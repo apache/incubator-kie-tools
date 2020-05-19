@@ -52,9 +52,7 @@ describe("EmbeddedEditor", () => {
     }
   };
 
-  beforeEach(() => {
-    spyOn<any>(EnvelopeBusOuterMessageHandler, "generateRandomBusId");
-  });
+  beforeAll(() => spyOn<any>(EnvelopeBusOuterMessageHandler, "generateRandomBusId"));
 
   test("EmbeddedEditor::defaults", () => {
     render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
@@ -63,21 +61,33 @@ describe("EmbeddedEditor", () => {
   });
 
   test("EmbeddedEditor::setContent", () => {
-    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
+    const spyRespond_contentRequest = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "respond_contentRequest");
 
-    editorRef.current?.setContent("");
+    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, { attachTo: holder });
+
+    editorRef.current?.setContent("content");
+
+    expect(spyRespond_contentRequest).toBeCalledWith({ content: "content" });
   });
 
   test("EmbeddedEditor::requestContent", () => {
-    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
+    const spyRequest_contentResponse = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "request_contentResponse");
+
+    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, { attachTo: holder });
 
     editorRef.current?.requestContent();
+
+    expect(spyRequest_contentResponse).toBeCalled();
   });
 
   test("EmbeddedEditor::requestPreview", () => {
-    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
+    const spyRequest_previewResponse = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "request_previewResponse");
+
+    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, { attachTo: holder });
 
     editorRef.current?.requestPreview();
+
+    expect(spyRequest_previewResponse).toBeCalled();
   });
 
   test("EmbeddedEditor::onContentResponse", async () => {
@@ -193,46 +203,6 @@ describe("EmbeddedEditor", () => {
 
     expect(document.body).toMatchSnapshot();
   });
-
-  // test("EmbeddedEditor::onEditorUndo", async () => {
-  //   const onEditorUndo = jest.fn(() => null);
-
-  //   mount(
-  //     <EmbeddedEditor
-  //       ref={editorRef}
-  //       file={file}
-  //       router={router}
-  //       channelType={channelType}
-  //       onEditorUndo={onEditorUndo}
-  //     />, { attachTo: holder }
-  //   );
-
-  //   await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO });
-
-  //   expect(onEditorUndo).toBeCalled();
-
-  //   expect(document.body).toMatchSnapshot();
-  // });
-
-  // test("EmbeddedEditor::onEditorRedo", async () => {
-  //   const onEditorRedo = jest.fn(() => null);
-
-  //   mount(
-  //     <EmbeddedEditor
-  //       ref={editorRef}
-  //       file={file}
-  //       router={router}
-  //       channelType={channelType}
-  //       onEditorRedo={onEditorRedo}
-  //     />, { attachTo: holder }
-  //   );
-
-  //   await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_REDO });
-
-  //   expect(onEditorRedo).toBeCalled();
-
-  //   expect(document.body).toMatchSnapshot();
-  // });
 
   test("EmbeddedEditor::onNewEdit", async () => {
     const onNewEdit = jest.fn((edit: KogitoEdit) => null);
