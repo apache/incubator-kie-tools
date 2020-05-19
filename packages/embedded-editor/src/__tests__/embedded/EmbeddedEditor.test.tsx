@@ -248,23 +248,23 @@ describe("EmbeddedEditor", () => {
     expect(document.body).toMatchSnapshot();
   });
 
-  // test("EmbeddedEditor::onPreviewResponse", async () => {
-  //   const onPreviewResponse = jest.fn((previewSvg: string) => null);
+  test("EmbeddedEditor::onPreviewResponse", async () => {
+    const onPreviewResponse = jest.fn((previewSvg: string) => null);
 
-  //   mount(
-  //     <EmbeddedEditor
-  //       ref={editorRef}
-  //       file={file}
-  //       router={router}
-  //       channelType={channelType}
-  //       onPreviewResponse={onPreviewResponse}
-  //     />, { attachTo: holder }
-  //   );
+    mount(
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        router={router}
+        channelType={channelType}
+        onPreviewResponse={onPreviewResponse}
+      />, { attachTo: holder }
+    );
 
-  //   await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_PREVIEW });
+    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_PREVIEW });
 
-  //   expect(onPreviewResponse).toBeCalled();
+    expect(onPreviewResponse).toBeCalled();
 
-  //   expect(document.body).toMatchSnapshot();
-  // });
+    expect(document.body).toMatchSnapshot();
+  });
 });
