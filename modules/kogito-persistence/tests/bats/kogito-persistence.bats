@@ -66,7 +66,8 @@ teardown() {
     [ "${lines[4]}" = "INFO ---> [persistence] Moving persistence files to final directory" ]
     [ "${lines[5]}" = "'${KOGITO_HOME}/bin/file1.proto' -> '${KOGITO_HOME}/data/protobufs/file1.proto'" ]
     [ "${lines[6]}" = "INFO ---> [persistence] generating md5 for persistence files" ]
-    
+    [ "${lines[7]}" = "INFO ----> [persistence] Generated checksum for ${KOGITO_HOME}/data/protobufs/file1.proto with the name: ${KOGITO_HOME}/data/protobufs/file1-md5.txt" ]
+
 }
 
 @test "There are no persistence files" {
@@ -91,6 +92,8 @@ teardown() {
     [ "$status" -eq 0 ]
     [ "${lines[0]}" = "INFO ---> [persistence] Moving persistence files to final directory" ]
     [ "${lines[1]}" = "'${KOGITO_HOME}/bin/file1.proto' -> '${KOGITO_HOME}/data/protobufs/file1.proto'" ]
+    [ "${lines[2]}" = "INFO ---> [persistence] generating md5 for persistence files" ]
+    [ "${lines[3]}" = "INFO ----> [persistence] Generated checksum for ${KOGITO_HOME}/data/protobufs/file1.proto with the name: ${KOGITO_HOME}/data/protobufs/file1-md5.txt" ]
 }
 
 @test "There's no proto files in the bin directory" {
@@ -107,10 +110,11 @@ teardown() {
     touch $KOGITO_HOME/data/protobufs/file1.proto
 
     run generate_md5_persistence_files
-    
     echo "result= ${lines[@]}"
 
     [ "$status" -eq 0 ]
+    [ "${lines[0]}" = "INFO ---> [persistence] generating md5 for persistence files" ]
+    [ "${lines[1]}" = "INFO ----> [persistence] Generated checksum for ${KOGITO_HOME}/data/protobufs/file1.proto with the name: ${KOGITO_HOME}/data/protobufs/file1-md5.txt" ]
     [ -e $KOGITO_HOME/data/protobufs/file1-md5.txt ]
     # if md5 isn't generated, grep will fail to find the given string
     grep -q "d41d8cd98f00b204e9800998ecf8427e" $KOGITO_HOME/data/protobufs/file1-md5.txt
@@ -120,7 +124,6 @@ teardown() {
     touch $KOGITO_HOME/data/protobufs/file1.proto1
 
     run generate_md5_persistence_files
-    
     echo "result= ${lines[@]}"
 
     [ "$status" -eq 0 ]
@@ -136,7 +139,7 @@ teardown() {
     local expected=$(cat $BATS_TEST_DIRNAME/expected/patch_cm_travel_agency.json)
 
     run update_configmap
-    
+
     echo "result= ${lines[@]}"
     [ "$status" -eq 0 ]
     [ "${lines[1]}" = "INFO ---> [persistence] About to patch configMap exampleapp-cm" ]

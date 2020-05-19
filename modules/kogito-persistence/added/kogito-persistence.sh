@@ -44,6 +44,7 @@ function generate_md5_persistence_files() {
         log_info "---> [persistence] generating md5 for persistence files"
         for entry in "$KOGITO_HOME/data/protobufs"/*.proto; do
             md5sum ${entry} | awk '{ print $1 }' >${entry%.*}-md5.txt
+            log_info "----> [persistence] Generated checksum for ${entry} with the name: ${entry%.*}-md5.txt"
         done
     fi
 }
