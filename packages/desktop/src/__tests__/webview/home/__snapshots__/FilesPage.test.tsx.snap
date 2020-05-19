@@ -564,6 +564,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
       >
         <div
           class="pf-c-card__body"
@@ -589,6 +590,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
       >
         <div
           class="pf-c-card__body"
@@ -614,6 +616,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
       >
         <div
           class="pf-c-card__body"
@@ -922,6 +925,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
       >
         <div
           class="pf-c-card__body"
@@ -947,6 +951,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
       >
         <div
           class="pf-c-card__body"
@@ -972,6 +977,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
       >
         <div
           class="pf-c-card__body"
@@ -997,6 +1003,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
       >
         <div
           class="pf-c-card__body"
@@ -1305,6 +1312,7 @@ exports[`FilesPage three recent files listed 1`] = `
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
       >
         <div
           class="pf-c-card__body"
@@ -1330,6 +1338,7 @@ exports[`FilesPage three recent files listed 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
       >
         <div
           class="pf-c-card__body"
@@ -1355,6 +1364,7 @@ exports[`FilesPage three recent files listed 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
       >
         <div
           class="pf-c-card__body"
@@ -1663,6 +1673,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
       >
         <div
           class="pf-c-card__body"
@@ -1688,6 +1699,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
       >
         <div
           class="pf-c-card__body"
@@ -1713,6 +1725,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__files-card"
+        tabindex="0"
       >
         <div
           class="pf-c-card__body"
