@@ -917,9 +917,11 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
             class="pf-l-stack__item pf-m-fill"
           >
             <iframe
-              class="kogito--editor"
+              data-envelope-channel="DESKTOP"
               id="kogito-iframe"
-              src="envelope/index.html"
+              src="envelope/envelope.html"
+              style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+              title="Kogito editor"
             />
           </div>
         </div>
