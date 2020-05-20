@@ -41,4 +41,18 @@ public class DMNUtilsTest {
         SimpleTypeImpl notBuiltIn = new SimpleTypeImpl(null, "tSimple", null, false, Collections.emptyList(), null, notBuiltInType);
         assertEquals(notBuiltInType, DMNUtils.getRootType(notBuiltIn));
     }
+
+    @Test
+    public void getDMNTypeName() {
+        SimpleTypeImpl simpleTypeAny = new SimpleTypeImpl(null, "tSimple", null, false, Collections.emptyList(), null, BuiltInType.UNKNOWN);
+        assertEquals("tSimple", DMNUtils.getDMNTypeName(simpleTypeAny));
+
+        Type aliasFeelType = new AliasFEELType("alias", BuiltInType.UNKNOWN);
+        CompositeTypeImpl aliasType = new CompositeTypeImpl(null, "tComposite", null, false, Collections.emptyMap(), simpleTypeAny, aliasFeelType);
+        assertEquals("tSimple", DMNUtils.getDMNTypeName(aliasType));
+
+        Type notBuiltInType = new AliasFEELType("notBuiltIn", BuiltInType.UNKNOWN);
+        SimpleTypeImpl notBuiltIn = new SimpleTypeImpl(null, "tSimple2", null, false, Collections.emptyList(), simpleTypeAny, notBuiltInType);
+        assertEquals("tSimple", DMNUtils.getDMNTypeName(notBuiltIn));
+    }
 }

@@ -39,7 +39,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class AbstractDMNTest {
+public abstract class AbstractDMNTest {
 
     protected DMNModel dmnModelLocal;
 
@@ -123,6 +123,14 @@ public class AbstractDMNTest {
     }
 
     /**
+     * Returns a <b>single</b> <code>SimpleTypeImpl</code>
+     * @return
+     */
+    protected SimpleTypeImpl getSimpleNoCollectionWithBaseType() {
+        return new SimpleTypeImpl("simpleNameSpace", "simpleType", null, false, null, getSimpleNoCollection(), null);
+    }
+
+    /**
      * Returns a <b>string collection</b> <code>SimpleTypeImpl</code>
      * @return
      */
@@ -167,6 +175,16 @@ public class AbstractDMNTest {
         toReturn.addField(EXPANDABLE_PROPERTY_PHONENUMBERS, phoneNumberComposite);
         toReturn.addField(EXPANDABLE_PROPERTY_DETAILS, detailsComposite);
         toReturn.addField("name", nameSimple);
+
+        return toReturn;
+    }
+
+    protected CompositeTypeImpl getSingleCompositeWithBaseTypeField() {
+        // Complex object retrieve
+        CompositeTypeImpl toReturn = new CompositeTypeImpl("compositeNameSpace", COMPOSITE_TYPE_NAME, null);
+
+        toReturn.addField("gender", getSimpleNoCollectionWithBaseType());
+        toReturn.addField("name", new SimpleTypeImpl(null, SIMPLE_TYPE_NAME, null));
 
         return toReturn;
     }

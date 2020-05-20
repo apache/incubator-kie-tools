@@ -41,6 +41,20 @@ public class DMNUtils {
         return dmnType.getFeelType();
     }
 
+    /**
+     * This method returns the correct <b>type</b> name of a given <code>DMNType</code>. Basically, if a DMNType
+     * contains a baseType, it takes the type name from its baseType. This is to manage DMN Simple Types and Anonymous
+     * inner types
+     * @param dmnType
+     * @return
+     */
+    public static String getDMNTypeName(DMNType dmnType) {
+        if (dmnType.getBaseType() != null) {
+            return dmnType.getBaseType().getName();
+        }
+        return dmnType.getName();
+    }
+
     public static DMNType navigateDMNType(DMNType rootType, List<String> steps) {
         DMNType toReturn = rootType;
         for (String step : steps) {

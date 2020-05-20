@@ -125,6 +125,15 @@ public class DMNScenarioValidationTest {
 
         createDMNType("myComplexType", "myComplexType", "parent");
 
+        // numberFM is valid with allowedValues
+        FactMapping quantityFM = test2.getScesimModelDescriptor().addFactMapping(
+                myComplexFactIdentifier,
+                ExpressionIdentifier.create("quantity", FactMappingType.GIVEN));
+        quantityFM.addExpressionElement("tMYCOMPLEXTYPE", "tMYCOMPLEXTYPE");
+        quantityFM.addExpressionElement("quantity", "number");
+
+        createDMNTypeWithBaseType("myComplexType", "myComplexType", "quantity");
+
         List<FactMappingValidationError> errorsTest2 = validationSpy.validate(test2, settingsLocal, null);
         checkResult(errorsTest2);
 
@@ -201,6 +210,20 @@ public class DMNScenarioValidationTest {
         for (String step : steps) {
             currentType = addStep(currentType, step);
         }
+
+        mapOfMockDecisions.put(decisionName, decisionNodeMock);
+    }
+
+    private void createDMNTypeWithBaseType(String decisionName, String rootType, String step) {
+        DecisionNode decisionNodeMock = getOrCreateDecisionNode(decisionName, rootType);
+
+        DMNType currentType = decisionNodeMock.getResultType();
+        currentType = addStep(currentType, step);
+        when(currentType.getName()).thenReturn(step);
+
+        DMNType numberType = initDMNType("number");
+        when(numberType.getName()).thenReturn("number");
+        when(currentType.getBaseType()).thenReturn(numberType);
 
         mapOfMockDecisions.put(decisionName, decisionNodeMock);
     }

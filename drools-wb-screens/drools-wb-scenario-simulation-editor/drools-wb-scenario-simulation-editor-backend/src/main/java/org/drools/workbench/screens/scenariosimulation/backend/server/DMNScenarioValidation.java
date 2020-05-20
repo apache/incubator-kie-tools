@@ -23,6 +23,7 @@ import org.drools.scenariosimulation.api.model.FactMapping;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
+import org.drools.workbench.screens.scenariosimulation.backend.server.util.DMNUtils;
 import org.drools.workbench.screens.scenariosimulation.model.FactMappingValidationError;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNModel;
@@ -106,7 +107,7 @@ public class DMNScenarioValidation extends AbstractScenarioValidation {
                 factMapping.getGenericTypes().get(0) :
                 typeName;
 
-        return Objects.equals(factMappingType, dmnType.getName());
+        return Objects.equals(factMappingType, DMNUtils.getDMNTypeName(dmnType));
     }
 
     protected DMNModel getDMNModel(KieContainer kieContainer, String dmnPath) {
