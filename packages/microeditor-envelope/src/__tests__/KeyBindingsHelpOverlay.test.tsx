@@ -21,7 +21,7 @@ import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
 import { fireEvent, render } from "@testing-library/react";
 
 describe("KeyBindingsHelpOverlay", () => {
-  test("snapshot", async () => {
+  test("minimal setup", async () => {
     const context = {
       operatingSystem: OperatingSystem.WINDOWS,
       channel: ChannelType.DESKTOP
