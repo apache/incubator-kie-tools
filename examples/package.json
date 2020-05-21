@@ -19,7 +19,7 @@
     "uniforms-bridge-json-schema": "^2.6.7",
     "uniforms-bridge-simple-schema": "^2.6.7",
     "uniforms-bridge-simple-schema-2": "^2.6.7",
-    "uniforms-patternfly": "^0.0.9"
+    "uniforms-patternfly": "^0.0.10"
   },
   "devDependencies": {
     "parcel-bundler": "1.12.4",
