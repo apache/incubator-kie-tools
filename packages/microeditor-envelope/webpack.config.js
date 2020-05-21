@@ -17,7 +17,7 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
-const envelope = require("./webpackUtils");
+const envelope = require("../patternfly-base/webpackUtils");
 
 module.exports = {
   mode: "development",

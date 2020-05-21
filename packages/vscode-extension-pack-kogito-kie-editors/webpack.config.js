@@ -17,7 +17,7 @@
 const path = require("path");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const envelope = require("../microeditor-envelope/webpackUtils");
+const envelope = require("../patternfly-base/webpackUtils");
 
 const commonConfig = {
   mode: "development",
