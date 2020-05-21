@@ -19,7 +19,6 @@ import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import {
   Button,
-  PageSection,
   TextInput,
   Title,
   Toolbar,
@@ -29,10 +28,10 @@ import {
   Brand,
   DropdownToggle
 } from "@patternfly/react-core";
-import { CloseIcon, ExpandIcon, CaretDownIcon, EditIcon, EllipsisVIcon } from "@patternfly/react-icons";
+import { CloseIcon, ExpandIcon, CaretDownIcon, EllipsisVIcon } from "@patternfly/react-icons";
 
 import { useLocation } from "react-router";
-import { Dropdown, DropdownItem, DropdownPosition, KebabToggle } from "@patternfly/react-core";
+import { Dropdown, DropdownItem, DropdownPosition } from "@patternfly/react-core";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -121,13 +120,26 @@ export function EditorToolbar(props: Props) {
         Get shareable URL
       </DropdownItem>*/
     ],
-    [context.external, context.readonly, props.onSave, props.onDownload, props.onCopyContentToClipboard, props.onExportGist]
+    [
+      context.external,
+      context.readonly,
+      props.onSave,
+      props.onDownload,
+      props.onCopyContentToClipboard,
+      props.onExportGist
+    ]
   );
 
   const filenameInput = (
     <>
       {!editingName && (
-        <Title headingLevel={"h3"} size={"xl"} onClick={editName} title={"Rename"}>
+        <Title
+          className={"kogito--editor__toolbar-title"}
+          headingLevel={"h3"}
+          size={"xl"}
+          onClick={editName}
+          title={"Rename"}
+        >
           {context.file.fileName + "." + editorType}
         </Title>
       )}
@@ -161,7 +173,7 @@ export function EditorToolbar(props: Props) {
             onClick={props.onDownload}
             className={"pf-u-display-none pf-u-display-flex-on-lg"}
           >
-            Download
+            Save
           </Button>
         </ToolbarItem>
       </ToolbarGroup>
@@ -172,6 +184,7 @@ export function EditorToolbar(props: Props) {
             toggle={
               <DropdownToggle
                 id={"toggle-id-lg"}
+                className={"kogito--editor__toolbar-toggle-icon-button"}
                 onToggle={isOpen => setMenuOpen(isOpen)}
                 iconComponent={CaretDownIcon}
               >
@@ -191,6 +204,7 @@ export function EditorToolbar(props: Props) {
             onSelect={() => setKebabOpen(false)}
             toggle={
               <DropdownToggle
+                className={"kogito--editor__toolbar-toggle-icon-button"}
                 id={"toggle-id-sm"}
                 onToggle={isOpen => setKebabOpen(isOpen)}
                 iconComponent={EllipsisVIcon}
@@ -204,13 +218,23 @@ export function EditorToolbar(props: Props) {
         </ToolbarItem>
 
         <ToolbarItem className={"pf-u-display-none pf-u-display-flex-on-lg"}>
-          <Button variant={"plain"} onClick={props.onFullScreen} aria-label={"Full screen"}>
+          <Button
+            className={"kogito--editor__toolbar-icon-button"}
+            variant={"plain"}
+            onClick={props.onFullScreen}
+            aria-label={"Full screen"}
+          >
             <ExpandIcon />
           </Button>
         </ToolbarItem>
         {!context.external && (
           <ToolbarItem>
-            <Button variant={"plain"} onClick={props.onClose} aria-label={"Close"}>
+            <Button
+              className={"kogito--editor__toolbar-icon-button"}
+              variant={"plain"}
+              onClick={props.onClose}
+              aria-label={"Close"}
+            >
               <CloseIcon />
             </Button>
           </ToolbarItem>

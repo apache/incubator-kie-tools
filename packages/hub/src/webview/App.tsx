@@ -386,6 +386,7 @@ export function App() {
             <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/vscode-logo.svg"} />
               <Dropdown
+                position="right"
                 onSelect={vscode_toggleKebab}
                 toggle={<KebabToggle onToggle={vscode_toggleKebab} />}
                 isOpen={vscode_kebabOpen}
@@ -563,6 +564,7 @@ export function App() {
             <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/desktop-logo.svg"} />
               <Dropdown
+                position="right"
                 onSelect={desktop_toggleKebab}
                 toggle={<KebabToggle onToggle={desktop_toggleKebab} />}
                 isOpen={desktop_kebabOpen}

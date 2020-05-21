@@ -16,7 +16,7 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const envelope = require("../microeditor-envelope/webpackUtils");
+const envelope = require("../patternfly-base/webpackUtils");
 
 const commonConfig = {
   mode: "development",
@@ -70,7 +70,7 @@ module.exports = [
     ...commonConfig,
     target: "electron-main",
     entry: {
-      index: "./src/electron/index.ts"
+      index: "./src/backend/index.ts"
     },
     plugins: [new CopyPlugin([{ from: "./build", to: "./build" }])],
     node: {

@@ -1,0 +1,933 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`invalid file type alert alert is closed after 3000ms 1`] = `
+<DocumentFragment>
+  <div
+    class="kogito--alert-container"
+  >
+    <div
+      aria-label="Danger Alert"
+      class="pf-c-alert pf-m-danger"
+    >
+      <div
+        class="pf-c-alert__icon"
+      >
+        <svg
+          aria-hidden="true"
+          fill="currentColor"
+          height="1em"
+          role="img"
+          style="vertical-align: -0.125em;"
+          viewBox="0 0 512 512"
+          width="1em"
+        >
+          <path
+            d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+            transform=""
+          />
+        </svg>
+      </div>
+      <h4
+        class="pf-c-alert__title"
+      >
+        <span
+          class="pf-u-screen-reader"
+        >
+          Danger alert:
+        </span>
+        This file extension is not supported.
+      </h4>
+      <div
+        class="pf-c-alert__action"
+      >
+        <button
+          aria-label="Close Danger alert: alert: This file extension is not supported."
+          class="pf-c-button pf-m-plain"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            fill="currentColor"
+            height="1em"
+            role="img"
+            style="vertical-align: -0.125em;"
+            viewBox="0 0 352 512"
+            width="1em"
+          >
+            <path
+              d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+              transform=""
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    class="pf-c-page kogito--editor-landing"
+  >
+    <header
+      class="pf-c-page__header"
+    >
+      <div
+        class="pf-c-page__header-brand"
+      >
+        <a
+          class="pf-c-page__header-brand-link"
+        >
+          <img
+            alt="Business Modeler Logo"
+            class="pf-c-brand"
+            src="images/BusinessModeler_Logo.svg"
+          />
+        </a>
+      </div>
+    </header>
+    <div
+      class="pf-c-page__sidebar pf-m-expanded pf-m-dark"
+      id="page-sidebar"
+    >
+      <div
+        class="pf-c-page__sidebar-body"
+      >
+        <nav
+          aria-label="Global"
+          class="pf-c-nav pf-m-dark"
+        >
+          <ul
+            class="pf-c-nav__list"
+          >
+            <li
+              class="pf-c-nav__item"
+            >
+              <a
+                aria-current="page"
+                class="pf-c-nav__link pf-m-current"
+                href=""
+              >
+                Files
+              </a>
+            </li>
+            <li
+              class="pf-c-nav__item"
+            >
+              <a
+                class="pf-c-nav__link"
+                href=""
+              >
+                Learn more
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <main
+      class="pf-c-page__main"
+      tabindex="-1"
+    >
+      <section
+        class="pf-c-page__main-section"
+      >
+        <div
+          class="pf-c-content"
+        >
+          <h2
+            class="pf-c-title pf-m-2xl"
+          >
+            Create new file
+          </h2>
+        </div>
+        <div
+          class="pf-l-gallery pf-m-gutter kogito--desktop__actions-gallery"
+        >
+          <article
+            class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+          >
+            <div
+              class="pf-c-card__header pf-c-title pf-m-md"
+            >
+              <h3
+                class="pf-c-title pf-m-xl pf-u-mb-md"
+              >
+                Blank Workflow (.BPMN)
+              </h3>
+            </div>
+            <div
+              class="pf-c-card__body kogito--desktop__actions-card-body"
+            >
+              <img
+                alt="file icon"
+                class="kogito--desktop__actions-img"
+                src="images/file_icon_regular.svg"
+              />
+            </div>
+          </article>
+          <article
+            class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+          >
+            <div
+              class="pf-c-card__header pf-c-title pf-m-md"
+            >
+              <h3
+                class="pf-c-title pf-m-xl pf-u-mb-md"
+              >
+                Blank Decision Model (.DMN)
+              </h3>
+            </div>
+            <div
+              class="pf-c-card__body kogito--desktop__actions-card-body"
+            >
+              <img
+                alt="file icon"
+                class="kogito--desktop__actions-img"
+                src="images/file_icon_regular.svg"
+              />
+            </div>
+          </article>
+          <article
+            class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+          >
+            <div
+              class="pf-c-card__header pf-c-title pf-m-md"
+            >
+              <h3
+                class="pf-c-title pf-m-xl pf-u-mb-md"
+              >
+                Sample Workflow (.BPMN)
+              </h3>
+            </div>
+            <div
+              class="pf-c-card__body kogito--desktop__actions-card-body"
+            >
+              <img
+                alt="file icon"
+                class="kogito--desktop__actions-img"
+                src="images/sample_file_icon_regular.svg"
+              />
+            </div>
+          </article>
+          <article
+            class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+          >
+            <div
+              class="pf-c-card__header pf-c-title pf-m-md"
+            >
+              <h3
+                class="pf-c-title pf-m-xl pf-u-mb-md"
+              >
+                Sample Decision Model (.DMN)
+              </h3>
+            </div>
+            <div
+              class="pf-c-card__body kogito--desktop__actions-card-body"
+            >
+              <img
+                alt="file icon"
+                class="kogito--desktop__actions-img"
+                src="images/sample_file_icon_regular.svg"
+              />
+            </div>
+          </article>
+          <article
+            class="pf-c-card kogito--desktop__actions-card--wide"
+          >
+            <div
+              class="pf-c-card__header pf-c-title pf-m-md"
+            >
+              <h3
+                class="pf-c-title pf-m-xl"
+              >
+                Open from source
+              </h3>
+            </div>
+            <div
+              class="pf-c-card__body"
+            >
+              <div
+                class="pf-c-content"
+              >
+                <p
+                  class=""
+                  data-pf-content="true"
+                >
+                  Paste a URL to a source code link (GitHub, Dropbox, etc.)
+                </p>
+                <form
+                  class="pf-c-form"
+                  novalidate=""
+                >
+                  <div
+                    class="pf-c-form__group"
+                  >
+                    <label
+                      class="pf-c-form__label"
+                      for="url-text-input"
+                    >
+                      <span
+                        class="pf-c-form__label-text"
+                      >
+                        URL
+                      </span>
+                    </label>
+                    <input
+                      aria-describedby="url-text-input-helper"
+                      aria-invalid="false"
+                      class="pf-c-form-control"
+                      id="url-text-input"
+                      name="urlText"
+                      placeholder="URL"
+                      required=""
+                      type="url"
+                      value=""
+                    />
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div
+              class="pf-c-card__footer"
+            >
+              <button
+                class="pf-c-button pf-m-secondary"
+                type="button"
+              >
+                Open from source
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section
+        class="pf-c-page__main-section pf-m-light"
+      >
+        <h3
+          class="pf-c-title pf-m-2xl"
+        >
+          Recent Files
+        </h3>
+        <div
+          class="pf-l-toolbar"
+        >
+          <div
+            class="pf-l-toolbar__group"
+          >
+            <div
+              class="pf-c-select"
+              style="width: 7em;"
+            >
+              <button
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby=" pf-toggle-id-1"
+                class="pf-c-select__toggle"
+                id="pf-toggle-id-1"
+                type="button"
+              >
+                <div
+                  class="pf-c-select__toggle-wrapper"
+                >
+                  <span
+                    class="pf-c-select__toggle-text"
+                  >
+                    All
+                  </span>
+                </div>
+                <svg
+                  aria-hidden="true"
+                  class="pf-c-select__toggle-arrow"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 320 512"
+                  width="1em"
+                >
+                  <path
+                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                    transform=""
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div
+            class="pf-l-toolbar__group"
+          >
+            <div
+              class="pf-c-input-group"
+            >
+              <input
+                aria-invalid="false"
+                aria-label="search input example"
+                class="pf-c-form-control"
+                id="searchInput"
+                name="searchInput"
+                placeholder="Search"
+                type="search"
+                value=""
+              />
+            </div>
+          </div>
+          <div
+            class="pf-l-toolbar__item"
+          >
+            <button
+              aria-label="sort file view"
+              class="pf-c-button pf-m-plain kogito--filter-btn"
+              data-testid="orderAlphabeticallyButton"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 448 512"
+                width="1em"
+              >
+                <path
+                  d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
+                  transform=""
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+      <section
+        class="pf-c-page__main-section pf-m-fill"
+      >
+        <div
+          class="pf-l-bullseye"
+        >
+          No files were opened yet.
+        </div>
+      </section>
+    </main>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`invalid file type alert alert is closed immediately after leaving the home page 1`] = `
+<DocumentFragment>
+  <div
+    class="kogito--alert-container"
+  >
+    <div
+      aria-label="Danger Alert"
+      class="pf-c-alert pf-m-danger"
+    >
+      <div
+        class="pf-c-alert__icon"
+      >
+        <svg
+          aria-hidden="true"
+          fill="currentColor"
+          height="1em"
+          role="img"
+          style="vertical-align: -0.125em;"
+          viewBox="0 0 512 512"
+          width="1em"
+        >
+          <path
+            d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"
+            transform=""
+          />
+        </svg>
+      </div>
+      <h4
+        class="pf-c-alert__title"
+      >
+        <span
+          class="pf-u-screen-reader"
+        >
+          Danger alert:
+        </span>
+        This file extension is not supported.
+      </h4>
+      <div
+        class="pf-c-alert__action"
+      >
+        <button
+          aria-label="Close Danger alert: alert: This file extension is not supported."
+          class="pf-c-button pf-m-plain"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            fill="currentColor"
+            height="1em"
+            role="img"
+            style="vertical-align: -0.125em;"
+            viewBox="0 0 352 512"
+            width="1em"
+          >
+            <path
+              d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+              transform=""
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    class="pf-c-page kogito--editor-landing"
+  >
+    <header
+      class="pf-c-page__header"
+    >
+      <div
+        class="pf-c-page__header-brand"
+      >
+        <a
+          class="pf-c-page__header-brand-link"
+        >
+          <img
+            alt="Business Modeler Logo"
+            class="pf-c-brand"
+            src="images/BusinessModeler_Logo.svg"
+          />
+        </a>
+      </div>
+    </header>
+    <div
+      class="pf-c-page__sidebar pf-m-expanded pf-m-dark"
+      id="page-sidebar"
+    >
+      <div
+        class="pf-c-page__sidebar-body"
+      >
+        <nav
+          aria-label="Global"
+          class="pf-c-nav pf-m-dark"
+        >
+          <ul
+            class="pf-c-nav__list"
+          >
+            <li
+              class="pf-c-nav__item"
+            >
+              <a
+                aria-current="page"
+                class="pf-c-nav__link pf-m-current"
+                href=""
+              >
+                Files
+              </a>
+            </li>
+            <li
+              class="pf-c-nav__item"
+            >
+              <a
+                class="pf-c-nav__link"
+                href=""
+              >
+                Learn more
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <main
+      class="pf-c-page__main"
+      tabindex="-1"
+    >
+      <section
+        class="pf-c-page__main-section"
+      >
+        <div
+          class="pf-c-content"
+        >
+          <h2
+            class="pf-c-title pf-m-2xl"
+          >
+            Create new file
+          </h2>
+        </div>
+        <div
+          class="pf-l-gallery pf-m-gutter kogito--desktop__actions-gallery"
+        >
+          <article
+            class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+          >
+            <div
+              class="pf-c-card__header pf-c-title pf-m-md"
+            >
+              <h3
+                class="pf-c-title pf-m-xl pf-u-mb-md"
+              >
+                Blank Workflow (.BPMN)
+              </h3>
+            </div>
+            <div
+              class="pf-c-card__body kogito--desktop__actions-card-body"
+            >
+              <img
+                alt="file icon"
+                class="kogito--desktop__actions-img"
+                src="images/file_icon_regular.svg"
+              />
+            </div>
+          </article>
+          <article
+            class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+          >
+            <div
+              class="pf-c-card__header pf-c-title pf-m-md"
+            >
+              <h3
+                class="pf-c-title pf-m-xl pf-u-mb-md"
+              >
+                Blank Decision Model (.DMN)
+              </h3>
+            </div>
+            <div
+              class="pf-c-card__body kogito--desktop__actions-card-body"
+            >
+              <img
+                alt="file icon"
+                class="kogito--desktop__actions-img"
+                src="images/file_icon_regular.svg"
+              />
+            </div>
+          </article>
+          <article
+            class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+          >
+            <div
+              class="pf-c-card__header pf-c-title pf-m-md"
+            >
+              <h3
+                class="pf-c-title pf-m-xl pf-u-mb-md"
+              >
+                Sample Workflow (.BPMN)
+              </h3>
+            </div>
+            <div
+              class="pf-c-card__body kogito--desktop__actions-card-body"
+            >
+              <img
+                alt="file icon"
+                class="kogito--desktop__actions-img"
+                src="images/sample_file_icon_regular.svg"
+              />
+            </div>
+          </article>
+          <article
+            class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+          >
+            <div
+              class="pf-c-card__header pf-c-title pf-m-md"
+            >
+              <h3
+                class="pf-c-title pf-m-xl pf-u-mb-md"
+              >
+                Sample Decision Model (.DMN)
+              </h3>
+            </div>
+            <div
+              class="pf-c-card__body kogito--desktop__actions-card-body"
+            >
+              <img
+                alt="file icon"
+                class="kogito--desktop__actions-img"
+                src="images/sample_file_icon_regular.svg"
+              />
+            </div>
+          </article>
+          <article
+            class="pf-c-card kogito--desktop__actions-card--wide"
+          >
+            <div
+              class="pf-c-card__header pf-c-title pf-m-md"
+            >
+              <h3
+                class="pf-c-title pf-m-xl"
+              >
+                Open from source
+              </h3>
+            </div>
+            <div
+              class="pf-c-card__body"
+            >
+              <div
+                class="pf-c-content"
+              >
+                <p
+                  class=""
+                  data-pf-content="true"
+                >
+                  Paste a URL to a source code link (GitHub, Dropbox, etc.)
+                </p>
+                <form
+                  class="pf-c-form"
+                  novalidate=""
+                >
+                  <div
+                    class="pf-c-form__group"
+                  >
+                    <label
+                      class="pf-c-form__label"
+                      for="url-text-input"
+                    >
+                      <span
+                        class="pf-c-form__label-text"
+                      >
+                        URL
+                      </span>
+                    </label>
+                    <input
+                      aria-describedby="url-text-input-helper"
+                      aria-invalid="false"
+                      class="pf-c-form-control"
+                      id="url-text-input"
+                      name="urlText"
+                      placeholder="URL"
+                      required=""
+                      type="url"
+                      value=""
+                    />
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div
+              class="pf-c-card__footer"
+            >
+              <button
+                class="pf-c-button pf-m-secondary"
+                type="button"
+              >
+                Open from source
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section
+        class="pf-c-page__main-section pf-m-light"
+      >
+        <h3
+          class="pf-c-title pf-m-2xl"
+        >
+          Recent Files
+        </h3>
+        <div
+          class="pf-l-toolbar"
+        >
+          <div
+            class="pf-l-toolbar__group"
+          >
+            <div
+              class="pf-c-select"
+              style="width: 7em;"
+            >
+              <button
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby=" pf-toggle-id-4"
+                class="pf-c-select__toggle"
+                id="pf-toggle-id-4"
+                type="button"
+              >
+                <div
+                  class="pf-c-select__toggle-wrapper"
+                >
+                  <span
+                    class="pf-c-select__toggle-text"
+                  >
+                    All
+                  </span>
+                </div>
+                <svg
+                  aria-hidden="true"
+                  class="pf-c-select__toggle-arrow"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  style="vertical-align: -0.125em;"
+                  viewBox="0 0 320 512"
+                  width="1em"
+                >
+                  <path
+                    d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                    transform=""
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div
+            class="pf-l-toolbar__group"
+          >
+            <div
+              class="pf-c-input-group"
+            >
+              <input
+                aria-invalid="false"
+                aria-label="search input example"
+                class="pf-c-form-control"
+                id="searchInput"
+                name="searchInput"
+                placeholder="Search"
+                type="search"
+                value=""
+              />
+            </div>
+          </div>
+          <div
+            class="pf-l-toolbar__item"
+          >
+            <button
+              aria-label="sort file view"
+              class="pf-c-button pf-m-plain kogito--filter-btn"
+              data-testid="orderAlphabeticallyButton"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 448 512"
+                width="1em"
+              >
+                <path
+                  d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
+                  transform=""
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+      <section
+        class="pf-c-page__main-section pf-m-fill"
+      >
+        <div
+          class="pf-l-bullseye"
+        >
+          No files were opened yet.
+        </div>
+      </section>
+    </main>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`invalid file type alert alert is closed immediately after leaving the home page 2`] = `
+<DocumentFragment>
+  <div
+    class="pf-c-page kogito--editor-page"
+  >
+    <main
+      class="pf-c-page__main"
+      tabindex="-1"
+    >
+      <section
+        class="pf-c-page__main-section pf-m-no-padding pf-m-dark-200"
+        style="flex-basis: 100%;"
+      >
+        <div
+          class="pf-l-stack"
+        >
+          <div
+            class="pf-l-stack__item"
+          >
+            <header
+              class="pf-c-page__header kogito--editor__toolbar"
+            >
+              <div
+                class="pf-c-page__header-brand"
+              >
+                <a
+                  class="pf-c-page__header-brand-link"
+                >
+                  <img
+                    alt="dmn kogito logo"
+                    class="pf-c-brand"
+                    src="images/dmn_kogito_logo.svg"
+                  />
+                </a>
+              </div>
+              <div
+                class="pf-c-page__header-nav"
+              >
+                <h3
+                  class="pf-c-title pf-m-xl"
+                >
+                  a.dmn
+                </h3>
+              </div>
+              <div
+                class="pf-c-page__header-tools"
+              >
+                <div
+                  class="pf-l-toolbar"
+                >
+                  <div
+                    class="pf-l-toolbar__group kogito--right"
+                  >
+                    <div
+                      class="pf-l-toolbar__item"
+                    >
+                      <button
+                        aria-label="Save file"
+                        class="pf-c-button pf-m-secondary pf-u-display-flex-on-lg"
+                        type="button"
+                      >
+                        Save
+                      </button>
+                    </div>
+                    <div
+                      class="pf-l-toolbar__item"
+                    >
+                      <button
+                        aria-label="Go to homepage"
+                        class="pf-c-button pf-m-plain"
+                        type="button"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          fill="currentColor"
+                          height="1em"
+                          role="img"
+                          style="vertical-align: -0.125em;"
+                          viewBox="0 64 731 1024"
+                          width="1em"
+                        >
+                          <path
+                            d="M96.464 804.571c-4.816-0.064-9.12-1.963-12.912-5.733l-77.815-77.815c-3.769-3.794-5.669-8.096-5.735-12.91-0.032-4.839 1.815-9.113 5.543-12.823l616.603-616.606c3.71-3.714 7.986-5.577 12.823-5.541 4.834 0.039 9.138 1.957 12.91 5.73l77.817 77.819c3.769 3.769 5.691 8.066 5.73 12.912 0.037 4.839-1.829 9.106-5.538 12.825l-616.606 616.599c-3.717 3.73-7.986 5.575-12.821 5.541zM622.144 799.031l-616.603-616.601c-3.726-3.717-5.577-7.989-5.536-12.827 0.059-4.843 1.959-9.143 5.728-12.914l77.817-77.817c3.792-3.774 8.096-5.691 12.91-5.728 4.837-0.039 9.106 1.824 12.821 5.536l616.599 616.608c3.717 3.712 5.579 7.989 5.543 12.823-0.041 4.814-1.959 9.118-5.728 12.91l-77.824 77.808c-3.767 3.778-8.073 5.678-12.907 5.744-4.834 0.034-9.104-1.815-12.818-5.541z"
+                            transform="rotate(180 0 512) scale(-1 1)"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </header>
+          </div>
+          <div
+            class="pf-l-stack__item pf-m-fill"
+          >
+            <iframe
+              class="kogito--editor"
+              id="kogito-iframe"
+              src="envelope/index.html"
+            />
+          </div>
+        </div>
+        <textarea
+          style="opacity: 0; width: 0px; height: 0px;"
+        />
+      </section>
+    </main>
+  </div>
+</DocumentFragment>
+`;
