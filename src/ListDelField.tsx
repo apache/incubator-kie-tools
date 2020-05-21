@@ -18,10 +18,11 @@ function ListDel<T>(rawProps: ListDelFieldProps<T>) {
   const parentName = joinName(nameParts.slice(0, -1));
   const parent = useField<{ minCount?: number }, T[]>(parentName, {})[0];
   if (rawProps.parent) Object.assign(parent, rawProps.parent);
+  const parentValue = parent.value ?? [];
 
-  const fieldIndex = +nameParts[nameParts.length - 1];
   const limitNotReached =
-    !props.disabled && !(parent.minCount! >= parent.value!.length);
+    !props.disabled && 
+    !(parent.minCount! >= parent.value!.length);
 
   return (
     <Button
@@ -30,8 +31,7 @@ function ListDel<T>(rawProps: ListDelFieldProps<T>) {
       style={{ paddingLeft: '0', paddingRight: '0'}}
       onClick={() => {
         if (limitNotReached) {
-          const value = parent.value!.slice();
-          value.splice(fieldIndex, 1);
+          const value = parentValue.splice(0, parentValue.length - 1);
           parent.onChange(value);
         }
       }}

@@ -35,8 +35,8 @@ function ListField<T>({
   label,
   labelCol,
   name,
-  showInlineError,
   value,
+  showInlineError,
   wrapperCol,
   ...props
 }: ListFieldProps<T>) {
@@ -85,11 +85,17 @@ function ListField<T>({
                 label={null}
                 name={joinName(name, index)}
                 {...itemProps}
+                // @ts-ignore
+                value={item}
               />
             ))}
       </div>
     </div>
   );
+}
+
+ListField.defaultProps = {
+  value: []
 }
 
 export default connectField<ListFieldProps<any>>(ListField, {
