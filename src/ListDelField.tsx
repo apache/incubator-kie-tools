@@ -22,7 +22,7 @@ function ListDel<T>(rawProps: ListDelFieldProps<T>) {
 
   const limitNotReached =
     !props.disabled && 
-    !(parent.minCount! >= parent.value!.length);
+    !(parent.minCount! >= parentValue!.length);
 
   return (
     <Button
