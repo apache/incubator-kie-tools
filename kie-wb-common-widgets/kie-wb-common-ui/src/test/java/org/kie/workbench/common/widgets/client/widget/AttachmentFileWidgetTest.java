@@ -30,21 +30,32 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.FileUpload;
 import org.uberfire.ext.widgets.common.client.common.FileUploadFormEncoder;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class AttachmentFileWidgetTest {
 
+    @Spy
     @InjectMocks
     private AttachmentFileWidgetTestWrapper editor;
 
     @GwtMock
     private Form form;
+
+    @Mock
+    private FileUpload fileUpload;
 
     @Mock
     private FileUploadFormEncoder formEncoder;
@@ -122,5 +133,15 @@ public class AttachmentFileWidgetTest {
                      editor.getShownMessages().size());
         assertEquals(CommonConstants.INSTANCE.UploadGenericError(),
                      editor.getShownMessages().get(0));
+    }
+
+    @Test
+    public void testSelectedFileName() {
+        doReturn(fileUpload).when(editor).createUploadWidget(anyBoolean());
+        editor.setup(true);
+
+        when(fileUpload.getFilename()).thenReturn("abcd");
+
+        assertEquals("abcd", editor.getFilenameSelectedToUpload());
     }
 }
