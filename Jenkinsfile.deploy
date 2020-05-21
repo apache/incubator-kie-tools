@@ -1,0 +1,245 @@
+//Checks master branch for updates every day
+//If found triggers the pipeline, 
+//The pipeline is set to run between 12:00AM - 3:00AM UTC
+
+IMAGES = ["kogito-quarkus-ubi8", 
+            "kogito-quarkus-jvm-ubi8",
+            "kogito-quarkus-ubi8-s2i",
+            "kogito-springboot-ubi8",
+            "kogito-springboot-ubi8-s2i",
+            "kogito-data-index",
+            "kogito-jobs-service",
+            "kogito-management-console"]
+
+pipeline {
+    agent { label 'jenkins-slave' }
+    parameters {
+        string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
+        string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Which branch to build ? Set if you are not on a multibranch pipeline.')
+
+        string(name: 'IMAGE_REGISTRY_CREDENTIALS', defaultValue: '', description: 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+        string(name: 'IMAGE_REGISTRY', defaultValue: '', description: 'Image registry to use to deploy images')
+        string(name: 'IMAGE_NAMESPACE', defaultValue: 'kiegroup', description: 'Image namespace to use to deploy images')
+        string(name: 'IMAGE_NAME_SUFFIX', defaultValue: '', description: 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
+        string(name: 'IMAGE_TAG', defaultValue: '', description: 'Image tag to use to deploy images')
+    }
+
+    // Keep commented if no env var is defined
+    // environment {
+        // Keep commented. It is for documentation only
+        // Cannot define here as an env variable defined here is immutable ...
+        // BRANCH_NAME => should be set by the multibranch pipeline. If single pipeline, then it is set with value from ${params.BUILD_BRANCH_NAME}
+
+        // OPENSHIFT_API => Taken from Jenkins global env
+        // OPENSHIFT_REGISTRY_ROUTE => Taken from Jenkins global env
+
+        // DEPLOY_IMAGE_REGISTRY_CREDENTIALS
+        // DEPLOY_IMAGE_USE_OPENSHIFT
+        // DEPLOY_IMAGE_REGISTRY
+        // DEPLOY_IMAGE_NAMESPACE
+        // DEPLOY_IMAGE_NAME_SUFFIX
+        // DEPLOY_IMAGE_TAG
+    // }
+
+    stages {
+        stage('Initialization') {
+            steps {
+                script {
+                    sh "docker rm -f \$(docker ps -a -q) || docker rmi -f \$(docker images -q) || date"
+                    
+                    setupImageEnvVarsFromParams("","DEPLOY")
+
+                    if (params.DISPLAY_NAME != "") {
+                        currentBuild.displayName = params.DISPLAY_NAME
+                    }
+
+                    if (env.BRANCH_NAME != "") {
+                        // Switch to branch if not on a multibranch pipeline
+                        env.BRANCH_NAME = params.BUILD_BRANCH_NAME
+                        checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], browser: [$class: 'GithubWeb', repoUrl: "${GIT_URL}"], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: '']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'user-kie-ci10', url: "${GIT_URL}"]]])
+                    }
+                }
+            }
+        }
+        stage('Update Artifacts') {
+            steps {
+                sh "python3 scripts/update-artifacts.py"
+
+                sh "cat modules/kogito-data-index/module.yaml"
+                sh "cat modules/kogito-jobs-service/module.yaml"
+                sh "cat modules/kogito-management-console/module.yaml"
+            }
+        }
+        stage('Validate CeKit Image and Modules descriptors'){
+            steps {
+                sh """
+                    curl -Ls https://github.com/kiegroup/kie-cloud-tools/releases/download/1.0-SNAPSHOT/cekit-image-validator-runner.tgz --output cekit-image-validator-runner.tgz
+                    tar -xzvf cekit-image-validator-runner.tgz
+                    chmod +x cekit-image-validator-runner
+                """
+                sh "./cekit-image-validator-runner modules/"
+                sh """
+                    ./cekit-image-validator-runner image.yaml
+                    ./cekit-image-validator-runner kogito-data-index-overrides.yaml
+                    ./cekit-image-validator-runner kogito-jobs-service-overrides.yaml
+                    ./cekit-image-validator-runner kogito-management-console-overrides.yaml
+                    ./cekit-image-validator-runner kogito-quarkus-jvm-overrides.yaml
+                    ./cekit-image-validator-runner kogito-quarkus-overrides.yaml
+                    ./cekit-image-validator-runner kogito-quarkus-s2i-overrides.yaml
+                    ./cekit-image-validator-runner kogito-springboot-overrides.yaml
+                    ./cekit-image-validator-runner kogito-springboot-s2i-overrides.yaml
+                """
+            }
+        }
+        stage('Prepare offline kogito-examples') {
+            steps {
+                sh "make clone-repos"
+            }
+        }
+        stage('Build and test kogito-quarkus-ubi8 image') {
+            steps {
+                sh "make kogito-quarkus-ubi8"
+            }
+        }
+        stage('Build and test kogito-quarkus-jvm-ubi8 image') {
+            steps {
+                sh "make kogito-quarkus-jvm-ubi8"
+            }
+        }
+        stage('Build and test kogito-quarkus-ubi8-s2i image') {
+            steps {
+                sh "make kogito-quarkus-ubi8-s2i"
+            }
+        }
+        stage('Build and test kogito-springboot-ubi8 image') {
+            steps {
+                sh "make kogito-springboot-ubi8"
+            }
+        }
+        stage('Build and test kogito-springboot-ubi8-s2i image ') {
+            steps {
+                sh "make kogito-springboot-ubi8-s2i"
+            }
+        }
+        stage('Build and test kogito-data-index image ') {
+            steps {
+                sh "make kogito-data-index"
+            }
+        }
+        stage('Build and test kogito-jobs-service image ') {
+            steps {
+                sh "make kogito-jobs-service"
+            }
+        }
+        stage('Build and test kogito-management-console image ') {
+            steps {
+                sh "make kogito-management-console"
+            }
+        }
+        stage('Tagging') {
+            steps {
+                script {
+                    tagImages()
+                }
+            }
+        }
+        stage('Pushing') {
+            steps {
+                script {
+                    if (env.DEPLOY_IMAGE_USE_OPENSHIFT == "true") {
+                        loginOpenshiftRegistry()
+                        pushImages()
+                    } else if (env.DEPLOY_IMAGE_REGISTRY_CREDENTIALS != '') {
+                        withDockerRegistry([ credentialsId: "${DEPLOY_IMAGE_REGISTRY_CREDENTIALS}", url: "https://${DEPLOY_IMAGE_REGISTRY}" ]) {        
+                            pushImages()
+                        }
+                    } else {
+                        pushImages()
+                    }
+                }
+            }
+        }
+        stage('Finishing') {
+            steps {
+                sh "docker rmi -f \$(docker images -q) || date"
+            }
+        }
+    }
+    post {
+        always {
+            junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
+        }
+    }
+}
+
+void tagImages() {
+    for(String imageName : IMAGES) {
+        sh "docker tag quay.io/kiegroup/${imageName}:latest ${buildImageName(imageName)}"
+    }
+}
+
+void pushImages() {
+    for(String imageName : IMAGES) {
+        sh "docker push ${buildImageName(imageName)}"
+    }
+}
+
+String buildImageName(String imageName) {
+    String finalImageName = imageName
+    if(env.DEPLOY_IMAGE_NAME_SUFFIX != null && env.DEPLOY_IMAGE_NAME_SUFFIX != '') {
+        finalImageName += "-" + env.DEPLOY_IMAGE_NAME_SUFFIX
+    }
+    return "${DEPLOY_IMAGE_REGISTRY}/${DEPLOY_IMAGE_NAMESPACE}/${finalImageName}:${DEPLOY_IMAGE_TAG}"
+}
+
+void loginOpenshiftRegistry() {
+    // Use creds & route as `jenkins-slave` is not running directly on Openshift
+    withCredentials([string(credentialsId: 'openshift-login-passwd', variable: 'OC_PASSWORD')]) {
+        sh "set +x && oc login -u admin -p ${OC_PASSWORD} --server=${OPENSHIFT_API} --insecure-skip-tls-verify"
+        sh "set +x && docker login -u admin -p \$(oc whoami -t) ${OPENSHIFT_REGISTRY_ROUTE}"
+    }
+}
+
+/**
+    Setup env variables for image registry/namesapce/tag, depending on parameters
+*/
+void setupImageEnvVarsFromParams(String prefixParam, String prefixEnv) {
+    if(getParam(prefixParam, "IMAGE_REGISTRY") == '') {
+        setEnv(prefixEnv, "IMAGE_REGISTRY", env.OPENSHIFT_REGISTRY_ROUTE) // Use route as `jenkins-slave` is not running directly on Openshift
+        setEnv(prefixEnv, "IMAGE_NAMESPACE", "openshift")
+        setEnv(prefixEnv, "IMAGE_USE_OPENSHIFT", "true")
+    } else {
+        setEnvFromParam("IMAGE_REGISTRY_CREDENTIALS", prefixEnv, prefixParam)
+        setEnvFromParam("IMAGE_REGISTRY", prefixEnv, prefixParam)
+        setEnvFromParam("IMAGE_NAMESPACE", prefixEnv, prefixParam)
+        setEnv(prefixEnv, "IMAGE_USE_OPENSHIFT", "false")
+    }
+    if (getParam(prefixParam, "IMAGE_TAG") != '') {
+        setEnvFromParam("IMAGE_TAG", prefixEnv, prefixParam)
+    } else {
+        setEnv(prefixEnv, "IMAGE_TAG", sh(script: "echo ${GIT_COMMIT} | cut -c1-7", returnStdout: true).trim())
+    }
+    if(getParam(prefixParam, "IMAGE_NAME_SUFFIX") != '') {
+        setEnvFromParam("IMAGE_NAME_SUFFIX", prefixEnv, prefixParam)
+    }
+}
+
+String getKey(String prefix, String envVarName) {
+    if (prefix == '') {
+        return envVarName
+    }
+    return "${prefix}_${envVarName}"
+}
+
+void setEnv(String keyPrefix, String keyId, String value){
+    echo "setEnv ${getKey(keyPrefix, keyId)} = ${value}"
+    env."${getKey(keyPrefix, keyId)}" = value
+}
+
+void setEnvFromParam(String keyId, String prefixEnv, String prefixParam){
+    setEnv(prefixEnv, keyId, getParam(prefixParam, keyId))
+}
+
+String getParam(String keyPrefix, String keyId){
+    return params."${getKey(keyPrefix, keyId)}"
+}

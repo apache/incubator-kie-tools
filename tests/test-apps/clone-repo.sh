@@ -17,9 +17,9 @@ git checkout master
 cp -rv  /tmp/kogito-examples/rules-quarkus-helloworld/ /tmp/kogito-examples/rules-quarkus-helloworld-native/
 
 # generating the app binaries to test the binary build
-mvn -f rules-quarkus-helloworld clean package -DskipTests
-mvn -f process-springboot-example clean package -DskipTests
-mvn -f rules-quarkus-helloworld-native -Pnative clean package -DskipTests
+mvn -f rules-quarkus-helloworld clean package -DskipTests -U
+mvn -f process-springboot-example clean package -DskipTests -U
+mvn -f rules-quarkus-helloworld-native -Pnative clean package -DskipTests -U
 
 # preparing directory to run kogito maven archetypes tests
 cp /tmp/kogito-examples/dmn-quarkus-example/src/main/resources/* /tmp/kogito-examples/dmn-quarkus-example/
