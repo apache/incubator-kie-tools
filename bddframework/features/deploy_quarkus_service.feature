@@ -152,6 +152,8 @@ Feature: Deploy quarkus service
       | native  | minutes |
       | enabled | 20      |
 
+#####
+
   @usertasks
   Scenario Outline: Deploy process-quarkus-example service to complete user tasks and native <native>
     Given Kogito Operator is deployed
@@ -188,3 +190,64 @@ Feature: Deploy quarkus service
     Examples:
       | native  | minutes |
       | enabled | 20      |
+
+#####
+
+  @externalcomponent
+  @infinispan
+  @persistence
+  Scenario: Deploy process-quarkus-example service with persistence using external Infinispan
+    Given Kogito Operator is deployed with Infinispan operator
+    And Infinispan instance "external-infinispan" is deployed with configuration:
+      | username | developer |
+      | password | mypass    |
+    And Deploy quarkus example service "process-quarkus-example" with configuration:
+      | infinispan | username    | developer                 |
+      | infinispan | password    | mypass                    |
+      | infinispan | uri         | external-infinispan:11222 |
+    And Kogito application "process-quarkus-example" has 1 pods running within 10 minutes
+    And Start "orders" process on service "process-quarkus-example" within 3 minutes with body:
+      """json
+      {
+        "approver" : "john", 
+        "order" : {
+          "orderNumber" : "12345", 
+          "shipped" : false
+        }
+      }
+      """
+    And Service "process-quarkus-example" contains 1 instances of process with name "orders"
+
+    When Scale Kogito application "process-quarkus-example" to 0 pods within 2 minutes
+    And Scale Kogito application "process-quarkus-example" to 1 pods within 2 minutes
+
+    Then Service "process-quarkus-example" contains 1 instances of process with name "orders" within 2 minutes
+    # Native application is not tested as the test is very expensive and the external Infinispan configuration shouldn't have any effect on build type
+
+#####
+
+  @externalcomponent
+  @kafka
+  @events
+  Scenario: Data Index retrieves Quarkus process events using external Kafka
+    Given Kogito Operator is deployed with Infinispan and Kafka operators
+    And Kafka instance "external-kafka" is deployed
+    And Install Kogito Data Index with 1 replicas with configuration:
+      | kafka | externalURI | external-kafka-kafka-bootstrap:9092 |
+    And Deploy quarkus example service "process-quarkus-example" with configuration:
+      | kafka | externalURI | external-kafka-kafka-bootstrap:9092 |
+    And Kogito application "process-quarkus-example" has 1 pods running within 10 minutes
+
+    When Start "orders" process on service "process-quarkus-example" within 3 minutes with body:
+      """json
+      {
+        "approver" : "john", 
+        "order" : {
+          "orderNumber" : "12345", 
+          "shipped" : false
+        }
+      }
+      """
+
+    Then GraphQL request on Data Index service returns ProcessInstances processName "orders" within 2 minutes
+    # Native application is not tested as the test is very expensive and the external Kafka configuration shouldn't have any effect on build type

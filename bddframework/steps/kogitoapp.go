@@ -41,6 +41,7 @@ import (
 	| infinispan      | username    | developer                 |
 	| infinispan      | password    | mypass                    |
 	| infinispan      | uri         | external-infinispan:11222 |
+	| kafka           | externalURI | external-kafka:9092       |
 */
 
 const (
@@ -57,16 +58,20 @@ const (
 	kogitoAppRuntimeRequestKey = "runtime-request"
 	kogitoAppRuntimeLimitKey   = "runtime-limit"
 	kogitoAppInfinispanKey     = "infinispan"
+	kogitoAppKafkaKey          = "kafka"
 
 	// DataTable Config second column
-	kogitoAppNativeKey             = "native"
-	kogitoAppPersistenceKey        = "persistence"
-	kogitoAppEventsKey             = "events"
+	kogitoAppNativeKey      = "native"
+	kogitoAppPersistenceKey = "persistence"
+	kogitoAppEventsKey      = "events"
 
 	// DataTable Infinispan second column
 	kogitoAppInfinispanUsernameKey = "username"
 	kogitoAppInfinispanPasswordKey = "password"
 	kogitoAppURIKey                = "uri"
+
+	// DataTable Kafka second column
+	kogitoAppKafkaExternalURIKey = "externalURI"
 
 	// Infinispan environment variables
 	// Quarkus
@@ -81,6 +86,9 @@ const (
 	springBootEnvVarInfinispanUser          = "INFINISPAN_REMOTE_AUTH_USERNAME"
 	springBootEnvVarInfinispanPassword      = "INFINISPAN_REMOTE_AUTH_PASSWORD"
 	springBootEnvVarInfinispanSaslMechanism = "INFINISPAN_REMOTE_SASL_MECHANISM"
+
+	// Kafka environment variables
+	envVarKafkaBootstrapServers = "KAFKA_BOOTSTRAP_SERVERS"
 )
 
 func registerKogitoAppSteps(s *godog.Suite, data *Data) {
@@ -259,6 +267,9 @@ func configureKogitoAppFromTable(table *messages.PickleStepArgument_PickleTable,
 		case kogitoAppInfinispanKey:
 			parseKogitoAppInfinispanRow(row, kogitoApp, &profiles)
 
+		case kogitoAppKafkaKey:
+			parseKogitoAppKafkaRow(row, kogitoApp, &profiles)
+
 		default:
 			return fmt.Errorf("Unrecognized configuration option: %s", firstColumn)
 		}
@@ -318,6 +329,16 @@ func parseKogitoAppInfinispanRow(row *messages.PickleStepArgument_PickleTable_Pi
 		}
 		kogitoApp.Spec.AddEnvironmentVariable(infinispanServerListVariable, getThirdColumn(row))
 		*profilesPtr = append(*profilesPtr, "persistence")
+	}
+}
+
+func parseKogitoAppKafkaRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoApp *framework.KogitoAppHolder, profilesPtr *[]string) {
+	secondColumn := getSecondColumn(row)
+
+	switch secondColumn {
+	case kogitoAppKafkaExternalURIKey:
+		kogitoApp.Spec.AddEnvironmentVariable(envVarKafkaBootstrapServers, getThirdColumn(row))
+		*profilesPtr = append(*profilesPtr, "events")
 	}
 }
 

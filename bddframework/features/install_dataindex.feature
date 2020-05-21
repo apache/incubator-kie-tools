@@ -42,31 +42,4 @@ Feature: Kogito Data Index
     }
     """
 
-
-#####
-
-  # Used just to confirm that integration between Data index and external Kafka works.
-  # Will be removed once external Kafka integration is implemented for Kogito service.
-  # Kogito service scenario will cover both Kogito service and Data index integration with external Kafka.
-  @externalcomponent
-  @kafka
-  Scenario Outline: Install Kogito Data Index using external Kafka
-    Given Kafka instance "external-kafka" is deployed
-
-    When Install Kogito Data Index with 1 replicas with configuration:
-      | kafka | <kafka-key> | <kafka-value> |
-
-    Then Kogito Data Index has 1 pods running within 10 minutes
-    And GraphQL request on service "data-index" is successful within 2 minutes with path "graphql" and query:
-    """
-    {
-      ProcessInstances{
-        id
-      }
-    }
-    """
-
-    Examples:
-      | kafka-key   | kafka-value                         |
-      | externalURI | external-kafka-kafka-bootstrap:9092 |
-      | instance    | external-kafka                      |
+# External Kafka testing is covered in deploy_quarkus_service and deploy_springboot_service as it checks integration between Data index and KogitoApp
