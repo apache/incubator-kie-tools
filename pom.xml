@@ -76,7 +76,6 @@
     <version.org.webjars.bower.jqueryui>1.12.1</version.org.webjars.bower.jqueryui>
 
     <version.org.jboss.byteman>3.0.10</version.org.jboss.byteman>
-    <version.org.jboss.jboss-dmr>1.5.0.Final</version.org.jboss.jboss-dmr>
     <version.org.jboss.jboss-msc>1.2.7.SP1</version.org.jboss.jboss-msc>
 
     <version.org.apache.activemq.artemis>2.3.0</version.org.apache.activemq.artemis>
@@ -1292,12 +1291,6 @@
         <groupId>com.googlecode.jtype</groupId>
         <artifactId>jtype</artifactId>
         <version>${version.com.googlecode.jtype}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-dmr</artifactId>
-        <version>${version.org.jboss.jboss-dmr}</version>
       </dependency>
 
       <dependency>
