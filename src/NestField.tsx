@@ -32,7 +32,7 @@ const Nest = ({
       {children
         ? injectName(name, children)
         : fields?.map(key => (
-            <AutoField key={key} name={joinName(name, key)} {...itemProps} />
+            <AutoField key={key} isDisabled={props.disabled} name={joinName(name, key)} {...itemProps} />
           ))}
     </div>
   );
