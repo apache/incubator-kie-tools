@@ -146,10 +146,82 @@ exports[`EditorEnvelopeController after received content 1`] = `
     </div>
     <Modal
       actions={Array []}
+      appendTo={
+        <body>
+          <div
+            id="envelopeContainer"
+          />
+          <div
+            id="envelopeContainer"
+          />
+          <div
+            id="envelopeContainer"
+          />
+          <div
+            id="loading-screen"
+          >
+            <div
+              class="kogito-tooling--loading-screen"
+              style="opacity: 0; transition: opacity 400ms;"
+            >
+              <div
+                class="pf-c-page"
+              >
+                <main
+                  class="pf-c-page__main"
+                  role="main"
+                  tabindex="-1"
+                >
+                  <div
+                    class="pf-l-bullseye"
+                  >
+                    <div
+                      class="pf-c-empty-state pf-m-lg"
+                    >
+                      <div
+                        class="pf-u-mb-lg"
+                      >
+                        <div
+                          aria-valuetext="Loading..."
+                          class="pf-c-spinner"
+                          role="progressbar"
+                        >
+                          <div
+                            class="pf-c-spinner__clipper"
+                          />
+                          <div
+                            class="pf-c-spinner__lead-ball"
+                          />
+                          <div
+                            class="pf-c-spinner__tail-ball"
+                          />
+                        </div>
+                      </div>
+                      <h5
+                        class="pf-c-title pf-m-lg"
+                      >
+                        Loading...
+                      </h5>
+                      <div
+                        class="pf-c-empty-state__body"
+                      />
+                    </div>
+                  </div>
+                </main>
+              </div>
+            </div>
+          </div>
+          <div
+            id="envelopeContainer"
+          />
+          <div />
+        </body>
+      }
       ariaDescribedById=""
       className=""
       data-testid="keyboard-shortcuts-help-overlay"
       hideTitle={false}
+      isFooterLeftAligned={false}
       isLarge={false}
       isOpen={false}
       isSmall={false}
@@ -168,6 +240,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
           data-testid="keyboard-shortcuts-help-overlay"
           hideTitle={false}
           id="pf-modal-0"
+          isFooterLeftAligned={false}
           isLarge={false}
           isOpen={false}
           isSmall={false}
