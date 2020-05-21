@@ -20,16 +20,19 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSXResourceType;
 import org.guvnor.common.services.project.categories.Decision;
 import org.guvnor.common.services.project.model.Package;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
@@ -39,6 +42,7 @@ import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -48,6 +52,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -72,11 +77,14 @@ public class NewDecisionTableXLSHandlerTest {
     @Mock
     private ClientMessageBus clientMessageBus;
 
-    @GwtMock
-    private FileExtensionSelector fileExtensionSelector;
-
-    @GwtMock
+    @Mock
     private AttachmentFileWidget uploadWidget;
+
+    @Mock
+    private ValidationService validationService;
+
+    @Mock
+    private Caller<ValidationService> validationServiceCaller;
 
     @Captor
     private ArgumentCaptor<Command> successCmdCaptor;
@@ -95,19 +103,20 @@ public class NewDecisionTableXLSHandlerTest {
 
     @Before
     public void setup() {
-        handler = new NewDecisionTableXLSHandler( placeManager,
-                                                  decisionTableXLSResourceType,
-                                                  decisionTableXLSXResourceType,
-                                                  busyIndicatorView,
-                                                  clientMessageBus ) {
+        handler = new NewDecisionTableXLSHandler(placeManager,
+                                                 decisionTableXLSResourceType,
+                                                 decisionTableXLSXResourceType,
+                                                 busyIndicatorView,
+                                                 clientMessageBus) {
             {
                 this.notificationEvent = mockNotificationEvent;
                 this.newResourceSuccessEvent = newResourceSuccessEventMock;
+                this.validationService = validationServiceCaller;
             }
 
             @Override
-            protected String encode( final String fileName ) {
-                return NewDecisionTableXLSHandlerTest.this.encode( fileName );
+            protected String encode(final String fileName) {
+                return NewDecisionTableXLSHandlerTest.this.encode(fileName);
             }
 
             @Override
@@ -115,168 +124,240 @@ public class NewDecisionTableXLSHandlerTest {
                 return "123";
             }
         };
-        handler.setFileExtensionSelector( fileExtensionSelector );
-        handler.setUploadWidget( uploadWidget );
 
-        when( fileExtensionSelector.getResourceType() ).thenReturn( decisionTableXLSResourceType );
+        when(validationServiceCaller.call(any(RemoteCallback.class))).thenReturn(validationService);
+
+        handler.setUploadWidget(uploadWidget);
     }
 
     @Test
     public void testSuccess() {
         final String fileName = "fileName";
-        final Package pkg = mock( Package.class );
-        final Path resourcesPath = PathFactory.newPath( "resources",
-                                                        "default://project/src/main/resources" );
+        final Package pkg = mock(Package.class);
+        final Path resourcesPath = PathFactory.newPath("resources",
+                                                       "default://project/src/main/resources");
 
-        when( pkg.getPackageMainResourcesPath() ).thenReturn( resourcesPath );
-        handler.create( pkg,
-                        fileName,
-                        newResourcePresenter );
+        when(pkg.getPackageMainResourcesPath()).thenReturn(resourcesPath);
+        when(uploadWidget.getFilenameSelectedToUpload()).thenReturn(fileName + ".xls");
 
-        verify( uploadWidget,
-                times( 1 ) ).submit( eq( resourcesPath ),
-                                     eq( fileName + "." + decisionTableXLSResourceType.getSuffix() ),
-                                     any( String.class ),
-                                     successCmdCaptor.capture(),
-                                     failureCmdCaptor.capture() );
+        handler.create(pkg,
+                       fileName,
+                       newResourcePresenter);
+
+        verify(uploadWidget,
+               times(1)).submit(eq(resourcesPath),
+                                eq(fileName + "." + decisionTableXLSResourceType.getSuffix()),
+                                any(String.class),
+                                successCmdCaptor.capture(),
+                                failureCmdCaptor.capture());
 
         successCmdCaptor.getValue().execute();
 
-        verify( busyIndicatorView,
-                times( 1 ) ).hideBusyIndicator();
-        verify( newResourcePresenter,
-                times( 1 ) ).complete();
-        verify( mockNotificationEvent,
-                times( 1 ) ).fire( any( NotificationEvent.class ) );
-        verify( newResourceSuccessEventMock,
-                times( 1 ) ).fire( any( NewResourceSuccessEvent.class ) );
-        verify( placeManager,
-                times( 1 ) ).goTo( newPathCaptor.capture() );
+        verify(busyIndicatorView,
+               times(1)).hideBusyIndicator();
+        verify(newResourcePresenter,
+               times(1)).complete();
+        verify(mockNotificationEvent,
+               times(1)).fire(any(NotificationEvent.class));
+        verify(newResourceSuccessEventMock,
+               times(1)).fire(any(NewResourceSuccessEvent.class));
+        verify(placeManager,
+               times(1)).goTo(newPathCaptor.capture());
 
-        assertEquals( "default://project/src/main/resources/fileName.xls",
-                      newPathCaptor.getValue().toURI() );
+        assertEquals("default://project/src/main/resources/fileName.xls",
+                     newPathCaptor.getValue().toURI());
+    }
+
+    @Test
+    public void testSuccessXLSX() {
+        final String fileName = "fileName";
+        final Package pkg = mock(Package.class);
+        final Path resourcesPath = PathFactory.newPath("resources",
+                                                       "default://project/src/main/resources");
+
+        when(pkg.getPackageMainResourcesPath()).thenReturn(resourcesPath);
+        when(uploadWidget.getFilenameSelectedToUpload()).thenReturn(fileName + ".xlsx");
+
+        handler.create(pkg,
+                       fileName,
+                       newResourcePresenter);
+
+        verify(uploadWidget,
+               times(1)).submit(eq(resourcesPath),
+                                eq(fileName + "." + decisionTableXLSXResourceType.getSuffix()),
+                                any(String.class),
+                                successCmdCaptor.capture(),
+                                failureCmdCaptor.capture());
+
+        successCmdCaptor.getValue().execute();
+
+        verify(busyIndicatorView,
+               times(1)).hideBusyIndicator();
+        verify(newResourcePresenter,
+               times(1)).complete();
+        verify(mockNotificationEvent,
+               times(1)).fire(any(NotificationEvent.class));
+        verify(newResourceSuccessEventMock,
+               times(1)).fire(any(NewResourceSuccessEvent.class));
+        verify(placeManager,
+               times(1)).goTo(newPathCaptor.capture());
+
+        assertEquals("default://project/src/main/resources/fileName.xlsx",
+                     newPathCaptor.getValue().toURI());
     }
 
     @Test
     public void testSuccessMultiByteProjectName() {
         final String fileName = "fileName";
-        final Package pkg = mock( Package.class );
-        final Path resourcesPath = PathFactory.newPath( "resources",
-                                                        "default://あああ/src/main/resources" );
+        final Package pkg = mock(Package.class);
+        final Path resourcesPath = PathFactory.newPath("resources",
+                                                       "default://あああ/src/main/resources");
 
-        when( pkg.getPackageMainResourcesPath() ).thenReturn( resourcesPath );
+        when(pkg.getPackageMainResourcesPath()).thenReturn(resourcesPath);
+        when(uploadWidget.getFilenameSelectedToUpload()).thenReturn(fileName + ".xls");
 
-        handler.create( pkg,
-                        fileName,
-                        newResourcePresenter );
+        handler.create(pkg,
+                       fileName,
+                       newResourcePresenter);
 
-        verify( uploadWidget,
-                times( 1 ) ).submit( eq( resourcesPath ),
-                                     eq( fileName + "." + decisionTableXLSResourceType.getSuffix() ),
-                                     any( String.class ),
-                                     successCmdCaptor.capture(),
-                                     failureCmdCaptor.capture() );
+        verify(uploadWidget,
+               times(1)).submit(eq(resourcesPath),
+                                eq(fileName + "." + decisionTableXLSResourceType.getSuffix()),
+                                any(String.class),
+                                successCmdCaptor.capture(),
+                                failureCmdCaptor.capture());
 
         successCmdCaptor.getValue().execute();
 
-        verify( busyIndicatorView,
-                times( 1 ) ).hideBusyIndicator();
-        verify( newResourcePresenter,
-                times( 1 ) ).complete();
-        verify( mockNotificationEvent,
-                times( 1 ) ).fire( any( NotificationEvent.class ) );
+        verify(busyIndicatorView,
+               times(1)).hideBusyIndicator();
+        verify(newResourcePresenter,
+               times(1)).complete();
+        verify(mockNotificationEvent,
+               times(1)).fire(any(NotificationEvent.class));
 
-        verify( placeManager,
-                times( 1 ) ).goTo( newPathCaptor.capture() );
+        verify(placeManager,
+               times(1)).goTo(newPathCaptor.capture());
 
-        assertEquals( "default://あああ/src/main/resources/fileName.xls",
-                      newPathCaptor.getValue().toURI() );
+        assertEquals("default://あああ/src/main/resources/fileName.xls",
+                     newPathCaptor.getValue().toURI());
     }
 
     @Test
     public void testSuccessMultiByteFileName() {
         final String fileName = "あああ";
-        final Package pkg = mock( Package.class );
-        final Path resourcesPath = PathFactory.newPath( "resources",
-                                                        "default://project/src/main/resources" );
+        final Package pkg = mock(Package.class);
+        final Path resourcesPath = PathFactory.newPath("resources",
+                                                       "default://project/src/main/resources");
 
-        when( pkg.getPackageMainResourcesPath() ).thenReturn( resourcesPath );
+        when(pkg.getPackageMainResourcesPath()).thenReturn(resourcesPath);
+        when(uploadWidget.getFilenameSelectedToUpload()).thenReturn(fileName + ".xls");
 
-        handler.create( pkg,
-                        fileName,
-                        newResourcePresenter );
+        handler.create(pkg,
+                       fileName,
+                       newResourcePresenter);
 
-        verify( uploadWidget,
-                times( 1 ) ).submit( eq( resourcesPath ),
-                                     eq( fileName + "." + decisionTableXLSResourceType.getSuffix() ),
-                                     any( String.class ),
-                                     successCmdCaptor.capture(),
-                                     failureCmdCaptor.capture() );
+        verify(uploadWidget,
+               times(1)).submit(eq(resourcesPath),
+                                eq(fileName + "." + decisionTableXLSResourceType.getSuffix()),
+                                any(String.class),
+                                successCmdCaptor.capture(),
+                                failureCmdCaptor.capture());
 
         successCmdCaptor.getValue().execute();
 
-        verify( busyIndicatorView,
-                times( 1 ) ).hideBusyIndicator();
-        verify( newResourcePresenter,
-                times( 1 ) ).complete();
-        verify( mockNotificationEvent,
-                times( 1 ) ).fire( any( NotificationEvent.class ) );
+        verify(busyIndicatorView,
+               times(1)).hideBusyIndicator();
+        verify(newResourcePresenter,
+               times(1)).complete();
+        verify(mockNotificationEvent,
+               times(1)).fire(any(NotificationEvent.class));
 
-        verify( placeManager,
-                times( 1 ) ).goTo( newPathCaptor.capture() );
+        verify(placeManager,
+               times(1)).goTo(newPathCaptor.capture());
 
-        assertEquals( "default://project/src/main/resources/%E3%81%82%E3%81%82%E3%81%82.xls",
-                      newPathCaptor.getValue().toURI() );
+        assertEquals("default://project/src/main/resources/%E3%81%82%E3%81%82%E3%81%82.xls",
+                     newPathCaptor.getValue().toURI());
     }
 
     @Test
     public void testSuccessMultiByteProjectNameAndFileName() {
         final String fileName = "あああ";
-        final Package pkg = mock( Package.class );
-        final Path resourcesPath = PathFactory.newPath( "resources",
-                                                        "default://" + encode( "ああ" ) + "/src/main/resources" );
+        final Package pkg = mock(Package.class);
+        final Path resourcesPath = PathFactory.newPath("resources",
+                                                       "default://" + encode("ああ") + "/src/main/resources");
 
-        when( pkg.getPackageMainResourcesPath() ).thenReturn( resourcesPath );
+        when(pkg.getPackageMainResourcesPath()).thenReturn(resourcesPath);
+        when(uploadWidget.getFilenameSelectedToUpload()).thenReturn(fileName + ".xls");
 
-        handler.create( pkg,
-                        fileName,
-                        newResourcePresenter );
+        handler.create(pkg,
+                       fileName,
+                       newResourcePresenter);
 
-        verify( uploadWidget,
-                times( 1 ) ).submit( eq( resourcesPath ),
-                                     eq( fileName + "." + decisionTableXLSResourceType.getSuffix() ),
-                                     any( String.class ),
-                                     successCmdCaptor.capture(),
-                                     failureCmdCaptor.capture() );
+        verify(uploadWidget,
+               times(1)).submit(eq(resourcesPath),
+                                eq(fileName + "." + decisionTableXLSResourceType.getSuffix()),
+                                any(String.class),
+                                successCmdCaptor.capture(),
+                                failureCmdCaptor.capture());
 
         successCmdCaptor.getValue().execute();
 
-        verify( busyIndicatorView,
-                times( 1 ) ).hideBusyIndicator();
-        verify( newResourcePresenter,
-                times( 1 ) ).complete();
-        verify( mockNotificationEvent,
-                times( 1 ) ).fire( any( NotificationEvent.class ) );
+        verify(busyIndicatorView,
+               times(1)).hideBusyIndicator();
+        verify(newResourcePresenter,
+               times(1)).complete();
+        verify(mockNotificationEvent,
+               times(1)).fire(any(NotificationEvent.class));
 
-        verify( placeManager,
-                times( 1 ) ).goTo( newPathCaptor.capture() );
+        verify(placeManager,
+               times(1)).goTo(newPathCaptor.capture());
 
-        assertEquals( "default://%E3%81%82%E3%81%82/src/main/resources/%E3%81%82%E3%81%82%E3%81%82.xls",
-                      newPathCaptor.getValue().toURI() );
+        assertEquals("default://%E3%81%82%E3%81%82/src/main/resources/%E3%81%82%E3%81%82%E3%81%82.xls",
+                     newPathCaptor.getValue().toURI());
     }
 
     @Test
     public void testGetServletUrl() {
-        assertEquals( "dtablexls/file?clientId=123", handler.getServletUrl() );
+        assertEquals("dtablexls/file?clientId=123", handler.getServletUrl());
     }
 
-    private String encode( final String s ) {
+    @Test
+    public void testValidateNullFile() {
+        final ValidatorWithReasonCallback validatorWithReasonCallback = mock(ValidatorWithReasonCallback.class);
+        when(uploadWidget.getFilenameSelectedToUpload()).thenReturn(null);
+
+        handler.validate("filename", validatorWithReasonCallback);
+
+        verify(uploadWidget).addStyleName(ValidationState.ERROR.getCssName());
+    }
+
+    @Test
+    public void testValidateEmptyFile() {
+        final ValidatorWithReasonCallback validatorWithReasonCallback = mock(ValidatorWithReasonCallback.class);
+        when(uploadWidget.getFilenameSelectedToUpload()).thenReturn("");
+
+        handler.validate("filename", validatorWithReasonCallback);
+
+        verify(uploadWidget).addStyleName(ValidationState.ERROR.getCssName());
+    }
+
+    @Test
+    public void testValidateNonEmptyFile() {
+        final ValidatorWithReasonCallback validatorWithReasonCallback = mock(ValidatorWithReasonCallback.class);
+        when(uploadWidget.getFilenameSelectedToUpload()).thenReturn("table.xls");
+
+        handler.validate("filename", validatorWithReasonCallback);
+
+        verify(uploadWidget, never()).addStyleName(ValidationState.ERROR.getCssName());
+    }
+
+    private String encode(final String s) {
         try {
-            return URLEncoder.encode( s, "UTF-8" );
-        } catch ( UnsupportedEncodingException uee ) {
-            fail( uee.getMessage() );
+            return URLEncoder.encode(s, "UTF-8");
+        } catch (UnsupportedEncodingException uee) {
+            fail(uee.getMessage());
         }
         return "";
     }
-
 }

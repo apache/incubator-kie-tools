@@ -32,6 +32,7 @@ import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTabl
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSXResourceType;
 import org.guvnor.common.services.project.model.Package;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
@@ -41,6 +42,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -57,7 +59,6 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
     private BusyIndicatorView busyIndicatorView;
 
     private AttachmentFileWidget uploadWidget;
-    private FileExtensionSelector fileExtensionSelector;
 
     public NewDecisionTableXLSHandler() {
     }
@@ -75,25 +76,17 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
         this.clientMessageBus = clientMessageBus;
     }
 
-    void setFileExtensionSelector( final FileExtensionSelector fileExtensionSelector ) {
-        this.fileExtensionSelector = fileExtensionSelector;
-    }
-
     void setUploadWidget( final AttachmentFileWidget uploadWidget ) {
         this.uploadWidget = uploadWidget;
     }
 
     @PostConstruct
     private void setupExtensions() {
-        fileExtensionSelector = new FileExtensionSelector( decisionTableXLSResourceType,
-                                                           decisionTableXLSXResourceType );
         uploadWidget = new AttachmentFileWidget(
                 new String[]{
                         decisionTableXLSResourceType.getSuffix(),
                         decisionTableXLSXResourceType.getSuffix() } );
 
-        extensions.add(Pair.newPair(DecisionTableXLSEditorConstants.INSTANCE.FileType(),
-                                    fileExtensionSelector));
         extensions.add(Pair.newPair(DecisionTableXLSEditorConstants.INSTANCE.Upload(),
                                     uploadWidget));
     }
@@ -120,14 +113,27 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
     }
 
     @Override
+    public void validate(final String baseFileName, final ValidatorWithReasonCallback callback) {
+        if(uploadWidget.getFilenameSelectedToUpload() == null || uploadWidget.getFilenameSelectedToUpload().isEmpty()) {
+            uploadWidget.addStyleName(ValidationState.ERROR.getCssName());
+        } else {
+            super.validate(baseFileName, callback);
+        }
+    }
+
+    @Override
     public void create( final Package pkg,
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         busyIndicatorView.showBusyIndicator( DecisionTableXLSEditorConstants.INSTANCE.Uploading() );
 
+        final ResourceTypeDefinition type =
+                uploadWidget.getFilenameSelectedToUpload().endsWith(decisionTableXLSResourceType.getSuffix()) ?
+                        decisionTableXLSResourceType : decisionTableXLSXResourceType;
+
         final Path path = pkg.getPackageMainResourcesPath();
         final String fileName = buildFileName( baseFileName,
-                                               fileExtensionSelector.getResourceType() );
+                                               type );
         //Package Path is already encoded, fileName needs to be encoded
         final Path newPath = PathFactory.newPathBasedOn( fileName,
                                                          path.toURI() + "/" + encode( fileName ),

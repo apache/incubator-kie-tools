@@ -126,6 +126,11 @@
       <artifactId>kie-wb-testing-utils</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-api</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <!-- GWT and GWT Extensions -->
     <dependency>
