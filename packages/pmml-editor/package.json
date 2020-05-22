@@ -14,12 +14,15 @@
     "@kogito-tooling/patternfly-base": "0.5.2",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
+    "jsonata": "^1.8.3",
     "react-router": "5.1.1",
-    "react-router-dom": "5.1.1"
+    "react-router-dom": "5.1.1",
+    "xml-js": "^1.6.11"
   },
   "scripts": {
-    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
-    "test": "jest --passWithNoTests",
+    "generate": "mvn clean package -B -nsu",
+    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}' -e 'src/generated/**'",
+    "test": "jest",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:prod": "yarn run build --mode production --devtool none",
