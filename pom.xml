@@ -277,6 +277,14 @@
                           <ignoreClass>org.apache.xmlbeans.xml.stream.Location</ignoreClass>
                         </ignoreClasses>
                       </dependency>
+                      <dependency>
+                        <groupId>org.wildfly.security</groupId>
+                        <artifactId>wildfly-elytron</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
                     </dependencies>
                     <findAllDuplicates>true</findAllDuplicates>
                   </banDuplicateClasses>
