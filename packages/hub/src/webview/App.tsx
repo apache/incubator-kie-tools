@@ -187,10 +187,10 @@ export function App() {
     (data: CommandExecutionResult) => {
       if (data.success) {
         setVscode_status(ExtensionStatus.INSTALLED);
-        pushNewAlert({ variant: "success", title: "VSCode extension successfully installed." });
+        pushNewAlert({ variant: "success", title: "VS Code extension successfully installed." });
       } else {
         setVscode_status(ExtensionStatus.NOT_INSTALLED);
-        pushNewAlert({ variant: "danger", title: "Error while installing VSCode extension." });
+        pushNewAlert({ variant: "danger", title: "Error while installing VS Code extension." });
         console.info(data.output);
       }
     },
@@ -202,10 +202,10 @@ export function App() {
     (data: CommandExecutionResult) => {
       if (data.success) {
         setVscode_status(ExtensionStatus.NOT_INSTALLED);
-        pushNewAlert({ variant: "info", title: "VSCode extension successfully uninstalled." });
+        pushNewAlert({ variant: "info", title: "VS Code extension successfully uninstalled." });
       } else {
         setVscode_status(ExtensionStatus.INSTALLED);
-        pushNewAlert({ variant: "danger", title: "Error while uninstalling VSCode extension." });
+        pushNewAlert({ variant: "danger", title: "Error while uninstalling VS Code extension." });
         console.info(data.output);
       }
     },
@@ -407,11 +407,11 @@ export function App() {
               />
             </CardHead>
             <CardBody>
-              <Title size={"xl"}>Kogito VSCode extension</Title>
+              <Title size={"xl"}>Kogito VS Code extension</Title>
               <Title size={"xl"}>&nbsp;</Title>
               <br />
               <TextContent>
-                <Text>Launches VSCode ready to use with Kogito</Text>
+                <Text>Launches VS Code ready to use with Kogito</Text>
               </TextContent>
             </CardBody>
             <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
@@ -438,7 +438,7 @@ export function App() {
           </Card>
           <Modal
             isSmall={true}
-            title="Install VSCode extension"
+            title="Install VS Code extension"
             isOpen={vscode_installModalOpen}
             onClose={vscode_toggleInstallModal}
             actions={[
@@ -455,7 +455,7 @@ export function App() {
               </Button>
             ]}
           >
-            <Text>Choose VSCode to install extension</Text>
+            <Text>Choose VS Code to install extension</Text>
             <InputGroup>
               <TextInput
                 type="search"
@@ -488,13 +488,13 @@ export function App() {
           >
             {vscode_stillOpenAfterRelaunch && (
               <>
-                <Alert variant="danger" isInline={true} title="Please close VSCode" />
+                <Alert variant="danger" isInline={true} title="Please close VS Code" />
                 <br />
               </>
             )}
-            <Text>Looks like VSCode is already open and was not started by Business Modeler Hub Preview.</Text>
+            <Text>Looks like VS Code is already open and was not started by Business Modeler Hub Preview.</Text>
             <br />
-            <Text>Please close VSCode and retry.</Text>
+            <Text>Please close VS Code and retry.</Text>
           </Modal>
           {/*CHROME*/}
           <Card className={"kogito--desktop__files-card"}>
