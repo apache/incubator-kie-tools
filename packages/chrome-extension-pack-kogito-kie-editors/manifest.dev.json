@@ -13,7 +13,7 @@
     {
       "run_at": "document_idle",
       "js": ["content_scripts/online-editor.js"],
-      "matches": ["*://kiegroup.github.io/*", "*://localhost/*"],
+      "matches": ["http://localhost/*"],
       "all_frames": true
     }
   ],
@@ -22,16 +22,15 @@
   "permissions": [
     "https://*.github.com/*",
     "http://*.github.com/*",
-    "tabs",
     "webRequest",
     "webRequestBlocking"
   ],
   "content_security_policy": "script-src 'self' https://raw.githubusercontent.com; object-src 'self'",
   "externally_connectable": {
     "matches": [
-      "*://*.github.com/*",
-      "*://kiegroup.github.io/*",
-      "*://localhost/*"
+      "https://*.github.com/*",
+      "http://*.github.com/*",
+      "http://localhost/*"
     ]
   }
 }

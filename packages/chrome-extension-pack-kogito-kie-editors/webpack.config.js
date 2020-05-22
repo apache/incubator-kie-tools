@@ -21,9 +21,9 @@ const packageJson = require("./package.json");
 
 function getLatestGitTag() {
   const tagName = require("child_process")
-      .execSync("git rev-list --tags --max-count=1")
-      .toString()
-      .trim();
+    .execSync("git rev-list --tags --max-count=1")
+    .toString()
+    .trim();
 
   return require("child_process")
     .execSync("git describe --tags " + tagName)
@@ -55,21 +55,23 @@ function getOnlineEditorArgs(argv) {
   const isProd = argv.mode === "production";
 
   let onlineEditorUrl = argv["ONLINEEDITOR_url"] || process.env["ONLINEEDITOR_url"];
+  let manifestFile = "manifest.dev.json";
 
   if (isProd) {
     onlineEditorUrl = onlineEditorUrl || "https://kiegroup.github.io/kogito-online";
+    manifestFile = "manifest.prod.json";
   } else {
     onlineEditorUrl = onlineEditorUrl || "http://localhost:9001";
   }
 
   console.info("Online Editor :: URL: " + onlineEditorUrl);
 
-  return [onlineEditorUrl];
+  return [onlineEditorUrl, manifestFile];
 }
 
 module.exports = async (env, argv) => {
   const [router_targetOrigin, router_relativePath] = getRouterArgs(argv);
-  const [onlineEditor_url] = getOnlineEditorArgs(argv);
+  const [onlineEditor_url, manifestFile] = getOnlineEditorArgs(argv);
 
   return {
     mode: "development",
@@ -93,7 +95,16 @@ module.exports = async (env, argv) => {
       port: 9000
     },
     plugins: [
-      new CopyPlugin([{ from: "./static" }]),
+      new CopyPlugin([
+        {
+          from: "./static",
+          to: "."
+        },
+        {
+          from: `./${manifestFile}`,
+          to: "./manifest.json"
+        }
+      ]),
       new ZipPlugin({
         filename: "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
         pathPrefix: "dist"
