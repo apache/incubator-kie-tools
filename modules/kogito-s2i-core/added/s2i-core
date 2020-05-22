@@ -7,6 +7,9 @@ source $KOGITO_HOME/launch/kogito-persistence.sh
 S2I_DESTINATION_DIR="${S2I_DESTINATION_DIR:-/tmp}"
 S2I_ARTIFACTS_DIR="${S2I_DESTINATION_DIR}/artifacts"
 S2I_SOURCE_DIR="${S2I_DESTINATION_DIR}/src"
+PROJECT_GROUP_ID="${PROJECT_GROUP_ID:-com.company}"
+PROJECT_ARTIFACT_ID="${PROJECT_ARTIFACT_ID:-project}"
+PROJECT_VERSION="${PROJECT_VERSION:-1.0-SNAPSHOT}"
 artifactDir="target"
 if [ ! -z "${ARTIFACT_DIR}" ]; then
     artifactDir="${ARTIFACT_DIR}"
@@ -127,21 +130,22 @@ function build_kogito_app() {
         log_info "---> Generating project structure..."
 
         $MAVEN_HOME/bin/mvn archetype:generate -B -DarchetypeGroupId=org.kie.kogito -DarchetypeArtifactId=kogito-quarkus-archetype \
-        -DarchetypeVersion=$KOGITO_VERSION -DgroupId=com.company -DartifactId=project -s $KOGITO_HOME/.m2/settings.xml
+        -DarchetypeVersion=$KOGITO_VERSION -DgroupId=$PROJECT_GROUP_ID -DartifactId=$PROJECT_ARTIFACT_ID -Dversion=$PROJECT_VERSION \
+        -s $KOGITO_HOME/.m2/settings.xml
 
         # copy resources into the generated project
         for item in *
         do
-            if [ -d "${item}" ] && [ "${item}" == "project" ]; then
+            if [ -d "${item}" ] && [ "${item}" == "$PROJECT_ARTIFACT_ID" ]; then
                 log_info "--> Skipping generated project ..."
             else
-                log_info "--> Coping resource "${item}""
-                cp -Rv "${item}" project/src/main/resources
+                log_info "--> Coping resource ${item}"
+                cp -Rv "${item}" $PROJECT_ARTIFACT_ID/src/main/resources
             fi
         done
 
         # move all project content into the current directory
-        mv -v project/* .
+        mv -v $PROJECT_ARTIFACT_ID/* .
 
         $MAVEN_HOME/bin/mvn clean package ${MAVEN_ARGS_APPEND} ${KOGITO_OPTS} ${nativeBuild} -s $KOGITO_HOME/.m2/settings.xml \
             -DskipTests -Dmaven.test.skip -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
@@ -174,4 +178,3 @@ function copy_kogito_app() {
         cp -v $artifactDir/*.jar $KOGITO_HOME/bin
     fi
 }
-

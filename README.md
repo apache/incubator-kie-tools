@@ -369,8 +369,7 @@ Types of Business assets can be:
 - Business Rule definition - drl files
 - Business Decision definition - dmn files
 
-Upon build, these assets will be copied to a generated maven project and built with Maven to produce a runnable binary.
-
+Upon build, these assets will be copied to a generated maven project and built with Maven to produce a runnable binary. Default value of group id is "com.company", artifact id is "project" and version is "1.0-SNAPSHOT". To provide custom value we need to set the **PROJECT_GROUP_ID**, **PROJECT_ARTIFACT_ID** and **PROJECT_VERSION**.
 
 #### Kogito Quarkus JVM Runtime Image
 
