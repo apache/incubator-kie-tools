@@ -21,3 +21,4 @@ export enum Constants {
   GITHUB_EXTENSION_CHROME_STORE_URL = "https://chrome.google.com/webstore/detail/kie-group-github-chrome-e/mgkfehibfkdpjkfjbikpchpcfimepckf",
   DOWNLOAD_GOOGLE_CHROME_URL = "https://www.google.com/chrome/"
 }
+
