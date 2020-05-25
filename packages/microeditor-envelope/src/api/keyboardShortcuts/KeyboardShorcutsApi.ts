@@ -20,6 +20,15 @@ import { KeyBinding } from "./DefaultKeyboardShortcutsService";
  * PUBLIC ENVELOPE API
  */
 export interface KeyboardShortcutsApi {
+  /**
+   * Register a Keyboard Shortcuts for a keypress event.
+   * @param combination The combination of keys that trigger 'onKeyDown' action. This is shown on the Keyboard Shortcuts panel.
+   * @param label The label for this Keyboard Shortcut. This is shown on the Keyboard Shortcuts panel. Use a `|` character to separate its section from its description. (e.g. "Moving | Up")
+   * @param onKeyPress The action to  be executed when 'combination' is pressed.
+   * @param opts Options of this registration.
+   *
+   * @return An id representing this registration. This id can be used to 'deregister' the Keyboard Shortcut.
+   */
   registerKeyPress(
     combination: string,
     label: string,
@@ -27,6 +36,16 @@ export interface KeyboardShortcutsApi {
     opts?: KeyBindingServiceOpts
   ): number;
 
+  /**
+   * Register a Keyboard Shortcuts for a keypress event.
+   * @param combination The combination of keys that trigger 'onKeyDown' action when they're pressed and 'onKeyUp' when they're released. This is shown on the Keyboard Shortcuts panel.
+   * @param label The label for this Keyboard Shortcut. This is shown on the Keyboard Shortcuts panel. Use a `|` character to separate its section from its description. (e.g. "Moving | Up")
+   * @param onKeyDown The action to  be executed when 'combination' is pressed.
+   * @param onKeyUp The action to  be executed when 'combination' is released.
+   * @param opts Options of this registration.
+   *
+   * @return An id representing this registration. This id can be used to 'deregister' the Keyboard Shortcut.
+   */
   registerKeyDownThenUp(
     combination: string,
     label: string,
@@ -35,12 +54,29 @@ export interface KeyboardShortcutsApi {
     opts?: KeyBindingServiceOpts
   ): number;
 
+  /**
+   * Deregister a Keyboard Shortcut.
+   *
+   * @param id The id obtained after registering the shortcut.
+   */
   deregister(id: number): void;
 
   //not exposed
 
+  /**
+   * Register a Keyboard Shortcuts that will happen only once and deregister itself
+   * @param combination The combination of keys that trigger 'onKeyDown' action when they're pressed and 'onKeyUp' when they're released. This is shown on the Keyboard Shortcuts panel.
+   * @param action The action to  be executed when 'combination' is pressed.
+   * @param opts Options of this registration.
+   *
+   * @return An id representing this registration. This id can be used to 'deregister' the Keyboard Shortcut.
+   */
   registerKeyPressOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts): number;
 
+
+  /**
+   * Returns a list of all the registered Keyboard Shortcuts.
+   */
   registered(): KeyBinding[];
 }
 
