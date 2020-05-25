@@ -149,7 +149,7 @@ public class NewDecisionTableXLSHandler extends DefaultNewResourceHandler {
                                      busyIndicatorView.hideBusyIndicator();
                                      presenter.complete();
                                      notifySuccess();
-                                     newResourceSuccessEvent.fire( new NewResourceSuccessEvent( path ) );
+                                     newResourceSuccessEvent.fire( new NewResourceSuccessEvent( newPath ) );
                                      placeManager.goTo( newPath );
                                  }
 
