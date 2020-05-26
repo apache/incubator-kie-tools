@@ -92,7 +92,7 @@ func WaitForDeploymentConfigRunning(namespace, dcName string, podNb int, timeout
 				}
 
 				GetLogger(namespace).Debugf("Deployment config has %d pods\n", len(pods.Items))
-				return len(pods.Items) == podNb && CheckPodsAreRunning(pods), nil
+				return len(pods.Items) == podNb && CheckPodsAreReady(pods), nil
 			}
 		}, CheckPodsByDeploymentConfigInError(namespace, dcName))
 }
