@@ -23,7 +23,6 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.eclipse.bpmn2.Definitions;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
-import org.jbpm.simulation.util.BPMN2Utils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +55,7 @@ import org.kie.workbench.common.forms.services.backend.serialization.FormDefinit
 import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
+import org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.BPMNDiagramMarshallerBaseTest;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -78,7 +78,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class FormDefinitionGeneratorImplTest {
+public class FormDefinitionGeneratorImplTest extends BPMNDiagramMarshallerBaseTest {
 
     private static final String PROCESS_NAME = "simple_process_generation";
     private static final String PROCESS_ID = "invoices.simple_process_generation";
@@ -163,18 +163,21 @@ public class FormDefinitionGeneratorImplTest {
     private ArgumentCaptor<FormDefinition> formDefinitionArgumentCaptor;
 
     @Before
-    public void init() throws Exception {
+    @Override
+    public void init() {
+        super.init();
 
         SimpleFileSystemProvider simpleFileSystemProvider = new SimpleFileSystemProvider();
         simpleFileSystemProvider.forceAsDefault();
 
-        Definitions processDefinitions = BPMN2Utils.getDefinitions(FormDefinitionGeneratorImplTest.class.getResourceAsStream(PROCESS_PATH));
+        Definitions processDefinitions = getProcessDefinitions();
 
         // Prepare BPMNFormModelGenerator
         when(kieModuleService.resolveModule(any())).thenReturn(module);
         when(module.getRootPath()).thenReturn(path);
         when(moduleClassLoaderHelper.getModuleClassLoader(module)).thenReturn(moduleClassLoader);
-        when(moduleClassLoader.loadClass(anyString())).thenAnswer(invocation -> Object.class);
+        loadClass();
+
         when(modelReaderService.getModelReader(any())).thenReturn(new RuntimeDMOModelReader(moduleClassLoader, new RawMVELEvaluator()));
         BPMNFormModelGenerator bpmnFormModelGenerator = spy(new BPMNFormModelGeneratorImpl(kieModuleService, moduleClassLoaderHelper));
 
@@ -203,6 +206,22 @@ public class FormDefinitionGeneratorImplTest {
         when(metadata.getPath()).thenReturn(diagramPath);
         when(diagram.getGraph()).thenReturn(graph);
         when(diagramPath.toURI()).thenReturn("default:///src/main/resources" + PROCESS_PATH);
+    }
+
+    private void loadClass() {
+        try {
+            when(moduleClassLoader.loadClass(anyString())).thenAnswer(invocation -> Object.class);
+        } catch (ClassNotFoundException e) {
+            // Do nothing.
+        }
+    }
+
+    private Definitions getProcessDefinitions() {
+        try {
+            return convertToDefinitions(unmarshall(marshaller, FormDefinitionGeneratorImplTest.class.getResourceAsStream(PROCESS_PATH)));
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Test
