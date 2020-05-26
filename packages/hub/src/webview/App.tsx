@@ -48,6 +48,7 @@ import {
   TextList,
   TextListItem,
   TextListVariants,
+  TextVariants,
   Title
 } from "@patternfly/react-core";
 import { Constants } from "../common/Constants";
@@ -187,10 +188,10 @@ export function App() {
     (data: CommandExecutionResult) => {
       if (data.success) {
         setVscode_status(ExtensionStatus.INSTALLED);
-        pushNewAlert({ variant: "success", title: "VSCode extension successfully installed." });
+        pushNewAlert({ variant: "success", title: "VS Code extension successfully installed." });
       } else {
         setVscode_status(ExtensionStatus.NOT_INSTALLED);
-        pushNewAlert({ variant: "danger", title: "Error while installing VSCode extension." });
+        pushNewAlert({ variant: "danger", title: "Error while installing VS Code extension." });
         console.info(data.output);
       }
     },
@@ -202,10 +203,10 @@ export function App() {
     (data: CommandExecutionResult) => {
       if (data.success) {
         setVscode_status(ExtensionStatus.NOT_INSTALLED);
-        pushNewAlert({ variant: "info", title: "VSCode extension successfully uninstalled." });
+        pushNewAlert({ variant: "info", title: "VS Code extension successfully uninstalled." });
       } else {
         setVscode_status(ExtensionStatus.INSTALLED);
-        pushNewAlert({ variant: "danger", title: "Error while uninstalling VSCode extension." });
+        pushNewAlert({ variant: "danger", title: "Error while uninstalling VS Code extension." });
         console.info(data.output);
       }
     },
@@ -295,9 +296,14 @@ export function App() {
     }
   }, [chrome_status]);
 
+  const chrome_openDownloadGoogleChrome = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    electron.shell.openExternal(Constants.DOWNLOAD_GOOGLE_CHROME_URL);
+  }, []);
+
   const chrome_openKogitoToolingReleasesPage = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
-    electron.shell.openExternal(Constants.KOGITO_TOOLING_RELEASES_URL);
+    electron.shell.openExternal(Constants.GITHUB_EXTENSION_CHROME_STORE_URL);
   }, []);
 
   const chrome_openGitHub = useCallback((e: React.MouseEvent) => {
@@ -407,11 +413,11 @@ export function App() {
               />
             </CardHead>
             <CardBody>
-              <Title size={"xl"}>Kogito VSCode extension</Title>
+              <Title size={"xl"}>Kogito VS Code extension</Title>
               <Title size={"xl"}>&nbsp;</Title>
               <br />
               <TextContent>
-                <Text>Launches VSCode ready to use with Kogito</Text>
+                <Text>Launches VS Code ready to use with Kogito</Text>
               </TextContent>
             </CardBody>
             <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
@@ -438,7 +444,7 @@ export function App() {
           </Card>
           <Modal
             isSmall={true}
-            title="Install VSCode extension"
+            title="Install VS Code extension"
             isOpen={vscode_installModalOpen}
             onClose={vscode_toggleInstallModal}
             actions={[
@@ -455,7 +461,7 @@ export function App() {
               </Button>
             ]}
           >
-            <Text>Choose VSCode to install extension</Text>
+            <Text>Choose VS Code to install extension</Text>
             <InputGroup>
               <TextInput
                 type="search"
@@ -488,13 +494,13 @@ export function App() {
           >
             {vscode_stillOpenAfterRelaunch && (
               <>
-                <Alert variant="danger" isInline={true} title="Please close VSCode" />
+                <Alert variant="danger" isInline={true} title="Please close VS Code" />
                 <br />
               </>
             )}
-            <Text>Looks like VSCode is already open and was not started by Business Modeler Hub Preview.</Text>
+            <Text>Looks like VS Code is already open and was not started by Business Modeler Hub Preview.</Text>
             <br />
-            <Text>Please close VSCode and retry.</Text>
+            <Text>Please close VS Code and retry.</Text>
           </Modal>
           {/*CHROME*/}
           <Card className={"kogito--desktop__files-card"}>
@@ -502,10 +508,10 @@ export function App() {
               <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
             </CardHead>
             <CardBody>
-              <Title size={"xl"}>Kogito GitHub extension for Chrome</Title>
+              <Title size={"xl"}>KIE GitHub Chrome Extension</Title>
               <br />
               <TextContent>
-                <Text>Installs the Kogito extension to an existing version of Chrome</Text>
+                <Text>Install the KIE GitHub Chrome Extension on Chrome browser</Text>
               </TextContent>
             </CardBody>
             <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
@@ -517,7 +523,7 @@ export function App() {
           </Card>
           <Modal
             width={"70%"}
-            title="Install Kogito extension on Chrome"
+            title="Install KIE GitHub Chrome Extension on Chrome browser"
             isOpen={chrome_modalOpen}
             onClose={chrome_toggleModal}
             actions={[
@@ -527,28 +533,30 @@ export function App() {
             ]}
           >
             <TextContent>
+              <Text component={TextVariants.p}>
+                To be able to install and use the KIE GitHub Chrome Extension it's necessary to have the Chrome browser
+                installed on your computer.
+              </Text>
+              <Text component={TextVariants.p}>
+                In case you don't have it, you can download it{" "}
+                <Button variant={"link"} isInline={true} onClick={chrome_openDownloadGoogleChrome}>
+                  here
+                </Button>
+                .
+              </Text>
+              <Text component={TextVariants.p}>
+                If you already have the Chrome browser or have just downloaded it, follow this steps:
+              </Text>
               <TextList component={TextListVariants.ol}>
-                <TextListItem>Follow these instructions to install the Kogito GitHub Chrome extension</TextListItem>
                 <TextListItem>
-                  Download the Chrome Extension ZIP from our{" "}
+                  Open the KIE GitHub Chrome Extension on the{" "}
                   <Button variant={"link"} isInline={true} onClick={chrome_openKogitoToolingReleasesPage}>
-                    releases page
-                  </Button>
-                  .
+                    Chrome Store
+                  </Button>{" "}
+                  using your Chrome browser
                 </TextListItem>
-                <TextListItem>
-                  Open Chrome and go to <b>{Constants.CHROME_EXTENSIONS_TAB}</b>.
-                </TextListItem>
-                <br />
-                <img
-                  width={"550px"}
-                  src={"images/chrome-extension-installation-guide.gif"}
-                  alt={"Chrome Extension installation guide"}
-                />
-                <br />
-                <br />
-                <TextListItem>Enable developer mode on the top-right corner.</TextListItem>
-                <TextListItem>Click in Load Unpacked and choose the unziped Chrome Extension directory.</TextListItem>
+                <TextListItem>Click on "Add to Chrome".</TextListItem>
+                <TextListItem>Read the permissions and in case you agree, click on “Add Extension”</TextListItem>
                 <TextListItem>
                   Done! You can go to{" "}
                   <Button variant={"link"} isInline={true} onClick={chrome_openGitHub}>
