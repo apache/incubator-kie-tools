@@ -18,15 +18,21 @@ package org.uberfire.java.nio.fs.k8s;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Queue;
 
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.Watcher.Action;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.fabric8.kubernetes.client.server.mock.KubernetesCrudDispatcher;
+import io.fabric8.kubernetes.client.server.mock.KubernetesMockServer;
+import io.fabric8.mockwebserver.Context;
+import io.fabric8.mockwebserver.ServerRequest;
+import io.fabric8.mockwebserver.ServerResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.file.FileSystem;
@@ -43,12 +49,11 @@ import static org.uberfire.java.nio.fs.k8s.K8SFileSystemConstants.K8S_FS_NO_IMPL
 
 public class K8SWatchServiceTest {
 
-    @ClassRule
-    public static KubernetesServer SERVER = new KubernetesServer(false, true);
+    public static KubernetesMockServer SERVER =
+            new KubernetesMockServer(new Context(), new MockWebServer(), new HashMap<ServerRequest, Queue<ServerResponse>>(), new KubernetesCrudDispatcher(), false);
     // The default namespace for MockKubernetes Server is 'test'
     protected static String TEST_NAMESPACE = "test";
-    protected static ThreadLocal<KubernetesClient> CLIENT_FACTORY =
-            ThreadLocal.withInitial(() -> SERVER.getClient());
+    protected static ThreadLocal<KubernetesClient> CLIENT_FACTORY;
 
     protected static final FileSystemProvider fsProvider = new K8SFileSystemProvider() {
 
@@ -61,6 +66,8 @@ public class K8SWatchServiceTest {
 
     @BeforeClass
     public static void setup() {
+        SERVER.init();
+        CLIENT_FACTORY = ThreadLocal.withInitial(() -> SERVER.createClient());
         //Checking the operating system before test execution
         Assume.assumeFalse("k8s does not support in Windows platform", System.getProperty("os.name").toLowerCase().contains("windows"));
         // Load testing KieServerState ConfigMap data into mock server from file
@@ -82,14 +89,15 @@ public class K8SWatchServiceTest {
     public static void tearDown() {
         CLIENT_FACTORY.get().configMaps().inNamespace(TEST_NAMESPACE).delete();
         CLIENT_FACTORY.get().close();
+        SERVER.destroy();
     }
-    
+
     @Test
     public void testSetup() {
         final FileSystem fileSystem = fsProvider.getFileSystem(URI.create("default:///"));
         final Path root = fileSystem.getPath("/");
         final Path dir = fileSystem.getPath("/testDir");
-        
+
         assertThat(root.getFileSystem().provider()).isEqualTo(fsProvider);
         assertThat(Files.exists(root)).isTrue();
         assertThat(Files.exists(dir)).isTrue();
@@ -101,13 +109,12 @@ public class K8SWatchServiceTest {
     public void testWatchServiceOpenAndClose() throws URISyntaxException {
         final FileSystem fileSystem = fsProvider.getFileSystem(URI.create("default:///"));
         final WatchService ws = fileSystem.newWatchService();
-        // MockWebServer does not support websocket; as a result, WatchService will shutdown itself.
         assertThat(ws.isClose()).isFalse();
-        await().until(ws::isClose);
         ws.close();
+        await().until(ws::isClose);
         assertThat(ws.isClose()).isTrue();
     }
-    
+
     @Test
     public void testMapActionToKind() {
         assertThat(K8SFileSystemUtils.mapActionToKind(Action.ERROR).isPresent()).isFalse();
@@ -118,12 +125,12 @@ public class K8SWatchServiceTest {
         assertThat(K8SFileSystemUtils.mapActionToKind(Action.DELETED).get())
             .isEqualTo(StandardWatchEventKind.ENTRY_DELETE);
     }
-    
+
     @Test
     public void testWatchKey() {
-        final K8SFileSystem fileSystem = (K8SFileSystem)fsProvider.getFileSystem(URI.create("default:///"));
+        final K8SFileSystem fileSystem = (K8SFileSystem) fsProvider.getFileSystem(URI.create("default:///"));
         final Path dir = fileSystem.getPath("/testDir");
-        
+
         boolean isWSClosed = false;
         K8SWatchKey wk = new K8SWatchKey(new K8SWatchService(fileSystem) {
 
@@ -132,26 +139,26 @@ public class K8SWatchServiceTest {
                 return isWSClosed;
             }
         }, dir);
-        
+
         assertThat(wk.isValid()).isTrue();
         assertThat(wk.pollEvents()).asList().isEmpty();
         assertThat(wk.watchable()).isEqualTo(dir);
         assertThat(wk.postEvent(StandardWatchEventKind.ENTRY_CREATE)).isTrue();
         assertThat(wk.isQueued()).isFalse();
-        
+
         wk.signal();
         assertThat(wk.isQueued()).isTrue();
         assertThat(wk.reset()).isTrue();
         assertThat(wk.pollEvents()).asList().isEmpty();
         assertThat(wk.isQueued()).isFalse();
-        
+
         assertThat(wk.postEvent(StandardWatchEventKind.ENTRY_DELETE)).isTrue();
         wk.signal();
         assertThat(wk.isQueued()).isTrue();
-        
+
         List<WatchEvent<?>> eventList = wk.pollEvents();
         assertThat(eventList.size()).isEqualTo(1);
-        
+
         WatchEvent<?> event = eventList.get(0);
         assertThat(event.kind()).isEqualTo(StandardWatchEventKind.ENTRY_DELETE);
         assertThat(event.count()).isEqualTo(1);
@@ -161,7 +168,7 @@ public class K8SWatchServiceTest {
         assertThat(wc.getSessionId()).isEqualTo(K8S_FS_NO_IMPL);
         assertThat(wc.getMessage()).isEqualTo(K8S_FS_NO_IMPL);
         assertThat(wc.getUser()).isEqualTo(K8S_FS_NO_IMPL);
-        
+
         wk.cancel();
         assertThat(wk.isValid()).isFalse();
     }

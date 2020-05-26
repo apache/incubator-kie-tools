@@ -26,15 +26,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 
 import com.google.common.collect.Lists;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
+import io.fabric8.kubernetes.client.server.mock.KubernetesCrudDispatcher;
+import io.fabric8.kubernetes.client.server.mock.KubernetesMockServer;
+import io.fabric8.mockwebserver.Context;
+import io.fabric8.mockwebserver.ServerRequest;
+import io.fabric8.mockwebserver.ServerResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
@@ -65,12 +70,11 @@ import static org.uberfire.java.nio.fs.k8s.K8SFileSystemUtils.validateAndBuildPa
 
 public class K8SFileSystemTest {
 
-    @ClassRule
-    public static KubernetesServer SERVER = new KubernetesServer(false, true);
+    public static KubernetesMockServer SERVER =
+            new KubernetesMockServer(new Context(), new MockWebServer(), new HashMap<ServerRequest, Queue<ServerResponse>>(), new KubernetesCrudDispatcher(), false);
     // The default namespace for MockKubernetes Server is 'test'
     protected static String TEST_NAMESPACE = "test";
-    protected static ThreadLocal<KubernetesClient> CLIENT_FACTORY =
-            ThreadLocal.withInitial(() -> SERVER.getClient());
+    protected static ThreadLocal<KubernetesClient> CLIENT_FACTORY;
 
     protected static final FileSystemProvider fsProvider = new K8SFileSystemProvider() {
 
@@ -90,6 +94,8 @@ public class K8SFileSystemTest {
 
     @BeforeClass
     public static void setup() {
+        SERVER.init();
+        CLIENT_FACTORY = ThreadLocal.withInitial(() -> SERVER.createClient());
         //Checking the operating system before test execution
         Assume.assumeFalse("k8s does not support in Windows platform", System.getProperty("os.name").toLowerCase().contains("windows"));
         // Load testing KieServerState ConfigMap data into mock server from file
@@ -123,6 +129,7 @@ public class K8SFileSystemTest {
     public static void tearDown() {
         CLIENT_FACTORY.get().configMaps().inNamespace(TEST_NAMESPACE).delete();
         CLIENT_FACTORY.get().close();
+        SERVER.destroy();
     }
     
     @Test
