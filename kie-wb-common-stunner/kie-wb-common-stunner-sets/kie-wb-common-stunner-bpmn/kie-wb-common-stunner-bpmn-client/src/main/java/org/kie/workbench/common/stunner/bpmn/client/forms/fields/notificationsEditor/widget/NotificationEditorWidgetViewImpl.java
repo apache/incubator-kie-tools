@@ -262,7 +262,7 @@ public class NotificationEditorWidgetViewImpl extends Composite implements Notif
     }
 
     protected void initTextBoxes() {
-        subject.setMaxLength(100);
+        subject.setMaxLength(255);
         periodBox.showLabel(false);
         body.setMaxLength(65535);
         body.setHeight("70px");
