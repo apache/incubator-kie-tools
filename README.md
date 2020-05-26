@@ -313,6 +313,19 @@ sys	0m0.539s
 Here you can see that the build time has again been reduced. 
 If the maven mirror have already have all the dependencies there, the build time can be even faster.
 
+If a custom Maven Repository is required, the S2i images also supports it.  
+In case the **MAVEN_REPO_URL** environment variable is provided a new Repository and Plugin Repository will be added to the internal `settings.xml` file.  
+If no repo-id is provided using the **MAVEN_REPO_ID** environment variable, a generated one will be used.  
+There is also the possibility to provide more than one custom Repository. In this case, we need to provide the repo **prefix** using the **MAVEN_REPOS** environment variable.  
+Example, if we want to add two new repositories, the following environment variables is needed:
+
+```bash
+MAVEN_REPOS="CENTRAL,COMPANY"
+CENTRAL_MAVEN_REPO_URL="http://central.severinolabs.com/group/public"
+CENTRAL_MAVEN_REPO_ID="my_cool_id_central"
+COMPANY_MAVEN_REPO_URL="http://company.severinolabs.com/group/public"
+COMPANY_MAVEN_REPO_ID="my_cool_id_company"
+``` 
 
 ### Kogito Runtime Images
 
