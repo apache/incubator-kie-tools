@@ -81,7 +81,7 @@ const commonConfig = {
     },
     disableHostCheck: true,
     watchContentBase: true,
-    contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+    contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static"), path.join(__dirname, "./build")],
     compress: true,
     port: 9001
   },
