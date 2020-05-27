@@ -52,6 +52,7 @@ Feature: Kogito Service Performance
 
   @quarkus
   @persistence
+  @infinispan
   Scenario Outline: Quarkus Kogito Service Performance with native <native>, with persistence and with requests <requests>
     Given Kogito Operator is deployed with Infinispan operator
     And Infinispan instance "external-infinispan" is deployed for performance within 5 minute(s) with configuration:
@@ -133,6 +134,7 @@ Feature: Kogito Service Performance
 
   @springboot
   @persistence
+  @infinispan
   Scenario Outline: Spring Boot Kogito Service Performance with persistence and with requests <requests>
     Given Kogito Operator is deployed with Infinispan operator
     And Infinispan instance "external-infinispan" is deployed for performance within 5 minute(s) with configuration:

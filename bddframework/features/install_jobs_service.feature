@@ -25,6 +25,7 @@ Feature: Install Kogito Jobs Service
 #####
 
   @persistence
+  @infinispan
   Scenario: Install Kogito Jobs Service with persistence
     Given Kogito Operator is deployed with Infinispan operator
     
@@ -48,6 +49,8 @@ Feature: Install Kogito Jobs Service
 #####
 
   @events
+  @kafka
+  @infinispan
   Scenario: Jobs service events are stored in Data Index
     Given Kogito Operator is deployed with Infinispan and Kafka operators
     And Install Kogito Data Index with 1 replicas

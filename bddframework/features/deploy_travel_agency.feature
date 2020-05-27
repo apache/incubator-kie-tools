@@ -1,5 +1,7 @@
 @quarkus
 @travelagency
+@infinispan
+@kafka
 Feature: Deploy Travel agency service and verify its functionality
 
   Background:

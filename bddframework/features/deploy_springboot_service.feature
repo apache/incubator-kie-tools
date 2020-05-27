@@ -16,6 +16,7 @@ Feature: Deploy spring boot service
 #####
 
   @persistence
+  @infinispan
   Scenario: Deploy process-springboot-example service with persistence
     Given Kogito Operator is deployed with Infinispan operator
     And Deploy springboot example service "process-springboot-example" with configuration:
@@ -62,6 +63,8 @@ Feature: Deploy spring boot service
 #####
 
   @events
+  @kafka
+  @infinispan
   Scenario: Data Index retrieves Spring Boot process' events
     Given Kogito Operator is deployed with Infinispan and Kafka operators
     And Install Kogito Data Index with 1 replicas
@@ -114,9 +117,8 @@ Feature: Deploy spring boot service
 
 #####
 
-  @externalcomponent
-  @infinispan
   @persistence
+  @infinispan
   Scenario: Deploy process-springboot-example service with persistence using external Infinispan
     Given Kogito Operator is deployed with Infinispan operator
     And Infinispan instance "external-infinispan" is deployed with configuration:
@@ -146,9 +148,9 @@ Feature: Deploy spring boot service
 
 #####
 
-  @externalcomponent
-  @kafka
   @events
+  @kafka
+  @infinispan
   Scenario: Data Index retrieves SpringBoot process events using external Kafka
     Given Kogito Operator is deployed with Infinispan and Kafka operators
     And Kafka instance "external-kafka" is deployed

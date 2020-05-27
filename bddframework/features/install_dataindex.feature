@@ -1,4 +1,6 @@
 @dataindex
+@infinispan
+@kafka
 Feature: Kogito Data Index
 
   Background:

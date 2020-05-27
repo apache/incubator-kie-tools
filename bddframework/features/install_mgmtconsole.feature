@@ -1,4 +1,6 @@
 @managementconsole
+@infinispan
+@kafka
 Feature: Install Kogito Management Console
 
   Background:

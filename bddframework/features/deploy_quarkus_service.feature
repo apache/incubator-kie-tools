@@ -54,6 +54,7 @@ Feature: Deploy quarkus service
 #####
 
   @persistence
+  @infinispan
   Scenario Outline: Deploy process-quarkus-example service with persistence and native <native>
     Given Kogito Operator is deployed with Infinispan operator
     And Deploy quarkus example service "process-quarkus-example" with configuration:
@@ -121,6 +122,8 @@ Feature: Deploy quarkus service
 #####
 
   @events
+  @infinispan
+  @kafka
   Scenario Outline: Data Index retrieves Quarkus process' events with native <native>
     Given Kogito Operator is deployed with Infinispan and Kafka operators
     And Install Kogito Data Index with 1 replicas
@@ -193,9 +196,8 @@ Feature: Deploy quarkus service
 
 #####
 
-  @externalcomponent
-  @infinispan
   @persistence
+  @infinispan
   Scenario: Deploy process-quarkus-example service with persistence using external Infinispan
     Given Kogito Operator is deployed with Infinispan operator
     And Infinispan instance "external-infinispan" is deployed with configuration:
@@ -226,9 +228,9 @@ Feature: Deploy quarkus service
 
 #####
 
-  @externalcomponent
-  @kafka
   @events
+  @kafka
+  @infinispan
   Scenario: Data Index retrieves Quarkus process events using external Kafka
     Given Kogito Operator is deployed with Infinispan and Kafka operators
     And Kafka instance "external-kafka" is deployed
