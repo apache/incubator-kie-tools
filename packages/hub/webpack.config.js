@@ -48,6 +48,9 @@ const commonConfig = {
       {
         from: "../desktop/out/Business Modeler Preview-" + os.platform() + "-x64",
         to: "./lib/Business Modeler Preview-" + os.platform() + "-x64"
+      },
+      {
+        from: "./build", to: "./build"
       }
     ])
   ],
