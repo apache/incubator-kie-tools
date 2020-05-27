@@ -60,8 +60,6 @@ Feature: Deploy Travel agency service and verify its functionality
       | native   | minutes | build-request-cpu | 
       | disabled | 10      | 1                 | 
 
-    # Disabled as long as https://issues.redhat.com/browse/KOGITO-1893  is not merged or https://issues.redhat.com/browse/KOGITO-1917 is not fixed
-    @disabled
     @native
     Examples:
       | native   | minutes | build-request-cpu | 
@@ -150,8 +148,6 @@ Feature: Deploy Travel agency service and verify its functionality
       | native   | minutes | build-request-cpu | 
       | disabled | 10      | 1                 | 
 
-    # Disabled as long as https://issues.redhat.com/browse/KOGITO-1893  is not merged or https://issues.redhat.com/browse/KOGITO-1917 is not fixed
-    @disabled
     @native
     Examples:
       | native   | minutes | build-request-cpu | 
