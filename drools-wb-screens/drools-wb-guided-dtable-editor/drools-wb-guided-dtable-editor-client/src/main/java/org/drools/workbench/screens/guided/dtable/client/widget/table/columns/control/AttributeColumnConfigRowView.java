@@ -23,6 +23,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.DefaultValueWidgetFactory;
@@ -66,10 +67,15 @@ public class AttributeColumnConfigRowView extends HorizontalPanel {
                                 DefaultValueWidgetFactory.DefaultValueChangedEventHandler handler) {
         final FlowPanel panel = new FlowPanel();
 
-        panel.add(new SmallLabel(new StringBuilder(GuidedDecisionTableConstants.INSTANCE.DefaultValue()).append(GuidedDecisionTableConstants.COLON).toString()));
-        panel.add(DefaultValueWidgetFactory.getDefaultValueWidget(attributeColumn,
-                                                                  !isEditable,
-                                                                  handler));
+        panel.add(new SmallLabel(new StringBuilder(GuidedDecisionTableConstants.INSTANCE.DefaultValue())
+                                         .append(GuidedDecisionTableConstants.COLON).toString()));
+
+        final Widget defaultValueEditor = DefaultValueWidgetFactory.getDefaultValueWidget(attributeColumn,
+                                                                                          !isEditable,
+                                                                                          handler);
+        defaultValueEditor.setTitle(GuidedDecisionTableConstants.INSTANCE.DefaultValueExplanation());
+
+        panel.add(defaultValueEditor);
         add(panel);
     }
 

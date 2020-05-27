@@ -72,6 +72,8 @@ public interface GuidedDecisionTableConstants
 
     String DefaultValue();
 
+    String DefaultValueExplanation();
+
     String LimitedEntryValue();
 
     String LogicallyInsert();
