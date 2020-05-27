@@ -234,7 +234,7 @@ func getBuildRuntimeImageStreamTag(kogitoApp *v1alpha1.KogitoApp) string {
 		return config.GetBuildRuntimeImageStreamTag()
 	}
 
-	if isBuildImageRegistryOrNamespaceSet() {
+	if isBuildImageInformationSet() {
 		buildType := resource.BuildTypeRuntime
 		if kogitoApp.Spec.Runtime == v1alpha1.QuarkusRuntimeType && !kogitoApp.Spec.Build.Native {
 			buildType = resource.BuildTypeRuntimeJvm
@@ -251,15 +251,17 @@ func getBuildS2IImageStreamTag(kogitoApp *v1alpha1.KogitoApp) string {
 		return config.GetBuildS2IImageStreamTag()
 	}
 
-	if isBuildImageRegistryOrNamespaceSet() {
+	if isBuildImageInformationSet() {
 		return getBuildImage(resource.BuildImageStreams[resource.BuildTypeS2I][kogitoApp.Spec.Runtime])
 	}
 
 	return ""
 }
 
-func isBuildImageRegistryOrNamespaceSet() bool {
-	return len(config.GetBuildImageRegistry()) > 0 || len(config.GetBuildImageNamespace()) > 0
+func isBuildImageInformationSet() bool {
+	return len(config.GetBuildImageRegistry()) > 0 ||
+		len(config.GetBuildImageNamespace()) > 0 ||
+		len(config.GetBuildImageNameSuffix()) > 0
 }
 
 func getBuildImage(imageName string) string {
@@ -280,6 +282,11 @@ func getBuildImage(imageName string) string {
 
 	if len(image.Tag) == 0 {
 		image.Tag = infrastructure.GetRuntimeImageVersion()
+	}
+
+	// Update image name with suffix if provided
+	if len(config.GetBuildImageNameSuffix()) > 0 {
+		image.Name = fmt.Sprintf("%s-%s", image.Name, config.GetBuildImageNameSuffix())
 	}
 
 	return framework.ConvertImageToImageTag(image)

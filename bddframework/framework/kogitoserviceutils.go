@@ -114,7 +114,8 @@ func newImageOrDefault(fullImage string, defaultImageName string) v1alpha1.Image
 	}
 
 	image := v1alpha1.Image{}
-	if len(config.GetServicesImageRegistry()) > 0 || len(config.GetServicesImageNamespace()) > 0 || len(config.GetServicesImageVersion()) > 0 {
+	if isRuntimeImageInformationSet() {
+
 		image.Domain = config.GetServicesImageRegistry()
 		image.Namespace = config.GetServicesImageNamespace()
 		image.Name = defaultImageName
@@ -131,9 +132,21 @@ func newImageOrDefault(fullImage string, defaultImageName string) v1alpha1.Image
 		if len(image.Tag) == 0 {
 			image.Tag = infrastructure.GetRuntimeImageVersion()
 		}
+
+		// Update image name with suffix if provided
+		if len(config.GetServicesImageNameSuffix()) > 0 {
+			image.Name = fmt.Sprintf("%s-%s", image.Name, config.GetServicesImageNameSuffix())
+		}
 	}
 
 	return image
+}
+
+func isRuntimeImageInformationSet() bool {
+	return len(config.GetServicesImageRegistry()) > 0 ||
+		len(config.GetServicesImageNamespace()) > 0 ||
+		len(config.GetServicesImageNameSuffix()) > 0 ||
+		len(config.GetServicesImageVersion()) > 0
 }
 
 func crInstall(serviceHolder *KogitoServiceHolder) error {
