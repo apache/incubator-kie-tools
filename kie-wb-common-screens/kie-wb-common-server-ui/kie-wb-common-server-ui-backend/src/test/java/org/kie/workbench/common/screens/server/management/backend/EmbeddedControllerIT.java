@@ -29,7 +29,9 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.kie.server.api.model.KieContainerStatus;
 import org.kie.server.api.model.ReleaseId;
@@ -78,6 +80,9 @@ public class EmbeddedControllerIT extends AbstractAutoControllerIT {
     public static void setup() {
         KieServerDeployer.createAndDeployKJar(RELEASE_ID);
     }
+
+    @Rule
+    public Timeout globalTimeout = Timeout.millis(6000000);
 
     @Test
     @RunAsClient
