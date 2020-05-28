@@ -46,7 +46,6 @@ export class StateControl {
   }
 
   public exposeApi(messageBus: EnvelopeBusInnerMessageHandler): StateControlApi {
-
     const stateControl = this;
 
     return {

@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`KeyBindingsHelpOverlay minimal setup 1`] = `
+<body
+  class="pf-c-backdrop__open"
+>
+  <div
+    aria-hidden="true"
+  >
+    <div
+      class="kogito-tooling--keyboard-shortcuts-icon"
+      data-testid="keyboard-shortcuts-help-overlay-icon"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 576 512"
+        width="1em"
+      >
+        <path
+          d="M528 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h480c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM128 180v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm288 0v-40c0-6.627-5.373-12-12-12H172c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h232c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12z"
+          transform=""
+        />
+      </svg>
+    </div>
+  </div>
+  <div>
+    <div
+      class="pf-c-backdrop"
+    >
+      <div
+        class="pf-l-bullseye"
+      >
+        <div
+          aria-describedby="pf-modal-0"
+          aria-label="Keyboard shortcuts"
+          aria-modal="true"
+          class="pf-c-modal-box"
+          role="dialog"
+          style="width: 60%;"
+        >
+          <button
+            aria-label="Close"
+            class="pf-c-button pf-m-plain"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="1em"
+              role="img"
+              style="vertical-align: -0.125em;"
+              viewBox="0 0 352 512"
+              width="1em"
+            >
+              <path
+                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                transform=""
+              />
+            </svg>
+          </button>
+          <h1
+            class="pf-c-title pf-m-2xl"
+          >
+             
+            Keyboard shortcuts
+             
+          </h1>
+          <div
+            class="pf-c-modal-box__body"
+            data-testid="keyboard-shortcuts-help-overlay"
+            id="pf-modal-0"
+          >
+            <div
+              class="pf-c-content"
+            >
+              <dl
+                class=""
+                data-pf-content="true"
+              >
+                <h2
+                  class=""
+                  data-pf-content="true"
+                >
+                  Copy
+                </h2>
+                <dt
+                  class=""
+                  data-pf-content="true"
+                >
+                  Ctrl + C
+                </dt>
+                <dd
+                  class=""
+                  data-pf-content="true"
+                />
+                <h2
+                  class=""
+                  data-pf-content="true"
+                >
+                  Help
+                </h2>
+                <dt
+                  class=""
+                  data-pf-content="true"
+                >
+                  Shift + /
+                </dt>
+                <dd
+                  class=""
+                  data-pf-content="true"
+                >
+                  Show keyboard shortcuts
+                </dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+`;

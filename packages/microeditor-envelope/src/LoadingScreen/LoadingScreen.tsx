@@ -16,8 +16,6 @@
 
 import * as React from "react";
 import { useLayoutEffect, useState } from "react";
-import "@patternfly/patternfly/patternfly-no-reset.css";
-import "@patternfly/patternfly/patternfly-addons.css";
 import "./styles.scss";
 import "./spinner.scss";
 

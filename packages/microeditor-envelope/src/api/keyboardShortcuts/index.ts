@@ -14,6 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./StateControl";
-export * from "./KogitoCommand";
-export * from "./KogitoCommandRegistry";
+export * from "./KeyboardShorcutsApi";
+export * from "./DefaultKeyboardShortcutsService";

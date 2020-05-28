@@ -17,6 +17,7 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
+const envelope = require("../patternfly-base/webpackUtils");
 
 module.exports = {
   mode: "development",
@@ -29,7 +30,7 @@ module.exports = {
     filename: "[name].js",
     libraryTarget: "commonjs2"
   },
-  externals: [nodeExternals({ modulesDir: "../../node_modules", whitelist: /@patternfly/ })],
+  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   plugins: [
     new CircularDependencyPlugin({
       exclude: /node_modules/, // exclude detection of files based on a RegExp
@@ -56,51 +57,7 @@ module.exports = {
         exclude: /node_modules/,
         use: ["babel-loader"]
       },
-      {
-        test: /\.s[ac]ss$/i,
-        include: [path.resolve(__dirname, "src"), path.resolve(__dirname, "../../node_modules/@patternfly/patternfly")],
-        use: ["style-loader", "css-loader", "sass-loader"]
-      },
-      {
-        test: /\.css$/,
-        include: [path.resolve(__dirname, "src"), path.resolve(__dirname, "../../node_modules/@patternfly/patternfly")],
-        use: ["style-loader", "css-loader"]
-      },
-      {
-        test: /\.(woff)$/,
-        include: [
-          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts/RedHatDisplay"),
-          path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts/RedHatText")
-        ],
-        use: {
-          loader: "file-loader",
-          options: {
-            limit: 244,
-            outputPath: "fonts",
-            name: "[name].[ext]"
-          }
-        }
-      },
-      {
-        test: /RedHat.*\.(woff2|ttf|eot|otf|svg)/,
-        loader: "null-loader"
-      },
-      {
-        test: /overpass-.*\.(woff2?|ttf|eot|otf)(\?.*$|$)/,
-        loader: "null-loader"
-      },
-      {
-        test: /pficon\.(woff2?|ttf|eot|otf|svg)/,
-        loader: "null-loader"
-      },
-      {
-        test: /fa-solid-900\.(woff2?|ttf|eot|otf|svg)/,
-        loader: "null-loader"
-      },
-      {
-        test: /pfbg_.*\.jpg$/,
-        loader: "null-loader"
-      }
+      ...envelope.patternflyLoaders
     ]
   },
   resolve: {

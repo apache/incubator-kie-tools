@@ -13,6 +13,7 @@
     "sourceMap": true,
     "strictNullChecks": true,
     "experimentalDecorators": true,
+    "downlevelIteration": true,
     "jsx": "react"
   }
 }

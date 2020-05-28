@@ -17,6 +17,7 @@
 const path = require("path");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const envelope = require("../patternfly-base/webpackUtils");
 
 const commonConfig = {
   mode: "development",
@@ -74,6 +75,9 @@ module.exports = [
     target: "web",
     entry: {
       "webview/index": "./src/webview/index.ts"
+    },
+    module: {
+      rules: [...commonConfig.module.rules, ...envelope.patternflyLoaders]
     },
     plugins: [
       new CopyWebpackPlugin([
