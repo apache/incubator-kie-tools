@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,27 +14,28 @@
  * limitations under the License.
  */
 
-package org.appformer.kogito.bridge.client.context.impl;
+package org.appformer.kogito.bridge.client.keyboardshortcuts;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 
-import org.appformer.kogito.bridge.client.context.KogitoChannel;
-import org.appformer.kogito.bridge.client.context.EditorContextProvider;
-import org.appformer.kogito.bridge.client.context.interop.EditorContextWrapper;
+import elemental2.dom.DomGlobal;
 import org.appformer.kogito.bridge.client.interop.WindowRef;
 
-@ApplicationScoped
-public class EditorContextProviderImpl implements EditorContextProvider {
+/**
+ * Produces {@link KeyboardShortcutsService} beans according to whether the envelope API is available or not
+ */
+public class KeyboardShortcutsServiceProducer {
 
-    @Override
-    public KogitoChannel getChannel() {
+    @Produces
+    @ApplicationScoped
+    public KeyboardShortcutsApi produce() {
+
         if (WindowRef.isEnvelopeAvailable()) {
-            String channel = EditorContextWrapper.get().getChannel();
-            if (channel != null) {
-                return KogitoChannel.withName(channel);
-            }
+            return new KeyboardShortcutsService();
         }
-        return KogitoChannel.DEFAULT;
-    }
 
+        DomGlobal.console.debug("[KeyboardShortcutsServiceProducer] Envelope API is not available. Producing NoOpKeyboardShortcutsService");
+        return new NoOpKeyboardShortcutsService();
+    }
 }

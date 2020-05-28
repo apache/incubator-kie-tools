@@ -16,24 +16,24 @@
 
 package org.appformer.kogito.bridge.client.context;
 
+import org.appformer.client.context.Channel;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class KogitoChannelTest {
+public class ChannelTest {
 
     @Test
     public void withNameTest() {
-        assertEquals(KogitoChannel.GITHUB, KogitoChannel.withName("GitHub"));
-        assertEquals(KogitoChannel.DEFAULT, KogitoChannel.withName("dEfAuLt"));
-        assertEquals(KogitoChannel.ONLINE, KogitoChannel.withName("ONLine"));
-        assertEquals(KogitoChannel.VSCODE, KogitoChannel.withName("VSCode"));
-        assertEquals(KogitoChannel.DESKTOP, KogitoChannel.withName("Desktop"));
+        assertEquals(Channel.GITHUB, Channel.withName("GitHub"));
+        assertEquals(Channel.DEFAULT, Channel.withName("dEfAuLt"));
+        assertEquals(Channel.ONLINE, Channel.withName("ONLine"));
+        assertEquals(Channel.VSCODE, Channel.withName("VSCode"));
+        assertEquals(Channel.DESKTOP, Channel.withName("Desktop"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void withWrongNameTest() {
-        KogitoChannel.withName("foo");
+        Channel.withName("foo");
     }
-
 }

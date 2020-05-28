@@ -30,6 +30,9 @@ public class EditorContextWrapper {
     @JsProperty
     public native String getChannel();
 
+    @JsProperty
+    public native String getOperatingSystem();
+
     @JsProperty(name = "editorContext")
     public static native EditorContextWrapper get();
 

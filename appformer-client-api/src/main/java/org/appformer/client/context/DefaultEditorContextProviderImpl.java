@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package org.appformer.kogito.bridge.client.context;
+package org.appformer.client.context;
 
-/**
- * 
- * Provide access to EditorContext properties
- *
- */
-public interface EditorContextProvider {
+import java.util.Optional;
 
-    /**
-     * Access the channel where the editor is running (e.g. ONLINE, GITHUB or VSCODE).
-     * 
-     * @return
-     * The channel where the editor is running or DEFAULT if no channel is available.
-     */
-    KogitoChannel getChannel();
+import javax.enterprise.context.ApplicationScoped;
 
+@ApplicationScoped
+public class DefaultEditorContextProviderImpl implements EditorContextProvider {
+
+    @Override
+    public Channel getChannel() {
+        return Channel.DEFAULT;
+    }
+
+    @Override
+    public Optional<OperatingSystem> getOperatingSystem() {
+        return Optional.empty();
+    }
 }

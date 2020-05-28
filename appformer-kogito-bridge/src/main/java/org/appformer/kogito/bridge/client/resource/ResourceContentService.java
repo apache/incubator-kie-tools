@@ -28,7 +28,7 @@ public interface ResourceContentService {
 
     /**
      * Returns a resource's content
-     * 
+     *
      * @param uri
      *  the resource URI relative to the workspace/project
      * @return
@@ -50,7 +50,7 @@ public interface ResourceContentService {
 
     /**
      * List files from the project/workspace where the editor is running
-     * 
+     *
      * @param pattern
      * A GLOB pattern to filter files. To list all files use "*"
      * @return

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.appformer.kogito.bridge.client.context;
+package org.appformer.client.context;
 
 import java.util.stream.Stream;
 
-public enum KogitoChannel {
+public enum Channel {
 
     DEFAULT("DEFAULT"),
     ONLINE("ONLINE"),
@@ -28,7 +28,7 @@ public enum KogitoChannel {
 
     private final String name;
 
-    KogitoChannel(String name) {
+    Channel(String name) {
         this.name = name;
     }
 
@@ -36,8 +36,8 @@ public enum KogitoChannel {
         return name;
     }
 
-    public static KogitoChannel withName(String name) {
-        return Stream.of(KogitoChannel.values())
+    public static Channel withName(String name) {
+        return Stream.of(Channel.values())
                      .filter(channel -> channel.getName().equalsIgnoreCase(name))
                      .findFirst().orElseThrow(() -> new IllegalArgumentException("Name not recognized: " + name));
     }
