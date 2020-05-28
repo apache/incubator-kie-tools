@@ -48,6 +48,9 @@ const commonConfig = {
       {
         from: "../desktop/out/Business Modeler Preview-" + os.platform() + "-x64",
         to: "./lib/Business Modeler Preview-" + os.platform() + "-x64"
+      },
+      {
+        from: "./build", to: "./build"
       }
     ])
   ],
@@ -78,7 +81,7 @@ const commonConfig = {
     },
     disableHostCheck: true,
     watchContentBase: true,
-    contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+    contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static"), path.join(__dirname, "./build")],
     compress: true,
     port: 9001
   },
