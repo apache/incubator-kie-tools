@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.S;
 import static org.kie.workbench.common.stunner.core.util.DefinitionUtils.getElementDefinition;
 
 @BPMN
@@ -45,7 +46,7 @@ public class AppendEmbeddedSubprocessShortcut extends AbstractAppendNodeShortcut
 
     @Override
     public boolean matchesPressedKeys(final KeyboardEvent.Key... pressedKeys) {
-        return KeysMatcher.doKeysMatch(pressedKeys, KeyboardEvent.Key.S);
+        return KeysMatcher.doKeysMatch(pressedKeys, getKeyCombination());
     }
 
     @Override
@@ -60,5 +61,15 @@ public class AppendEmbeddedSubprocessShortcut extends AbstractAppendNodeShortcut
     @Override
     public boolean canAppendNodeOfDefinition(final Object definition) {
         return definition instanceof EmbeddedSubprocess;
+    }
+
+    @Override
+    public KeyboardEvent.Key[] getKeyCombination() {
+        return new KeyboardEvent.Key[]{S};
+    }
+
+    @Override
+    public String getLabel() {
+        return "Append Embedded Subprocess";
     }
 }

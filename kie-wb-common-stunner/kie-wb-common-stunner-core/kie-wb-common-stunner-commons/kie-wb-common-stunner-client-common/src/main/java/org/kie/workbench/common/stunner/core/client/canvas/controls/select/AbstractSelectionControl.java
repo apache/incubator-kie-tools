@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl.KogitoKeyPress;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
@@ -40,6 +41,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ESC;
 
 public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
         implements SelectionControl<H, Element>,
@@ -187,6 +189,7 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     public void bind(final ClientSession session) {
         if (session instanceof EditorSession) {
             ((EditorSession) session).getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+            ((EditorSession) session).getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new KeyboardEvent.Key[]{ESC}, "Edit | Unselect", this::clearSelection));
             selectionControl.setReadonly(false);
         }
     }
@@ -196,8 +199,7 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     }
 
     private void onKeyDownEvent(final KeyboardEvent.Key... keys) {
-        if (KeysMatcher.doKeysMatch(keys,
-                                    KeyboardEvent.Key.ESC)) {
+        if (KeysMatcher.doKeysMatch(keys, ESC)) {
             clearSelection();
         }
     }

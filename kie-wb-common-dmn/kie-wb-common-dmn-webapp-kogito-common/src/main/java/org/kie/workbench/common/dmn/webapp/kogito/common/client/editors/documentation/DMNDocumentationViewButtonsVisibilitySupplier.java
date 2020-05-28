@@ -23,9 +23,9 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
-import org.appformer.kogito.bridge.client.context.EditorContextProvider;
+import org.appformer.client.context.EditorContextProvider;
 
-import static org.appformer.kogito.bridge.client.context.KogitoChannel.VSCODE;
+import static org.appformer.client.context.Channel.VSCODE;
 
 @Dependent
 @Alternative

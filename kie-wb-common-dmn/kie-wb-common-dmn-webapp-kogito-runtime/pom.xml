@@ -564,6 +564,7 @@
               <hostedWebapp>src/main/webapp</hostedWebapp>
               <gwtSdkFirstInClasspath>false</gwtSdkFirstInClasspath>
               <logLevel>INFO</logLevel>
+              <generateJsInteropExports>true</generateJsInteropExports>
 
               <compileSourcesArtifacts>
 

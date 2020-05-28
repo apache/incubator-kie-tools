@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.G;
 import static org.kie.workbench.common.stunner.core.util.DefinitionUtils.getElementDefinition;
 
 @BPMN
@@ -45,7 +46,7 @@ public class AppendParallelGatewayShortcut extends AbstractAppendNodeShortcut {
 
     @Override
     public boolean matchesPressedKeys(final KeyboardEvent.Key... pressedKeys) {
-        return KeysMatcher.doKeysMatch(pressedKeys, KeyboardEvent.Key.G);
+        return KeysMatcher.doKeysMatch(pressedKeys, this.getKeyCombination());
     }
 
     @Override
@@ -60,5 +61,15 @@ public class AppendParallelGatewayShortcut extends AbstractAppendNodeShortcut {
     @Override
     public boolean canAppendNodeOfDefinition(final Object definition) {
         return definition instanceof ParallelGateway;
+    }
+
+    @Override
+    public KeyboardEvent.Key[] getKeyCombination() {
+        return new KeyboardEvent.Key[]{G};
+    }
+
+    @Override
+    public String getLabel() {
+        return "Append Parallel Gateway";
     }
 }

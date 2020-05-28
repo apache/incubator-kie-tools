@@ -71,7 +71,7 @@ public class KeyboardControlImpl
         this.session = session;
     }
 
-    class SessionKeyShortcutCallback implements KeyShortcutCallback {
+    public class SessionKeyShortcutCallback implements KeyShortcutCallback {
 
         private final KeyShortcutCallback delegate;
 
@@ -83,6 +83,13 @@ public class KeyboardControlImpl
         public void onKeyShortcut(final KeyboardEvent.Key... keys) {
             if (isSameSession(session)) {
                 delegate.onKeyShortcut(keys);
+            }
+        }
+
+        @Override
+        public void onKeyUp(KeyboardEvent.Key key) {
+            if (isSameSession(session)) {
+                delegate.onKeyUp(key);
             }
         }
 

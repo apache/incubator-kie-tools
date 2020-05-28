@@ -93,6 +93,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>appformer-client-api</artifactId>
+    </dependency>
+
     <!-- Test scope. -->
 
     <dependency>

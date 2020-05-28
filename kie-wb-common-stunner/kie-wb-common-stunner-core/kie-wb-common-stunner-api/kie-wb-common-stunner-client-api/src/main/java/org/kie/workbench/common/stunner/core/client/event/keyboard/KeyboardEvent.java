@@ -20,37 +20,43 @@ import com.google.gwt.event.dom.client.KeyCodes;
 
 public interface KeyboardEvent {
 
-    enum Key {
-        ESC(KeyCodes.KEY_ESCAPE),
-        CONTROL(KeyCodes.KEY_CTRL),
-        KEY_BACKSPACE(KeyCodes.KEY_BACKSPACE),
-        ALT(KeyCodes.KEY_ALT),
-        SHIFT(KeyCodes.KEY_SHIFT),
-        DELETE(KeyCodes.KEY_DELETE),
-        ARROW_UP(KeyCodes.KEY_UP),
-        ARROW_DOWN(KeyCodes.KEY_DOWN),
-        ARROW_LEFT(KeyCodes.KEY_LEFT),
-        ARROW_RIGHT(KeyCodes.KEY_RIGHT),
-        C(KeyCodes.KEY_C),
-        D(KeyCodes.KEY_D),
-        E(KeyCodes.KEY_E),
-        G(KeyCodes.KEY_G),
-        S(KeyCodes.KEY_S),
-        T(KeyCodes.KEY_T),
-        V(KeyCodes.KEY_V),
-        X(KeyCodes.KEY_X),
-        Z(KeyCodes.KEY_Z);
+    Key getKey();
 
+    enum Key {
+        ESC("esc", KeyCodes.KEY_ESCAPE),
+        CONTROL("ctrl", KeyCodes.KEY_CTRL),
+        KEY_BACKSPACE("backspace", KeyCodes.KEY_BACKSPACE),
+        ALT("alt", KeyCodes.KEY_ALT),
+        SHIFT("shift", KeyCodes.KEY_SHIFT),
+        DELETE("delete", KeyCodes.KEY_DELETE),
+        ARROW_UP("up", KeyCodes.KEY_UP),
+        ARROW_DOWN("down", KeyCodes.KEY_DOWN),
+        ARROW_LEFT("left", KeyCodes.KEY_LEFT),
+        ARROW_RIGHT("right", KeyCodes.KEY_RIGHT),
+        C("c", KeyCodes.KEY_C),
+        D("d", KeyCodes.KEY_D),
+        E("e", KeyCodes.KEY_E),
+        G("g", KeyCodes.KEY_G),
+        S("s", KeyCodes.KEY_S),
+        T("t", KeyCodes.KEY_T),
+        V("v", KeyCodes.KEY_V),
+        X("x", KeyCodes.KEY_X),
+        Z("z", KeyCodes.KEY_Z);
         private final int unicharCode;
 
-        Key(final int unicharCode) {
+        private final String stringCode;
+
+        Key(final String stringCode, final int unicharCode) {
+            this.stringCode = stringCode;
             this.unicharCode = unicharCode;
         }
 
         public int getUnicharCode() {
             return unicharCode;
         }
-    }
 
-    Key getKey();
+        public String getStringCode() {
+            return stringCode;
+        }
+    }
 }

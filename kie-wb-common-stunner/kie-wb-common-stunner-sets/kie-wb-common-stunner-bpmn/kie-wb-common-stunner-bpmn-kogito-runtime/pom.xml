@@ -710,6 +710,8 @@
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <hostedWebapp>src/main/webapp</hostedWebapp>
           <runTarget>test.html</runTarget>
+          <generateJsInteropExports>true</generateJsInteropExports>
+
           <compileSourcesArtifacts>
 
             <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>

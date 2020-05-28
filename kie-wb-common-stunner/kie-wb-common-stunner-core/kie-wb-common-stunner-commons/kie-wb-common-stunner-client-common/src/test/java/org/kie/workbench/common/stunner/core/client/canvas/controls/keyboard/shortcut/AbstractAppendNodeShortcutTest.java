@@ -169,5 +169,15 @@ public class AbstractAppendNodeShortcutTest {
             // tested per AbstractAppendNodeShortcut implementations
             return false;
         }
+
+        @Override
+        public KeyboardEvent.Key[] getKeyCombination() {
+            return new KeyboardEvent.Key[]{};
+        }
+
+        @Override
+        public String getLabel() {
+            return null;
+        }
     }
 }

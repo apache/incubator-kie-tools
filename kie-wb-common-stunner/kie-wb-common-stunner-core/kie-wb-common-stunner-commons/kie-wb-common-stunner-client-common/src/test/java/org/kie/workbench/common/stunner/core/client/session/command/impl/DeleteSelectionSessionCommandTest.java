@@ -132,4 +132,9 @@ public class DeleteSelectionSessionCommandTest extends BaseSessionCommandKeyboar
     protected KeyboardEvent.Key[] getUnexpectedKeys() {
         return new KeyboardEvent.Key[]{KeyboardEvent.Key.ESC};
     }
+
+    @Override
+    protected int getExpectedKeyBoardControlRegistrationCalls() {
+        return 3;
+    }
 }

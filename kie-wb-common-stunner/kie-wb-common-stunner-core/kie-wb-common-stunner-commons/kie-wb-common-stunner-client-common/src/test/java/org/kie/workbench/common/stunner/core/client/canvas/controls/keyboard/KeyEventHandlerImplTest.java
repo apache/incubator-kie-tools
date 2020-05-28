@@ -38,7 +38,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class KeyEventHandlerTest {
+public class KeyEventHandlerImplTest {
 
     @Mock
     private KeyboardControl.KeyShortcutCallback shortcutCallback;
@@ -49,11 +49,11 @@ public class KeyEventHandlerTest {
     @Captor
     private ArgumentCaptor<KeyboardEvent.Key> keysArgumentCaptor;
 
-    private KeyEventHandler tested;
+    private KeyEventHandlerImpl tested;
 
     @Before
     public void setup() throws Exception {
-        this.tested = spy(new KeyEventHandler());
+        this.tested = spy(new KeyEventHandlerImpl());
         this.tested.addKeyShortcutCallback(shortcutCallback);
     }
 

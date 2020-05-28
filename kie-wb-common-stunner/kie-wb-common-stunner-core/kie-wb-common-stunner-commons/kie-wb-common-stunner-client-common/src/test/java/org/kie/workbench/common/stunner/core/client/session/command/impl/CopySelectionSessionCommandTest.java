@@ -227,4 +227,9 @@ public class CopySelectionSessionCommandTest extends BaseSessionCommandKeyboardS
     protected Key[] getUnexpectedKeys() {
         return new Key[]{Key.ESC};
     }
+
+    @Override
+    protected int getExpectedKeyBoardControlRegistrationCalls() {
+        return 2;
+    }
 }

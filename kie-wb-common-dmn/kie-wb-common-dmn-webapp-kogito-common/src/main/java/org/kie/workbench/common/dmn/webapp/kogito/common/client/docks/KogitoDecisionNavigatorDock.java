@@ -19,8 +19,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Specializes;
 import javax.inject.Inject;
 
-import org.appformer.kogito.bridge.client.context.EditorContextProvider;
-import org.appformer.kogito.bridge.client.context.KogitoChannel;
+import org.appformer.client.context.Channel;
+import org.appformer.client.context.EditorContextProvider;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
@@ -83,7 +83,7 @@ public class KogitoDecisionNavigatorDock extends DecisionNavigatorDock {
     }
 
     UberfireDockPosition getUberfireDockPosition() {
-        final KogitoChannel channel = context.getChannel();
+        final Channel channel = context.getChannel();
         switch (channel) {
             case GITHUB:
             case VSCODE:

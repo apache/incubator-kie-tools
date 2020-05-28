@@ -77,7 +77,11 @@ public abstract class BaseSessionCommandKeyboardTest {
         command.bind(session);
 
         verify(keyboardControl,
-               times(1)).addKeyShortcutCallback(any(KeyShortcutCallback.class));
+               times(getExpectedKeyBoardControlRegistrationCalls())).addKeyShortcutCallback(any(KeyShortcutCallback.class));
+    }
+
+    protected int getExpectedKeyBoardControlRegistrationCalls() {
+        return 1;
     }
 
     @Test
@@ -92,7 +96,7 @@ public abstract class BaseSessionCommandKeyboardTest {
         command.bind(session);
 
         verify(keyboardControl,
-               times(1)).addKeyShortcutCallback(keyShortcutCallbackCaptor.capture());
+               times(getExpectedKeyBoardControlRegistrationCalls())).addKeyShortcutCallback(keyShortcutCallbackCaptor.capture());
 
         final KeyShortcutCallback keyShortcutCallback = keyShortcutCallbackCaptor.getValue();
         keyShortcutCallback.onKeyShortcut(keys);
@@ -109,7 +113,7 @@ public abstract class BaseSessionCommandKeyboardTest {
         command.bind(session);
 
         verify(keyboardControl,
-               times(1)).addKeyShortcutCallback(keyShortcutCallbackCaptor.capture());
+               times(getExpectedKeyBoardControlRegistrationCalls())).addKeyShortcutCallback(keyShortcutCallbackCaptor.capture());
 
         final KeyShortcutCallback keyShortcutCallback = keyShortcutCallbackCaptor.getValue();
         keyShortcutCallback.onKeyShortcut(getExpectedKeys());
@@ -123,7 +127,7 @@ public abstract class BaseSessionCommandKeyboardTest {
         command.bind(session);
 
         verify(keyboardControl,
-               times(1)).addKeyShortcutCallback(keyShortcutCallbackCaptor.capture());
+               times(getExpectedKeyBoardControlRegistrationCalls())).addKeyShortcutCallback(keyShortcutCallbackCaptor.capture());
 
         final KeyShortcutCallback keyShortcutCallback = keyShortcutCallbackCaptor.getValue();
         keyShortcutCallback.onKeyShortcut(getUnexpectedKeys());

@@ -15,8 +15,8 @@
  */
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.docks;
 
-import org.appformer.kogito.bridge.client.context.EditorContextProvider;
-import org.appformer.kogito.bridge.client.context.KogitoChannel;
+import org.appformer.client.context.Channel;
+import org.appformer.client.context.EditorContextProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
@@ -34,7 +34,7 @@ public class KogitoDecisionNavigatorDockTest extends BaseKogitoDockTest<KogitoDe
     @Before
     @Override
     public void setup() {
-        when(context.getChannel()).thenReturn(KogitoChannel.DEFAULT);
+        when(context.getChannel()).thenReturn(Channel.DEFAULT);
 
         super.setup();
     }
@@ -59,28 +59,28 @@ public class KogitoDecisionNavigatorDockTest extends BaseKogitoDockTest<KogitoDe
 
     @Test
     public void testDefaultChannelPosition() {
-        when(context.getChannel()).thenReturn(KogitoChannel.DEFAULT);
+        when(context.getChannel()).thenReturn(Channel.DEFAULT);
 
         assertEquals(UberfireDockPosition.WEST, dock.position());
     }
 
     @Test
     public void testOnlineChannelPosition() {
-        when(context.getChannel()).thenReturn(KogitoChannel.ONLINE);
+        when(context.getChannel()).thenReturn(Channel.ONLINE);
 
         assertEquals(UberfireDockPosition.WEST, dock.position());
     }
 
     @Test
     public void testVSCodeChannelPosition() {
-        when(context.getChannel()).thenReturn(KogitoChannel.VSCODE);
+        when(context.getChannel()).thenReturn(Channel.VSCODE);
 
         assertEquals(UberfireDockPosition.EAST, dock.position());
     }
 
     @Test
     public void testGitHubChannelPosition() {
-        when(context.getChannel()).thenReturn(KogitoChannel.GITHUB);
+        when(context.getChannel()).thenReturn(Channel.GITHUB);
 
         assertEquals(UberfireDockPosition.EAST, dock.position());
     }

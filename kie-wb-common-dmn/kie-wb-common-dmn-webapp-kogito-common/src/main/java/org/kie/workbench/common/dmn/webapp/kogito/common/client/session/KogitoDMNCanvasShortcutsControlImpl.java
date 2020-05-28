@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.client.canvas.controls;
+package org.kie.workbench.common.dmn.webapp.kogito.common.client.session;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.AbstractCanvasShortcutsControlImpl;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.shortcut.KeyboardShortcut;
+import org.kie.workbench.common.stunner.kogito.client.session.KogitoAbstractCanvasShortcutsControlImpl;
 
-@BPMN
+@DMNEditor
 @Dependent
-public class BPMNCanvasShortcutsControlImpl extends AbstractCanvasShortcutsControlImpl {
+@Alternative
+public class KogitoDMNCanvasShortcutsControlImpl extends KogitoAbstractCanvasShortcutsControlImpl {
 
     @Inject
-    public BPMNCanvasShortcutsControlImpl(final @BPMN Instance<KeyboardShortcut> implementedActions) {
+    public KogitoDMNCanvasShortcutsControlImpl(final @DMNEditor Instance<KeyboardShortcut> implementedActions) {
         super(implementedActions);
     }
 }

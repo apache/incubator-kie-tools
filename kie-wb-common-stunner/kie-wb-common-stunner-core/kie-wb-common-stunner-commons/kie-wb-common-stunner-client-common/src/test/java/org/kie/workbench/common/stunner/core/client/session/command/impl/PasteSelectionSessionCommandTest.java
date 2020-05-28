@@ -498,4 +498,10 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
         verify(statusCallback, times(1)).execute();
         assertTrue(command.isEnabled());
     }
+
+
+    @Override
+    protected int getExpectedKeyBoardControlRegistrationCalls() {
+        return 2;
+    }
 }

@@ -154,4 +154,9 @@ public class CutSelectionSessionCommandTest extends BaseSessionCommandKeyboardSe
     protected Key[] getUnexpectedKeys() {
         return new Key[]{Key.ESC};
     }
+
+    @Override
+    protected int getExpectedKeyBoardControlRegistrationCalls() {
+        return 2;
+    }
 }

@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl.KogitoKeyPress;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -43,6 +44,8 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.C;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.CONTROL;
 
 /**
  * This session command obtains the selected elements on session and copy the elements to a clipboard.
@@ -80,6 +83,11 @@ public class CopySelectionSessionCommand extends AbstractSelectionAwareSessionCo
     @Override
     public void bind(final EditorSession session) {
         super.bind(session);
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{CONTROL, C}, "Edit | Copy selection", () -> {
+            if (isEnabled()) {
+                execute();
+            }
+        }));
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
         this.clipboardControl = session.getClipboardControl();
     }
@@ -96,9 +104,7 @@ public class CopySelectionSessionCommand extends AbstractSelectionAwareSessionCo
     }
 
     private void handleCtrlC(final Key[] keys) {
-        if (doKeysMatch(keys,
-                        Key.CONTROL,
-                        Key.C)) {
+        if (doKeysMatch(keys, CONTROL, C)) {
             this.execute();
         }
     }

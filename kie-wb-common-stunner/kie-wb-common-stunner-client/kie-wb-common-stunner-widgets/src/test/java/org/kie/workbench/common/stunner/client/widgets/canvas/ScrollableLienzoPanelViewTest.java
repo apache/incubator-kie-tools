@@ -55,6 +55,7 @@ public class ScrollableLienzoPanelViewTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSetPresenter() {
+        when(tested.isRemoteCommunicationEnabled()).thenReturn(true);
         tested.setPresenter(presenter);
         verify(presenter, times(3)).register(any(HandlerRegistration.class));
         ArgumentCaptor<KeyDownHandler> downCaptor = ArgumentCaptor.forClass(KeyDownHandler.class);

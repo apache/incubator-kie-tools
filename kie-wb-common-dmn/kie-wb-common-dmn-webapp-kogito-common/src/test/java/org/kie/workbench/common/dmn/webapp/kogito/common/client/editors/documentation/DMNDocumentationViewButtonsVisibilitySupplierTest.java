@@ -17,14 +17,14 @@
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.editors.documentation;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.appformer.kogito.bridge.client.context.EditorContextProvider;
-import org.appformer.kogito.bridge.client.context.KogitoChannel;
+import org.appformer.client.context.Channel;
+import org.appformer.client.context.EditorContextProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.appformer.kogito.bridge.client.context.KogitoChannel.VSCODE;
+import static org.appformer.client.context.Channel.VSCODE;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -56,7 +56,7 @@ public class DMNDocumentationViewButtonsVisibilitySupplierTest {
     @Test
     public void testIsButtonsVisibleWhenIsNotVSCode() {
 
-        final KogitoChannel channel = mock(KogitoChannel.class);
+        final Channel channel = mock(Channel.class);
         when(contextProvider.getChannel()).thenReturn(channel);
 
         final boolean isButtonsVisible = supplier.isButtonsVisible();

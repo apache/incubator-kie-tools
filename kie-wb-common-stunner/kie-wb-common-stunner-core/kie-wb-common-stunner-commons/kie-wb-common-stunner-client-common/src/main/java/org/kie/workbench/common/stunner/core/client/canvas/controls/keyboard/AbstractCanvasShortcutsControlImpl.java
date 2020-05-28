@@ -34,7 +34,7 @@ public abstract class AbstractCanvasShortcutsControlImpl extends AbstractCanvasH
         implements CanvasControl.SessionAware<EditorSession>,
                    KeyboardControl.KeyShortcutCallback {
 
-    final private Instance<KeyboardShortcut> keyboardShortcutActions;
+    protected final Instance<KeyboardShortcut> keyboardShortcutActions;
 
     protected EditorSession editorSession;
 

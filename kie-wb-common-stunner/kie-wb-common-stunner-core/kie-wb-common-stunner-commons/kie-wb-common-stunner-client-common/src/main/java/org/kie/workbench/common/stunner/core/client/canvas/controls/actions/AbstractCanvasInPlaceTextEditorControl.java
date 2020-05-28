@@ -27,13 +27,14 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl.KogitoKeyPress;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
@@ -51,6 +52,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.uberfire.mvp.Command;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ESC;
 
 public abstract class AbstractCanvasInPlaceTextEditorControl
         extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler>
@@ -72,6 +74,7 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
 
     @Override
     public void bind(final EditorSession session) {
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{ESC}, "Edit | Hide", this::hide));
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
     }
 
@@ -241,9 +244,9 @@ public abstract class AbstractCanvasInPlaceTextEditorControl
         return canvasHandler.getCanvas();
     }
 
-    void onKeyDownEvent(final KeyboardEvent.Key... keys) {
+    void onKeyDownEvent(final Key... keys) {
         if (KeysMatcher.doKeysMatch(keys,
-                                    KeyboardEvent.Key.ESC)) {
+                                    Key.ESC)) {
 
             hide();
         }

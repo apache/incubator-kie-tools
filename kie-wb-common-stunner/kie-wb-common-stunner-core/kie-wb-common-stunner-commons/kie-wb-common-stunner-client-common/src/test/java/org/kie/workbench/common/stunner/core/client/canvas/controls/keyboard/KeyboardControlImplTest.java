@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
 public class KeyboardControlImplTest {
 
     @Mock
-    private KeyEventHandler keyEventHandler;
+    private KeyEventHandlerImpl keyEventHandler;
 
     @Mock
     private SessionManager clientSessionManager;

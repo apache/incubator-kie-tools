@@ -50,7 +50,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -238,43 +237,7 @@ public class DMNDesignerKogitoSeleniumIT {
                 .ignoreWhitespace()
                 .areIdentical();
     }
-
-    @Test
-    public void testCopyAndPaste() throws Exception {
-        final String source = loadResource("business-knowledge-model.xml");
-        setContent(source);
-
-        expandDecisionNavigatorDock();
-
-        final String nodeName = "BusinessKnowledgeModel-1";
-        final String copiedNodeName = "BusinessKnowledgeModel-2";
-        waitOperation()
-                .withMessage(format(NOT_PRESENT_IN_NAVIGATOR, nodeName))
-                .until(element(NODE, nodeName))
-                .click();
-
-        final WebElement canvas = waitOperation()
-                .withMessage(format(NOT_PRESENT_IN_NAVIGATOR, "canvas"))
-                .until(presenceOfElementLocated(xpath(CANVAS)));
-
-        final Actions actions = new Actions(driver);
-        actions.keyDown(Keys.CONTROL).sendKeys("c").keyUp(Keys.CONTROL).perform();
-        actions.keyDown(canvas, Keys.CONTROL).sendKeys("v").keyUp(Keys.CONTROL).perform();
-
-        collapseDecisionNavigatorDock();
-
-        final String actual = getContent();
-        XmlAssert.assertThat(actual)
-                .withNamespaceContext(NAMESPACES)
-                .valueByXPath("count(//dmn:businessKnowledgeModel[@name='" + nodeName + "'])")
-                .isEqualTo(1);
-
-        XmlAssert.assertThat(actual)
-                .withNamespaceContext(NAMESPACES)
-                .valueByXPath("count(//dmn:businessKnowledgeModel[@name='" + copiedNodeName + "'])")
-                .isEqualTo(1);
-    }
-
+    
     @Test
     public void testInputData() throws Exception {
         final String expected = loadResource("input-data.xml");

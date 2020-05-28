@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.shortcut;
 
+import org.appformer.client.keyboardShortcuts.KeyboardShortcutsApiOpts;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -40,4 +41,12 @@ public interface KeyboardShortcut<H extends CanvasHandler> {
 
     void executeAction(final H canvasHandler,
                        final String selectedNodeId);
+
+    KeyboardEvent.Key[] getKeyCombination();
+
+    String getLabel();
+
+    default KeyboardShortcutsApiOpts getOpts() {
+        return KeyboardShortcutsApiOpts.DEFAULT;
+    }
 }

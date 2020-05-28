@@ -31,13 +31,14 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl.KogitoKeyPress;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -48,6 +49,8 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.DELETE;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.KEY_BACKSPACE;
 
 /**
  * This session command obtains the selected elements on session and executes a delete operation for each one.
@@ -104,6 +107,16 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
     @Override
     public void bind(final EditorSession session) {
         super.bind(session);
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{KEY_BACKSPACE}, "Edit | Delete selection", () -> {
+            if (isEnabled()) {
+                execute();
+            }
+        }));
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{DELETE}, "Edit | Delete selection", () -> {
+            if (isEnabled()) {
+                execute();
+            }
+        }));
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
         this.canvasCommandFactory = this.loadCanvasFactory(canvasCommandFactoryInstance, definitionUtils);
     }
@@ -148,14 +161,14 @@ public class DeleteSelectionSessionCommand extends AbstractSelectionAwareSession
         }
     }
 
-    protected void onKeyDownEvent(final KeyboardEvent.Key... keys) {
+    protected void onKeyDownEvent(final Key... keys) {
         if (isEnabled()) {
             handleDelete(keys);
         }
     }
 
-    private void handleDelete(final KeyboardEvent.Key... keys) {
-        if ((doKeysMatch(keys, KeyboardEvent.Key.DELETE)) || doKeysMatch(keys, KeyboardEvent.Key.KEY_BACKSPACE)) {
+    private void handleDelete(final Key... keys) {
+        if ((doKeysMatch(keys, Key.DELETE)) || doKeysMatch(keys, Key.KEY_BACKSPACE)) {
             this.execute();
         }
     }

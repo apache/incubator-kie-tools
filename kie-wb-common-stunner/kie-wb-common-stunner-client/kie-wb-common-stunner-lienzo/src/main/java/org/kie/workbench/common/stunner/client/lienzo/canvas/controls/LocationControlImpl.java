@@ -34,12 +34,14 @@ import javax.inject.Inject;
 import com.ait.lienzo.client.core.shape.wires.ILocationAcceptor;
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
+import org.appformer.client.keyboardShortcuts.KeyboardShortcutsApiOpts;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.LocationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl.KogitoKeyPress;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher;
 import org.kie.workbench.common.stunner.core.client.canvas.event.ShapeLocationsChangedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
@@ -48,7 +50,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
+import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
@@ -73,7 +75,15 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
+import static org.appformer.client.keyboardShortcuts.KeyboardShortcutsApiOpts.Repeat.REPEAT;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ARROW_DOWN;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ARROW_LEFT;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ARROW_RIGHT;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ARROW_UP;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.CONTROL;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ESC;
+import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.SHIFT;
 
 @Dependent
 @Default
@@ -117,18 +127,40 @@ public class LocationControlImpl
     public void bind(final EditorSession session) {
         // Keyboard event handling.
         session.getKeyboardControl().addKeyShortcutCallback(this::onKeyDownEvent);
+
+        //KOGITO
+
+        //Kogito: Esc
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{ESC}, "Move | Reset / unselect", () -> getWiresManager().resetContext()));
+
+        //Kogito: Normal moves
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{ARROW_UP}, "Move | Move selection down", () -> moveNode(0, -NORMAL_DISTANCE), new KeyboardShortcutsApiOpts(REPEAT)));
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{ARROW_DOWN}, "Move | Move selection down", () -> moveNode(0, NORMAL_DISTANCE), new KeyboardShortcutsApiOpts(REPEAT)));
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{ARROW_LEFT}, "Move | Move selection left", () -> moveNode(-NORMAL_DISTANCE, 0), new KeyboardShortcutsApiOpts(REPEAT)));
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{ARROW_RIGHT}, "Move | Move selection right", () -> moveNode(NORMAL_DISTANCE, 0), new KeyboardShortcutsApiOpts(REPEAT)));
+
+        //Kogito: Short moves
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{SHIFT, ARROW_UP}, "Move | Slowly move selection up", () -> moveNode(0, -SHORT_DISTANCE), new KeyboardShortcutsApiOpts(REPEAT)));
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{SHIFT, ARROW_DOWN}, "Move | Slowly move selection down", () -> moveNode(0, SHORT_DISTANCE), new KeyboardShortcutsApiOpts(REPEAT)));
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{SHIFT, ARROW_LEFT}, "Move | Slowly move selection left", () -> moveNode(-SHORT_DISTANCE, 0), new KeyboardShortcutsApiOpts(REPEAT)));
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{SHIFT, ARROW_RIGHT}, "Move | Slowly move selection right", () -> moveNode(SHORT_DISTANCE, 0), new KeyboardShortcutsApiOpts(REPEAT)));
+
+        //Kogito: Large moves
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{CONTROL, ARROW_UP}, "Move | Rapidly move selection up", () -> moveNode(0, -LARGE_DISTANCE), new KeyboardShortcutsApiOpts(REPEAT)));
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{CONTROL, ARROW_DOWN}, "Move | Rapidly move selection down", () -> moveNode(0, LARGE_DISTANCE), new KeyboardShortcutsApiOpts(REPEAT)));
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{CONTROL, ARROW_LEFT}, "Move | Rapidly move selection left", () -> moveNode(-LARGE_DISTANCE, 0), new KeyboardShortcutsApiOpts(REPEAT)));
+        session.getKeyboardControl().addKeyShortcutCallback(new KogitoKeyPress(new Key[]{CONTROL, ARROW_RIGHT}, "Move | Rapidly move selection right", () -> moveNode(LARGE_DISTANCE, 0), new KeyboardShortcutsApiOpts(REPEAT)));
     }
 
-    private void onKeyDownEvent(final KeyboardEvent.Key... keys) {
-        if (KeysMatcher.doKeysMatch(keys,
-                                    KeyboardEvent.Key.ESC)) {
+    private void onKeyDownEvent(final Key... keys) {
+        if (KeysMatcher.doKeysMatch(keys, ESC)) {
             getWiresManager().resetContext();
         }
 
         handleArrowKeys(keys);
     }
 
-    public void handleArrowKeys(final KeyboardEvent.Key... keys) {
+    public void handleArrowKeys(final Key... keys) {
         final int selectedIDsCount = selectedIDs.size();
 
         if (selectedIDsCount == 0) {
@@ -137,24 +169,24 @@ public class LocationControlImpl
 
         double movementDistance = NORMAL_DISTANCE;
 
-        if (KeysMatcher.isKeyMatch(keys, KeyboardEvent.Key.CONTROL)) {
+        if (KeysMatcher.isKeyMatch(keys, CONTROL)) {
             movementDistance = LARGE_DISTANCE;
-        } else if (KeysMatcher.isKeyMatch(keys, KeyboardEvent.Key.SHIFT)) {
+        } else if (KeysMatcher.isKeyMatch(keys, SHIFT)) {
             movementDistance = SHORT_DISTANCE;
         }
 
         double horizontalDistance = 0d;
         double verticalDistance = 0d;
 
-        if (KeysMatcher.isKeyMatch(keys, KeyboardEvent.Key.ARROW_LEFT)) {
+        if (KeysMatcher.isKeyMatch(keys, Key.ARROW_LEFT)) {
             horizontalDistance = -movementDistance;
-        } else if (KeysMatcher.isKeyMatch(keys, KeyboardEvent.Key.ARROW_RIGHT)) {
+        } else if (KeysMatcher.isKeyMatch(keys, Key.ARROW_RIGHT)) {
             horizontalDistance = movementDistance;
         }
 
-        if (KeysMatcher.isKeyMatch(keys, KeyboardEvent.Key.ARROW_UP)) {
+        if (KeysMatcher.isKeyMatch(keys, ARROW_UP)) {
             verticalDistance = -movementDistance;
-        } else if (KeysMatcher.isKeyMatch(keys, KeyboardEvent.Key.ARROW_DOWN)) {
+        } else if (KeysMatcher.isKeyMatch(keys, Key.ARROW_DOWN)) {
             verticalDistance = movementDistance;
         }
 
@@ -162,10 +194,14 @@ public class LocationControlImpl
             return;
         }
 
-        List<Element> moveNodes = new ArrayList<>();
-        List<Point2D> movePositions = new ArrayList<>();
+        moveNode(horizontalDistance, verticalDistance);
+    }
 
-        for (String uuid : selectedIDs) {
+    private void moveNode(final double horizontalDistance, final double verticalDistance) {
+        final List<Element> moveNodes = new ArrayList<>();
+        final List<Point2D> movePositions = new ArrayList<>();
+
+        for (final String uuid : selectedIDs) {
             final Node<View<?>, Edge> node = canvasHandler.getGraphIndex().getNode(uuid);
             if (node != null) {
                 final Point2D nodePosition = GraphUtils.getPosition(node.getContent());

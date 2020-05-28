@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,116 +16,29 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
+public interface KeyEventHandler {
 
-import com.google.gwt.user.client.Timer;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyDownEvent;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyUpEvent;
-import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
+    KeyEventHandler addKeyShortcutCallback(final KeyboardControl.KeyShortcutCallback shortcutCallback);
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+    void clear();
 
-/**
- * A helper class for component that listen to keyboard events.
- * It provides keyboard shortcuts support by listening for
- * multiple key events.
- */
-@Dependent
-public class KeyEventHandler {
+    void setEnabled(boolean enabled);
 
-    private final static int KEYS_TIMER_DELAY = 100;
-
-    private final Set<KeyboardEvent.Key> keys = new HashSet<>();
-    private final List<KeyboardControl.KeyShortcutCallback> shortcutCallbacks = new ArrayList<>();
-
-    private boolean enabled = true;
-    private KeyboardEvent.Key[] _keys;
-    private Timer timer;
-    private int delay = KEYS_TIMER_DELAY;
-
-    public KeyEventHandler addKeyShortcutCallback(final KeyboardControl.KeyShortcutCallback shortcutCallback) {
-        this.shortcutCallbacks.add(shortcutCallback);
+    default KeyEventHandler setTimerDelay(int delay) {
         return this;
     }
 
-    public KeyEventHandler setTimerDelay(final int millis) {
-        this.delay = millis;
-        return this;
-    }
-
-    @PreDestroy
-    public void clear() {
-        if (null != timer && timer.isRunning()) {
-            timer.cancel();
+    default Optional<KeyboardControl.KogitoKeyShortcutCallback> getAssociatedKogitoKeyShortcutCallback(final KeyboardControl.KeyShortcutCallback shortcutCallback) {
+        if (shortcutCallback instanceof KeyboardControl.KogitoKeyShortcutCallback) {
+            return Optional.of((KeyboardControl.KogitoKeyShortcutCallback) shortcutCallback);
         }
-        shortcutCallbacks.clear();
-        reset();
-    }
 
-    public void setEnabled(final boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void onKeyUpEvent(final @Observes KeyUpEvent event) {
-        checkNotNull("event",
-                     event);
-        onKeyUp(event.getKey());
-    }
-
-    void onKeyDownEvent(final @Observes KeyDownEvent event) {
-        checkNotNull("event",
-                     event);
-        onKeyDown(event.getKey());
-    }
-
-    private void onKeyDown(final KeyboardEvent.Key key) {
-        if (!enabled) {
-            return;
+        if (shortcutCallback instanceof KeyboardControlImpl.SessionKeyShortcutCallback && ((KeyboardControlImpl.SessionKeyShortcutCallback) shortcutCallback).getDelegate() instanceof KeyboardControl.KogitoKeyShortcutCallback) {
+            return Optional.of((KeyboardControl.KogitoKeyShortcutCallback) ((KeyboardControlImpl.SessionKeyShortcutCallback) shortcutCallback).getDelegate());
         }
-        if (!shortcutCallbacks.isEmpty()) {
-            startKeysTimer(key);
-        }
-    }
 
-    private void onKeyUp(final KeyboardEvent.Key key) {
-        if (!enabled) {
-            return;
-        }
-        keys.remove(key);
-        shortcutCallbacks.stream().forEach(s -> s.onKeyUp(key));
-    }
-
-    private void startKeysTimer(final KeyboardEvent.Key key) {
-        keys.add(key);
-        this._keys = keys.toArray(new KeyboardEvent.Key[this.keys.size()]);
-        if (null == timer) {
-            timer = new Timer() {
-                @Override
-                public void run() {
-                    KeyEventHandler.this.keysTimerTimeIsUp();
-                }
-            };
-        }
-        timer.schedule(delay);
-    }
-
-    void keysTimerTimeIsUp() {
-        if (!shortcutCallbacks.isEmpty() && null != _keys) {
-            shortcutCallbacks.stream().forEach(s -> s.onKeyShortcut(_keys));
-        }
-    }
-
-    void reset() {
-        setEnabled(false);
-        _keys = null;
-        keys.clear();
-        timer = null;
+        return Optional.empty();
     }
 }

@@ -23,7 +23,6 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.appformer.client.stateControl.registry.Registry;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.canvas.controls.resize.DecisionServiceMoveDividerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
@@ -145,7 +144,7 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
         canvasHandlerControls.put(elementBuilderControl, ElementBuilderControl.class);
         canvasHandlerControls.put(nodeBuilderControl, NodeBuilderControl.class);
         canvasHandlerControls.put(edgeBuilderControl, EdgeBuilderControl.class);
-        canvasHandlerControls.put(canvasShortcutsControl, AbstractCanvasShortcutsControlImpl.class);
+        canvasHandlerControls.put(canvasShortcutsControl, DMNCanvasShortcutsControl.class);
         return canvasHandlerControls;
     }
 
@@ -154,6 +153,6 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
         super.assertInitQualifiers();
         verify(managedSession).registerCanvasHandlerControl(eq(CanvasInPlaceTextEditorControl.class), eq(SingleLineTextEditorBox.class));
         verify(managedSession).registerCanvasHandlerControl(eq(ElementBuilderControl.class), eq(Observer.class));
-        verify(managedSession).registerCanvasHandlerControl(eq(AbstractCanvasShortcutsControlImpl.class), eq(DMNEditor.class));
+        verify(managedSession).registerCanvasHandlerControl(eq(DMNCanvasShortcutsControl.class));
     }
 }
