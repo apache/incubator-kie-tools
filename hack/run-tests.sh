@@ -65,6 +65,8 @@ function usage(){
   printf "\n--data_index_image_tag {IMAGE_TAG}\n\tSet the Kogito Data Index image tag ('services_image_version' is ignored)"
   printf "\n--jobs_service_image_tag {IMAGE_TAG}\n\tSet the Kogito Jobs Service image tag ('services_image_version' is ignored)"
   printf "\n--management_console_image_tag {IMAGE_TAG}\n\tSet the Kogito Management Console image tag ('services_image_version' is ignored)"
+  printf "\n--runtime_application_image_registry {REGISTRY}\n\tSet the registry for built runtime applications."
+  printf "\n--runtime_application_image_namespace {NAMESPACE}\n\tSet the namespace for built runtime applications."
 
   # build
   printf "\n--maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
@@ -246,6 +248,14 @@ case $1 in
   --management_console_image_tag)
     shift
     if addParamKeyValueIfAccepted "--tests.management-console-image-tag" ${1}; then shift; fi
+  ;;
+  --runtime_application_image_registry)
+    shift
+    if addParamKeyValueIfAccepted "--tests.runtime-application-image-registry" ${1}; then shift; fi
+  ;;
+  --runtime_application_image_namespace)
+    shift
+    if addParamKeyValueIfAccepted "--tests.runtime-application-image-namespace" ${1}; then shift; fi
   ;;
 
   # build
