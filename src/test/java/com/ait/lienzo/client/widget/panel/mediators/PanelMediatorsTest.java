@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.widget.panel.mediators;
 
+import com.ait.lienzo.client.core.mediator.EventFilter;
 import com.ait.lienzo.client.core.mediator.IMediator;
 import com.ait.lienzo.client.core.mediator.MousePanMediator;
 import com.ait.lienzo.client.core.mediator.MouseWheelZoomMediator;
@@ -69,7 +70,7 @@ public class PanelMediatorsTest {
             public PanelPreviewMediator get() {
                 return previewMediator;
             }
-        });
+        }, EventFilter.CONTROL, EventFilter.ALT);
     }
 
     @Test
