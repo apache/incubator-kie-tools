@@ -179,6 +179,7 @@ func (data *Data) scaleKogitoApplicationToPodsWithinMinutes(name string, nbPods,
 	if err != nil {
 		return err
 	}
+
 	return framework.WaitForDeploymentConfigRunning(data.Namespace, name, nbPods, timeoutInMin)
 }
 
@@ -279,7 +280,7 @@ func configureKogitoAppFromTable(table *messages.PickleStepArgument_PickleTable,
 		kogitoApp.Spec.Build.AddEnvironmentVariable(mavenArgsAppendEnvVar, "-P"+strings.Join(profiles, ","))
 	}
 
-	addDefaultJavaOptionsIfNotProvided(kogitoApp)
+	addDefaultJavaOptionsIfNotProvided(kogitoApp.Spec.KogitoServiceSpec)
 
 	return nil
 }
@@ -339,19 +340,5 @@ func parseKogitoAppKafkaRow(row *messages.PickleStepArgument_PickleTable_PickleT
 	case kogitoAppKafkaExternalURIKey:
 		kogitoApp.Spec.AddEnvironmentVariable(envVarKafkaBootstrapServers, getThirdColumn(row))
 		*profilesPtr = append(*profilesPtr, "events")
-	}
-}
-
-func addDefaultJavaOptionsIfNotProvided(kogitoApp *framework.KogitoAppHolder) {
-	javaOptionsProvided := false
-	for _, env := range kogitoApp.Spec.Envs {
-		if env.Name == javaOptionsEnvVar {
-			javaOptionsProvided = true
-			break
-		}
-	}
-
-	if !javaOptionsProvided {
-		kogitoApp.Spec.AddEnvironmentVariable(javaOptionsEnvVar, "-Xmx2G")
 	}
 }

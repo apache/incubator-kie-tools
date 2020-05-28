@@ -117,6 +117,21 @@ func IsPodStatusConditionReady(pod *corev1.Pod) bool {
 	return false
 }
 
+// WaitForDeploymentRunning waits for a deployment to be running, with a specific number of pod
+func WaitForDeploymentRunning(namespace, dName string, podNb int, timeoutInMin int) error {
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("Deployment %s running", dName), timeoutInMin,
+		func() (bool, error) {
+			if dc, err := GetDeployment(namespace, dName); err != nil {
+				return false, err
+			} else if dc == nil {
+				return false, nil
+			} else {
+				GetLogger(namespace).Debugf("Deployment has %d available replicas\n", dc.Status.AvailableReplicas)
+				return dc.Status.AvailableReplicas == int32(podNb), nil
+			}
+		})
+}
+
 // GetDeployment retrieves deployment with specified name in namespace
 func GetDeployment(namespace, deploymentName string) (*apps.Deployment, error) {
 	deployment := &apps.Deployment{}

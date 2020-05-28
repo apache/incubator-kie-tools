@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cucumber/messages-go/v10"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 )
@@ -28,6 +29,19 @@ const (
 	runtimeRequestKey = "runtime-request"
 	runtimeLimitKey   = "runtime-limit"
 )
+
+func addDefaultJavaOptionsIfNotProvided(spec v1alpha1.KogitoServiceSpec) {
+	javaOptionsProvided := false
+	for _, env := range spec.Envs {
+		if env.Name == javaOptionsEnvVar {
+			javaOptionsProvided = true
+		}
+	}
+
+	if !javaOptionsProvided {
+		spec.AddEnvironmentVariable(javaOptionsEnvVar, "-Xmx2G")
+	}
+}
 
 func getFirstColumn(row *messages.PickleStepArgument_PickleTable_PickleTableRow) string {
 	return row.Cells[0].Value

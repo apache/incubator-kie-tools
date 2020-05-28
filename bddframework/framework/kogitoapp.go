@@ -27,8 +27,6 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/resource"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
@@ -38,7 +36,7 @@ const (
 
 // KogitoAppHolder Helper structure holding information which are not available in KogitoApp
 type KogitoAppHolder struct {
-	* v1alpha1.KogitoApp
+	*v1alpha1.KogitoApp
 	Infinispan struct {
 		Username string
 		Password string
@@ -240,7 +238,7 @@ func getBuildRuntimeImageStreamTag(kogitoApp *v1alpha1.KogitoApp) string {
 			buildType = resource.BuildTypeRuntimeJvm
 		}
 
-		return getBuildImage(resource.BuildImageStreams[buildType][kogitoApp.Spec.Runtime])
+		return GetBuildImage(resource.BuildImageStreams[buildType][kogitoApp.Spec.Runtime])
 	}
 
 	return ""
@@ -252,7 +250,7 @@ func getBuildS2IImageStreamTag(kogitoApp *v1alpha1.KogitoApp) string {
 	}
 
 	if isBuildImageInformationSet() {
-		return getBuildImage(resource.BuildImageStreams[resource.BuildTypeS2I][kogitoApp.Spec.Runtime])
+		return GetBuildImage(resource.BuildImageStreams[resource.BuildTypeS2I][kogitoApp.Spec.Runtime])
 	}
 
 	return ""
@@ -262,34 +260,6 @@ func isBuildImageInformationSet() bool {
 	return len(config.GetBuildImageRegistry()) > 0 ||
 		len(config.GetBuildImageNamespace()) > 0 ||
 		len(config.GetBuildImageNameSuffix()) > 0
-}
-
-func getBuildImage(imageName string) string {
-	image := v1alpha1.Image{
-		Domain:    config.GetBuildImageRegistry(),
-		Namespace: config.GetBuildImageNamespace(),
-		Name:      imageName,
-		Tag:       config.GetBuildImageVersion(),
-	}
-
-	if len(image.Domain) == 0 {
-		image.Domain = infrastructure.DefaultImageRegistry
-	}
-
-	if len(image.Namespace) == 0 {
-		image.Namespace = infrastructure.DefaultImageNamespace
-	}
-
-	if len(image.Tag) == 0 {
-		image.Tag = infrastructure.GetRuntimeImageVersion()
-	}
-
-	// Update image name with suffix if provided
-	if len(config.GetBuildImageNameSuffix()) > 0 {
-		image.Name = fmt.Sprintf("%s-%s", image.Name, config.GetBuildImageNameSuffix())
-	}
-
-	return framework.ConvertImageToImageTag(image)
 }
 
 // IsInfinispanUsernameSpecified Returns true if Infinispan username is specified

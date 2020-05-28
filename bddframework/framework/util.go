@@ -25,6 +25,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
@@ -166,6 +169,24 @@ func DeleteFolder(folder string) error {
 	return os.RemoveAll(folder)
 }
 
+// CreateFile Creates file in folder with supplied content
+func CreateFile(folder, fileName, fileContent string) error {
+	f, err := os.Create(folder + "/" + fileName)
+	if err != nil {
+		return fmt.Errorf("Error creating file %s in folder %s: %v ", fileName, folder, err)
+	}
+
+	if _, err = f.WriteString(fileContent); err != nil {
+		f.Close()
+		return fmt.Errorf("Error writing to file %s in folder %s: %v ", fileName, folder, err)
+	}
+
+	if err := f.Close(); err != nil {
+		return fmt.Errorf("Error closing file %s in folder %s: %v ", fileName, folder, err)
+	}
+	return nil
+}
+
 // MustParseEnabledDisabled parse a boolean string value
 func MustParseEnabledDisabled(value string) bool {
 	switch value {
@@ -176,4 +197,33 @@ func MustParseEnabledDisabled(value string) bool {
 	default:
 		panic(fmt.Errorf("Unknown value for enabled/disabled: %s", value))
 	}
+}
+
+// GetBuildImage returns a build image with defaults set
+func GetBuildImage(imageName string) string {
+	image := v1alpha1.Image{
+		Domain:    config.GetBuildImageRegistry(),
+		Namespace: config.GetBuildImageNamespace(),
+		Name:      imageName,
+		Tag:       config.GetBuildImageVersion(),
+	}
+
+	if len(image.Domain) == 0 {
+		image.Domain = infrastructure.DefaultImageRegistry
+	}
+
+	if len(image.Namespace) == 0 {
+		image.Namespace = infrastructure.DefaultImageNamespace
+	}
+
+	if len(image.Tag) == 0 {
+		image.Tag = infrastructure.GetRuntimeImageVersion()
+	}
+
+	// Update image name with suffix if provided
+	if len(config.GetBuildImageNameSuffix()) > 0 {
+		image.Name = fmt.Sprintf("%s-%s", image.Name, config.GetBuildImageNameSuffix())
+	}
+
+	return framework.ConvertImageToImageTag(image)
 }

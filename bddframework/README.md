@@ -27,6 +27,30 @@ Useful if you built your own image into your repository.
 
 `../hack/run-tests.sh --concurrent {NB_OF_CONCURRENT_TESTS}`
 
+### Run Kogito Runtime tests
+
+The Kogito Runtime tests have been disabled because it cannot be integrated to either the CI pipelines yet. 
+In order to run these tests locally, it requires:
+- an Openshift or Kubernetes cluster
+- an Image registry (quay.io as an example)
+
+We first need to enable the feature by removing the "@disabled" annotation in "features/deploy_kogito_runtime.feature".
+Then, we need to login to the image registry. See example using quay.io:
+
+```
+docker login -u <your_username> -p <your_password> quay.io
+```
+
+And finally, we run these tests by:
+
+```
+../hack/run-tests.sh --feature "features/deploy_kogito_runtime.feature" --runtime_application_image_namespace <namespace> --runtime_application_image_registry <registry>
+```
+
+| Note that if we use quay.io, the repositories must be public **before** running the tests. Concretely, the repositories that will be used are:
+| - https://quay.io/<namespace>/process-springboot-example
+| - https://quay.io/<namespace>/process-quarkus-example
+
 ### Other options
 
 Check the usage of the tests script:
