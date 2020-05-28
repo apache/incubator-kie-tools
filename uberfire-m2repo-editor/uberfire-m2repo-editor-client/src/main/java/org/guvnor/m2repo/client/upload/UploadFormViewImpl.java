@@ -202,6 +202,18 @@ public class UploadFormViewImpl
         return uploader.getFilename();
     }
 
+    @Override
+    public void hide() {
+        super.hide();
+        uploader.clear();
+    }
+
+    @Override
+    public void removeFromParent() {
+        super.removeFromParent();
+        uploader.clear();
+    }
+
     private void showMessage(final String message) {
         Window.alert(message);
     }
