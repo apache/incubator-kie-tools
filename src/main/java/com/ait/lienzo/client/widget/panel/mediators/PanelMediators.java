@@ -32,8 +32,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 public class PanelMediators {
 
-    static final IEventFilter EVENT_FILTER_ZOOM = EventFilter.CONTROL;
-    static final IEventFilter EVENT_FILTER_PAN = EventFilter.ALT;
+    static final IEventFilter DEFAULT_EVENT_FILTER_ZOOM = EventFilter.CONTROL;
+    static final IEventFilter DEFAULT_EVENT_FILTER_PAN = EventFilter.ALT;
     static final double MIN_SCALE = 0.1;
     static final double MAX_SCALE = Double.MAX_VALUE;
     static final double ZOOM_FACTOR = 0.1;
@@ -50,32 +50,45 @@ public class PanelMediators {
             public LienzoBoundsPanel get() {
                 return panel;
             }
-        });
+        }, DEFAULT_EVENT_FILTER_ZOOM, DEFAULT_EVENT_FILTER_PAN);
     }
 
-    public PanelMediators init(final Supplier<LienzoBoundsPanel> panelSupplier) {
+    public static PanelMediators build(final LienzoBoundsPanel panel, final IEventFilter eventFilterZoom, final IEventFilter eventFilterPan) {
+        return new PanelMediators().init(new Supplier<LienzoBoundsPanel>() {
+            @Override
+            public LienzoBoundsPanel get() {
+                return panel;
+            }
+        }, eventFilterZoom, eventFilterPan);
+    }
+
+    public PanelMediators init(final Supplier<LienzoBoundsPanel> panelSupplier, final IEventFilter eventFilterZoom, final IEventFilter eventFilterPan) {
         return init(panelSupplier,
                     new Supplier<PanelPreviewMediator>() {
                         @Override
                         public PanelPreviewMediator get() {
                             return PanelPreviewMediator.build((ScrollablePanel) panelSupplier.get());
                         }
-                    });
+                    },
+                    eventFilterZoom,
+                    eventFilterPan);
     }
 
     public PanelMediators init(final Supplier<LienzoBoundsPanel> panelSupplier,
-                               final Supplier<PanelPreviewMediator> previewMediatorBuilder) {
+                               final Supplier<PanelPreviewMediator> previewMediatorBuilder,
+                               final IEventFilter eventFilterZoom,
+                               final IEventFilter eventFilterPan) {
         this.panelSupplier = panelSupplier;
         final LienzoBoundsPanel panel = panelSupplier.get();
 
         final Viewport viewport = getViewport();
 
-        zoomMediator = new MouseWheelZoomMediator(EVENT_FILTER_ZOOM)
+        zoomMediator = new MouseWheelZoomMediator(eventFilterZoom)
                 .setMinScale(MIN_SCALE)
                 .setMaxScale(MAX_SCALE)
                 .setZoomFactor(ZOOM_FACTOR);
 
-        panMediator = new MousePanMediator(EVENT_FILTER_PAN)
+        panMediator = new MousePanMediator(eventFilterPan)
                 .setXConstrained(true)
                 .setYConstrained(true);
 
