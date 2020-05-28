@@ -68,7 +68,6 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
   >
     <header
       class="pf-c-page__header"
-      role="banner"
     >
       <div
         class="pf-c-page__header-brand"
@@ -125,7 +124,6 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
     </div>
     <main
       class="pf-c-page__main"
-      role="main"
       tabindex="-1"
     >
       <section
@@ -480,7 +478,6 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
   >
     <header
       class="pf-c-page__header"
-      role="banner"
     >
       <div
         class="pf-c-page__header-brand"
@@ -537,7 +534,6 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
     </div>
     <main
       class="pf-c-page__main"
-      role="main"
       tabindex="-1"
     >
       <section
@@ -831,7 +827,6 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
   >
     <main
       class="pf-c-page__main"
-      role="main"
       tabindex="-1"
     >
       <section
@@ -846,7 +841,6 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
           >
             <header
               class="pf-c-page__header kogito--editor__toolbar"
-              role="banner"
             >
               <div
                 class="pf-c-page__header-brand"
@@ -866,7 +860,6 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
               >
                 <h3
                   class="pf-c-title pf-m-xl"
-                  tabindex="0"
                 >
                   a.dmn
                 </h3>

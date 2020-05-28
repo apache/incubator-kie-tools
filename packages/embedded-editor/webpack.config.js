@@ -17,6 +17,7 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
+const envelope = require("../patternfly-base/webpackUtils");
 
 const commonConfig = {
   mode: "development",
@@ -39,7 +40,8 @@ const commonConfig = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: ["babel-loader"]
-      }
+      },
+      ...envelope.patternflyLoaders
     ]
   },
   resolve: {
