@@ -39,6 +39,11 @@ public class HomeProducer implements HomeModelProvider {
     @Inject
     private PlaceManager placeManager;
 
+    @Override
+    public void initialize(Runnable done) {
+        done.run();
+    }
+
     public HomeModel get(ProfilePreferences profilePreferences) {
         final HomeModel model = new HomeModel("Welcome to KIE Workbench",
                                               "KIE Workbench offers a set of flexible tools, that support the way you need to work. Select a tool below to get started.",
