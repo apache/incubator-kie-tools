@@ -16,6 +16,10 @@
 
 import { Router, Routes } from "@kogito-tooling/core-api";
 
+/**
+ * Default router to be used for construction of an `EnvelopeBusOuterMessageHandler` by `EmbeddedEditor`.
+ * Consumers can map the different supported editor URL routes as appropriate, if necessary.
+ */
 export class EmbeddedEditorRouter extends Router {
   constructor(...routesArray: Routes[]) {
     super(...routesArray);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorType, EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
+import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly-variables.css";

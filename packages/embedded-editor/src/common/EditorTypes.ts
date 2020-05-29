@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * Enumeration of the different editors supported and their _well-defined_ aliases.
+ */
 export enum EditorType {
   DMN = "dmn",
   BPMN = "bpmn",
   SCESIM = "scesim"
-};
+}

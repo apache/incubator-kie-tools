@@ -15,6 +15,9 @@
  */
 import { EditorType } from "./EditorTypes";
 
+/**
+ * Definition of a File supported by the embedded-editor.
+ */
 export interface File {
   fileName: string;
   editorType: EditorType;
@@ -22,6 +25,9 @@ export interface File {
   isReadOnly: boolean;
 }
 
+/**
+ * Default implementation of an empty DMN file; used when creating _new_ DMN files.
+ */
 export const EMPTY_FILE_DMN = {
   fileName: "new-file",
   editorType: EditorType.DMN,
@@ -29,6 +35,9 @@ export const EMPTY_FILE_DMN = {
   isReadOnly: false
 };
 
+/**
+ * Default implementation of an empty BPMN file; used when creating _new_ BPMN files.
+ */
 export const EMPTY_FILE_BPMN = {
   fileName: "new-file",
   editorType: EditorType.BPMN,
@@ -36,6 +45,9 @@ export const EMPTY_FILE_BPMN = {
   isReadOnly: false
 };
 
+/**
+ * Default implementation of an empty SCESIM file; used when creating _new_ SCESIM files.
+ */
 export const EMPTY_FILE_SCESIM = {
   fileName: "new-file",
   editorType: EditorType.SCESIM,
@@ -43,6 +55,10 @@ export const EMPTY_FILE_SCESIM = {
   isReadOnly: false
 };
 
+/**
+ * Helper method to create new, empty files, for different EditorTypes.
+ * @param editorType The type of editor for which the new file represents.
+ */
 export function newFile(editorType: EditorType): File {
   return {
     fileName: "new-file",

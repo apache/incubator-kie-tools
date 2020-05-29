@@ -30,26 +30,84 @@ import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "re
 import { File } from "../common/File";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 
+/**
+ * Properties supported by the `EmbeddedEditor`.
+ */
 export interface Props {
+  /**
+   * File to show in the editor.
+   */
   file: File;
+  /**
+   * Router to map editor URLs to installations.
+   */
   router: EmbeddedEditorRouter;
+  /**
+   * Channel in which the editor has been embedded.
+   */
   channelType: ChannelType;
+  /**
+   * Optional callback for when the editors' content is returned followin a response for it.
+   */
   onContentResponse?: (content: EditorContent) => void;
+  /**
+   * Optional callback for when setting the editors content resulted in an error.
+   */
   onSetContentError?: (errorMessage: string) => void;
+  /**
+   * Optional callback for when the editor signals its content is changed.
+   */
   onDirtyIndicatorChange?: (isDirty: boolean) => void;
+  /**
+   * Optional callback for when the editor has initialised and is considered ready.
+   */
   onReady?: () => void;
+  /**
+   * Optional callback for when the editor is requesting external content.
+   */
   onResourceContentRequest?: (request: ResourceContentRequest) => Promise<ResourceContent | undefined>;
+  /**
+   * Optional callback for when the editor is requesting a list of external content.
+   */
   onResourceListRequest?: (request: ResourceListRequest) => Promise<ResourcesList>;
+  /**
+   * Optional callback for when the editor signals an _undo_ operation.
+   */
   onEditorUndo?: () => void;
+  /**
+   * Optional callback for when the editor signals an _redo_ operation.
+   */
   onEditorRedo?: () => void;
+  /**
+   * Optional callback for when the editor signals a new edit.
+   */
   onNewEdit?: (edit: KogitoEdit) => void;
+  /**
+   * Optional callback for when a preview of editors' content is returned followin a response for it.
+   */
   onPreviewResponse?: (previewSvg: string) => void;
+  /**
+   * Optional relative URL for the `envelope.html` used as the inner bus `IFRAME`. Defaults to `envelope/envelope.html`
+   */
   envelopeUri?: string;
 }
 
+/**
+ * Forward reference for the `EmbeddedEditor` to support consumers to call upon embedded operations.
+ */
 export type EmbeddedEditorRef = {
+  /**
+   * Request the editor returns its current content.
+   */
   requestContent(): void;
+  /**
+   * Request the editor returns a preview of its current content.
+   */
   requestPreview(): void;
+  /**
+   * Request to set the content of the editor; this will overwrite the content supplied by the `File.getFileContents()` passed in construction.
+   * @param content 
+   */
   setContent(content: string): void;
 } | null;
 

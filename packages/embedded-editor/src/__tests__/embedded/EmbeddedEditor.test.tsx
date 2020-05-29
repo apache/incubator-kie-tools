@@ -23,17 +23,9 @@ import { EditorType } from "../../common/EditorTypes";
 import { File } from "../../common/File";
 import { EmbeddedEditor, EmbeddedEditorRef } from "../../embedded/EmbeddedEditor";
 import { EmbeddedEditorRouter } from "../../embedded/EmbeddedEditorRouter";
+import { incomingMessage } from "./EmbeddedEditorTestUtils";
 
-const delay = (ms: number) => {
-  return Promise.resolve().then(() => new Promise(res => setTimeout(res, ms)));
-};
-
-async function incomingMessage(message: any) {
-  window.postMessage(message, window.location.origin);
-  await delay(0); //waits til next event loop iteration
-}
-
-describe("EmbeddedEditor", () => {
+describe("EmbeddedEditor::ONLINE", () => {
   const file: File = {
     fileName: "test",
     editorType: EditorType.DMN,
@@ -55,7 +47,11 @@ describe("EmbeddedEditor", () => {
   beforeAll(() => spyOn<any>(EnvelopeBusOuterMessageHandler, "generateRandomBusId"));
 
   test("EmbeddedEditor::defaults", () => {
-    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
+    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, { attachTo: holder });
+
+    expect(holder.firstElementChild?.getAttribute("id")).toBe("kogito-iframe");
+    expect(holder.firstElementChild?.getAttribute("data-envelope-channel")).toBe(ChannelType.ONLINE);
+    expect(holder.firstElementChild?.getAttribute("src")).toBe("envelope/envelope.html");
 
     expect(document.body).toMatchSnapshot();
   });

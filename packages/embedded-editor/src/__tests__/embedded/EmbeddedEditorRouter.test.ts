@@ -17,31 +17,25 @@ import { LanguageData, Router, Routes } from "@kogito-tooling/core-api";
 import { EditorType } from "../../common/EditorTypes";
 import { EmbeddedEditorRouter } from "../../embedded/EmbeddedEditorRouter";
 
+describe("EmbeddedEditorRouter", () => {
+  const languages: Map<string, LanguageData> = new Map<string, LanguageData>();
+  languages.set(EditorType.DMN, {
+    type: EditorType.DMN
+  });
+  const routes: Routes = { getRoutes: (r: Router) => languages };
 
-describe("EmbeddedEditorRouter",
-    () => {
-        const languages: Map<string, LanguageData> = new Map<string, LanguageData>();
-        languages.set(EditorType.DMN,
-            {
-                type: EditorType.DMN
-            });
-        const routes: Routes = { getRoutes: (r: Router) => languages };
+  const router: EmbeddedEditorRouter = new EmbeddedEditorRouter(routes);
 
-        const router: EmbeddedEditorRouter = new EmbeddedEditorRouter(routes);
+  test("EmbeddedEditorRouter::getRelativePathTo", () => {
+    expect(router.getRelativePathTo("uri")).toBe("../uri");
+  });
 
-        test("EmbeddedEditorRouter::getRelativePathTo",
-            () => {
-                expect(router.getRelativePathTo("uri")).toBe("../uri");
-            });
+  test("EmbeddedEditorRouter::getLanguageData", () => {
+    const languageData: LanguageData = router.getLanguageData(EditorType.DMN);
+    expect(languageData).not.toBeNull();
+  });
 
-        test("EmbeddedEditorRouter::getLanguageData",
-            () => {
-                const languageData: LanguageData = router.getLanguageData(EditorType.DMN);
-                expect(languageData).not.toBeNull();
-            });
-
-        test("EmbeddedEditorRouter::getTargetOrigin",
-            () => {
-                expect(router.getTargetOrigin()).toBe("");
-            });
-    });
+  test("EmbeddedEditorRouter::getTargetOrigin", () => {
+    expect(router.getTargetOrigin()).toBe("");
+  });
+});

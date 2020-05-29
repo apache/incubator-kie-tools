@@ -27,12 +27,33 @@ import { File } from "../common/File";
 import { EmbeddedEditor } from "./EmbeddedEditor";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 
+/**
+ * Properties supported by the `EmbeddedEditor`.
+ */
 interface Props {
+  /**
+   * File to show in the editor.
+   */
   file: File;
+  /**
+   * Router to map editor URLs to installations.
+   */
   router: EmbeddedEditorRouter;
+  /**
+   * Channel in which the editor has been embedded.
+   */
   channelType: ChannelType;
+  /**
+   * Optional callback for when the editor is requesting external content.
+   */
   onResourceContentRequest?: (request: ResourceContentRequest) => Promise<ResourceContent | undefined>;
+  /**
+   * Optional callback for when the editor is requesting a list of external content.
+   */
   onResourceListRequest?: (request: ResourceListRequest) => Promise<ResourcesList>;
+  /**
+   * Optional relative URL for the `envelope.html` used as the inner bus `IFRAME`. Defaults to `envelope/envelope.html`
+   */
   envelopeUri?: string;
 }
 

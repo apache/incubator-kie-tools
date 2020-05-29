@@ -1,12 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`EmbeddedEditor EmbeddedEditor::defaults 1`] = `
-<body>
-  <div />
-</body>
-`;
-
-exports[`EmbeddedEditor EmbeddedEditor::onContentResponse 1`] = `
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::defaults 1`] = `
 <body>
   <div>
     <iframe
@@ -20,7 +14,7 @@ exports[`EmbeddedEditor EmbeddedEditor::onContentResponse 1`] = `
 </body>
 `;
 
-exports[`EmbeddedEditor EmbeddedEditor::onDirtyIndicatorChange 1`] = `
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::onContentResponse 1`] = `
 <body>
   <div>
     <iframe
@@ -34,7 +28,7 @@ exports[`EmbeddedEditor EmbeddedEditor::onDirtyIndicatorChange 1`] = `
 </body>
 `;
 
-exports[`EmbeddedEditor EmbeddedEditor::onNewEdit 1`] = `
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::onDirtyIndicatorChange 1`] = `
 <body>
   <div>
     <iframe
@@ -48,7 +42,7 @@ exports[`EmbeddedEditor EmbeddedEditor::onNewEdit 1`] = `
 </body>
 `;
 
-exports[`EmbeddedEditor EmbeddedEditor::onPreviewResponse 1`] = `
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::onNewEdit 1`] = `
 <body>
   <div>
     <iframe
@@ -62,7 +56,7 @@ exports[`EmbeddedEditor EmbeddedEditor::onPreviewResponse 1`] = `
 </body>
 `;
 
-exports[`EmbeddedEditor EmbeddedEditor::onReady 1`] = `
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::onPreviewResponse 1`] = `
 <body>
   <div>
     <iframe
@@ -76,7 +70,7 @@ exports[`EmbeddedEditor EmbeddedEditor::onReady 1`] = `
 </body>
 `;
 
-exports[`EmbeddedEditor EmbeddedEditor::onResourceContentRequest 1`] = `
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::onReady 1`] = `
 <body>
   <div>
     <iframe
@@ -90,7 +84,7 @@ exports[`EmbeddedEditor EmbeddedEditor::onResourceContentRequest 1`] = `
 </body>
 `;
 
-exports[`EmbeddedEditor EmbeddedEditor::onResourceListRequest 1`] = `
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::onResourceContentRequest 1`] = `
 <body>
   <div>
     <iframe
@@ -104,7 +98,21 @@ exports[`EmbeddedEditor EmbeddedEditor::onResourceListRequest 1`] = `
 </body>
 `;
 
-exports[`EmbeddedEditor EmbeddedEditor::onSetContentError 1`] = `
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::onResourceListRequest 1`] = `
+<body>
+  <div>
+    <iframe
+      data-envelope-channel="ONLINE"
+      id="kogito-iframe"
+      src="envelope/envelope.html"
+      style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+      title="Kogito editor"
+    />
+  </div>
+</body>
+`;
+
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::onSetContentError 1`] = `
 <body>
   <div>
     <iframe

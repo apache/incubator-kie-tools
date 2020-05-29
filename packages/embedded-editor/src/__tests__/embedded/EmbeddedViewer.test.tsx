@@ -22,17 +22,9 @@ import { EditorType } from "../../common/EditorTypes";
 import { File } from "../../common/File";
 import { EmbeddedEditorRouter } from "../../embedded/EmbeddedEditorRouter";
 import { EmbeddedViewer } from "../../embedded/EmbeddedViewer";
+import { incomingMessage } from "./EmbeddedEditorTestUtils";
 
-const delay = (ms: number) => {
-  return Promise.resolve().then(() => new Promise(res => setTimeout(res, ms)));
-};
-
-async function incomingMessage(message: any) {
-  window.postMessage(message, window.location.origin);
-  await delay(0); //waits til next event loop iteration
-}
-
-describe("EmbeddedViewer", () => {
+describe("EmbeddedViewer::ONLINE", () => {
   const file: File = {
     fileName: "test",
     editorType: EditorType.DMN,
@@ -48,7 +40,11 @@ describe("EmbeddedViewer", () => {
   });
 
   test("EmbeddedViewer::defaults", () => {
-    render(<EmbeddedViewer file={file} router={router} channelType={channelType} />);
+    mount(<EmbeddedViewer file={file} router={router} channelType={channelType} />, { attachTo: holder });
+
+    expect(holder.firstElementChild?.getAttribute("id")).toBe("kogito-iframe");
+    expect(holder.firstElementChild?.getAttribute("data-envelope-channel")).toBe(ChannelType.ONLINE);
+    expect(holder.firstElementChild?.getAttribute("src")).toBe("envelope/envelope.html");
 
     expect(document.body).toMatchSnapshot();
   });

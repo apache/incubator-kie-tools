@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EditorType } from "../../common/EditorTypes"
+import { EditorType } from "../../common/EditorTypes";
 
 function extractValue(key: string): string {
-    return EditorType[key];
+  return EditorType[key];
 }
 
-describe("EditorTypes::definitions",
-    () => {
-        test("Should contain DMN",
-            () => {
-                expect(Object.keys(EditorType)).toContain("DMN");
-                expect(extractValue("DMN")).toEqual("dmn");
-            });
+describe("EditorTypes::definitions", () => {
+  test("Should contain DMN", () => {
+    expect(Object.keys(EditorType)).toContain("DMN");
+    expect(extractValue("DMN")).toEqual("dmn");
+  });
 
-        test("Should contain BPMN",
-            () => {
-                expect(Object.keys(EditorType)).toContain("BPMN");
-                expect(extractValue("BPMN")).toEqual("bpmn");
-            });
+  test("Should contain BPMN", () => {
+    expect(Object.keys(EditorType)).toContain("BPMN");
+    expect(extractValue("BPMN")).toEqual("bpmn");
+  });
 
-        test("Should contain SCESIM",
-            () => {
-                expect(Object.keys(EditorType)).toContain("SCESIM");
-                expect(extractValue("SCESIM")).toEqual("scesim");
-            });
-    });
+  test("Should contain SCESIM", () => {
+    expect(Object.keys(EditorType)).toContain("SCESIM");
+    expect(extractValue("SCESIM")).toEqual("scesim");
+  });
+});
