@@ -55,7 +55,7 @@ import static org.kie.workbench.common.stunner.bpmn.util.XmlUtils.createValidId;
 @ApplicationScoped
 public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService {
 
-    static final String DEFAULT_PACKAGE = "default";
+    static final String DEFAULT_PACKAGE = "com.example";
     static final String NO_DIAGRAM_MESSAGE = "No BPMN Diagram can be found.";
 
     private final DefinitionManager definitionManager;

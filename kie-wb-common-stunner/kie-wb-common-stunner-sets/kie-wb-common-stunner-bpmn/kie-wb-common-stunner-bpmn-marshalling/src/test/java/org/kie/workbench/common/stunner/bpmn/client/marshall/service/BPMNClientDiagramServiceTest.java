@@ -371,7 +371,7 @@ public class BPMNClientDiagramServiceTest {
 
         assertEquals(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, diagramSet.getName().getValue());
         assertEquals(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, diagramSet.getId().getValue());
-        assertEquals(BPMNClientDiagramService.DEFAULT_PACKAGE, diagramSet.getId().getValue());
+        assertEquals(BPMNClientDiagramService.DEFAULT_PACKAGE, diagramSet.getPackageProperty().getValue());
     }
 
     @Test
@@ -419,7 +419,7 @@ public class BPMNClientDiagramServiceTest {
     public void testGetDiagramTitleWhenIsEmpty() {
         final String actual = tested.createDiagramTitleFromFilePath("");
 
-        assertEquals("default", actual);
+        assertEquals(BPMNClientDiagramService.DEFAULT_DIAGRAM_ID, actual);
     }
 
     @Test
