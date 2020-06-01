@@ -140,4 +140,47 @@ public class ContainerCardPresenterTest {
         verify( containerSpecSelectedEvent ).fire( eq( new ContainerSpecSelected( containerSpecKey ) ) );
     }
 
+    @Test
+    public void testSetupWithUnNamedContainer() {
+        final InfoTitlePresenter infoTitlePresenter = mock(InfoTitlePresenter.class);
+        when(infoTitlePresenterProvider.get()).thenReturn(infoTitlePresenter);
+
+        final LinkTitlePresenter linkTitlePresenter = spy(new LinkTitlePresenter(mock(LinkTitlePresenter.View.class)));
+        when(linkTitlePresenterProvider.get()).thenReturn(linkTitlePresenter);
+
+        final BodyPresenter bodyPresenter = mock(BodyPresenter.class);
+        when(bodyPresenterProvider.get()).thenReturn(bodyPresenter);
+        final FooterPresenter footerPresenter = mock(FooterPresenter.class);
+        when(footerPresenterProvider.get()).thenReturn(footerPresenter);
+        final CardPresenter.View cardPresenterView = mock(CardPresenter.View.class);
+        final CardPresenter cardPresenter = spy(new CardPresenter(cardPresenterView));
+        when(cardPresenterProvider.get()).thenReturn(cardPresenter);
+
+        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey("templateId",
+                                                                          "serverName",
+                                                                          "serverInstanceId",
+                                                                          "url");
+        final Message message = new Message(Severity.INFO, "testMessage");
+        final ReleaseId resolvedReleasedId = new ReleaseId("org.kie",
+                                                           "container",
+                                                           "1.0.0");
+        final Container container = new Container("containerSpecId",
+                                                  null,
+                                                  serverInstanceKey,
+                                                  Collections.singletonList(message),
+                                                  resolvedReleasedId, null);
+
+        presenter.setup(container);
+
+        verify(linkTitlePresenter).setup(eq(container.getContainerSpecId()), any(Command.class));
+        verify(view).setCard(cardPresenterView);
+        linkTitlePresenter.onSelect();
+
+        final ContainerSpecKey containerSpecKey = new ContainerSpecKey(container.getContainerSpecId(),
+                                                                       container.getContainerSpecId(),
+                                                                       new ServerTemplateKey(container.getServerInstanceKey().getServerTemplateId(), ""));
+
+        verify(containerSpecSelectedEvent).fire(eq(new ContainerSpecSelected(containerSpecKey)));
+    }
+
 }

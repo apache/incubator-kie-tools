@@ -54,7 +54,9 @@ public class ContainerCardPresenter {
 
     public void setup( final Container container ) {
         final LinkTitlePresenter linkTitlePresenter = presenterProvider.select( LinkTitlePresenter.class ).get();
-        linkTitlePresenter.setup( container.getContainerName(),
+        linkTitlePresenter.setup( container.getContainerName() != null ?
+                                          container.getContainerName() :
+                                          container.getContainerSpecId(),
                                   new Command() {
                                       @Override
                                       public void execute() {
@@ -82,7 +84,9 @@ public class ContainerCardPresenter {
 
     private ContainerSpecKey buildContainerSpecKey( final Container container ) {
         return new ContainerSpecKey( container.getContainerSpecId(),
-                                     container.getContainerName(),
+                                     container.getContainerName() != null ?
+                                             container.getContainerName() :
+                                             container.getContainerSpecId(),
                                      new ServerTemplateKey( container.getServerInstanceKey().getServerTemplateId(), "" ) );
 
     }
