@@ -20,5 +20,7 @@ import org.kie.workbench.common.profile.api.preferences.ProfilePreferences;
 
 public interface HomeModelProvider {
 
+    void initialize(Runnable done);
+
     HomeModel get(ProfilePreferences profilePreferences);
 }

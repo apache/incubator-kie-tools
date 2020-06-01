@@ -72,17 +72,18 @@ public class HomePresenter {
 
     public void setup() {
         profilePreferences.load(loadedProfilePreferences -> {
-            final HomeModel model = modelProvider.get(loadedProfilePreferences);
-            
-            view.setWelcome(model.getWelcome());
-            view.setDescription(model.getDescription());
-            view.setBackgroundImageUrl(model.getBackgroundImageUrl());
-            model.getShortcuts().forEach(shortcut -> {
-                final ShortcutPresenter shortcutPresenter = shortcutPresenters.get();
-                shortcutPresenter.setup(shortcut);
-                view.addShortcut(shortcutPresenter);
+            modelProvider.initialize(()->{
+                final HomeModel model = modelProvider.get(loadedProfilePreferences);
+
+                view.setWelcome(model.getWelcome());
+                view.setDescription(model.getDescription());
+                view.setBackgroundImageUrl(model.getBackgroundImageUrl());
+                model.getShortcuts().forEach(shortcut -> {
+                    final ShortcutPresenter shortcutPresenter = shortcutPresenters.get();
+                    shortcutPresenter.setup(shortcut);
+                    view.addShortcut(shortcutPresenter);
+                });
             });
-            
         }, RuntimeException::new);
     }
 

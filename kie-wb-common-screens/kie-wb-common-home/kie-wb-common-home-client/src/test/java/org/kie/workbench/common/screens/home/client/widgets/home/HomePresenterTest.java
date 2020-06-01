@@ -58,7 +58,7 @@ public class HomePresenterTest {
     private HomeModelProvider modelProvider;
 
     private HomePresenter presenter;
-    
+
     @Mock
     ProfilePreferences profilePreferences;
 
@@ -67,31 +67,40 @@ public class HomePresenterTest {
         doReturn(mock(ShortcutPresenter.class)).when(shortcutPresenters).get();
 
         executeParametrizedCommandWith(0, new ProfilePreferences(Profile.FULL))
-                .when(profilePreferences).load(any(ParameterizedCommand.class), 
-                                                any(ParameterizedCommand.class)); 
-        
-        modelProvider = ProfilePreferences -> {
-            final HomeModel homeModel = new HomeModel("welcome",
-                                                      "description",
-                                                      "backgroundImageUrl");
-            homeModel.addShortcut(ModelUtils.makeShortcut("iconCss1",
-                                                          "heading1",
-                                                          "subHeading1",
-                                                          mock(Command.class)));
-            homeModel.addShortcut(ModelUtils.makeShortcut("iconCss2",
-                                                          "heading2",
-                                                          "subHeading2",
-                                                          mock(Command.class),
-                                                          "resourceId2",
-                                                          ResourceType.UNKNOWN,
-                                                          ResourceAction.READ));
-            homeModel.addShortcut(ModelUtils.makeShortcut("iconCss3",
-                                                          "heading3",
-                                                          "subHeading3",
-                                                          mock(Command.class),
-                                                          "perspectiveId"));
+                .when(profilePreferences).load(any(ParameterizedCommand.class),
+                                               any(ParameterizedCommand.class));
 
-            return homeModel;
+        modelProvider = new HomeModelProvider() {
+
+            @Override
+            public void initialize(Runnable done) {
+                done.run();
+            }
+
+            @Override
+            public HomeModel get(ProfilePreferences profilePreferences) {
+                final HomeModel homeModel = new HomeModel("welcome",
+                                                          "description",
+                                                          "backgroundImageUrl");
+                homeModel.addShortcut(ModelUtils.makeShortcut("iconCss1",
+                                                              "heading1",
+                                                              "subHeading1",
+                                                              mock(Command.class)));
+                homeModel.addShortcut(ModelUtils.makeShortcut("iconCss2",
+                                                              "heading2",
+                                                              "subHeading2",
+                                                              mock(Command.class),
+                                                              "resourceId2",
+                                                              ResourceType.UNKNOWN,
+                                                              ResourceAction.READ));
+                homeModel.addShortcut(ModelUtils.makeShortcut("iconCss3",
+                                                              "heading3",
+                                                              "subHeading3",
+                                                              mock(Command.class),
+                                                              "perspectiveId"));
+
+                return homeModel;
+            }
         };
 
         presenter = new HomePresenter(view,
