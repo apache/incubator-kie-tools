@@ -26,8 +26,15 @@ import (
 	"time"
 )
 
-// HTTPRequestResult represents the success or error of an HTTP request
-type HTTPRequestResult string
+type (
+	// HTTPRequestResult represents the success or error of an HTTP request
+	HTTPRequestResult string
+
+	// HTTPRequestInfo structure encapsulates all information needed to execute an HTTP request
+	HTTPRequestInfo struct {
+		HTTPMethod, URI, Path, BodyFormat, BodyContent string
+	}
+)
 
 const (
 	// HTTPRequestResultSuccess in case of success
@@ -37,31 +44,31 @@ const (
 )
 
 // WaitForSuccessfulHTTPRequest waits for an HTTP request to be successful
-func WaitForSuccessfulHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, bodyContent string, timeoutInMin int) error {
-	return WaitForOnOpenshift(namespace, fmt.Sprintf("HTTP %s request on path '%s' to be successful", httpMethod, path), timeoutInMin,
+func WaitForSuccessfulHTTPRequest(namespace string, requestInfo HTTPRequestInfo, timeoutInMin int) error {
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("HTTP %s request on path '%s' to be successful", requestInfo.HTTPMethod, requestInfo.Path), timeoutInMin,
 		func() (bool, error) {
-			return IsHTTPRequestSuccessful(namespace, httpMethod, uri, path, bodyFormat, bodyContent)
+			return IsHTTPRequestSuccessful(namespace, requestInfo)
 		})
 }
 
 // ExecuteHTTPRequest executes an HTTP request
-func ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, bodyContent string) (*http.Response, error) {
-	return ExecuteHTTPRequestC(&http.Client{}, namespace, httpMethod, uri, path, bodyFormat, bodyContent)
+func ExecuteHTTPRequest(namespace string, requestInfo HTTPRequestInfo) (*http.Response, error) {
+	return ExecuteHTTPRequestC(&http.Client{}, namespace, requestInfo)
 }
 
 // ExecuteHTTPRequestC executes an HTTP request using a given client
-func ExecuteHTTPRequestC(client *http.Client, namespace, httpMethod, uri, path, bodyFormat, bodyContent string) (*http.Response, error) {
-	GetLogger(namespace).Debugf("ExecuteHTTPRequest %s on uri %s, with path %s, %s bodyContent %s", httpMethod, uri, path, bodyFormat, bodyContent)
+func ExecuteHTTPRequestC(client *http.Client, namespace string, requestInfo HTTPRequestInfo) (*http.Response, error) {
+	GetLogger(namespace).Debugf("ExecuteHTTPRequest %s on uri %s, with path %s, %s bodyContent %s", requestInfo.HTTPMethod, requestInfo.URI, requestInfo.Path, requestInfo.BodyFormat, requestInfo.BodyContent)
 
-	request, err := http.NewRequest(httpMethod, uri+"/"+path, strings.NewReader(bodyContent))
-	if len(bodyContent) > 0 && len(bodyFormat) > 0 {
-		switch bodyFormat {
+	request, err := http.NewRequest(requestInfo.HTTPMethod, requestInfo.URI+"/"+requestInfo.Path, strings.NewReader(requestInfo.BodyContent))
+	if len(requestInfo.BodyContent) > 0 && len(requestInfo.BodyFormat) > 0 {
+		switch requestInfo.BodyFormat {
 		case "json":
 			request.Header.Add("Content-Type", "application/json")
 		case "xml":
 			request.Header.Add("Content-Type", "application/xml")
 		default:
-			return nil, fmt.Errorf("Unknown body format to set into request: %s", bodyFormat)
+			return nil, fmt.Errorf("Unknown body format to set into request: %s", requestInfo.BodyFormat)
 		}
 	}
 
@@ -73,8 +80,8 @@ func ExecuteHTTPRequestC(client *http.Client, namespace, httpMethod, uri, path, 
 }
 
 // ExecuteHTTPRequestWithStringResponse executes an HTTP request and returns a string response in case there is no error
-func ExecuteHTTPRequestWithStringResponse(namespace, httpMethod, uri, path string, bodyFormat, bodyContent string) (string, error) {
-	httpResponse, err := ExecuteHTTPRequest(namespace, httpMethod, uri, path, bodyFormat, bodyContent)
+func ExecuteHTTPRequestWithStringResponse(namespace string, requestInfo HTTPRequestInfo) (string, error) {
+	httpResponse, err := ExecuteHTTPRequest(namespace, requestInfo)
 	if err != nil {
 		return "", err
 	}
@@ -92,8 +99,8 @@ func ExecuteHTTPRequestWithStringResponse(namespace, httpMethod, uri, path strin
 }
 
 // ExecuteHTTPRequestWithUnmarshalledResponse executes an HTTP request and returns response unmarshalled into specific structure in case there is no error
-func ExecuteHTTPRequestWithUnmarshalledResponse(namespace, httpMethod, uri, path string, bodyFormat, bodyContent string, response interface{}) error {
-	resultBody, err := ExecuteHTTPRequestWithStringResponse(namespace, httpMethod, uri, path, bodyFormat, bodyContent)
+func ExecuteHTTPRequestWithUnmarshalledResponse(namespace string, requestInfo HTTPRequestInfo, response interface{}) error {
+	resultBody, err := ExecuteHTTPRequestWithStringResponse(namespace, requestInfo)
 	if err != nil {
 		return err
 	}
@@ -105,13 +112,13 @@ func ExecuteHTTPRequestWithUnmarshalledResponse(namespace, httpMethod, uri, path
 }
 
 // IsHTTPRequestSuccessful makes and checks whether an http request is successful
-func IsHTTPRequestSuccessful(namespace, httpMethod, uri, path, bodyFormat, bodyContent string) (bool, error) {
-	return IsHTTPRequestSuccessfulC(&http.Client{}, namespace, httpMethod, uri, path, bodyFormat, bodyContent)
+func IsHTTPRequestSuccessful(namespace string, requestInfo HTTPRequestInfo) (bool, error) {
+	return IsHTTPRequestSuccessfulC(&http.Client{}, namespace, requestInfo)
 }
 
 // IsHTTPRequestSuccessfulC makes and checks whether an http request is successful using a given client
-func IsHTTPRequestSuccessfulC(client *http.Client, namespace, httpMethod, uri, path, bodyFormat, bodyContent string) (bool, error) {
-	response, err := ExecuteHTTPRequestC(client, namespace, httpMethod, uri, path, bodyFormat, bodyContent)
+func IsHTTPRequestSuccessfulC(client *http.Client, namespace string, requestInfo HTTPRequestInfo) (bool, error) {
+	response, err := ExecuteHTTPRequestC(client, namespace, requestInfo)
 	if err != nil {
 		return false, err
 	}
@@ -124,7 +131,7 @@ func IsHTTPRequestSuccessfulC(client *http.Client, namespace, httpMethod, uri, p
 // Returns []HTTPRequestResult with the outcome of each thread (HTTPRequestResultSuccess or HTTPRequestResultError).
 // Returns error if the desired number of requests cannot be precisely divided to the threads.
 // Useful for performance testing.
-func ExecuteHTTPRequestsInThreads(namespace, httpMethod string, requestCount, threadCount int, routeURI, path, bodyFormat, bodyContent string) ([]HTTPRequestResult, error) {
+func ExecuteHTTPRequestsInThreads(namespace string, requestCount, threadCount int, requestInfo HTTPRequestInfo) ([]HTTPRequestResult, error) {
 	if requestCount%threadCount != 0 {
 		return nil, fmt.Errorf("Cannot precisely divide %d requests to %d threads. Use different numbers", requestCount, threadCount)
 	}
@@ -138,7 +145,7 @@ func ExecuteHTTPRequestsInThreads(namespace, httpMethod string, requestCount, th
 
 	for threadID := 0; threadID < threadCount; threadID++ {
 		client := createCustomClient()
-		go runRequestRoutine(threadID, waitGroup, client, namespace, httpMethod, requestPerThread, routeURI, path, bodyFormat, bodyContent, results)
+		go runRequestRoutine(threadID, waitGroup, client, namespace, requestPerThread, requestInfo, results)
 	}
 
 	GetLogger(namespace).Info("Waiting for requests to finish")
@@ -159,16 +166,16 @@ func createCustomClient() *http.Client {
 	return client
 }
 
-func runRequestRoutine(threadID int, waitGroup *sync.WaitGroup, client *http.Client, namespace, httpMethod string, requestPerThread int, routeURI, path, bodyFormat, bodyContent string, results []HTTPRequestResult) {
+func runRequestRoutine(threadID int, waitGroup *sync.WaitGroup, client *http.Client, namespace string, requestPerThread int, requestInfo HTTPRequestInfo, results []HTTPRequestResult) {
 	defer waitGroup.Done()
 	GetLogger(namespace).Infof("Starting Go routine #%d", threadID)
 	for i := 0; i < requestPerThread; i++ {
-		if success, err := IsHTTPRequestSuccessfulC(client, namespace, httpMethod, routeURI, path, bodyFormat, bodyContent); err != nil {
+		if success, err := IsHTTPRequestSuccessfulC(client, namespace, requestInfo); err != nil {
 			GetLogger(namespace).Errorf("Go routine #%d - Failed with error: %v", threadID, err)
 			results[threadID] = HTTPRequestResultError
 			return
 		} else if !success {
-			GetLogger(namespace).Errorf("Go routine #%d - HTTP POST request to path %s was not successful", threadID, path)
+			GetLogger(namespace).Errorf("Go routine #%d - HTTP POST request to path %s was not successful", threadID, requestInfo.Path)
 			results[threadID] = HTTPRequestResultError
 			return
 		}
@@ -188,9 +195,9 @@ func checkHTTPResponseSuccessful(namespace string, response *http.Response) bool
 }
 
 // IsHTTPResponseArraySize makes and checks whether an http request returns an array of a specific size
-func IsHTTPResponseArraySize(namespace, httpMethod, uri, path string, bodyFormat, bodyContent string, arraySize int) (bool, error) {
+func IsHTTPResponseArraySize(namespace string, requestInfo HTTPRequestInfo, arraySize int) (bool, error) {
 	var httpResponseArray []map[string]interface{}
-	err := ExecuteHTTPRequestWithUnmarshalledResponse(namespace, httpMethod, uri, path, bodyFormat, bodyContent, &httpResponseArray)
+	err := ExecuteHTTPRequestWithUnmarshalledResponse(namespace, requestInfo, &httpResponseArray)
 	if err != nil {
 		return false, err
 	}
@@ -199,11 +206,31 @@ func IsHTTPResponseArraySize(namespace, httpMethod, uri, path string, bodyFormat
 }
 
 // DoesHTTPResponseContain checks whether the response of an http request contains a certain string
-func DoesHTTPResponseContain(namespace, httpMethod, uri, path string, bodyFormat, bodyContent string, responseContent string) (bool, error) {
-	resultBody, err := ExecuteHTTPRequestWithStringResponse(namespace, httpMethod, uri, path, bodyFormat, bodyContent)
+func DoesHTTPResponseContain(namespace string, requestInfo HTTPRequestInfo, responseContent string) (bool, error) {
+	resultBody, err := ExecuteHTTPRequestWithStringResponse(namespace, requestInfo)
 	if err != nil {
 		return false, err
 	}
 
 	return strings.Contains(resultBody, responseContent), nil
+}
+
+// NewGETHTTPRequestInfo constructor creates a new HTTPRequestInfo struct with the GET HTTP method
+func NewGETHTTPRequestInfo(uri, path string) HTTPRequestInfo {
+	return HTTPRequestInfo{
+		HTTPMethod: "GET",
+		URI:        uri,
+		Path:       path,
+	}
+}
+
+// NewPOSTHTTPRequestInfo constructor creates a new HTTPRequestInfo struct with the POST HTTP method
+func NewPOSTHTTPRequestInfo(uri, path, bodyFormat, bodyContent string) HTTPRequestInfo {
+	return HTTPRequestInfo{
+		HTTPMethod:  "POST",
+		URI:         uri,
+		Path:        path,
+		BodyFormat:  bodyFormat,
+		BodyContent: bodyContent,
+	}
 }

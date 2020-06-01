@@ -16,12 +16,14 @@ package framework
 
 // StartProcess starts new process instance
 func StartProcess(namespace, routeURI, processName, bodyFormat, bodyContent string) (err error) {
-	_, err = ExecuteHTTPRequest(namespace, "POST", routeURI, processName, bodyFormat, bodyContent)
+	requestInfo := NewPOSTHTTPRequestInfo(routeURI, processName, bodyFormat, bodyContent)
+	_, err = ExecuteHTTPRequest(namespace, requestInfo)
 	return
 }
 
 // GetProcessInstances retrieves process instance of process name
 func GetProcessInstances(namespace, routeURI, processName string) (foundProcessInstances []map[string]interface{}, err error) {
-	err = ExecuteHTTPRequestWithUnmarshalledResponse(namespace, "GET", routeURI, processName, "", "", &foundProcessInstances)
+	requestInfo := NewGETHTTPRequestInfo(routeURI, processName)
+	err = ExecuteHTTPRequestWithUnmarshalledResponse(namespace, requestInfo, &foundProcessInstances)
 	return
 }

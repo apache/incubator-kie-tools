@@ -22,14 +22,16 @@ import (
 // GetTasks retrieves tasks of specific process instance
 func GetTasks(namespace, routeURI, processName, processInstanceID string) (foundTasks map[string]string, err error) {
 	tasksEndpointPath := getTasksEndpointPath(processName, processInstanceID)
-	err = ExecuteHTTPRequestWithUnmarshalledResponse(namespace, "GET", routeURI, tasksEndpointPath, "", "", &foundTasks)
+	requestInfo := NewGETHTTPRequestInfo(routeURI, tasksEndpointPath)
+	err = ExecuteHTTPRequestWithUnmarshalledResponse(namespace, requestInfo, &foundTasks)
 	return
 }
 
 // GetTasksByUser retrieves tasks of specific process instance and user
 func GetTasksByUser(namespace, routeURI, processName, processInstanceID, user string) (foundTasks map[string]string, err error) {
 	tasksEndpointPath := getTasksEndpointPath(processName, processInstanceID) + "?user=" + user
-	err = ExecuteHTTPRequestWithUnmarshalledResponse(namespace, "GET", routeURI, tasksEndpointPath, "", "", &foundTasks)
+	requestInfo := NewGETHTTPRequestInfo(routeURI, tasksEndpointPath)
+	err = ExecuteHTTPRequestWithUnmarshalledResponse(namespace, requestInfo, &foundTasks)
 	return
 }
 
@@ -46,7 +48,8 @@ func CompleteTaskByUser(namespace, routeURI, processName, processInstanceID, tas
 }
 
 func completeTask(namespace, routeURI, taskEndpointPath, bodyFormat, bodyContent string) (err error) {
-	_, err = ExecuteHTTPRequest(namespace, "POST", routeURI, taskEndpointPath, bodyFormat, bodyContent)
+	requestInfo := NewPOSTHTTPRequestInfo(routeURI, taskEndpointPath, bodyFormat, bodyContent)
+	_, err = ExecuteHTTPRequest(namespace, requestInfo)
 	return
 }
 
