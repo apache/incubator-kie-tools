@@ -54,6 +54,8 @@ public class JBPMBpmn2Resource extends Bpmn2ResourceImpl {
                                          parserFeatures);
         this.getDefaultSaveOptions().put(XMLResource.OPTION_ENCODING,
                                          "UTF-8");
+        this.getDefaultSaveOptions().put(XMLResource.OPTION_SKIP_ESCAPE,
+                                         true);
         this.getDefaultSaveOptions().put(XMLResource.OPTION_PROCESS_DANGLING_HREF,
                                          XMLResource.OPTION_PROCESS_DANGLING_HREF_DISCARD);
     }
@@ -79,8 +81,6 @@ public class JBPMBpmn2Resource extends Bpmn2ResourceImpl {
 
     @Override
     protected XMLLoad createXMLLoad() {
-//        DroolsPackageImpl.init();
-//        BpsimPackageImpl.init();
         return new XMLLoadImpl(createXMLHelper()) {
 
             @Override
@@ -120,7 +120,6 @@ public class JBPMBpmn2Resource extends Bpmn2ResourceImpl {
 
         public void setColumn(int column) {
             this.column = column;
-            ;
         }
 
         public int getColumn() {

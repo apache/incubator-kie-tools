@@ -26,7 +26,6 @@ import java.util.Map;
 
 import bpsim.impl.BpsimFactoryImpl;
 import bpsim.impl.BpsimPackageImpl;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.bpmn2.Bpmn2Package;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.DocumentRoot;
@@ -144,7 +143,7 @@ public abstract class BaseDirectDiagramMarshaller implements DiagramMarshaller<G
         } finally {
             outputStream.close();
         }
-        return StringEscapeUtils.unescapeHtml4(outputStream.toString("UTF-8"));
+        return outputStream.toString("UTF-8");
     }
 
     @Override

@@ -37,11 +37,10 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.util.UUID;
-import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.when;
 
 public class TestUtils {
 
@@ -98,9 +97,9 @@ public class TestUtils {
     public static FeatureMap.Entry mockFeatureMapEntry(String name, Object value) {
         FeatureMap.Entry entry = mock(FeatureMap.Entry.class);
         EStructuralFeature feature = mock(EStructuralFeature.class);
-        Mockito.when(feature.getName()).thenReturn(name);
-        Mockito.when(entry.getEStructuralFeature()).thenReturn(feature);
-        Mockito.when(entry.getValue()).thenReturn(value);
+        when(feature.getName()).thenReturn(name);
+        when(entry.getEStructuralFeature()).thenReturn(feature);
+        when(entry.getValue()).thenReturn(value);
         return entry;
     }
 
