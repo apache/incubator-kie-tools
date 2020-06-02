@@ -21,6 +21,8 @@ const packageJson = require("./package.json");
 const envelope = require("../patternfly-base/webpackUtils");
 
 function getLatestGitTag() {
+  require("child_process").execSync("git fetch --tags --all");
+  
   const tagName = require("child_process")
     .execSync("git rev-list --tags --max-count=1")
     .toString()
