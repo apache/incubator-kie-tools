@@ -15,19 +15,13 @@
  */
 
 const path = require("path");
+const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
 const envelope = require("../patternfly-base/webpackUtils");
 
 const commonConfig = {
   mode: "development",
   devtool: "inline-source-map",
-  output: {
-    path: path.resolve(__dirname, "./dist"),
-    filename: "[name].js"
-  },
-  externals: {
-    electron: "commonjs electron"
-  },
   module: {
     rules: [
       {
@@ -46,18 +40,9 @@ const commonConfig = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: ["babel-loader"]
-      }
+      },
+      ...envelope.patternflyLoaders
     ]
-  },
-  devServer: {
-    historyApiFallback: {
-      disableDotRule: true
-    },
-    disableHostCheck: true,
-    watchContentBase: true,
-    contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static"), path.join(__dirname, "./build")],
-    compress: true,
-    port: 9001
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],
@@ -68,33 +53,28 @@ const commonConfig = {
 module.exports = [
   {
     ...commonConfig,
-    target: "electron-main",
     entry: {
-      index: "./src/backend/index.ts"
+      index: "./src/index.ts"
     },
-    plugins: [new CopyPlugin([{ from: "./build", to: "./build" }])],
-    node: {
-      __dirname: false,
-      __filename: false
-    }
+    output: {
+      path: path.resolve(__dirname, "./dist"),
+      filename: "[name].js",
+      libraryTarget: "umd",
+      globalObject: "this"
+    },
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
+    plugins: [new CopyPlugin([{ from: "./static/envelope", to: "./envelope" }])]
   },
   {
     ...commonConfig,
-    target: "web",
+    mode: "development",
+    devtool: "inline-source-map",
     entry: {
-      "webview/index": "./src/webview/index.tsx"
+      "envelope/envelope": "./src/envelope/envelope.ts"
     },
-    module: { rules: [...commonConfig.module.rules, ...envelope.patternflyLoaders] },
-    plugins: [
-      new CopyPlugin([
-        { from: "./static/samples", to: "./samples" },
-        { from: "./static/resources", to: "./resources" },
-        { from: "./static/images", to: "./images" },
-        { from: "./static/index.html", to: "./index.html" },
-        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/envelope", to: "./envelope" },
-        { from: "../kie-bc-editors-unpacked/dmn", to: "./gwt-editors/dmn" },
-        { from: "../kie-bc-editors-unpacked/bpmn", to: "./gwt-editors/bpmn" }
-      ])
-    ]
+    output: {
+      path: path.resolve(__dirname, "./dist"),
+      filename: "[name].js"
+    }
   }
 ];

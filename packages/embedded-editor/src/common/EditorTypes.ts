@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-import { Router, Routes } from "@kogito-tooling/core-api";
-
-export class DesktopRouter extends Router {
-  constructor(...routesArray: Routes[]) {
-    super(...routesArray);
-  }
-
-  public getRelativePathTo(uri: string): string {
-    return `../${uri}`;
-  }
-
-  public getLanguageData(fileExtension: string) {
-    return this.getLanguageDataByFileExtension().get(fileExtension);
-  }
-
-  public getTargetOrigin() {
-    return "";
-  }
+/**
+ * Enumeration of the different editors supported and their _well-defined_ aliases.
+ */
+export enum EditorType {
+  DMN = "dmn",
+  BPMN = "bpmn",
+  SCESIM = "scesim"
 }

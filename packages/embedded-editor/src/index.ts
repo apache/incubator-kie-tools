@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,13 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
-import * as React from "react";
-import { File } from "../../common/File";
 
-export interface GlobalContextType {
-  file?: File;
-  router: EmbeddedEditorRouter;
-}
-
-export const GlobalContext = React.createContext<GlobalContextType>({} as any);
+export * from "./common";
+export * from "./embedded";

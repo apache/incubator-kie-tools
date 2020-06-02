@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
+import { EmbeddedEditorRouter, File } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
-import { Router } from "@kogito-tooling/core-api";
-import { File } from "./File";
-import { Routes } from "./Routes";
 import { GithubService } from "./GithubService";
-import { EnvelopeBusOuterMessageHandlerFactory } from "../editor/EnvelopeBusOuterMessageHandlerFactory";
+import { Routes } from "./Routes";
 
 export interface GlobalContextType {
-  router: Router;
-  routes: Routes;
-  envelopeBusOuterMessageHandlerFactory: EnvelopeBusOuterMessageHandlerFactory;
-  iframeTemplateRelativePath: string;
   file: File;
+  routes: Routes;
+  router: EmbeddedEditorRouter;
   readonly: boolean;
   external: boolean;
   senderTabId?: string;

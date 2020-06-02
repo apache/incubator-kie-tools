@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { useHistory } from "react-router";
-import { GlobalContext } from "../common/GlobalContext";
-import { EMPTY_FILE, File as UploadFile } from "../common/File";
+import { EditorType, File as UploadFile, newFile } from "@kogito-tooling/embedded-editor";
 import {
   Brand,
   Bullseye,
@@ -46,9 +42,13 @@ import {
   ToolbarItem
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
-import { extractFileExtension, removeFileExtension } from "../common/utils";
+import * as React from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
+import { GlobalContext } from "../common/GlobalContext";
+import { extractFileExtension, removeFileExtension } from "../common/utils";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -79,7 +79,7 @@ enum UploadFileDndState {
 
 interface InputFileUrlStateType {
   urlValidation: InputFileUrlState;
-  urlToOpen: string | undefined
+  urlToOpen: string | undefined;
 }
 
 export function HomePage(props: Props) {
@@ -113,6 +113,8 @@ export function HomePage(props: Props) {
   const openFile = useCallback(
     (file: File) => {
       props.onFileOpened({
+        isReadOnly: false,
+        editorType: extractFileExtension(file.name) as EditorType,
         fileName: removeFileExtension(file.name),
         getFileContents: () =>
           new Promise<string | undefined>(resolve => {
@@ -227,40 +229,42 @@ export function HomePage(props: Props) {
   }, [uploadFileInputState]);
 
   const createEmptyFile = useCallback(
-    (fileExtension: string) => {
-      props.onFileOpened(EMPTY_FILE);
-      history.replace(context.routes.editor.url({ type: fileExtension }));
+    (editorType: EditorType) => {
+      props.onFileOpened(newFile(editorType));
+      history.replace(context.routes.editor.url({ type: editorType }));
     },
     [context, history]
   );
 
   const createEmptyBpmnFile = useCallback(() => {
-    createEmptyFile("bpmn");
+    createEmptyFile(EditorType.BPMN);
   }, [createEmptyFile]);
 
   const createEmptyDmnFile = useCallback(() => {
-    createEmptyFile("dmn");
+    createEmptyFile(EditorType.DMN);
   }, [createEmptyFile]);
 
   const trySample = useCallback(
-    (fileExtension: string) => {
+    (editorType: EditorType) => {
       const fileName = "sample";
-      const filePath = `samples/${fileName}.${fileExtension}`;
+      const filePath = `samples/${fileName}.${editorType}`;
       props.onFileOpened({
+        isReadOnly: false,
+        editorType: editorType,
         fileName: fileName,
         getFileContents: () => fetch(filePath).then(response => response.text())
       });
-      history.replace(context.routes.editor.url({ type: fileExtension }));
+      history.replace(context.routes.editor.url({ type: editorType }));
     },
     [context, history]
   );
 
   const tryBpmnSample = useCallback(() => {
-    trySample("bpmn");
+    trySample(EditorType.BPMN);
   }, [trySample]);
 
   const tryDmnSample = useCallback(() => {
-    trySample("dmn");
+    trySample(EditorType.DMN);
   }, [trySample]);
 
   const validateUrl = useCallback(async () => {

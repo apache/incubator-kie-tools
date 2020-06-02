@@ -14,33 +14,29 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { GlobalContext, GlobalContextType } from "../common/GlobalContext";
-import { Routes } from "../common/Routes";
-import { EnvelopeBusOuterMessageHandlerFactory } from "../editor/EnvelopeBusOuterMessageHandlerFactory";
-import { EMPTY_FILE } from "../common/File";
-import { OnlineEditorRouter } from "../common/OnlineEditorRouter";
+import { EmbeddedEditorRouter, EMPTY_FILE_DMN } from "@kogito-tooling/embedded-editor";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
-import { GithubService } from "../common/GithubService";
+import * as React from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
+import { GithubService } from "../common/GithubService";
+import { GlobalContext, GlobalContextType } from "../common/GlobalContext";
+import { Routes } from "../common/Routes";
 
 export function usingTestingGlobalContext(
   children: React.ReactElement,
   ctx?: Partial<GlobalContextType>
 ) {
   const usedCtx = {
-    router: new OnlineEditorRouter(
+    file: EMPTY_FILE_DMN,
+    routes: new Routes(),
+    router: new EmbeddedEditorRouter(
       new GwtEditorRoutes({
         bpmnPath: "gwt-editors/bpmn",
         dmnPath: "gwt-editors/dmn",
         scesimPath: "gwt-editors/scesim"
       })
     ),
-    routes: new Routes(),
-    envelopeBusOuterMessageHandlerFactory: new EnvelopeBusOuterMessageHandlerFactory(),
-    iframeTemplateRelativePath: "../envelope/index.html",
-    file: EMPTY_FILE,
     readonly: false,
     external: false,
     senderTabId: undefined,

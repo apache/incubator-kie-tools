@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-import * as ReactDOM from "react-dom";
-import { EditorEnvelopeController } from "./EditorEnvelopeController";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
-import { SpecialDomElements } from "./SpecialDomElements";
-import { Renderer } from "./Renderer";
 import { ReactElement } from "react";
-import { EditorFactory } from "./EditorFactory";
+import * as ReactDOM from "react-dom";
 import { EditorContext } from "./api/context";
+import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "./api/keyboardShortcuts";
 import { ResourceContentApi, ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { StateControl, StateControlApi } from "./api/stateControl";
-import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "./api/keyboardShortcuts";
+import { EditorEnvelopeController } from "./EditorEnvelopeController";
+import { EditorFactory } from "./EditorFactory";
+import { Renderer } from "./Renderer";
+import { SpecialDomElements } from "./SpecialDomElements";
 
-export * from "./EditorFactory";
 export * from "./api/context/EditorContext";
+export * from "./api/resourceContent";
+export { EditorEnvelopeController } from "./EditorEnvelopeController";
+export * from "./EditorFactory";
 export * from "./EnvelopeBusInnerMessageHandler";
+export { SpecialDomElements } from "./SpecialDomElements";
 
 declare global {
   interface Window {

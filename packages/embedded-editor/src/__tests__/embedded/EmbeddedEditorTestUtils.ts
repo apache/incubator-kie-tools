@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-import {
-  EnvelopeBusOuterMessageHandler,
-  EnvelopeBusOuterMessageHandlerImpl
-} from "@kogito-tooling/microeditor-envelope-protocol";
-import { RefObject } from "react";
+/**
+ * Delay the event by the given number of miliseconds.
+ * @param ms
+ */
+export const delay = (ms: number) => {
+  return Promise.resolve().then(() => new Promise(res => setTimeout(res, ms)));
+};
 
-export class EnvelopeBusOuterMessageHandlerFactory {
-  public createNew(
-    iframeRef: RefObject<HTMLIFrameElement>,
-    impl: (self: EnvelopeBusOuterMessageHandler) => EnvelopeBusOuterMessageHandlerImpl
-  ) {
-    return new EnvelopeBusOuterMessageHandler(
-      {
-        postMessage: msg => {
-          iframeRef.current?.contentWindow?.postMessage(msg, "*");
-        }
-      },
-      impl
-    );
-  }
+/**
+ * Post a message to the inter-frame communication bus and await a response.
+ * @param message
+ */
+export async function incomingMessage(message: any) {
+  window.postMessage(message, window.location.origin);
+  await delay(0); //waits til next event loop iteration
 }

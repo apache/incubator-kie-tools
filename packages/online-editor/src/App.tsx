@@ -14,28 +14,26 @@
  * limitations under the License.
  */
 
+import { EditorType, EmbeddedEditorRouter, File } from "@kogito-tooling/embedded-editor";
+import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
+import "@patternfly/patternfly/patternfly-addons.css";
+import "@patternfly/patternfly/patternfly-variables.css";
+import "@patternfly/patternfly/patternfly.css";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
-import { Routes } from "./common/Routes";
-import { GithubService } from "./common/GithubService";
-import { HomePage } from "./home/HomePage";
-import { EditorPage } from "./editor/EditorPage";
-import { NoMatchPage } from "./NoMatchPage";
-import { OnlineEditorRouter } from "./common/OnlineEditorRouter";
-import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
-import { GlobalContext } from "./common/GlobalContext";
-import { EnvelopeBusOuterMessageHandlerFactory } from "./editor/EnvelopeBusOuterMessageHandlerFactory";
-import "@patternfly/patternfly/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly-addons.css";
-import "@patternfly/patternfly/patternfly.css";
 import "../static/resources/style.css";
-import { File } from "./common/File";
+import { GithubService } from "./common/GithubService";
+import { GlobalContext } from "./common/GlobalContext";
+import { Routes } from "./common/Routes";
+import { extractFileExtension } from "./common/utils";
+import { EditorPage } from "./editor/EditorPage";
 import { DownloadHubModal } from "./home/DownloadHubModal";
+import { HomePage } from "./home/HomePage";
+import { NoMatchPage } from "./NoMatchPage";
 
 interface Props {
-  iframeTemplateRelativePath: string;
   file: File;
   readonly: boolean;
   external: boolean;
@@ -46,13 +44,12 @@ interface Props {
 export function App(props: Props) {
   const [file, setFile] = useState(props.file);
   const routes = useMemo(() => new Routes(), []);
-  const envelopeBusOuterMessageHandlerFactory = useMemo(() => new EnvelopeBusOuterMessageHandlerFactory(), []);
-  const onlineEditorRouter = useMemo(
+  const router: EmbeddedEditorRouter = useMemo(
     () =>
-      new OnlineEditorRouter(
+      new EmbeddedEditorRouter(
         new GwtEditorRoutes({
-          bpmnPath: "gwt-editors/bpmn",
           dmnPath: "gwt-editors/dmn",
+          bpmnPath: "gwt-editors/bpmn",
           scesimPath: "gwt-editors/scesim"
         })
       ),
@@ -66,6 +63,8 @@ export function App(props: Props) {
   const onFileNameChanged = useCallback(
     (fileName: string) => {
       setFile({
+        isReadOnly: false,
+        editorType: extractFileExtension(fileName) as EditorType,
         fileName: fileName,
         getFileContents: file.getFileContents
       });
@@ -76,11 +75,9 @@ export function App(props: Props) {
   return (
     <GlobalContext.Provider
       value={{
-        router: onlineEditorRouter,
-        routes: routes,
-        envelopeBusOuterMessageHandlerFactory: envelopeBusOuterMessageHandlerFactory,
-        iframeTemplateRelativePath: props.iframeTemplateRelativePath,
         file: file,
+        routes: routes,
+        router: router,
         readonly: props.readonly,
         external: props.external,
         senderTabId: props.senderTabId,

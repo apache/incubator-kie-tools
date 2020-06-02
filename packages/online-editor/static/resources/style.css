@@ -119,11 +119,6 @@
   }
 }
 
-.kogito--editor {
-  width: 100%;
-  height: 100%;
-}
-
 .kogito--editor__toolbar-section {
   --pf-c-page__main-nav--PaddingBottom: var(--pf-global--spacer--sm);
   border-bottom: var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100);

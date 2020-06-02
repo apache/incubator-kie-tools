@@ -18,11 +18,12 @@ import { ChromeRouter } from "./ChromeRouter";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import { startExtension } from "@kogito-tooling/chrome-extension";
 import { OnlineEditorManager } from "./OnlineEditorManager";
+import { EditorType } from "@kogito-tooling/embedded-editor"
 
 startExtension({
   name: "Kogito :: BPMN and DMN editors",
   editorIndexPath: "envelope/index.html",
-  router: new ChromeRouter(new GwtEditorRoutes({ bpmnPath: "bpmn", dmnPath: "dmn", scesimPath: "scesim" })),
+  router: new ChromeRouter(new GwtEditorRoutes({ bpmnPath: EditorType.BPMN, dmnPath: EditorType.DMN, scesimPath: EditorType.SCESIM })),
   extensionIconUrl: chrome.extension.getURL("/resources/kogito-icon.png"),
   githubAuthTokenCookieName: "github-oauth-token-kie-editors",
   externalEditorManager: new OnlineEditorManager()

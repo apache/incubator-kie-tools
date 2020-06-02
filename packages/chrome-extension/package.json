@@ -13,8 +13,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/microeditor-envelope": "0.4.3",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.4.3",
+    "@kogito-tooling/embedded-editor": "0.4.3",
     "@octokit/rest": "16.35.0",
     "@types/chrome": "0.0.81",
     "minimatch": "3.0.4"
