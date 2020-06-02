@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
+import { EditorStateControl, EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
-import { EditorStateControl } from "@kogito-tooling/editor-state-control";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly.css";
@@ -48,7 +47,6 @@ export function App(props: Props) {
 
   const [invalidFileTypeErrorVisible, setInvalidFileTypeErrorVisible] = useState(false);
 
-  const envelopeBusOuterMessageHandlerFactory = useMemo(() => new EnvelopeBusOuterMessageHandlerFactory(), []);
   const editorStateControl = useMemo(() => new EditorStateControl(), []);
 
   const desktopRouter = useMemo(

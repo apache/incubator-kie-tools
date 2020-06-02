@@ -858,11 +858,13 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
               <div
                 class="pf-c-page__header-nav"
               >
-                <h3
-                  class="pf-c-title pf-m-xl"
-                >
-                  a.dmn
-                </h3>
+                <div>
+                  <h3
+                    class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
+                  >
+                    a.dmn
+                  </h3>
+                </div>
               </div>
               <div
                 class="pf-c-page__header-tools"

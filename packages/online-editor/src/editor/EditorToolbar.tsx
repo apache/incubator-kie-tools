@@ -33,7 +33,7 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
-import { useEditorDirtyState } from "@kogito-tooling/editor-state-control";
+import { useEditorDirtyState } from "@kogito-tooling/embedded-editor";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;

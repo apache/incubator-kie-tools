@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorStateControl } from "@kogito-tooling/editor-state-control";
-import { EmbeddedEditorRouter, EMPTY_FILE_DMN } from "@kogito-tooling/embedded-editor";
+import { EditorStateControl, EmbeddedEditorRouter, EMPTY_FILE_DMN } from "@kogito-tooling/embedded-editor";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import * as React from "react";
 import { Route, Switch } from "react-router";

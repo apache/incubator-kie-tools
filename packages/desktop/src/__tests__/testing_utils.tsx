@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorStateControl } from "@kogito-tooling/editor-state-control"
-import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
+import { EditorStateControl, EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { GlobalContext, GlobalContextType } from "../webview/common/GlobalContext";
 

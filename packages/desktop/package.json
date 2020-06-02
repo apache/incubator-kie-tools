@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@kogito-tooling/core-api": "0.4.3",
-    "@kogito-tooling/editor-state-control": "0.4.3",
     "@kogito-tooling/embedded-editor": "0.4.3",
     "@kogito-tooling/patternfly-base": "0.4.3",
     "electron": "7.1.9",

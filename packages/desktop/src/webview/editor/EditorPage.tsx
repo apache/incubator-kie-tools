@@ -15,7 +15,7 @@
  */
 
 import { ChannelType, EditorContent } from "@kogito-tooling/core-api";
-import { EditorType, EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
+import { EditorType, EmbeddedEditor, EmbeddedEditorRef, useEditorDirtyState } from "@kogito-tooling/embedded-editor";
 import "@patternfly/patternfly/patternfly.css";
 import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
 import * as electron from "electron";
@@ -25,7 +25,6 @@ import { File, FileSaveActions } from "../../common/File";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import { useEditorDirtyState } from "@kogito-tooling/editor-state-control";
 
 interface Props {
   editorType: string;
@@ -311,6 +310,7 @@ export function EditorPage(props: Props) {
               onContentResponse={onContentResponse}
               onPreviewResponse={onPreviewResponse}
               onReady={requestThumbnailPreview}
+              editorStateControl={context.editorStateControl}
             />
           </StackItem>
         </Stack>

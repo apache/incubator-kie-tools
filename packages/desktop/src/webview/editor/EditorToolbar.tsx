@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { useEditorDirtyState } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { useContext, useMemo } from "react";
 import { GlobalContext } from "../common/GlobalContext";
@@ -21,7 +22,6 @@ import { PageHeader, Brand, Toolbar, ToolbarGroup, ToolbarItem, Button, Title } 
 import { CloseIcon } from "@patternfly/react-icons";
 import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";
 import { removeDirectories } from "../../common/utils";
-import { useEditorDirtyState } from "@kogito-tooling/editor-state-control";
 
 interface Props {
   onSave: () => void;

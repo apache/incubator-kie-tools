@@ -29,6 +29,7 @@ import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { File } from "../common/File";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
+import {EditorStateControl} from "../state-control";
 
 /**
  * Properties supported by the `EmbeddedEditor`.
@@ -90,6 +91,7 @@ export interface Props {
    * Optional relative URL for the `envelope.html` used as the inner bus `IFRAME`. Defaults to `envelope/envelope.html`
    */
   envelopeUri?: string;
+  editorStateControl?: EditorStateControl
 }
 
 /**
@@ -199,6 +201,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           props.onEditorRedo?.();
         },
         receive_newEdit(edit: KogitoEdit) {
+          props.editorStateControl?.updateEventStack(edit.id);
           props.onNewEdit?.(edit);
         },
         receive_previewRequest(previewSvg: string) {

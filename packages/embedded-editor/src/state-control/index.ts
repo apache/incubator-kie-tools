@@ -14,4 +14,6 @@
  * limitations under the License.
  */
 
-import "@testing-library/jest-dom"
+
+export { EditorStateControl } from "./EditorStateControl";
+export { useEditorDirtyState } from "./EditorDirtyState";

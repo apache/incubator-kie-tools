@@ -15,8 +15,8 @@
  */
 
 import { EditorContent, ChannelType } from "@kogito-tooling/core-api";
-import { useEditorDirtyState } from "@kogito-tooling/editor-state-control";
-import { EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
+import { EmbeddedEditor, EmbeddedEditorRef, useEditorDirtyState } from "@kogito-tooling/embedded-editor";
+import "@patternfly/patternfly/patternfly.css";
 import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -286,6 +286,7 @@ export function EditorPage(props: Props) {
           channelType={ChannelType.ONLINE}
           onContentResponse={onContentResponse}
           onPreviewResponse={onPreviewResponse}
+          editorStateControl={context.editorStateControl}
         />
       </PageSection>
       <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
