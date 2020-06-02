@@ -15,8 +15,9 @@
  */
 
 export enum ChannelType {
-    VSCODE = "VSCODE",
-    ONLINE = "ONLINE",
-    GITHUB = "GITHUB",
-    DESKTOP = "DESKTOP"
+  VSCODE = "VSCODE",
+  ONLINE = "ONLINE",
+  GITHUB = "GITHUB",
+  DESKTOP = "DESKTOP",
+  EMBEDDED = "EMBEDDED"
 }
