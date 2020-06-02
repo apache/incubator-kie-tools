@@ -162,7 +162,11 @@ public class DisplayerViewer extends Composite {
     }
 
     public void error(ClientRuntimeError e) {
-        error(e, e.getMessage(), e.getCause());
+        if (e.getThrowable() != null) {
+            error(e, e.getThrowable().getMessage(), e.getCause());
+        } else {
+            error(e, e.getMessage(), e.getCause());
+        }
     }
     
     public void error(ClientRuntimeError e, String message, String cause) {

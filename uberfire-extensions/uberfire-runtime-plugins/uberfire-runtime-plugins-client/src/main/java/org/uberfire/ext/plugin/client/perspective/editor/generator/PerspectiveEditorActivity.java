@@ -95,7 +95,7 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
         return perspectiveDefinition;
     }
 
-    private String getDefaultPanelType() {
+    protected String getDefaultPanelType() {
         return SimpleWorkbenchPanelPresenter.class.getName();
     }
 

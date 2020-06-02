@@ -1,4 +1,5 @@
 .mapTooltipContainer {
+    display: none;
     min-width: 100px;
     min-height: 50px;
     position: absolute;

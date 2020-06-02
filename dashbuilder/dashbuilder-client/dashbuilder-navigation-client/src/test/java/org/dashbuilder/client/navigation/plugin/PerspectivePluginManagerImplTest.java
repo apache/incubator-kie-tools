@@ -55,7 +55,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.workbench.category.Others;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PerspectivePluginManagerTest {
+public class PerspectivePluginManagerImplTest {
 
     private static final String PERSPECTIVE_ID = "Persp1";
     private static final NavTree TEST_NAV_TREE = new NavTreeBuilder()
@@ -79,7 +79,7 @@ public class PerspectivePluginManagerTest {
     private PluginDeleted pluginDeletedEvent;
     private Plugin perspectivePlugin;
     private Plugin perspectiveRenamedPlugin;
-    private PerspectivePluginManager testedPluginManager;
+    private PerspectivePluginManagerImpl testedPluginManager;
 
     @Before
     public void setUp() {
@@ -95,7 +95,7 @@ public class PerspectivePluginManagerTest {
 
         when(pluginServices.listPlugins()).thenReturn(Collections.emptyList());
 
-        testedPluginManager = new PerspectivePluginManager(clientTypeRegistry, null, navigationManager, new CallerMock<>(pluginServices), perspectiveChangedEvent);
+        testedPluginManager = new PerspectivePluginManagerImpl(clientTypeRegistry, null, navigationManager, new CallerMock<>(pluginServices), perspectiveChangedEvent);
         testedPluginManager.getPerspectivePlugins(plugins -> {});
     }
 
