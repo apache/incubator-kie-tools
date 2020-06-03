@@ -27,59 +27,58 @@ Modules = {
     "management-console": "kogito-management-console"
 }
 
+def isSnapshotVersion(version):
+    '''
+    Check whether the given version is a snapshot version
+    :param version: The version to check
+    :return: whether the given version is a snapshot version
+    '''
+    return version.endswith("-SNAPSHOT")
 
-def getMetadataRoot(serviceUrl):
+def getMetadataRoot(service):
     '''
     Get the root element from the maven-metadata
-    :parm serviceUrl: URL of the repository's service from which artifacts needs to be updated
+    :param service: Service information (repoUrl, version, name)
     :return: root object
     '''
-    metadataURL=serviceUrl+"maven-metadata.xml"
+    metadataURL=service["repoUrl"]+"maven-metadata.xml"
     mavenMetadata=requests.get(metadataURL)
     with open('maven-metadata.xml', 'wb') as f:
         f.write(mavenMetadata.content)
     tree = ET.parse('maven-metadata.xml')
     root=tree.getroot()
+    os.remove("maven-metadata.xml")
     return root
 
-def getSnapshotVersion(serviceUrl):
+def getSnapshotVersion(service):
     '''
     parse the xml and finds the snapshotVersion
-    :parm serviceUrl: URL of the repository's service from which artifacts needs to be updated
+    :param service: Service information (repoUrl, version, name)
     :return: snapshotVersion string
     '''
-    root=getMetadataRoot(serviceUrl)
+    root=getMetadataRoot(service)
     snapshotVersion=root.find("./versioning/snapshotVersions/snapshotVersion/value").text
     return snapshotVersion
 
-def getArtifactID(serviceUrl):
-    '''
-    parse the xml and finds the artifactID
-    :parm serviceUrl: URL of the repository's service from which artifacts needs to be updated
-    :return: artifactID string
-    '''
-    root=getMetadataRoot(serviceUrl)
-    artifactID=root.find("./artifactId").text
-    return artifactID
-
-def getRunnerURL(serviceUrl):
+def getRunnerURL(service):
     ''' 
     Creates the updated URL for runner.jar
-    :parm serviceUrl: URL of the repository's service from which artifacts needs to be updated
+    :param service: Service information (repoUrl, version, name)
     :return: url string
     '''
-    artifactId=getArtifactID(serviceUrl)
-    snapshotVersion=getSnapshotVersion(serviceUrl)
-    url=serviceUrl+"{}-{}-runner.jar".format(artifactId,snapshotVersion)
+    finalVersion = service["version"]
+    if isSnapshotVersion(finalVersion):
+        finalVersion=getSnapshotVersion(service)
+    url = service["repoUrl"] + "{}-{}-runner.jar".format(service["name"], finalVersion)
     return url
 
-def getMD5(serviceUrl):
+def getMD5(service):
     '''
     Fetches the md5 code for the latest runner.jar
-    :parm serviceUrl: URL of the repository's service from which artifacts needs to be updated
+    :param service: Service information (repoUrl, version, name)
     :return: runnerMD5 string
     '''
-    runnerURL=getRunnerURL(serviceUrl)
+    runnerURL=getRunnerURL(service)
     runnerMD5URL=runnerURL+".md5"
     runnerMD5=sp.getoutput("curl -s  {}".format(runnerMD5URL))
     return runnerMD5
@@ -95,17 +94,17 @@ def yaml_loader():
     yaml.indent(mapping=2, sequence=4, offset=2)
     return yaml
 
-def update_artifacts(serviceUrl,modulePath):
+def update_artifacts(service,modulePath):
     '''
     Updates the module.yaml file of services with latest artifacts
-    :parm serviceUrl: URL of the repository's service from which artifacts needs to be updated
+    :param service: Service information (repoUrl, version, name)
     :param modulePath: relative file location of the module.yaml for the kogito service
     '''
 
     with open(modulePath) as module:
         data=yaml_loader().load(module)
-        data['artifacts'][0]['url']=getRunnerURL(serviceUrl)
-        data['artifacts'][0]['md5']=getMD5(serviceUrl)
+        data['artifacts'][0]['url']=getRunnerURL(service)
+        data['artifacts'][0]['md5']=getMD5(service)
     with open(modulePath, 'w') as module:
         yaml_loader().dump(data, module)
 
@@ -113,14 +112,16 @@ def update_artifacts(serviceUrl,modulePath):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Update the snapshot url for kogito services.')
     parser.add_argument('--repo-url', dest='repoUrl', default=DEFAULT_REPO_URL, help='Defines the url of the repository to extract the artifacts from, defaults to {}'.format(DEFAULT_REPO_URL))
-    parser.add_argument('--snapshot-version', dest='snapshotVersion', default=DEFAULT_VERSION, help='Defines the snapshot version of artifacts to retrieve from the repository url, defaults to {}'.format(DEFAULT_VERSION))
+    parser.add_argument('--version', dest='version', default=DEFAULT_VERSION, help='Defines the version of artifacts to retrieve from the repository url, defaults to {}'.format(DEFAULT_VERSION))
     args = parser.parse_args()
     
-    for service, path in Modules.items():
-        serviceUrl = args.repoUrl+"{}/{}/{}/".format(DEFAULT_ARTIFACT_PATH, service, args.snapshotVersion)
-        moduleYamlFile = "modules/{}/module.yaml".format(path)
+    for serviceName, modulePath in Modules.items():
+        service = {
+            "repoUrl" : args.repoUrl + "{}/{}/{}/".format(DEFAULT_ARTIFACT_PATH, serviceName, args.version),
+            "name" : serviceName,
+            "version" : args.version
+        }
+        moduleYamlFile = "modules/{}/module.yaml".format(modulePath)
         
-        update_artifacts(serviceUrl,moduleYamlFile)
-        print("Successfully updated the artifacts for: ",service)
-
-    os.remove("maven-metadata.xml")
+        update_artifacts(service, moduleYamlFile)
+        print("Successfully updated the artifacts for: ", serviceName)

@@ -22,6 +22,8 @@ pipeline {
         string(name: 'IMAGE_NAMESPACE', defaultValue: 'kiegroup', description: 'Image namespace to use to deploy images')
         string(name: 'IMAGE_NAME_SUFFIX', defaultValue: '', description: 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
         string(name: 'IMAGE_TAG', defaultValue: '', description: 'Image tag to use to deploy images')
+
+        string(name: 'MAVEN_ARTIFACT_REPOSITORY', defaultValue: '', description: 'Maven repository where the build artifacts are present')
     }
 
     // Keep commented if no env var is defined
@@ -65,11 +67,17 @@ pipeline {
         }
         stage('Update Artifacts') {
             steps {
-                sh "python3 scripts/update-artifacts.py"
+                script {
+                    updateArtifactCmd = "python3 scripts/update-artifacts.py"
+                    if(params.MAVEN_ARTIFACT_REPOSITORY != ''){
+                        updateArtifactCmd += "--repo-url ${params.MAVEN_ARTIFACT_REPOSITORY}"
+                    }
+                    sh updateArtifactCmd
 
-                sh "cat modules/kogito-data-index/module.yaml"
-                sh "cat modules/kogito-jobs-service/module.yaml"
-                sh "cat modules/kogito-management-console/module.yaml"
+                    sh "cat modules/kogito-data-index/module.yaml"
+                    sh "cat modules/kogito-jobs-service/module.yaml"
+                    sh "cat modules/kogito-management-console/module.yaml"
+                }
             }
         }
         stage('Validate CeKit Image and Modules descriptors'){
