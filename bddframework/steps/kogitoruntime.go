@@ -47,7 +47,7 @@ const (
 
 func registerKogitoRuntimeSteps(s *godog.Suite, data *Data) {
 	// Deploy steps
-	s.Step(`^Deploy (quarkus|springboot) example service using image in variable "([^"]*)" with configuration:$`, data.deployExampleServiceUsingImageInVariableWithConfiguration)
+	s.Step(`^Deploy (quarkus|springboot) example service "([^"]*)" from runtime registry with configuration:$`, data.deployExampleServiceFromRuntimeRegistryWithConfiguration)
 
 	// Deployment steps
 	s.Step(`^Kogito Runtime "([^"]*)" has (\d+) pods running within (\d+) minutes$`, data.kogitoRuntimeHasPodsRunningWithinMinutes)
@@ -58,9 +58,10 @@ func registerKogitoRuntimeSteps(s *godog.Suite, data *Data) {
 
 // Deploy service steps
 
-func (data *Data) deployExampleServiceUsingImageInVariableWithConfiguration(runtimeType, imageTagKey string, table *messages.PickleStepArgument_PickleTable) error {
-	imageTag := data.ScenarioContext[imageTagKey]
-	kogitoRuntime, err := getKogitoRuntimeExamplesStub(data.Namespace, runtimeType, imageTag, table)
+func (data *Data) deployExampleServiceFromRuntimeRegistryWithConfiguration(runtimeType, kogitoApplicationName string, table *messages.PickleStepArgument_PickleTable) error {
+	imageTag := data.ScenarioContext[getBuiltRuntimeImageTagContextKey(kogitoApplicationName)]
+
+	kogitoRuntime, err := getKogitoRuntimeExamplesStub(data.Namespace, runtimeType, kogitoApplicationName, imageTag, table)
 	if err != nil {
 		return err
 	}
@@ -92,8 +93,8 @@ func (data *Data) scaleKogitoRuntimeToPodsWithinMinutes(name string, nbPods, tim
 // Misc methods
 
 // getKogitoRuntimeExamplesStub Get basic KogitoRuntime stub with GIT properties initialized to common Kogito examples
-func getKogitoRuntimeExamplesStub(namespace, runtimeType, imageTag string, table *messages.PickleStepArgument_PickleTable) (*v1alpha1.KogitoRuntime, error) {
-	kogitoRuntime := framework.GetKogitoRuntimeStub(namespace, runtimeType, imageTag)
+func getKogitoRuntimeExamplesStub(namespace, runtimeType, name, imageTag string, table *messages.PickleStepArgument_PickleTable) (*v1alpha1.KogitoRuntime, error) {
+	kogitoRuntime := framework.GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag)
 
 	if err := configureKogitoRuntimeFromTable(table, kogitoRuntime); err != nil {
 		return nil, err

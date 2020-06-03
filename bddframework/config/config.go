@@ -30,6 +30,7 @@ type TestConfig struct {
 	localTests       bool
 	ciName           string
 	crDeploymentOnly bool
+	containerEngine  string
 
 	// operator information
 	operatorImageName string
@@ -80,6 +81,8 @@ const (
 	defaultKogitoExamplesURI = "https://github.com/kiegroup/kogito-examples"
 
 	defaultLoadFactor = 1
+
+	defaultContainerEngine = "docker"
 )
 
 var (
@@ -100,6 +103,7 @@ func BindFlags(set *flag.FlagSet) {
 	set.BoolVar(&env.localTests, prefix+"local", false, "If tests are launch on local machine")
 	set.StringVar(&env.ciName, prefix+"ci", "", "If tests are launch on ci machine, give the CI name")
 	set.BoolVar(&env.crDeploymentOnly, prefix+"cr-deployment-only", false, "Use this option if you have no CLI to test against. It will use only direct CR deployments.")
+	set.StringVar(&env.containerEngine, prefix+"container-engine", defaultContainerEngine, "Engine used to interact with images and local containers.")
 
 	// operator information
 	set.StringVar(&env.operatorImageName, prefix+"operator-image-name", defaultOperatorImageName, "Operator image name")
@@ -171,6 +175,11 @@ func GetCiName() string {
 // IsCrDeploymentOnly returns whether the deployment should be done only with CR
 func IsCrDeploymentOnly() bool {
 	return env.crDeploymentOnly
+}
+
+// GetContainerEngine returns engine used to interact with images and local containers
+func GetContainerEngine() string {
+	return env.containerEngine
 }
 
 // operator information

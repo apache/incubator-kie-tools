@@ -60,11 +60,11 @@ func SetKogitoRuntimeReplicas(namespace, name string, nbPods int) error {
 }
 
 // GetKogitoRuntimeStub Get basic KogitoRuntime stub with all needed fields initialized
-func GetKogitoRuntimeStub(namespace, runtimeType, imageTag string) *v1alpha1.KogitoRuntime {
+func GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag string) *v1alpha1.KogitoRuntime {
 	image := framework.ConvertImageTagToImage(imageTag)
 	kogitoRuntime := &v1alpha1.KogitoRuntime{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      image.Name,
+			Name:      name,
 			Namespace: namespace,
 		},
 		Status: v1alpha1.KogitoRuntimeStatus{
