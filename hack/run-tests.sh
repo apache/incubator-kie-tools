@@ -396,4 +396,7 @@ if [ "${KEEP_NAMESPACE}" = "false" ]; then
   cd -
 fi
 
+echo "-------- Delete stucked namespaces"
+${SCRIPT_DIR}/clean-stuck-namespaces.sh
+
 exit ${exit_code}
