@@ -8,6 +8,10 @@ cp $BATS_TEST_DIRNAME/../../../kogito-logging/added/logging.sh ${KOGITO_HOME}/la
 # import
 load $BATS_TEST_DIRNAME/../../added/kogito-infinispan-properties.sh
 
+function setup(){
+  function log_error() { echo "ERROR ${1}"; }
+}
+
 function clear_vars() {
     unset INFINISPAN_USEAUTH
     unset INFINISPAN_USERNAME
@@ -88,9 +92,13 @@ function clear_vars() {
 @test "when use auth is set to true and no credentials" {
     clear_vars
     export INFINISPAN_USEAUTH="true"
+
     run configure_infinispan_props
-    # exit
-    echo "Status: ${status}"
+
+    expected="ERROR Flag INFINISPAN_USEAUTH set to true, but no username or password informed. Please use INFINISPAN_USERNAME and INFINISPAN_PASSWORD variables to set the right credentials."
+    echo "Result is ${output} and expected is ${expected}"
+    echo "Expected status is 1, outcome status is ${status}"
     [ "$status" -eq 1 ]
+    [ "${output}" = "${expected}" ]
 }
 
