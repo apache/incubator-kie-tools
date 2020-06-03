@@ -6,13 +6,25 @@
 def buildNumber = env.BUILD_NUMBER as int
 if (buildNumber > 1) milestone(buildNumber - 1)
 milestone(buildNumber)
+IMAGES = ["kogito-quarkus-ubi8", 
+            "kogito-quarkus-jvm-ubi8",
+            "kogito-quarkus-ubi8-s2i",
+            "kogito-springboot-ubi8",
+            "kogito-springboot-ubi8-s2i",
+            "kogito-data-index",
+            "kogito-jobs-service",
+            "kogito-management-console"]
 
 pipeline{
     agent { label 'jenkins-slave'}
     stages{
         stage('Initialization'){
             steps{
-                sh "docker rm -f \$(docker ps -a -q) || docker rmi -f \$(docker images -q) || date"
+                script{
+                    cleanWorkspaces()
+                }
+                sh "docker rm -f \$(docker ps -a -q) || date"
+                sh "docker rmi -f \$(docker images -q) || date"
             }
         }
         stage('Validate CeKit Image and Modules descriptors'){
@@ -41,44 +53,26 @@ pipeline{
                 sh "make clone-repos"
             }
         }
-        stage('Build and test kogito-quarkus-ubi8 image'){
+        stage('Build and Test Images'){
             steps{
-                sh "make kogito-quarkus-ubi8"
-            }
-        }
-        stage('Build and test kogito-quarkus-jvm-ubi8 image'){
-            steps{
-                sh "make kogito-quarkus-jvm-ubi8"
-            }
-        }
-        stage('Build and test kogito-quarkus-ubi8-s2i image'){
-            steps{
-                sh "make kogito-quarkus-ubi8-s2i"
-            }
-        }
-        stage('Build and test kogito-springboot-ubi8 image'){
-            steps{
-                sh "make kogito-springboot-ubi8"
-            }
-        }
-        stage('Build and test kogito-springboot-ubi8-s2i image '){
-            steps{
-                sh "make kogito-springboot-ubi8-s2i"
-            }
-        }
-        stage('Build and test kogito-data-index image '){
-            steps{
-                sh "make kogito-data-index"
-            }
-        }
-        stage('Build and test kogito-jobs-service image '){
-            steps{
-                sh "make kogito-jobs-service"
-            }
-        }
-        stage('Build and test kogito-management-console image '){
-            steps{
-                sh "make kogito-management-console"
+                script {
+                    build_stages = [:]
+                    IMAGES.each{ image -> build_stages["${image}"] = {
+                            createWorkspace("$image")
+                            copyWorkspace("$image")
+                            dir(getWorkspacePath("$image")){
+                                try{
+                                    sh "make ${image}"
+                                }
+                                finally{
+                                    junit 'target/test/results/*.xml'
+                                }
+                            
+                            }
+                        }
+                    }
+                    parallel build_stages
+                }
             }
         }
         stage('Finishing'){
@@ -89,8 +83,27 @@ pipeline{
     }
     post{
         always{
-            junit 'target/test/results/*.xml'
+            script{
+                cleanWorkspaces()
+            }
         }
     }
 }
 
+
+
+void  createWorkspace(String image){
+    sh "mkdir -p ${getWorkspacePath(image)}"
+}
+void copyWorkspace(String image){
+    sh "rsync -av --progress . ${getWorkspacePath(image)} --exclude workspaces"
+}
+void cleanWorkspaces(){
+    sh "rm -rf ${getWorkspacesPath()}"
+}
+String getWorkspacesPath(){
+    return "${WORKSPACE}/workspaces"
+}
+String getWorkspacePath(String image){
+    return "${getWorkspacesPath()}/${image}"
+}
