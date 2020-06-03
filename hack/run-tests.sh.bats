@@ -200,6 +200,24 @@
     [[ "${output}" != *"Load default test config"* ]]
 }
 
+@test "invoke run-tests with container_engine" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --container_engine podman --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.container-engine=podman" ]]
+}
+
+@test "invoke run-tests with container_engine missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --container_engine --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.container-engine"* ]]
+}
+
+@test "invoke run-tests with container_engine empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --container_engine "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.container-engine"* ]]
+}
+
 # operator information
 
 @test "invoke run-tests with operator_image" {

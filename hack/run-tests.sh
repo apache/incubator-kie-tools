@@ -47,6 +47,7 @@ function usage(){
   printf "\n--ci {CI_NAME}\n\tSpecify whether you run test with ci, give also the name of the CI."
   printf "\n--cr_deployment_only\n\tUse this option if you have no CLI to test against. It will use only direct CR deployments."
   printf "\n--load_default_config\n\tTo be used if you want to directly use the default test config contained into ${SCRIPT_DIR}/../test/.default_config"
+  printf "\n--container_engine\n\tTo be used if you want to specify engine to interact with images and containers. Default is docker."
 
   # operator information
   printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup/kogito-cloud-operator' one."
@@ -198,6 +199,10 @@ case $1 in
   --load_default_config)
     LOAD_DEFAULT_CONFIG=true
     shift
+  ;;
+  --container_engine)
+    shift
+    if addParamKeyValueIfAccepted "--tests.container-engine" ${1}; then shift; fi
   ;;
 
   # operator information
