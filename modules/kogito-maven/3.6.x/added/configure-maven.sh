@@ -8,6 +8,7 @@ function prepareEnv() {
     unset HTTP_PROXY_NONPROXYHOSTS
     unset HTTPS_PROXY
     unset MAVEN_MIRROR_URL
+    unset MAVEN_DOWNLOAD_OUTPUT
     unset MAVEN_REPO_ID
     unset MAVEN_REPO_LAYOUT
     unset MAVEN_REPO_RELEASES_ENABLED
@@ -23,6 +24,7 @@ function prepareEnv() {
 function configure() {
     configure_proxy
     configure_mirrors
+    configure_maven_download_output
     add_maven_repo
 }
 
@@ -83,6 +85,11 @@ function configure_mirrors() {
     fi
 }
 
+function configure_maven_download_output() {
+    if [ "${MAVEN_DOWNLOAD_OUTPUT}" != "true" ]; then
+        export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} --no-transfer-progress"
+    fi
+}
 
 function add_maven_repo() {
     # single remote repository scenario: respect fully qualified url if specified, otherwise find and use service

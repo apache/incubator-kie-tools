@@ -143,6 +143,26 @@ function _generate_random_id() {
     [ "${expected}" = "${result}" ]
 }
 
+@test "test maven download output logs when MAVEN_DOWNLOAD_OUTPUT is not true" {
+    prepareEnv
+    configure_maven_download_output
+    expected=" --no-transfer-progress"
+    result="${MAVEN_ARGS_APPEND}"
+    echo "expected=${expected}"
+    echo "result=${result}"
+    [ "${expected}" = "${result}" ]
+}
+
+@test "test maven download output logs when MAVEN_DOWNLOAD_OUTPUT is true" {
+    prepareEnv
+    MAVEN_DOWNLOAD_OUTPUT="true"
+    configure_maven_download_output
+    expected=""
+    result="${MAVEN_ARGS_APPEND}"
+    echo "expected=${expected}"
+    echo "result=${result}"
+    [ "${expected}" = "${result}" ]
+}
 
 @test "test maven custom repo with ID and all supported configurations" {
     prepareEnv
