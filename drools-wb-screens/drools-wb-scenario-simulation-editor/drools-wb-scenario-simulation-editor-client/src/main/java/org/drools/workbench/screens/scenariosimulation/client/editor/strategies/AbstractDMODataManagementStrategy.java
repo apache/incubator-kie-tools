@@ -23,6 +23,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import org.drools.scenariosimulation.api.utils.ConstantsHolder;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
@@ -30,6 +31,7 @@ import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToo
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.uberfire.client.callbacks.Callback;
 
 public abstract class AbstractDMODataManagementStrategy extends AbstractDataManagementStrategy {
 
@@ -42,9 +44,12 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
 
     protected abstract List<String> getFactTypes();
 
+    protected abstract void getSuperType(String factType, Callback<String> callback);
+
     protected abstract boolean skipPopulateTestTools();
 
     protected abstract void manageDataObjects(final List<String> dataObjectsTypes,
+                                              final Map<String, String> superTypeMap,
                                               final TestToolsView.Presenter testToolsPresenter,
                                               final int expectedElements,
                                               final SortedMap<String, FactModelTree> dataObjectsFieldsMap,
@@ -75,25 +80,80 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
             int expectedElements = dataObjectsTypes.size();
             // Instantiate a dataObjects container map
             final SortedMap<String, FactModelTree> dataObjectsFieldsMap = new TreeMap<>();
+            final Map<String, String> superTypesMap = new HashMap<>();
             if (dataObjectsTypes.isEmpty()) { // Add to manage the situation when no complex objects are present
                 aggregatorCallbackMethod(testToolsPresenter, expectedElements, dataObjectsFieldsMap, context, null, simpleJavaTypes, gridWidget);
             } else {
-                manageDataObjects(dataObjectsTypes, testToolsPresenter, expectedElements, dataObjectsFieldsMap, context, simpleJavaTypes, gridWidget);
+                loadSuperTypes(dataObjectsTypes, testToolsPresenter, expectedElements, dataObjectsFieldsMap, superTypesMap, context, simpleJavaTypes, gridWidget);
             }
         }
+    }
+
+    protected void loadSuperTypes(final List<String> dataObjectsTypes,
+                                  final TestToolsView.Presenter testToolsPresenter,
+                                  final int expectedElements,
+                                  final SortedMap<String, FactModelTree> dataObjectsFieldsMap,
+                                  final Map<String, String> superTypesMap,
+                                  final ScenarioSimulationContext context,
+                                  final List<String> simpleJavaTypes,
+                                  final GridWidget gridWidget) {
+        dataObjectsTypes.forEach(factType -> getSuperType(factType, superTypeAggregatorCallBack(dataObjectsTypes,
+                                                                                                superTypesMap,
+                                                                                                testToolsPresenter,
+                                                                                                expectedElements,
+                                                                                                dataObjectsFieldsMap,
+                                                                                                context,
+                                                                                                simpleJavaTypes,
+                                                                                                gridWidget,
+                                                                                                factType)));
+    }
+
+    /**
+     * This method returns a Callback required when calling <code>getSuperType</code> method.
+     * Basically, its aim to to join all the asynchronous calls done previously calling
+     * <code>getSuperType</code> methods.
+     * @param dataObjectsTypes
+     * @param superTypeMap
+     * @param testToolsPresenter
+     * @param expectedElements
+     * @param dataObjectsFieldsMap
+     * @param context
+     * @param simpleJavaTypes
+     * @param gridWidget
+     * @param factType
+     * @return
+     */
+    protected Callback<String> superTypeAggregatorCallBack(final List<String> dataObjectsTypes,
+                                                         final Map<String, String> superTypeMap,
+                                                         final TestToolsView.Presenter testToolsPresenter,
+                                                         final int expectedElements,
+                                                         final SortedMap<String, FactModelTree> dataObjectsFieldsMap,
+                                                         final ScenarioSimulationContext context,
+                                                         final List<String> simpleJavaTypes,
+                                                         final GridWidget gridWidget,
+                                                         final String factType) {
+        return superType -> {
+            superTypeMap.put(factType, superType);
+            /* This is used to invoke this callback only once, when all the expected superclasses
+               of the expected factTypes have been managed */
+            if (superTypeMap.size() == expectedElements) {
+                manageDataObjects(dataObjectsTypes, superTypeMap, testToolsPresenter, expectedElements, dataObjectsFieldsMap, context, simpleJavaTypes, gridWidget);
+            }
+        };
     }
 
     /**
      * Create a <code>FactModelTree</code> for a given <b>factName</b> populating it with the given
      * <code>ModelField[]</code>
      * @param factName
+     * @param superTypeMap
      * @param modelFields
      * @return
      * @implNote For the moment being, due to current implementation of <b>DMO</b>, it it not possible to retrieve <b>all</b>
      * the generic types of a class with more then one, but only the last one. So, for <code>Map</code>, the <b>key</b>
      * will always be a <code>java.lang.String</code>
      */
-    public FactModelTree getFactModelTree(String factName, ModelField[] modelFields) {
+    public FactModelTree getFactModelTree(String factName, Map<String, String> superTypeMap, ModelField[] modelFields) {
         Map<String, String> simpleProperties = new HashMap<>();
         Map<String, List<String>> genericTypesMap = new HashMap<>();
         String factPackageName = packageName;
@@ -101,9 +161,14 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
         if (fullFactClassName != null && fullFactClassName.contains(".")) {
             factPackageName = fullFactClassName.substring(0, fullFactClassName.lastIndexOf('.'));
         }
+        if (ScenarioSimulationSharedUtils.isEnumCanonicalName(superTypeMap.get(factName))) {
+            simpleProperties.put(ConstantsHolder.VALUE, fullFactClassName);
+            return getSimpleClassFactModelTree(factName, fullFactClassName);
+        }
+
         for (ModelField modelField : modelFields) {
             if (!modelField.getName().equals("this")) {
-                String className = SIMPLE_CLASSES_MAP.containsKey(modelField.getClassName()) ? SIMPLE_CLASSES_MAP.get(modelField.getClassName()).getCanonicalName() : modelField.getClassName();
+                String className = defineClassNameField(modelField.getClassName(), superTypeMap);
                 simpleProperties.put(modelField.getName(), className);
                 if (ScenarioSimulationSharedUtils.isCollection(className)) {
                     populateGenericTypeMap(genericTypesMap, factName, modelField.getName(), ScenarioSimulationSharedUtils.isList(className));
@@ -111,6 +176,16 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
             }
         }
         return new FactModelTree(factName, factPackageName, simpleProperties, genericTypesMap);
+    }
+
+    protected String defineClassNameField(String modelFieldClassName, Map<String, String> superTypesMap) {
+        if (SIMPLE_CLASSES_MAP.containsKey(modelFieldClassName)) {
+            return SIMPLE_CLASSES_MAP.get(modelFieldClassName).getCanonicalName();
+        }
+        if (ScenarioSimulationSharedUtils.isEnumCanonicalName(superTypesMap.get(modelFieldClassName))) {
+            return getFQCNByFactName(modelFieldClassName);
+        }
+        return modelFieldClassName;
     }
 
     /**

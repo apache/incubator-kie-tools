@@ -17,6 +17,7 @@ package org.drools.workbench.screens.scenariosimulation.businesscentral.client.e
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
@@ -62,21 +63,23 @@ public class BusinessCentralDMODataManagementStrategy extends AbstractDMODataMan
      * final Callback&lt;ModelField[]&gt;)</code>; build a <code>FactModelTree</code> from them, and send it to the
      * given <code>Callback&lt;FactModelTree&gt;</code> aggregatorCallback
      * @param factName
+     * @param superTypeMap
      * @param aggregatorCallback
      * @return
      */
-    protected Callback<ModelField[]> fieldCompletionsCallback(String factName, Callback<FactModelTree> aggregatorCallback) {
-        return result -> fieldCompletionsCallbackMethod(factName, result, aggregatorCallback);
+    protected Callback<ModelField[]> fieldCompletionsCallback(String factName, Map<String, String> superTypeMap, Callback<FactModelTree> aggregatorCallback) {
+        return result -> fieldCompletionsCallbackMethod(factName, superTypeMap, result, aggregatorCallback);
     }
 
     /**
      * Actual code of the <b>fieldCompletionsCallback</b>; isolated for testing
      * @param factName
+     * @param superTypeMap
      * @param result
      * @param aggregatorCallback
      */
-    protected void fieldCompletionsCallbackMethod(String factName, ModelField[] result, Callback<FactModelTree> aggregatorCallback) {
-        FactModelTree toSend = getFactModelTree(factName, result);
+    protected void fieldCompletionsCallbackMethod(String factName, Map<String, String> superTypeMap, ModelField[] result, Callback<FactModelTree> aggregatorCallback) {
+        FactModelTree toSend = getFactModelTree(factName, superTypeMap, result);
         aggregatorCallback.callback(toSend);
     }
 
@@ -100,7 +103,10 @@ public class BusinessCentralDMODataManagementStrategy extends AbstractDMODataMan
     }
 
     @Override
-    protected void manageDataObjects(List<String> dataObjectsTypes, final TestToolsView.Presenter testToolsPresenter,  int expectedElements,
+    protected void manageDataObjects(final List<String> dataObjectsTypes,
+                                     final Map<String, String> superTypeMap,
+                                     final TestToolsView.Presenter testToolsPresenter,
+                                     final int expectedElements,
                                      final SortedMap<String, FactModelTree> dataObjectsFieldsMap,
                                      final ScenarioSimulationContext context,
                                      final List<String> simpleJavaTypes,
@@ -109,13 +115,17 @@ public class BusinessCentralDMODataManagementStrategy extends AbstractDMODataMan
         Callback<FactModelTree> aggregatorCallback = aggregatorCallback(testToolsPresenter, expectedElements, dataObjectsFieldsMap, context, simpleJavaTypes, gridWidget);
         // Iterate over all dataObjects to retrieve their modelfields
         dataObjectsTypes.forEach(factType ->
-                                         oracle.getFieldCompletions(factType, fieldCompletionsCallback(factType, aggregatorCallback)));
-
+                                         oracle.getFieldCompletions(factType, fieldCompletionsCallback(factType, superTypeMap, aggregatorCallback)));
     }
 
     @Override
     protected List<String> getFactTypes() {
         return Arrays.asList(oracle.getFactTypes());
+    }
+
+    @Override
+    protected void getSuperType(String factType, Callback<String> callback) {
+        oracle.getSuperType(factType, callback);
     }
 
     @Override
