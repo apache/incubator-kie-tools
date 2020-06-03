@@ -11,6 +11,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
   exposing={[Function]}
   keyboardShortcuts={
     DefaultKeyboardShortcutsService {
+      "delayedKeyBindings": Array [],
       "editorContext": Object {
         "channel": "VSCODE",
         "operatingSystem": "WINDOWS",
@@ -94,6 +95,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
     }
     keyboardShortcuts={
       DefaultKeyboardShortcutsService {
+        "delayedKeyBindings": Array [],
         "editorContext": Object {
           "channel": "VSCODE",
           "operatingSystem": "WINDOWS",
@@ -393,6 +395,7 @@ exports[`EditorEnvelopeController opens 1`] = `
   exposing={[Function]}
   keyboardShortcuts={
     DefaultKeyboardShortcutsService {
+      "delayedKeyBindings": Array [],
       "editorContext": Object {
         "channel": "VSCODE",
         "operatingSystem": "WINDOWS",
@@ -590,6 +593,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
   exposing={[Function]}
   keyboardShortcuts={
     DefaultKeyboardShortcutsService {
+      "delayedKeyBindings": Array [],
       "editorContext": Object {
         "channel": "VSCODE",
         "operatingSystem": "WINDOWS",

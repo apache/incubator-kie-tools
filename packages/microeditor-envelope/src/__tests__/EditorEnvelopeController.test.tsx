@@ -81,7 +81,8 @@ beforeEach(() => {
         callback();
       }
     },
-    new ResourceContentEditorCoordinator()
+    new ResourceContentEditorCoordinator(),
+    new DefaultKeyboardShortcutsService( { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS })
   );
 });
 

@@ -44,7 +44,8 @@ export class EditorEnvelopeController {
     specialDomElements: SpecialDomElements,
     stateControl: StateControl,
     renderer: Renderer,
-    resourceContentEditorCoordinator: ResourceContentEditorCoordinator
+    resourceContentEditorCoordinator: ResourceContentEditorCoordinator,
+    keyboardShortcutsApi: KeyboardShortcutsApi
   ) {
     this.renderer = renderer;
     this.editorFactory = editorFactory;
@@ -59,7 +60,10 @@ export class EditorEnvelopeController {
           this.editorEnvelopeView!.setLoading();
           editor
             .setContent(contentPath, editorContent.content)
-            .finally(() => this.editorEnvelopeView!.setLoadingFinished())
+            .finally(() => {
+              keyboardShortcutsApi.executeDelayedShortcutsRegistration();
+              this.editorEnvelopeView!.setLoadingFinished()
+            })
             .then(() => self.notify_ready());
         }
       },
