@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/bash
 # Copyright 2019 Red Hat, Inc. and/or its affiliates
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,12 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-dirs=(cmd pkg version)
-for dir in "${dirs[@]}"
-do
-    if ! golint "${dir}"/... | grep -v zz_generated; then
-        code=1
-    fi
-done
+golint ./... | grep -v zz_generated | tee -a golint_errors
+if [ -s golint_errors ]  ; then
+    code=1
+fi
+rm -f golint_errors
 exit ${code:0}
+
