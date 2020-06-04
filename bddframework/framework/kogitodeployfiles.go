@@ -14,20 +14,12 @@
 
 package framework
 
-import (
-	"github.com/kiegroup/kogito-cloud-operator/test/config"
-)
-
 // DeploySourceFilesFromPath deploys source files from a path
 func DeploySourceFilesFromPath(namespace, serviceName, path string) error {
 	GetLogger(namespace).Infof("Deploy example %s with source files in path %s", serviceName, path)
 
-	cmd := []string{"deploy-service", serviceName, path}
+	kogitoApp := GetKogitoAppStub(namespace, "quarkus", serviceName)
+	kogitoApp.Spec.Build.GitSource.URI = path
 
-	if buildImageVersion := config.GetBuildImageVersion(); len(buildImageVersion) > 0 {
-		cmd = append(cmd, "--image-version", buildImageVersion)
-	}
-
-	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
-	return err
+	return DeployService(namespace, CLIInstallerType, kogitoApp)
 }
