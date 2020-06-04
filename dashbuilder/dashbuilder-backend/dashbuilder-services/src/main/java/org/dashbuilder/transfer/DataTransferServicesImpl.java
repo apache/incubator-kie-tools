@@ -119,7 +119,8 @@ public class DataTransferServicesImpl implements DataTransferServices {
                                                 .append(FILE_PATH)
                                                 .append(File.separator)
                                                 .append(EXPORT_FILE_NAME)
-                                                .toString();
+                                                .toString()
+                                                .replace("\\", "/");
 
         Predicate<Path> readmeFilter = p -> p.toString().toLowerCase().endsWith("readme.md");
         Predicate<Path> datasetsFilter = def -> true;
@@ -159,7 +160,8 @@ public class DataTransferServicesImpl implements DataTransferServices {
                                   .append(FILE_PATH)
                                   .append(File.separator)
                                   .append(EXPORT_FILE_NAME)
-                                  .toString();
+                                  .toString()
+                                  .replace("\\", "/");
     }
 
     @Override
@@ -170,13 +172,15 @@ public class DataTransferServicesImpl implements DataTransferServices {
                                                             .append("://")
                                                             .append(systemFS.getName())
                                                             .append(File.separator)
-                                                            .toString()));
+                                                            .toString()
+                                                            .replace("\\", "/")));
 
         String expectedPath = new StringBuilder().append(File.separator)
                                                  .append(FILE_PATH)
                                                  .append(File.separator)
                                                  .append(IMPORT_FILE_NAME)
-                                                 .toString();
+                                                 .toString()
+                                                 .replace("\\", "/");
 
         Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
 
@@ -220,7 +224,8 @@ public class DataTransferServicesImpl implements DataTransferServices {
 
     private List<String> importFiles(Path path) throws Exception {
         String tmpDir = System.getProperty("java.io.tmpdir");
-        if (tmpDir.lastIndexOf('/') == tmpDir.length() - 1) {
+        if (tmpDir.lastIndexOf('/') == tmpDir.length() - 1
+                || tmpDir.lastIndexOf('\\') == tmpDir.length() - 1) {
             tmpDir = tmpDir.substring(0, tmpDir.length() - 1);
         }
 
@@ -229,7 +234,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
             .append(File.separator)
             .append(FILE_PATH)
             .append(File.separator)
-            .toString();
+            .toString().replace("\\", "/");
 
         List<String> imported = new ArrayList<>();
         File destDir = new File(tempPath);
@@ -250,10 +255,12 @@ public class DataTransferServicesImpl implements DataTransferServices {
                 URI uri = URI.create(new StringBuilder().append(SpacesAPI.Scheme.GIT)
                                                         .append("://")
                                                         .append(fileSystem.getName())
-                                                        .toString());
+                                                        .toString()
+                                                        .replace("\\", "/"));
 
                 String newFilePath = newFile.toPath()
                                             .toString()
+                                            .replace("\\", "/")
                                             .replace(new StringBuilder(tempPath).append(fileSystem.getName()),
                                                      "");
 
@@ -319,7 +326,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
 
     private FileSystem getImportFileSystem(File file, String tempPath) {
         List<FileSystem> fileSystems = Arrays.asList(datasetsFS, perspectivesFS, navigationFS);
-        String filePath = file.toURI().toString();
+        String filePath = file.toURI().toString().replace("\\", "/");
 
         return fileSystems.stream()
                           .filter(fs -> filePath.contains(tempPath + fs.getName()))
@@ -330,7 +337,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
     private void moveZipToFileSystem(String zipLocation, FileSystem fileSystem) {
         String sourceLocation = new StringBuilder()
                                                    .append(SpacesAPI.Scheme.FILE)
-                                                   .append("://")
+                                                   .append(":///")
                                                    .append(zipLocation)
                                                    .toString();
 
@@ -343,7 +350,8 @@ public class DataTransferServicesImpl implements DataTransferServices {
                                                               .append(FILE_PATH)
                                                               .append(File.separator)
                                                               .append(EXPORT_FILE_NAME)
-                                                              .toString()));
+                                                              .toString()
+                                                              .replace("\\", "/")));
 
         ioService.write(target, Files.readAllBytes(source));
 
