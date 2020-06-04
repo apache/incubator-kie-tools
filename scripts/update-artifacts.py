@@ -7,6 +7,8 @@
 # ruamel.yaml
 # elementpath 
 
+import sys
+sys.dont_write_bytecode = True
 
 import xml.etree.ElementTree as ET
 import requests
@@ -14,6 +16,8 @@ import subprocess as sp
 import os
 import argparse
 from ruamel.yaml import YAML
+
+import common
 
 DEFAULT_REPO_URL = "https://repository.jboss.org/"
 DEFAULT_VERSION = "8.0.0-SNAPSHOT"
@@ -125,3 +129,5 @@ if __name__ == "__main__":
         
         update_artifacts(service, moduleYamlFile)
         print("Successfully updated the artifacts for: ", serviceName)
+    
+    common.update_kogito_version_in_modules(args.version)

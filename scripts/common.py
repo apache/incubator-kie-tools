@@ -99,10 +99,32 @@ def update_kogito_modules(target_version):
                 print(
                     "Updating module {0} version from {1} to {2}".format(data['name'], data['version'], target_version))
                 data['version'] = target_version
+
+            with open(os.path.join(modules_dir, module), 'w') as m:
+                yaml_loader().dump(data, m)
+
+    except TypeError:
+        raise
+
+    update_kogito_version_in_modules(target_version)
+
+def update_kogito_version_in_modules(target_version):
+    """
+    Update every module.yaml file listed on MODULES as well the envs listed on ENVS.
+    :param target_version:  version used to update all needed module.yaml files
+    """
+    modules_dir = "modules"
+    try:
+
+        for module in MODULES:
+            module = module + "/module.yaml"
+            with open(os.path.join(modules_dir, module)) as m:
+                data = yaml_loader().load(m)
                 if 'envs' in data:
                     for index, env in enumerate(data['envs'], start=0):
                         for target_env in ENVS:
                             if target_env == env['name']:
+                                print("Updating module {0} env var {1} with value {2}".format(data['name'], target_env, target_version))
                                 data['envs'][index]['value'] = target_version
 
             with open(os.path.join(modules_dir, module), 'w') as m:
