@@ -30,6 +30,7 @@ public class ChannelTest {
         assertEquals(Channel.ONLINE, Channel.withName("ONLine"));
         assertEquals(Channel.VSCODE, Channel.withName("VSCode"));
         assertEquals(Channel.DESKTOP, Channel.withName("Desktop"));
+        assertEquals(Channel.EMBEDDED, Channel.withName("emBedDED"));
     }
 
     @Test(expected = IllegalArgumentException.class)

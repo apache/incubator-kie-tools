@@ -24,7 +24,8 @@ public enum Channel {
     ONLINE("ONLINE"),
     VSCODE("VSCODE"),
     GITHUB("GITHUB"),
-    DESKTOP("DESKTOP");
+    DESKTOP("DESKTOP"),
+    EMBEDDED("EMBEDDED");
 
     private final String name;
 
@@ -38,8 +39,8 @@ public enum Channel {
 
     public static Channel withName(String name) {
         return Stream.of(Channel.values())
-                     .filter(channel -> channel.getName().equalsIgnoreCase(name))
-                     .findFirst().orElseThrow(() -> new IllegalArgumentException("Name not recognized: " + name));
+                .filter(channel -> channel.getName().equalsIgnoreCase(name))
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("Name not recognized: " + name));
     }
 
 }
