@@ -34,11 +34,11 @@ const (
 
 var (
 	// InfinispanKogitoInfraComponent is for infinispan
-	InfinispanKogitoInfraComponent KogitoInfraComponent = KogitoInfraComponent{name: infinispanKey}
+	InfinispanKogitoInfraComponent = KogitoInfraComponent{name: infinispanKey}
 	// KafkaKogitoInfraComponent is for kafka
-	KafkaKogitoInfraComponent KogitoInfraComponent = KogitoInfraComponent{name: kafkaKey}
+	KafkaKogitoInfraComponent = KogitoInfraComponent{name: kafkaKey}
 	// KeycloakKogitoInfraComponent is for keycloak
-	KeycloakKogitoInfraComponent KogitoInfraComponent = KogitoInfraComponent{name: keycloakKey}
+	KeycloakKogitoInfraComponent = KogitoInfraComponent{name: keycloakKey}
 )
 
 // ParseKogitoInfraComponent retrieves the correspoding KogitoInfraComponent
