@@ -22,9 +22,12 @@
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "jest",
+    "cypress-run": "cypress run",
+    "cypress-start-server": "webpack-dev-server -d --host 0.0.0.0 & wait-on http-get://localhost:9001",
+    "cypress-ui-test": "start-server-and-test cypress-start-server http://localhost:9001 cypress-run",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
-    "build:prod": "yarn run build --mode production --devtool none",
+    "build:prod": "yarn run build --mode production --devtool none && yarn run cypress-ui-test",
     "start": "webpack-dev-server -d --host 0.0.0.0"
   },
   "babel": {
@@ -32,5 +35,9 @@
       "@babel/env",
       "@babel/react"
     ]
+  },
+  "devDependencies": {
+    "cypress": "^4.7.0",
+    "start-server-and-test": "^1.11.0"
   }
 }

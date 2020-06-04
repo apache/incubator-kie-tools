@@ -547,7 +547,8 @@ export function HomePage(props: Props) {
       </PageSection>
       <PageSection className="pf-u-px-2xl-on-lg">
         <Gallery gutter="lg" className="kogito--editor-landing__gallery">
-          <Card>
+          <Card data-ouia-component-type="try-sample-model"
+                data-ouia-component-id="try-sample-model-bpmn">
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
                 Workflow (.BPMN)
@@ -565,7 +566,8 @@ export function HomePage(props: Props) {
               </Button>
             </CardFooter>
           </Card>
-          <Card>
+          <Card data-ouia-component-type="try-sample-model"
+                data-ouia-component-id="try-sample-model-dmn">
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
                 Decision model (.DMN)
