@@ -1,0 +1,190 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@import "/org/uberfire/client/views/static/uberfire-variables.less";
+#homePage {
+
+  height: 100%;
+
+  .kie-circle-icon--md {
+    font-size: 3em;
+  }
+
+  .kie-circle-icon--lg {
+    font-size: 4em;
+  }
+
+  .kie-page {
+    align-items: stretch;
+    display: flex;
+    justify-content: space-between;
+    flex-flow: column nowrap;
+    height: 100%;
+    max-height: 100vh;
+  }
+  .kie-page__content {
+    flex: 1 1 auto;
+  }
+  .kie-page__masthead,
+  .kie-page__footer {
+    flex: 0 0 auto;
+  }
+  .kie-content--bg-image {
+    background-image: url('./images/dashbuilder_home_bg.jpg');
+    background-color: @color-pf-black-700;
+    background-position: top center;
+    background-size: cover;
+    .blank-slate-pf {
+      background-color: transparent;
+      color: @color-pf-black-300;
+      border: 0;
+    }
+    .kie-circle-icon {
+      background-color: transparent;
+    }
+
+  }
+  .kie-container-fluid--blank-slate {
+    @media (min-width: @screen-md-min) {
+      width: 100%;
+      background-color: rgba(0, 0, 0, .2);
+    }
+  }
+  .kie-blank-slate {
+    display: flex;
+    @media (min-width: @screen-md-min) {
+      align-items: center;
+    }
+  }
+  .blank-slate-pf-secondary-action {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    > *:not(:last-child) {
+      margin-bottom: @pf-spacer-lg;
+    }
+    @media (min-width: @screen-md-min) {
+      flex-direction: row;
+      flex-grow: 1;
+      justify-content: center;
+      align-items: stretch;
+      flex-wrap: nowrap;
+      > *:not(:last-child) {
+        margin-bottom: 0;
+        border-right: 1px solid @color-pf-white;
+      }
+    }
+  }
+
+  .kie-hero-card {
+    height: 210px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding-top: @pf-spacer-md;
+
+    & + .kie-hero-card {
+      border-left: 0;
+    }
+    @media (min-width: @screen-md-min) {
+      flex: 0 0 24em;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      align-items: center;
+      padding-left: @pf-spacer-xxxl;
+      padding-right: @pf-spacer-xxxl;
+
+    }
+    &:hover, &:focus, &:active {
+      .kie-hero-card__icon {
+        background-color: @brand-primary;
+        color: @color-pf-white;
+      }
+    }
+  }
+
+  .kie-hero-card__icon {
+    margin-right: @pf-spacer-md;
+    .kie-circle-icon--md;
+    @media (min-width: @screen-md-min) {
+      margin-right: 0;
+      .kie-circle-icon--lg;
+    }
+  }
+
+  .kie-hero-card__text {
+    flex: 3 0;
+    text-align: left;
+    width: 230px;
+    @media (min-width: @screen-md-min) {
+      flex: 1 1 ;
+      text-align: center;
+    }
+  }
+
+  .kie-hero-card__action {
+    display: flex;
+    flex: 1 1 100%;
+    align-items: center;
+    margin-bottom: @grid-gutter-width;
+    @media (min-width: @screen-xs-min) {
+      flex: 1 1;
+      align-items: flex-end;
+      width: auto;
+      margin-bottom: 0;
+
+    }
+    @media (min-width: @screen-sm-min) {
+      margin-top: @grid-gutter-width;
+    }
+  }
+
+  .kie-circle-icon {
+    background-color: @alert-info-bg;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    height: 1.75em;
+    width: 1.75em;
+    border-radius: 50%;
+    &:hover {
+      background-color: @color-pf-black-600;
+      color: @color-pf-white;
+    }
+  }
+
+  .kie-circle-icon--md {
+    font-size: 3em;
+  }
+
+  .kie-circle-icon--lg {
+    font-size: 4em;
+  }
+
+  .kie-hero-card__link {
+    font-weight: bold;
+  }
+
+  .kie-hero-card__link.disabled {
+    pointer-events: none;
+    font-weight: normal;
+    color: #d1d1d1;
+  }
+}

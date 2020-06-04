@@ -15,28 +15,27 @@
  */
 package org.dashbuilder.client.perspectives;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
+import org.dashbuilder.client.screens.HomeScreen;
 import org.dashbuilder.perspectives.PerspectiveIds;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.client.annotations.WorkbenchPanel;
+import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.util.Layouts;
+import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.impl.PartDefinitionImpl;
+import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
-import com.google.gwt.user.client.ui.FlowPanel;
-
-@Templated
 @WorkbenchPerspective(identifier = PerspectiveIds.HOME, isDefault = true)
-public class HomePerspective implements IsElement {
+public class HomePerspective  {
 
-    @Inject
-    @DataField
-    @WorkbenchPanel(parts = "HomeScreen")
-    Div homeScreen;
-
+    @Perspective
+    public PerspectiveDefinition buildPerspective() {
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(StaticWorkbenchPanelPresenter.class.getName());
+        final PlaceRequest place = new DefaultPlaceRequest(HomeScreen.ID);
+        PartDefinitionImpl dashboardScreen = new PartDefinitionImpl(place);
+        perspective.getRoot().addPart(dashboardScreen);
+        perspective.setName("Dashbuilder Home");
+        return perspective;
+    }
 }
