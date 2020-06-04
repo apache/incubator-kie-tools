@@ -4,9 +4,8 @@
   "description": "",
   "version": "0.4.3",
   "license": "Apache-2.0",
-  "enableProposedApi": true,
   "engines": {
-    "vscode": "^1.45.0"
+    "vscode": "^1.46.0"
   },
   "repository": {
     "type": "git",
