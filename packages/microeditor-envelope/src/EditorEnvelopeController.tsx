@@ -123,6 +123,8 @@ export class EditorEnvelopeController {
           loadingScreenContainer={this.specialDomElements.loadingScreenContainer}
           keyboardShortcuts={args.keyboardShortcuts}
           context={args.context}
+          stateControl={this.stateControl}
+          busApi={this.envelopeBusInnerMessageHandler}
         />,
         args.container,
         res

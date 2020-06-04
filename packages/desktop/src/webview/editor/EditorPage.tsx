@@ -15,7 +15,13 @@
  */
 
 import { ChannelType, EditorContent } from "@kogito-tooling/core-api";
-import { EditorType, EmbeddedEditor, EmbeddedEditorRef, useEditorDirtyState } from "@kogito-tooling/embedded-editor";
+import {
+  EditorType,
+  EmbeddedEditor,
+  // EmbeddedEditorKeyboardShortcuts,
+  EmbeddedEditorRef,
+  useEditorDirtyState
+} from "@kogito-tooling/embedded-editor";
 import "@patternfly/patternfly/patternfly.css";
 import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
 import * as electron from "electron";
@@ -250,6 +256,31 @@ export function EditorPage(props: Props) {
     }),
     [context.file?.filePath, context.file?.fileType, context.file?.fileContent]
   );
+
+  // const keyboard = EmbeddedEditorKeyboardShortcuts.getInstance(ChannelType.DESKTOP);
+  // useEffect(() => {
+  //   const undoId = keyboard.registerKeyPress(
+  //     "ctrl+z",
+  //     "Undo | Undo last event",
+  //     async () => {
+  //       editorRef.current!.notifyUndo();
+  //     },
+  //     { element: window }
+  //   );
+  //
+  //   const redoId = keyboard.registerKeyPress(
+  //     "shift+ctrl+z",
+  //     "Redo | Redo last event",
+  //     async () => {
+  //       editorRef.current!.notifyRedo();
+  //     },
+  //     { element: window }
+  //   );
+  //   return () => {
+  //     keyboard.deregister(undoId);
+  //     keyboard.deregister(redoId);
+  //   };
+  // }, []);
 
   return (
     <Page className={"kogito--editor-page"}>

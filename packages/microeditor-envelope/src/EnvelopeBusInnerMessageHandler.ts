@@ -28,6 +28,7 @@ import {
   ResourcesList,
   ResourceListOptions
 } from "@kogito-tooling/core-api";
+import { EditorStateControlEvent } from "@kogito-tooling/embedded-editor";
 
 export interface Impl {
   receive_contentResponse(content: EditorContent): void;
@@ -115,6 +116,9 @@ export class EnvelopeBusInnerMessageHandler {
   }
   public respond_previewRequest(previewSvg: string) {
     return this.send({ type: EnvelopeBusMessageType.RETURN_PREVIEW, data: previewSvg });
+  }
+  public notify_channelStateControl(stateControl: EditorStateControlEvent) {
+    return this.send({ type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL, data: stateControl });
   }
 
   private receive_initRequest(init: { origin: string; busId: string }) {

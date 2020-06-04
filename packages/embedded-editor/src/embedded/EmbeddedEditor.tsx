@@ -17,6 +17,7 @@
 import {
   ChannelType,
   EditorContent,
+  getOperatingSystem,
   KogitoEdit,
   ResourceContent,
   ResourceContentRequest,
@@ -29,7 +30,9 @@ import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { File } from "../common/File";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
-import {EditorStateControl} from "../state-control";
+import { EditorStateControl } from "../stateControl";
+import { EditorStateControlEvent } from "../stateControl/EditorStateControlEvent";
+import { DefaultKeyboardShortcutsService } from "../keyboardShortcuts/KeyboardShortcutsChannels";
 
 /**
  * Properties supported by the `EmbeddedEditor`.
@@ -91,13 +94,15 @@ export interface Props {
    * Optional relative URL for the `envelope.html` used as the inner bus `IFRAME`. Defaults to `envelope/envelope.html`
    */
   envelopeUri?: string;
-  editorStateControl?: EditorStateControl
+  editorStateControl?: EditorStateControl;
 }
 
 /**
  * Forward reference for the `EmbeddedEditor` to support consumers to call upon embedded operations.
  */
 export type EmbeddedEditorRef = {
+  notifyRedo(): void;
+  notifyUndo(): void;
   /**
    * Request the editor returns its current content.
    */
@@ -108,7 +113,7 @@ export type EmbeddedEditorRef = {
   requestPreview(): void;
   /**
    * Request to set the content of the editor; this will overwrite the content supplied by the `File.getFileContents()` passed in construction.
-   * @param content 
+   * @param content
    */
   setContent(content: string): void;
 } | null;
@@ -130,6 +135,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   forwardedRef
 ) => {
   const iframeRef: React.RefObject<HTMLIFrameElement> = useRef<HTMLIFrameElement>(null);
+  const keyboardShortcuts = useMemo(() => {
+    return new DefaultKeyboardShortcutsService({ channel: props.channelType, operatingSystem: getOperatingSystem() });
+  }, []);
 
   //Property functions default handling
   const onResourceContentRequest = useCallback(
@@ -186,6 +194,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           props.onDirtyIndicatorChange?.(isDirty);
         },
         receive_ready() {
+          setupKeyboardShortcuts();
           props.onReady?.();
         },
         receive_resourceContentRequest(request: ResourceContentRequest) {
@@ -195,9 +204,11 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           onResourceListRequest(request).then(r => self.respond_resourceList(r!));
         },
         notify_editorUndo: () => {
+          props.editorStateControl?.undoEvent();
           props.onEditorUndo?.();
         },
         notify_editorRedo: () => {
+          props.editorStateControl?.redoEvent();
           props.onEditorRedo?.();
         },
         receive_newEdit(edit: KogitoEdit) {
@@ -206,6 +217,20 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         },
         receive_previewRequest(previewSvg: string) {
           props.onPreviewResponse?.(previewSvg);
+        },
+        notify_channelStateControl(stateControlEvent: EditorStateControlEvent) {
+          // props.onStateControl??? // method from core-api to handle to nofication
+          switch (stateControlEvent) {
+            case EditorStateControlEvent.REDO:
+              props.editorStateControl?.redoEvent();
+              break;
+            case EditorStateControlEvent.UNDO:
+              props.editorStateControl?.undoEvent();
+              break;
+            case EditorStateControlEvent.SAVE:
+              props.editorStateControl?.setSavedEvent();
+              break;
+          }
         }
       })
     );
@@ -216,6 +241,26 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     props.onResourceContentRequest,
     props.onResourceListRequest
   ]);
+
+  const setupKeyboardShortcuts = useCallback(() => {
+    // necessary to keyboardShortcuts.deregister(undoId) on unmount. necessary to check when editor is unmount
+    // move shortcuts to core-api. (used on microeditor-envelope // improve name)
+    // move state control to core-api. (used on microeditor-envelope // change class name)
+    // put common shortcuts on the core-api.
+    const undoId = keyboardShortcuts.registerKeyPress(
+      "ctrl+z",
+      "Undo | Undo last edit",
+      async () => envelopeBusOuterMessageHandler.notify_editorUndo(),
+      { element: window }
+    );
+
+    const redoId = keyboardShortcuts.registerKeyPress(
+      "shift+ctrl+z",
+      "Redo | Redo last edit",
+      async () => envelopeBusOuterMessageHandler.notify_editorUndo(),
+      { element: window }
+    );
+  }, []);
 
   //Attach/detach bus when component attaches/detaches from DOM
   useEffect(() => {
@@ -238,6 +283,8 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       }
 
       return {
+        notifyRedo: () => envelopeBusOuterMessageHandler.notify_editorRedo(),
+        notifyUndo: () => envelopeBusOuterMessageHandler.notify_editorUndo(),
         requestContent: () => envelopeBusOuterMessageHandler.request_contentResponse(),
         requestPreview: () => envelopeBusOuterMessageHandler.request_previewResponse(),
         setContent: (content: string) => {

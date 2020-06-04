@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorStateControl } from "../../state-control/EditorStateControl";
+import { EditorStateControl } from "../../stateControl/EditorStateControl";
 
 describe("EditorStateControl", () => {
   let editorStateControl: EditorStateControl;

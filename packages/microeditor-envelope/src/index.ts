@@ -27,6 +27,7 @@ import { Renderer } from "./Renderer";
 import { SpecialDomElements } from "./SpecialDomElements";
 
 export * from "./api/context/EditorContext";
+export * from "./api/keyboardShortcuts";
 export * from "./api/resourceContent";
 export { EditorEnvelopeController } from "./EditorEnvelopeController";
 export * from "./EditorFactory";

@@ -21,7 +21,7 @@ import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/re
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
-import { GithubTokenModal } from '../common/GithubTokenModal';
+import { GithubTokenModal } from "../common/GithubTokenModal";
 import { GlobalContext } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";

@@ -24,12 +24,17 @@ import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
 import { EditorContext } from "./api/context";
+import { RegisterEditorKeyboardShortcuts } from "./EditorKeyboardShortcuts";
+import { StateControl } from "./api/stateControl";
+import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
   loadingScreenContainer: HTMLElement;
   keyboardShortcuts: KeyboardShortcutsApi;
   context: EditorContext;
+  stateControl: StateControl;
+  busApi: EnvelopeBusInnerMessageHandler;
 }
 
 interface State {
@@ -67,7 +72,14 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
   public render() {
     return (
       <>
-        {!this.state.loading && <KeyBindingsHelpOverlay keyboardShortcuts={this.props.keyboardShortcuts} context={this.props.context}/>}
+        <RegisterEditorKeyboardShortcuts
+          keyboardShortcuts={this.props.keyboardShortcuts}
+          stateControl={this.props.stateControl}
+          busAPI={this.props.busApi}
+        />
+        {!this.state.loading && (
+          <KeyBindingsHelpOverlay keyboardShortcuts={this.props.keyboardShortcuts} context={this.props.context} />
+        )}
         {this.LoadingScreenPortal()}
         {this.state.editor && this.state.editor.af_isReact && this.state.editor.af_componentRoot()}
       </>

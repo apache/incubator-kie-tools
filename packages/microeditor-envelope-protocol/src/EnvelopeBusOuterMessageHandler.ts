@@ -26,6 +26,7 @@ import {
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
 import { EnvelopeBusApi } from "./EnvelopeBusApi";
+import { EditorStateControlEvent } from "@kogito-tooling/embedded-editor";
 
 export interface EnvelopeBusOuterMessageHandlerImpl {
   pollInit(): void;
@@ -41,6 +42,7 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   notify_editorUndo(): void;
   notify_editorRedo(): void;
   receive_newEdit(edit: KogitoEdit): void;
+  notify_channelStateControl(event: EditorStateControlEvent): void;
 }
 
 export class EnvelopeBusOuterMessageHandler {
@@ -158,6 +160,9 @@ export class EnvelopeBusOuterMessageHandler {
         break;
       case EnvelopeBusMessageType.RETURN_PREVIEW:
         this.impl.receive_previewRequest(message.data as string);
+        break;
+      case EnvelopeBusMessageType.NOTIFY_STATE_CONTROL:
+        this.impl.notify_channelStateControl(message.data);
         break;
       default:
         console.info(`Unknown message type received: ${message.type}`);

@@ -15,8 +15,8 @@
  */
 
 import { renderHook } from "@testing-library/react-hooks";
-import { useEditorDirtyState } from "../../state-control/EditorDirtyState";
-import { EditorStateControl } from "../../state-control/EditorStateControl";
+import { useEditorDirtyState } from "../../stateControl/EditorDirtyState";
+import { EditorStateControl } from "../../stateControl/EditorStateControl";
 import { act } from "react-test-renderer";
 
 describe("useEditorDirtyState", () => {

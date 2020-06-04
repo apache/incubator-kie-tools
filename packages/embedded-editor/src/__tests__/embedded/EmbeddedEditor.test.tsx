@@ -40,7 +40,9 @@ describe("EmbeddedEditor::ONLINE", () => {
     current: {
       requestContent: () => "",
       requestPreview: () => "",
-      setContent: (content: string) => null
+      setContent: (content: string) => null,
+      notifyRedo: () => "",
+      notifyUndo: () => ""
     }
   };
 
