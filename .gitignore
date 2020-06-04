@@ -9,4 +9,6 @@ out/
 packages/kie-bc-editors-unpacked/dmn
 packages/kie-bc-editors-unpacked/bpmn
 packages/kie-bc-editors-unpacked/scesim
+packages/online-editor/cypress/screenshots
+packages/online-editor/cypress/videos
 .vscode/
