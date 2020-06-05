@@ -76,7 +76,8 @@ export function init(args: {
     specialDomElements,
     stateControl,
     renderer,
-    resourceContentEditorCoordinator
+    resourceContentEditorCoordinator,
+    keyboardShortcutsService
   );
 
   return editorEnvelopeController

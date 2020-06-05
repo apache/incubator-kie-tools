@@ -73,11 +73,15 @@ export interface KeyboardShortcutsApi {
    */
   registerKeyPressOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts): number;
 
-
   /**
    * Returns a list of all the registered Keyboard Shortcuts.
    */
   registered(): KeyBinding[];
+
+  /**
+   * Execute delayed shortcuts after envelope load.
+   */
+  executeDelayedShortcutsRegistration(): void;
 }
 
 /**

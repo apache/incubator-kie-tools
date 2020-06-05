@@ -11,6 +11,7 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
     }
     keyboardShortcuts={
       DefaultKeyboardShortcutsService {
+        "delayedKeyBindings": Array [],
         "editorContext": Object {
           "channel": "VSCODE",
           "operatingSystem": "WINDOWS",
@@ -41,6 +42,7 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
     }
     keyboardShortcuts={
       DefaultKeyboardShortcutsService {
+        "delayedKeyBindings": Array [],
         "editorContext": Object {
           "channel": "VSCODE",
           "operatingSystem": "WINDOWS",

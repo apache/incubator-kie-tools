@@ -26,6 +26,7 @@ describe("DefaultKeyboardShortcutsService", () => {
     });
 
     const [wasFired] = resolveWhenKeyPressed("ctrl+a", keyboardShortcutsApi);
+    keyboardShortcutsApi.executeDelayedShortcutsRegistration();
     expect(keyboardShortcutsApi.registered().length).toStrictEqual(1);
 
     fire("keydown", { ctrlKey: true, code: "KeyA" });
@@ -40,6 +41,7 @@ describe("DefaultKeyboardShortcutsService", () => {
     });
 
     const [wasFired] = resolveWhenKeyPressed("ctrl+a", keyboardShortcutsApi);
+    keyboardShortcutsApi.executeDelayedShortcutsRegistration();
     expect(keyboardShortcutsApi.registered().length).toStrictEqual(1);
     fire("keydown", { metaKey: true, code: "KeyA" });
     await wasFired;
@@ -54,6 +56,7 @@ describe("DefaultKeyboardShortcutsService", () => {
     });
 
     const [wasFiredDownA, wasFiredUpA] = resolveWhenKeyDownThenUp("ctrl+a", keyboardShortcutsApi);
+    keyboardShortcutsApi.executeDelayedShortcutsRegistration();
     expect(keyboardShortcutsApi.registered().length).toStrictEqual(1);
     fire("keydown", { ctrlKey: true, code: "KeyA" });
     await wasFiredDownA;
@@ -66,6 +69,7 @@ describe("DefaultKeyboardShortcutsService", () => {
     //
 
     const [wasFiredDownB, wasFiredUpB] = resolveWhenKeyDownThenUp("ctrl+b", keyboardShortcutsApi);
+    keyboardShortcutsApi.executeDelayedShortcutsRegistration();
     expect(keyboardShortcutsApi.registered().length).toStrictEqual(2);
     fire("keydown", { ctrlKey: true, code: "KeyB" });
     await wasFiredDownB;
@@ -83,6 +87,7 @@ describe("DefaultKeyboardShortcutsService", () => {
     });
 
     const [wasFired] = resolveWhenKeyPressedOnce("ctrl+c", keyboardShortcutsApi);
+    keyboardShortcutsApi.executeDelayedShortcutsRegistration();
     expect(keyboardShortcutsApi.registered().length).toStrictEqual(1);
 
     fire("keydown", { ctrlKey: true, code: "KeyC" });
@@ -98,6 +103,7 @@ describe("DefaultKeyboardShortcutsService", () => {
     });
 
     const [wasFired, id] = resolveWhenKeyPressed("ctrl+c", keyboardShortcutsApi);
+    keyboardShortcutsApi.executeDelayedShortcutsRegistration();
     expect(keyboardShortcutsApi.registered().length).toStrictEqual(1);
 
     fire("keydown", { ctrlKey: true, code: "KeyC" });

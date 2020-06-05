@@ -80,11 +80,22 @@ const KEY_CODES = new Map<string, string>([
   ["z", "KeyZ"]
 ]);
 
+enum ShortCutsType {
+  KeyDownThenUp,
+  KeyDown
+}
+
+export interface DelayedRegisterKeyBinding{
+  type: ShortCutsType;
+  binding: KeyBinding;
+}
+
 export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
   private readonly editorContext: EditorContext;
 
   private eventIdentifiers = 1;
   private readonly keyBindings = new Map<number, KeyBinding>();
+  private delayedKeyBindings = new Array<DelayedRegisterKeyBinding>();
 
   constructor(editorContext: EditorContext) {
     this.editorContext = editorContext;
@@ -130,11 +141,24 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
 
     this.keyBindings.set(this.eventIdentifiers, keyBinding);
 
-    this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
-    this.keyBindingElement(keyBinding).addEventListener("keyup", keyBinding.listener);
-
+    if (keyBinding?.opts?.element || document.querySelector(".session-container")) {
+      this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
+      this.keyBindingElement(keyBinding).addEventListener("keyup", keyBinding.listener); 
+    }
+    else {
+      const delayedShorcut = {
+        type: ShortCutsType.KeyDownThenUp,
+        binding: keyBinding,
+      };
+      this.delayedKeyBindings.push(delayedShorcut);
+    }
     return this.eventIdentifiers++;
   }
+
+  private keyBindingElement(keyBinding?: KeyBinding) {
+    return keyBinding?.opts?.element ?? document.querySelector(".session-container") ?? window;
+  }
+
 
   public registerKeyPress(
     combination: string,
@@ -156,15 +180,39 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
           console.debug(`Fired (press) [${combination}]!`);
           onKeyPress(e.target);
         }
-
         return true;
       },
       opts
     };
 
     this.keyBindings.set(this.eventIdentifiers, keyBinding);
-    this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
+
+    if (keyBinding?.opts?.element || document.querySelector(".session-container")) {
+      this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
+    }
+    else {
+      const delayedShorcut = {
+        type: ShortCutsType.KeyDown,
+        binding: keyBinding,
+      };
+      this.delayedKeyBindings.push(delayedShorcut);
+    }
+
     return this.eventIdentifiers++;
+  }
+
+  public executeDelayedShortcutsRegistration() {
+    this.delayedKeyBindings.forEach(delayedKeyBindings => {
+    
+      if (delayedKeyBindings.type === ShortCutsType.KeyDown) {
+        this.keyBindingElement(delayedKeyBindings.binding).addEventListener("keydown", delayedKeyBindings.binding.listener);
+      }
+      else {
+        this.keyBindingElement(delayedKeyBindings.binding).addEventListener("keydown", delayedKeyBindings.binding.listener);
+        this.keyBindingElement(delayedKeyBindings.binding).addEventListener("keyup", delayedKeyBindings.binding.listener); 
+      }
+    }); 
+    this.delayedKeyBindings = []; 
   }
 
   public registerKeyPressOnce(
@@ -183,10 +231,6 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
     );
 
     return id;
-  }
-
-  private keyBindingElement(keyBinding?: KeyBinding) {
-    return keyBinding?.opts?.element ?? document.querySelector(".session-container") ?? window;
   }
 
   public deregister(id: number): void {
