@@ -17,22 +17,18 @@
 import { ChannelStateControlEvent } from "@kogito-tooling/core-api";
 import { StateControl } from "../../api/stateControl";
 import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
-import { RegisterKeyPressParams } from "../../api/keyboardShortcuts";
+import { KeyboardShortcutRegistration } from "../../api/keyboardShortcuts";
 
-export function undoShortcut(onKeyPress: () => Thenable<void>): RegisterKeyPressParams {
+export function undoShortcut(): KeyboardShortcutRegistration {
   return {
     combination: "ctrl+z",
-    label: "Undo | Undo last edit",
-    onKeyPress,
-    opts: { element: window }
+    label: "Edit | Undo last edit",
   };
 }
 
-export function redoShortcut(onKeyPress: () => Thenable<void>): RegisterKeyPressParams {
+export function redoShortcut(): KeyboardShortcutRegistration {
   return {
     combination: "shift+ctrl+z",
-    label: "Redo | Redo last edit",
-    onKeyPress,
-    opts: { element: window }
+    label: "Edit | Redo last edit",
   };
 }

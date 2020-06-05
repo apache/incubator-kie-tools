@@ -16,7 +16,6 @@
 
 import { EditorContent, ChannelType } from "@kogito-tooling/core-api";
 import { EmbeddedEditor, EmbeddedEditorRef, useEditorDirtyState } from "@kogito-tooling/embedded-editor";
-import "@patternfly/patternfly/patternfly.css";
 import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";

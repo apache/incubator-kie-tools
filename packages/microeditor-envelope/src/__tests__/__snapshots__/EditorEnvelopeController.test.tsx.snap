@@ -2,6 +2,27 @@
 
 exports[`EditorEnvelopeController after received content 1`] = `
 <EditorEnvelopeView
+  busApi={
+    EnvelopeBusInnerMessageHandler {
+      "capturedInitRequestYet": true,
+      "envelopeBusApi": Object {
+        "postMessage": [Function],
+      },
+      "eventListener": [Function],
+      "id": undefined,
+      "impl": Object {
+        "receive_contentRequest": [Function],
+        "receive_contentResponse": [Function],
+        "receive_editorRedo": [Function],
+        "receive_editorUndo": [Function],
+        "receive_languageResponse": [Function],
+        "receive_previewRequest": [Function],
+        "receive_resourceContentList": [Function],
+        "receive_resourceContentResponse": [Function],
+      },
+      "targetOrigin": "test-target-origin",
+    }
+  }
   context={
     Object {
       "channel": "VSCODE",
@@ -11,14 +32,45 @@ exports[`EditorEnvelopeController after received content 1`] = `
   exposing={[Function]}
   keyboardShortcuts={
     DefaultKeyboardShortcutsService {
-      "delayedKeyBindings": Array [],
+      "delayedKeyBindings": Array [
+        Object {
+          "binding": Object {
+            "combination": "shift+ctrl+z",
+            "label": "Edit | Redo last edit",
+            "listener": [Function],
+            "opts": undefined,
+          },
+          "type": 1,
+        },
+        Object {
+          "binding": Object {
+            "combination": "ctrl+z",
+            "label": "Edit | Undo last edit",
+            "listener": [Function],
+            "opts": undefined,
+          },
+          "type": 1,
+        },
+      ],
       "editorContext": Object {
         "channel": "VSCODE",
         "operatingSystem": "WINDOWS",
       },
-      "eventIdentifiers": 2,
+      "eventIdentifiers": 4,
       "keyBindings": Map {
         1 => Object {
+          "combination": "shift+ctrl+z",
+          "label": "Edit | Redo last edit",
+          "listener": [Function],
+          "opts": undefined,
+        },
+        2 => Object {
+          "combination": "ctrl+z",
+          "label": "Edit | Undo last edit",
+          "listener": [Function],
+          "opts": undefined,
+        },
+        3 => Object {
           "combination": "shift+/",
           "label": "Help | Show keyboard shortcuts",
           "listener": [Function],
@@ -85,7 +137,95 @@ exports[`EditorEnvelopeController after received content 1`] = `
       </div>
     </div>
   }
+  stateControl={
+    Object {
+      "redo": [MockFunction],
+      "registry": [MockFunction],
+      "undo": [MockFunction],
+    }
+  }
 >
+  <ChannelKeyboardShortcuts
+    busApi={
+      EnvelopeBusInnerMessageHandler {
+        "capturedInitRequestYet": true,
+        "envelopeBusApi": Object {
+          "postMessage": [Function],
+        },
+        "eventListener": [Function],
+        "id": undefined,
+        "impl": Object {
+          "receive_contentRequest": [Function],
+          "receive_contentResponse": [Function],
+          "receive_editorRedo": [Function],
+          "receive_editorUndo": [Function],
+          "receive_languageResponse": [Function],
+          "receive_previewRequest": [Function],
+          "receive_resourceContentList": [Function],
+          "receive_resourceContentResponse": [Function],
+        },
+        "targetOrigin": "test-target-origin",
+      }
+    }
+    keyboardShortcuts={
+      DefaultKeyboardShortcutsService {
+        "delayedKeyBindings": Array [
+          Object {
+            "binding": Object {
+              "combination": "shift+ctrl+z",
+              "label": "Edit | Redo last edit",
+              "listener": [Function],
+              "opts": undefined,
+            },
+            "type": 1,
+          },
+          Object {
+            "binding": Object {
+              "combination": "ctrl+z",
+              "label": "Edit | Undo last edit",
+              "listener": [Function],
+              "opts": undefined,
+            },
+            "type": 1,
+          },
+        ],
+        "editorContext": Object {
+          "channel": "VSCODE",
+          "operatingSystem": "WINDOWS",
+        },
+        "eventIdentifiers": 4,
+        "keyBindings": Map {
+          1 => Object {
+            "combination": "shift+ctrl+z",
+            "label": "Edit | Redo last edit",
+            "listener": [Function],
+            "opts": undefined,
+          },
+          2 => Object {
+            "combination": "ctrl+z",
+            "label": "Edit | Undo last edit",
+            "listener": [Function],
+            "opts": undefined,
+          },
+          3 => Object {
+            "combination": "shift+/",
+            "label": "Help | Show keyboard shortcuts",
+            "listener": [Function],
+            "opts": Object {
+              "element": [Window],
+            },
+          },
+        },
+      }
+    }
+    stateControl={
+      Object {
+        "redo": [MockFunction],
+        "registry": [MockFunction],
+        "undo": [MockFunction],
+      }
+    }
+  />
   <KeyBindingsHelpOverlay
     context={
       Object {
@@ -95,14 +235,45 @@ exports[`EditorEnvelopeController after received content 1`] = `
     }
     keyboardShortcuts={
       DefaultKeyboardShortcutsService {
-        "delayedKeyBindings": Array [],
+        "delayedKeyBindings": Array [
+          Object {
+            "binding": Object {
+              "combination": "shift+ctrl+z",
+              "label": "Edit | Redo last edit",
+              "listener": [Function],
+              "opts": undefined,
+            },
+            "type": 1,
+          },
+          Object {
+            "binding": Object {
+              "combination": "ctrl+z",
+              "label": "Edit | Undo last edit",
+              "listener": [Function],
+              "opts": undefined,
+            },
+            "type": 1,
+          },
+        ],
         "editorContext": Object {
           "channel": "VSCODE",
           "operatingSystem": "WINDOWS",
         },
-        "eventIdentifiers": 2,
+        "eventIdentifiers": 4,
         "keyBindings": Map {
           1 => Object {
+            "combination": "shift+ctrl+z",
+            "label": "Edit | Redo last edit",
+            "listener": [Function],
+            "opts": undefined,
+          },
+          2 => Object {
+            "combination": "ctrl+z",
+            "label": "Edit | Undo last edit",
+            "listener": [Function],
+            "opts": undefined,
+          },
+          3 => Object {
             "combination": "shift+/",
             "label": "Help | Show keyboard shortcuts",
             "listener": [Function],
@@ -386,6 +557,25 @@ exports[`EditorEnvelopeController after received content 1`] = `
 
 exports[`EditorEnvelopeController opens 1`] = `
 <EditorEnvelopeView
+  busApi={
+    EnvelopeBusInnerMessageHandler {
+      "capturedInitRequestYet": false,
+      "envelopeBusApi": Object {
+        "postMessage": [Function],
+      },
+      "eventListener": [Function],
+      "impl": Object {
+        "receive_contentRequest": [Function],
+        "receive_contentResponse": [Function],
+        "receive_editorRedo": [Function],
+        "receive_editorUndo": [Function],
+        "receive_languageResponse": [Function],
+        "receive_previewRequest": [Function],
+        "receive_resourceContentList": [Function],
+        "receive_resourceContentResponse": [Function],
+      },
+    }
+  }
   context={
     Object {
       "channel": "VSCODE",
@@ -459,6 +649,13 @@ exports[`EditorEnvelopeController opens 1`] = `
         </div>
       </div>
     </div>
+  }
+  stateControl={
+    Object {
+      "redo": [MockFunction],
+      "registry": [MockFunction],
+      "undo": [MockFunction],
+    }
   }
 >
   <Portal
@@ -584,6 +781,27 @@ exports[`EditorEnvelopeController opens 1`] = `
 
 exports[`EditorEnvelopeController receives init request 1`] = `
 <EditorEnvelopeView
+  busApi={
+    EnvelopeBusInnerMessageHandler {
+      "capturedInitRequestYet": true,
+      "envelopeBusApi": Object {
+        "postMessage": [Function],
+      },
+      "eventListener": [Function],
+      "id": undefined,
+      "impl": Object {
+        "receive_contentRequest": [Function],
+        "receive_contentResponse": [Function],
+        "receive_editorRedo": [Function],
+        "receive_editorUndo": [Function],
+        "receive_languageResponse": [Function],
+        "receive_previewRequest": [Function],
+        "receive_resourceContentList": [Function],
+        "receive_resourceContentResponse": [Function],
+      },
+      "targetOrigin": "test-target-origin",
+    }
+  }
   context={
     Object {
       "channel": "VSCODE",
@@ -657,6 +875,13 @@ exports[`EditorEnvelopeController receives init request 1`] = `
         </div>
       </div>
     </div>
+  }
+  stateControl={
+    Object {
+      "redo": [MockFunction],
+      "registry": [MockFunction],
+      "undo": [MockFunction],
+    }
   }
 >
   <Portal

@@ -26,7 +26,7 @@ import {
   ResourceContentRequest,
   ResourceContentService,
   Router,
-  ResourceListRequest
+  ResourceListRequest, ChannelStateControlEvent
 } from "@kogito-tooling/core-api";
 
 export class KogitoEditor {
@@ -140,6 +140,9 @@ export class KogitoEditor {
             const parsedPath = parse(this.uri.fsPath);
             fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, preview);
           }
+        },
+        notify_channelStateControl(event: ChannelStateControlEvent) {
+          /**/
         }
       })
     );

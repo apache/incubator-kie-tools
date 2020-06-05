@@ -30,20 +30,20 @@ interface Props {
 
 export function ChannelKeyboardShortcuts(props: Props) {
   useEffect(() => {
-    const { combination, label, onKeyPress, opts } = redoShortcut(async () => {
+    const { combination, label } = redoShortcut();
+    const id = props.keyboardShortcuts.registerKeyPress(combination, label, async () => {
       props.stateControl.redo();
       props.busApi.notify_channelStateControl(ChannelStateControlEvent.REDO);
     });
-    const id = props.keyboardShortcuts.registerKeyPress(combination, label, onKeyPress, opts);
     return () => props.keyboardShortcuts.deregister(id);
   }, []);
 
   useEffect(() => {
-    const { combination, label, onKeyPress, opts } = undoShortcut(async () => {
+    const { combination, label } = undoShortcut();
+    const id = props.keyboardShortcuts.registerKeyPress(combination, label, async () => {
       props.stateControl.undo();
       props.busApi.notify_channelStateControl(ChannelStateControlEvent.UNDO);
     });
-    const id = props.keyboardShortcuts.registerKeyPress(combination, label, onKeyPress, opts);
     return () => props.keyboardShortcuts.deregister(id);
   }, []);
   return <></>;

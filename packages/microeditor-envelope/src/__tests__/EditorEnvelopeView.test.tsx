@@ -19,7 +19,14 @@ import { shallow } from "enzyme";
 import { EditorEnvelopeView } from "../EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
 import { DefaultKeyboardShortcutsService } from "../api/keyboardShortcuts";
-import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
+import {
+  ChannelType,
+  EditorContent,
+  LanguageData,
+  OperatingSystem,
+  ResourceContent,
+  ResourcesList
+} from "@kogito-tooling/core-api";
 import {StateControl} from "../api/stateControl";
 import {EnvelopeBusInnerMessageHandler} from "../EnvelopeBusInnerMessageHandler";
 
@@ -27,38 +34,72 @@ let loadingScreenContainer: HTMLElement;
 beforeEach(() => (loadingScreenContainer = document.body.appendChild(document.createElement("div"))));
 afterEach(() => loadingScreenContainer.remove());
 
-// function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shallow>] {
-//   let view: EditorEnvelopeView;
-//   const context = { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS };
-//   const render = shallow(
-//     <EditorEnvelopeView
-//       keyboardShortcuts={new DefaultKeyboardShortcutsService(context)}
-//       context={context}
-//       exposing={self => (view = self)}
-//       loadingScreenContainer={loadingScreenContainer}
-//       stateControl={new StateControl()}
-//       busApi={jest.fn()}
-//     />
-//   );
-//   return [view!, render];
-// }
-//
-// describe("EditorEnvelopeView", () => {
-//   test("first open", () => {
-//     const [_, render] = renderEditorEnvelopeView();
-//     expect(render).toMatchSnapshot();
-//   });
-//
-//   test("after loading stops", async () => {
-//     const [view, render] = renderEditorEnvelopeView();
-//     await view.setLoadingFinished();
-//     expect(render).toMatchSnapshot();
-//   });
-//
-//   test("after loading stops and editor is set", async () => {
-//     const [view, render] = renderEditorEnvelopeView();
-//     await view.setLoadingFinished();
-//     await view.setEditor(new DummyEditor());
-//     expect(render).toMatchSnapshot();
-//   });
-// });
+function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shallow>] {
+  let view: EditorEnvelopeView;
+  const context = { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS };
+  const receivedMessages: any[] = [];
+  const sentMessages: any[] = [];
+  const busApi = new EnvelopeBusInnerMessageHandler(
+    {
+      postMessage: (message, targetOrigin) => sentMessages.push([message, targetOrigin])
+    },
+    self => ({
+      receive_contentResponse: (content: EditorContent) => {
+        receivedMessages.push(["contentResponse", content]);
+      },
+      receive_languageResponse: (languageData: LanguageData) => {
+        receivedMessages.push(["languageResponse", languageData]);
+      },
+      receive_contentRequest: () => {
+        receivedMessages.push(["contentRequest", undefined]);
+      },
+      receive_resourceContentResponse: (content: ResourceContent) => {
+        receivedMessages.push(["resourceContent", content]);
+      },
+      receive_resourceContentList: (resourcesList: ResourcesList) => {
+        receivedMessages.push(["resourceContentList", resourcesList]);
+      },
+      receive_editorRedo(): void {
+        receivedMessages.push(["notify_editorRedo", undefined]);
+      },
+      receive_editorUndo(): void {
+        receivedMessages.push(["notify_editorUndo", undefined]);
+      },
+      receive_previewRequest: () => {
+        receivedMessages.push(["receive_previewRequest"]);
+      }
+    })
+  );
+
+  const render = shallow(
+    <EditorEnvelopeView
+      keyboardShortcuts={new DefaultKeyboardShortcutsService(context)}
+      context={context}
+      exposing={self => (view = self)}
+      loadingScreenContainer={loadingScreenContainer}
+      stateControl={new StateControl()}
+      busApi={busApi}
+    />
+  );
+  return [view!, render];
+}
+
+describe("EditorEnvelopeView", () => {
+  test("first open", () => {
+    const [_, render] = renderEditorEnvelopeView();
+    expect(render).toMatchSnapshot();
+  });
+
+  test("after loading stops", async () => {
+    const [view, render] = renderEditorEnvelopeView();
+    await view.setLoadingFinished();
+    expect(render).toMatchSnapshot();
+  });
+
+  test("after loading stops and editor is set", async () => {
+    const [view, render] = renderEditorEnvelopeView();
+    await view.setLoadingFinished();
+    await view.setEditor(new DummyEditor());
+    expect(render).toMatchSnapshot();
+  });
+});

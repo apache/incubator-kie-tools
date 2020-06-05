@@ -2,6 +2,38 @@
 
 exports[`EditorEnvelopeView after loading stops 1`] = `
 <Fragment>
+  <ChannelKeyboardShortcuts
+    busApi={
+      EnvelopeBusInnerMessageHandler {
+        "capturedInitRequestYet": false,
+        "envelopeBusApi": Object {
+          "postMessage": [Function],
+        },
+        "impl": Object {
+          "receive_contentRequest": [Function],
+          "receive_contentResponse": [Function],
+          "receive_editorRedo": [Function],
+          "receive_editorUndo": [Function],
+          "receive_languageResponse": [Function],
+          "receive_previewRequest": [Function],
+          "receive_resourceContentList": [Function],
+          "receive_resourceContentResponse": [Function],
+        },
+      }
+    }
+    keyboardShortcuts={
+      DefaultKeyboardShortcutsService {
+        "delayedKeyBindings": Array [],
+        "editorContext": Object {
+          "channel": "VSCODE",
+          "operatingSystem": "WINDOWS",
+        },
+        "eventIdentifiers": 1,
+        "keyBindings": Map {},
+      }
+    }
+    stateControl={StateControl {}}
+  />
   <KeyBindingsHelpOverlay
     context={
       Object {
@@ -33,6 +65,38 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
 
 exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
 <Fragment>
+  <ChannelKeyboardShortcuts
+    busApi={
+      EnvelopeBusInnerMessageHandler {
+        "capturedInitRequestYet": false,
+        "envelopeBusApi": Object {
+          "postMessage": [Function],
+        },
+        "impl": Object {
+          "receive_contentRequest": [Function],
+          "receive_contentResponse": [Function],
+          "receive_editorRedo": [Function],
+          "receive_editorUndo": [Function],
+          "receive_languageResponse": [Function],
+          "receive_previewRequest": [Function],
+          "receive_resourceContentList": [Function],
+          "receive_resourceContentResponse": [Function],
+        },
+      }
+    }
+    keyboardShortcuts={
+      DefaultKeyboardShortcutsService {
+        "delayedKeyBindings": Array [],
+        "editorContext": Object {
+          "channel": "VSCODE",
+          "operatingSystem": "WINDOWS",
+        },
+        "eventIdentifiers": 1,
+        "keyBindings": Map {},
+      }
+    }
+    stateControl={StateControl {}}
+  />
   <KeyBindingsHelpOverlay
     context={
       Object {

@@ -74,7 +74,6 @@ export class EditorStateControl {
   }
 
   public undoEvent() {
-    console.info("UNDO EVENT");
     const indexOfCurrentEvent = this.eventStack.indexOf(this.currentEvent!);
 
     let eventUndone: Event;
@@ -85,7 +84,6 @@ export class EditorStateControl {
   }
 
   public redoEvent() {
-    console.info("REDO EVENT");
     const indexOfCurrentEvent = this.eventStack.indexOf(this.currentEvent!);
     if (this.eventStack[indexOfCurrentEvent + 1]) {
       const eventRedone = this.eventStack[indexOfCurrentEvent + 1];

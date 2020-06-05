@@ -194,7 +194,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           props.onDirtyIndicatorChange?.(isDirty);
         },
         receive_ready() {
-          // registerShortcuts();
           props.onReady?.();
         },
         receive_resourceContentRequest(request: ResourceContentRequest) {
@@ -245,21 +244,27 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     }
   }, []);
 
-    useEffect(() => {
-      const { combination, label, onKeyPress, opts } = undoShortcut(async () =>
-        envelopeBusOuterMessageHandler.notify_editorUndo()
-      );
-      const undoId = keyboardShortcuts.registerKeyPress(combination, label, onKeyPress, opts);
-      return () => keyboardShortcuts.deregister(undoId);
-    }, []);
+  useEffect(() => {
+    const { combination, label } = redoShortcut();
+    const undoId = keyboardShortcuts.registerKeyPress(
+      combination,
+      label,
+      async () => envelopeBusOuterMessageHandler.notify_editorUndo(),
+      { element: window }
+    );
+    return () => keyboardShortcuts.deregister(undoId);
+  }, []);
 
-    useEffect(() => {
-      const { combination, label, onKeyPress, opts } = redoShortcut(async () =>
-        envelopeBusOuterMessageHandler.notify_editorUndo()
-      );
-      const redoId = keyboardShortcuts.registerKeyPress(combination, label, onKeyPress, opts);
-      return () => keyboardShortcuts.deregister(redoId);
-    }, []);
+  useEffect(() => {
+    const { combination, label } = undoShortcut();
+    const redoId = keyboardShortcuts.registerKeyPress(
+      combination,
+      label,
+      async () => envelopeBusOuterMessageHandler.notify_editorUndo(),
+      { element: window }
+    );
+    return () => keyboardShortcuts.deregister(redoId);
+  }, []);
 
   //Attach/detach bus when component attaches/detaches from DOM
   useEffect(() => {

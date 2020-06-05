@@ -93,9 +93,7 @@ export interface KeyBindingServiceOpts {
   repeat?: boolean;
 }
 
-export interface RegisterKeyPressParams {
+export interface KeyboardShortcutRegistration {
   combination: string,
   label: string,
-  onKeyPress: () => Thenable<void>,
-  opts?: KeyBindingServiceOpts
 }
