@@ -46,6 +46,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.S
 import org.drools.workbench.screens.guided.dtable.client.widget.table.keyboard.SelectionPaste;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.ColumnHeaderPopOver;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.ColumnHeaderPopOverHandler;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableRenderer;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.services.verifier.reporting.client.panel.AnalysisReportScreen;
@@ -389,7 +390,17 @@ public class GuidedDecisionTableModellerPresenter implements GuidedDecisionTable
     public void onViewPinned(final boolean isPinned) {
         pinnedEvent.fire(new DecisionTablePinnedEvent(this,
                                                       isPinned));
-        view.setPinnedModeIndicatorVisibility(isPinned);
+
+        view.setPinnedModeIndicatorVisibility(isPinned,
+                                              getHeaderCaptionWidth());
+    }
+
+    private double getHeaderCaptionWidth() {
+        if (getActiveDecisionTable().get().getView().getRenderer() instanceof GuidedDecisionTableRenderer) {
+            return ((GuidedDecisionTableRenderer) getActiveDecisionTable().get().getView().getRenderer()).getHeaderCaptionWidth() + 10;
+        } else {
+            return 0;
+        }
     }
 
     @Override

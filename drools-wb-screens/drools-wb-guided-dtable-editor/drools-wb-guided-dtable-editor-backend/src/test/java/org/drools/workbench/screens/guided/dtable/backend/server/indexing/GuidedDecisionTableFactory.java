@@ -55,7 +55,7 @@ public class GuidedDecisionTableFactory {
         dt.getAttributeCols().add(attr);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "myRuleFlowGroup"}
+                new String[]{"1", "", "desc", "myRuleFlowGroup"}
         }));
 
         return dt;
@@ -98,7 +98,7 @@ public class GuidedDecisionTableFactory {
         dt.getConditions().add(p2);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "33", ""}
+                new String[]{"1", "", "desc", "33", ""}
         }));
 
         return dt;
@@ -120,7 +120,7 @@ public class GuidedDecisionTableFactory {
         dt.getActionCols().add(ins);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "33"}
+                new String[]{"1", "", "desc", "33"}
         }));
 
         return dt;
@@ -165,7 +165,7 @@ public class GuidedDecisionTableFactory {
         dt.getConditions().add(brl);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "33", ""}
+                new String[]{"1", "", "desc", "33", ""}
         }));
 
         return dt;
@@ -194,7 +194,7 @@ public class GuidedDecisionTableFactory {
         dt.getConditions().add(brl);
 
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{"1", "desc", true}
+                new Object[]{"1", "", "desc", true}
         }));
 
         return dt;
@@ -252,7 +252,7 @@ public class GuidedDecisionTableFactory {
         dt.getConditions().add(brl);
 
         dt.setData(DataUtilities.makeDataLists(new String[][]{
-                new String[]{"1", "desc", "33", ""}
+                new String[]{"1", "", "desc", "33", ""}
         }));
 
         return dt;

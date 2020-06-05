@@ -113,11 +113,11 @@ public class DTableUpdateManagerTest {
             Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         Coordinate coordinate = new Coordinate(0,
-                                               2);
+                                               3);
         coordinates.add(coordinate);
         table52.getData()
                 .get(0)
-                .get(2)
+                .get(3)
                 .setNumericValue(123);
 
         updateManager.update(table52,
@@ -167,11 +167,11 @@ public class DTableUpdateManagerTest {
             Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         Coordinate coordinate = new Coordinate(0,
-                                               2);
+                                               3);
         coordinates.add(coordinate);
         table52.getData()
                 .get(0)
-                .get(2)
+                .get(3)
                 .setNumericValue((Integer) null);
 
         updateManager.update(table52,
@@ -185,11 +185,11 @@ public class DTableUpdateManagerTest {
             Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         Coordinate coordinate = new Coordinate(1,
-                                               2);
+                                               3);
         coordinates.add(coordinate);
         table52.getData()
                 .get(1)
-                .get(2)
+                .get(3)
                 .setNumericValue(123);
 
         updateManager.update(table52,
@@ -203,11 +203,11 @@ public class DTableUpdateManagerTest {
             Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<Coordinate>();
         Coordinate coordinate = new Coordinate(1,
-                                               3);
+                                               4);
         coordinates.add(coordinate);
         table52.getData()
                 .get(1)
-                .get(3)
+                .get(4)
                 .setBooleanValue(false);
 
         updateManager.update(table52,

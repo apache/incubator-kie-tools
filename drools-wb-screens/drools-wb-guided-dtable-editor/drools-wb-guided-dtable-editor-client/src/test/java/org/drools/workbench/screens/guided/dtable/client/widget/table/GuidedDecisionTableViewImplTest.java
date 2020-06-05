@@ -32,6 +32,7 @@ import com.google.gwtmockito.GwtMockito;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableRenderer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableTheme;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +58,7 @@ public class GuidedDecisionTableViewImplTest {
     private static final double HEADER_ROW_HEIGHT = 32.0;
 
     @Mock
-    private GridRenderer renderer;
+    private GuidedDecisionTableRenderer renderer;
 
     @Mock
     private GuidedDecisionTableView.Presenter presenter;

@@ -50,10 +50,10 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals("smurf",
                      model.getMetadataCols().get(0).getMetadata());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
         assertEquals("smurf",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
     }
 
     @Test
@@ -78,10 +78,10 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals("changed",
                      model.getMetadataCols().get(0).getMetadata());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
         assertEquals("changed",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
     }
 
     @Test
@@ -107,12 +107,12 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals("smurf",
                      model.getMetadataCols().get(0).getMetadata());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
         assertEquals("smurf",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
         assertEquals(false,
-                     uiModel.getColumns().get(2).isVisible());
+                     uiModel.getColumns().get(3).isVisible());
     }
 
     @Test
@@ -124,13 +124,13 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
 
         assertEquals(1,
                      model.getMetadataCols().size());
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
 
         modelSynchronizer.deleteColumn(column);
         assertEquals(0,
                      model.getMetadataCols().size());
-        assertEquals(2,
+        assertEquals(3,
                      uiModel.getColumns().size());
     }
 
@@ -146,10 +146,10 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<String>("metadata1"));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("metadata2"));
 
         assertEquals(2,
@@ -159,30 +159,30 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column2,
                      model.getMetadataCols().get(1));
         assertEquals("metadata1",
-                     model.getData().get(0).get(2).getStringValue());
-        assertEquals("metadata2",
                      model.getData().get(0).get(3).getStringValue());
+        assertEquals("metadata2",
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals("metadata1",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("metadata2",
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals("metadata1",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals("metadata2",
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(2,
+        uiModel.moveColumnTo(3,
                              uiModelColumn2_1);
 
         assertEquals(2,
@@ -192,23 +192,23 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column1,
                      model.getMetadataCols().get(1));
         assertEquals("metadata2",
-                     model.getData().get(0).get(2).getStringValue());
-        assertEquals("metadata1",
                      model.getData().get(0).get(3).getStringValue());
+        assertEquals("metadata1",
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals("metadata2",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("metadata1",
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_2 instanceof StringUiColumn);
-        assertEquals(3,
+        assertEquals(4,
                      uiModelColumn1_2.getIndex());
-        assertEquals(2,
+        assertEquals(3,
                      uiModelColumn2_2.getIndex());
         assertEquals("metadata2",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -228,10 +228,10 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<String>("metadata1"));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("metadata2"));
 
         assertEquals(2,
@@ -241,30 +241,30 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column2,
                      model.getMetadataCols().get(1));
         assertEquals("metadata1",
-                     model.getData().get(0).get(2).getStringValue());
-        assertEquals("metadata2",
                      model.getData().get(0).get(3).getStringValue());
+        assertEquals("metadata2",
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals("metadata1",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("metadata2",
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals("metadata1",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals("metadata2",
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(3,
+        uiModel.moveColumnTo(4,
                              uiModelColumn1_1);
 
         assertEquals(2,
@@ -274,23 +274,23 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column1,
                      model.getMetadataCols().get(1));
         assertEquals("metadata2",
-                     model.getData().get(0).get(2).getStringValue());
-        assertEquals("metadata1",
                      model.getData().get(0).get(3).getStringValue());
+        assertEquals("metadata1",
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals("metadata2",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("metadata1",
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_2 instanceof StringUiColumn);
-        assertEquals(3,
+        assertEquals(4,
                      uiModelColumn1_2.getIndex());
-        assertEquals(2,
+        assertEquals(3,
                      uiModelColumn2_2.getIndex());
         assertEquals("metadata2",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -310,10 +310,10 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<String>("metadata1"));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("metadata2"));
 
         assertEquals(2,
@@ -323,30 +323,30 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column2,
                      model.getMetadataCols().get(1));
         assertEquals("metadata1",
-                     model.getData().get(0).get(2).getStringValue());
-        assertEquals("metadata2",
                      model.getData().get(0).get(3).getStringValue());
+        assertEquals("metadata2",
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals("metadata1",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("metadata2",
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals("metadata1",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals("metadata2",
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(0,
+        uiModel.moveColumnTo(1,
                              uiModelColumn1_1);
 
         assertEquals(2,
@@ -356,23 +356,23 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column2,
                      model.getMetadataCols().get(1));
         assertEquals("metadata1",
-                     model.getData().get(0).get(2).getStringValue());
-        assertEquals("metadata2",
                      model.getData().get(0).get(3).getStringValue());
+        assertEquals("metadata2",
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals("metadata1",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("metadata2",
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_2 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_2.getIndex());
         assertEquals(3,
+                     uiModelColumn1_2.getIndex());
+        assertEquals(4,
                      uiModelColumn2_2.getIndex());
         assertEquals("metadata1",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -395,18 +395,18 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<String>("metadata1"));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("metadata2"));
         uiModel.setCellValue(0,
-                             4,
+                             5,
                              new BaseGridCellValue<String>("metadata3"));
 
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(5);
 
         assertTestMoveColumnsTo(column1,
                                 column2,
@@ -416,15 +416,15 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
                                 uiModelColumn3_1);
 
         //Moving multiple MetaData columns as an unsupported operation as it's impossible via the UI
-        uiModel.moveColumnsTo(2,
+        uiModel.moveColumnsTo(3,
                               new ArrayList<GridColumn<?>>() {{
                                   add(uiModelColumn2_1);
                                   add(uiModelColumn3_1);
                               }});
 
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(5);
 
         assertTestMoveColumnsTo(column1,
                                 column2,
@@ -449,18 +449,18 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<String>("metadata1"));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("metadata2"));
         uiModel.setCellValue(0,
-                             4,
+                             5,
                              new BaseGridCellValue<String>("metadata3"));
 
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(5);
 
         assertTestMoveColumnsTo(column1,
                                 column2,
@@ -470,15 +470,15 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
                                 uiModelColumn3_1);
 
         //Moving multiple MetaData columns as an unsupported operation as it's impossible via the UI
-        uiModel.moveColumnsTo(4,
+        uiModel.moveColumnsTo(5,
                               new ArrayList<GridColumn<?>>() {{
                                   add(uiModelColumn1_1);
                                   add(uiModelColumn2_1);
                               }});
 
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(5);
 
         assertTestMoveColumnsTo(column1,
                                 column2,
@@ -533,13 +533,13 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column3,
                      model.getMetadataCols().get(2));
         assertEquals("metadata1",
-                     model.getData().get(0).get(2).getStringValue());
-        assertEquals("metadata2",
                      model.getData().get(0).get(3).getStringValue());
-        assertEquals("metadata3",
+        assertEquals("metadata2",
                      model.getData().get(0).get(4).getStringValue());
+        assertEquals("metadata3",
+                     model.getData().get(0).get(5).getStringValue());
 
-        assertEquals(5,
+        assertEquals(6,
                      uiModel.getColumns().size());
         assertEquals("metadata1",
                      uiModelColumn1.getHeaderMetaData().get(0).getTitle());
@@ -550,11 +550,11 @@ public class MetaDataColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue(uiModelColumn1 instanceof StringUiColumn);
         assertTrue(uiModelColumn2 instanceof StringUiColumn);
         assertTrue(uiModelColumn3 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1.getIndex());
         assertEquals(3,
-                     uiModelColumn2.getIndex());
+                     uiModelColumn1.getIndex());
         assertEquals(4,
+                     uiModelColumn2.getIndex());
+        assertEquals(5,
                      uiModelColumn3.getIndex());
         assertEquals("metadata1",
                      uiModel.getRow(0).getCells().get(uiModelColumn1.getIndex()).getValue().getValue());

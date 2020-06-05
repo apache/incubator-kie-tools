@@ -77,6 +77,7 @@ public abstract class BaseConverterTest {
         converters.add( new DescriptionColumnConverter() );
         converters.add( new LimitedEntryColumnConverter() );
         converters.add( new MetaDataColumnConverter() );
+        converters.add( new RuleNameColumnConverter() );
         converters.add( new RowNumberColumnConverter() );
         return converters;
     }

@@ -39,6 +39,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTablePinnedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.ColumnHeaderPopOver;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableRenderer;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -149,12 +150,15 @@ public class GuidedDecisionTableModellerPresenterTest {
     private GuidedDecisionTableView.Presenter makeDecisionTable() {
         final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
         final GuidedDecisionTableView dtView = mock(GuidedDecisionTableView.class);
+        final GuidedDecisionTableRenderer renderer = mock(GuidedDecisionTableRenderer.class);
         final GridData dtData = new BaseGridData();
 
         when(dtPresenter.getView()).thenReturn(dtView);
         when(dtPresenter.getAccess()).thenReturn(mock(GuidedDecisionTablePresenter.Access.class));
         when(dtPresenter.getModel()).thenReturn(mock(GuidedDecisionTable52.class));
         when(dtView.getModel()).thenReturn(dtData);
+        when(dtView.getRenderer()).thenReturn(renderer);
+        when(renderer.getHeaderCaptionWidth()).thenReturn(200.0);
 
         return dtPresenter;
     }
@@ -555,6 +559,9 @@ public class GuidedDecisionTableModellerPresenterTest {
     public void onViewPinnedIsPinned() {
         final ArgumentCaptor<DecisionTablePinnedEvent> pinnedEventCaptor = ArgumentCaptor.forClass(DecisionTablePinnedEvent.class);
 
+        GuidedDecisionTableView.Presenter value = makeDecisionTable();
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.of(value));
+
         presenter.onViewPinned(true);
 
         verify(pinnedEvent,
@@ -565,12 +572,15 @@ public class GuidedDecisionTableModellerPresenterTest {
         assertEquals(presenter,
                      pinnedEvent.getPresenter());
         assertTrue(pinnedEvent.isPinned());
-        verify(view).setPinnedModeIndicatorVisibility(true);
+        verify(view).setPinnedModeIndicatorVisibility(true, 210);
     }
 
     @Test
     public void onViewPinnedIsNotPinned() {
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final ArgumentCaptor<DecisionTablePinnedEvent> pinnedEventCaptor = ArgumentCaptor.forClass(DecisionTablePinnedEvent.class);
+
+        when(presenter.getActiveDecisionTable()).thenReturn(Optional.of(dtPresenter));
 
         presenter.onViewPinned(false);
 
@@ -582,7 +592,7 @@ public class GuidedDecisionTableModellerPresenterTest {
         assertEquals(presenter,
                      pinnedEvent.getPresenter());
         assertFalse(pinnedEvent.isPinned());
-        verify(view).setPinnedModeIndicatorVisibility(false);
+        verify(view).setPinnedModeIndicatorVisibility(false, 210);
     }
 
     @Test

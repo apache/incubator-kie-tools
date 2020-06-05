@@ -83,7 +83,7 @@ public class DecisionTableAnalyzerUpdateTest
                        1, 2);
 
         setValue(1,
-                 2,
+                 3,
                  0);
 
         assertTrue(analyzerProvider.getAnalysisReport().isEmpty());
@@ -111,7 +111,7 @@ public class DecisionTableAnalyzerUpdateTest
                        1, 2);
 
         setValue(1,
-                 2,
+                 3,
                  new Date(4000, 11, 05));
 
         assertTrue(analyzerProvider.getAnalysisReport().isEmpty());
@@ -139,7 +139,7 @@ public class DecisionTableAnalyzerUpdateTest
                        1, 2);
 
         setValue(1,
-                 3,
+                 4,
                  new Date(1500, 11, 05));
 
         assertTrue(analyzerProvider.getAnalysisReport().isEmpty());
@@ -249,7 +249,7 @@ public class DecisionTableAnalyzerUpdateTest
 
         assertTrue(analyzerProvider.getAnalysisReport().isEmpty());
 
-        removeActionColumn(3,
+        removeActionColumn(4,
                            0);
 
         assertContains(analyzerProvider.getAnalysisReport(),
@@ -277,7 +277,7 @@ public class DecisionTableAnalyzerUpdateTest
 
         assertTrue(analyzerProvider.getAnalysisReport().isEmpty());
 
-        appendActionColumn(4,
+        appendActionColumn(5,
                            ExtendedGuidedDecisionTableBuilder.createActionSetField("a",
                                                                                    "approved",
                                                                                    DataType.TYPE_BOOLEAN),

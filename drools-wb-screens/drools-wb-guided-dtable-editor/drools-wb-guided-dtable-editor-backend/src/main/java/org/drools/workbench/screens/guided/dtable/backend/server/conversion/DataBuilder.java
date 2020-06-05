@@ -82,7 +82,7 @@ public class DataBuilder {
         private final List<DTCellValue52> row;
 
         private int sourceColumnIndex = 0;
-        private int targetColumnIndex = -1;
+        private int targetColumnIndex = -2;
 
         public DataRowBuilder(List<DTCellValue52> row) {
             this.row = row;
@@ -92,10 +92,10 @@ public class DataBuilder {
 
             for (final DTCellValue52 cell : row) {
 
-                if (sourceColumnIndex == 1) {
+                if (sourceColumnIndex == GuidedDecisionTable52.RULE_DESCRIPTION_INDEX) {
                     xlsRow.createCell(targetColumnIndex)
                             .setCellValue(cell.getStringValue());
-                } else if (sourceColumnIndex > 1) {
+                } else if (sourceColumnIndex > GuidedDecisionTable52.RULE_DESCRIPTION_INDEX) {
 
                     final BaseColumn baseColumn = dtable.getExpandedColumns().get(sourceColumnIndex);
 

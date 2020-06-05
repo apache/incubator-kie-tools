@@ -38,6 +38,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.RuleNameColumn;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
@@ -93,7 +94,7 @@ public class SubHeaderBuilder {
             } else if (baseColumn instanceof ActionCol52) {
                 makeAction(sourceColumnIndex,
                            baseColumn);
-            } else if (baseColumn instanceof RowNumberCol52) {
+            } else if (baseColumn instanceof RowNumberCol52 || baseColumn instanceof RuleNameColumn) {
                 // Ignore and do not add to count
                 continue;
             } else if (baseColumn instanceof DescriptionCol52) {

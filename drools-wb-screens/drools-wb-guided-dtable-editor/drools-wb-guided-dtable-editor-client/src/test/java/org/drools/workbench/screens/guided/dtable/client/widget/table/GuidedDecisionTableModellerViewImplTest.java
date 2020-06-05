@@ -251,7 +251,7 @@ public class GuidedDecisionTableModellerViewImplTest {
         doReturn(element).when(pinnedModeIndicator).getElement();
         doReturn(style).when(element).getStyle();
 
-        view.setPinnedModeIndicatorVisibility(true);
+        view.setPinnedModeIndicatorVisibility(true, 0);
 
         verify(style).setTop(0.5, Style.Unit.EM);
     }
@@ -265,7 +265,7 @@ public class GuidedDecisionTableModellerViewImplTest {
         doReturn(element).when(pinnedModeIndicator).getElement();
         doReturn(style).when(element).getStyle();
 
-        view.setPinnedModeIndicatorVisibility(false);
+        view.setPinnedModeIndicatorVisibility(false, 0);
 
         verify(style).setTop(-2.0, Style.Unit.EM);
     }

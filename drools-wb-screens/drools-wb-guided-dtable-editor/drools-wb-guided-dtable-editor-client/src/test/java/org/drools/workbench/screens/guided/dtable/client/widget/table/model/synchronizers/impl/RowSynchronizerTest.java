@@ -82,16 +82,16 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendRow();
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             1,
+                             2,
                              new GuidedDecisionTableUiCell<String>("a"));
         uiModel.setCellValue(1,
-                             1,
+                             2,
                              new GuidedDecisionTableUiCell<String>("a"));
         uiModel.setCellValue(2,
-                             1,
+                             2,
                              new GuidedDecisionTableUiCell<String>("b"));
         uiModel.collapseCell(0,
-                             1);
+                             2);
 
         modelSynchronizer.deleteRow(0);
 
@@ -108,16 +108,16 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendRow();
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             1,
+                             2,
                              new GuidedDecisionTableUiCell<String>("a"));
         uiModel.setCellValue(1,
-                             1,
+                             2,
                              new GuidedDecisionTableUiCell<String>("a"));
         uiModel.setCellValue(2,
-                             1,
+                             2,
                              new GuidedDecisionTableUiCell<String>("a"));
         uiModel.collapseCell(0,
-                             1);
+                             2);
 
         modelSynchronizer.deleteRow(0);
 
@@ -448,9 +448,9 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
 
-        assertTrue((Boolean) uiModel.getRow(0).getCells().get(2).getValue().getValue());
+        assertTrue((Boolean) uiModel.getRow(0).getCells().get(3).getValue().getValue());
 
-        assertTrue(model.getData().get(0).get(2).getBooleanValue());
+        assertTrue(model.getData().get(0).get(3).getBooleanValue());
     }
 
     @Test
@@ -463,9 +463,9 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
 
-        assertFalse((Boolean) uiModel.getRow(0).getCells().get(2).getValue().getValue());
+        assertFalse((Boolean) uiModel.getRow(0).getCells().get(3).getValue().getValue());
 
-        assertFalse(model.getData().get(0).get(2).getBooleanValue());
+        assertFalse(model.getData().get(0).get(3).getBooleanValue());
     }
 
     @Test
@@ -477,8 +477,8 @@ public class RowSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
 
-        assertFalse((Boolean) uiModel.getRow(0).getCells().get(2).getValue().getValue());
+        assertFalse((Boolean) uiModel.getRow(0).getCells().get(3).getValue().getValue());
 
-        assertFalse(model.getData().get(0).get(2).getBooleanValue());
+        assertFalse(model.getData().get(0).get(3).getBooleanValue());
     }
 }

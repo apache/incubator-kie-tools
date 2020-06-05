@@ -182,7 +182,7 @@ public class RowExpanderTest {
                                          oracle);
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
-        assertEquals(8,
+        assertEquals(9,
                      columns.size());
         assertEquals(1,
                      columns.get(0).values.size());
@@ -200,6 +200,8 @@ public class RowExpanderTest {
                      columns.get(6).values.size());
         assertEquals(1,
                      columns.get(7).values.size());
+        assertEquals(1,
+                     columns.get(8).values.size());
 
         RowExpander.RowIterator ri = re.iterator();
         assertFalse(ri.hasNext());
@@ -313,14 +315,14 @@ public class RowExpanderTest {
                                          oracle);
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
-        assertEquals(8,
+        assertEquals(9,
                      columns.size());
 
         assertEquals(1,
                      columns.get(0).values.size());
         assertEquals(1,
                      columns.get(1).values.size());
-        assertEquals(2,
+        assertEquals(1,
                      columns.get(2).values.size());
         assertEquals(2,
                      columns.get(3).values.size());
@@ -328,34 +330,36 @@ public class RowExpanderTest {
                      columns.get(4).values.size());
         assertEquals(2,
                      columns.get(5).values.size());
-        assertEquals(1,
+        assertEquals(2,
                      columns.get(6).values.size());
         assertEquals(1,
                      columns.get(7).values.size());
+        assertEquals(1,
+                     columns.get(8).values.size());
 
         assertEquals("c1a",
-                     columns.get(2).values.get(0).getStringValue());
-        assertEquals("c1b",
-                     columns.get(2).values.get(1).getStringValue());
-
-        assertEquals("c2a",
                      columns.get(3).values.get(0).getStringValue());
-        assertEquals("c2b",
+        assertEquals("c1b",
                      columns.get(3).values.get(1).getStringValue());
 
-        assertEquals("c3a",
+        assertEquals("c2a",
                      columns.get(4).values.get(0).getStringValue());
-        assertEquals("c3b",
+        assertEquals("c2b",
                      columns.get(4).values.get(1).getStringValue());
 
-        assertEquals("c4a",
+        assertEquals("c3a",
                      columns.get(5).values.get(0).getStringValue());
-        assertEquals("c4b",
+        assertEquals("c3b",
                      columns.get(5).values.get(1).getStringValue());
 
-        assertNull(columns.get(6).values.get(0));
+        assertEquals("c4a",
+                     columns.get(6).values.get(0).getStringValue());
+        assertEquals("c4b",
+                     columns.get(6).values.get(1).getStringValue());
 
         assertNull(columns.get(7).values.get(0));
+
+        assertNull(columns.get(8).values.get(0));
 
         RowExpander.RowIterator ri = re.iterator();
         assertTrue(ri.hasNext());
@@ -469,14 +473,14 @@ public class RowExpanderTest {
                                          oracle);
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
-        assertEquals(8,
+        assertEquals(9,
                      columns.size());
 
         assertEquals(1,
                      columns.get(0).values.size());
         assertEquals(1,
                      columns.get(1).values.size());
-        assertEquals(2,
+        assertEquals(1,
                      columns.get(2).values.size());
         assertEquals(2,
                      columns.get(3).values.size());
@@ -484,34 +488,36 @@ public class RowExpanderTest {
                      columns.get(4).values.size());
         assertEquals(2,
                      columns.get(5).values.size());
-        assertEquals(1,
+        assertEquals(2,
                      columns.get(6).values.size());
         assertEquals(1,
                      columns.get(7).values.size());
+        assertEquals(1,
+                     columns.get(8).values.size());
 
         assertEquals("f1a",
-                     columns.get(2).values.get(0).getStringValue());
-        assertEquals("f1b",
-                     columns.get(2).values.get(1).getStringValue());
-
-        assertEquals("f2a",
                      columns.get(3).values.get(0).getStringValue());
-        assertEquals("f2b",
+        assertEquals("f1b",
                      columns.get(3).values.get(1).getStringValue());
 
-        assertEquals("f3a",
+        assertEquals("f2a",
                      columns.get(4).values.get(0).getStringValue());
-        assertEquals("f3b",
+        assertEquals("f2b",
                      columns.get(4).values.get(1).getStringValue());
 
-        assertEquals("f4a",
+        assertEquals("f3a",
                      columns.get(5).values.get(0).getStringValue());
-        assertEquals("f4b",
+        assertEquals("f3b",
                      columns.get(5).values.get(1).getStringValue());
 
-        assertNull(columns.get(6).values.get(0));
+        assertEquals("f4a",
+                     columns.get(6).values.get(0).getStringValue());
+        assertEquals("f4b",
+                     columns.get(6).values.get(1).getStringValue());
 
         assertNull(columns.get(7).values.get(0));
+
+        assertNull(columns.get(8).values.get(0));
 
         RowExpander.RowIterator ri = re.iterator();
         assertTrue(ri.hasNext());
@@ -591,27 +597,30 @@ public class RowExpanderTest {
                                          oracle);
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
-        assertEquals(6,
+        assertEquals(7,
                      columns.size());
 
         assertTrue(columns.get(0) instanceof RowExpander.ColumnValues);
         assertTrue(columns.get(1) instanceof RowExpander.ColumnValues);
         assertTrue(columns.get(2) instanceof RowExpander.ColumnValues);
-        assertTrue(columns.get(3) instanceof RowExpander.ColumnDynamicValues);
-        assertTrue(columns.get(4) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(3) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(4) instanceof RowExpander.ColumnDynamicValues);
         assertTrue(columns.get(5) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(6) instanceof RowExpander.ColumnValues);
 
         //Can't check size of values for ColumnDynamicValues as they depend on the other columns
         assertEquals(1,
                      columns.get(0).values.size());
         assertEquals(1,
                      columns.get(1).values.size());
-        assertEquals(3,
-                     columns.get(2).values.size());
         assertEquals(1,
-                     columns.get(4).values.size());
+                     columns.get(2).values.size());
+        assertEquals(3,
+                     columns.get(3).values.size());
         assertEquals(1,
                      columns.get(5).values.size());
+        assertEquals(1,
+                     columns.get(6).values.size());
 
         //Expected data
         // --> f1a, f1af2a
@@ -627,84 +636,84 @@ public class RowExpanderTest {
         RowExpander.RowIterator ri = re.iterator();
         assertTrue(ri.hasNext());
         List<DTCellValue52> row0 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row0.size());
         assertEquals("f1a",
-                     row0.get(2).getStringValue());
-        assertEquals("f1af2a",
                      row0.get(3).getStringValue());
+        assertEquals("f1af2a",
+                     row0.get(4).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row1 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row1.size());
         assertEquals("f1a",
-                     row1.get(2).getStringValue());
-        assertEquals("f1af2b",
                      row1.get(3).getStringValue());
+        assertEquals("f1af2b",
+                     row1.get(4).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row2 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row2.size());
         assertEquals("f1a",
-                     row2.get(2).getStringValue());
-        assertEquals("f1af2c",
                      row2.get(3).getStringValue());
+        assertEquals("f1af2c",
+                     row2.get(4).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row3 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row3.size());
         assertEquals("f1b",
-                     row3.get(2).getStringValue());
-        assertEquals("f1bf2a",
                      row3.get(3).getStringValue());
+        assertEquals("f1bf2a",
+                     row3.get(4).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row4 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row4.size());
         assertEquals("f1b",
-                     row4.get(2).getStringValue());
-        assertEquals("f1bf2b",
                      row4.get(3).getStringValue());
+        assertEquals("f1bf2b",
+                     row4.get(4).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row5 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row5.size());
         assertEquals("f1b",
-                     row5.get(2).getStringValue());
-        assertEquals("f1bf2c",
                      row5.get(3).getStringValue());
+        assertEquals("f1bf2c",
+                     row5.get(4).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row6 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row6.size());
         assertEquals("f1c",
-                     row6.get(2).getStringValue());
-        assertEquals("f1cf2a",
                      row6.get(3).getStringValue());
+        assertEquals("f1cf2a",
+                     row6.get(4).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row7 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row7.size());
         assertEquals("f1c",
-                     row7.get(2).getStringValue());
-        assertEquals("f1cf2b",
                      row7.get(3).getStringValue());
+        assertEquals("f1cf2b",
+                     row7.get(4).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row8 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row8.size());
         assertEquals("f1c",
-                     row8.get(2).getStringValue());
-        assertEquals("f1cf2c",
                      row8.get(3).getStringValue());
+        assertEquals("f1cf2c",
+                     row8.get(4).getStringValue());
 
         assertFalse(ri.hasNext());
     }
@@ -788,27 +797,30 @@ public class RowExpanderTest {
         }
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
-        assertEquals(6,
+        assertEquals(7,
                      columns.size());
 
         assertTrue(columns.get(0) instanceof RowExpander.ColumnValues);
         assertTrue(columns.get(1) instanceof RowExpander.ColumnValues);
         assertTrue(columns.get(2) instanceof RowExpander.ColumnValues);
-        assertTrue(columns.get(3) instanceof RowExpander.ColumnDynamicValues);
-        assertTrue(columns.get(4) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(3) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(4) instanceof RowExpander.ColumnDynamicValues);
         assertTrue(columns.get(5) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(6) instanceof RowExpander.ColumnValues);
 
         //Can't check size of values for ColumnDynamicValues as they depend on the other columns
         assertEquals(1,
                      columns.get(0).values.size());
         assertEquals(1,
                      columns.get(1).values.size());
-        assertEquals(2,
-                     columns.get(2).values.size());
         assertEquals(1,
-                     columns.get(4).values.size());
+                     columns.get(2).values.size());
+        assertEquals(2,
+                     columns.get(3).values.size());
         assertEquals(1,
                      columns.get(5).values.size());
+        assertEquals(1,
+                     columns.get(6).values.size());
 
         //Expected data
         // --> f1a, f1af2a
@@ -819,39 +831,39 @@ public class RowExpanderTest {
         RowExpander.RowIterator ri = re.iterator();
         assertTrue(ri.hasNext());
         List<DTCellValue52> row0 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row0.size());
         assertEquals("f1a",
-                     row0.get(2).getStringValue());
-        assertEquals("f1af2a",
                      row0.get(3).getStringValue());
+        assertEquals("f1af2a",
+                     row0.get(4).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row1 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row1.size());
         assertEquals("f1a",
-                     row1.get(2).getStringValue());
-        assertEquals("f1af2b",
                      row1.get(3).getStringValue());
+        assertEquals("f1af2b",
+                     row1.get(4).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row3 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row3.size());
         assertEquals("f1b",
-                     row3.get(2).getStringValue());
-        assertEquals("f1bf2a",
                      row3.get(3).getStringValue());
+        assertEquals("f1bf2a",
+                     row3.get(4).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row4 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row4.size());
         assertEquals("f1b",
-                     row4.get(2).getStringValue());
-        assertEquals("f1bf2b",
                      row4.get(3).getStringValue());
+        assertEquals("f1bf2b",
+                     row4.get(4).getStringValue());
 
         assertFalse(ri.hasNext());
     }
@@ -935,27 +947,30 @@ public class RowExpanderTest {
                            false);
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
-        assertEquals(6,
+        assertEquals(7,
                      columns.size());
 
         assertTrue(columns.get(0) instanceof RowExpander.ColumnValues);
         assertTrue(columns.get(1) instanceof RowExpander.ColumnValues);
         assertTrue(columns.get(2) instanceof RowExpander.ColumnValues);
-        assertTrue(columns.get(3) instanceof RowExpander.ColumnDynamicValues);
-        assertTrue(columns.get(4) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(3) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(4) instanceof RowExpander.ColumnDynamicValues);
         assertTrue(columns.get(5) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(6) instanceof RowExpander.ColumnValues);
 
         //Can't check size of values for ColumnDynamicValues as they depend on the other columns
         assertEquals(1,
                      columns.get(0).values.size());
         assertEquals(1,
                      columns.get(1).values.size());
-        assertEquals(2,
-                     columns.get(2).values.size());
         assertEquals(1,
-                     columns.get(4).values.size());
+                     columns.get(2).values.size());
+        assertEquals(2,
+                     columns.get(3).values.size());
         assertEquals(1,
                      columns.get(5).values.size());
+        assertEquals(1,
+                     columns.get(6).values.size());
 
         //Expected data
         // --> f1a, null
@@ -964,19 +979,19 @@ public class RowExpanderTest {
         RowExpander.RowIterator ri = re.iterator();
         assertTrue(ri.hasNext());
         List<DTCellValue52> row0 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row0.size());
         assertEquals("f1a",
-                     row0.get(2).getStringValue());
-        assertNull(row0.get(3));
+                     row0.get(3).getStringValue());
+        assertNull(row0.get(4));
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row1 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row1.size());
         assertEquals("f1b",
-                     row1.get(2).getStringValue());
-        assertNull(row1.get(3));
+                     row1.get(3).getStringValue());
+        assertNull(row1.get(4));
 
         assertFalse(ri.hasNext());
     }
@@ -1060,15 +1075,16 @@ public class RowExpanderTest {
                            true);
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
-        assertEquals(6,
+        assertEquals(7,
                      columns.size());
 
         assertTrue(columns.get(0) instanceof RowExpander.ColumnValues);
         assertTrue(columns.get(1) instanceof RowExpander.ColumnValues);
         assertTrue(columns.get(2) instanceof RowExpander.ColumnValues);
-        assertTrue(columns.get(3) instanceof RowExpander.ColumnDynamicValues);
-        assertTrue(columns.get(4) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(3) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(4) instanceof RowExpander.ColumnDynamicValues);
         assertTrue(columns.get(5) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(6) instanceof RowExpander.ColumnValues);
 
         //Can't check size of values for ColumnDynamicValues as they depend on the other columns
         assertEquals(1,
@@ -1078,9 +1094,11 @@ public class RowExpanderTest {
         assertEquals(1,
                      columns.get(2).values.size());
         assertEquals(1,
-                     columns.get(4).values.size());
+                     columns.get(3).values.size());
         assertEquals(1,
                      columns.get(5).values.size());
+        assertEquals(1,
+                     columns.get(6).values.size());
 
         //Expected data
         // --> null, null
@@ -1088,10 +1106,10 @@ public class RowExpanderTest {
         RowExpander.RowIterator ri = re.iterator();
         assertTrue(ri.hasNext());
         List<DTCellValue52> row0 = ri.next();
-        assertEquals(6,
+        assertEquals(7,
                      row0.size());
-        assertNull(row0.get(2));
         assertNull(row0.get(3));
+        assertNull(row0.get(4));
 
         assertFalse(ri.hasNext());
     }
@@ -1185,28 +1203,31 @@ public class RowExpanderTest {
                                          oracle);
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
-        assertEquals(7,
+        assertEquals(8,
                      columns.size());
 
         assertTrue(columns.get(0) instanceof RowExpander.ColumnValues);
         assertTrue(columns.get(1) instanceof RowExpander.ColumnValues);
         assertTrue(columns.get(2) instanceof RowExpander.ColumnValues);
-        assertTrue(columns.get(3) instanceof RowExpander.ColumnDynamicValues);
+        assertTrue(columns.get(3) instanceof RowExpander.ColumnValues);
         assertTrue(columns.get(4) instanceof RowExpander.ColumnDynamicValues);
-        assertTrue(columns.get(5) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(5) instanceof RowExpander.ColumnDynamicValues);
         assertTrue(columns.get(6) instanceof RowExpander.ColumnValues);
+        assertTrue(columns.get(7) instanceof RowExpander.ColumnValues);
 
         //Can't check size of values for ColumnDynamicValues as they depend on the other columns
         assertEquals(1,
                      columns.get(0).values.size());
         assertEquals(1,
                      columns.get(1).values.size());
-        assertEquals(2,
-                     columns.get(2).values.size());
         assertEquals(1,
-                     columns.get(5).values.size());
+                     columns.get(2).values.size());
+        assertEquals(2,
+                     columns.get(3).values.size());
         assertEquals(1,
                      columns.get(6).values.size());
+        assertEquals(1,
+                     columns.get(7).values.size());
 
         //Expected data
         // --> f1a, f1af2a, f1af2af3a
@@ -1221,91 +1242,91 @@ public class RowExpanderTest {
         RowExpander.RowIterator ri = re.iterator();
         assertTrue(ri.hasNext());
         List<DTCellValue52> row0 = ri.next();
-        assertEquals(7,
+        assertEquals(8,
                      row0.size());
         assertEquals("f1a",
-                     row0.get(2).getStringValue());
-        assertEquals("f1af2a",
                      row0.get(3).getStringValue());
-        assertEquals("f1af2af3a",
+        assertEquals("f1af2a",
                      row0.get(4).getStringValue());
+        assertEquals("f1af2af3a",
+                     row0.get(5).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row1 = ri.next();
-        assertEquals(7,
+        assertEquals(8,
                      row1.size());
         assertEquals("f1a",
-                     row1.get(2).getStringValue());
-        assertEquals("f1af2a",
                      row1.get(3).getStringValue());
-        assertEquals("f1af2af3b",
+        assertEquals("f1af2a",
                      row1.get(4).getStringValue());
+        assertEquals("f1af2af3b",
+                     row1.get(5).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row2 = ri.next();
-        assertEquals(7,
+        assertEquals(8,
                      row2.size());
         assertEquals("f1a",
-                     row2.get(2).getStringValue());
-        assertEquals("f1af2b",
                      row2.get(3).getStringValue());
-        assertEquals("f1af2bf3a",
+        assertEquals("f1af2b",
                      row2.get(4).getStringValue());
+        assertEquals("f1af2bf3a",
+                     row2.get(5).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row3 = ri.next();
-        assertEquals(7,
+        assertEquals(8,
                      row3.size());
         assertEquals("f1a",
-                     row3.get(2).getStringValue());
-        assertEquals("f1af2b",
                      row3.get(3).getStringValue());
-        assertEquals("f1af2bf3b",
+        assertEquals("f1af2b",
                      row3.get(4).getStringValue());
+        assertEquals("f1af2bf3b",
+                     row3.get(5).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row4 = ri.next();
-        assertEquals(7,
+        assertEquals(8,
                      row4.size());
         assertEquals("f1b",
-                     row4.get(2).getStringValue());
-        assertEquals("f1bf2a",
                      row4.get(3).getStringValue());
-        assertEquals("f1bf2af3a",
+        assertEquals("f1bf2a",
                      row4.get(4).getStringValue());
+        assertEquals("f1bf2af3a",
+                     row4.get(5).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row5 = ri.next();
-        assertEquals(7,
+        assertEquals(8,
                      row5.size());
         assertEquals("f1b",
-                     row5.get(2).getStringValue());
-        assertEquals("f1bf2a",
                      row5.get(3).getStringValue());
-        assertEquals("f1bf2af3b",
+        assertEquals("f1bf2a",
                      row5.get(4).getStringValue());
+        assertEquals("f1bf2af3b",
+                     row5.get(5).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row6 = ri.next();
-        assertEquals(7,
+        assertEquals(8,
                      row6.size());
         assertEquals("f1b",
-                     row6.get(2).getStringValue());
-        assertEquals("f1bf2b",
                      row6.get(3).getStringValue());
-        assertEquals("f1bf2bf3a",
+        assertEquals("f1bf2b",
                      row6.get(4).getStringValue());
+        assertEquals("f1bf2bf3a",
+                     row6.get(5).getStringValue());
 
         assertTrue(ri.hasNext());
         List<DTCellValue52> row7 = ri.next();
-        assertEquals(7,
+        assertEquals(8,
                      row7.size());
         assertEquals("f1b",
-                     row7.get(2).getStringValue());
-        assertEquals("f1bf2b",
                      row7.get(3).getStringValue());
-        assertEquals("f1bf2bf3b",
+        assertEquals("f1bf2b",
                      row7.get(4).getStringValue());
+        assertEquals("f1bf2bf3b",
+                     row7.get(5).getStringValue());
 
         assertFalse(ri.hasNext());
     }
@@ -1356,24 +1377,26 @@ public class RowExpanderTest {
                                          oracle);
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
-        assertEquals(3,
+        assertEquals(4,
                      columns.size());
 
         assertEquals("",
                      columns.get(0).getCurrentValue().getStringValue());
         assertEquals("",
                      columns.get(1).getCurrentValue().getStringValue());
+        assertEquals("",
+                     columns.get(2).getCurrentValue().getStringValue());
         assertEquals("c1a",
-                     columns.get(2).getCurrentValue().getStringValue());
-        columns.get(2).advanceColumnValue();
+                     columns.get(3).getCurrentValue().getStringValue());
+        columns.get(3).advanceColumnValue();
         assertEquals("c1b",
-                     columns.get(2).getCurrentValue().getStringValue());
-        columns.get(2).advanceColumnValue();
+                     columns.get(3).getCurrentValue().getStringValue());
+        columns.get(3).advanceColumnValue();
         assertEquals("c1a",
-                     columns.get(2).getCurrentValue().getStringValue());
-        columns.get(2).advanceColumnValue();
+                     columns.get(3).getCurrentValue().getStringValue());
+        columns.get(3).advanceColumnValue();
         assertEquals("c1b",
-                     columns.get(2).getCurrentValue().getStringValue());
+                     columns.get(3).getCurrentValue().getStringValue());
     }
 
     @Test
@@ -1421,7 +1444,7 @@ public class RowExpanderTest {
         RowExpander re = new RowExpander(model,
                                          oracle);
 
-        assertEquals(3,
+        assertEquals(4,
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
@@ -1438,14 +1461,18 @@ public class RowExpanderTest {
                      rows.get(0).get(0).getStringValue());
         assertEquals("",
                      rows.get(0).get(1).getStringValue());
-        assertEquals("c1a",
+        assertEquals("",
                      rows.get(0).get(2).getStringValue());
+        assertEquals("c1a",
+                     rows.get(0).get(3).getStringValue());
         assertEquals("",
                      rows.get(1).get(0).getStringValue());
         assertEquals("",
                      rows.get(1).get(1).getStringValue());
-        assertEquals("c1b",
+        assertEquals("",
                      rows.get(1).get(2).getStringValue());
+        assertEquals("c1b",
+                     rows.get(1).get(3).getStringValue());
     }
 
     @Test
@@ -1506,7 +1533,7 @@ public class RowExpanderTest {
         RowExpander re = new RowExpander(model,
                                          oracle);
 
-        assertEquals(4,
+        assertEquals(5,
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
@@ -1523,34 +1550,42 @@ public class RowExpanderTest {
                      rows.get(0).get(0).getStringValue());
         assertEquals("",
                      rows.get(0).get(1).getStringValue());
-        assertEquals("c1a",
+        assertEquals("",
                      rows.get(0).get(2).getStringValue());
-        assertEquals("c2a",
+        assertEquals("c1a",
                      rows.get(0).get(3).getStringValue());
+        assertEquals("c2a",
+                     rows.get(0).get(4).getStringValue());
         assertEquals("",
                      rows.get(1).get(0).getStringValue());
         assertEquals("",
                      rows.get(1).get(1).getStringValue());
-        assertEquals("c1a",
+        assertEquals("",
                      rows.get(1).get(2).getStringValue());
-        assertEquals("c2b",
+        assertEquals("c1a",
                      rows.get(1).get(3).getStringValue());
+        assertEquals("c2b",
+                     rows.get(1).get(4).getStringValue());
         assertEquals("",
                      rows.get(2).get(0).getStringValue());
         assertEquals("",
                      rows.get(2).get(1).getStringValue());
-        assertEquals("c1b",
+        assertEquals("",
                      rows.get(2).get(2).getStringValue());
-        assertEquals("c2a",
+        assertEquals("c1b",
                      rows.get(2).get(3).getStringValue());
+        assertEquals("c2a",
+                     rows.get(2).get(4).getStringValue());
         assertEquals("",
                      rows.get(3).get(0).getStringValue());
         assertEquals("",
                      rows.get(3).get(1).getStringValue());
-        assertEquals("c1b",
+        assertEquals("",
                      rows.get(3).get(2).getStringValue());
-        assertEquals("c2b",
+        assertEquals("c1b",
                      rows.get(3).get(3).getStringValue());
+        assertEquals("c2b",
+                     rows.get(3).get(4).getStringValue());
     }
 
     @Test
@@ -1628,7 +1663,7 @@ public class RowExpanderTest {
         RowExpander re = new RowExpander(model,
                                          oracle);
 
-        assertEquals(5,
+        assertEquals(6,
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
@@ -1645,41 +1680,49 @@ public class RowExpanderTest {
                      rows.get(0).get(0).getStringValue());
         assertEquals("",
                      rows.get(0).get(1).getStringValue());
-        assertEquals("c1a",
+        assertEquals("",
                      rows.get(0).get(2).getStringValue());
-        assertEquals("c2a",
+        assertEquals("c1a",
                      rows.get(0).get(3).getStringValue());
-        assertNull(rows.get(0).get(4));
+        assertEquals("c2a",
+                     rows.get(0).get(4).getStringValue());
+        assertNull(rows.get(0).get(5));
 
         assertEquals("",
                      rows.get(1).get(0).getStringValue());
         assertEquals("",
                      rows.get(1).get(1).getStringValue());
-        assertEquals("c1a",
+        assertEquals("",
                      rows.get(1).get(2).getStringValue());
-        assertEquals("c2b",
+        assertEquals("c1a",
                      rows.get(1).get(3).getStringValue());
-        assertNull(rows.get(1).get(4));
+        assertEquals("c2b",
+                     rows.get(1).get(4).getStringValue());
+        assertNull(rows.get(1).get(5));
 
         assertEquals("",
                      rows.get(2).get(0).getStringValue());
         assertEquals("",
                      rows.get(2).get(1).getStringValue());
-        assertEquals("c1b",
+        assertEquals("",
                      rows.get(2).get(2).getStringValue());
-        assertEquals("c2a",
+        assertEquals("c1b",
                      rows.get(2).get(3).getStringValue());
-        assertNull(rows.get(2).get(4));
+        assertEquals("c2a",
+                     rows.get(2).get(4).getStringValue());
+        assertNull(rows.get(2).get(5));
 
         assertEquals("",
                      rows.get(3).get(0).getStringValue());
         assertEquals("",
                      rows.get(3).get(1).getStringValue());
-        assertEquals("c1b",
+        assertEquals("",
                      rows.get(3).get(2).getStringValue());
-        assertEquals("c2b",
+        assertEquals("c1b",
                      rows.get(3).get(3).getStringValue());
-        assertNull(rows.get(3).get(4));
+        assertEquals("c2b",
+                     rows.get(3).get(4).getStringValue());
+        assertNull(rows.get(3).get(5));
     }
 
     @Test
@@ -1760,7 +1803,7 @@ public class RowExpanderTest {
         RowExpander re = new RowExpander(model,
                                          oracle);
 
-        assertEquals(5,
+        assertEquals(6,
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
@@ -1777,45 +1820,53 @@ public class RowExpanderTest {
                      rows.get(0).get(0).getStringValue());
         assertEquals("",
                      rows.get(0).get(1).getStringValue());
-        assertEquals("c1a",
+        assertEquals("",
                      rows.get(0).get(2).getStringValue());
-        assertEquals("c2a",
+        assertEquals("c1a",
                      rows.get(0).get(3).getStringValue());
-        assertEquals("c3default",
+        assertEquals("c2a",
                      rows.get(0).get(4).getStringValue());
+        assertEquals("c3default",
+                     rows.get(0).get(5).getStringValue());
 
         assertEquals("",
                      rows.get(1).get(0).getStringValue());
         assertEquals("",
                      rows.get(1).get(1).getStringValue());
-        assertEquals("c1a",
+        assertEquals("",
                      rows.get(1).get(2).getStringValue());
-        assertEquals("c2b",
+        assertEquals("c1a",
                      rows.get(1).get(3).getStringValue());
-        assertEquals("c3default",
+        assertEquals("c2b",
                      rows.get(1).get(4).getStringValue());
+        assertEquals("c3default",
+                     rows.get(1).get(5).getStringValue());
 
         assertEquals("",
                      rows.get(2).get(0).getStringValue());
         assertEquals("",
                      rows.get(2).get(1).getStringValue());
-        assertEquals("c1b",
+        assertEquals("",
                      rows.get(2).get(2).getStringValue());
-        assertEquals("c2a",
+        assertEquals("c1b",
                      rows.get(2).get(3).getStringValue());
-        assertEquals("c3default",
+        assertEquals("c2a",
                      rows.get(2).get(4).getStringValue());
+        assertEquals("c3default",
+                     rows.get(2).get(5).getStringValue());
 
         assertEquals("",
                      rows.get(3).get(0).getStringValue());
         assertEquals("",
                      rows.get(3).get(1).getStringValue());
-        assertEquals("c1b",
+        assertEquals("",
                      rows.get(3).get(2).getStringValue());
-        assertEquals("c2b",
+        assertEquals("c1b",
                      rows.get(3).get(3).getStringValue());
-        assertEquals("c3default",
+        assertEquals("c2b",
                      rows.get(3).get(4).getStringValue());
+        assertEquals("c3default",
+                     rows.get(3).get(5).getStringValue());
     }
 
     @Test
@@ -1900,7 +1951,7 @@ public class RowExpanderTest {
         re.setExpandColumn(c3,
                            false);
 
-        assertEquals(5,
+        assertEquals(6,
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
@@ -1987,7 +2038,7 @@ public class RowExpanderTest {
         re.setExpandColumn(c2,
                            false);
 
-        assertEquals(5,
+        assertEquals(6,
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
@@ -2004,19 +2055,23 @@ public class RowExpanderTest {
                      rows.get(0).get(0).getStringValue());
         assertEquals("",
                      rows.get(0).get(1).getStringValue());
-        assertNull(rows.get(0).get(2));
+        assertEquals("",
+                     rows.get(0).get(2).getStringValue());
         assertNull(rows.get(0).get(3));
+        assertNull(rows.get(0).get(4));
         assertEquals("c3a",
-                     rows.get(0).get(4).getStringValue());
+                     rows.get(0).get(5).getStringValue());
 
         assertEquals("",
                      rows.get(1).get(0).getStringValue());
         assertEquals("",
                      rows.get(1).get(1).getStringValue());
-        assertNull(rows.get(1).get(2));
+        assertEquals("",
+                     rows.get(1).get(2).getStringValue());
         assertNull(rows.get(1).get(3));
+        assertNull(rows.get(1).get(4));
         assertEquals("c3b",
-                     rows.get(1).get(4).getStringValue());
+                     rows.get(1).get(5).getStringValue());
     }
 
     @Test
@@ -2097,7 +2152,7 @@ public class RowExpanderTest {
         re.setExpandColumn(c2,
                            false);
 
-        assertEquals(5,
+        assertEquals(6,
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
@@ -2114,41 +2169,49 @@ public class RowExpanderTest {
                      rows.get(0).get(0).getStringValue());
         assertEquals("",
                      rows.get(0).get(1).getStringValue());
-        assertEquals("c1a",
+        assertEquals("",
                      rows.get(0).get(2).getStringValue());
-        assertNull(rows.get(0).get(3));
+        assertEquals("c1a",
+                     rows.get(0).get(3).getStringValue());
+        assertNull(rows.get(0).get(4));
         assertEquals("c3a",
-                     rows.get(0).get(4).getStringValue());
+                     rows.get(0).get(5).getStringValue());
 
         assertEquals("",
                      rows.get(1).get(0).getStringValue());
         assertEquals("",
                      rows.get(1).get(1).getStringValue());
-        assertEquals("c1a",
+        assertEquals("",
                      rows.get(1).get(2).getStringValue());
-        assertNull(rows.get(1).get(3));
+        assertEquals("c1a",
+                     rows.get(1).get(3).getStringValue());
+        assertNull(rows.get(1).get(4));
         assertEquals("c3b",
-                     rows.get(1).get(4).getStringValue());
+                     rows.get(1).get(5).getStringValue());
 
         assertEquals("",
                      rows.get(2).get(0).getStringValue());
         assertEquals("",
                      rows.get(2).get(1).getStringValue());
-        assertEquals("c1b",
+        assertEquals("",
                      rows.get(2).get(2).getStringValue());
-        assertNull(rows.get(2).get(3));
+        assertEquals("c1b",
+                     rows.get(2).get(3).getStringValue());
+        assertNull(rows.get(2).get(4));
         assertEquals("c3a",
-                     rows.get(2).get(4).getStringValue());
+                     rows.get(2).get(5).getStringValue());
 
         assertEquals("",
                      rows.get(3).get(0).getStringValue());
         assertEquals("",
                      rows.get(3).get(1).getStringValue());
-        assertEquals("c1b",
+        assertEquals("",
                      rows.get(3).get(2).getStringValue());
-        assertNull(rows.get(3).get(3));
+        assertEquals("c1b",
+                     rows.get(3).get(3).getStringValue());
+        assertNull(rows.get(3).get(4));
         assertEquals("c3b",
-                     rows.get(3).get(4).getStringValue());
+                     rows.get(3).get(5).getStringValue());
     }
 
     @Test
@@ -2230,7 +2293,7 @@ public class RowExpanderTest {
         re.setExpandColumn(c2,
                            false);
 
-        assertEquals(5,
+        assertEquals(6,
                      re.getColumns().size());
 
         RowExpander.RowIterator i = re.iterator();
@@ -2247,45 +2310,53 @@ public class RowExpanderTest {
                      rows.get(0).get(0).getStringValue());
         assertEquals("",
                      rows.get(0).get(1).getStringValue());
-        assertEquals("c1a",
+        assertEquals("",
                      rows.get(0).get(2).getStringValue());
-        assertEquals("c2default",
+        assertEquals("c1a",
                      rows.get(0).get(3).getStringValue());
-        assertEquals("c3a",
+        assertEquals("c2default",
                      rows.get(0).get(4).getStringValue());
+        assertEquals("c3a",
+                     rows.get(0).get(5).getStringValue());
 
         assertEquals("",
                      rows.get(1).get(0).getStringValue());
         assertEquals("",
                      rows.get(1).get(1).getStringValue());
-        assertEquals("c1a",
+        assertEquals("",
                      rows.get(1).get(2).getStringValue());
-        assertEquals("c2default",
+        assertEquals("c1a",
                      rows.get(1).get(3).getStringValue());
-        assertEquals("c3b",
+        assertEquals("c2default",
                      rows.get(1).get(4).getStringValue());
+        assertEquals("c3b",
+                     rows.get(1).get(5).getStringValue());
 
         assertEquals("",
                      rows.get(2).get(0).getStringValue());
         assertEquals("",
                      rows.get(2).get(1).getStringValue());
-        assertEquals("c1b",
+        assertEquals("",
                      rows.get(2).get(2).getStringValue());
-        assertEquals("c2default",
+        assertEquals("c1b",
                      rows.get(2).get(3).getStringValue());
-        assertEquals("c3a",
+        assertEquals("c2default",
                      rows.get(2).get(4).getStringValue());
+        assertEquals("c3a",
+                     rows.get(2).get(5).getStringValue());
 
         assertEquals("",
                      rows.get(3).get(0).getStringValue());
         assertEquals("",
                      rows.get(3).get(1).getStringValue());
-        assertEquals("c1b",
+        assertEquals("",
                      rows.get(3).get(2).getStringValue());
-        assertEquals("c2default",
+        assertEquals("c1b",
                      rows.get(3).get(3).getStringValue());
-        assertEquals("c3b",
+        assertEquals("c2default",
                      rows.get(3).get(4).getStringValue());
+        assertEquals("c3b",
+                     rows.get(3).get(5).getStringValue());
     }
 
     @Test
@@ -2373,37 +2444,39 @@ public class RowExpanderTest {
                                          oracle);
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
-        assertEquals(6,
+        assertEquals(7,
                      columns.size());
 
         assertEquals(1,
                      columns.get(0).values.size());
         assertEquals(1,
                      columns.get(1).values.size());
-        assertEquals(2,
+        assertEquals(1,
                      columns.get(2).values.size());
         assertEquals(2,
                      columns.get(3).values.size());
-        assertEquals(1,
+        assertEquals(2,
                      columns.get(4).values.size());
         assertEquals(1,
                      columns.get(5).values.size());
-
-        assertEquals(Boolean.TRUE,
-                     columns.get(2).values.get(0).getBooleanValue());
-        assertEquals(Boolean.FALSE,
-                     columns.get(2).values.get(1).getBooleanValue());
+        assertEquals(1,
+                     columns.get(6).values.size());
 
         assertEquals(Boolean.TRUE,
                      columns.get(3).values.get(0).getBooleanValue());
         assertEquals(Boolean.FALSE,
                      columns.get(3).values.get(1).getBooleanValue());
 
-        assertEquals(Boolean.FALSE,
+        assertEquals(Boolean.TRUE,
                      columns.get(4).values.get(0).getBooleanValue());
+        assertEquals(Boolean.FALSE,
+                     columns.get(4).values.get(1).getBooleanValue());
 
         assertEquals(Boolean.FALSE,
                      columns.get(5).values.get(0).getBooleanValue());
+
+        assertEquals(Boolean.FALSE,
+                     columns.get(6).values.get(0).getBooleanValue());
 
         RowExpander.RowIterator i = re.iterator();
         List<List<DTCellValue52>> rows = new ArrayList<List<DTCellValue52>>();
@@ -2419,53 +2492,61 @@ public class RowExpanderTest {
                      rows.get(0).get(0).getStringValue());
         assertEquals("",
                      rows.get(0).get(1).getStringValue());
-        assertEquals(Boolean.TRUE,
-                     rows.get(0).get(2).getBooleanValue());
+        assertEquals("",
+                     rows.get(0).get(2).getStringValue());
         assertEquals(Boolean.TRUE,
                      rows.get(0).get(3).getBooleanValue());
-        assertEquals(Boolean.FALSE,
+        assertEquals(Boolean.TRUE,
                      rows.get(0).get(4).getBooleanValue());
         assertEquals(Boolean.FALSE,
                      rows.get(0).get(5).getBooleanValue());
+        assertEquals(Boolean.FALSE,
+                     rows.get(0).get(6).getBooleanValue());
 
         assertEquals("",
                      rows.get(1).get(0).getStringValue());
         assertEquals("",
                      rows.get(1).get(1).getStringValue());
+        assertEquals("",
+                     rows.get(1).get(2).getStringValue());
         assertEquals(Boolean.TRUE,
-                     rows.get(1).get(2).getBooleanValue());
-        assertEquals(Boolean.FALSE,
                      rows.get(1).get(3).getBooleanValue());
         assertEquals(Boolean.FALSE,
                      rows.get(1).get(4).getBooleanValue());
         assertEquals(Boolean.FALSE,
                      rows.get(1).get(5).getBooleanValue());
+        assertEquals(Boolean.FALSE,
+                     rows.get(1).get(6).getBooleanValue());
 
         assertEquals("",
                      rows.get(2).get(0).getStringValue());
         assertEquals("",
                      rows.get(2).get(1).getStringValue());
+        assertEquals("",
+                     rows.get(2).get(2).getStringValue());
         assertEquals(Boolean.FALSE,
-                     rows.get(2).get(2).getBooleanValue());
-        assertEquals(Boolean.TRUE,
                      rows.get(2).get(3).getBooleanValue());
-        assertEquals(Boolean.FALSE,
+        assertEquals(Boolean.TRUE,
                      rows.get(2).get(4).getBooleanValue());
         assertEquals(Boolean.FALSE,
                      rows.get(2).get(5).getBooleanValue());
+        assertEquals(Boolean.FALSE,
+                     rows.get(2).get(6).getBooleanValue());
 
         assertEquals("",
                      rows.get(3).get(0).getStringValue());
         assertEquals("",
                      rows.get(3).get(1).getStringValue());
-        assertEquals(Boolean.FALSE,
-                     rows.get(3).get(2).getBooleanValue());
+        assertEquals("",
+                     rows.get(3).get(2).getStringValue());
         assertEquals(Boolean.FALSE,
                      rows.get(3).get(3).getBooleanValue());
         assertEquals(Boolean.FALSE,
                      rows.get(3).get(4).getBooleanValue());
         assertEquals(Boolean.FALSE,
                      rows.get(3).get(5).getBooleanValue());
+        assertEquals(Boolean.FALSE,
+                     rows.get(3).get(6).getBooleanValue());
     }
 
     @Test
@@ -2514,15 +2595,17 @@ public class RowExpanderTest {
                                          oracle);
 
         List<RowExpander.ColumnValues> columns = re.getColumns();
-        assertEquals(3,
+        assertEquals(4,
                      columns.size());
 
         assertEquals(1,
                      columns.get(0).values.size());
         assertEquals(1,
                      columns.get(1).values.size());
-        assertEquals(2,
+        assertEquals(1,
                      columns.get(2).values.size());
+        assertEquals(2,
+                     columns.get(3).values.size());
 
         RowExpander.RowIterator ri = re.iterator();
         assertTrue(ri.hasNext());
@@ -2540,15 +2623,19 @@ public class RowExpanderTest {
                      rows.get(0).get(0).getStringValue());
         assertEquals("",
                      rows.get(0).get(1).getStringValue());
-        assertEquals("M",
+        assertEquals("",
                      rows.get(0).get(2).getStringValue());
+        assertEquals("M",
+                     rows.get(0).get(3).getStringValue());
 
         assertEquals("",
                      rows.get(1).get(0).getStringValue());
         assertEquals("",
                      rows.get(1).get(1).getStringValue());
-        assertEquals("F",
+        assertEquals("",
                      rows.get(1).get(2).getStringValue());
+        assertEquals("F",
+                     rows.get(1).get(3).getStringValue());
 
         assertTrue(rows.get(0).get(0) != rows.get(1).get(0));
         assertTrue(rows.get(0).get(1) != rows.get(1).get(1));

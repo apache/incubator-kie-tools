@@ -67,11 +67,11 @@ public class DecisionTableAnalyzerFromFileTest extends AnalyzerUpdateTestBase {
         // Update
         table52.getData()
                 .get(0)
-                .get(2)
+                .get(3)
                 .setBooleanValue(true);
         final List<Coordinate> updates = new ArrayList<>();
         updates.add(new Coordinate(0,
-                                   2));
+                                   3));
 
         analyzerProvider.getUpdateManager(table52,
                                           analyzer)
@@ -81,11 +81,11 @@ public class DecisionTableAnalyzerFromFileTest extends AnalyzerUpdateTestBase {
         // Update
         table52.getData()
                 .get(1)
-                .get(2)
+                .get(3)
                 .setBooleanValue(true);
         final List<Coordinate> updates2 = new ArrayList<>();
         updates2.add(new Coordinate(1,
-                                    2));
+                                    3));
         analyzerProvider.getUpdateManager(table52,
                                           analyzer)
                 .update(table52,

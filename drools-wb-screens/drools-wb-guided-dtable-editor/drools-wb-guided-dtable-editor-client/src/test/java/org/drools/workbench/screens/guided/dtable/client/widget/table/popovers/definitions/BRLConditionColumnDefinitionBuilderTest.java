@@ -67,7 +67,7 @@ public class BRLConditionColumnDefinitionBuilderTest extends BaseColumnDefinitio
         setupBRLConditionColumn();
 
         builder.generateDefinition(dtPresenter,
-                                   model.getExpandedColumns().get(2),
+                                   model.getExpandedColumns().get(3),
                                    (String definition) -> {
                                        calledBack.set(true);
                                        assertEquals("Person( name == \"x\" )<br/>" +

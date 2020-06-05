@@ -101,7 +101,7 @@ public class DecisionTableAnalyzerTest {
         model.getConditions().addAll(patterns);
 
         decisionTableAnalyzer.insertColumn(a);
-        verify(updateManager).newColumn(model, 2);
+        verify(updateManager).newColumn(model, 3);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class DecisionTableAnalyzerTest {
 
         decisionTableAnalyzer.insertColumn(b);
 
-        verify(updateManager).newColumn(model, 3);
+        verify(updateManager).newColumn(model, 4);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class DecisionTableAnalyzerTest {
         model.getConditions().addAll(Arrays.asList(brlConditionOne, brlConditionTwo));
 
         decisionTableAnalyzer.insertColumn(brlConditionTwo);
-        verify(updateManager).newColumn(model, 4);
+        verify(updateManager).newColumn(model, 5);
     }
 
     @Test
@@ -157,7 +157,7 @@ public class DecisionTableAnalyzerTest {
         model.setActionCols(Arrays.asList(brlActionOne, brlActionTwo));
 
         decisionTableAnalyzer.insertColumn(brlActionOne);
-        verify(updateManager).newColumn(model, 2);
+        verify(updateManager).newColumn(model, 3);
     }
 
     @Test
@@ -178,7 +178,7 @@ public class DecisionTableAnalyzerTest {
         model.getConditions().addAll(Arrays.asList(pattern, brlCondition));
 
         decisionTableAnalyzer.insertColumn(d);
-        verify(updateManager).newColumn(model, 5);
+        verify(updateManager).newColumn(model, 6);
     }
 
     @Test(expected = IllegalArgumentException.class)

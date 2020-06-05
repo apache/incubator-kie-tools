@@ -44,11 +44,11 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
         assertEquals(1,
                      model.getActionCols().size());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof BoundFactUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof BoundFactUiColumn);
         assertEquals(true,
-                     ((BaseSingletonDOMElementUiColumn) uiModel.getColumns().get(2)).isEditable());
+                     ((BaseSingletonDOMElementUiColumn) uiModel.getColumns().get(3)).isEditable());
     }
 
     @Test
@@ -72,13 +72,13 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
         assertEquals(1,
                      model.getActionCols().size());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof BoundFactUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof BoundFactUiColumn);
         assertEquals("updated",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
         assertEquals(false,
-                     uiModel.getColumns().get(2).isVisible());
+                     uiModel.getColumns().get(3).isVisible());
     }
 
     @Test
@@ -90,13 +90,13 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
 
         assertEquals(1,
                      model.getActionCols().size());
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
 
         modelSynchronizer.deleteColumn(column);
         assertEquals(0,
                      model.getActionCols().size());
-        assertEquals(2,
+        assertEquals(3,
                      uiModel.getColumns().size());
     }
 
@@ -112,10 +112,10 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<String>("$r1"));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("$r2"));
 
         assertEquals(2,
@@ -125,30 +125,30 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
         assertEquals(column2,
                      model.getActionCols().get(1));
         assertEquals("$r1",
-                     model.getData().get(0).get(2).getStringValue());
-        assertEquals("$r2",
                      model.getData().get(0).get(3).getStringValue());
+        assertEquals("$r2",
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals("retract1",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("retract2",
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof BoundFactUiColumn);
         assertTrue(uiModelColumn2_1 instanceof BoundFactUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals("$r1",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals("$r2",
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(2,
+        uiModel.moveColumnTo(3,
                              uiModelColumn2_1);
 
         assertEquals(2,
@@ -158,23 +158,23 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
         assertEquals(column1,
                      model.getActionCols().get(1));
         assertEquals("$r2",
-                     model.getData().get(0).get(2).getStringValue());
-        assertEquals("$r1",
                      model.getData().get(0).get(3).getStringValue());
+        assertEquals("$r1",
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals("retract2",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("retract1",
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof BoundFactUiColumn);
         assertTrue(uiModelColumn2_2 instanceof BoundFactUiColumn);
-        assertEquals(3,
+        assertEquals(4,
                      uiModelColumn1_2.getIndex());
-        assertEquals(2,
+        assertEquals(3,
                      uiModelColumn2_2.getIndex());
         assertEquals("$r2",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -194,10 +194,10 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<String>("$r1"));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("$r2"));
 
         assertEquals(2,
@@ -207,30 +207,30 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
         assertEquals(column2,
                      model.getActionCols().get(1));
         assertEquals("$r1",
-                     model.getData().get(0).get(2).getStringValue());
-        assertEquals("$r2",
                      model.getData().get(0).get(3).getStringValue());
+        assertEquals("$r2",
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals("retract1",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("retract2",
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof BoundFactUiColumn);
         assertTrue(uiModelColumn2_1 instanceof BoundFactUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals("$r1",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals("$r2",
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(3,
+        uiModel.moveColumnTo(4,
                              uiModelColumn1_1);
 
         assertEquals(2,
@@ -240,23 +240,23 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
         assertEquals(column1,
                      model.getActionCols().get(1));
         assertEquals("$r2",
-                     model.getData().get(0).get(2).getStringValue());
-        assertEquals("$r1",
                      model.getData().get(0).get(3).getStringValue());
+        assertEquals("$r1",
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals("retract2",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("retract1",
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof BoundFactUiColumn);
         assertTrue(uiModelColumn2_2 instanceof BoundFactUiColumn);
-        assertEquals(3,
+        assertEquals(4,
                      uiModelColumn1_2.getIndex());
-        assertEquals(2,
+        assertEquals(3,
                      uiModelColumn2_2.getIndex());
         assertEquals("$r2",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -276,10 +276,10 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<String>("$r1"));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("$r2"));
 
         assertEquals(2,
@@ -289,30 +289,30 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
         assertEquals(column2,
                      model.getActionCols().get(1));
         assertEquals("$r1",
-                     model.getData().get(0).get(2).getStringValue());
-        assertEquals("$r2",
                      model.getData().get(0).get(3).getStringValue());
+        assertEquals("$r2",
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals("retract1",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("retract2",
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof BoundFactUiColumn);
         assertTrue(uiModelColumn2_1 instanceof BoundFactUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals("$r1",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals("$r2",
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(0,
+        uiModel.moveColumnTo(1,
                              uiModelColumn1_1);
 
         assertEquals(2,
@@ -322,23 +322,23 @@ public class ActionRetractFactColumnSynchronizerTest extends BaseSynchronizerTes
         assertEquals(column2,
                      model.getActionCols().get(1));
         assertEquals("$r1",
-                     model.getData().get(0).get(2).getStringValue());
-        assertEquals("$r2",
                      model.getData().get(0).get(3).getStringValue());
+        assertEquals("$r2",
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals("retract1",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("retract2",
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof BoundFactUiColumn);
         assertTrue(uiModelColumn2_2 instanceof BoundFactUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_2.getIndex());
         assertEquals(3,
+                     uiModelColumn1_2.getIndex());
+        assertEquals(4,
                      uiModelColumn2_2.getIndex());
         assertEquals("$r1",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());

@@ -126,6 +126,7 @@ public class EditMenuBuilderTest {
         uiModel.appendColumn(new BaseGridColumn<>(headerMetaData, gridColumnRenderer, 100));
         uiModel.appendColumn(new BaseGridColumn<>(headerMetaData, gridColumnRenderer, 100));
         uiModel.appendColumn(new BaseGridColumn<>(headerMetaData, gridColumnRenderer, 100));
+        uiModel.appendColumn(new BaseGridColumn<>(headerMetaData, gridColumnRenderer, 100));
         uiModel.appendRow(new BaseGridRow());
 
         builder = spy(new EditMenuBuilder(clipboard,
@@ -160,7 +161,7 @@ public class EditMenuBuilderTest {
 
         model.getMetadataCols().add(new MetadataCol52());
         model.getData().add(makeDTCellValue52());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
 
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
@@ -181,7 +182,7 @@ public class EditMenuBuilderTest {
 
         model.getMetadataCols().add(new MetadataCol52());
         model.getData().add(makeDTCellValue52());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
 
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
@@ -200,7 +201,7 @@ public class EditMenuBuilderTest {
 
         model.getConditions().add(makePattern52());
         model.getData().add(makeDTCellValue52());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
 
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
@@ -221,7 +222,7 @@ public class EditMenuBuilderTest {
 
         model.getConditions().add(makePattern52());
         model.getData().add(makeDTCellValue52());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
 
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
@@ -240,7 +241,7 @@ public class EditMenuBuilderTest {
 
         model.getConditions().add(makePattern52());
         model.getData().add(makeDTCellValue52ListWithOtherwise());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
 
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
@@ -261,7 +262,7 @@ public class EditMenuBuilderTest {
 
         model.getConditions().add(makePattern52());
         model.getData().add(makeDTCellValue52ListWithOtherwise());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
 
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
 
@@ -280,7 +281,7 @@ public class EditMenuBuilderTest {
 
         model.getMetadataCols().add(new MetadataCol52());
         model.getData().add(makeDTCellValue52());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
         clipboard.setData(makeClipboardHashSetData());
 
         builder.onDecisionTableSelectedEvent(new DecisionTableSelectedEvent(dtPresenter));
@@ -314,7 +315,7 @@ public class EditMenuBuilderTest {
 
         model.getMetadataCols().add(new MetadataCol52());
         model.getData().add(makeDTCellValue52());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
 
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
@@ -335,7 +336,7 @@ public class EditMenuBuilderTest {
 
         model.getMetadataCols().add(new MetadataCol52());
         model.getData().add(makeDTCellValue52());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
 
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
@@ -354,7 +355,7 @@ public class EditMenuBuilderTest {
 
         model.getConditions().add(makePattern52());
         model.getData().add(makeDTCellValue52());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
 
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
@@ -375,7 +376,7 @@ public class EditMenuBuilderTest {
 
         model.getConditions().add(makePattern52());
         model.getData().add(makeDTCellValue52());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
 
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
@@ -394,7 +395,7 @@ public class EditMenuBuilderTest {
 
         model.getConditions().add(makePattern52());
         model.getData().add(makeDTCellValue52ListWithOtherwise());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
 
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
@@ -415,7 +416,7 @@ public class EditMenuBuilderTest {
 
         model.getConditions().add(makePattern52());
         model.getData().add(makeDTCellValue52ListWithOtherwise());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
 
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
 
@@ -434,7 +435,7 @@ public class EditMenuBuilderTest {
 
         model.getMetadataCols().add(new MetadataCol52());
         model.getData().add(makeDTCellValue52());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
         clipboard.setData(makeClipboardHashSetData());
 
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
@@ -456,7 +457,7 @@ public class EditMenuBuilderTest {
 
         model.getMetadataCols().add(new MetadataCol52());
         model.getData().add(makeDTCellValue52());
-        uiModel.selectCell(0, 2);
+        uiModel.selectCell(0, 3);
         clipboard.setData(makeClipboardHashSetData());
 
         builder.onDecisionTableSelectionsChangedEvent(new DecisionTableSelectionsChangedEvent(dtPresenter));
@@ -501,9 +502,9 @@ public class EditMenuBuilderTest {
 
     private DefaultClipboard.ClipboardDataImpl makeDefaultClipboard() {
 
-        final DTCellValue52 dtCellValue52 = model.getData().get(0).get(2);
+        final DTCellValue52 dtCellValue52 = model.getData().get(0).get(3);
 
-        return new DefaultClipboard.ClipboardDataImpl(0, 2, dtCellValue52);
+        return new DefaultClipboard.ClipboardDataImpl(0, 3, dtCellValue52);
     }
 
     private Pattern52 makePattern52() {
@@ -521,6 +522,7 @@ public class EditMenuBuilderTest {
     private List<DTCellValue52> makeDTCellValue52() {
         return new ArrayList<DTCellValue52>() {{
             add(new DTCellValue52(1));
+            add(new DTCellValue52(""));
             add(new DTCellValue52("descr"));
             add(new DTCellValue52("md"));
         }};
@@ -529,6 +531,7 @@ public class EditMenuBuilderTest {
     private List<DTCellValue52> makeDTCellValue52ListWithOtherwise() {
         return new ArrayList<DTCellValue52>() {{
             add(new DTCellValue52(1));
+            add(new DTCellValue52(""));
             add(new DTCellValue52("descr"));
             add(new DTCellValue52() {{
                 setOtherwise(true);

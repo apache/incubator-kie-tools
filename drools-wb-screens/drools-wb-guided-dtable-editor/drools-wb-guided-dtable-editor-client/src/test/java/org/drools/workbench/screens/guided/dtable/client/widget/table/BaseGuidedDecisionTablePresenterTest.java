@@ -61,6 +61,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.conv
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.LimitedEntryColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.MetaDataColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.RowNumberColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.RuleNameColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ActionColumnSynchronizer;
@@ -372,6 +373,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
                 converters.add(new DescriptionColumnConverter());
                 converters.add(new LimitedEntryColumnConverter());
                 converters.add(new MetaDataColumnConverter());
+                converters.add(new RuleNameColumnConverter());
                 converters.add(new RowNumberColumnConverter());
                 return converters;
             }

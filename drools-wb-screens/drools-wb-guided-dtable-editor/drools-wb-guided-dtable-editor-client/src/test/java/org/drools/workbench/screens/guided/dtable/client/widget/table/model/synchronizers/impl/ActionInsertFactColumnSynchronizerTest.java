@@ -73,11 +73,11 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         assertEquals(1,
                      model.getActionCols().size());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof IntegerUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof IntegerUiColumn);
         assertEquals(true,
-                     ((BaseSingletonDOMElementUiColumn) uiModel.getColumns().get(2)).isEditable());
+                     ((BaseSingletonDOMElementUiColumn) uiModel.getColumns().get(3)).isEditable());
     }
 
     @Test
@@ -94,17 +94,17 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         assertEquals(1,
                      model.getActionCols().size());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof BooleanUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof BooleanUiColumn);
         assertEquals(true,
-                     ((BaseMultipleDOMElementUiColumn) uiModel.getColumns().get(2)).isEditable());
+                     ((BaseMultipleDOMElementUiColumn) uiModel.getColumns().get(3)).isEditable());
 
         //Test row append (boolean cells should be instantiated for Model and UiModel)
         modelSynchronizer.appendRow();
 
-        assertFalse(model.getData().get(0).get(2).getBooleanValue());
-        assertFalse(((Boolean) uiModel.getRow(0).getCells().get(2).getValue().getValue()));
+        assertFalse(model.getData().get(0).get(3).getBooleanValue());
+        assertFalse(((Boolean) uiModel.getRow(0).getCells().get(3).getValue().getValue()));
     }
 
     @Test
@@ -134,13 +134,13 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         assertEquals(1,
                      model.getActionCols().size());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof StringUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof StringUiColumn);
         assertEquals("updated",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(1).getTitle());
         assertEquals(false,
-                     uiModel.getColumns().get(2).isVisible());
+                     uiModel.getColumns().get(3).isVisible());
     }
 
     @Test
@@ -155,13 +155,13 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
 
         assertEquals(1,
                      model.getActionCols().size());
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
 
         modelSynchronizer.deleteColumn(column);
         assertEquals(0,
                      model.getActionCols().size());
-        assertEquals(2,
+        assertEquals(3,
                      uiModel.getColumns().size());
     }
 
@@ -183,10 +183,10 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<Integer>(45));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("Smurf"));
 
         assertEquals(2,
@@ -196,14 +196,14 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         assertEquals(column2,
                      model.getActionCols().get(1));
         assertEquals(45,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("Smurf",
-                     model.getData().get(0).get(3).getStringValue());
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals("$a : Applicant",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("age",
@@ -214,16 +214,16 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
                      uiModelColumn2_1.getHeaderMetaData().get(1).getTitle());
         assertTrue(uiModelColumn1_1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals(45,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals("Smurf",
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(2,
+        uiModel.moveColumnTo(3,
                              uiModelColumn2_1);
 
         assertEquals(2,
@@ -233,14 +233,14 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         assertEquals(column1,
                      model.getActionCols().get(1));
         assertEquals("Smurf",
-                     model.getData().get(0).get(2).getStringValue());
+                     model.getData().get(0).get(3).getStringValue());
         assertEquals(45,
-                     model.getData().get(0).get(3).getNumericValue());
+                     model.getData().get(0).get(4).getNumericValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals("$a : Applicant",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("name",
@@ -251,9 +251,9 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
                      uiModelColumn2_2.getHeaderMetaData().get(1).getTitle());
         assertTrue(uiModelColumn1_2 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_2 instanceof IntegerUiColumn);
-        assertEquals(3,
+        assertEquals(4,
                      uiModelColumn1_2.getIndex());
-        assertEquals(2,
+        assertEquals(3,
                      uiModelColumn2_2.getIndex());
         assertEquals("Smurf",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -279,10 +279,10 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<Integer>(45));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("Smurf"));
 
         assertEquals(2,
@@ -292,14 +292,14 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         assertEquals(column2,
                      model.getActionCols().get(1));
         assertEquals(45,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("Smurf",
-                     model.getData().get(0).get(3).getStringValue());
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals("$a : Applicant",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("age",
@@ -310,16 +310,16 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
                      uiModelColumn2_1.getHeaderMetaData().get(1).getTitle());
         assertTrue(uiModelColumn1_1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals(45,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals("Smurf",
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(3,
+        uiModel.moveColumnTo(4,
                              uiModelColumn1_1);
 
         assertEquals(2,
@@ -329,14 +329,14 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         assertEquals(column1,
                      model.getActionCols().get(1));
         assertEquals("Smurf",
-                     model.getData().get(0).get(2).getStringValue());
+                     model.getData().get(0).get(3).getStringValue());
         assertEquals(45,
-                     model.getData().get(0).get(3).getNumericValue());
+                     model.getData().get(0).get(4).getNumericValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals("$a : Applicant",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("name",
@@ -347,9 +347,9 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
                      uiModelColumn2_2.getHeaderMetaData().get(1).getTitle());
         assertTrue(uiModelColumn1_2 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_2 instanceof IntegerUiColumn);
-        assertEquals(3,
+        assertEquals(4,
                      uiModelColumn1_2.getIndex());
-        assertEquals(2,
+        assertEquals(3,
                      uiModelColumn2_2.getIndex());
         assertEquals("Smurf",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -375,10 +375,10 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<Integer>(45));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("Smurf"));
 
         assertEquals(2,
@@ -388,14 +388,14 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         assertEquals(column2,
                      model.getActionCols().get(1));
         assertEquals(45,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("Smurf",
-                     model.getData().get(0).get(3).getStringValue());
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals("$a : Applicant",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("age",
@@ -406,16 +406,16 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
                      uiModelColumn2_1.getHeaderMetaData().get(1).getTitle());
         assertTrue(uiModelColumn1_1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals(45,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals("Smurf",
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(0,
+        uiModel.moveColumnTo(1,
                              uiModelColumn1_1);
 
         assertEquals(2,
@@ -425,14 +425,14 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
         assertEquals(column2,
                      model.getActionCols().get(1));
         assertEquals(45,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("Smurf",
-                     model.getData().get(0).get(3).getStringValue());
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals("$a : Applicant",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("age",
@@ -443,9 +443,9 @@ public class ActionInsertFactColumnSynchronizerTest extends BaseSynchronizerTest
                      uiModelColumn2_2.getHeaderMetaData().get(1).getTitle());
         assertTrue(uiModelColumn1_2 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_2 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_2.getIndex());
         assertEquals(3,
+                     uiModelColumn1_2.getIndex());
+        assertEquals(4,
                      uiModelColumn2_2.getIndex());
         assertEquals(45,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());

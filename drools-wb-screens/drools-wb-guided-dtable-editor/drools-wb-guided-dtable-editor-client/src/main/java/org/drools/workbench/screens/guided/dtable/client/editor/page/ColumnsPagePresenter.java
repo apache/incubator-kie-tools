@@ -108,6 +108,8 @@ public class ColumnsPagePresenter {
 
     private VerticalPanel actionsWidget;
 
+    private ShowRuleNameOptionPresenter showRuleNameOptionPresenter;
+
     @Inject
     public ColumnsPagePresenter(final View view,
                                 final GuidedDecisionTableAccordion accordion,
@@ -116,7 +118,8 @@ public class ColumnsPagePresenter {
                                 final ManagedInstance<DeleteColumnManagementAnchorWidget> deleteColumnManagementAnchorWidgets,
                                 final ManagedInstance<AttributeColumnConfigRow> attributeColumnConfigRow,
                                 final ColumnManagementView conditionsPanel,
-                                final ColumnManagementView actionsPanel) {
+                                final ColumnManagementView actionsPanel,
+                                final ShowRuleNameOptionPresenter showRuleNameOptionPresenter) {
 
         this.view = view;
         this.accordion = accordion;
@@ -126,6 +129,7 @@ public class ColumnsPagePresenter {
         this.attributeColumnConfigRow = attributeColumnConfigRow;
         this.conditionsPanel = conditionsPanel;
         this.actionsPanel = actionsPanel;
+        this.showRuleNameOptionPresenter = showRuleNameOptionPresenter;
     }
 
     @PostConstruct
@@ -143,6 +147,7 @@ public class ColumnsPagePresenter {
 
         setupAccordion();
         setupRuleInheritance();
+        setupUseRuleNames();
         setupColumnsNoteInfo(modeller);
         setupConditionsPanel(modeller);
         setupActionsPanel(modeller);
@@ -527,6 +532,25 @@ public class ColumnsPagePresenter {
         }});
     }
 
+    void setupUseRuleNames() {
+
+        getActiveDecisionTable().ifPresent(this::setupRuleName);
+
+        showRuleNameOptionPresenter.addOptionChangeCallback(
+                result -> getActiveDecisionTable().ifPresent(dt -> dt.setShowRuleName(result))
+        );
+        view.setRuleNameOptionWidget(showRuleNameOptionPresenter);
+    }
+
+    private void setupRuleName(GuidedDecisionTableView.Presenter presenter) {
+        if (presenter == null) {
+            return;
+        }
+
+        final GuidedDecisionTable52 model = presenter.getModel();
+        showRuleNameOptionPresenter.setShowRuleName(!model.getRuleNameColumn().isHideColumn());
+    }
+
     Widget ruleInheritanceWidget() {
 
         final FlowPanel result = makeFlowPanel();
@@ -646,5 +670,7 @@ public class ColumnsPagePresenter {
         void setColumnsNoteInfoAsVisible();
 
         void setColumnsNoteInfoAsHidden();
+
+        void setRuleNameOptionWidget(final ShowRuleNameOptionPresenter showRuleNameOptionPresenter);
     }
 }

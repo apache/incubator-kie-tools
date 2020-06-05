@@ -18,6 +18,8 @@ package org.drools.workbench.services.verifier.plugin.client;
 
 import java.util.ArrayList;
 
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+
 public class DataBuilderProvider {
 
     public static DataBuilder row(final Object... items) {
@@ -39,16 +41,17 @@ public class DataBuilderProvider {
 
         public Object[][] end() {
 
-            final Object[][] result = new Object[list.size()][list.get(0).length + 2];
+            final Object[][] result = new Object[list.size()][list.get(0).length + 3];
 
             for (int i = 0; i < list.size(); i++) {
-                result[i][0] = i + 1;
-                result[i][1] = "description";
+                result[i][GuidedDecisionTable52.RULE_NUMBER_INDEX] = i + 1;
+                result[i][GuidedDecisionTable52.RULE_NAME_COLUMN_INDEX] = "";
+                result[i][GuidedDecisionTable52.RULE_DESCRIPTION_INDEX] = "description";
             }
 
             for (int i = 0; i < list.size(); i++) {
                 for (int j = 0; j < list.get(i).length; j++) {
-                    result[i][j + 2] = list.get(i)[j];
+                    result[i][j + 3] = list.get(i)[j];
                 }
             }
 

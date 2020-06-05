@@ -75,6 +75,7 @@ public class BRLActionColumnDefinitionBuilder extends BaseColumnDefinitionBuilde
                                             final BRLActionColumn brlColumn) {
         final List<DTCellValue52> row = new ArrayList<>();
         row.add(new DTCellValue52(1));
+        row.add(new DTCellValue52(""));
         row.add(new DTCellValue52("desc"));
 
         for (BRLActionVariableColumn brlVariableColumn : brlColumn.getChildColumns()) {

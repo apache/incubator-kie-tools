@@ -62,11 +62,11 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
         assertEquals(1,
                      model.getActionCols().size());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof BooleanUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof BooleanUiColumn);
         assertEquals(true,
-                     ((BaseMultipleDOMElementUiColumn) uiModel.getColumns().get(2)).isEditable());
+                     ((BaseMultipleDOMElementUiColumn) uiModel.getColumns().get(3)).isEditable());
     }
 
     @Test
@@ -90,13 +90,13 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
         assertEquals(1,
                      model.getActionCols().size());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof BooleanUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof BooleanUiColumn);
         assertEquals("updated",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(1).getTitle());
         assertEquals(false,
-                     uiModel.getColumns().get(2).isVisible());
+                     uiModel.getColumns().get(3).isVisible());
     }
 
     @Test
@@ -108,13 +108,13 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
 
         assertEquals(1,
                      model.getActionCols().size());
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
 
         modelSynchronizer.deleteColumn(column);
         assertEquals(0,
                      model.getActionCols().size());
-        assertEquals(2,
+        assertEquals(3,
                      uiModel.getColumns().size());
     }
 
@@ -130,10 +130,10 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<Boolean>(true));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<Boolean>(false));
 
         assertEquals(2,
@@ -143,30 +143,30 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
         assertEquals(column2,
                      model.getActionCols().get(1));
         assertEquals(true,
-                     model.getData().get(0).get(2).getBooleanValue());
-        assertEquals(false,
                      model.getData().get(0).get(3).getBooleanValue());
+        assertEquals(false,
+                     model.getData().get(0).get(4).getBooleanValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals("wid1",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("wid2",
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof BooleanUiColumn);
         assertTrue(uiModelColumn2_1 instanceof BooleanUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals(true,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals(false,
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(2,
+        uiModel.moveColumnTo(3,
                              uiModelColumn2_1);
 
         assertEquals(2,
@@ -176,23 +176,23 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
         assertEquals(column1,
                      model.getActionCols().get(1));
         assertEquals(false,
-                     model.getData().get(0).get(2).getBooleanValue());
-        assertEquals(true,
                      model.getData().get(0).get(3).getBooleanValue());
+        assertEquals(true,
+                     model.getData().get(0).get(4).getBooleanValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals("wid2",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("wid1",
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof BooleanUiColumn);
         assertTrue(uiModelColumn2_2 instanceof BooleanUiColumn);
-        assertEquals(3,
+        assertEquals(4,
                      uiModelColumn1_2.getIndex());
-        assertEquals(2,
+        assertEquals(3,
                      uiModelColumn2_2.getIndex());
         assertEquals(false,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -212,10 +212,10 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<Boolean>(true));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<Boolean>(false));
 
         assertEquals(2,
@@ -225,30 +225,30 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
         assertEquals(column2,
                      model.getActionCols().get(1));
         assertEquals(true,
-                     model.getData().get(0).get(2).getBooleanValue());
-        assertEquals(false,
                      model.getData().get(0).get(3).getBooleanValue());
+        assertEquals(false,
+                     model.getData().get(0).get(4).getBooleanValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals("wid1",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("wid2",
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof BooleanUiColumn);
         assertTrue(uiModelColumn2_1 instanceof BooleanUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals(true,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals(false,
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(3,
+        uiModel.moveColumnTo(4,
                              uiModelColumn1_1);
 
         assertEquals(2,
@@ -258,23 +258,23 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
         assertEquals(column1,
                      model.getActionCols().get(1));
         assertEquals(false,
-                     model.getData().get(0).get(2).getBooleanValue());
-        assertEquals(true,
                      model.getData().get(0).get(3).getBooleanValue());
+        assertEquals(true,
+                     model.getData().get(0).get(4).getBooleanValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals("wid2",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("wid1",
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof BooleanUiColumn);
         assertTrue(uiModelColumn2_2 instanceof BooleanUiColumn);
-        assertEquals(3,
+        assertEquals(4,
                      uiModelColumn1_2.getIndex());
-        assertEquals(2,
+        assertEquals(3,
                      uiModelColumn2_2.getIndex());
         assertEquals(false,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -294,10 +294,10 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<Boolean>(true));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<Boolean>(false));
 
         assertEquals(2,
@@ -307,30 +307,30 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
         assertEquals(column2,
                      model.getActionCols().get(1));
         assertEquals(true,
-                     model.getData().get(0).get(2).getBooleanValue());
-        assertEquals(false,
                      model.getData().get(0).get(3).getBooleanValue());
+        assertEquals(false,
+                     model.getData().get(0).get(4).getBooleanValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals("wid1",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("wid2",
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof BooleanUiColumn);
         assertTrue(uiModelColumn2_1 instanceof BooleanUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals(true,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals(false,
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(0,
+        uiModel.moveColumnTo(1,
                              uiModelColumn1_1);
 
         assertEquals(2,
@@ -340,23 +340,23 @@ public class ActionWorkItemExecuteColumnSynchronizerTest extends BaseSynchronize
         assertEquals(column2,
                      model.getActionCols().get(1));
         assertEquals(true,
-                     model.getData().get(0).get(2).getBooleanValue());
-        assertEquals(false,
                      model.getData().get(0).get(3).getBooleanValue());
+        assertEquals(false,
+                     model.getData().get(0).get(4).getBooleanValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals("wid1",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("wid2",
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof BooleanUiColumn);
         assertTrue(uiModelColumn2_2 instanceof BooleanUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_2.getIndex());
         assertEquals(3,
+                     uiModelColumn1_2.getIndex());
+        assertEquals(4,
                      uiModelColumn2_2.getIndex());
         assertEquals(true,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());

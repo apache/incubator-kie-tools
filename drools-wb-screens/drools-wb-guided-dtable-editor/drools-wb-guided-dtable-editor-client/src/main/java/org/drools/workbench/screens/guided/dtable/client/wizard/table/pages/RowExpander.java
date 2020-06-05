@@ -39,7 +39,7 @@ import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 /**
  * A utility class to expand Condition column definitions into rows. Action
  * columns are not expanded, as the use-case is that a user-determined action
- * should be specified for each combination of Conditons. Where a column is
+ * should be specified for each combination of Conditions. Where a column is
  * defined as having multiple values (Guvnor enum, Java enum or Decision Table
  * Value List) the number of rows is the Cartesian Product of all combinations.
  */
@@ -75,6 +75,7 @@ public class RowExpander {
         //Add all columns to Expander to generate row data. The AnalysisCol is not added 
         //as its data is transient, not held in the underlying Decision Table's data
         addRowNumberColumn();
+        addRuleNameColumn();
         addRowDescriptionColumn();
         addConditionColumns();
         addActionColumns();
@@ -90,6 +91,16 @@ public class RowExpander {
                                                     new DTCellValue52());
         cv.setExpandColumn(false);
         this.expandedColumns.put(model.getRowNumberCol(),
+                                 cv);
+        this.columns.add(cv);
+    }
+
+    private void addRuleNameColumn() {
+        ColumnValues cv = new RuleNameColumnValues(columns,
+                                                   EMPTY_VALUE,
+                                                   new DTCellValue52());
+        cv.setExpandColumn(false);
+        this.expandedColumns.put(model.getRuleNameColumn(),
                                  cv);
         this.columns.add(cv);
     }
@@ -524,6 +535,23 @@ public class RowExpander {
         RowNumberColumnValues(final List<ColumnValues> columns,
                               final List<DTCellValue52> values,
                               final DTCellValue52 defaultValue) {
+            super(columns,
+                  values,
+                  defaultValue);
+        }
+
+        @Override
+        DTCellValue52 getCurrentValue() {
+            //GUVNOR-1960: Always return a new instance
+            return new DTCellValue52();
+        }
+    }
+
+    static class RuleNameColumnValues extends ColumnValues {
+
+        RuleNameColumnValues(final List<ColumnValues> columns,
+                                   final List<DTCellValue52> values,
+                                   final DTCellValue52 defaultValue) {
             super(columns,
                   values,
                   defaultValue);

@@ -120,6 +120,9 @@ public class ColumnsPagePresenterTest {
     private ColumnManagementView actionsPanel;
 
     @Mock
+    private ShowRuleNameOptionPresenter showRuleNameOptionPresenter;
+
+    @Mock
     private VerticalPanel verticalPanel;
 
     @Mock
@@ -148,7 +151,8 @@ public class ColumnsPagePresenterTest {
                                                  deleteColumnManagementAnchorWidgets,
                                                  attributeColumnConfigRow,
                                                  conditionsPanel,
-                                                 actionsPanel));
+                                                 actionsPanel,
+                                                 showRuleNameOptionPresenter));
 
         doReturn(modeller).when(presenter).getModeller();
     }
@@ -168,6 +172,7 @@ public class ColumnsPagePresenterTest {
 
         doNothing().when(presenter).setupAccordion();
         doNothing().when(presenter).setupRuleInheritance();
+        doNothing().when(presenter).setupUseRuleNames();
         doNothing().when(presenter).setupColumnsNoteInfo(modeller);
         doNothing().when(presenter).setupConditionsPanel(modeller);
         doNothing().when(presenter).setupActionsPanel(modeller);

@@ -409,11 +409,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
                                        final String cell2Value,
                                        final String cell4Value,
                                        final String cell5Value) {
-        assertEquals(7, rowData.size());
-        assertEquals(cell1Value, rowData.get(3).getStringValue());
-        assertEquals(cell2Value, rowData.get(4).getStringValue());
-        assertEquals(cell4Value, rowData.get(5).getStringValue());
-        assertEquals(cell5Value, rowData.get(6).getStringValue());
+        assertEquals(8, rowData.size());
+        assertEquals(cell1Value, rowData.get(4).getStringValue());
+        assertEquals(cell2Value, rowData.get(5).getStringValue());
+        assertEquals(cell4Value, rowData.get(6).getStringValue());
+        assertEquals(cell5Value, rowData.get(7).getStringValue());
     }
 
     @Test(expected = DecisionTableParseException.class)

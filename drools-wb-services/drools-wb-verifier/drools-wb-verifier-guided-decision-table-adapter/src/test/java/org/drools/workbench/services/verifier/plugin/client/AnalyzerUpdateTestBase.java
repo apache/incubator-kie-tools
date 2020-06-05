@@ -199,6 +199,8 @@ public abstract class AnalyzerUpdateTestBase {
 
         // Row number
         row.add(new DTCellValue52());
+        // Rule Name
+        row.add(new DTCellValue52());
         // Explanation
         row.add(new DTCellValue52());
 

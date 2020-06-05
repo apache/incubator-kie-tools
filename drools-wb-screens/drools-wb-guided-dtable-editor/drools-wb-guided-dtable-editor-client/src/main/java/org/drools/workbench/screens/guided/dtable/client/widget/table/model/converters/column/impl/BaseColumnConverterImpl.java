@@ -75,6 +75,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.do
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxIntegerSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxLongSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxNumericSingletonDOMElementFactory;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxRuleNameSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxShortSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.dom.textbox.TextBoxStringSingletonDOMElementFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.BaseColumnConverter;
@@ -771,5 +772,21 @@ public abstract class BaseColumnConverterImpl implements BaseColumnConverter {
                                   new TextBoxStringSingletonDOMElementFactory(gridPanel,
                                                                               gridLayer,
                                                                               gridWidget));
+    }
+
+    protected GridColumn<String> newRuleNameColumn(final List<GridColumn.HeaderMetaData> headerMetaData,
+                                                   final double width,
+                                                   final boolean isResizable,
+                                                   final boolean isVisible,
+                                                   final GuidedDecisionTablePresenter.Access access,
+                                                   final GuidedDecisionTableView gridWidget) {
+        return new StringUiColumn(headerMetaData,
+                                  width,
+                                  isResizable,
+                                  isVisible,
+                                  access,
+                                  new TextBoxRuleNameSingletonDOMElementFactory(gridPanel,
+                                                                                gridLayer,
+                                                                                gridWidget));
     }
 }

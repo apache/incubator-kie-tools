@@ -65,7 +65,8 @@ public class RuleBuilder {
 
         int columnIndex = 0;
 
-        for (final BaseColumn baseColumn : model.getExpandedColumns()) {
+        List<BaseColumn> expandedColumns = model.getExpandedColumns();
+        for (final BaseColumn baseColumn : expandedColumns) {
 
             if (baseColumn instanceof AttributeCol52) {
                 final String attribute = ((AttributeCol52) baseColumn).getAttribute();

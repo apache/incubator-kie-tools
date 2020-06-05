@@ -31,6 +31,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.RuleNameColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableModellerView;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
@@ -54,6 +55,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.model.conv
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.LimitedEntryColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.MetaDataColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.RowNumberColumnConverter;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.column.impl.RuleNameColumnConverter;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
@@ -149,8 +151,11 @@ public abstract class BaseSynchronizerTest {
                                      eventBus,
                                      editable);
 
-        //Dummy columns for Row number and Description
+        //Dummy columns for Row number, rule name and Description
         uiModel.appendColumn(gridWidgetColumnFactory.convertColumn(new RowNumberCol52(),
+                                                                   readOnly,
+                                                                   view));
+        uiModel.appendColumn(gridWidgetColumnFactory.convertColumn(new RuleNameColumn(),
                                                                    readOnly,
                                                                    view));
         uiModel.appendColumn(gridWidgetColumnFactory.convertColumn(new DescriptionCol52(),
@@ -184,6 +189,7 @@ public abstract class BaseSynchronizerTest {
         converters.add(new DescriptionColumnConverter());
         converters.add(new LimitedEntryColumnConverter());
         converters.add(new MetaDataColumnConverter());
+        converters.add(new RuleNameColumnConverter());
         converters.add(new RowNumberColumnConverter());
         return converters;
     }

@@ -118,7 +118,8 @@ public class ColumnHeaderPopOverImplTest {
 
     private BaseGridData uiModel;
     private BaseGridColumn uiColumn1;
-    private BaseGridColumn<String> uiColumn2;
+    private BaseGridColumn  uiColumn2;
+    private BaseGridColumn<String> uiColumn3;
     private Bounds bounds = new BaseBounds( -50, -50, 250, 250 );
 
     private ColumnHeaderPopOver popOver;
@@ -127,18 +128,23 @@ public class ColumnHeaderPopOverImplTest {
     @SuppressWarnings("unchecked")
     public void setup() {
         this.model = new GuidedDecisionTable52();
-        this.model.getExpandedColumns().get( 0 ).setHeader( "#" );
-        this.model.getExpandedColumns().get( 1 ).setHeader( "description" );
+        this.model.getExpandedColumns().get( GuidedDecisionTable52.RULE_NUMBER_INDEX ).setHeader( "#" );
+        this.model.getExpandedColumns().get( GuidedDecisionTable52.RULE_NAME_COLUMN_INDEX ).setHeader( "" );
+        this.model.getExpandedColumns().get( GuidedDecisionTable52.RULE_DESCRIPTION_INDEX ).setHeader( "description" );
 
         this.uiColumn1 = new RowNumberColumn();
-        this.uiColumn2 = new BaseGridColumn<>( new BaseHeaderMetaData( "description" ),
-                                               columnRenderer,
-                                               100.0 );
+        this.uiColumn2 = new BaseGridColumn<>(new BaseHeaderMetaData("rule name" ),
+                                              columnRenderer,
+                                              100.0 );
+        this.uiColumn3 = new BaseGridColumn<>(new BaseHeaderMetaData("description" ),
+                                              columnRenderer,
+                                              100.0 );
         this.uiModel = new BaseGridData() {{
             setHeaderRowCount( 2 );
         }};
         uiModel.appendColumn( uiColumn1 );
         uiModel.appendColumn( uiColumn2 );
+        uiModel.appendColumn( uiColumn3 );
 
         serviceCaller = new CallerMock<>( service );
         when( service.toSource( any( Path.class ),
@@ -170,13 +176,14 @@ public class ColumnHeaderPopOverImplTest {
         when( domElementContainer.getAbsoluteLeft() ).thenReturn( 200 );
         when( viewport.getTransform() ).thenReturn( transform );
         when( rendererHelper.getColumnOffset( uiColumn1 ) ).thenReturn( 0.0 );
-        when( rendererHelper.getColumnOffset( uiColumn2 ) ).thenReturn( uiColumn1.getWidth() );
+        when( rendererHelper.getColumnOffset( uiColumn2 ) ).thenReturn(uiColumn1.getWidth() );
+        when( rendererHelper.getColumnOffset( uiColumn3 ) ).thenReturn(uiColumn1.getWidth() );
 
         final BaseGridRendererHelper.RenderingInformation ri = new BaseGridRendererHelper.RenderingInformation( bounds,
                                                                                                                 uiModel.getColumns(),
                                                                                                                 new BaseGridRendererHelper.RenderingBlockInformation(
                                                                                                                         new ArrayList<GridColumn<?>>() {{
-                                                                                                                            add( uiColumn2 );
+                                                                                                                            add(uiColumn3);
                                                                                                                         }},
                                                                                                                         0.0,
                                                                                                                         0.0,
@@ -323,14 +330,14 @@ public class ColumnHeaderPopOverImplTest {
 
         popOver.show( modellerView,
                       dtPresenter,
-                      2 );
+                      3 );
 
         verify( view,
                 times( 1 ) ).show( contentProviderArgumentCaptor.capture() );
 
         popOver.show( modellerView,
                       dtPresenter,
-                      2 );
+                      3 );
 
         verify( view,
                 times( 2 ) ).show( contentProviderArgumentCaptor.capture() );

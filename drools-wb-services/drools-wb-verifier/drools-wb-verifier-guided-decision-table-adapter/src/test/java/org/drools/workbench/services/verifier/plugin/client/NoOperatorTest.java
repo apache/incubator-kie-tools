@@ -85,9 +85,9 @@ public class NoOperatorTest
                   DataType.DataTypes.STRING,
                   DataType.DataTypes.BOOLEAN);
 
-        setCoordinate().row(0).column(2).toValue(">= 20");
         setCoordinate().row(0).column(3).toValue(">= 20");
-        setCoordinate().row(0).column(4).toValue(Boolean.TRUE);
+        setCoordinate().row(0).column(4).toValue(">= 20");
+        setCoordinate().row(0).column(5).toValue(Boolean.TRUE);
 
         final Set<Issue> analysisReport = analyzerProvider.getAnalysisReport();
         assertDoesNotContain(CheckType.IMPOSSIBLE_MATCH,
@@ -116,9 +116,9 @@ public class NoOperatorTest
                   DataType.DataTypes.STRING,
                   DataType.DataTypes.BOOLEAN);
 
-        setCoordinate().row(0).column(2).toValue(">= 20");
-        setCoordinate().row(0).column(3).toValue("<= 30");
-        setCoordinate().row(0).column(4).toValue(Boolean.TRUE);
+        setCoordinate().row(0).column(3).toValue(">= 20");
+        setCoordinate().row(0).column(4).toValue("<= 30");
+        setCoordinate().row(0).column(5).toValue(Boolean.TRUE);
 
         Set<Issue> analysisReport = analyzerProvider.getAnalysisReport();
         assertResultIsEmpty(analysisReport);
@@ -127,8 +127,8 @@ public class NoOperatorTest
                   DataType.DataTypes.STRING,
                   DataType.DataTypes.BOOLEAN);
 
-        setCoordinate().row(1).column(2).toValue("< 20");
-        setCoordinate().row(1).column(4).toValue(Boolean.TRUE);
+        setCoordinate().row(1).column(3).toValue("< 20");
+        setCoordinate().row(1).column(5).toValue(Boolean.TRUE);
 
         analysisReport = analyzerProvider.getAnalysisReport();
         assertResultIsEmpty(analysisReport);
@@ -137,8 +137,8 @@ public class NoOperatorTest
                   DataType.DataTypes.STRING,
                   DataType.DataTypes.BOOLEAN);
 
-        setCoordinate().row(2).column(3).toValue("< 20");
-        setCoordinate().row(2).column(4).toValue(Boolean.FALSE);
+        setCoordinate().row(2).column(4).toValue("< 20");
+        setCoordinate().row(2).column(5).toValue(Boolean.FALSE);
 
         analysisReport = analyzerProvider.getAnalysisReport();
         assertContains(analysisReport,

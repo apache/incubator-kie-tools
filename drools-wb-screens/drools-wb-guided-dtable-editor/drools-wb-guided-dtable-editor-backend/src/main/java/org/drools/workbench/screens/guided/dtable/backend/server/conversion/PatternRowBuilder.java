@@ -30,6 +30,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.RuleNameColumn;
 import org.kie.soup.commons.validation.PortablePreconditions;
 
 public class PatternRowBuilder {
@@ -94,7 +95,7 @@ public class PatternRowBuilder {
                     columnIndex = endIndex;
                     sourceIndex = sourceIndex + columnWidth - 1;
                 }
-            } else if (baseColumn instanceof RowNumberCol52) {
+            } else if (baseColumn instanceof RowNumberCol52 || baseColumn instanceof RuleNameColumn) {
                 // Ignore row column and do not up the columnIndex
                 continue;
             }

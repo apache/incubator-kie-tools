@@ -474,11 +474,11 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         linkTables();
 
         verify(uiModel1Columns,
-               atLeast(1)).get(eq(2));
+               atLeast(1)).get(eq(3));
         verify(uiModel2Columns,
-               atLeast(1)).get(eq(2));
+               atLeast(1)).get(eq(3));
         verify(uiModel3Columns,
-               atLeast(1)).get(eq(2));
+               atLeast(1)).get(eq(3));
 
         verify(uiModel2MockColumn).setLink(eq(uiModel1MockColumn));
         verify(uiModel3MockColumn).setLink(eq(uiModel1MockColumn));
@@ -620,6 +620,16 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(uiModel1MockColumn).setLink(eq(uiModel3MockColumn));
         verify(uiModel2MockColumn).setLink(eq(uiModel1MockColumn));
         verify(uiModel3MockColumn).setLink(eq(uiModel2MockColumn));
+    }
+
+    @Test
+    public void setRuleNameColumnVisibility() {
+
+        dtPresenter.setShowRuleName(true);
+        assertFalse(model.getRuleNameColumn().isHideColumn());
+
+        dtPresenter.setShowRuleName(false);
+        assertTrue(model.getRuleNameColumn().isHideColumn());
     }
 
     @Test
@@ -1344,7 +1354,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         final GridData uiModel = dtPresenter.getUiModel();
         uiModel.selectCell(0,
-                           2);
+                           3);
 
         dtPresenter.onDeleteSelectedCells();
 
@@ -1366,9 +1376,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         final GridData uiModel = dtPresenter.getUiModel();
         uiModel.selectCell(0,
-                           1);
-        uiModel.selectCell(0,
                            2);
+        uiModel.selectCell(0,
+                           3);
 
         final ArgumentCaptor<Integer> columnIndexCaptor = ArgumentCaptor.forClass(Integer.class);
         final ArgumentCaptor<GridData.Range> rowRangeCaptor = ArgumentCaptor.forClass(GridData.Range.class);
@@ -1380,11 +1390,11 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                                     columnIndexCaptor.capture());
         verify(synchronizer,
                never()).deleteCell(any(GridData.Range.class),
-                                   eq(2));
+                                   eq(3));
         checkDTSelectionsChangedEventFired(3);
 
         final GridCell<?> booleanCell = uiModel.getCell(0,
-                                                        2);
+                                                        3);
         assertNotNull(booleanCell);
         assertFalse((Boolean) booleanCell.getValue().getValue());
 
@@ -1394,7 +1404,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                      rowRange.getMinRowIndex());
         assertEquals(0,
                      rowRange.getMaxRowIndex());
-        assertEquals(1,
+        assertEquals(2,
                      columnIndex.intValue());
     }
 
@@ -1418,7 +1428,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         dtPresenter.appendColumn(column);
         final GridData uiModel = dtPresenter.getUiModel();
         uiModel.selectCell(0,
-                           2);
+                           3);
 
         dtPresenter.onDeleteSelectedColumns();
 

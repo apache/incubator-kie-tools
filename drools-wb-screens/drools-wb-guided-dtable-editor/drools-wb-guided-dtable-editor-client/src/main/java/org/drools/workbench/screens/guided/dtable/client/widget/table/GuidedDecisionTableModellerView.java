@@ -66,7 +66,7 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
 
     Bounds getBounds();
 
-    void setPinnedModeIndicatorVisibility(final boolean visible);
+    void setPinnedModeIndicatorVisibility(final boolean visible, final double headerCaptionWidth);
 
     void showGenericVetoMessage();
 

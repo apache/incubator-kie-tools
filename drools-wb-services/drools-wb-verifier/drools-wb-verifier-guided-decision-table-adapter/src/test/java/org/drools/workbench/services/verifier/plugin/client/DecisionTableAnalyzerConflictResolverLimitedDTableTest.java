@@ -62,8 +62,8 @@ public class DecisionTableAnalyzerConflictResolverLimitedDTableTest
                                 }
                             })
                 .withData(new Object[][]{
-                        {1, "description", true, true, false},
-                        {2, "description", true, false, true}})
+                        {1, "", "description", true, true, false},
+                        {2, "", "description", true, false, true}})
                 .buildTable();
 
         fireUpAnalyzer();

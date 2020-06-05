@@ -67,7 +67,7 @@ public class BRLActionColumnDefinitionBuilderTest extends BaseColumnDefinitionBu
         setupBRLActionColumn();
 
         builder.generateDefinition(dtPresenter,
-                                   model.getExpandedColumns().get(2),
+                                   model.getExpandedColumns().get(3),
                                    (String definition) -> {
                                        calledBack.set(true);
                                        assertEquals("Person $a = new Person();<br/>" +

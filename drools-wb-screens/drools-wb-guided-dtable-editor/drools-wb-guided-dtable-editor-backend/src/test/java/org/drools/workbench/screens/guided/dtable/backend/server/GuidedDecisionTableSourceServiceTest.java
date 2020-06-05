@@ -244,6 +244,19 @@ public class GuidedDecisionTableSourceServiceTest {
     }
 
     @Test
+    public void testCustomRuleName() throws Exception {
+        adRowWithCustomRuleName(1,
+                                "John is important",
+                                "John");
+        model.setData(data);
+        String source = service.getSource(path,
+                                          model);
+
+        assertTrue("Expected custom rule name to be present",
+                   source.contains("rule \"John is important\"\n"));
+    }
+
+    @Test
     public void testFormulaFieldBinding() throws Exception {
         final ConditionCol52 ageEqualToFormulaCondition = new ConditionCol52();
         ageEqualToFormulaCondition.setConstraintValueType(BaseSingleFieldConstraint.TYPE_RET_VALUE);
@@ -266,6 +279,7 @@ public class GuidedDecisionTableSourceServiceTest {
                         boolean isOtherwise) {
         data.add(new ArrayList<DTCellValue52>() {{
             add(new DTCellValue52(rowNumber));
+            add(new DTCellValue52(""));
             add(new DTCellValue52("row " + rowNumber));
             if (!isOtherwise) {
                 add(new DTCellValue52(nameEqualToCostraint));
@@ -279,8 +293,16 @@ public class GuidedDecisionTableSourceServiceTest {
 
     private void addRow(int rowNumber,
                         String... constraintValues) {
+
+        adRowWithCustomRuleName(rowNumber, "", constraintValues);
+    }
+
+    private void adRowWithCustomRuleName(int rowNumber,
+                                         String customRuleName,
+                                         String... constraintValues) {
         data.add(new ArrayList<DTCellValue52>() {{
             add(new DTCellValue52(rowNumber));
+            add(new DTCellValue52(customRuleName));
             add(new DTCellValue52("row " + rowNumber));
             Stream.of(constraintValues).forEach(value -> add(new DTCellValue52(value)));
         }});

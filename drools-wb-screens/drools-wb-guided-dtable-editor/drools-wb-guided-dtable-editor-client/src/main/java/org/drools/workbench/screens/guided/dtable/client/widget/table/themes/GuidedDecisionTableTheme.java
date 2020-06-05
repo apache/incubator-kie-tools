@@ -31,6 +31,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.RuleNameColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -216,7 +217,7 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
         final BaseColumn modelColumn = model.getExpandedColumns().get(uiColumnIndex);
         if (modelColumn instanceof RowNumberCol52) {
             return ModelColumnType.ROW_NUMBER;
-        } else if (modelColumn instanceof DescriptionCol52) {
+        } else if (modelColumn instanceof DescriptionCol52 || modelColumn instanceof RuleNameColumn) {
             return ModelColumnType.DESCRIPTION;
         } else if (modelColumn instanceof MetadataCol52) {
             return ModelColumnType.METADATA;
@@ -233,4 +234,5 @@ public class GuidedDecisionTableTheme implements GridRendererTheme {
         // proof rendering than throw an exception.
         return ModelColumnType.UNKNOWN;
     }
+
 }

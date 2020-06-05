@@ -117,11 +117,11 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
                                     "approvedRate",
                                     DataType.TYPE_NUMERIC_INTEGER)
                 .withData(new Object[][]{
-                        {1, "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
-                        {2, "description", 10000, 100000, 20, 2000, "Job", true, 0, 4},
-                        {3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6},
-                        {4, "description", null, null, null, null, null, null, null, null},
-                        {5, "description", null, null, null, null, null, null, null, null}})
+                        {1, "", "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
+                        {2, "", "description", 10000, 100000, 20, 2000, "Job", true, 0, 4},
+                        {3, "", "description", 100001, 130000, 20, 3000, "Job", true, 10, 6},
+                        {4, "", "description", null, null, null, null, null, null, null, null},
+                        {5, "", "description", null, null, null, null, null, null, null, null}})
                 .buildTable();
 
         Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
@@ -169,9 +169,9 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
                                     "approvedRate",
                                     DataType.TYPE_NUMERIC_INTEGER)
                 .withData(new Object[][]{
-                        {1, "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
-                        {2, "description", 1000, 200000, 30, 20000, "Asset", true, 0, 2},
-                        {3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6}})
+                        {1, "", "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
+                        {2, "", "description", 1000, 200000, 30, 20000, "Asset", true, 0, 2},
+                        {3, "", "description", 100001, 130000, 20, 3000, "Job", true, 10, 6}})
                 .buildTable();
 
         Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
@@ -220,9 +220,9 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
                                     "approvedRate",
                                     DataType.TYPE_NUMERIC)
                 .withData(new Object[][]{
-                        {1, "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
-                        {2, "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
-                        {3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6}})
+                        {1, "", "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
+                        {2, "", "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
+                        {3, "", "description", 100001, 130000, 20, 3000, "Job", true, 10, 6}})
                 .buildTable();
 
         Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
@@ -259,9 +259,9 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
                                     "approved",
                                     DataType.TYPE_STRING)
                 .withData(new Object[][]{
-                        {1, "description", "131000", "Toni", "Asset", "true"},
-                        {2, "description", "131000", "Toni", "Asset", "true"},
-                        {3, "description", "100001", "Michael", "Job", "true"}})
+                        {1, "", "description", "131000", "Toni", "Asset", "true"},
+                        {2, "", "description", "131000", "Toni", "Asset", "true"},
+                        {3, "", "description", "100001", "Michael", "Job", "true"}})
                 .buildTable();
 
         Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
@@ -299,9 +299,9 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
                                     "approved",
                                     DataType.TYPE_STRING)
                 .withData(new Object[][]{
-                        {1, "description", "131000", "Toni", "Asset", "true"},
-                        {2, "description", "131000", "Toni", "Asset", "true"},
-                        {3, "description", "100001", "Michael", "Job", "true"}})
+                        {1, "", "description", "131000", "Toni", "Asset", "true"},
+                        {2, "", "description", "131000", "Toni", "Asset", "true"},
+                        {3, "", "description", "100001", "Michael", "Job", "true"}})
                 .buildTable();
 
         Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
@@ -331,7 +331,7 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
                                             "Person",
                                             "name",
                                             "==")
-                .withData(new Object[][]{{1, "description", "Toni", "Toni"}})
+                .withData(new Object[][]{{1, "", "description", "Toni", "Toni"}})
                 .buildTable();
 
         Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
@@ -365,8 +365,8 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
                                     "approved",
                                     DataType.TYPE_BOOLEAN)
                 .withData(new Object[][]{
-                        {1, "description", 100, 0.0, true, true},
-                        {2, "description", 100, 0.0, true, false}})
+                        {1, "", "description", 100, 0.0, true, true},
+                        {2, "", "description", 100, 0.0, true, false}})
                 .buildTable();
 
         Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
@@ -395,10 +395,10 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
                                     "salary",
                                     DataType.TYPE_NUMERIC_INTEGER)
                 .withData(new Object[][]{
-                        {1, "description", "Toni", 100, 100},
-                        {2, "description", "Eder", 200, null},
-                        {3, "description", "Michael", null, 300},
-                        {4, "description", null, null, null, null, null}
+                        {1, "", "description", "Toni", 100, 100},
+                        {2, "", "description", "Eder", 200, null},
+                        {3, "", "description", "Michael", null, 300},
+                        {4, "", "description", null, null, null, null, null}
                 })
                 .buildTable();
 
@@ -431,10 +431,10 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
                                     "salary",
                                     DataType.TYPE_NUMERIC_INTEGER)
                 .withData(new Object[][]{
-                        {1, "description", "Toni", 100, 100},
-                        {2, "description", "Eder", 200, null},
-                        {3, "description", "Michael", null, 300},
-                        {4, "description", null, null, null, null, null}
+                        {1, "", "description", "Toni", 100, 100},
+                        {2, "", "description", "Eder", 200, null},
+                        {3, "", "description", "Michael", null, 300},
+                        {4, "", "description", null, null, null, null, null}
                 })
                 .buildTable();
 

@@ -334,8 +334,9 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     }
 
     @Override
-    public void setPinnedModeIndicatorVisibility(final boolean visibility) {
+    public void setPinnedModeIndicatorVisibility(final boolean visibility, final double headerCaptionWidth) {
         style(pinnedModeIndicator).setTop(visibility ? 0.5 : -2.0, Style.Unit.EM);
+        style(pinnedModeIndicator).setLeft(headerCaptionWidth, Style.Unit.PX);
     }
 
     private Style style(final HTMLPanel pinnedModeIndicator) {

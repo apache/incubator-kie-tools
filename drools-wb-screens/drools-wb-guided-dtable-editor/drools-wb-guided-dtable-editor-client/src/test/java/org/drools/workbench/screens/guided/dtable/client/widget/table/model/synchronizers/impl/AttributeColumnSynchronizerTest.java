@@ -57,13 +57,13 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      model.getAttributeCols().get(0).getAttribute());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof IntegerUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof IntegerUiColumn);
         assertEquals(Attribute.SALIENCE.getAttributeName(),
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
         assertEquals(true,
-                     ((BaseSingletonDOMElementUiColumn) uiModel.getColumns().get(2)).isEditable());
+                     ((BaseSingletonDOMElementUiColumn) uiModel.getColumns().get(3)).isEditable());
     }
 
     @Test
@@ -88,11 +88,11 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(Attribute.ENABLED.getAttributeName(),
                      model.getAttributeCols().get(0).getAttribute());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof BooleanUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof BooleanUiColumn);
         assertEquals(Attribute.ENABLED.getAttributeName(),
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
     }
 
     @Test
@@ -118,13 +118,13 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      model.getAttributeCols().get(0).getAttribute());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof IntegerUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof IntegerUiColumn);
         assertEquals(Attribute.SALIENCE.getAttributeName(),
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
         assertEquals(false,
-                     uiModel.getColumns().get(2).isVisible());
+                     uiModel.getColumns().get(3).isVisible());
     }
 
     @Test
@@ -149,21 +149,21 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      model.getAttributeCols().get(0).getAttribute());
         assertEquals(1,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals(2,
-                     model.getData().get(1).get(2).getNumericValue());
+                     model.getData().get(1).get(3).getNumericValue());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof SalienceUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof SalienceUiColumn);
         assertEquals(Attribute.SALIENCE.getAttributeName(),
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
         assertEquals(true,
-                     ((SalienceUiColumn) uiModel.getColumns().get(2)).isUseRowNumber());
+                     ((SalienceUiColumn) uiModel.getColumns().get(3)).isUseRowNumber());
         assertEquals(1,
-                     uiModel.getRow(0).getCells().get(2).getValue().getValue());
+                     uiModel.getRow(0).getCells().get(3).getValue().getValue());
         assertEquals(2,
-                     uiModel.getRow(1).getCells().get(2).getValue().getValue());
+                     uiModel.getRow(1).getCells().get(3).getValue().getValue());
 
         final AttributeCol52 edited2 = new AttributeCol52();
         edited2.setAttribute(Attribute.SALIENCE.getAttributeName());
@@ -178,21 +178,21 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      model.getAttributeCols().get(0).getAttribute());
         assertEquals(2,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals(1,
-                     model.getData().get(1).get(2).getNumericValue());
+                     model.getData().get(1).get(3).getNumericValue());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof SalienceUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof SalienceUiColumn);
         assertEquals(Attribute.SALIENCE.getAttributeName(),
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
         assertEquals(true,
-                     ((SalienceUiColumn) uiModel.getColumns().get(2)).isUseRowNumber());
+                     ((SalienceUiColumn) uiModel.getColumns().get(3)).isUseRowNumber());
         assertEquals(2,
-                     uiModel.getRow(0).getCells().get(2).getValue().getValue());
+                     uiModel.getRow(0).getCells().get(3).getValue().getValue());
         assertEquals(1,
-                     uiModel.getRow(1).getCells().get(2).getValue().getValue());
+                     uiModel.getRow(1).getCells().get(3).getValue().getValue());
     }
 
     @Test
@@ -204,13 +204,13 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
         assertEquals(1,
                      model.getAttributeCols().size());
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
 
         modelSynchronizer.deleteColumn(column);
         assertEquals(0,
                      model.getAttributeCols().size());
-        assertEquals(2,
+        assertEquals(3,
                      uiModel.getColumns().size());
     }
 
@@ -226,10 +226,10 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<Integer>(1));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("smurf"));
 
         assertEquals(2,
@@ -239,30 +239,30 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column2,
                      model.getAttributeCols().get(1));
         assertEquals(1,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("smurf",
-                     model.getData().get(0).get(3).getStringValue());
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals(1,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals("smurf",
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(2,
+        uiModel.moveColumnTo(3,
                              uiModelColumn2_1);
 
         assertEquals(2,
@@ -272,23 +272,23 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column1,
                      model.getAttributeCols().get(1));
         assertEquals("smurf",
-                     model.getData().get(0).get(2).getStringValue());
+                     model.getData().get(0).get(3).getStringValue());
         assertEquals(1,
-                     model.getData().get(0).get(3).getNumericValue());
+                     model.getData().get(0).get(4).getNumericValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_2 instanceof IntegerUiColumn);
-        assertEquals(3,
+        assertEquals(4,
                      uiModelColumn1_2.getIndex());
-        assertEquals(2,
+        assertEquals(3,
                      uiModelColumn2_2.getIndex());
         assertEquals("smurf",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -308,10 +308,10 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<Integer>(1));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("smurf"));
 
         assertEquals(2,
@@ -321,30 +321,30 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column2,
                      model.getAttributeCols().get(1));
         assertEquals(1,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("smurf",
-                     model.getData().get(0).get(3).getStringValue());
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals(1,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals("smurf",
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(3,
+        uiModel.moveColumnTo(4,
                              uiModelColumn1_1);
 
         assertEquals(2,
@@ -354,23 +354,23 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column1,
                      model.getAttributeCols().get(1));
         assertEquals("smurf",
-                     model.getData().get(0).get(2).getStringValue());
+                     model.getData().get(0).get(3).getStringValue());
         assertEquals(1,
-                     model.getData().get(0).get(3).getNumericValue());
+                     model.getData().get(0).get(4).getNumericValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_2 instanceof IntegerUiColumn);
-        assertEquals(3,
+        assertEquals(4,
                      uiModelColumn1_2.getIndex());
-        assertEquals(2,
+        assertEquals(3,
                      uiModelColumn2_2.getIndex());
         assertEquals("smurf",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -390,10 +390,10 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<Integer>(1));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("smurf"));
 
         assertEquals(2,
@@ -403,30 +403,30 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column2,
                      model.getAttributeCols().get(1));
         assertEquals(1,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("smurf",
-                     model.getData().get(0).get(3).getStringValue());
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      uiModelColumn2_1.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
+                     uiModelColumn1_1.getIndex());
+        assertEquals(4,
                      uiModelColumn2_1.getIndex());
         assertEquals(1,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
         assertEquals("smurf",
                      uiModel.getRow(0).getCells().get(uiModelColumn2_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(0,
+        uiModel.moveColumnTo(1,
                              uiModelColumn1_1);
 
         assertEquals(2,
@@ -436,23 +436,23 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column2,
                      model.getAttributeCols().get(1));
         assertEquals(1,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("smurf",
-                     model.getData().get(0).get(3).getStringValue());
+                     model.getData().get(0).get(4).getStringValue());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      uiModelColumn2_2.getHeaderMetaData().get(0).getTitle());
         assertTrue(uiModelColumn1_2 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_2 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_2.getIndex());
         assertEquals(3,
+                     uiModelColumn1_2.getIndex());
+        assertEquals(4,
                      uiModelColumn2_2.getIndex());
         assertEquals(1,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -475,18 +475,18 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<Integer>(1));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("smurf"));
         uiModel.setCellValue(0,
-                             4,
+                             5,
                              new BaseGridCellValue<Boolean>(true));
 
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(5);
 
         assertTestMoveColumnsTo(column1,
                                 column2,
@@ -496,15 +496,15 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
                                 uiModelColumn3_1);
 
         //Moving multiple Attribute columns as an unsupported operation as it's impossible via the UI
-        uiModel.moveColumnsTo(2,
+        uiModel.moveColumnsTo(3,
                               new ArrayList<GridColumn<?>>() {{
                                   add(uiModelColumn2_1);
                                   add(uiModelColumn3_1);
                               }});
 
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(5);
 
         assertTestMoveColumnsTo(column1,
                                 column2,
@@ -529,18 +529,18 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<Integer>(1));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("smurf"));
         uiModel.setCellValue(0,
-                             4,
+                             5,
                              new BaseGridCellValue<Boolean>(true));
 
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(5);
 
         assertTestMoveColumnsTo(column1,
                                 column2,
@@ -549,15 +549,15 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
                                 uiModelColumn2_1,
                                 uiModelColumn3_1);
 
-        uiModel.moveColumnsTo(4,
+        uiModel.moveColumnsTo(5,
                               new ArrayList<GridColumn<?>>() {{
                                   add(uiModelColumn1_1);
                                   add(uiModelColumn2_1);
                               }});
 
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(5);
 
         assertTestMoveColumnsTo(column1,
                                 column2,
@@ -610,13 +610,13 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column3,
                      model.getAttributeCols().get(2));
         assertEquals(1,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("smurf",
-                     model.getData().get(0).get(3).getStringValue());
+                     model.getData().get(0).get(4).getStringValue());
         assertEquals(true,
-                     model.getData().get(0).get(4).getBooleanValue());
+                     model.getData().get(0).get(5).getBooleanValue());
 
-        assertEquals(5,
+        assertEquals(6,
                      uiModel.getColumns().size());
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      uiModelColumn1.getHeaderMetaData().get(0).getTitle());
@@ -627,11 +627,11 @@ public class AttributeColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue(uiModelColumn1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2 instanceof StringUiColumn);
         assertTrue(uiModelColumn3 instanceof BooleanUiColumn);
-        assertEquals(2,
-                     uiModelColumn1.getIndex());
         assertEquals(3,
-                     uiModelColumn2.getIndex());
+                     uiModelColumn1.getIndex());
         assertEquals(4,
+                     uiModelColumn2.getIndex());
+        assertEquals(5,
                      uiModelColumn3.getIndex());
         assertEquals(1,
                      uiModel.getRow(0).getCells().get(uiModelColumn1.getIndex()).getValue().getValue());

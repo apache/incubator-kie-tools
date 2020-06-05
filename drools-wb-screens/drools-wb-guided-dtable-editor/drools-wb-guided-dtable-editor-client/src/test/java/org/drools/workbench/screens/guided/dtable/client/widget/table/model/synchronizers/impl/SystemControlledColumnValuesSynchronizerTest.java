@@ -256,7 +256,7 @@ public class SystemControlledColumnValuesSynchronizerTest extends BaseSynchroniz
 
         modelSynchronizer.insertRow(0);
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new GuidedDecisionTableUiCell<>(""));
 
         assertPriorities(Arrays.asList("",
@@ -277,7 +277,7 @@ public class SystemControlledColumnValuesSynchronizerTest extends BaseSynchroniz
 
         modelSynchronizer.insertRow(3);
         uiModel.setCellValue(3,
-                             2,
+                             3,
                              new GuidedDecisionTableUiCell<>(""));
 
         assertPriorities(Arrays.asList("",
@@ -298,7 +298,7 @@ public class SystemControlledColumnValuesSynchronizerTest extends BaseSynchroniz
 
         modelSynchronizer.insertRow(4);
         uiModel.setCellValue(4,
-                             2,
+                             3,
                              new GuidedDecisionTableUiCell<>(""));
 
         assertPriorities(Arrays.asList("",
@@ -386,7 +386,7 @@ public class SystemControlledColumnValuesSynchronizerTest extends BaseSynchroniz
                              0,
                              new GuidedDecisionTableUiCell<>(rowsCount + 1));
         uiModel.setCellValue(rowsCount,
-                             2,
+                             3,
                              new GuidedDecisionTableUiCell<>(priorityOverRow));
         rowsCount++;
     }
@@ -395,7 +395,7 @@ public class SystemControlledColumnValuesSynchronizerTest extends BaseSynchroniz
         for (int rowIndex = 0; rowIndex < priorities.size(); rowIndex++) {
             assertEquals(priorities.get(rowIndex),
                          uiModel.getCell(rowIndex,
-                                         2).getValue().getValue());
+                                         3).getValue().getValue());
         }
     }
 }

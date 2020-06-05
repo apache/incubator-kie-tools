@@ -185,5 +185,7 @@ public interface GuidedDecisionTableView extends GridWidget,
         void link(final Set<GuidedDecisionTableView.Presenter> dtPresenters);
 
         boolean hasEditableColumns();
+
+        void setShowRuleName(boolean show);
     }
 }

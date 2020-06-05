@@ -53,6 +53,7 @@ public abstract class BaseColumnDefinitionBuilder implements ColumnDefinitionBui
                                               final BaseColumn column) {
         final List<DTCellValue52> row = new ArrayList<>();
         row.add(new DTCellValue52(1));
+        row.add(new DTCellValue52(""));
         row.add(new DTCellValue52("desc"));
 
         final DataType.DataTypes dataType = columnUtilities.getDataType(column);

@@ -117,7 +117,7 @@ public class DTableUpdateManagerIsNullTest {
     public void testSetTrueToFalse() throws
             Exception {
         set(0,
-            2,
+            3,
             false);
 
         verify(analyzer).update(anySet());
@@ -127,7 +127,7 @@ public class DTableUpdateManagerIsNullTest {
     public void testSetTrueToNull() throws
             Exception {
         set(0,
-            2,
+            3,
             (Boolean) null);
 
         verify(analyzer).update(anySet());
@@ -137,7 +137,7 @@ public class DTableUpdateManagerIsNullTest {
     public void testSetFalseToTrue() throws
             Exception {
         set(1,
-            2,
+            3,
             true);
 
         verify(analyzer).update(anySet());
@@ -158,7 +158,7 @@ public class DTableUpdateManagerIsNullTest {
     public void testSetNullToTrue() throws
             Exception {
         set(2,
-            2,
+            3,
             true);
 
         verify(analyzer).update(anySet());

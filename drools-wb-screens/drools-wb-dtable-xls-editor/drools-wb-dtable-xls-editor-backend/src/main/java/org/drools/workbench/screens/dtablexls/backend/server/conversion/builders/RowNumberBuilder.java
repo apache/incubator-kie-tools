@@ -44,7 +44,7 @@ public class RowNumberBuilder
             dtable.getData().add( new ArrayList<DTCellValue52>() );
             final DTCellValue52 dcv = this.values.get( iRow );
             dcv.setNumericValue( Integer.valueOf( iRow + 1 ) );
-            dtable.getData().get( iRow ).add( 0,
+            dtable.getData().get( iRow ).add( GuidedDecisionTable52.RULE_NUMBER_INDEX,
                                               dcv );
         }
     }

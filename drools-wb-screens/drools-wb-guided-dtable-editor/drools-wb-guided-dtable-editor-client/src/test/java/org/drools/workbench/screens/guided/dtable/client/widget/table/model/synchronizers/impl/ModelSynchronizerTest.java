@@ -36,14 +36,14 @@ public class ModelSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendRow();
 
         uiModel.setCellValue(0,
-                             1,
+                             2,
                              new BaseGridCellValue<String>("value"));
 
         assertEquals("value",
-                     model.getData().get(0).get(1).getStringValue());
+                     model.getData().get(0).get(2).getStringValue());
         assertEquals("value",
                      uiModel.getCell(0,
-                                     1).getValue().getValue());
+                                     2).getValue().getValue());
     }
 
     @Test
@@ -51,20 +51,20 @@ public class ModelSynchronizerTest extends BaseSynchronizerTest {
         modelSynchronizer.appendRow();
 
         uiModel.setCellValue(0,
-                             1,
+                             2,
                              new BaseGridCellValue<String>("value"));
         assertEquals("value",
-                     model.getData().get(0).get(1).getStringValue());
+                     model.getData().get(0).get(2).getStringValue());
         assertEquals("value",
                      uiModel.getCell(0,
-                                     1).getValue().getValue());
+                                     2).getValue().getValue());
 
         uiModel.deleteCell(0,
-                           1);
+                           2);
 
-        assertNull(model.getData().get(0).get(1).getStringValue());
+        assertNull(model.getData().get(0).get(2).getStringValue());
         assertNull(uiModel.getCell(0,
-                                   1));
+                                   2));
     }
 
     @Test
@@ -73,9 +73,9 @@ public class ModelSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
 
-        assertTrue(model.getData().get(0).get(2).getBooleanValue());
+        assertTrue(model.getData().get(0).get(3).getBooleanValue());
         assertTrue((Boolean) uiModel.getCell(0,
-                                             2).getValue().getValue());
+                                             3).getValue().getValue());
     }
 
     @Test
@@ -84,9 +84,9 @@ public class ModelSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
 
-        assertFalse(model.getData().get(0).get(2).getBooleanValue());
+        assertFalse(model.getData().get(0).get(3).getBooleanValue());
         assertFalse((Boolean) uiModel.getCell(0,
-                                              2).getValue().getValue());
+                                              3).getValue().getValue());
     }
 
     @Test
@@ -95,9 +95,9 @@ public class ModelSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
 
-        assertFalse(model.getData().get(0).get(2).getBooleanValue());
+        assertFalse(model.getData().get(0).get(3).getBooleanValue());
         assertFalse((Boolean) uiModel.getCell(0,
-                                              2).getValue().getValue());
+                                              3).getValue().getValue());
     }
 
     private void setupBooleanColumn(final ParameterizedCommand<AttributeCol52> cmdInit) throws VetoException {

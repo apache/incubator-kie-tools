@@ -48,7 +48,7 @@ public class DefaultDescriptionBuilder
         }
 
         for ( int iRow = 0; iRow < this.values.size(); iRow++ ) {
-            dtable.getData().get( iRow ).add( 1,
+            dtable.getData().get( iRow ).add( GuidedDecisionTable52.RULE_DESCRIPTION_INDEX,
                                               this.values.get( iRow ) );
         }
     }

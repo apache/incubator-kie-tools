@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.RuleNameColumn;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
@@ -282,7 +283,7 @@ public class EditMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
         for (GridData.SelectedCell sc : selections) {
             final int columnIndex = findUiColumnIndex(sc.getColumnIndex());
             final BaseColumn column = activeDecisionTable.getModel().getExpandedColumns().get(columnIndex);
-            if (!((column instanceof RowNumberCol52) || (column instanceof DescriptionCol52))) {
+            if (!((column instanceof RowNumberCol52) || (column instanceof DescriptionCol52)) || (column instanceof RuleNameColumn)) {
                 isOnlyMandatoryColumnSelected = false;
             }
         }

@@ -38,8 +38,6 @@ import org.drools.workbench.services.verifier.plugin.client.util.NullEqualityOpe
 
 public class DTableUpdateManager {
 
-    private static final int ROW_NUMBER_COLUMN = 0;
-    private static final int DESCRIPTION_COLUMN = 1;
     private final Analyzer analyzer;
     private final AnalyzerConfiguration configuration;
     private Index index;
@@ -70,8 +68,7 @@ public class DTableUpdateManager {
         final Set<Integer> canBeUpdated = new HashSet<>();
 
         for (final Coordinate coordinate : coordinates) {
-            if (coordinate.getCol() != ROW_NUMBER_COLUMN
-                    && coordinate.getCol() != DESCRIPTION_COLUMN) {
+            if (coordinate.getCol() > GuidedDecisionTable52.RULE_DESCRIPTION_INDEX) {
 
                 if (getCellUpdateManager(coordinate,
                                          model).update()) {

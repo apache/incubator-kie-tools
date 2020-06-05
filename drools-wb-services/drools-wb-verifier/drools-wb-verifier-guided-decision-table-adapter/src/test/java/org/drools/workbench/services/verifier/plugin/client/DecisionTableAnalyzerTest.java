@@ -59,7 +59,7 @@ public class DecisionTableAnalyzerTest
                                             "Person",
                                             "age",
                                             ">")
-                .withData(new Object[][]{{1, "description", ""}})
+                .withData(new Object[][]{{1, "", "description", ""}})
                 .buildTable();
 
         fireUpAnalyzer();
@@ -79,8 +79,9 @@ public class DecisionTableAnalyzerTest
                                             "Person",
                                             "age",
                                             "==")
-                .withData(new Object[][]{{1, "description", ""},
-                        {2, "description", ""}
+                .withData(new Object[][]{
+                        {1, "", "description", ""},
+                        {2, "", "description", ""}
                 })
                 .buildTable();
 
@@ -110,7 +111,7 @@ public class DecisionTableAnalyzerTest
                                             "Person",
                                             "age",
                                             ">")
-                .withData(new Object[][]{{1, "description", 0}})
+                .withData(new Object[][]{{1, "", "description", 0}})
                 .buildTable();
 
         fireUpAnalyzer();
@@ -129,8 +130,9 @@ public class DecisionTableAnalyzerTest
                                             "Person",
                                             "age",
                                             ">")
-                .withData(new Object[][]{{1, "description", 0},
-                        {2, "description", 1}})
+                .withData(new Object[][]{
+                        {1, "", "description", 0},
+                        {2, "", "description", 1}})
                 .buildTable();
 
         fireUpAnalyzer();
@@ -187,8 +189,8 @@ public class DecisionTableAnalyzerTest
                                     "name",
                                     DataType.TYPE_STRING)
                 .withData(new Object[][]{
-                        {1, "description", 0, null, null, ""},
-                        {2, "description", null, null, null, null}
+                        {1, "", "description", 0, null, null, ""},
+                        {2, "", "description", null, null, null, null}
                 })
                 .buildTable();
 
@@ -219,7 +221,7 @@ public class DecisionTableAnalyzerTest
                                       "a",
                                       "approved",
                                       DataType.TYPE_BOOLEAN)
-                .withData(new Object[][]{{1, "description", true}})
+                .withData(new Object[][]{{1, "", "description", true}})
                 .buildTable();
 
         fireUpAnalyzer();
@@ -246,8 +248,8 @@ public class DecisionTableAnalyzerTest
                                     "approved",
                                     DataType.TYPE_BOOLEAN)
                 .withData(new Object[][]{
-                        {1, "description", null, "", true},
-                        {2, "description", null, null, null}
+                        {1, "", "description", null, "", true},
+                        {2, "", "description", null, null, null}
                 })
                 .buildTable();
 
@@ -284,7 +286,7 @@ public class DecisionTableAnalyzerTest
                 .withActionSetField("a",
                                     "approved",
                                     DataType.TYPE_BOOLEAN)
-                .withData(new Object[][]{{1, "description", 100, true, false}})
+                .withData(new Object[][]{{1, "", "description", 100, true, false}})
                 .buildTable();
 
         analyzer = analyzerProvider.makeAnalyser(table52);
@@ -322,8 +324,8 @@ public class DecisionTableAnalyzerTest
                                               }
                                           })
                 .withData(new Object[][]{
-                        {1, "description", true, true, false},
-                        {2, "description", true, false, true}})
+                        {1, "", "description", true, true, false},
+                        {2, "", "description", true, false, true}})
                 .buildTable();
 
         fireUpAnalyzer();
@@ -348,7 +350,7 @@ public class DecisionTableAnalyzerTest
                                             "age",
                                             ">")
                 .withActionBRLFragment()
-                .withData(new Object[][]{{1, "description", 0, true}})
+                .withData(new Object[][]{{1, "", "description", 0, true}})
                 .buildTable();
 
         fireUpAnalyzer();
@@ -374,7 +376,7 @@ public class DecisionTableAnalyzerTest
                                             "age",
                                             ">")
                 .withActionBRLFragment()
-                .withData(new Object[][]{{1, "description", Integer.MIN_VALUE, null}})
+                .withData(new Object[][]{{1, "", "description", Integer.MIN_VALUE, null}})
                 .buildTable();
 
         fireUpAnalyzer();
@@ -400,7 +402,7 @@ public class DecisionTableAnalyzerTest
                                             "age",
                                             ">")
                 .withActionBRLFragment()
-                .withData(new Object[][]{{1, "description", null, true}})
+                .withData(new Object[][]{{1, "", "description", null, true}})
                 .buildTable();
 
         fireUpAnalyzer();
@@ -424,8 +426,8 @@ public class DecisionTableAnalyzerTest
                                       "approved",
                                       DataType.TYPE_BOOLEAN)
                 .withData(new Object[][]{
-                        {1, "description", null, true},
-                        {2, "description", null, null}
+                        {1, "", "description", null, true},
+                        {2, "", "description", null, null}
                 })
                 .buildTable();
 
@@ -461,7 +463,7 @@ public class DecisionTableAnalyzerTest
                                       "a",
                                       "approved",
                                       DataType.TYPE_BOOLEAN)
-                .withData(new Object[][]{{1, "description", "value", null}})
+                .withData(new Object[][]{{1, "", "description", "value", null}})
                 .buildTable();
 
         fireUpAnalyzer();

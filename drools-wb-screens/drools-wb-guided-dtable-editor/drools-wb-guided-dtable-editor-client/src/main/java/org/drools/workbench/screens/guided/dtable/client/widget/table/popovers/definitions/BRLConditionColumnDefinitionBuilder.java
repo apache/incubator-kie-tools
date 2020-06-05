@@ -75,6 +75,7 @@ public class BRLConditionColumnDefinitionBuilder extends BaseColumnDefinitionBui
                                             final BRLConditionColumn brlColumn) {
         final List<DTCellValue52> row = new ArrayList<>();
         row.add(new DTCellValue52(1));
+        row.add(new DTCellValue52(""));
         row.add(new DTCellValue52("desc"));
 
         for (BRLConditionVariableColumn brlVariableColumn : brlColumn.getChildColumns()) {

@@ -51,8 +51,8 @@ public class DecisionTableAnalyzerSubsumptionTest
                                     "approved",
                                     DataType.TYPE_BOOLEAN)
                 .withData(new Object[][]{
-                        {1, "description", true, null, true},
-                        {2, "description", null, false, true},
+                        {1, "", "description", true, null, true},
+                        {2, "", "description", null, false, true},
                 })
                 .buildTable();
 
@@ -80,8 +80,8 @@ public class DecisionTableAnalyzerSubsumptionTest
                                     "approved",
                                     DataType.TYPE_BOOLEAN)
                 .withData(new Object[][]{
-                        {1, "description", true, null, true},
-                        {2, "description", null, true, true},
+                        {1, "", "description", true, null, true},
+                        {2, "", "description", null, true, true},
                 })
                 .buildTable();
 
@@ -109,8 +109,8 @@ public class DecisionTableAnalyzerSubsumptionTest
                                     "approved",
                                     DataType.TYPE_BOOLEAN)
                 .withData(new Object[][]{
-                        {1, "description", true, null, true},
-                        {2, "description", null, false, true},
+                        {1, "", "description", true, null, true},
+                        {2, "", "description", null, false, true},
                 })
                 .buildTable();
 
@@ -137,8 +137,8 @@ public class DecisionTableAnalyzerSubsumptionTest
                                     "approved",
                                     DataType.TYPE_BOOLEAN)
                 .withData(new Object[][]{
-                        {1, "description", true, null, true},
-                        {2, "description", null, true, true},
+                        {1, "", "description", true, null, true},
+                        {2, "", "description", null, true, true},
                 })
                 .buildTable();
 
@@ -165,8 +165,8 @@ public class DecisionTableAnalyzerSubsumptionTest
                                     "approved",
                                     DataType.TYPE_BOOLEAN)
                 .withData(new Object[][]{
-                        {1, "description", 0, null, true},
-                        {2, "description", null, 0, true},
+                        {1, "", "description", 0, null, true},
+                        {2, "", "description", null, 0, true},
                 })
                 .buildTable();
 
@@ -194,8 +194,8 @@ public class DecisionTableAnalyzerSubsumptionTest
                                     "approved",
                                     DataType.TYPE_BOOLEAN)
                 .withData(new Object[][]{
-                        {1, "description", 0, null, true},
-                        {2, "description", null, 1, true},
+                        {1, "", "description", 0, null, true},
+                        {2, "", "description", null, 1, true},
                 })
                 .buildTable();
 

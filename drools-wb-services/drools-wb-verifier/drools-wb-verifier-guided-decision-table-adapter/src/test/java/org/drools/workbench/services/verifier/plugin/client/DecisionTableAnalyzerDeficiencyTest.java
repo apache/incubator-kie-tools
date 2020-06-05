@@ -55,10 +55,10 @@ public class DecisionTableAnalyzerDeficiencyTest
                                     "salary",
                                     DataType.TYPE_NUMERIC_INTEGER)
                 .withData(new Object[][]{
-                        {1, "description", null, "Eder", null, 100},
-                        {2, "description", 10, null, null, 100},
-                        {3, "description", null, "Toni", "Rikkola", 100},
-                        {4, "description", null, null, null, null}
+                        {1, "", "description", null, "Eder", null, 100},
+                        {2, "", "description", 10, null, null, 100},
+                        {3, "", "description", null, "Toni", "Rikkola", 100},
+                        {4, "", "description", null, null, null, null}
                 })
                 .buildTable();
 
@@ -89,10 +89,10 @@ public class DecisionTableAnalyzerDeficiencyTest
                                     "salary",
                                     DataType.TYPE_NUMERIC_INTEGER)
                 .withData(new Object[][]{
-                        {1, "description", null, "Eder", null, 100},
-                        {2, "description", 10, null, null, 200},
-                        {3, "description", null, "Toni", "Rikkola", 300},
-                        {4, "description", null, null, null, null}
+                        {1, "", "description", null, "Eder", null, 100},
+                        {2, "", "description", 10, null, null, 200},
+                        {3, "", "description", null, "Toni", "Rikkola", 300},
+                        {4, "", "description", null, null, null, null}
                 })
                 .buildTable();
 
@@ -137,10 +137,10 @@ public class DecisionTableAnalyzerDeficiencyTest
                                     "description",
                                     DataType.TYPE_STRING)
                 .withData(new Object[][]{
-                        {1, "description", 10, "", "", 100, "ok"},
-                        {2, "description", null, "", "", 200, "ok"},
-                        {3, "description", 12, "", "Rikkola", 300, "ok"},
-                        {4, "description", null, "", "", null, ""}
+                        {1, "", "description", 10, "", "", 100, "ok"},
+                        {2, "", "description", null, "", "", 200, "ok"},
+                        {3, "", "description", 12, "", "Rikkola", 300, "ok"},
+                        {4, "", "description", null, "", "", null, ""}
                 })
                 .buildTable();
 
@@ -160,7 +160,7 @@ public class DecisionTableAnalyzerDeficiencyTest
                              4);
 
         setValue(1,
-                 3,
+                 4,
                  "Toni");
 
         assertDoesNotContain(CheckType.DEFICIENT_ROW,
@@ -202,10 +202,10 @@ public class DecisionTableAnalyzerDeficiencyTest
                                     "description",
                                     DataType.TYPE_STRING)
                 .withData(new Object[][]{
-                        {1, "description", 10, "", "", 100, "ok"},
-                        {2, "description", null, "Eder", "", 200, "ok"},
-                        {3, "description", 12, "", "Rikkola", 300, "ok"},
-                        {4, "description", null, "", "", null, ""}
+                        {1, "", "description", 10, "", "", 100, "ok"},
+                        {2, "", "description", null, "Eder", "", 200, "ok"},
+                        {3, "", "description", 12, "", "Rikkola", 300, "ok"},
+                        {4, "", "description", null, "", "", null, ""}
                 })
                 .buildTable();
 
@@ -226,7 +226,7 @@ public class DecisionTableAnalyzerDeficiencyTest
                              4);
 
         setValue(2,
-                 3,
+                 4,
                  "Toni");
 
         assertDoesNotContain(CheckType.DEFICIENT_ROW,
@@ -267,10 +267,10 @@ public class DecisionTableAnalyzerDeficiencyTest
                                     "description",
                                     DataType.TYPE_STRING)
                 .withData(new Object[][]{
-                        {1, "description", 10, "", "", 100, "ok"},
-                        {2, "description", null, "Eder", "", 200, "ok"},
-                        {3, "description", 12, "Toni", "Rikkola", 300, "ok"},
-                        {4, "description", null, "", "", null, ""}
+                        {1, "", "description", 10, "", "", 100, "ok"},
+                        {2, "", "description", null, "Eder", "", 200, "ok"},
+                        {3, "", "description", 12, "Toni", "Rikkola", 300, "ok"},
+                        {4, "", "description", null, "", "", null, ""}
                 })
                 .buildTable();
 
@@ -290,7 +290,7 @@ public class DecisionTableAnalyzerDeficiencyTest
                              4);
 
         setValue(2,
-                 3,
+                 4,
                  "");
 
         assertDoesNotContain(CheckType.DEFICIENT_ROW,

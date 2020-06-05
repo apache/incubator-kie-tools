@@ -59,6 +59,7 @@ import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.ParameterUtilities;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.ParameterizedValueBuilder;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.RowNumberBuilder;
+import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.RuleNameBuilder;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
 public class GuidedDecisionTableGeneratorListener
@@ -71,14 +72,9 @@ public class GuidedDecisionTableGeneratorListener
     private static final int CODE_ROW = 3;
     private static final int LABEL_ROW = 4;
 
-    //Row Number column must always be at position 0
-    private static final int ROW_NUMBER_COLUMN_INDEX = 0;
-
-    //Description column must always be at position 1
-    private static final int DESCRIPTION_COLUMN_INDEX = 1;
-
-    private static GuidedDecisionTableSourceBuilder ROW_NUMBER_BUILDER = new RowNumberBuilder();
-    private static GuidedDecisionTableSourceBuilder DEFAULT_DESCRIPTION_BUILDER = new DefaultDescriptionBuilder();
+    private static GuidedDecisionTableSourceBuilder rowNumberBuilder = new RowNumberBuilder();
+    private static RuleNameBuilder ruleNameBuilder = new RuleNameBuilder();
+    private static GuidedDecisionTableSourceBuilder defaultDescriptionBuilder = new DefaultDescriptionBuilder();
 
     //State machine variables for this parser
     private boolean _isInRuleTable = false;
@@ -250,12 +246,15 @@ public class GuidedDecisionTableGeneratorListener
         this._dtable.setTableName(RuleSheetParserUtil.getRuleName(value));
         this._dtable.setPackageName(_dmo.getPackageName());
         this._sourceBuilders = new ArrayList<GuidedDecisionTableSourceBuilder>();
-        ROW_NUMBER_BUILDER.clearValues();
-        DEFAULT_DESCRIPTION_BUILDER.clearValues();
-        this._sourceBuilders.add(ROW_NUMBER_COLUMN_INDEX,
-                                 ROW_NUMBER_BUILDER);
-        this._sourceBuilders.add(DESCRIPTION_COLUMN_INDEX,
-                                 DEFAULT_DESCRIPTION_BUILDER);
+        rowNumberBuilder.clearValues();
+        ruleNameBuilder.clearValues();
+        defaultDescriptionBuilder.clearValues();
+        this._sourceBuilders.add(GuidedDecisionTable52.RULE_NUMBER_INDEX,
+                                 rowNumberBuilder);
+        this._sourceBuilders.add(GuidedDecisionTable52.RULE_NAME_COLUMN_INDEX,
+                                 ruleNameBuilder);
+        this._sourceBuilders.add(GuidedDecisionTable52.RULE_DESCRIPTION_INDEX,
+                                 defaultDescriptionBuilder);
 
         postInitRuleTable(row,
                           column,
@@ -348,9 +347,9 @@ public class GuidedDecisionTableGeneratorListener
             if (row - this._ruleStartRow > LABEL_ROW &&
                     (column + 1) == this._ruleStartColumn &&
                     row - this._ruleRow < 2) {
-                DEFAULT_DESCRIPTION_BUILDER.addCellValue(row,
-                                                         1,
-                                                         trimVal);
+                defaultDescriptionBuilder.addCellValue(row,
+                                                       1,
+                                                       trimVal);
             }
             return;
         }
@@ -393,9 +392,9 @@ public class GuidedDecisionTableGeneratorListener
             default:
                 if (this._isNewDataRow) {
                     this._isNewDataRow = false;
-                    ROW_NUMBER_BUILDER.addCellValue(row,
-                                                    0,
-                                                    "");
+                    rowNumberBuilder.addCellValue(row,
+                                                  0,
+                                                  "");
                 }
                 doDataCell(row,
                            column,
@@ -434,13 +433,13 @@ public class GuidedDecisionTableGeneratorListener
 
             case DESCRIPTION:
                 //Remove default Description Column builder and add that provided
-                this._sourceBuilders.remove(DEFAULT_DESCRIPTION_BUILDER);
+                this._sourceBuilders.remove(defaultDescriptionBuilder);
                 sb = new GuidedDecisionTableDescriptionBuilder(row - 1,
                                                                column,
                                                                this._conversionResult);
 
                 //Description column must always be at position 1
-                this._sourceBuilders.add(DESCRIPTION_COLUMN_INDEX,
+                this._sourceBuilders.add(GuidedDecisionTable52.RULE_DESCRIPTION_INDEX,
                                          sb);
                 actionType.setSourceBuilder(sb);
                 break;

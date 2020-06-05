@@ -35,6 +35,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.RuleNameColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.IntegerUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.LongUiColumn;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.StringUiColumn;
@@ -99,18 +100,18 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendColumn(column);
 
-        assertEquals(3,
+        assertEquals(4,
                      model.getExpandedColumns().size());
         assertEquals(1,
                      model.getConditions().size());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof IntegerUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof IntegerUiColumn);
         assertEquals(2,
-                     uiModel.getColumns().get(2).getHeaderMetaData().size());
+                     uiModel.getColumns().get(3).getHeaderMetaData().size());
         assertEquals("$age",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(1).getTitle());
     }
 
     @Test
@@ -133,25 +134,25 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendColumn(column);
 
-        assertEquals(4,
+        assertEquals(5,
                      model.getExpandedColumns().size());
         assertEquals(1,
                      model.getConditions().size());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof IntegerUiColumn);
-        assertTrue(uiModel.getColumns().get(3) instanceof StringUiColumn);
-
-        assertEquals(2,
-                     uiModel.getColumns().get(2).getHeaderMetaData().size());
-        assertEquals("$age",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
+        assertTrue(uiModel.getColumns().get(3) instanceof IntegerUiColumn);
+        assertTrue(uiModel.getColumns().get(4) instanceof StringUiColumn);
 
         assertEquals(2,
                      uiModel.getColumns().get(3).getHeaderMetaData().size());
-        assertEquals("$name",
+        assertEquals("$age",
                      uiModel.getColumns().get(3).getHeaderMetaData().get(1).getTitle());
+
+        assertEquals(2,
+                     uiModel.getColumns().get(4).getHeaderMetaData().size());
+        assertEquals("$name",
+                     uiModel.getColumns().get(4).getHeaderMetaData().get(1).getTitle());
     }
 
     @Test
@@ -168,19 +169,19 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendColumn(column);
 
-        assertEquals(3,
+        assertEquals(4,
                      model.getExpandedColumns().size());
         assertEquals(1,
                      model.getConditions().size());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof IntegerUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof IntegerUiColumn);
 
         assertEquals(2,
-                     uiModel.getColumns().get(2).getHeaderMetaData().size());
+                     uiModel.getColumns().get(3).getHeaderMetaData().size());
         assertEquals("$age",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(1).getTitle());
 
         final BRLConditionColumn edited = new BRLConditionColumn();
         final BRLConditionVariableColumn editedColumnV0 = new BRLConditionVariableColumn("$name",
@@ -199,22 +200,22 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                      diffs.size());
         verify(column).diff(edited);
 
-        assertEquals(3,
+        assertEquals(4,
                      model.getExpandedColumns().size());
         assertEquals(1,
                      model.getConditions().size());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof StringUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof StringUiColumn);
         assertEquals("updated",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
         assertEquals(false,
-                     uiModel.getColumns().get(2).isVisible());
+                     uiModel.getColumns().get(3).isVisible());
         assertEquals(2,
-                     uiModel.getColumns().get(2).getHeaderMetaData().size());
+                     uiModel.getColumns().get(3).getHeaderMetaData().size());
         assertEquals("$name",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(1).getTitle());
     }
 
     @Test
@@ -237,15 +238,15 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendColumn(column);
 
-        assertEquals(4,
+        assertEquals(5,
                      model.getExpandedColumns().size());
         assertEquals(1,
                      model.getConditions().size());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof IntegerUiColumn);
-        assertTrue(uiModel.getColumns().get(3) instanceof StringUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof IntegerUiColumn);
+        assertTrue(uiModel.getColumns().get(4) instanceof StringUiColumn);
 
         final BRLConditionColumn edited = new BRLConditionColumn();
         final BRLConditionVariableColumn editedColumnV0 = new BRLConditionVariableColumn("$name",
@@ -264,20 +265,20 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                      diffs.size());
         verify(column).diff(edited);
 
-        assertEquals(3,
+        assertEquals(4,
                      model.getExpandedColumns().size());
         assertEquals(1,
                      model.getConditions().size());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof StringUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof StringUiColumn);
         assertEquals("updated",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
         assertEquals(false,
-                     uiModel.getColumns().get(2).isVisible());
+                     uiModel.getColumns().get(3).isVisible());
         assertEquals("$name",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(1).getTitle());
     }
 
     @Test
@@ -300,18 +301,18 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendColumn(column);
 
-        assertEquals(4,
+        assertEquals(5,
                      model.getExpandedColumns().size());
         assertEquals(1,
                      model.getConditions().size());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof IntegerUiColumn);
-        assertTrue(uiModel.getColumns().get(3) instanceof StringUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof IntegerUiColumn);
+        assertTrue(uiModel.getColumns().get(4) instanceof StringUiColumn);
 
         assertEquals("$age",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(1).getTitle());
 
         final BRLConditionColumn edited = new BRLConditionColumn();
         final BRLConditionVariableColumn editedColumnV0 = new BRLConditionVariableColumn("$s",
@@ -330,20 +331,20 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
                      diffs.size());
         verify(column).diff(edited);
 
-        assertEquals(3,
+        assertEquals(4,
                      model.getExpandedColumns().size());
         assertEquals(1,
                      model.getConditions().size());
 
-        assertEquals(3,
+        assertEquals(4,
                      uiModel.getColumns().size());
-        assertTrue(uiModel.getColumns().get(2) instanceof LongUiColumn);
+        assertTrue(uiModel.getColumns().get(3) instanceof LongUiColumn);
         assertEquals("updated",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(0).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(0).getTitle());
         assertEquals(false,
-                     uiModel.getColumns().get(2).isVisible());
+                     uiModel.getColumns().get(3).isVisible());
         assertEquals("$s",
-                     uiModel.getColumns().get(2).getHeaderMetaData().get(1).getTitle());
+                     uiModel.getColumns().get(3).getHeaderMetaData().get(1).getTitle());
     }
 
     @Test
@@ -392,16 +393,17 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
             modelSynchronizer.updateColumn(column,
                                            editedColumn);
 
-            assertEquals(5,
+            assertEquals(6,
                          model.getExpandedColumns().size());
             assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
-            assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+            assertTrue(model.getExpandedColumns().get(1) instanceof RuleNameColumn);
+            assertTrue(model.getExpandedColumns().get(2) instanceof DescriptionCol52);
             assertEquals(editedColumnV0,
-                         model.getExpandedColumns().get(2));
-            assertEquals(editedColumnV1,
                          model.getExpandedColumns().get(3));
-            assertEquals(action,
+            assertEquals(editedColumnV1,
                          model.getExpandedColumns().get(4));
+            assertEquals(action,
+                         model.getExpandedColumns().get(5));
         } catch (VetoException veto) {
             fail("VetoUpdatePatternInUseException was not expected.");
         }
@@ -454,14 +456,15 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
             fail("VetoUpdatePatternInUseException was expected.");
         }
 
-        assertEquals(4,
+        assertEquals(5,
                      model.getExpandedColumns().size());
         assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
-        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof RuleNameColumn);
+        assertTrue(model.getExpandedColumns().get(2) instanceof DescriptionCol52);
         assertEquals(columnV0,
-                     model.getExpandedColumns().get(2));
-        assertEquals(action,
                      model.getExpandedColumns().get(3));
+        assertEquals(action,
+                     model.getExpandedColumns().get(4));
     }
 
     @Test
@@ -525,14 +528,15 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
             fail("VetoUpdatePatternInUseException was expected.");
         }
 
-        assertEquals(4,
+        assertEquals(5,
                      model.getExpandedColumns().size());
         assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
-        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof RuleNameColumn);
+        assertTrue(model.getExpandedColumns().get(2) instanceof DescriptionCol52);
         assertEquals(columnV0,
-                     model.getExpandedColumns().get(2));
-        assertEquals(action.getChildColumns().get(0),
                      model.getExpandedColumns().get(3));
+        assertEquals(action.getChildColumns().get(0),
+                     model.getExpandedColumns().get(4));
     }
 
     @Test
@@ -554,22 +558,22 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendColumn(column);
 
-        assertEquals(4,
+        assertEquals(5,
                      model.getExpandedColumns().size());
         assertEquals(1,
                      model.getConditions().size());
 
-        assertEquals(4,
+        assertEquals(5,
                      uiModel.getColumns().size());
 
         modelSynchronizer.deleteColumn(column);
 
-        assertEquals(2,
+        assertEquals(3,
                      model.getExpandedColumns().size());
         assertEquals(0,
                      model.getConditions().size());
 
-        assertEquals(2,
+        assertEquals(3,
                      uiModel.getColumns().size());
     }
 
@@ -607,14 +611,15 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
             fail("VetoDeletePatternInUseException was expected.");
         }
 
-        assertEquals(4,
+        assertEquals(5,
                      model.getExpandedColumns().size());
         assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
-        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof RuleNameColumn);
+        assertTrue(model.getExpandedColumns().get(2) instanceof DescriptionCol52);
         assertEquals(columnV0,
-                     model.getExpandedColumns().get(2));
-        assertEquals(action,
                      model.getExpandedColumns().get(3));
+        assertEquals(action,
+                     model.getExpandedColumns().get(4));
     }
 
     @Test
@@ -662,14 +667,15 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
             fail("VetoDeletePatternInUseException was expected.");
         }
 
-        assertEquals(4,
+        assertEquals(5,
                      model.getExpandedColumns().size());
         assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
-        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof RuleNameColumn);
+        assertTrue(model.getExpandedColumns().get(2) instanceof DescriptionCol52);
         assertEquals(columnV0,
-                     model.getExpandedColumns().get(2));
-        assertEquals(action.getChildColumns().get(0),
                      model.getExpandedColumns().get(3));
+        assertEquals(action.getChildColumns().get(0),
+                     model.getExpandedColumns().get(4));
     }
 
     @Test
@@ -697,10 +703,11 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
             fail("Deletion should have been permitted.");
         }
 
-        assertEquals(2,
+        assertEquals(3,
                      model.getExpandedColumns().size());
         assertTrue(model.getExpandedColumns().get(0) instanceof RowNumberCol52);
-        assertTrue(model.getExpandedColumns().get(1) instanceof DescriptionCol52);
+        assertTrue(model.getExpandedColumns().get(1) instanceof RuleNameColumn);
+        assertTrue(model.getExpandedColumns().get(2) instanceof DescriptionCol52);
     }
 
     @Test
@@ -733,13 +740,13 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<Integer>(55));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<String>("Smurf"));
         uiModel.setCellValue(0,
-                             4,
+                             5,
                              new BaseGridCellValue<String>("Canada"));
 
         assertEquals(2,
@@ -749,17 +756,17 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column2,
                      model.getConditions().get(1));
         assertEquals(55,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("Smurf",
-                     model.getData().get(0).get(3).getStringValue());
-        assertEquals("Canada",
                      model.getData().get(0).get(4).getStringValue());
+        assertEquals("Canada",
+                     model.getData().get(0).get(5).getStringValue());
 
-        assertEquals(5,
+        assertEquals(6,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(5);
         assertEquals("age",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("name",
@@ -767,11 +774,11 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue(uiModelColumn1_1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
         assertTrue(uiModelColumn3_1 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
-                     uiModelColumn2_1.getIndex());
+                     uiModelColumn1_1.getIndex());
         assertEquals(4,
+                     uiModelColumn2_1.getIndex());
+        assertEquals(5,
                      uiModelColumn3_1.getIndex());
         assertEquals(55,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
@@ -780,7 +787,7 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals("Canada",
                      uiModel.getRow(0).getCells().get(uiModelColumn3_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(2,
+        uiModel.moveColumnTo(3,
                              uiModelColumn2_1);
 
         //The move should have been vetoed and nothing changed
@@ -791,17 +798,17 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column2,
                      model.getConditions().get(1));
         assertEquals(55,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("Smurf",
-                     model.getData().get(0).get(3).getStringValue());
-        assertEquals("Canada",
                      model.getData().get(0).get(4).getStringValue());
+        assertEquals("Canada",
+                     model.getData().get(0).get(5).getStringValue());
 
-        assertEquals(5,
+        assertEquals(6,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(5);
         assertEquals("age",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("name",
@@ -809,11 +816,11 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue(uiModelColumn1_2 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_2 instanceof StringUiColumn);
         assertTrue(uiModelColumn3_2 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_2.getIndex());
         assertEquals(3,
-                     uiModelColumn2_2.getIndex());
+                     uiModelColumn1_2.getIndex());
         assertEquals(4,
+                     uiModelColumn2_2.getIndex());
+        assertEquals(5,
                      uiModelColumn3_2.getIndex());
         assertEquals(55,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -854,13 +861,13 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<>(55));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<>("Smurf"));
         uiModel.setCellValue(0,
-                             4,
+                             5,
                              new BaseGridCellValue<>("Canada"));
 
         assertEquals(2,
@@ -870,17 +877,17 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column2,
                      model.getConditions().get(1));
         assertEquals(55,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("Smurf",
-                     model.getData().get(0).get(3).getStringValue());
-        assertEquals("Canada",
                      model.getData().get(0).get(4).getStringValue());
+        assertEquals("Canada",
+                     model.getData().get(0).get(5).getStringValue());
 
-        assertEquals(5,
+        assertEquals(6,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(5);
         assertEquals("age",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("name",
@@ -888,11 +895,11 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue(uiModelColumn1_1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
         assertTrue(uiModelColumn3_1 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
-                     uiModelColumn2_1.getIndex());
+                     uiModelColumn1_1.getIndex());
         assertEquals(4,
+                     uiModelColumn2_1.getIndex());
+        assertEquals(5,
                      uiModelColumn3_1.getIndex());
         assertEquals(55,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
@@ -901,7 +908,7 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals("Canada",
                      uiModel.getRow(0).getCells().get(uiModelColumn3_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnsTo(4,
+        uiModel.moveColumnsTo(5,
                               new ArrayList<GridColumn<?>>() {{
                                   add(uiModelColumn1_1);
                                   add(uiModelColumn2_1);
@@ -915,17 +922,17 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column1,
                      model.getConditions().get(1));
         assertEquals("Canada",
-                     model.getData().get(0).get(2).getStringValue());
+                     model.getData().get(0).get(3).getStringValue());
         assertEquals(55,
-                     model.getData().get(0).get(3).getNumericValue());
+                     model.getData().get(0).get(4).getNumericValue());
         assertEquals("Smurf",
-                     model.getData().get(0).get(4).getStringValue());
+                     model.getData().get(0).get(5).getStringValue());
 
-        assertEquals(5,
+        assertEquals(6,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(5);
         assertEquals("Address",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("age",
@@ -935,11 +942,11 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue(uiModelColumn1_2 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_2 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn3_2 instanceof StringUiColumn);
-        assertEquals(4,
+        assertEquals(5,
                      uiModelColumn1_2.getIndex());
-        assertEquals(2,
-                     uiModelColumn2_2.getIndex());
         assertEquals(3,
+                     uiModelColumn2_2.getIndex());
+        assertEquals(4,
                      uiModelColumn3_2.getIndex());
         assertEquals("Canada",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -980,13 +987,13 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<>(55));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<>("Smurf"));
         uiModel.setCellValue(0,
-                             4,
+                             5,
                              new BaseGridCellValue<>("Canada"));
 
         assertEquals(2,
@@ -996,17 +1003,17 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column2,
                      model.getConditions().get(1));
         assertEquals(55,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("Smurf",
-                     model.getData().get(0).get(3).getStringValue());
-        assertEquals("Canada",
                      model.getData().get(0).get(4).getStringValue());
+        assertEquals("Canada",
+                     model.getData().get(0).get(5).getStringValue());
 
-        assertEquals(5,
+        assertEquals(6,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(5);
         assertEquals("age",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("name",
@@ -1016,11 +1023,11 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue(uiModelColumn1_1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_1 instanceof StringUiColumn);
         assertTrue(uiModelColumn3_1 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
-                     uiModelColumn2_1.getIndex());
+                     uiModelColumn1_1.getIndex());
         assertEquals(4,
+                     uiModelColumn2_1.getIndex());
+        assertEquals(5,
                      uiModelColumn3_1.getIndex());
         assertEquals(55,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
@@ -1029,7 +1036,7 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals("Canada",
                      uiModel.getRow(0).getCells().get(uiModelColumn3_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(2,
+        uiModel.moveColumnTo(3,
                              uiModelColumn3_1);
 
         assertEquals(2,
@@ -1039,17 +1046,17 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column1,
                      model.getConditions().get(1));
         assertEquals("Canada",
-                     model.getData().get(0).get(2).getStringValue());
+                     model.getData().get(0).get(3).getStringValue());
         assertEquals(55,
-                     model.getData().get(0).get(3).getNumericValue());
+                     model.getData().get(0).get(4).getNumericValue());
         assertEquals("Smurf",
-                     model.getData().get(0).get(4).getStringValue());
+                     model.getData().get(0).get(5).getStringValue());
 
-        assertEquals(5,
+        assertEquals(6,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(5);
         assertEquals("Address",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("age",
@@ -1059,11 +1066,11 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue(uiModelColumn1_2 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_2 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn3_2 instanceof StringUiColumn);
-        assertEquals(4,
+        assertEquals(5,
                      uiModelColumn1_2.getIndex());
-        assertEquals(2,
-                     uiModelColumn2_2.getIndex());
         assertEquals(3,
+                     uiModelColumn2_2.getIndex());
+        assertEquals(4,
                      uiModelColumn3_2.getIndex());
         assertEquals("Canada",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());
@@ -1104,13 +1111,13 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
 
         modelSynchronizer.appendRow();
         uiModel.setCellValue(0,
-                             2,
+                             3,
                              new BaseGridCellValue<>("Canada"));
         uiModel.setCellValue(0,
-                             3,
+                             4,
                              new BaseGridCellValue<>(55));
         uiModel.setCellValue(0,
-                             4,
+                             5,
                              new BaseGridCellValue<>("Smurf"));
 
         assertEquals(2,
@@ -1120,17 +1127,17 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column2,
                      model.getConditions().get(1));
         assertEquals("Canada",
-                     model.getData().get(0).get(2).getStringValue());
+                     model.getData().get(0).get(3).getStringValue());
         assertEquals(55,
-                     model.getData().get(0).get(3).getNumericValue());
+                     model.getData().get(0).get(4).getNumericValue());
         assertEquals("Smurf",
-                     model.getData().get(0).get(4).getStringValue());
+                     model.getData().get(0).get(5).getStringValue());
 
-        assertEquals(5,
+        assertEquals(6,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_1 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_1 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_1 = uiModel.getColumns().get(5);
         assertEquals("Address",
                      uiModelColumn1_1.getHeaderMetaData().get(0).getTitle());
         assertEquals("age",
@@ -1140,11 +1147,11 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue(uiModelColumn1_1 instanceof StringUiColumn);
         assertTrue(uiModelColumn2_1 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn3_1 instanceof StringUiColumn);
-        assertEquals(2,
-                     uiModelColumn1_1.getIndex());
         assertEquals(3,
-                     uiModelColumn2_1.getIndex());
+                     uiModelColumn1_1.getIndex());
         assertEquals(4,
+                     uiModelColumn2_1.getIndex());
+        assertEquals(5,
                      uiModelColumn3_1.getIndex());
         assertEquals("Canada",
                      uiModel.getRow(0).getCells().get(uiModelColumn1_1.getIndex()).getValue().getValue());
@@ -1153,7 +1160,7 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals("Smurf",
                      uiModel.getRow(0).getCells().get(uiModelColumn3_1.getIndex()).getValue().getValue());
 
-        uiModel.moveColumnTo(4,
+        uiModel.moveColumnTo(5,
                              uiModelColumn1_1);
 
         assertEquals(2,
@@ -1163,17 +1170,17 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertEquals(column1,
                      model.getConditions().get(1));
         assertEquals(55,
-                     model.getData().get(0).get(2).getNumericValue());
+                     model.getData().get(0).get(3).getNumericValue());
         assertEquals("Smurf",
-                     model.getData().get(0).get(3).getStringValue());
-        assertEquals("Canada",
                      model.getData().get(0).get(4).getStringValue());
+        assertEquals("Canada",
+                     model.getData().get(0).get(5).getStringValue());
 
-        assertEquals(5,
+        assertEquals(6,
                      uiModel.getColumns().size());
-        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(2);
-        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(3);
-        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn1_2 = uiModel.getColumns().get(3);
+        final GridColumn<?> uiModelColumn2_2 = uiModel.getColumns().get(4);
+        final GridColumn<?> uiModelColumn3_2 = uiModel.getColumns().get(5);
         assertEquals("age",
                      uiModelColumn1_2.getHeaderMetaData().get(0).getTitle());
         assertEquals("name",
@@ -1183,11 +1190,11 @@ public class BRLConditionColumnSynchronizerTest extends BaseSynchronizerTest {
         assertTrue(uiModelColumn1_2 instanceof IntegerUiColumn);
         assertTrue(uiModelColumn2_2 instanceof StringUiColumn);
         assertTrue(uiModelColumn3_2 instanceof StringUiColumn);
-        assertEquals(3,
-                     uiModelColumn1_2.getIndex());
         assertEquals(4,
+                     uiModelColumn1_2.getIndex());
+        assertEquals(5,
                      uiModelColumn2_2.getIndex());
-        assertEquals(2,
+        assertEquals(3,
                      uiModelColumn3_2.getIndex());
         assertEquals(55,
                      uiModel.getRow(0).getCells().get(uiModelColumn1_2.getIndex()).getValue().getValue());

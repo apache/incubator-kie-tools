@@ -55,6 +55,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.RuleNameColumn;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -163,11 +164,11 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(12,
+        assertEquals(13,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof AttributeCol52);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
         assertTrue(columns.get(3) instanceof AttributeCol52);
         assertTrue(columns.get(4) instanceof AttributeCol52);
         assertTrue(columns.get(5) instanceof AttributeCol52);
@@ -177,56 +178,57 @@ public class GuidedDecisionTableGeneratorListenerTest {
         assertTrue(columns.get(9) instanceof AttributeCol52);
         assertTrue(columns.get(10) instanceof AttributeCol52);
         assertTrue(columns.get(11) instanceof AttributeCol52);
+        assertTrue(columns.get(12) instanceof AttributeCol52);
 
         //Check individual attributes
-        AttributeCol52 attrCol2 = ((AttributeCol52) columns.get(2));
+        AttributeCol52 attrCol2 = ((AttributeCol52) columns.get(3));
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      attrCol2.getAttribute());
         assertFalse(attrCol2.isUseRowNumber());
         assertFalse(attrCol2.isReverseOrder());
 
-        AttributeCol52 attrCol3 = ((AttributeCol52) columns.get(3));
+        AttributeCol52 attrCol3 = ((AttributeCol52) columns.get(4));
         assertEquals(Attribute.ACTIVATION_GROUP.getAttributeName(),
                      attrCol3.getAttribute());
 
-        AttributeCol52 attrCol4 = ((AttributeCol52) columns.get(4));
+        AttributeCol52 attrCol4 = ((AttributeCol52) columns.get(5));
         assertEquals(Attribute.DURATION.getAttributeName(),
                      attrCol4.getAttribute());
 
-        AttributeCol52 attrCol5 = ((AttributeCol52) columns.get(5));
+        AttributeCol52 attrCol5 = ((AttributeCol52) columns.get(6));
         assertEquals(Attribute.TIMER.getAttributeName(),
                      attrCol5.getAttribute());
 
-        AttributeCol52 attrCol6 = ((AttributeCol52) columns.get(6));
+        AttributeCol52 attrCol6 = ((AttributeCol52) columns.get(7));
         assertEquals(Attribute.CALENDARS.getAttributeName(),
                      attrCol6.getAttribute());
 
-        AttributeCol52 attrCol7 = ((AttributeCol52) columns.get(7));
+        AttributeCol52 attrCol7 = ((AttributeCol52) columns.get(8));
         assertEquals(Attribute.NO_LOOP.getAttributeName(),
                      attrCol7.getAttribute());
 
-        AttributeCol52 attrCol8 = ((AttributeCol52) columns.get(8));
+        AttributeCol52 attrCol8 = ((AttributeCol52) columns.get(9));
         assertEquals(Attribute.LOCK_ON_ACTIVE.getAttributeName(),
                      attrCol8.getAttribute());
 
-        AttributeCol52 attrCol9 = ((AttributeCol52) columns.get(9));
+        AttributeCol52 attrCol9 = ((AttributeCol52) columns.get(10));
         assertEquals(Attribute.AUTO_FOCUS.getAttributeName(),
                      attrCol9.getAttribute());
 
-        AttributeCol52 attrCol10 = ((AttributeCol52) columns.get(10));
+        AttributeCol52 attrCol10 = ((AttributeCol52) columns.get(11));
         assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      attrCol10.getAttribute());
 
-        AttributeCol52 attrCol11 = ((AttributeCol52) columns.get(11));
+        AttributeCol52 attrCol11 = ((AttributeCol52) columns.get(12));
         assertEquals(Attribute.RULEFLOW_GROUP.getAttributeName(),
                      attrCol11.getAttribute());
 
         //Check data
         assertEquals(2,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "Specific rule 1", 1, "g1", 100l, "T1", "CAL1", true, true, true, "AG1", "RFG1"},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "Specific rule 1", 1, "g1", 100l, "T1", "CAL1", true, true, true, "AG1", "RFG1"},
                                    dtable.getData().get(0)));
-        assertTrue(isRowEquivalent(new Object[]{2, "Specific rule 2", 2, "g2", 200l, "T2", "CAL2", false, false, false, "AG2", "RFG2"},
+        assertTrue(isRowEquivalent(new Object[]{2, "", "Specific rule 2", 2, "g2", 200l, "T2", "CAL2", false, false, false, "AG2", "RFG2"},
                                    dtable.getData().get(1)));
     }
 
@@ -273,14 +275,15 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(3,
+        assertEquals(4,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof AttributeCol52);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
+        assertTrue(columns.get(3) instanceof AttributeCol52);
 
         //Check attribute column
-        AttributeCol52 attrCol2 = ((AttributeCol52) columns.get(2));
+        AttributeCol52 attrCol2 = ((AttributeCol52) columns.get(3));
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      attrCol2.getAttribute());
         assertTrue(attrCol2.isUseRowNumber());
@@ -289,9 +292,9 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(2,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "Rule 1", 2},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "Rule 1", 2},
                                    dtable.getData().get(0)));
-        assertTrue(isRowEquivalent(new Object[]{2, "Rule 2", 1},
+        assertTrue(isRowEquivalent(new Object[]{2, "", "Rule 2", 1},
                                    dtable.getData().get(1)));
     }
 
@@ -344,14 +347,15 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(3,
+        assertEquals(4,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof AttributeCol52);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
+        assertTrue(columns.get(3) instanceof AttributeCol52);
 
         //Check attribute column
-        AttributeCol52 attrCol2 = ((AttributeCol52) columns.get(2));
+        AttributeCol52 attrCol2 = ((AttributeCol52) columns.get(3));
         assertEquals(Attribute.SALIENCE.getAttributeName(),
                      attrCol2.getAttribute());
         assertFalse(attrCol2.isUseRowNumber());
@@ -360,9 +364,9 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(2,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "Rule 1", 0},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "Rule 1", 0},
                                    dtable.getData().get(0)));
-        assertTrue(isRowEquivalent(new Object[]{2, "Rule 2", 0},
+        assertTrue(isRowEquivalent(new Object[]{2, "", "Rule 2", 0},
                                    dtable.getData().get(1)));
     }
 
@@ -415,14 +419,15 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(3,
+        assertEquals(4,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof AttributeCol52);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
+        assertTrue(columns.get(3) instanceof AttributeCol52);
 
         //Check attribute column
-        AttributeCol52 attrCol2 = ((AttributeCol52) columns.get(2));
+        AttributeCol52 attrCol2 = ((AttributeCol52) columns.get(3));
         assertEquals(Attribute.DURATION.getAttributeName(),
                      attrCol2.getAttribute());
         assertFalse(attrCol2.isUseRowNumber());
@@ -431,9 +436,9 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(2,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "Rule 1", 0},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "Rule 1", 0},
                                    dtable.getData().get(0)));
-        assertTrue(isRowEquivalent(new Object[]{2, "Rule 2", 0},
+        assertTrue(isRowEquivalent(new Object[]{2, "", "Rule 2", 0},
                                    dtable.getData().get(1)));
     }
 
@@ -480,23 +485,24 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(3,
+        assertEquals(4,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof MetadataCol52);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
+        assertTrue(columns.get(3) instanceof MetadataCol52);
 
         //Check metadata column
-        MetadataCol52 mdCol2 = ((MetadataCol52) columns.get(2));
+        MetadataCol52 mdCol2 = ((MetadataCol52) columns.get(3));
         assertEquals("cheese",
                      mdCol2.getMetadata());
 
         //Check data
         assertEquals(2,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "Rule 1", "cheddar"},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "Rule 1", "cheddar"},
                                    dtable.getData().get(0)));
-        assertTrue(isRowEquivalent(new Object[]{2, "Rule 2", "edam"},
+        assertTrue(isRowEquivalent(new Object[]{2, "", "Rule 2", "edam"},
                                    dtable.getData().get(1)));
     }
 
@@ -583,15 +589,16 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(7,
+        assertEquals(8,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
         assertTrue(columns.get(3) instanceof BRLActionVariableColumn);
         assertTrue(columns.get(4) instanceof BRLActionVariableColumn);
         assertTrue(columns.get(5) instanceof BRLActionVariableColumn);
         assertTrue(columns.get(6) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(7) instanceof BRLActionVariableColumn);
 
         //Check individual action columns
         assertEquals(4,
@@ -723,17 +730,17 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(2,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "Row 1", "10", "20", "30", "hello", true},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "Row 1", "10", "20", "30", "hello", true},
                                    dtable.getData().get(0)));
-        assertTrue(isRowEquivalent(new Object[]{2, "Row 2", "50", "60", "70", "goodbye", false},
+        assertTrue(isRowEquivalent(new Object[]{2, "", "Row 2", "50", "60", "70", "goodbye", false},
                                    dtable.getData().get(1)));
     }
 
     @Test
     public void testConditions() {
         final List<Object[]> expectedRows = new ArrayList<Object[]>(2);
-        expectedRows.add(new Object[]{1, "Row 1", 20, "Mike", "Brown", "BMW", "M3"});
-        expectedRows.add(new Object[]{2, "Row 2", 30, "Jason", "Grey", "Audi", "S4"});
+        expectedRows.add(new Object[]{1, "", "Row 1", 20, "Mike", "Brown", "BMW", "M3"});
+        expectedRows.add(new Object[]{2, "", "Row 2", 30, "Jason", "Grey", "Audi", "S4"});
         conditionsTest("Conditions.xls",
                        expectedRows);
     }
@@ -741,8 +748,8 @@ public class GuidedDecisionTableGeneratorListenerTest {
     @Test
     public void testConditionsIndexedParameters() {
         final List<Object[]> expectedRows = new ArrayList<Object[]>(2);
-        expectedRows.add(new Object[]{1, "Row 1", 20, "Mike", "Brown", "BMW", "M3"});
-        expectedRows.add(new Object[]{2, "Row 2", 30, "Jason", "Grey", "", ""});
+        expectedRows.add(new Object[]{1, "", "Row 1", 20, "Mike", "Brown", "BMW", "M3"});
+        expectedRows.add(new Object[]{2, "", "Row 2", 30, "Jason", "Grey", "", ""});
         conditionsTest("Conditions-indexedParameters.xls",
                        expectedRows);
     }
@@ -821,15 +828,16 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(7,
+        assertEquals(8,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
         assertTrue(columns.get(3) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(4) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(5) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(6) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(7) instanceof BRLConditionVariableColumn);
 
         //Check individual condition columns
         assertEquals(2,
@@ -1062,15 +1070,16 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns0 = dtable0.getExpandedColumns();
         assertNotNull(columns0);
-        assertEquals(5,
+        assertEquals(6,
                      columns0.size());
         assertTrue(columns0.get(0) instanceof RowNumberCol52);
-        assertTrue(columns0.get(1) instanceof DescriptionCol52);
-        assertTrue(columns0.get(2) instanceof AttributeCol52);
-        assertTrue(columns0.get(3) instanceof BRLConditionVariableColumn);
-        assertTrue(columns0.get(4) instanceof BRLActionVariableColumn);
+        assertTrue(columns0.get(1) instanceof RuleNameColumn);
+        assertTrue(columns0.get(2) instanceof DescriptionCol52);
+        assertTrue(columns0.get(3) instanceof AttributeCol52);
+        assertTrue(columns0.get(4) instanceof BRLConditionVariableColumn);
+        assertTrue(columns0.get(5) instanceof BRLActionVariableColumn);
 
-        AttributeCol52 attrCol0_2 = ((AttributeCol52) columns0.get(2));
+        AttributeCol52 attrCol0_2 = ((AttributeCol52) columns0.get(3));
         assertEquals(Attribute.AGENDA_GROUP.getAttributeName(),
                      attrCol0_2.getAttribute());
 
@@ -1150,20 +1159,21 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(2,
                      dtable0.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "Created from row 7", "AG1", "John", "Hello Sir"},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "Created from row 7", "AG1", "John", "Hello Sir"},
                                    dtable0.getData().get(0)));
-        assertTrue(isRowEquivalent(new Object[]{2, "Row 2", "AG2", "Jane", "Hello Madam"},
+        assertTrue(isRowEquivalent(new Object[]{2, "", "Row 2", "AG2", "Jane", "Hello Madam"},
                                    dtable0.getData().get(1)));
 
         //Check expanded columns
         List<BaseColumn> columns1 = dtable1.getExpandedColumns();
         assertNotNull(columns1);
-        assertEquals(4,
+        assertEquals(5,
                      columns1.size());
         assertTrue(columns1.get(0) instanceof RowNumberCol52);
-        assertTrue(columns1.get(1) instanceof DescriptionCol52);
-        assertTrue(columns1.get(2) instanceof BRLConditionVariableColumn);
+        assertTrue(columns1.get(1) instanceof RuleNameColumn);
+        assertTrue(columns1.get(2) instanceof DescriptionCol52);
         assertTrue(columns1.get(3) instanceof BRLConditionVariableColumn);
+        assertTrue(columns1.get(4) instanceof BRLConditionVariableColumn);
 
         //Check individual condition columns
         assertEquals(1,
@@ -1237,9 +1247,9 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(2,
                      dtable1.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "Row 1", "John", "25"},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "Row 1", "John", "25"},
                                    dtable1.getData().get(0)));
-        assertTrue(isRowEquivalent(new Object[]{2, "Created from row 16", "Jane", "29"},
+        assertTrue(isRowEquivalent(new Object[]{2, "", "Created from row 16", "Jane", "29"},
                                    dtable1.getData().get(1)));
     }
 
@@ -1286,11 +1296,12 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(3,
+        assertEquals(4,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
+        assertTrue(columns.get(3) instanceof BRLConditionVariableColumn);
 
         //Check individual condition columns
         assertEquals(1,
@@ -1327,9 +1338,9 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(2,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "Row 1", "isQualified"},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "Row 1", "isQualified"},
                                    dtable.getData().get(0)));
-        assertTrue(isRowEquivalent(new Object[]{2, "Row 2", "isLicensed"},
+        assertTrue(isRowEquivalent(new Object[]{2, "", "Row 2", "isLicensed"},
                                    dtable.getData().get(1)));
     }
 
@@ -1443,14 +1454,15 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(6,
+        assertEquals(7,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
         assertTrue(columns.get(3) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(4) instanceof BRLConditionVariableColumn);
-        assertTrue(columns.get(5) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(5) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(6) instanceof BRLActionVariableColumn);
 
         //Check individual condition columns
         assertEquals(1,
@@ -1629,14 +1641,15 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(6,
+        assertEquals(7,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
         assertTrue(columns.get(3) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(4) instanceof BRLConditionVariableColumn);
-        assertTrue(columns.get(5) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(5) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(6) instanceof BRLActionVariableColumn);
 
         //Check individual condition columns
         assertEquals(1,
@@ -1762,7 +1775,7 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(1,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "asd", "false", "", "true", "0"},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "asd", "false", "", "true", "0"},
                                    dtable.getData().get(0)));
     }
 
@@ -1802,17 +1815,17 @@ public class GuidedDecisionTableGeneratorListenerTest {
         assertEquals(2,
                      dtable.getData().size());
         assertEquals("Created from row 7",
-                     dtable.getData().get(0).get(1).getStringValue());
+                     dtable.getData().get(0).get(2).getStringValue());
         assertEquals("Row 2",
-                     dtable.getData().get(1).get(1).getStringValue());
+                     dtable.getData().get(1).get(2).getStringValue());
 
         dtable = dtables.get(1);
         assertEquals(2,
                      dtable.getData().size());
         assertEquals("Row 1",
-                     dtable.getData().get(0).get(1).getStringValue());
+                     dtable.getData().get(0).get(2).getStringValue());
         assertEquals("Created from row 16",
-                     dtable.getData().get(1).get(1).getStringValue());
+                     dtable.getData().get(1).get(2).getStringValue());
     }
 
     @Test
@@ -1868,13 +1881,14 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(5,
+        assertEquals(6,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
         assertTrue(columns.get(3) instanceof BRLConditionVariableColumn);
-        assertTrue(columns.get(4) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(4) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(5) instanceof BRLActionVariableColumn);
 
         //Check individual condition columns
         assertEquals(1,
@@ -1974,7 +1988,7 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(1,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "Created from row 12", 0, 100, "A1"},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "Created from row 12", 0, 100, "A1"},
                                    dtable.getData().get(0)));
     }
 
@@ -2031,14 +2045,15 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(6,
+        assertEquals(7,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof BRLConditionVariableColumn);
-        assertTrue(columns.get(3) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
+        assertTrue(columns.get(3) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(4) instanceof BRLActionVariableColumn);
         assertTrue(columns.get(5) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(6) instanceof BRLActionVariableColumn);
 
         //Check individual condition columns
         assertEquals(1,
@@ -2173,7 +2188,7 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(1,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "asd", false, true, false, false},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "asd", false, true, false, false},
                                    dtable.getData().get(0)));
     }
 
@@ -2220,13 +2235,13 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(20,
+        assertEquals(21,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof AttributeCol52);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
         assertTrue(columns.get(3) instanceof AttributeCol52);
-        assertTrue(columns.get(4) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(4) instanceof AttributeCol52);
         assertTrue(columns.get(5) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(6) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(7) instanceof BRLConditionVariableColumn);
@@ -2241,7 +2256,8 @@ public class GuidedDecisionTableGeneratorListenerTest {
         assertTrue(columns.get(16) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(17) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(18) instanceof BRLConditionVariableColumn);
-        assertTrue(columns.get(19) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(19) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(20) instanceof BRLActionVariableColumn);
     }
 
     @Test
@@ -2317,17 +2333,18 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(9,
+        assertEquals(10,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
         assertTrue(columns.get(3) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(4) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(5) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(6) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(7) instanceof BRLConditionVariableColumn);
-        assertTrue(columns.get(8) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(8) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(9) instanceof BRLActionVariableColumn);
 
         //Check individual condition columns
         assertEquals(1,
@@ -2561,13 +2578,13 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(4,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "1", "ALL", "XYZ", "EL", "HighEnd", 1, 0, 1.75d},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "1", "ALL", "XYZ", "EL", "HighEnd", 1, 0, 1.75d},
                                    dtable.getData().get(0)));
-        assertTrue(isRowEquivalent(new Object[]{2, "2", "ALL", "XYZ", "EL", "HighEnd", 5, 1, 2.00d},
+        assertTrue(isRowEquivalent(new Object[]{2, "", "2", "ALL", "XYZ", "EL", "HighEnd", 5, 1, 2.00d},
                                    dtable.getData().get(1)));
-        assertTrue(isRowEquivalent(new Object[]{3, "3", "ALL", "XYZ", "EL", "HighEnd", 7, 5, 2.00d},
+        assertTrue(isRowEquivalent(new Object[]{3, "", "3", "ALL", "XYZ", "EL", "HighEnd", 7, 5, 2.00d},
                                    dtable.getData().get(2)));
-        assertTrue(isRowEquivalent(new Object[]{4, "4", "ALL", "XYZ", "EL", "HighEnd", 10, 7, 1.00d},
+        assertTrue(isRowEquivalent(new Object[]{4, "", "4", "ALL", "XYZ", "EL", "HighEnd", 10, 7, 1.00d},
                                    dtable.getData().get(3)));
     }
 
@@ -2631,14 +2648,15 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(6,
+        assertEquals(7,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof BRLConditionVariableColumn);
-        assertTrue(columns.get(3) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
+        assertTrue(columns.get(3) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(4) instanceof BRLActionVariableColumn);
         assertTrue(columns.get(5) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(6) instanceof BRLActionVariableColumn);
 
         //Check individual condition columns
         assertEquals(1,
@@ -2790,9 +2808,9 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(2,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "Hello World", null, false, "Goodbye cruel world", null},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "Hello World", null, false, "Goodbye cruel world", null},
                                    dtable.getData().get(0)));
-        assertTrue(isRowEquivalent(new Object[]{2, "Goodbye", null, false, "", null},
+        assertTrue(isRowEquivalent(new Object[]{2, "", "Goodbye", null, false, "", null},
                                    dtable.getData().get(1)));
     }
 
@@ -2871,19 +2889,20 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(11,
+        assertEquals(12,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof BRLConditionVariableColumn);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
         assertTrue(columns.get(3) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(4) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(5) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(6) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(7) instanceof BRLConditionVariableColumn);
-        assertTrue(columns.get(8) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(8) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(9) instanceof BRLActionVariableColumn);
         assertTrue(columns.get(10) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(11) instanceof BRLActionVariableColumn);
 
         //Check individual condition columns
         assertEquals(3,
@@ -3203,13 +3222,13 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(4,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "Lowest bonus", 0, 2, null, false, "", "$e", "400", false, false},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "Lowest bonus", 0, 2, null, false, "", "$e", "400", false, false},
                                    dtable.getData().get(0)));
-        assertTrue(isRowEquivalent(new Object[]{2, "Middle bonus", 2, 6, null, false, "", "$e", "800", false, false},
+        assertTrue(isRowEquivalent(new Object[]{2, "", "Middle bonus", 2, 6, null, false, "", "$e", "800", false, false},
                                    dtable.getData().get(1)));
-        assertTrue(isRowEquivalent(new Object[]{3, "High bonus", null, null, 6, false, "", "", "1000", false, false},
+        assertTrue(isRowEquivalent(new Object[]{3, "", "High bonus", null, null, 6, false, "", "", "1000", false, false},
                                    dtable.getData().get(2)));
-        assertTrue(isRowEquivalent(new Object[]{4, "Big absence", null, null, null, true, "$e", "", "", true, true},
+        assertTrue(isRowEquivalent(new Object[]{4, "", "Big absence", null, null, null, true, "$e", "", "", true, true},
                                    dtable.getData().get(3)));
     }
 
@@ -3384,16 +3403,17 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull(columns);
-        assertEquals(8,
+        assertEquals(9,
                      columns.size());
         assertTrue(columns.get(0) instanceof RowNumberCol52);
-        assertTrue(columns.get(1) instanceof DescriptionCol52);
-        assertTrue(columns.get(2) instanceof BRLConditionVariableColumn);
-        assertTrue(columns.get(3) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(1) instanceof RuleNameColumn);
+        assertTrue(columns.get(2) instanceof DescriptionCol52);
+        assertTrue(columns.get(3) instanceof BRLConditionVariableColumn);
         assertTrue(columns.get(4) instanceof BRLActionVariableColumn);
         assertTrue(columns.get(5) instanceof BRLActionVariableColumn);
         assertTrue(columns.get(6) instanceof BRLActionVariableColumn);
         assertTrue(columns.get(7) instanceof BRLActionVariableColumn);
+        assertTrue(columns.get(8) instanceof BRLActionVariableColumn);
 
         //Check individual condition columns
         assertEquals(1,
@@ -3558,9 +3578,9 @@ public class GuidedDecisionTableGeneratorListenerTest {
         //Check data
         assertEquals(2,
                      dtable.getData().size());
-        assertTrue(isRowEquivalent(new Object[]{1, "Hello World", "Message.HELLO", false, "Goodbye cruel world", "Message.GOODBYE", expectedDataValueRow0.get(), "m"},
+        assertTrue(isRowEquivalent(new Object[]{1, "", "Hello World", "Message.HELLO", false, "Goodbye cruel world", "Message.GOODBYE", expectedDataValueRow0.get(), "m"},
                                    dtable.getData().get(0)));
-        assertTrue(isRowEquivalent(new Object[]{2, "Goodbye", "Message.GOODBYE", false, "", "", expectedDataValueRow1.get(), "m"},
+        assertTrue(isRowEquivalent(new Object[]{2, "", "Goodbye", "Message.GOODBYE", false, "", "", expectedDataValueRow1.get(), "m"},
                                    dtable.getData().get(1)));
     }
 

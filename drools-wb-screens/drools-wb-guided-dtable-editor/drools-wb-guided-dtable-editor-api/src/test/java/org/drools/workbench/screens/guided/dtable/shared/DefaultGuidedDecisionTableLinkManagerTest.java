@@ -86,9 +86,9 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
         manager.link(dt1,
                      dt2,
                      (s, t) -> {
-                         assertEquals(3,
+                         assertEquals(4,
                                       s);
-                         assertEquals(2,
+                         assertEquals(3,
                                       t);
                      });
     }
@@ -115,9 +115,9 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
         manager.link(dt1,
                      dt2,
                      (s, t) -> {
-                         assertEquals(2,
+                         assertEquals(3,
                                       s);
-                         assertEquals(2,
+                         assertEquals(3,
                                       t);
                      });
     }
@@ -155,9 +155,9 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
         manager.link(dt1,
                      dt2,
                      (s, t) -> {
-                         assertEquals(2,
+                         assertEquals(3,
                                       s);
-                         assertEquals(2,
+                         assertEquals(3,
                                       t);
                      });
     }
@@ -197,9 +197,9 @@ public class DefaultGuidedDecisionTableLinkManagerTest {
         manager.link(dt1,
                      dt2,
                      (s, t) -> {
-                         assertEquals(2,
+                         assertEquals(3,
                                       s);
-                         assertEquals(2,
+                         assertEquals(3,
                                       t);
                      });
     }

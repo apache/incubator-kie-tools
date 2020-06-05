@@ -74,11 +74,11 @@ public class DTableUpdateManagerAttributesTest {
             Exception {
         ArrayList<Coordinate> coordinates = new ArrayList<>();
         Coordinate coordinate = new Coordinate(0,
-                                               2);
+                                               3);
         coordinates.add(coordinate);
         table52.getData()
                 .get(0)
-                .get(2)
+                .get(3)
                 .setDateValue(null);
 
         updateManager.update(table52,

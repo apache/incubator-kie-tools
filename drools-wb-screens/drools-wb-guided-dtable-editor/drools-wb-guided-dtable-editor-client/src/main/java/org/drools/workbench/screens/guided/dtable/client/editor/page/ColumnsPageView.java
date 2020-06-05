@@ -44,6 +44,9 @@ public class ColumnsPageView implements ColumnsPagePresenter.View,
     @DataField("rule-inheritance-container")
     private HTMLDivElement ruleInheritanceContainer;
 
+    @DataField("rule-name-option-container")
+    private HTMLDivElement ruleNameOptionContainer;
+
     @DataField("accordion-container")
     private HTMLDivElement accordionContainer;
 
@@ -55,12 +58,14 @@ public class ColumnsPageView implements ColumnsPagePresenter.View,
     public ColumnsPageView(final HTMLDivElement columnsNoteInfo,
                            final HTMLButtonElement insertButton,
                            final HTMLDivElement ruleInheritanceContainer,
+                           final HTMLDivElement ruleNameOptionContainer,
                            final HTMLDivElement accordionContainer,
                            final Elemental2DomUtil elemental2DomUtil) {
 
         this.columnsNoteInfo = columnsNoteInfo;
         this.insertButton = insertButton;
         this.ruleInheritanceContainer = ruleInheritanceContainer;
+        this.ruleNameOptionContainer = ruleNameOptionContainer;
         this.accordionContainer = accordionContainer;
         this.elemental2DomUtil = elemental2DomUtil;
     }
@@ -91,6 +96,11 @@ public class ColumnsPageView implements ColumnsPagePresenter.View,
 
         elemental2DomUtil.removeAllElementChildren(ruleInheritanceContainer);
         elemental2DomUtil.appendWidgetToElement(ruleInheritanceContainer, widget);
+    }
+
+    @Override
+    public void setRuleNameOptionWidget(final ShowRuleNameOptionPresenter showRuleNameOptionPresenter) {
+        ruleNameOptionContainer.appendChild(showRuleNameOptionPresenter.getView().getElement());
     }
 
     @EventHandler("insert-column")

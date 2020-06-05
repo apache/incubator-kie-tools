@@ -70,7 +70,7 @@ public class LimitedEntryConditionCol52DefinitionBuilderTest extends BaseColumnD
         setupLimitedEntryPatternAndCondition();
 
         builder.generateDefinition( dtPresenter,
-                                    model.getExpandedColumns().get( 2 ),
+                                    model.getExpandedColumns().get( 3 ),
                                     ( String definition ) -> {
                                         calledBack.set( true );
                                         assertEquals( "$p : Person( name == \"Michael\" )",

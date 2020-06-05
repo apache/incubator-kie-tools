@@ -34,6 +34,7 @@ import com.google.gwt.core.client.GWT;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableRenderer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.themes.GuidedDecisionTableTheme;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -85,7 +86,7 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
 
     private Group makeHeaderCaption() {
         final Group g = GWT.create(Group.class);
-        final double captionWidth = getHeaderCaptionWidth();
+        final double captionWidth = ((GuidedDecisionTableRenderer) renderer).getHeaderCaptionWidth();
         final GuidedDecisionTableTheme theme = (GuidedDecisionTableTheme) renderer.getTheme();
         final Rectangle r = theme.getBaseRectangle(GuidedDecisionTableTheme.ModelColumnType.CAPTION);
         r.setWidth(captionWidth);
@@ -129,11 +130,6 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
         return new BoundingBoxPathClipper(bb);
     }
 
-    private double getHeaderCaptionWidth() {
-        return Math.max(HEADER_CAPTION_WIDTH,
-                        model.getRowNumberCol().getWidth() + model.getDescriptionCol().getWidth());
-    }
-
     @Override
     public boolean onDragHandle(final INodeXYEvent event) {
         return isNodeMouseEventOverCaption(event);
@@ -147,7 +143,7 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
         final double cx = ap.getX();
         final double cy = ap.getY();
 
-        if (cx > headerCaption.getX() && cx < headerCaption.getX() + getHeaderCaptionWidth()) {
+        if (cx > headerCaption.getX() && cx < headerCaption.getX() + ((GuidedDecisionTableRenderer) renderer).getHeaderCaptionWidth()) {
             if (cy > headerCaption.getY() && cy < headerCaption.getY() + HEADER_CAPTION_HEIGHT) {
                 return true;
             }

@@ -54,6 +54,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.RuleNameColumn;
 import org.drools.workbench.models.guided.dtable.shared.validation.HitPolicyValidation;
 import org.drools.workbench.screens.guided.dtable.client.GuidedDecisionTable;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
@@ -106,6 +107,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.search.common.SearchPerformedEvent;
 import org.kie.workbench.common.widgets.client.search.common.Searchable;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetColumnVisibilityEvent;
 import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
@@ -1001,6 +1003,16 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
+    public void setShowRuleName(final boolean show) {
+        model.getRuleNameColumn().setHideColumn(!show);
+        eventBus.fireEvent(new SetColumnVisibilityEvent(1, show));
+        final int iModelColumn = model.getExpandedColumns().indexOf(model.getRuleNameColumn());
+        uiModel.getColumns().get(iModelColumn).setVisible(show);
+
+        refreshView();
+    }
+
+    @Override
     public void updateColumn(final AttributeCol52 originalColumn,
                              final AttributeCol52 editedColumn) throws VetoException {
         doUpdateColumn(originalColumn,
@@ -1267,7 +1279,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         for (int selectedColumnIndex : selectedColumnIndexes) {
             final int columnIndex = findUiColumnIndex(selectedColumnIndex);
             final BaseColumn column = model.getExpandedColumns().get(columnIndex);
-            if (!(column instanceof RowNumberCol52 || column instanceof DescriptionCol52)) {
+            if (!(column instanceof RowNumberCol52 || column instanceof DescriptionCol52 || column instanceof RuleNameColumn)) {
                 columnsToDelete.add(column);
             }
         }
