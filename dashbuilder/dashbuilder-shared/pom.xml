@@ -19,6 +19,7 @@
     <module>dashbuilder-validations</module>
     <module>dashbuilder-navigation-api</module>
     <module>dashbuilder-services-api</module>
+    <module>dashbuilder-kie-server-api</module>
   </modules>
 
 </project>

@@ -229,6 +229,16 @@
 			<groupId>org.dashbuilder</groupId>
 			<artifactId>dashbuilder-services-api</artifactId>
 		</dependency>
+		<!-- Kie Server Support -->
+		<dependency>
+		    <groupId>org.dashbuilder</groupId>
+		    <artifactId>dashbuilder-kie-server-api</artifactId>
+		 </dependency>
+		    
+		    <dependency>
+		      <groupId>org.dashbuilder</groupId>
+		      <artifactId>dashbuilder-kie-server-backend</artifactId>
+		    </dependency>
 
 		<!-- UberFire -->
 		<dependency>
@@ -718,6 +728,7 @@
 						<compileSourcesArtifact>org.dashbuilder:dashbuilder-renderer-c3</compileSourcesArtifact>
 						<compileSourcesArtifact>org.dashbuilder:dashbuilder-navigation-api</compileSourcesArtifact>
 						<compileSourcesArtifact>org.dashbuilder:dashbuilder-navigation-client</compileSourcesArtifact>
+						<compileSourcesArtifact>org.dashbuilder:dashbuilder-kie-server-api</compileSourcesArtifact>
 
 						<!-- Uberfire ext -->
 						<compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-api</compileSourcesArtifact>

@@ -26,6 +26,7 @@ import org.dashbuilder.client.cms.screen.explorer.PerspectivesExplorerScreen;
 import org.dashbuilder.client.cms.screen.explorer.NavigationExplorerScreen;
 import org.dashbuilder.client.cms.screen.home.ContentManagerHomeScreen;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.docks.UberfireDock;
@@ -77,7 +78,7 @@ public class ContentManagerPerspective {
         return perspective;
     }
 
-    @PostConstruct
+    @AfterInitialization
     public void init() {
         perspectivesExplorerDock = new UberfireDock(UberfireDockPosition.WEST,
                 IconType.FILE_TEXT_O.toString(),

@@ -31,6 +31,7 @@
 	<inherits name="org.dashbuilder.DisplayerEditor" />
 	<inherits name="org.dashbuilder.renderer.DefaultRenderer" />
 	<inherits name="org.dashbuilder.renderer.C3Renderer" />
+  <inherits name="org.dashbuilder.DashbuilderKieServerAPI"/>
 
 	<source path='client' />
 	<source path='shared' />

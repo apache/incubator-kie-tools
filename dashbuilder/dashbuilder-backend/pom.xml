@@ -18,6 +18,7 @@
     <module>dashbuilder-dataset-cdi</module>
     <module>dashbuilder-navigation-backend</module>
     <module>dashbuilder-services</module>
+    <module>dashbuilder-kie-server-backend</module>
   </modules>
 
 </project>

@@ -15,11 +15,13 @@
   <inherits name="org.uberfire.experimental.UberfireExperimentalAPI"/>
   <inherits name="org.uberfire.experimental.UberfireExperimentalClient"/>
 
+  <inherits name="org.dashbuilder.DashbuilderKieServerAPI"/>
   <inherits name="org.dashbuilder.DashbuilderClientAll"/>
+  <inherits name="org.dashbuilder.DashbuilderKieServerClient"/>
   <inherits name="org.dashbuilder.DisplayerEditor"/>
   <inherits name="org.dashbuilder.renderer.ChartJsRenderer"/>
   <inherits name="org.dashbuilder.renderer.C3Renderer"/>
-
+  
   <source path='client'/>
   <source path='shared'/>
 

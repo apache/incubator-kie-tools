@@ -37,6 +37,7 @@
       <module name="org.jboss.xnio"/>
       <module name="org.slf4j"/>
       <module name="org.slf4j.ext"/>
+      <module name="org.apache.xalan"/>
 
       <!-- Module dependencies for Wildfly / EAP security management providers. -->
       <module name="org.jboss.as.controller-client"/>

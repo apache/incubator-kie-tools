@@ -1,0 +1,95 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+             xmlns:editor="urn:import:org.dashbuilder.common.client.editor"
+             xmlns:ddwn="urn:import:org.dashbuilder.common.client.editor.list">
+
+  <ui:with field="i18n" type="org.dashbuilder.client.kieserver.resources.i18n.KieServerClientConstants"/>
+
+  <ui:style>
+    .sourceSelectorButton {
+      float: left;
+      margin-right: 10px;
+    }
+    .queryBox {
+      height: 200px;
+    }
+    .row {
+      margin-bottom: 5px;
+    }
+    .attr {
+      float: left;
+      margin-right: 5px;
+    }
+  </ui:style>
+
+  <b:Container fluid="true">
+
+    <!-- source -->
+    <b:Row addStyleNames="{style.row}">
+      <b:Column size="MD_3">
+        <g:HTML text="{i18n.remoteSqlDatasource}" addStyleNames="{style.attr}"/>
+        <b:Tooltip isAnimated="true" placement="BOTTOM" title="{i18n.remoteDatasourceDescription}">
+          <b:Icon type="QUESTION_CIRCLE" />
+        </b:Tooltip>
+      </b:Column>
+      <b:Column size="MD_9">
+        <editor:ValueBoxEditor.View ui:field="dataSource">
+          <editor:valuebox>
+            <b:TextBox />
+          </editor:valuebox>
+        </editor:ValueBoxEditor.View>
+      </b:Column>
+    </b:Row>
+    
+    <!-- server template id -->
+    <b:Row addStyleNames="{style.row}">
+      <b:Column size="MD_3">
+        <g:HTML text="{i18n.remoteServerTemplate}" addStyleNames="{style.attr}"/>
+        <b:Tooltip isAnimated="true" placement="BOTTOM" title="{i18n.remoteServerTemplateDescription}">
+          <b:Icon type="QUESTION_CIRCLE" />
+        </b:Tooltip>
+      </b:Column>
+      <b:Column size="MD_9">
+        <ddwn:DropDownEditor.View ui:field="serverTemplateId" />
+      </b:Column>
+    </b:Row>
+    
+    <!-- target -->
+    <b:Row addStyleNames="{style.row}">
+      <b:Column size="MD_3">
+        <g:HTML text="{i18n.remoteQueryTarget}" addStyleNames="{style.attr}"/>
+        <b:Tooltip isAnimated="true" placement="BOTTOM" title="{i18n.remoteQueryTargetDescription}">
+          <b:Icon type="QUESTION_CIRCLE" />
+        </b:Tooltip>
+      </b:Column>
+      <b:Column size="MD_9">
+        <ddwn:DropDownEditor.View ui:field="queryTarget" />
+      </b:Column>
+    </b:Row>
+
+    <!-- Source selector (table or query). -->
+    <b:Row addStyleNames="{style.row}">
+      <b:Column size="MD_3">
+        <g:HTML text="{i18n.remoteSqlSource}" addStyleNames="{style.attr}"/>
+        <b:Tooltip isAnimated="true" placement="BOTTOM" title="{i18n.remoteSourceDescription}">
+          <b:Icon type="QUESTION_CIRCLE" />
+        </b:Tooltip>
+      </b:Column>
+      <b:Column size="MD_9">
+
+        <g:FlowPanel ui:field="dbSQLPanel">
+          <editor:ValueBoxEditor.View ui:field="dbSQL">
+            <editor:valuebox>
+              <b:TextArea placeholder="{i18n.remoteQueryPlaceHolder}" addStyleNames="{style.queryBox}"/>
+            </editor:valuebox>
+          </editor:ValueBoxEditor.View>
+        </g:FlowPanel>
+
+      </b:Column>
+    </b:Row>
+    
+  </b:Container>
+  
+</ui:UiBinder>
