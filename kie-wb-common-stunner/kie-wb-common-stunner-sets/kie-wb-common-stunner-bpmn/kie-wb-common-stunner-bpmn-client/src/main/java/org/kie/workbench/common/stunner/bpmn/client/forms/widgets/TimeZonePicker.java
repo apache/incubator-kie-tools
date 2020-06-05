@@ -77,6 +77,9 @@ public class TimeZonePicker implements IsWidget,
     public void setValue(String value, boolean fireEvents) {
         String oldValue = current;
         current = value;
+
+        view.setValue(current);
+
         if (fireEvents) {
             ValueChangeEvent.fireIfNotEqual(this, oldValue, value);
         }
@@ -104,8 +107,8 @@ public class TimeZonePicker implements IsWidget,
 
         final String name;
         String code;
-        final  double offsetAsDouble;
-        final  String offsetAsString;
+        final double offsetAsDouble;
+        final String offsetAsString;
 
         TimeZoneDTO(String code, JSONObject json) {
 

@@ -43,8 +43,12 @@ public class TimeZonePickerViewImpl extends Composite implements TimeZonePickerV
 
     private final double defaultOffset = new Date().getTimezoneOffset() * -1;
 
+    private static final String NEW_NOTIFICATION = "0";
+
+    String userTimeZone;
+
     @DataField
-    private Select tzSelect = new Select();
+    Select tzSelect = new Select();
 
     private List<TimeZonePicker.TimeZoneDTO> zones;
 
@@ -83,6 +87,7 @@ public class TimeZonePickerViewImpl extends Composite implements TimeZonePickerV
                 option.setValue(zones.get(i).offsetAsString + "");
                 if (new Double(zones.get(i).offsetAsDouble).equals(new Double(defaultOffset / 60))) {
                     option.setSelected(true);
+                    userTimeZone = option.getValue();
                 }
                 tzSelect.add(option);
             }
@@ -97,6 +102,7 @@ public class TimeZonePickerViewImpl extends Composite implements TimeZonePickerV
                         option.setValue(zone.offsetAsString + "");
                         if (new Double(zone.offsetAsDouble).equals(new Double(defaultOffset / 60))) {
                             option.setSelected(true);
+                            userTimeZone = option.getValue();
                         }
                         tzSelect.add(option);
                     });
@@ -107,6 +113,14 @@ public class TimeZonePickerViewImpl extends Composite implements TimeZonePickerV
     @Override
     public String getValue() {
         return tzSelect.getValue();
+    }
+
+    @Override
+    public void setValue(String value) {
+        if (value.equals(NEW_NOTIFICATION)) {
+            value = userTimeZone;
+        }
+        tzSelect.setValue(value);
     }
 
     private enum TZSelectType {

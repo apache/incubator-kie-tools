@@ -27,6 +27,8 @@ public interface TimeZonePickerView extends IsWidget {
 
     String getValue();
 
+    void setValue(String value);
+
     interface Presenter extends HasValue<String> {
 
         String getValue();
