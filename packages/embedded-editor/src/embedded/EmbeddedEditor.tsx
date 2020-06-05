@@ -15,6 +15,7 @@
  */
 
 import {
+  ChannelStateControlEvent,
   ChannelType,
   EditorContent,
   getOperatingSystem,
@@ -31,8 +32,7 @@ import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "re
 import { File } from "../common/File";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 import { EditorStateControl } from "../stateControl";
-import { EditorStateControlEvent } from "../stateControl/EditorStateControlEvent";
-import { DefaultKeyboardShortcutsService } from "../keyboardShortcuts/KeyboardShortcutsChannels";
+import { DefaultKeyboardShortcutsService, redoShortcut, undoShortcut } from "@kogito-tooling/microeditor-envelope";
 
 /**
  * Properties supported by the `EmbeddedEditor`.
@@ -194,7 +194,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           props.onDirtyIndicatorChange?.(isDirty);
         },
         receive_ready() {
-          setupKeyboardShortcuts();
+          // registerShortcuts();
           props.onReady?.();
         },
         receive_resourceContentRequest(request: ResourceContentRequest) {
@@ -218,19 +218,8 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         receive_previewRequest(previewSvg: string) {
           props.onPreviewResponse?.(previewSvg);
         },
-        notify_channelStateControl(stateControlEvent: EditorStateControlEvent) {
-          // props.onStateControl??? // method from core-api to handle to nofication
-          switch (stateControlEvent) {
-            case EditorStateControlEvent.REDO:
-              props.editorStateControl?.redoEvent();
-              break;
-            case EditorStateControlEvent.UNDO:
-              props.editorStateControl?.undoEvent();
-              break;
-            case EditorStateControlEvent.SAVE:
-              props.editorStateControl?.setSavedEvent();
-              break;
-          }
+        notify_channelStateControl(stateControlEvent: ChannelStateControlEvent) {
+          handleStateControlNotification(stateControlEvent);
         }
       })
     );
@@ -242,25 +231,35 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     props.onResourceListRequest
   ]);
 
-  const setupKeyboardShortcuts = useCallback(() => {
-    // necessary to keyboardShortcuts.deregister(undoId) on unmount. necessary to check when editor is unmount
-    // move shortcuts to core-api. (used on microeditor-envelope // improve name)
-    // move state control to core-api. (used on microeditor-envelope // change class name)
-    // put common shortcuts on the core-api.
-    const undoId = keyboardShortcuts.registerKeyPress(
-      "ctrl+z",
-      "Undo | Undo last edit",
-      async () => envelopeBusOuterMessageHandler.notify_editorUndo(),
-      { element: window }
-    );
-
-    const redoId = keyboardShortcuts.registerKeyPress(
-      "shift+ctrl+z",
-      "Redo | Redo last edit",
-      async () => envelopeBusOuterMessageHandler.notify_editorUndo(),
-      { element: window }
-    );
+  const handleStateControlNotification = useCallback((stateControlEvent: ChannelStateControlEvent) => {
+    switch (stateControlEvent) {
+      case ChannelStateControlEvent.REDO:
+        props.editorStateControl?.redoEvent();
+        break;
+      case ChannelStateControlEvent.UNDO:
+        props.editorStateControl?.undoEvent();
+        break;
+      case ChannelStateControlEvent.SAVE:
+        props.editorStateControl?.setSavedEvent();
+        break;
+    }
   }, []);
+
+    useEffect(() => {
+      const { combination, label, onKeyPress, opts } = undoShortcut(async () =>
+        envelopeBusOuterMessageHandler.notify_editorUndo()
+      );
+      const undoId = keyboardShortcuts.registerKeyPress(combination, label, onKeyPress, opts);
+      return () => keyboardShortcuts.deregister(undoId);
+    }, []);
+
+    useEffect(() => {
+      const { combination, label, onKeyPress, opts } = redoShortcut(async () =>
+        envelopeBusOuterMessageHandler.notify_editorUndo()
+      );
+      const redoId = keyboardShortcuts.registerKeyPress(combination, label, onKeyPress, opts);
+      return () => keyboardShortcuts.deregister(redoId);
+    }, []);
 
   //Attach/detach bus when component attaches/detaches from DOM
   useEffect(() => {

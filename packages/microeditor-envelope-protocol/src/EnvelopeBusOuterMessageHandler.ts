@@ -15,6 +15,7 @@
  */
 
 import {
+  ChannelStateControlEvent,
   EditorContent,
   KogitoEdit,
   LanguageData,
@@ -26,7 +27,6 @@ import {
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
 import { EnvelopeBusApi } from "./EnvelopeBusApi";
-import { EditorStateControlEvent } from "@kogito-tooling/embedded-editor";
 
 export interface EnvelopeBusOuterMessageHandlerImpl {
   pollInit(): void;
@@ -42,7 +42,7 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   notify_editorUndo(): void;
   notify_editorRedo(): void;
   receive_newEdit(edit: KogitoEdit): void;
-  notify_channelStateControl(event: EditorStateControlEvent): void;
+  notify_channelStateControl(event: ChannelStateControlEvent): void;
 }
 
 export class EnvelopeBusOuterMessageHandler {

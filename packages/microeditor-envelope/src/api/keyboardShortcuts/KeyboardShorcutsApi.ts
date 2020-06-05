@@ -92,3 +92,10 @@ export interface KeyBindingServiceOpts {
   element?: EventTarget;
   repeat?: boolean;
 }
+
+export interface RegisterKeyPressParams {
+  combination: string,
+  label: string,
+  onKeyPress: () => Thenable<void>,
+  opts?: KeyBindingServiceOpts
+}

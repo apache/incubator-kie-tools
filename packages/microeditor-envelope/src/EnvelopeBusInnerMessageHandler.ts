@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import {
   EnvelopeBusMessageType
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import {
+  ChannelStateControlEvent,
   EditorContent,
   KogitoEdit,
   LanguageData,
@@ -28,7 +29,6 @@ import {
   ResourcesList,
   ResourceListOptions
 } from "@kogito-tooling/core-api";
-import { EditorStateControlEvent } from "@kogito-tooling/embedded-editor";
 
 export interface Impl {
   receive_contentResponse(content: EditorContent): void;
@@ -117,7 +117,7 @@ export class EnvelopeBusInnerMessageHandler {
   public respond_previewRequest(previewSvg: string) {
     return this.send({ type: EnvelopeBusMessageType.RETURN_PREVIEW, data: previewSvg });
   }
-  public notify_channelStateControl(stateControl: EditorStateControlEvent) {
+  public notify_channelStateControl(stateControl: ChannelStateControlEvent) {
     return this.send({ type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL, data: stateControl });
   }
 

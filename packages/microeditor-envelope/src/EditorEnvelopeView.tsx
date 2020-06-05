@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
 import { EditorContext } from "./api/context";
-import { RegisterEditorKeyboardShortcuts } from "./EditorKeyboardShortcuts";
+import { ChannelKeyboardShortcuts } from "./ChannelKeyboardShortcuts";
 import { StateControl } from "./api/stateControl";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 
@@ -72,10 +72,10 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
   public render() {
     return (
       <>
-        <RegisterEditorKeyboardShortcuts
+        <ChannelKeyboardShortcuts
           keyboardShortcuts={this.props.keyboardShortcuts}
           stateControl={this.props.stateControl}
-          busAPI={this.props.busApi}
+          busApi={this.props.busApi}
         />
         {!this.state.loading && (
           <KeyBindingsHelpOverlay keyboardShortcuts={this.props.keyboardShortcuts} context={this.props.context} />
