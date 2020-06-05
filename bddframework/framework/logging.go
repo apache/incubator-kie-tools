@@ -391,7 +391,9 @@ func BumpEvents(namespace string) error {
 		return fmt.Errorf("Error while creating filewriter: %v", err)
 	}
 
-	PrintDataMap(eventKeys, mapEvents(eventList), fileWriter)
+	if err := PrintDataMap(eventKeys, mapEvents(eventList), fileWriter); err != nil{
+		return err
+	}
 
 	if err := fileWriter.Close(); err != nil {
 		return fmt.Errorf("Error while closing filewriter: %v", err)

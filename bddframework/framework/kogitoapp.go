@@ -79,7 +79,7 @@ func cliDeployService(namespace string, kogitoApp *v1alpha1.KogitoApp) error {
 		}
 	}
 
-	cmd = append(cmd, "--runtime", fmt.Sprintf("%s", kogitoApp.Spec.Runtime))
+	cmd = append(cmd, "--runtime", string(kogitoApp.Spec.Runtime))
 
 	if kogitoApp.Spec.Build.Native {
 		cmd = append(cmd, "--native")

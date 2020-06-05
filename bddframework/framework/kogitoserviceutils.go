@@ -159,9 +159,7 @@ func crInstall(serviceHolder *KogitoServiceHolder) error {
 func cliInstall(serviceHolder *KogitoServiceHolder, cliName string, cliFlags []string) error {
 	cmd := []string{"install", cliName}
 
-	for _, cliFlag := range cliFlags {
-		cmd = append(cmd, cliFlag)
-	}
+	cmd = append(cmd, cliFlags...)
 
 	image := framework.ConvertImageToImageTag(*serviceHolder.GetSpec().GetImage())
 	if len(image) > 0 {

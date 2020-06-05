@@ -73,13 +73,6 @@ func setKogitoJobsServicePersistence(resource *v1alpha1.KogitoJobsService, persi
 	}
 }
 
-func setKogitoJobsServiceEvents(resource *v1alpha1.KogitoJobsService, events bool) {
-	if events {
-		resource.Spec.KafkaProperties = v1alpha1.KafkaConnectionProperties{
-			UseKogitoInfra: true,
-		}
-	}
-}
 
 func newKogitoJobsServiceResource(namespace string, replicas int) *v1alpha1.KogitoJobsService {
 	return &v1alpha1.KogitoJobsService{

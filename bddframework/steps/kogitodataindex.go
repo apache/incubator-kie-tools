@@ -73,7 +73,9 @@ func (data *Data) installKogitoDataIndexServiceWithReplicasWithConfiguration(rep
 
 	if dataIndex.IsInfinispanUsernameSpecified() && framework.GetDefaultInstallerType() == framework.CRInstallerType {
 		// If Infinispan authentication is set and CR installer is used, the Secret holding Infinispan credentials needs to be created and passed to Data index CR.
-		framework.CreateSecret(data.Namespace, kogitoExternalInfinispanSecret, map[string]string{usernameSecretKey: dataIndex.Infinispan.Username, passwordSecretKey: dataIndex.Infinispan.Password})
+		if err := framework.CreateSecret(data.Namespace, kogitoExternalInfinispanSecret, map[string]string{usernameSecretKey: dataIndex.Infinispan.Username, passwordSecretKey: dataIndex.Infinispan.Password}); err != nil{
+			return err
+		}
 		dataIndex.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.SecretName = kogitoExternalInfinispanSecret
 		dataIndex.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.UsernameKey = usernameSecretKey
 		dataIndex.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.PasswordKey = passwordSecretKey

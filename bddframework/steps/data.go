@@ -59,15 +59,22 @@ func (data *Data) RegisterAllSteps(s *godog.Suite) {
 }
 
 // BeforeScenario configure the data before a scenario is launched
-func (data *Data) BeforeScenario(pickle *messages.Pickle) {
+func (data *Data) BeforeScenario(pickle *messages.Pickle) error {
 	data.StartTime = time.Now()
 	data.Namespace = getNamespaceName()
 	data.KogitoExamplesLocation = createTemporaryFolder()
 	data.ScenarioName = pickle.GetName()
 	data.ScenarioContext = map[string]string{}
 
+	var err error
 	framework.GetLogger(data.Namespace).Info(fmt.Sprintf("Scenario %s", pickle.GetName()))
-	go framework.StartPodLogCollector(data.Namespace)
+	 go func(){
+		err = framework.StartPodLogCollector(data.Namespace)
+	}()
+	 if err != nil{
+	 	return err
+	 }
+	 return nil
 }
 
 func getNamespaceName() string {
@@ -86,8 +93,8 @@ func createTemporaryFolder() string {
 }
 
 // AfterScenario executes some actions on data after a scenario is finished
-func (data *Data) AfterScenario(pickle *messages.Pickle, err error) {
-	framework.OperateOnNamespaceIfExists(data.Namespace, func(namespace string) error {
+func (data *Data) AfterScenario(pickle *messages.Pickle, err error)  error{
+	error := framework.OperateOnNamespaceIfExists(data.Namespace, func(namespace string) error {
 		if err := framework.StopPodLogCollector(namespace); err != nil {
 			framework.GetMainLogger().Errorf("Error stopping log collector on namespace %s: %v", namespace, err)
 		}
@@ -103,6 +110,12 @@ func (data *Data) AfterScenario(pickle *messages.Pickle, err error) {
 	handleScenarioResult(data, pickle, err)
 	logScenarioDuration(data)
 	deleteTemporaryExamplesFolder(data)
+
+	if error != nil{
+		return error
+	}
+
+	return nil
 }
 
 // ResolveWithScenarioContext replaces all the variables in the string with their values.

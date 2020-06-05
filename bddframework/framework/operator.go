@@ -77,9 +77,15 @@ func DeployKogitoOperatorFromYaml(namespace string) error {
 	GetLogger(namespace).Infof("Deploy Operator from yaml files in %s", deployURI)
 
 	// TODO: error handling, go lint is screaming about this
-	loadResource(namespace, deployURI+"service_account.yaml", &corev1.ServiceAccount{}, nil)
-	loadResource(namespace, deployURI+"role.yaml", &rbac.Role{}, nil)
-	loadResource(namespace, deployURI+"role_binding.yaml", &rbac.RoleBinding{}, nil)
+	if err := loadResource(namespace, deployURI+"service_account.yaml", &corev1.ServiceAccount{}, nil); err != nil{
+		return err
+	}
+	if err := loadResource(namespace, deployURI+"role.yaml", &rbac.Role{}, nil); err != nil{
+		return err
+	}
+	if err := loadResource(namespace, deployURI+"role_binding.yaml", &rbac.RoleBinding{}, nil); err != nil{
+		return err
+	}
 
 	// Wait for docker pulling secret available for kogito-operator serviceaccount
 	// This is needed if images are stored into local Openshift registry
@@ -101,11 +107,13 @@ func DeployKogitoOperatorFromYaml(namespace string) error {
 	}
 
 	// Then deploy operator
-	loadResource(namespace, deployURI+"operator.yaml", &coreapps.Deployment{}, func(object interface{}) {
+	err = loadResource(namespace, deployURI+"operator.yaml", &coreapps.Deployment{}, func(object interface{}) {
 		GetLogger(namespace).Debugf("Using operator image %s", getOperatorImageNameAndTag())
 		object.(*coreapps.Deployment).Spec.Template.Spec.Containers[0].Image = getOperatorImageNameAndTag()
 	})
-
+	if err != nil{
+		return err
+	}
 	return nil
 }
 

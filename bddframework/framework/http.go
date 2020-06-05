@@ -91,7 +91,9 @@ func ExecuteHTTPRequestWithStringResponse(namespace string, requestInfo HTTPRequ
 	// Check response
 	defer httpResponse.Body.Close()
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(httpResponse.Body)
+	if _,err = buf.ReadFrom(httpResponse.Body); err != nil{
+		return "",err
+	}
 	resultBody := buf.String()
 
 	GetLogger(namespace).Debugf("Retrieved body %v", resultBody)
@@ -122,7 +124,9 @@ func IsHTTPRequestSuccessfulC(client *http.Client, namespace string, requestInfo
 	if err != nil {
 		return false, err
 	}
-	io.Copy(ioutil.Discard, response.Body) // Just read the response to be able to close the connection properly
+	if _, err = io.Copy(ioutil.Discard, response.Body); err != nil{      // Just read the response to be able to close the connection properly
+		return false, err
+	}
 	defer response.Body.Close()
 	return checkHTTPResponseSuccessful(namespace, response), nil
 }

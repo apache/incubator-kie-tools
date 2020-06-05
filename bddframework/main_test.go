@@ -77,7 +77,9 @@ func TestMain(m *testing.M) {
 		}
 
 		status := godog.RunWithOptions("godogs", func(s *godog.Suite) {
-			FeatureContext(s)
+			if err := FeatureContext(s); err != nil{
+				panic(fmt.Errorf("Error while setting feature context %v", err))
+			}
 		}, opt)
 
 		if st := m.Run(); st > status {
@@ -134,19 +136,25 @@ func configureTestOutput() {
 	opt.Output = io.MultiWriter(opt.Output, mainLogFile)
 }
 
-func FeatureContext(s *godog.Suite) {
+func FeatureContext(s *godog.Suite) error{
 	// Create kube client
-	framework.InitKubeClient()
+	if err := framework.InitKubeClient(); err != nil{
+		return err
+	}
 
 	data := &steps.Data{}
 	data.RegisterAllSteps(s)
 
 	// Scenario handlers
 	s.BeforeScenario(func(pickle *messages.Pickle) {
-		data.BeforeScenario(pickle)
+		if err := data.BeforeScenario(pickle); err != nil{
+			framework.GetLogger(data.Namespace).Errorf("Error in configuring data for before scenario  %v", err)
+		}
 	})
 	s.AfterScenario(func(pickle *messages.Pickle, err error) {
-		data.AfterScenario(pickle, err)
+		if err := data.AfterScenario(pickle, err); err != nil{
+			framework.GetLogger(data.Namespace).Errorf("Error in configuring data for After scenario  %v", err)
+		}
 
 		// Namespace should be deleted after all other operations have been done
 		if !config.IsKeepNamespace() {
@@ -163,16 +171,20 @@ func FeatureContext(s *godog.Suite) {
 			framework.GetLogger(data.Namespace).Errorf("Error in step '%s': %v", s.Text, err)
 		}
 	})
+	return nil
 }
 
 func deleteNamespaceIfExists(namespace string) {
-	framework.OperateOnNamespaceIfExists(namespace, func(namespace string) error {
+	err := framework.OperateOnNamespaceIfExists(namespace, func(namespace string) error {
 		framework.GetLogger(namespace).Infof("Delete created namespace %s", namespace)
 		if e := framework.DeleteNamespace(namespace); e != nil {
 			return fmt.Errorf("Error while deleting the namespace: %v", e)
 		}
 		return nil
 	})
+	if err != nil{
+		framework.GetLogger(namespace).Errorf("Error while doing operator on namespace: %v", err)
+	}
 }
 
 func matchingFeature(filterTags string, features []*feature) bool {
