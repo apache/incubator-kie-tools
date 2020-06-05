@@ -23,7 +23,6 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
-import "../static/resources/style.css";
 import { GithubService } from "./common/GithubService";
 import { GlobalContext } from "./common/GlobalContext";
 import { Routes } from "./common/Routes";
@@ -32,6 +31,7 @@ import { EditorPage } from "./editor/EditorPage";
 import { DownloadHubModal } from "./home/DownloadHubModal";
 import { HomePage } from "./home/HomePage";
 import { NoMatchPage } from "./NoMatchPage";
+import "../static/resources/style.css";
 
 interface Props {
   file: File;
