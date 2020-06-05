@@ -71,9 +71,13 @@ public class CollectionViewImplTest extends AbstractCollectionEditorTest {
     @Mock
     private ButtonElement saveButtonMock;
     @Mock
+    private SpanElement saveButtonSpanTextMock;
+    @Mock
     private ButtonElement cancelButtonMock;
     @Mock
     private ButtonElement removeButtonMock;
+    @Mock
+    private SpanElement removeButtonSpanTextMock;
     @Mock
     private ButtonElement addItemButtonMock;
     @Mock
@@ -121,6 +125,8 @@ public class CollectionViewImplTest extends AbstractCollectionEditorTest {
                 this.addItemButton = addItemButtonMock;
                 this.createCollectionRadio = createCollectionRadioMock;
                 this.defineCollectionRadio = defineCollectionRadioMock;
+                this.removeButtonSpanText = removeButtonSpanTextMock;
+                this.saveButtonSpanText = saveButtonSpanTextMock;
             }
         });
     }
@@ -159,9 +165,9 @@ public class CollectionViewImplTest extends AbstractCollectionEditorTest {
     public void commonInit_RuleScenario() {
         collectionEditorViewImplSpy.commonInit(ScenarioSimulationModel.Type.RULE);
         assertEquals(ScenarioSimulationModel.Type.RULE, collectionEditorViewImplSpy.scenarioType);
-        verify(saveButtonMock, times(1)).setInnerText(ScenarioSimulationEditorConstants.INSTANCE.saveButton());
+        verify(saveButtonSpanTextMock, times(1)).setInnerText(ScenarioSimulationEditorConstants.INSTANCE.saveButton());
         verify(cancelButtonMock, times(1)).setInnerText(ScenarioSimulationEditorConstants.INSTANCE.cancelButton());
-        verify(removeButtonMock, times(1)).setInnerText(ScenarioSimulationEditorConstants.INSTANCE.removeButton());
+        verify(removeButtonSpanTextMock, times(1)).setInnerText(ScenarioSimulationEditorConstants.INSTANCE.removeButton());
         verify(collectionEditorViewImplSpy, times(1)).enableCreateCollectionContainer(eq(true));
         verify(collectionEditorViewImplSpy, times(1)).initAndRegisterHandlerForExpressionTextArea();
     }
@@ -170,9 +176,9 @@ public class CollectionViewImplTest extends AbstractCollectionEditorTest {
     public void commonInit_DMNScenario() {
         collectionEditorViewImplSpy.commonInit(ScenarioSimulationModel.Type.DMN);
         assertEquals(ScenarioSimulationModel.Type.DMN, collectionEditorViewImplSpy.scenarioType);
-        verify(saveButtonMock, times(1)).setInnerText(ScenarioSimulationEditorConstants.INSTANCE.saveButton());
+        verify(saveButtonSpanTextMock, times(1)).setInnerText(ScenarioSimulationEditorConstants.INSTANCE.saveButton());
         verify(cancelButtonMock, times(1)).setInnerText(ScenarioSimulationEditorConstants.INSTANCE.cancelButton());
-        verify(removeButtonMock, times(1)).setInnerText(ScenarioSimulationEditorConstants.INSTANCE.removeButton());
+        verify(removeButtonSpanTextMock, times(1)).setInnerText(ScenarioSimulationEditorConstants.INSTANCE.removeButton());
         verify(collectionEditorViewImplSpy, times(1)).enableCreateCollectionContainer(eq(true));
         verify(collectionEditorViewImplSpy, never()).initAndRegisterHandlerForExpressionTextArea();
     }

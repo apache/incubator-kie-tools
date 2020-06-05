@@ -1,4 +1,5 @@
 <div class="kie-dataTypesList-modal modal-wide" tabindex="-1" role="dialog" id="collectionEditor">
+    <div class="modal-backdrop in"></div>
     <div class="modal-dialog" style="width:100%" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -58,9 +59,15 @@
                 </button>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" data-field="saveButton">
+                    <span class="fa fa-save" style="margin-right: 5px;"></span>
+                    <span data-field="saveButtonSpanText"></span>
+                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" data-field="removeButton">
+                    <span class="fa fa-remove" style="margin-right: 5px;"></span>
+                    <span data-field="removeButtonSpanText"></span>
+                </button>
                 <button type="button" class="btn btn-default" data-dismiss="modal" data-field="cancelButton"></button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal" data-field="removeButton"></button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" data-field="saveButton"></button>
             </div>
         </div>
     </div>

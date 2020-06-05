@@ -93,8 +93,14 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
     @DataField("removeButton")
     protected ButtonElement removeButton = Document.get().createPushButtonElement();
 
+    @DataField("removeButtonSpanText")
+    protected SpanElement removeButtonSpanText = Document.get().createSpanElement();
+
     @DataField("saveButton")
     protected ButtonElement saveButton = Document.get().createPushButtonElement();
+
+    @DataField("saveButtonSpanText")
+    protected SpanElement saveButtonSpanText = Document.get().createSpanElement();
 
     @DataField("addItemButton")
     protected ButtonElement addItemButton = Document.get().createPushButtonElement();
@@ -204,9 +210,9 @@ public class CollectionViewImpl extends FocusWidget implements HasCloseComposite
 
     protected void commonInit(ScenarioSimulationModel.Type type) {
         scenarioType = type ;
-        saveButton.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.saveButton());
         cancelButton.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.cancelButton());
-        removeButton.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.removeButton());
+        saveButtonSpanText.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.saveButton());
+        removeButtonSpanText.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.removeButton());
         enableCreateCollectionContainer(true);
         if (RULE.equals(scenarioType)) {
             initAndRegisterHandlerForExpressionTextArea();
