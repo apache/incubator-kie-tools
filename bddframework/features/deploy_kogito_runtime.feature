@@ -47,14 +47,14 @@ Feature: Deploy Kogito Runtime
     And Start "orders" process on service "<example-service>" within 3 minutes with body:
       """json
       {
-        "approver" : "john", 
+        "approver" : "john",
         "order" : {
-          "orderNumber" : "12345", 
+          "orderNumber" : "12345",
           "shipped" : false
         }
       }
       """
-    
+
     Then Service "<example-service>" contains 1 instances of process with name "orders"
 
     When Scale Kogito Runtime "<example-service>" to 0 pods within 2 minutes
@@ -94,14 +94,14 @@ Feature: Deploy Kogito Runtime
     And Start "orders" process on service "<example-service>" within 3 minutes with body:
       """json
       {
-        "approver" : "john", 
+        "approver" : "john",
         "order" : {
-          "orderNumber" : "12345", 
+          "orderNumber" : "12345",
           "shipped" : false
         }
       }
       """
-    
+
     Then GraphQL request on Data Index service returns ProcessInstances processName "orders" within 2 minutes
 
     @springboot
@@ -119,3 +119,39 @@ Feature: Deploy Kogito Runtime
     Examples:
       | runtime    | example-service         | profile                   |
       | quarkus    | process-quarkus-example | native,persistence,events |
+
+#####
+
+  Scenario Outline: Deploy process-optaplanner-quarkus service without persistence
+    Given Kogito Operator is deployed
+    And Clone Kogito examples into local directory
+    And Local example service "<example-service>" is built by Maven using profile "<profile>"
+    And Local example service "<example-service>" is deployed to image registry, image tag stored as variable "built-image"
+
+    When Deploy <runtime> example service using image in variable "built-image" with configuration:
+      | config | persistence | disabled |
+
+    Then Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
+    And HTTP POST request on service "<example-service>" is successful within 2 minutes with path "rest/flights" and body:
+      """json
+      {
+        "params" : {
+          "origin" : "A",
+          "destination" : "B",
+          "departureDateTime" : "2020-05-30T17:30:43.873968",
+          "seatRowSize" : 6,
+          "seatColumnSize" : 10
+        }
+      }
+      """
+
+    @quarkus
+    Examples:
+      | runtime    | example-service             | profile |
+      | quarkus    | process-optaplanner-quarkus | default |
+
+    @quarkus
+    @native
+    Examples:
+      | runtime    | example-service             | profile |
+      | quarkus    | process-optaplanner-quarkus | native  |
