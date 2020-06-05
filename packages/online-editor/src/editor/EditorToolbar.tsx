@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useCallback, useContext, useMemo, useState } from "react";
-import { GlobalContext } from "../common/GlobalContext";
 import {
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownPosition,
   TextInput,
   Title,
   Toolbar,
@@ -29,9 +29,10 @@ import {
   DropdownToggle
 } from "@patternfly/react-core";
 import { CloseIcon, ExpandIcon, CaretDownIcon, EllipsisVIcon } from "@patternfly/react-icons";
-
+import * as React from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
+import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
-import { Dropdown, DropdownItem, DropdownPosition } from "@patternfly/react-core";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
