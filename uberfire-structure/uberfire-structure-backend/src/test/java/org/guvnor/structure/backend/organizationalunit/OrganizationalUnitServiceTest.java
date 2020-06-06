@@ -93,6 +93,7 @@ import static org.mockito.Mockito.when;
 public class OrganizationalUnitServiceTest {
 
     private static final String SPACE_NAME = "space";
+    private static final String SPACE_DESCRIPTION = "This is test space";
     private static final String DEFAULT_GROUP_ID = "default.group.id";
 
     private static final String REPO_A = "repoA";
@@ -164,6 +165,7 @@ public class OrganizationalUnitServiceTest {
     public void setUp() throws Exception {
 
         spaceInfo = new SpaceInfo(SPACE_NAME,
+                                  SPACE_DESCRIPTION,
                                   DEFAULT_GROUP_ID,
                                   new ArrayList<>(),
                                   new ArrayList<>(),
@@ -265,11 +267,13 @@ public class OrganizationalUnitServiceTest {
         final OrganizationalUnit ou = organizationalUnitService.createOrganizationalUnit(SPACE_NAME,
                                                                                          DEFAULT_GROUP_ID,
                                                                                          new ArrayList<>(),
-                                                                                         contributors);
+                                                                                         contributors,
+                                                                                         SPACE_DESCRIPTION);
 
         assertNotNull(ou);
         verify(organizationalUnitFactory).newOrganizationalUnit(any());
         assertEquals(SPACE_NAME, ou.getName());
+        assertEquals(SPACE_DESCRIPTION, ou.getDescription());
         assertEquals(DEFAULT_GROUP_ID, ou.getDefaultGroupId());
         assertEquals(contributors, ou.getContributors());
     }

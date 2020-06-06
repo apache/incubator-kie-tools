@@ -30,6 +30,8 @@ public class SpaceInfo {
 
     private String name;
 
+    private String description;
+
     private String defaultGroupId;
 
     private Collection<Contributor> contributors;
@@ -39,11 +41,13 @@ public class SpaceInfo {
     private List<String> securityGroups;
 
     public SpaceInfo(@MapsTo("name") final String name,
+                     @MapsTo("description") final String description,
                      @MapsTo("defaultGroupId") final String defaultGroupId,
                      @MapsTo("contributors") final Collection<Contributor> contributors,
                      @MapsTo("repositories") final List<RepositoryInfo> repositories,
                      @MapsTo("securityGroups") final List<String> securityGroups) {
         this.name = name;
+        this.description = description;
         this.defaultGroupId = defaultGroupId;
         this.contributors = contributors;
         this.repositories = repositories;
@@ -56,6 +60,14 @@ public class SpaceInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getDefaultGroupId() {

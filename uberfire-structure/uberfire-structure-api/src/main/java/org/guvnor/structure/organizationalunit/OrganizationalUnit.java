@@ -31,6 +31,8 @@ public interface OrganizationalUnit extends RuntimeContentResource,
 
     String getName();
 
+    String getDescription();
+
     Space getSpace();
 
     String getOwner();
@@ -44,4 +46,6 @@ public interface OrganizationalUnit extends RuntimeContentResource,
     Collection<Contributor> getContributors();
 
     boolean isDeleted();
+
+    void setDescription(String description);
 }

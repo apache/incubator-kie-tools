@@ -79,6 +79,7 @@ public class OrganizationalUnitFactoryImplTest {
         final List<Contributor> contributors = Arrays.asList(new Contributor("c1", ContributorType.OWNER),
                                                              new Contributor("c2", ContributorType.ADMIN));
         final SpaceInfo spaceInfo = new SpaceInfo("ou",
+                                                  "test space",
                                                   "groupId",
                                                   contributors,
                                                   Collections.singletonList(new RepositoryInfo("repo1",false,new RepositoryConfiguration())),
@@ -88,6 +89,7 @@ public class OrganizationalUnitFactoryImplTest {
 
         assertEquals("ou", organizationalUnit.getName());
         assertEquals("groupId", organizationalUnit.getDefaultGroupId());
+        assertEquals("test space", organizationalUnit.getDescription());
 
         assertEquals(1, organizationalUnit.getRepositories().size());
         assertEquals("repo1", ((List<Repository>) organizationalUnit.getRepositories()).get(0).getAlias());

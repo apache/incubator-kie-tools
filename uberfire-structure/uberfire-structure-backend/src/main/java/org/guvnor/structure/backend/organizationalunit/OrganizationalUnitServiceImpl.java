@@ -59,7 +59,6 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.ext.security.management.api.event.UserDeletedEvent;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.spaces.Space;
@@ -297,6 +296,19 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
                                                        final String defaultGroupId,
                                                        final Collection<Repository> repositories,
                                                        final Collection<Contributor> contributors) {
+        return createOrganizationalUnit(name,
+                                        defaultGroupId,
+                                        repositories,
+                                        contributors,
+                                        null);
+    }
+
+    @Override
+    public OrganizationalUnit createOrganizationalUnit(final String name,
+                                                       final String defaultGroupId,
+                                                       final Collection<Repository> repositories,
+                                                       final Collection<Contributor> contributors,
+                                                       final String description) {
         if (spaceDirectoryExists(name)) {
             return null;
         }
@@ -306,6 +318,7 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
         try {
             String _defaultGroupId = defaultGroupId == null || defaultGroupId.trim().isEmpty() ? getSanitizedDefaultGroupId(name) : defaultGroupId;
             final SpaceInfo spaceInfo = new SpaceInfo(name,
+                                                      description,
                                                       _defaultGroupId,
                                                       contributors,
                                                       getRepositoryAliases(repositories),
@@ -342,7 +355,17 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
     public OrganizationalUnit updateOrganizationalUnit(String name,
                                                        String defaultGroupId,
                                                        Collection<Contributor> contributors) {
+        return updateOrganizationalUnit(name,
+                                        defaultGroupId,
+                                        contributors,
+                                        null);
+    }
 
+    @Override
+    public OrganizationalUnit updateOrganizationalUnit(String name,
+                                                       String defaultGroupId,
+                                                       Collection<Contributor> contributors,
+                                                       String description) {
         return spaceConfigStorageRegistry.getBatch(name)
                 .run(context -> {
                     OrganizationalUnit updatedOrganizationalUnit = null;
@@ -356,6 +379,10 @@ public class OrganizationalUnitServiceImpl implements OrganizationalUnitService 
 
                         if (contributors != null) {
                             spaceInfo.setContributors(contributors);
+                        }
+
+                        if (description != null) {
+                            spaceInfo.setDescription(description);
                         }
 
                         context.saveSpaceInfo();

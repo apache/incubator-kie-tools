@@ -35,6 +35,7 @@ import org.guvnor.rest.backend.cmd.InstallProjectCmd;
 import org.guvnor.rest.backend.cmd.RemoveSpaceCmd;
 import org.guvnor.rest.backend.cmd.RemoveBranchCmd;
 import org.guvnor.rest.backend.cmd.TestProjectCmd;
+import org.guvnor.rest.backend.cmd.UpdateSpaceCmd;
 import org.guvnor.rest.client.AddBranchJobRequest;
 import org.guvnor.rest.client.AddProjectToSpaceRequest;
 import org.guvnor.rest.client.CloneProjectJobRequest;
@@ -198,6 +199,17 @@ public class JobRequestScheduler {
 
         scheduleJob(jobRequest,
                     new CreateSpaceCmd(jobRequestHelper,
+                                       jobResultManager,
+                                       params));
+    }
+
+    public void updateSpaceRequest(final SpaceRequest jobRequest) {
+        final Map<String, Object> params = getContext(jobRequest);
+        params.put("Operation",
+                   "updateOrgUnit");
+
+        scheduleJob(jobRequest,
+                    new UpdateSpaceCmd(jobRequestHelper,
                                        jobResultManager,
                                        params));
     }

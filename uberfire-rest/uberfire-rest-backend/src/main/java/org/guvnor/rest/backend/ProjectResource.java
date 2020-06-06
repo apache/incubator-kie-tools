@@ -29,6 +29,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -42,13 +43,14 @@ import javax.ws.rs.core.Variant;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.guvnor.rest.client.AddBranchJobRequest;
+import org.guvnor.rest.client.AddBranchRequest;
+import org.guvnor.rest.client.BranchResponse;
 import org.guvnor.rest.client.CloneProjectJobRequest;
 import org.guvnor.rest.client.CloneProjectRequest;
 import org.guvnor.rest.client.CompileProjectRequest;
 import org.guvnor.rest.client.CreateProjectJobRequest;
 import org.guvnor.rest.client.CreateProjectRequest;
-import org.guvnor.rest.client.AddBranchRequest;
-import org.guvnor.rest.client.AddBranchJobRequest;
 import org.guvnor.rest.client.DeleteProjectRequest;
 import org.guvnor.rest.client.DeployProjectRequest;
 import org.guvnor.rest.client.InstallProjectRequest;
@@ -56,8 +58,6 @@ import org.guvnor.rest.client.JobRequest;
 import org.guvnor.rest.client.JobResult;
 import org.guvnor.rest.client.JobStatus;
 import org.guvnor.rest.client.ProjectResponse;
-import org.guvnor.rest.client.BranchResponse;
-import org.guvnor.rest.client.RemoveBranchRequest;
 import org.guvnor.rest.client.RemoveBranchJobRequest;
 import org.guvnor.rest.client.RemoveSpaceRequest;
 import org.guvnor.rest.client.Space;
@@ -65,21 +65,20 @@ import org.guvnor.rest.client.SpaceRequest;
 import org.guvnor.rest.client.TestProjectRequest;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
-import org.guvnor.structure.repositories.PublicURI;
 import org.guvnor.structure.repositories.Branch;
+import org.guvnor.structure.repositories.PublicURI;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.rpc.SessionInfo;
 import org.uberfire.io.IOService;
+import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.SpacesAPI;
-import org.jboss.errai.security.shared.api.identity.User;
 
 import static org.guvnor.rest.backend.PermissionConstants.REST_PROJECT_ROLE;
 import static org.guvnor.rest.backend.PermissionConstants.REST_ROLE;
 
 /**
- * REST services
+ * REST services for project management related operations
  */
 @Path("/")
 @Named
@@ -324,11 +323,11 @@ public class ProjectResource {
                            projectName);
 
         return workspaceProject
-            .getRepository()
-            .getBranches()
-            .stream()
-            .map(this::getBranchResponse)
-            .collect(Collectors.toList());
+                .getRepository()
+                .getBranches()
+                .stream()
+                .map(this::getBranchResponse)
+                .collect(Collectors.toList());
     }
 
     @POST
@@ -453,8 +452,8 @@ public class ProjectResource {
             @PathParam("projectName") String projectName) {
 
         return compileProject(spaceName,
-                      projectName,
-                      null);
+                              projectName,
+                              null);
     }
 
     @POST
@@ -497,7 +496,8 @@ public class ProjectResource {
                               projectName,
                               null);
     }
-   @POST
+
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/spaces/{spaceName}/projects/{projectName}/branches/{branchName}/maven/install")
     @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
@@ -627,6 +627,7 @@ public class ProjectResource {
     private Space getSpace(OrganizationalUnit ou) {
         final Space space = new Space();
         space.setName(ou.getName());
+        space.setDescription(ou.getDescription());
         space.setOwner(ou.getOwner());
         space.setDefaultGroupId(ou.getDefaultGroupId());
 
@@ -671,11 +672,37 @@ public class ProjectResource {
         jobRequest.setStatus(JobStatus.ACCEPTED);
         jobRequest.setJobId(id);
         jobRequest.setSpaceName(space.getName());
+        jobRequest.setDescription(space.getDescription());
         jobRequest.setOwner(space.getOwner());
         jobRequest.setDefaultGroupId(space.getDefaultGroupId());
         addAcceptedJobResult(id);
 
         jobRequestObserver.createSpaceRequest(jobRequest);
+
+        return createAcceptedStatusResponse(jobRequest);
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/spaces")
+    @RolesAllowed({REST_ROLE, REST_PROJECT_ROLE})
+    public Response updateSpace(Space space) {
+        logger.debug("-----updateSpace--- , Space name: {}, Default group id : {}",
+                     space.getName(),
+                     space.getDefaultGroupId());
+
+        final String id = newId();
+        final SpaceRequest jobRequest = new SpaceRequest();
+        jobRequest.setStatus(JobStatus.ACCEPTED);
+        jobRequest.setJobId(id);
+        jobRequest.setSpaceName(space.getName());
+        jobRequest.setDescription(space.getDescription());
+        jobRequest.setOwner(space.getOwner());
+        jobRequest.setDefaultGroupId(space.getDefaultGroupId());
+        addAcceptedJobResult(id);
+
+        jobRequestObserver.updateSpaceRequest(jobRequest);
 
         return createAcceptedStatusResponse(jobRequest);
     }

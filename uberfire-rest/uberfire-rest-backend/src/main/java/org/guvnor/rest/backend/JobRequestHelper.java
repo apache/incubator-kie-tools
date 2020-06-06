@@ -17,6 +17,7 @@ package org.guvnor.rest.backend;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +56,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
-import org.uberfire.rpc.SessionInfo;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.spaces.Space;
 import org.uberfire.spaces.SpacesAPI;
@@ -233,9 +233,9 @@ public class JobRequestHelper {
                                     final String branchName) {
 
         final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
-            spacesAPI.getSpace(spaceName),
-            projectName,
-            branchName);
+                spacesAPI.getSpace(spaceName),
+                projectName,
+                branchName);
 
         if (workspaceProject == null) {
             return projectDoesNotExistError(jobId, projectName);
@@ -291,9 +291,9 @@ public class JobRequestHelper {
         }
 
         final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
-            spacesAPI.getSpace(spaceName),
-            projectName,
-            branchName);
+                spacesAPI.getSpace(spaceName),
+                projectName,
+                branchName);
 
         if (workspaceProject == null) {
             return projectDoesNotExistError(jobId, projectName);
@@ -312,7 +312,6 @@ public class JobRequestHelper {
             BuildResults buildResults = buildService.buildAndDeploy(module);
             result.setDetailedResult(buildResults == null ? null : deployResultToDetailedStringMessages(buildResults));
             result.setStatus(buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
-
         } catch (Throwable t) {
             Optional<GAVAlreadyExistsException> gaeOpt = findCause(t, GAVAlreadyExistsException.class);
 
@@ -320,14 +319,13 @@ public class JobRequestHelper {
                 GAVAlreadyExistsException gae = gaeOpt.get();
                 result.setStatus(JobStatus.DUPLICATE_RESOURCE);
                 result.setResult("Project's GAV [" + gae.getGAV() + "] already exists at [" + toString(gae.getRepositories()) + "]");
-
             } else {
                 List<String> errorResult = new ArrayList<>();
                 errorResult.add(t.getMessage());
                 result.setDetailedResult(errorResult);
                 result.setStatus(JobStatus.FAIL);
             }
-       }
+        }
 
         return result;
     }
@@ -351,9 +349,9 @@ public class JobRequestHelper {
         result.setJobId(jobId);
 
         final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
-            spacesAPI.getSpace(spaceName),
-            projectName,
-            branchName);
+                spacesAPI.getSpace(spaceName),
+                projectName,
+                branchName);
 
         if (workspaceProject == null) {
             return projectDoesNotExistError(jobId, projectName);
@@ -407,9 +405,9 @@ public class JobRequestHelper {
         result.setJobId(jobId);
 
         final WorkspaceProject workspaceProject = workspaceProjectService.resolveProject(
-            spacesAPI.getSpace(spaceName),
-            projectName,
-            branchName);
+                spacesAPI.getSpace(spaceName),
+                projectName,
+                branchName);
 
         if (workspaceProject == null) {
             return projectDoesNotExistError(jobId, projectName);
@@ -428,7 +426,6 @@ public class JobRequestHelper {
             BuildResults buildResults = buildService.buildAndDeploy(module);
             result.setDetailedResult(buildResults == null ? null : deployResultToDetailedStringMessages(buildResults));
             result.setStatus(buildResults != null && buildResults.getErrorMessages().isEmpty() ? JobStatus.SUCCESS : JobStatus.FAIL);
-
         } catch (RuntimeException ex) {
             GAVAlreadyExistsException gae = findCause(ex, GAVAlreadyExistsException.class).orElseThrow(() -> ex);
             result.setStatus(JobStatus.DUPLICATE_RESOURCE);
@@ -466,6 +463,7 @@ public class JobRequestHelper {
 
     public JobResult createSpace(final String jobId,
                                  final String spaceName,
+                                 final String spaceDescription,
                                  final String spaceOwner,
                                  final String defaultGroupId) {
         JobResult result = new JobResult();
@@ -502,10 +500,65 @@ public class JobRequestHelper {
         organizationalUnit = organizationalUnitService.createOrganizationalUnit(spaceName,
                                                                                 _defaultGroupId,
                                                                                 Collections.emptyList(),
-                                                                                Collections.singletonList(new Contributor(spaceOwner, ContributorType.OWNER)));
+                                                                                Collections.singletonList(new Contributor(spaceOwner, ContributorType.OWNER)),
+                                                                                spaceDescription);
 
         if (organizationalUnit != null) {
             result.setResult("Space " + organizationalUnit.getName() + " is created successfully.");
+            result.setStatus(JobStatus.SUCCESS);
+        } else {
+            result.setStatus(JobStatus.FAIL);
+        }
+        return result;
+    }
+
+    public JobResult updateSpace(final String jobId,
+                                 final String spaceName,
+                                 final String spaceDescription,
+                                 final String spaceOwner,
+                                 final String defaultGroupId) {
+        JobResult result = new JobResult();
+        result.setJobId(jobId);
+
+        if (spaceName == null) {
+            result.setStatus(JobStatus.BAD_REQUEST);
+            result.setResult("Space name must be provided");
+            return result;
+        }
+
+        OrganizationalUnit organizationalUnit = organizationalUnitService.getOrganizationalUnit(spaceName);
+        if (organizationalUnit == null) {
+            result.setStatus(JobStatus.BAD_REQUEST);
+            result.setResult("Space with name " + spaceName + " doesn't exists");
+            return result;
+        }
+
+        String groupId = null;
+        if (defaultGroupId == null || defaultGroupId.trim().isEmpty()) {
+            groupId = organizationalUnit.getDefaultGroupId();
+        } else {
+            if (!organizationalUnitService.isValidGroupId(defaultGroupId)) {
+                result.setStatus(JobStatus.BAD_REQUEST);
+                result.setResult("Invalid default group id, only alphanumerical characters are admitted, " +
+                                         "as well as '\"_\"', '\"-\"' or '\".\"'.");
+                return result;
+            } else {
+                groupId = defaultGroupId;
+            }
+        }
+
+        Collection<Contributor> contributors;
+
+        if (spaceOwner == null) {
+            contributors = organizationalUnit.getContributors();
+        } else {
+            contributors = Collections.singletonList(new Contributor(spaceOwner, ContributorType.OWNER));
+        }
+
+        organizationalUnit = organizationalUnitService.updateOrganizationalUnit(spaceName, groupId, contributors, spaceDescription);
+
+        if (organizationalUnit != null) {
+            result.setResult("Space " + organizationalUnit.getName() + " is updated successfully.");
             result.setStatus(JobStatus.SUCCESS);
         } else {
             result.setStatus(JobStatus.FAIL);
@@ -539,11 +592,9 @@ public class JobRequestHelper {
                                               project,
                                               userIdentifier);
             result.setStatus(JobStatus.SUCCESS);
-
         } catch (FileAlreadyExistsException e) {
             result.setStatus(JobStatus.DUPLICATE_RESOURCE);
             result.setResult("Branch [" + newBranchName + "] already exists.");
-
         } catch (Exception e) {
             result.setStatus(JobStatus.FAIL);
             result.setResult(e.getMessage());
@@ -576,7 +627,6 @@ public class JobRequestHelper {
                                                  project,
                                                  userIdentifier);
             result.setStatus(JobStatus.SUCCESS);
-
         } catch (Exception e) {
             result.setStatus(JobStatus.FAIL);
             result.setResult(e.getMessage());

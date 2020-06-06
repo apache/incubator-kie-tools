@@ -67,12 +67,24 @@ public interface OrganizationalUnitService {
                                                 final Collection<Repository> repositories,
                                                 final Collection<Contributor> contributors);
 
+    OrganizationalUnit createOrganizationalUnit(final String name,
+                                                final String defaultGroupId,
+                                                final Collection<Repository> repositories,
+                                                final Collection<Contributor> contributors,
+                                                final String description);
+
     OrganizationalUnit updateOrganizationalUnit(final String name,
                                                 final String defaultGroupId);
+
 
     OrganizationalUnit updateOrganizationalUnit(final String name,
                                                 final String defaultGroupId,
                                                 final Collection<Contributor> contributors);
+
+    OrganizationalUnit updateOrganizationalUnit(final String name,
+                                                final String defaultGroupId,
+                                                final Collection<Contributor> contributors,
+                                                final String description );
 
     void addRepository(final OrganizationalUnit organizationalUnit,
                        final Repository repository);

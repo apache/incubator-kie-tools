@@ -31,6 +31,7 @@ import org.uberfire.spaces.Space;
 public class OrganizationalUnitImpl implements OrganizationalUnit {
 
     private String name;
+    private String description;
     private String defaultGroupId;
     private boolean deleted;
 
@@ -58,6 +59,11 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
     }
 
     @Override
@@ -147,9 +153,13 @@ public class OrganizationalUnitImpl implements OrganizationalUnit {
     public Collection<Contributor> getContributors() {
         return contributors;
     }
-
     @Override
     public boolean isDeleted() {
         return deleted;
+    }
+
+    @Override
+    public void setDescription(String description) {
+       this.description = description;
     }
 }

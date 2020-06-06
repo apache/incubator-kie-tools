@@ -304,6 +304,15 @@ public class ProjectResourceJobTest {
     }
 
     @Test
+    public void updateSpace() throws Exception {
+
+        projectResource.updateSpace(new Space());
+
+        verify(jobManager).putJob(jobResultArgumentCaptor.capture());
+        assertEquals(JobStatus.ACCEPTED, jobResultArgumentCaptor.getValue().getStatus());
+    }
+
+    @Test
     public void deleteSpace() throws Exception {
 
         projectResource.deleteSpace("spaceName");

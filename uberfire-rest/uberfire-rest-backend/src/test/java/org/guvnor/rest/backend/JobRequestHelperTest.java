@@ -1,18 +1,18 @@
 /*
-* Copyright 2017 Red Hat, Inc. and/or its affiliates.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.guvnor.rest.backend;
 
 import java.util.ArrayList;
@@ -22,14 +22,14 @@ import java.util.Optional;
 
 import javax.enterprise.event.Event;
 
+import org.guvnor.common.services.project.builder.model.BuildMessage;
+import org.guvnor.common.services.project.builder.model.BuildResults;
+import org.guvnor.common.services.project.builder.service.BuildService;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
-import org.guvnor.common.services.project.builder.service.BuildService;
-import org.guvnor.common.services.project.builder.model.BuildResults;
-import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.common.services.shared.test.TestRunnerService;
@@ -57,12 +57,13 @@ import org.uberfire.spaces.SpacesAPI;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doThrow;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JobRequestHelperTest {
@@ -220,7 +221,6 @@ public class JobRequestHelperTest {
                      jobResult.getStatus());
     }
 
-
     @Test
     public void testInstallProject() {
         whenProjectExists();
@@ -267,9 +267,9 @@ public class JobRequestHelperTest {
         when(buildService.buildAndDeploy(any())).thenReturn(buildResults);
 
         JobResult jobResult = helper.deployProject(null,
-                                                    space.getName(),
-                                                    "project",
-                                                    null);
+                                                   space.getName(),
+                                                   "project",
+                                                   null);
 
         assertEquals(JobStatus.SUCCESS,
                      jobResult.getStatus());
@@ -285,9 +285,9 @@ public class JobRequestHelperTest {
         when(buildService.buildAndDeploy(any())).thenReturn(buildResults);
 
         JobResult jobResult = helper.deployProject(null,
-                                                    space.getName(),
-                                                    "project",
-                                                    null);
+                                                   space.getName(),
+                                                   "project",
+                                                   null);
 
         assertEquals(JobStatus.FAIL,
                      jobResult.getStatus());
@@ -337,14 +337,52 @@ public class JobRequestHelperTest {
     }
 
     @Test
+    public void testCreateSpace() {
+        when(organizationalUnitService.isValidGroupId("org.space.newspace")).thenReturn(true);
+        when(organizationalUnitService.createOrganizationalUnit(any(), any(), any(), any(), any())).thenReturn(mock(OrganizationalUnit.class));
+        JobResult jobResult = helper.createSpace(null,
+                                                 space.getName(),
+                                                 "this is a new space",
+                                                 "admin",
+                                                 "org.space.newspace");
+
+        assertEquals(JobStatus.SUCCESS,
+                     jobResult.getStatus());
+    }
+
+    @Test
+    public void testUpdateSpace() {
+        when(organizationalUnitService.isValidGroupId("org.space.newspace")).thenReturn(true);
+        when(organizationalUnitService.getOrganizationalUnit(space.getName())).thenReturn(mock(OrganizationalUnit.class));
+        when(organizationalUnitService.updateOrganizationalUnit(anyString(), anyString(), any(), anyString())).thenReturn(mock(OrganizationalUnit.class));
+        JobResult jobResult = helper.updateSpace(null,
+                                                 space.getName(),
+                                                 "this is a new space",
+                                                 "admin",
+                                                 "org.space.newspace");
+
+        assertEquals(JobStatus.SUCCESS,
+                     jobResult.getStatus());
+    }
+
+    @Test
+    public void testRemoveSpace() {
+        JobResult jobResult = helper.removeSpace(null,
+                                                 space.getName());
+
+        assertEquals(JobStatus.SUCCESS,
+                     jobResult.getStatus());
+    }
+
+    @Test
     public void testRemoveBranchProjectDoesNotExists() {
         when(workspaceProjectService.resolveProject(eq(space), eq("project"))).thenReturn(null);
 
         JobResult jobResult = helper.removeBranch(null,
-                                               space.getName(),
-                                               "project",
-                                               "new-branch",
-                                               "user");
+                                                  space.getName(),
+                                                  "project",
+                                                  "new-branch",
+                                                  "user");
 
         assertEquals(JobStatus.RESOURCE_NOT_EXIST,
                      jobResult.getStatus());
@@ -355,10 +393,10 @@ public class JobRequestHelperTest {
         doThrow(Exception.class).when(workspaceProjectService).removeBranch(any(), any(), any());
 
         JobResult jobResult = helper.removeBranch(null,
-                                               space.getName(),
-                                               "project",
-                                               "new-branch",
-                                               "user");
+                                                  space.getName(),
+                                                  "project",
+                                                  "new-branch",
+                                                  "user");
 
         assertEquals(JobStatus.FAIL,
                      jobResult.getStatus());
@@ -367,10 +405,10 @@ public class JobRequestHelperTest {
     @Test
     public void testRemoveBranch() {
         JobResult jobResult = helper.removeBranch(null,
-                                               space.getName(),
-                                               "project",
-                                               "new-branch",
-                                               "user");
+                                                  space.getName(),
+                                                  "project",
+                                                  "new-branch",
+                                                  "user");
 
         assertEquals(JobStatus.SUCCESS,
                      jobResult.getStatus());
