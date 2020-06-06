@@ -74,18 +74,7 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
         if (request.getPage() <= 0) {
             throw new RuntimeException("First page must be 1.");
         }
-        final List<Group> roles = new LinkedList<>();
-        consumeRealm(realmResource -> {
-            final RolesResource rolesResource = realmResource.roles();
-            final List<RoleRepresentation> roleRepresentations = rolesResource.list();
-            if (roleRepresentations != null && !roleRepresentations.isEmpty()) {
-                for (RoleRepresentation role : roleRepresentations) {
-                    final String name = role.getName();
-                    final Group group = createGroup(name);
-                    roles.add(group);
-                }
-            }
-        });
+        final List<Group> roles = getAll();
         return groupsSearchEngine.search(roles,
                                          request);
     }
@@ -108,6 +97,23 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
             }
         }
         throw new GroupNotFoundException(identifier);
+    }
+
+    @Override
+    public List<Group> getAll() throws SecurityManagementException {
+        final List<Group> roles = new LinkedList<>();
+        consumeRealm(realmResource -> {
+            final RolesResource rolesResource = realmResource.roles();
+            final List<RoleRepresentation> roleRepresentations = rolesResource.list();
+            if (roleRepresentations != null && !roleRepresentations.isEmpty()) {
+                for (RoleRepresentation role : roleRepresentations) {
+                    final String name = role.getName();
+                    final Group group = createGroup(name);
+                    roles.add(group);
+                }
+            }
+        });
+        return roles;
     }
 
     @Override

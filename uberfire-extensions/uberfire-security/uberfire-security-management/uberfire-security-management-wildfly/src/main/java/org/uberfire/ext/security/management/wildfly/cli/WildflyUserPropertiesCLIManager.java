@@ -18,6 +18,7 @@ package org.uberfire.ext.security.management.wildfly.cli;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.errai.security.shared.api.identity.User;
@@ -123,6 +124,11 @@ public class WildflyUserPropertiesCLIManager extends BaseWildflyCLIManager imple
     @Override
     public User get(String identifier) throws SecurityManagementException {
         return usersPropertiesManager.get(identifier);
+    }
+
+    @Override
+    public List<User> getAll() throws SecurityManagementException {
+        return usersPropertiesManager.getAll();
     }
 
     @Override

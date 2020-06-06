@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.service;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -70,6 +72,12 @@ public class RoleManagerServiceImpl implements RoleManagerService {
     public Role get(String identifier) throws SecurityManagementException {
         final RoleManager serviceImpl = getService();
         return serviceImpl.get(identifier);
+    }
+
+    @Override
+    public List<Role> getAll() throws SecurityManagementException {
+        final RoleManager serviceImpl = getService();
+        return serviceImpl.getAll();
     }
 
     @Override

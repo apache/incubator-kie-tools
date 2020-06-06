@@ -17,7 +17,10 @@
 package org.uberfire.ext.security.management.service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -83,6 +86,15 @@ public class GroupManagerServiceImpl implements GroupManagerService {
     public Group get(String identifier) throws SecurityManagementException {
         final GroupManager serviceImpl = getService();
         return serviceImpl.get(identifier);
+    }
+
+    @Override
+    public List<Group> getAll() throws SecurityManagementException {
+        final GroupManager serviceImpl = getService();
+        return serviceImpl.getAll()
+                .stream()
+                .filter(group -> !SecurityManagementUtils.getRegisteredRoleNames().contains(group.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override

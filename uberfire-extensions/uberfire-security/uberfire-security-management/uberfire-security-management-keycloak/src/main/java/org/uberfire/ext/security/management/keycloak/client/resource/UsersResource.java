@@ -28,12 +28,17 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
 /**
  * @since 0.9.0
  */
 public interface UsersResource {
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    List<UserRepresentation> list();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

@@ -201,6 +201,12 @@ public class TomcatUserManagerTest extends BaseTest {
     }
 
     @Test
+    public void testGetAllUsers() {
+        List<User> users = usersManager.getAll();
+        assertEquals(4, users.size());
+    }
+
+    @Test
     public void testCreateUser() {
         User user = mock(User.class);
         when(user.getIdentifier()).thenReturn("user4");

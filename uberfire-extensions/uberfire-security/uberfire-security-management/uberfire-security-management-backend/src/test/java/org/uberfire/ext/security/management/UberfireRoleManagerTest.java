@@ -119,6 +119,13 @@ public class UberfireRoleManagerTest {
                      3);
     }
 
+    @Test
+    public void testGetAllRoles() {
+        List<Role> results = tested.getAll();
+        assertEquals(results.size(),
+                     3);
+    }
+
     public void testGet() {
         Role role = tested.get("regRole1");
         assertEquals(role,

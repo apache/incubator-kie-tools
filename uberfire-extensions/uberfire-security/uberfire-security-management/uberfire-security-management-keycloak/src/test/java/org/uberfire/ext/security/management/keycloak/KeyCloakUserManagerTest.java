@@ -27,6 +27,7 @@ import java.util.function.Consumer;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -133,6 +134,11 @@ public class KeyCloakUserManagerTest extends DefaultKeyCloakTest {
         String username = USERNAME + 50;
         User user = usersManager.get(username);
         assertNull(user);
+    }
+    @Test
+    public void testGetAllUsers(){
+        List<User> users = usersManager.getAll();
+        Assert.assertEquals(usersCount,users.size());
     }
 
     @Test(expected = RuntimeException.class)

@@ -135,6 +135,13 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
     }
 
     @Test
+    public void testGetAllGroups() {
+        List<Group> groups = groupsPropertiesManager.getAll();
+        assertEquals(groups.size(),
+                     4);
+    }
+
+    @Test
     public void testGroupsForUser() {
         Set<Group> groups = groupsPropertiesManager.getGroupsAndRolesForUser(ADMIN)[0];
         assertGroupsForUser(groups,

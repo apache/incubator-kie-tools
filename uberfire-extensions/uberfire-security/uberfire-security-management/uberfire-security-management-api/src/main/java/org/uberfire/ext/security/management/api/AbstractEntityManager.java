@@ -44,6 +44,13 @@ public interface AbstractEntityManager<T, S extends Settings> {
     T get(final String identifier) throws SecurityManagementException;
 
     /**
+     * <p>The entities list of given type.</p>
+     * @return List of all the entities present for given type.
+     * @throws SecurityManagementException
+     */
+    List<T> getAll() throws SecurityManagementException;
+
+    /**
      * Creates a given entity in the backend security environment.
      * @param entity The entity to create.
      * @return The entity.

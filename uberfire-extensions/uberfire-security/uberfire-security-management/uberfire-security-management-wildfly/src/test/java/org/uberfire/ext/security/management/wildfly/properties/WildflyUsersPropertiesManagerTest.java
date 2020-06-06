@@ -197,6 +197,13 @@ public class WildflyUsersPropertiesManagerTest extends BaseTest {
     }
 
     @Test
+    public void testGetAllUsers() {
+        List<User> users = usersPropertiesManager.getAll();
+        assertEquals(users.size(),
+                     5);
+    }
+
+    @Test
     public void testCreateUser() {
         User user = mock(User.class);
         when(user.getIdentifier()).thenReturn("user4");

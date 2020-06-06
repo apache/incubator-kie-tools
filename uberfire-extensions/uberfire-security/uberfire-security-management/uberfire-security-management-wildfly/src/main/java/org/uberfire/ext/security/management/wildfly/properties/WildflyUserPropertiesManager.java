@@ -1,12 +1,12 @@
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,10 +23,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jboss.as.domain.management.security.PropertiesFileLoader;
 import org.jboss.as.domain.management.security.UserPropertiesFileLoader;
@@ -118,20 +120,14 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
         validateUserIdentifier(identifier);
         List<String> userNames = getUserNames();
         if (userNames != null && userNames.contains(identifier)) {
-            Set<Group> userGroups = null;
-            Set<Role> userRoles = null;
-            if (getGroupsPropertiesManager() != null) {
-                final Set[] gr = getGroupsPropertiesManager().getGroupsAndRolesForUser(identifier);
-                if (null != gr) {
-                    userGroups = gr[0];
-                    userRoles = gr[1];
-                }
-            }
-            return SecurityManagementUtils.createUser(identifier,
-                                                      userGroups,
-                                                      userRoles);
+            return getUser(identifier);
         }
         throw new UserNotFoundException(identifier);
+    }
+
+    @Override
+    public List<User> getAll() throws SecurityManagementException {
+        return getUserNames().stream().map(this::getUser).collect(Collectors.toList());
     }
 
     public String getUsersFilePath() {
@@ -249,6 +245,19 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
                                            null);
     }
 
+    private User getUser(String userName) {
+        Set<Group> userGroups = null;
+        Set<Role> userRoles = null;
+        if (getGroupsPropertiesManager() != null) {
+            final Set[] gr = getGroupsPropertiesManager().getGroupsAndRolesForUser(userName);
+            if (null != gr) {
+                userGroups = gr[0];
+                userRoles = gr[1];
+            }
+        }
+        return SecurityManagementUtils.createUser(userName,
+                                                     userGroups, userRoles);
+    }
     protected CapabilityStatus getCapabilityStatus(Capability capability) {
         if (capability != null) {
             switch (capability) {
@@ -389,6 +398,7 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
      * WFLYDM0028: Username must be alphanumeric with the exception of
      * the following accepted symbols (",", "-", ".", "/", "=", "@", "\")
      * </code>
+     *
      * @param identifier The identifier to validate.
      */
     private void validateUserIdentifier(String identifier) {

@@ -24,8 +24,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.as.domain.management.security.PropertiesFileLoader;
@@ -52,6 +54,7 @@ import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
 /**
  * <p>Groups manager service provider implementation for JBoss Wildfly, when using default realm based on properties files.</p>
+ *
  * @since 0.8.0
  */
 public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager implements GroupManager,
@@ -134,6 +137,13 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
         throw new GroupNotFoundException(identifier);
     }
 
+    @Override
+    public List<Group> getAll() throws SecurityManagementException {
+        return getAllGroups().stream()
+                .map(this::createGroup)
+                .collect(Collectors.toList());
+    }
+
     public Set[] getGroupsAndRolesForUser(String username) {
         if (groupsPropertiesFileLoader != null && username != null) {
             try {
@@ -192,6 +202,7 @@ public class WildflyGroupPropertiesManager extends BaseWildflyPropertiesManager 
 
     /**
      * Wildfly / EAP realms based on properties do not allow groups with empty users. So the groups are created using the method #assignUsers.
+     *
      * @param entity The entity to create.
      * @return A runtime instance for a group.
      * @throws SecurityManagementException

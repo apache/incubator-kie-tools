@@ -138,6 +138,22 @@ public class KeyCloakUserManager extends BaseKeyCloakManager implements UserMana
     }
 
     @Override
+    public List<User> getAll() throws SecurityManagementException {
+        final List<User> users = new ArrayList<>();
+        consumeRealm(realmResource -> {
+            final UsersResource usersResource = realmResource.users();
+            final List<UserRepresentation> userRepresentations = usersResource.list();
+            if (userRepresentations != null && !userRepresentations.isEmpty()) {
+                for (UserRepresentation userRepresentation : userRepresentations) {
+                    final User user = createUser(userRepresentation);
+                    users.add(user);
+                }
+            }
+        });
+        return users;
+    }
+
+    @Override
     public User create(User entity) throws SecurityManagementException {
         checkNotNull("entity",
                      entity);

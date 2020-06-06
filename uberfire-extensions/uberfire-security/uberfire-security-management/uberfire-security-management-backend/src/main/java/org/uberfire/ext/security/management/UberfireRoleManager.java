@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.security.management;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
@@ -58,6 +61,11 @@ public class UberfireRoleManager implements RoleManager,
     @Override
     public Role get(String identifier) throws SecurityManagementException {
         return RoleRegistry.get().getRegisteredRole(identifier);
+    }
+
+    @Override
+    public List<Role> getAll() throws SecurityManagementException {
+        return new ArrayList<>(RoleRegistry.get().getRegisteredRoles());
     }
 
     @Override

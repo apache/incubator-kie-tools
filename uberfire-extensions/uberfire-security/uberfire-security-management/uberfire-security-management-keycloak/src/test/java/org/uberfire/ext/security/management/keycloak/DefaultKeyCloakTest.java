@@ -118,6 +118,12 @@ public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
                 return result;
             }
         });
+        when(usersResource.list()).thenAnswer(new Answer<List<UserRepresentation>>() {
+            @Override
+            public List<UserRepresentation> answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return userRepresentations;
+            }
+        });
         when(usersResource.search(anyString(),
                                   anyString(),
                                   anyString(),

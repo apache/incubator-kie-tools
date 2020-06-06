@@ -18,6 +18,7 @@ package org.uberfire.ext.security.management.wildfly.cli;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jboss.errai.security.shared.api.Group;
@@ -92,6 +93,11 @@ public class WildflyGroupPropertiesCLIManager extends BaseWildflyCLIManager impl
     @Override
     public Group get(String identifier) throws SecurityManagementException {
         return groupsPropertiesManager.get(identifier);
+    }
+
+    @Override
+    public List<Group> getAll() throws SecurityManagementException {
+        return groupsPropertiesManager.getAll();
     }
 
     @Override

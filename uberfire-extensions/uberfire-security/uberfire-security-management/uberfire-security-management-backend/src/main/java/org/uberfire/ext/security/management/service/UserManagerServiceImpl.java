@@ -17,6 +17,7 @@
 package org.uberfire.ext.security.management.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -104,6 +105,12 @@ public class UserManagerServiceImpl implements UserManagerService {
     public User get(String identifier) {
         final UserManager serviceImpl = getService();
         return serviceImpl.get(identifier);
+    }
+
+    @Override
+    public List<User> getAll() throws SecurityManagementException {
+        final UserManager serviceImpl = getService();
+        return serviceImpl.getAll();
     }
 
     @Override

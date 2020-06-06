@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.catalina.users.MemoryUserDatabase;
@@ -75,22 +76,8 @@ public class TomcatGroupManager extends BaseTomcatManager implements GroupManage
 
     @Override
     public SearchResponse<Group> search(SearchRequest request) throws SecurityManagementException {
-        MemoryUserDatabase userDatabase = getDatabase();
-        try {
-            Iterator<org.apache.catalina.Role> groups = userDatabase.getRoles();
-            Collection<String> groupIdentifiers = new ArrayList<String>();
-            if (groups != null) {
-                while (groups.hasNext()) {
-                    org.apache.catalina.Role group = groups.next();
-                    String groupname = group.getRolename();
-                    groupIdentifiers.add(groupname);
-                }
-            }
-            return groupsSearchEngine.searchByIdentifiers(groupIdentifiers,
-                                                          request);
-        } finally {
-            closeDatabase(userDatabase);
-        }
+        List<Group> groups  = getAll();
+        return groupsSearchEngine.search(groups, request);
     }
 
     @Override
@@ -100,6 +87,25 @@ public class TomcatGroupManager extends BaseTomcatManager implements GroupManage
             org.apache.catalina.Role group = getRole(userDatabase,
                                                      identifier);
             return createGroup(group);
+        } finally {
+            closeDatabase(userDatabase);
+        }
+    }
+
+    @Override
+    public List<Group> getAll() throws SecurityManagementException {
+        MemoryUserDatabase userDatabase = getDatabase();
+        try {
+            Iterator<org.apache.catalina.Role> groupIterator = userDatabase.getRoles();
+            List<Group> groups = new ArrayList<>();
+            if (groupIterator != null) {
+                while (groupIterator.hasNext()) {
+                    org.apache.catalina.Role group = groupIterator.next();
+                    Group groupname = SecurityManagementUtils.createGroup(group.getRolename());
+                    groups.add(groupname);
+                }
+            }
+            return groups;
         } finally {
             closeDatabase(userDatabase);
         }

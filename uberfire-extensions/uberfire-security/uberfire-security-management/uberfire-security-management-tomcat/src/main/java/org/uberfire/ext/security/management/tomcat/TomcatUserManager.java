@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,22 +82,8 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
 
     @Override
     public SearchResponse<User> search(SearchRequest request) throws SecurityManagementException {
-        MemoryUserDatabase userDatabase = getDatabase();
-        try {
-            Iterator<org.apache.catalina.User> users = userDatabase.getUsers();
-            Collection<String> userIdentifiers = new ArrayList<String>();
-            if (users != null) {
-                while (users.hasNext()) {
-                    org.apache.catalina.User user = users.next();
-                    String username = user.getUsername();
-                    userIdentifiers.add(username);
-                }
-            }
-            return usersSearchEngine.searchByIdentifiers(userIdentifiers,
-                                                         request);
-        } finally {
-            closeDatabase(userDatabase);
-        }
+        List<User> users = getAll();
+        return usersSearchEngine.search(users, request);
     }
 
     @Override
@@ -112,6 +99,25 @@ public class TomcatUserManager extends BaseTomcatManager implements UserManager,
             u.setProperty(ATTRIBUTE_USER_FULLNAME,
                           user.getFullName() != null ? user.getFullName() : "");
             return u;
+        } finally {
+            closeDatabase(userDatabase);
+        }
+    }
+
+    @Override
+    public List<User> getAll() throws SecurityManagementException {
+        MemoryUserDatabase userDatabase = getDatabase();
+        try {
+            Iterator<org.apache.catalina.User> userIterator = userDatabase.getUsers();
+            List<User> users = new ArrayList<>();
+            if (userIterator != null) {
+                while (userIterator.hasNext()) {
+                    org.apache.catalina.User user = userIterator.next();
+                    Iterator<Role> groups = user.getRoles();
+                    users.add(createUser(user, groups));
+                }
+            }
+            return users;
         } finally {
             closeDatabase(userDatabase);
         }

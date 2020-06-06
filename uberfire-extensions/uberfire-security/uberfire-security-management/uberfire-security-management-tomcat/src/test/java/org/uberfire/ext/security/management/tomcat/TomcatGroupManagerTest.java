@@ -158,6 +158,13 @@ public class TomcatGroupManagerTest extends BaseTest {
     }
 
     @Test
+    public void testGetAllGroups() {
+        List<Group> groups = groupsManager.getAll();
+        assertEquals(groups.size(),
+                     4);
+    }
+
+    @Test
     public void testCreateGroup() {
         Group group = mock(Group.class);
         when(group.getName()).thenReturn("role10");

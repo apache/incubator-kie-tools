@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -105,6 +107,12 @@ public class KeyCloakGroupManagerTest extends DefaultKeyCloakTest {
     public void testGetGroup200() {
         String name = ROLE + 200;
         Group group = groupsManager.get(name);
+    }
+
+    @Test
+    public void testGetAllGroups() {
+        List<Group> groups = groupsManager.getAll();
+        assertEquals(50, groups.size());
     }
 
     @Test(expected = RuntimeException.class)
