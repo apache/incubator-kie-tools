@@ -16,6 +16,7 @@
 
 export interface Space {
   name: string;
+  description: string;
   deleted: boolean;
   contributors: any[];
   repositories: any[];
@@ -41,6 +42,7 @@ export function fetchSpaces(): Promise<Space[]> {
 
 export function createSpace(newSpace: {
   name: string;
+  description: string;
   groupId: string;
 }): Promise<Response> {
   return fetch("rest/spacesScreen/spaces", {

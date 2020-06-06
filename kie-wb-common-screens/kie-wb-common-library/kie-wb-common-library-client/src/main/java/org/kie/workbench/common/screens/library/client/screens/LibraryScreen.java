@@ -27,6 +27,7 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.contributors.SpaceContributorsUpdatedEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -67,6 +68,7 @@ public class LibraryScreen {
     private SettingsScreenPresenter settingsScreenPresenter;
     private ContributorsListPresenter contributorsListPresenter;
     private Caller<LibraryService> libraryService;
+    private Caller<OrganizationalUnitService> organizationalUnitService;
     private LibraryPlaces libraryPlaces;
     private SpaceContributorsListServiceImpl spaceContributorsListService;
     private Event<NotificationEvent> notificationEvent;
@@ -85,6 +87,7 @@ public class LibraryScreen {
                          final SettingsScreenPresenter settingsScreenPresenter,
                          final ContributorsListPresenter contributorsListPresenter,
                          final Caller<LibraryService> libraryService,
+                         final Caller<OrganizationalUnitService> organizationalUnitService,
                          final LibraryPlaces libraryPlaces,
                          final SpaceContributorsListServiceImpl spaceContributorsListService,
                          final Event<NotificationEvent> notificationEvent,
@@ -101,6 +104,7 @@ public class LibraryScreen {
         this.settingsScreenPresenter = settingsScreenPresenter;
         this.contributorsListPresenter = contributorsListPresenter;
         this.libraryService = libraryService;
+        this.organizationalUnitService = organizationalUnitService;
         this.libraryPlaces = libraryPlaces;
         this.spaceContributorsListService = spaceContributorsListService;
         this.notificationEvent = notificationEvent;
@@ -116,6 +120,7 @@ public class LibraryScreen {
 
         view.init(this);
         view.setTitle(activeOU.getName());
+        view.setDescription(activeOU.getDescription());
         view.showSettingsTab(organizationalUnitController.canUpdateOrgUnit(activeOU));
 
         showProjects();
@@ -169,6 +174,17 @@ public class LibraryScreen {
         } else {
             showEmptyLibraryScreen();
         }
+    }
+
+    protected void changeDescription(String description) {
+        projectContext.getActiveOrganizationalUnit().ifPresent(p -> {
+            organizationalUnitService.call((RemoteCallback<OrganizationalUnit>) this::setDescriptionChanged).updateOrganizationalUnit(p.getName(), p.getDefaultGroupId(), null, description);
+        });
+    }
+
+    private void setDescriptionChanged(OrganizationalUnit organizationalUnit) {
+        view.setDescription(organizationalUnit.getDescription());
+        notificationEvent.fire(new NotificationEvent(translationService.format(LibraryConstants.SpaceDescriptionChanged, organizationalUnit.getName()), NotificationEvent.NotificationType.SUCCESS));
     }
 
     private void showEmptyLibraryScreen() {
@@ -275,6 +291,8 @@ public class LibraryScreen {
     public interface View extends UberElement<LibraryScreen> {
 
         void setTitle(String title);
+
+        void setDescription(String description);
 
         void setProjectsCount(int count);
 

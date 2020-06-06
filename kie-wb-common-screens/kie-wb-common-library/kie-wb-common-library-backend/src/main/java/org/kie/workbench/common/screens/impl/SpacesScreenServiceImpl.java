@@ -64,7 +64,7 @@ public class SpacesScreenServiceImpl implements SpacesScreenService {
 
     @Override
     public Response postSpace(final NewSpace newSpace) {
-        organizationalUnitService.createOrganizationalUnit(newSpace.name, newSpace.groupId, new ArrayList<>(), getContributors());
+        organizationalUnitService.createOrganizationalUnit(newSpace.name, newSpace.groupId, new ArrayList<>(), getContributors(), newSpace.description);
         return Response.status(201).build();
     }
 

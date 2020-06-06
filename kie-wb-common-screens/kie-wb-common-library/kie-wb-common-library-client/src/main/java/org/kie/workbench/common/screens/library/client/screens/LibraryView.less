@@ -114,17 +114,41 @@
     }
 
     // Title for toolbar inside content section
-    .toolbar-data-title-kie {
-        display:table-cell;
-        float:left;
-        font-size: 1.5em;
+    .toolbar-data-title-container-kie {
+        display: flex;
+        float: left;
+        align-items: inherit;
         margin-right: 1em;
-        text-overflow: ellipsis !important;
-        overflow: hidden;
         white-space: nowrap;
+        line-height: 1.5;
         max-width: 1030px;
     }
 
+    .toolbar-data-title-container-kie input[type="text"] {
+        display: inline-block;
+        width: 500px;
+        margin-right: 8px;
+    }
+
+   .toolbar-data-title-kie {
+       font-size: 1.5em;
+       margin: 0px 8px 0px 0px;
+   }
+   .toolbar-data-icon-kie {
+       color: #363636;
+       font-size: 12px;
+       cursor: pointer;
+   }
+
+   .toolbar-data-description-kie {
+       font-size: 13px;
+       text-overflow: ellipsis;
+       overflow: hidden;
+       max-width: 100%;
+       color: #363636;
+       margin: 0px 8px 0px 0px;
+       cursor: pointer;
+    }
     // Add space to left of kebab; have to override specificity
     .dropdown-kebab-pf {
         margin-left: 1em !important;
@@ -371,6 +395,7 @@
 
     .card-pf-body {
         display: flex;
+        min-height: 100px;
         justify-content: space-between;
         align-items: center;
     }
@@ -386,7 +411,7 @@
         overflow: hidden;
     }
 
-    .card-pf-view .card-pf-title + h5 {
+    .card-pf-view .card-pf-contributors {
         color: @color-pf-black-500;
         min-height: 16px;
     }
@@ -415,7 +440,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
-        width: 170px;
+        width: 100% !important;
     }
 
     .kie-page-header {

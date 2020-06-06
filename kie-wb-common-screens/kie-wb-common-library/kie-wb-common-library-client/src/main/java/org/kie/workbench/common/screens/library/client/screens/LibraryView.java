@@ -21,6 +21,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Input;
 import org.jboss.errai.common.client.dom.ListItem;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
@@ -40,7 +41,31 @@ public class LibraryView implements LibraryScreen.View,
 
     @Inject
     @DataField("title")
-    Div title;
+    Span title;
+
+    @Inject
+    @DataField("description-text")
+    Span descriptionText;
+
+    @Inject
+    @DataField("edit-icon")
+    Span editIcon;
+
+    @Inject
+    @DataField("change-description")
+    Anchor changeDescription;
+
+    @Inject
+    @DataField("cancel-description-editor")
+    Anchor cancelDescriptionEditor;
+
+    @Inject
+    @DataField("description-input")
+    Input descriptionInput;
+
+    @Inject
+    @DataField("description-editor")
+    Span descriptionEditor;
 
     @Inject
     @DataField("delete-project")
@@ -145,9 +170,40 @@ public class LibraryView implements LibraryScreen.View,
         presenter.showSettings();
     }
 
+    @EventHandler("edit-icon")
+    public void onEditClicked(final ClickEvent clickEvent) {
+        showDescriptionEditor();
+    }
+
+    @EventHandler("description-text")
+    public void onDescriptionClickedfinal(ClickEvent clickEvent) {
+        showDescriptionEditor();
+    }
+
+    @EventHandler("change-description")
+    public void onChangeDescription(final ClickEvent clickEvent) {
+        presenter.changeDescription(descriptionInput.getValue());
+    }
+
+    @EventHandler("cancel-description-editor")
+    public void onCancelDescriptionEditor(final ClickEvent clickEvent) {
+        showDescriptionText();
+    }
+
     @Override
     public void setTitle(final String title) {
         this.title.setTextContent(title);
+    }
+
+    @Override
+    public void setDescription(final String description) {
+        this.descriptionText.setTextContent("");
+        showDescriptionText();
+        if (description != null && !description.isEmpty()) {
+            descriptionText.setHidden(false);
+            this.descriptionText.setTextContent(description);
+            this.descriptionText.setTitle(description);
+        }
     }
 
     @Override
@@ -190,5 +246,18 @@ public class LibraryView implements LibraryScreen.View,
     public void showSettingsTab(final boolean isVisible) {
         settingsTab.setHidden(!isVisible);
         settingsTabContainer.setHidden(!isVisible);
+    }
+
+    private void showDescriptionText() {
+        descriptionEditor.setHidden(true);
+        descriptionText.setHidden(false);
+        editIcon.setHidden(false);
+    }
+
+    private void showDescriptionEditor() {
+        descriptionText.setHidden(true);
+        editIcon.setHidden(true);
+        descriptionEditor.setHidden(false);
+        descriptionInput.setValue(descriptionText.getTextContent());
     }
 }

@@ -26,6 +26,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.client.security.OrganizationalUnitController;
 import org.guvnor.structure.contributors.SpaceContributorsUpdatedEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.common.client.dom.HTMLElement;
@@ -51,6 +52,7 @@ import org.uberfire.promise.SyncPromises;
 import org.uberfire.spaces.Space;
 import org.uberfire.workbench.events.NotificationEvent;
 
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.doAnswer;
@@ -102,6 +104,9 @@ public class LibraryScreenTest {
 
     @Mock
     private LibraryService libraryService;
+
+    @Mock
+    private OrganizationalUnitService organizationalUnitService;
 
     @Mock
     private LibraryPlaces libraryPlaces;
@@ -167,6 +172,7 @@ public class LibraryScreenTest {
                                               settingsScreenPresenter,
                                               contributorsListPresenter,
                                               new CallerMock<>(libraryService),
+                                              new CallerMock<>(organizationalUnitService),
                                               libraryPlaces,
                                               spaceContributorsListService,
                                               notificationEvent,
@@ -422,6 +428,16 @@ public class LibraryScreenTest {
         this.libraryScreen.showProjects();
         verify(this.libraryService, times(0)).hasProjects(any());
         verify(this.libraryPlaces).goToOrganizationalUnits();
+    }
+
+    @Test
+    public void testUpdateSpaceDescription() {
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        when(organizationalUnit.getDescription()).thenReturn("newdescription");
+        doReturn(organizationalUnit).when(organizationalUnitService).updateOrganizationalUnit(anyString(), anyString(), any(), anyString());
+        libraryScreen.changeDescription("newdescription");
+
+        verify(this.view, times(1)).setDescription("newdescription");
     }
 }
 

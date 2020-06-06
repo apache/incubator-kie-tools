@@ -44,6 +44,7 @@ public interface SpacesScreenService {
         }
 
         public String name;
+        public String description;
         public String groupId;
     }
 }

@@ -780,6 +780,9 @@ public class LibraryConstants {
     public static final String SpacePermissionsChanged = "SpacePermissionsChanged";
 
     @TranslationKey(defaultValue = "")
+    public static final String SpaceDescriptionChanged = "SpaceDescriptionChanged";
+
+    @TranslationKey(defaultValue = "")
     public static final String SquashAndMerge = "SquashAndMerge";
 
     @TranslationKey(defaultValue = "")

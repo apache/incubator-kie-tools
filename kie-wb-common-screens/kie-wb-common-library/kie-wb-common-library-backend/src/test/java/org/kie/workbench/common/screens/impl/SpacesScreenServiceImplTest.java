@@ -75,13 +75,14 @@ public class SpacesScreenServiceImplTest {
         final SpacesScreenService.NewSpace space = new SpacesScreenService.NewSpace() {{
             name = "test";
             groupId = "com.test";
+            description="Test space";
         }};
 
         final List<Contributor> contributors = new ArrayList<>();
         contributors.add(new Contributor(sessionInfo.getIdentity().getIdentifier(), ContributorType.OWNER));
 
         assertEquals(201, spacesScreenService.postSpace(space).getStatus());
-        verify(organizationalUnitService).createOrganizationalUnit("test", "com.test", new ArrayList<>(), contributors);
+        verify(organizationalUnitService).createOrganizationalUnit("test", "com.test", new ArrayList<>(), contributors, "Test space");
     }
 
     @Test

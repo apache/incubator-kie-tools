@@ -190,7 +190,7 @@ export function EmptySpacesScreen(props: { onAddSpace: () => void; canCreateSpac
 export function Tile(props: { space: Service.Space; onSelect: () => void }) {
   return (
     <>
-      <div className={"col-xs-12 col-sm-6 col-md-4 col-lg-3"}>
+      <div title={props.space.description} className={"col-xs-12 col-sm-6 col-md-4 col-lg-3"}>
         <div
           className={
             "card-pf card-pf-view card-pf-view-select card-pf-view-single-select"
@@ -198,7 +198,7 @@ export function Tile(props: { space: Service.Space; onSelect: () => void }) {
           onClick={() => props.onSelect()}
         >
           <div className={"card-pf-body"}>
-            <div>
+            <div className={"card-pf-body-title"}>
               <div
                   className={"card-pf-title"}
                   style={{
@@ -219,6 +219,9 @@ export function Tile(props: { space: Service.Space; onSelect: () => void }) {
                 )}
               </div>
               <h5>
+                {props.space.description}
+              </h5>
+              <h5 className={"card-pf-contributors"}>
                 {AppFormer.translate("NumberOfContributors", [
                   props.space.contributors!.length.toString()
                 ])}

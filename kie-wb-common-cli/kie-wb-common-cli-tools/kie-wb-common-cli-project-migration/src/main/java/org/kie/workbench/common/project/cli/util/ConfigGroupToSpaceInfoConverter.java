@@ -72,11 +72,13 @@ public class ConfigGroupToSpaceInfoConverter {
         }
 
         final String defaultGroupId = extractDefaultGroupId(configGroup);
+        final String description = extractDescription(configGroup);
         final Collection<Contributor> contributors = extractContributors(configGroup);
         final List<RepositoryInfo> repositories = extractRepositories(spaceName);
         final List<String> securityGroups = extractSecurityGroups(configGroup);
 
         return new SpaceInfo(spaceName,
+                             description,
                              defaultGroupId,
                              contributors,
                              repositories,
@@ -85,6 +87,10 @@ public class ConfigGroupToSpaceInfoConverter {
 
     private String extractName(final ConfigGroup groupConfig) {
         return groupConfig.getName();
+    }
+
+    private String extractDescription(final ConfigGroup groupConfig) {
+        return groupConfig.getDescription();
     }
 
     private String extractDefaultGroupId(final ConfigGroup groupConfig) {

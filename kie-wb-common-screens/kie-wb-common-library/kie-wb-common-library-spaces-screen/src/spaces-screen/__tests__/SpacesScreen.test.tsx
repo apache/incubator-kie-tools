@@ -56,7 +56,7 @@ describe("snapshot", () => {
     spacesScreen.setState({
       newSpacePopupOpen: false,
       loading: false,
-      spaces: [{ name: "Foo", contributors: [], repositories: [] }]
+      spaces: [{ name: "Foo", description: "This is test space", contributors: [], repositories: [] }]
     });
     expect(spacesScreen).toMatchSnapshot();
   });
@@ -66,7 +66,7 @@ describe("snapshot", () => {
     spacesScreen.setState({
       newSpacePopupOpen: false,
       loading: false,
-      spaces: [{ name: "Foo", contributors: [], repositories: [] }]
+      spaces: [{ name: "Foo", description: "This is test space", contributors: [], repositories: [] }]
     });
     expect(spacesScreen).toMatchSnapshot();
   });
@@ -86,7 +86,7 @@ describe("snapshot", () => {
     spacesScreen.setState({
       newSpacePopupOpen: true,
       loading: false,
-      spaces: [{ name: "Foo", contributors: [], repositories: [] }]
+      spaces: [{ name: "Foo", description: "This is test space", contributors: [], repositories: [] }]
     });
     expect(spacesScreen).toMatchSnapshot();
   });

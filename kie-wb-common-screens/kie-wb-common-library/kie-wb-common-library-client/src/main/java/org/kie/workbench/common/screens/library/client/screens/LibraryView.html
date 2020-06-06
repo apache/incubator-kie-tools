@@ -18,7 +18,16 @@
     <div class="page-content-kie">
         <div class="toolbar-pf">
             <div class="toolbar-pf-actions">
-                <div class="toolbar-data-title-kie" data-field="title"></div>
+                <div class="toolbar-data-title-container-kie">
+                    <span class="toolbar-data-title-kie" data-field="title"></span>
+                    <span class="toolbar-data-description-kie" data-field="description-text"></span>
+                    <span class="fa fa-pencil toolbar-data-icon-kie" data-field="edit-icon"></span>
+                    <span data-field="description-editor">
+                          <input type="text" class="form-control" data-field="description-input"/>
+                          <a data-field="change-description" class="btn btn-primary" data-i18n-key="Save"></a>
+                          <a data-field="cancel-description-editor" class="btn btn-default" data-i18n-key="Cancel"></a>
+                    </span>
+                </div>
                 <div class="form-group">
                     <a data-field="delete-project" class="btn btn-danger" data-i18n-key="DeleteSpace"></a>
                 </div>

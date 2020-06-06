@@ -27,6 +27,7 @@ interface Props {
 
 interface State {
   name: string;
+  description : string;
   errorMessages: string[];
   displayedErrorMessages: string[];
 }
@@ -34,12 +35,13 @@ interface State {
 export class NewSpacePopup extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { name: "", errorMessages: [], displayedErrorMessages: [] };
+    this.state = { name: "", description: "", errorMessages: [], displayedErrorMessages: [] };
   }
 
   private async add() {
     const newSpace = {
       name: this.state.name,
+      description : this.state.description,
       groupId: `com.${this.state.name.toLowerCase()}`
     };
 
@@ -123,6 +125,14 @@ export class NewSpacePopup extends React.Component<Props, State> {
                   type={"text"}
                   className={"form-control"}
                   onInput={(e: any) => this.setState({ name: e.target.value })}
+                />
+              </div>
+              <label className={"form-control-label"}>Description</label>
+              <div className={"form-group"}>
+                <input
+                  type={"text"}
+                  className={"form-control"}
+                  onInput={(e: any) => this.setState({ description: e.target.value })}
                 />
               </div>
             </div>

@@ -4,6 +4,7 @@ exports[`snapshot of tile should match snapshot 1`] = `
 <Fragment>
   <div
     className="col-xs-12 col-sm-6 col-md-4 col-lg-3"
+    title="This is test space"
   >
     <div
       className="card-pf card-pf-view card-pf-view-select card-pf-view-single-select"
@@ -12,7 +13,9 @@ exports[`snapshot of tile should match snapshot 1`] = `
       <div
         className="card-pf-body"
       >
-        <div>
+        <div
+          className="card-pf-body-title"
+        >
           <div
             className="card-pf-title"
             style={
@@ -30,6 +33,11 @@ exports[`snapshot of tile should match snapshot 1`] = `
             </h2>
           </div>
           <h5>
+            This is test space
+          </h5>
+          <h5
+            className="card-pf-contributors"
+          >
             NumberOfContributors
           </h5>
         </div>

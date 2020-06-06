@@ -53,6 +53,7 @@ exports[`snapshot of spaces screen with no space and popup open 1`] = `
             space={
               Object {
                 "contributors": Array [],
+                "description": "This is test space",
                 "name": "Foo",
                 "repositories": Array [],
               }
@@ -129,6 +130,7 @@ exports[`snapshot of spaces screen with some spaces 1`] = `
             space={
               Object {
                 "contributors": Array [],
+                "description": "This is test space",
                 "name": "Foo",
                 "repositories": Array [],
               }
@@ -177,6 +179,7 @@ exports[`snapshot of spaces screen with some spaces but no permission to create 
             space={
               Object {
                 "contributors": Array [],
+                "description": "This is test space",
                 "name": "Foo",
                 "repositories": Array [],
               }
