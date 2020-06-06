@@ -27,7 +27,7 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.refactoring.service.ScoreCardServiceLoader;
-import org.kie.workbench.common.workbench.client.EditorIds;
+import org.kie.workbench.common.services.shared.resources.EditorIds;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceAction;

@@ -29,7 +29,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.workbench.client.PerspectiveIds;
+import org.kie.workbench.common.services.shared.resources.PerspectiveIds;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.annotations.WorkbenchPerspective;
@@ -41,7 +41,7 @@ import org.uberfire.workbench.model.menu.Menus;
  */
 @Templated
 @Dependent
-@WorkbenchPerspective( identifier = PerspectiveIds.GUVNOR_M2REPO )
+@WorkbenchPerspective(identifier = PerspectiveIds.GUVNOR_M2REPO)
 public class M2RepoPerspective implements IsElement {
 
     @Inject
@@ -52,19 +52,19 @@ public class M2RepoPerspective implements IsElement {
 
     @Inject
     @DataField
-    @WorkbenchPanel( parts = "M2RepoEditor" )
+    @WorkbenchPanel(parts = "M2RepoEditor")
     Div m2RepoEditor;
 
     @WorkbenchMenu
     public void getMenus(final Consumer<Menus> menusConsumer) {
-        menusConsumer.accept(MenuFactory.newTopLevelMenu( AppConstants.INSTANCE.Upload() )
+        menusConsumer.accept(MenuFactory.newTopLevelMenu(AppConstants.INSTANCE.Upload())
                                      .respondsWith(() -> {
-                                         UploadFormPresenter uploadFormPresenter = iocManager.lookupBean( UploadFormPresenter.class ).getInstance();
+                                         UploadFormPresenter uploadFormPresenter = iocManager.lookupBean(UploadFormPresenter.class).getInstance();
                                          uploadFormPresenter.showView();
                                      })
                                      .endMenu()
-                                     .newTopLevelMenu( AppConstants.INSTANCE.Refresh() )
-                                     .respondsWith(() -> refreshEvents.fire(new M2RepoRefreshEvent() ))
+                                     .newTopLevelMenu(AppConstants.INSTANCE.Refresh())
+                                     .respondsWith(() -> refreshEvents.fire(new M2RepoRefreshEvent()))
                                      .endMenu()
                                      .build());
     }
