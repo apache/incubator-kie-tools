@@ -16,16 +16,16 @@
 
 package org.kie.workbench.common.workbench.client.menu;
 
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMINISTRATION;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.APPS;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASET_AUTHORING;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.DATASOURCE_MANAGEMENT;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.GUVNOR_M2REPO;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.LIBRARY;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.PLUGIN_AUTHORING;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_DEFINITIONS;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.PROCESS_INSTANCES;
+import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.ADMIN;
+import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.ADMINISTRATION;
+import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.APPS;
+import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.DATASET_AUTHORING;
+import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.DATASOURCE_MANAGEMENT;
+import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.GUVNOR_M2REPO;
+import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.LIBRARY;
+import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.PLUGIN_AUTHORING;
+import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.PROCESS_DEFINITIONS;
+import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.PROCESS_INSTANCES;
 import static org.uberfire.workbench.model.menu.MenuFactory.newSimpleItem;
 
 import java.util.ArrayList;

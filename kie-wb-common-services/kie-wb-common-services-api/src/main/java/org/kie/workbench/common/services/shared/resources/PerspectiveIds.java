@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.workbench.client;
+package org.kie.workbench.common.services.shared.resources;
 
 public interface PerspectiveIds {
 

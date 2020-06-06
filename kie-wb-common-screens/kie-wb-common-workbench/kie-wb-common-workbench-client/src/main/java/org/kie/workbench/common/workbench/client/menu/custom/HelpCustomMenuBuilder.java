@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import org.jboss.errai.common.client.api.IsElement;
-import org.kie.workbench.common.workbench.client.PerspectiveIds;
+import  org.kie.workbench.common.services.shared.resources.PerspectiveIds;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.megamenu.menuitem.IconMenuItemPresenter;

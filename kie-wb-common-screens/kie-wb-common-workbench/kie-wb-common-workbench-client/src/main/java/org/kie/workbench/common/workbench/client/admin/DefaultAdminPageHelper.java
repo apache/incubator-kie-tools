@@ -31,7 +31,7 @@ import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.profile.api.preferences.ProfileService;
 import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.LanguageConfigurationHandler;
 import org.kie.workbench.common.widgets.client.handlers.workbench.configuration.WorkbenchConfigurationPresenter;
-import org.kie.workbench.common.workbench.client.PerspectiveIds;
+import  org.kie.workbench.common.services.shared.resources.PerspectiveIds;
 import org.kie.workbench.common.workbench.client.admin.resources.i18n.PreferencesConstants;
 import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
@@ -51,9 +51,9 @@ import org.uberfire.security.ResourceRef;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.ActivityResourceType;
 
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.ADMIN;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.GUVNOR_M2REPO;
-import static org.kie.workbench.common.workbench.client.PerspectiveIds.SECURITY_MANAGEMENT;
+import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.ADMIN;
+import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.GUVNOR_M2REPO;
+import static org.kie.workbench.common.services.shared.resources.PerspectiveIds.SECURITY_MANAGEMENT;
 
 public class DefaultAdminPageHelper {
 

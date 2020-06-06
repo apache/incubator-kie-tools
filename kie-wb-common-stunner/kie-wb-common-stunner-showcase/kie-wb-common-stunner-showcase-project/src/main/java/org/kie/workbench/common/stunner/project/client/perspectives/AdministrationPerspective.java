@@ -24,9 +24,9 @@ import javax.inject.Inject;
 
 import org.guvnor.structure.client.editors.repository.clone.CloneRepositoryPresenter;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.services.shared.resources.PerspectiveIds;
 import org.kie.workbench.common.stunner.project.client.resources.i18n.AppConstants;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
-import org.kie.workbench.common.workbench.client.PerspectiveIds;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPerspective;

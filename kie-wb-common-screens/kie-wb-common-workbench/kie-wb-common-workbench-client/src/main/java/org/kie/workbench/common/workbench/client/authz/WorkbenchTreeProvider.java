@@ -105,8 +105,8 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
                                                  i18n.EditGlobalPreferences(),
                                                  i18n.EditGlobalPreferencesHelp()));
         permissions.add(createPermissionLeafNode(GUIDED_DECISION_TABLE_EDIT_COLUMNS,
-                                                 i18n.EditProfilePreferences(),
-                                                 i18n.EditProfilePreferences()));
+                                                 i18n.GuidedDecisionTableEditColumns(),
+                                                 i18n.GuidedDecisionTableEditColumnsHelp()));
         permissions.add(createPermissionLeafNode(EDIT_PROFILE_PREFERENCES,
                                                  i18n.EditProfilePreferences(),
                                                  i18n.EditProfilePreferencesHelp()));
