@@ -25,14 +25,14 @@ import {
   ResourceListRequest,
   ResourcesList
 } from "@kogito-tooling/core-api";
+import { DefaultKeyboardShortcutsService, redoShortcut, undoShortcut } from "@kogito-tooling/keyboard-shortcuts";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as CSS from "csstype";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
-import { File } from "../common/File";
+import { File } from "../common";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 import { EditorStateControl } from "../stateControl";
-import { DefaultKeyboardShortcutsService, redoShortcut, undoShortcut } from "@kogito-tooling/microeditor-envelope";
 
 /**
  * Properties supported by the `EmbeddedEditor`.
@@ -135,9 +135,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   forwardedRef
 ) => {
   const iframeRef: React.RefObject<HTMLIFrameElement> = useRef<HTMLIFrameElement>(null);
-  const keyboardShortcuts = useMemo(() => {
-    return new DefaultKeyboardShortcutsService({ channel: props.channelType, operatingSystem: getOperatingSystem() });
-  }, []);
 
   //Property functions default handling
   const onResourceContentRequest = useCallback(
@@ -242,6 +239,10 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         props.editorStateControl?.setSavedEvent();
         break;
     }
+  }, []);
+
+  const keyboardShortcuts = useMemo(() => {
+    return new DefaultKeyboardShortcutsService({ channel: props.channelType, operatingSystem: getOperatingSystem() });
   }, []);
 
   useEffect(() => {

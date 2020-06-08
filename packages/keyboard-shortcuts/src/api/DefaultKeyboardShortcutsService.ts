@@ -77,7 +77,7 @@ enum ShortCutsType {
   KeyDown
 }
 
-export interface DelayedRegisterKeyBinding{
+export interface DelayedRegisterKeyBinding {
   type: ShortCutsType;
   binding: KeyBinding;
 }
@@ -135,12 +135,11 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
 
     if (keyBinding?.opts?.element || document.querySelector(".session-container")) {
       this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
-      this.keyBindingElement(keyBinding).addEventListener("keyup", keyBinding.listener); 
-    }
-    else {
+      this.keyBindingElement(keyBinding).addEventListener("keyup", keyBinding.listener);
+    } else {
       const delayedShorcut = {
         type: ShortCutsType.KeyDownThenUp,
-        binding: keyBinding,
+        binding: keyBinding
       };
       this.delayedKeyBindings.push(delayedShorcut);
     }
@@ -150,7 +149,6 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
   private keyBindingElement(keyBinding?: KeyBinding) {
     return keyBinding?.opts?.element ?? document.querySelector(".session-container") ?? window;
   }
-
 
   public registerKeyPress(
     combination: string,
@@ -181,11 +179,10 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
 
     if (keyBinding?.opts?.element || document.querySelector(".session-container")) {
       this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
-    }
-    else {
+    } else {
       const delayedShorcut = {
         type: ShortCutsType.KeyDown,
-        binding: keyBinding,
+        binding: keyBinding
       };
       this.delayedKeyBindings.push(delayedShorcut);
     }
@@ -195,16 +192,23 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
 
   public executeDelayedShortcutsRegistration() {
     this.delayedKeyBindings.forEach(delayedKeyBindings => {
-    
       if (delayedKeyBindings.type === ShortCutsType.KeyDown) {
-        this.keyBindingElement(delayedKeyBindings.binding).addEventListener("keydown", delayedKeyBindings.binding.listener);
+        this.keyBindingElement(delayedKeyBindings.binding).addEventListener(
+          "keydown",
+          delayedKeyBindings.binding.listener
+        );
+      } else {
+        this.keyBindingElement(delayedKeyBindings.binding).addEventListener(
+          "keydown",
+          delayedKeyBindings.binding.listener
+        );
+        this.keyBindingElement(delayedKeyBindings.binding).addEventListener(
+          "keyup",
+          delayedKeyBindings.binding.listener
+        );
       }
-      else {
-        this.keyBindingElement(delayedKeyBindings.binding).addEventListener("keydown", delayedKeyBindings.binding.listener);
-        this.keyBindingElement(delayedKeyBindings.binding).addEventListener("keyup", delayedKeyBindings.binding.listener); 
-      }
-    }); 
-    this.delayedKeyBindings = []; 
+    });
+    this.delayedKeyBindings = [];
   }
 
   public registerKeyPressOnce(
