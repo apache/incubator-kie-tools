@@ -12,7 +12,7 @@ Feature: Deploy Kogito Runtime
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
 
     When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
-      | config | persistence | disabled |
+      | infinispan | useKogitoInfra | disabled |
 
     Then Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
     And Service "<example-service>" with process name "orders" is available within 2 minutes
@@ -42,7 +42,7 @@ Feature: Deploy Kogito Runtime
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
 
     When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
-      | config | persistence | enabled |
+      | infinispan | useKogitoInfra | enabled |
     And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
     And Start "orders" process on service "<example-service>" within 3 minutes with body:
       """json
@@ -88,8 +88,8 @@ Feature: Deploy Kogito Runtime
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
 
     When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
-      | config | persistence | enabled |
-      | config | events      | enabled  |
+      | infinispan | useKogitoInfra | enabled |
+      | kafka      | useKogitoInfra | enabled |
     And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
     And Start "orders" process on service "<example-service>" within 3 minutes with body:
       """json
@@ -125,11 +125,10 @@ Feature: Deploy Kogito Runtime
   Scenario Outline: Deploy process-optaplanner-quarkus service without persistence
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
-    And Local example service "<example-service>" is built by Maven using profile "<profile>"
-    And Local example service "<example-service>" is deployed to image registry, image tag stored as variable "built-image"
+    And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
 
-    When Deploy <runtime> example service using image in variable "built-image" with configuration:
-      | config | persistence | disabled |
+    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
+      | infinispan | useKogitoInfra | disabled |
 
     Then Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
     And HTTP POST request on service "<example-service>" is successful within 2 minutes with path "rest/flights" and body:

@@ -15,35 +15,27 @@
 package steps
 
 import (
-	"fmt"
-
 	"github.com/cucumber/godog"
 	"github.com/cucumber/messages-go/v10"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/resource"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
 /*
 	DataTable for KogitoRuntime:
-	| config          | persistence | true/false                |
-	| config          | events      | true/false                |
-	| runtime-env     | varName     | varValue                  |
-	| label           | labelKey 	| labelValue                |
-	| runtime-request | cpu/memory  | value                     |
-	| runtime-limit   | cpu/memory  | value                     |
+	| infinispan       | useKogitoInfra | enabled/disabled          |
+	| infinispan       | username       | developer                 |
+	| infinispan       | password       | mypass                    |
+	| infinispan       | uri            | external-infinispan:11222 |
+	| kafka            | useKogitoInfra | enabled/disabled          |
+	| kafka            | externalURI    | kafka-bootstrap:9092      |
+	| kafka            | instance       | external-kafka            |
+	| service-label    | labelKey       | labelValue                |
+	| deployment-label | labelKey       | labelValue                |
+	| runtime-request  | cpu/memory     | value                     |
+	| runtime-limit    | cpu/memory     | value                     |
+	| runtime-env      | varName        | varValue                  |
 */
-
-const (
-	// DataTable first column
-	kogitoRuntimeConfigKey = "config"
-	kogitoRuntimeEnvKey    = "runtime-env"
-	kogitoRuntimeLabelKey  = "label"
-
-	// DataTable Config second column
-	kogitoRuntimePersistenceKey = "persistence"
-	kogitoRuntimeEventsKey      = "events"
-)
 
 func registerKogitoRuntimeSteps(s *godog.Suite, data *Data) {
 	// Deploy steps
@@ -93,68 +85,14 @@ func (data *Data) scaleKogitoRuntimeToPodsWithinMinutes(name string, nbPods, tim
 // Misc methods
 
 // getKogitoRuntimeExamplesStub Get basic KogitoRuntime stub with GIT properties initialized to common Kogito examples
-func getKogitoRuntimeExamplesStub(namespace, runtimeType, name, imageTag string, table *messages.PickleStepArgument_PickleTable) (*v1alpha1.KogitoRuntime, error) {
-	kogitoRuntime := framework.GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag)
+func getKogitoRuntimeExamplesStub(namespace, runtimeType, name, imageTag string, table *messages.PickleStepArgument_PickleTable) (*framework.KogitoServiceHolder, error) {
+	kogitoRuntime := &framework.KogitoServiceHolder{
+		KogitoService: framework.GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag),
+	}
 
-	if err := configureKogitoRuntimeFromTable(table, kogitoRuntime); err != nil {
+	if err := configureKogitoServiceFromTable(table, kogitoRuntime); err != nil {
 		return nil, err
 	}
 
 	return kogitoRuntime, nil
-}
-
-func configureKogitoRuntimeFromTable(table *messages.PickleStepArgument_PickleTable, kogitoRuntime *v1alpha1.KogitoRuntime) error {
-	if len(table.Rows) == 0 { // Using default configuration
-		return nil
-	}
-
-	if len(table.Rows[0].Cells) != 3 {
-		return fmt.Errorf("expected table to have exactly three columns")
-	}
-
-	for _, row := range table.Rows {
-		firstColumn := getFirstColumn(row)
-		switch firstColumn {
-		case kogitoRuntimeConfigKey:
-			parseKogitoRuntimeConfigRow(row, kogitoRuntime)
-
-		case kogitoRuntimeLabelKey:
-			kogitoRuntime.Spec.ServiceLabels[getSecondColumn(row)] = getThirdColumn(row)
-
-		case kogitoRuntimeEnvKey:
-			kogitoRuntime.Spec.AddEnvironmentVariable(getSecondColumn(row), getThirdColumn(row))
-
-		case runtimeRequestKey:
-			kogitoRuntime.Spec.AddResourceRequest(getSecondColumn(row), getThirdColumn(row))
-
-		case runtimeLimitKey:
-			kogitoRuntime.Spec.AddResourceLimit(getSecondColumn(row), getThirdColumn(row))
-
-		default:
-			return fmt.Errorf("Unrecognized configuration option: %s", firstColumn)
-		}
-	}
-
-	addDefaultJavaOptionsIfNotProvided(kogitoRuntime.Spec.KogitoServiceSpec)
-
-	return nil
-}
-
-func parseKogitoRuntimeConfigRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoRuntime *v1alpha1.KogitoRuntime) {
-	secondColumn := getSecondColumn(row)
-
-	switch secondColumn {
-
-	case kogitoRuntimePersistenceKey:
-		persistence := framework.MustParseEnabledDisabled(getThirdColumn(row))
-		if persistence {
-			kogitoRuntime.Spec.InfinispanMeta.InfinispanProperties.UseKogitoInfra = true
-		}
-
-	case kogitoRuntimeEventsKey:
-		events := framework.MustParseEnabledDisabled(getThirdColumn(row))
-		if events {
-			kogitoRuntime.Spec.KafkaMeta.KafkaProperties.UseKogitoInfra = true
-		}
-	}
 }

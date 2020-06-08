@@ -29,7 +29,8 @@ Feature: Install Kogito Jobs Service
   Scenario: Install Kogito Jobs Service with persistence
     Given Kogito Operator is deployed with Infinispan operator
     
-    When Install Kogito Jobs Service with 1 replicas and persistence
+    When Install Kogito Jobs Service with 1 replicas with configuration:
+      | infinispan | useKogitoInfra | enabled |
     And Kogito Jobs Service has 1 pods running within 10 minutes
     And HTTP POST request on service "jobs-service" is successful within 2 minutes with path "jobs" and body:
       """json
@@ -54,7 +55,9 @@ Feature: Install Kogito Jobs Service
   Scenario: Jobs service events are stored in Data Index
     Given Kogito Operator is deployed with Infinispan and Kafka operators
     And Install Kogito Data Index with 1 replicas
-    And Install Kogito Jobs Service with 1 replicas and persistence and events
+    And Install Kogito Jobs Service with 1 replicas with configuration:
+      | infinispan | useKogitoInfra | enabled |
+      | kafka      | useKogitoInfra | enabled |
     And Kogito Data Index has 1 pods running within 10 minutes
     And Kogito Jobs Service has 1 pods running within 10 minutes
 

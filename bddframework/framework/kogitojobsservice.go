@@ -26,10 +26,8 @@ import (
 )
 
 // InstallKogitoJobsService install the Kogito Jobs Service component
-func InstallKogitoJobsService(namespace string, installerType InstallerType, replicas int, persistence, events bool) error {
-	resource := newKogitoJobsServiceResource(namespace, replicas)
-	setKogitoJobsServicePersistence(resource, persistence)
-	return InstallService(&KogitoServiceHolder{KogitoService: resource}, installerType, "jobs-service", GetCliFlags(persistence, events))
+func InstallKogitoJobsService(installerType InstallerType, jobsService *KogitoServiceHolder) error {
+	return InstallService(jobsService, installerType, "jobs-service")
 }
 
 // WaitForKogitoJobsService wait for Kogito Jobs Service to be deployed
@@ -65,16 +63,8 @@ func getJobsServiceName() string {
 	return infrastructure.DefaultJobsServiceName
 }
 
-func setKogitoJobsServicePersistence(resource *v1alpha1.KogitoJobsService, persistence bool) {
-	if persistence {
-		resource.Spec.InfinispanProperties = v1alpha1.InfinispanConnectionProperties{
-			UseKogitoInfra: true,
-		}
-	}
-}
-
-
-func newKogitoJobsServiceResource(namespace string, replicas int) *v1alpha1.KogitoJobsService {
+// GetKogitoJobsServiceResourceStub Get basic KogitoJobsService stub with all needed fields initialized
+func GetKogitoJobsServiceResourceStub(namespace string, replicas int) *v1alpha1.KogitoJobsService {
 	return &v1alpha1.KogitoJobsService{
 		ObjectMeta: NewObjectMetadata(namespace, getJobsServiceName()),
 		Spec: v1alpha1.KogitoJobsServiceSpec{

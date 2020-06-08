@@ -16,27 +16,57 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
+	"github.com/cucumber/messages-go/v10"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
+/*
+	DataTable for Jobs Service:
+	| infinispan       | useKogitoInfra | enabled/disabled          |
+	| infinispan       | username       | developer                 |
+	| infinispan       | password       | mypass                    |
+	| infinispan       | uri            | external-infinispan:11222 |
+	| kafka            | useKogitoInfra | enabled/disabled          |
+	| kafka            | externalURI    | kafka-bootstrap:9092      |
+	| kafka            | instance       | external-kafka            |
+	| runtime-request  | cpu/memory     | value                     |
+	| runtime-limit    | cpu/memory     | value                     |
+	| runtime-env      | varName        | varValue                  |
+*/
+
 func registerKogitoJobsServiceSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Install Kogito Jobs Service with (\d+) replicas$`, data.installKogitoJobsServiceWithReplicas)
-	s.Step(`^Install Kogito Jobs Service with (\d+) replicas and persistence$`, data.installKogitoJobsServiceWithReplicasAndPersistence)
-	s.Step(`^Install Kogito Jobs Service with (\d+) replicas and persistence and events$`, data.installKogitoJobsServiceWithReplicasAndPersistenceAndEvents)
+	s.Step(`^Install Kogito Jobs Service with (\d+) replicas with configuration:$`, data.installKogitoJobsServiceWithReplicasWithConfiguration)
 	s.Step(`^Kogito Jobs Service has (\d+) pods running within (\d+) minutes$`, data.kogitoJobsServiceHasPodsRunningWithinMinutes)
 	s.Step(`^Scale Kogito Jobs Service to (\d+) pods within (\d+) minutes$`, data.scaleKogitoJobsServiceToPodsWithinMinutes)
 }
 
 func (data *Data) installKogitoJobsServiceWithReplicas(replicas int) error {
-	return framework.InstallKogitoJobsService(data.Namespace, framework.GetDefaultInstallerType(), replicas, false, false)
+	jobsService := framework.GetKogitoJobsServiceResourceStub(data.Namespace, replicas)
+	return framework.InstallKogitoJobsService(framework.GetDefaultInstallerType(), &framework.KogitoServiceHolder{KogitoService: jobsService})
 }
 
-func (data *Data) installKogitoJobsServiceWithReplicasAndPersistence(replicas int) error {
-	return framework.InstallKogitoJobsService(data.Namespace, framework.GetDefaultInstallerType(), replicas, true, false)
-}
+func (data *Data) installKogitoJobsServiceWithReplicasWithConfiguration(replicas int, table *messages.PickleStepArgument_PickleTable) error {
+	jobsService := &framework.KogitoServiceHolder{
+		KogitoService: framework.GetKogitoJobsServiceResourceStub(data.Namespace, replicas),
+	}
 
-func (data *Data) installKogitoJobsServiceWithReplicasAndPersistenceAndEvents(replicas int) error {
-	return framework.InstallKogitoJobsService(data.Namespace, framework.GetDefaultInstallerType(), replicas, true, true)
+	if err := configureKogitoServiceFromTable(table, jobsService); err != nil {
+		return err
+	}
+
+	if jobsService.IsInfinispanUsernameSpecified() && framework.GetDefaultInstallerType() == framework.CRInstallerType {
+		// If Infinispan authentication is set and CR installer is used, the Secret holding Infinispan credentials needs to be created and passed to Data index CR.
+		if err := framework.CreateSecret(data.Namespace, kogitoExternalInfinispanSecret, map[string]string{usernameSecretKey: jobsService.Infinispan.Username, passwordSecretKey: jobsService.Infinispan.Password}); err != nil {
+			return err
+		}
+		jobsService.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.SecretName = kogitoExternalInfinispanSecret
+		jobsService.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.UsernameKey = usernameSecretKey
+		jobsService.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.PasswordKey = passwordSecretKey
+	}
+
+	return framework.InstallKogitoJobsService(framework.GetDefaultInstallerType(), jobsService)
 }
 
 func (data *Data) kogitoJobsServiceHasPodsRunningWithinMinutes(pods, timeoutInMin int) error {

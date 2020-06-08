@@ -27,20 +27,20 @@ import (
 )
 
 // DeployRuntimeService deploy a Kogito service
-func DeployRuntimeService(namespace string, installerType InstallerType, kogitoRuntime *v1alpha1.KogitoRuntime) error {
-	GetLogger(namespace).Infof("%s deploy %s example %s with persistence %v, events %v and labels %v", installerType, kogitoRuntime.Spec.Runtime, kogitoRuntime.Name, kogitoRuntime.Spec.InfinispanMeta.InfinispanProperties.UseKogitoInfra, kogitoRuntime.Spec.KafkaMeta.KafkaProperties.UseKogitoInfra, kogitoRuntime.Spec.ServiceLabels)
+func DeployRuntimeService(namespace string, installerType InstallerType, serviceHolder *KogitoServiceHolder) error {
+	GetLogger(namespace).Infof("%s deploy %s example %s with persistence %v, events %v and labels %v", installerType, serviceHolder.GetSpec().GetRuntime(), serviceHolder.GetName(), serviceHolder.GetSpec().(v1alpha1.InfinispanAware).GetInfinispanProperties().UseKogitoInfra, serviceHolder.GetSpec().(v1alpha1.KafkaAware).GetKafkaProperties().UseKogitoInfra, serviceHolder.GetSpec().GetServiceLabels())
 
 	switch installerType {
 	case CRInstallerType:
-		return crDeployRuntimeService(namespace, kogitoRuntime)
+		return crDeployRuntimeService(namespace, serviceHolder)
 	default:
 		panic(fmt.Errorf("Unknown installer type %s", installerType))
 	}
 }
 
-func crDeployRuntimeService(namespace string, kogitoRuntime *v1alpha1.KogitoRuntime) error {
-	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(kogitoRuntime); err != nil {
-		return fmt.Errorf("Error creating example service %s: %v", kogitoRuntime.Name, err)
+func crDeployRuntimeService(namespace string, serviceHolder *KogitoServiceHolder) error {
+	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(serviceHolder.KogitoService); err != nil {
+		return fmt.Errorf("Error creating example service %s: %v", serviceHolder.GetName(), err)
 	}
 	return nil
 }

@@ -23,7 +23,7 @@ import (
 // InstallKogitoDataIndexService install the Kogito Data Index service
 func InstallKogitoDataIndexService(namespace string, installerType InstallerType, dataIndex *KogitoServiceHolder) error {
 	// Persistence is already configured internally by the Data Index service, so we don't need to add any additional persistence step here.
-	return InstallServiceWithoutCliFlags(dataIndex, installerType, "data-index")
+	return InstallService(dataIndex, installerType, "data-index")
 }
 
 // WaitForKogitoDataIndexService wait for Kogito Data Index to be deployed
