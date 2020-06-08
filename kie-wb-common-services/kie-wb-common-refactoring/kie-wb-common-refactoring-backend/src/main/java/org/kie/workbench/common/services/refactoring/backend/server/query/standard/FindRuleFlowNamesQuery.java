@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -44,20 +45,29 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.paging.PageResponse;
 
 @ApplicationScoped
 public class FindRuleFlowNamesQuery extends AbstractFindQuery implements NamedQuery {
 
-    private static final Logger logger = LoggerFactory.getLogger(FindRuleFlowNamesQuery.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FindRuleFlowNamesQuery.class);
+
+    private final IOService ioService;
 
     @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
+    public FindRuleFlowNamesQuery(@Named("ioStrategy") IOService ioService) {
+        this.ioService = ioService;
+    }
 
     private RuleFlowNamesResponseBuilder responseBuilder = new RuleFlowNamesResponseBuilder();
 
     public static final String NAME = FindRuleFlowNamesQuery.class.getSimpleName();
+    public static final String SHARED_TERM = SharedPartIndexTerm.TERM + ":" + PartType.RULEFLOW_GROUP.toString();
+
+    public static boolean isSharedRuleFlowGroup(String parameter) {
+        return SHARED_TERM.equals(parameter);
+    }
 
     @Override
     public String getName() {
@@ -136,20 +146,15 @@ public class FindRuleFlowNamesQuery extends AbstractFindQuery implements NamedQu
         }
 
         private Map<String, Map<String, String>> getRuleFlowGroupNamesNamesFromKObject(final KObject kObject) {
-            final Map<String, Map<String, String>> ruleFlowGroupNames = new HashMap<String, Map<String, String>>();
+            final Map<String, Map<String, String>> ruleFlowGroupNames = new HashMap<>();
             if (kObject == null) {
                 return ruleFlowGroupNames;
             }
-            for (KProperty property : kObject.getProperties()) {
-                if (property.getName().equals(SharedPartIndexTerm.TERM + ":" + PartType.RULEFLOW_GROUP.toString())) {
-                    if (ruleFlowGroupNames.containsKey(property.getValue().toString())) {
-                        final Path path = Paths.convert(ioService.get(URI.create(kObject.getKey())));
-                        ruleFlowGroupNames.get(property.getValue().toString()).put("name", property.getValue().toString());
-                        ruleFlowGroupNames.get(property.getValue().toString()).put("filename", path.getFileName());
-                        ruleFlowGroupNames.get(property.getValue().toString()).put("pathuri", path.toURI());
-                    } else {
-                        final Path path = Paths.convert(ioService.get(URI.create(kObject.getKey())));
-                        ruleFlowGroupNames.put(property.getValue().toString(), new HashMap<String, String>());
+            for (KProperty<?> property : kObject.getProperties()) {
+                if (SHARED_TERM.equals(property.getName())) {
+                    Path path = getPath(kObject);
+                    if (path != null) {
+                        ruleFlowGroupNames.put(property.getValue().toString(), new HashMap<>());
                         ruleFlowGroupNames.get(property.getValue().toString()).put("name", property.getValue().toString());
                         ruleFlowGroupNames.get(property.getValue().toString()).put("filename", path.getFileName());
                         ruleFlowGroupNames.get(property.getValue().toString()).put("pathuri", path.toURI());
@@ -158,6 +163,15 @@ public class FindRuleFlowNamesQuery extends AbstractFindQuery implements NamedQu
             }
 
             return ruleFlowGroupNames;
+        }
+
+        private Path getPath(KObject kObject) {
+            try {
+                return Paths.convert(ioService.get(URI.create(kObject.getKey())));
+            } catch (FileSystemNotFoundException ex) {
+                LOGGER.error(ex.toString());
+                return null;
+            }
         }
     }
 }

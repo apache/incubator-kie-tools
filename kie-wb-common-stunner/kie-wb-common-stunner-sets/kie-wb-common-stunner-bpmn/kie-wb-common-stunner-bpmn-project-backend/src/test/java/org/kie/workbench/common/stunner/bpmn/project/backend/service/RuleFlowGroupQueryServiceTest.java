@@ -23,12 +23,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import org.junit.Test;
 import org.kie.workbench.common.services.refactoring.backend.server.query.standard.FindRuleFlowNamesQuery;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.PartType;
+import org.uberfire.io.IOService;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -38,11 +41,14 @@ import static org.mockito.Mockito.when;
 
 public class RuleFlowGroupQueryServiceTest {
 
+    @Inject
+    private IOService ioService;
+
     private final static String ERROR_MSG = PartType.ACTIVATION_GROUP.toString() + "' can not be used";
 
     @Test
     public void findRuleFlowNamesQueryTermsTest() {
-        FindRuleFlowNamesQuery query = new FindRuleFlowNamesQuery();
+        FindRuleFlowNamesQuery query = new FindRuleFlowNamesQuery(ioService);
 
         Set<ValueIndexTerm> queryTerms = new HashSet<>();
         try {
