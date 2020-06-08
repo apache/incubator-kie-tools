@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,12 +26,17 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.HasExpression;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.Context;
 import org.kie.workbench.common.dmn.api.definition.model.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
@@ -55,8 +61,10 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.ANY;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.NUMBER;
 import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.STRING;
 import static org.mockito.Mockito.mock;
@@ -77,9 +85,17 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
     private static final String DECISION_NAME_1 = "b-decision1";
 
+    private static final String DEFAULT_OUTPUT_NAME = "output-1";
+
+    private static final String TYPE_PERSON = "tPerson";
+
+    private static final String TYPE_COMPANY = "tCompany";
+
     private static final QName DECISION_QNAME_1 = STRING.asQName();
 
     private static final QName OUTPUT_DATA_QNAME = BuiltInType.DATE.asQName();
+
+    private static final QName T_ADDRESS_QNAME = new QName("", "tAddress");
 
     private DMNDiagram diagram;
 
@@ -485,6 +501,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
     @Test
     public void testModelEnrichmentWhenParentIsContextEntry() {
+        final Decision decision = mock(Decision.class);
         final String name = "context-entry";
         final Context context = new Context();
         final ContextEntry contextEntry = new ContextEntry();
@@ -495,6 +512,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         oModel.get().setParent(contextEntry);
         contextEntry.setParent(context);
         context.setParent(decision);
+        when(decision.asDMNModelInstrumentedBase()).thenReturn(contextEntry);
 
         definition.enrich(Optional.empty(), decision, oModel);
 
@@ -504,7 +522,35 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final List<OutputClause> output = model.getOutput();
         assertThat(output.size()).isEqualTo(1);
-        assertThat(output.get(0).getName()).isEqualTo(name);
+        assertThat(output.get(0).getName()).isEqualTo(DEFAULT_OUTPUT_NAME);
+        assertThat(output.get(0).getTypeRef()).isEqualTo(OUTPUT_DATA_QNAME);
+
+        assertStandardDecisionRuleEnrichment(model);
+        assertParentHierarchyEnrichment(model);
+    }
+
+    @Test
+    public void testModelEnrichmentWhenParentIsBKM() {
+        final FunctionDefinition functionDefinition = mock(FunctionDefinition.class);
+        final DMNModelInstrumentedBase dmnModelInstrumentedBase = mock(DMNModelInstrumentedBase.class);
+        final BusinessKnowledgeModel businessKnowledgeModel = new BusinessKnowledgeModel();
+        businessKnowledgeModel.setVariable(new InformationItemPrimary(new Id(), new Name(), OUTPUT_DATA_QNAME));
+        businessKnowledgeModel.setEncapsulatedLogic(functionDefinition);
+
+        final Optional<DecisionTable> oModel = definition.getModelClass();
+        oModel.get().setParent(functionDefinition);
+        when(functionDefinition.asDMNModelInstrumentedBase()).thenReturn(dmnModelInstrumentedBase);
+        when(dmnModelInstrumentedBase.getParent()).thenReturn(businessKnowledgeModel);
+
+        definition.enrich(Optional.empty(), functionDefinition, oModel);
+
+        final DecisionTable model = oModel.get();
+        assertBasicEnrichment(model);
+        assertStandardInputClauseEnrichment(model);
+
+        final List<OutputClause> output = model.getOutput();
+        assertThat(output.size()).isEqualTo(1);
+        assertThat(output.get(0).getName()).isEqualTo(DEFAULT_OUTPUT_NAME);
         assertThat(output.get(0).getTypeRef()).isEqualTo(OUTPUT_DATA_QNAME);
 
         assertStandardDecisionRuleEnrichment(model);
@@ -535,7 +581,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final List<OutputClause> output = model.getOutput();
         assertThat(output.size()).isEqualTo(1);
-        assertThat(output.get(0).getName()).isEqualTo(name);
+        assertThat(output.get(0).getName()).isEqualTo(DEFAULT_OUTPUT_NAME);
         assertThat(output.get(0).getTypeRef()).isEqualTo(OUTPUT_DATA_QNAME);
 
         assertStandardDecisionRuleEnrichment(model);
@@ -544,8 +590,8 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
     @Test
     public void testModelEnrichmentWhenParentIsNestedContextEntryDefaultResult() {
+        final Decision decision = mock(Decision.class);
         final String name = "context-entry";
-
         final Context innerContext = new Context();
         final ContextEntry innerContextEntry = new ContextEntry();
         innerContext.getContextEntry().add(innerContextEntry);
@@ -559,6 +605,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         outerContext.setParent(decision);
 
         outerContextEntry.setVariable(new InformationItem(new Id(), new Description(), new Name(name), OUTPUT_DATA_QNAME));
+        when(decision.asDMNModelInstrumentedBase()).thenReturn(outerContextEntry);
 
         final Optional<DecisionTable> oModel = definition.getModelClass();
         oModel.get().setParent(innerContextEntry);
@@ -571,7 +618,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final List<OutputClause> output = model.getOutput();
         assertThat(output.size()).isEqualTo(1);
-        assertThat(output.get(0).getName()).isEqualTo(name);
+        assertThat(output.get(0).getName()).isEqualTo(DEFAULT_OUTPUT_NAME);
         assertThat(output.get(0).getTypeRef()).isEqualTo(OUTPUT_DATA_QNAME);
 
         assertStandardDecisionRuleEnrichment(model);
@@ -592,7 +639,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final List<OutputClause> output = model.getOutput();
         assertThat(output.size()).isEqualTo(1);
-        assertThat(output.get(0).getName()).isEqualTo("output-1");
+        assertThat(output.get(0).getName()).isEqualTo(DEFAULT_OUTPUT_NAME);
         assertThat(output.get(0).getTypeRef()).isEqualTo(OUTPUT_DATA_QNAME);
 
         assertStandardDecisionRuleEnrichment(model);
@@ -611,7 +658,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final List<OutputClause> output = model.getOutput();
         assertThat(output.size()).isEqualTo(1);
-        assertThat(output.get(0).getName()).isEqualTo("output-1");
+        assertThat(output.get(0).getName()).isEqualTo(DEFAULT_OUTPUT_NAME);
         assertThat(output.get(0).getTypeRef()).isEqualTo(BuiltInType.UNDEFINED.asQName());
 
         assertStandardDecisionRuleEnrichment(model);
@@ -619,14 +666,160 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
     }
 
     @Test
+    public void testModelEnrichmentWhenDecisionTypeRefIsStructureWithMultipleFields() {
+
+        final DMNGraphUtils dmnGraphUtils = mock(DMNGraphUtils.class);
+        final Definitions definitions = mock(Definitions.class);
+        final HasExpression hasExpression = mock(HasExpression.class);
+        final Decision decision = mock(Decision.class);
+        final InformationItemPrimary informationItemPrimary = mock(InformationItemPrimary.class);
+        final ItemDefinition tPerson = mockTPersonStructure();
+
+        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(definitions.getItemDefinition()).thenReturn(Collections.singletonList(tPerson));
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(decision);
+        when(decision.getVariable()).thenReturn(informationItemPrimary);
+        when(informationItemPrimary.getTypeRef()).thenReturn(new QName("", TYPE_PERSON));
+
+        final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, dmnGraphUtils, itemDefinitionUtils);
+        final Optional<DecisionTable> oModel = definition.getModelClass();
+        final DecisionTable model = oModel.get();
+        enricher.buildOutputClausesByDataType(hasExpression, model, new DecisionRule());
+
+        final List<OutputClause> outputClauses = model.getOutput();
+        assertThat(outputClauses.size()).isEqualTo(2);
+
+        final OutputClause outputClause1 = outputClauses.get(0);
+        final OutputClause outputClause2 = outputClauses.get(1);
+
+        assertEquals("age", outputClause1.getName());
+        assertEquals(NUMBER.asQName(), outputClause1.getTypeRef());
+
+        assertEquals("name", outputClause2.getName());
+        assertEquals(STRING.asQName(), outputClause2.getTypeRef());
+    }
+
+    @Test
+    public void testModelEnrichmentWhenDecisionTypeRefIsStructureAndOneSubfieldIsStructure() {
+
+        final DMNGraphUtils dmnGraphUtils = mock(DMNGraphUtils.class);
+        final Definitions definitions = mock(Definitions.class);
+        final HasExpression hasExpression = mock(HasExpression.class);
+        final Decision decision = mock(Decision.class);
+        final InformationItemPrimary informationItemPrimary = mock(InformationItemPrimary.class);
+        final ItemDefinition tCompany = mockTCompanyStructure();
+
+        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(definitions.getItemDefinition()).thenReturn(Collections.singletonList(tCompany));
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(decision);
+        when(decision.getVariable()).thenReturn(informationItemPrimary);
+        when(informationItemPrimary.getTypeRef()).thenReturn(new QName("", TYPE_COMPANY));
+
+        final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, dmnGraphUtils, itemDefinitionUtils);
+        final Optional<DecisionTable> oModel = definition.getModelClass();
+        final DecisionTable model = oModel.get();
+        enricher.buildOutputClausesByDataType(hasExpression, model, new DecisionRule());
+
+        final List<OutputClause> outputClauses = model.getOutput();
+        assertThat(outputClauses.size()).isEqualTo(2);
+
+        final OutputClause outputClause1 = outputClauses.get(0);
+        final OutputClause outputClause2 = outputClauses.get(1);
+
+        assertEquals("address", outputClause1.getName());
+        assertEquals(ANY.asQName(), outputClause1.getTypeRef());
+
+        assertEquals("name", outputClause2.getName());
+        assertEquals(STRING.asQName(), outputClause2.getTypeRef());
+    }
+
+    private ItemDefinition mockTCompanyStructure() {
+        final ItemDefinition tCompany = mock(ItemDefinition.class);
+        final ItemDefinition name = mock(ItemDefinition.class);
+        final ItemDefinition tAddress = mock(ItemDefinition.class);
+
+        /* === ItemDefinition ===
+         * - tCompany (Structure)
+         *   - name     (String)
+         *   - tAddress (Structure)
+         * ======================
+         */
+
+        when(name.getName()).thenReturn(new Name("name"));
+        when(name.getTypeRef()).thenReturn(STRING.asQName());
+        when(name.getItemComponent()).thenReturn(emptyList());
+
+        when(tAddress.getName()).thenReturn(new Name("address"));
+        when(tAddress.getTypeRef()).thenReturn(T_ADDRESS_QNAME);
+        when(tAddress.getItemComponent()).thenReturn(singletonList(name));
+
+        when(tCompany.getName()).thenReturn(new Name(TYPE_COMPANY));
+        when(tCompany.getTypeRef()).thenReturn(null);
+        when(tCompany.getItemComponent()).thenReturn(asList(name, tAddress));
+        return tCompany;
+    }
+
+    @Test
+    public void testModelEnrichmentWhenDecisionTypeRefIsStructureWithNoFields() {
+
+        final DMNGraphUtils dmnGraphUtils = mock(DMNGraphUtils.class);
+        final Definitions definitions = mock(Definitions.class);
+        final HasExpression hasExpression = mock(HasExpression.class);
+        final Decision decision = mock(Decision.class);
+        final InformationItemPrimary informationItemPrimary = mock(InformationItemPrimary.class);
+        final ItemDefinition tPerson = mock(ItemDefinition.class);
+        final QName tPersonTypeRef = new QName("", TYPE_PERSON);
+
+        when(tPerson.getName()).thenReturn(new Name(TYPE_PERSON));
+        when(tPerson.getTypeRef()).thenReturn(tPersonTypeRef);
+        when(tPerson.getItemComponent()).thenReturn(emptyList());
+
+        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(definitions.getItemDefinition()).thenReturn(Collections.singletonList(tPerson));
+        when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(decision);
+        when(decision.getVariable()).thenReturn(informationItemPrimary);
+        when(informationItemPrimary.getTypeRef()).thenReturn(tPersonTypeRef);
+
+        final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, dmnGraphUtils, itemDefinitionUtils);
+        final Optional<DecisionTable> oModel = definition.getModelClass();
+        final DecisionTable model = oModel.get();
+        enricher.buildOutputClausesByDataType(hasExpression, model, new DecisionRule());
+
+        final List<OutputClause> outputClauses = model.getOutput();
+        assertThat(outputClauses.size()).isEqualTo(1);
+
+        final OutputClause outputClause = outputClauses.get(0);
+
+        assertEquals(DEFAULT_OUTPUT_NAME, outputClause.getName());
+        assertEquals(tPersonTypeRef, outputClause.getTypeRef());
+    }
+
+    @Test
     public void testAddInputClauseRequirement() {
 
+        final List<DecisionTableEditorDefinitionEnricher.ClauseRequirement> inputClauseRequirements = new ArrayList<>();
+        final String inputData = "InputData";
+        final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, null, itemDefinitionUtils);
+        final ItemDefinition tPerson = mockTPersonStructure();
+
+        enricher.addInputClauseRequirement(tPerson, inputClauseRequirements, inputData);
+
+        assertEquals(2, inputClauseRequirements.size());
+
+        final DecisionTableEditorDefinitionEnricher.ClauseRequirement inputClause1 = inputClauseRequirements.get(0);
+        final DecisionTableEditorDefinitionEnricher.ClauseRequirement inputClause2 = inputClauseRequirements.get(1);
+
+        assertEquals("InputData.name", inputClause1.text);
+        assertEquals(STRING.getName(), inputClause1.typeRef.getLocalPart());
+
+        assertEquals("InputData.age", inputClause2.text);
+        assertEquals(NUMBER.getName(), inputClause2.typeRef.getLocalPart());
+    }
+
+    private ItemDefinition mockTPersonStructure() {
         final ItemDefinition tPerson = mock(ItemDefinition.class);
         final ItemDefinition name = mock(ItemDefinition.class);
         final ItemDefinition age = mock(ItemDefinition.class);
-        final List<DecisionTableEditorDefinitionEnricher.InputClauseRequirement> inputClauseRequirements = new ArrayList<>();
-        final String inputData = "InputData";
-        final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, null, itemDefinitionUtils);
 
         /* === ItemDefinition ===
          * - tPerson (Structure)
@@ -643,22 +836,10 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         when(age.getTypeRef()).thenReturn(NUMBER.asQName());
         when(age.getItemComponent()).thenReturn(emptyList());
 
-        when(tPerson.getName()).thenReturn(new Name("tPerson"));
+        when(tPerson.getName()).thenReturn(new Name(TYPE_PERSON));
         when(tPerson.getTypeRef()).thenReturn(null);
         when(tPerson.getItemComponent()).thenReturn(asList(name, age));
-
-        enricher.addInputClauseRequirement(tPerson, inputClauseRequirements, inputData);
-
-        assertEquals(2, inputClauseRequirements.size());
-
-        final DecisionTableEditorDefinitionEnricher.InputClauseRequirement inputClause1 = inputClauseRequirements.get(0);
-        final DecisionTableEditorDefinitionEnricher.InputClauseRequirement inputClause2 = inputClauseRequirements.get(1);
-
-        assertEquals("InputData.name", inputClause1.text);
-        assertEquals(STRING.getName(), inputClause1.typeRef.getLocalPart());
-
-        assertEquals("InputData.age", inputClause2.text);
-        assertEquals(NUMBER.getName(), inputClause2.typeRef.getLocalPart());
+        return tPerson;
     }
 
     @Test
@@ -666,11 +847,11 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
 
         final ItemDefinition tPerson = mock(ItemDefinition.class);
         final String inputData = "InputData";
-        final List<DecisionTableEditorDefinitionEnricher.InputClauseRequirement> inputClauseRequirements = new ArrayList<>();
+        final List<DecisionTableEditorDefinitionEnricher.ClauseRequirement> inputClauseRequirements = new ArrayList<>();
         final ItemDefinitionUtils itemDefinitionUtils = new ItemDefinitionUtils(mock(DMNGraphUtils.class));
         final DecisionTableEditorDefinitionEnricher enricher = new DecisionTableEditorDefinitionEnricher(null, null, itemDefinitionUtils);
 
-        when(tPerson.getName()).thenReturn(new Name("tPerson"));
+        when(tPerson.getName()).thenReturn(new Name(TYPE_PERSON));
         when(tPerson.getTypeRef()).thenReturn(null);
         when(tPerson.getItemComponent()).thenReturn(emptyList());
 
@@ -679,6 +860,46 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         assertEquals(1, inputClauseRequirements.size());
 
         assertEquals("InputData", inputClauseRequirements.get(0).text);
-        assertEquals("tPerson", inputClauseRequirements.get(0).typeRef.getLocalPart());
+        assertEquals(TYPE_PERSON, inputClauseRequirements.get(0).typeRef.getLocalPart());
+    }
+
+    @Test
+    public void testComputingClauseNameWithoutModelRef() {
+        final ItemDefinition itemComponent = new ItemDefinition();
+        itemComponent.setName(new Name("model.age"));
+        itemComponent.setAllowOnlyVisualChange(true);
+
+        assertEquals("age", new DecisionTableEditorDefinitionEnricher(null, null, null)
+                .computeClauseName(itemComponent));
+    }
+
+    @Test
+    public void testComputingClauseNameWithoutModelRefWhenModelRefHasMultipleLevels() {
+        final ItemDefinition itemComponent = new ItemDefinition();
+        itemComponent.setName(new Name("a.b.c.age"));
+        itemComponent.setAllowOnlyVisualChange(true);
+
+        assertEquals("age", new DecisionTableEditorDefinitionEnricher(null, null, null)
+                .computeClauseName(itemComponent));
+    }
+
+    @Test
+    public void testComputingClauseNameWithoutModelRefWhenModelRefAlreadyMissing() {
+        final ItemDefinition itemComponent = new ItemDefinition();
+        itemComponent.setName(new Name("age"));
+        itemComponent.setAllowOnlyVisualChange(true);
+
+        assertEquals("age", new DecisionTableEditorDefinitionEnricher(null, null, null)
+                .computeClauseName(itemComponent));
+    }
+
+    @Test
+    public void testComputingClauseNameWithoutModelRefWhenLocalPartEndsWithDot() {
+        final ItemDefinition itemComponent = new ItemDefinition();
+        itemComponent.setName(new Name("age."));
+        itemComponent.setAllowOnlyVisualChange(true);
+
+        assertEquals("age.", new DecisionTableEditorDefinitionEnricher(null, null, null)
+                .computeClauseName(itemComponent));
     }
 }

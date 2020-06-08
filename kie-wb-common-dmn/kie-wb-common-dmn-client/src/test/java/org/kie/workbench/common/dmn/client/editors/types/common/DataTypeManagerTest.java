@@ -389,7 +389,7 @@ public class DataTypeManagerTest {
         when(itemDefinition.getName()).thenReturn(name);
         when(itemDefinition.getItemComponent()).thenReturn(new ArrayList<>());
         when(itemDefinition.getTypeRef()).thenReturn(typeRefMock);
-        when(itemDefinition.isAllowOnlyVisualChange()).thenReturn(true);
+        when(itemDefinition.isImported()).thenReturn(true);
         when(itemDefinitionUtils.getConstraintText(any())).thenCallRealMethod();
         when(itemDefinitionUtils.findByName(any())).thenReturn(Optional.empty());
 

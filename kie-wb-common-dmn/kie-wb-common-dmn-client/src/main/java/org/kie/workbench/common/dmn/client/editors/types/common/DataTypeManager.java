@@ -105,7 +105,7 @@ public class DataTypeManager {
     }
 
     public DataTypeManager from(final ItemDefinition itemDefinition) {
-        final boolean isReadOnly = isImportedItemDefinition(itemDefinition);
+        final boolean isReadOnly = itemDefinition.isImported();
         return this
                 .newDataType(isReadOnly)
                 .withUUID()
@@ -117,10 +117,6 @@ public class DataTypeManager {
                 .withItemDefinitionCollection()
                 .withItemDefinitionSubDataTypes()
                 .withIndexedItemDefinition();
-    }
-
-    private boolean isImportedItemDefinition(final ItemDefinition itemDefinition) {
-        return itemDefinition.isAllowOnlyVisualChange();
     }
 
     public DataTypeManager from(final BuiltInType builtInType) {

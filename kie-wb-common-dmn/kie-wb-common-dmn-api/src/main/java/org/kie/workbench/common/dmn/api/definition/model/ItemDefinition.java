@@ -127,6 +127,13 @@ public class ItemDefinition extends NamedElement implements HasTypeRef,
         this.isCollection = value;
     }
 
+    /**
+     * @return true if current instance of {@link ItemDefinition} is related to an imported model
+     */
+    public boolean isImported() {
+        return allowOnlyVisualChange;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

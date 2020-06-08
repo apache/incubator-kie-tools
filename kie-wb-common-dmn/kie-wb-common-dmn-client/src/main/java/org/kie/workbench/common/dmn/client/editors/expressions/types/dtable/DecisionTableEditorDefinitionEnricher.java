@@ -17,10 +17,12 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -37,6 +39,7 @@ import org.kie.workbench.common.dmn.api.definition.model.DecisionRule;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTable;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionTableOrientation;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.definition.model.InputClause;
@@ -62,22 +65,25 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
+import static org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils.isBuiltInType;
 import static org.kie.workbench.common.dmn.api.property.dmn.QName.NULL_NS_URI;
+import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.ANY;
 
 @ApplicationScoped
 public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorModelEnricher<DecisionTable> {
 
+    private static final String DOT_CHAR = ".";
     private SessionManager sessionManager;
     private DMNGraphUtils dmnGraphUtils;
     private ItemDefinitionUtils itemDefinitionUtils;
 
-    static class InputClauseRequirement {
+    static class ClauseRequirement {
 
         String text;
         QName typeRef;
 
-        InputClauseRequirement(final String text,
-                               final QName typeRef) {
+        ClauseRequirement(final String text,
+                          final QName typeRef) {
             this.text = text;
             this.typeRef = typeRef;
         }
@@ -110,12 +116,6 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
             inputClause.setInputExpression(literalExpression);
             dtable.getInput().add(inputClause);
 
-            final OutputClause outputClause = new OutputClause();
-            outputClause.setName(DecisionTableDefaultValueUtilities.getNewOutputClauseName(dtable));
-            final HasTypeRef hasTypeRef = TypeRefUtils.getTypeRefOfExpression(dtable, hasExpression);
-            outputClause.setTypeRef(!Objects.isNull(hasTypeRef) ? hasTypeRef.getTypeRef() : BuiltInType.UNDEFINED.asQName());
-            dtable.getOutput().add(outputClause);
-
             final RuleAnnotationClause ruleAnnotationClause = new RuleAnnotationClause();
             ruleAnnotationClause.getName().setValue(DecisionTableDefaultValueUtilities.getNewRuleAnnotationClauseName(dtable));
             dtable.getAnnotations().add(ruleAnnotationClause);
@@ -125,9 +125,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
             decisionRuleUnaryTest.getText().setValue(DecisionTableDefaultValueUtilities.INPUT_CLAUSE_UNARY_TEST_TEXT);
             decisionRule.getInputEntry().add(decisionRuleUnaryTest);
 
-            final LiteralExpression decisionRuleLiteralExpression = new LiteralExpression();
-            decisionRuleLiteralExpression.getText().setValue(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
-            decisionRule.getOutputEntry().add(decisionRuleLiteralExpression);
+            buildOutputClausesByDataType(hasExpression, dtable, decisionRule);
 
             final RuleAnnotationClauseText ruleAnnotationEntry = new RuleAnnotationClauseText();
             ruleAnnotationEntry.getText().setValue(DecisionTableDefaultValueUtilities.RULE_DESCRIPTION);
@@ -137,11 +135,9 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
             //Setup parent relationships
             inputClause.setParent(dtable);
-            outputClause.setParent(dtable);
             decisionRule.setParent(dtable);
             literalExpression.setParent(inputClause);
             decisionRuleUnaryTest.setParent(decisionRule);
-            decisionRuleLiteralExpression.setParent(decisionRule);
             ruleAnnotationEntry.setParent(dtable);
 
             if (nodeUUID.isPresent()) {
@@ -150,6 +146,92 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
                 enrichOutputClauses(dtable);
             }
         });
+    }
+
+    void buildOutputClausesByDataType(final HasExpression hasExpression, final DecisionTable dTable, final DecisionRule decisionRule) {
+        final HasTypeRef hasTypeRef = getHasTypeRef(hasExpression, dTable);
+        final QName typeRef = !Objects.isNull(hasTypeRef) ? hasTypeRef.getTypeRef() : BuiltInType.UNDEFINED.asQName();
+        final String name = DecisionTableDefaultValueUtilities.getNewOutputClauseName(dTable);
+
+        final List<ClauseRequirement> outputClausesRequirement = generateOutputClauseRequirements(dmnGraphUtils.getDefinitions(), typeRef, name);
+
+        if (outputClausesRequirement.isEmpty()) {
+            dTable.getOutput().add(
+                    buildOutputClause(dTable, typeRef, name)
+            );
+            populateOutputEntries(decisionRule);
+        } else {
+            outputClausesRequirement
+                    .stream()
+                    .sorted(Comparator.comparing(outputClauseRequirement -> outputClauseRequirement.text))
+                    .map(outputClauseRequirement -> buildOutputClause(dTable, outputClauseRequirement.typeRef, outputClauseRequirement.text))
+                    .forEach(outputClause -> {
+                        dTable.getOutput().add(outputClause);
+                        populateOutputEntries(decisionRule);
+                    });
+        }
+    }
+
+    private HasTypeRef getHasTypeRef(final HasExpression hasExpression, final DecisionTable dTable) {
+        if (hasExpression instanceof FunctionDefinition) {
+            final DMNModelInstrumentedBase parent = hasExpression.asDMNModelInstrumentedBase().getParent();
+            if (parent instanceof HasVariable) {
+                return ((HasVariable) parent).getVariable();
+            }
+        }
+        return TypeRefUtils.getTypeRefOfExpression(dTable, hasExpression);
+    }
+
+    private List<ClauseRequirement> generateOutputClauseRequirements(final Definitions definitions, final QName typeRef, final String name) {
+        if (isBuiltInType(typeRef.getLocalPart())) {
+            return Collections.singletonList(new ClauseRequirement(name, typeRef));
+        }
+
+        return definitions.getItemDefinition()
+                .stream()
+                .filter(typeRefIsCustom(typeRef))
+                .findFirst()
+                .map(this::generateOutputClauseRequirementsForFirstLevel)
+                .orElse(Collections.emptyList());
+    }
+
+    private List<ClauseRequirement> generateOutputClauseRequirementsForFirstLevel(final ItemDefinition itemDefinition) {
+        return itemDefinition.getItemComponent()
+                .stream()
+                .map(this::definitionToClauseRequirementMapper)
+                .collect(Collectors.toList());
+    }
+
+    private ClauseRequirement definitionToClauseRequirementMapper(final ItemDefinition itemDefinition) {
+        final QName typeRef = itemDefinition.getTypeRef();
+        final String name = computeClauseName(itemDefinition);
+
+        if (Objects.isNull(typeRef) || typeRefDoesNotMatchAnyDefinition(typeRef)) {
+            return new ClauseRequirement(name, ANY.asQName());
+        }
+        return new ClauseRequirement(name, typeRef);
+    }
+
+    private boolean typeRefDoesNotMatchAnyDefinition(final QName typeRef) {
+        return !isBuiltInType(typeRef.getLocalPart()) &&
+                dmnGraphUtils.getDefinitions().getItemDefinition()
+                        .stream()
+                        .noneMatch(typeRefIsCustom(typeRef));
+    }
+
+    private OutputClause buildOutputClause(final DecisionTable dtable, final QName typeRef, final String text) {
+        final OutputClause outputClause = new OutputClause();
+        outputClause.setName(text);
+        outputClause.setTypeRef(typeRef);
+        outputClause.setParent(dtable);
+        return outputClause;
+    }
+
+    private void populateOutputEntries(final DecisionRule decisionRule) {
+        final LiteralExpression decisionRuleLiteralExpression = new LiteralExpression();
+        decisionRuleLiteralExpression.getText().setValue(DecisionTableDefaultValueUtilities.OUTPUT_CLAUSE_EXPRESSION_TEXT);
+        decisionRuleLiteralExpression.setParent(decisionRule);
+        decisionRule.getOutputEntry().add(decisionRuleLiteralExpression);
     }
 
     @SuppressWarnings("unchecked")
@@ -188,7 +270,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
         //Extract individual components of InputData TypeRefs
         final Definitions definitions = dmnGraphUtils.getDefinitions();
-        final List<InputClauseRequirement> inputClauseRequirements = new ArrayList<>();
+        final List<ClauseRequirement> inputClauseRequirements = new ArrayList<>();
         decisionSet.forEach(decision -> addInputClauseRequirement(decision.getVariable().getTypeRef(),
                                                                   definitions,
                                                                   inputClauseRequirements,
@@ -226,38 +308,50 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
     private void addInputClauseRequirement(final QName typeRef,
                                            final Definitions definitions,
-                                           final List<InputClauseRequirement> inputClauseRequirements,
+                                           final List<ClauseRequirement> inputClauseRequirements,
                                            final String text) {
         //TypeRef matches a BuiltInType
-        for (BuiltInType bi : BuiltInType.values()) {
-            for (String biName : bi.getNames()) {
-                if (Objects.equals(biName, typeRef.getLocalPart())) {
-                    inputClauseRequirements.add(new InputClauseRequirement(text, typeRef));
-                    return;
-                }
-            }
+        if (isBuiltInType(typeRef.getLocalPart())) {
+            inputClauseRequirements.add(new ClauseRequirement(text, typeRef));
+            return;
         }
 
         //Otherwise lookup and expand ItemDefinition from the QName's LocalPart
         definitions.getItemDefinition()
                 .stream()
-                .filter(itemDef -> itemDef.getName().getValue().equals(typeRef.getLocalPart()))
+                .filter(typeRefIsCustom(typeRef))
                 .findFirst()
                 .ifPresent(itemDefinition -> addInputClauseRequirement(itemDefinition, inputClauseRequirements, text));
     }
 
     void addInputClauseRequirement(final ItemDefinition itemDefinition,
-                                   final List<InputClauseRequirement> inputClauseRequirements,
+                                   final List<ClauseRequirement> inputClauseRequirements,
                                    final String text) {
         if (itemDefinition.getItemComponent().size() == 0) {
-            inputClauseRequirements.add(new InputClauseRequirement(text,
-                                                                   getQName(itemDefinition)));
+            inputClauseRequirements.add(new ClauseRequirement(text,
+                                                              getQName(itemDefinition)));
         } else {
             itemDefinition.getItemComponent()
                     .forEach(itemComponent -> addInputClauseRequirement(itemComponent,
                                                                         inputClauseRequirements,
-                                                                        text + "." + itemComponent.getName().getValue()));
+                                                                        text + DOT_CHAR + computeClauseName(itemComponent)));
         }
+    }
+
+    String computeClauseName(final ItemDefinition itemComponent) {
+        final String originalName = itemComponent.getName().getValue();
+        String nameWithoutModelRef = originalName;
+        if (itemComponent.isImported()) {
+            final int positionOfLastDot = originalName.lastIndexOf(DOT_CHAR) + 1;
+            if (positionOfLastDot > 0 && positionOfLastDot != originalName.length()) {
+                nameWithoutModelRef = originalName.substring(positionOfLastDot);
+            }
+        }
+        return nameWithoutModelRef;
+    }
+
+    private Predicate<ItemDefinition> typeRefIsCustom(final QName typeRef) {
+        return itemDef -> Objects.equals(itemDef.getName().getValue(), typeRef.getLocalPart());
     }
 
     private QName getQName(final ItemDefinition itemDefinition) {
@@ -275,10 +369,8 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
     }
 
     void enrichOutputClauses(final DecisionTable dtable) {
-        if (dtable.getParent() instanceof ContextEntry) {
+        if (dtable.getParent() instanceof ContextEntry && dtable.getOutput().isEmpty()) {
             final ContextEntry contextEntry = (ContextEntry) dtable.getParent();
-            dtable.getOutput().clear();
-            dtable.getRule().stream().forEach(decisionRule -> decisionRule.getOutputEntry().clear());
 
             final OutputClause outputClause = new OutputClause();
             outputClause.setName(getOutputClauseName(contextEntry).orElse(DecisionTableDefaultValueUtilities.getNewOutputClauseName(dtable)));

@@ -68,5 +68,6 @@ public class RegisterNodeCommand extends org.kie.workbench.common.stunner.core.g
         function.setExpression(le);
         le.setParent(function);
         businessKnowledgeModel.setEncapsulatedLogic(function);
+        function.setParent(businessKnowledgeModel);
     }
 }
