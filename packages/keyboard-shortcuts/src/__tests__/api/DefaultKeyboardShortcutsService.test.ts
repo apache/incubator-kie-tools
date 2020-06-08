@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "../../api/keyboardShortcuts";
+import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "../../api";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
 import { fireEvent } from "@testing-library/react";
 

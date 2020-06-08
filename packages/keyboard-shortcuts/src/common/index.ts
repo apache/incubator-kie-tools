@@ -14,21 +14,5 @@
  * limitations under the License.
  */
 
-import { ChannelStateControlEvent } from "@kogito-tooling/core-api";
-import { StateControl } from "../../api/stateControl";
-import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
-import { KeyboardShortcutRegistration } from "../../api/keyboardShortcuts";
-
-export function undoShortcut(): KeyboardShortcutRegistration {
-  return {
-    combination: "ctrl+z",
-    label: "Edit | Undo last edit",
-  };
-}
-
-export function redoShortcut(): KeyboardShortcutRegistration {
-  return {
-    combination: "shift+ctrl+z",
-    label: "Edit | Redo last edit",
-  };
-}
+export * from "./ChannelKeyboardShortcuts";
+export * from "./KeyBindingsHelpOverlay";

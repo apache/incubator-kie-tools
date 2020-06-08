@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/microeditor-envelope",
+  "name": "@kogito-tooling/keyboard-shortcuts",
   "version": "0.4.3",
   "description": "",
   "license": "Apache-2.0",
@@ -13,9 +13,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.4.3",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.4.3",
-    "@kogito-tooling/keyboard-shortcuts": "0.4.3"
+    "@kogito-tooling/core-api": "0.4.3"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

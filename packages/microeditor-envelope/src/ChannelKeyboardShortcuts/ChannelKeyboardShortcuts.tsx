@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
+import { ChannelStateControlEvent } from "@kogito-tooling/core-api";
+import { KeyboardShortcutsApi, undoShortcut, redoShortcut } from "@kogito-tooling/keyboard-shortcuts";
 import { useEffect } from "react";
 import * as React from "react";
-import { undoShortcut, redoShortcut } from "./channelStateControl";
-import { KeyboardShortcutsApi } from "../api/keyboardShortcuts";
-import { StateControl } from "../api/stateControl";
 import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
-import { ChannelStateControlEvent } from "@kogito-tooling/core-api";
+import { StateControl } from "../api/stateControl";
 
 interface Props {
   keyboardShortcuts: KeyboardShortcutsApi;
@@ -29,6 +28,7 @@ interface Props {
 }
 
 export function ChannelKeyboardShortcuts(props: Props) {
+  // Add the redo keyboard shortcut
   useEffect(() => {
     const { combination, label } = redoShortcut();
     const id = props.keyboardShortcuts.registerKeyPress(combination, label, async () => {
@@ -38,6 +38,7 @@ export function ChannelKeyboardShortcuts(props: Props) {
     return () => props.keyboardShortcuts.deregister(id);
   }, []);
 
+  // Add the undo keyboard shortcut
   useEffect(() => {
     const { combination, label } = undoShortcut();
     const id = props.keyboardShortcuts.registerKeyPress(combination, label, async () => {

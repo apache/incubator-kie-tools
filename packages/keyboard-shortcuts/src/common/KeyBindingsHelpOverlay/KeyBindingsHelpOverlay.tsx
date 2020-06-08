@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { KeyboardShortcutsApi } from "../api/keyboardShortcuts";
+import { EditorContext, OperatingSystem } from "@kogito-tooling/core-api";
 import {
   Modal,
   Text,
@@ -28,9 +26,10 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { KeyboardIcon } from "@patternfly/react-icons";
-import { EditorContext } from "../api/context";
-import { OperatingSystem } from "@kogito-tooling/core-api";
+import * as React from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import "./styles.scss";
+import { KeyboardShortcutsApi } from "../../api";
 
 export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShortcutsApi; context: EditorContext }) {
   const [showing, setShowing] = useState(false);
@@ -88,7 +87,13 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
         <KeyboardIcon />
       </div>
 
-      <Modal title={"Keyboard shortcuts"} isOpen={showing} width={"60%"} onClose={toggle} data-testid={"keyboard-shortcuts-help-overlay"}>
+      <Modal
+        title={"Keyboard shortcuts"}
+        isOpen={showing}
+        width={"60%"}
+        onClose={toggle}
+        data-testid={"keyboard-shortcuts-help-overlay"}
+      >
         <TextContent>
           <TextList component={TextListVariants.dl}>
             {Array.from(keyBindings.keys()).map(category => (

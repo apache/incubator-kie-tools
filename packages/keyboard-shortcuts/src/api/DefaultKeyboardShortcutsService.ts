@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-import { KeyBindingServiceOpts, KeyboardShortcutsApi } from "./KeyboardShorcutsApi";
-import { EditorContext } from "../context";
-import { OperatingSystem } from "@kogito-tooling/core-api";
-
-export interface KeyBinding {
-  combination: string;
-  label: string;
-  opts?: KeyBindingServiceOpts;
-  listener: (e: KeyboardEvent) => boolean;
-}
+import { EditorContext, OperatingSystem } from "@kogito-tooling/core-api";
+import { KeyBinding, KeyBindingServiceOpts, KeyboardShortcutsApi } from "./KeyboardShorcutsApi";
 
 export enum ModKeys {
   CTRL = "ctrl",

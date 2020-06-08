@@ -18,7 +18,7 @@ import * as React from "react";
 import { shallow } from "enzyme";
 import { EditorEnvelopeView } from "../EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
-import { DefaultKeyboardShortcutsService } from "../api/keyboardShortcuts";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import {
   ChannelType,
   EditorContent,

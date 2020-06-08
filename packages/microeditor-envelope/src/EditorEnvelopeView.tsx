@@ -18,13 +18,12 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as AppFormer from "@kogito-tooling/core-api";
 import { LoadingScreen } from "./LoadingScreen";
-import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
-import { KeyboardShortcutsApi } from "./api/keyboardShortcuts";
+import { KeyBindingsHelpOverlay } from "@kogito-tooling/keyboard-shortcuts";
+import { KeyboardShortcutsApi } from "../../keyboard-shortcuts/src/api";
+import { ChannelKeyboardShortcuts } from "./ChannelKeyboardShortcuts"
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
-import { EditorContext } from "./api/context";
-import { ChannelKeyboardShortcuts } from "./ChannelKeyboardShortcuts";
 import { StateControl } from "./api/stateControl";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 
@@ -32,7 +31,7 @@ interface Props {
   exposing: (self: EditorEnvelopeView) => void;
   loadingScreenContainer: HTMLElement;
   keyboardShortcuts: KeyboardShortcutsApi;
-  context: EditorContext;
+  context: AppFormer.EditorContext;
   stateControl: StateControl;
   busApi: EnvelopeBusInnerMessageHandler;
 }

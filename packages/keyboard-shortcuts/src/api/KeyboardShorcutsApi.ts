@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { KeyBinding } from "./DefaultKeyboardShortcutsService";
-
 /**
  * PUBLIC ENVELOPE API
  */
@@ -91,6 +89,13 @@ export interface KeyBindingServiceOpts {
   hidden?: boolean;
   element?: EventTarget;
   repeat?: boolean;
+}
+
+export interface KeyBinding {
+  combination: string;
+  label: string;
+  opts?: KeyBindingServiceOpts;
+  listener: (e: KeyboardEvent) => boolean;
 }
 
 export interface KeyboardShortcutRegistration {

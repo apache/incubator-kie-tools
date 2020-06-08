@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./ChannelKeyboardShortcuts";
+import "@testing-library/jest-dom";

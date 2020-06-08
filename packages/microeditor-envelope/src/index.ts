@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 
+import { EditorContext } from "@kogito-tooling/core-api";
+import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "@kogito-tooling/keyboard-shortcuts";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { ReactElement } from "react";
 import * as ReactDOM from "react-dom";
-import { EditorContext } from "./api/context";
-import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "./api/keyboardShortcuts";
 import { ResourceContentApi, ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { StateControl, StateControlApi } from "./api/stateControl";
 import { EditorEnvelopeController } from "./EditorEnvelopeController";
 import { EditorFactory } from "./EditorFactory";
 import { Renderer } from "./Renderer";
 import { SpecialDomElements } from "./SpecialDomElements";
-
-export * from "./api/context/EditorContext";
-export * from "./api/keyboardShortcuts";
-export * from "./api/resourceContent";
-export * from "./api/keyboardShortcuts";
-export * from "./ChannelKeyboardShortcuts";
-export { EditorEnvelopeController } from "./EditorEnvelopeController";
-export * from "./EditorFactory";
-export * from "./EnvelopeBusInnerMessageHandler";
-export { SpecialDomElements } from "./SpecialDomElements";
 
 declare global {
   interface Window {

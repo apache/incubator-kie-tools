@@ -14,5 +14,18 @@
  * limitations under the License.
  */
 
-export * from "./KeyboardShorcutsApi";
-export * from "./DefaultKeyboardShortcutsService";
+import { KeyboardShortcutRegistration } from "../../api";
+
+export function undoShortcut(): KeyboardShortcutRegistration {
+  return {
+    combination: "ctrl+z",
+    label: "Edit | Undo last edit",
+  };
+}
+
+export function redoShortcut(): KeyboardShortcutRegistration {
+  return {
+    combination: "shift+ctrl+z",
+    label: "Edit | Redo last edit",
+  };
+}

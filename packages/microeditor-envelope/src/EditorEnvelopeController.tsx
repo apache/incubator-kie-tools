@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,16 @@
 
 import * as React from "react";
 import * as AppFormer from "@kogito-tooling/core-api";
-import { EditorContent, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { EditorContent, EditorContext, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { KeyboardShortcutsApi } from "@kogito-tooling/keyboard-shortcuts";
+import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
-import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { StateControl } from "./api/stateControl";
-import { KeyboardShortcutsApi } from "./api/keyboardShortcuts";
-import { EditorContext } from "./api/context";
 
 export class EditorEnvelopeController {
   private readonly editorFactory: EditorFactory<any>;
