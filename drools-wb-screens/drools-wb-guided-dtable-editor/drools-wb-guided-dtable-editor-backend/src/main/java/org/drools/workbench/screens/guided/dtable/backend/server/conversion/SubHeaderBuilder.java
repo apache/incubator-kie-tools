@@ -16,7 +16,6 @@
 package org.drools.workbench.screens.guided.dtable.backend.server.conversion;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +31,10 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol5
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
@@ -39,6 +42,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.RuleNameColumn;
+import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.ColumnContext;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
 
@@ -47,27 +51,47 @@ import static org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstrai
 
 public class SubHeaderBuilder {
 
+    public static final String ACTION = "ACTION";
+    public static final String METADATA = "METADATA";
+    public static final String CONDITION = "CONDITION";
+
     private static final int COLUMN_TYPE_ROW = 5;
     private static final int FIELD_ROW = 7;
     private static final int HEADER_TITLE_ROW = 8;
 
     private final GuidedDecisionTable52 dtable;
-    private final String ACTION = "ACTION";
-    private final String METADATA = "METADATA";
-    private final String CONDITION = "CONDITION";
     private final XLSColumnUtilities columnUtilities;
     private final Row headerRow;
     private final Row fieldRow;
     private final Row headerTitleRow;
-    private final List<String> addedInserts = new ArrayList<>();
 
     private int targetColumnIndex = 0;
+    private final BRLColumnSubHeaderProvider brlColumnSubHeaderProvider;
+    private final ColumnContext columnContext;
+
+    private int sourceColumnIndex = 0;
+
+    public ColumnContext getColumnContext() {
+        return columnContext;
+    }
+
+    public Row getFieldRow() {
+        return fieldRow;
+    }
+
+    public int getTargetColumnIndex() {
+        return targetColumnIndex;
+    }
 
     public SubHeaderBuilder(final Sheet sheet,
                             final GuidedDecisionTable52 dtable,
-                            final PackageDataModelOracle dmo) {
+                            final PackageDataModelOracle dmo,
+                            final ColumnContext columnContext) {
         PortablePreconditions.checkNotNull("sheet", sheet);
         this.dtable = PortablePreconditions.checkNotNull("dtable", dtable);
+        this.columnContext = PortablePreconditions.checkNotNull("brlColumnIndex", columnContext);
+        brlColumnSubHeaderProvider = new BRLColumnSubHeaderProvider(this,
+                                                                    columnContext);
         this.columnUtilities = new XLSColumnUtilities(dtable,
                                                       PortablePreconditions.checkNotNull("dmo", dmo),
                                                       false);
@@ -81,19 +105,26 @@ public class SubHeaderBuilder {
 
         final List<BaseColumn> expandedColumns = dtable.getExpandedColumns();
 
-        for (int sourceColumnIndex = 0; sourceColumnIndex < expandedColumns.size(); sourceColumnIndex++) {
+        for (; sourceColumnIndex < expandedColumns.size(); sourceColumnIndex++) {
 
             final BaseColumn baseColumn = expandedColumns.get(sourceColumnIndex);
 
             if (baseColumn instanceof AttributeCol52) {
-                makeAttribute((AttributeCol52) baseColumn);
+                addAttribute((AttributeCol52) baseColumn);
             } else if (baseColumn instanceof MetadataCol52) {
-                makeMetadata((MetadataCol52) baseColumn);
+                addMetadata((MetadataCol52) baseColumn);
+            } else if (baseColumn instanceof BRLConditionVariableColumn) {
+                final BRLConditionColumn brlColumn = dtable.getBRLColumn((BRLConditionVariableColumn) baseColumn);
+                addBRLConditionColumn(brlColumn);
+                sourceColumnIndex = sourceColumnIndex + brlColumn.getChildColumns().size() - 1;
+            } else if (baseColumn instanceof BRLActionVariableColumn) {
+                final BRLActionColumn brlColumn = dtable.getBRLColumn((BRLActionVariableColumn) baseColumn);
+                addBRLActionColumn(brlColumn);
+                sourceColumnIndex = sourceColumnIndex + brlColumn.getChildColumns().size() - 1;
             } else if (baseColumn instanceof ConditionCol52) {
-                makeCondition((ConditionCol52) baseColumn);
+                addCondition((ConditionCol52) baseColumn);
             } else if (baseColumn instanceof ActionCol52) {
-                makeAction(sourceColumnIndex,
-                           baseColumn);
+                addAction((ActionCol52) baseColumn);
             } else if (baseColumn instanceof RowNumberCol52 || baseColumn instanceof RuleNameColumn) {
                 // Ignore and do not add to count
                 continue;
@@ -102,37 +133,52 @@ public class SubHeaderBuilder {
             } else {
                 throw new IllegalArgumentException("TODO REMOTE THIS");
             }
-            targetColumnIndex++;
+            incrementTargetIndex();
         }
     }
 
-    private void makeAction(final int sourceColumnIndex,
-                            final BaseColumn baseColumn) {
+    public void incrementTargetIndex() {
+        targetColumnIndex++;
+    }
+
+    private void addBRLConditionColumn(final BRLConditionColumn brlColumn) {
+        brlColumnSubHeaderProvider.getBRLColumnSubHeaderBuilder(dtable,
+                                                                brlColumn);
+    }
+
+    private void addBRLActionColumn(final BRLActionColumn brlColumn) {
+        brlColumnSubHeaderProvider.getBRLColumnSubHeaderBuilder(dtable,
+                                                                brlColumn);
+    }
+
+    public void addAction(final ActionCol52 baseColumn) {
 
         if (baseColumn instanceof ActionWorkItemSetFieldCol52) {
-            makeWorkItemSetField(sourceColumnIndex,
-                                 (ActionWorkItemSetFieldCol52) baseColumn);
+            addWorkItemSetField((ActionWorkItemSetFieldCol52) baseColumn);
         } else if (baseColumn instanceof ActionSetFieldCol52) {
-            makeSetField((ActionSetFieldCol52) baseColumn);
+            addSetField((ActionSetFieldCol52) baseColumn);
         } else if (baseColumn instanceof ActionInsertFactCol52) {
-            makeInsert((ActionInsertFactCol52) baseColumn);
+            addInsert(baseColumn.getHeader(),
+                      ((ActionInsertFactCol52) baseColumn).getBoundName(),
+                      ((ActionInsertFactCol52) baseColumn).getFactType(),
+                      ((ActionInsertFactCol52) baseColumn).getFactField());
         } else if (baseColumn instanceof ActionWorkItemCol52) {
-            makeWorkItem((ActionWorkItemCol52) baseColumn);
+            addWorkItem((ActionWorkItemCol52) baseColumn);
         } else if (baseColumn instanceof ActionRetractFactCol52) {
-            makeRetract((ActionRetractFactCol52) baseColumn);
+            addRetract((ActionRetractFactCol52) baseColumn);
         }
     }
 
-    private void makeHeaderAndTitle(final String action,
-                                    final String header) {
+    public void addHeaderAndTitle(final String title,
+                                  final String header) {
         headerRow.createCell(targetColumnIndex)
-                .setCellValue(action);
+                .setCellValue(title);
 
         headerTitleRow.createCell(targetColumnIndex)
                 .setCellValue(header);
     }
 
-    private void makeWorkItem(final ActionWorkItemCol52 column) {
+    private void addWorkItem(final ActionWorkItemCol52 column) {
 
         final PortableWorkDefinition workItemDefinition = column.getWorkItemDefinition();
 
@@ -159,8 +205,8 @@ public class SubHeaderBuilder {
                                                    workItemDefinition.getName(),
                                                    builder.toString());
 
-        makeHeaderAndTitle(ACTION,
-                           column.getHeader());
+        addHeaderAndTitle(ACTION,
+                          column.getHeader());
         fieldRow.createCell(targetColumnIndex).setCellValue(format);
     }
 
@@ -172,66 +218,74 @@ public class SubHeaderBuilder {
         return String.format("wi%sManager", name);
     }
 
-    private void makeRetract(final ActionRetractFactCol52 column) {
+    private void addRetract(final ActionRetractFactCol52 column) {
 
-        makeHeaderAndTitle(ACTION,
-                           column.getHeader());
+        addHeaderAndTitle(ACTION,
+                          column.getHeader());
         fieldRow.createCell(targetColumnIndex).setCellValue("retract( $param );");
     }
 
-    private void makeInsert(final ActionInsertFactCol52 column) {
+    /**
+     * @return true if an insert was created.
+     */
+    public boolean addInsert(final String header,
+                             final String boundName,
+                             final String factType,
+                             final String factField) {
+        boolean madeInsert = false;
 
-        if (!addedInserts.contains(column.getBoundName())) {
+        if (columnContext.isBoundNameFree(boundName)) {
+            madeInsert = true;
 
-            makeHeaderAndTitle(ACTION,
-                               "");
+            addHeaderAndTitle(ACTION,
+                              "");
 
             fieldRow.createCell(targetColumnIndex).setCellValue(MessageFormat.format("{0} {1} = new {2}(); insert( {1} );",
-                                                                                     column.getFactType(),
-                                                                                     column.getBoundName(),
-                                                                                     column.getFactType()));
+                                                                                     factType,
+                                                                                     boundName,
+                                                                                     factType));
 
-            addedInserts.add(column.getBoundName());
-            targetColumnIndex++;
+            columnContext.addBoundName(boundName);
+            incrementTargetIndex();
         }
 
-        makeHeaderAndTitle(ACTION,
-                           column.getHeader());
+        addHeaderAndTitle(ACTION,
+                          header);
 
-        fieldRow.createCell(targetColumnIndex).setCellValue(makeSetMethod(column.getBoundName(),
-                                                                          column.getFactField(),
-                                                                          "$param"));
+        fieldRow.createCell(targetColumnIndex).setCellValue(addSetMethod(boundName,
+                                                                         factField,
+                                                                         "$param"));
+        return madeInsert;
     }
 
-    private void makeSetField(final ActionSetFieldCol52 column) {
+    private void addSetField(final ActionSetFieldCol52 column) {
 
-        makeSetField(column,
-                     "$param");
+        addSetField(column,
+                    "$param");
     }
 
-    private void makeWorkItemSetField(final int sourceColumnIndex,
-                                      final ActionWorkItemSetFieldCol52 column) {
+    private void addWorkItemSetField(final ActionWorkItemSetFieldCol52 column) {
 
-        makeSetField(column,
-                     String.format("(%s) %s.getResult( \"Result\" )",
-                                   getColumnDataType(sourceColumnIndex),
-                                   getWorkItemParameterVariableName(column.getWorkItemName())));
+        addSetField(column,
+                    String.format("(%s) %s.getResult( \"Result\" )",
+                                  getColumnDataType(sourceColumnIndex),
+                                  getWorkItemParameterVariableName(column.getWorkItemName())));
     }
 
-    private void makeSetField(final ActionSetFieldCol52 column,
-                              final String value) {
+    private void addSetField(final ActionSetFieldCol52 column,
+                             final String value) {
 
-        makeHeaderAndTitle(ACTION,
-                           column.getHeader());
-        fieldRow.createCell(targetColumnIndex).setCellValue(makeSetMethod(column.getBoundName(),
-                                                                          column.getFactField(),
-                                                                          value));
+        addHeaderAndTitle(ACTION,
+                          column.getHeader());
+        fieldRow.createCell(targetColumnIndex).setCellValue(addSetMethod(column.getBoundName(),
+                                                                         column.getFactField(),
+                                                                         value));
     }
 
-    private void makeCondition(final ConditionCol52 column) {
+    public void addCondition(final ConditionCol52 column) {
 
-        makeHeaderAndTitle(CONDITION,
-                           column.getHeader());
+        addHeaderAndTitle(CONDITION,
+                          column.getHeader());
 
         if (column.getConstraintValueType() == TYPE_PREDICATE) {
 
@@ -282,7 +336,7 @@ public class SubHeaderBuilder {
         }
     }
 
-    private void makeAttribute(final AttributeCol52 column) {
+    private void addAttribute(final AttributeCol52 column) {
         if (Objects.equals(Attribute.NEGATE_RULE.getAttributeName(), column.getAttribute())) {
             throw new UnsupportedOperationException("Conversion of the negate attribute is not supported.");
         } else {
@@ -300,18 +354,18 @@ public class SubHeaderBuilder {
         }
     }
 
-    private void makeMetadata(final MetadataCol52 column) {
+    private void addMetadata(final MetadataCol52 column) {
 
-        makeHeaderAndTitle(METADATA,
-                           column.getHeader());
+        addHeaderAndTitle(METADATA,
+                          column.getHeader());
 
         fieldRow.createCell(targetColumnIndex).setCellValue(String.format("%s( $param )",
                                                                           column.getMetadata()));
     }
 
-    private String makeSetMethod(final String boundName,
-                                 final String factField,
-                                 final String value) {
+    private String addSetMethod(final String boundName,
+                                final String factField,
+                                final String value) {
         return String.format("%s.set%s%s( %s );",
                              boundName,
                              factField.substring(0, 1).toUpperCase(),

@@ -30,12 +30,17 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactC
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.util.ColumnUtilitiesBase;
+import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.ColumnContext;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
@@ -49,6 +54,7 @@ public class DataBuilder {
 
     private final Sheet sheet;
     private final GuidedDecisionTable52 dtable;
+    private final ColumnContext columnContext;
     private final ColumnUtilitiesBase utilsWithRespectForLists;
     private final ColumnUtilitiesBase utilsWithNoRespectForLists;
 
@@ -56,9 +62,11 @@ public class DataBuilder {
 
     public DataBuilder(final Sheet sheet,
                        final GuidedDecisionTable52 dtable,
-                       final PackageDataModelOracle dmo) {
+                       final PackageDataModelOracle dmo,
+                       final ColumnContext columnContext) {
         this.sheet = PortablePreconditions.checkNotNull("sheet", sheet);
         this.dtable = PortablePreconditions.checkNotNull("dtable", dtable);
+        this.columnContext = PortablePreconditions.checkNotNull("columnContext", columnContext);
         PortablePreconditions.checkNotNull("dmo", dmo);
         this.utilsWithRespectForLists = new XLSColumnUtilities(dtable,
                                                                dmo,
@@ -75,7 +83,7 @@ public class DataBuilder {
         }
     }
 
-    class DataRowBuilder {
+    public class DataRowBuilder {
 
         private final Row xlsRow = sheet.createRow(rowCount);
         private final Set<String> addedInserts = new HashSet<>();
@@ -84,13 +92,34 @@ public class DataBuilder {
         private int sourceColumnIndex = 0;
         private int targetColumnIndex = -2;
 
-        public DataRowBuilder(List<DTCellValue52> row) {
+        public GuidedDecisionTable52 getDtable() {
+            return dtable;
+        }
+
+        public int getTargetColumnIndex() {
+            return targetColumnIndex;
+        }
+
+        public void moveToNextTargetColumnIndex() {
+            ++targetColumnIndex;
+        }
+
+        public int getSourceColumnIndex() {
+            return sourceColumnIndex;
+        }
+
+        public void moveSourceColumnIndexForward() {
+            sourceColumnIndex++;
+        }
+
+        public DataRowBuilder(final List<DTCellValue52> row) {
             this.row = row;
         }
 
         public void build() {
 
-            for (final DTCellValue52 cell : row) {
+            for (; sourceColumnIndex < row.size(); sourceColumnIndex++) {
+                final DTCellValue52 cell = row.get(sourceColumnIndex);
 
                 if (sourceColumnIndex == GuidedDecisionTable52.RULE_DESCRIPTION_INDEX) {
                     xlsRow.createCell(targetColumnIndex)
@@ -99,37 +128,81 @@ public class DataBuilder {
 
                     final BaseColumn baseColumn = dtable.getExpandedColumns().get(sourceColumnIndex);
 
-                    if (baseColumn instanceof ActionInsertFactCol52) {
+                    if (baseColumn instanceof BRLActionVariableColumn) {
 
-                        addActionInsertFirstColumn();
-                    }
+                        addBRLActionVariableColumn((BRLActionVariableColumn) baseColumn);
+                    } else if (baseColumn instanceof BRLConditionVariableColumn) {
 
-                    if (isOperator("== null") || isOperator("!= null")) {
-
-                        xlsRow.createCell(targetColumnIndex)
-                                .setCellValue("null");
-                    } else if (isWorkItemColumn()) {
-
-                        if (cell.getBooleanValue() != null
-                                && cell.getBooleanValue()) {
-                            xlsRow.createCell(targetColumnIndex)
-                                    .setCellValue("X");
-                        }
-                    } else if (dtable.getExpandedColumns().get(sourceColumnIndex) instanceof ActionRetractFactCol52) {
-
-                        if (!StringUtils.isEmpty(cell.getStringValue())) {
-                            xlsRow.createCell(targetColumnIndex)
-                                    .setCellValue(cell.getStringValue());
-                        }
+                        addBRLConditionVariableColumn((BRLConditionVariableColumn) baseColumn);
                     } else {
 
-                        setValue(cell, getColumnDataType(sourceColumnIndex));
+                        if (baseColumn instanceof ActionInsertFactCol52) {
+
+                            addActionInsertFirstColumn();
+                        }
+
+                        if (isOperator("== null") || isOperator("!= null")) {
+
+                            addNullColumn();
+                        } else if (isWorkItemColumn()) {
+
+                            addWorkItemColumn(cell);
+                        } else if (dtable.getExpandedColumns().get(sourceColumnIndex) instanceof ActionRetractFactCol52) {
+
+                            addRetractColumn(cell);
+                        } else {
+
+                            final String value = getValue(cell,
+                                                          getColumnDataType(sourceColumnIndex),
+                                                          true);
+                            if (value != null) {
+                                xlsRow.createCell(targetColumnIndex)
+                                        .setCellValue(value);
+                            }
+                        }
                     }
                 }
-                sourceColumnIndex++;
                 targetColumnIndex++;
             }
             rowCount++;
+        }
+
+        public void addRetractColumn(final DTCellValue52 cell) {
+            if (!StringUtils.isEmpty(cell.getStringValue())) {
+                xlsRow.createCell(targetColumnIndex)
+                        .setCellValue(cell.getStringValue());
+            }
+        }
+
+        public void addNullColumn() {
+            xlsRow.createCell(targetColumnIndex)
+                    .setCellValue("null");
+        }
+
+        public void addWorkItemColumn(final DTCellValue52 cell) {
+            if (cell.getBooleanValue() != null
+                    && cell.getBooleanValue()) {
+                xlsRow.createCell(targetColumnIndex)
+                        .setCellValue("X");
+            }
+        }
+
+        public void addBRLConditionVariableColumn(final BRLConditionVariableColumn baseColumn) {
+            final BRLConditionColumn brlColumn = dtable.getBRLColumn(baseColumn);
+            BRLColumnDataBuilder.make(this,
+                                      brlColumn,
+                                      columnContext).build(brlColumn,
+                                                           row,
+                                                           xlsRow);
+        }
+
+        public void addBRLActionVariableColumn(final BRLActionVariableColumn baseColumn) {
+            final BRLActionColumn brlColumn = dtable.getBRLColumn(baseColumn);
+            BRLColumnDataBuilder.make(this,
+                                      brlColumn,
+                                      columnContext).build(brlColumn,
+                                                           row,
+                                                           xlsRow);
         }
 
         private boolean isWorkItemColumn() {
@@ -152,14 +225,32 @@ public class DataBuilder {
             }
         }
 
-        private void setValue(final DTCellValue52 cell,
-                              final DataType.DataTypes dataType) {
+        public String getValue(final List<DTCellValue52> row,
+                               final int sourceColumnIndex,
+                               final boolean addQuotes) {
+            final DTCellValue52 newCell = row.get(sourceColumnIndex);
+            return getValue(newCell,
+                            getColumnDataType(sourceColumnIndex),
+                            addQuotes); // TODO needed?
+
+        }
+        public String getValue(final List<DTCellValue52> row,
+                               final int sourceColumnIndex) {
+            final DTCellValue52 newCell = row.get(sourceColumnIndex);
+            return getValue(newCell,
+                            getColumnDataType(sourceColumnIndex),
+                            false); // TODO true or false?
+        }
+
+        public String getValue(final DTCellValue52 cell,
+                               final DataType.DataTypes dataType,
+                               final boolean addQuotes) {
             switch (dataType) {
 
                 case STRING:
 
-                    setStringValue(cell);
-                    break;
+                    return getStringValue(cell,
+                                          addQuotes);
                 case NUMERIC:
                 case NUMERIC_BIGDECIMAL:
                 case NUMERIC_BIGINTEGER:
@@ -169,54 +260,57 @@ public class DataBuilder {
                 case NUMERIC_INTEGER:
                 case NUMERIC_LONG:
                 case NUMERIC_SHORT:
-                    setNumericValue(cell);
-                    break;
+                    return getNumericValue(cell);
                 case DATE:
-                    setDateValue(cell);
-                    break;
+                    return getDateValue(cell,
+                                        addQuotes);
                 case BOOLEAN:
-                    setBooleanValue(cell);
-                    break;
+                    return getBooleanValue(cell);
             }
+            return null;
         }
 
-        private void setNumericValue(final DTCellValue52 cell) {
+        private String getNumericValue(final DTCellValue52 cell) {
             final Number numericValue = cell.getNumericValue();
             if (numericValue != null) {
-                xlsRow.createCell(targetColumnIndex)
-                        .setCellValue(numericValue.toString());
+                return numericValue.toString();
             }
+            return null;
         }
 
-        private void setBooleanValue(final DTCellValue52 cell) {
+        private String getBooleanValue(final DTCellValue52 cell) {
             final Boolean booleanValue = cell.getBooleanValue();
             if (booleanValue != null) {
-                xlsRow.createCell(targetColumnIndex)
-                        .setCellValue(booleanValue.toString());
+
+                return booleanValue.toString();
             }
+            return null;
         }
 
-        private void setDateValue(final DTCellValue52 cell) {
+        private String getDateValue(final DTCellValue52 cell,
+                                    final boolean addQuotes) {
             final Date dateValue = cell.getDateValue();
             if (dateValue != null) {
-
-                xlsRow.createCell(targetColumnIndex)
-                        .setCellValue(String.format("\"%s\"", DateUtils.format(dateValue)));
+                if (addQuotes) {
+                    return String.format("\"%s\"", DateUtils.format(dateValue));
+                } else {
+                    return DateUtils.format(dateValue);
+                }
             }
+            return null;
         }
 
-        private void setStringValue(final DTCellValue52 cell) {
+        private String getStringValue(final DTCellValue52 cell,
+                                      final boolean addQuotes) {
             if (isTheRealCellValueString(sourceColumnIndex) && cell.getStringValue() != null) {
 
                 if (cell.getStringValue() != null && !cell.getStringValue().isEmpty()) {
                     if (isOperator("in")) {
-
-                        xlsRow.createCell(targetColumnIndex)
-                                .setCellValue(String.format("(%s)", fixStringValue(cell)));
+                        return String.format("(%s)", fixStringValue(cell));
+                    } else if (addQuotes) {
+                        return String.format("\"%s\"", fixStringValue(cell));
                     } else {
-
-                        xlsRow.createCell(targetColumnIndex)
-                                .setCellValue(String.format("\"%s\"", fixStringValue(cell)));
+                        return cell.getStringValue();
                     }
                 }
             } else {
@@ -230,10 +324,12 @@ public class DataBuilder {
                             .setCellValue(cell.getStringValue());
                 } else {
 
-                    setValue(cell,
-                             cell.getDataType());
+                    return getValue(cell,
+                                    cell.getDataType(),
+                                    addQuotes);
                 }
             }
+            return null;
         }
 
         private boolean isOperator(final String operator) {
@@ -277,7 +373,7 @@ public class DataBuilder {
             return false;
         }
 
-        private DataType.DataTypes getColumnDataType(final int columnIndex) {
+        public DataType.DataTypes getColumnDataType(final int columnIndex) {
             return utilsWithRespectForLists.getTypeSafeType(dtable.getExpandedColumns().get(columnIndex));
         }
     }

@@ -23,6 +23,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.ColumnContext;
 import org.drools.workbench.screens.guided.dtable.shared.XLSConversionResult;
 import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.soup.project.datamodel.oracle.PackageDataModelOracle;
@@ -31,11 +32,13 @@ public class XLSBuilder {
 
     private static final int RULE_SET_ROW = 1;
     private static final int IMPORTS_ROW = 2;
+    private static final int DECLARE_ROW = 3;
     private static final int RULE_TABLE_ROW = 4;
     private final GuidedDecisionTable52 dtable;
     private final Sheet sheet;
     private final Workbook workbook;
     private final PackageDataModelOracle dmo;
+    private final ColumnContext columnContext = new ColumnContext();
 
     public XLSBuilder(final GuidedDecisionTable52 dtable,
                       final PackageDataModelOracle dmo) {
@@ -48,9 +51,11 @@ public class XLSBuilder {
 
     public BuildResult build() {
         try {
+            checkHitPolicy();
 
             makeRuleSet();
             makeImports();
+            makeDeclare();
 
             makeTable();
         } catch (final UnsupportedOperationException e) {
@@ -62,6 +67,12 @@ public class XLSBuilder {
         }
         return new BuildResult(workbook,
                                new XLSConversionResult());
+    }
+
+    private void checkHitPolicy() {
+        if (dtable.getHitPolicy() != GuidedDecisionTable52.HitPolicy.NONE) {
+            throw new UnsupportedOperationException("Migrating Hit Policies is not supported.");
+        }
     }
 
     private void makeRuleSet() {
@@ -85,6 +96,15 @@ public class XLSBuilder {
                                       .collect(Collectors.joining(", ")));
     }
 
+    private void makeDeclare() {
+        final Row headerRow = sheet.createRow(DECLARE_ROW);
+        headerRow.createCell(1)
+                .setCellValue("Declare");
+
+        headerRow.createCell(2)
+                .setCellValue("dialect \"mvel\";");
+    }
+
     private void makeTable() {
 
         makeTableHeader();
@@ -101,15 +121,15 @@ public class XLSBuilder {
     }
 
     private void makeTableSubHeader() {
-        new SubHeaderBuilder(sheet, dtable, dmo).build();
+        new SubHeaderBuilder(sheet, dtable, dmo, columnContext).build();
     }
 
     private void makePatternRow() {
-        new PatternRowBuilder(sheet, dtable).build();
+        new PatternRowBuilder(sheet, dtable, columnContext).build();
     }
 
     private void makeDTableColumns() {
-        new DataBuilder(sheet, dtable, dmo).build();
+        new DataBuilder(sheet, dtable, dmo, columnContext).build();
     }
 
     class BuildResult {
