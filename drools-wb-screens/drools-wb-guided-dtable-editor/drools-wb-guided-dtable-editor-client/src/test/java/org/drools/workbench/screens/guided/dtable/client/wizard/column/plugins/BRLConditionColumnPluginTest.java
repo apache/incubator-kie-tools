@@ -33,9 +33,11 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryBRLCon
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer.VetoUpdatePatternInUseException;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AdditionalInfoPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.DefaultValuesPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.RuleModellerPage;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -95,6 +97,7 @@ public class BRLConditionColumnPluginTest {
 
     @InjectMocks
     private BRLConditionColumnPlugin plugin = spy(new BRLConditionColumnPlugin(ruleModellerPage,
+                                                                               mock(DefaultValuesPage.class),
                                                                                additionalInfoPage,
                                                                                changeEvent,
                                                                                translationService));
@@ -134,7 +137,7 @@ public class BRLConditionColumnPluginTest {
     public void testGetPages() throws Exception {
         final List<WizardPage> pages = plugin.getPages();
 
-        assertEquals(2,
+        assertEquals(3,
                      pages.size());
     }
 
@@ -157,11 +160,24 @@ public class BRLConditionColumnPluginTest {
 
         assertTrue(success);
 
-        verify(plugin).getDefinedVariables(any());
+        verify(plugin).setupDefinedVariables(any());
         verify(editingCol).setDefinition(any());
         verify(presenter).appendColumn(editingCol);
         verify(translationService,
                never()).format(any());
+    }
+
+    @Test
+    public void testGenerateColumnVeto() throws Exception {
+
+        doReturn(false).when(plugin).isNewColumn();
+        doThrow(new ModelSynchronizer.VetoException()).when(presenter).updateColumn(any(ConditionCol52.class),
+                                                                                    any(BRLConditionColumn.class));
+        final Boolean success = plugin.generateColumn();
+
+        assertFalse(success);
+
+        verify(wizard).showGenericVetoError();
     }
 
     @Test
@@ -178,7 +194,7 @@ public class BRLConditionColumnPluginTest {
 
         assertTrue(success);
 
-        verify(plugin).getDefinedVariables(any());
+        verify(plugin).setupDefinedVariables(any());
         verify(editingCol).setDefinition(any());
         verify(presenter).updateColumn(col52,
                                        editingCol);

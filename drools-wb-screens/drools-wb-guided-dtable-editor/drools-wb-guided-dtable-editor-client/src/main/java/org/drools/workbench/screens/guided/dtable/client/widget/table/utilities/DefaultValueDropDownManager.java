@@ -48,7 +48,7 @@ public class DefaultValueDropDownManager extends LimitedEntryDropDownManager {
         final BaseColumn baseColumn = context.getBaseColumn();
 
         //Get values for all Constraints or Actions on the same pattern as the baseColumn
-        if ( baseColumn instanceof ConditionCol52 ) {
+        if ( baseColumn instanceof ConditionCol52 && basePattern != null) {
             for ( ConditionCol52 cc : basePattern.getChildColumns() ) {
                 currentValueMap.put( cc.getFactField(),
                                      getValue( cc ) );

@@ -38,6 +38,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.M
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AdditionalInfoPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.CalculationTypePage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.DefaultValuesPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.FieldPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.OperatorPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.PatternPage;
@@ -108,6 +109,9 @@ public class PluginHandlerTest {
 
     @Mock
     private AdditionalInfoPage additionalInfoPage;
+
+    @Mock
+    private DefaultValuesPage defaultValuesPage;
 
     @Mock
     private ManagedInstance<NewGuidedDecisionTableColumnWizard> wizardManagedInstance;
@@ -284,6 +288,7 @@ public class PluginHandlerTest {
         final LimitedEntryBRLActionColumn originalColumn = mock(LimitedEntryBRLActionColumn.class);
 
         final BRLActionColumnPlugin plugin = spy(new BRLActionColumnPlugin(ruleModellerPage,
+                                                                           defaultValuesPage,
                                                                            new MockInstanceImpl<>(new ArrayList<>()),
                                                                            additionalInfoPage,
                                                                            event,
@@ -298,6 +303,7 @@ public class PluginHandlerTest {
         final BRLActionColumn originalColumn = mock(BRLActionColumn.class);
 
         final BRLActionColumnPlugin plugin = spy(new BRLActionColumnPlugin(ruleModellerPage,
+                                                                           defaultValuesPage,
                                                                            new MockInstanceImpl<>(new ArrayList<>()),
                                                                            additionalInfoPage,
                                                                            event,
@@ -351,6 +357,7 @@ public class PluginHandlerTest {
 
     private void testEditBrlConditionColumn(BRLConditionColumn originalColumn) {
         final BRLConditionColumnPlugin plugin = spy(new BRLConditionColumnPlugin(ruleModellerPage,
+                                                                                 defaultValuesPage,
                                                                                  additionalInfoPage,
                                                                                  event,
                                                                                  translationService));

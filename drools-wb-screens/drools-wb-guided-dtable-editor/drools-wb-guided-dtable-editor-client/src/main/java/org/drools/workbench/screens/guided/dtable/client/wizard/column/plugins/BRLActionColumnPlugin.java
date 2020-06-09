@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -46,8 +47,10 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasAdditionalInfoPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasDefaultValuesPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.commons.HasRuleModellerPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AdditionalInfoPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.DefaultValuesPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.RuleModellerPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.AdditionalInfoPageInitializer;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins.commons.BaseDecisionTableColumnPlugin;
@@ -60,11 +63,15 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
 @Dependent
-public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin implements HasRuleModellerPage,
+public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin implements HasDefaultValuesPage,
+                                                                                    HasRuleModellerPage,
                                                                                     HasAdditionalInfoPage,
                                                                                     TemplateVariablesChangedEvent.Handler {
 
+    private static final String EMPTY_COLUMN_NAME = "";
+
     private RuleModellerPage ruleModellerPage;
+    private DefaultValuesPage defaultValuesPage;
 
     private Collection<RuleModellerActionPlugin> actionPlugins = new ArrayList<>();
 
@@ -80,6 +87,7 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     @Inject
     public BRLActionColumnPlugin(final RuleModellerPage ruleModellerPage,
+                                 final DefaultValuesPage defaultValuesPage,
                                  final Instance<RuleModellerActionPlugin> actionPluginInstance,
                                  final AdditionalInfoPage<BRLActionColumnPlugin> additionalInfoPage,
                                  final Event<WizardPageStatusChangeEvent> changeEvent,
@@ -88,6 +96,7 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
               translationService);
 
         this.ruleModellerPage = ruleModellerPage;
+        this.defaultValuesPage = defaultValuesPage;
         actionPluginInstance.iterator().forEachRemaining(actionPlugins::add);
         this.additionalInfoPage = additionalInfoPage;
     }
@@ -101,6 +110,7 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
     public List<WizardPage> getPages() {
         return new ArrayList<WizardPage>() {{
             add(ruleModellerPage);
+            add(defaultValuesPage);
             add(additionalInfoPage());
         }};
     }
@@ -144,7 +154,7 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
     @Override
     public Boolean generateColumn() {
-        getDefinedVariables(getRuleModel());
+        setupDefinedVariables(getRuleModel());
         editingCol().setDefinition(Arrays.asList(getRuleModel().rhs));
 
         if (isNewColumn()) {
@@ -166,7 +176,8 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
         return (BRLActionColumn) getOriginalColumnConfig52();
     }
 
-    boolean getDefinedVariables(RuleModel ruleModel) {
+    @Override
+    public boolean setupDefinedVariables(RuleModel ruleModel) {
         Map<InterpolationVariable, Integer> ivs = new HashMap<InterpolationVariable, Integer>();
         RuleModelVisitor rmv = new RuleModelVisitor(ivs);
         rmv.visit(ruleModel);
@@ -181,10 +192,14 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
 
         //If there are no variables add a boolean column to specify whether the fragment should apply
         if (ivs.isEmpty()) {
-            BRLActionVariableColumn variable = new BRLActionVariableColumn("",
+            BRLActionVariableColumn variable = new BRLActionVariableColumn(EMPTY_COLUMN_NAME,
                                                                            DataType.TYPE_BOOLEAN);
-            variable.setHeader(editingCol.getHeader());
-            variable.setHideColumn(editingCol.isHideColumn());
+            variable.setHeader(editingCol().getHeader());
+            variable.setHideColumn(editingCol().isHideColumn());
+            final Optional<BRLActionVariableColumn> oldCol = getChildEditingCol(EMPTY_COLUMN_NAME);
+            if (oldCol.isPresent()) {
+                variable.setDefaultValue(oldCol.get().getDefaultValue());
+            }
             List<BRLActionVariableColumn> variables = new ArrayList<BRLActionVariableColumn>();
             variables.add(variable);
             return variables;
@@ -199,8 +214,12 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
                                                                            iv.getDataType(),
                                                                            iv.getFactType(),
                                                                            iv.getFactField());
-            variable.setHeader(editingCol.getHeader());
-            variable.setHideColumn(editingCol.isHideColumn());
+            final Optional<BRLActionVariableColumn> oldCol = getChildEditingCol(iv.getVarName());
+            if (oldCol.isPresent()) {
+                variable.setDefaultValue(oldCol.get().getDefaultValue());
+            }
+            variable.setHeader(editingCol().getHeader());
+            variable.setHideColumn(editingCol().isHideColumn());
             variables[index] = variable;
         }
 
@@ -210,6 +229,16 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
             variableList.add(variable);
         }
         return variableList;
+    }
+
+    private Optional<BRLActionVariableColumn> getChildEditingCol(final String varName) {
+        for (BRLActionVariableColumn childColumn : editingCol().getChildColumns()) {
+            if (Objects.equals(varName, childColumn.getVarName())) {
+                return Optional.of(childColumn);
+            }
+        }
+
+        return Optional.empty();
     }
 
     @Override
@@ -355,7 +384,7 @@ public class BRLActionColumnPlugin extends BaseDecisionTableColumnPlugin impleme
     @Override
     public void onTemplateVariablesChanged(TemplateVariablesChangedEvent event) {
         if (event.getSource() == getRuleModel()) {
-            getDefinedVariables(event.getModel());
+            setupDefinedVariables(event.getModel());
         }
     }
 

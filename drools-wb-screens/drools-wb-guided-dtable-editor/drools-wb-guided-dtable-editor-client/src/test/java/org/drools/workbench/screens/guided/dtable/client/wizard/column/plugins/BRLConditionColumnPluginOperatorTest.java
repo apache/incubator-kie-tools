@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.wizard.column.plugins;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -28,9 +29,11 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.AdditionalInfoPage;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.DefaultValuesPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.column.pages.RuleModellerPage;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
@@ -44,7 +47,9 @@ import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -71,6 +76,7 @@ public class BRLConditionColumnPluginOperatorTest {
 
     @InjectMocks
     private BRLConditionColumnPlugin plugin = spy(new BRLConditionColumnPlugin(ruleModellerPage,
+                                                                               mock(DefaultValuesPage.class),
                                                                                additionalInfoPage,
                                                                                changeEvent,
                                                                                translationService) {
@@ -80,7 +86,7 @@ public class BRLConditionColumnPluginOperatorTest {
             ruleModel.lhs = new IPattern[1];
             final FactPattern factPattern = new FactPattern();
             final SingleFieldConstraint constraint = new SingleFieldConstraint();
-            constraint.setValue("value");
+            constraint.setValue("var1");
             constraint.setFieldType("fieldType");
             constraint.setFactType("factType");
             constraint.setFieldName("fieldName");
@@ -115,9 +121,38 @@ public class BRLConditionColumnPluginOperatorTest {
         final BRLConditionVariableColumn brlConditionVariableColumn = value.get(0);
 
         assertEquals("fieldType", brlConditionVariableColumn.getFieldType());
-        assertEquals("value", brlConditionVariableColumn.getVarName());
+        assertEquals("var1", brlConditionVariableColumn.getVarName());
         assertEquals("fieldName", brlConditionVariableColumn.getFactField());
         assertEquals("in", brlConditionVariableColumn.getOperator());
+        assertNull(brlConditionVariableColumn.getDefaultValue());
+    }
+
+    @Test
+    public void getDefinedVariables2() {
+
+        doReturn(true).when(plugin).isNewColumn();
+        doReturn(model).when(presenter).getModel();
+        doReturn("header").when(editingCol).getHeader();
+
+        final ArrayList<BRLConditionVariableColumn> childColumns = new ArrayList<>();
+        final BRLConditionVariableColumn brlConditionVariableColumn1 = new BRLConditionVariableColumn("var1",
+                                                                                                      "fieldType");
+        final DTCellValue52 defaultValue = new DTCellValue52();
+        brlConditionVariableColumn1.setDefaultValue(defaultValue);
+        childColumns.add(brlConditionVariableColumn1);
+        childColumns.add(new BRLConditionVariableColumn("var2",
+                                                        "fieldType"));
+        doReturn(childColumns).when(editingCol).getChildColumns();
+
+        plugin.generateColumn();
+
+        verify(editingCol).setChildColumns(listArgumentCaptor.capture());
+        final List<BRLConditionVariableColumn> value = listArgumentCaptor.getValue();
+        assertEquals(1, value.size());
+
+        final BRLConditionVariableColumn brlConditionVariableColumn = value.get(0);
+
+        assertEquals(defaultValue, brlConditionVariableColumn.getDefaultValue());
     }
 
     @Test

@@ -28,9 +28,11 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -274,6 +276,23 @@ public class DTCellValueWidgetFactory {
         }
 
         DataType.DataTypes type = columnUtilities.getTypeSafeType(column);
+        return makeHasNoValuesAndEnumsWidget(type,
+                                             value);
+    }
+
+    public IsWidget getWidget(BRLVariableColumn column,
+                              DTCellValue52 value) {
+        if (oracle.hasEnums(column.getFactType(),
+                            column.getFactField())) {
+            return makeHasEnumsListBox(null,
+                                       (BaseColumn) column,
+                                       value,
+                                       false,
+                                       column.getFactField(),
+                                       column.getFactType());
+        }
+
+        DataType.DataTypes type = columnUtilities.getTypeSafeType((BaseColumn) column);
         return makeHasNoValuesAndEnumsWidget(type,
                                              value);
     }

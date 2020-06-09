@@ -18,13 +18,17 @@ package org.drools.workbench.screens.guided.dtable.client.widget;
 
 import java.util.HashMap;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
+import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTColumnConfig52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +37,8 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -88,6 +94,45 @@ public class DTCellValueWidgetFactoryTest {
                              "name")).thenReturn(true);
         Widget widget = factory.getWidget(insertFactCol52,
                                           cellValue);
+
+        assertTrue(widget instanceof ListBox);
+    }
+
+    @Test
+    public void testGetWidgetEnumsForBRLColumn() throws Exception {
+        BRLActionVariableColumn column = mock(BRLActionVariableColumn.class);
+        doReturn("Person").when(column).getFactType();
+        doReturn("name").when(column).getFactField();
+        when(oracle.hasEnums("Person",
+                             "name")).thenReturn(true);
+        IsWidget widget = factory.getWidget(column,
+                                            cellValue);
+
+        assertTrue(widget instanceof ListBox);
+    }
+
+    @Test
+    public void testGeTextBoxForBRLColumn() throws Exception {
+        BRLActionVariableColumn column = mock(BRLActionVariableColumn.class);
+        doReturn("Person").when(column).getFactType();
+        doReturn("name").when(column).getFactField();
+        when(oracle.hasEnums("Person",
+                             "name")).thenReturn(false);
+        IsWidget widget = factory.getWidget(column,
+                                            cellValue);
+
+        assertTrue(widget instanceof TextBox);
+    }
+
+    @Test
+    public void testEnumDropdownForBRLColumn() throws Exception {
+        BRLConditionVariableColumn column = mock(BRLConditionVariableColumn.class);
+        doReturn("Person").when(column).getFactType();
+        doReturn("name").when(column).getFactField();
+        when(oracle.hasEnums("Person",
+                             "name")).thenReturn(true);
+        IsWidget widget = factory.getWidget(column,
+                                            cellValue);
 
         assertTrue(widget instanceof ListBox);
     }
