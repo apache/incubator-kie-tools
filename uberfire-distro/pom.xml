@@ -246,7 +246,7 @@
       <groupId>org.uberfire</groupId>
       <artifactId>showcase-distribution-wars</artifactId>
       <type>war</type>
-      <classifier>wildfly8.1</classifier>
+      <classifier>wildfly</classifier>
     </dependency>
 
     <!-- Testing Utils -->

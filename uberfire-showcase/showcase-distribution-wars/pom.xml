@@ -50,7 +50,7 @@
           <finalName>uberfire-showcase-${project.version}</finalName>
           <descriptors>
             <descriptor>src/main/assembly/assembly-showcase-tomcat-7_0.xml</descriptor>
-            <descriptor>src/main/assembly/assembly-showcase-wildfly-8_1.xml</descriptor>
+            <descriptor>src/main/assembly/assembly-showcase-wildfly.xml</descriptor>
           </descriptors>
           <archive>
             <addMavenDescriptor>false</addMavenDescriptor>
