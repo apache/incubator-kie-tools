@@ -24,7 +24,7 @@ startExtension({
   name: "Kogito :: BPMN and DMN editors",
   editorIndexPath: "envelope/index.html",
   router: new ChromeRouter(new GwtEditorRoutes({ bpmnPath: EditorType.BPMN, dmnPath: EditorType.DMN, scesimPath: EditorType.SCESIM })),
-  extensionIconUrl: chrome.extension.getURL("/resources/kogito-icon.png"),
+  extensionIconUrl: chrome.extension.getURL("/resources/kie_icon.png"),
   githubAuthTokenCookieName: "github-oauth-token-kie-editors",
   externalEditorManager: new OnlineEditorManager()
 });
