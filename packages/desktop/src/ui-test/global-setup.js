@@ -24,12 +24,13 @@ exports.setupTimeout = function (test) {
   if (process.env.CI) {
     test.timeout(30000)
   } else {
-    test.timeout(10000)
+    test.timeout(30000)
   }
 }
 
 exports.startApplication = function (options) {
   options.path = exports.getElectronPath()
+  options.waitTimeout = 25000
   if (process.env.CI) {
     options.startTimeout = 30000
   }
