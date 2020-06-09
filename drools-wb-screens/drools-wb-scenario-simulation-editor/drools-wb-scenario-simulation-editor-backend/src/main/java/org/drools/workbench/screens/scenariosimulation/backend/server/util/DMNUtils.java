@@ -43,13 +43,13 @@ public class DMNUtils {
 
     /**
      * This method returns the correct <b>type</b> name of a given <code>DMNType</code>. Basically, if a DMNType
-     * contains a baseType, it takes the type name from its baseType. This is to manage DMN Simple Types and Anonymous
-     * inner types
+     * contains a baseType and is not a collection, it takes the type name from its baseType.
+     * This is to manage DMN Simple Types and Anonymous inner types
      * @param dmnType
      * @return
      */
     public static String getDMNTypeName(DMNType dmnType) {
-        if (dmnType.getBaseType() != null) {
+        if (dmnType.getBaseType() != null && !dmnType.isCollection()) {
             return dmnType.getBaseType().getName();
         }
         return dmnType.getName();
