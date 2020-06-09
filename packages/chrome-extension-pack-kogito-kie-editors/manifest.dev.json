@@ -1,5 +1,5 @@
 {
-  "name": "KIE Group GitHub Chrome Extension",
+  "name": "KIE Group Chrome Extension",
   "version": "0.4.3",
   "manifest_version": 2,
   "description": "Visualize and edit BPMN or DMN files on GitHub",
@@ -17,6 +17,18 @@
       "all_frames": true
     }
   ],
+  "icons": {
+    "16": "./resources/icon_16.png",
+    "48": "./resources/icon_48.png",
+    "128": "./resources/icon_128.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "16": "./resources/icon_16.png",
+      "48": "./resources/icon_48.png",
+      "128": "./resources/icon_128.png"
+    }
+  },
   "background": { "scripts": ["background.js"], "persistent": true },
   "web_accessible_resources": ["resources/*"],
   "permissions": [
