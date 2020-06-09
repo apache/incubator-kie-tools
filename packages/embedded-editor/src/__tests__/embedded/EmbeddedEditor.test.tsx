@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-import { ChannelType, EditorContent, KogitoEdit, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
+import {
+  ChannelType,
+  EditorContent,
+  KogitoEdit,
+  ResourceContentRequest,
+  ResourceListRequest
+} from "@kogito-tooling/core-api";
 import { EnvelopeBusMessageType, EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
-import { mount, render } from "enzyme";
+import { mount } from "enzyme";
 import * as React from "react";
 import { RefObject } from "react";
-import { EditorType } from "../../common/EditorTypes";
-import { File } from "../../common/File";
-import { EmbeddedEditor, EmbeddedEditorRef } from "../../embedded/EmbeddedEditor";
-import { EmbeddedEditorRouter } from "../../embedded/EmbeddedEditorRouter";
+import { EditorType, File } from "../../common";
+import { EmbeddedEditor, EmbeddedEditorRef, EmbeddedEditorRouter } from "../../embedded";
+import { StateControl } from "../../stateControl";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 
 describe("EmbeddedEditor::ONLINE", () => {
@@ -46,10 +51,21 @@ describe("EmbeddedEditor::ONLINE", () => {
     }
   };
 
+  const stateControl = new StateControl();
+
   beforeAll(() => spyOn<any>(EnvelopeBusOuterMessageHandler, "generateRandomBusId"));
 
   test("EmbeddedEditor::defaults", () => {
-    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, { attachTo: holder });
+    mount(
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        router={router}
+        channelType={channelType}
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
+    );
 
     expect(holder.firstElementChild?.getAttribute("id")).toBe("kogito-iframe");
     expect(holder.firstElementChild?.getAttribute("data-envelope-channel")).toBe(ChannelType.ONLINE);
@@ -61,7 +77,16 @@ describe("EmbeddedEditor::ONLINE", () => {
   test("EmbeddedEditor::setContent", () => {
     const spyRespond_contentRequest = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "respond_contentRequest");
 
-    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, { attachTo: holder });
+    mount(
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        router={router}
+        channelType={channelType}
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
+    );
 
     editorRef.current?.setContent("content");
 
@@ -71,7 +96,16 @@ describe("EmbeddedEditor::ONLINE", () => {
   test("EmbeddedEditor::requestContent", () => {
     const spyRequest_contentResponse = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "request_contentResponse");
 
-    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, { attachTo: holder });
+    mount(
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        router={router}
+        channelType={channelType}
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
+    );
 
     editorRef.current?.requestContent();
 
@@ -81,7 +115,16 @@ describe("EmbeddedEditor::ONLINE", () => {
   test("EmbeddedEditor::requestPreview", () => {
     const spyRequest_previewResponse = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "request_previewResponse");
 
-    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, { attachTo: holder });
+    mount(
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        router={router}
+        channelType={channelType}
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
+    );
 
     editorRef.current?.requestPreview();
 
@@ -98,7 +141,9 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onContentResponse={onContentResponse}
-      />, { attachTo: holder }
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
     );
 
     await incomingMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT });
@@ -118,7 +163,9 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onSetContentError={onSetContentError}
-      />, { attachTo: holder }
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
     );
 
     await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR });
@@ -138,7 +185,9 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onDirtyIndicatorChange={onDirtyIndicatorChange}
-      />, { attachTo: holder }
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
     );
 
     await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE });
@@ -151,7 +200,17 @@ describe("EmbeddedEditor::ONLINE", () => {
   test("EmbeddedEditor::onReady", async () => {
     const onReady = jest.fn(() => null);
 
-    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} onReady={onReady} />, { attachTo: holder });
+    mount(
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        router={router}
+        channelType={channelType}
+        onReady={onReady}
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
+    );
 
     await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_READY });
 
@@ -170,7 +229,9 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onResourceContentRequest={onResourceContentRequest}
-      />, { attachTo: holder }
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
     );
 
     await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT, data: { path: "" } });
@@ -192,7 +253,9 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onResourceListRequest={onResourceListRequest}
-      />, { attachTo: holder }
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
     );
 
     await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_LIST, data: { pattern: "", paths: [] } });
@@ -206,10 +269,18 @@ describe("EmbeddedEditor::ONLINE", () => {
     const onNewEdit = jest.fn((edit: KogitoEdit) => null);
 
     mount(
-      <EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} onNewEdit={onNewEdit} />, { attachTo: holder }
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        router={router}
+        channelType={channelType}
+        onNewEdit={onNewEdit}
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
     );
 
-    await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT });
+    await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT, data: new KogitoEdit("1") });
 
     expect(onNewEdit).toBeCalled();
 
@@ -226,7 +297,9 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onPreviewResponse={onPreviewResponse}
-      />, { attachTo: holder }
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
     );
 
     await incomingMessage({ type: EnvelopeBusMessageType.RETURN_PREVIEW });

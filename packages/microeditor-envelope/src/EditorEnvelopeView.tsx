@@ -20,7 +20,7 @@ import * as AppFormer from "@kogito-tooling/core-api";
 import { LoadingScreen } from "./LoadingScreen";
 import { KeyBindingsHelpOverlay } from "@kogito-tooling/keyboard-shortcuts";
 import { KeyboardShortcutsApi } from "../../keyboard-shortcuts/src/api";
-import { ChannelKeyboardShortcuts } from "./ChannelKeyboardShortcuts"
+import { RegisterChannelKeyboardShortcuts } from "./RegisterChannelKeyboardShortcuts";
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
@@ -33,7 +33,7 @@ interface Props {
   keyboardShortcuts: KeyboardShortcutsApi;
   context: AppFormer.EditorContext;
   stateControl: StateControl;
-  busApi: EnvelopeBusInnerMessageHandler;
+  messageBus: EnvelopeBusInnerMessageHandler;
 }
 
 interface State {
@@ -73,10 +73,10 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
       <>
         {!this.state.loading && (
           <>
-            <ChannelKeyboardShortcuts
+            <RegisterChannelKeyboardShortcuts
               keyboardShortcuts={this.props.keyboardShortcuts}
               stateControl={this.props.stateControl}
-              busApi={this.props.busApi}
+              messageBus={this.props.messageBus}
             />
             <KeyBindingsHelpOverlay keyboardShortcuts={this.props.keyboardShortcuts} context={this.props.context} />
           </>

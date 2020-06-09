@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export enum ChannelStateControlEvent {
+export enum StateControlEvent {
   UNDO,
   REDO,
   SAVE

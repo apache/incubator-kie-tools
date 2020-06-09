@@ -2,8 +2,19 @@
 
 exports[`EditorEnvelopeView after loading stops 1`] = `
 <Fragment>
-  <ChannelKeyboardShortcuts
-    busApi={
+  <RegisterChannelKeyboardShortcuts
+    keyboardShortcuts={
+      e {
+        "delayedKeyBindings": Array [],
+        "editorContext": Object {
+          "channel": "VSCODE",
+          "operatingSystem": "WINDOWS",
+        },
+        "eventIdentifiers": 1,
+        "keyBindings": Map {},
+      }
+    }
+    messageBus={
       EnvelopeBusInnerMessageHandler {
         "capturedInitRequestYet": false,
         "envelopeBusApi": Object {
@@ -19,17 +30,6 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
           "receive_resourceContentList": [Function],
           "receive_resourceContentResponse": [Function],
         },
-      }
-    }
-    keyboardShortcuts={
-      e {
-        "delayedKeyBindings": Array [],
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
-        },
-        "eventIdentifiers": 1,
-        "keyBindings": Map {},
       }
     }
     stateControl={StateControl {}}
@@ -65,8 +65,19 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
 
 exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
 <Fragment>
-  <ChannelKeyboardShortcuts
-    busApi={
+  <RegisterChannelKeyboardShortcuts
+    keyboardShortcuts={
+      e {
+        "delayedKeyBindings": Array [],
+        "editorContext": Object {
+          "channel": "VSCODE",
+          "operatingSystem": "WINDOWS",
+        },
+        "eventIdentifiers": 1,
+        "keyBindings": Map {},
+      }
+    }
+    messageBus={
       EnvelopeBusInnerMessageHandler {
         "capturedInitRequestYet": false,
         "envelopeBusApi": Object {
@@ -82,17 +93,6 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
           "receive_resourceContentList": [Function],
           "receive_resourceContentResponse": [Function],
         },
-      }
-    }
-    keyboardShortcuts={
-      e {
-        "delayedKeyBindings": Array [],
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
-        },
-        "eventIdentifiers": 1,
-        "keyBindings": Map {},
       }
     }
     stateControl={StateControl {}}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useEditorDirtyState } from "@kogito-tooling/embedded-editor";
+import { useDirtyState } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { useContext, useMemo } from "react";
 import { GlobalContext } from "../common/GlobalContext";
@@ -30,7 +30,7 @@ interface Props {
 
 export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
-  const isEdited = useEditorDirtyState(context.editorStateControl);
+  const isEdited = useDirtyState(context.stateControl);
 
   const editorType = useMemo(() => {
     return context.file!.fileType;

@@ -17,7 +17,7 @@
 import { EnvelopeBusOuterMessageHandler } from "../EnvelopeBusOuterMessageHandler";
 import { EnvelopeBusMessage } from "../EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "../EnvelopeBusMessageType";
-import { ChannelStateControlEvent, EditorContent, KogitoEdit, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
+import { EditorContent, KogitoEdit, ResourceContentRequest, ResourceListRequest, StateControlEvent } from "@kogito-tooling/core-api";
 
 let sentMessages: Array<EnvelopeBusMessage<any>>;
 let receivedMessages: string[];
@@ -76,7 +76,7 @@ beforeEach(() => {
       receive_previewRequest(previewSvg: string) {
         receivedMessages.push("preview");
       },
-      notify_channelStateControl(edit: ChannelStateControlEvent) {
+      notify_stateControl(edit: StateControlEvent) {
         receivedMessages.push("receiveStateControlEvent_" + edit);
       }
     })

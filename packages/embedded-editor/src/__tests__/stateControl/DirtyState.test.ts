@@ -15,23 +15,23 @@
  */
 
 import { renderHook } from "@testing-library/react-hooks";
-import { useEditorDirtyState } from "../../stateControl/EditorDirtyState";
-import { EditorStateControl } from "../../stateControl/EditorStateControl";
+import { useDirtyState } from "../../stateControl/DirtyState";
+import { StateControl } from "../../stateControl/StateControl";
 import { act } from "react-test-renderer";
 
 describe("useEditorDirtyState", () => {
-  let editorStateControl: EditorStateControl;
-  beforeEach(() => (editorStateControl = new EditorStateControl()));
+  let editorStateControl: StateControl;
+  beforeEach(() => (editorStateControl = new StateControl()));
 
   describe("false", () => {
     it("after initialization", () => {
-      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
+      const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       expect(result.current).toBeFalsy();
     });
 
     it("redo without any event to be redone", () => {
-      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
+      const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
         editorStateControl.redoEvent();
@@ -41,7 +41,7 @@ describe("useEditorDirtyState", () => {
     });
 
     it("add event and save it", () => {
-      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
+      const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
         editorStateControl.updateEventStack("1");
@@ -52,7 +52,7 @@ describe("useEditorDirtyState", () => {
     });
 
     it("add event and undo it", () => {
-      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
+      const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
         editorStateControl.updateEventStack("1");
@@ -63,7 +63,7 @@ describe("useEditorDirtyState", () => {
     });
 
     it("add event, save it, undo and redo", () => {
-      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
+      const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
         editorStateControl.updateEventStack("1");
@@ -78,7 +78,7 @@ describe("useEditorDirtyState", () => {
 
   describe("true", () => {
     it("add event without saving", () => {
-      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
+      const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
         editorStateControl.updateEventStack("1");
@@ -88,7 +88,7 @@ describe("useEditorDirtyState", () => {
     });
 
     it("add event, undo and redo", () => {
-      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
+      const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
         editorStateControl.updateEventStack("1");
@@ -100,7 +100,7 @@ describe("useEditorDirtyState", () => {
     });
 
     it("add event, save it, undo and new event", () => {
-      const { result } = renderHook(() => useEditorDirtyState(editorStateControl));
+      const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
         editorStateControl.updateEventStack("1");

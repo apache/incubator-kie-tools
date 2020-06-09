@@ -14,18 +14,4 @@
  * limitations under the License.
  */
 
-import { useEffect, useState } from "react";
-import { EditorStateControl } from "./EditorStateControl";
-
-export function useEditorDirtyState(editorStateControl: EditorStateControl) {
-  const [isDirty, setIsDirty] = useState(false);
-
-  useEffect(() => {
-    const callback = editorStateControl.subscribe(setIsDirty);
-    return () => {
-      editorStateControl.unsubscribe(callback);
-    };
-  }, []);
-
-  return isDirty;
-}
+export * from "./RegisterChannelKeyboardShortcuts";

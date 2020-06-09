@@ -15,7 +15,7 @@
  */
 
 import { ChannelType, EditorContent, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
-import { EditorType, EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
+import { EditorType, EmbeddedEditor, EmbeddedEditorRef, StateControl } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { runScriptOnPage } from "../../utils";
@@ -39,6 +39,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   const editorRef = useRef<EmbeddedEditorRef>(null);
   const { router, editorIndexPath, resourceContentServiceFactory } = useGlobals();
   const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
+  const stateControl = useMemo(() => new StateControl(), [])
 
   //Lookup ResourceContentService
   const resourceContentService = useMemo(() => {
@@ -124,6 +125,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           onResourceContentRequest={(request: ResourceContentRequest) => resourceContentService.get(request.path, request.opts)}
           onResourceListRequest={(request: ResourceListRequest) => resourceContentService.list(request.pattern, request.opts)}
           envelopeUri={router.getRelativePathTo(editorIndexPath)}
+          stateControl={stateControl}
         />
       </div>
     </>

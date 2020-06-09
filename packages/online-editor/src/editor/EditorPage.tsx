@@ -15,7 +15,7 @@
  */
 
 import { EditorContent, ChannelType } from "@kogito-tooling/core-api";
-import { EmbeddedEditor, EmbeddedEditorRef, useEditorDirtyState } from "@kogito-tooling/embedded-editor";
+import { EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
 import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -55,7 +55,7 @@ export function EditorPage(props: Props) {
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
-  const isDirty = useEditorDirtyState(context.editorStateControl);
+  const isDirty = useDirtyState(context.stateControl);
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -75,11 +75,11 @@ export function EditorPage(props: Props) {
   }, []);
 
   const requestDownload = useCallback(() => {
-    context.editorStateControl.setSavedEvent();
+    context.stateControl.setSavedEvent();
     setShowUnsavedAlert(false);
     action = ActionType.DOWNLOAD;
     editorRef.current?.requestContent();
-  }, [context.editorStateControl.setSavedEvent]);
+  }, [context.stateControl.setSavedEvent]);
 
   const requestPreview = useCallback(() => {
     action = ActionType.PREVIEW;
@@ -285,7 +285,7 @@ export function EditorPage(props: Props) {
           channelType={ChannelType.ONLINE}
           onContentResponse={onContentResponse}
           onPreviewResponse={onPreviewResponse}
-          editorStateControl={context.editorStateControl}
+          stateControl={context.stateControl}
         />
       </PageSection>
       <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />

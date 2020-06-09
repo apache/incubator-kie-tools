@@ -20,14 +20,14 @@ import {
   EnvelopeBusMessageType
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import {
-  ChannelStateControlEvent,
   EditorContent,
   KogitoEdit,
   LanguageData,
   ResourceContent,
   ResourceContentOptions,
   ResourcesList,
-  ResourceListOptions
+  ResourceListOptions,
+  StateControlEvent
 } from "@kogito-tooling/core-api";
 
 export interface Impl {
@@ -117,7 +117,7 @@ export class EnvelopeBusInnerMessageHandler {
   public respond_previewRequest(previewSvg: string) {
     return this.send({ type: EnvelopeBusMessageType.RETURN_PREVIEW, data: previewSvg });
   }
-  public notify_channelStateControl(stateControl: ChannelStateControlEvent) {
+  public notify_stateControl(stateControl: StateControlEvent) {
     return this.send({ type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL, data: stateControl });
   }
 

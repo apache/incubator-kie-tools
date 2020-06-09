@@ -15,7 +15,6 @@
  */
 
 import {
-  ChannelStateControlEvent,
   ChannelType,
   EditorContent,
   getOperatingSystem,
@@ -23,7 +22,8 @@ import {
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
-  ResourcesList
+  ResourcesList,
+  StateControlEvent
 } from "@kogito-tooling/core-api";
 import { DefaultKeyboardShortcutsService, redoShortcut, undoShortcut } from "@kogito-tooling/keyboard-shortcuts";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
@@ -32,7 +32,7 @@ import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { File } from "../common";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
-import { EditorStateControl } from "../stateControl";
+import { StateControl } from "../stateControl";
 
 /**
  * Properties supported by the `EmbeddedEditor`.
@@ -49,10 +49,16 @@ export interface Props {
   /**
    * Channel in which the editor has been embedded.
    */
+
   channelType: ChannelType;
+  /**
+   * Handle the state of the Editor, gives the possibility to undo/redo edits and show when the file was edited (isDirty)
+   */
+  stateControl: StateControl;
   /**
    * Optional callback for when the editors' content is returned followin a response for it.
    */
+
   onContentResponse?: (content: EditorContent) => void;
   /**
    * Optional callback for when setting the editors content resulted in an error.
@@ -94,7 +100,6 @@ export interface Props {
    * Optional relative URL for the `envelope.html` used as the inner bus `IFRAME`. Defaults to `envelope/envelope.html`
    */
   envelopeUri?: string;
-  editorStateControl?: EditorStateControl;
 }
 
 /**
@@ -200,21 +205,21 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           onResourceListRequest(request).then(r => self.respond_resourceList(r!));
         },
         notify_editorUndo: () => {
-          props.editorStateControl?.undoEvent();
+          props.stateControl.undoEvent();
           props.onEditorUndo?.();
         },
         notify_editorRedo: () => {
-          props.editorStateControl?.redoEvent();
+          props.stateControl.redoEvent();
           props.onEditorRedo?.();
         },
         receive_newEdit(edit: KogitoEdit) {
-          props.editorStateControl?.updateEventStack(edit.id);
+          props.stateControl.updateEventStack(edit.id);
           props.onNewEdit?.(edit);
         },
         receive_previewRequest(previewSvg: string) {
           props.onPreviewResponse?.(previewSvg);
         },
-        notify_channelStateControl(stateControlEvent: ChannelStateControlEvent) {
+        notify_stateControl(stateControlEvent: StateControlEvent) {
           handleStateControlNotification(stateControlEvent);
         }
       })
@@ -227,16 +232,19 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     props.onResourceListRequest
   ]);
 
-  const handleStateControlNotification = useCallback((stateControlEvent: ChannelStateControlEvent) => {
+  const handleStateControlNotification = useCallback((stateControlEvent: StateControlEvent) => {
     switch (stateControlEvent) {
-      case ChannelStateControlEvent.REDO:
-        props.editorStateControl?.redoEvent();
+      case StateControlEvent.REDO:
+        props.stateControl.redoEvent();
         break;
-      case ChannelStateControlEvent.UNDO:
-        props.editorStateControl?.undoEvent();
+      case StateControlEvent.UNDO:
+        props.stateControl.undoEvent();
         break;
-      case ChannelStateControlEvent.SAVE:
-        props.editorStateControl?.setSavedEvent();
+      case StateControlEvent.SAVE:
+        props.stateControl.setSavedEvent();
+        break;
+      default:
+        console.info(`Unknown message type received: ${stateControlEvent}`);
         break;
     }
   }, []);

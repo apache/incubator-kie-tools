@@ -15,7 +15,7 @@
  */
 
 import { ChannelType, EditorContent } from "@kogito-tooling/core-api";
-import { EditorType, EmbeddedEditor, EmbeddedEditorRef, useEditorDirtyState } from "@kogito-tooling/embedded-editor";
+import { EditorType, EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
 import "@patternfly/patternfly/patternfly.css";
 import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
 import * as electron from "electron";
@@ -60,7 +60,7 @@ export function EditorPage(props: Props) {
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [saveFileSuccessAlertVisible, setSaveFileSuccessAlertVisible] = useState(false);
   const [savePreviewSuccessAlertVisible, setSavePreviewSuccessAlertVisible] = useState(false);
-  const isDirty = useEditorDirtyState(context.editorStateControl);
+  const isDirty = useDirtyState(context.stateControl);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
 
   const onClose = useCallback(() => {
@@ -221,7 +221,7 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     electron.ipcRenderer.on("saveFileSuccess", () => {
-      context.editorStateControl.setSavedEvent();
+      context.stateControl.setSavedEvent();
       setSaveFileSuccessAlertVisible(true);
       requestThumbnailPreview();
     });
@@ -310,7 +310,7 @@ export function EditorPage(props: Props) {
               onContentResponse={onContentResponse}
               onPreviewResponse={onPreviewResponse}
               onReady={requestThumbnailPreview}
-              editorStateControl={context.editorStateControl}
+              stateControl={context.stateControl}
             />
           </StackItem>
         </Stack>

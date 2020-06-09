@@ -15,14 +15,14 @@
  */
 
 import {
-  ChannelStateControlEvent,
   EditorContent,
   KogitoEdit,
   LanguageData,
   ResourceContent,
   ResourceContentRequest,
   ResourcesList,
-  ResourceListRequest
+  ResourceListRequest,
+  StateControlEvent
 } from "@kogito-tooling/core-api";
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
@@ -42,7 +42,7 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   notify_editorUndo(): void;
   notify_editorRedo(): void;
   receive_newEdit(edit: KogitoEdit): void;
-  notify_channelStateControl(event: ChannelStateControlEvent): void;
+  notify_stateControl(event: StateControlEvent): void;
 }
 
 export class EnvelopeBusOuterMessageHandler {
@@ -162,7 +162,7 @@ export class EnvelopeBusOuterMessageHandler {
         this.impl.receive_previewRequest(message.data as string);
         break;
       case EnvelopeBusMessageType.NOTIFY_STATE_CONTROL:
-        this.impl.notify_channelStateControl(message.data);
+        this.impl.notify_stateControl(message.data);
         break;
       default:
         console.info(`Unknown message type received: ${message.type}`);

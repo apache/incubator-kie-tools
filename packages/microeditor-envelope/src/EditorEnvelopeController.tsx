@@ -123,7 +123,7 @@ export class EditorEnvelopeController {
           keyboardShortcuts={args.keyboardShortcuts}
           context={args.context}
           stateControl={this.stateControl}
-          busApi={this.envelopeBusInnerMessageHandler}
+          messageBus={this.envelopeBusInnerMessageHandler}
         />,
         args.container,
         res

@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export { EditorStateControl } from "./EditorStateControl";
-export { useEditorDirtyState } from "./EditorDirtyState";
+export { useDirtyState } from "./DirtyState";
+export { StateControl } from "./StateControl";

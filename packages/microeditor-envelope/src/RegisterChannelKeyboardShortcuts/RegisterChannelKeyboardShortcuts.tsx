@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-import { ChannelStateControlEvent } from "@kogito-tooling/core-api";
+import { StateControlEvent } from "@kogito-tooling/core-api";
 import { KeyboardShortcutsApi, undoShortcut, redoShortcut } from "@kogito-tooling/keyboard-shortcuts";
 import { useEffect } from "react";
 import * as React from "react";
-import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
 import { StateControl } from "../api/stateControl";
+import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
 
 interface Props {
   keyboardShortcuts: KeyboardShortcutsApi;
   stateControl: StateControl;
-  busApi: EnvelopeBusInnerMessageHandler;
+  messageBus: EnvelopeBusInnerMessageHandler;
 }
 
-export function ChannelKeyboardShortcuts(props: Props) {
+export function RegisterChannelKeyboardShortcuts(props: Props) {
   // Add the redo keyboard shortcut
   useEffect(() => {
     const { combination, label } = redoShortcut();
     const id = props.keyboardShortcuts.registerKeyPress(combination, label, async () => {
       props.stateControl.redo();
-      props.busApi.notify_channelStateControl(ChannelStateControlEvent.REDO);
+      props.messageBus.notify_stateControl(StateControlEvent.REDO);
     });
     return () => props.keyboardShortcuts.deregister(id);
   }, []);
@@ -43,7 +43,7 @@ export function ChannelKeyboardShortcuts(props: Props) {
     const { combination, label } = undoShortcut();
     const id = props.keyboardShortcuts.registerKeyPress(combination, label, async () => {
       props.stateControl.undo();
-      props.busApi.notify_channelStateControl(ChannelStateControlEvent.UNDO);
+      props.messageBus.notify_stateControl(StateControlEvent.UNDO);
     });
     return () => props.keyboardShortcuts.deregister(id);
   }, []);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorType, EditorStateControl, EmbeddedEditorRouter, File } from "@kogito-tooling/embedded-editor";
+import { EditorType, EmbeddedEditorRouter, File, StateControl } from "@kogito-tooling/embedded-editor";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly-variables.css";
@@ -55,7 +55,7 @@ export function App(props: Props) {
       ),
     []
   );
-  const editorStateControl = useMemo(() => new EditorStateControl(), []);
+  const stateControl = useMemo(() => new StateControl(), []);
 
   const onFileOpened = useCallback(fileOpened => {
     setFile(fileOpened);
@@ -83,7 +83,7 @@ export function App(props: Props) {
         external: props.external,
         senderTabId: props.senderTabId,
         githubService: props.githubService,
-        editorStateControl: editorStateControl
+        stateControl: stateControl
       }}
     >
       <HashRouter>

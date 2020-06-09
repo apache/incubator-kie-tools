@@ -16,12 +16,11 @@
 
 import { ChannelType, ContentType, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
 import { EnvelopeBusMessageType, EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
-import { mount, render } from "enzyme";
+import { mount } from "enzyme";
 import * as React from "react";
-import { EditorType } from "../../common/EditorTypes";
-import { File } from "../../common/File";
-import { EmbeddedEditorRouter } from "../../embedded/EmbeddedEditorRouter";
-import { EmbeddedViewer } from "../../embedded/EmbeddedViewer";
+import { EditorType, File } from "../../common";
+import { EmbeddedEditorRouter, EmbeddedViewer } from "../../embedded";
+import { StateControl } from "../../stateControl";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 
 describe("EmbeddedViewer::ONLINE", () => {
@@ -34,13 +33,16 @@ describe("EmbeddedViewer::ONLINE", () => {
   const router: EmbeddedEditorRouter = new EmbeddedEditorRouter();
   const channelType: ChannelType = ChannelType.ONLINE;
   const holder: HTMLElement = document.body.appendChild(document.createElement("div"));
+  const stateControl = new StateControl();
 
   beforeEach(() => {
     spyOn<any>(EnvelopeBusOuterMessageHandler, "generateRandomBusId");
   });
 
   test("EmbeddedViewer::defaults", () => {
-    mount(<EmbeddedViewer file={file} router={router} channelType={channelType} />, { attachTo: holder });
+    mount(<EmbeddedViewer file={file} router={router} channelType={channelType} stateControl={stateControl} />, {
+      attachTo: holder
+    });
 
     expect(holder.firstElementChild?.getAttribute("id")).toBe("kogito-iframe");
     expect(holder.firstElementChild?.getAttribute("data-envelope-channel")).toBe(ChannelType.ONLINE);
@@ -51,14 +53,19 @@ describe("EmbeddedViewer::ONLINE", () => {
 
   test("EmbeddedViewer::onResourceContentRequest", async () => {
     const onResourceContentRequest = jest.fn((request: ResourceContentRequest) =>
-      Promise.resolve({ path: "", type: ContentType.TEXT }));
+      Promise.resolve({ path: "", type: ContentType.TEXT })
+    );
 
-    mount(<EmbeddedViewer
-      file={file}
-      router={router}
-      channelType={channelType}
-      onResourceContentRequest={onResourceContentRequest}
-    />, { attachTo: holder });
+    mount(
+      <EmbeddedViewer
+        file={file}
+        router={router}
+        channelType={channelType}
+        onResourceContentRequest={onResourceContentRequest}
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
+    );
 
     await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT, data: { path: "" } });
 
@@ -78,7 +85,9 @@ describe("EmbeddedViewer::ONLINE", () => {
         router={router}
         channelType={channelType}
         onResourceListRequest={onResourceListRequest}
-      />, { attachTo: holder }
+        stateControl={stateControl}
+      />,
+      { attachTo: holder }
     );
 
     await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_LIST, data: { pattern: "", paths: [] } });

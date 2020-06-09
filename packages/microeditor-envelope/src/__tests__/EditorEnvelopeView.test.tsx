@@ -27,8 +27,8 @@ import {
   ResourceContent,
   ResourcesList
 } from "@kogito-tooling/core-api";
-import {StateControl} from "../api/stateControl";
-import {EnvelopeBusInnerMessageHandler} from "../EnvelopeBusInnerMessageHandler";
+import { StateControl } from "../api/stateControl";
+import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
 
 let loadingScreenContainer: HTMLElement;
 beforeEach(() => (loadingScreenContainer = document.body.appendChild(document.createElement("div"))));
@@ -39,7 +39,7 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
   const context = { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS };
   const receivedMessages: any[] = [];
   const sentMessages: any[] = [];
-  const busApi = new EnvelopeBusInnerMessageHandler(
+  const messageBus = new EnvelopeBusInnerMessageHandler(
     {
       postMessage: (message, targetOrigin) => sentMessages.push([message, targetOrigin])
     },
@@ -78,7 +78,7 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
       exposing={self => (view = self)}
       loadingScreenContainer={loadingScreenContainer}
       stateControl={new StateControl()}
-      busApi={busApi}
+      messageBus={messageBus}
     />
   );
   return [view!, render];

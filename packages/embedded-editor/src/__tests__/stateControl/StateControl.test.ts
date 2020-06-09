@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { EditorStateControl } from "../../stateControl/EditorStateControl";
+import { StateControl } from "../../stateControl/StateControl";
 
 describe("EditorStateControl", () => {
-  let editorStateControl: EditorStateControl;
+  let editorStateControl: StateControl;
 
   beforeEach(() => {
-    editorStateControl = new EditorStateControl();
+    editorStateControl = new StateControl();
   });
 
   describe("eventStack", () => {
