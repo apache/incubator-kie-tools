@@ -17,7 +17,7 @@
   "activationEvents": [
     "onCustomEditor:kieKogitoWebviewEditors"
   ],
-  "publisher": "kiegroup",
+  "publisher": "kie-group",
   "main": "./dist/extension/extension.js",
   "contributes": {
     "customEditors": [

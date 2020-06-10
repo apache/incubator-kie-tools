@@ -27,10 +27,15 @@ export class DefaultVsCodeRouter extends Router {
   }
 
   public getRelativePathTo(uri: string) {
-    const vscodePathResolver: ((absolutePath: Uri) => Uri) | undefined = this.context.globalState.get(
+    const vscodePathResolver: ((absolutePath: Uri) => Uri) | undefined = this.context?.globalState?.get(
       "vscodePathResolver"
     );
-    return vscodePathResolver!(vscode.Uri.file(this.context.asAbsolutePath(uri))).toString();
+
+    if (vscodePathResolver) {
+      return vscodePathResolver(vscode.Uri.file(this.context.asAbsolutePath(uri))).toString();
+    }
+    // TODO Figure out a better way to do this fallback for when the Webview#asWebviewUri is not available yet
+    return "vscode-resource://" + vscode.Uri.file(this.context.asAbsolutePath(uri)).toString().replace(":", "");
   }
 
   public getLanguageData(fileExtension: string) {
