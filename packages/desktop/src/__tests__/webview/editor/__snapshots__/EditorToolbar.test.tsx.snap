@@ -1,0 +1,106 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditorToolbar is dirty indicator with isDirty indicator should show the isDirty indicator - new edit 1`] = `
+<div
+  data-testid="toolbar-title"
+>
+  <h3
+    class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
+  >
+    test.dmn
+  </h3>
+  <span
+    class="kogito--editor__toolbar-edited"
+    data-testid="is-dirty-indicator"
+  >
+     
+    - Edited
+  </span>
+</div>
+`;
+
+exports[`EditorToolbar is dirty indicator with isDirty indicator should show the isDirty indicator - save and make a new edit 1`] = `
+<div
+  data-testid="toolbar-title"
+>
+  <h3
+    class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
+  >
+    test.dmn
+  </h3>
+  <span
+    class="kogito--editor__toolbar-edited"
+    data-testid="is-dirty-indicator"
+  >
+     
+    - Edited
+  </span>
+</div>
+`;
+
+exports[`EditorToolbar is dirty indicator with isDirty indicator should show the isDirty indicator - save and undo the last edit 1`] = `
+<div
+  data-testid="toolbar-title"
+>
+  <h3
+    class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
+  >
+    test.dmn
+  </h3>
+  <span
+    class="kogito--editor__toolbar-edited"
+    data-testid="is-dirty-indicator"
+  >
+     
+    - Edited
+  </span>
+</div>
+`;
+
+exports[`EditorToolbar is dirty indicator without isDirty indicator should show the isDirty indicator - make an edit and save 1`] = `
+<div
+  data-testid="toolbar-title"
+>
+  <h3
+    class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
+  >
+    test.dmn
+  </h3>
+</div>
+`;
+
+exports[`EditorToolbar is dirty indicator without isDirty indicator should show the isDirty indicator - make an edit and undo it 1`] = `
+<div
+  data-testid="toolbar-title"
+>
+  <h3
+    class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
+  >
+    test.dmn
+  </h3>
+</div>
+`;
+
+exports[`EditorToolbar is dirty indicator without isDirty indicator should show the isDirty indicator - make an edit, save, undo it, redo it 1`] = `
+<div
+  data-testid="toolbar-title"
+>
+  <h3
+    class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
+  >
+    test.dmn
+  </h3>
+</div>
+`;
+
+exports[`EditorToolbar is dirty indicator without isDirty indicator shouldn't show the isDirty indicator - new file 1`] = `
+<div
+  data-testid="toolbar-title"
+>
+  <h3
+    class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
+  >
+    test.dmn
+  </h3>
+</div>
+`;

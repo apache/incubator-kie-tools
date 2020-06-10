@@ -39,17 +39,18 @@ export function EditorToolbar(props: Props) {
   const tooltipContent = <div>{context.file?.filePath!}</div>;
 
   const fileNameTitle = (
-    <div>
-      <Tooltip
-        content={tooltipContent}
-        position={TooltipPosition.bottom}
-        maxWidth={"50em"}
-      >
+    <div data-testid="toolbar-title">
+      <Tooltip content={tooltipContent} position={TooltipPosition.bottom} maxWidth={"50em"}>
         <Title headingLevel={"h3"} size={"xl"} className={"kogito--editor__toolbar-title"}>
           {removeDirectories(context.file!.filePath)}
         </Title>
       </Tooltip>
-      {isEdited && <span className={"kogito--editor__toolbar-edited"}> - Edited</span>}
+      {isEdited && (
+        <span className={"kogito--editor__toolbar-edited"} data-testid="is-dirty-indicator">
+          {" "}
+          - Edited
+        </span>
+      )}
     </div>
   );
 
@@ -59,6 +60,7 @@ export function EditorToolbar(props: Props) {
       <ToolbarGroup className={"kogito--right"}>
         <ToolbarItem>
           <Button
+            data-testid="save-button"
             variant={"secondary"}
             onClick={props.onSave}
             className={"pf-u-display-flex-on-lg"}

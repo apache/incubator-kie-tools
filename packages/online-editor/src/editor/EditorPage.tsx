@@ -257,6 +257,7 @@ export function EditorPage(props: Props) {
         {!fullscreen && showUnsavedAlert && (
           <div className={"kogito--alert-container-unsaved"}>
             <Alert
+              data-testid="unsaved-alert"
               variant="warning"
               title="Unsaved changes will be lost."
               action={<AlertActionCloseButton onClose={() => setShowUnsavedAlert(false)} />}

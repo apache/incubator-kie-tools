@@ -134,7 +134,7 @@ export function EditorToolbar(props: Props) {
   const filenameInput = (
     <>
       {!editingName && (
-        <div>
+        <div data-testid="toolbar-title">
           <Title
             className={"kogito--editor__toolbar-title"}
             headingLevel={"h3"}
@@ -144,7 +144,12 @@ export function EditorToolbar(props: Props) {
           >
             {context.file.fileName + "." + editorType}
           </Title>
-          {isEdited && <span className={"kogito--editor__toolbar-edited"}> - Edited</span>}
+          {isEdited && (
+            <span className={"kogito--editor__toolbar-edited"} data-testid="is-dirty-indicator">
+              {" "}
+              - Edited
+            </span>
+          )}
         </div>
       )}
       {editingName && (
@@ -173,6 +178,7 @@ export function EditorToolbar(props: Props) {
       <ToolbarGroup>
         <ToolbarItem>
           <Button
+            data-testid="save-button"
             variant={"secondary"}
             onClick={props.onDownload}
             className={"pf-u-display-none pf-u-display-flex-on-lg"}
@@ -238,6 +244,7 @@ export function EditorToolbar(props: Props) {
               variant={"plain"}
               onClick={props.onClose}
               aria-label={"Close"}
+              data-testid="close-editor-button"
             >
               <CloseIcon />
             </Button>

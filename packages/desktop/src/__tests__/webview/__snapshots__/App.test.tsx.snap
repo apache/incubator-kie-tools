@@ -858,7 +858,9 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
               <div
                 class="pf-c-page__header-nav"
               >
-                <div>
+                <div
+                  data-testid="toolbar-title"
+                >
                   <h3
                     class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
                   >
@@ -881,6 +883,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                       <button
                         aria-label="Save file"
                         class="pf-c-button pf-m-secondary pf-u-display-flex-on-lg"
+                        data-testid="save-button"
                         type="button"
                       >
                         Save

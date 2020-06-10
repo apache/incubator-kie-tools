@@ -22,7 +22,8 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
   const usedCtx = {
     router: new EmbeddedEditorRouter(),
     file: { filePath: "test.dmn", fileContent: "", fileType: "dmn" },
-    stateControl: new StateControl()
+    stateControl: new StateControl(),
+    ...ctx
   };
   return {
     ctx: usedCtx,
