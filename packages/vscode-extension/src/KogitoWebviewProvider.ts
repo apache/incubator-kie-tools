@@ -55,7 +55,7 @@ export class KogitoWebviewProvider implements CustomEditorProvider<KogitoEditabl
   }
 
   public register() {
-    return vscode.window.registerCustomEditorProvider2(this.viewType, this, {
+    return vscode.window.registerCustomEditorProvider(this.viewType, this, {
       webviewOptions: {
         retainContextWhenHidden: true
       }

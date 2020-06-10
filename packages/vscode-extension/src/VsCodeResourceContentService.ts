@@ -26,12 +26,12 @@ import {
 
 import * as vscode from "vscode";
 import * as nodePath from "path";
+import { WorkspaceFolder } from "vscode";
 
 /**
  * Implementation of a ResourceContentService using the vscode apis to list/get assets.
  */
 export class VsCodeResourceContentService implements ResourceContentService {
-
   private readonly currentAssetFolder: string;
 
   constructor(currentAssetFolder: string) {
@@ -39,10 +39,7 @@ export class VsCodeResourceContentService implements ResourceContentService {
   }
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
-
-    const expr = opts?.type === SearchType.ASSET_FOLDER
-      ? this.currentAssetFolder + pattern
-      : pattern;
+    const expr = opts?.type === SearchType.ASSET_FOLDER ? this.currentAssetFolder + pattern : pattern;
 
     const files = await vscode.workspace.findFiles(expr);
     const paths = files.map(f => vscode.workspace.asRelativePath(f.path));
@@ -50,7 +47,6 @@ export class VsCodeResourceContentService implements ResourceContentService {
   }
 
   public async get(path: string, opts?: ResourceContentOptions): Promise<ResourceContent | undefined> {
-
     const contentPath = this.resolvePath(path);
 
     if (!contentPath) {
@@ -68,7 +64,7 @@ export class VsCodeResourceContentService implements ResourceContentService {
   }
 
   private resolvePath(uri: string) {
-    const folders: vscode.WorkspaceFolder[] = vscode.workspace!.workspaceFolders!;
+    const folders: ReadonlyArray<WorkspaceFolder> = vscode.workspace!.workspaceFolders!;
     if (folders) {
       const rootPath = folders[0].uri.path;
       if (!uri.startsWith(nodePath.sep)) {
