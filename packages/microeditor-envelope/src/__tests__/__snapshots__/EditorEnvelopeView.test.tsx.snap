@@ -2,25 +2,6 @@
 
 exports[`EditorEnvelopeView after loading stops 1`] = `
 <Fragment>
-  <KeyBindingsHelpOverlay
-    context={
-      Object {
-        "channel": "VSCODE",
-        "operatingSystem": "WINDOWS",
-      }
-    }
-    keyboardShortcuts={
-      DefaultKeyboardShortcutsService {
-        "delayedKeyBindings": Array [],
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
-        },
-        "eventIdentifiers": 1,
-        "keyBindings": Map {},
-      }
-    }
-  />
   <Portal
     containerInfo={<div />}
   >
@@ -33,25 +14,6 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
 
 exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
 <Fragment>
-  <KeyBindingsHelpOverlay
-    context={
-      Object {
-        "channel": "VSCODE",
-        "operatingSystem": "WINDOWS",
-      }
-    }
-    keyboardShortcuts={
-      DefaultKeyboardShortcutsService {
-        "delayedKeyBindings": Array [],
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
-        },
-        "eventIdentifiers": 1,
-        "keyBindings": Map {},
-      }
-    }
-  />
   <Portal
     containerInfo={<div />}
   >
