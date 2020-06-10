@@ -895,6 +895,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                       <button
                         aria-label="Go to homepage"
                         class="pf-c-button pf-m-plain"
+                        data-testid="close-editor-button"
                         type="button"
                       >
                         <svg

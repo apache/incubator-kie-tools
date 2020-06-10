@@ -66,6 +66,7 @@ export function EditorPage(props: Props) {
   }, [isDirty]);
 
   const closeWithoutSaving = useCallback(() => {
+    setShowUnsavedAlert(false);
     window.location.href = window.location.href.split("?")[0].split("#")[0];
   }, []);
 
@@ -255,18 +256,28 @@ export function EditorPage(props: Props) {
           </div>
         )}
         {!fullscreen && showUnsavedAlert && (
-          <div className={"kogito--alert-container-unsaved"}>
+          <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
             <Alert
-              data-testid="unsaved-alert"
               variant="warning"
               title="Unsaved changes will be lost."
-              action={<AlertActionCloseButton onClose={() => setShowUnsavedAlert(false)} />}
+              action={
+                <AlertActionCloseButton
+                  data-testid="unsaved-alert-close-button"
+                  onClose={() => setShowUnsavedAlert(false)}
+                />
+              }
             >
               <div>
                 <p>
-                  Click Save to download your progress before closing. <a onClick={requestDownload}>Save</a>
+                  Click Save to download your progress before closing.{" "}
+                  <a data-testid="unsaved-alert-save-button" onClick={requestDownload}>
+                    Save
+                  </a>
                 </p>
-                <a onClick={closeWithoutSaving}> Close without saving</a>
+                <a data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
+                  {" "}
+                  Close without saving
+                </a>
               </div>
             </Alert>
           </div>

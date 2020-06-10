@@ -71,6 +71,11 @@ export function EditorPage(props: Props) {
     }
   }, [isDirty]);
 
+  const onCloseWithoutSave = useCallback(() => {
+    setShowUnsavedAlert(false);
+    props.onClose();
+  }, []);
+
   const requestSaveFile = useCallback(() => {
     setShowUnsavedAlert(false);
     contentRequestAction = ContentRequestActionType.SAVE;
@@ -260,17 +265,28 @@ export function EditorPage(props: Props) {
           </StackItem>
           <StackItem className="pf-m-fill">
             {showUnsavedAlert && (
-              <div className={"kogito--alert-container-unsaved"}>
+              <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
                 <Alert
                   variant="warning"
                   title="Unsaved changes will be lost."
-                  action={<AlertActionCloseButton onClose={() => setShowUnsavedAlert(false)} />}
+                  action={
+                    <AlertActionCloseButton
+                      data-testid="unsaved-alert-close-button"
+                      onClose={() => setShowUnsavedAlert(false)}
+                    />
+                  }
                 >
                   <div>
                     <p>
-                      Click Save to download your progress before closing. <a onClick={requestSaveFile}>Save</a>
+                      Click Save to download your progress before closing.{" "}
+                      <a data-testid="unsaved-alert-save-button" onClick={requestSaveFile}>
+                        Save
+                      </a>
                     </p>
-                    <a onClick={props.onClose}> Close without saving</a>
+                    <a data-testid="unsaved-alert-close-without-save-button" onClick={onCloseWithoutSave}>
+                      {" "}
+                      Close without saving
+                    </a>
                   </div>
                 </Alert>
               </div>

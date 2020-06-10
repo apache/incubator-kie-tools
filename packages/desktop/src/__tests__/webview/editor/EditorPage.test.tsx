@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { fireEvent, render } from "@testing-library/react";
-import { EditorPage } from "../../editor/EditorPage";
-import { usingTestingGlobalContext } from "../testing_utils";
+import { EditorPage } from "../../../webview/editor/EditorPage";
+import { usingTestingGlobalContext } from "../../testing_utils";
 import { StateControl } from "@kogito-tooling/embedded-editor";
 import { act } from "react-dom/test-utils";
 
@@ -30,7 +30,8 @@ jest.mock("react-router", () => ({
   })
 }));
 
-const onFileNameChanged = jest.fn((file: string) => null);
+const editorType = "";
+const onClose = jest.fn(() => null);
 
 describe("EditorPage", () => {
   let stateControl: StateControl;
@@ -42,7 +43,7 @@ describe("EditorPage", () => {
   describe("Unsaved Alert", () => {
     test("should not appear by default", () => {
       const { queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType}/>).wrapper
       );
 
       expect(queryByTestId("unsaved-alert")).toBeNull();
@@ -50,7 +51,7 @@ describe("EditorPage", () => {
 
     test("should not appear after an edit", () => {
       const { queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />, { stateControl }).wrapper
+        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType}/>, { stateControl }).wrapper
       );
 
       act(() => stateControl.updateEventStack("1"));
@@ -60,7 +61,7 @@ describe("EditorPage", () => {
 
     test("should appear when tries to close after an edit", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />, { stateControl }).wrapper
+        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType}/>, { stateControl }).wrapper
       );
 
       act(() => stateControl.updateEventStack("1"));
@@ -71,7 +72,7 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on save", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />, { stateControl }).wrapper
+        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType}/>, { stateControl }).wrapper
       );
 
       act(() => stateControl.updateEventStack("1"));
@@ -83,7 +84,7 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on close", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />, { stateControl }).wrapper
+        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType}/>, { stateControl }).wrapper
       );
 
       act(() => stateControl.updateEventStack("1"));
@@ -95,7 +96,7 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on close without save", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />, { stateControl }).wrapper
+        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType}/>, { stateControl }).wrapper
       );
 
       act(() => stateControl.updateEventStack("1"));

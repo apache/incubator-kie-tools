@@ -14,7 +14,8 @@ exports[`EditorToolbar is dirty indicator with isDirty indicator should show the
     class="kogito--editor__toolbar-edited"
     data-testid="is-dirty-indicator"
   >
-     - Edited
+     
+    - Edited
   </span>
 </div>
 `;
@@ -33,7 +34,8 @@ exports[`EditorToolbar is dirty indicator with isDirty indicator should show the
     class="kogito--editor__toolbar-edited"
     data-testid="is-dirty-indicator"
   >
-     - Edited
+     
+    - Edited
   </span>
 </div>
 `;
@@ -52,7 +54,8 @@ exports[`EditorToolbar is dirty indicator with isDirty indicator should show the
     class="kogito--editor__toolbar-edited"
     data-testid="is-dirty-indicator"
   >
-     - Edited
+     
+    - Edited
   </span>
 </div>
 `;

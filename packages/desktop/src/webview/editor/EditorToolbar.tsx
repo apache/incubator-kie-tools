@@ -70,7 +70,12 @@ export function EditorToolbar(props: Props) {
           </Button>
         </ToolbarItem>
         <ToolbarItem>
-          <Button variant={"plain"} onClick={props.onClose} aria-label={"Go to homepage"}>
+          <Button
+            variant={"plain"}
+            onClick={props.onClose}
+            aria-label={"Go to homepage"}
+            data-testid="close-editor-button"
+          >
             <CloseIcon />
           </Button>
         </ToolbarItem>
