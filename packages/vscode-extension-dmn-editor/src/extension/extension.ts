@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   KogitoVsCode.startExtension({
-    extensionName: "kiegroup.vscode-extension-dmn-editor",
+    extensionName: "kie-group.vscode-extension-dmn-editor",
     webviewLocation: "dist/webview/index.js",
     context: context,
     viewType: "kieKogitoWebviewEditorsDmn",
