@@ -75,31 +75,11 @@ function createWindow() {
     });
   }
 
-  function checkIfVsCodeIsOpenWithProposedApiEnabled(): Promise<
-    CommandExecutionResult & { isProposedApiEnabled: boolean }
-  > {
-    const vsCodeLocation = hubUserData.getVsCodeLocation()!;
-    const vscodeLocationForGrep = vsCodeLocation.replace(vsCodeLocation[0], `[${vsCodeLocation[0]}]`);
-    return executeCommand({
-      macOS: `ps aux | grep '${vscodeLocationForGrep}' | grep '\\--enable-proposed-api ${Constants.VSCODE_EXTENSION_PACKAGE_NAME}' | xargs echo `,
-      linux: `ps aux | grep '${vscodeLocationForGrep}' | grep '\\--enable-proposed-api.*${Constants.VSCODE_EXTENSION_PACKAGE_NAME}' | xargs echo `,
-      windows: `WMIC path win32_process get Caption,Processid,Commandline | FINDSTR /V "FINDSTR" | FINDSTR "Code.exe" | FINDSTR "enable-proposed-api" | FINDSTR "${Constants.VSCODE_EXTENSION_PACKAGE_NAME}"`
-    }).then(result => {
-      return { ...result, isProposedApiEnabled: result.output.trim().length !== 0 };
-    });
-  }
-
   function launchVsCode(): Promise<CommandExecutionResult> {
     return executeCommand({
-      macOS: `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code' --enable-proposed-api ${
-        Constants.VSCODE_EXTENSION_PACKAGE_NAME
-      }`,
-      linux: `${hubUserData.getVsCodeLocation()}/bin/code --enable-proposed-api ${
-        Constants.VSCODE_EXTENSION_PACKAGE_NAME
-      }`,
-      windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code" --enable-proposed-api ${
-        Constants.VSCODE_EXTENSION_PACKAGE_NAME
-      }`
+      macOS: `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code'`,
+      linux: `${hubUserData.getVsCodeLocation()}/bin/code`,
+      windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code`
     });
   }
 
@@ -110,11 +90,6 @@ function createWindow() {
   // VSCODE
   ipcMain.on("vscode__launch", async (e: IpcMainEvent) => {
     if (!(await checkIfVsCodeIsOpen()).isOpen) {
-      mainWindow.webContents.send("vscode__launch_complete", await launchVsCode());
-      return;
-    }
-
-    if ((await checkIfVsCodeIsOpenWithProposedApiEnabled()).isProposedApiEnabled) {
       mainWindow.webContents.send("vscode__launch_complete", await launchVsCode());
       return;
     }
