@@ -34,12 +34,22 @@ public class MetaDataAttributesElementTest {
     private final static String ATTRIBUTES = "att1ßval1Øatt2ßval2Øatt3ßval3";
     private final static String ATTRIBUTE = "att1ßval1";
     private final static String NAME = "metaDataElement";
+    private final static String SPECIAL_CHAR_ATTRIBUTES = "att1ß#{[($%&@!*|)]}Øatt2ß/-_.,?`'^\"\\~<>=+Øatt3ß:;çÇáàÁÀãÃüÜ";
 
     @Test
     public void testSetValue() {
         BaseElement baseElement = bpmn2.createProcess();
         CustomElement.metaDataAttributes.of(baseElement).set(ATTRIBUTES);
-        assertEquals("att1ß<![CDATA[val1]]>Øatt2ß<![CDATA[val2]]>Øatt3ß<![CDATA[val3]]>", CustomElement.metaDataAttributes.of(baseElement).get());
+        assertEquals("att1ß<![CDATA[val1]]>Øatt2ß<![CDATA[val2]]>Øatt3ß<![CDATA[val3]]>",
+                     CustomElement.metaDataAttributes.of(baseElement).get());
+    }
+
+    @Test
+    public void testSetValueSpecialChar() {
+        BaseElement baseElement = bpmn2.createProcess();
+        CustomElement.metaDataAttributes.of(baseElement).set(SPECIAL_CHAR_ATTRIBUTES);
+        assertEquals("att1ß<![CDATA[#{[($%&@!*|)]}]]>Øatt2ß<![CDATA[/-_.,?`'^\"\\~<>=+]]>Øatt3ß<![CDATA[:;çÇáàÁÀãÃüÜ]]>",
+                     CustomElement.metaDataAttributes.of(baseElement).get());
     }
 
     @Test
@@ -60,6 +70,13 @@ public class MetaDataAttributesElementTest {
         BaseElement baseElement = bpmn2.createProcess();
         CustomElement.metaDataAttributes.of(baseElement).set("ßValue");
         assertEquals("", CustomElement.metaDataAttributes.of(baseElement).get());
+    }
+
+    @Test
+    public void testGetStringValueEmpty() {
+        BaseElement baseElement = bpmn2.createProcess();
+        CustomElement.metaDataAttributes.of(baseElement).set("att1");
+        assertEquals("att1ß", CustomElement.metaDataAttributes.of(baseElement).get());
     }
 
     @Test

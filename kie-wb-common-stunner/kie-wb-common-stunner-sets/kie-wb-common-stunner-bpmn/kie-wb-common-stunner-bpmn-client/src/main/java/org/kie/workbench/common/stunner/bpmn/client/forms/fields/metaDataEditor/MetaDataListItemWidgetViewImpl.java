@@ -85,10 +85,6 @@ public class MetaDataListItemWidgetViewImpl implements MetaDataListItemWidgetVie
             notifyModelChanged();
         });
 
-        value.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_COMMA_REGEXP,
-                        StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_value(),
-                        StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_value());
-
         value.addChangeHandler(event -> notifyModelChanged());
     }
 

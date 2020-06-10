@@ -75,9 +75,10 @@ public class MetaDataAttributesElement extends ElementDefinition<String> {
         String metaDataAttributes = metadataExtensions.stream()
                 .filter(metaDataType -> metaDataType.getName() != null)
                 .filter(metaDataType -> metaDataType.getName().length() > 0)
-                .filter(metaDataType -> metaDataType.getMetaValue() != null)
-                .filter(metaDataType -> metaDataType.getMetaValue().length() > 0)
-                .map(metaDataType -> metaDataType.getName() + SEPARATOR + metaDataType.getMetaValue())
+                .map(metaDataType -> metaDataType.getName()
+                        + SEPARATOR
+                        + ((null != metaDataType.getMetaValue() && metaDataType.getMetaValue().length() > 0)
+                        ? metaDataType.getMetaValue() : ""))
                 .collect(Collectors.joining(DELIMITER));
 
         return Optional.ofNullable(metaDataAttributes);
