@@ -45,6 +45,12 @@ class ReactDomRenderer implements Renderer {
   }
 }
 
+export * from "./api/resourceContent";
+export { EditorEnvelopeController } from "./EditorEnvelopeController";
+export * from "./EditorFactory";
+export * from "./EnvelopeBusInnerMessageHandler";
+export { SpecialDomElements } from "./SpecialDomElements";
+
 /**
  * Starts the envelope at a container. Uses busApi to send messages out of the envelope and creates editors based on the editorFactory provided.
  * @param args.container The DOM element where the envelope should be rendered.
