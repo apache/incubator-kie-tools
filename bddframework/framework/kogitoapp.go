@@ -16,22 +16,15 @@ package framework
 
 import (
 	"fmt"
-	"strings"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/apimachinery/pkg/util/yaml"
 
-	"github.com/gobuffalo/packr/v2"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/resource"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
-)
-
-const (
-	boxExamplesPath = "../../deploy/examples"
 )
 
 // KogitoAppHolder Helper structure holding information which are not available in KogitoApp
@@ -138,32 +131,6 @@ func cliDeployService(namespace string, kogitoApp *v1alpha1.KogitoApp) error {
 	return err
 }
 
-// DeployServiceFromExampleFile deploy service from example YAML file (example is located in deploy/examples folder)
-func DeployServiceFromExampleFile(namespace, runtimeType, exampleFile string) error {
-	box := packr.New("examples", boxExamplesPath)
-	yamlContent, err := box.FindString(exampleFile)
-	if err != nil {
-		return fmt.Errorf("Error reading file %s: %v ", exampleFile, err)
-	}
-
-	// Create basic KogitoApp stub
-	kogitoApp := GetKogitoAppStub(namespace, runtimeType, "name-should-be overwritten-from-yaml")
-
-	// Apply content from yaml file
-	if err := yaml.NewYAMLOrJSONDecoder(strings.NewReader(yamlContent), len([]byte(yamlContent))).Decode(kogitoApp); err != nil {
-		return fmt.Errorf("Error while unmarshalling file: %v ", err)
-	}
-
-	// Setup image streams again as example yaml can override image streams declared by default
-	setupBuildImageStreams(kogitoApp)
-
-	// Create application
-	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(kogitoApp); err != nil {
-		return fmt.Errorf("Error creating service %s: %v", kogitoApp.Name, err)
-	}
-	return nil
-}
-
 // SetKogitoAppReplicas sets the number of replicas for a Kogito application
 func SetKogitoAppReplicas(namespace, name string, nbPods int) error {
 	GetLogger(namespace).Infof("Set Kogito application %s replica number to %d", name, nbPods)
@@ -201,11 +168,8 @@ func GetKogitoAppStub(namespace, runtimeType, appName string) *v1alpha1.KogitoAp
 		},
 	}
 
-	setupBuildImageStreams(kogitoApp)
-
 	return kogitoApp
 }
-
 func getKogitoApp(namespace, name string) (*v1alpha1.KogitoApp, error) {
 	kogitoApp := &v1alpha1.KogitoApp{}
 	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: name, Namespace: namespace}, kogitoApp); err != nil && !errors.IsNotFound(err) {
@@ -216,7 +180,8 @@ func getKogitoApp(namespace, name string) (*v1alpha1.KogitoApp, error) {
 	return kogitoApp, nil
 }
 
-func setupBuildImageStreams(kogitoApp *v1alpha1.KogitoApp) {
+// SetupKogitoAppBuildImageStreams sets the correct images for the build of the KogitoApp
+func SetupKogitoAppBuildImageStreams(kogitoApp *v1alpha1.KogitoApp) {
 	// If "KOGITO_BUILD_IMAGE_STREAM_TAG" is defined, it is taken into account
 	// If not defined then search for specific s2i and runtime tags
 	// If none, let the operator manage

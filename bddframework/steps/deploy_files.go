@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cucumber/godog"
+	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
@@ -33,10 +34,22 @@ func registerKogitoDeployFilesSteps(s *godog.Suite, data *Data) {
 
 func (data *Data) deployFileFromExampleService(file, serviceName string) error {
 	sourceFilePath := fmt.Sprintf(`%s/%s/%s/%s`, data.KogitoExamplesLocation, serviceName, sourceLocation, file)
-	return framework.DeploySourceFilesFromPath(data.Namespace, serviceName, sourceFilePath)
+	return deploySourceFilesFromPath(data.Namespace, serviceName, sourceFilePath)
 }
 
 func (data *Data) deployFolderFromExampleService(serviceName string) error {
 	sourceFolderPath := fmt.Sprintf(`%s/%s/%s`, data.KogitoExamplesLocation, serviceName, sourceLocation)
-	return framework.DeploySourceFilesFromPath(data.Namespace, serviceName, sourceFolderPath)
+	return deploySourceFilesFromPath(data.Namespace, serviceName, sourceFolderPath)
+}
+
+func deploySourceFilesFromPath(namespace, serviceName, path string) error {
+	framework.GetLogger(namespace).Infof("Deploy example %s with source files in path %s", serviceName, path)
+
+	kogitoAppHolder, err := getKogitoAppHolder(namespace, "quarkus", serviceName, &messages.PickleStepArgument_PickleTable{})
+	if err != nil {
+		return err
+	}
+	kogitoAppHolder.Spec.Build.GitSource.URI = path
+
+	return framework.DeployService(namespace, framework.CLIInstallerType, kogitoAppHolder.KogitoApp)
 }

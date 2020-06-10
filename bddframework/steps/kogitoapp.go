@@ -24,6 +24,7 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"k8s.io/apimachinery/pkg/util/yaml"
 )
 
 /*
@@ -155,7 +156,7 @@ func (data *Data) createServiceWithConfiguration(runtimeType, serviceName string
 }
 
 func (data *Data) deployServiceFromExampleFile(runtimeType, exampleFile string) error {
-	return framework.DeployServiceFromExampleFile(data.Namespace, runtimeType, exampleFile)
+	return deployServiceFromExampleFile(data.Namespace, runtimeType, exampleFile)
 }
 
 // DeploymentConfig steps
@@ -190,6 +191,28 @@ func (data *Data) kogitoApplicationLogContainsTextWithinMinutes(dcName, logText 
 
 // Misc methods
 
+// DeployServiceFromExampleFile deploy service from example YAML file (example is located in deploy/examples folder)
+func deployServiceFromExampleFile(namespace, runtimeType, exampleFile string) error {
+	kogitoAppHolder, err := getKogitoAppHolder(namespace, runtimeType, "name-should-be overwritten-from-yaml", &messages.PickleStepArgument_PickleTable{})
+	if err != nil {
+		return err
+	}
+
+	// Apply content from yaml file
+	yamlContent, err := getExampleFileContent(exampleFile)
+	if err != nil {
+		return err
+	}
+	if err := yaml.NewYAMLOrJSONDecoder(strings.NewReader(yamlContent), len([]byte(yamlContent))).Decode(kogitoAppHolder); err != nil {
+		return fmt.Errorf("Error while unmarshalling file: %v ", err)
+	}
+
+	// Setup image streams again as KogitoApp has changed
+	framework.SetupKogitoAppBuildImageStreams(kogitoAppHolder.KogitoApp)
+
+	return framework.DeployService(namespace, framework.CRInstallerType, kogitoAppHolder.KogitoApp)
+}
+
 // getKogitoAppHolder Get basic KogitoApp stub with GIT properties initialized to common Kogito examples
 func getKogitoAppHolder(namespace, runtimeType, serviceName string, table *messages.PickleStepArgument_PickleTable) (*framework.KogitoAppHolder, error) {
 	kogitoApp := &framework.KogitoAppHolder{
@@ -199,6 +222,8 @@ func getKogitoAppHolder(namespace, runtimeType, serviceName string, table *messa
 	if err := configureKogitoAppFromTable(table, kogitoApp); err != nil {
 		return nil, err
 	}
+
+	framework.SetupKogitoAppBuildImageStreams(kogitoApp.KogitoApp)
 
 	if kogitoApp.Spec.Runtime != v1alpha1.QuarkusRuntimeType && kogitoApp.Spec.Build.Native {
 		return nil, fmt.Errorf(runtimeType + " does not support native build")

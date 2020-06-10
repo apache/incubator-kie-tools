@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cucumber/messages-go/v10"
+	"github.com/gobuffalo/packr/v2"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -28,6 +29,8 @@ const (
 	buildLimitKey     = "build-limit"
 	runtimeRequestKey = "runtime-request"
 	runtimeLimitKey   = "runtime-limit"
+
+	boxExamplesPath = "../../deploy/examples"
 )
 
 func addDefaultJavaOptionsIfNotProvided(spec v1alpha1.KogitoServiceSpec) {
@@ -82,4 +85,13 @@ func parseResourceRequirementsTable(table *messages.PickleStepArgument_PickleTab
 
 	}
 	return
+}
+
+func getExampleFileContent(exampleFile string) (string, error) {
+	box := packr.New("examples", boxExamplesPath)
+	yamlContent, err := box.FindString(exampleFile)
+	if err != nil {
+		return "", fmt.Errorf("Error reading file %s: %v ", exampleFile, err)
+	}
+	return yamlContent, nil
 }
