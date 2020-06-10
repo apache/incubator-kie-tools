@@ -21,7 +21,13 @@ pipeline{
         stage('Initialization'){
             steps{
                 script{
-                    cleanWorkspaces()
+                    cleanWorkspaces()                    
+                    
+                    // Set the mirror url only if exist
+                    if (env.MAVEN_MIRROR_REPOSITORY != null
+                            && env.MAVEN_MIRROR_REPOSITORY != ''){
+                        env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
+                    }
                 }
                 sh "docker rm -f \$(docker ps -a -q) || date"
                 sh "docker rmi -f \$(docker images -q) || date"

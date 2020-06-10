@@ -62,6 +62,13 @@ pipeline {
                         env.BRANCH_NAME = params.BUILD_BRANCH_NAME
                         checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], browser: [$class: 'GithubWeb', repoUrl: "${GIT_URL}"], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: '']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'user-kie-ci10', url: "${GIT_URL}"]]])
                     }
+
+                    // Set the mirror url only if no artifact repository is given
+                    if (params.MAVEN_ARTIFACT_REPOSITORY != '' 
+                            && env.MAVEN_MIRROR_REPOSITORY != null
+                            && env.MAVEN_MIRROR_REPOSITORY != ''){
+                        env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
+                    }
                 }
             }
         }
@@ -70,7 +77,7 @@ pipeline {
                 script {
                     updateArtifactCmd = "python3 scripts/update-artifacts.py"
                     if(params.MAVEN_ARTIFACT_REPOSITORY != ''){
-                        updateArtifactCmd += "--repo-url ${params.MAVEN_ARTIFACT_REPOSITORY}"
+                        updateArtifactCmd += " --repo-url ${params.MAVEN_ARTIFACT_REPOSITORY}"
                     }
                     sh updateArtifactCmd
 
