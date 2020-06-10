@@ -25,6 +25,7 @@ function configure() {
     configure_proxy
     configure_mirrors
     configure_maven_download_output
+    set_kogito_maven_repo
     add_maven_repo
 }
 
@@ -88,6 +89,13 @@ function configure_mirrors() {
 function configure_maven_download_output() {
     if [ "${MAVEN_DOWNLOAD_OUTPUT}" != "true" ]; then
         export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} --no-transfer-progress"
+    fi
+}
+
+function set_kogito_maven_repo() {
+    local kogito_maven_repo_url="${JBOSS_MAVEN_REPO_URL}"
+    if [ -n "${kogito_maven_repo_url}" ]; then
+        sed -i "s|https://repository.jboss.org/nexus/content/groups/public/|${kogito_maven_repo_url}|" $HOME/.m2/settings.xml
     fi
 }
 

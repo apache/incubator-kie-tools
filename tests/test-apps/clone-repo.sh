@@ -2,10 +2,19 @@
 #
 # Clone the kogito-examples and edit the rules-quarkus-helloworld and dmn-quarkus-example for testing purposes
 
+SCRIPT_DIR=`pwd`
+MVN_MODULE="${SCRIPT_DIR}/../../modules/kogito-maven/3.6.x"
+
 # exit when any command fails
 set -e
 
-TEST_DIR=`pwd`
+# setup maven env
+export JBOSS_MAVEN_REPO_URL="https://repository.jboss.org/nexus/content/groups/public/"
+cp ${MVN_MODULE}/maven/settings.xml ${HOME}/.m2/settings.xml
+source ${MVN_MODULE}/added/configure-maven.sh
+configure
+
+# Clone examples
 cd /tmp
 rm -rf kogito-examples/
 git clone https://github.com/kiegroup/kogito-examples.git
@@ -29,8 +38,10 @@ rm -rf /tmp/kogito-examples/dmn-quarkus-example/pom.xml
 # by adding the application.properties file telling app to start on
 # port 10000, the purpose of this tests is make sure that the images
 # will ensure the use of the port 8080.
-cp ${TEST_DIR}/application.properties /tmp/kogito-examples/rules-quarkus-helloworld/src/main/resources/META-INF/
+cp ${SCRIPT_DIR}/application.properties /tmp/kogito-examples/rules-quarkus-helloworld/src/main/resources/META-INF/
 (echo ""; echo "server.port=10000") >> /tmp/kogito-examples/process-springboot-example/src/main/resources/application.properties
 
 git add --all  :/
 git commit -am "test"
+
+rm ${HOME}/.m2/settings.xml

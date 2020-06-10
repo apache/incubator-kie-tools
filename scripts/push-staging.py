@@ -138,7 +138,8 @@ if __name__ == "__main__":
     version = get_next_rc_version(find_current_rc_version())
     common.update_image_version(version)
     common.update_image_stream(version)
-    common.update_kogito_modules(version)
+    common.update_modules_version(version)
+    common.update_kogito_version_env_in_modules(version)
 
     find_next_tag()
     tag_and_push_images()

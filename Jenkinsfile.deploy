@@ -72,22 +72,26 @@ pipeline {
                 }
             }
         }
-        stage('Update Artifacts') {
+        stage('Update Maven information') {
             steps {
                 script {
-                    updateArtifactCmd = "python3 scripts/update-artifacts.py"
+                    // Update artifacts
+                    updateArtifactCmd = "python3 scripts/update-maven-information.py"
                     if(params.MAVEN_ARTIFACT_REPOSITORY != ''){
                         updateArtifactCmd += " --repo-url ${params.MAVEN_ARTIFACT_REPOSITORY}"
                     }
                     sh updateArtifactCmd
 
+                    // For debug
                     sh "cat modules/kogito-data-index/module.yaml"
                     sh "cat modules/kogito-jobs-service/module.yaml"
                     sh "cat modules/kogito-management-console/module.yaml"
+                    sh "cat tests/test-apps/clone-repo.sh"
+                    sh "cat ${HOME}/.m2/settings.xml"
                 }
             }
         }
-        stage('Validate CeKit Image and Modules descriptors'){
+        stage('Validate CeKit Image and Modules descriptors') {
             steps {
                 sh """
                     curl -Ls https://github.com/kiegroup/kie-cloud-tools/releases/download/1.0-SNAPSHOT/cekit-image-validator-runner.tgz --output cekit-image-validator-runner.tgz

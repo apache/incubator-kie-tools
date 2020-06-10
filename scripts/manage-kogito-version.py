@@ -94,7 +94,8 @@ if __name__ == "__main__":
 
             common.update_image_version(args.bump_to)
             common.update_image_stream(args.bump_to)
-            common.update_kogito_modules(args.bump_to)
+            common.update_modules_version(args.bump_to)
+            common.update_kogito_version_env_in_modules(args.bump_to)
             update_behave_tests(tests_branch)
             update_test_apps_clone_repo(tests_branch)
         else:
