@@ -16,6 +16,5 @@
 
 export enum StateControlEvent {
   UNDO,
-  REDO,
-  SAVE
+  REDO
 }

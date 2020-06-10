@@ -205,6 +205,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           onResourceListRequest(request).then(r => self.respond_resourceList(r!));
         },
         notify_editorUndo: () => {
+          console.log("hehehehe")
           props.stateControl.undoEvent();
           props.onEditorUndo?.();
         },
@@ -240,9 +241,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       case StateControlEvent.UNDO:
         props.stateControl.undoEvent();
         break;
-      case StateControlEvent.SAVE:
-        props.stateControl.setSavedEvent();
-        break;
       default:
         console.info(`Unknown message type received: ${stateControlEvent}`);
         break;
@@ -255,6 +253,17 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
   useEffect(() => {
     const { combination, label } = redoShortcut();
+    const redoId = keyboardShortcuts.registerKeyPress(
+      combination,
+      label,
+      async () => envelopeBusOuterMessageHandler.notify_editorRedo(),
+      { element: window }
+    );
+    return () => keyboardShortcuts.deregister(redoId);
+  }, []);
+
+  useEffect(() => {
+    const { combination, label } = undoShortcut();
     const undoId = keyboardShortcuts.registerKeyPress(
       combination,
       label,
@@ -262,17 +271,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       { element: window }
     );
     return () => keyboardShortcuts.deregister(undoId);
-  }, []);
-
-  useEffect(() => {
-    const { combination, label } = undoShortcut();
-    const redoId = keyboardShortcuts.registerKeyPress(
-      combination,
-      label,
-      async () => envelopeBusOuterMessageHandler.notify_editorUndo(),
-      { element: window }
-    );
-    return () => keyboardShortcuts.deregister(redoId);
   }, []);
 
   //Attach/detach bus when component attaches/detaches from DOM
