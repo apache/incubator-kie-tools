@@ -48,16 +48,27 @@ public class TimerSettingsValueValidatorTest
             "PT1H8M",
             "PT1H8M5S",
             "PT8M",
-            "PT3S"
-    };
-
-    private static final String[] INVALID_TIME_DURATIONS = {
+            "PT3S",
+            "P1Y2M3DT2H30M2S",
             "P4Y",
             "P4Y2M",
             "P4Y2M6D",
             "P4Y2M6DT1H",
             "P4Y2M6DT1H8M",
             "P4Y2M6DT1H8M15S",
+            "P5Y1M4DT13H30M0,4S",
+            "P5Y1M4DT13H30M0.4S"
+    };
+
+    private static final String[] INVALID_TIME_DURATIONS = {
+            "P4G",
+            "P4M2Y",
+            "P4Y2W6M",
+            "P4Y2M6D6W",
+            "P4Y2M6DT1Y",
+            "P4Y2M6DT1M8H",
+            "P4Y2M6DT1H8S15M",
+            "P5Y1M4DT1,5H30,2M0,4S",
             "",
             "PPP",
             "23EE",
@@ -82,28 +93,63 @@ public class TimerSettingsValueValidatorTest
             "R2/PT1H8M",
             "R2/PT1H8M5S",
             "R2/PT8M",
-            "R2/PT3S"
+            "R2/PT3S",
+            "R5/2020-04-30T17:55-04:00/PT1S",
+            "R5/2020-04-30T17:55-04:00/PT1M",
+            "R5/2020-04-30T17:55-04:00/PT1H",
+            "R5/2020-04-30T17:55-04:00/P1D",
+            "R5/2020-04-30T17:55-04:00/P1Y",
+            "R5/2020-02-07T15:36:00Z/PT5S",
+            "R5/2020-02-07T15:36:00Z/PT5M",
+            "R5/2020-02-07T15:36:00Z/PT5H",
+            "R5/2020-02-07T15:36:00Z/P5D",
+            "R5/2020-02-07T15:36:00Z/P5Y",
+            "R1/2020-05-12T18:25:00+02:00/PT5S",
+            "R5/2021-04-14T08:15:00Z/P1Y2M3DT2H30M2S",
+            "R5/2030-08-20T22:14-00:30/PT5S",
+            "R5/2020-12-01T23:50:01Z/PT5S",
+            "R5/2021-04-14T08:15:00Z/2021-04-15T08:15:00Z",
+            "R5/2030-08-20T17:59Z/PT5S",
+            "R2/PT3S/2021-04-15T08:15:00Z",
+            "R5/2020-04-30T17:55-04:00/P5Y1M4DT13H30M0,4S",
+            "R5/2020-04-30T17:55-04:00/P5Y1M4DT13H30M0.4S"
     };
 
     private static final String[] INVALID_ISO_TIME_CYCLE_DURATIONS = {
-            "R/P4Y",
-            "R/P4Y2M",
-            "R/P4Y2M6D",
-            "R/P4Y2M6DT1H",
-            "R/P4Y2M6DT1H8M",
-            "R/P4Y2M6DT1H8M15S",
-            "R2/P4Y",
-            "R2/P4Y2M",
-            "R2/P4Y2M6D",
-            "R2/P4Y2M6DT1H",
-            "R2/P4Y2M6DT1H8M",
-            "R2/P4Y2M6DT1H8M15S",
+            "R/P4S",
+            "R/P4Y2H",
+            "R/P4M2M",
+            "R/P4Y2M6DT1W",
+            "R/P4Y2M6DT1H8K",
+            "R/P4Y2M6D1H8M15S",
+            "R2/P4S",
+            "R2/P4Y2H",
+            "R2/P4M2M",
+            "R2/P4Y2M6DT1W",
+            "R2/P4Y2M6DT1H8K",
+            "R2/P4Y2M6D1H8M15S",
             "",
             "R/",
             "R/4Y2M",
             "A",
             "/P4Y2M6D",
             "R2PT1H",
+            "R5/2020-04-30T17:55-4:00/PT1S",
+            "R5/2020-04-30T17:55-04/PT1M",
+            "R5/2020-04-30T17:55-4/PT1H",
+            "R5/2020-04-30T17:55-04:00",
+            "R5/2020-04-30T17:5504:00/PT1Y",
+            "R5/2020-02-07T15:36:00Z",
+            "2020-02-07T15:36:00Z/PT5M",
+            "R1/2020-05-12T18:25:00Z+02:00/PT5S",
+            "R5/2021-04-14T08:15:00Z/P1Y2M3DT2H30S2M",
+            "R5/2030-08-20T25:14-00:30/PT5S",
+            "R5/2020-12-01T23:50:01/PT5S",
+            "R5/2021-04-14T08:15:00Z/2021-13-15T08:15:00-04:00",
+            "R5/2030-08-20T17:60Z/PT5S",
+            "R2/PT3S/2021-04-32T08:15:00Z",
+            "R5/2020-04-30T17:55-04:00/P5Y1M4DT13H30,5M0,4S",
+            "R5/2020-04-30T17:55-04:00/P5Y1M4DT13H30.5M0.4S",
             "etc"
     };
 
@@ -141,7 +187,10 @@ public class TimerSettingsValueValidatorTest
 
     private static final String[] VALID_TIME_DATES = {
             "2013-10-24T20:15:00.000+00:00",
-            "2013-10-24T20:15:00+02:05"
+            "2030-08-20T17:59Z",
+            "2020-05-01T15:45:00Z",
+            "2030-08-20T22:14-00:30",
+            "2013-10-24T20:15:00+02:00"
     };
 
     private static final String[] INVALID_TIME_DATES = {

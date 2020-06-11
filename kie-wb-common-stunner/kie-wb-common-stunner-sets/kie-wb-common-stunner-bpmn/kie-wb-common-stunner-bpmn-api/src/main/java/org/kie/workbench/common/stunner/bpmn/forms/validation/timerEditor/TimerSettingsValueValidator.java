@@ -28,7 +28,7 @@ public class TimerSettingsValueValidator
 
     public static final String TimeDurationInvalid = "The timer duration must be a valid ISO-8601 duration or an expression like #{expression}.";
 
-    public static final String ISOTimeCycleInvalid = "The timer cycle must be a valid ISO-8601 repetable interval or an expression like #{expression}.";
+    public static final String ISOTimeCycleInvalid = "The timer cycle must be a valid ISO-8601 repeatable interval or an expression like #{expression}.";
 
     public static final String CronTimeCycleInvalid = "The time cycle must be a valid cron interval or an expression like #{expression}.";
 
@@ -43,14 +43,22 @@ public class TimerSettingsValueValidator
     /**
      * ISO8601-Duration
      */
-    private static final String ISO_DURATION = "P(?:\\d+(?:\\.\\d+)?D)?(?:T(?:\\d+(?:\\.\\d+)?H)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?S)?)?";
+    private static final String ISO_DURATION = "P(?!$)(\\d+Y)?(\\d+M)?(\\d+W)?(\\d+D)?(T(?=\\d)(\\d+H)?(\\d+M)?((\\d+((\\.|\\,)\\d+)?)+S)?)?";
 
     /**
-     * ISO8601-Repetable Intervals
+     * ISO8601-Repeatable Intervals
      */
-    private static final String ISO_REPETABLE_INTERVAL = "(R\\d*\\/)" + ISO_DURATION;
+    private static final String REPETITION_MASK = "R(\\d*)?";
 
-    private static final String ISO_DATE_TIME = "^([\\+-]?\\d{4}(?!\\d{2}\\b))(-)(0[1-9]|1[0-2])(-)(0[1-9]|1[0-9]|2[0-9]|3[0-1])T(0[0-9]|1[0-9]|2[0-4])(:)([0-5][0-9])(:)([0-5][0-9])(.[0-9][0-9][0-9])?(((\\+)(0[0-9]|1[0-5]))|((\\-)(0[0-9]|1[0-8]))):([0-5][0-9])$";
+    private static final String ISO_REPEATABLE_INTERVAL = REPETITION_MASK + "\\/" + ISO_DURATION;
+
+    private static final String ISO_DATE_TIME = "([\\+-]?\\d{4}(?!\\d{2}\\b))(-)(0[1-9]|1[0-2])(-)(0[1-9]|1[0-9]|2[0-9]|3[0-1])T(0[0-9]|1[0-9]|2[0-4])(:)([0-5][0-9])((:)[0-5][0-9]((.)[0-9][0-9][0-9])?)?(((((\\+)(0[0-9]|1[0-5]))|((\\-)(0[0-9]|1[0-8]))):([0-5][0-9]))|(Z))";
+
+    private static final String ISO_REPEATABLE_DATE_TIME_INTERVAL = REPETITION_MASK + "\\/" + ISO_DATE_TIME + "\\/" + ISO_DURATION;
+
+    private static final String ISO_REPEATABLE_START_END_INTERVAL = REPETITION_MASK + "\\/" + ISO_DATE_TIME + "\\/" + ISO_DATE_TIME;
+
+    private static final String ISO_REPEATABLE_PERIOD_END_INTERVAL = REPETITION_MASK + "\\/" + ISO_DURATION + "\\/" + ISO_DATE_TIME;
 
     /**
      * Cron interval
@@ -61,13 +69,19 @@ public class TimerSettingsValueValidator
 
     private static final RegExp durationExpr = RegExp.compile("^" + ISO_DURATION + "$");
 
-    private static final RegExp repetableIntervalExpr = RegExp.compile("^" + ISO_REPETABLE_INTERVAL + "$");
+    private static final RegExp repeatableIntervalExpr = RegExp.compile("^" + ISO_REPEATABLE_INTERVAL + "$");
 
     private static final RegExp cronIntervalExpr = RegExp.compile("^" + CRON_INTERVAL + "$");
 
     private static final RegExp expressionExpr = RegExp.compile("^" + EXPRESSION + "$");
 
     private static final RegExp dateTimeExpr = RegExp.compile("^" + ISO_DATE_TIME + "$");
+
+    private static final RegExp repeatableDateTimeExpr = RegExp.compile("^" + ISO_REPEATABLE_DATE_TIME_INTERVAL + "$");
+
+    private static final RegExp repeatableStartEndExpr = RegExp.compile("^" + ISO_REPEATABLE_START_END_INTERVAL + "$");
+
+    private static final RegExp repeatablePeriodEndExpr = RegExp.compile("^" + ISO_REPEATABLE_PERIOD_END_INTERVAL + "$");
 
     public void initialize(ValidTimerSettingsValue constraintAnnotation) {
     }
@@ -87,7 +101,9 @@ public class TimerSettingsValueValidator
         } else if (ISO.equals(timerSettings.getTimeCycleLanguage())) {
             value = timerSettings.getTimeCycle();
             if ((looksLikeExpression(value) && !isValidExpression(value)) ||
-                    (!looksLikeExpression(value) && !isValidRepetableInterval(value))) {
+                    (!looksLikeExpression(value) && !isValidRepeatableInterval(value) &&
+                            !isValidRepeatableDateTimeInterval(value) && !isValidRepeatableStartEndInterval(value) &&
+                            !isValidRepeatablePeriodEndInterval(value))) {
                 errorMessage = ISOTimeCycleInvalid;
             }
         } else if (CRON.equals(timerSettings.getTimeCycleLanguage())) {
@@ -127,8 +143,20 @@ public class TimerSettingsValueValidator
         return hasSomething(value) && durationExpr.test(value);
     }
 
-    private static boolean isValidRepetableInterval(final String value) {
-        return hasSomething(value) && repetableIntervalExpr.test(value);
+    private static boolean isValidRepeatableInterval(final String value) {
+        return hasSomething(value) && repeatableIntervalExpr.test(value);
+    }
+
+    private static boolean isValidRepeatableDateTimeInterval(final String value) {
+        return hasSomething(value) && repeatableDateTimeExpr.test(value);
+    }
+
+    private static boolean isValidRepeatableStartEndInterval(final String value) {
+        return hasSomething(value) && repeatableStartEndExpr.test(value);
+    }
+
+    private static boolean isValidRepeatablePeriodEndInterval(final String value) {
+        return hasSomething(value) && repeatablePeriodEndExpr.test(value);
     }
 
     private static boolean isValidCronExpression(final String value) {
