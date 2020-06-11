@@ -66,7 +66,7 @@ public class MultipleInstanceVariableEditorPresenterTest
 
     @Test
     public void testSetValue() {
-        editor.setValue("value:String");
+        editor.setValue("value:String:");
         Variable variable = new Variable("value", Variable.VariableType.INPUT, "String", null);
         verify(view).setModel(variable);
     }

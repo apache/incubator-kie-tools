@@ -105,7 +105,7 @@ public class StringUtilsTest {
         attributes.add(metaDataAttribute1);
         attributes.add(metaDataAttribute2);
 
-        assertEquals("input1:Boolean,input2:Object", StringUtils.getStringForList(variables));
+        assertEquals("input1:Boolean:,input2:Object:", StringUtils.getStringForList(variables));
         assertEquals("input1ßvalue,input2ßvalue", StringUtils.getStringForList(attributes, null));
         assertEquals("input1ßvalue,input2ßvalue", StringUtils.getStringForList(attributes, ""));
         assertEquals("input1ßvalueØinput2ßvalue", StringUtils.getStringForList(attributes, "Ø"));

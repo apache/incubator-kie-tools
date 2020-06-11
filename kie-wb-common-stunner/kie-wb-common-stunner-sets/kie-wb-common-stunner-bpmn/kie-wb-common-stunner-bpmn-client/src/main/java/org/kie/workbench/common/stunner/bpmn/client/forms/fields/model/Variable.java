@@ -19,9 +19,11 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class Variable {
+
+    static final String DIVIDER = ":";
+    static final String TAG_DIVIDER = ";";
 
     public enum VariableType {
         INPUT,
@@ -29,7 +31,7 @@ public class Variable {
         PROCESS
     }
 
-    private VariableType variableType = VariableType.PROCESS;
+    private VariableType variableType;
 
     private String name;
 
@@ -40,23 +42,19 @@ public class Variable {
     private List<String> tags;
 
     public Variable(VariableType variableType) {
-        this.variableType = variableType;
+        this(null, variableType, null, null, null);
     }
 
     public Variable(final String name,
                     final VariableType variableType) {
-        this.name = name;
-        this.variableType = variableType;
+        this(name, variableType, null, null, null);
     }
 
     public Variable(final String name,
                     final VariableType variableType,
                     final String dataType,
                     final String customDataType) {
-        this.name = name;
-        this.variableType = variableType;
-        this.dataType = dataType;
-        this.customDataType = customDataType;
+        this(name, variableType, dataType, customDataType, null);
     }
 
     public Variable(final String name,
@@ -69,19 +67,6 @@ public class Variable {
         this.dataType = dataType;
         this.customDataType = customDataType;
         this.tags = tags;
-    }
-
-    public Variable(final VariableRow row,
-                    final Map<String, String> mapDataTypeDisplayNamesToNames) {
-        this.name = row.getName();
-        this.variableType = row.getVariableType();
-        if (row.getDataTypeDisplayName() != null && mapDataTypeDisplayNamesToNames.containsKey(row.getDataTypeDisplayName())) {
-            this.dataType = mapDataTypeDisplayNamesToNames.get(row.getDataTypeDisplayName());
-        } else {
-            this.dataType = row.getDataTypeDisplayName();
-        }
-        this.customDataType = row.getCustomDataType();
-        this.tags = row.getTags();
     }
 
     public List<String> getTags() {
@@ -127,13 +112,17 @@ public class Variable {
     public String toString() {
         if (name != null && !name.isEmpty()) {
             StringBuilder sb = new StringBuilder().append(name);
+
+            sb.append(DIVIDER);
             if (customDataType != null && !customDataType.isEmpty()) {
-                sb.append(':').append(customDataType);
+                sb.append(customDataType);
             } else if (dataType != null && !dataType.isEmpty()) {
-                sb.append(':').append(dataType);
+                sb.append(dataType);
             }
-            if (tags != null && !tags.isEmpty() && this.getVariableType() == Variable.VariableType.PROCESS && (customDataType != null || dataType != null)) {
-                sb.append(":").append(String.join(";", tags));
+
+            sb.append(DIVIDER);
+            if (this.getVariableType() == Variable.VariableType.PROCESS && tags != null) {
+                sb.append(String.join(TAG_DIVIDER, tags));
             }
 
             return sb.toString();
@@ -143,6 +132,7 @@ public class Variable {
 
     /**
      * Deserializes a variable, checking whether the datatype is custom or not
+     *
      * @param s
      * @param variableType
      * @param dataTypes
@@ -152,30 +142,27 @@ public class Variable {
                                        final VariableType variableType,
                                        final List<String> dataTypes) {
         Variable var = new Variable(variableType);
-        String[] varParts = s.split(":");
-        if (varParts.length > 0) {
+        String[] varParts = s.split(DIVIDER, -1);
+        if (varParts.length == 3) {
             String name = varParts[0];
             if (!name.isEmpty()) {
                 var.setName(name);
-                if (varParts.length == 2 || varParts.length == 3) {
-                    var.tags = new ArrayList<>();
-                    String dataType = varParts[1];
-                    if (!dataType.isEmpty()) {
-                        if (dataTypes != null && dataTypes.contains(dataType)) {
-                            var.setDataType(dataType);
-                        } else {
-                            var.setCustomDataType(dataType);
-                        }
-                    }
+                var.tags = new ArrayList<>();
 
-                    if (varParts.length == 3) {
-                        final String strippedDownTags = varParts[2].replace("[", "").replace("]", "");
-                        String[] elements = strippedDownTags.split(";");
-
-                        if (!strippedDownTags.isEmpty()) { // If not Empty Tags
-                            var.tags.addAll(Arrays.asList(elements));
-                        }
+                String dataType = varParts[1];
+                if (!dataType.isEmpty()) {
+                    if (dataTypes != null && dataTypes.contains(dataType)) {
+                        var.setDataType(dataType);
+                    } else {
+                        var.setCustomDataType(dataType);
                     }
+                }
+
+                final String strippedDownTags = varParts[2].replace("[", "").replace("]", "");
+                String[] elements = strippedDownTags.split(TAG_DIVIDER);
+
+                if (!strippedDownTags.isEmpty()) {
+                    var.tags.addAll(Arrays.asList(elements));
                 }
             }
         }
@@ -184,6 +171,7 @@ public class Variable {
 
     /**
      * Deserializes a variable, NOT checking whether the datatype is custom
+     *
      * @param s
      * @param variableType
      * @return
@@ -226,7 +214,7 @@ public class Variable {
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         result = 31 * result + (getDataType() != null ? getDataType().hashCode() : 0);
         result = 31 * result + (getCustomDataType() != null ? getCustomDataType().hashCode() : 0);
-        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        result = 31 * result + (tags != null && !tags.isEmpty() ? tags.hashCode() : 0);
 
         return result;
     }

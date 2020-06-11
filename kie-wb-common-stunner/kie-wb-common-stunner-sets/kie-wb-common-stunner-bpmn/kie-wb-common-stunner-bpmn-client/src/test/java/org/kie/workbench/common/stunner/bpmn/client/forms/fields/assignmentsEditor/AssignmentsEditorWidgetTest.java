@@ -84,12 +84,12 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
 
     private static final String TASK_NAME = "Get Address";
 
-    private static final String ASSIGNMENTS_INFO = "|input1:com.test.Employee,input2:String,input3:String,input4:String,Skippable||output1:com.test.Employee,output2:String|[din]employee->input1,[din]input2=ab%7Ccd%7Cef,[din]input3=yes,[din]input4=%22Hello%22+then+%22Goodbye%22,[dout]output1->employee,[dout]output2->reason";
-    public static final String DATA_INPUT = "input1:com.test.Employee";
-    public static final String DATA_INPUT_SET = "input1:com.test.Employee,input2:String,input3:String,input4:String,Skippable";
-    public static final String DATA_OUTPUT = "output1:com.test.Employee";
-    public static final String DATA_OUTPUT_SET = "output1:com.test.Employee,output2:String";
-    public static final String PROCESS_VARS = "employee:java.lang.String,reason:java.lang.String,performance:java.lang.String";
+    private static final String ASSIGNMENTS_INFO = "|input1:com.test.Employee:,input2:String:,input3:String:,input4:String:,Skippable::||output1:com.test.Employee:,output2:String:|[din]employee->input1,[din]input2=ab%7Ccd%7Cef,[din]input3=yes,[din]input4=%22Hello%22+then+%22Goodbye%22,[dout]output1->employee,[dout]output2->reason";
+    public static final String DATA_INPUT = "input1:com.test.Employee:";
+    public static final String DATA_INPUT_SET = "input1:com.test.Employee:,input2:String:,input3:String:,input4:String:,Skippable::";
+    public static final String DATA_OUTPUT = "output1:com.test.Employee:";
+    public static final String DATA_OUTPUT_SET = "output1:com.test.Employee:,output2:String:";
+    public static final String PROCESS_VARS = "employee:java.lang.String:,reason:java.lang.String:,performance:java.lang.String:";
     public static final String ASSIGNMENTS_SINGLE_INPUT = "[din]employee->input1";
     public static final String ASSIGNMENTS_SINGLE_OUTPUT = "[dout]output1->employee";
     public static final String ASSIGNMENTS_MULTIPLE = "[din]employee->input1,[din]input2=ab%7Ccd%7Cef,[din]input3=yes,[din]input4=%22Hello%22+then+%22Goodbye%22,[dout]output1->employee,[dout]output2->reason";
@@ -99,11 +99,11 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
     public static final String FORMATTED_DATATYPES = "Articles [org.documents]:org.documents.Articles,Cardboard [myorg.myproject1]:myorg.myproject1.Cardboard,Paper [yourorg.materials]:yourorg.materials.Paper";
 
     public static final String SIMPLE_DATA_TYPES = "Boolean:Boolean,Float:Float,Integer:Integer,Object:Object,String:String";
-    public static final String NORMAL_TASK_WITH_INPUTS_OUTPUTS_CASE = "|input1:Boolean,input2:Object||output1:Object,output2:Integer|[din]processVar1->input1,[din]processVar2->input2,[dout]output1->processVar3,[dout]output2->processVar4";
-    public static final String NORMAL_TASK_WITH_ONLY_INPUTS_CASE = "|input1:Boolean,input2:Object|||[din]processVar1->input1,[din]processVar2->input2";
-    public static final String NORMAL_TASK_WITH_ONLY_OUTPUTS_CASE = "|||output1:Object,output2:Integer|[dout]output1->processVar1,[dout]output2->processVar2";
-    public static final String EVENT_WITH_INPUT_CASE = "||eventOutput:Object||[dout]eventOutput->processVar1";
-    public static final String EVENT_WITH_OUTPUT_CASE = "eventInput:Object||||[din]processVar1->eventInput";
+    public static final String NORMAL_TASK_WITH_INPUTS_OUTPUTS_CASE = "|input1:Boolean:,input2:Object:||output1:Object:,output2:Integer:|[din]processVar1->input1,[din]processVar2->input2,[dout]output1->processVar3,[dout]output2->processVar4";
+    public static final String NORMAL_TASK_WITH_ONLY_INPUTS_CASE = "|input1:Boolean:,input2:Object:|||[din]processVar1->input1,[din]processVar2->input2";
+    public static final String NORMAL_TASK_WITH_ONLY_OUTPUTS_CASE = "|||output1:Object:,output2:Integer:|[dout]output1->processVar1,[dout]output2->processVar2";
+    public static final String EVENT_WITH_INPUT_CASE = "||eventOutput:Object:||[dout]eventOutput->processVar1";
+    public static final String EVENT_WITH_OUTPUT_CASE = "eventInput:Object:||||[din]processVar1->eventInput";
 
     @GwtMock
     private AssignmentsEditorWidget widget;
@@ -557,7 +557,7 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         View parentNodeView = new ViewImpl(bpmnDiagram, Bounds.create());
         parentNode.setContent(parentNodeView);
 
-        bpmnDiagram.getProcessData().getProcessVariables().setValue("processVar1:Object,processVar2:Object,processVar3:Object,processVar4:Object");
+        bpmnDiagram.getProcessData().getProcessVariables().setValue("processVar1:Object:,processVar2:Object:,processVar3:Object:,processVar4:Object:");
         Node node = new NodeImpl("UUID");
         Edge edge = new EdgeImpl("edge");
         Child child = mock(Child.class);

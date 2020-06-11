@@ -37,17 +37,16 @@ class ProcessVariableReader {
     private static String toProcessVariableString(Property p) {
         String processVariableName = getProcessVariableName(p);
         String tags = CustomElement.customTags.of(p).get();
-
         return Optional.ofNullable(p.getItemSubjectRef())
                 .map(ItemDefinition::getStructureRef)
                 .map(type -> processVariableName + ":" + type + ":" + tags)
-                .orElse(processVariableName);
+                .orElse(processVariableName + "::" + tags);
     }
 
     public static String getProcessVariableName(Property p) {
         String name = p.getName();
         // legacy uses ID instead of name
-        return name == null ? p.getId() : name;
+        return name == null || name.isEmpty() ? p.getId() : name;
     }
 
     public static boolean isProcessVariable(Property p) {

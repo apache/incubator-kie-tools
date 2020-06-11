@@ -202,16 +202,30 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         List<Variable> variables = new ArrayList<>();
         for (VariableRow row : variableRows) {
             if (row.getName() != null && row.getName().length() > 0) {
-                variables.add(new Variable(row,
-                                           mapDataTypeDisplayNamesToNames));
+                String dataType = getRowDataType(row);
+                variables.add(new Variable(row.getName(),
+                                           row.getVariableType(),
+                                           dataType,
+                                           row.getCustomDataType(),
+                                           row.getTags()));
             }
         }
 
         return StringUtils.getStringForList(variables);
     }
 
+    private String getRowDataType(VariableRow row) {
+        if (row.getDataTypeDisplayName() != null &&
+                mapDataTypeDisplayNamesToNames.containsKey(row.getDataTypeDisplayName())) {
+            return mapDataTypeDisplayNamesToNames.get(row.getDataTypeDisplayName());
+        } else {
+            return row.getDataTypeDisplayName();
+        }
+    }
+
     /**
      * Tests whether a Row name occurs more than once in the list of rows
+     *
      * @param name
      * @return
      */

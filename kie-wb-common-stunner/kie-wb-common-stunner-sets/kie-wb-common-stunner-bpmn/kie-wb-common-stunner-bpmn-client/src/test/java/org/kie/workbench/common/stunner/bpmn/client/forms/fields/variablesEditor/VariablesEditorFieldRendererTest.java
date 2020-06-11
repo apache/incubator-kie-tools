@@ -222,7 +222,7 @@ public class VariablesEditorFieldRendererTest {
 
         variablesEditor.setDataTypes(dataTypes,
                                      dataTypeDisplayNames);
-        List<VariableRow> variableRows = variablesEditor.deserializeVariables("var1:String:[internal;input],var2:Integer:[output],var3:org.stuff.Potato,var4:com.myCustomDataType:[]");
+        List<VariableRow> variableRows = variablesEditor.deserializeVariables("var1:String:[internal;input],var2:Integer:[output],var3:org.stuff.Potato:,var4:com.myCustomDataType:[]");
         assertEquals(4,
                      variableRows.size());
         VariableRow var = variableRows.get(0);
@@ -279,22 +279,35 @@ public class VariablesEditorFieldRendererTest {
                                            "org.veg.Potato");
         variablesEditor.mapDataTypeDisplayNamesToNames = mapDataTypeDisplayNamesToNames;
 
+        List<String> tags = new ArrayList<>(Arrays.asList("Tag_1", "Tag_2"));
+
         List<VariableRow> variableRows = new ArrayList<VariableRow>();
         variableRows.add(new VariableRow(Variable.VariableType.PROCESS,
                                          "var1",
                                          "String",
-                                         null));
+                                         null,
+                                         tags));
         variableRows.add(new VariableRow(Variable.VariableType.PROCESS,
                                          "var2",
                                          "Integer",
-                                         null));
+                                         null,
+                                         tags));
         variableRows.add(new VariableRow(Variable.VariableType.PROCESS,
                                          "var3",
                                          "org.veg.Potato",
+                                         null,
+                                         tags));
+        variableRows.add(new VariableRow(Variable.VariableType.PROCESS,
+                                         "var4",
+                                         null,
+                                         null,
+                                         tags));
+        variableRows.add(new VariableRow(Variable.VariableType.PROCESS,
+                                         "var5",
+                                         "Boolean",
                                          null));
         String s = variablesEditor.serializeVariables(variableRows);
-        assertEquals("var1:String,var2:Integer,var3:org.veg.Potato",
-                     s);
+        assertEquals("var1:String:Tag_1;Tag_2,var2:Integer:Tag_1;Tag_2,var3:org.veg.Potato:Tag_1;Tag_2,var4::Tag_1;Tag_2,var5:Boolean:", s);
     }
 
     @Test
@@ -342,10 +355,10 @@ public class VariablesEditorFieldRendererTest {
                                          "var6",
                                          null,
                                          null,
-                                         Arrays.asList("thisTagShouldNotBeWrittenEither")));
+                                         Arrays.asList("thisTagShouldBeWritten")));
 
         String s = variablesEditor.serializeVariables(variableRows);
-        assertEquals("var1:String:internal,var2:Integer:input,var3:org.veg.Potato:input;output,var4:myCustomTag,var5:myType,var6",
+        assertEquals("var1:String:internal,var2:Integer:input,var3:org.veg.Potato:input;output,var4:myCustomTag:,var5:myType:,var6::thisTagShouldBeWritten",
                      s);
     }
 
