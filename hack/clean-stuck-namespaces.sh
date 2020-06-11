@@ -16,7 +16,7 @@
 
 DIR=$(mktemp -d)
 
-oc get projects | grep "Terminating" | awk -F " " '{print $1}' > ${DIR}/projects
+oc get namespaces | grep "Terminating" | awk -F " " '{print $1}' > ${DIR}/projects
 
 while read project
 do 
