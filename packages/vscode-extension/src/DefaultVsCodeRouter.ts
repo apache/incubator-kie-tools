@@ -16,7 +16,7 @@
 
 import { Router, Routes } from "@kogito-tooling/core-api";
 import * as vscode from "vscode";
-import * as __path from "path";
+import { Uri } from "vscode";
 
 export class DefaultVsCodeRouter extends Router {
   private readonly context: vscode.ExtensionContext;
@@ -27,9 +27,15 @@ export class DefaultVsCodeRouter extends Router {
   }
 
   public getRelativePathTo(uri: string) {
-    return vscode.Uri.file(__path.join(this.context.extensionPath, ...uri.split("/")))
-      .with({ scheme: "vscode-resource" })
-      .toString();
+    const vscodePathResolver: ((absolutePath: Uri) => Uri) | undefined = this.context?.globalState?.get(
+      "vscodePathResolver"
+    );
+
+    if (vscodePathResolver) {
+      return vscodePathResolver(vscode.Uri.file(this.context.asAbsolutePath(uri))).toString();
+    }
+    // TODO Figure out a better way to do this fallback for when the Webview#asWebviewUri is not available yet
+    return "vscode-resource://" + vscode.Uri.file(this.context.asAbsolutePath(uri)).toString().replace(":", "");
   }
 
   public getLanguageData(fileExtension: string) {
