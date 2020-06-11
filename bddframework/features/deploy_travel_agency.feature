@@ -10,12 +10,12 @@ Feature: Deploy Travel agency service and verify its functionality
     And Install Kogito Data Index with 1 replicas
 
   Scenario Outline: Travel application without required Visa and native <native>
-    Given Deploy quarkus example service "kogito-travel-agency/travels" with configuration:
+    Given Deploy quarkus example service "kogito-travel-agency/extended/travels" with configuration:
       | config        | native      | <native>                |
       | config        | persistence | enabled                 |
       | config        | events      | enabled                 |
       | build-request | cpu         | <build-request-cpu>     |
-    And Deploy quarkus example service "kogito-travel-agency/visas" with configuration:
+    And Deploy quarkus example service "kogito-travel-agency/extended/visas" with configuration:
       | config        | native      | <native>                |
       | config        | persistence | enabled                 |
       | config        | events      | enabled                 |
@@ -66,12 +66,12 @@ Feature: Deploy Travel agency service and verify its functionality
       | enabled  | 30      | 4                 | 
 
   Scenario Outline: Travel application with required Visa and native <native>
-    Given Deploy quarkus example service "kogito-travel-agency/travels" with configuration:
+    Given Deploy quarkus example service "kogito-travel-agency/extended/travels" with configuration:
       | config        | native      | <native>                |
       | config        | persistence | enabled                 |
       | config        | events      | enabled                 |
       | build-request | cpu         | <build-request-cpu>     |
-    And Deploy quarkus example service "kogito-travel-agency/visas" with configuration:
+    And Deploy quarkus example service "kogito-travel-agency/extended/visas" with configuration:
       | config        | native      | <native>                |
       | config        | persistence | enabled                 |
       | config        | events      | enabled                 |
