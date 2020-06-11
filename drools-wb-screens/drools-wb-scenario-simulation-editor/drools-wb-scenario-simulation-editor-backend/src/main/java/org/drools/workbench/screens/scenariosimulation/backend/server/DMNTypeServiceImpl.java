@@ -32,7 +32,6 @@ import javax.enterprise.context.ApplicationScoped;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.backend.util.DMNSimulationUtils;
 import org.drools.workbench.screens.scenariosimulation.backend.server.exceptions.WrongDMNTypeException;
-import org.drools.workbench.screens.scenariosimulation.backend.server.util.DMNUtils;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
@@ -155,7 +154,7 @@ public class DMNTypeServiceImpl
         if (type.isCollection() && isToBeManagedAsCollection(type)) {
             throw new WrongDMNTypeException();
         }
-        return isToBeManagedAsComposite(type) ? createFactModelTreeForComposite(genericTypeInfoMap, propertyName, fullPropertyPath, type, hiddenFacts, fmType, alreadyVisited) : createFactModelTreeForSimple(genericTypeInfoMap, factName, DMNUtils.getDMNTypeName(type), fmType);
+        return isToBeManagedAsComposite(type) ? createFactModelTreeForComposite(genericTypeInfoMap, propertyName, fullPropertyPath, type, hiddenFacts, fmType, alreadyVisited) : createFactModelTreeForSimple(genericTypeInfoMap, factName, type.getName(), fmType);
     }
 
     /**
@@ -210,8 +209,8 @@ public class DMNTypeServiceImpl
                 simpleFields.put(entry.getKey(), List.class.getCanonicalName());
                 genericTypeInfoMap.put(entry.getKey(), fact.getGenericTypeInfo(VALUE));
             } else {
+                String typeName = entry.getValue().getName();
                 if (entry.getValue().isComposite()) { // a complex type needs the expandable property and then in the hidden map, its fact model tree
-                    String typeName = entry.getValue().getName();
                     if (!hiddenFacts.containsKey(typeName) && !alreadyVisited.contains(typeName)) {
                         alreadyVisited.add(typeName);
                         FactModelTree fact = createFactModelTreeForNoCollection(genericTypeInfoMap, entry.getKey(), VALUE, expandablePropertyName, entry.getValue(), hiddenFacts, FactModelTree.Type.UNDEFINED, alreadyVisited);
@@ -219,7 +218,7 @@ public class DMNTypeServiceImpl
                     }
                     toReturn.addExpandableProperty(entry.getKey(), typeName);
                 } else {  // a simple type is just name -> type
-                    simpleFields.put(entry.getKey(), DMNUtils.getDMNTypeName(entry.getValue()));
+                    simpleFields.put(entry.getKey(), typeName);
                 }
             }
         }

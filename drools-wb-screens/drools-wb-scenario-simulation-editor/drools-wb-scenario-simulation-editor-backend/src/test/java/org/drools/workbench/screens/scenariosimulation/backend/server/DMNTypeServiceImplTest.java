@@ -149,35 +149,6 @@ public class DMNTypeServiceImplTest extends AbstractDMNTest {
     }
 
     @Test
-    public void createTopLevelFactModelTreeSimpleNoCollectionBaseType() throws WrongDMNTypeException {
-        // Single property retrieve
-        DMNType simpleString = getSimpleNoCollectionWithBaseType();
-        FactModelTree retrieved = dmnTypeServiceImpl.createTopLevelFactModelTree("testPath", simpleString, new TreeMap<>(), FactModelTree.Type.INPUT);
-        assertNotNull(retrieved);
-        assertEquals("testPath", retrieved.getFactName());
-        assertEquals(1, retrieved.getSimpleProperties().size());
-        assertTrue(retrieved.getSimpleProperties().containsKey(VALUE));
-        assertEquals(SIMPLE_TYPE_NAME, retrieved.getSimpleProperties().get(VALUE));
-    }
-
-    @Test
-    public void createTopLevelFactModelTreeCompositeNoCollectionBaseType() throws WrongDMNTypeException {
-        // Single property retrieve
-        DMNType composite = getSingleCompositeWithBaseTypeField();
-        FactModelTree retrieved = dmnTypeServiceImpl.createTopLevelFactModelTree("testPath", composite, new TreeMap<>(), FactModelTree.Type.INPUT);
-        assertNotNull(retrieved);
-        assertEquals("testPath", retrieved.getFactName());
-        assertEquals(2, retrieved.getSimpleProperties().size());
-        assertTrue(retrieved.getSimpleProperties().containsKey("name"));
-        assertEquals(SIMPLE_TYPE_NAME, retrieved.getSimpleProperties().get("name"));
-        //
-        assertTrue(retrieved.getSimpleProperties().containsKey("gender"));
-        assertEquals(SIMPLE_TYPE_NAME, retrieved.getSimpleProperties().get("gender"));
-        assertTrue(retrieved.getExpandableProperties().isEmpty());
-        assertTrue(retrieved.getGenericTypesMap().isEmpty());
-    }
-
-    @Test
     public void createTopLevelFactModelTreeCompositeCollection() throws WrongDMNTypeException {
         // Single property collection retrieve
         DMNType compositePerson = getCompositeCollection();
