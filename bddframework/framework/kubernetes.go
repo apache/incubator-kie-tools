@@ -78,11 +78,6 @@ func GetPodsByDeploymentConfig(namespace string, dcName string) (*corev1.PodList
 	return GetPodsWithLabels(namespace, map[string]string{"deploymentconfig": dcName})
 }
 
-// GetPodsByDeploymentConfigAndVersion retrieves pods with a deploymentconfig label set to <dcName> and version <version>
-func GetPodsByDeploymentConfigAndVersion(namespace string, dcName string, version int64) (*corev1.PodList, error) {
-	return GetPodsWithLabels(namespace, map[string]string{"deploymentconfig": dcName, "deployment": fmt.Sprintf("%s-%d", dcName, version)})
-}
-
 // GetPodsWithLabels retrieves pods based on label name and value
 func GetPodsWithLabels(namespace string, labels map[string]string) (*corev1.PodList, error) {
 	pods := &corev1.PodList{}

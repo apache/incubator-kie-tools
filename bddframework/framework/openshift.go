@@ -85,14 +85,8 @@ func WaitForDeploymentConfigRunning(namespace, dcName string, podNb int, timeout
 			} else if dc == nil {
 				return false, nil
 			} else {
-				// Workaround for KOGITO-2162: DeploymentConfig is being rollout without any reason
-				pods, err := GetPodsByDeploymentConfigAndVersion(namespace, dcName, dc.Status.LatestVersion)
-				if err != nil {
-					return false, nil
-				}
-
-				GetLogger(namespace).Debugf("Deployment config has %d pods\n", len(pods.Items))
-				return len(pods.Items) == podNb && CheckPodsAreReady(pods), nil
+				GetLogger(namespace).Debugf("Deployment config has %d available replicas\n", dc.Status.AvailableReplicas)
+				return dc.Status.AvailableReplicas == int32(podNb), nil
 			}
 		}, CheckPodsByDeploymentConfigInError(namespace, dcName))
 }
