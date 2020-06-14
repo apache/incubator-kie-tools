@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.assertj.core.api.SoftAssertions;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
@@ -37,6 +36,7 @@ import org.uberfire.mocks.EventSourceMock;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -172,13 +172,11 @@ public class TestRunnerReportingPanelTest {
 
     @Test
     public void testMillisecondsFormatting() {
-        SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(screen.formatMilliseconds("0")).isEqualTo("0");
-            softly.assertThat(screen.formatMilliseconds("00")).isEqualTo("0");
-            softly.assertThat(screen.formatMilliseconds("110")).isEqualTo("110");
-            softly.assertThat(screen.formatMilliseconds("0101")).isEqualTo("101");
-            softly.assertThat(screen.formatMilliseconds("000110")).isEqualTo("110");
-        });
+        assertThat(screen.formatMilliseconds("0")).isEqualTo("0");
+        assertThat(screen.formatMilliseconds("00")).isEqualTo("0");
+        assertThat(screen.formatMilliseconds("110")).isEqualTo("110");
+        assertThat(screen.formatMilliseconds("0101")).isEqualTo("101");
+        assertThat(screen.formatMilliseconds("000110")).isEqualTo("110");
     }
 
     private TestResultMessage createTRMWithoutFailures(long runtime) {

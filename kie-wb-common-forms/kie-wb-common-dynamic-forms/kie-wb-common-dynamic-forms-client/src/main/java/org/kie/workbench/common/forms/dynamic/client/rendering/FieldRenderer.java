@@ -164,7 +164,7 @@ public abstract class FieldRenderer<F extends FieldDefinition, G extends FormGro
         return fieldChangeListeners;
     }
 
-    protected class FieldConfigStatus {
+    public class FieldConfigStatus {
 
         protected List<String> configErrors;
 

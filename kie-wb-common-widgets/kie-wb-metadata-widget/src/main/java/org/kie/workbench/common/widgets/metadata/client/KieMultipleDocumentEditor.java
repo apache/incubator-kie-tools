@@ -132,7 +132,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     protected boolean showDocks = false;
 
     //Handler for MayClose requests
-    protected interface MayCloseHandler {
+    public interface MayCloseHandler {
 
         boolean mayClose(final Integer originalHashCode,
                          final Integer currentHashCode);
