@@ -39,7 +39,6 @@ import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.definition.model.InputData;
-import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model.AssociationConverter;
@@ -148,9 +147,7 @@ public class DMNMarshallerKogitoMarshaller {
         final Definitions definitionsStunnerPojo = ((DMNDiagram) DefinitionUtils.getElementDefinition(dmnDiagramRoot)).getDefinitions();
         final List<JSIDMNEdge> dmnEdges = new ArrayList<>();
 
-        cleanImportedItemDefinitions(definitionsStunnerPojo);
-
-        final JSITDefinitions definitions = DefinitionsConverter.dmnFromWB(definitionsStunnerPojo);
+        final JSITDefinitions definitions = DefinitionsConverter.dmnFromWB(definitionsStunnerPojo, true);
         if (Objects.isNull(definitions.getExtensionElements())) {
             JSITDMNElement.JSIExtensionElements jsiExtensionElements = new JSITDMNElement.JSIExtensionElements();
             definitions.setExtensionElements(jsiExtensionElements);
@@ -302,10 +299,6 @@ public class DMNMarshallerKogitoMarshaller {
             dmnDDDMNDiagram.addDMNDiagramElement(WrapperUtils.getWrappedJSIDMNEdge(Js.uncheckedCast(dmnEdges.get(i))));
         }
         return definitions;
-    }
-
-    void cleanImportedItemDefinitions(final Definitions definitions) {
-        definitions.getItemDefinition().removeIf(ItemDefinition::isAllowOnlyVisualChange);
     }
 
     @SuppressWarnings("unchecked")

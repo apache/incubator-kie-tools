@@ -28,7 +28,6 @@ import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.widgets.client.kogito.IsKogito;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
@@ -38,7 +37,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -46,9 +44,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class KogitoKieAssetsDropdownTest extends AbstractKieAssetsDropdownTest {
-
-    @Mock
-    private IsKogito isKogito;
 
     @Mock
     private Consumer<List<KieAssetsDropdownItem>> kieAssetsConsumer;
@@ -60,8 +55,7 @@ public class KogitoKieAssetsDropdownTest extends AbstractKieAssetsDropdownTest {
 
     @Before
     public void setup() {
-        when(isKogito.get()).thenReturn(false);
-        dropdownLocal = spy(new KogitoKieAssetsDropdown(viewlocalMock, isKogito, dataProviderMock) {
+        dropdownLocal = spy(new KogitoKieAssetsDropdown(viewlocalMock, dataProviderMock) {
             {
                 onValueChangeHandler = onValueChangeHandlerMock;
                 this.kieAssets.addAll(assetList);
@@ -81,18 +75,6 @@ public class KogitoKieAssetsDropdownTest extends AbstractKieAssetsDropdownTest {
     }
 
     @Test
-    public void testLoadAssetsWhenEnvIsKogito() {
-
-        when(isKogito.get()).thenReturn(true);
-
-        getDropdown().loadAssets();
-
-        verify(getDropdown()).clear();
-        verify(viewlocalMock).enableInputMode();
-        verify(getViewMock()).initialize();
-    }
-
-    @Test
     public void testLoadAssetsWhenEnvIsNotKogito() {
 
         doReturn(kieAssetsConsumer).when((KogitoKieAssetsDropdown) getDropdown()).getAssetListConsumer();
@@ -108,13 +90,6 @@ public class KogitoKieAssetsDropdownTest extends AbstractKieAssetsDropdownTest {
     public void testInitialize() {
         getDropdown().initialize();
         verify(getViewMock()).refreshSelectPicker();
-    }
-
-    @Test
-    public void testInitializeWhenItIsNotKogito() {
-        when(isKogito.get()).thenReturn(true);
-        getDropdown().initialize();
-        verify(getViewMock(), never()).refreshSelectPicker();
     }
 
     @Test
@@ -148,20 +123,6 @@ public class KogitoKieAssetsDropdownTest extends AbstractKieAssetsDropdownTest {
     public void testGetValueWhenOptionDoesNotExist() {
         ((KogitoKieAssetsDropdown) getDropdown()).kieAssets.clear();
         assertFalse(getDropdown().getValue().isPresent());
-    }
-
-    @Test
-    public void testGetValueWhenItIsKogito() {
-
-        final String expectedValue = "value";
-
-        when(isKogito.get()).thenReturn(true);
-        when(getViewMock().getValue()).thenReturn(expectedValue);
-
-        final Optional<KieAssetsDropdownItem> value = getDropdown().getValue();
-
-        assertTrue(value.isPresent());
-        assertEquals(expectedValue, value.get().getValue());
     }
 
     @Test

@@ -61,6 +61,13 @@ public class DMNVFSService {
         }).readAllString(path);
     }
 
+    public void openFile(final String fileName, final String xml){
+        final PlaceRequest placeRequest = new DefaultPlaceRequest(DMNDiagramEditor.EDITOR_ID);
+        placeRequest.addParameter(DMNDiagramEditor.FILE_NAME_PARAMETER_NAME, fileName);
+        placeRequest.addParameter(DMNDiagramEditor.CONTENT_PARAMETER_NAME, xml);
+        placeManager.goTo(placeRequest);
+    }
+
     @SuppressWarnings("unchecked")
     public void saveFile(final Path path,
                          final String xml,

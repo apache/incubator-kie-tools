@@ -56,8 +56,13 @@ public abstract class BaseDMNDiagramsNavigatorScreen {
         clear();
     }
 
-    private Menus makeMenuBar() {
-        final MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> m =
+    protected Menus makeMenuBar() {
+        final MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> builder = createMenuBuilder();
+        return builder.build();
+    }
+
+    protected MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> createMenuBuilder() {
+        final MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> builder =
                 MenuFactory
                         .newTopLevelMenu("Load diagrams from server")
                         .respondsWith(() -> diagramsNavigator.show())
@@ -65,10 +70,11 @@ public abstract class BaseDMNDiagramsNavigatorScreen {
                         .newTopLevelMenu("Edit")
                         .respondsWith(this::edit)
                         .endMenu();
-        m.newTopLevelMenu(newDiagramMenuItemsBuilder.build("Create",
-                                                           "Create a new",
-                                                           this::create)).endMenu();
-        return m.build();
+        builder.newTopLevelMenu(newDiagramMenuItemsBuilder.build("Create",
+                                                                 "Create a new",
+                                                                 this::create)).endMenu();
+
+        return builder;
     }
 
     protected abstract void edit();

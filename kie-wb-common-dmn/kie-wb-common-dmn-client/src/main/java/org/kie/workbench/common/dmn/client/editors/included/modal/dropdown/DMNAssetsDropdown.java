@@ -20,15 +20,13 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.widgets.client.assets.dropdown.KogitoKieAssetsDropdown;
-import org.kie.workbench.common.widgets.client.kogito.IsKogito;
 
 @Dependent
 public class DMNAssetsDropdown extends KogitoKieAssetsDropdown {
 
     @Inject
     public DMNAssetsDropdown(final View view,
-                             final IsKogito isKogito,
                              final DMNAssetsDropdownItemsProvider dataProvider) {
-        super(view, isKogito, dataProvider);
+        super(view, dataProvider);
     }
 }

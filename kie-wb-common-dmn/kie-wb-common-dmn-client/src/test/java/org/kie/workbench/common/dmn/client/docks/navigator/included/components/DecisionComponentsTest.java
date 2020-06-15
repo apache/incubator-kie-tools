@@ -27,11 +27,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.api.definition.model.ImportDMN;
 import org.kie.workbench.common.dmn.api.definition.model.ImportPMML;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
+import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
+import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -231,5 +234,27 @@ public class DecisionComponentsTest {
         verify(item).setDecisionComponent(any(DecisionComponent.class));
         verify(decisionComponentsItems).add(item);
         verify(view).addListItem(htmlElement);
+    }
+
+    @Test
+    public void testAsDMNIncludedModel() {
+
+        final String modelName = "Model Name";
+        final String namespace = "The Namespace";
+        final String type = "The type";
+        final String file = "my file.dmn";
+        final String filePath = "//users//some//" + file;
+        final Import anImport = new Import();
+        anImport.setName(new Name(modelName));
+        anImport.setNamespace(namespace);
+        anImport.setImportType(type);
+        anImport.setLocationURI(new LocationURI(filePath));
+
+        final DMNIncludedModel includedModel = decisionComponents.asDMNIncludedModel(anImport);
+
+        assertEquals(modelName, includedModel.getModelName());
+        assertEquals(namespace, includedModel.getNamespace());
+        assertEquals(type, includedModel.getImportType());
+        assertEquals(file, includedModel.getPath());
     }
 }

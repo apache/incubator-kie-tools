@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.appformer.client.context.Channel;
+import org.appformer.client.context.EditorContextProvider;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +37,6 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.widgets.client.kogito.IsKogito;
 import org.mockito.Mock;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
@@ -46,6 +47,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionNavigatorPresenter_DecisionNavigator;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -79,7 +81,7 @@ public class DecisionNavigatorPresenterTest {
     private TranslationService translationService;
 
     @Mock
-    private IsKogito isKogito;
+    private EditorContextProvider context;
 
     private DecisionNavigatorPresenter presenter;
 
@@ -92,7 +94,7 @@ public class DecisionNavigatorPresenterTest {
                                                        navigatorChildrenTraverse,
                                                        itemFactory,
                                                        translationService,
-                                                       isKogito));
+                                                       context));
     }
 
     @Test
@@ -130,36 +132,46 @@ public class DecisionNavigatorPresenterTest {
     }
 
     @Test
-    public void testSetupView() {
-
-        final DecisionNavigatorTreePresenter.View treeView = mock(DecisionNavigatorTreePresenter.View.class);
-        final DecisionComponents.View decisionComponentsView = mock(DecisionComponents.View.class);
-
-        when(treePresenter.getView()).thenReturn(treeView);
-        when(decisionComponents.getView()).thenReturn(decisionComponentsView);
-
-        presenter.setupView();
-
-        verify(view).setupMainTree(treeView);
-        verify(view).showDecisionComponentsContainer();
-        verify(view).setupDecisionComponents(decisionComponentsView);
+    public void testSetupViewWhenChannelIsVSCodeOrDefault() {
+        testSetupViewWhenDecisionComponentsContainerIsVisible(Channel.VSCODE);
+        testSetupViewWhenDecisionComponentsContainerIsVisible(Channel.DEFAULT);
     }
 
     @Test
-    public void testSetupViewWhenIsKogito() {
+    public void testSetupViewWhenChannelIsNotVSCodeOrDefault() {
+        testSetupViewWhenDecisionComponentsContainerIsNotVisible(Channel.GITHUB);
+        testSetupViewWhenDecisionComponentsContainerIsNotVisible(Channel.ONLINE);
+        testSetupViewWhenDecisionComponentsContainerIsNotVisible(Channel.DESKTOP);
+    }
 
+    private void testSetupViewWhenDecisionComponentsContainerIsNotVisible(final Channel channel) {
         final DecisionNavigatorTreePresenter.View treeView = mock(DecisionNavigatorTreePresenter.View.class);
         final DecisionComponents.View decisionComponentsView = mock(DecisionComponents.View.class);
-
+        when(context.getChannel()).thenReturn(channel);
         when(treePresenter.getView()).thenReturn(treeView);
         when(decisionComponents.getView()).thenReturn(decisionComponentsView);
-        when(isKogito.get()).thenReturn(true);
 
         presenter.setupView();
 
         verify(view).setupMainTree(treeView);
-        verify(view).hideDecisionComponentsContainer();
+        verify(view, never()).showDecisionComponentsContainer();
         verify(view, never()).setupDecisionComponents(decisionComponentsView);
+        verify(view, atLeastOnce()).hideDecisionComponentsContainer();
+    }
+
+    private void testSetupViewWhenDecisionComponentsContainerIsVisible(final Channel channel) {
+        final DecisionNavigatorTreePresenter.View treeView = mock(DecisionNavigatorTreePresenter.View.class);
+        final DecisionComponents.View decisionComponentsView = mock(DecisionComponents.View.class);
+        when(context.getChannel()).thenReturn(channel);
+        when(treePresenter.getView()).thenReturn(treeView);
+        when(decisionComponents.getView()).thenReturn(decisionComponentsView);
+
+        presenter.setupView();
+
+        verify(view).setupMainTree(treeView);
+        verify(view, atLeastOnce()).showDecisionComponentsContainer();
+        verify(view, atLeastOnce()).setupDecisionComponents(decisionComponentsView);
+        verify(view, never()).hideDecisionComponentsContainer();
     }
 
     @Test

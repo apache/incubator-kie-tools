@@ -16,17 +16,12 @@
 
 package org.kie.workbench.common.widgets.client.assets.dropdown;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import elemental2.dom.HTMLInputElement;
 import elemental2.dom.HTMLOptionElement;
 import elemental2.dom.HTMLSelectElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
 
@@ -34,57 +29,34 @@ import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerEvent;
 @Templated
 public class KogitoKieAssetsDropdownView extends KieAssetsDropdownView implements KogitoKieAssetsDropdown.View {
 
-    @DataField("fallback-input")
-    protected final HTMLInputElement fallbackInput;
+    private String value;
 
     @Inject
     public KogitoKieAssetsDropdownView(final HTMLSelectElement nativeSelect,
-                                       final HTMLInputElement fallbackInput,
                                        final HTMLOptionElement htmlOptionElement,
                                        final TranslationService translationService) {
         super(nativeSelect, htmlOptionElement, translationService);
-        this.fallbackInput = fallbackInput;
-    }
-
-    @PostConstruct
-    public void init() {
-        super.init();
-        fallbackInput.hidden = true;
     }
 
     @Override
     public void initialize() {
-        fallbackInput.value = "";
         dropdown().selectpicker("val", "");
     }
 
     @Override
     public String getValue() {
-        return fallbackInput.value;
-    }
-
-    @Override
-    public void enableInputMode() {
-        nativeSelect.classList.add(HIDDEN_CSS_CLASS);
-        fallbackInput.classList.remove(HIDDEN_CSS_CLASS);
-        dropdown().selectpicker("hide");
+        return value;
     }
 
     @Override
     public void enableDropdownMode() {
-        fallbackInput.classList.add(HIDDEN_CSS_CLASS);
         nativeSelect.classList.remove(HIDDEN_CSS_CLASS);
         dropdown().selectpicker("show");
     }
 
-    @EventHandler("fallback-input")
-    public void onFallbackInputChange(final KeyUpEvent e) {
-        presenter.onValueChanged();
-    }
-
     @Override
-    protected void onDropdownChangeHandlerMethod(JQuerySelectPickerEvent event) {
-        fallbackInput.value = event.target.value;
+    protected void onDropdownChangeHandlerMethod(final JQuerySelectPickerEvent event) {
+        this.value = event.target.value;
         super.onDropdownChangeHandlerMethod(event);
     }
 }

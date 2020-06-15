@@ -16,12 +16,17 @@
 
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.services;
 
+import java.util.Map;
 import java.util.Objects;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.xml.namespace.QName;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
 import elemental2.promise.Promise;
 import jsinterop.base.Js;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
@@ -161,13 +166,15 @@ public class DMNClientDiagramServiceImpl extends AbstractKogitoClientDiagramServ
 
             final DMN12UnmarshallCallback jsCallback = dmn12 -> {
                 final JSITDefinitions definitions = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn12));
-                final Graph graph = dmnMarshallerKogitoUnmarshaller.unmarshall(metadata, definitions);
-                final Node<Definition<DMNDiagram>, ?> diagramNode = GraphUtils.getFirstNode((Graph<?, Node>) graph, DMNDiagram.class);
-                final String title = ((DMNDiagram) DefinitionUtils.getElementDefinition(diagramNode)).getDefinitions().getName().getValue();
-                final Diagram diagram = dmnDiagramFactory.build(title, metadata, graph);
-                updateClientShapeSetId(diagram);
+                dmnMarshallerKogitoUnmarshaller.unmarshall(metadata, definitions).then(graph -> {
+                    final Node<Definition<DMNDiagram>, ?> diagramNode = GraphUtils.getFirstNode((Graph<?, Node>) graph, DMNDiagram.class);
+                    final String title = ((DMNDiagram) DefinitionUtils.getElementDefinition(diagramNode)).getDefinitions().getName().getValue();
+                    final Diagram diagram = dmnDiagramFactory.build(title, metadata, graph);
+                    updateClientShapeSetId(diagram);
 
-                callback.onSuccess(diagram);
+                    callback.onSuccess(diagram);
+                    return promises.resolve();
+                });
             };
 
             MainJs.unmarshall(xml, "", jsCallback);
@@ -175,6 +182,15 @@ public class DMNClientDiagramServiceImpl extends AbstractKogitoClientDiagramServ
             GWT.log(e.getMessage(), e);
             callback.onError(new ClientRuntimeError(new DiagramParsingException(metadata, xml)));
         }
+    }
+
+    public void getDefinitions(final String xml,
+                               final ServiceCallback<Object> callback) {
+        final DMN12UnmarshallCallback jsCallback = dmn12 -> {
+            final JSITDefinitions definitions = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn12));
+            callback.onSuccess(definitions);
+        };
+        MainJs.unmarshall(xml, "", jsCallback);
     }
 
     @Override
@@ -220,11 +236,21 @@ public class DMNClientDiagramServiceImpl extends AbstractKogitoClientDiagramServ
             JsUtils.setNameOnWrapped(dmn12, makeJSINameForDMN12());
             JsUtils.setValueOnWrapped(dmn12, jsitDefinitions);
 
-            MainJs.marshall(dmn12, jsitDefinitions.getNamespace(), jsCallback);
+            final JavaScriptObject namespaces = createNamespaces(jsitDefinitions.getOtherAttributes(),
+                                                                 jsitDefinitions.getNamespace());
+            MainJs.marshall(dmn12, namespaces, jsCallback);
         } catch (Exception e) {
             GWT.log(e.getMessage(), e);
             rejectOnchangeFn.onInvoke(e);
         }
+    }
+
+    private JavaScriptObject createNamespaces(final Map<QName, String> otherAttributes,
+                                              final String defaultNamespace) {
+        final JSONObject jsonObject = new JSONObject();
+        jsonObject.put(defaultNamespace, new JSONString(""));
+        otherAttributes.forEach((key, value) -> jsonObject.put(value, new JSONString(key.getLocalPart())));
+        return jsonObject.getJavaScriptObject();
     }
 
     private JSIName makeJSINameForDMN12() {

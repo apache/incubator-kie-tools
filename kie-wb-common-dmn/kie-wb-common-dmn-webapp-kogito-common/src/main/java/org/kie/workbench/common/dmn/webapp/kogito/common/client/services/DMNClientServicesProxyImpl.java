@@ -32,29 +32,33 @@ import org.kie.workbench.common.dmn.api.editors.types.DMNSimpleTimeZone;
 import org.kie.workbench.common.dmn.api.editors.types.DataObject;
 import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
 import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.DMNMarshallerImportsHelperKogito;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.uberfire.backend.vfs.Path;
 
 @Dependent
 public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
 
-    private TimeZonesProvider timeZonesProvider;
+    private final DMNMarshallerImportsHelperKogito kogitoImportsHelper;
+    private final TimeZonesProvider timeZonesProvider;
 
     @Inject
-    public DMNClientServicesProxyImpl(final TimeZonesProvider timeZonesProvider) {
+    public DMNClientServicesProxyImpl(final TimeZonesProvider timeZonesProvider,
+                                      final DMNMarshallerImportsHelperKogito kogitoImportsHelper) {
         this.timeZonesProvider = timeZonesProvider;
+        this.kogitoImportsHelper = kogitoImportsHelper;
     }
 
     @Override
     public void loadModels(final Path path,
                            final ServiceCallback<List<IncludedModel>> callback) {
-        callback.onSuccess(Collections.emptyList());
+        kogitoImportsHelper.loadModels(callback);
     }
 
     @Override
     public void loadNodesFromImports(final List<DMNIncludedModel> includedModels,
                                      final ServiceCallback<List<DMNIncludedNode>> callback) {
-        callback.onSuccess(Collections.emptyList());
+        kogitoImportsHelper.loadNodesFromModels(includedModels, callback);
     }
 
     @Override
@@ -68,7 +72,10 @@ public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
     public void loadItemDefinitionsByNamespace(final String modelName,
                                                final String namespace,
                                                final ServiceCallback<List<ItemDefinition>> callback) {
-        callback.onSuccess(Collections.emptyList());
+        kogitoImportsHelper.getImportedItemDefinitionsByNamespaceAsync(
+                modelName,
+                namespace,
+                callback);
     }
 
     @Override

@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.types.DMNSimpleTimeZone;
 import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.DMNMarshallerImportsHelperKogito;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.mockito.Mock;
@@ -52,12 +53,15 @@ public class DMNClientServicesProxyImplTest {
     @Mock
     private Path path;
 
+    @Mock
+    private DMNMarshallerImportsHelperKogito importsHelperKogito;
+
     private DMNClientServicesProxyImpl service;
 
     @Before
     public void setup() {
         final TimeZonesProvider timeZonesProvider = spy(new TimeZonesProvider());
-        this.service = new DMNClientServicesProxyImpl(timeZonesProvider);
+        this.service = new DMNClientServicesProxyImpl(timeZonesProvider, importsHelperKogito);
 
         doCallRealMethod().when(timeZonesProvider).getTimeZones();
         doReturn(new String[]{"A"}).when(timeZonesProvider).getNames();

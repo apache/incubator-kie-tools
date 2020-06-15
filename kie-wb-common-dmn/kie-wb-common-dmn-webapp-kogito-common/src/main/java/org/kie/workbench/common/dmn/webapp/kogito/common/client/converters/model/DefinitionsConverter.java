@@ -99,7 +99,7 @@ public class DefinitionsConverter {
         final List<JSITImport> jsiImports = dmn.getImport();
         for (int i = 0; i < jsiImports.size(); i++) {
             final JSITImport jsiImport = Js.uncheckedCast(jsiImports.get(i));
-            final JSITDefinitions definitions = importDefinitions.get(jsiImport);
+            final JSITDefinitions definitions = Js.uncheckedCast(importDefinitions.get(jsiImport));
             final PMMLDocumentMetadata pmmlDocument = pmmlDocuments.get(jsiImport);
             final Import importConverted = ImportConverter.wbFromDMN(jsiImport, definitions, pmmlDocument);
             if (Objects.nonNull(importConverted)) {
@@ -111,7 +111,7 @@ public class DefinitionsConverter {
         return result;
     }
 
-    public static JSITDefinitions dmnFromWB(final Definitions wb) {
+    public static JSITDefinitions dmnFromWB(final Definitions wb, final boolean ignoreImportedItemDefinition) {
         if (Objects.isNull(wb)) {
             return null;
         }
@@ -156,6 +156,11 @@ public class DefinitionsConverter {
             result.setItemDefinition(new ArrayList<>());
         }
         for (ItemDefinition itemDef : wb.getItemDefinition()) {
+            if (ignoreImportedItemDefinition) {
+                if (itemDef.isAllowOnlyVisualChange()) {
+                    continue;
+                }
+            }
             final JSITItemDefinition itemDefConverted = ItemDefinitionPropertyConverter.dmnFromWB(itemDef);
             result.addItemDefinition(itemDefConverted);
         }

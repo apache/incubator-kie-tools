@@ -37,6 +37,7 @@ import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.util.FileUtils;
 import org.uberfire.client.mvp.UberElemental;
 
 import static org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes.determineImportType;
@@ -159,11 +160,12 @@ public class DecisionComponents {
                 .collect(Collectors.toList());
     }
 
-    private DMNIncludedModel asDMNIncludedModel(final Import anImport) {
+    DMNIncludedModel asDMNIncludedModel(final Import anImport) {
         final String modelName = anImport.getName().getValue();
         final String namespace = anImport.getNamespace();
         final String importType = anImport.getImportType();
-        return new DMNIncludedModel(modelName, "", "", namespace, importType, 0, 0);
+        final String path = FileUtils.getFileName(anImport.getLocationURI().getValue());
+        return new DMNIncludedModel(modelName, "", path, namespace, importType, 0, 0);
     }
 
     List<DecisionComponentsItem> getDecisionComponentsItems() {

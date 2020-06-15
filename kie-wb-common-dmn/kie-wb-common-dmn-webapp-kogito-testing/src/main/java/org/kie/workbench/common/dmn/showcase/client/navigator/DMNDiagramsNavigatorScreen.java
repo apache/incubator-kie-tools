@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.showcase.client.navigator;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -23,7 +24,11 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.api.ErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.dmn.showcase.client.alternatives.DMNClientModels;
 import org.kie.workbench.common.dmn.webapp.common.client.navigator.BaseDMNDiagramsNavigatorScreen;
 import org.kie.workbench.common.kogito.webapp.base.client.editor.KogitoScreen;
 import org.kie.workbench.common.stunner.client.widgets.event.LoadDiagramEvent;
@@ -38,6 +43,7 @@ import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
@@ -45,6 +51,8 @@ import org.uberfire.workbench.model.menu.Menus;
 public class DMNDiagramsNavigatorScreen extends BaseDMNDiagramsNavigatorScreen implements KogitoScreen {
 
     private static final PlaceRequest DMN_KOGITO_TESTING_SCREEN_DEFAULT_REQUEST = new DefaultPlaceRequest(DMNDiagramsNavigatorScreen.SCREEN_ID);
+
+    private org.kie.workbench.common.kogito.webapp.base.client.workarounds.KogitoResourceContentService contentService;
 
     private DMNVFSService vfsService;
 
@@ -55,10 +63,12 @@ public class DMNDiagramsNavigatorScreen extends BaseDMNDiagramsNavigatorScreen i
     @Inject
     public DMNDiagramsNavigatorScreen(final DiagramsNavigator diagramsNavigator,
                                       final ShapeSetsMenuItemsBuilder newDiagramMenuItemsBuilder,
-                                      final DMNVFSService vfsService) {
+                                      final DMNVFSService vfsService,
+                                      final org.kie.workbench.common.kogito.webapp.base.client.workarounds.KogitoResourceContentService contentService) {
         super(diagramsNavigator,
               newDiagramMenuItemsBuilder);
         this.vfsService = vfsService;
+        this.contentService = contentService;
     }
 
     @Override
@@ -84,6 +94,34 @@ public class DMNDiagramsNavigatorScreen extends BaseDMNDiagramsNavigatorScreen i
         if (Objects.nonNull(selectedDiagramEvent)) {
             vfsService.openFile(selectedDiagramEvent.getPath());
         }
+    }
+
+    @Override
+    protected MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> createMenuBuilder() {
+        final MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder> builder = super.createMenuBuilder();
+        builder.newTopLevelMenu("Load diagrams from client")
+                .respondsWith(this::loadFromClient)
+                .order(-1)
+                .endMenu();
+        return builder;
+    }
+
+    private void loadFromClient() {
+        contentService.getFilteredItems("**/*.dmn", getItems(), getErrorCallback());
+    }
+
+    private ErrorCallback<Object> getErrorCallback() {
+        return null;
+    }
+
+    private RemoteCallback<List<String>> getItems() {
+        return response -> {
+            GWT.log("PATHS:");
+            for (final String s : response) {
+                GWT.log(s);
+            }
+            vfsService.openFile("something.dmn", DMNClientModels.MODEL_WITH_IMPORTS);
+        };
     }
 
     @Override

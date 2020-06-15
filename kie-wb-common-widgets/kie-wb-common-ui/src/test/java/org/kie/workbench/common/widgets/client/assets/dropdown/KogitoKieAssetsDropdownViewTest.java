@@ -18,10 +18,8 @@ package org.kie.workbench.common.widgets.client.assets.dropdown;
 
 import java.util.Map;
 
-import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.DOMTokenList;
-import elemental2.dom.HTMLInputElement;
 import elemental2.dom.HTMLOptionElement;
 import elemental2.dom.HTMLSelectElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -38,7 +36,6 @@ import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPickerTarget;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.widgets.client.assets.dropdown.KogitoKieAssetsDropdownView.HIDDEN_CSS_CLASS;
 import static org.kie.workbench.common.widgets.client.assets.dropdown.KogitoKieAssetsDropdownView.SELECT_PICKER_SUBTEXT_ATTRIBUTE;
 import static org.kie.workbench.common.widgets.client.resources.i18n.KieWorkbenchWidgetsConstants.KieAssetsDropdownView_Select;
@@ -52,9 +49,6 @@ public class KogitoKieAssetsDropdownViewTest {
 
     @Mock
     private HTMLSelectElement nativeSelect;
-
-    @Mock
-    private HTMLInputElement fallbackInput;
 
     @Mock
     private HTMLOptionElement htmlOptionElement;
@@ -73,7 +67,7 @@ public class KogitoKieAssetsDropdownViewTest {
     @Before
     public void setup() {
 
-        view = Mockito.spy(new KogitoKieAssetsDropdownView(nativeSelect, fallbackInput, htmlOptionElement, translationService));
+        view = Mockito.spy(new KogitoKieAssetsDropdownView(nativeSelect, htmlOptionElement, translationService));
         view.init(presenter);
 
         doReturn(dropdown).when(view).dropdown();
@@ -88,7 +82,6 @@ public class KogitoKieAssetsDropdownViewTest {
         view.init();
 
         assertFalse(nativeSelect.hidden);
-        assertTrue(fallbackInput.hidden);
         verify(dropdown).on("hidden.bs.select", callbackFunction);
     }
 
@@ -99,7 +92,6 @@ public class KogitoKieAssetsDropdownViewTest {
         final JQuerySelectPickerTarget target = mock(JQuerySelectPickerTarget.class);
         final String expectedValue = "newValue";
 
-        fallbackInput.value = "something";
         event.target = target;
         target.value = expectedValue;
 
@@ -164,11 +156,8 @@ public class KogitoKieAssetsDropdownViewTest {
     @Test
     public void testInitialize() {
 
-        fallbackInput.value = "something";
-
         view.initialize();
 
-        assertEquals("", fallbackInput.value);
         verify(dropdown).selectpicker("val", "");
     }
 
@@ -179,46 +168,14 @@ public class KogitoKieAssetsDropdownViewTest {
     }
 
     @Test
-    public void testGetValue() {
-
-        final String expected = "value";
-        fallbackInput.value = expected;
-
-        final String actual = view.getValue();
-
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testEnableInputMode() {
-
-        nativeSelect.classList = mock(DOMTokenList.class);
-        fallbackInput.classList = mock(DOMTokenList.class);
-
-        view.enableInputMode();
-
-        verify(nativeSelect.classList).add(HIDDEN_CSS_CLASS);
-        verify(fallbackInput.classList).remove(HIDDEN_CSS_CLASS);
-        verify(dropdown).selectpicker("hide");
-    }
-
-    @Test
     public void testEnableDropdownMode() {
 
         nativeSelect.classList = mock(DOMTokenList.class);
-        fallbackInput.classList = mock(DOMTokenList.class);
 
         view.enableDropdownMode();
 
-        verify(fallbackInput.classList).add(HIDDEN_CSS_CLASS);
         verify(nativeSelect.classList).remove(HIDDEN_CSS_CLASS);
         verify(dropdown).selectpicker("show");
-    }
-
-    @Test
-    public void testOnFallbackInputChange() {
-        view.onFallbackInputChange(mock(KeyUpEvent.class));
-        verify(presenter).onValueChanged();
     }
 
     private Map<String, String> getMetaData() {

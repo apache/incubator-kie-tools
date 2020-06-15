@@ -31,9 +31,9 @@ import java.util.function.Consumer;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+import elemental2.promise.Promise;
 import jsinterop.base.Js;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.api.definition.HasComponentWidths;
@@ -76,7 +76,6 @@ import org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model.dd.FontSetPropertyConverter;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model.dd.PointUtils;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.utils.DMNMarshallerUtils;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.utils.NameSpaceUtils;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.MainJs;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dc.JSIPoint;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.di.JSIDiagramElement;
@@ -94,10 +93,10 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITImport;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITInformationRequirement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITInputData;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITItemDefinition;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITKnowledgeRequirement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITKnowledgeSource;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITTextAnnotation;
-import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITUnaryTests;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNDecisionServiceDividerLine;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNDiagram;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmndi12.JSIDMNEdge;
@@ -121,10 +120,9 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
+import org.uberfire.client.promise.Promises;
 
-import static java.util.stream.Collectors.toList;
 import static org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model.dd.PointUtils.heightOfShape;
 import static org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model.dd.PointUtils.lowerRightBound;
 import static org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model.dd.PointUtils.upperLeftBound;
@@ -154,16 +152,19 @@ public class DMNMarshallerKogitoUnmarshaller {
     private KnowledgeSourceConverter knowledgeSourceConverter;
     private TextAnnotationConverter textAnnotationConverter;
     private DecisionServiceConverter decisionServiceConverter;
+    private Promises promises;
 
     protected DMNMarshallerKogitoUnmarshaller() {
-        this(null, null);
+        this(null, null, null);
     }
 
     @Inject
     public DMNMarshallerKogitoUnmarshaller(final FactoryManager factoryManager,
-                                           final DMNMarshallerImportsHelperKogito dmnMarshallerImportsHelper) {
+                                           final DMNMarshallerImportsHelperKogito dmnMarshallerImportsHelper,
+                                           final Promises promises) {
         this.factoryManager = factoryManager;
         this.dmnMarshallerImportsHelper = dmnMarshallerImportsHelper;
+        this.promises = promises;
 
         this.inputDataConverter = new InputDataConverter(factoryManager);
         this.decisionConverter = new DecisionConverter(factoryManager);
@@ -183,8 +184,9 @@ public class DMNMarshallerKogitoUnmarshaller {
     // ==================================
 
     @SuppressWarnings("unchecked")
-    public Graph unmarshall(final Metadata metadata,
-                            final JSITDefinitions jsiDefinitions) {
+    public Promise<Graph> unmarshall(final Metadata metadata,
+                                     final JSITDefinitions jsiDefinitions) {
+
         final Map<String, HasComponentWidths> hasComponentWidthsMap = new HashMap<>();
         final BiConsumer<String, HasComponentWidths> hasComponentWidthsConsumer = (uuid, hcw) -> {
             if (Objects.nonNull(uuid)) {
@@ -196,290 +198,294 @@ public class DMNMarshallerKogitoUnmarshaller {
         final Optional<JSIDMNDiagram> dmnDDDiagram = findJSIDiagram(jsiDefinitions);
 
         // Get external DMN model information
-        final Map<JSITImport, JSITDefinitions> importDefinitions = dmnMarshallerImportsHelper.getImportDefinitions(metadata, jsiDefinitions.getImport());
+        final Promise<Map<JSITImport, JSITDefinitions>> importAsync = dmnMarshallerImportsHelper.getImportDefinitionsAsync(metadata, jsiDefinitions.getImport());
+        return importAsync.then(importDefinitions -> {
 
-        // Get external PMML model information
-        final Map<JSITImport, PMMLDocumentMetadata> pmmlDocuments = dmnMarshallerImportsHelper.getPMMLDocuments(metadata, jsiDefinitions.getImport());
+            // Get external PMML model information
+            final Map<JSITImport, PMMLDocumentMetadata> pmmlDocuments = dmnMarshallerImportsHelper.getPMMLDocuments(metadata, jsiDefinitions.getImport());
 
-        // Map external DRGElements
-        final List<JSIDMNShape> dmnShapes = new ArrayList<>();
-        final List<JSITDRGElement> importedDrgElements = new ArrayList<>();
-        if (dmnDDDiagram.isPresent()) {
-            final JSIDMNDiagram jsidmnDiagram = Js.uncheckedCast(dmnDDDiagram.get());
-            dmnShapes.addAll(getUniqueDMNShapes(jsidmnDiagram));
-            importedDrgElements.addAll(getImportedDrgElementsByShape(dmnShapes,
-                                                                     importDefinitions,
-                                                                     jsiDefinitions));
-        }
-
-        // Combine all explicit and imported elements into one
-        final List<JSITDRGElement> drgElements = new ArrayList<>();
-        final Set<JSITDecisionService> dmnDecisionServices = new HashSet<>();
-        drgElements.addAll(diagramDrgElements);
-        drgElements.addAll(importedDrgElements);
-
-        // Remove DRGElements that doesn't have any local or imported shape.
-        removeDrgElementsWithoutShape(drgElements, dmnShapes);
-
-        // Main conversion from DMN to Stunner
-        final Map<String, Entry<JSITDRGElement, Node>> elems = new HashMap<>();
-        for (int i = 0; i < drgElements.size(); i++) {
-            final JSITDRGElement drgElement = Js.uncheckedCast(drgElements.get(i));
-            final String id = drgElement.getId();
-            final Node stunnerNode = dmnToStunner(drgElement,
-                                                  hasComponentWidthsConsumer,
-                                                  importedDrgElements);
-            elems.put(id,
-                      new AbstractMap.SimpleEntry<>(drgElement, stunnerNode));
-        }
-
-        // Stunner rely on relative positioning for Edge connections, so need to cycle on DMNShape first.
-        for (Entry<JSITDRGElement, Node> kv : elems.values()) {
-            ddExtAugmentStunner(dmnDDDiagram, kv.getValue());
-        }
-
-        // Setup Node Relationships and Connections all based on absolute positioning
-        for (Entry<JSITDRGElement, Node> kv : elems.values()) {
-            final JSITDRGElement element = Js.uncheckedCast(kv.getKey());
-            final Node currentNode = kv.getValue();
-
-            // For imported nodes, we don't have its connections
-            if (isImportedDRGElement(importedDrgElements, element)) {
-                continue;
+            // Map external DRGElements
+            final List<JSIDMNShape> dmnShapes = new ArrayList<>();
+            final List<JSITDRGElement> importedDrgElements = new ArrayList<>();
+            if (dmnDDDiagram.isPresent()) {
+                final JSIDMNDiagram jsidmnDiagram = Js.uncheckedCast(dmnDDDiagram.get());
+                dmnShapes.addAll(getUniqueDMNShapes(jsidmnDiagram));
+                importedDrgElements.addAll(getImportedDrgElementsByShape(dmnShapes,
+                                                                         importDefinitions,
+                                                                         jsiDefinitions));
             }
 
-            // DMN spec table 2: Requirements connection rules
-            if (JSITDecision.instanceOf(element)) {
-                final JSITDecision decision = Js.uncheckedCast(element);
-                final List<JSITInformationRequirement> jsiInformationRequirements = decision.getInformationRequirement();
-                for (int i = 0; i < jsiInformationRequirements.size(); i++) {
-                    final JSITInformationRequirement ir = Js.uncheckedCast(jsiInformationRequirements.get(i));
-                    connectEdgeToNodes(INFO_REQ_ID,
-                                       ir,
-                                       ir.getRequiredInput(),
-                                       elems,
-                                       jsiDefinitions,
-                                       currentNode);
-                    connectEdgeToNodes(INFO_REQ_ID,
-                                       ir,
-                                       ir.getRequiredDecision(),
-                                       elems,
-                                       jsiDefinitions,
-                                       currentNode);
+            // Combine all explicit and imported elements into one
+            final List<JSITDRGElement> drgElements = new ArrayList<>();
+            final Set<JSITDecisionService> dmnDecisionServices = new HashSet<>();
+            drgElements.addAll(diagramDrgElements);
+            drgElements.addAll(importedDrgElements);
+
+            // Remove DRGElements that doesn't have any local or imported shape.
+            removeDrgElementsWithoutShape(drgElements, dmnShapes);
+
+            // Main conversion from DMN to Stunner
+            final Map<String, Entry<JSITDRGElement, Node>> elems = new HashMap<>();
+            for (int i = 0; i < drgElements.size(); i++) {
+                final JSITDRGElement drgElement = Js.uncheckedCast(drgElements.get(i));
+                final String id = drgElement.getId();
+                final Node stunnerNode = dmnToStunner(drgElement,
+                                                      hasComponentWidthsConsumer,
+                                                      importedDrgElements);
+                elems.put(id,
+                          new AbstractMap.SimpleEntry<>(drgElement, stunnerNode));
+            }
+
+            // Stunner rely on relative positioning for Edge connections, so need to cycle on DMNShape first.
+            for (Entry<JSITDRGElement, Node> kv : elems.values()) {
+                ddExtAugmentStunner(dmnDDDiagram, kv.getValue());
+            }
+
+            // Setup Node Relationships and Connections all based on absolute positioning
+            for (Entry<JSITDRGElement, Node> kv : elems.values()) {
+                final JSITDRGElement element = Js.uncheckedCast(kv.getKey());
+                final Node currentNode = kv.getValue();
+
+                // For imported nodes, we don't have its connections
+                if (isImportedDRGElement(importedDrgElements, element)) {
+                    continue;
                 }
-                final List<JSITKnowledgeRequirement> jsiKnowledgeRequirements = decision.getKnowledgeRequirement();
-                for (int i = 0; i < jsiKnowledgeRequirements.size(); i++) {
-                    final JSITKnowledgeRequirement kr = Js.uncheckedCast(jsiKnowledgeRequirements.get(i));
-                    connectEdgeToNodes(KNOWLEDGE_REQ_ID,
-                                       kr,
-                                       kr.getRequiredKnowledge(),
-                                       elems,
-                                       jsiDefinitions,
-                                       currentNode);
-                }
-                final List<JSITAuthorityRequirement> jsiAuthorityRequirements = decision.getAuthorityRequirement();
-                for (int i = 0; i < jsiAuthorityRequirements.size(); i++) {
-                    final JSITAuthorityRequirement ar = Js.uncheckedCast(jsiAuthorityRequirements.get(i));
-                    connectEdgeToNodes(AUTH_REQ_ID,
-                                       ar,
-                                       ar.getRequiredAuthority(),
-                                       elems,
-                                       jsiDefinitions,
-                                       currentNode);
-                }
-            } else if (JSITBusinessKnowledgeModel.instanceOf(element)) {
-                final JSITBusinessKnowledgeModel bkm = Js.uncheckedCast(element);
-                final List<JSITKnowledgeRequirement> jsiKnowledgeRequirements = bkm.getKnowledgeRequirement();
-                for (int i = 0; i < jsiKnowledgeRequirements.size(); i++) {
-                    final JSITKnowledgeRequirement kr = Js.uncheckedCast(jsiKnowledgeRequirements.get(i));
-                    connectEdgeToNodes(KNOWLEDGE_REQ_ID,
-                                       kr,
-                                       kr.getRequiredKnowledge(),
-                                       elems,
-                                       jsiDefinitions,
-                                       currentNode);
-                }
-                final List<JSITAuthorityRequirement> jsiAuthorityRequirements = bkm.getAuthorityRequirement();
-                for (int i = 0; i < jsiAuthorityRequirements.size(); i++) {
-                    final JSITAuthorityRequirement ar = Js.uncheckedCast(jsiAuthorityRequirements.get(i));
-                    connectEdgeToNodes(AUTH_REQ_ID,
-                                       ar,
-                                       ar.getRequiredAuthority(),
-                                       elems,
-                                       jsiDefinitions,
-                                       currentNode);
-                }
-            } else if (JSITKnowledgeSource.instanceOf(element)) {
-                final JSITKnowledgeSource ks = Js.uncheckedCast(element);
-                final List<JSITAuthorityRequirement> jsiAuthorityRequirements = ks.getAuthorityRequirement();
-                for (int i = 0; i < jsiAuthorityRequirements.size(); i++) {
-                    final JSITAuthorityRequirement ar = Js.uncheckedCast(jsiAuthorityRequirements.get(i));
-                    connectEdgeToNodes(AUTH_REQ_ID,
-                                       ar,
-                                       ar.getRequiredInput(),
-                                       elems,
-                                       jsiDefinitions,
-                                       currentNode);
-                    connectEdgeToNodes(AUTH_REQ_ID,
-                                       ar,
-                                       ar.getRequiredDecision(),
-                                       elems,
-                                       jsiDefinitions,
-                                       currentNode);
-                    connectEdgeToNodes(AUTH_REQ_ID,
-                                       ar,
-                                       ar.getRequiredAuthority(),
-                                       elems,
-                                       jsiDefinitions,
-                                       currentNode);
-                }
-            } else if (JSITDecisionService.instanceOf(element)) {
-                final JSITDecisionService ds = Js.uncheckedCast(element);
-                dmnDecisionServices.add(ds);
-                final List<JSITDMNElementReference> jsiEncapsulatedDecisions = ds.getEncapsulatedDecision();
-                for (int i = 0; i < jsiEncapsulatedDecisions.size(); i++) {
-                    final JSITDMNElementReference er = Js.uncheckedCast(jsiEncapsulatedDecisions.get(i));
-                    final String reqInputID = getId(er);
-                    final Node requiredNode = getRequiredNode(elems, reqInputID);
-                    if (Objects.nonNull(requiredNode)) {
-                        connectDSChildEdge(currentNode, requiredNode);
+
+                // DMN spec table 2: Requirements
+                if (JSITDecision.instanceOf(element)) {
+                    final JSITDecision decision = Js.uncheckedCast(element);
+                    final List<JSITInformationRequirement> jsiInformationRequirements = decision.getInformationRequirement();
+
+                    for (int i = 0; i < jsiInformationRequirements.size(); i++) {
+                        final JSITInformationRequirement ir = Js.uncheckedCast(jsiInformationRequirements.get(i));
+                        connectEdgeToNodes(INFO_REQ_ID,
+                                           ir,
+                                           ir.getRequiredInput(),
+                                           elems,
+                                           jsiDefinitions,
+                                           currentNode);
+                        connectEdgeToNodes(INFO_REQ_ID,
+                                           ir,
+                                           ir.getRequiredDecision(),
+                                           elems,
+                                           jsiDefinitions,
+                                           currentNode);
+                    }
+                    final List<JSITKnowledgeRequirement> jsiKnowledgeRequirements = decision.getKnowledgeRequirement();
+                    for (int i = 0; i < jsiKnowledgeRequirements.size(); i++) {
+                        final JSITKnowledgeRequirement kr = Js.uncheckedCast(jsiKnowledgeRequirements.get(i));
+                        connectEdgeToNodes(KNOWLEDGE_REQ_ID,
+                                           kr,
+                                           kr.getRequiredKnowledge(),
+                                           elems,
+                                           jsiDefinitions,
+                                           currentNode);
+                    }
+                    final List<JSITAuthorityRequirement> jsiAuthorityRequirements = decision.getAuthorityRequirement();
+                    for (int i = 0; i < jsiAuthorityRequirements.size(); i++) {
+                        final JSITAuthorityRequirement ar = Js.uncheckedCast(jsiAuthorityRequirements.get(i));
+                        connectEdgeToNodes(AUTH_REQ_ID,
+                                           ar,
+                                           ar.getRequiredAuthority(),
+                                           elems,
+                                           jsiDefinitions,
+                                           currentNode);
+                    }
+                } else if (JSITBusinessKnowledgeModel.instanceOf(element)) {
+                    final JSITBusinessKnowledgeModel bkm = Js.uncheckedCast(element);
+                    final List<JSITKnowledgeRequirement> jsiKnowledgeRequirements = bkm.getKnowledgeRequirement();
+                    for (int i = 0; i < jsiKnowledgeRequirements.size(); i++) {
+                        final JSITKnowledgeRequirement kr = Js.uncheckedCast(jsiKnowledgeRequirements.get(i));
+                        connectEdgeToNodes(KNOWLEDGE_REQ_ID,
+                                           kr,
+                                           kr.getRequiredKnowledge(),
+                                           elems,
+                                           jsiDefinitions,
+                                           currentNode);
+                    }
+                    final List<JSITAuthorityRequirement> jsiAuthorityRequirements = bkm.getAuthorityRequirement();
+                    for (int i = 0; i < jsiAuthorityRequirements.size(); i++) {
+                        final JSITAuthorityRequirement ar = Js.uncheckedCast(jsiAuthorityRequirements.get(i));
+                        connectEdgeToNodes(AUTH_REQ_ID,
+                                           ar,
+                                           ar.getRequiredAuthority(),
+                                           elems,
+                                           jsiDefinitions,
+                                           currentNode);
+                    }
+                } else if (JSITKnowledgeSource.instanceOf(element)) {
+                    final JSITKnowledgeSource ks = Js.uncheckedCast(element);
+                    final List<JSITAuthorityRequirement> jsiAuthorityRequirements = ks.getAuthorityRequirement();
+                    for (int i = 0; i < jsiAuthorityRequirements.size(); i++) {
+                        final JSITAuthorityRequirement ar = Js.uncheckedCast(jsiAuthorityRequirements.get(i));
+                        connectEdgeToNodes(AUTH_REQ_ID,
+                                           ar,
+                                           ar.getRequiredInput(),
+                                           elems,
+                                           jsiDefinitions,
+                                           currentNode);
+                        connectEdgeToNodes(AUTH_REQ_ID,
+                                           ar,
+                                           ar.getRequiredDecision(),
+                                           elems,
+                                           jsiDefinitions,
+                                           currentNode);
+                        connectEdgeToNodes(AUTH_REQ_ID,
+                                           ar,
+                                           ar.getRequiredAuthority(),
+                                           elems,
+                                           jsiDefinitions,
+                                           currentNode);
+                    }
+                } else if (JSITDecisionService.instanceOf(element)) {
+                    final JSITDecisionService ds = Js.uncheckedCast(element);
+                    dmnDecisionServices.add(ds);
+                    final List<JSITDMNElementReference> jsiEncapsulatedDecisions = ds.getEncapsulatedDecision();
+                    for (int i = 0; i < jsiEncapsulatedDecisions.size(); i++) {
+                        final JSITDMNElementReference er = Js.uncheckedCast(jsiEncapsulatedDecisions.get(i));
+                        final String reqInputID = getId(er);
+                        final Node requiredNode = getRequiredNode(elems, reqInputID);
+                        if (Objects.nonNull(requiredNode)) {
+                            connectDSChildEdge(currentNode, requiredNode);
+                        }
+                    }
+                    final List<JSITDMNElementReference> jsiOutputDecisions = ds.getOutputDecision();
+                    for (int i = 0; i < jsiOutputDecisions.size(); i++) {
+                        final JSITDMNElementReference er = Js.uncheckedCast(jsiOutputDecisions.get(i));
+                        final String reqInputID = getId(er);
+                        final Node requiredNode = getRequiredNode(elems, reqInputID);
+                        if (Objects.nonNull(requiredNode)) {
+                            connectDSChildEdge(currentNode, requiredNode);
+                        }
                     }
                 }
-                final List<JSITDMNElementReference> jsiOutputDecisions = ds.getOutputDecision();
-                for (int i = 0; i < jsiOutputDecisions.size(); i++) {
-                    final JSITDMNElementReference er = Js.uncheckedCast(jsiOutputDecisions.get(i));
-                    final String reqInputID = getId(er);
-                    final Node requiredNode = getRequiredNode(elems, reqInputID);
-                    if (Objects.nonNull(requiredNode)) {
-                        connectDSChildEdge(currentNode, requiredNode);
+            }
+
+            final Map<String, Node<View<TextAnnotation>, ?>> textAnnotations = new HashMap<>();
+            final List<JSITArtifact> jsiArtifacts = jsiDefinitions.getArtifact();
+            for (int i = 0; i < jsiArtifacts.size(); i++) {
+                final JSITArtifact jsiArtifact = Js.uncheckedCast(jsiArtifacts.get(i));
+                if (JSITTextAnnotation.instanceOf(jsiArtifact)) {
+                    final String id = jsiArtifact.getId();
+                    final JSITTextAnnotation jsiTextAnnotation = Js.uncheckedCast(jsiArtifact);
+                    final Node<View<TextAnnotation>, ?> textAnnotation = textAnnotationConverter.nodeFromDMN(jsiTextAnnotation,
+                                                                                                             hasComponentWidthsConsumer);
+                    textAnnotations.put(id,
+                                        textAnnotation);
+                }
+            }
+            textAnnotations.values().forEach(n -> ddExtAugmentStunner(dmnDDDiagram, n));
+            final List<JSITAssociation> associations = new ArrayList<>();
+            for (int i = 0; i < jsiArtifacts.size(); i++) {
+                final JSITArtifact jsiArtifact = Js.uncheckedCast(jsiArtifacts.get(i));
+                if (JSITAssociation.instanceOf(jsiArtifact)) {
+                    final JSITAssociation jsiAssociation = Js.uncheckedCast(jsiArtifact);
+                    associations.add(jsiAssociation);
+                }
+            }
+            for (int i = 0; i < associations.size(); i++) {
+                final JSITAssociation jsiAssociation = Js.uncheckedCast(associations.get(i));
+                final String sourceId = getId(jsiAssociation.getSourceRef());
+                final Node sourceNode = Optional.ofNullable(elems.get(sourceId)).map(Entry::getValue).orElse(textAnnotations.get(sourceId));
+
+                final String targetId = getId(jsiAssociation.getTargetRef());
+                final Node targetNode = Optional.ofNullable(elems.get(targetId)).map(Entry::getValue).orElse(textAnnotations.get(targetId));
+
+                @SuppressWarnings("unchecked")
+                final Edge<View<Association>, ?> myEdge = (Edge<View<Association>, ?>) factoryManager.newElement(idOfDMNorWBUUID(jsiAssociation),
+                                                                                                                 ASSOCIATION_ID).asEdge();
+
+                final Id id = IdPropertyConverter.wbFromDMN(jsiAssociation.getId());
+                final Description description = new Description(jsiAssociation.getDescription());
+                final Association definition = new Association(id, description);
+                myEdge.getContent().setDefinition(definition);
+
+                connectEdge(myEdge,
+                            sourceNode,
+                            targetNode);
+                setConnectionMagnets(myEdge, jsiAssociation.getId(), jsiDefinitions);
+            }
+
+            //Ensure all locations are updated to relative for Stunner
+            for (Entry<JSITDRGElement, Node> kv : elems.values()) {
+                PointUtils.convertToRelativeBounds(kv.getValue());
+            }
+
+            final Graph graph = factoryManager.newDiagram("prova",
+                                                          BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class),
+                                                          metadata).getGraph();
+            elems.values().stream().map(Entry::getValue).forEach(graph::addNode);
+            textAnnotations.values().forEach(graph::addNode);
+
+            final Node<?, ?> dmnDiagramRoot = DMNMarshallerUtils.findDMNDiagramRoot(graph);
+            final Definitions definitionsStunnerPojo = DefinitionsConverter.wbFromDMN(jsiDefinitions,
+                                                                                      importDefinitions,
+                                                                                      pmmlDocuments);
+
+            loadImportedItemDefinitions(definitionsStunnerPojo, importDefinitions);
+
+            ((View<DMNDiagram>) dmnDiagramRoot.getContent()).getDefinition().setDefinitions(definitionsStunnerPojo);
+
+            //Only connect Nodes to the Diagram that are not referenced by DecisionServices
+            final List<String> references = new ArrayList<>();
+            final List<JSITDecisionService> lstDecisionServices = new ArrayList<>(dmnDecisionServices);
+            for (int iDS = 0; iDS < lstDecisionServices.size(); iDS++) {
+                final JSITDecisionService jsiDecisionService = Js.uncheckedCast(lstDecisionServices.get(iDS));
+                final List<JSITDMNElementReference> jsiEncapsulatedDecisions = jsiDecisionService.getEncapsulatedDecision();
+                if (Objects.nonNull(jsiEncapsulatedDecisions)) {
+                    for (int i = 0; i < jsiEncapsulatedDecisions.size(); i++) {
+                        final JSITDMNElementReference jsiEncapsulatedDecision = Js.uncheckedCast(jsiEncapsulatedDecisions.get(i));
+                        references.add(jsiEncapsulatedDecision.getHref());
+                    }
+                }
+
+                final List<JSITDMNElementReference> jsiOutputDecisions = jsiDecisionService.getOutputDecision();
+                if (Objects.nonNull(jsiOutputDecisions)) {
+                    for (int i = 0; i < jsiOutputDecisions.size(); i++) {
+                        final JSITDMNElementReference jsiOutputDecision = Js.uncheckedCast(jsiOutputDecisions.get(i));
+                        references.add(jsiOutputDecision.getHref());
                     }
                 }
             }
-        }
 
-        final Map<String, Node<View<TextAnnotation>, ?>> textAnnotations = new HashMap<>();
-        final List<JSITArtifact> jsiArtifacts = jsiDefinitions.getArtifact();
-        for (int i = 0; i < jsiArtifacts.size(); i++) {
-            final JSITArtifact jsiArtifact = Js.uncheckedCast(jsiArtifacts.get(i));
-            if (JSITTextAnnotation.instanceOf(jsiArtifact)) {
-                final String id = jsiArtifact.getId();
-                final JSITTextAnnotation jsiTextAnnotation = Js.uncheckedCast(jsiArtifact);
-                final Node<View<TextAnnotation>, ?> textAnnotation = textAnnotationConverter.nodeFromDMN(jsiTextAnnotation,
-                                                                                                         hasComponentWidthsConsumer);
-                textAnnotations.put(id,
-                                    textAnnotation);
-            }
-        }
-        textAnnotations.values().forEach(n -> ddExtAugmentStunner(dmnDDDiagram, n));
-
-        final List<JSITAssociation> associations = new ArrayList<>();
-        for (int i = 0; i < jsiArtifacts.size(); i++) {
-            final JSITArtifact jsiArtifact = Js.uncheckedCast(jsiArtifacts.get(i));
-            if (JSITAssociation.instanceOf(jsiArtifact)) {
-                final JSITAssociation jsiAssociation = Js.uncheckedCast(jsiArtifact);
-                associations.add(jsiAssociation);
-            }
-        }
-        for (int i = 0; i < associations.size(); i++) {
-            final JSITAssociation jsiAssociation = Js.uncheckedCast(associations.get(i));
-            final String sourceId = getId(jsiAssociation.getSourceRef());
-            final Node sourceNode = Optional.ofNullable(elems.get(sourceId)).map(Entry::getValue).orElse(textAnnotations.get(sourceId));
-
-            final String targetId = getId(jsiAssociation.getTargetRef());
-            final Node targetNode = Optional.ofNullable(elems.get(targetId)).map(Entry::getValue).orElse(textAnnotations.get(targetId));
-
-            @SuppressWarnings("unchecked")
-            final Edge<View<Association>, ?> myEdge = (Edge<View<Association>, ?>) factoryManager.newElement(idOfDMNorWBUUID(jsiAssociation),
-                                                                                                             ASSOCIATION_ID).asEdge();
-
-            final Id id = IdPropertyConverter.wbFromDMN(jsiAssociation.getId());
-            final Description description = new Description(jsiAssociation.getDescription());
-            final Association definition = new Association(id, description);
-            myEdge.getContent().setDefinition(definition);
-
-            connectEdge(myEdge,
-                        sourceNode,
-                        targetNode);
-            setConnectionMagnets(myEdge, jsiAssociation.getId(), jsiDefinitions);
-        }
-
-        //Ensure all locations are updated to relative for Stunner
-        for (Entry<JSITDRGElement, Node> kv : elems.values()) {
-            PointUtils.convertToRelativeBounds(kv.getValue());
-        }
-
-        final Graph graph = factoryManager.newDiagram("prova",
-                                                      BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class),
-                                                      metadata).getGraph();
-        elems.values().stream().map(Entry::getValue).forEach(graph::addNode);
-        textAnnotations.values().forEach(graph::addNode);
-
-        final Node<?, ?> dmnDiagramRoot = DMNMarshallerUtils.findDMNDiagramRoot(graph);
-        final Definitions definitionsStunnerPojo = DefinitionsConverter.wbFromDMN(jsiDefinitions,
-                                                                                  importDefinitions,
-                                                                                  pmmlDocuments);
-        loadImportedItemDefinitions(definitionsStunnerPojo, importDefinitions);
-        ((View<DMNDiagram>) dmnDiagramRoot.getContent()).getDefinition().setDefinitions(definitionsStunnerPojo);
-
-        //Only connect Nodes to the Diagram that are not referenced by DecisionServices
-        final List<String> references = new ArrayList<>();
-        final List<JSITDecisionService> lstDecisionServices = new ArrayList<>(dmnDecisionServices);
-        for (int iDS = 0; iDS < lstDecisionServices.size(); iDS++) {
-            final JSITDecisionService jsiDecisionService = Js.uncheckedCast(lstDecisionServices.get(iDS));
-            final List<JSITDMNElementReference> jsiEncapsulatedDecisions = jsiDecisionService.getEncapsulatedDecision();
-            if (Objects.nonNull(jsiEncapsulatedDecisions)) {
-                for (int i = 0; i < jsiEncapsulatedDecisions.size(); i++) {
-                    final JSITDMNElementReference jsiEncapsulatedDecision = Js.uncheckedCast(jsiEncapsulatedDecisions.get(i));
-                    references.add(jsiEncapsulatedDecision.getHref());
+            final Map<JSITDRGElement, Node> elementsToConnectToRoot = new HashMap<>();
+            for (Entry<JSITDRGElement, Node> kv : elems.values()) {
+                final JSITDRGElement element = Js.uncheckedCast(kv.getKey());
+                final Node node = kv.getValue();
+                if (!references.contains("#" + element.getId())) {
+                    elementsToConnectToRoot.put(element, node);
                 }
             }
+            elementsToConnectToRoot.values().forEach(node -> connectRootWithChild(dmnDiagramRoot, node));
+            textAnnotations.values().forEach(node -> connectRootWithChild(dmnDiagramRoot, node));
 
-            final List<JSITDMNElementReference> jsiOutputDecisions = jsiDecisionService.getOutputDecision();
-            if (Objects.nonNull(jsiOutputDecisions)) {
-                for (int i = 0; i < jsiOutputDecisions.size(); i++) {
-                    final JSITDMNElementReference jsiOutputDecision = Js.uncheckedCast(jsiOutputDecisions.get(i));
-                    references.add(jsiOutputDecision.getHref());
-                }
-            }
-        }
-
-        final Map<JSITDRGElement, Node> elementsToConnectToRoot = new HashMap<>();
-        for (Entry<JSITDRGElement, Node> kv : elems.values()) {
-            final JSITDRGElement element = Js.uncheckedCast(kv.getKey());
-            final Node node = kv.getValue();
-            if (!references.contains("#" + element.getId())) {
-                elementsToConnectToRoot.put(element, node);
-            }
-        }
-        elementsToConnectToRoot.values().forEach(node -> connectRootWithChild(dmnDiagramRoot, node));
-        textAnnotations.values().forEach(node -> connectRootWithChild(dmnDiagramRoot, node));
-
-        //Copy ComponentWidths information
-        final Optional<JSITComponentsWidthsExtension> extension = findComponentsWidthsExtension(dmnDDDiagram);
-        extension.ifPresent(componentsWidthsExtension -> {
-            //This condition is required because a node with ComponentsWidthsExtension
-            //can be imported from another diagram but the extension is not imported or present in this diagram.
-            if (Objects.nonNull(componentsWidthsExtension.getComponentWidths())) {
-                hasComponentWidthsMap.entrySet().forEach(es -> {
-                    final List<JSITComponentWidths> jsiComponentWidths = componentsWidthsExtension.getComponentWidths();
-                    for (int i = 0; i < jsiComponentWidths.size(); i++) {
-                        final JSITComponentWidths jsiWidths = Js.uncheckedCast(jsiComponentWidths.get(i));
-                        if (Objects.equals(jsiWidths.getDmnElementRef(), es.getKey())) {
-                            final List<Double> widths = es.getValue().getComponentWidths();
-                            if (Objects.nonNull(jsiWidths.getWidth())) {
-                                widths.clear();
-                                for (int w = 0; w < jsiWidths.getWidth().size(); w++) {
-                                    final double width = jsiWidths.getWidth().get(w).doubleValue();
-                                    widths.add(width);
+            //Copy ComponentWidths information
+            final Optional<JSITComponentsWidthsExtension> extension = findComponentsWidthsExtension(dmnDDDiagram);
+            extension.ifPresent(componentsWidthsExtension -> {
+                //This condition is required because a node with ComponentsWidthsExtension
+                //can be imported from another diagram but the extension is not imported or present in this diagram.
+                if (Objects.nonNull(componentsWidthsExtension.getComponentWidths())) {
+                    hasComponentWidthsMap.entrySet().forEach(es -> {
+                        final List<JSITComponentWidths> jsiComponentWidths = componentsWidthsExtension.getComponentWidths();
+                        for (int i = 0; i < jsiComponentWidths.size(); i++) {
+                            final JSITComponentWidths jsiWidths = Js.uncheckedCast(jsiComponentWidths.get(i));
+                            if (Objects.equals(jsiWidths.getDmnElementRef(), es.getKey())) {
+                                final List<Double> widths = es.getValue().getComponentWidths();
+                                if (Objects.nonNull(jsiWidths.getWidth())) {
+                                    widths.clear();
+                                    for (int w = 0; w < jsiWidths.getWidth().size(); w++) {
+                                        final double width = jsiWidths.getWidth().get(w).doubleValue();
+                                        widths.add(width);
+                                    }
                                 }
                             }
                         }
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
 
-        return graph;
+            return promises.resolve(graph);
+        });
     }
 
     private Optional<JSIDMNDiagram> findJSIDiagram(final JSITDefinitions dmnXml) {
@@ -501,30 +507,8 @@ public class DMNMarshallerKogitoUnmarshaller {
             return;
         }
 
-        drgElements.removeIf(element -> dmnShapes.stream().noneMatch(s -> Objects.equals(s.getDmnElementRef().getLocalPart(),
+        drgElements.removeIf(element -> dmnShapes.stream().noneMatch(s -> Objects.equals(getDmnElementRef(s),
                                                                                          element.getId())));
-    }
-
-    private void updateIDsWithAlias(final Map<String, String> indexByUri,
-                                    final List<JSITDRGElement> importedDrgElements) {
-        if (importedDrgElements.isEmpty()) {
-            return;
-        }
-
-        final QName defaultNamespace = new QName(XMLConstants.NULL_NS_URI,
-                                                 "Namespace",
-                                                 XMLConstants.DEFAULT_NS_PREFIX);
-
-        for (JSITDRGElement element : importedDrgElements) {
-            final Map<QName, String> otherAttributes = JSITUnaryTests.getOtherAttributesMap(element);
-            final String namespaceAttribute = otherAttributes.getOrDefault(defaultNamespace, "");
-            if (!StringUtils.isEmpty(namespaceAttribute)) {
-                if (indexByUri.containsKey(namespaceAttribute)) {
-                    final String alias = indexByUri.get(namespaceAttribute);
-                    changeAlias(alias, element);
-                }
-            }
-        }
     }
 
     private void changeAlias(final String alias,
@@ -538,9 +522,9 @@ public class DMNMarshallerKogitoUnmarshaller {
     private Node getRequiredNode(final Map<String, Entry<JSITDRGElement, Node>> elems,
                                  final String reqInputID) {
         if (elems.containsKey(reqInputID)) {
-            return elems.get(reqInputID).getValue();
+            final Entry<JSITDRGElement, Node> value = elems.get(reqInputID);
+            return value.getValue();
         } else {
-
             final Optional<String> match = elems.keySet().stream()
                     .filter(k -> k.contains(reqInputID))
                     .findFirst();
@@ -548,7 +532,6 @@ public class DMNMarshallerKogitoUnmarshaller {
                 return elems.get(match.get()).getValue();
             }
         }
-
         return null;
     }
 
@@ -558,26 +541,24 @@ public class DMNMarshallerKogitoUnmarshaller {
 
         final List<JSITDRGElement> importedDRGElements = dmnMarshallerImportsHelper.getImportedDRGElements(importDefinitions);
 
-        // Update IDs with the alias used in this file for the respective imports
-        final Map<String, String> indexByUri = NameSpaceUtils.extractNamespacesKeyedByUri(dmnXml);
-        updateIDsWithAlias(indexByUri, importedDRGElements);
-
-        return dmnShapes
-                .stream()
-                .map(shape -> {
-                    final String dmnElementRef = getDmnElementRef(shape);
-                    final Optional<JSITDRGElement> ref = getReference(importedDRGElements, dmnElementRef);
-                    return ref.orElse(null);
-                })
-                .filter(Objects::nonNull)
-                .collect(toList());
+        final List<JSITDRGElement> elements = new ArrayList<>();
+        for (int i = 0; i < dmnShapes.size(); i++) {
+            final JSIDMNShape shape = Js.uncheckedCast(dmnShapes.get(i));
+            final String dmnElementRef = getDmnElementRef(shape);
+            final Optional<Object> ref = getReference(importedDRGElements, dmnElementRef);
+            if (ref.isPresent()) {
+                elements.add(Js.uncheckedCast(ref.get()));
+            }
+        }
+        return elements;
     }
 
-    private Optional<JSITDRGElement> getReference(final List<JSITDRGElement> importedDRGElements,
-                                                  final String dmnElementRef) {
-        for (JSITDRGElement importedDRGElement : importedDRGElements) {
+    private Optional<Object> getReference(final List<JSITDRGElement> importedDRGElements,
+                                          final String dmnElementRef) {
+        for (int i = 0; i < importedDRGElements.size(); i++) {
+            final JSITDRGElement importedDRGElement = Js.uncheckedCast(importedDRGElements.get(i));
             final String importedDRGElementId = importedDRGElement.getId();
-            if (Objects.equals(importedDRGElementId, dmnElementRef)) {
+            if (dmnElementRef.endsWith(importedDRGElementId)) {
                 return Optional.of(importedDRGElement);
             }
         }
@@ -862,12 +843,15 @@ public class DMNMarshallerKogitoUnmarshaller {
     }
 
     private List<ItemDefinition> getWbImportedItemDefinitions(final Map<JSITImport, JSITDefinitions> importDefinitions) {
-        return dmnMarshallerImportsHelper
-                .getImportedItemDefinitions(importDefinitions)
-                .stream()
-                .map(ItemDefinitionPropertyConverter::wbFromDMN)
-                .peek(itemDefinition -> itemDefinition.setAllowOnlyVisualChange(true))
-                .collect(toList());
+        final List<ItemDefinition> definitions = new ArrayList<>();
+        final List<JSITItemDefinition> importedDefinitions = dmnMarshallerImportsHelper.getImportedItemDefinitions(importDefinitions);
+        for (int i = 0; i < importedDefinitions.size(); i++) {
+            final JSITItemDefinition definition = Js.uncheckedCast(importedDefinitions.get(i));
+            final ItemDefinition converted = ItemDefinitionPropertyConverter.wbFromDMN(definition);
+            converted.setAllowOnlyVisualChange(true);
+            definitions.add(converted);
+        }
+        return definitions;
     }
 
     private void ddExtAugmentStunner(final Optional<JSIDMNDiagram> dmnDDDiagram,
@@ -978,7 +962,8 @@ public class DMNMarshallerKogitoUnmarshaller {
         Optional<JSIDMNShape> drgShapeOpt = Optional.empty();
         for (int i = 0; i < drgShapes.size(); i++) {
             final JSIDMNShape jsiShape = Js.uncheckedCast(drgShapes.get(i));
-            if (Objects.equals(id.getValue(), jsiShape.getDmnElementRef().getLocalPart())) {
+            final QName dmnRef = jsiShape.getDmnElementRef();
+            if (dmnRef.getLocalPart().endsWith(id.getValue())) {
                 drgShapeOpt = Optional.of(jsiShape);
             }
         }

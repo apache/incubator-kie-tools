@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.showcase.client.navigator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.kogito.webapp.base.client.workarounds.KogitoResourceContentService;
 import org.kie.workbench.common.stunner.client.widgets.event.LoadDiagramEvent;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.diagrams.DiagramsNavigator;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.ShapeSetsMenuItemsBuilder;
@@ -46,13 +47,18 @@ public class DMNDiagramsNavigatorScreenTest {
     @Mock
     private Path path;
 
+    @Mock
+    private KogitoResourceContentService contentService;
+
     private DMNDiagramsNavigatorScreen navigator;
 
     @Before
     public void setup() {
+
         this.navigator = new DMNDiagramsNavigatorScreen(diagramsNavigator,
                                                         newDiagramMenuItemsBuilder,
-                                                        vfsService);
+                                                        vfsService,
+                                                        contentService);
     }
 
     @Test

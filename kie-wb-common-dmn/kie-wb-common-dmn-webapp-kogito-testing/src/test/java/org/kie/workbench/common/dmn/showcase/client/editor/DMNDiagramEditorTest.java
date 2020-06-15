@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.showcase.client.editor;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
+import org.appformer.client.context.EditorContextProvider;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,6 +87,9 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
     @Mock
     private CanvasFileExport canvasFileExport;
 
+    @Mock
+    private EditorContextProvider contextProvider;
+
     private Promises promises = new SyncPromises();
 
     @Captor
@@ -148,7 +152,10 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                                     vfsService,
                                     promises,
                                     feelInitializer,
-                                    canvasFileExport) {
+                                    canvasFileExport,
+                                    includedModelsPage,
+                                    importsPageProvider,
+                                    contextProvider) {
 
             @Override
             protected PlaceRequest getPlaceRequest() {

@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.editor;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -24,11 +25,15 @@ import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import elemental2.promise.Promise;
+import org.appformer.client.context.Channel;
+import org.appformer.client.context.EditorContextProvider;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
+import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
+import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
@@ -90,6 +95,8 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static elemental2.dom.DomGlobal.setTimeout;
+import static org.appformer.client.context.Channel.DEFAULT;
+import static org.appformer.client.context.Channel.VSCODE;
 
 public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
 
@@ -115,6 +122,9 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     protected final MonacoFEELInitializer feelInitializer;
     protected final CanvasFileExport canvasFileExport;
     protected final Promises promises;
+    protected final IncludedModelsPage includedModelsPage;
+    protected final IncludedModelsPageStateProviderImpl importsPageProvider;
+    protected final EditorContextProvider contextProvider;
 
     public AbstractDMNDiagramEditor(final View view,
                                     final FileMenuBuilder fileMenuBuilder,
@@ -145,7 +155,10 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
                                     final KogitoClientDiagramService diagramServices,
                                     final MonacoFEELInitializer feelInitializer,
                                     final CanvasFileExport canvasFileExport,
-                                    final Promises promises) {
+                                    final Promises promises,
+                                    final IncludedModelsPage includedModelsPage,
+                                    final IncludedModelsPageStateProviderImpl importsPageProvider,
+                                    final EditorContextProvider contextProvider) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -176,6 +189,9 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         this.feelInitializer = feelInitializer;
         this.canvasFileExport = canvasFileExport;
         this.promises = promises;
+        this.includedModelsPage = includedModelsPage;
+        this.importsPageProvider = importsPageProvider;
+        this.contextProvider = contextProvider;
     }
 
     @OnStartup
@@ -197,7 +213,10 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         superInitialiseKieEditorForSession(diagram);
 
         getWidget().getMultiPage().addPage(dataTypesPage);
-
+        final Channel channel = contextProvider.getChannel();
+        if (Objects.equals(channel, DEFAULT) || Objects.equals(channel, VSCODE)) {
+            getWidget().getMultiPage().addPage(includedModelsPage);
+        }
         setupEditorSearchIndex();
         setupSearchComponent();
     }
@@ -436,7 +455,7 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
 
     @GetPreview
     public Promise getPreview() {
-        CanvasHandler canvasHandler = getCanvasHandler();
+        final CanvasHandler canvasHandler = getCanvasHandler();
         if (canvasHandler != null) {
             return Promise.resolve(canvasFileExport.exportToSvg((AbstractCanvasHandler) canvasHandler));
         } else {

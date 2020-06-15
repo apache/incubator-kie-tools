@@ -86,21 +86,13 @@ MainJs = {
         callback(toReturn);
     },
 
-    marshall: function (value, defaultNamespace, callback) {
+    marshall: function (value, namespacesValues, callback) {
         // Create Jsonix context
-        var namespaces = {};
-        namespaces[defaultNamespace] = "";
-        namespaces["http://www.omg.org/spec/DMN/20180521/MODEL/"] = "dmn";
-        namespaces["http://www.omg.org/spec/DMN/20180521/DI/"] = "di";
-        namespaces["http://www.drools.org/kie/dmn/1.2"] = "kie";
-        namespaces["http://www.omg.org/spec/DMN/20180521/DMNDI/"] = "dmndi";
-        namespaces["http://www.omg.org/spec/DMN/20180521/DC/"] = "dc";
-        namespaces["http://www.omg.org/spec/DMN/20180521/FEEL/"] = "feel";
         var context = new Jsonix.Context(this.mappings, {
-            namespacePrefixes: namespaces
+            namespacePrefixes: namespacesValues
         });
 
-        // Create unmarshaller
+        // Create marshaller
         var marshaller = context.createMarshaller();
         var xmlDocument = marshaller.marshalDocument(value);
         if (typeof FormatterJs !== "undefined") {

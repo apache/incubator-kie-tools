@@ -16,12 +16,12 @@
 
 package org.kie.workbench.common.stunner.kogito.client.service;
 
+import static org.kie.workbench.common.stunner.core.util.FileUtils.getFileName;
+import static org.kie.workbench.common.stunner.core.util.FileUtils.getFileNameWithoutExtension;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 
 public abstract class AbstractKogitoClientDiagramService implements KogitoClientDiagramService {
 
-    private static final char UNIX_SEPARATOR = '/';
-    private static final char WINDOWS_SEPARATOR = '\\';
     public static final String DEFAULT_DIAGRAM_ID = "default";
 
     /**
@@ -29,6 +29,7 @@ public abstract class AbstractKogitoClientDiagramService implements KogitoClient
      * 1. Extracts file name without extension from path
      * 2. Returns {@link AbstractKogitoClientDiagramService#generateDefaultId}
      * If name is empty (can be overridden in descendant)
+     *
      * @param filePath path to the file
      * @return file name
      */
@@ -38,26 +39,6 @@ public abstract class AbstractKogitoClientDiagramService implements KogitoClient
         }
 
         return getFileNameWithoutExtension(getFileName(filePath));
-    }
-
-    private static String getFileNameWithoutExtension(final String fullName) {
-        if (fullName.contains(".")) {
-            return fullName.substring(0, fullName.lastIndexOf('.'));
-        }
-
-        return fullName;
-    }
-
-    private static String getFileName(final String filePath) {
-        final int index = indexOfLastSeparator(filePath);
-        return filePath.substring(index + 1);
-    }
-
-    private static int indexOfLastSeparator(final String filename) {
-        final int lastUnixPos = filename.lastIndexOf(UNIX_SEPARATOR);
-        final int lastWindowsPos = filename.lastIndexOf(WINDOWS_SEPARATOR);
-        return Math.max(lastUnixPos,
-                        lastWindowsPos);
     }
 
     public String generateDefaultId() {
