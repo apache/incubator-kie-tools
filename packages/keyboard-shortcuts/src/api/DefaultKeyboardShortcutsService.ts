@@ -137,11 +137,11 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
       this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
       this.keyBindingElement(keyBinding).addEventListener("keyup", keyBinding.listener);
     } else {
-      const delayedShorcut = {
+      const delayedShortcut = {
         type: ShortCutsType.KeyDownThenUp,
         binding: keyBinding
       };
-      this.delayedKeyBindings.push(delayedShorcut);
+      this.delayedKeyBindings.push(delayedShortcut);
     }
     return this.eventIdentifiers++;
   }
@@ -180,11 +180,11 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
     if (keyBinding?.opts?.element || document.querySelector(".session-container")) {
       this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
     } else {
-      const delayedShorcut = {
+      const delayedShortcut = {
         type: ShortCutsType.KeyDown,
         binding: keyBinding
       };
-      this.delayedKeyBindings.push(delayedShorcut);
+      this.delayedKeyBindings.push(delayedShortcut);
     }
 
     return this.eventIdentifiers++;
