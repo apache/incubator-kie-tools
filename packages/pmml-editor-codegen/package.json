@@ -1,0 +1,21 @@
+{
+  "name": "@kogito-tooling/pmml-editor-codegen",
+  "version": "0.5.2",
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "scripts": {
+    "generate": "mvn clean package -B -nsu",
+    "build:fast": "rm -rf dist && webpack",
+    "build": "yarn run build:fast",
+    "build:prod": "yarn run build --mode production --devtool none"
+  }
+}

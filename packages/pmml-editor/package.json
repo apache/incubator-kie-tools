@@ -12,6 +12,7 @@
   "dependencies": {
     "@kogito-tooling/core-api": "0.5.2",
     "@kogito-tooling/patternfly-base": "0.5.2",
+    "@kogito-tooling/pmml-editor-codegen": "0.5.2",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
     "jsonata": "^1.8.3",
@@ -20,8 +21,7 @@
     "xml-js": "^1.6.11"
   },
   "scripts": {
-    "generate": "mvn clean package -B -nsu",
-    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}' -e 'src/generated/**'",
+    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "jest",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",

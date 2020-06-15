@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DataDictionary, DataField, Interval, PMML } from "../../generated/pmml";
+import { DataDictionary, DataField, Interval, PMML } from "@kogito-tooling/pmml-editor-codegen";
 import { PMML2XML, XML2PMML } from "../../marshaller";
 
 describe("Interval tests", () => {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DataDictionary, DataField, PMML, Value } from "../../generated/pmml";
+import { DataDictionary, DataField, PMML, Value } from "@kogito-tooling/pmml-editor-codegen";
 import { PMML2XML, XML2PMML } from "../../marshaller";
 
 describe("Value tests", () => {

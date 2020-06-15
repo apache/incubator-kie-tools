@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+target/
+.idea
+
+# Transient desination for jpmml-model source code
+src/main/
