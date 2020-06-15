@@ -98,11 +98,15 @@ describe("Header tests", () => {
 
     expect(annotations.length).toBe(1);
     expect(annotations[0]).not.toBeUndefined();
+    /* tslint:disable:no-string-literal */
     expect(annotations[0]["text"]).toBe("annotation1");
+    /* tslint:enable:no-string-literal */
 
     const annotation: Annotation = new Annotation({});
+    /* tslint:disable:no-string-literal */
     annotation["type"] = "text";
     annotation["text"] = "annotation2";
+    /* tslint:enable:no-string-literal */
 
     annotations.push(annotation);
     expect(annotations.length).toBe(2);
@@ -132,9 +136,11 @@ describe("Header tests", () => {
     expect(header.Timestamp).not.toBeUndefined();
 
     const timestamp: Timestamp = header.Timestamp as Timestamp;
+    /* tslint:disable:no-string-literal */
     expect(timestamp["text"]).toBe("timestamp");
 
     timestamp["text"] = "timestamp-changed";
+    /* tslint:enable:no-string-literal */
     const xml: string = PMML2XML(pmml);
     expect(xml).toContain(`<Timestamp>timestamp-changed</Timestamp>`);
   });
