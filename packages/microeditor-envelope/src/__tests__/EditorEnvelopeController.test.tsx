@@ -21,7 +21,7 @@ import { EnvelopeBusMessage, EnvelopeBusMessageType } from "@kogito-tooling/micr
 import { ChannelType, LanguageData, OperatingSystem } from "@kogito-tooling/core-api";
 import { DummyEditor } from "./DummyEditor";
 import { ResourceContentEditorCoordinator } from "../api/resourceContent";
-import { DefaultKeyboardShortcutsService } from "../../../keyboard-shortcuts/src/api";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 
 const StateControlMock = jest.fn(() => ({
   undo: jest.fn(),

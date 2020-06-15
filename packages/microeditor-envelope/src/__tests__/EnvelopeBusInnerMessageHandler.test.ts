@@ -16,7 +16,13 @@
 
 import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
 import { EnvelopeBusMessageType } from "@kogito-tooling/microeditor-envelope-protocol";
-import { EditorContent, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import {
+  EditorContent,
+  LanguageData,
+  ResourceContent,
+  ResourcesList,
+  StateControlEvent
+} from "@kogito-tooling/core-api";
 
 let handler: EnvelopeBusInnerMessageHandler;
 let receivedMessages: any[];
@@ -212,6 +218,22 @@ describe("send", () => {
   test("notify ready", () => {
     handler.notify_ready();
     expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined }, "tgt-orgn"]]);
+  });
+
+  describe("notify_stateControl", () => {
+    test("notify state control api - redo event", () => {
+      handler.notify_stateControl(StateControlEvent.REDO);
+      expect(sentMessages).toEqual([
+        [{ type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL, data: StateControlEvent.REDO }, "tgt-orgn"]
+      ]);
+    });
+
+    test("notify state control api - redo event", () => {
+      handler.notify_stateControl(StateControlEvent.UNDO);
+      expect(sentMessages).toEqual([
+        [{ type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL, data: StateControlEvent.UNDO }, "tgt-orgn"]
+      ]);
+    });
   });
 });
 

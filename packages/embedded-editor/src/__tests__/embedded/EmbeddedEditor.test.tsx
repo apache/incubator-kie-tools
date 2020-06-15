@@ -19,7 +19,7 @@ import {
   EditorContent,
   KogitoEdit,
   ResourceContentRequest,
-  ResourceListRequest
+  ResourceListRequest,
 } from "@kogito-tooling/core-api";
 import { EnvelopeBusMessageType, EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { mount } from "enzyme";
@@ -267,6 +267,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
   test("EmbeddedEditor::onNewEdit", async () => {
     const onNewEdit = jest.fn((edit: KogitoEdit) => null);
+    stateControl.updateEventStack = jest.fn(() => null);
 
     mount(
       <EmbeddedEditor
@@ -281,7 +282,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT, data: new KogitoEdit("1") });
-
+    expect(stateControl.updateEventStack).toBeCalled();
     expect(onNewEdit).toBeCalled();
 
     expect(document.body).toMatchSnapshot();
