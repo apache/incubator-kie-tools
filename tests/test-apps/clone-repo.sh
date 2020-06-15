@@ -31,9 +31,8 @@ mvn -f process-springboot-example clean package -DskipTests -U
 mvn -f rules-quarkus-helloworld-native -Pnative clean package -DskipTests -U
 
 # preparing directory to run kogito maven archetypes tests
-cp /tmp/kogito-examples/dmn-quarkus-example/src/main/resources/* /tmp/kogito-examples/dmn-quarkus-example/
-rm -rf /tmp/kogito-examples/dmn-quarkus-example/src
-rm -rf /tmp/kogito-examples/dmn-quarkus-example/pom.xml
+mkdir -pv /tmp/kogito-examples/dmn-example
+cp /tmp/kogito-examples/dmn-quarkus-example/src/main/resources/* /tmp/kogito-examples/dmn-example/
 
 # by adding the application.properties file telling app to start on
 # port 10000, the purpose of this tests is make sure that the images

@@ -366,9 +366,18 @@ teardown() {
     rm -rf target/*
 
     echo "result= ${lines[@]}"
-    [ "${lines[0]}" = "---> Generating project structure..." ]
+    [ "${lines[0]}" = "---> Generating $QUARKUS_RUNTIME_TYPE project structure..." ]
 }
 
+@test "build_kogito_app only checks if it will generate the springboot project in case there's no pom.xml" {
+    mkdir /tmp/src
+
+    run build_kogito_app $SPRINGBOOT_RUNTIME_TYPE
+    rm -rf target/*
+
+    echo "result= ${lines[@]}"
+    [ "${lines[0]}" = "---> Generating $SPRINGBOOT_RUNTIME_TYPE project structure..." ]
+}
 
 @test "build_kogito_app only checks if it will a build will be triggered if a pom is found" {
     mkdir /tmp/src

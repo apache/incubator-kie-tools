@@ -26,7 +26,7 @@ source ${KOGITO_HOME}/launch/configure.sh
 manage_incremental_build
 
 # kogito app build
-build_kogito_app
+build_kogito_app $QUARKUS_RUNTIME_TYPE
 
 # copy kogito app to ${KOGITO_HOME}/bin dir
 copy_kogito_app

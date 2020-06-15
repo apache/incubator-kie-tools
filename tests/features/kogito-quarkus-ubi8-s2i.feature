@@ -247,7 +247,7 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 19.3.1
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly
-    Given s2i build /tmp/kogito-examples from dmn-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
+    Given s2i build /tmp/kogito-examples from dmn-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable       | value          |
       | NATIVE         | false          |
       | KOGITO_VERSION | 8.0.0-SNAPSHOT |
@@ -263,7 +263,7 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | request_body    | {"Driver": {"Points": 2}, "Violation": {"Type": "speed","Actual Speed": 120,"Speed Limit": 100}} |
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly using native build
-    Given s2i build /tmp/kogito-examples from dmn-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
+    Given s2i build /tmp/kogito-examples from dmn-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
       | variable       | value          |
       | NATIVE         | true           |
       | LIMIT_MEMORY   | 6442450944     |
@@ -280,7 +280,7 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | request_body    | {"Driver": {"Points": 2}, "Violation": {"Type": "speed","Actual Speed": 120,"Speed Limit": 100}} |
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly with custom group id, archetype & version
-    Given s2i build /tmp/kogito-examples from dmn-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
+    Given s2i build /tmp/kogito-examples from dmn-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable            | value          |
       | NATIVE              | false          |
       | KOGITO_VERSION      | 8.0.0-SNAPSHOT |

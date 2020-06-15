@@ -11,6 +11,8 @@ PROJECT_GROUP_ID="${PROJECT_GROUP_ID:-com.company}"
 PROJECT_ARTIFACT_ID="${PROJECT_ARTIFACT_ID:-project}"
 PROJECT_VERSION="${PROJECT_VERSION:-1.0-SNAPSHOT}"
 artifactDir="target"
+readonly QUARKUS_RUNTIME_TYPE="quarkus"
+readonly SPRINGBOOT_RUNTIME_TYPE="springboot"
 if [ ! -z "${ARTIFACT_DIR}" ]; then
     artifactDir="${ARTIFACT_DIR}"
 fi
@@ -107,6 +109,7 @@ function handle_image_metadata_json() {
 
 
 function build_kogito_app() {
+    local RUNTIME_TYPE="${1:-$QUARKUS_RUNTIME_TYPE}"
     cd "${S2I_SOURCE_DIR}"
 
     nativeBuild=""
@@ -127,9 +130,18 @@ function build_kogito_app() {
 
     else
 
-        log_info "---> Generating project structure..."
+        local ARCHETYPE_ARTIFACT_ID
+        if [ "${RUNTIME_TYPE}" == "${QUARKUS_RUNTIME_TYPE}" ]; then
+            ARCHETYPE_ARTIFACT_ID='kogito-quarkus-archetype'
+        elif [ "${RUNTIME_TYPE}" == "${SPRINGBOOT_RUNTIME_TYPE}" ]; then
+            ARCHETYPE_ARTIFACT_ID="kogito-springboot-archetype"
+        else
+            log_error "---> Invalid RUNTIME_TYPE(${RUNTIME_TYPE}) provided, failing build..."
+            exit 1
+        fi
 
-        $MAVEN_HOME/bin/mvn archetype:generate -B -DarchetypeGroupId=org.kie.kogito -DarchetypeArtifactId=kogito-quarkus-archetype \
+        log_info "---> Generating $RUNTIME_TYPE project structure..."
+        $MAVEN_HOME/bin/mvn archetype:generate -B -DarchetypeGroupId=org.kie.kogito -DarchetypeArtifactId=$ARCHETYPE_ARTIFACT_ID \
         -DarchetypeVersion=$KOGITO_VERSION -DgroupId=$PROJECT_GROUP_ID -DartifactId=$PROJECT_ARTIFACT_ID -Dversion=$PROJECT_VERSION \
         -s $KOGITO_HOME/.m2/settings.xml
 
