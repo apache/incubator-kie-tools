@@ -370,7 +370,7 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     protected void marshallContent(ScenarioSimulationModel scenarioSimulationModel, Promise.PromiseExecutorCallbackFn.ResolveCallbackFn<String> resolveCallbackFn) {
         final JSIScenarioSimulationModelType jsiScenarioSimulationModelType = getJSIScenarioSimulationModelType(scenarioSimulationModel);
         JsUtils.setValueOnWrapped(scesimContainer, jsiScenarioSimulationModelType);
-        SCESIMMainJs.marshall(scesimContainer, SCESIM, getJSInteropMarshallCallback(resolveCallbackFn));
+        SCESIMMainJs.marshall(scesimContainer, null, getJSInteropMarshallCallback(resolveCallbackFn));
     }
 
     protected void unmarshallContent(String toUnmarshal) {

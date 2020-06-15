@@ -125,7 +125,7 @@ public class KogitoScenarioSimulationBuilder {
         JsUtils.setNameOnWrapped(scesim, makeJSINameForSCESIM());
         JsUtils.setValueOnWrapped(scesim, jsiScenarioSimulationModelType);
         SCESIMMarshallCallback scesimMarshallCallback = getSCESIMMarshallCallback(callback);
-        SCESIMMainJs.marshall(scesim, "", scesimMarshallCallback);
+        SCESIMMainJs.marshall(scesim, null, scesimMarshallCallback);
     }
 
     private JSIName makeJSINameForSCESIM() {
