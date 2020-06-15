@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   KogitoVsCode.startExtension({
-    extensionName: "kiegroup.vscode-extension-pack-kogito-kie-editors",
+    extensionName: "kie-group.vscode-extension-pack-kogito-kie-editors",
     webviewLocation: "dist/webview/index.js",
     context: context,
     viewType: "kieKogitoWebviewEditors",

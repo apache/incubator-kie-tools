@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/desktop",
-  "version": "0.4.3",
+  "version": "0.5.1",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -10,9 +10,9 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.4.3",
-    "@kogito-tooling/embedded-editor": "0.4.3",
-    "@kogito-tooling/patternfly-base": "0.4.3",
+    "@kogito-tooling/core-api": "0.5.1",
+    "@kogito-tooling/embedded-editor": "0.5.1",
+    "@kogito-tooling/patternfly-base": "0.5.1",
     "electron": "7.1.9",
     "react-router": "5.1.1",
     "react-router-dom": "5.1.1"
