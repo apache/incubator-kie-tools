@@ -18,8 +18,8 @@ if [ -s golint_errors ]  ; then
     code=1
 fi
 rm -f golint_errors
-# see this link to understand why we are using a different go.mod file: https://github.com/golang/go/issues/34506
-which golangci-lint > /dev/null || go get -modfile=go.tools.mod github.com/golangci/golangci-lint/cmd/golangci-lint@v1.27.0
+# The command in or will fetch the latest tag available for golangci-lint and install in $GOPATH/bin/
+which golangci-lint > /dev/null || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
 golangci-lint run ./... --enable golint
 
 exit ${code:0}
