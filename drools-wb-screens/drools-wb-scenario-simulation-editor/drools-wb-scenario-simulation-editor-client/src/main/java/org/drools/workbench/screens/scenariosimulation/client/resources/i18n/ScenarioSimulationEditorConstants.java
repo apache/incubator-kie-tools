@@ -270,6 +270,10 @@ public interface ScenarioSimulationEditorConstants
 
     String settings();
 
+    String name();
+
+    String type();
+
     String dmnPathErrorLabel(String dmnPath);
 
     String dmnPathErrorDetailedLabel(String dmnPath);
@@ -281,6 +285,8 @@ public interface ScenarioSimulationEditorConstants
     String coverageReport();
 
     String uploadWarning();
+
+    String chooseFile();
 
     String importFailedMessage();
 
@@ -340,6 +346,8 @@ public interface ScenarioSimulationEditorConstants
 
     String skipSimulation();
 
+    String downloadReportLabel();
+
     String noDecisionsAvailable();
 
     String noRulesAvailable();
@@ -385,6 +393,8 @@ public interface ScenarioSimulationEditorConstants
     String removeButton();
 
     String cancelButton();
+
+    String item();
 
     String addNewListItem();
 

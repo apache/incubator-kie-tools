@@ -28,6 +28,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.user.client.ui.Composite;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -37,6 +38,11 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 public class SettingsViewImpl
         extends Composite
         implements SettingsView {
+
+    protected static final String STATELESS_LABEL = "Stateless Session";
+    protected static final String DMN_MODEL_LABEL = "DMN model";
+    protected static final String DMN_NAMESPACE_LABEL = "DMN namespace";
+    protected static final String DMN_NAME_LABEL = "DMN name";
 
     protected Presenter presenter;
 
@@ -97,12 +103,18 @@ public class SettingsViewImpl
     @DataField("stateless")
     protected InputElement stateless = Document.get().createCheckInputElement();
 
-    public SettingsViewImpl() {
-    }
+    @DataField("statelessLabel")
+    protected SpanElement statelessLabel = Document.get().createSpanElement();
 
     @Override
     public void init(Presenter presenter) {
         this.presenter = presenter;
+        nameLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.name());
+        typeLabel.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.type());
+        statelessLabel.setInnerText(STATELESS_LABEL);
+        dmnFileLabel.setInnerText(DMN_MODEL_LABEL);
+        dmnNamespaceLabel.setInnerText(DMN_NAMESPACE_LABEL);
+        dmnNameLabel.setInnerText(DMN_NAME_LABEL);
     }
 
     @Override

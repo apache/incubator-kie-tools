@@ -21,6 +21,7 @@ import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.UListElement;
 import com.google.gwt.event.dom.client.ClickEvent;
+import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 
@@ -42,6 +43,9 @@ public abstract class ElementViewImpl<T extends ElementView.Presenter> implement
     @DataField("itemSeparator")
     protected LIElement itemSeparator = Document.get().createLIElement();
 
+    @DataField("itemSeparatorText")
+    protected SpanElement itemSeparatorText = Document.get().createSpanElement();
+
     @DataField("saveChange")
     protected LIElement saveChange = Document.get().createLIElement();
 
@@ -49,20 +53,29 @@ public abstract class ElementViewImpl<T extends ElementView.Presenter> implement
     protected SpanElement faAngleRight = Document.get().createSpanElement();
 
     @DataField("editItemButton")
-    protected ButtonElement editItemButton = Document.get().createButtonElement();
+    protected ButtonElement editItemButton = Document.get().createPushButtonElement();
 
     @DataField("deleteItemButton")
-    protected ButtonElement deleteItemButton = Document.get().createButtonElement();
+    protected ButtonElement deleteItemButton = Document.get().createPushButtonElement();
 
     @DataField("saveChangeButton")
-    protected ButtonElement saveChangeButton = Document.get().createButtonElement();
+    protected ButtonElement saveChangeButton = Document.get().createPushButtonElement();
+
+    @DataField("saveChangeButtonSpanText")
+    protected SpanElement saveChangeButtonSpanText = Document.get().createSpanElement();
 
     @DataField("cancelChangeButton")
-    protected ButtonElement cancelChangeButton = Document.get().createButtonElement();
+    protected ButtonElement cancelChangeButton = Document.get().createPushButtonElement();
+
+    @DataField("cancelButtonSpanText")
+    protected SpanElement cancelButtonSpanText = Document.get().createSpanElement();
 
     @Override
     public void init(Presenter presenter) {
         this.presenter = presenter;
+        itemSeparatorText.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.item());
+        saveChangeButtonSpanText.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.saveButton());
+        cancelButtonSpanText.setInnerText(ScenarioSimulationEditorConstants.INSTANCE.cancelButton());
     }
 
     @Override

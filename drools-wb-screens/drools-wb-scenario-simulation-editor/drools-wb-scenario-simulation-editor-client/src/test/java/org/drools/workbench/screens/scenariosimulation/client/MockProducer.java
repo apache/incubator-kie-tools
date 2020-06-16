@@ -165,4 +165,9 @@ public class MockProducer {
         when(toReturn.getStyle()).thenReturn(ruleSettingsStyleMock());
         return toReturn;
     }
+
+    public static SpanElement statlessLabelMock() {
+        SpanElement toReturn = mock(SpanElement.class);
+        return toReturn;
+    }
 }

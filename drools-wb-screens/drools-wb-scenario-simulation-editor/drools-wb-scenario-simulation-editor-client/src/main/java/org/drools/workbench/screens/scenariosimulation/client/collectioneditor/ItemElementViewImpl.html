@@ -1,8 +1,8 @@
 <li data-field="itemContainer" style="list-style-type: none;">
     <ul data-field="innerItemContainer">
         <li class="list-group-item node-treeview-object1 kie-drools-object-separator" data-field="itemSeparator" style="list-style-type: none;">
-            <!--<span class="indent"></span>-->
-            <span class="icon expand-icon fa fa-angle-down" data-field="faAngleRight"></span>Item
+            <span class="icon expand-icon fa fa-angle-down" data-field="faAngleRight"></span>
+            <span data-field="itemSeparatorText"></span>
             <div class="pull-right">
                 <button class="btn btn-link" aria-label="Edit item" data-field="editItemButton">
                     <span class="fa fa-pencil" aria-hidden="true"></span>
@@ -14,10 +14,12 @@
         </li>
         <li class="list-group-item" data-field="saveChange" style="display: none; list-style-type: none;">
             <button class="btn btn-link" data-field="saveChangeButton">
-                <span class="fa fa-check"></span> Save changes
+                <span class="fa fa-check"></span>
+                <span data-field="saveChangeButtonSpanText"></span>
             </button>
             <button class="btn btn-link" data-field="cancelChangeButton">
-                <span class="fa fa-close"></span> Cancel
+                <span class="fa fa-close"></span>
+                <span data-field="cancelButtonSpanText"></span>
             </button>
         </li>
     </ul>

@@ -1,7 +1,8 @@
     <li data-field="itemContainer" style="list-style-type: none;">
     <ul class="list-group" data-field="innerItemContainer">
         <li class="list-group-item kie-object-list__separator" data-field="itemSeparator" style="list-style-type: none;">
-            <span class="fa fa-angle-down kie-object-list__expander" data-field="faAngleRight"></span> Item
+            <span class="fa fa-angle-down kie-object-list__expander" data-field="faAngleRight"></span>
+            <span data-field="itemSeparatorText"></span>
             <div class="pull-right">
                 <button class="btn btn-link" aria-label="Edit item" data-field="editItemButton">
                     <span class="fa fa-pencil" aria-hidden="true"></span>
@@ -25,10 +26,12 @@
         </li>
         <li class="list-group-item" data-field="saveChange" style="display: none; list-style-type: none;">
             <button class="btn btn-link" data-field="saveChangeButton">
-                <span class="fa fa-check"></span> Save changes
+                <span class="fa fa-check"></span>
+                <span data-field="saveChangeButtonSpanText"></span>
             </button>
             <button class="btn btn-link" data-field="cancelChangeButton">
-                <span class="fa fa-close"></span> Cancel
+                <span class="fa fa-close"></span>
+                <span data-field="cancelButtonSpanText"></span>
             </button>
         </li>
     </ul>

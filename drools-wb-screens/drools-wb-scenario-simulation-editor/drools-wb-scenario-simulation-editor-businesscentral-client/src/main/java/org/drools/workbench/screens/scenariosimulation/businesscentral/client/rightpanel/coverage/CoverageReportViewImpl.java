@@ -45,6 +45,9 @@ public class CoverageReportViewImpl
     protected HTMLButtonElement downloadReportButton = (HTMLButtonElement) DomGlobal.document.createElement("button");
 
     @DataField
+    protected HTMLElement downloadReportButtonSpanText = (HTMLElement) DomGlobal.document.createElement("span");
+
+    @DataField
     protected HTMLElement reportAvailableLabel = (HTMLElement) DomGlobal.document.createElement("dt");
 
     @DataField
@@ -94,6 +97,7 @@ public class CoverageReportViewImpl
 
     @Override
     public void initText(Type type) {
+        downloadReportButtonSpanText.textContent = ScenarioSimulationEditorConstants.INSTANCE.downloadReportLabel();
         if (Type.DMN.equals(type)) {
             reportAvailableLabel.textContent = ScenarioSimulationEditorConstants.INSTANCE.reportAvailableLabel();
             reportExecutedLabel.textContent = ScenarioSimulationEditorConstants.INSTANCE.reportExecutedLabel();

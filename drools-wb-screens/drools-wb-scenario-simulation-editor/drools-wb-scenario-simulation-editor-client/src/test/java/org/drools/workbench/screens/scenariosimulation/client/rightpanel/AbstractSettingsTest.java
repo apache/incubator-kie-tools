@@ -69,6 +69,8 @@ abstract class AbstractSettingsTest {
 
     protected SettingsView settingsViewMock;
 
+    protected SpanElement statelessLabelMock;
+
     protected void setup() {
         settingsViewMock = MockProducer.getSettingsViewMock();
         kieSettingsContentMock = MockProducer.kieSettingsContentMock();
@@ -92,5 +94,6 @@ abstract class AbstractSettingsTest {
         dmnNameMock = settingsViewMock.getDmnName();
         skipFromBuildMock = settingsViewMock.getSkipFromBuild();
         statelessMock = settingsViewMock.getStateless();
+        statelessLabelMock = MockProducer.statlessLabelMock();
     }
 }

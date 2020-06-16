@@ -19,60 +19,47 @@
 <div id="settings-panel" class="uf-scroll-panel">
     <div id="kieSettingsContent" class="tab-pane kie-tab-pane--scesim-panel">
         <div class="pf-c-form__group">
-            <label for="kieScenarioSettingsName" data-field="nameLabel">
-                Name
-            </label>
+            <label for="kieScenarioSettingsName" data-field="nameLabel"></label>
             <input class="form-control" data-field="fileName" id="kieScenarioSettingsName" type="text" readonly>
         </div>
         <br/>
         <div class="pf-c-form__group">
-            <label for="kieScenarioSettingsType" data-field="typeLabel">
-                Type
-            </label>
+            <label for="kieScenarioSettingsType" data-field="typeLabel"></label>
             <span data-field="scenarioType" id="kieScenarioSettingsType"></span>
         </div>
         <br/>
         <div data-field="ruleSettings">
             <div class="checkbox">
                 <label for="kieScenarioSettingsStateless">
-                    <input type="checkbox" data-field="stateless" id="kieScenarioSettingsStateless">Stateless Session
+                    <input type="checkbox" data-field="stateless" id="kieScenarioSettingsStateless">
+                    <span data-field="statelessLabel"></span>
                 </label>
             </div>
             <br/>
             <div class="pf-c-form__group">
-                <label for="kieScenarioSettingsKieSession">
-                    KieSession
-                </label>
+                <label for="kieScenarioSettingsKieSession">KieSession</label>
                 <input class="form-control" data-field="dmoSession" id="kieScenarioSettingsKieSession">
             </div>
             <br/>
             <div class="pf-c-form__group">
-                <label for="kieScenarioSettingsRuleFlowGroup">
-                    RuleFlowGroup/AgendaGroup
-                </label>
+                <label for="kieScenarioSettingsRuleFlowGroup">RuleFlowGroup/AgendaGroup</label>
                 <input class="form-control" data-field="ruleFlowGroup" id="kieScenarioSettingsRuleFlowGroup">
             </div>
         </div>
         <div data-field="dmnSettings">
             <div class="pf-c-form__group">
-                <label data-field="dmnFileLabel">
-                    DMN model
-                </label>
+                <label data-field="dmnFileLabel"></label>
                 <div data-field="dmnFilePathPlaceholder" id="kieScenarioSettingsModelPath"></div>
                 <span class="help-block" data-field="dmnFilePathErrorLabel" style="color:#cc0000"></span>
             </div>
             <br/>
             <div class="pf-c-form__group">
-                <label for="kieScenarioSettingsDMNNamespace" data-field="dmnNamespaceLabel">
-                    DMN namespace
-                </label>
+                <label for="kieScenarioSettingsDMNNamespace" data-field="dmnNamespaceLabel"></label>
                 <input class="form-control" data-field="dmnNamespace" id="kieScenarioSettingsDMNNamespace" type="text" readonly>
             </div>
             <br/>
             <div class="pf-c-form__group">
-                <label for="kieScenarioSettingsDMNName" data-field="dmnNameLabel">
-                    DMN name
-                </label>
+                <label for="kieScenarioSettingsDMNName" data-field="dmnNameLabel"></label>
                 <input class="form-control" data-field="dmnName" id="kieScenarioSettingsDMNName" type="text" readonly>
             </div>
         </div>
