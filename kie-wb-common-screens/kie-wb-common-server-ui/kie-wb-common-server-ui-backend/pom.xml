@@ -18,9 +18,9 @@
   <properties>
     <java.module.name>org.kie.wb.common.server.ui.backend</java.module.name>
     <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->
-    <jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</jboss.home>
-    <jboss.home.instance1>${project.build.directory}/instance1/wildfly-${version.org.jboss.errai.wildfly}</jboss.home.instance1>
-    <jboss.home.instance2>${project.build.directory}/instance2/wildfly-${version.org.jboss.errai.wildfly}</jboss.home.instance2>
+    <jboss.home>${project.build.directory}/wildfly-${version.org.wildfly}</jboss.home>
+    <jboss.home.instance1>${project.build.directory}/instance1/wildfly-${version.org.wildfly}</jboss.home.instance1>
+    <jboss.home.instance2>${project.build.directory}/instance2/wildfly-${version.org.wildfly}</jboss.home.instance2>
   </properties>
 
   <dependencies>
@@ -458,7 +458,7 @@
                 <artifactItem>
                   <groupId>org.wildfly</groupId>
                   <artifactId>wildfly-dist</artifactId>
-                  <version>${version.org.jboss.errai.wildfly}</version>
+                  <version>${version.org.wildfly}</version>
                   <type>zip</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}</outputDirectory>
@@ -466,7 +466,7 @@
                 <artifactItem>
                   <groupId>org.wildfly</groupId>
                   <artifactId>wildfly-dist</artifactId>
-                  <version>${version.org.jboss.errai.wildfly}</version>
+                  <version>${version.org.wildfly}</version>
                   <type>zip</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/instance1</outputDirectory>
@@ -474,7 +474,7 @@
                 <artifactItem>
                   <groupId>org.wildfly</groupId>
                   <artifactId>wildfly-dist</artifactId>
-                  <version>${version.org.jboss.errai.wildfly}</version>
+                  <version>${version.org.wildfly}</version>
                   <type>zip</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/instance2</outputDirectory>
