@@ -24,6 +24,8 @@ pipeline {
         string(name: 'IMAGE_TAG', defaultValue: '', description: 'Image tag to use to deploy images')
 
         string(name: 'MAVEN_ARTIFACT_REPOSITORY', defaultValue: '', description: 'Maven repository where the build artifacts are present')
+
+        booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests')
     }
 
     // Keep commented if no env var is defined
@@ -64,9 +66,10 @@ pipeline {
                     }
 
                     // Set the mirror url only if no artifact repository is given
-                    if (params.MAVEN_ARTIFACT_REPOSITORY != '' 
+                    if (params.MAVEN_ARTIFACT_REPOSITORY == '' 
                             && env.MAVEN_MIRROR_REPOSITORY != null
                             && env.MAVEN_MIRROR_REPOSITORY != ''){
+                        echo "Set Maven mirror url"
                         env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
                     }
                 }
@@ -87,7 +90,8 @@ pipeline {
                     sh "cat modules/kogito-jobs-service/module.yaml"
                     sh "cat modules/kogito-management-console/module.yaml"
                     sh "cat tests/test-apps/clone-repo.sh"
-                    sh "cat ${HOME}/.m2/settings.xml"
+                    sh "cat tests/features/kogito-quarkus-ubi8-s2i.feature"
+                    sh "cat tests/features/kogito-springboot-ubi8-s2i.feature"
                 }
             }
         }
@@ -113,6 +117,11 @@ pipeline {
             }
         }
         stage('Prepare offline kogito-examples') {
+            when {
+                expression {
+                    return !params.SKIP_TESTS;
+                }
+            }
             steps {
                 sh "make clone-repos"
             }
@@ -126,10 +135,10 @@ pipeline {
                             copyWorkspace("$image")
                             dir(getWorkspacePath("$image")){
                                 try{
-                                    sh "make ${image}"
+                                    sh "make ${image} ignore_test=${params.SKIP_TESTS}"
                                 }
                                 finally{
-                                    junit 'target/test/results/*.xml'
+                                    junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
                                 }
                             
                             }

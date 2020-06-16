@@ -31,6 +31,8 @@ Feature: kogito-springboot-ubi8-s2i image tests
 
   Scenario: Verify if the s2i build is finished as expected and if it is listening on the expected port, test uses custom properties file to test the port configuration.
     Given s2i build /tmp/kogito-examples from process-springboot-example using master and runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest
+      # Leave those here as placeholder for scripts adding variable to the test. No impact on tests if empty.
+      | variable | value |
     Then check that page is served
       | property             | value     |
       | port                 | 8080      |
@@ -69,6 +71,8 @@ Feature: kogito-springboot-ubi8-s2i image tests
 
   Scenario: Scenario: Perform a incremental s2i build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from process-springboot-example with env and incremental using master
+      # Leave those here as placeholder for scripts adding variable to the test. No impact on tests if empty.
+      | variable | value |
     Then check that page is served
       | property             | value     |
       | port                 | 8080      |
@@ -80,6 +84,8 @@ Feature: kogito-springboot-ubi8-s2i image tests
   # Since the same image is used we can do a subsequent incremental build and verify if it is working as expected.
   Scenario: Perform a second incremental s2i build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from process-springboot-example with env and incremental using master
+      # Leave those here as placeholder for scripts adding variable to the test. No impact on tests if empty.
+      | variable | value |
     Then s2i build log should contain Expanding artifacts from incremental build...
     And s2i build log should not contain WARNING: Clean build will be performed because of error saving previous build artifacts
 
