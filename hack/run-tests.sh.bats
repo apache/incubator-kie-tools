@@ -218,6 +218,24 @@
     [[ "${output}" != *"--tests.container-engine"* ]]
 }
 
+@test "invoke run-tests with domain_suffix" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --domain_suffix suffix --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.domain-suffix=suffix" ]]
+}
+
+@test "invoke run-tests with domain_suffix missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --domain_suffix --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.domain-suffix"* ]]
+}
+
+@test "invoke run-tests with domain_suffix empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --domain_suffix "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.domain-suffix"* ]]
+}
+
 # operator information
 
 @test "invoke run-tests with operator_image" {
@@ -654,4 +672,16 @@
     run ${BATS_TEST_DIRNAME}/run-tests.sh --namespace_name --dry_run
     [ "$status" -eq 0 ]
     [[ "${output}" != *"--tests.dev.namespace-name"* ]]
+}
+
+@test "invoke run-tests with local_cluster" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --local_cluster --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.dev.local-cluster" ]]
+}
+
+@test "invoke run-tests without local_cluster" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.dev.local-cluster"* ]]
 }
