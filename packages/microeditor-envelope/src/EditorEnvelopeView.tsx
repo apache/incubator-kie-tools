@@ -67,7 +67,7 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
   public render() {
     return (
       <>
-        {!this.state.loading && <KeyBindingsHelpOverlay keyboardShortcuts={this.props.keyboardShortcuts} context={this.props.context}/>}
+        {/*{!this.state.loading && <KeyBindingsHelpOverlay keyboardShortcuts={this.props.keyboardShortcuts} context={this.props.context}/>}*/}
         {this.LoadingScreenPortal()}
         {this.state.editor && this.state.editor.af_isReact && this.state.editor.af_componentRoot()}
       </>
