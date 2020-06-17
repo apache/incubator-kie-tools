@@ -1,7 +1,7 @@
 BPMN, DMN and Test Scenario Editors
 --
 
-## Release notes - 0.5.0 (alpha)
+## Release notes - 0.5.1 (alpha)
 
 We are happy to announce a fresh new Kogito Tooling release! 🎉
 
