@@ -24,6 +24,7 @@ import {
   ResourceListRequest,
   StateControlCommand
 } from "@kogito-tooling/core-api";
+import { UserInteraction, Tutorial } from "@kogito-tooling/guided-tour";
 
 let sentMessages: Array<EnvelopeBusMessage<any>>;
 let receivedMessages: string[];
@@ -87,6 +88,15 @@ beforeEach(() => {
       },
       receive_stateControlCommandUpdate(command: StateControlCommand) {
         receivedMessages.push("receiveStateControlEvent_" + command);
+      }
+      receive_guidedTourUserInteraction(userInteraction: UserInteraction) {
+        receivedMessages.push("guidedTour_UserInteraction");
+      },
+      receive_guidedTourRegisterTutorial(tutorial: Tutorial) {
+        receivedMessages.push("guidedTour_RegisterTutorial");
+      },
+      receive_guidedTourElementPositionRequest(selector: string) {
+        receivedMessages.push("guidedTour_ElementPositionRequest");
       }
     })
   );
