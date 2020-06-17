@@ -60,6 +60,9 @@ beforeEach(() => {
       },
       receive_previewRequest: () => {
         receivedMessages.push(["receive_previewRequest"]);
+      },
+      receive_guidedTourElementPositionRequest: (selector: string) => {
+        receivedMessages.push(["receive_guidedTourElementPositionRequest", selector]);
       }
     })
   );

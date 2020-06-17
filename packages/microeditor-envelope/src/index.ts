@@ -26,6 +26,7 @@ import { EditorFactory } from "./EditorFactory";
 import { Renderer } from "./Renderer";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { WorkspaceService, WorkspaceServiceApi } from "./api/workspaceService";
+import { GuidedTourService, GuidedTourServiceCoordinator } from "./api/tour";
 
 export * from "./api/resourceContent";
 export { EditorEnvelopeController } from "./EditorEnvelopeController";
@@ -36,6 +37,7 @@ export { SpecialDomElements } from "./SpecialDomElements";
 declare global {
   interface Window {
     envelope: {
+      guidedTourService: GuidedTourService;
       editorContext: EditorContext;
       resourceContentEditorService?: ResourceContentApi;
       stateControl: StateControlApi;
@@ -69,6 +71,7 @@ export function init(args: {
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
+  const guidedTourService = new GuidedTourServiceCoordinator();
   const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: args.editorContext });
   const stateControlService = new StateControlService();
   const workspaceService = new WorkspaceService();
@@ -84,6 +87,7 @@ export function init(args: {
 
   return editorEnvelopeController.start({ container: args.container, context: args.editorContext }).then(messageBus => {
     window.envelope = {
+      guidedTourService: guidedTourService.exposeApi(messageBus),
       resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
       editorContext: args.editorContext,
       stateControl: stateControlService.exposeApi(messageBus),

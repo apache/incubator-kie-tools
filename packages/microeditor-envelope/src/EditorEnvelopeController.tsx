@@ -26,6 +26,7 @@ import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { StateControlService } from "./api/stateControl";
+import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandler";
 
 export class EditorEnvelopeController {
   private readonly envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler;
@@ -82,6 +83,10 @@ export class EditorEnvelopeController {
           ?.getPreview()
           .then(preview => self.respond_previewRequest(preview!))
           .catch(error => console.log(`Error retrieving preview: ${error}`));
+      },
+      receive_guidedTourElementPositionRequest: (selector: string) => {
+        const position = getGuidedTourElementPosition(selector);
+        self.respond_guidedTourElementPositionRequest(position);
       }
     }));
   }
