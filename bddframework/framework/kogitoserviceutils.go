@@ -38,14 +38,21 @@ type KogitoServiceHolder struct {
 // InstallService the Kogito Service component
 func InstallService(serviceHolder *KogitoServiceHolder, installerType InstallerType, cliName string) error {
 	GetLogger(serviceHolder.GetNamespace()).Infof("%s install %s with %d replicas", serviceHolder.GetName(), installerType, *serviceHolder.GetSpec().GetReplicas())
+	var err error
 	switch installerType {
 	case CLIInstallerType:
-		return cliInstall(serviceHolder, cliName)
+		err = cliInstall(serviceHolder, cliName)
 	case CRInstallerType:
-		return crInstall(serviceHolder)
+		err = crInstall(serviceHolder)
 	default:
 		panic(fmt.Errorf("Unknown installer type %s", installerType))
 	}
+
+	if err == nil {
+		err = OnKogitoServiceDeployed(serviceHolder.GetNamespace(), serviceHolder.GetName())
+	}
+
+	return err
 }
 
 // WaitForService waits that the service has a certain number of replicas
@@ -189,4 +196,13 @@ func cliInstall(serviceHolder *KogitoServiceHolder, cliName string) error {
 //IsInfinispanUsernameSpecified Returns true if Infinispan username is specified
 func (serviceHolder *KogitoServiceHolder) IsInfinispanUsernameSpecified() bool {
 	return len(serviceHolder.Infinispan.Username) > 0
+}
+
+// OnKogitoServiceDeployed is called when a service deployed.
+func OnKogitoServiceDeployed(namespace, serviceName string) error {
+	if !IsOpenshift() {
+		return ExposeServiceOnKubernetes(namespace, serviceName)
+	}
+
+	return nil
 }

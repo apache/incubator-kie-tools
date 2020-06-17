@@ -61,11 +61,16 @@ func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) 
 		}
 	}
 
+	operatorSource := framework.CommunityCatalog
+	if !framework.IsOpenshift() {
+		operatorSource = framework.OperatorHubCatalog
+	}
+
 	// Install operator dependencies
 	var installedOperators []string
-	for dependentOperator := range framework.KogitoOperatorCommunityDependencies {
+	for _, dependentOperator := range framework.KogitoOperatorDependencies {
 		if strings.Contains(dependencies, dependentOperator) {
-			if err := framework.InstallCommunityKogitoOperatorDependency(data.Namespace, dependentOperator); err != nil {
+			if err := framework.InstallKogitoOperatorDependency(data.Namespace, dependentOperator, operatorSource); err != nil {
 				return err
 			}
 			installedOperators = append(installedOperators, dependentOperator)
@@ -78,7 +83,7 @@ func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) 
 	}
 	// Wait for dependent operators to be running
 	for _, installedOperator := range installedOperators {
-		if err := framework.WaitForKogitoOperatorDependencyRunning(data.Namespace, installedOperator); err != nil {
+		if err := framework.WaitForKogitoOperatorDependencyRunning(data.Namespace, installedOperator, operatorSource); err != nil {
 			return err
 		}
 	}

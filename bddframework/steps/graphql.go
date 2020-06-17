@@ -29,12 +29,12 @@ func registerGraphQLSteps(s *godog.Suite, data *Data) {
 
 func (data *Data) graphqlRequestOnServiceIsSuccessfulWithinMinutesWithPathAndQuery(serviceName string, timeoutInMin int, path string, query *messages.PickleStepArgument_PickleDocString) error {
 	framework.GetLogger(data.Namespace).Debugf("graphqlRequestOnServiceWithPathAndBodyIsSuccessfulWithinMinutes with service %s, path %s, query %s and timeout %d", serviceName, path, query, timeoutInMin)
-	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
 	}
 	var response interface{}
-	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, routeURI, path, query.GetContent(), timeoutInMin, response, nil)
+	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, uri, path, query.GetContent(), timeoutInMin, response, nil)
 }
 
 func (data *Data) graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWithinMinutes(processName string, timeoutInMin int) error {
@@ -43,12 +43,12 @@ func (data *Data) graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWit
 	path := "graphql"
 
 	framework.GetLogger(data.Namespace).Debugf("graphqlProcessNameRequestOnDataIndexIsSuccessfulWithinMinutes with service %s, path %s, query %s and timeout %d", serviceName, path, query, timeoutInMin)
-	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
 	}
 	response := GraphqlDataIndexProcessInstancesQueryResponse{}
-	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, routeURI, path, query, timeoutInMin, &response, func(response interface{}) (bool, error) {
+	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, uri, path, query, timeoutInMin, &response, func(response interface{}) (bool, error) {
 		resp := response.(*GraphqlDataIndexProcessInstancesQueryResponse)
 		for _, processInstance := range resp.ProcessInstances {
 			if processInstance.ProcessName == processName {
@@ -65,12 +65,12 @@ func (data *Data) graphqlRequestOnDataIndexReturnsJobsIDWithinMinutes(id string,
 	path := "graphql"
 
 	framework.GetLogger(data.Namespace).Debugf("graphqlRequestOnDataIndexReturnsJobsIDWithinMinutes with service %s, path %s, query %s and timeout %d", serviceName, path, query, timeoutInMin)
-	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
 	}
 	response := GraphqlDataIndexJobsQueryResponse{}
-	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, routeURI, path, query, timeoutInMin, &response, func(response interface{}) (bool, error) {
+	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, uri, path, query, timeoutInMin, &response, func(response interface{}) (bool, error) {
 		resp := response.(*GraphqlDataIndexJobsQueryResponse)
 		for _, job := range resp.Jobs {
 			if job.ID == id {

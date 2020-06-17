@@ -33,41 +33,59 @@ import (
 )
 
 const (
-	kogitoOperatorTimeoutInMin = 5
-
-	communityCatalog = "community-operators"
+	kogitoOperatorTimeoutInMin     = 5
+	kogitoInfinispanDependencyName = "Infinispan"
+	kogitoKafkaDependencyName      = "Kafka"
+	kogitoKeycloakDependencyName   = "Keycloak"
 )
 
 type dependentOperator struct {
 	operatorPackageName string
 	timeoutInMin        int
 	channel             string
-	crdName             string
+}
+
+type operatorCatalog struct {
+	source       string
+	namespace    string
+	dependencies map[string]dependentOperator
 }
 
 var (
 	kogitoOperatorPullImageSecretPrefix = operator.Name + "-dockercfg"
 
-	// KogitoOperatorCommunityDependencies contains list of community operators to be used together with Kogito operator
-	KogitoOperatorCommunityDependencies = map[string]dependentOperator{
-		"Infinispan": {
+	// KogitoOperatorDependencies contains list of operators to be used together with Kogito operator
+	KogitoOperatorDependencies = []string{kogitoInfinispanDependencyName, kogitoKafkaDependencyName, kogitoKeycloakDependencyName}
+
+	commonKogitoOperatorDependencies = map[string]dependentOperator{
+		kogitoInfinispanDependencyName: {
 			operatorPackageName: "infinispan",
 			timeoutInMin:        10,
 			channel:             "stable",
-			crdName:             "infinispans.infinispan.org",
 		},
-		"Kafka": {
+		kogitoKafkaDependencyName: {
 			operatorPackageName: "strimzi-kafka-operator",
 			timeoutInMin:        10,
 			channel:             "stable",
-			crdName:             "kafkas.kafka.strimzi.io",
 		},
-		"Keycloak": {
+		kogitoKeycloakDependencyName: {
 			operatorPackageName: "keycloak-operator",
 			timeoutInMin:        10,
 			channel:             "alpha",
-			crdName:             "keycloaks.keycloak.org",
 		},
+	}
+
+	// CommunityCatalog operator catalog for community
+	CommunityCatalog = operatorCatalog{
+		source:       "community-operators",
+		namespace:    "openshift-marketplace",
+		dependencies: commonKogitoOperatorDependencies,
+	}
+	// OperatorHubCatalog operator catalog of Operator Hub
+	OperatorHubCatalog = operatorCatalog{
+		source:       "operatorhubio-catalog",
+		namespace:    "olm",
+		dependencies: commonKogitoOperatorDependencies,
 	}
 )
 
@@ -77,41 +95,43 @@ func DeployKogitoOperatorFromYaml(namespace string) error {
 	GetLogger(namespace).Infof("Deploy Operator from yaml files in %s", deployURI)
 
 	// TODO: error handling, go lint is screaming about this
-	if err := loadResource(namespace, deployURI+"service_account.yaml", &corev1.ServiceAccount{}, nil); err != nil{
+	if err := loadResource(namespace, deployURI+"service_account.yaml", &corev1.ServiceAccount{}, nil); err != nil {
 		return err
 	}
-	if err := loadResource(namespace, deployURI+"role.yaml", &rbac.Role{}, nil); err != nil{
+	if err := loadResource(namespace, deployURI+"role.yaml", &rbac.Role{}, nil); err != nil {
 		return err
 	}
-	if err := loadResource(namespace, deployURI+"role_binding.yaml", &rbac.RoleBinding{}, nil); err != nil{
+	if err := loadResource(namespace, deployURI+"role_binding.yaml", &rbac.RoleBinding{}, nil); err != nil {
 		return err
 	}
 
-	// Wait for docker pulling secret available for kogito-operator serviceaccount
-	// This is needed if images are stored into local Openshift registry
-	// Note that this is specific to Openshift
-	err := WaitForOnOpenshift(namespace, "image pulling secret", 2, func() (bool, error) {
-		// unfortunately the SecretList is buggy, so we have to fetch it manually: https://github.com/kubernetes-sigs/controller-runtime/issues/362
-		// so use direct command to look for specific secret
-		output, err := CreateCommand("oc", "get", "secrets", "-o", "name", "-n", namespace).WithLoggerContext(namespace).Execute()
+	if IsOpenshift() {
+		// Wait for docker pulling secret available for kogito-operator serviceaccount
+		// This is needed if images are stored into local Openshift registry
+		// Note that this is specific to Openshift
+		err := WaitForOnOpenshift(namespace, "image pulling secret", 2, func() (bool, error) {
+			// unfortunately the SecretList is buggy, so we have to fetch it manually: https://github.com/kubernetes-sigs/controller-runtime/issues/362
+			// so use direct command to look for specific secret
+			output, err := CreateCommand("oc", "get", "secrets", "-o", "name", "-n", namespace).WithLoggerContext(namespace).Execute()
+			if err != nil {
+				GetLogger(namespace).Errorf("Error while trying to get secrets: %v", err)
+				return false, err
+			}
+			GetLogger(namespace).Info(output)
+			return strings.Contains(output, "secret/"+kogitoOperatorPullImageSecretPrefix), nil
+		})
+
 		if err != nil {
-			GetLogger(namespace).Errorf("Error while trying to get secrets: %v", err)
-			return false, err
+			return err
 		}
-		GetLogger(namespace).Info(output)
-		return strings.Contains(output, "secret/"+kogitoOperatorPullImageSecretPrefix), nil
-	})
-
-	if err != nil {
-		return err
 	}
 
 	// Then deploy operator
-	err = loadResource(namespace, deployURI+"operator.yaml", &coreapps.Deployment{}, func(object interface{}) {
+	err := loadResource(namespace, deployURI+"operator.yaml", &coreapps.Deployment{}, func(object interface{}) {
 		GetLogger(namespace).Debugf("Using operator image %s", getOperatorImageNameAndTag())
 		object.(*coreapps.Deployment).Spec.Template.Spec.Containers[0].Image = getOperatorImageNameAndTag()
 	})
-	if err != nil{
+	if err != nil {
 		return err
 	}
 	return nil
@@ -142,7 +162,7 @@ func WaitForKogitoOperatorRunning(namespace string) error {
 			// If not running, make sure the image pull secret is present in pod
 			// If not present, delete the pod to allow its reconstruction with correct pull secret
 			// Note that this is specific to Openshift
-			if !running {
+			if !running && IsOpenshift() {
 				podList, err := GetPodsWithLabels(namespace, map[string]string{"name": operator.Name})
 				if err != nil {
 					GetLogger(namespace).Errorf("Error while trying to retrieve Kogito Operator pods: %v", err)
@@ -170,18 +190,18 @@ func WaitForKogitoOperatorRunningWithDependencies(namespace string) error {
 		return err
 	}
 
-	for dependentOperator := range KogitoOperatorCommunityDependencies {
-		if err := WaitForKogitoOperatorDependencyRunning(namespace, dependentOperator); err != nil {
+	for dependentOperator := range CommunityCatalog.dependencies {
+		if err := WaitForKogitoOperatorDependencyRunning(namespace, dependentOperator, CommunityCatalog); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// InstallCommunityKogitoOperatorDependency installs dependent operator from parameter
-func InstallCommunityKogitoOperatorDependency(namespace, dependentOperator string) error {
-	if operatorInfo, exists := KogitoOperatorCommunityDependencies[dependentOperator]; exists {
-		if err := InstallCommunityOperator(namespace, operatorInfo.operatorPackageName, operatorInfo.channel); err != nil {
+// InstallKogitoOperatorDependency installs dependent operator from parameter
+func InstallKogitoOperatorDependency(namespace, dependentOperator string, catalog operatorCatalog) error {
+	if operatorInfo, exists := catalog.dependencies[dependentOperator]; exists {
+		if err := InstallOperator(namespace, operatorInfo.operatorPackageName, operatorInfo.channel, catalog); err != nil {
 			return err
 		}
 	} else {
@@ -191,9 +211,9 @@ func InstallCommunityKogitoOperatorDependency(namespace, dependentOperator strin
 }
 
 // WaitForKogitoOperatorDependencyRunning waits for dependent operator to be running
-func WaitForKogitoOperatorDependencyRunning(namespace, dependentOperator string) error {
-	if operatorInfo, exists := KogitoOperatorCommunityDependencies[dependentOperator]; exists {
-		if err := WaitForOperatorRunning(namespace, operatorInfo.operatorPackageName, communityCatalog, operatorInfo.timeoutInMin); err != nil {
+func WaitForKogitoOperatorDependencyRunning(namespace, dependentOperator string, catalog operatorCatalog) error {
+	if operatorInfo, exists := catalog.dependencies[dependentOperator]; exists {
+		if err := WaitForOperatorRunning(namespace, operatorInfo.operatorPackageName, catalog, operatorInfo.timeoutInMin); err != nil {
 			return err
 		}
 	} else {
@@ -202,19 +222,14 @@ func WaitForKogitoOperatorDependencyRunning(namespace, dependentOperator string)
 	return nil
 }
 
-// InstallCommunityOperator installs an operator from 'community-operators' catalog
-func InstallCommunityOperator(namespace, subscriptionName, channel string) error {
-	return InstallOperator(namespace, subscriptionName, communityCatalog, channel)
-}
-
 // InstallOperator installs an operator via subscrition
-func InstallOperator(namespace, subscriptionName, operatorSource, channel string) error {
-	GetLogger(namespace).Infof("Subscribing to %s operator from source %s on channel %s", subscriptionName, operatorSource, channel)
+func InstallOperator(namespace, subscriptionName, channel string, catalog operatorCatalog) error {
+	GetLogger(namespace).Infof("Subscribing to %s operator from source %s on channel %s", subscriptionName, catalog.source, channel)
 	if _, err := CreateOperatorGroupIfNotExists(namespace, namespace); err != nil {
 		return err
 	}
 
-	if _, err := CreateNamespacedSubscriptionIfNotExist(namespace, subscriptionName, subscriptionName, operatorSource, channel); err != nil {
+	if _, err := CreateNamespacedSubscriptionIfNotExist(namespace, subscriptionName, subscriptionName, catalog, channel); err != nil {
 		return err
 	}
 
@@ -222,16 +237,16 @@ func InstallOperator(namespace, subscriptionName, operatorSource, channel string
 }
 
 // WaitForOperatorRunning waits for an operator to be running
-func WaitForOperatorRunning(namespace, operatorPackageName, operatorSource string, timeoutInMin int) error {
+func WaitForOperatorRunning(namespace, operatorPackageName string, catalog operatorCatalog, timeoutInMin int) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("%s operator running", operatorPackageName), timeoutInMin,
 		func() (bool, error) {
-			return IsOperatorRunning(namespace, operatorPackageName, operatorSource)
+			return IsOperatorRunning(namespace, operatorPackageName, catalog)
 		})
 }
 
 // IsOperatorRunning checks whether an operator is running
-func IsOperatorRunning(namespace, operatorPackageName, operatorSource string) (bool, error) {
-	exists, err := infra.CheckOperatorExistsUsingSubscription(kubeClient, namespace, operatorPackageName, operatorSource)
+func IsOperatorRunning(namespace, operatorPackageName string, catalog operatorCatalog) (bool, error) {
+	exists, err := infra.CheckOperatorExistsUsingSubscription(kubeClient, namespace, operatorPackageName, catalog.source)
 	if err != nil {
 		if exists {
 			return false, nil
@@ -259,7 +274,7 @@ func CreateOperatorGroupIfNotExists(namespace, operatorGroupName string) (*olmap
 }
 
 // CreateNamespacedSubscriptionIfNotExist create a namespaced subscription if not exists
-func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName string, operatorName string, operatorSource string, channel string) (*olmapiv1alpha1.Subscription, error) {
+func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName string, operatorName string, catalog operatorCatalog, channel string) (*olmapiv1alpha1.Subscription, error) {
 	subscription := &olmapiv1alpha1.Subscription{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      subscriptionName,
@@ -267,11 +282,12 @@ func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName s
 		},
 		Spec: &olmapiv1alpha1.SubscriptionSpec{
 			Package:                operatorName,
-			CatalogSource:          operatorSource,
-			CatalogSourceNamespace: "openshift-marketplace",
+			CatalogSource:          catalog.source,
+			CatalogSourceNamespace: catalog.namespace,
 			Channel:                channel,
 		},
 	}
+
 	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(subscription); err != nil {
 		return nil, fmt.Errorf("Error creating Subscription %s: %v", subscriptionName, err)
 	}
@@ -281,25 +297,4 @@ func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName s
 
 func getOperatorImageNameAndTag() string {
 	return fmt.Sprintf("%s:%s", config.GetOperatorImageName(), config.GetOperatorImageTag())
-}
-
-// IsCommunityOperatorCrdAvailable returns whether the crd is available on cluster
-func IsCommunityOperatorCrdAvailable(operatorName string) (bool, error) {
-	operator, exists := KogitoOperatorCommunityDependencies[operatorName]
-	if !exists {
-		return false, fmt.Errorf("Unknown community operator %s", operatorName)
-	}
-	return IsCrdAvailable(operator.crdName)
-
-}
-
-// WaitForKogitoOperatorCrdAvailable waits for dependent operator main crd to be available
-func WaitForKogitoOperatorCrdAvailable(namespace, dependentOperator string) error {
-	if operatorInfo, exists := KogitoOperatorCommunityDependencies[dependentOperator]; exists {
-		return WaitForOnOpenshift(namespace, fmt.Sprintf("%s operator crd is available", dependentOperator), operatorInfo.timeoutInMin,
-			func() (bool, error) {
-				return IsCrdAvailable(operatorInfo.crdName)
-			})
-	}
-	return fmt.Errorf("Operator %s not found", dependentOperator)
 }

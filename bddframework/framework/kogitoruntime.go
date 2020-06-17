@@ -30,12 +30,19 @@ import (
 func DeployRuntimeService(namespace string, installerType InstallerType, serviceHolder *KogitoServiceHolder) error {
 	GetLogger(namespace).Infof("%s deploy %s example %s with persistence %v, events %v and labels %v", installerType, serviceHolder.GetSpec().GetRuntime(), serviceHolder.GetName(), serviceHolder.GetSpec().(v1alpha1.InfinispanAware).GetInfinispanProperties().UseKogitoInfra, serviceHolder.GetSpec().(v1alpha1.KafkaAware).GetKafkaProperties().UseKogitoInfra, serviceHolder.GetSpec().GetServiceLabels())
 
+	var err error
 	switch installerType {
 	case CRInstallerType:
-		return crDeployRuntimeService(namespace, serviceHolder)
+		err = crDeployRuntimeService(namespace, serviceHolder)
 	default:
 		panic(fmt.Errorf("Unknown installer type %s", installerType))
 	}
+
+	if err == nil {
+		err = OnKogitoServiceDeployed(namespace, serviceHolder.GetName())
+	}
+
+	return err
 }
 
 func crDeployRuntimeService(namespace string, serviceHolder *KogitoServiceHolder) error {
@@ -48,15 +55,15 @@ func crDeployRuntimeService(namespace string, serviceHolder *KogitoServiceHolder
 // SetKogitoRuntimeReplicas sets the number of replicas for a Kogito application
 func SetKogitoRuntimeReplicas(namespace, name string, nbPods int) error {
 	GetLogger(namespace).Infof("Set Kogito application %s replica number to %d", name, nbPods)
-	kogitoApp, err := getKogitoRuntime(namespace, name)
+	kogitoRuntime, err := getKogitoRuntime(namespace, name)
 	if err != nil {
 		return err
-	} else if kogitoApp == nil {
+	} else if kogitoRuntime == nil {
 		return fmt.Errorf("No KogitoRuntime found with name %s in namespace %s", name, namespace)
 	}
 	replicas := int32(nbPods)
-	kogitoApp.Spec.KogitoServiceSpec.Replicas = &replicas
-	return kubernetes.ResourceC(kubeClient).Update(kogitoApp)
+	kogitoRuntime.Spec.KogitoServiceSpec.Replicas = &replicas
+	return kubernetes.ResourceC(kubeClient).Update(kogitoRuntime)
 }
 
 // GetKogitoRuntimeStub Get basic KogitoRuntime stub with all needed fields initialized

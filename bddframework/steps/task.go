@@ -29,17 +29,17 @@ func registerTaskSteps(s *godog.Suite, data *Data) {
 }
 
 func (data *Data) serviceContainsTasksOfProcessWithNameAndTaskName(serviceName string, numberOfTasks int, processName, taskName string) error {
-	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
 	}
 
-	processInstanceID, err := getProcessInstanceID(data.Namespace, routeURI, processName)
+	processInstanceID, err := getProcessInstanceID(data.Namespace, uri, processName)
 	if err != nil {
 		return err
 	}
 
-	foundTasks, err := framework.GetTasks(data.Namespace, routeURI, processName, processInstanceID)
+	foundTasks, err := framework.GetTasks(data.Namespace, uri, processName, processInstanceID)
 	if err != nil {
 		return err
 	}
@@ -56,17 +56,17 @@ func (data *Data) serviceContainsTasksOfProcessWithNameAndTaskName(serviceName s
 }
 
 func (data *Data) completeTaskOnServiceAndProcessWithName(taskName, serviceName, processName string, body *messages.PickleStepArgument_PickleDocString) error {
-	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
 	}
 
-	processInstanceID, err := getProcessInstanceID(data.Namespace, routeURI, processName)
+	processInstanceID, err := getProcessInstanceID(data.Namespace, uri, processName)
 	if err != nil {
 		return err
 	}
 
-	foundTasks, err := framework.GetTasks(data.Namespace, routeURI, processName, processInstanceID)
+	foundTasks, err := framework.GetTasks(data.Namespace, uri, processName, processInstanceID)
 	if err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func (data *Data) completeTaskOnServiceAndProcessWithName(taskName, serviceName,
 	}
 
 	bodyContent := data.ResolveWithScenarioContext(body.GetContent())
-	err = framework.CompleteTask(data.Namespace, routeURI, processName, processInstanceID, taskName, taskID, body.GetMediaType(), bodyContent)
+	err = framework.CompleteTask(data.Namespace, uri, processName, processInstanceID, taskName, taskID, body.GetMediaType(), bodyContent)
 	if err != nil {
 		return err
 	}
@@ -85,17 +85,17 @@ func (data *Data) completeTaskOnServiceAndProcessWithName(taskName, serviceName,
 }
 
 func (data *Data) completeTaskOnServiceAndProcessWithNameAndUser(taskName, serviceName, processName, user string, body *messages.PickleStepArgument_PickleDocString) error {
-	routeURI, err := framework.WaitAndRetrieveRouteURI(data.Namespace, serviceName)
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
 	}
 
-	processInstanceID, err := getProcessInstanceID(data.Namespace, routeURI, processName)
+	processInstanceID, err := getProcessInstanceID(data.Namespace, uri, processName)
 	if err != nil {
 		return err
 	}
 
-	foundTasks, err := framework.GetTasksByUser(data.Namespace, routeURI, processName, processInstanceID, user)
+	foundTasks, err := framework.GetTasksByUser(data.Namespace, uri, processName, processInstanceID, user)
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func (data *Data) completeTaskOnServiceAndProcessWithNameAndUser(taskName, servi
 	}
 
 	bodyContent := data.ResolveWithScenarioContext(body.GetContent())
-	err = framework.CompleteTaskByUser(data.Namespace, routeURI, processName, processInstanceID, taskName, taskID, user, body.GetMediaType(), bodyContent)
+	err = framework.CompleteTaskByUser(data.Namespace, uri, processName, processInstanceID, taskName, taskID, user, body.GetMediaType(), bodyContent)
 	if err != nil {
 		return err
 	}

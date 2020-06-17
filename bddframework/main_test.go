@@ -136,23 +136,29 @@ func configureTestOutput() {
 	opt.Output = io.MultiWriter(opt.Output, mainLogFile)
 }
 
-func FeatureContext(s *godog.Suite) error{
+func FeatureContext(s *godog.Suite) error {
 	// Create kube client
-	if err := framework.InitKubeClient(); err != nil{
+	if err := framework.InitKubeClient(); err != nil {
 		return err
 	}
 
+	// Verify Setup
+	if err := framework.CheckSetup(); err != nil {
+		return err
+	}
+
+	// Register Steps
 	data := &steps.Data{}
 	data.RegisterAllSteps(s)
 
 	// Scenario handlers
 	s.BeforeScenario(func(pickle *messages.Pickle) {
-		if err := data.BeforeScenario(pickle); err != nil{
+		if err := data.BeforeScenario(pickle); err != nil {
 			framework.GetLogger(data.Namespace).Errorf("Error in configuring data for before scenario  %v", err)
 		}
 	})
 	s.AfterScenario(func(pickle *messages.Pickle, err error) {
-		if err := data.AfterScenario(pickle, err); err != nil{
+		if err := data.AfterScenario(pickle, err); err != nil {
 			framework.GetLogger(data.Namespace).Errorf("Error in configuring data for After scenario  %v", err)
 		}
 
@@ -182,7 +188,7 @@ func deleteNamespaceIfExists(namespace string) {
 		}
 		return nil
 	})
-	if err != nil{
+	if err != nil {
 		framework.GetLogger(namespace).Errorf("Error while doing operator on namespace: %v", err)
 	}
 }

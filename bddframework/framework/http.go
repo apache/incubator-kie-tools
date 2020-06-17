@@ -43,6 +43,25 @@ const (
 	HTTPRequestResultError HTTPRequestResult = "error"
 )
 
+// WaitAndRetrieveEndpointURI waits for a route and returns its URI
+func WaitAndRetrieveEndpointURI(namespace, serviceName string) (string, error) {
+	var uri string
+	var err error
+	if IsOpenshift() {
+		uri, err = GetRouteURI(namespace, serviceName)
+	} else {
+		uri, err = GetIngressURI(namespace, serviceName)
+	}
+
+	if err != nil {
+		return "", fmt.Errorf("Error retrieving URI for route %s in namespace %s: %v", serviceName, namespace, err)
+	} else if len(uri) <= 0 {
+		return "", fmt.Errorf("No URI found for route name %s in namespace %s: %v", serviceName, namespace, err)
+	}
+	GetLogger(namespace).Debugf("Got route %s\n", uri)
+	return uri, nil
+}
+
 // WaitForSuccessfulHTTPRequest waits for an HTTP request to be successful
 func WaitForSuccessfulHTTPRequest(namespace string, requestInfo HTTPRequestInfo, timeoutInMin int) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("HTTP %s request on path '%s' to be successful", requestInfo.HTTPMethod, requestInfo.Path), timeoutInMin,
@@ -91,8 +110,8 @@ func ExecuteHTTPRequestWithStringResponse(namespace string, requestInfo HTTPRequ
 	// Check response
 	defer httpResponse.Body.Close()
 	buf := new(bytes.Buffer)
-	if _,err = buf.ReadFrom(httpResponse.Body); err != nil{
-		return "",err
+	if _, err = buf.ReadFrom(httpResponse.Body); err != nil {
+		return "", err
 	}
 	resultBody := buf.String()
 
@@ -124,7 +143,7 @@ func IsHTTPRequestSuccessfulC(client *http.Client, namespace string, requestInfo
 	if err != nil {
 		return false, err
 	}
-	if _, err = io.Copy(ioutil.Discard, response.Body); err != nil{      // Just read the response to be able to close the connection properly
+	if _, err = io.Copy(ioutil.Discard, response.Body); err != nil { // Just read the response to be able to close the connection properly
 		return false, err
 	}
 	defer response.Body.Close()

@@ -25,7 +25,7 @@ func registerPrometheusSteps(s *godog.Suite, data *Data) {
 }
 
 func (data *Data) prometheusOperatorIsDeployed() error {
-	return framework.InstallCommunityOperator(data.Namespace, "prometheus", "beta")
+	return framework.InstallOperator(data.Namespace, "prometheus", "beta", framework.CommunityCatalog)
 }
 
 func (data *Data) prometheusInstanceIsDeployed(labelName, labelValue string) error {

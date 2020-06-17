@@ -18,15 +18,19 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	apps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/api/extensions/v1beta1"
 	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
 var (
@@ -279,4 +283,70 @@ func checkPodContainerHasEnvVariableWithValue(pod *corev1.Pod, containerName, en
 		}
 	}
 	return false
+}
+
+// GetIngressURI returns the ingress URI
+func GetIngressURI(namespace, serviceName string) (string, error) {
+	ingress := &v1beta1.Ingress{}
+	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: serviceName, Namespace: namespace}, ingress); err != nil {
+		return "", err
+	} else if !exists {
+		return "", fmt.Errorf("Ingress %s does not exist in namespace %s", serviceName, namespace)
+	} else if len(ingress.Spec.Rules) == 0 {
+		return "", fmt.Errorf("Ingress %s does not have any rules", serviceName)
+	}
+
+	return fmt.Sprintf("http://%s:80", ingress.Spec.Rules[0].Host), nil
+}
+
+// ExposeServiceOnKubernetes adds ingress CR to expose a service
+func ExposeServiceOnKubernetes(namespace, serviceName string) error {
+	host := serviceName
+	if !config.IsLocalCluster() {
+		host += fmt.Sprintf(".%s.%s", namespace, config.GetDomainSuffix())
+	}
+
+	ingress := v1beta1.Ingress{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:        serviceName,
+			Namespace:   namespace,
+			Annotations: map[string]string{"nginx.ingress.kubernetes.io/rewrite-target": "/"},
+		},
+		Spec: v1beta1.IngressSpec{
+			Rules: []v1beta1.IngressRule{
+				{
+					Host: host,
+					IngressRuleValue: v1beta1.IngressRuleValue{
+						HTTP: &v1beta1.HTTPIngressRuleValue{
+							Paths: []v1beta1.HTTPIngressPath{
+								{
+									Path: "/",
+									Backend: v1beta1.IngressBackend{
+										ServiceName: serviceName,
+										ServicePort: intstr.FromInt(8080),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+	return kubernetes.ResourceC(kubeClient).Create(&ingress)
+}
+
+// WaitForOnKubernetes is a specific method
+func WaitForOnKubernetes(namespace, display string, timeoutInMin int, condition func() (bool, error)) error {
+	return WaitFor(namespace, display, GetKubernetesDurationFromTimeInMin(timeoutInMin), condition)
+}
+
+// GetKubernetesDurationFromTimeInMin will calculate the time depending on the configured cluster load factor
+func GetKubernetesDurationFromTimeInMin(timeoutInMin int) time.Duration {
+	return time.Duration(timeoutInMin*config.GetLoadFactor()) * time.Minute
+}
+
+// IsOpenshift returns whether the cluster is running on Openshift
+func IsOpenshift() bool {
+	return kubeClient.IsOpenshift()
 }
