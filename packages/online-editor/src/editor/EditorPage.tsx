@@ -186,6 +186,8 @@ export function EditorPage(props: Props) {
     [fileNameWithExtension]
   );
 
+  const onReady = useCallback(() => context.setIsEditorReady(true), []);
+
   useEffect(() => {
     if (closeCopySuccessAlert) {
       const autoCloseCopySuccessAlert = setTimeout(closeCopySuccessAlert, ALERT_AUTO_CLOSE_TIMEOUT);
@@ -294,6 +296,7 @@ export function EditorPage(props: Props) {
           ref={editorRef}
           file={context.file}
           router={context.router}
+          onReady={onReady}
           channelType={ChannelType.ONLINE}
           onContentResponse={onContentResponse}
           onPreviewResponse={onPreviewResponse}

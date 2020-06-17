@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@kogito-tooling/core-api": "0.5.2",
+    "@kogito-tooling/guided-tour": "0.5.1",
     "@kogito-tooling/embedded-editor": "0.5.2",
     "@kogito-tooling/patternfly-base": "0.5.2",
     "@octokit/rest": "16.35.0",

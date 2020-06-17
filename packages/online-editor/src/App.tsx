@@ -32,6 +32,7 @@ import { DownloadHubModal } from "./home/DownloadHubModal";
 import { HomePage } from "./home/HomePage";
 import { NoMatchPage } from "./NoMatchPage";
 import "../static/resources/style.css";
+import { useDMNTour } from "./tour";
 
 interface Props {
   file: File;
@@ -43,6 +44,7 @@ interface Props {
 
 export function App(props: Props) {
   const [file, setFile] = useState(props.file);
+  const [isEditorReady, setIsEditorReady] = useState(false);
   const routes = useMemo(() => new Routes(), []);
   const router: EmbeddedEditorRouter = useMemo(
     () =>
@@ -72,12 +74,16 @@ export function App(props: Props) {
     [file]
   );
 
+  useDMNTour(isEditorReady, file);
+
   return (
     <GlobalContext.Provider
       value={{
-        file: file,
-        routes: routes,
-        router: router,
+        file,
+        routes,
+        router,
+        isEditorReady,
+        setIsEditorReady,
         readonly: props.readonly,
         external: props.external,
         senderTabId: props.senderTabId,
