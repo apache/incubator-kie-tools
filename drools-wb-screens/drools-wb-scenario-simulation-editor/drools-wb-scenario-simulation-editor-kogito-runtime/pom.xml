@@ -16,7 +16,7 @@
   <description>Drools Workbench - Scenario Simulation Editor - Kogito - Runtime Webapp</description>
 
   <properties>
-    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
+    <wildfly.home>${project.build.directory}/wildfly-${version.org.wildfly}</wildfly.home>
     <gwt.helper.includes>Client,Marshaller,KogitoEditor,WebappBase</gwt.helper.includes>
     <gwt.helper.rootDirectories>${project.parent.basedir}/</gwt.helper.rootDirectories>
   </properties>
