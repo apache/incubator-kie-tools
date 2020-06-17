@@ -1,0 +1,44 @@
+/*
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { KogitoGuidedTour, Step, Tutorial, SubTutorialMode, DemoMode } from "../..";
+
+const concat = <T>(array1: T[], array2: T[]) => array1.concat(array2);
+const flatMap = <T>(f: (array: T) => T[], array: T[]) => array.map(f).reduce(concat, []);
+
+export const getCurrentStep = (currentStep: number, currentTutorial: Tutorial | undefined): Step | undefined => {
+  return getSteps(currentTutorial)[currentStep];
+};
+
+export const getSteps = (currentTutorial: Tutorial | undefined) => {
+  const registeredTutorials = KogitoGuidedTour.getRegisteredTutorials();
+  const steps = currentTutorial?.steps || [];
+
+  return flatMap(step => {
+    const stepMode = step.mode || new DemoMode();
+
+    if (!("label" in stepMode)) {
+      return [step];
+    }
+
+    const stepTutorialLabel = (stepMode as SubTutorialMode).label;
+    const stepTutorial = registeredTutorials.find(tutorial => {
+      return tutorial.label === stepTutorialLabel;
+    });
+
+    return stepTutorial?.steps || [];
+  }, steps);
+};
