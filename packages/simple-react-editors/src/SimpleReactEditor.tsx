@@ -24,7 +24,6 @@ export interface Props {
 
 export interface State {
   content: string;
-  originalContent: string;
 }
 
 export class SimpleReactEditor extends React.Component<Props, State> {
@@ -32,7 +31,6 @@ export class SimpleReactEditor extends React.Component<Props, State> {
     super(props);
     props.exposing(this);
     this.state = {
-      originalContent: "",
       content: ""
     };
   }
@@ -41,36 +39,42 @@ export class SimpleReactEditor extends React.Component<Props, State> {
     this.props.messageBus.notify_ready();
   }
 
-  public setContent(content: string) {
-    return new Promise<void>(res => this.setState({ originalContent: content }, res)).then(() =>
-      this.updateContent(content)
-    );
+  public async setContent(content: string): Promise<void> {
+    this.setState({ content: content });
   }
 
-  private updateContent(content: string) {
-    return new Promise<void>(res => {
-      this.setState({ content: content }, () => {
-        this.props.messageBus.notify_dirtyIndicatorChange(this.isDirty());
-        res();
-      });
-    });
+  private async updateContent(content: string): Promise<void> {
+    // The updateContent method is also called when users perform undo/redo actions
+    // but, ideally, messageBus.notify_newEdit shouldn't be called in this cases.
+    this.props.messageBus.notify_newEdit({ id: new Date().getTime().toString() });
+    this.setContent(content);
   }
 
-  //saving triggers this method, so we also update the originalContent by calling `this.setContent`
-  public getContent() {
-    return this.setContent(this.state.content).then(() => this.state.content);
+  public async getContent(): Promise<string> {
+    return this.state.content;
   }
 
-  public isDirty() {
-    return this.state.content !== this.state.originalContent;
+  public isDirty(): boolean {
+    throw new Error("Method not implemented.");
+  }
+
+  public getPreview(): Promise<string | undefined> {
+    throw new Error("Method not implemented.");
   }
 
   public render() {
     return (
       <textarea
-        style={{ width: "100%", height: "100%", outline: 0, boxSizing: "border-box", border: 0 }}
+        style={{
+          width: "100%",
+          height: "100%",
+          outline: 0,
+          boxSizing: "border-box",
+          border: 0,
+          color: "black"
+        }}
         value={this.state.content}
-        onInput={(e: any) => this.updateContent(e.target.value)}
+        onChange={(e: any) => this.updateContent(e.target.value)}
       />
     );
   }

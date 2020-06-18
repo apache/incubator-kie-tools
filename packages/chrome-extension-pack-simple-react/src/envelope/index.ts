@@ -17,6 +17,7 @@
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { EnvelopeBusMessage } from "@kogito-tooling/microeditor-envelope-protocol";
 import { SimpleReactEditorsFactory } from "simple-react-editors";
+import { ChannelType, getOperatingSystem } from "@kogito-tooling/core-api";
 
 MicroEditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
@@ -25,5 +26,6 @@ MicroEditorEnvelope.init({
       window.parent.postMessage(message, targetOrigin!, _);
     }
   },
-  editorFactory: new SimpleReactEditorsFactory()
+  editorFactory: new SimpleReactEditorsFactory(),
+  editorContext: { channel: ChannelType.GITHUB, operatingSystem: getOperatingSystem() }
 });

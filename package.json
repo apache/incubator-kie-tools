@@ -14,6 +14,11 @@
     "update-version-to": "node ./update_version_to.js"
   },
   "devDependencies": {
-    "lerna": "3.18.3"
+    "@types/react": "16.8.8",
+    "lerna": "3.18.3",
+    "style-loader": "1.0.0",
+    "css-loader": "3.2.0",
+    "url-loader": "4.0.0",
+    "file-loader": "4.2.0"
   }
 }

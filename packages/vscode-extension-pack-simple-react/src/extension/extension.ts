@@ -26,6 +26,8 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kogito-tooling-examples.vscode-extension-pack-simple-react",
     webviewLocation: "dist/webview/index.js",
     context: context,
+    viewType: "kieKogitoWebviewSimpleEditors",
+    getPreviewCommandId: "",
     router: new DefaultVsCodeRouter(context, new SimpleReactEditorsRoutes())
   });
 

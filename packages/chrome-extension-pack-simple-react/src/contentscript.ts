@@ -20,5 +20,7 @@ import { SimpleReactEditorsRoutes } from "simple-react-editors";
 startExtension({
   name: "KIE :: Kogito Simple React Editor",
   editorIndexPath: "envelope/index.html",
+  extensionIconUrl: chrome.extension.getURL("/resources/kie-icon.png"),
+  githubAuthTokenCookieName: "github-oauth-token-kie-editors",
   router: new DefaultChromeRouter(new SimpleReactEditorsRoutes())
 });
