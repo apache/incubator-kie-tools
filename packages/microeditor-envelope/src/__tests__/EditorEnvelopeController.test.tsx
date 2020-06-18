@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import {EditorEnvelopeController} from "../EditorEnvelopeController";
-import {SpecialDomElements} from "../SpecialDomElements";
-import {mount} from "enzyme";
-import {EnvelopeBusMessage, EnvelopeBusMessageType} from "@kogito-tooling/microeditor-envelope-protocol";
-import {ChannelType, LanguageData, OperatingSystem} from "@kogito-tooling/core-api";
-import {DummyEditor} from "./DummyEditor";
-import {ResourceContentEditorCoordinator} from "../api/resourceContent";
-import {DefaultKeyboardShortcutsService} from "../api/keyboardShortcuts";
+import { EditorEnvelopeController } from "../EditorEnvelopeController";
+import { SpecialDomElements } from "../SpecialDomElements";
+import { mount } from "enzyme";
+import { EnvelopeBusMessage, EnvelopeBusMessageType } from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelType, LanguageData, OperatingSystem } from "@kogito-tooling/core-api";
+import { DummyEditor } from "./DummyEditor";
+import { ResourceContentEditorCoordinator } from "../api/resourceContent";
+import { DefaultKeyboardShortcutsService } from "../api/keyboardShortcuts";
 
 const StateControlMock = jest.fn(() => ({
   undo: jest.fn(),
