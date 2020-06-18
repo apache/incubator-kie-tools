@@ -247,32 +247,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     }
   }, []);
 
-  const keyboardShortcuts = useMemo(() => {
-    return new DefaultKeyboardShortcutsService({ channel: props.channelType, operatingSystem: getOperatingSystem() });
-  }, []);
-
-  useEffect(() => {
-    const { combination, label } = redoShortcut();
-    const redoId = keyboardShortcuts.registerKeyPress(
-      combination,
-      label,
-      async () => envelopeBusOuterMessageHandler.notify_editorRedo(),
-      { element: window }
-    );
-    return () => keyboardShortcuts.deregister(redoId);
-  }, []);
-
-  useEffect(() => {
-    const { combination, label } = undoShortcut();
-    const undoId = keyboardShortcuts.registerKeyPress(
-      combination,
-      label,
-      async () => envelopeBusOuterMessageHandler.notify_editorUndo(),
-      { element: window }
-    );
-    return () => keyboardShortcuts.deregister(undoId);
-  }, []);
-
   //Attach/detach bus when component attaches/detaches from DOM
   useEffect(() => {
     const listener = (msg: MessageEvent) => envelopeBusOuterMessageHandler.receive(msg.data);

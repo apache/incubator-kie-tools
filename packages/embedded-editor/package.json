@@ -12,7 +12,6 @@
   "dependencies": {
     "@kogito-tooling/core-api": "0.5.1",
     "@kogito-tooling/kie-bc-editors": "0.5.1",
-    "@kogito-tooling/keyboard-shortcuts": "0.5.1",
     "@kogito-tooling/microeditor-envelope": "0.5.1",
     "@kogito-tooling/microeditor-envelope-protocol": "0.5.1"
   },

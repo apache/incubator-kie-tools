@@ -4,7 +4,7 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
 <Fragment>
   <RegisterChannelKeyboardShortcuts
     keyboardShortcuts={
-      e {
+      DefaultKeyboardShortcutsService {
         "delayedKeyBindings": Array [],
         "editorContext": Object {
           "channel": "VSCODE",
@@ -34,7 +34,7 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
     }
     stateControl={StateControl {}}
   />
-  <Component
+  <KeyBindingsHelpOverlay
     context={
       Object {
         "channel": "VSCODE",
@@ -42,7 +42,7 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
       }
     }
     keyboardShortcuts={
-      e {
+      DefaultKeyboardShortcutsService {
         "delayedKeyBindings": Array [],
         "editorContext": Object {
           "channel": "VSCODE",
@@ -67,7 +67,7 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
 <Fragment>
   <RegisterChannelKeyboardShortcuts
     keyboardShortcuts={
-      e {
+      DefaultKeyboardShortcutsService {
         "delayedKeyBindings": Array [],
         "editorContext": Object {
           "channel": "VSCODE",
@@ -97,7 +97,7 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
     }
     stateControl={StateControl {}}
   />
-  <Component
+  <KeyBindingsHelpOverlay
     context={
       Object {
         "channel": "VSCODE",
@@ -105,7 +105,7 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
       }
     }
     keyboardShortcuts={
-      e {
+      DefaultKeyboardShortcutsService {
         "delayedKeyBindings": Array [],
         "editorContext": Object {
           "channel": "VSCODE",
