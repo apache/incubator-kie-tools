@@ -34,7 +34,7 @@
   <properties>
     <gwt.compiler.skip>false</gwt.compiler.skip>
     <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->
-    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
+    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.wildfly}</errai.jboss.home>
   </properties>
 
   <dependencies>

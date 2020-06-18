@@ -18,7 +18,7 @@
 
   <properties>
     <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->
-    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}</errai.jboss.home>
+    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.wildfly}</errai.jboss.home>
     <gwt.compiler.skip>false</gwt.compiler.skip>
     <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
   </properties>
@@ -895,7 +895,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/wildfly-${version.org.jboss.errai.wildfly}/standalone/deployments</outputDirectory>
+              <outputDirectory>${project.build.directory}/wildfly-${version.org.wildfly}/standalone/deployments</outputDirectory>
               <resources>
                 <resource>
                   <directory>src/test/resources/datasources</directory>
