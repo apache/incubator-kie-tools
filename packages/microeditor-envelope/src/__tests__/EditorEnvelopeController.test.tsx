@@ -82,7 +82,10 @@ beforeEach(() => {
       }
     },
     new ResourceContentEditorCoordinator(),
-    new DefaultKeyboardShortcutsService( { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS })
+    new DefaultKeyboardShortcutsService({
+      editorContext: { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS },
+      defaultKeyBindingSelector: ".none"
+    })
   );
 });
 
@@ -94,7 +97,6 @@ async function startController() {
   const context = { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS };
   await controller.start({
     container: envelopeContainer,
-    keyboardShortcuts: new DefaultKeyboardShortcutsService(context),
     context: context
   });
   return mockComponent!;

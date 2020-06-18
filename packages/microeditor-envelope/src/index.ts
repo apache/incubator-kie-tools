@@ -65,11 +65,16 @@ export function init(args: {
   editorFactory: EditorFactory<any>;
   editorContext: EditorContext;
 }) {
-  const keyboardShortcutsService = new DefaultKeyboardShortcutsService(args.editorContext);
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
   const stateControl = new StateControl();
+
+  const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
+    editorContext: args.editorContext,
+    defaultKeyBindingSelector: ".session-container"
+  });
+
   const editorEnvelopeController = new EditorEnvelopeController(
     args.busApi,
     args.editorFactory,
@@ -80,14 +85,12 @@ export function init(args: {
     keyboardShortcutsService
   );
 
-  return editorEnvelopeController
-    .start({ container: args.container, keyboardShortcuts: keyboardShortcutsService, context: args.editorContext })
-    .then(messageBus => {
-      window.envelope = {
-        resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
-        editorContext: args.editorContext,
-        stateControl: stateControl.exposeApi(messageBus),
-        keyboardShortcuts: keyboardShortcutsService
-      };
-    });
+  return editorEnvelopeController.start({ container: args.container, context: args.editorContext }).then(messageBus => {
+    window.envelope = {
+      resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
+      editorContext: args.editorContext,
+      stateControl: stateControl.exposeApi(messageBus),
+      keyboardShortcuts: keyboardShortcutsService.exposeApi()
+    };
+  });
 }

@@ -80,26 +80,14 @@ const KEY_CODES = new Map<string, string>([
   ["z", "KeyZ"]
 ]);
 
-enum ShortCutsType {
-  KeyDownThenUp,
-  KeyDown
-}
-
-export interface DelayedRegisterKeyBinding{
-  type: ShortCutsType;
-  binding: KeyBinding;
-}
+const IGNORED_TAGS = ["INPUT", "TEXTAREA", "SELECT", "OPTION"];
 
 export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
-  private readonly editorContext: EditorContext;
-
   private eventIdentifiers = 1;
-  private readonly keyBindings = new Map<number, KeyBinding>();
-  private delayedKeyBindings = new Array<DelayedRegisterKeyBinding>();
 
-  constructor(editorContext: EditorContext) {
-    this.editorContext = editorContext;
-  }
+  private readonly keyBindings = new Map<number, KeyBinding>();
+
+  constructor(private readonly args: { editorContext: EditorContext; defaultKeyBindingSelector: string }) {}
 
   public registerKeyDownThenUp(
     combination: string,
@@ -109,12 +97,16 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
     opts?: KeyBindingServiceOpts
   ) {
     console.debug(`Registering shortcut (down/up) for ${combination} - ${label}: ${opts?.repeat}`);
-    console.debug(opts);
 
     const keyBinding = {
       combination,
       label,
       listener: (e: KeyboardEvent) => {
+        if (IGNORED_TAGS.includes((e.target as HTMLElement)?.tagName)) {
+          console.debug(`Ignoring execution (${combination}) because target was ` + (e.target as HTMLElement)?.tagName);
+          return true;
+        }
+
         if (e.repeat && !opts?.repeat) {
           return true;
         }
@@ -123,6 +115,7 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
           if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(e))) {
             console.debug(`Fired (down) [${combination}]!`);
             onKeyDown(e.target);
+            return false;
           }
         } else if (e.type === "keyup") {
           if (
@@ -131,6 +124,7 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
           ) {
             console.debug(`Fired (up) [${combination}]!`);
             onKeyUp(e.target);
+            return false;
           }
         }
 
@@ -141,24 +135,11 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
 
     this.keyBindings.set(this.eventIdentifiers, keyBinding);
 
-    if (keyBinding?.opts?.element || document.querySelector(".session-container")) {
-      this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
-      this.keyBindingElement(keyBinding).addEventListener("keyup", keyBinding.listener); 
-    }
-    else {
-      const delayedShorcut = {
-        type: ShortCutsType.KeyDownThenUp,
-        binding: keyBinding,
-      };
-      this.delayedKeyBindings.push(delayedShorcut);
-    }
+    this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
+    this.keyBindingElement(keyBinding).addEventListener("keyup", keyBinding.listener);
+
     return this.eventIdentifiers++;
   }
-
-  private keyBindingElement(keyBinding?: KeyBinding) {
-    return keyBinding?.opts?.element ?? document.querySelector(".session-container") ?? window;
-  }
-
 
   public registerKeyPress(
     combination: string,
@@ -172,6 +153,11 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
       combination,
       label,
       listener: (e: KeyboardEvent) => {
+        if (IGNORED_TAGS.includes((e.target as HTMLElement)?.tagName)) {
+          console.debug(`Ignoring execution (${combination}) because target was ` + (e.target as HTMLElement)?.tagName);
+          return true;
+        }
+
         if (e.repeat && !opts?.repeat) {
           return true;
         }
@@ -179,7 +165,9 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
         if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(e))) {
           console.debug(`Fired (press) [${combination}]!`);
           onKeyPress(e.target);
+          return false;
         }
+
         return true;
       },
       opts
@@ -187,32 +175,9 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
 
     this.keyBindings.set(this.eventIdentifiers, keyBinding);
 
-    if (keyBinding?.opts?.element || document.querySelector(".session-container")) {
-      this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
-    }
-    else {
-      const delayedShorcut = {
-        type: ShortCutsType.KeyDown,
-        binding: keyBinding,
-      };
-      this.delayedKeyBindings.push(delayedShorcut);
-    }
+    this.keyBindingElement(keyBinding).addEventListener("keydown", keyBinding.listener);
 
     return this.eventIdentifiers++;
-  }
-
-  public executeDelayedShortcutsRegistration() {
-    this.delayedKeyBindings.forEach(delayedKeyBindings => {
-    
-      if (delayedKeyBindings.type === ShortCutsType.KeyDown) {
-        this.keyBindingElement(delayedKeyBindings.binding).addEventListener("keydown", delayedKeyBindings.binding.listener);
-      }
-      else {
-        this.keyBindingElement(delayedKeyBindings.binding).addEventListener("keydown", delayedKeyBindings.binding.listener);
-        this.keyBindingElement(delayedKeyBindings.binding).addEventListener("keyup", delayedKeyBindings.binding.listener); 
-      }
-    }); 
-    this.delayedKeyBindings = []; 
   }
 
   public registerKeyPressOnce(
@@ -241,13 +206,17 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
     this.keyBindings.delete(id);
   }
 
+  private keyBindingElement(keyBinding?: KeyBinding) {
+    return keyBinding?.opts?.element ?? window;
+  }
+
   private combinationKeySet(combination: string) {
     const keys = combination
       .split("+")
       .map(k => k.toLowerCase())
       .map(k => KEY_CODES.get(k) ?? k);
 
-    if (this.editorContext.operatingSystem === OperatingSystem.MACOS) {
+    if (this.args.editorContext.operatingSystem === OperatingSystem.MACOS) {
       return new Set(keys.map(k => (k === ModKeys.CTRL ? ModKeys.META : k)));
     } else {
       return new Set(keys);
@@ -276,6 +245,10 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
 
   public registered() {
     return Array.from(this.keyBindings.values());
+  }
+
+  public exposeApi(): KeyboardShortcutsApi {
+    return this;
   }
 }
 

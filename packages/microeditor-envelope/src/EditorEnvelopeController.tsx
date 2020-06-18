@@ -25,33 +25,29 @@ import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { StateControl } from "./api/stateControl";
-import { KeyboardShortcutsApi } from "./api/keyboardShortcuts";
+import { DefaultKeyboardShortcutsService } from "./api/keyboardShortcuts";
 import { EditorContext } from "./api/context";
 
 export class EditorEnvelopeController {
-  private readonly editorFactory: EditorFactory<any>;
-  private readonly specialDomElements: SpecialDomElements;
-  private readonly resourceContentEditorCoordinator: ResourceContentEditorCoordinator;
   private readonly envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler;
-  private readonly stateControl: StateControl;
 
   private editorEnvelopeView?: EditorEnvelopeView;
-  private renderer: Renderer;
 
   constructor(
     busApi: EnvelopeBusApi,
-    editorFactory: EditorFactory<any>,
-    specialDomElements: SpecialDomElements,
-    stateControl: StateControl,
-    renderer: Renderer,
-    resourceContentEditorCoordinator: ResourceContentEditorCoordinator,
-    keyboardShortcutsApi: KeyboardShortcutsApi
+    private readonly editorFactory: EditorFactory<any>,
+    private readonly specialDomElements: SpecialDomElements,
+    private readonly stateControl: StateControl,
+    private readonly renderer: Renderer,
+    private readonly resourceContentEditorCoordinator: ResourceContentEditorCoordinator,
+    private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService
   ) {
     this.renderer = renderer;
     this.editorFactory = editorFactory;
     this.specialDomElements = specialDomElements;
     this.resourceContentEditorCoordinator = resourceContentEditorCoordinator;
     this.stateControl = stateControl;
+    this.keyboardShortcutsService = keyboardShortcutsService;
     this.envelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(busApi, self => ({
       receive_contentResponse: (editorContent: EditorContent) => {
         const contentPath = editorContent.path || "";
@@ -60,10 +56,7 @@ export class EditorEnvelopeController {
           this.editorEnvelopeView!.setLoading();
           editor
             .setContent(contentPath, editorContent.content)
-            .finally(() => {
-              keyboardShortcutsApi.executeDelayedShortcutsRegistration();
-              this.editorEnvelopeView!.setLoadingFinished()
-            })
+            .finally(() => this.editorEnvelopeView!.setLoadingFinished())
             .then(() => self.notify_ready());
         }
       },
@@ -115,13 +108,13 @@ export class EditorEnvelopeController {
     return this.editorEnvelopeView!.getEditor();
   }
 
-  private render(args: { container: HTMLElement; keyboardShortcuts: KeyboardShortcutsApi; context: EditorContext }) {
+  private render(args: { container: HTMLElement; context: EditorContext }) {
     return new Promise<void>(res =>
       this.renderer.render(
         <EditorEnvelopeView
           exposing={self => (this.editorEnvelopeView = self)}
           loadingScreenContainer={this.specialDomElements.loadingScreenContainer}
-          keyboardShortcuts={args.keyboardShortcuts}
+          keyboardShortcutsService={this.keyboardShortcutsService}
           context={args.context}
         />,
         args.container,
@@ -130,7 +123,7 @@ export class EditorEnvelopeController {
     );
   }
 
-  public start(args: { container: HTMLElement; keyboardShortcuts: KeyboardShortcutsApi; context: EditorContext }) {
+  public start(args: { container: HTMLElement; context: EditorContext }) {
     return this.render(args).then(() => {
       this.envelopeBusInnerMessageHandler.startListening();
       return this.envelopeBusInnerMessageHandler;

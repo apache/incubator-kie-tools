@@ -14,103 +14,101 @@
  * limitations under the License.
  */
 
-import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "../../api/keyboardShortcuts";
+import { DefaultKeyboardShortcutsService } from "../../api/keyboardShortcuts";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
 import { fireEvent } from "@testing-library/react";
 
 describe("DefaultKeyboardShortcutsService", () => {
   test("keyPress", async () => {
-    const keyboardShortcutsApi = new DefaultKeyboardShortcutsService({
-      operatingSystem: OperatingSystem.LINUX,
-      channel: ChannelType.ONLINE
+    const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
+      editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE },
+      defaultKeyBindingSelector: ".none"
     });
 
-    const [wasFired] = resolveWhenKeyPressed("ctrl+a", keyboardShortcutsApi);
-    keyboardShortcutsApi.executeDelayedShortcutsRegistration();
-    expect(keyboardShortcutsApi.registered().length).toStrictEqual(1);
+    const [action] = getActionForKeyPress("ctrl+a", keyboardShortcutsService);
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
 
     fire("keydown", { ctrlKey: true, code: "KeyA" });
-    await wasFired;
-    expect(keyboardShortcutsApi.registered().length).toStrictEqual(1);
+
+    expect(action).toHaveBeenCalled();
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
   });
 
   test("keyPress on macOS", async () => {
-    const keyboardShortcutsApi = new DefaultKeyboardShortcutsService({
-      operatingSystem: OperatingSystem.MACOS,
-      channel: ChannelType.ONLINE
+    const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
+      editorContext: { operatingSystem: OperatingSystem.MACOS, channel: ChannelType.ONLINE },
+      defaultKeyBindingSelector: ".none"
     });
 
-    const [wasFired] = resolveWhenKeyPressed("ctrl+a", keyboardShortcutsApi);
-    keyboardShortcutsApi.executeDelayedShortcutsRegistration();
-    expect(keyboardShortcutsApi.registered().length).toStrictEqual(1);
-    fire("keydown", { metaKey: true, code: "KeyA" });
-    await wasFired;
+    const [action] = getActionForKeyPress("ctrl+a", keyboardShortcutsService);
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
 
-    expect(keyboardShortcutsApi.registered().length).toStrictEqual(1);
+    fire("keydown", { metaKey: true, code: "KeyA" });
+
+    expect(action).toHaveBeenCalled();
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
   });
 
   test("keyDown then keyUp", async () => {
-    const keyboardShortcutsApi = new DefaultKeyboardShortcutsService({
-      operatingSystem: OperatingSystem.LINUX,
-      channel: ChannelType.ONLINE
+    const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
+      editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE },
+      defaultKeyBindingSelector: ".none"
     });
 
-    const [wasFiredDownA, wasFiredUpA] = resolveWhenKeyDownThenUp("ctrl+a", keyboardShortcutsApi);
-    keyboardShortcutsApi.executeDelayedShortcutsRegistration();
-    expect(keyboardShortcutsApi.registered().length).toStrictEqual(1);
+    const [actionDown, actionUp] = getActionsForKeyUpAndDown("ctrl+a", keyboardShortcutsService);
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
+
     fire("keydown", { ctrlKey: true, code: "KeyA" });
-    await wasFiredDownA;
+    expect(actionDown).toHaveBeenCalled();
 
     fire("keyup", { code: "CtrlRight" });
-    await wasFiredUpA;
+    expect(actionUp).toHaveBeenCalled();
 
-    expect(keyboardShortcutsApi.registered().length).toStrictEqual(1);
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
 
     //
 
-    const [wasFiredDownB, wasFiredUpB] = resolveWhenKeyDownThenUp("ctrl+b", keyboardShortcutsApi);
-    keyboardShortcutsApi.executeDelayedShortcutsRegistration();
-    expect(keyboardShortcutsApi.registered().length).toStrictEqual(2);
+    const [actionDown2, actionUp2] = getActionsForKeyUpAndDown("ctrl+b", keyboardShortcutsService);
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(2);
+
     fire("keydown", { ctrlKey: true, code: "KeyB" });
-    await wasFiredDownB;
+    expect(actionDown2).toHaveBeenCalled();
 
     fire("keyup", { code: "KeyB" });
-    await wasFiredUpB;
+    expect(actionUp2).toHaveBeenCalled();
 
-    expect(keyboardShortcutsApi.registered().length).toStrictEqual(2);
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(2);
   });
 
   test("keyPressOnce", async () => {
-    const keyboardShortcutsApi = new DefaultKeyboardShortcutsService({
-      operatingSystem: OperatingSystem.LINUX,
-      channel: ChannelType.ONLINE
+    const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
+      editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE },
+      defaultKeyBindingSelector: ".none"
     });
 
-    const [wasFired] = resolveWhenKeyPressedOnce("ctrl+c", keyboardShortcutsApi);
-    keyboardShortcutsApi.executeDelayedShortcutsRegistration();
-    expect(keyboardShortcutsApi.registered().length).toStrictEqual(1);
+    const [action] = getActionForKeyPressOnce("ctrl+c", keyboardShortcutsService);
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
 
     fire("keydown", { ctrlKey: true, code: "KeyC" });
-    await wasFired;
 
-    expect(keyboardShortcutsApi.registered().length).toStrictEqual(0);
+    expect(action).toHaveBeenCalled();
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(0);
   });
 
   test("deregister", async () => {
-    const keyboardShortcutsApi = new DefaultKeyboardShortcutsService({
-      operatingSystem: OperatingSystem.LINUX,
-      channel: ChannelType.ONLINE
+    const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
+      editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE },
+      defaultKeyBindingSelector: ".none"
     });
 
-    const [wasFired, id] = resolveWhenKeyPressed("ctrl+c", keyboardShortcutsApi);
-    keyboardShortcutsApi.executeDelayedShortcutsRegistration();
-    expect(keyboardShortcutsApi.registered().length).toStrictEqual(1);
+    const [action, id] = getActionForKeyPress("ctrl+c", keyboardShortcutsService);
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
 
     fire("keydown", { ctrlKey: true, code: "KeyC" });
-    await wasFired;
+    expect(action).toHaveBeenCalled();
 
-    keyboardShortcutsApi.deregister(id);
-    expect(keyboardShortcutsApi.registered().length).toStrictEqual(0);
+    keyboardShortcutsService.deregister(id as number);
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(0);
   });
 });
 
@@ -118,61 +116,51 @@ function fire(type: "keydown" | "keyup", opts) {
   fireEvent(window, new KeyboardEvent(type, opts));
 }
 
-function resolveWhenKeyPressed(combination: string, api: KeyboardShortcutsApi) {
-  let id;
-  const p = new Promise(res => {
-    id = api.registerKeyPress(
-      combination,
-      "Label",
-      () => {
-        res();
-        return Promise.resolve();
-      },
-      {}
-    );
-  });
+function getActionForKeyPress(combination: string, api: DefaultKeyboardShortcutsService) {
+  const fn = jest.fn();
+  const id = api.registerKeyPress(
+    combination,
+    "Label",
+    () => {
+      fn();
+      return Promise.resolve();
+    },
+    {}
+  );
 
-  return [p, id];
+  return [fn, id];
 }
 
-function resolveWhenKeyPressedOnce(combination: string, api: KeyboardShortcutsApi) {
-  let id;
-  const p = new Promise(res => {
-    id = api.registerKeyPressOnce(
-      combination,
-      () => {
-        res();
-        return Promise.resolve();
-      },
-      {}
-    );
-  });
+function getActionForKeyPressOnce(combination: string, api: DefaultKeyboardShortcutsService) {
+  const fn = jest.fn();
+  const id = api.registerKeyPressOnce(
+    combination,
+    () => {
+      fn();
+      return Promise.resolve();
+    },
+    {}
+  );
 
-  return [p, id];
+  return [fn, id];
 }
 
-function resolveWhenKeyDownThenUp(combination: string, api: KeyboardShortcutsApi) {
-  let down;
-  let up;
-  let id;
-
-  down = new Promise(resDown => {
-    up = new Promise(resUp => {
-      id = api.registerKeyDownThenUp(
-        combination,
-        "Label",
-        () => {
-          resDown();
-          return Promise.resolve();
-        },
-        () => {
-          resUp();
-          return Promise.resolve();
-        },
-        {}
-      );
-    });
-  });
+function getActionsForKeyUpAndDown(combination: string, api: DefaultKeyboardShortcutsService) {
+  const down = jest.fn();
+  const up = jest.fn();
+  const id = api.registerKeyDownThenUp(
+    combination,
+    "Label",
+    () => {
+      down();
+      return Promise.resolve();
+    },
+    () => {
+      up();
+      return Promise.resolve();
+    },
+    {}
+  );
 
   return [down, up, id];
 }

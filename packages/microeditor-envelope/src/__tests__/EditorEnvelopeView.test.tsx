@@ -30,7 +30,9 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
   const context = { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS };
   const render = shallow(
     <EditorEnvelopeView
-      keyboardShortcuts={new DefaultKeyboardShortcutsService(context)}
+      keyboardShortcutsService={
+        new DefaultKeyboardShortcutsService({ editorContext: context, defaultKeyBindingSelector: ".none" })
+      }
       context={context}
       exposing={self => (view = self)}
       loadingScreenContainer={loadingScreenContainer}
