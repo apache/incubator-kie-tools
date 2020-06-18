@@ -87,7 +87,7 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
 
   private readonly keyBindings = new Map<number, KeyBinding>();
 
-  constructor(private readonly args: { editorContext: EditorContext; defaultKeyBindingSelector: string }) {}
+  constructor(private readonly args: { editorContext: EditorContext }) {}
 
   public registerKeyDownThenUp(
     combination: string,

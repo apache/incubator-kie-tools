@@ -27,10 +27,7 @@ describe("KeyBindingsHelpOverlay", () => {
       channel: ChannelType.DESKTOP
     };
 
-    const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
-      editorContext: context,
-      defaultKeyBindingSelector: ".none"
-    });
+    const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: context });
 
     keyboardShortcutsService.registerKeyPress("ctrl+c", "Copy", () => Promise.resolve(), {});
 

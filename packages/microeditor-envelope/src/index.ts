@@ -69,12 +69,7 @@ export function init(args: {
   const renderer = new ReactDomRenderer();
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
   const stateControl = new StateControl();
-
-  const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
-    editorContext: args.editorContext,
-    defaultKeyBindingSelector: ".session-container"
-  });
-
+  const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: args.editorContext });
   const editorEnvelopeController = new EditorEnvelopeController(
     args.busApi,
     args.editorFactory,

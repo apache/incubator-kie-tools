@@ -22,7 +22,6 @@ describe("DefaultKeyboardShortcutsService", () => {
   test("keyPress", async () => {
     const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
       editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE },
-      defaultKeyBindingSelector: ".none"
     });
 
     const [action] = getActionForKeyPress("ctrl+a", keyboardShortcutsService);
@@ -37,7 +36,6 @@ describe("DefaultKeyboardShortcutsService", () => {
   test("keyPress on macOS", async () => {
     const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
       editorContext: { operatingSystem: OperatingSystem.MACOS, channel: ChannelType.ONLINE },
-      defaultKeyBindingSelector: ".none"
     });
 
     const [action] = getActionForKeyPress("ctrl+a", keyboardShortcutsService);
@@ -52,7 +50,6 @@ describe("DefaultKeyboardShortcutsService", () => {
   test("keyDown then keyUp", async () => {
     const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
       editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE },
-      defaultKeyBindingSelector: ".none"
     });
 
     const [actionDown, actionUp] = getActionsForKeyUpAndDown("ctrl+a", keyboardShortcutsService);
@@ -83,7 +80,6 @@ describe("DefaultKeyboardShortcutsService", () => {
   test("keyPressOnce", async () => {
     const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
       editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE },
-      defaultKeyBindingSelector: ".none"
     });
 
     const [action] = getActionForKeyPressOnce("ctrl+c", keyboardShortcutsService);
@@ -98,7 +94,6 @@ describe("DefaultKeyboardShortcutsService", () => {
   test("deregister", async () => {
     const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
       editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE },
-      defaultKeyBindingSelector: ".none"
     });
 
     const [action, id] = getActionForKeyPress("ctrl+c", keyboardShortcutsService);

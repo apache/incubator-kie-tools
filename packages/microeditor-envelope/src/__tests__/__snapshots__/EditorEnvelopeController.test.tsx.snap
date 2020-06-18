@@ -12,7 +12,6 @@ exports[`EditorEnvelopeController after received content 1`] = `
   keyboardShortcutsService={
     DefaultKeyboardShortcutsService {
       "args": Object {
-        "defaultKeyBindingSelector": ".none",
         "editorContext": Object {
           "channel": "VSCODE",
           "operatingSystem": "WINDOWS",
@@ -98,7 +97,6 @@ exports[`EditorEnvelopeController after received content 1`] = `
     keyboardShortcutsService={
       DefaultKeyboardShortcutsService {
         "args": Object {
-          "defaultKeyBindingSelector": ".none",
           "editorContext": Object {
             "channel": "VSCODE",
             "operatingSystem": "WINDOWS",
@@ -400,7 +398,6 @@ exports[`EditorEnvelopeController opens 1`] = `
   keyboardShortcutsService={
     DefaultKeyboardShortcutsService {
       "args": Object {
-        "defaultKeyBindingSelector": ".none",
         "editorContext": Object {
           "channel": "VSCODE",
           "operatingSystem": "WINDOWS",
@@ -600,7 +597,6 @@ exports[`EditorEnvelopeController receives init request 1`] = `
   keyboardShortcutsService={
     DefaultKeyboardShortcutsService {
       "args": Object {
-        "defaultKeyBindingSelector": ".none",
         "editorContext": Object {
           "channel": "VSCODE",
           "operatingSystem": "WINDOWS",
