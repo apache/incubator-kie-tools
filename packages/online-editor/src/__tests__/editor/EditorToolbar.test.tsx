@@ -15,21 +15,10 @@
  */
 
 import * as React from "react";
-import { fireEvent, render } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { EditorToolbar } from "../../editor/EditorToolbar";
 import { usingTestingGlobalContext } from "../testing_utils";
 import { StateControl } from "@kogito-tooling/embedded-editor";
-import { act } from "react-dom/test-utils";
-
-const mockHistoryPush = jest.fn();
-
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
-  useHistory: () => ({
-    push: mockHistoryPush
-  })
-}));
-
 const onFileNameChanged = jest.fn((file: string) => null);
 const enterFullscreen = jest.fn(() => null);
 const requestSave = jest.fn(() => null);
@@ -51,190 +40,52 @@ describe("EditorToolbar", () => {
   });
 
   describe("is dirty indicator", () => {
-    describe("with isDirty indicator", () => {
-      test("should show the isDirty indicator - new edit", () => {
-        const { queryByTestId, getByTestId } = render(
-          usingTestingGlobalContext(
-            <EditorToolbar
-              onFullScreen={enterFullscreen}
-              onSave={requestSave}
-              onDownload={requestDownload}
-              onClose={close}
-              onFileNameChanged={onFileNameChanged}
-              onCopyContentToClipboard={requestCopyContentToClipboard}
-              isPageFullscreen={fullscreen}
-              onPreview={requestPreview}
-              onExportGist={requestExportGist}
-              isEdited={true}
-            />
-          ).wrapper
-        );
+    test("should show the isDirty indicator when isEdited is true", () => {
+      const isEdited = true;
 
-        act(() => stateControl.updateCommandStack("1"));
-        expect(queryByTestId("is-dirty-indicator")).toBeVisible();
-        expect(getByTestId("toolbar-title")).toMatchSnapshot();
-      });
+      const { queryByTestId, getByTestId } = render(
+        usingTestingGlobalContext(
+          <EditorToolbar
+            onFullScreen={enterFullscreen}
+            onSave={requestSave}
+            onDownload={requestDownload}
+            onClose={close}
+            onFileNameChanged={onFileNameChanged}
+            onCopyContentToClipboard={requestCopyContentToClipboard}
+            isPageFullscreen={fullscreen}
+            onPreview={requestPreview}
+            onExportGist={requestExportGist}
+            isEdited={isEdited}
+          />
+        ).wrapper
+      );
 
-      test("should show the isDirty indicator - save and make a new edit", () => {
-        const { queryByTestId, getByTestId } = render(
-          usingTestingGlobalContext(
-            <EditorToolbar
-              onFullScreen={enterFullscreen}
-              onSave={requestSave}
-              onDownload={requestDownload}
-              onClose={close}
-              onFileNameChanged={onFileNameChanged}
-              onCopyContentToClipboard={requestCopyContentToClipboard}
-              isPageFullscreen={fullscreen}
-              onPreview={requestPreview}
-              onExportGist={requestExportGist}
-              isEdited={true}
-            />
-          ).wrapper
-        );
-
-        act(() => stateControl.updateCommandStack("1"));
-        fireEvent.click(getByTestId("save-button"));
-        expect(queryByTestId("is-dirty-indicator")).toBeNull();
-
-        act(() => stateControl.updateCommandStack("2"));
-        expect(queryByTestId("is-dirty-indicator")).toBeVisible();
-        expect(getByTestId("toolbar-title")).toMatchSnapshot();
-      });
-
-      test("should show the isDirty indicator - save and undo the last edit", () => {
-        const { queryByTestId, getByTestId } = render(
-          usingTestingGlobalContext(
-            <EditorToolbar
-              onFullScreen={enterFullscreen}
-              onSave={requestSave}
-              onDownload={requestDownload}
-              onClose={close}
-              onFileNameChanged={onFileNameChanged}
-              onCopyContentToClipboard={requestCopyContentToClipboard}
-              isPageFullscreen={fullscreen}
-              onPreview={requestPreview}
-              onExportGist={requestExportGist}
-              isEdited={true}
-            />
-          ).wrapper
-        );
-
-        act(() => stateControl.updateCommandStack("1"));
-        fireEvent.click(getByTestId("save-button"));
-        expect(queryByTestId("is-dirty-indicator")).toBeNull();
-
-        act(() => stateControl.undo());
-        expect(queryByTestId("is-dirty-indicator")).toBeVisible();
-        expect(getByTestId("toolbar-title")).toMatchSnapshot();
-      });
+      expect(queryByTestId("is-dirty-indicator")).toBeVisible();
+      expect(getByTestId("toolbar-title")).toMatchSnapshot();
     });
 
-    describe("without isDirty indicator", () => {
-      test("shouldn't show the isDirty indicator - new file", () => {
-        const { queryByTestId, getByTestId } = render(
-          usingTestingGlobalContext(
-            <EditorToolbar
-              onFullScreen={enterFullscreen}
-              onSave={requestSave}
-              onDownload={requestDownload}
-              onClose={close}
-              onFileNameChanged={onFileNameChanged}
-              onCopyContentToClipboard={requestCopyContentToClipboard}
-              isPageFullscreen={fullscreen}
-              onPreview={requestPreview}
-              onExportGist={requestExportGist}
-              isEdited={true}
-            />
-          ).wrapper
-        );
+    test("shouldn't show the isDirty indicator when isEdited is false", () => {
+      const isEdited = false;
 
-        expect(queryByTestId("is-dirty-indicator")).toBeNull();
-        expect(getByTestId("toolbar-title")).toMatchSnapshot();
-      });
+      const { queryByTestId, getByTestId } = render(
+        usingTestingGlobalContext(
+          <EditorToolbar
+            onFullScreen={enterFullscreen}
+            onSave={requestSave}
+            onDownload={requestDownload}
+            onClose={close}
+            onFileNameChanged={onFileNameChanged}
+            onCopyContentToClipboard={requestCopyContentToClipboard}
+            isPageFullscreen={fullscreen}
+            onPreview={requestPreview}
+            onExportGist={requestExportGist}
+            isEdited={isEdited}
+          />
+        ).wrapper
+      );
 
-      test("should show the isDirty indicator - make an edit and save", () => {
-        const { queryByTestId, getByTestId } = render(
-          usingTestingGlobalContext(
-            <EditorToolbar
-              onFullScreen={enterFullscreen}
-              onSave={requestSave}
-              onDownload={requestDownload}
-              onClose={close}
-              onFileNameChanged={onFileNameChanged}
-              onCopyContentToClipboard={requestCopyContentToClipboard}
-              isPageFullscreen={fullscreen}
-              onPreview={requestPreview}
-              onExportGist={requestExportGist}
-              isEdited={true}
-            />
-          ).wrapper
-        );
-
-        act(() => stateControl.updateCommandStack("1"));
-        fireEvent.click(getByTestId("save-button"));
-
-        expect(queryByTestId("is-dirty-indicator")).toBeNull();
-        expect(getByTestId("toolbar-title")).toMatchSnapshot();
-      });
-
-      test("should show the isDirty indicator - make an edit and undo it", () => {
-        const { queryByTestId, getByTestId } = render(
-          usingTestingGlobalContext(
-            <EditorToolbar
-              onFullScreen={enterFullscreen}
-              onSave={requestSave}
-              onDownload={requestDownload}
-              onClose={close}
-              onFileNameChanged={onFileNameChanged}
-              onCopyContentToClipboard={requestCopyContentToClipboard}
-              isPageFullscreen={fullscreen}
-              onPreview={requestPreview}
-              onExportGist={requestExportGist}
-              isEdited={true}
-            />
-          ).wrapper
-        );
-
-        act(() => stateControl.updateCommandStack("1"));
-        expect(queryByTestId("is-dirty-indicator")).toBeVisible();
-
-        act(() => stateControl.undo());
-        expect(queryByTestId("is-dirty-indicator")).toBeNull();
-        expect(getByTestId("toolbar-title")).toMatchSnapshot();
-      });
-
-      test("should show the isDirty indicator - make an edit, save, undo it, redo it", () => {
-        const { queryByTestId, getByTestId } = render(
-          usingTestingGlobalContext(
-            <EditorToolbar
-              onFullScreen={enterFullscreen}
-              onSave={requestSave}
-              onDownload={requestDownload}
-              onClose={close}
-              onFileNameChanged={onFileNameChanged}
-              onCopyContentToClipboard={requestCopyContentToClipboard}
-              isPageFullscreen={fullscreen}
-              onPreview={requestPreview}
-              onExportGist={requestExportGist}
-              isEdited={true}
-            />
-          ).wrapper
-        );
-
-        act(() => stateControl.updateCommandStack("1"));
-        expect(queryByTestId("is-dirty-indicator")).toBeVisible();
-
-        fireEvent.click(getByTestId("save-button"));
-        expect(queryByTestId("is-dirty-indicator")).toBeNull();
-
-        act(() => stateControl.undo());
-        expect(queryByTestId("is-dirty-indicator")).toBeVisible();
-
-        act(() => stateControl.redo());
-        expect(queryByTestId("is-dirty-indicator")).toBeNull();
-        expect(getByTestId("toolbar-title")).toMatchSnapshot();
-      });
+      expect(queryByTestId("is-dirty-indicator")).toBeNull();
+      expect(getByTestId("toolbar-title")).toMatchSnapshot();
     });
   });
 });

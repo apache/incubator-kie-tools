@@ -2,39 +2,7 @@
 
 exports[`EditorEnvelopeView after loading stops 1`] = `
 <Fragment>
-  <RegisterChannelKeyboardShortcuts
-    keyboardShortcuts={
-      DefaultKeyboardShortcutsService {
-        "delayedKeyBindings": Array [],
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
-        },
-        "eventIdentifiers": 1,
-        "keyBindings": Map {},
-      }
-    }
-    messageBus={
-      EnvelopeBusInnerMessageHandler {
-        "capturedInitRequestYet": false,
-        "envelopeBusApi": Object {
-          "postMessage": [Function],
-        },
-        "impl": Object {
-          "receive_contentRequest": [Function],
-          "receive_contentResponse": [Function],
-          "receive_editorRedo": [Function],
-          "receive_editorUndo": [Function],
-          "receive_languageResponse": [Function],
-          "receive_previewRequest": [Function],
-          "receive_resourceContentList": [Function],
-          "receive_resourceContentResponse": [Function],
-        },
-      }
-    }
-    stateControl={StateControlService {}}
-  />
-  <KeyBindingsHelpOverlay
+  <Component
     context={
       Object {
         "channel": "VSCODE",
@@ -42,7 +10,7 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
       }
     }
     keyboardShortcuts={
-      DefaultKeyboardShortcutsService {
+      e {
         "delayedKeyBindings": Array [],
         "editorContext": Object {
           "channel": "VSCODE",
@@ -65,39 +33,7 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
 
 exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
 <Fragment>
-  <RegisterChannelKeyboardShortcuts
-    keyboardShortcuts={
-      DefaultKeyboardShortcutsService {
-        "delayedKeyBindings": Array [],
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
-        },
-        "eventIdentifiers": 1,
-        "keyBindings": Map {},
-      }
-    }
-    messageBus={
-      EnvelopeBusInnerMessageHandler {
-        "capturedInitRequestYet": false,
-        "envelopeBusApi": Object {
-          "postMessage": [Function],
-        },
-        "impl": Object {
-          "receive_contentRequest": [Function],
-          "receive_contentResponse": [Function],
-          "receive_editorRedo": [Function],
-          "receive_editorUndo": [Function],
-          "receive_languageResponse": [Function],
-          "receive_previewRequest": [Function],
-          "receive_resourceContentList": [Function],
-          "receive_resourceContentResponse": [Function],
-        },
-      }
-    }
-    stateControl={StateControlService {}}
-  />
-  <KeyBindingsHelpOverlay
+  <Component
     context={
       Object {
         "channel": "VSCODE",
@@ -105,7 +41,7 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
       }
     }
     keyboardShortcuts={
-      DefaultKeyboardShortcutsService {
+      e {
         "delayedKeyBindings": Array [],
         "editorContext": Object {
           "channel": "VSCODE",

@@ -10,46 +10,15 @@ exports[`EditorEnvelopeController after received content 1`] = `
   }
   exposing={[Function]}
   keyboardShortcuts={
-    DefaultKeyboardShortcutsService {
-      "delayedKeyBindings": Array [
-        Object {
-          "binding": Object {
-            "combination": "shift+ctrl+z",
-            "label": "Edit | Redo last edit",
-            "listener": [Function],
-            "opts": undefined,
-          },
-          "type": 1,
-        },
-        Object {
-          "binding": Object {
-            "combination": "ctrl+z",
-            "label": "Edit | Undo last edit",
-            "listener": [Function],
-            "opts": undefined,
-          },
-          "type": 1,
-        },
-      ],
+    e {
+      "delayedKeyBindings": Array [],
       "editorContext": Object {
         "channel": "VSCODE",
         "operatingSystem": "WINDOWS",
       },
-      "eventIdentifiers": 4,
+      "eventIdentifiers": 2,
       "keyBindings": Map {
         1 => Object {
-          "combination": "shift+ctrl+z",
-          "label": "Edit | Redo last edit",
-          "listener": [Function],
-          "opts": undefined,
-        },
-        2 => Object {
-          "combination": "ctrl+z",
-          "label": "Edit | Undo last edit",
-          "listener": [Function],
-          "opts": undefined,
-        },
-        3 => Object {
           "combination": "shift+/",
           "label": "Help | Show keyboard shortcuts",
           "listener": [Function],
@@ -145,88 +114,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
     }
   }
 >
-  <RegisterChannelKeyboardShortcuts
-    keyboardShortcuts={
-      DefaultKeyboardShortcutsService {
-        "delayedKeyBindings": Array [
-          Object {
-            "binding": Object {
-              "combination": "shift+ctrl+z",
-              "label": "Edit | Redo last edit",
-              "listener": [Function],
-              "opts": undefined,
-            },
-            "type": 1,
-          },
-          Object {
-            "binding": Object {
-              "combination": "ctrl+z",
-              "label": "Edit | Undo last edit",
-              "listener": [Function],
-              "opts": undefined,
-            },
-            "type": 1,
-          },
-        ],
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
-        },
-        "eventIdentifiers": 4,
-        "keyBindings": Map {
-          1 => Object {
-            "combination": "shift+ctrl+z",
-            "label": "Edit | Redo last edit",
-            "listener": [Function],
-            "opts": undefined,
-          },
-          2 => Object {
-            "combination": "ctrl+z",
-            "label": "Edit | Undo last edit",
-            "listener": [Function],
-            "opts": undefined,
-          },
-          3 => Object {
-            "combination": "shift+/",
-            "label": "Help | Show keyboard shortcuts",
-            "listener": [Function],
-            "opts": Object {
-              "element": [Window],
-            },
-          },
-        },
-      }
-    }
-    messageBus={
-      EnvelopeBusInnerMessageHandler {
-        "capturedInitRequestYet": true,
-        "envelopeBusApi": Object {
-          "postMessage": [Function],
-        },
-        "eventListener": [Function],
-        "id": undefined,
-        "impl": Object {
-          "receive_contentRequest": [Function],
-          "receive_contentResponse": [Function],
-          "receive_editorRedo": [Function],
-          "receive_editorUndo": [Function],
-          "receive_languageResponse": [Function],
-          "receive_previewRequest": [Function],
-          "receive_resourceContentList": [Function],
-          "receive_resourceContentResponse": [Function],
-        },
-        "targetOrigin": "test-target-origin",
-      }
-    }
-    stateControl={
-      Object {
-        "redo": [MockFunction],
-        "registry": [MockFunction],
-        "undo": [MockFunction],
-      }
-    }
-  />
-  <KeyBindingsHelpOverlay
+  <Component
     context={
       Object {
         "channel": "VSCODE",
@@ -234,46 +122,15 @@ exports[`EditorEnvelopeController after received content 1`] = `
       }
     }
     keyboardShortcuts={
-      DefaultKeyboardShortcutsService {
-        "delayedKeyBindings": Array [
-          Object {
-            "binding": Object {
-              "combination": "shift+ctrl+z",
-              "label": "Edit | Redo last edit",
-              "listener": [Function],
-              "opts": undefined,
-            },
-            "type": 1,
-          },
-          Object {
-            "binding": Object {
-              "combination": "ctrl+z",
-              "label": "Edit | Undo last edit",
-              "listener": [Function],
-              "opts": undefined,
-            },
-            "type": 1,
-          },
-        ],
+      e {
+        "delayedKeyBindings": Array [],
         "editorContext": Object {
           "channel": "VSCODE",
           "operatingSystem": "WINDOWS",
         },
-        "eventIdentifiers": 4,
+        "eventIdentifiers": 2,
         "keyBindings": Map {
           1 => Object {
-            "combination": "shift+ctrl+z",
-            "label": "Edit | Redo last edit",
-            "listener": [Function],
-            "opts": undefined,
-          },
-          2 => Object {
-            "combination": "ctrl+z",
-            "label": "Edit | Undo last edit",
-            "listener": [Function],
-            "opts": undefined,
-          },
-          3 => Object {
             "combination": "shift+/",
             "label": "Help | Show keyboard shortcuts",
             "listener": [Function],
@@ -424,7 +281,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
         />
       </Portal>
     </Modal>
-  </KeyBindingsHelpOverlay>
+  </Component>
   <Portal
     containerInfo={
       <div
@@ -565,7 +422,7 @@ exports[`EditorEnvelopeController opens 1`] = `
   }
   exposing={[Function]}
   keyboardShortcuts={
-    DefaultKeyboardShortcutsService {
+    e {
       "delayedKeyBindings": Array [],
       "editorContext": Object {
         "channel": "VSCODE",
@@ -789,7 +646,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
   }
   exposing={[Function]}
   keyboardShortcuts={
-    DefaultKeyboardShortcutsService {
+    e {
       "delayedKeyBindings": Array [],
       "editorContext": Object {
         "channel": "VSCODE",

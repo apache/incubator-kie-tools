@@ -14,102 +14,119 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { renderHook } from "@testing-library/react-hooks";
-import { useDirtyState } from "../../stateControl/Hooks";
-import { StateControl } from "../../stateControl/StateControl";
+import { EmbeddedEditorRef } from "../../embedded";
+import { useDirtyState, StateControl } from "../../stateControl";
 import { act } from "react-test-renderer";
 
-describe.skip("useEditorDirtyState", () => {
-  // let editorStateControl: StateControl;
-  // beforeEach(() => (editorStateControl = new StateControl()));
-  //
-  // describe("false", () => {
-  //   test("after initialization", () => {
-  //     const { result } = renderHook(() => useDirtyState(editorStateControl));
-  //
-  //     expect(result.current).toBeFalsy();
-  //   });
-  //
-  //   test("redo without any command to be redone", () => {
-  //     const { result } = renderHook(() => useDirtyState(editorStateControl));
-  //
-  //     act(() => {
-  //       editorStateControl.redo();
-  //     });
-  //
-  //     expect(result.current).toBeFalsy();
-  //   });
-  //
-  //   test("add command and save it", () => {
-  //     const { result } = renderHook(() => useDirtyState(editorStateControl));
-  //
-  //     act(() => {
-  //       editorStateControl.updateCommandStack("1");
-  //       editorStateControl.setSavedCommand();
-  //     });
-  //
-  //     expect(result.current).toBeFalsy();
-  //   });
-  //
-  //   test("add command and undo it", () => {
-  //     const { result } = renderHook(() => useDirtyState(editorStateControl));
-  //
-  //     act(() => {
-  //       editorStateControl.updateCommandStack("1");
-  //       editorStateControl.undo();
-  //     });
-  //
-  //     expect(result.current).toBeFalsy();
-  //   });
-  //
-  //   test("add command, save it, undo and redo", () => {
-  //     const { result } = renderHook(() => useDirtyState(editorStateControl));
-  //
-  //     act(() => {
-  //       editorStateControl.updateCommandStack("1");
-  //       editorStateControl.setSavedCommand();
-  //       editorStateControl.undo();
-  //       editorStateControl.redo();
-  //     });
-  //
-  //     expect(result.current).toBeFalsy();
-  //   });
-  // });
-  //
-  // describe("true", () => {
-  //   test("add command without saving", () => {
-  //     const { result } = renderHook(() => useDirtyState(editorStateControl));
-  //
-  //     act(() => {
-  //       editorStateControl.updateCommandStack("1");
-  //     });
-  //
-  //     expect(result.current).toBeTruthy();
-  //   });
-  //
-  //   test("add command, undo and redo", () => {
-  //     const { result } = renderHook(() => useDirtyState(editorStateControl));
-  //
-  //     act(() => {
-  //       editorStateControl.updateCommandStack("1");
-  //       editorStateControl.undo();
-  //       editorStateControl.redo();
-  //     });
-  //
-  //     expect(result.current).toBeTruthy();
-  //   });
-  //
-  //   test("add command, save it, undo and new command", () => {
-  //     const { result } = renderHook(() => useDirtyState(editorStateControl));
-  //
-  //     act(() => {
-  //       editorStateControl.updateCommandStack("1");
-  //       editorStateControl.setSavedCommand();
-  //       editorStateControl.undo();
-  //       editorStateControl.updateCommandStack("2");
-  //     });
-  //
-  //     expect(result.current).toBeTruthy();
-  //   });
-  // });
+describe("useEditorDirtyState", () => {
+  let embeddedEditorRef: EmbeddedEditorRef;
+  let stateControl: StateControl;
+  let editorRef;
+
+  beforeEach(() => {
+    stateControl = new StateControl();
+    embeddedEditorRef = {
+      getStateControl: () => stateControl,
+      notifyUndo: () => jest.fn(() => null),
+      notifyRedo: () => jest.fn(() => null),
+      requestContent: () => jest.fn(() => null),
+      requestPreview: () => jest.fn(() => null),
+      setContent: () => jest.fn(() => null)
+    };
+    editorRef = {
+      current: embeddedEditorRef
+    };
+  });
+
+  describe("false", () => {
+    test("after initialization", () => {
+      const { result } = renderHook(() => useDirtyState(editorRef));
+
+      expect(result.current).toBeFalsy();
+    });
+
+    test("redo without any command to be redone", () => {
+      const { result } = renderHook(() => useDirtyState(editorRef));
+
+      act(() => {
+        stateControl.redo();
+      });
+
+      expect(result.current).toBeFalsy();
+    });
+
+    test("add command and save it", () => {
+      const { result } = renderHook(() => useDirtyState(editorRef));
+
+      act(() => {
+        stateControl.updateCommandStack("1");
+        stateControl.setSavedCommand();
+      });
+
+      expect(result.current).toBeFalsy();
+    });
+
+    test("add command and undo it", () => {
+      const { result } = renderHook(() => useDirtyState(editorRef));
+
+      act(() => {
+        stateControl.updateCommandStack("1");
+        stateControl.undo();
+      });
+
+      expect(result.current).toBeFalsy();
+    });
+
+    test("add command, save it, undo and redo", () => {
+      const { result } = renderHook(() => useDirtyState(editorRef));
+
+      act(() => {
+        stateControl.updateCommandStack("1");
+        stateControl.setSavedCommand();
+        stateControl.undo();
+        stateControl.redo();
+      });
+
+      expect(result.current).toBeFalsy();
+    });
+  });
+
+  describe("true", () => {
+    test("add command without saving", () => {
+      const { result } = renderHook(() => useDirtyState(editorRef));
+
+      act(() => {
+        stateControl.updateCommandStack("1");
+      });
+
+      expect(result.current).toBeTruthy();
+    });
+
+    test("add command, undo and redo", () => {
+      const { result } = renderHook(() => useDirtyState(editorRef));
+
+      act(() => {
+        stateControl.updateCommandStack("1");
+        stateControl.undo();
+        stateControl.redo();
+      });
+
+      expect(result.current).toBeTruthy();
+    });
+
+    test("add command, save it, undo and new command", () => {
+      const { result } = renderHook(() => useDirtyState(editorRef));
+
+      act(() => {
+        stateControl.updateCommandStack("1");
+        stateControl.setSavedCommand();
+        stateControl.undo();
+        stateControl.updateCommandStack("2");
+      });
+
+      expect(result.current).toBeTruthy();
+    });
+  });
 });
