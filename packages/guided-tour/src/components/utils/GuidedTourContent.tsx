@@ -116,6 +116,7 @@ export const renderNegativeReinforcementDialog = (suggestion: string, onCloseAct
 
   return (
     <>
+      <ModalBoxCloseButton data-kgt-close="true" onClose={onCloseAction} />
       <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={BookIcon} />
         {getNegativeReinforcementBody()}

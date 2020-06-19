@@ -20,11 +20,15 @@
   position: fixed
   width: fit-content
   min-height: 160px
+  width: max-content
   max-width: 600px
   padding-bottom: 50px
   left: 50%
   top: 50%
   transition: all .5s ease-out
+
+  & > .pf-c-button + *
+    margin-right: 0
 
   &--enabled
     display: block
