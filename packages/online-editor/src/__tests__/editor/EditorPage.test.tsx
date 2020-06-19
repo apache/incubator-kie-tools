@@ -50,20 +50,20 @@ describe("EditorPage", () => {
 
     test("should not appear after an edit", () => {
       const { queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />, { stateControl }).wrapper
+        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
       );
 
-      act(() => stateControl.updateEventStack("1"));
+      act(() => stateControl.updateCommandStack("1"));
 
       expect(queryByTestId("unsaved-alert")).toBeNull();
     });
 
     test("should appear when tries to close after an edit", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />, { stateControl }).wrapper
+        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
       );
 
-      act(() => stateControl.updateEventStack("1"));
+      act(() => stateControl.updateCommandStack("1"));
       fireEvent.click(getByTestId("close-editor-button"));
 
       expect(queryByTestId("unsaved-alert")).toBeVisible();
@@ -71,10 +71,10 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on save", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />, { stateControl }).wrapper
+        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
       );
 
-      act(() => stateControl.updateEventStack("1"));
+      act(() => stateControl.updateCommandStack("1"));
       fireEvent.click(getByTestId("close-editor-button"));
       fireEvent.click(getByTestId("unsaved-alert-save-button"));
 
@@ -83,10 +83,10 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on close", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />, { stateControl }).wrapper
+        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
       );
 
-      act(() => stateControl.updateEventStack("1"));
+      act(() => stateControl.updateCommandStack("1"));
       fireEvent.click(getByTestId("close-editor-button"));
       fireEvent.click(getByTestId("unsaved-alert-close-button"));
 
@@ -95,10 +95,10 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on close without save", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />, { stateControl }).wrapper
+        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
       );
 
-      act(() => stateControl.updateEventStack("1"));
+      act(() => stateControl.updateCommandStack("1"));
       fireEvent.click(getByTestId("close-editor-button"));
       fireEvent.click(getByTestId("unsaved-alert-close-without-save-button"));
 

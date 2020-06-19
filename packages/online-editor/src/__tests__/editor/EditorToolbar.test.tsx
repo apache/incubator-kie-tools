@@ -46,7 +46,7 @@ describe("EditorToolbar", () => {
   beforeEach(() => {
     stateControl = new StateControl();
     requestDownload = jest.fn().mockImplementation(() => {
-      stateControl.setSavedEvent();
+      stateControl.setSavedCommand();
     });
   });
 
@@ -65,12 +65,12 @@ describe("EditorToolbar", () => {
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
               onExportGist={requestExportGist}
-            />,
-            { stateControl }
+              isEdited={true}
+            />
           ).wrapper
         );
 
-        act(() => stateControl.updateEventStack("1"));
+        act(() => stateControl.updateCommandStack("1"));
         expect(queryByTestId("is-dirty-indicator")).toBeVisible();
         expect(getByTestId("toolbar-title")).toMatchSnapshot();
       });
@@ -88,16 +88,16 @@ describe("EditorToolbar", () => {
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
               onExportGist={requestExportGist}
-            />,
-            { stateControl }
+              isEdited={true}
+            />
           ).wrapper
         );
 
-        act(() => stateControl.updateEventStack("1"));
+        act(() => stateControl.updateCommandStack("1"));
         fireEvent.click(getByTestId("save-button"));
         expect(queryByTestId("is-dirty-indicator")).toBeNull();
 
-        act(() => stateControl.updateEventStack("2"));
+        act(() => stateControl.updateCommandStack("2"));
         expect(queryByTestId("is-dirty-indicator")).toBeVisible();
         expect(getByTestId("toolbar-title")).toMatchSnapshot();
       });
@@ -115,16 +115,16 @@ describe("EditorToolbar", () => {
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
               onExportGist={requestExportGist}
-            />,
-            { stateControl }
+              isEdited={true}
+            />
           ).wrapper
         );
 
-        act(() => stateControl.updateEventStack("1"));
+        act(() => stateControl.updateCommandStack("1"));
         fireEvent.click(getByTestId("save-button"));
         expect(queryByTestId("is-dirty-indicator")).toBeNull();
 
-        act(() => stateControl.undoEvent());
+        act(() => stateControl.undo());
         expect(queryByTestId("is-dirty-indicator")).toBeVisible();
         expect(getByTestId("toolbar-title")).toMatchSnapshot();
       });
@@ -144,8 +144,8 @@ describe("EditorToolbar", () => {
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
               onExportGist={requestExportGist}
-            />,
-            { stateControl }
+              isEdited={true}
+            />
           ).wrapper
         );
 
@@ -166,12 +166,12 @@ describe("EditorToolbar", () => {
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
               onExportGist={requestExportGist}
-            />,
-            { stateControl }
+              isEdited={true}
+            />
           ).wrapper
         );
 
-        act(() => stateControl.updateEventStack("1"));
+        act(() => stateControl.updateCommandStack("1"));
         fireEvent.click(getByTestId("save-button"));
 
         expect(queryByTestId("is-dirty-indicator")).toBeNull();
@@ -191,15 +191,15 @@ describe("EditorToolbar", () => {
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
               onExportGist={requestExportGist}
-            />,
-            { stateControl }
+              isEdited={true}
+            />
           ).wrapper
         );
 
-        act(() => stateControl.updateEventStack("1"));
+        act(() => stateControl.updateCommandStack("1"));
         expect(queryByTestId("is-dirty-indicator")).toBeVisible();
 
-        act(() => stateControl.undoEvent());
+        act(() => stateControl.undo());
         expect(queryByTestId("is-dirty-indicator")).toBeNull();
         expect(getByTestId("toolbar-title")).toMatchSnapshot();
       });
@@ -217,21 +217,21 @@ describe("EditorToolbar", () => {
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
               onExportGist={requestExportGist}
-            />,
-            { stateControl }
+              isEdited={true}
+            />
           ).wrapper
         );
 
-        act(() => stateControl.updateEventStack("1"));
+        act(() => stateControl.updateCommandStack("1"));
         expect(queryByTestId("is-dirty-indicator")).toBeVisible();
 
         fireEvent.click(getByTestId("save-button"));
         expect(queryByTestId("is-dirty-indicator")).toBeNull();
 
-        act(() => stateControl.undoEvent());
+        act(() => stateControl.undo());
         expect(queryByTestId("is-dirty-indicator")).toBeVisible();
 
-        act(() => stateControl.redoEvent());
+        act(() => stateControl.redo());
         expect(queryByTestId("is-dirty-indicator")).toBeNull();
         expect(getByTestId("toolbar-title")).toMatchSnapshot();
       });

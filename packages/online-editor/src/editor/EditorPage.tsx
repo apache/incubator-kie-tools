@@ -55,7 +55,7 @@ export function EditorPage(props: Props) {
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
-  const isDirty = useDirtyState(context.stateControl);
+  const isDirty = useDirtyState(editorRef);
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -76,11 +76,11 @@ export function EditorPage(props: Props) {
   }, []);
 
   const requestDownload = useCallback(() => {
-    context.stateControl.setSavedEvent();
+    editorRef.current?.getStateControl().setSavedCommand();
     setShowUnsavedAlert(false);
     action = ActionType.DOWNLOAD;
     editorRef.current?.requestContent();
-  }, [context.stateControl.setSavedEvent]);
+  }, []);
 
   const requestPreview = useCallback(() => {
     action = ActionType.PREVIEW;
@@ -242,6 +242,7 @@ export function EditorPage(props: Props) {
           isPageFullscreen={fullscreen}
           onPreview={requestPreview}
           onExportGist={requestExportGist}
+          isEdited={isDirty}
         />
       }
     >
@@ -275,8 +276,7 @@ export function EditorPage(props: Props) {
                   </a>
                 </p>
                 <a data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
-                  {" "}
-                  Close without saving
+                  {" Close without saving"}
                 </a>
               </div>
             </Alert>
@@ -297,7 +297,6 @@ export function EditorPage(props: Props) {
           channelType={ChannelType.ONLINE}
           onContentResponse={onContentResponse}
           onPreviewResponse={onPreviewResponse}
-          stateControl={context.stateControl}
         />
       </PageSection>
       <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />

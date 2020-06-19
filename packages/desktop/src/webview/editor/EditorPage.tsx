@@ -56,11 +56,10 @@ export function EditorPage(props: Props) {
   const context = useContext(GlobalContext);
   const editorRef = useRef<EmbeddedEditorRef>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
-
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [saveFileSuccessAlertVisible, setSaveFileSuccessAlertVisible] = useState(false);
   const [savePreviewSuccessAlertVisible, setSavePreviewSuccessAlertVisible] = useState(false);
-  const isDirty = useDirtyState(context.stateControl);
+  const isDirty = useDirtyState(editorRef);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
 
   const onClose = useCallback(() => {
@@ -140,7 +139,7 @@ export function EditorPage(props: Props) {
     [previewRequestAction, context.file!.filePath]
   );
 
-  const saveFile = useCallback(() => {
+  const onSave = useCallback(() => {
     contentRequestData = {
       action: FileSaveActions.SAVE
     };
@@ -226,7 +225,7 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     electron.ipcRenderer.on("saveFileSuccess", () => {
-      context.stateControl.setSavedEvent();
+      editorRef.current?.getStateControl().setSavedCommand();
       setSaveFileSuccessAlertVisible(true);
       requestThumbnailPreview();
     });
@@ -261,7 +260,7 @@ export function EditorPage(props: Props) {
       <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
         <Stack>
           <StackItem>
-            <EditorToolbar onClose={onClose} onSave={saveFile} />
+            <EditorToolbar onClose={onClose} onSave={onSave} isEdited={isDirty}/>
           </StackItem>
           <StackItem className="pf-m-fill">
             {showUnsavedAlert && (
@@ -326,7 +325,6 @@ export function EditorPage(props: Props) {
               onContentResponse={onContentResponse}
               onPreviewResponse={onPreviewResponse}
               onReady={requestThumbnailPreview}
-              stateControl={context.stateControl}
             />
           </StackItem>
         </Stack>

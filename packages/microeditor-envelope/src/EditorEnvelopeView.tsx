@@ -17,10 +17,10 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as AppFormer from "@kogito-tooling/core-api";
+import { ChannelType, StateControlCommand } from "@kogito-tooling/core-api";
 import { LoadingScreen } from "./LoadingScreen";
 import { KeyBindingsHelpOverlay } from "@kogito-tooling/keyboard-shortcuts";
 import { KeyboardShortcutsApi } from "../../keyboard-shortcuts/src/api";
-import { RegisterChannelKeyboardShortcuts } from "./RegisterChannelKeyboardShortcuts";
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
@@ -42,6 +42,9 @@ interface State {
 }
 
 export class EditorEnvelopeView extends React.Component<Props, State> {
+  private redoId: number;
+  private undoId: number;
+
   constructor(props: Props) {
     super(props);
     this.state = { editor: undefined, loading: true };
@@ -68,18 +71,37 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
     return ReactDOM.createPortal(<LoadingScreen visible={this.state.loading} />, this.props.loadingScreenContainer!);
   }
 
+  public componentDidMount() {
+    if (this.props.context.channel !== ChannelType.VSCODE) {
+      this.registerRedoShortcut();
+      this.registerUndoShortcut();
+    }
+  }
+
+  public componentWillUnmount() {
+    this.props.keyboardShortcuts.deregister(this.redoId);
+    this.props.keyboardShortcuts.deregister(this.undoId);
+  }
+
+  private registerRedoShortcut() {
+    this.redoId = this.props.keyboardShortcuts.registerKeyPress("shift+ctrl+z", "Edit | Redo last edit", async () => {
+      this.props.stateControl.redo();
+      this.props.messageBus.request_stateControlCommandUpdate(StateControlCommand.REDO);
+    });
+  }
+
+  private registerUndoShortcut() {
+    this.undoId = this.props.keyboardShortcuts.registerKeyPress("ctrl+z", "Edit | Undo last edit", async () => {
+      this.props.stateControl.undo();
+      this.props.messageBus.request_stateControlCommandUpdate(StateControlCommand.UNDO);
+    });
+  }
+
   public render() {
     return (
       <>
         {!this.state.loading && (
-          <>
-            <RegisterChannelKeyboardShortcuts
-              keyboardShortcuts={this.props.keyboardShortcuts}
-              stateControl={this.props.stateControl}
-              messageBus={this.props.messageBus}
-            />
-            <KeyBindingsHelpOverlay keyboardShortcuts={this.props.keyboardShortcuts} context={this.props.context} />
-          </>
+          <KeyBindingsHelpOverlay keyboardShortcuts={this.props.keyboardShortcuts} context={this.props.context} />
         )}
         {this.LoadingScreenPortal()}
         {this.state.editor && this.state.editor.af_isReact && this.state.editor.af_componentRoot()}

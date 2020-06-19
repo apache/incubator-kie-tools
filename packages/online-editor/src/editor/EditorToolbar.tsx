@@ -33,7 +33,6 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
-import { useDirtyState } from "@kogito-tooling/embedded-editor";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -45,6 +44,7 @@ interface Props {
   onClose: () => void;
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
+  isEdited: boolean;
 }
 
 export function EditorToolbar(props: Props) {
@@ -54,7 +54,6 @@ export function EditorToolbar(props: Props) {
   const [name, setName] = useState(context.file.fileName);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
-  const isEdited = useDirtyState(context.stateControl);
 
   const logoProps = useMemo(() => {
     return { onClick: props.onClose };
@@ -144,10 +143,9 @@ export function EditorToolbar(props: Props) {
           >
             {context.file.fileName + "." + editorType}
           </Title>
-          {isEdited && (
+          {props.isEdited && (
             <span className={"kogito--editor__toolbar-edited"} data-testid="is-dirty-indicator">
-              {" "}
-              - Edited
+              {" - Edited"}
             </span>
           )}
         </div>

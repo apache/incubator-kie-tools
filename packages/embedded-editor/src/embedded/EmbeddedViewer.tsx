@@ -26,7 +26,6 @@ import { useCallback } from "react";
 import { File } from "../common/File";
 import { EmbeddedEditor } from "./EmbeddedEditor";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
-import {StateControl} from "../stateControl";
 
 /**
  * Properties supported by the `EmbeddedEditor`.
@@ -56,10 +55,6 @@ interface Props {
    * Optional relative URL for the `envelope.html` used as the inner bus `IFRAME`. Defaults to `envelope/envelope.html`
    */
   envelopeUri?: string;
-  /**
-   * Handle the state of the Editor, gives the possibility to undo/redo edits and show when the file was edited (isDirty)
-   */
-  stateControl: StateControl;
 }
 
 export const EmbeddedViewer = (props: Props) => {
@@ -103,7 +98,6 @@ export const EmbeddedViewer = (props: Props) => {
       onNewEdit={noop}
       onPreviewResponse={noop}
       envelopeUri={props.envelopeUri}
-      stateControl={props.stateControl}
     />
   );
 };

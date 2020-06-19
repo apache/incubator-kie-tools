@@ -27,7 +27,7 @@ import {
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as CSS from "csstype";
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import {useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from "react";
 import { File } from "../common";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 import { StateControl } from "../stateControl";
@@ -49,10 +49,6 @@ export interface Props {
    */
 
   channelType: ChannelType;
-  /**
-   * Handle the state of the Editor, gives the possibility to undo/redo edits and show when the file was edited (isDirty)
-   */
-  stateControl: StateControl;
   /**
    * Optional callback for when the editors' content is returned followin a response for it.
    */
@@ -105,6 +101,10 @@ export interface Props {
  */
 export type EmbeddedEditorRef = {
   /**
+   * Get an instance of the StateControl
+   */
+  getStateControl(): StateControl;
+  /**
    * Notify the editor to redo the last command and update the state control.
    */
   notifyRedo(): void;
@@ -144,6 +144,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   forwardedRef
 ) => {
   const iframeRef: React.RefObject<HTMLIFrameElement> = useRef<HTMLIFrameElement>(null);
+  const stateControl = useMemo(() => new StateControl(), []);
 
   //Property functions default handling
   const onResourceContentRequest = useCallback(
@@ -169,10 +170,10 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   const handleStateControlCommand = useCallback((stateControlCommand: StateControlCommand) => {
     switch (stateControlCommand) {
       case StateControlCommand.REDO:
-        props.stateControl.redo();
+        stateControl.redo();
         break;
       case StateControlCommand.UNDO:
-        props.stateControl.undo();
+        stateControl.undo();
         break;
       default:
         console.info(`Unknown message type received: ${stateControlCommand}`);
@@ -223,15 +224,15 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           onResourceListRequest(request).then(r => self.respond_resourceList(r!));
         },
         notify_editorUndo: () => {
-          props.stateControl.undo();
+          stateControl.undo();
           props.onEditorUndo?.();
         },
         notify_editorRedo: () => {
-          props.stateControl.redo();
+          stateControl.redo();
           props.onEditorRedo?.();
         },
         receive_newEdit(edit: KogitoEdit) {
-          props.stateControl.updateCommandStack(edit.id);
+          stateControl.updateCommandStack(edit.id);
           props.onNewEdit?.(edit);
         },
         receive_previewRequest(previewSvg: string) {
@@ -272,6 +273,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       }
 
       return {
+        getStateControl: () => stateControl,
         notifyRedo: () => envelopeBusOuterMessageHandler.notify_editorRedo(),
         notifyUndo: () => envelopeBusOuterMessageHandler.notify_editorUndo(),
         requestContent: () => envelopeBusOuterMessageHandler.request_contentResponse(),

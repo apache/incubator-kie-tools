@@ -40,7 +40,7 @@ describe("EmbeddedViewer::ONLINE", () => {
   });
 
   test("EmbeddedViewer::defaults", () => {
-    mount(<EmbeddedViewer file={file} router={router} channelType={channelType} stateControl={stateControl} />, {
+    mount(<EmbeddedViewer file={file} router={router} channelType={channelType} />, {
       attachTo: holder
     });
 
@@ -62,7 +62,6 @@ describe("EmbeddedViewer::ONLINE", () => {
         router={router}
         channelType={channelType}
         onResourceContentRequest={onResourceContentRequest}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );
@@ -85,7 +84,6 @@ describe("EmbeddedViewer::ONLINE", () => {
         router={router}
         channelType={channelType}
         onResourceListRequest={onResourceListRequest}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );

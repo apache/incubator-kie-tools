@@ -26,7 +26,8 @@ import {
   ResourceContentRequest,
   ResourceContentService,
   Router,
-  ResourceListRequest, StateControlEvent
+  ResourceListRequest,
+  StateControlCommand
 } from "@kogito-tooling/core-api";
 import { Uri } from "vscode";
 
@@ -142,7 +143,7 @@ export class KogitoEditor {
             fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, preview);
           }
         },
-        notify_stateControl(event: StateControlEvent) {
+        receive_stateControlCommandUpdate(command: StateControlCommand) {
           /**/
         }
       })

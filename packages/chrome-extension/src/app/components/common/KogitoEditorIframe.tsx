@@ -39,7 +39,6 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   const editorRef = useRef<EmbeddedEditorRef>(null);
   const { router, editorIndexPath, resourceContentServiceFactory } = useGlobals();
   const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
-  const stateControl = useMemo(() => new StateControl(), [])
 
   //Lookup ResourceContentService
   const resourceContentService = useMemo(() => {
@@ -125,7 +124,6 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           onResourceContentRequest={(request: ResourceContentRequest) => resourceContentService.get(request.path, request.opts)}
           onResourceListRequest={(request: ResourceListRequest) => resourceContentService.list(request.pattern, request.opts)}
           envelopeUri={router.getRelativePathTo(editorIndexPath)}
-          stateControl={stateControl}
         />
       </div>
     </>

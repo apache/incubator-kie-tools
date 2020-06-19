@@ -26,11 +26,11 @@ import { removeDirectories } from "../../common/utils";
 interface Props {
   onSave: () => void;
   onClose: () => void;
+  isEdited: boolean;
 }
 
 export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
-  const isEdited = useDirtyState(context.stateControl);
 
   const editorType = useMemo(() => {
     return context.file!.fileType;
@@ -45,10 +45,9 @@ export function EditorToolbar(props: Props) {
           {removeDirectories(context.file!.filePath)}
         </Title>
       </Tooltip>
-      {isEdited && (
+      {props.isEdited && (
         <span className={"kogito--editor__toolbar-edited"} data-testid="is-dirty-indicator">
-          {" "}
-          - Edited
+          {" - Edited"}
         </span>
       )}
     </div>

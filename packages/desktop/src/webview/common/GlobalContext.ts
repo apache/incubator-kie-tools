@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorRouter, StateControl } from "@kogito-tooling/embedded-editor";
+import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { File } from "../../common/File";
 
 export interface GlobalContextType {
   file?: File;
   router: EmbeddedEditorRouter;
-  stateControl: StateControl;
 }
 
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);

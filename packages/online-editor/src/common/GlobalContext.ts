@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { StateControl, EmbeddedEditorRouter, File } from "@kogito-tooling/embedded-editor";
+import { EmbeddedEditorRouter, File } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { GithubService } from "./GithubService";
 import { Routes } from "./Routes";
@@ -27,7 +27,6 @@ export interface GlobalContextType {
   external: boolean;
   senderTabId?: string;
   githubService: GithubService;
-  stateControl: StateControl;
 }
 
 export const GlobalContext = React.createContext<GlobalContextType>({} as any);

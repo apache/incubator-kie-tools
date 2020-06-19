@@ -43,6 +43,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
   const editorRef: RefObject<EmbeddedEditorRef> = {
     current: {
+      getStateControl: () => new StateControl(),
       requestContent: () => "",
       requestPreview: () => "",
       setContent: (content: string) => null,
@@ -50,8 +51,6 @@ describe("EmbeddedEditor::ONLINE", () => {
       notifyUndo: () => ""
     }
   };
-
-  const stateControl = new StateControl();
 
   beforeAll(() => spyOn<any>(EnvelopeBusOuterMessageHandler, "generateRandomBusId"));
 
@@ -62,7 +61,6 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         router={router}
         channelType={channelType}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );
@@ -83,7 +81,6 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         router={router}
         channelType={channelType}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );
@@ -102,7 +99,6 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         router={router}
         channelType={channelType}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );
@@ -121,7 +117,6 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         router={router}
         channelType={channelType}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );
@@ -141,7 +136,6 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onContentResponse={onContentResponse}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );
@@ -163,7 +157,6 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onSetContentError={onSetContentError}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );
@@ -185,7 +178,6 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onDirtyIndicatorChange={onDirtyIndicatorChange}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );
@@ -207,7 +199,6 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onReady={onReady}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );
@@ -229,7 +220,6 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onResourceContentRequest={onResourceContentRequest}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );
@@ -253,7 +243,6 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onResourceListRequest={onResourceListRequest}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );
@@ -267,7 +256,6 @@ describe("EmbeddedEditor::ONLINE", () => {
 
   test("EmbeddedEditor::onNewEdit", async () => {
     const onNewEdit = jest.fn((edit: KogitoEdit) => null);
-    stateControl.updateCommandStack = jest.fn(() => null);
 
     mount(
       <EmbeddedEditor
@@ -276,13 +264,12 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onNewEdit={onNewEdit}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );
 
     await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT, data: new KogitoEdit("1") });
-    expect(stateControl.updateCommandStack).toBeCalled();
+    expect(editorRef.current?.getStateControl().getCommandStack()).toEqual(["1"]);
     expect(onNewEdit).toBeCalled();
 
     expect(document.body).toMatchSnapshot();
@@ -298,7 +285,6 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onPreviewResponse={onPreviewResponse}
-        stateControl={stateControl}
       />,
       { attachTo: holder }
     );

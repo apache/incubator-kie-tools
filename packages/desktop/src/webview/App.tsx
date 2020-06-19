@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorRouter, StateControl } from "@kogito-tooling/embedded-editor";
+import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly-variables.css";
@@ -46,8 +46,6 @@ export function App(props: Props) {
   const [file, setFile] = useState(props.file);
 
   const [invalidFileTypeErrorVisible, setInvalidFileTypeErrorVisible] = useState(false);
-
-  const stateControl = useMemo(() => new StateControl(), []);
 
   const desktopRouter = useMemo(
     () =>
@@ -161,8 +159,7 @@ export function App(props: Props) {
     <GlobalContext.Provider
       value={{
         file: file,
-        router: desktopRouter,
-        stateControl: stateControl
+        router: desktopRouter
       }}
     >
       {invalidFileTypeErrorVisible && (
