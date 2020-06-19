@@ -42,12 +42,6 @@ export class EditorEnvelopeController {
     private readonly resourceContentEditorCoordinator: ResourceContentEditorCoordinator,
     private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService
   ) {
-    this.renderer = renderer;
-    this.editorFactory = editorFactory;
-    this.specialDomElements = specialDomElements;
-    this.resourceContentEditorCoordinator = resourceContentEditorCoordinator;
-    this.stateControl = stateControl;
-    this.keyboardShortcutsService = keyboardShortcutsService;
     this.envelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(busApi, self => ({
       receive_contentResponse: (editorContent: EditorContent) => {
         const contentPath = editorContent.path || "";
