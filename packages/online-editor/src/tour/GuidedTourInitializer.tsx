@@ -86,8 +86,14 @@ function getOnlineEditorTutorial() {
           </List>
           <Text className="pf-c-content--align-left">
             You can find useful information at the{" "}
-            <a href="http://learn-dmn-in-15-minutes.com">Learn DMN in 15 minutes</a> course or at the{" "}
-            <a href="https://docs.jboss.org/kogito/release/latest/html_single/#_using_dmn_models_in_kogito_services">
+            <a target="_blank" href="http://learn-dmn-in-15-minutes.com">
+              Learn DMN in 15 minutes
+            </a>{" "}
+            course or at the{" "}
+            <a
+              target="_blank"
+              href="https://docs.jboss.org/kogito/release/latest/html_single/#_using_dmn_models_in_kogito_services"
+            >
               Kogito documentation
             </a>{" "}
             :-)
