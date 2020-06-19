@@ -1,6 +1,5 @@
 {
     "baseUrl": "http://localhost:9001",
-    "testFiles": "**/*spec.js",
     "defaultCommandTimeout": 30000,
     "chromeWebSecurity": false
 }

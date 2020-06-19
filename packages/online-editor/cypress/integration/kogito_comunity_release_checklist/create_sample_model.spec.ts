@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-/// <reference types="Cypress" />
+/// <reference path="../../support/index.d.ts" />
+
 context('Check sample models successfully created', () => {
 
   beforeEach(() => {
