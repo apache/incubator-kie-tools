@@ -17,7 +17,7 @@
 import { Rect } from "@kogito-tooling/guided-tour";
 
 function getPositionProvider() {
-  return window.org.appformer.kogito.bridge.client.guided.tour.GuidedTourCustomSelectorPositionProvider.getInstance();
+  return window.JsInterop__Envelope__GuidedTour__GuidedTourCustomSelectorPositionProvider.getInstance();
 }
 
 export const getGuidedTourElementPosition = (selector: string) => {
@@ -32,20 +32,6 @@ interface GuidedTourCustomSelectorPositionProvider {
 
 declare global {
   interface Window {
-    org: {
-      appformer: {
-        kogito: {
-          bridge: {
-            client: {
-              guided: {
-                tour: {
-                  GuidedTourCustomSelectorPositionProvider: GuidedTourCustomSelectorPositionProvider;
-                };
-              };
-            };
-          };
-        };
-      };
-    };
+    JsInterop__Envelope__GuidedTour__GuidedTourCustomSelectorPositionProvider: GuidedTourCustomSelectorPositionProvider;
   }
 }
