@@ -89,7 +89,8 @@ const (
 	springBootEnvVarInfinispanSaslMechanism = "INFINISPAN_REMOTE_SASL_MECHANISM"
 
 	// Kafka environment variables
-	envVarKafkaBootstrapServers = "KAFKA_BOOTSTRAP_SERVERS"
+	envVarQuarkusKafkaBootstrapServers    = "KAFKA_BOOTSTRAP_SERVERS"
+	envVarSpringBootKafkaBootstrapServers = "SPRING_KAFKA_BOOTSTRAP_SERVERS"
 )
 
 func registerKogitoAppSteps(s *godog.Suite, data *Data) {
@@ -363,7 +364,11 @@ func parseKogitoAppKafkaRow(row *messages.PickleStepArgument_PickleTable_PickleT
 
 	switch secondColumn {
 	case kogitoAppKafkaExternalURIKey:
-		kogitoApp.Spec.AddEnvironmentVariable(envVarKafkaBootstrapServers, getThirdColumn(row))
+		key := envVarQuarkusKafkaBootstrapServers
+		if kogitoApp.Spec.Runtime == v1alpha1.SpringbootRuntimeType {
+			key = envVarSpringBootKafkaBootstrapServers
+		}
+		kogitoApp.Spec.AddEnvironmentVariable(key, getThirdColumn(row))
 		*profilesPtr = append(*profilesPtr, "events")
 	}
 }
