@@ -3,5 +3,5 @@
   "compilerOptions": {
     "declaration": false
   },
-  "include": ["src"]
+  "include": ["src", "it-tests"]
 }
