@@ -15,7 +15,7 @@
  */
 
 import { renderHook } from "@testing-library/react-hooks";
-import { useDirtyState } from "../../stateControl/DirtyState";
+import { useDirtyState } from "../../stateControl/Hooks";
 import { StateControl } from "../../stateControl/StateControl";
 import { act } from "react-test-renderer";
 
@@ -24,52 +24,52 @@ describe("useEditorDirtyState", () => {
   beforeEach(() => (editorStateControl = new StateControl()));
 
   describe("false", () => {
-    it("after initialization", () => {
+    test("after initialization", () => {
       const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       expect(result.current).toBeFalsy();
     });
 
-    it("redo without any event to be redone", () => {
+    test("redo without any command to be redone", () => {
       const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
-        editorStateControl.redoEvent();
+        editorStateControl.redo();
       });
 
       expect(result.current).toBeFalsy();
     });
 
-    it("add event and save it", () => {
+    test("add command and save it", () => {
       const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
-        editorStateControl.updateEventStack("1");
-        editorStateControl.setSavedEvent();
+        editorStateControl.updateCommandStack("1");
+        editorStateControl.setSavedCommand();
       });
 
       expect(result.current).toBeFalsy();
     });
 
-    it("add event and undo it", () => {
+    test("add command and undo it", () => {
       const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
-        editorStateControl.updateEventStack("1");
-        editorStateControl.undoEvent();
+        editorStateControl.updateCommandStack("1");
+        editorStateControl.undo();
       });
 
       expect(result.current).toBeFalsy();
     });
 
-    it("add event, save it, undo and redo", () => {
+    test("add command, save it, undo and redo", () => {
       const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
-        editorStateControl.updateEventStack("1");
-        editorStateControl.setSavedEvent();
-        editorStateControl.undoEvent();
-        editorStateControl.redoEvent();
+        editorStateControl.updateCommandStack("1");
+        editorStateControl.setSavedCommand();
+        editorStateControl.undo();
+        editorStateControl.redo();
       });
 
       expect(result.current).toBeFalsy();
@@ -77,36 +77,36 @@ describe("useEditorDirtyState", () => {
   });
 
   describe("true", () => {
-    it("add event without saving", () => {
+    test("add command without saving", () => {
       const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
-        editorStateControl.updateEventStack("1");
+        editorStateControl.updateCommandStack("1");
       });
 
       expect(result.current).toBeTruthy();
     });
 
-    it("add event, undo and redo", () => {
+    test("add command, undo and redo", () => {
       const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
-        editorStateControl.updateEventStack("1");
-        editorStateControl.undoEvent();
-        editorStateControl.redoEvent();
+        editorStateControl.updateCommandStack("1");
+        editorStateControl.undo();
+        editorStateControl.redo();
       });
 
       expect(result.current).toBeTruthy();
     });
 
-    it("add event, save it, undo and new event", () => {
+    test("add command, save it, undo and new command", () => {
       const { result } = renderHook(() => useDirtyState(editorStateControl));
 
       act(() => {
-        editorStateControl.updateEventStack("1");
-        editorStateControl.setSavedEvent();
-        editorStateControl.undoEvent();
-        editorStateControl.updateEventStack("2");
+        editorStateControl.updateCommandStack("1");
+        editorStateControl.setSavedCommand();
+        editorStateControl.undo();
+        editorStateControl.updateCommandStack("2");
       });
 
       expect(result.current).toBeTruthy();

@@ -14,4 +14,18 @@
  * limitations under the License.
  */
 
-export * from "./stateControl"
+import { useEffect, useState } from "react";
+import { StateControl } from "./StateControl";
+
+export function useDirtyState(stateControl: StateControl) {
+  const [isDirty, setIsDirty] = useState(false);
+
+  useEffect(() => {
+    const callback = stateControl.subscribe(setIsDirty);
+    return () => {
+      stateControl.unsubscribe(callback);
+    };
+  }, []);
+
+  return isDirty;
+}

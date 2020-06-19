@@ -14,36 +14,34 @@
  * limitations under the License.
  */
 
-import { StateControlEvent } from "@kogito-tooling/core-api";
-import { KeyboardShortcutsApi, undoShortcut, redoShortcut } from "@kogito-tooling/keyboard-shortcuts";
+import { StateControlCommand } from "@kogito-tooling/core-api";
+import { KeyboardShortcutsApi } from "@kogito-tooling/keyboard-shortcuts";
 import { useEffect } from "react";
 import * as React from "react";
-import { StateControl } from "../api/stateControl";
+import { StateControlService } from "../api/stateControl";
 import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
 
 interface Props {
   keyboardShortcuts: KeyboardShortcutsApi;
-  stateControl: StateControl;
+  stateControl: StateControlService;
   messageBus: EnvelopeBusInnerMessageHandler;
 }
 
 export function RegisterChannelKeyboardShortcuts(props: Props) {
   // Add the redo keyboard shortcut
   useEffect(() => {
-    const { combination, label } = redoShortcut();
-    const id = props.keyboardShortcuts.registerKeyPress(combination, label, async () => {
+    const id = props.keyboardShortcuts.registerKeyPress("shift+ctrl+z", "Edit | Redo last edit", async () => {
       props.stateControl.redo();
-      props.messageBus.notify_stateControl(StateControlEvent.REDO);
+      props.messageBus.request_stateControlCommandUpdate(StateControlCommand.REDO);
     });
     return () => props.keyboardShortcuts.deregister(id);
   }, []);
 
   // Add the undo keyboard shortcut
   useEffect(() => {
-    const { combination, label } = undoShortcut();
-    const id = props.keyboardShortcuts.registerKeyPress(combination, label, async () => {
+    const id = props.keyboardShortcuts.registerKeyPress("ctrl+z", "Edit | Undo last edit", async () => {
       props.stateControl.undo();
-      props.messageBus.notify_stateControl(StateControlEvent.UNDO);
+      props.messageBus.request_stateControlCommandUpdate(StateControlCommand.UNDO);
     });
     return () => props.keyboardShortcuts.deregister(id);
   }, []);

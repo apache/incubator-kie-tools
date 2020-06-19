@@ -25,14 +25,14 @@ import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ResourceContentEditorCoordinator } from "./api/resourceContent";
-import { StateControl } from "./api/stateControl";
+import { StateControlService } from "./api/stateControl";
 
 export class EditorEnvelopeController {
   private readonly editorFactory: EditorFactory<any>;
   private readonly specialDomElements: SpecialDomElements;
   private readonly resourceContentEditorCoordinator: ResourceContentEditorCoordinator;
   private readonly envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler;
-  private readonly stateControl: StateControl;
+  private readonly stateControl: StateControlService;
 
   private editorEnvelopeView?: EditorEnvelopeView;
   private renderer: Renderer;
@@ -41,7 +41,7 @@ export class EditorEnvelopeController {
     busApi: EnvelopeBusApi,
     editorFactory: EditorFactory<any>,
     specialDomElements: SpecialDomElements,
-    stateControl: StateControl,
+    stateControl: StateControlService,
     renderer: Renderer,
     resourceContentEditorCoordinator: ResourceContentEditorCoordinator,
     keyboardShortcutsApi: KeyboardShortcutsApi

@@ -15,19 +15,19 @@
  */
 
 
-import { StateControl, StateControlApi } from "../../api/stateControl";
+import { StateControlService, StateControlApi } from "../../api/stateControl";
 
 const innerMessageHandler = jest.fn();
 
 let messageBus;
 
-let stateControl:StateControl;
+let stateControl:StateControlService;
 let stateControlApi:StateControlApi;
 
 describe("StateControl", () => {
 
   beforeEach(() => {
-    stateControl = new StateControl();
+    stateControl = new StateControlService();
     messageBus = new innerMessageHandler();
     stateControlApi = stateControl.exposeApi(messageBus);
   });

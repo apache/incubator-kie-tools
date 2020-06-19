@@ -10,7 +10,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
   }
   exposing={[Function]}
   keyboardShortcuts={
-    e {
+    DefaultKeyboardShortcutsService {
       "delayedKeyBindings": Array [
         Object {
           "binding": Object {
@@ -147,7 +147,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
 >
   <RegisterChannelKeyboardShortcuts
     keyboardShortcuts={
-      e {
+      DefaultKeyboardShortcutsService {
         "delayedKeyBindings": Array [
           Object {
             "binding": Object {
@@ -226,7 +226,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
       }
     }
   />
-  <Component
+  <KeyBindingsHelpOverlay
     context={
       Object {
         "channel": "VSCODE",
@@ -234,7 +234,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
       }
     }
     keyboardShortcuts={
-      e {
+      DefaultKeyboardShortcutsService {
         "delayedKeyBindings": Array [
           Object {
             "binding": Object {
@@ -424,7 +424,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
         />
       </Portal>
     </Modal>
-  </Component>
+  </KeyBindingsHelpOverlay>
   <Portal
     containerInfo={
       <div
@@ -565,7 +565,7 @@ exports[`EditorEnvelopeController opens 1`] = `
   }
   exposing={[Function]}
   keyboardShortcuts={
-    e {
+    DefaultKeyboardShortcutsService {
       "delayedKeyBindings": Array [],
       "editorContext": Object {
         "channel": "VSCODE",
@@ -789,7 +789,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
   }
   exposing={[Function]}
   keyboardShortcuts={
-    e {
+    DefaultKeyboardShortcutsService {
       "delayedKeyBindings": Array [],
       "editorContext": Object {
         "channel": "VSCODE",

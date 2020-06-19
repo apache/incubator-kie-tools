@@ -24,7 +24,7 @@ import { RegisterChannelKeyboardShortcuts } from "./RegisterChannelKeyboardShort
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
-import { StateControl } from "./api/stateControl";
+import { StateControlService } from "./api/stateControl";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 
 interface Props {
@@ -32,7 +32,7 @@ interface Props {
   loadingScreenContainer: HTMLElement;
   keyboardShortcuts: KeyboardShortcutsApi;
   context: AppFormer.EditorContext;
-  stateControl: StateControl;
+  stateControl: StateControlService;
   messageBus: EnvelopeBusInnerMessageHandler;
 }
 

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./StateControl";
+export * from "./StateControlService";
 export * from "./KogitoCommand";
 export * from "./KogitoCommandRegistry";

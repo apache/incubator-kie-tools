@@ -27,7 +27,7 @@ import {
   ResourceContentOptions,
   ResourcesList,
   ResourceListOptions,
-  StateControlEvent
+  StateControlCommand
 } from "@kogito-tooling/core-api";
 
 export interface Impl {
@@ -117,8 +117,8 @@ export class EnvelopeBusInnerMessageHandler {
   public respond_previewRequest(previewSvg: string) {
     return this.send({ type: EnvelopeBusMessageType.RETURN_PREVIEW, data: previewSvg });
   }
-  public notify_stateControl(stateControl: StateControlEvent) {
-    return this.send({ type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL, data: stateControl });
+  public request_stateControlCommandUpdate(stateControl: StateControlCommand) {
+    return this.send({ type: EnvelopeBusMessageType.REQUEST_STATE_CONTROL_COMMAND_UPDATE, data: stateControl });
   }
 
   private receive_initRequest(init: { origin: string; busId: string }) {

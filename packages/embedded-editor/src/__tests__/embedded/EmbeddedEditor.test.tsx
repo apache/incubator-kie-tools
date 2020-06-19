@@ -267,7 +267,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
   test("EmbeddedEditor::onNewEdit", async () => {
     const onNewEdit = jest.fn((edit: KogitoEdit) => null);
-    stateControl.updateEventStack = jest.fn(() => null);
+    stateControl.updateCommandStack = jest.fn(() => null);
 
     mount(
       <EmbeddedEditor
@@ -282,7 +282,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT, data: new KogitoEdit("1") });
-    expect(stateControl.updateEventStack).toBeCalled();
+    expect(stateControl.updateCommandStack).toBeCalled();
     expect(onNewEdit).toBeCalled();
 
     expect(document.body).toMatchSnapshot();

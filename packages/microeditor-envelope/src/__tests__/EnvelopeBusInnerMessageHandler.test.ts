@@ -21,7 +21,7 @@ import {
   LanguageData,
   ResourceContent,
   ResourcesList,
-  StateControlEvent
+  StateControlCommand
 } from "@kogito-tooling/core-api";
 
 let handler: EnvelopeBusInnerMessageHandler;
@@ -220,18 +220,24 @@ describe("send", () => {
     expect(sentMessages).toEqual([[{ type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined }, "tgt-orgn"]]);
   });
 
-  describe("notify_stateControl", () => {
-    test("notify state control api - redo event", () => {
-      handler.notify_stateControl(StateControlEvent.REDO);
+  describe("receive_stateControlCommand", () => {
+    test("receive state control api - redo event", () => {
+      handler.request_stateControlCommandUpdate(StateControlCommand.REDO);
       expect(sentMessages).toEqual([
-        [{ type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL, data: StateControlEvent.REDO }, "tgt-orgn"]
+        [
+          { type: EnvelopeBusMessageType.REQUEST_STATE_CONTROL_COMMAND_UPDATE, data: StateControlCommand.REDO },
+          "tgt-orgn"
+        ]
       ]);
     });
 
-    test("notify state control api - redo event", () => {
-      handler.notify_stateControl(StateControlEvent.UNDO);
+    test("receive state control api - redo event", () => {
+      handler.request_stateControlCommandUpdate(StateControlCommand.UNDO);
       expect(sentMessages).toEqual([
-        [{ type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL, data: StateControlEvent.UNDO }, "tgt-orgn"]
+        [
+          { type: EnvelopeBusMessageType.REQUEST_STATE_CONTROL_COMMAND_UPDATE, data: StateControlCommand.UNDO },
+          "tgt-orgn"
+        ]
       ]);
     });
   });

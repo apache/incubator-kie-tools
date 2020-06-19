@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export { useDirtyState } from "./DirtyState";
+export { useDirtyState } from "./Hooks";
 export { StateControl } from "./StateControl";

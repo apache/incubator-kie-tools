@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-type Event = undefined | string;
+type Command = undefined | string;
 
 export class StateControl {
-  private eventStack: string[];
-  private currentEvent: Event;
-  private savedEvent: Event;
+  private commandStack: string[];
+  private currentCommand: Command;
+  private savedCommand: Command;
   private registeredCallbacks: Array<(isDirty: boolean) => void>;
 
   constructor() {
-    this.eventStack = [];
+    this.commandStack = [];
     this.registeredCallbacks = [];
   }
 
@@ -39,30 +39,30 @@ export class StateControl {
     }
   }
 
-  public getSavedEvent() {
-    return this.savedEvent;
+  public getSavedCommand() {
+    return this.savedCommand;
   }
 
-  public setSavedEvent() {
-    this.savedEvent = this.currentEvent;
+  public setSavedCommand() {
+    this.savedCommand = this.currentCommand;
     this.registeredCallbacks.forEach(setIsDirty => setIsDirty(this.isDirty()));
   }
 
-  public getCurrentEvent() {
-    return this.currentEvent;
+  public getCurrentCommand() {
+    return this.currentCommand;
   }
 
-  public setCurrentEvent(event: Event) {
-    this.currentEvent = event;
+  public setCurrentCommand(command: Command) {
+    this.currentCommand = command;
     this.registeredCallbacks.forEach(setIsDirty => setIsDirty(this.isDirty()));
   }
 
-  public getEventStack() {
-    return this.eventStack;
+  public getCommandStack() {
+    return this.commandStack;
   }
 
-  public setEventStack(eventStack: string[]) {
-    this.eventStack = eventStack;
+  public setCommandStack(commandStack: string[]) {
+    this.commandStack = commandStack;
   }
 
   public getRegisteredCallbacks() {
@@ -70,33 +70,33 @@ export class StateControl {
   }
 
   public isDirty() {
-    return this.currentEvent !== this.savedEvent;
+    return this.currentCommand !== this.savedCommand;
   }
 
-  public undoEvent() {
-    const indexOfCurrentEvent = this.eventStack.indexOf(this.currentEvent!);
+  public undo() {
+    const indexOfCurrentCommand = this.commandStack.indexOf(this.currentCommand!);
 
-    let eventUndone: Event;
-    if (this.eventStack[indexOfCurrentEvent - 1]) {
-      eventUndone = this.eventStack[indexOfCurrentEvent - 1];
+    let commandUndone: Command;
+    if (this.commandStack[indexOfCurrentCommand - 1]) {
+      commandUndone = this.commandStack[indexOfCurrentCommand - 1];
     }
-    this.setCurrentEvent(eventUndone);
+    this.setCurrentCommand(commandUndone);
   }
 
-  public redoEvent() {
-    const indexOfCurrentEvent = this.eventStack.indexOf(this.currentEvent!);
-    if (this.eventStack[indexOfCurrentEvent + 1]) {
-      const eventRedone = this.eventStack[indexOfCurrentEvent + 1];
-      this.setCurrentEvent(eventRedone);
+  public redo() {
+    const indexOfCurrentCommand = this.commandStack.indexOf(this.currentCommand!);
+    if (this.commandStack[indexOfCurrentCommand + 1]) {
+      const commandRedone = this.commandStack[indexOfCurrentCommand + 1];
+      this.setCurrentCommand(commandRedone);
     }
   }
 
-  private eraseRedoEvents() {
-    return this.eventStack.slice(0, this.eventStack.indexOf(this.currentEvent!) + 1);
+  private eraseRedoCommands() {
+    return this.commandStack.slice(0, this.commandStack.indexOf(this.currentCommand!) + 1);
   }
 
-  public updateEventStack(event: string) {
-    this.eventStack = this.eraseRedoEvents().concat(event);
-    this.setCurrentEvent(event);
+  public updateCommandStack(command: string) {
+    this.commandStack = this.eraseRedoCommands().concat(command);
+    this.setCurrentCommand(command);
   }
 }

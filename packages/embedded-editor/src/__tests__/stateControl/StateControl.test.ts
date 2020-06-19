@@ -16,230 +16,230 @@
 
 import { StateControl } from "../../stateControl/StateControl";
 
-describe("EditorStateControl", () => {
-  let editorStateControl: StateControl;
+describe("StateControl", () => {
+  let stateControl: StateControl;
 
   beforeEach(() => {
-    editorStateControl = new StateControl();
+    stateControl = new StateControl();
   });
 
-  describe("eventStack", () => {
+  describe("commandStack", () => {
     test("should be empty", () => {
-      expect(editorStateControl.getEventStack()).toEqual([]);
+      expect(stateControl.getCommandStack()).toEqual([]);
     });
 
-    test("should set new events on the stack", () => {
-      const events = ["1", "2", "3", "4"];
-      editorStateControl.setEventStack(events);
-      expect(editorStateControl.getEventStack()).toEqual(events);
+    test("should set new commands on the stack", () => {
+      const commands = ["1", "2", "3", "4"];
+      stateControl.setCommandStack(commands);
+      expect(stateControl.getCommandStack()).toEqual(commands);
     });
 
-    test("should set new events on the stack", () => {
-      ["1", "2", "3", "4"].forEach((event, index, events) => {
-        editorStateControl.updateEventStack(event);
-        expect(editorStateControl.getEventStack()).toEqual(events.slice(0, index + 1));
+    test("should set new commands on the stack", () => {
+      ["1", "2", "3", "4"].forEach((command, index, commands) => {
+        stateControl.updateCommandStack(command);
+        expect(stateControl.getCommandStack()).toEqual(commands.slice(0, index + 1));
       });
     });
   });
 
-  describe("currentEvent", () => {
+  describe("currentCommand", () => {
     test("should be undefined", () => {
-      expect(editorStateControl.getCurrentEvent()).toBeUndefined();
+      expect(stateControl.getCurrentCommand()).toBeUndefined();
     });
 
-    test("should be the last added event on the stack", () => {
-      ["1", "2", "3", "4"].forEach(event => {
-        editorStateControl.updateEventStack(event);
-        expect(editorStateControl.getCurrentEvent()).toEqual(event);
+    test("should be the last added command on the stack", () => {
+      ["1", "2", "3", "4"].forEach(command => {
+        stateControl.updateCommandStack(command);
+        expect(stateControl.getCurrentCommand()).toEqual(command);
       });
     });
   });
 
-  describe("savedEvent", () => {
+  describe("savedCommand", () => {
     test("should be undefined", () => {
-      expect(editorStateControl.getSavedEvent()).toBeUndefined();
-      editorStateControl.setSavedEvent();
-      expect(editorStateControl.getSavedEvent()).toBeUndefined();
+      expect(stateControl.getSavedCommand()).toBeUndefined();
+      stateControl.getSavedCommand();
+      expect(stateControl.getSavedCommand()).toBeUndefined();
 
-      ["1", "2", "3", "4"].forEach(event => {
-        editorStateControl.updateEventStack(event);
-        expect(editorStateControl.getSavedEvent()).toBeUndefined();
+      ["1", "2", "3", "4"].forEach(command => {
+        stateControl.updateCommandStack(command);
+        expect(stateControl.getSavedCommand()).toBeUndefined();
       });
     });
 
-    test("should be the last event added", () => {
-      ["1", "2", "3", "4"].forEach(event => {
-        editorStateControl.updateEventStack(event);
-        editorStateControl.setSavedEvent();
-        expect(editorStateControl.getSavedEvent()).toEqual(event);
+    test("should be the last command added", () => {
+      ["1", "2", "3", "4"].forEach(command => {
+        stateControl.updateCommandStack(command);
+        stateControl.setSavedCommand();
+        expect(stateControl.getSavedCommand()).toEqual(command);
       });
     });
 
-    test("should be the saved event", () => {
-      const specialEvent = "special";
-      editorStateControl.updateEventStack(specialEvent);
-      editorStateControl.setSavedEvent();
+    test("should be the saved command", () => {
+      const specialCommand = "special";
+      stateControl.updateCommandStack(specialCommand);
+      stateControl.setSavedCommand();
 
-      ["1", "2", "3", "4"].forEach(event => {
-        editorStateControl.updateEventStack(event);
-        expect(editorStateControl.getSavedEvent()).toEqual(specialEvent);
+      ["1", "2", "3", "4"].forEach(command => {
+        stateControl.updateCommandStack(command);
+        expect(stateControl.getSavedCommand()).toEqual(specialCommand);
       });
     });
   });
 
-  describe("isDirty::EditorStateControl", () => {
+  describe("isDirty::StateControl", () => {
     test("should be false", () => {
-      expect(editorStateControl.isDirty()).toBeFalsy();
+      expect(stateControl.isDirty()).toBeFalsy();
 
-      ["1", "2", "3", "4"].forEach(event => {
-        editorStateControl.updateEventStack(event);
-        editorStateControl.setSavedEvent();
-        expect(editorStateControl.isDirty()).toBeFalsy();
+      ["1", "2", "3", "4"].forEach(command => {
+        stateControl.updateCommandStack(command);
+        stateControl.setSavedCommand();
+        expect(stateControl.isDirty()).toBeFalsy();
       });
     });
 
     test("should be true", () => {
-      ["1", "2", "3", "4"].forEach(event => {
-        editorStateControl.updateEventStack(event);
-        expect(editorStateControl.isDirty()).toBeTruthy();
+      ["1", "2", "3", "4"].forEach(command => {
+        stateControl.updateCommandStack(command);
+        expect(stateControl.isDirty()).toBeTruthy();
       });
     });
 
     test("should be true", () => {
-      const specialEvent = "special";
-      editorStateControl.updateEventStack(specialEvent);
-      editorStateControl.setSavedEvent();
-      expect(editorStateControl.isDirty()).toBeFalsy();
+      const specialCommand = "special";
+      stateControl.updateCommandStack(specialCommand);
+      stateControl.setSavedCommand();
+      expect(stateControl.isDirty()).toBeFalsy();
 
-      ["1", "2", "3", "4"].forEach(event => {
-        editorStateControl.updateEventStack(event);
-        expect(editorStateControl.isDirty()).toBeTruthy();
+      ["1", "2", "3", "4"].forEach(command => {
+        stateControl.updateCommandStack(command);
+        expect(stateControl.isDirty()).toBeTruthy();
       });
-      editorStateControl.setSavedEvent();
-      expect(editorStateControl.isDirty()).toBeFalsy();
+      stateControl.setSavedCommand();
+      expect(stateControl.isDirty()).toBeFalsy();
     });
   });
 
-  describe("updateEventStack::EditorStateControl", () => {
-    test("shouldn't erase events", () => {
-      editorStateControl.updateEventStack("1");
-      expect(editorStateControl.getEventStack()).toEqual(["1"]);
+  describe("updateCommandStack::StateControl", () => {
+    test("shouldn't erase commands", () => {
+      stateControl.updateCommandStack("1");
+      expect(stateControl.getCommandStack()).toEqual(["1"]);
 
-      const events = ["1", "2", "3", "4"];
-      events.forEach(event => editorStateControl.updateEventStack(event));
+      const commands = ["1", "2", "3", "4"];
+      commands.forEach(command => stateControl.updateCommandStack(command));
 
-      expect(editorStateControl.getEventStack()).toEqual(events);
+      expect(stateControl.getCommandStack()).toEqual(commands);
     });
 
     test("should erase", () => {
-      const events = ["1", "2", "3", "4"];
-      events.forEach(event => editorStateControl.updateEventStack(event));
-      editorStateControl.setCurrentEvent("2");
-      editorStateControl.updateEventStack("5");
+      const commands = ["1", "2", "3", "4"];
+      commands.forEach(command => stateControl.updateCommandStack(command));
+      stateControl.setCurrentCommand("2");
+      stateControl.updateCommandStack("5");
 
-      expect(editorStateControl.getEventStack()).toEqual(["1", "2", "5"]);
+      expect(stateControl.getCommandStack()).toEqual(["1", "2", "5"]);
     });
   });
 
-  describe("undoEvent::EditorStateControl", () => {
-    test("shouldn't undo an empty event stack", () => {
-      editorStateControl.undoEvent();
-      expect(editorStateControl.getCurrentEvent()).toBeUndefined();
+  describe("undo::StateControl", () => {
+    test("shouldn't undo an empty command stack", () => {
+      stateControl.undo();
+      expect(stateControl.getCurrentCommand()).toBeUndefined();
     });
 
-    test("should undo to previous event and maintain event stack", () => {
-      const events = ["1", "2", "3", "4"];
-      events.forEach(event => editorStateControl.updateEventStack(event));
+    test("should undo to previous command and maintain command stack", () => {
+      const commands = ["1", "2", "3", "4"];
+      commands.forEach(command => stateControl.updateCommandStack(command));
 
-      ["4", "3", "2", "1"].forEach(event => {
-        expect(editorStateControl.getCurrentEvent()).toEqual(event);
-        editorStateControl.undoEvent();
+      ["4", "3", "2", "1"].forEach(command => {
+        expect(stateControl.getCurrentCommand()).toEqual(command);
+        stateControl.undo();
       });
-      expect(editorStateControl.getCurrentEvent()).toBeUndefined();
-      expect(editorStateControl.getEventStack()).toEqual(events);
+      expect(stateControl.getCurrentCommand()).toBeUndefined();
+      expect(stateControl.getCommandStack()).toEqual(commands);
     });
   });
 
-  describe("redoEvent::EditorStateControl", () => {
-    test("shouldn't redo an empty event stack", () => {
-      editorStateControl.redoEvent();
-      expect(editorStateControl.getCurrentEvent()).toBeUndefined();
+  describe("redo::StateControl", () => {
+    test("shouldn't redo an empty command stack", () => {
+      stateControl.redo();
+      expect(stateControl.getCurrentCommand()).toBeUndefined();
     });
 
-    test("should redo to the next possible event on the event stack", () => {
-      const events = ["1", "2", "3", "4"];
-      events.forEach(event => editorStateControl.updateEventStack(event));
+    test("should redo to the next possible command on the command stack", () => {
+      const commands = ["1", "2", "3", "4"];
+      commands.forEach(command => stateControl.updateCommandStack(command));
 
-      events.forEach(event => editorStateControl.undoEvent());
-      expect(editorStateControl.getCurrentEvent()).toBeUndefined();
+      commands.forEach(command => stateControl.undo());
+      expect(stateControl.getCurrentCommand()).toBeUndefined();
 
-      events.forEach(event => {
-        editorStateControl.redoEvent();
-        expect(editorStateControl.getCurrentEvent()).toEqual(event);
+      commands.forEach(command => {
+        stateControl.redo();
+        expect(stateControl.getCurrentCommand()).toEqual(command);
       });
 
-      editorStateControl.redoEvent();
-      expect(editorStateControl.getCurrentEvent()).toEqual(events.pop());
+      stateControl.redo();
+      expect(stateControl.getCurrentCommand()).toEqual(commands.pop());
     });
   });
 
-  describe("subscribe::EditorStateControl", () => {
+  describe("subscribe::StateControl", () => {
     let isDirty = false;
     const setIsDirty = (newState: boolean) => {
       isDirty = newState;
     };
 
     test("should update the state when a change occurs", () => {
-      editorStateControl.subscribe(setIsDirty);
-      expect(editorStateControl.isDirty()).toBeFalsy();
+      stateControl.subscribe(setIsDirty);
+      expect(stateControl.isDirty()).toBeFalsy();
 
-      editorStateControl.updateEventStack("1");
-      expect(editorStateControl.isDirty()).toBeTruthy();
+      stateControl.updateCommandStack("1");
+      expect(stateControl.isDirty()).toBeTruthy();
       expect(isDirty).toBeTruthy();
 
-      editorStateControl.setSavedEvent();
-      expect(editorStateControl.isDirty()).toBeFalsy();
+      stateControl.setSavedCommand();
+      expect(stateControl.isDirty()).toBeFalsy();
       expect(isDirty).toBeFalsy();
     });
   });
 
-  describe("unsubscribe::EditorStateControl", () => {
+  describe("unsubscribe::StateControl", () => {
     let isDirty = false;
     const setIsDirty = (newState: boolean) => {
       isDirty = newState;
     };
 
-    test("should unsubscribe and make incosistent data", () => {
-      editorStateControl.subscribe(setIsDirty);
-      editorStateControl.updateEventStack("1");
-      editorStateControl.unsubscribe(setIsDirty);
-      editorStateControl.setSavedEvent();
+    test("should unsubscribe and make inconsistent data", () => {
+      stateControl.subscribe(setIsDirty);
+      stateControl.updateCommandStack("1");
+      stateControl.unsubscribe(setIsDirty);
+      stateControl.setSavedCommand();
 
-      expect(editorStateControl.isDirty()).toBeFalsy();
+      expect(stateControl.isDirty()).toBeFalsy();
       expect(isDirty).toBeTruthy();
     });
   });
 
   describe("complete workflow", () => {
-    test("shouldn't redo an empty event stack", () => {
-      editorStateControl.updateEventStack("1");
-      editorStateControl.updateEventStack("2");
-      expect(editorStateControl.isDirty()).toBeTruthy();
-      editorStateControl.setSavedEvent();
-      expect(editorStateControl.isDirty()).toBeFalsy();
+    test("shouldn't redo an empty command stack", () => {
+      stateControl.updateCommandStack("1");
+      stateControl.updateCommandStack("2");
+      expect(stateControl.isDirty()).toBeTruthy();
+      stateControl.setSavedCommand();
+      expect(stateControl.isDirty()).toBeFalsy();
 
-      editorStateControl.undoEvent();
-      expect(editorStateControl.isDirty()).toBeTruthy();
-      editorStateControl.redoEvent();
-      expect(editorStateControl.isDirty()).toBeFalsy();
+      stateControl.undo();
+      expect(stateControl.isDirty()).toBeTruthy();
+      stateControl.redo();
+      expect(stateControl.isDirty()).toBeFalsy();
 
-      expect(editorStateControl.getEventStack()).toEqual(["1", "2"]);
-      editorStateControl.undoEvent();
-      expect(editorStateControl.getCurrentEvent()).toEqual("1");
-      editorStateControl.updateEventStack("3");
-      expect(editorStateControl.getEventStack()).toEqual(["1", "3"]);
-      editorStateControl.redoEvent();
-      expect(editorStateControl.getCurrentEvent()).toEqual("3");
+      expect(stateControl.getCommandStack()).toEqual(["1", "2"]);
+      stateControl.undo();
+      expect(stateControl.getCurrentCommand()).toEqual("1");
+      stateControl.updateCommandStack("3");
+      expect(stateControl.getCommandStack()).toEqual(["1", "3"]);
+      stateControl.redo();
+      expect(stateControl.getCurrentCommand()).toEqual("3");
     });
   });
 });
