@@ -47,6 +47,7 @@ import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.AbstractScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationHasBusyIndicatorDefaultErrorCallback;
+import org.drools.workbench.screens.scenariosimulation.client.popup.CustomBusyPopup;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.type.ScenarioSimulationResourceType;
@@ -83,12 +84,14 @@ import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter.IDENTIFIER;
@@ -417,7 +420,19 @@ public class ScenarioSimulationEditorBusinessCentralWrapper extends KieEditor<Sc
     protected void loadContent() {
         scenarioSimulationEditorPresenter.loadContent();
         service.call(getModelSuccessCallback(),
-                     getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
+                     getLoadContentErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
+    }
+
+    protected ErrorCallback<Boolean> getLoadContentErrorCallback() {
+        return (message, exception) -> {
+            CustomBusyPopup.close();
+            BusyPopup.close();
+            scenarioSimulationEditorPresenter.sendNotification(ScenarioSimulationEditorConstants.INSTANCE.loadContentFailedNotification()
+                                                                       + exception.getMessage(),
+                                                               NotificationEvent.NotificationType.ERROR);
+            placeManager.forceClosePlace(place);
+            return false;
+        };
     }
 
     @Override

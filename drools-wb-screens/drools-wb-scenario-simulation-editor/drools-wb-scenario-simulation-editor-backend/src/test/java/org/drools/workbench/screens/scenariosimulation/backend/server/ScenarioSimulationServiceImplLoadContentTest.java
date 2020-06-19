@@ -17,7 +17,12 @@ package org.drools.workbench.screens.scenariosimulation.backend.server;
 
 import javax.enterprise.event.Event;
 
+import org.drools.scenariosimulation.api.model.Background;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Settings;
+import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.model.ScenarioSimulationModelContent;
+import org.drools.workbench.screens.scenariosimulation.service.DMNTypeService;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
@@ -37,8 +42,13 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -59,29 +69,46 @@ public class ScenarioSimulationServiceImplLoadContentTest {
     @Mock
     private DataModelService dataModelService;
 
+    @Mock
+    private DMNTypeService dmnTypeServiceMock;
+
     @InjectMocks
-    private ScenarioSimulationServiceImpl service = new ScenarioSimulationServiceImpl(mock(SafeSessionInfo.class));
+    private ScenarioSimulationServiceImpl serviceSpy = spy(new ScenarioSimulationServiceImpl(mock(SafeSessionInfo.class)) {
+        @Override
+        protected ScenarioSimulationModel unmarshalInternal(String content) {
+            Simulation simulation = new Simulation();
+            Background background = new Background();
+            Settings settings = new Settings();
+            settings.setType(ScenarioSimulationModel.Type.DMN);
+            ScenarioSimulationModel toReturn = new ScenarioSimulationModel();
+            toReturn.setSimulation(simulation);
+            toReturn.setBackground(background);
+            toReturn.setSettings(settings);
+            return toReturn;
+        }
+    });
 
     private Path path = PathFactory.newPath("contextpath", "file:///contextpath");
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         doReturn("").when(ioService).readAllString(any());
         doReturn(false).when(pathResolver).isDotFile(any());
         doReturn(mock(Overview.class)).when(overviewLoader).loadOverview(any());
-
         doReturn(mock(PackageDataModelOracle.class)).when(dataModelService).getDataModel(path);
     }
 
     @Test
-    public void loadContent() throws Exception {
-        final ScenarioSimulationModelContent scenarioSimulationModelContent = service.loadContent(path);
+    public void loadContent() {
+        final ScenarioSimulationModelContent scenarioSimulationModelContent = serviceSpy.loadContent(path);
 
         assertNotNull(scenarioSimulationModelContent);
         assertNotNull(scenarioSimulationModelContent.getDataModel());
         assertNotNull(scenarioSimulationModelContent.getModel());
         assertNotNull(scenarioSimulationModelContent.getOverview());
 
+        verify(serviceSpy, times(1)).constructContent(eq(path), isA(Overview.class));
+        verify(dmnTypeServiceMock, times(1)).initializeNameAndNamespace(isA(Settings.class), eq(path), anyString());
         verify(resourceOpenedEvent).fire(any(ResourceOpenedEvent.class));
     }
 }
