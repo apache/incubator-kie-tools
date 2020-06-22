@@ -25,10 +25,10 @@ export const getCurrentStep = (currentStep: number, currentTutorial?: Tutorial):
 
 export const getSteps = (currentTutorial?: Tutorial) => {
   const registeredTutorials = KogitoGuidedTour.getRegisteredTutorials();
-  const steps = currentTutorial?.steps || [];
+  const steps = currentTutorial?.steps ?? [];
 
   return flatMap(step => {
-    const stepMode = step.mode || new DemoMode();
+    const stepMode = step.mode ?? new DemoMode();
 
     if (!("label" in stepMode)) {
       return [step];
@@ -39,6 +39,6 @@ export const getSteps = (currentTutorial?: Tutorial) => {
       return tutorial.label === stepTutorialLabel;
     });
 
-    return stepTutorial?.steps || [];
+    return stepTutorial?.steps ?? [];
   }, steps);
 };

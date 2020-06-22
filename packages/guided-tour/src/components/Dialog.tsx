@@ -61,9 +61,9 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
   // Aliases
   const dialogClass = "pf-c-modal-box kgt-dialog kgt-dialog" + (isEnabled ? "--enabled" : "--disabled");
   const dialogStep = useMemo(() => getCurrentStep(currentStep, currentTutorial), [currentStep, currentTutorial]);
-  const dialogContent = dialogStep?.content || "";
-  const dialogPosition = dialogStep?.position || "center";
-  const dialogMode = dialogStep?.mode || new DemoMode();
+  const dialogContent = dialogStep?.content ?? "";
+  const dialogPosition = dialogStep?.position ?? "center";
+  const dialogMode = dialogStep?.mode ?? new DemoMode();
   const dialogRefElement = isNegativeReinforcementStateEnabled ? DEFAULT_RECT : currentRefElementPosition;
 
   // Post processing

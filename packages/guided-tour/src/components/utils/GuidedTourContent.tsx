@@ -67,7 +67,7 @@ export const StepDialog = (
 
 export const NegativeReinforcementDialog = (step: Step | undefined, onCloseAction: () => void) => {
   const { isHighlightLayerEnabled, setIsHighlightLayerEnabled } = useContext(CurrentTutorialContext);
-  const negativeReinforcementMessage = step?.negativeReinforcementMessage || "";
+  const negativeReinforcementMessage = step?.negativeReinforcementMessage ?? "";
   const showSuggestion = useCallback(() => setIsHighlightLayerEnabled(false), []);
 
   if (!isHighlightLayerEnabled) {

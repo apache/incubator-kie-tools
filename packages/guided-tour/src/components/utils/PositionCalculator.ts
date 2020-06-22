@@ -23,9 +23,9 @@ const DEFAULT_STYLE = {
 };
 
 export const calculatePositionStyle = (position: string, rect?: Rect) => {
-  const { left, top, width, height } = rect || {};
+  const { left, top, width, height } = rect ?? {};
 
-  if (!(left && top && width && height) || rect === DEFAULT_RECT) {
+  if (!(left && top && width && height) ?? rect === DEFAULT_RECT) {
     return DEFAULT_STYLE;
   }
 

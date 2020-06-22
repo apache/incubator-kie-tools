@@ -32,7 +32,7 @@ export const NavigationControls = () => {
     currentTutorial
   ]);
   const numberOfSteps = useMemo(() => getSteps(currentTutorial).length, [currentTutorial]);
-  const currentStepNumber = (currentStep || 0) + 1;
+  const currentStepNumber = (currentStep ?? 0) + 1;
 
   const prev = useCallback(() => setCurrentStep(currentStep - 1), [currentStep]);
   const next = useCallback(() => setCurrentStep(currentStep + 1), [currentStep]);

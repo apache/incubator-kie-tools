@@ -35,18 +35,18 @@ export const useUserInteractions = () => {
 
   // Aliases
   const dialogStep = useMemo(() => getCurrentStep(currentStep, currentTutorial), [currentStep, currentTutorial]);
-  const mode = dialogStep?.mode || new DemoMode();
+  const mode = dialogStep?.mode ?? new DemoMode();
 
   function handleBlockMode(blockMode: BlockMode) {
     const { userInteraction, allowedSelectors } = blockMode;
-    const targetSelector = latestUserInteraction?.target || "";
+    const targetSelector = latestUserInteraction?.target ?? "";
 
     function isAllowedInteraction() {
       return [...allowedSelectors, userInteraction.target].indexOf(targetSelector) !== -1;
     }
 
     function isNegativeReinforcementMessagePresent() {
-      const message = dialogStep?.negativeReinforcementMessage || "";
+      const message = dialogStep?.negativeReinforcementMessage ?? "";
       return message.length > 0;
     }
 
@@ -68,11 +68,11 @@ export const useUserInteractions = () => {
       setIsHighlightLayerEnabled(true);
     }
 
-    const expectedAction = userInteraction.action || "";
-    const expectedTarget = userInteraction.target || "";
+    const expectedAction = userInteraction.action ?? "";
+    const expectedTarget = userInteraction.target ?? "";
 
-    const actualAction = latestUserInteraction?.action || "";
-    const actualTarget = latestUserInteraction?.target || "";
+    const actualAction = latestUserInteraction?.action ?? "";
+    const actualTarget = latestUserInteraction?.target ?? "";
 
     const isExpectedAction = actualAction.startsWith(expectedAction);
     const isExpectedTarget = actualTarget.startsWith(expectedTarget);

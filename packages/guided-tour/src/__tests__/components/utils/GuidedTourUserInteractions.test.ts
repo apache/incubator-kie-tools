@@ -126,9 +126,9 @@ const ctx: any = {
 };
 
 function useContext(currentCtx: any) {
-  ctx.currentStep = currentCtx.currentStep || 0;
-  ctx.completedStep = currentCtx.completedStep || 0;
-  ctx.currentTutorial = currentCtx.currentTutorial || {
+  ctx.currentStep = currentCtx.currentStep ?? 0;
+  ctx.completedStep = currentCtx.completedStep ?? 0;
+  ctx.currentTutorial = currentCtx.currentTutorial ?? {
     steps: [
       {
         negativeReinforcementMessage: "Click on 'Node' to continue...",
@@ -136,7 +136,7 @@ function useContext(currentCtx: any) {
       }
     ]
   };
-  ctx.isHighlightLayerEnabled = currentCtx.isHighlightLayerEnabled || false;
-  ctx.isNegativeReinforcementStateEnabled = currentCtx.isNegativeReinforcementStateEnabled || false;
-  ctx.latestUserInteraction = currentCtx.latestUserInteraction || new UserInteraction("", "");
+  ctx.isHighlightLayerEnabled = currentCtx.isHighlightLayerEnabled ?? false;
+  ctx.isNegativeReinforcementStateEnabled = currentCtx.isNegativeReinforcementStateEnabled ?? false;
+  ctx.latestUserInteraction = currentCtx.latestUserInteraction ?? new UserInteraction("", "");
 }

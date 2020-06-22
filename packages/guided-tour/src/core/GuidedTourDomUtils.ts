@@ -20,7 +20,7 @@ export class GuidedTourDomUtils {
   private guidedTourElement?: HTMLElement;
 
   public getGuidedTourHTMLElement() {
-    this.guidedTourElement = this.guidedTourElement || this.findGuidedTourElement();
+    this.guidedTourElement = this.guidedTourElement ?? this.findGuidedTourElement();
     return this.guidedTourElement;
   }
 
@@ -32,7 +32,7 @@ export class GuidedTourDomUtils {
   private findGuidedTourElement() {
     const idSelector = "#" + this.elementId;
     const existingElement = document.getElementById(idSelector);
-    return existingElement || this.createGuidedTourElement();
+    return existingElement ?? this.createGuidedTourElement();
   }
 
   private createGuidedTourElement() {

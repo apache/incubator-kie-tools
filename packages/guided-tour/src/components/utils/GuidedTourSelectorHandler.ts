@@ -34,7 +34,7 @@ export const useSelectorHandler = () => {
     CurrentTutorialContext
   );
   const dialogStep = useMemo(() => getCurrentStep(currentStep, currentTutorial), [currentStep, currentTutorial]);
-  const selector = dialogStep?.selector || "";
+  const selector = dialogStep?.selector ?? "";
 
   useEffect(() => {
     if (selector.length === 0) {
