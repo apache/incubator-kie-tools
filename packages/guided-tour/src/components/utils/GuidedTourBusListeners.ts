@@ -39,10 +39,11 @@ function useGuidedTourBusEffect(eventLabel: EventLabel, consumer: (customEvent: 
 }
 
 function createEffect(eventLabel: EventLabel, consumer: (customEvent: CustomEvent) => void) {
-  function listener(e: any) {
-    consumer(e as CustomEvent);
-  }
   return () => {
+    function listener(e: any) {
+      consumer(e as CustomEvent);
+    }
+
     document.addEventListener(eventLabel, listener);
     return () => {
       document.removeEventListener(eventLabel, listener);
