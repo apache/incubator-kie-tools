@@ -21,6 +21,14 @@ import { KogitoGuidedTour } from "../..";
 import { DEFAULT_RECT } from "../../api";
 import { CurrentTutorialContext } from "../../contexts";
 
+function querySelector(query: string) {
+  try {
+    return document.querySelector(query);
+  } catch (err) {
+    return undefined;
+  }
+}
+
 export const useSelectorHandler = () => {
   const { currentStep, currentTutorial, latestUserInteraction, setCurrentRefElementPosition } = useContext(
     CurrentTutorialContext
@@ -28,15 +36,7 @@ export const useSelectorHandler = () => {
   const dialogStep = getCurrentStep(currentStep, currentTutorial);
   const selector = dialogStep?.selector || "";
 
-  function querySelector(query: string) {
-    try {
-      return document.querySelector(query);
-    } catch (err) {
-      return undefined;
-    }
-  }
-
-  function handleStepSelector() {
+  useEffect(() => {
     if (selector.length === 0) {
       return;
     }
@@ -55,9 +55,5 @@ export const useSelectorHandler = () => {
     }
 
     setCurrentRefElementPosition(DEFAULT_RECT);
-  }
-
-  useEffect(() => {
-    handleStepSelector();
   }, [currentStep, latestUserInteraction]);
 };
