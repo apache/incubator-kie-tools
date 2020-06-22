@@ -168,6 +168,10 @@ func GetKogitoAppStub(namespace, runtimeType, appName string) *v1alpha1.KogitoAp
 		},
 	}
 
+	if len(config.GetCustomMavenRepoURL()) > 0 {
+		kogitoApp.Spec.Build.AddEnvironmentVariable("MAVEN_REPO_URL", config.GetCustomMavenRepoURL())
+	}
+
 	return kogitoApp
 }
 func getKogitoApp(namespace, name string) (*v1alpha1.KogitoApp, error) {

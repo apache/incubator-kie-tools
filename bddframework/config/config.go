@@ -53,6 +53,7 @@ type TestConfig struct {
 	runtimeApplicationImageNamespace string
 
 	// build
+	customMavenRepoURL   string
 	mavenMirrorURL       string
 	buildImageRegistry   string
 	buildImageNamespace  string
@@ -128,6 +129,7 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.runtimeApplicationImageNamespace, prefix+"runtime-application-image-namespace", "", "Set the runtime application (built Kogito application image) image namespace")
 
 	// build
+	set.StringVar(&env.customMavenRepoURL, prefix+"custom-maven-repo-url", "", "Set a custom Maven repository url for S2I builds, in case your artifacts are in a specific repository. See https://github.com/kiegroup/kogito-images/README.md for more information")
 	set.StringVar(&env.mavenMirrorURL, prefix+"maven-mirror-url", "", "Maven mirror url to be used when building app in the tests")
 	set.StringVar(&env.buildImageRegistry, prefix+"build-image-registry", "", "Set the build image registry")
 	set.StringVar(&env.buildImageNamespace, prefix+"build-image-namespace", "", "Set the build image namespace")
@@ -263,6 +265,11 @@ func GetRuntimeApplicationImageNamespace() string {
 }
 
 // build
+
+// GetCustomMavenRepoURL return the custom maven repository url used by S2I builds
+func GetCustomMavenRepoURL() string {
+	return env.customMavenRepoURL
+}
 
 // GetMavenMirrorURL return the maven mirror url used for building applications
 func GetMavenMirrorURL() string {
