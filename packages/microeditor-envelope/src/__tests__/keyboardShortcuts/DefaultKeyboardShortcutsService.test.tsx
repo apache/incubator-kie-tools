@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { DefaultKeyboardShortcutsService } from "../../api/keyboardShortcuts";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
-import { fireEvent } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 
 describe("DefaultKeyboardShortcutsService", () => {
   test("keyPress", async () => {
     const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
-      editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE },
+      editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE }
     });
 
     const [action] = getActionForKeyPress("ctrl+a", keyboardShortcutsService);
@@ -33,9 +34,24 @@ describe("DefaultKeyboardShortcutsService", () => {
     expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
   });
 
+  test("keyPress on ignored tag", async () => {
+    const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
+      editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE }
+    });
+
+    const [action] = getActionForKeyPress("ctrl+a", keyboardShortcutsService);
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
+
+    const input = render(<input data-testid={"an-input"} />).getByTestId("an-input");
+    fireEvent(input, new KeyboardEvent("keydown", { ctrlKey: true, code: "KeyA" }));
+
+    expect(action).not.toHaveBeenCalled();
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
+  });
+
   test("keyPress on macOS", async () => {
     const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
-      editorContext: { operatingSystem: OperatingSystem.MACOS, channel: ChannelType.ONLINE },
+      editorContext: { operatingSystem: OperatingSystem.MACOS, channel: ChannelType.ONLINE }
     });
 
     const [action] = getActionForKeyPress("ctrl+a", keyboardShortcutsService);
@@ -49,7 +65,7 @@ describe("DefaultKeyboardShortcutsService", () => {
 
   test("keyDown then keyUp", async () => {
     const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
-      editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE },
+      editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE }
     });
 
     const [actionDown, actionUp] = getActionsForKeyUpAndDown("ctrl+a", keyboardShortcutsService);
@@ -79,7 +95,7 @@ describe("DefaultKeyboardShortcutsService", () => {
 
   test("keyPressOnce", async () => {
     const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
-      editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE },
+      editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE }
     });
 
     const [action] = getActionForKeyPressOnce("ctrl+c", keyboardShortcutsService);
@@ -93,7 +109,7 @@ describe("DefaultKeyboardShortcutsService", () => {
 
   test("deregister", async () => {
     const keyboardShortcutsService = new DefaultKeyboardShortcutsService({
-      editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE },
+      editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE }
     });
 
     const [action, id] = getActionForKeyPress("ctrl+c", keyboardShortcutsService);
