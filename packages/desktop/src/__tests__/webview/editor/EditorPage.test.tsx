@@ -18,8 +18,6 @@ import * as React from "react";
 import { fireEvent, render } from "@testing-library/react";
 import { EditorPage } from "../../../webview/editor/EditorPage";
 import { usingTestingGlobalContext } from "../../testing_utils";
-import { StateControl } from "@kogito-tooling/embedded-editor";
-import { act } from "react-dom/test-utils";
 
 const editorType = "";
 const onClose = jest.fn(() => null);

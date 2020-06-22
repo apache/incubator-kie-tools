@@ -77,7 +77,7 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
       context={context}
       exposing={self => (view = self)}
       loadingScreenContainer={loadingScreenContainer}
-      stateControl={new StateControlService()}
+      stateControlService={new StateControlService()}
       messageBus={messageBus}
     />
   );

@@ -32,7 +32,7 @@ export class EditorEnvelopeController {
   private readonly specialDomElements: SpecialDomElements;
   private readonly resourceContentEditorCoordinator: ResourceContentEditorCoordinator;
   private readonly envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler;
-  private readonly stateControl: StateControlService;
+  private readonly stateControlService: StateControlService;
 
   private editorEnvelopeView?: EditorEnvelopeView;
   private renderer: Renderer;
@@ -41,7 +41,7 @@ export class EditorEnvelopeController {
     busApi: EnvelopeBusApi,
     editorFactory: EditorFactory<any>,
     specialDomElements: SpecialDomElements,
-    stateControl: StateControlService,
+    stateControlService: StateControlService,
     renderer: Renderer,
     resourceContentEditorCoordinator: ResourceContentEditorCoordinator,
     keyboardShortcutsApi: KeyboardShortcutsApi
@@ -50,7 +50,7 @@ export class EditorEnvelopeController {
     this.editorFactory = editorFactory;
     this.specialDomElements = specialDomElements;
     this.resourceContentEditorCoordinator = resourceContentEditorCoordinator;
-    this.stateControl = stateControl;
+    this.stateControlService = stateControlService;
     this.envelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(busApi, self => ({
       receive_contentResponse: (editorContent: EditorContent) => {
         const contentPath = editorContent.path || "";
@@ -85,10 +85,10 @@ export class EditorEnvelopeController {
         this.resourceContentEditorCoordinator.resolvePendingList(resourcesList);
       },
       receive_editorUndo: () => {
-        this.stateControl.undo();
+        this.stateControlService.undo();
       },
       receive_editorRedo: () => {
-        this.stateControl.redo();
+        this.stateControlService.redo();
       },
       receive_previewRequest: () => {
         this.getEditor()
@@ -122,7 +122,7 @@ export class EditorEnvelopeController {
           loadingScreenContainer={this.specialDomElements.loadingScreenContainer}
           keyboardShortcuts={args.keyboardShortcuts}
           context={args.context}
-          stateControl={this.stateControl}
+          stateControlService={this.stateControlService}
           messageBus={this.envelopeBusInnerMessageHandler}
         />,
         args.container,

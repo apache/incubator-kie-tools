@@ -32,7 +32,7 @@ interface Props {
   loadingScreenContainer: HTMLElement;
   keyboardShortcuts: KeyboardShortcutsApi;
   context: AppFormer.EditorContext;
-  stateControl: StateControlService;
+  stateControlService: StateControlService;
   messageBus: EnvelopeBusInnerMessageHandler;
 }
 
@@ -79,21 +79,23 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
   }
 
   public componentWillUnmount() {
-    this.props.keyboardShortcuts.deregister(this.redoId);
-    this.props.keyboardShortcuts.deregister(this.undoId);
+    if (this.props.context.channel !== ChannelType.VSCODE) {
+      this.props.keyboardShortcuts.deregister(this.redoId);
+      this.props.keyboardShortcuts.deregister(this.undoId);
+    }
   }
 
   private registerRedoShortcut() {
     this.redoId = this.props.keyboardShortcuts.registerKeyPress("shift+ctrl+z", "Edit | Redo last edit", async () => {
-      this.props.stateControl.redo();
-      this.props.messageBus.request_stateControlCommandUpdate(StateControlCommand.REDO);
+      this.props.stateControlService.redo();
+      this.props.messageBus.request_stateControlCommandUpdateRequest(StateControlCommand.REDO);
     });
   }
 
   private registerUndoShortcut() {
     this.undoId = this.props.keyboardShortcuts.registerKeyPress("ctrl+z", "Edit | Undo last edit", async () => {
-      this.props.stateControl.undo();
-      this.props.messageBus.request_stateControlCommandUpdate(StateControlCommand.UNDO);
+      this.props.stateControlService.undo();
+      this.props.messageBus.request_stateControlCommandUpdateRequest(StateControlCommand.UNDO);
     });
   }
 

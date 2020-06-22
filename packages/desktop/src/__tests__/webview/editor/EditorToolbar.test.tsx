@@ -15,11 +15,10 @@
  */
 
 import * as React from "react";
-import { fireEvent, render } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { EditorToolbar } from "../../../webview/editor/EditorToolbar";
 import { usingTestingGlobalContext } from "../../testing_utils";
 import { StateControl } from "@kogito-tooling/embedded-editor";
-import { act } from "react-dom/test-utils";
 
 const onClose = jest.fn(() => null);
 
@@ -34,7 +33,7 @@ describe("EditorToolbar", () => {
     });
   });
 
-  describe("is dirty indicator", () => {
+  describe("isDirty indicator", () => {
     test("should show the isDirty indicator when the isEdited is true", () => {
       const isEdited = true;
       const { queryByTestId, getByTestId } = render(

@@ -14,42 +14,39 @@
  * limitations under the License.
  */
 
-
 import { StateControlService, StateControlApi } from "../../api/stateControl";
 
 const innerMessageHandler = jest.fn();
 
 let messageBus;
 
-let stateControl:StateControlService;
-let stateControlApi:StateControlApi;
+let stateControlService: StateControlService;
+let stateControlApi: StateControlApi;
 
 describe("StateControl", () => {
-
   beforeEach(() => {
-    stateControl = new StateControlService();
+    stateControlService = new StateControlService();
     messageBus = new innerMessageHandler();
-    stateControlApi = stateControl.exposeApi(messageBus);
+    stateControlApi = stateControlService.exposeApi(messageBus);
   });
 
   test("test undo redo without commands", () => {
-    expect(() => stateControl.undo()).not.toThrow();
-    expect(() => stateControl.redo()).not.toThrow();
+    expect(() => stateControlService.undo()).not.toThrow();
+    expect(() => stateControlService.redo()).not.toThrow();
   });
 
   test("test undo redo with commands", () => {
-
     const undoCommand = jest.fn();
     const redoCommand = jest.fn();
 
     stateControlApi.setUndoCommand(undoCommand);
     stateControlApi.setRedoCommand(redoCommand);
 
-    stateControl.undo();
+    stateControlService.undo();
 
     expect(undoCommand).toBeCalled();
 
-    stateControl.redo();
+    stateControlService.redo();
 
     expect(redoCommand).toBeCalled();
   });

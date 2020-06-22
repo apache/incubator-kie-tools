@@ -106,7 +106,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
       "targetOrigin": "test-target-origin",
     }
   }
-  stateControl={
+  stateControlService={
     Object {
       "redo": [MockFunction],
       "registry": [MockFunction],
@@ -507,7 +507,7 @@ exports[`EditorEnvelopeController opens 1`] = `
       },
     }
   }
-  stateControl={
+  stateControlService={
     Object {
       "redo": [MockFunction],
       "registry": [MockFunction],
@@ -733,7 +733,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
       "targetOrigin": "test-target-origin",
     }
   }
-  stateControl={
+  stateControlService={
     Object {
       "redo": [MockFunction],
       "registry": [MockFunction],

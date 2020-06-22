@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`EditorToolbar is dirty indicator should show the isDirty indicator when the isEdited is true 1`] = `
+exports[`EditorToolbar isDirty indicator should show the isDirty indicator when the isEdited is true 1`] = `
 <div
   data-testid="toolbar-title"
 >
@@ -18,7 +18,7 @@ exports[`EditorToolbar is dirty indicator should show the isDirty indicator when
 </div>
 `;
 
-exports[`EditorToolbar is dirty indicator shouldn't show the isDirty indicator when the isEdited is false 1`] = `
+exports[`EditorToolbar isDirty indicator shouldn't show the isDirty indicator when the isEdited is false 1`] = `
 <div
   data-testid="toolbar-title"
 >

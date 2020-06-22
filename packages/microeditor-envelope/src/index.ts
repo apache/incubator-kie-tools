@@ -70,13 +70,13 @@ export function init(args: {
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
-  const stateControl = new StateControlService();
+  const stateControlService = new StateControlService();
   const workspaceService = new WorkspaceService();
   const editorEnvelopeController = new EditorEnvelopeController(
     args.busApi,
     args.editorFactory,
     specialDomElements,
-    stateControl,
+    stateControlService,
     renderer,
     resourceContentEditorCoordinator,
     keyboardShortcutsService
@@ -88,7 +88,7 @@ export function init(args: {
       window.envelope = {
         resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
         editorContext: args.editorContext,
-        stateControl: stateControl.exposeApi(messageBus),
+        stateControl: stateControlService.exposeApi(messageBus),
         workspaceService: workspaceService.exposeApi(messageBus),
         keyboardShortcuts: keyboardShortcutsService
       };

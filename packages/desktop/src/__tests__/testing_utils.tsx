@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorRouter, StateControl } from "@kogito-tooling/embedded-editor";
+import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { GlobalContext, GlobalContextType } from "../webview/common/GlobalContext";
 
@@ -22,7 +22,6 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
   const usedCtx = {
     router: new EmbeddedEditorRouter(),
     file: { filePath: "test.dmn", fileContent: "", fileType: "dmn" },
-    stateControl: new StateControl(),
     ...ctx
   };
   return {
