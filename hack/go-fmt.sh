@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/bash
 # Copyright 2019 Red Hat, Inc. and/or its affiliates
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
 
 
 gofmt -s -l -w cmd/ pkg/ version/
-
+go fmt ./...
 if [[ -n ${CI} ]]; then
     git diff --exit-code
 fi
