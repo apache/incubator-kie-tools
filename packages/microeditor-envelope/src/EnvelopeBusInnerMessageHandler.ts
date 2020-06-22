@@ -113,6 +113,11 @@ export class EnvelopeBusInnerMessageHandler {
   public notify_newEdit(edit: KogitoEdit) {
     return this.send({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT, data: edit });
   }
+
+  public notify_openFile(path: string) {
+    return this.send({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_OPEN_FILE, data: path });
+  }
+
   public respond_previewRequest(previewSvg: string) {
     return this.send({ type: EnvelopeBusMessageType.RETURN_PREVIEW, data: previewSvg });
   }

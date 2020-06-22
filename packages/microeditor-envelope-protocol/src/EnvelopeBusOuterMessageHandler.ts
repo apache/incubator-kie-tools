@@ -41,6 +41,7 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   notify_editorUndo(): void;
   notify_editorRedo(): void;
   receive_newEdit(edit: KogitoEdit): void;
+  receive_openFile(path: string): void;
 }
 
 export class EnvelopeBusOuterMessageHandler {
@@ -155,6 +156,9 @@ export class EnvelopeBusOuterMessageHandler {
       case EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT:
         const kogitoEdit = message.data as KogitoEdit;
         this.impl.receive_newEdit(kogitoEdit);
+        break;
+      case EnvelopeBusMessageType.NOTIFY_EDITOR_OPEN_FILE:
+        this.impl.receive_openFile(message.data as string);
         break;
       case EnvelopeBusMessageType.RETURN_PREVIEW:
         this.impl.receive_previewRequest(message.data as string);
