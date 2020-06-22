@@ -22,7 +22,7 @@ const DEFAULT_STYLE = {
   transform: "translate(-50%, -50%)"
 };
 
-export const calculatePositionStyle = (position: string, rect: Rect | undefined) => {
+export const calculatePositionStyle = (position: string, rect?: Rect) => {
   const { left, top, width, height } = rect || {};
 
   if (!(left && top && width && height) || rect === DEFAULT_RECT) {

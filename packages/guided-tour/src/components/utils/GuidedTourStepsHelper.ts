@@ -19,11 +19,11 @@ import { KogitoGuidedTour, Step, Tutorial, SubTutorialMode, DemoMode } from "../
 const concat = <T>(array1: T[], array2: T[]) => array1.concat(array2);
 const flatMap = <T>(f: (array: T) => T[], array: T[]) => array.map(f).reduce(concat, []);
 
-export const getCurrentStep = (currentStep: number, currentTutorial: Tutorial | undefined): Step | undefined => {
+export const getCurrentStep = (currentStep: number, currentTutorial?: Tutorial): Step | undefined => {
   return getSteps(currentTutorial)[currentStep];
 };
 
-export const getSteps = (currentTutorial: Tutorial | undefined) => {
+export const getSteps = (currentTutorial?: Tutorial) => {
   const registeredTutorials = KogitoGuidedTour.getRegisteredTutorials();
   const steps = currentTutorial?.steps || [];
 
