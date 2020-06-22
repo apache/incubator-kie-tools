@@ -45,7 +45,7 @@ func (data *Data) namespaceIsDeleted() error {
 				exists, err := framework.IsNamespace(data.Namespace)
 				return !exists, err
 			})
-		if err != nil{
+		if err != nil {
 			return err
 		}
 	}

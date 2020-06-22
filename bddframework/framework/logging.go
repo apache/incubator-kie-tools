@@ -180,7 +180,7 @@ func isNamespaceMonitored(namespace string) bool {
 
 func getOrCreateResultsFile() (*os.File, error) {
 	resultsFilePath := GetLogFolder() + "/" + defaultResultsFileName
-	resultsFile, err := os.OpenFile(resultsFilePath, os.O_APPEND | os.O_WRONLY, 0)
+	resultsFile, err := os.OpenFile(resultsFilePath, os.O_APPEND|os.O_WRONLY, 0)
 	if err != nil {
 		if os.IsNotExist(err) {
 			resultsFile, err = os.Create(resultsFilePath)
@@ -391,7 +391,7 @@ func BumpEvents(namespace string) error {
 		return fmt.Errorf("Error while creating filewriter: %v", err)
 	}
 
-	if err := PrintDataMap(eventKeys, mapEvents(eventList), fileWriter); err != nil{
+	if err := PrintDataMap(eventKeys, mapEvents(eventList), fileWriter); err != nil {
 		return err
 	}
 

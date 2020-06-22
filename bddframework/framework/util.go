@@ -68,13 +68,13 @@ func ReadFromURI(uri string) (string, error) {
 			return "", err
 		}
 		defer resp.Body.Close()
-		if data, err = ioutil.ReadAll(resp.Body); err != nil{
+		if data, err = ioutil.ReadAll(resp.Body); err != nil {
 			return "", err
 		}
 	} else {
 		// It should be a Filesystem uri
 		absPath, err := filepath.Abs(uri)
-		if err != nil{
+		if err != nil {
 			return "", err
 		}
 		data, err = ioutil.ReadFile(absPath)
@@ -119,7 +119,7 @@ func WaitFor(namespace, display string, timeout time.Duration, condition func() 
 }
 
 // PrintDataMap prints a formatted dataMap using the given writer
-func PrintDataMap(keys []string, dataMaps []map[string]string, writer io.StringWriter)  error {
+func PrintDataMap(keys []string, dataMaps []map[string]string, writer io.StringWriter) error {
 	// Get size of strings to be written, to be able to format correctly
 	maxStringSizeMap := make(map[string]int)
 	for _, key := range keys {
@@ -134,17 +134,17 @@ func PrintDataMap(keys []string, dataMaps []map[string]string, writer io.StringW
 
 	// Write headers
 	for _, header := range keys {
-		if _, err := writer.WriteString(header); err != nil{
+		if _, err := writer.WriteString(header); err != nil {
 			return fmt.Errorf("Error in writing the header: %v", err)
 		}
-		if _, err := writer.WriteString(getWhitespaceStr(maxStringSizeMap[header] - len(header) + 1)); err != nil{
+		if _, err := writer.WriteString(getWhitespaceStr(maxStringSizeMap[header] - len(header) + 1)); err != nil {
 			return fmt.Errorf("Error in writing headers: %v", err)
 		}
-		if _, err := writer.WriteString(" | "); err != nil{
+		if _, err := writer.WriteString(" | "); err != nil {
 			return fmt.Errorf("Error in writing headers : %v", err)
 		}
 	}
-	if _, err := writer.WriteString("\n"); err != nil{
+	if _, err := writer.WriteString("\n"); err != nil {
 		return fmt.Errorf("Error in writing headers '|': %v", err)
 
 	}
@@ -152,17 +152,17 @@ func PrintDataMap(keys []string, dataMaps []map[string]string, writer io.StringW
 	// Write events
 	for _, dataMap := range dataMaps {
 		for _, key := range keys {
-			if _, err := writer.WriteString(dataMap[key]); err != nil{
+			if _, err := writer.WriteString(dataMap[key]); err != nil {
 				return fmt.Errorf("Error in writing events: %v", err)
 			}
-			if _, err := writer.WriteString(getWhitespaceStr(maxStringSizeMap[key] - len(dataMap[key]) + 1)); err != nil{
+			if _, err := writer.WriteString(getWhitespaceStr(maxStringSizeMap[key] - len(dataMap[key]) + 1)); err != nil {
 				return fmt.Errorf("Error in writing events: %v", err)
 			}
-			if _, err := writer.WriteString(" | "); err != nil{
+			if _, err := writer.WriteString(" | "); err != nil {
 				return fmt.Errorf("Error in writing events: %v", err)
 			}
 		}
-		if _, err := writer.WriteString("\n"); err != nil{
+		if _, err := writer.WriteString("\n"); err != nil {
 			return fmt.Errorf("Error in writing events: %v", err)
 		}
 	}

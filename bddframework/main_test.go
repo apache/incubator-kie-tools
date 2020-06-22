@@ -77,7 +77,7 @@ func TestMain(m *testing.M) {
 		}
 
 		status := godog.RunWithOptions("godogs", func(s *godog.Suite) {
-			if err := FeatureContext(s); err != nil{
+			if err := FeatureContext(s); err != nil {
 				panic(fmt.Errorf("Error while setting feature context %v", err))
 			}
 		}, opt)

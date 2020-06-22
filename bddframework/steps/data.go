@@ -68,13 +68,13 @@ func (data *Data) BeforeScenario(pickle *messages.Pickle) error {
 
 	var err error
 	framework.GetLogger(data.Namespace).Info(fmt.Sprintf("Scenario %s", pickle.GetName()))
-	 go func(){
+	go func() {
 		err = framework.StartPodLogCollector(data.Namespace)
 	}()
-	 if err != nil{
-	 	return err
-	 }
-	 return nil
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func getNamespaceName() string {
@@ -93,7 +93,7 @@ func createTemporaryFolder() string {
 }
 
 // AfterScenario executes some actions on data after a scenario is finished
-func (data *Data) AfterScenario(pickle *messages.Pickle, err error)  error{
+func (data *Data) AfterScenario(pickle *messages.Pickle, err error) error {
 	error := framework.OperateOnNamespaceIfExists(data.Namespace, func(namespace string) error {
 		if err := framework.StopPodLogCollector(namespace); err != nil {
 			framework.GetMainLogger().Errorf("Error stopping log collector on namespace %s: %v", namespace, err)
@@ -111,7 +111,7 @@ func (data *Data) AfterScenario(pickle *messages.Pickle, err error)  error{
 	logScenarioDuration(data)
 	deleteTemporaryExamplesFolder(data)
 
-	if error != nil{
+	if error != nil {
 		return error
 	}
 
