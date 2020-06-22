@@ -453,6 +453,26 @@ public class DataTransferServicesTest {
             return ioService.getFileSystem(URI.create(path));
         }
     }
+    
+    @Test
+    public void testShouldNotExposePrivateDS() throws Exception {
+        final String DS = "ds.dset";
+        final String DS_CONTENT = "TEST_CONTENT";
+        final String DS_NAME = "test_dataset";
+        
+        DataSetDef dataSetDef = mock(DataSetDef.class);
+        when(dataSetDef.isPublic()).thenReturn(false);
+        when(dataSetDef.getName()).thenReturn(DS_NAME);
+        when(dataSetDefJSONMarshaller.fromJson(DS_CONTENT)).thenReturn(dataSetDef);
+
+        createFile(datasetsFS, DS, DS_CONTENT);
+
+        DataTransferAssets assetsToExport = dataTransferServices.assetsToExport();
+
+        assertTrue(assetsToExport.getDatasetsDefinitions().isEmpty());
+        
+        cleanFileSystems();
+    }
 
     private Path createFile(FileSystem fs, String filename, String data) {
         Path path = fs.getRootDirectories().iterator().next();

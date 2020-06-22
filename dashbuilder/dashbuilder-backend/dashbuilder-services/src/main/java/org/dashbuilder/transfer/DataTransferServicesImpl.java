@@ -218,6 +218,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
                                                   p -> p.endsWith(DATASET_EXT)).stream()
                                                                                .map(this::getFileContent)
                                                                                .map(this::parseDataSetDefinition)
+                                                                               .filter(DataSetDef::isPublic)
                                                                                .collect(Collectors.toList());
         return new DataTransferAssets(datasetsDefs, pages);
     }
