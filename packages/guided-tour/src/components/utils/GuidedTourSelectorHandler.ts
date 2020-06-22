@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 
 import { getCurrentStep } from ".";
 import { KogitoGuidedTour } from "../..";
@@ -33,7 +33,7 @@ export const useSelectorHandler = () => {
   const { currentStep, currentTutorial, latestUserInteraction, setCurrentRefElementPosition } = useContext(
     CurrentTutorialContext
   );
-  const dialogStep = getCurrentStep(currentStep, currentTutorial);
+  const dialogStep = useMemo(() => getCurrentStep(currentStep, currentTutorial), [currentStep, currentTutorial]);
   const selector = dialogStep?.selector || "";
 
   useEffect(() => {

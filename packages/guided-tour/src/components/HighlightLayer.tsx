@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 
 import { getCurrentStep } from "./utils";
 import { CurrentTutorialContext } from "../contexts";
@@ -30,7 +30,7 @@ export const HighlightLayer = () => {
     isHighlightLayerEnabled,
     isNegativeReinforcementStateEnabled
   } = useContext(CurrentTutorialContext);
-  const step = getCurrentStep(currentStep, currentTutorial);
+  const step = useMemo(() => getCurrentStep(currentStep, currentTutorial), [currentStep, currentTutorial]);
   const highlightEnabled = step?.highlightEnabled || isHighlightLayerEnabled;
 
   let refElementX = 0;

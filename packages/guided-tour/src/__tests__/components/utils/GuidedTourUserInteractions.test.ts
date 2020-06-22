@@ -114,7 +114,8 @@ jest.mock("react", () => {
   return {
     ...ActualReact,
     useContext: () => ctx,
-    useEffect: (fn: any) => fn()
+    useEffect: (fn: any) => fn(),
+    useMemo: (fn: any, _deps: any) => fn()
   };
 });
 

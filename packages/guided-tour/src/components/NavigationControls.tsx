@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useContext, useCallback } from "react";
+import { useContext, useCallback, useMemo } from "react";
 
 import { Button } from "@patternfly/react-core";
 import { AngleLeftIcon, AngleRightIcon } from "@patternfly/react-icons";
@@ -27,8 +27,11 @@ import "./NavigationControls.sass";
 
 export const NavigationControls = () => {
   const { currentTutorial, currentStep, setCurrentStep } = useContext(CurrentTutorialContext);
-  const isButtonsHidden = getCurrentStep(currentStep, currentTutorial)?.navigatorEnabled !== true;
-  const numberOfSteps = getSteps(currentTutorial).length;
+  const isButtonsHidden = useMemo(() => getCurrentStep(currentStep, currentTutorial)?.navigatorEnabled !== true, [
+    currentStep,
+    currentTutorial
+  ]);
+  const numberOfSteps = useMemo(() => getSteps(currentTutorial).length, [currentTutorial]);
   const currentStepNumber = (currentStep || 0) + 1;
 
   const prev = useCallback(() => setCurrentStep(currentStep - 1), [currentStep]);

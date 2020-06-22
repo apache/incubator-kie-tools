@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useMemo } from "react";
 
 import { getCurrentStep } from ".";
 import { BlockMode, DemoMode } from "../../api";
@@ -34,7 +34,7 @@ export const useUserInteractions = () => {
   } = useContext(CurrentTutorialContext);
 
   // Aliases
-  const dialogStep = getCurrentStep(currentStep, currentTutorial);
+  const dialogStep = useMemo(() => getCurrentStep(currentStep, currentTutorial), [currentStep, currentTutorial]);
   const mode = dialogStep?.mode || new DemoMode();
 
   function handleBlockMode(blockMode: BlockMode) {
