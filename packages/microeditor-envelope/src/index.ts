@@ -25,6 +25,7 @@ import { EditorEnvelopeController } from "./EditorEnvelopeController";
 import { EditorFactory } from "./EditorFactory";
 import { Renderer } from "./Renderer";
 import { SpecialDomElements } from "./SpecialDomElements";
+import { WorkspaceService, WorkspaceServiceApi } from "./api/workspaceService";
 
 declare global {
   interface Window {
@@ -33,6 +34,7 @@ declare global {
       resourceContentEditorService?: ResourceContentApi;
       stateControl: StateControlApi;
       keyboardShortcuts: KeyboardShortcutsApi;
+      workspaceService: WorkspaceServiceApi;
     };
   }
 }
@@ -69,6 +71,7 @@ export function init(args: {
   const renderer = new ReactDomRenderer();
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
   const stateControl = new StateControlService();
+  const workspaceService = new WorkspaceService();
   const editorEnvelopeController = new EditorEnvelopeController(
     args.busApi,
     args.editorFactory,
@@ -86,6 +89,7 @@ export function init(args: {
         resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
         editorContext: args.editorContext,
         stateControl: stateControl.exposeApi(messageBus),
+        workspaceService: workspaceService.exposeApi(messageBus),
         keyboardShortcuts: keyboardShortcutsService
       };
     });

@@ -79,6 +79,9 @@ beforeEach(() => {
       receive_newEdit(edit: KogitoEdit) {
         receivedMessages.push("receiveNewEdit_" + edit.id);
       },
+      receive_openFile(path: string): void {
+        receivedMessages.push("receiveOpenFile_" + path);
+      },
       receive_previewRequest(previewSvg: string) {
         receivedMessages.push("preview");
       },
@@ -169,6 +172,11 @@ describe("receive", () => {
   test("ready notification", () => {
     handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined });
     expect(receivedMessages).toEqual(["ready"]);
+  });
+
+  test("open file notification", () => {
+    handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.NOTIFY_EDITOR_OPEN_FILE, data: "file/path/to/open" });
+    expect(receivedMessages).toEqual(["receiveOpenFile_file/path/to/open"]);
   });
 });
 
