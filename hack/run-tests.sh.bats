@@ -478,6 +478,24 @@
 
 # build
 
+@test "invoke run-tests with custom_maven_repo" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --custom_maven_repo repourl --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.custom-maven-repo-url=repourl" ]]
+}
+
+@test "invoke run-tests with custom_maven_repo missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --custom_maven_repo --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.custom-maven-repo-url"* ]]
+}
+
+@test "invoke run-tests with custom_maven_repo empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --custom_maven_repo "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.custom-maven-repo-url"* ]]
+}
+
 @test "invoke run-tests with maven_mirror" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --maven_mirror maven --dry_run
     [ "$status" -eq 0 ]

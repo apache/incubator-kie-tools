@@ -71,6 +71,7 @@ function usage(){
   printf "\n--runtime_application_image_namespace {NAMESPACE}\n\tSet the namespace for built runtime applications."
 
   # build
+  printf "\n--custom_maven_repo {URI}\n\tSet a custom Maven repository url for S2I builds, in case your artifacts are in a specific repository. See https://github.com/kiegroup/kogito-images/README.md for more information."
   printf "\n--maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
   printf "\n--build_image_registry {REGISTRY}\n\tSet the build image registry."
   printf "\n--build_image_namespace {NAMESPACE}\n\tSet the build image namespace."
@@ -270,6 +271,10 @@ case $1 in
   ;;
 
   # build
+  --custom_maven_repo)
+    shift
+    if addParamKeyValueIfAccepted "--tests.custom-maven-repo-url" ${1}; then shift; fi
+  ;;
   --maven_mirror)
     shift
     if addParamKeyValueIfAccepted "--tests.maven-mirror-url" ${1}; then shift; fi
