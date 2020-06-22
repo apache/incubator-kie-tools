@@ -40,10 +40,10 @@
     "customEditors": [
       {
         "viewType": "kieKogitoWebviewEditorsDmn",
-        "displayName": "DMN Editor",
+        "displayName": "DMN/SceSim Editors",
         "selector": [
           {
-            "filenamePattern": "*.{dmn}"
+            "filenamePattern": "*.{dmn,scesim}"
           }
         ]
       }
@@ -63,6 +63,16 @@
         "aliases": [
           "dmn",
           "Decision Model and Notation"
+        ]
+      },
+      {
+        "id": "scesim",
+        "extensions": [
+          ".scesim"
+        ],
+        "aliases": [
+          "scesim",
+          "Test Scenario"
         ]
       }
     ]
