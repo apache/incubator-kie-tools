@@ -65,9 +65,9 @@ jest.mock("react", () => {
   };
 });
 
-const triggerPositionProvider = jest.fn().mockName("triggerPositionProvider");
-
-KogitoGuidedTour.triggerPositionProvider = triggerPositionProvider;
+const triggerPositionProvider = jest.fn();
+const guidedTour = KogitoGuidedTour.getInstance();
+guidedTour.triggerPositionProvider = triggerPositionProvider;
 
 const ctx: any = {
   currentStep: 0,

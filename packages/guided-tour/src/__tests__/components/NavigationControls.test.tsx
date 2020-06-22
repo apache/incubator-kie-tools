@@ -112,7 +112,7 @@ describe("NavigationControls", () => {
     };
 
     act(() => {
-      KogitoGuidedTour.registerTutorial(ctx.currentTutorial);
+      KogitoGuidedTour.getInstance().registerTutorial(ctx.currentTutorial);
       useContextMock(ctx);
       render(<NavigationControls />);
     });

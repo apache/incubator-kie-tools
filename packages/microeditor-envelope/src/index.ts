@@ -26,7 +26,7 @@ import { EditorFactory } from "./EditorFactory";
 import { Renderer } from "./Renderer";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { WorkspaceService, WorkspaceServiceApi } from "./api/workspaceService";
-import { GuidedTourService, GuidedTourServiceCoordinator } from "./api/tour";
+import { GuidedTourApi, GuidedTourServiceCoordinator } from "./api/tour";
 
 export * from "./api/resourceContent";
 export { EditorEnvelopeController } from "./EditorEnvelopeController";
@@ -37,7 +37,7 @@ export { SpecialDomElements } from "./SpecialDomElements";
 declare global {
   interface Window {
     envelope: {
-      guidedTourService: GuidedTourService;
+      guidedTourService: GuidedTourApi;
       editorContext: EditorContext;
       resourceContentEditorService?: ResourceContentApi;
       stateControl: StateControlApi;

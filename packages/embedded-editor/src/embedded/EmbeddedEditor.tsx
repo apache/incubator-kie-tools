@@ -244,14 +244,14 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           handleStateControlCommand(stateControlCommand);
         },
         receive_guidedTourUserInteraction(userInteraction: UserInteraction) {
-          KogitoGuidedTour.onUserInteraction(userInteraction);
+          KogitoGuidedTour.getInstance().onUserInteraction(userInteraction);
         },
         receive_guidedTourRegisterTutorial(tutorial: Tutorial) {
-          KogitoGuidedTour.registerTutorial(tutorial);
+          KogitoGuidedTour.getInstance().registerTutorial(tutorial);
         },
-        receive_guidedTourElementPositionRequest(rect: Rect) {
+        receive_guidedTourElementPositionResponse(rect: Rect) {
           const parentRect = iframeRef.current?.getBoundingClientRect();
-          KogitoGuidedTour.onPositionReceived(rect, parentRect);
+          KogitoGuidedTour.getInstance().onPositionReceived(rect, parentRect);
         }
       })
     );
@@ -266,7 +266,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
   useEffect(() => {
     const requestPosition = (s: string) => envelopeBusOuterMessageHandler.request_guidedTourElementPositionResponse(s);
-    KogitoGuidedTour.registerPositionProvider(requestPosition);
+    KogitoGuidedTour.getInstance().registerPositionProvider(requestPosition);
   }, [envelopeBusOuterMessageHandler]);
 
   //Attach/detach bus when component attaches/detaches from DOM

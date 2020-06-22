@@ -22,6 +22,7 @@ export type EventLabel = "GuidedTour.startTutorial" | "GuidedTour.userInteractio
 export class GuidedTourEventBus {
   private isEnabled = false;
   private queuedEvents: CustomEvent[] = [];
+  private cookie = new GuidedTourCookie();
 
   public enableBus() {
     this.isEnabled = true;
@@ -62,6 +63,6 @@ export class GuidedTourEventBus {
   }
 
   private isBusEnabled() {
-    return this.isEnabled && !GuidedTourCookie.isDisabled();
+    return this.isEnabled && !this.cookie.isDisabled();
   }
 }

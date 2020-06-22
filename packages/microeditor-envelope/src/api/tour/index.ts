@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./GuidedTourService";
+export * from "./GuidedTourApi";
 export * from "./GuidedTourServiceCoordinator";

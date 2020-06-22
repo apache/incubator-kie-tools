@@ -40,7 +40,7 @@ const ctx = {
 };
 
 function registeredTutorial(tutorial: Tutorial) {
-  KogitoGuidedTour.registerTutorial(tutorial);
+  KogitoGuidedTour.getInstance().registerTutorial(tutorial);
   return tutorial;
 }
 

@@ -56,7 +56,8 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
     setIsNegativeReinforcementStateEnabled,
     setIsHighlightLayerEnabled
   } = useContext(CurrentTutorialContext);
-  const registeredTutorials = KogitoGuidedTour.getRegisteredTutorials();
+  const guidedTour = KogitoGuidedTour.getInstance();
+  const registeredTutorials = guidedTour.getRegisteredTutorials();
 
   // Aliases
   const dialogClass = "pf-c-modal-box kgt-dialog kgt-dialog" + (isEnabled ? "--enabled" : "--disabled");
@@ -89,7 +90,7 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
 
   function closeDialog() {
     setIsEnabled(false);
-    KogitoGuidedTour.teardown();
+    guidedTour.teardown();
   }
 
   function getDialogTemplate() {

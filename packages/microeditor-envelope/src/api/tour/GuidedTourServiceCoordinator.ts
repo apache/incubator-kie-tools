@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { GuidedTourService } from "./GuidedTourService";
+import { GuidedTourApi } from "./GuidedTourApi";
 import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
 import { UserInteraction, Tutorial, KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 
 export class GuidedTourServiceCoordinator {
-  public exposeApi(messageBus: EnvelopeBusInnerMessageHandler): GuidedTourService {
+  public exposeApi(messageBus: EnvelopeBusInnerMessageHandler): GuidedTourApi {
     return {
       refresh(userInteraction: UserInteraction): void {
         messageBus.notify_guidedTourRefresh(userInteraction);
@@ -28,7 +28,7 @@ export class GuidedTourServiceCoordinator {
         messageBus.notify_guidedTourRegisterTutorial(tutorial);
       },
       isEnabled(): boolean {
-        return KogitoGuidedTour.isEnabled();
+        return KogitoGuidedTour.getInstance().isEnabled();
       }
     };
   }

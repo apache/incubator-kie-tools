@@ -43,7 +43,7 @@ export const useSelectorHandler = () => {
 
     const isCustomSelector = selector.indexOf(":::") !== -1;
     if (isCustomSelector) {
-      KogitoGuidedTour.triggerPositionProvider(selector);
+      KogitoGuidedTour.getInstance().triggerPositionProvider(selector);
       return;
     }
 

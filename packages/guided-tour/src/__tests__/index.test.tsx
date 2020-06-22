@@ -26,20 +26,18 @@ describe("KogitoGuidedTour", () => {
 
   describe("setup", () => {
     it("renders the dialog when guided tour is enabled", () => {
-      mockStatic(GuidedTourCookie.isDisabled, () => false);
-      mockInstance(GuidedTourDomUtils, {
-        getGuidedTourHTMLElement: () => document.createElement("div")
-      });
+      mockInstance(GuidedTourCookie, { isDisabled: () => false });
+      mockInstance(GuidedTourDomUtils, { getGuidedTourHTMLElement: () => document.createElement("div") });
 
-      KogitoGuidedTour.setup();
+      KogitoGuidedTour.getInstance().setup();
 
       expect(ReactDOM.render).toBeCalledWith(<GuidedTour />, expect.any(HTMLElement), expect.any(Function));
     });
 
     it("does not render anything when it's not enabled", () => {
-      mockStatic(GuidedTourCookie.isDisabled, () => true);
+      mockInstance(GuidedTourCookie, { isDisabled: () => true });
 
-      KogitoGuidedTour.setup();
+      KogitoGuidedTour.getInstance().setup();
 
       expect(ReactDOM.render).not.toBeCalled();
     });
@@ -48,42 +46,50 @@ describe("KogitoGuidedTour", () => {
   describe("teardown", () => {
     it("removes the dialog when guided tour is enabled", () => {
       const removeGuidedTourHTMLElement = jest.fn();
+      const markAsDisabled = jest.fn();
 
-      mockStatic(GuidedTourCookie.isDisabled, () => false);
+      mockInstance(GuidedTourCookie, {
+        isDisabled: () => false,
+        markAsDisabled: markAsDisabled
+      });
       mockInstance(GuidedTourDomUtils, {
         removeGuidedTourHTMLElement: removeGuidedTourHTMLElement
       });
 
-      KogitoGuidedTour.teardown();
+      KogitoGuidedTour.getInstance().teardown();
 
       expect(removeGuidedTourHTMLElement).toBeCalled();
-      expect(GuidedTourCookie.markAsDisabled).toBeCalled();
+      expect(markAsDisabled).toBeCalled();
     });
 
     it("does not do anything when it's not enabled", () => {
       const removeGuidedTourHTMLElement = jest.fn();
+      const markAsDisabled = jest.fn();
 
-      mockStatic(GuidedTourCookie.isDisabled, () => true);
+      mockInstance(GuidedTourCookie, {
+        isDisabled: () => true,
+        markAsDisabled: markAsDisabled
+      });
       mockInstance(GuidedTourDomUtils, {
         removeGuidedTourHTMLElement: removeGuidedTourHTMLElement
       });
 
-      KogitoGuidedTour.teardown();
+      KogitoGuidedTour.getInstance().teardown();
 
       expect(removeGuidedTourHTMLElement).not.toBeCalled();
-      expect(GuidedTourCookie.markAsDisabled).not.toBeCalled();
+      expect(markAsDisabled).not.toBeCalled();
     });
   });
 
   describe("isEnabled", () => {
     it("returns 'true' when 'GuidedTourCookie.isDisabled' retuns 'false'", () => {
-      mockStatic(GuidedTourCookie.isDisabled, () => false);
-      expect(KogitoGuidedTour.isEnabled()).toBeTruthy();
+      mockInstance(GuidedTourCookie, { isDisabled: () => false });
+      expect(KogitoGuidedTour.getInstance().isEnabled()).toBeTruthy();
     });
 
     it("returns 'false' when 'GuidedTourCookie.isDisabled' retuns 'true'", () => {
-      mockStatic(GuidedTourCookie.isDisabled, () => true);
-      expect(KogitoGuidedTour.isEnabled()).toBeFalsy();
+      mockInstance(GuidedTourCookie, { isDisabled: () => true });
+      expect(KogitoGuidedTour.getInstance().isEnabled()).toBeFalsy();
     });
   });
 
@@ -94,7 +100,7 @@ describe("KogitoGuidedTour", () => {
 
       mockInstance(GuidedTourEventBus, { startTutorial: startTutorial });
 
-      KogitoGuidedTour.start(tutorialLabel);
+      KogitoGuidedTour.getInstance().start(tutorialLabel);
 
       expect(startTutorial).toBeCalledWith(tutorialLabel);
     });
@@ -102,13 +108,14 @@ describe("KogitoGuidedTour", () => {
 
   describe("registerTutorial", () => {
     it("registers a tutorial", () => {
+      const guidedTour = KogitoGuidedTour.getInstance();
       const tutorial1 = new Tutorial("Tutorial 1", []);
       const tutorial2 = new Tutorial("Tutorial 2", []);
 
-      KogitoGuidedTour.registerTutorial(tutorial1);
-      KogitoGuidedTour.registerTutorial(tutorial2);
+      guidedTour.registerTutorial(tutorial1);
+      guidedTour.registerTutorial(tutorial2);
 
-      expect(KogitoGuidedTour.getRegisteredTutorials()).toEqual([tutorial2, tutorial1]);
+      expect(guidedTour.getRegisteredTutorials()).toEqual([tutorial2, tutorial1]);
     });
   });
 
@@ -119,7 +126,7 @@ describe("KogitoGuidedTour", () => {
 
       mockInstance(GuidedTourEventBus, { onUserInteraction: onUserInteraction });
 
-      KogitoGuidedTour.onUserInteraction(userInteraction);
+      KogitoGuidedTour.getInstance().onUserInteraction(userInteraction);
 
       expect(onUserInteraction).toBeCalledWith(userInteraction);
     });
@@ -133,7 +140,7 @@ describe("KogitoGuidedTour", () => {
 
       mockInstance(GuidedTourEventBus, { onPositionReceived: onPositionReceived });
 
-      KogitoGuidedTour.onPositionReceived(rect, parent);
+      KogitoGuidedTour.getInstance().onPositionReceived(rect, parent);
 
       expect(onPositionReceived).toBeCalledWith({
         bottom: 1,
@@ -150,11 +157,12 @@ describe("KogitoGuidedTour", () => {
 
   describe("positionProvider", () => {
     it("registers position provider", () => {
+      const guidedTour = KogitoGuidedTour.getInstance();
       const positionProvider = jest.fn();
       const selector = "Node";
 
-      KogitoGuidedTour.registerPositionProvider(positionProvider);
-      KogitoGuidedTour.triggerPositionProvider(selector);
+      guidedTour.registerPositionProvider(positionProvider);
+      guidedTour.triggerPositionProvider(selector);
 
       expect(positionProvider).toBeCalledWith(selector);
     });
@@ -167,12 +175,10 @@ jest.mock("react-dom", () => ({
   render: jest.fn()
 }));
 
-function mockStatic(obj: any, fn: any) {
-  obj.mockImplementation(fn);
-}
-
-function mockInstance(obj: any, method: any) {
-  const methodName = Object.keys(method)[0];
-  const methodImpl = Object.values(method)[0];
-  obj.prototype[methodName].mockImplementation(methodImpl);
+function mockInstance(obj: any, methods: any) {
+  const methodNames = Object.keys(methods);
+  methodNames.forEach(methodName => {
+    const methodImpl = methods[methodName];
+    obj.prototype[methodName].mockImplementation(methodImpl);
+  });
 }

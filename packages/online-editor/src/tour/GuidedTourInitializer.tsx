@@ -23,16 +23,20 @@ import { BookOpenIcon, TrophyIcon } from "@patternfly/react-icons";
 import { File, EditorType } from "@kogito-tooling/embedded-editor";
 import { KogitoGuidedTour, DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/guided-tour";
 
-export function useDMNTour(isEditorReady: boolean, file: File) {
+export function useDmnTour(isEditorReady: boolean, file: File) {
   useEffect(() => {
-    KogitoGuidedTour.setup();
-    return () => KogitoGuidedTour.teardown();
+    const guidedTour = KogitoGuidedTour.getInstance();
+    guidedTour.setup();
+    return () => guidedTour.teardown();
   }, []);
 
   useEffect(() => {
     if (isEditorReady && file.editorType === EditorType.DMN) {
-      KogitoGuidedTour.registerTutorial(getOnlineEditorTutorial());
-      KogitoGuidedTour.start("DMN Online Editor Tutorial");
+      const guidedTour = KogitoGuidedTour.getInstance();
+      const tutorial = getOnlineEditorTutorial();
+
+      guidedTour.registerTutorial(tutorial);
+      guidedTour.start(tutorial.label);
     }
   }, [isEditorReady, file]);
 }

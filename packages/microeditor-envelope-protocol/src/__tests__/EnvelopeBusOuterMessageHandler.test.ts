@@ -95,7 +95,7 @@ beforeEach(() => {
       receive_guidedTourRegisterTutorial(tutorial: Tutorial) {
         receivedMessages.push("guidedTour_RegisterTutorial");
       },
-      receive_guidedTourElementPositionRequest(selector: string) {
+      receive_guidedTourElementPositionResponse(selector: string) {
         receivedMessages.push("guidedTour_ElementPositionRequest");
       }
     })

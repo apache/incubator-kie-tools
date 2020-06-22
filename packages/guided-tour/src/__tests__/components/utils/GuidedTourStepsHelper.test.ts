@@ -19,6 +19,7 @@ import { Mode, DemoMode, SubTutorialMode, KogitoGuidedTour, Step } from "../../.
 
 describe("GuidedTourStepsHelper", () => {
   const currentStep = 3;
+  const guidedTour = KogitoGuidedTour.getInstance();
   const step0: Step = makeStep("#selector-0");
   const step1: Step = makeStep("#selector-1");
   const step2: Step = makeStep("#selector-2", new SubTutorialMode("tutorial 2"));
@@ -36,8 +37,8 @@ describe("GuidedTourStepsHelper", () => {
     steps: [step2_0, step2_1, step2_2, step2_3]
   };
 
-  KogitoGuidedTour.registerTutorial(tutorial1);
-  KogitoGuidedTour.registerTutorial(tutorial2);
+  guidedTour.registerTutorial(tutorial1);
+  guidedTour.registerTutorial(tutorial2);
 
   describe("getCurrentStep", () => {
     it("returns the current step", () => {

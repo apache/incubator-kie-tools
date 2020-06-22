@@ -32,7 +32,7 @@ import { DownloadHubModal } from "./home/DownloadHubModal";
 import { HomePage } from "./home/HomePage";
 import { NoMatchPage } from "./NoMatchPage";
 import "../static/resources/style.css";
-import { useDMNTour } from "./tour";
+import { useDmnTour } from "./tour";
 
 interface Props {
   file: File;
@@ -74,7 +74,7 @@ export function App(props: Props) {
     [file]
   );
 
-  useDMNTour(isEditorReady, file);
+  useDmnTour(isEditorReady, file);
 
   return (
     <GlobalContext.Provider

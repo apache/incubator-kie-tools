@@ -152,6 +152,7 @@ export class KogitoEditor {
            */
         },
         receive_guidedTourElementPositionRequest: _ => {
+        receive_guidedTourElementPositionResponse: _ => {
           /* empty */
         },
         receive_guidedTourRegisterTutorial: _ => {

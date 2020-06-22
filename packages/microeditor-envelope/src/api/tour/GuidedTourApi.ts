@@ -18,7 +18,7 @@ import { UserInteraction, Tutorial } from "@kogito-tooling/guided-tour";
 /**
  * PUBLIC ENVELOPE API
  */
-export interface GuidedTourService {
+export interface GuidedTourApi {
   refresh(userInteraction: UserInteraction): void;
   registerTutorial(tutorial: Tutorial): void;
   isEnabled(): boolean;

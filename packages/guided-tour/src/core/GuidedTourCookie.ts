@@ -15,17 +15,17 @@
  */
 
 export class GuidedTourCookie {
-  private static GUIDED_TOUR_ENABLED_COOKIE = "is-guided-tour-enabled";
+  private GUIDED_TOUR_ENABLED_COOKIE = "is-guided-tour-enabled";
 
-  public static isDisabled() {
+  public isDisabled() {
     return this.getCookie(this.GUIDED_TOUR_ENABLED_COOKIE) === "NO";
   }
 
-  public static markAsDisabled() {
+  public markAsDisabled() {
     return this.setCookie(this.GUIDED_TOUR_ENABLED_COOKIE, "NO");
   }
 
-  private static getCookie(name: string) {
+  private getCookie(name: string) {
     const value = "; " + document.cookie;
     const parts = value.split("; " + name + "=");
 
@@ -37,7 +37,7 @@ export class GuidedTourCookie {
     }
   }
 
-  private static setCookie(name: string, value: string) {
+  private setCookie(name: string, value: string) {
     const date = new Date();
     date.setTime(date.getTime() + 365 * 24 * 60 * 60); // expires in 1 year
     document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";

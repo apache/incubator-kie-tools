@@ -17,15 +17,17 @@
 import { GuidedTourCookie } from "../../core";
 
 describe("GuidedTourCookie", () => {
+  const guidedTourCookie = new GuidedTourCookie();
+
   describe("isDisabled", () => {
     it("returns 'true' when guided tour is disabled", () => {
       document.cookie = "is-guided-tour-enabled=NO";
-      expect(GuidedTourCookie.isDisabled()).toBeTruthy();
+      expect(guidedTourCookie.isDisabled()).toBeTruthy();
     });
 
     it("returns 'false' when guided tour is not disabled", () => {
       document.cookie = "is-guided-tour-enabled=";
-      expect(GuidedTourCookie.isDisabled()).toBeFalsy();
+      expect(guidedTourCookie.isDisabled()).toBeFalsy();
     });
   });
 
@@ -33,7 +35,7 @@ describe("GuidedTourCookie", () => {
     it("disables the guided tour", () => {
       document.cookie = "is-guided-tour-enabled=";
 
-      GuidedTourCookie.markAsDisabled();
+      guidedTourCookie.markAsDisabled();
 
       expect(document.cookie).toContain("is-guided-tour-enabled=NO");
     });

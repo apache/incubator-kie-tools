@@ -24,7 +24,8 @@ export const getCurrentStep = (currentStep: number, currentTutorial?: Tutorial):
 };
 
 export const getSteps = (currentTutorial?: Tutorial) => {
-  const registeredTutorials = KogitoGuidedTour.getRegisteredTutorials();
+  const guidedTour = KogitoGuidedTour.getInstance();
+  const registeredTutorials = guidedTour.getRegisteredTutorials();
   const steps = currentTutorial?.steps ?? [];
 
   return flatMap(step => {

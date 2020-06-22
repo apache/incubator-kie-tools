@@ -45,7 +45,7 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   receive_openFile(path: string): void;
   receive_guidedTourUserInteraction(userInteraction: UserInteraction): void;
   receive_guidedTourRegisterTutorial(tutorial: Tutorial): void;
-  receive_guidedTourElementPositionRequest(rect: Rect): void;
+  receive_guidedTourElementPositionResponse(rect: Rect): void;
 }
 
 export class EnvelopeBusOuterMessageHandler {
@@ -181,7 +181,7 @@ export class EnvelopeBusOuterMessageHandler {
         this.impl.receive_guidedTourRegisterTutorial(message.data as Tutorial);
         break;
       case EnvelopeBusMessageType.RETURN_GUIDED_TOUR_ELEMENT_POSITION:
-        this.impl.receive_guidedTourElementPositionRequest(message.data as Rect);
+        this.impl.receive_guidedTourElementPositionResponse(message.data as Rect);
         break;
       default:
         console.info(`Unknown message type received: ${message.type}`);
