@@ -14,8 +14,84 @@
  * limitations under the License.
  */
 
+import * as React from "react";
+import { fireEvent, render } from "@testing-library/react";
+import { EditorPage } from "../../../webview/editor/EditorPage";
+import { usingTestingGlobalContext } from "../../testing_utils";
+import { StateControl } from "@kogito-tooling/embedded-editor";
+import { act } from "react-dom/test-utils";
+
+const editorType = "";
+const onClose = jest.fn(() => null);
+
+function mockFunctions() {
+  const original = require.requireActual("@kogito-tooling/embedded-editor");
+  return {
+    ...original,
+    useDirtyState: jest.fn(() => true).mockImplementationOnce(() => false)
+  };
+}
+jest.mock("@kogito-tooling/embedded-editor", () => mockFunctions());
+
 describe("EditorPage", () => {
-  test("test 1", async () => {
-    expect(true).toBeTruthy();
+  describe("Unsaved Alert", () => {
+    test("should not appear by default with isDirty equal to false", () => {
+      const { queryByTestId } = render(
+        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType} />).wrapper
+      );
+
+      expect(queryByTestId("unsaved-alert")).toBeNull();
+    });
+
+    test("should not appear by default with isDirty equal to true", () => {
+      const { queryByTestId } = render(
+        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType} />).wrapper
+      );
+
+      expect(queryByTestId("unsaved-alert")).toBeNull();
+    });
+
+    test("should appear when tries to close after an edit with isDirty equal to true", () => {
+      const { getByTestId, queryByTestId } = render(
+        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType} />).wrapper
+      );
+
+      fireEvent.click(getByTestId("close-editor-button"));
+
+      expect(queryByTestId("unsaved-alert")).toBeVisible();
+    });
+
+    test("should appear and then close after click on save with isDirty equal to true", () => {
+      const { getByTestId, queryByTestId } = render(
+        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType} />).wrapper
+      );
+
+      fireEvent.click(getByTestId("close-editor-button"));
+      fireEvent.click(getByTestId("unsaved-alert-save-button"));
+
+      expect(queryByTestId("unsaved-alert")).toBeNull();
+    });
+
+    test("should appear and then close after click on close with isDirty equal to true", () => {
+      const { getByTestId, queryByTestId } = render(
+        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType} />).wrapper
+      );
+
+      fireEvent.click(getByTestId("close-editor-button"));
+      fireEvent.click(getByTestId("unsaved-alert-close-button"));
+
+      expect(queryByTestId("unsaved-alert")).toBeNull();
+    });
+
+    test("should appear and then close after click on close without save with isDirty equal to true", () => {
+      const { getByTestId, queryByTestId } = render(
+        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType} />).wrapper
+      );
+
+      fireEvent.click(getByTestId("close-editor-button"));
+      fireEvent.click(getByTestId("unsaved-alert-close-without-save-button"));
+
+      expect(queryByTestId("unsaved-alert")).toBeNull();
+    });
   });
 });
