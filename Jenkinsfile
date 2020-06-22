@@ -1,11 +1,9 @@
-// Setup milestone to stop previous build from running when a new one is launched
-// The result would be:
-//  Build 1 runs and creates milestone 1
-//  While build 1 is running, suppose build 2 fires. It has milestone 1 and milestone 2. It passes 1, which causes build #1 to abort
+@Library('jenkins-pipeline-shared-libraries')_
 
-def buildNumber = env.BUILD_NUMBER as int
-if (buildNumber > 1) milestone(buildNumber - 1)
-milestone(buildNumber)
+def changeAuthor = env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR
+def changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
+def changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
+
 IMAGES = ["kogito-quarkus-ubi8", 
             "kogito-quarkus-jvm-ubi8",
             "kogito-quarkus-ubi8-s2i",
@@ -16,7 +14,13 @@ IMAGES = ["kogito-quarkus-ubi8",
             "kogito-management-console"]
 
 pipeline{
-    agent { label 'jenkins-slave'}
+    agent { label 'kogito-image-slave && !master'}
+    tools {
+        jdk 'kie-jdk11'
+    }
+    environment {
+        JAVA_HOME = "${GRAALVM_HOME}"
+    }
     stages{
         stage('Initialization'){
             steps{
@@ -28,6 +32,7 @@ pipeline{
                             && env.MAVEN_MIRROR_REPOSITORY != ''){
                         env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
                     }
+                    githubscm.checkoutIfExists('kogito-images', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
                 }
                 sh "docker rm -f \$(docker ps -a -q) || date"
                 sh "docker rmi -f \$(docker images -q) || date"
