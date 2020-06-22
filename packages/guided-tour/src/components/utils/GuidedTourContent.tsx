@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useState, useContext, useEffect } from "react";
+import { useContext, useCallback } from "react";
 
 import {
   Button,
@@ -32,6 +32,7 @@ import { TimesCircleIcon, BookIcon } from "@patternfly/react-icons";
 
 import { NavigationControls } from "..";
 import { CurrentTutorialContext } from "../../contexts";
+import { Step } from "../..";
 
 function renderContent(
   content: React.ReactNode | ((props: object) => React.ReactNode) | string,
@@ -64,36 +65,37 @@ export const renderStepDialog = (
   );
 };
 
-export const renderNegativeReinforcementDialog = (suggestion: string, onCloseAction: () => void) => {
+export const renderNegativeReinforcementDialog = (step: Step | undefined, onCloseAction: () => void) => {
   const { isHighlightLayerEnabled, setIsHighlightLayerEnabled } = useContext(CurrentTutorialContext);
-  const [message, setMessage] = useState("");
+  const negativeReinforcementMessage = step?.negativeReinforcementMessage || "";
+  const showSuggestion = useCallback(() => setIsHighlightLayerEnabled(false), []);
 
-  useEffect(() => {
-    if (isHighlightLayerEnabled) {
-      setMessage("");
-    }
-  }, [isHighlightLayerEnabled]);
-
-  function showSuggestion() {
-    setMessage(suggestion);
-    setIsHighlightLayerEnabled(false);
-  }
-
-  function getNegativeReinforcementBody() {
-    if (message.length > 0) {
-      return (
-        <>
+  if (!isHighlightLayerEnabled) {
+    return () => (
+      <>
+        <ModalBoxCloseButton data-kgt-close="true" onClose={onCloseAction} />
+        <EmptyState variant={EmptyStateVariant.small}>
+          <EmptyStateIcon icon={BookIcon} />
           <Title headingLevel="h4" size="lg">
             Great!
           </Title>
           <EmptyStateBody>
-            <Text className="pf-c-content">{message}</Text>
+            <Text className="pf-c-content">{negativeReinforcementMessage}</Text>
           </EmptyStateBody>
-        </>
-      );
-    } else {
-      return (
-        <>
+          <EmptyStateSecondaryActions>
+            <Button onClick={onCloseAction} variant="link">
+              Dismiss
+            </Button>
+          </EmptyStateSecondaryActions>
+        </EmptyState>
+      </>
+    );
+  } else {
+    return () => (
+      <>
+        <ModalBoxCloseButton data-kgt-close="true" onClose={onCloseAction} />
+        <EmptyState variant={EmptyStateVariant.small}>
+          <EmptyStateIcon icon={BookIcon} />
           <Title headingLevel="h4" size="lg">
             Do you want to stop the tour?
           </Title>
@@ -109,25 +111,15 @@ export const renderNegativeReinforcementDialog = (suggestion: string, onCloseAct
           <Button data-kgt-continue="true" onClick={showSuggestion}>
             Continue
           </Button>
-        </>
-      );
-    }
+          <EmptyStateSecondaryActions>
+            <Button onClick={onCloseAction} variant="link">
+              Dismiss
+            </Button>
+          </EmptyStateSecondaryActions>
+        </EmptyState>
+      </>
+    );
   }
-
-  return (
-    <>
-      <ModalBoxCloseButton data-kgt-close="true" onClose={onCloseAction} />
-      <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={BookIcon} />
-        {getNegativeReinforcementBody()}
-        <EmptyStateSecondaryActions>
-          <Button onClick={onCloseAction} variant="link">
-            Dismiss
-          </Button>
-        </EmptyStateSecondaryActions>
-      </EmptyState>
-    </>
-  );
 };
 
 export const renderEmptyDialog = (onCloseAction: () => void) => {

@@ -189,7 +189,7 @@ describe("Dialog", () => {
 
     it("renders negative reinforcement message", () => {
       act(() => {
-        useContextMock(negativeReinforcementCtx);
+        useContextMock({ ...negativeReinforcementCtx, isHighlightLayerEnabled: true });
         render(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />);
       });
 
@@ -198,12 +198,19 @@ describe("Dialog", () => {
 
     it("renders negative reinforcement clue", () => {
       act(() => {
-        useContextMock(negativeReinforcementCtx);
+        useContextMock({ ...negativeReinforcementCtx, isHighlightLayerEnabled: false });
+        render(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />);
+      });
+      expect(renderedComponent()).toMatchSnapshot();
+    });
+
+    it("sets 'isHighlightLayerEnabled' as 'false' when users press the 'Continue' button", () => {
+      act(() => {
+        useContextMock({ ...negativeReinforcementCtx, isHighlightLayerEnabled: true });
         render(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />);
         triggerClick("[data-kgt-continue]");
       });
-
-      expect(renderedComponent()).toMatchSnapshot();
+      expect(ctx.isHighlightLayerEnabled).toBeFalsy();
     });
   });
 });

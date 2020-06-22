@@ -47,6 +47,7 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
     completedStep,
     currentRefElementPosition,
     isNegativeReinforcementStateEnabled,
+    isHighlightLayerEnabled,
     setCurrentTutorial,
     setCurrentStep,
     setCompletedStep,
@@ -63,7 +64,6 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
   const dialogContent = dialogStep?.content || "";
   const dialogPosition = dialogStep?.position || "center";
   const dialogMode = dialogStep?.mode || new DemoMode();
-  const dialogNegativeReinforcementMessage = dialogStep?.negativeReinforcementMessage || "";
   const dialogRefElement = isNegativeReinforcementStateEnabled ? DEFAULT_RECT : currentRefElementPosition;
 
   // Post processing
@@ -75,10 +75,11 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
     registeredTutorials,
     isNegativeReinforcementStateEnabled
   ]);
-  const negativeReinforcementTemplate = renderNegativeReinforcementDialog(
-    dialogNegativeReinforcementMessage,
-    closeDialog
-  );
+  const negativeReinforcementTemplate = useMemo(renderNegativeReinforcementDialog(dialogStep, closeDialog), [
+    currentStep,
+    isHighlightLayerEnabled,
+    isNegativeReinforcementStateEnabled
+  ]);
 
   useStartTutorialListener(tutorialLabel => setCurrentTutorialLabel(tutorialLabel));
   usePositionListener(rect => setCurrentRefElementPosition(rect));
