@@ -17,7 +17,7 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
-const envelope = require("../patternfly-base/webpackUtils");
+const envelope = require("@kogito-tooling/patternfly-base/webpackUtils");
 
 const commonConfig = {
   mode: "development",

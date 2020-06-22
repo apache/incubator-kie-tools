@@ -16,7 +16,7 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const envelope = require("../patternfly-base/webpackUtils");
+const envelope = require("@kogito-tooling/patternfly-base/webpackUtils");
 
 module.exports = async (env, argv) => {
   return {

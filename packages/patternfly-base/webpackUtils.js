@@ -17,6 +17,15 @@
 const path = require("path");
 const BG_IMAGES_DIRNAME = "bgimages";
 
+/**
+ * Two scenarios for node_modules_dir:
+ * (1) When using @kogito-tooling/patternfly-base library as dependency for other projects, 
+ *     __dirname is already on node_modules folder.
+ * (2) When developing for kogito-tooling, 
+ *     patternfly-base is accessed directly so node_modules_dir needs node_modules appended.
+ */
+const node_modules_dir = "../.." + (__dirname.includes("node_modules") ? "" : "/node_modules");
+
 module.exports = {
   patternflyLoaders: [
     {
@@ -32,11 +41,11 @@ module.exports = {
       // only process modules with this loader
       // if they live under a 'fonts' or 'pficon' directory
       include: [
-        path.resolve(__dirname, "../../node_modules/patternfly/dist/fonts"),
-        path.resolve(__dirname, "../../node_modules/@patternfly/react-core/dist/styles/assets/fonts"),
-        path.resolve(__dirname, "../../node_modules/@patternfly/react-core/dist/styles/assets/pficon"),
-        path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/fonts"),
-        path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/pficon")
+        path.resolve(__dirname, node_modules_dir + "/patternfly/dist/fonts"),
+        path.resolve(__dirname, node_modules_dir + "/@patternfly/react-core/dist/styles/assets/fonts"),
+        path.resolve(__dirname, node_modules_dir + "/@patternfly/react-core/dist/styles/assets/pficon"),
+        path.resolve(__dirname, node_modules_dir + "/@patternfly/patternfly/assets/fonts"),
+        path.resolve(__dirname, node_modules_dir + "/@patternfly/patternfly/assets/pficon")
       ],
       use: {
         loader: "file-loader",
@@ -90,21 +99,22 @@ module.exports = {
       test: /\.(jpg|jpeg|png|gif)$/i,
       include: [
         path.resolve(__dirname, "src"),
-        path.resolve(__dirname, "../../node_modules/patternfly"),
-        path.resolve(__dirname, "../../node_modules/@patternfly/patternfly/assets/images"),
-        path.resolve(__dirname, "../../node_modules/@patternfly/react-styles/css/assets/images"),
-        path.resolve(__dirname, "../../node_modules/@patternfly/react-core/dist/styles/assets/images"),
+        path.resolve(__dirname, node_modules_dir + "/patternfly"),
+        path.resolve(__dirname, node_modules_dir + "/@patternfly/patternfly/assets/images"),
+        path.resolve(__dirname, node_modules_dir + "/@patternfly/react-styles/css/assets/images"),
+        path.resolve(__dirname, node_modules_dir + "/@patternfly/react-core/dist/styles/assets/images"),
         path.resolve(
           __dirname,
-          "../../node_modules/@patternfly/react-core/node_modules/@patternfly/react-styles/css/assets/images"
+          node_modules_dir + "/@patternfly/react-core/node_modules/@patternfly/react-styles/css/assets/images"
         ),
         path.resolve(
           __dirname,
-          "../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images"
+          node_modules_dir + "/@patternfly/react-table/node_modules/@patternfly/react-styles/css/assets/images"
         ),
         path.resolve(
           __dirname,
-          "../../node_modules/@patternfly/react-inline-edit-extension/node_modules/@patternfly/react-styles/css/assets/images"
+          node_modules_dir +
+            "/@patternfly/react-inline-edit-extension/node_modules/@patternfly/react-styles/css/assets/images"
         )
       ],
       use: [
