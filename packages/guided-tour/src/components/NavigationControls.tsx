@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useContext } from "react";
+import { useContext, useCallback } from "react";
 
 import { Button } from "@patternfly/react-core";
 import { AngleLeftIcon, AngleRightIcon } from "@patternfly/react-icons";
@@ -31,15 +31,9 @@ export const NavigationControls = () => {
   const numberOfSteps = getSteps(currentTutorial).length;
   const currentStepNumber = (currentStep || 0) + 1;
 
-  function prev() {
-    setCurrentStep(currentStep - 1);
-  }
-
-  function next() {
-    setCurrentStep(currentStep + 1);
-  }
-
-  function stepBullets() {
+  const prev = useCallback(() => setCurrentStep(currentStep - 1), [currentStep]);
+  const next = useCallback(() => setCurrentStep(currentStep + 1), [currentStep]);
+  const stepBullets = useCallback(() => {
     const bullets = [...Array(numberOfSteps).keys()].map(stepNumber => {
       const baseClassName = "kgt-nav-controls__bullet";
       const isCurrentStep = currentStepNumber === stepNumber + 1;
@@ -53,7 +47,7 @@ export const NavigationControls = () => {
     });
 
     return <div className="kgt-nav-controls__bullets">{bullets}</div>;
-  }
+  }, [currentTutorial, currentStep]);
 
   return (
     <div className="kgt-nav-controls">
