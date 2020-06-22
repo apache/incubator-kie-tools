@@ -49,7 +49,7 @@ function renderContent(
   return content;
 }
 
-export const renderStepDialog = (
+export const StepDialog = (
   content: React.ReactNode | ((props: object) => React.ReactNode) | string,
   onCloseAction: () => void
 ) => {
@@ -65,7 +65,7 @@ export const renderStepDialog = (
   );
 };
 
-export const renderNegativeReinforcementDialog = (step: Step | undefined, onCloseAction: () => void) => {
+export const NegativeReinforcementDialog = (step: Step | undefined, onCloseAction: () => void) => {
   const { isHighlightLayerEnabled, setIsHighlightLayerEnabled } = useContext(CurrentTutorialContext);
   const negativeReinforcementMessage = step?.negativeReinforcementMessage || "";
   const showSuggestion = useCallback(() => setIsHighlightLayerEnabled(false), []);
@@ -122,7 +122,7 @@ export const renderNegativeReinforcementDialog = (step: Step | undefined, onClos
   }
 };
 
-export const renderEmptyDialog = (onCloseAction: () => void) => {
+export const EmptyDialog = (onCloseAction: () => void) => {
   return () => (
     <>
       <EmptyState variant={EmptyStateVariant.small}>

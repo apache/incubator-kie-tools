@@ -20,9 +20,9 @@ import { useState, useContext, useEffect, useMemo } from "react";
 import {
   calculatePositionStyle,
   getCurrentStep,
-  renderEmptyDialog,
-  renderNegativeReinforcementDialog,
-  renderStepDialog,
+  EmptyDialog,
+  NegativeReinforcementDialog,
+  StepDialog,
   usePositionListener,
   useSelectorHandler,
   useStartTutorialListener,
@@ -68,14 +68,14 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
 
   // Post processing
   const dialogStyle = calculatePositionStyle(dialogPosition, dialogRefElement);
-  const emptyTemplate = useMemo(renderEmptyDialog(closeDialog), []);
-  const regularTemplate = useMemo(renderStepDialog(dialogContent, closeDialog), [
+  const emptyTemplate = useMemo(EmptyDialog(closeDialog), []);
+  const regularTemplate = useMemo(StepDialog(dialogContent, closeDialog), [
     currentStep,
     currentTutorial,
     registeredTutorials,
     isNegativeReinforcementStateEnabled
   ]);
-  const negativeReinforcementTemplate = useMemo(renderNegativeReinforcementDialog(dialogStep, closeDialog), [
+  const negativeReinforcementTemplate = useMemo(NegativeReinforcementDialog(dialogStep, closeDialog), [
     currentStep,
     isHighlightLayerEnabled,
     isNegativeReinforcementStateEnabled
