@@ -25,6 +25,7 @@ import { GlobalContext } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
+import { useDmnTour } from "../tour";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -51,6 +52,7 @@ export function EditorPage(props: Props) {
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
+  const [isEditorReady, setIsEditorReady] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
@@ -186,7 +188,7 @@ export function EditorPage(props: Props) {
     [fileNameWithExtension]
   );
 
-  const onReady = useCallback(() => context.setIsEditorReady(true), []);
+  const onReady = useCallback(() => setIsEditorReady(true), []);
 
   useEffect(() => {
     if (closeCopySuccessAlert) {
@@ -230,6 +232,8 @@ export function EditorPage(props: Props) {
       }
     })();
   });
+
+  useDmnTour(isEditorReady, context.file);
 
   return (
     <Page

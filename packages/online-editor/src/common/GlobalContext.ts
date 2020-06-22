@@ -25,8 +25,6 @@ export interface GlobalContextType {
   router: EmbeddedEditorRouter;
   readonly: boolean;
   external: boolean;
-  isEditorReady: boolean;
-  setIsEditorReady: (isEditorReady: boolean) => void;
   senderTabId?: string;
   githubService: GithubService;
 }

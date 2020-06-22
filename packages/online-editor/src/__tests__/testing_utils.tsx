@@ -34,8 +34,6 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
         scesimPath: "gwt-editors/scesim"
       })
     ),
-    isEditorReady: false,
-    setIsEditorReady: (isReady: boolean) => (usedCtx.isEditorReady = isReady),
     readonly: false,
     external: false,
     senderTabId: undefined,
