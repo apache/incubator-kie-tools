@@ -170,7 +170,8 @@ module.exports = [
     },
     plugins: [
       new CopyWebpackPlugin([
-        { from: "../kie-bc-editors-unpacked/dmn", to: "webview/editors/dmn" }
+        { from: "../kie-bc-editors-unpacked/dmn", to: "webview/editors/dmn" },
+        { from: "../kie-bc-editors-unpacked/scesim", to: "webview/editors/scesim" }
       ])
     ]
   }
