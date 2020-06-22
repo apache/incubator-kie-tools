@@ -101,6 +101,36 @@ const OUTPUT: string = `[
   })
 ]`;
 
+const MODEL_STATS: string = `[
+  $v.ModelStats ~> $map(function($v, $i) {
+    $v
+  })
+]`;
+
+const MODEL_EXPLANATION: string = `[
+  $v.ModelExplanation ~> $map(function($v, $i) {
+    $v
+  })
+]`;
+
+const MODEL_VERIFICATION: string = `[
+  $v.ModelVerification ~> $map(function($v, $i) {
+    $v
+  })
+]`;
+
+const TARGETS: string = `[
+  $v.Targets ~> $map(function($v, $i) {
+    $v
+  })
+]`;
+
+const LOCAL_TRANSFORMATION: string = `[
+  $v.LocalTransformations ~> $map(function($v, $i) {
+    $v
+  })
+]`;
+
 export const MODELS_SCORECARD: string = `[
   models[(_type = "Scorecard")] ~> $map(function($v, $i) {
     {
@@ -117,7 +147,21 @@ export const MODELS_SCORECARD: string = `[
         "baselineMethod": $v.baselineMethod,
         "isScorable": $v.isScorable
       },
-      "elements": $append(${MINING_SCHEMA}, $append(${OUTPUT}, ${CHARACTERISTICS}))
+      "elements": $append(${MINING_SCHEMA}, 
+                    $append(${OUTPUT}, 
+                      $append(${CHARACTERISTICS},
+                        $append(${MODEL_STATS},
+                          $append(${MODEL_EXPLANATION},
+                            $append(${MODEL_VERIFICATION},
+                              $append(${TARGETS},
+                                $append([], ${LOCAL_TRANSFORMATION})
+                              )
+                            )
+                          )
+                        )
+                      )
+                    )
+                  )
     }
   })
 ]`;

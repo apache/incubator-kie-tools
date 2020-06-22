@@ -16,7 +16,7 @@
 import { MINING_SCHEMA } from "./MiningSchema";
 
 const COMPLEX_PARTIAL_SCORE: string = `
-"ComplexPartialScore": $v.elements[(name = "ComplexPartialScore")] ~> $map(function($v, $i) {
+  "ComplexPartialScore": $v.elements[(name = "ComplexPartialScore")] ~> $map(function($v, $i) {
     $v
 })`;
 
@@ -59,6 +59,31 @@ const OUTPUT: string = `
   })] 
 }`;
 
+const MODEL_STATS: string = `
+  "ModelStats": $v.elements[(name = "ModelStats")] ~> $map(function($v, $i) {
+    $v
+})`;
+
+const MODEL_EXPLANATION: string = `
+  "ModelExplanation": $v.elements[(name = "ModelExplanation")] ~> $map(function($v, $i) {
+    $v
+})`;
+
+const MODEL_VERIFICATION: string = `
+  "ModelVerification": $v.elements[(name = "ModelVerification")] ~> $map(function($v, $i) {
+    $v
+})`;
+
+const TARGETS: string = `
+  "Targets": $v.elements[(name = "Targets")] ~> $map(function($v, $i) {
+    $v
+})`;
+
+const LOCAL_TRANSFORMATION: string = `
+  "LocalTransformations": $v.elements[(name = "LocalTransformations")] ~> $map(function($v, $i) {
+    $v
+})`;
+
 export const SCORE_CARD: string = `
 elements.elements[(name = "Scorecard")] ~> $map(function($v, $i) {
   $merge([
@@ -68,9 +93,14 @@ elements.elements[(name = "Scorecard")] ~> $map(function($v, $i) {
       "_type": $v.name
     },
     {
-      ${MINING_SCHEMA},
-      ${CHARACTERISTICS},  
-      ${OUTPUT}
+      ${MINING_SCHEMA}, 
+      ${OUTPUT},
+      ${CHARACTERISTICS}, 
+      ${MODEL_STATS},
+      ${MODEL_EXPLANATION},
+      ${MODEL_VERIFICATION},
+      ${TARGETS},
+      ${LOCAL_TRANSFORMATION}
     }
   ])
 })`;
