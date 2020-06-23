@@ -17,7 +17,7 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
-const envelope = require("@kogito-tooling/patternfly-base/webpackUtils");
+const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
 
 const commonConfig = {
   mode: "development",
@@ -41,7 +41,7 @@ const commonConfig = {
         exclude: /node_modules/,
         use: ["babel-loader"]
       },
-      ...envelope.patternflyLoaders
+      ...pfWebpackUtils.patternflyLoaders
     ]
   },
   resolve: {
