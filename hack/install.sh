@@ -16,13 +16,15 @@
 EXIT=0
 FILE_FOUND=0
 
+if [ -z "${NAMESPACE}" ]; then
+  NAMESPACE="kogito"
+fi
+
 shopt -s nullglob
-for file in deploy/{crds/*_crd.yaml,*.yaml}
-do
+for file in deploy/{crds/*_crd.yaml,*.yaml}; do
   FILE_FOUND=1
-  oc apply -f "$file"
-  if [[ $? -gt 0 ]]; then
-    EXIT=$?
+  if ! kubectl apply -f "$file" -n "${NAMESPACE}"; then
+    EXIT=1
     break # Don't try other files if one fails
   fi
 done
