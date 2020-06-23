@@ -41,7 +41,7 @@ func WaitForBuildComplete(namespace, buildName string, timeoutInMin int) error {
 					Namespace: namespace,
 				},
 			}
-			builds, err := openshift.BuildConfigC(kubeClient).GetBuildsStatus(&bc, fmt.Sprintf("%s=%s", "buildconfig", buildName))
+			builds, err := openshift.BuildConfigC(kubeClient).GetBuildsStatus(&bc, fmt.Sprintf("%s=%s", openshift.BuildConfigLabelSelector, buildName))
 
 			if err != nil {
 				return false, fmt.Errorf("Error while fetching buildconfig %s: %v", buildName, err)

@@ -117,7 +117,7 @@ func newImageOrDefault(fullImage string, defaultImageName string) v1alpha1.Image
 		}
 
 		if len(image.Tag) == 0 {
-			image.Tag = infrastructure.GetRuntimeImageVersion()
+			image.Tag = infrastructure.GetKogitoImageVersion()
 		}
 
 		// Update image name with suffix if provided

@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/test"
 	"io"
 	"io/ioutil"
 	"math/rand"
@@ -39,7 +40,7 @@ const (
 // GenerateNamespaceName generates a namespace name, taking configuration into account (local or not)
 func GenerateNamespaceName(prefix string) string {
 	rand.Seed(time.Now().UnixNano())
-	ns := fmt.Sprintf("%s-%s", prefix, RandSeq(4))
+	ns := fmt.Sprintf("%s-%s", prefix, test.GenerateShortUID(4))
 	if config.IsLocalTests() {
 		username := getEnvUsername()
 		ns = fmt.Sprintf("%s-local-%s", username, ns)
@@ -47,16 +48,6 @@ func GenerateNamespaceName(prefix string) string {
 		ns = fmt.Sprintf("%s-%s", config.GetCiName(), ns)
 	}
 	return ns
-}
-
-// RandSeq returns a generated string
-func RandSeq(size int) string {
-	randomLetters := []rune("abcdefghijklmnopqrstuvwxyz0123456789")
-	b := make([]rune, size)
-	for i := range b {
-		b[i] = randomLetters[rand.Intn(len(randomLetters))]
-	}
-	return string(b)
 }
 
 // ReadFromURI reads string content from given URI (URL or Filesystem)
@@ -240,7 +231,7 @@ func GetBuildImage(imageName string) string {
 	}
 
 	if len(image.Tag) == 0 {
-		image.Tag = infrastructure.GetRuntimeImageVersion()
+		image.Tag = infrastructure.GetKogitoImageVersion()
 	}
 
 	// Update image name with suffix if provided
