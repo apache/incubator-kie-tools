@@ -9,10 +9,10 @@ Feature: Deploy source files (dmn, drl, bpmn, bpmn2, ...) with CLI
   Scenario: Deploy .dmn source files with CLI
     Given Clone Kogito examples into local directory
     
-    When Deploy file "Traffic Violation.dmn" from example service "dmn-quarkus-example"
-    And Build "dmn-quarkus-example-builder" is complete after 10 minutes
+    When Deploy <runtime> file "Traffic Violation.dmn" from example service "dmn-<runtime>-example"
+    And Build "dmn-<runtime>-example-builder" is complete after 10 minutes
 
-    Then HTTP POST request on service "dmn-quarkus-example" is successful within 2 minutes with path "Traffic Violation" and body:
+    Then HTTP POST request on service "dmn-<runtime>-example" is successful within 2 minutes with path "Traffic Violation" and body:
       """json
       {
           "Driver":{"Points":2},
@@ -23,11 +23,21 @@ Feature: Deploy source files (dmn, drl, bpmn, bpmn2, ...) with CLI
           }
       }
       """
+
+    @springboot
+    Examples:
+      | runtime    |
+      | springboot |
+
+    @quarkus
+    Examples:
+      | runtime    |
+      | quarkus    |
   
   Scenario: Deploy .bpmn source files with CLI
     Given Clone Kogito examples into local directory
     
-    When Deploy file "org/acme/travels/scripts.bpmn" from example service "process-scripts-quarkus"
+    When Deploy quarkus file "org/acme/travels/scripts.bpmn" from example service "process-scripts-quarkus"
     And Build "process-scripts-quarkus-builder" is complete after 10 minutes
 
     Then HTTP POST request on service "process-scripts-quarkus" is successful within 2 minutes with path "scripts" and body:
@@ -40,7 +50,7 @@ Feature: Deploy source files (dmn, drl, bpmn, bpmn2, ...) with CLI
   Scenario: Deploy source files in folder with CLI
     Given Clone Kogito examples into local directory
     
-    When Deploy folder from example service "process-timer-quarkus"
+    When Deploy quarkus folder from example service "process-timer-quarkus"
     And Build "process-timer-quarkus-builder" is complete after 10 minutes
 
     Then HTTP POST request on service "process-timer-quarkus" is successful within 2 minutes with path "timers" and body:

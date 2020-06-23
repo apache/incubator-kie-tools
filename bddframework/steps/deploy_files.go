@@ -26,26 +26,26 @@ const sourceLocation = "src/main/resources"
 
 func registerKogitoDeployFilesSteps(s *godog.Suite, data *Data) {
 	// Deploy steps
-	s.Step(`^Deploy file "([^"]*)" from example service "([^"]*)"$`, data.deployFileFromExampleService)
-	s.Step(`^Deploy folder from example service "([^"]*)"$`, data.deployFolderFromExampleService)
+	s.Step(`^Deploy (quarkus|springboot) file "([^"]*)" from example service "([^"]*)"$`, data.deployFileFromExampleService)
+	s.Step(`^Deploy (quarkus|springboot) folder from example service "([^"]*)"$`, data.deployFolderFromExampleService)
 }
 
 // Deploy steps
 
-func (data *Data) deployFileFromExampleService(file, serviceName string) error {
+func (data *Data) deployFileFromExampleService(runtimeType, file, serviceName string) error {
 	sourceFilePath := fmt.Sprintf(`%s/%s/%s/%s`, data.KogitoExamplesLocation, serviceName, sourceLocation, file)
-	return deploySourceFilesFromPath(data.Namespace, serviceName, sourceFilePath)
+	return deploySourceFilesFromPath(data.Namespace, runtimeType, serviceName, sourceFilePath)
 }
 
-func (data *Data) deployFolderFromExampleService(serviceName string) error {
+func (data *Data) deployFolderFromExampleService(runtimeType, serviceName string) error {
 	sourceFolderPath := fmt.Sprintf(`%s/%s/%s`, data.KogitoExamplesLocation, serviceName, sourceLocation)
-	return deploySourceFilesFromPath(data.Namespace, serviceName, sourceFolderPath)
+	return deploySourceFilesFromPath(data.Namespace, runtimeType, serviceName, sourceFolderPath)
 }
 
-func deploySourceFilesFromPath(namespace, serviceName, path string) error {
-	framework.GetLogger(namespace).Infof("Deploy example %s with source files in path %s", serviceName, path)
+func deploySourceFilesFromPath(namespace, runtimeType, serviceName, path string) error {
+	framework.GetLogger(namespace).Infof("Deploy %s example %s with source files in path %s", runtimeType, serviceName, path)
 
-	kogitoAppHolder, err := getKogitoAppHolder(namespace, "quarkus", serviceName, &messages.PickleStepArgument_PickleTable{})
+	kogitoAppHolder, err := getKogitoAppHolder(namespace, runtimeType, serviceName, &messages.PickleStepArgument_PickleTable{})
 	if err != nil {
 		return err
 	}
