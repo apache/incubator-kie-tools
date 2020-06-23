@@ -175,9 +175,11 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     switch (stateControlCommand) {
       case StateControlCommand.REDO:
         stateControl.redo();
+        props.onEditorRedo?.()
         break;
       case StateControlCommand.UNDO:
         stateControl.undo();
+        props.onEditorUndo?.()
         break;
       default:
         console.info(`Unknown message type received: ${stateControlCommand}`);
@@ -226,14 +228,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         },
         receive_resourceListRequest(request: ResourceListRequest) {
           onResourceListRequest(request).then(r => self.respond_resourceList(r!));
-        },
-        notify_editorUndo: () => {
-          stateControl.undo();
-          props.onEditorUndo?.();
-        },
-        notify_editorRedo: () => {
-          stateControl.redo();
-          props.onEditorRedo?.();
         },
         receive_openFile: (path: string) => {
           props.onOpenFile?.(path);
