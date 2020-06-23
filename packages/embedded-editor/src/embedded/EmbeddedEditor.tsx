@@ -79,6 +79,10 @@ export interface Props {
    */
   onEditorRedo?: () => void;
   /**
+   * Optional callback for when the editor signals an open file operation.
+   */
+  onOpenFile?: (path: string) => void;
+  /**
    * Optional callback for when the editor signals a new edit.
    */
   onNewEdit?: (edit: KogitoEdit) => void;
@@ -197,6 +201,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         },
         notify_editorRedo: () => {
           props.onEditorRedo?.();
+        },
+        receive_openFile: (path: string) => {
+          props.onOpenFile?.(path);
         },
         receive_newEdit(edit: KogitoEdit) {
           props.onNewEdit?.(edit);

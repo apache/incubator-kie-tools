@@ -25,6 +25,7 @@ import { EditorEnvelopeController } from "./EditorEnvelopeController";
 import { EditorFactory } from "./EditorFactory";
 import { Renderer } from "./Renderer";
 import { SpecialDomElements } from "./SpecialDomElements";
+import { WorkspaceService, WorkspaceServiceApi } from "./api/workspaceService";
 
 export * from "./api/context/EditorContext";
 export * from "./api/resourceContent";
@@ -40,6 +41,7 @@ declare global {
       resourceContentEditorService?: ResourceContentApi;
       stateControl: StateControlApi;
       keyboardShortcuts: KeyboardShortcutsApi;
+      workspaceService: WorkspaceServiceApi;
     };
   }
 }
@@ -70,6 +72,7 @@ export function init(args: {
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
   const stateControl = new StateControl();
   const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: args.editorContext });
+  const workspaceService = new WorkspaceService();
   const editorEnvelopeController = new EditorEnvelopeController(
     args.busApi,
     args.editorFactory,
@@ -85,7 +88,8 @@ export function init(args: {
       resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
       editorContext: args.editorContext,
       stateControl: stateControl.exposeApi(messageBus),
-      keyboardShortcuts: keyboardShortcutsService.exposeApi()
+      keyboardShortcuts: keyboardShortcutsService.exposeApi(),
+      workspaceService: workspaceService.exposeApi(messageBus)
     };
   });
 }
