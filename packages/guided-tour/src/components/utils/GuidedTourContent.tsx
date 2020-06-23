@@ -54,8 +54,8 @@ export const StepDialog = (
   onCloseAction: () => void
 ) => {
   const { currentStep, setCurrentStep } = useContext(CurrentTutorialContext);
-  const nextStep = useCallback(() => setCurrentStep(currentStep + 1), []);
-  const prevStep = useCallback(() => setCurrentStep(currentStep - 1), []);
+  const nextStep = useCallback(() => setCurrentStep(currentStep + 1), [currentStep]);
+  const prevStep = useCallback(() => setCurrentStep(currentStep - 1), [currentStep]);
   return () => (
     <>
       <ModalBoxCloseButton data-kgt-close="true" onClose={onCloseAction} />
