@@ -122,8 +122,8 @@ export class EnvelopeBusInnerMessageHandler {
   public respond_previewRequest(previewSvg: string) {
     return this.send({ type: EnvelopeBusMessageType.RETURN_PREVIEW, data: previewSvg });
   }
-  public request_stateControlCommandUpdateRequest(stateControl: StateControlCommand) {
-    return this.send({ type: EnvelopeBusMessageType.STATE_CONTROL_COMMAND_UPDATE_REQUEST, data: stateControl });
+  public notify_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
+    return this.send({ type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE, data: stateControlCommand });
   }
 
   private receive_initRequest(init: { origin: string; busId: string }) {

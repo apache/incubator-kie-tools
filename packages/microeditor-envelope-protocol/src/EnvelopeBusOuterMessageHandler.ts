@@ -163,7 +163,7 @@ export class EnvelopeBusOuterMessageHandler {
       case EnvelopeBusMessageType.RETURN_PREVIEW:
         this.impl.receive_previewRequest(message.data as string);
         break;
-      case EnvelopeBusMessageType.STATE_CONTROL_COMMAND_UPDATE_REQUEST:
+      case EnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE:
         this.impl.receive_stateControlCommandUpdate(message.data);
         break;
       default:

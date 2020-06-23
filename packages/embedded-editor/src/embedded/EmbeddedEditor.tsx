@@ -27,7 +27,7 @@ import {
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as CSS from "csstype";
 import * as React from "react";
-import {useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { File } from "../common";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 import { StateControl } from "../stateControl";

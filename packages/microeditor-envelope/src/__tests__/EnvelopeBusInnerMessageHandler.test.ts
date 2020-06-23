@@ -222,20 +222,20 @@ describe("send", () => {
 
   describe("receive_stateControlCommand", () => {
     test("receive state control api - redo event", () => {
-      handler.request_stateControlCommandUpdateRequest(StateControlCommand.REDO);
+      handler.notify_stateControlCommandUpdate(StateControlCommand.REDO);
       expect(sentMessages).toEqual([
         [
-          { type: EnvelopeBusMessageType.STATE_CONTROL_COMMAND_UPDATE_REQUEST, data: StateControlCommand.REDO },
+          { type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE, data: StateControlCommand.REDO },
           "tgt-orgn"
         ]
       ]);
     });
 
     test("receive state control api - redo event", () => {
-      handler.request_stateControlCommandUpdateRequest(StateControlCommand.UNDO);
+      handler.notify_stateControlCommandUpdate(StateControlCommand.UNDO);
       expect(sentMessages).toEqual([
         [
-          { type: EnvelopeBusMessageType.STATE_CONTROL_COMMAND_UPDATE_REQUEST, data: StateControlCommand.UNDO },
+          { type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE, data: StateControlCommand.UNDO },
           "tgt-orgn"
         ]
       ]);

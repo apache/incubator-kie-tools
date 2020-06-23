@@ -88,14 +88,14 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
   private registerRedoShortcut() {
     this.redoId = this.props.keyboardShortcuts.registerKeyPress("shift+ctrl+z", "Edit | Redo last edit", async () => {
       this.props.stateControlService.redo();
-      this.props.messageBus.request_stateControlCommandUpdateRequest(StateControlCommand.REDO);
+      this.props.messageBus.notify_stateControlCommandUpdate(StateControlCommand.REDO);
     });
   }
 
   private registerUndoShortcut() {
     this.undoId = this.props.keyboardShortcuts.registerKeyPress("ctrl+z", "Edit | Undo last edit", async () => {
       this.props.stateControlService.undo();
-      this.props.messageBus.request_stateControlCommandUpdateRequest(StateControlCommand.UNDO);
+      this.props.messageBus.notify_stateControlCommandUpdate(StateControlCommand.UNDO);
     });
   }
 

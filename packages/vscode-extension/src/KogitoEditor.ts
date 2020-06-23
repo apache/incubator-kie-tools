@@ -146,7 +146,7 @@ export class KogitoEditor {
             fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, preview);
           }
         },
-        receive_stateControlCommandUpdate(command: StateControlCommand) {
+        receive_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
           /**/
         }
       })
