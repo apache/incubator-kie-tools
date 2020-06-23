@@ -30,40 +30,44 @@ export const HighlightLayer = () => {
     isHighlightLayerEnabled,
     isNegativeReinforcementStateEnabled
   } = useContext(CurrentTutorialContext);
+
   const step = useMemo(() => getCurrentStep(currentStep, currentTutorial), [currentStep, currentTutorial]);
   const highlightEnabled = step?.highlightEnabled || isHighlightLayerEnabled;
 
-  let refElementX = 0;
-  let refElementY = 0;
-  let refElementWidth = 0;
-  let refElementHeight = 0;
+  const internalRectPath = useMemo(() => {
+    let refElementX = 0;
+    let refElementY = 0;
+    let refElementWidth = 0;
+    let refElementHeight = 0;
 
-  if (!isNegativeReinforcementStateEnabled && currentRefElementPosition) {
-    refElementX = currentRefElementPosition.left;
-    refElementY = currentRefElementPosition.top;
-    refElementWidth = currentRefElementPosition.width;
-    refElementHeight = currentRefElementPosition.height;
-  }
+    if (!isNegativeReinforcementStateEnabled && currentRefElementPosition) {
+      refElementX = currentRefElementPosition.left;
+      refElementY = currentRefElementPosition.top;
+      refElementWidth = currentRefElementPosition.width;
+      refElementHeight = currentRefElementPosition.height;
+    }
 
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-  const PADDING = 5;
-  const rectX = refElementX - PADDING;
-  const rectY = refElementY - PADDING;
-  const rectWidth = refElementWidth + PADDING * 2;
-  const reactHeight = refElementHeight + PADDING * 2;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const PADDING = 5;
+    const rectX = refElementX - PADDING;
+    const rectY = refElementY - PADDING;
+    const rectWidth = refElementWidth + PADDING * 2;
+    const reactHeight = refElementHeight + PADDING * 2;
 
-  function internalRectPath() {
     if (highlightEnabled) {
       return `M0 0 H${width} V${height} H0Z 
               M${rectX} ${rectY} V${rectY + reactHeight} H${rectX + rectWidth} V${rectY}Z`;
     }
     return "";
-  }
+  }, [currentStep, currentRefElementPosition, isHighlightLayerEnabled, isNegativeReinforcementStateEnabled]);
 
-  return (
-    <svg style={{ opacity: highlightEnabled ? 1 : 0 }} className="kgt-svg-layer">
-      <path d={internalRectPath()} style={{ fill: "rgba(0, 0, 0, .5)" }} />
-    </svg>
+  return useMemo(
+    () => (
+      <svg style={{ opacity: highlightEnabled ? 1 : 0 }} className="kgt-svg-layer">
+        <path d={internalRectPath} style={{ fill: "rgba(0, 0, 0, .5)" }} />
+      </svg>
+    ),
+    [internalRectPath, highlightEnabled]
   );
 };
