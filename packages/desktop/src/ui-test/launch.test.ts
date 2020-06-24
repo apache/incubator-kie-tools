@@ -59,7 +59,7 @@ describe('Application Startup', function () {
     it('opens BPMN editor - new file', async () => {
       await app.client.waitUntilWindowLoaded().click(homePage.openNewBpmnDiagramButtonSelector());
       await app.client.waitUntilWindowLoaded().getWindowCount().should.eventually.equal(1);
-      waitForLoadingSpinner(app.client);
+      await waitForLoadingSpinner(app.client);
       await app.client.browserWindow.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
       await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
       await app.client.browserWindow.focus().waitUntilWindowLoaded();
@@ -81,7 +81,7 @@ describe('Application Startup', function () {
       await app.client.waitUntilWindowLoaded();
       await app.client.click(homePage.openNewDmnDiagramButtonSelector())
       await app.client.waitUntilWindowLoaded().getWindowCount().should.eventually.equal(1)
-      waitForLoadingSpinner(app.client)
+      await waitForLoadingSpinner(app.client)
            
       await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
       await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
@@ -104,7 +104,7 @@ describe('Application Startup', function () {
       await app.client.waitUntilWindowLoaded();
       await app.client.click(homePage.openSampleBpmnDiagramButtonSelector())
       await app.client.waitUntilWindowLoaded().getWindowCount().should.eventually.equal(1)
-      waitForLoadingSpinner(app.client)
+      await waitForLoadingSpinner(app.client)
       
       await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
       await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
@@ -127,7 +127,7 @@ describe('Application Startup', function () {
       await app.client.waitUntilWindowLoaded();
       await app.client.click(homePage.openSampleDmnDiagramButtonSelector())
       await app.client.waitUntilWindowLoaded().getWindowCount().should.eventually.equal(1)
-      waitForLoadingSpinner(app.client)
+      await waitForLoadingSpinner(app.client)
       
       await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
       await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
