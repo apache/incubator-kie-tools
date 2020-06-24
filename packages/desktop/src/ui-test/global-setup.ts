@@ -1,11 +1,11 @@
 import { ApplicationSettings, SpectronClient } from "spectron";
 
-let Application = require('spectron').Application
-let assert = require('assert');
-let path = require('path');
-let chaiActual = require('chai')
-let chaiAsPromised = require('chai-as-promised')
-let chaiRoughly = require('chai-roughly')
+const Application = require('spectron').Application
+const assert = require('assert');
+const path = require('path');
+const chaiActual = require('chai')
+const chaiAsPromised = require('chai-as-promised')
+const chaiRoughly = require('chai-roughly')
 
 global.before(() => {
   chaiActual.should()

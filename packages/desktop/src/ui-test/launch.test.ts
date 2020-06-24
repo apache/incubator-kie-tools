@@ -1,5 +1,5 @@
-let helpers = require('./global-setup');
-let path = require( 'path');
+const helpers = require('./global-setup');
+const path = require( 'path');
 
 import { HomePage } from './utils/HomePage';
 import { EditorPage } from'./utils/EditorPage';
@@ -125,7 +125,7 @@ describe('Application Startup', function () {
       await app.client.waitUntilWindowLoaded();
       await app.client.click(homePage.openSampleDmnDiagramButtonSelector())
       await app.client.waitUntilWindowLoaded().getWindowCount().should.eventually.equal(1)
-      await app.client.isVisible().should.eventually.be.false
+      await app.client.isVisible(editorPage.diagramLoadingScreenLocator()).should.eventually.be.false
       
       await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
       await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true

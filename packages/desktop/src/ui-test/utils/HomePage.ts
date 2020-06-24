@@ -4,7 +4,7 @@ export class HomePage {
   }
 
   public openSampleBpmnDiagramButtonSelector(): string {
-    return this.articleComponent('create-sample-bpmn');
+    return this.articleComponent('open-sample-bpmn');
   }
 
   public openNewDmnDiagramButtonSelector(): string {
@@ -12,7 +12,7 @@ export class HomePage {
   }
 
   public openSampleDmnDiagramButtonSelector(): string {
-    return this.articleComponent('create-sample-dmn');
+    return this.articleComponent('open-sample-dmn');
   }
 
   private articleComponent = (componentId) => {
