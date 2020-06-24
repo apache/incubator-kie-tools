@@ -16,13 +16,23 @@
 import { DATA_DICTIONARY } from "./json2ui/DataDictionary";
 import { HEADER } from "./json2ui/Header";
 import { SCORE_CARD } from "./json2ui/Scorecard";
+import { REGRESSION_MODEL } from "./json2ui/RegressionModel";
 
 export const JSON2UI_TRANSFORMATION: string = `(
   $bootstrap := function($node) {
     { 
       ${HEADER}, 
       ${DATA_DICTIONARY}, 
-      "models": $singletonArray($append([], ${SCORE_CARD})) }
+      "models": $singletonArray(
+        $append(
+          [],
+          $append(
+              ${SCORE_CARD}, 
+              ${REGRESSION_MODEL}
+          )
+        )
+      )
+    }
   };
 
   $json2uiPredicateFactory := function($node) {
