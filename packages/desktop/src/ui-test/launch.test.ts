@@ -1,40 +1,39 @@
-var helpers = require('./global-setup')
-var path = require('path')
-var assert = require('assert')
+let helpers = require('./global-setup');
+let path = require( 'path');
 
-var describe = global.describe
-var it = global.it
-var beforeEach = global.beforeEach
-var afterEach = global.afterEach
+import { HomePage } from './utils/HomePage';
+import { EditorPage } from'./utils/EditorPage';
+
+const describe = global.describe
+const it = global.it
+const beforeEach = global.beforeEach
+const afterEach = global.afterEach
 
 const UNSAVED_FILE = 'unsaved file';
-const KOGITO_EDITOR_LOCATOR = '//iframe[@id = \'kogito-iframe\']';
-const UNSAVED_FILE_H3_LOCATOR = '//h3[text() = \'unsaved file\']';
 const GO_TO_HOMEPAGE_BUTTON_LOCATOR = '//button[@aria-label=\'Go to homepage\']';
-const LOADING_SCREEN_LOCATOR = '#loading-screen';
 const BMP_TITLE = "Business Modeler Preview";
 
 describe('Application Startup', function () {
   helpers.setupTimeout(this)
 
-  var app = null
+  let app;
 
-  beforeEach(function () {
+  beforeEach(() => {
       return helpers.startApplication({
-        args: [path.join(__dirname, '../..')],
+        args: [path.join(__dirname, '../../..')],
         port: 3000,
         startTimeout: 25000,
         waitTimeout: 25000
-      }).then(function (startedApp) { 
+      }).then((startedApp) => { 
         app = startedApp
       })
   });
 
-  afterEach(function () {
+  afterEach(() => {
     return helpers.stopApplication(app)
   });
 
-  it('opens application window', function () {
+  it('opens application window',  () => {
     return app.client.waitUntilWindowLoaded()
       .browserWindow.focus()
       .getWindowCount().should.eventually.equal(1)
@@ -47,16 +46,20 @@ describe('Application Startup', function () {
       .getTitle().should.eventually.equal(BMP_TITLE)
   })
 
-  describe('Editors can be opened', function() {
+  describe('Editors can be opened', () => {
+
+    const homePage = new HomePage();
+    const editorPage = new EditorPage();
 
     it('opens BPMN editor - new file', async () => {
       await app.client.waitUntilWindowLoaded();
-      await app.client.click('//article[@data-ouia-component-id = \'create-new-bpmn\']')
+      await app.client.click(homePage.openNewBpmnDiagramButtonSelector());
       await app.client.waitUntilWindowLoaded().getWindowCount().should.eventually.equal(1)
-      await app.client.isVisible(LOADING_SCREEN_LOCATOR).should.eventually.be.false
+      await app.client.isVisible(editorPage.diagramLoadingScreenLocator()).should.eventually.be.false
+
       
-      await app.client.getText(UNSAVED_FILE_H3_LOCATOR).should.eventually.be.equal(UNSAVED_FILE)
-      await app.client.isVisible(KOGITO_EDITOR_LOCATOR).should.eventually.be.true
+      await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
+      await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
       await app.client.browserWindow.focus().waitUntilWindowLoaded();
       await app.client.browserWindow.focus().click(GO_TO_HOMEPAGE_BUTTON_LOCATOR)
 
@@ -74,12 +77,12 @@ describe('Application Startup', function () {
 
     it('opens DMN editor - new file', async () => {
       await app.client.waitUntilWindowLoaded();
-      await app.client.click('//article[@data-ouia-component-id = \'create-new-dmn\']')
+      await app.client.click(homePage.openNewDmnDiagramButtonSelector())
       await app.client.waitUntilWindowLoaded().getWindowCount().should.eventually.equal(1)
-      await app.client.isVisible(LOADING_SCREEN_LOCATOR).should.eventually.be.false
+      await app.client.isVisible(editorPage.diagramLoadingScreenLocator()).should.eventually.be.false
       
-      await app.client.getText(UNSAVED_FILE_H3_LOCATOR).should.eventually.be.equal(UNSAVED_FILE)
-      await app.client.isVisible(KOGITO_EDITOR_LOCATOR).should.eventually.be.true
+      await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
+      await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
       await app.client.browserWindow.focus().waitUntilWindowLoaded();
       await app.client.browserWindow.focus().click(GO_TO_HOMEPAGE_BUTTON_LOCATOR).waitUntilWindowLoaded()
 
@@ -97,12 +100,12 @@ describe('Application Startup', function () {
 
     it('opens BPMN editor - sample file', async () => {
       await app.client.waitUntilWindowLoaded();
-      await app.client.click('//article[@data-ouia-component-id = \'open-sample-bpmn\']')
+      await app.client.click(homePage.openSampleBpmnDiagramButtonSelector())
       await app.client.waitUntilWindowLoaded().getWindowCount().should.eventually.equal(1)
-      await app.client.isVisible('#loading-screen').should.eventually.be.false
+      await app.client.isVisible(editorPage.diagramLoadingScreenLocator()).should.eventually.be.false
       
-      await app.client.getText(UNSAVED_FILE_H3_LOCATOR).should.eventually.be.equal(UNSAVED_FILE)
-      await app.client.isVisible(KOGITO_EDITOR_LOCATOR).should.eventually.be.true
+      await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
+      await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
       await app.client.browserWindow.focus().waitUntilWindowLoaded();
       await app.client.browserWindow.focus().click(GO_TO_HOMEPAGE_BUTTON_LOCATOR)
 
@@ -120,12 +123,12 @@ describe('Application Startup', function () {
 
     it('opens DMN editor - sample file', async () => {
       await app.client.waitUntilWindowLoaded();
-      await app.client.click('//article[@data-ouia-component-id = \'open-sample-dmn\']')
+      await app.client.click(homePage.openSampleDmnDiagramButtonSelector())
       await app.client.waitUntilWindowLoaded().getWindowCount().should.eventually.equal(1)
-      await app.client.isVisible(LOADING_SCREEN_LOCATOR).should.eventually.be.false
+      await app.client.isVisible().should.eventually.be.false
       
-      await app.client.getText(UNSAVED_FILE_H3_LOCATOR).should.eventually.be.equal(UNSAVED_FILE)
-      await app.client.isVisible(KOGITO_EDITOR_LOCATOR).should.eventually.be.true
+      await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
+      await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
       await app.client.browserWindow.focus().waitUntilWindowLoaded();
       await app.client.browserWindow.focus().click(GO_TO_HOMEPAGE_BUTTON_LOCATOR).waitUntilWindowLoaded()
 
