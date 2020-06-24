@@ -18,16 +18,12 @@
     }
   ],
   "icons": {
-    "16": "./resources/icon_16.png",
-    "48": "./resources/icon_48.png",
-    "128": "./resources/icon_128.png"
+    "16": "resources/icon_16.png",
+    "48": "resources/icon_48.png",
+    "128": "resources/icon_128.png"
   },
   "browser_action": {
-    "default_icon": {
-      "16": "./resources/icon_16.png",
-      "48": "./resources/icon_48.png",
-      "128": "./resources/icon_128.png"
-    }
+    "default_icon": "resources/icon_16.png"
   },
   "background": { "scripts": ["background.js"], "persistent": true },
   "web_accessible_resources": ["resources/*"],
