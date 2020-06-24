@@ -147,7 +147,9 @@ export class KogitoEditor {
           }
         },
         receive_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
-          /**/
+          /*
+           * VS Code has his own state control API.
+           */
         }
       })
     );

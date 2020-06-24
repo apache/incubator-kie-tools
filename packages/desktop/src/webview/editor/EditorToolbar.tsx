@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { useDirtyState } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { useContext, useMemo } from "react";
 import { GlobalContext } from "../common/GlobalContext";
