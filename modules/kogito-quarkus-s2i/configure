@@ -9,6 +9,7 @@ ADDED_DIR=${SCRIPT_DIR}/added
 cp -p ${ADDED_DIR}/kogito-app-launch.sh ${KOGITO_HOME}/
 chmod +x ${KOGITO_HOME}/kogito-app-launch.sh
 
+cp -rv ${ADDED_DIR}/launch/* ${KOGITO_HOME}/launch/
 cp -rv ${SCRIPT_DIR}/s2i/bin/* /usr/local/s2i/
 
 chmod 755 /usr/local/s2i/*

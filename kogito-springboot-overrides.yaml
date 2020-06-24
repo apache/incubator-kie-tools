@@ -23,6 +23,9 @@ envs:
 - name: BINARY_BUILD
   example: "true"
   description: Enables binary builds for this image, meaning that the application binaries (e.g. maven target directory) will be uploaded to it.
+- name: "HTTP_PORT"
+  example: "9090"
+  description: "Defines on which port the service will listen on."
 
 ports:
 - value: 8080
@@ -32,6 +35,7 @@ modules:
   - name: org.kie.kogito.image.dependencies
   - name: org.kie.kogito.system.user
   - name: org.kie.kogito.logging
+  - name: org.kie.kogito.launch.scripts
   - name: org.kie.kogito.openjdk
     version: "11-headless"
   - name: org.kie.kogito.s2i.core

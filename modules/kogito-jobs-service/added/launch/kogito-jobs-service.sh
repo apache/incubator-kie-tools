@@ -4,12 +4,14 @@ function prepareEnv() {
     # keep it on alphabetical order
     unset BACKOFF_RETRY
     unset ENABLE_PERSISTENCE
+    unset HTTP_PORT
     unset INFINISPAN_CLIENT_SERVER_LIST
     unset MAX_INTERVAL_LIMIT_RETRY
 }
 
 function configure() {
     configure_jobs_service
+    configure_jobs_service_http_port
 }
 
 
@@ -42,5 +44,10 @@ function configure_jobs_service() {
             KOGITO_JOBS_PROPS="${KOGITO_JOBS_PROPS} -Dmp.messaging.outgoing.kogito-job-service-job-status-events.bootstrap.servers=${KAFKA_BOOTSTRAP_SERVERS} -Devents-support.quarkus.kafka.bootstrap-servers=${KAFKA_BOOTSTRAP_SERVERS}"
         fi
     fi
+}
+
+function configure_jobs_service_http_port {
+    local httpPort=${HTTP_PORT:-8080}
+    KOGITO_JOBS_PROPS="${KOGITO_JOBS_PROPS} -Dquarkus.http.port=${httpPort}"
 }
 

@@ -23,9 +23,9 @@ Feature: Kogito-data-index feature.
 
   Scenario: Verify if the debug is correctly enabled and test custom http port
     When container is started with env
-      | variable                     | value |
-      | SCRIPT_DEBUG                 | true  |
-      | KOGITO_DATA_INDEX_HTTP_PORT  | 9090  |
+      | variable      | value |
+      | SCRIPT_DEBUG  | true  |
+      | HTTP_PORT     | 9090  |
     Then container log should contain + exec java -XshowSettings:properties -Dquarkus.infinispan-client.use-auth=false -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-data-index-runner.jar
 
   Scenario: Verify data-index default configuration

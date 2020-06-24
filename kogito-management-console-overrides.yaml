@@ -20,6 +20,9 @@ envs:
   - name: "KOGITO_DATAINDEX_HTTP_URL"
     example: "http://data-index.service:8080"
     description: "Data Index service address, defaults tohttp://localhost:8180."
+  - name: "HTTP_PORT"
+    example: "9090"
+    description: "Defines which port the management console Container Image will listen on."
 
 ports:
 - value: 8080

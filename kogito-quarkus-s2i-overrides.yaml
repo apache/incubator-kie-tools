@@ -27,6 +27,9 @@ envs:
 - name: ARTIFACT_DIR
   example: mymodule/target
   description:  Path to target/ where the jar files are created for multi-module builds
+- name: "HTTP_PORT"
+  example: "9090"
+  description: "Defines on which port the service will listen on."
 
 modules:
   install:

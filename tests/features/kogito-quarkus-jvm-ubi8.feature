@@ -34,6 +34,23 @@ Feature: Kogito-quarkus-ubi8 feature.
       | expected_phrase | ["hello","world"]        |
     And file /home/kogito/bin/rules-quarkus-helloworld-runner.jar should exist
 
+  Scenario: Verify if the binary build is finished as expected and if it is listening on the custom port
+    Given s2i build /tmp/kogito-examples/rules-quarkus-helloworld from target
+      | variable            | value                     |
+      | NATIVE              | false                     |
+      | JAVA_OPTIONS        | -Dquarkus.log.level=DEBUG |
+      | HTTP_PORT           | 9090                      |
+    Then check that page is served
+      | property        | value                    |
+      | port            | 9090                     |
+      | path            | /hello                   |
+      | request_method  | POST                     |
+      | content_type    | application/json         |
+      | request_body    | {"strings":["hello"]}    |
+      | wait            | 80                       |
+      | expected_phrase | ["hello","world"]        |
+    And file /home/kogito/bin/rules-quarkus-helloworld-runner.jar should exist
+
   Scenario: Verify if the binary build (forcing) is finished as expected and if it is listening on the expected port
     Given s2i build /tmp/kogito-examples/rules-quarkus-helloworld from target
       | variable            | value                     |

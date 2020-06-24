@@ -12,5 +12,13 @@ if [[ "$1" == "-h" ]]; then
     exit 0
 fi
 
-exec java ${JAVA_OPTIONS} -Dserver.port=8080 -jar $KOGITO_HOME/bin/*.jar
+# Configuration scripts
+# Any configuration script that needs to run on image startup must be added here.
+CONFIGURE_SCRIPTS=(
+  ${KOGITO_HOME}/launch/kogito-springboot-s2i.sh
+)
+source ${KOGITO_HOME}/launch/configure.sh
+#############################################
+
+exec java ${JAVA_OPTIONS} ${KOGITO_SPRINGBOOT_S2I_PROPS} -jar $KOGITO_HOME/bin/*.jar
 

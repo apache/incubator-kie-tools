@@ -35,6 +35,9 @@ envs:
 - name: "KAFKA_BOOTSTRAP_SERVERS"
   example: "localhost:9092"
   description: "When enabling events for the Jobs Service, this variable also needs to be set to allow the service to connect to the given Kafka instance."
+- name: "HTTP_PORT"
+  example: "9090"
+  description: "Defines which port the Job service Container Image will listen on."
 
 ports:
 - value: 8080

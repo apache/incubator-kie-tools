@@ -12,6 +12,14 @@ if [[ "$1" == "-h" ]]; then
     exit 0
 fi
 
-exec $KOGITO_HOME/bin/*-runner ${JAVA_OPTIONS} -Dquarkus.http.host=0.0.0.0 \
-    -Dquarkus.http.port=8080 -Djava.library.path=$KOGITO_HOME/ssl-libs \
+# Configuration scripts
+# Any configuration script that needs to run on image startup must be added here.
+CONFIGURE_SCRIPTS=(
+  ${KOGITO_HOME}/launch/kogito-quarkus-native.sh
+)
+source ${KOGITO_HOME}/launch/configure.sh
+#############################################
+
+exec $KOGITO_HOME/bin/*-runner ${JAVA_OPTIONS} ${KOGITO_QUARKUS_NATIVE_PROPS} \
+    -Dquarkus.http.host=0.0.0.0 -Djava.library.path=$KOGITO_HOME/ssl-libs \
     -Djavax.net.ssl.trustStore=$KOGITO_HOME/cacerts

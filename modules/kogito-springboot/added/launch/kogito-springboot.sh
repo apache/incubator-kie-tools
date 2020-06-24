@@ -7,11 +7,10 @@ function prepareEnv() {
 }
 
 function configure() {
-    configure_data_index_http_port
+    configure_springboot_http_port
 }
 
-function configure_data_index_http_port {
+function configure_springboot_http_port {
     local httpPort=${HTTP_PORT:-8080}
-    KOGITO_DATA_INDEX_PROPS="${KOGITO_DATA_INDEX_PROPS} -Dquarkus.http.port=${httpPort}"
+    KOGITO_SPRINGBOOT_PROPS="${KOGITO_SPRINGBOOT_PROPS} -Dserver.port=${httpPort}"
 }
-

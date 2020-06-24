@@ -42,6 +42,19 @@ Feature: kogito-springboot-ubi8-s2i image tests
     And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain Tomcat initialized with port(s): 8080 (http)
 
+  Scenario: Verify if the s2i build is finished as expected and if it is listening on the custom port, test uses custom properties file to test the port configuration.
+    Given s2i build /tmp/kogito-examples from process-springboot-example using master and runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest
+      | variable            | value |
+      | HTTP_PORT           | 9090  |
+    Then check that page is served
+      | property             | value     |
+      | port                 | 9090      |
+      | path                 | /orders/1 |
+      | wait                 | 80        |
+      | expected_status_code | 204       |
+    And file /home/kogito/bin/process-springboot-example.jar should exist
+    And container log should contain Tomcat initialized with port(s): 9090 (http)
+
   Scenario: Verify if the s2i build is finished as expected with persistence enabled
     Given s2i build https://github.com/kiegroup/kogito-examples.git from process-springboot-example using master and runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest
       | variable | value |

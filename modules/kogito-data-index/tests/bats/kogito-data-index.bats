@@ -23,7 +23,7 @@ teardown() {
 }
 
 @test "http port configuration custom value" {
-    export KOGITO_DATA_INDEX_HTTP_PORT="9090"
+    export HTTP_PORT="9090"
     configure_data_index_http_port
     expected=" -Dquarkus.http.port=9090"
     echo "Result is ${KOGITO_DATA_INDEX_PROPS} and expected is ${expected}"
