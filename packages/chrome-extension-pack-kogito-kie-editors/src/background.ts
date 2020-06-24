@@ -86,7 +86,7 @@ function openOnlineEditor(request: any, sender: chrome.runtime.MessageSender, se
         chrome.tabs.onUpdated.removeListener(tabUpdateListener);
         chrome.tabs.sendMessage(tab.id!, {
           messageId: "LOAD_ONLINE_EDITOR",
-          filePath: removeDirectories(removeFileExtension(request.filePath)),
+          filePath: removeDirectories(request.filePath),
           fileContent: request.fileContent,
           readonly: request.readonly,
           senderTabId: sender.tab!.id!
