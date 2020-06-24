@@ -1,7 +1,7 @@
 {
   "name": "vscode-extension-dmn-editor",
   "description": "",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -18,10 +18,10 @@
     "@kogito-tooling/kie-bc-editors": "0.5.0",
     "@kogito-tooling/microeditor-envelope": "0.5.0",
     "@kogito-tooling/vscode-extension": "0.5.0",
-    "kie-bc-editors-unpacked": "0.5.0",
     "@patternfly/patternfly": "2.71.5",
     "@patternfly/react-core": "3.153.13",
-    "@patternfly/react-icons": "3.15.16"
+    "@patternfly/react-icons": "3.15.16",
+    "kie-bc-editors-unpacked": "0.5.1"
   },
   "displayName": "DMN Editor",
   "publisher": "redhat",
