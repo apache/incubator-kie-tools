@@ -93,6 +93,7 @@
     "@kogito-tooling/kie-bc-editors-unpacked": "0.5.2",
     "@kogito-tooling/microeditor-envelope": "0.5.2",
     "@kogito-tooling/microeditor-envelope-protocol": "0.5.2",
-    "@kogito-tooling/vscode-extension": "0.5.2"
+    "@kogito-tooling/vscode-extension": "0.5.2",
+    "@kogito-tooling/patternfly-base": "0.5.2"
   }
 }
