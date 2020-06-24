@@ -35,6 +35,7 @@ export function FileTreeWithExternalLink() {
   const [links, setLinksToFiles] = useState<HTMLAnchorElement[]>([]);
 
   useEffect(() => {
+    removeDisplayBlockClass(dependencies.treeView.fileSpanElements());
     const newLinks = filterLinks(dependencies.treeView.linksToFiles(), router);
     if (newLinks.length === 0) {
       return;
@@ -44,6 +45,7 @@ export function FileTreeWithExternalLink() {
 
   useEffect(() => {
     const observer = new MutationObserver(mutations => {
+      removeDisplayBlockClass(dependencies.treeView.fileSpanElements());
       const addedNodes = mutations.reduce((l, r) => [...l, ...Array.from(r.addedNodes)], []);
       if (addedNodes.length <= 0) {
         return;
@@ -85,14 +87,19 @@ export function FileTreeWithExternalLink() {
 }
 
 function filterLinks(links: HTMLAnchorElement[], router: Router): HTMLAnchorElement[] {
-  return links.filter(fileLink =>
-    router.getLanguageData(extractOpenFileExtension(fileLink.href) as any)
-    && !document.getElementById(externalLinkId(fileLink))
+  return links.filter(
+    fileLink =>
+      router.getLanguageData(extractOpenFileExtension(fileLink.href) as any) &&
+      !document.getElementById(externalLinkId(fileLink))
   );
 }
 
 function externalLinkId(fileLink: HTMLAnchorElement): string {
   return "external_editor_" + fileLink.id;
+}
+
+function removeDisplayBlockClass(spans: HTMLSpanElement[]) {
+  spans.forEach(span => span.classList.remove("d-block"));
 }
 
 export function createTargetUrl(pathname: string, externalEditorManager?: ExternalEditorManager): string {

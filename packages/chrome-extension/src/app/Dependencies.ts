@@ -58,8 +58,14 @@ export class Dependencies {
 
     linksToFiles: () => {
       return Array.from(
-        document.querySelectorAll("table.files > tbody > tr > td.content > span > a[href*=blob]")
+        document.querySelectorAll('div[role="grid"] > div[role="row"] > div[role="rowheader"] > span > a')
       ) as HTMLAnchorElement[];
+    },
+
+    fileSpanElements: () => {
+      return Array.from(
+        document.querySelectorAll('div[role="grid"] > div[role="row"] > div[role="rowheader"] > span')
+      ) as HTMLSpanElement[];
     }
   };
 
