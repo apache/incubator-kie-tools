@@ -1,8 +1,3 @@
-BPMN Editor
---
-
-## Release notes - 0.5.1 (alpha)
-
 We are happy to announce a fresh new Kogito Tooling release! 🎉
 
 On this release, we did a lot of improvements and bug fixes. The highlight of this release is that the VS Code team released today Custom Binary Editor support and we are finally able to run our VS Code extension without experimental features parameters. \o/

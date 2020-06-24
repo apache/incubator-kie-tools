@@ -1,6 +1,7 @@
 {
   "name": "vscode-extension-red-hat-business-automation-bundle",
-  "description": "",
+  "displayName": "Red Hat Business Automation Bundle",
+  "description": "Edit BPMN, DMN and Test Scenario files",
   "version": "0.5.1",
   "license": "Apache-2.0",
   "repository": {
@@ -14,7 +15,6 @@
     "compile": "yarn build-ext",
     "watch": "yarn build-ext"
   },
-  "displayName": "Red Hat Business Automation Bundle",
   "publisher": "redhat",
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",
