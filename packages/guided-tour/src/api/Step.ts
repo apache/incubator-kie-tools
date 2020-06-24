@@ -23,7 +23,7 @@ export class Step {
       | React.ReactNode
       | ((props: { dismiss?: () => void; nextStep?: () => void; prevStep?: () => void }) => React.ReactNode)
       | string,
-    public selector?: string, // TODO: doc pattern
+    public selector?: string,
     public highlightEnabled?: boolean,
     public navigatorEnabled?: boolean,
     public position?: "right" | "bottom" | "center" | "left",
