@@ -1,4 +1,4 @@
-import { ApplicationSettings, SpectronClient } from "spectron";
+import { ApplicationSettings } from "spectron";
 
 const Application = require('spectron').Application
 const assert = require('assert');
@@ -27,7 +27,6 @@ exports.setupTimeout = (test: Mocha) => {
 
 exports.startApplication = (options: ApplicationSettings) => {
   options.path = exports.getElectronPath()
-  options.waitTimeout = 25000
   if (process.env.CI) {
     options.startTimeout = 30000
   }
