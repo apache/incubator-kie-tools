@@ -1,8 +1,9 @@
 {
   "name": "vscode-extension-dmn-editor",
+  "publisher": "redhat",
   "displayName": "DMN Editor",
   "description": "Edit DMN and Test Scenario files",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -22,9 +23,8 @@
     "@patternfly/patternfly": "2.71.5",
     "@patternfly/react-core": "3.153.13",
     "@patternfly/react-icons": "3.15.16",
-    "kie-bc-editors-unpacked": "0.5.1"
+    "kie-bc-editors-unpacked": "0.5.2"
   },
-  "publisher": "redhat",
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",
   "engines": {
