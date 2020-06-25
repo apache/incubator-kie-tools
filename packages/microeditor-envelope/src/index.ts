@@ -27,6 +27,12 @@ import { Renderer } from "./Renderer";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { WorkspaceService, WorkspaceServiceApi } from "./api/workspaceService";
 
+export * from "./api/resourceContent";
+export { EditorEnvelopeController } from "./EditorEnvelopeController";
+export * from "./EditorFactory";
+export * from "./EnvelopeBusInnerMessageHandler";
+export { SpecialDomElements } from "./SpecialDomElements";
+
 declare global {
   interface Window {
     envelope: {
@@ -47,12 +53,6 @@ class ReactDomRenderer implements Renderer {
   }
 }
 
-export * from "./api/resourceContent";
-export { EditorEnvelopeController } from "./EditorEnvelopeController";
-export * from "./EditorFactory";
-export * from "./EnvelopeBusInnerMessageHandler";
-export { SpecialDomElements } from "./SpecialDomElements";
-
 /**
  * Starts the envelope at a container. Uses busApi to send messages out of the envelope and creates editors based on the editorFactory provided.
  * @param args.container The DOM element where the envelope should be rendered.
@@ -66,10 +66,10 @@ export function init(args: {
   editorFactory: EditorFactory<any>;
   editorContext: EditorContext;
 }) {
-  const keyboardShortcutsService = new DefaultKeyboardShortcutsService(args.editorContext);
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
+  const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: args.editorContext });
   const stateControlService = new StateControlService();
   const workspaceService = new WorkspaceService();
   const editorEnvelopeController = new EditorEnvelopeController(
@@ -82,15 +82,13 @@ export function init(args: {
     keyboardShortcutsService
   );
 
-  return editorEnvelopeController
-    .start({ container: args.container, keyboardShortcuts: keyboardShortcutsService, context: args.editorContext })
-    .then(messageBus => {
-      window.envelope = {
-        resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
-        editorContext: args.editorContext,
-        stateControl: stateControlService.exposeApi(messageBus),
-        workspaceService: workspaceService.exposeApi(messageBus),
-        keyboardShortcuts: keyboardShortcutsService
-      };
-    });
+  return editorEnvelopeController.start({ container: args.container, context: args.editorContext }).then(messageBus => {
+    window.envelope = {
+      resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
+      editorContext: args.editorContext,
+      stateControl: stateControlService.exposeApi(messageBus),
+      keyboardShortcuts: keyboardShortcutsService.exposeApi(),
+      workspaceService: workspaceService.exposeApi(messageBus)
+    };
+  });
 }

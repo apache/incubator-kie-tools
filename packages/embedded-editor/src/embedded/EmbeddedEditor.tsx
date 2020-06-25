@@ -175,11 +175,11 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     switch (stateControlCommand) {
       case StateControlCommand.REDO:
         stateControl.redo();
-        props.onEditorRedo?.()
+        props.onEditorRedo?.();
         break;
       case StateControlCommand.UNDO:
         stateControl.undo();
-        props.onEditorUndo?.()
+        props.onEditorUndo?.();
         break;
       default:
         console.info(`Unknown message type received: ${stateControlCommand}`);

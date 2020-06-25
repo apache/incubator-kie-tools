@@ -16,7 +16,8 @@
     "@kogito-tooling/core-api": "0.5.2",
     "@kogito-tooling/kie-bc-editors": "0.5.2",
     "@kogito-tooling/microeditor-envelope": "0.5.2",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.5.2"
+    "@kogito-tooling/microeditor-envelope-protocol": "0.5.2",
+    "@kogito-tooling/patternfly-base": "0.5.2"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

@@ -70,16 +70,6 @@ export interface KeyboardShortcutsApi {
    * @return An id representing this registration. This id can be used to 'deregister' the Keyboard Shortcut.
    */
   registerKeyPressOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts): number;
-
-  /**
-   * Returns a list of all the registered Keyboard Shortcuts.
-   */
-  registered(): KeyBinding[];
-
-  /**
-   * Execute delayed shortcuts after envelope load.
-   */
-  executeDelayedShortcutsRegistration(): void;
 }
 
 /**
@@ -89,16 +79,4 @@ export interface KeyBindingServiceOpts {
   hidden?: boolean;
   element?: EventTarget;
   repeat?: boolean;
-}
-
-export interface KeyBinding {
-  combination: string;
-  label: string;
-  opts?: KeyBindingServiceOpts;
-  listener: (e: KeyboardEvent) => boolean;
-}
-
-export interface KeyboardShortcutRegistration {
-  combination: string,
-  label: string,
 }

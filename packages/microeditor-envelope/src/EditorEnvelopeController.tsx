@@ -17,7 +17,7 @@
 import * as React from "react";
 import * as AppFormer from "@kogito-tooling/core-api";
 import { EditorContent, EditorContext, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
-import { KeyboardShortcutsApi } from "@kogito-tooling/keyboard-shortcuts";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
@@ -28,29 +28,19 @@ import { ResourceContentEditorCoordinator } from "./api/resourceContent";
 import { StateControlService } from "./api/stateControl";
 
 export class EditorEnvelopeController {
-  private readonly editorFactory: EditorFactory<any>;
-  private readonly specialDomElements: SpecialDomElements;
-  private readonly resourceContentEditorCoordinator: ResourceContentEditorCoordinator;
   private readonly envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler;
-  private readonly stateControlService: StateControlService;
 
   private editorEnvelopeView?: EditorEnvelopeView;
-  private renderer: Renderer;
 
   constructor(
     busApi: EnvelopeBusApi,
-    editorFactory: EditorFactory<any>,
-    specialDomElements: SpecialDomElements,
-    stateControlService: StateControlService,
-    renderer: Renderer,
-    resourceContentEditorCoordinator: ResourceContentEditorCoordinator,
-    keyboardShortcutsApi: KeyboardShortcutsApi
+    private readonly editorFactory: EditorFactory<any>,
+    private readonly specialDomElements: SpecialDomElements,
+    private readonly stateControlService: StateControlService,
+    private readonly renderer: Renderer,
+    private readonly resourceContentEditorCoordinator: ResourceContentEditorCoordinator,
+    private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService
   ) {
-    this.renderer = renderer;
-    this.editorFactory = editorFactory;
-    this.specialDomElements = specialDomElements;
-    this.resourceContentEditorCoordinator = resourceContentEditorCoordinator;
-    this.stateControlService = stateControlService;
     this.envelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(busApi, self => ({
       receive_contentResponse: (editorContent: EditorContent) => {
         const contentPath = editorContent.path || "";
@@ -59,10 +49,7 @@ export class EditorEnvelopeController {
           this.editorEnvelopeView!.setLoading();
           editor
             .setContent(contentPath, editorContent.content)
-            .finally(() => {
-              keyboardShortcutsApi.executeDelayedShortcutsRegistration();
-              this.editorEnvelopeView!.setLoadingFinished()
-            })
+            .finally(() => this.editorEnvelopeView!.setLoadingFinished())
             .then(() => self.notify_ready());
         }
       },
@@ -114,13 +101,13 @@ export class EditorEnvelopeController {
     return this.editorEnvelopeView!.getEditor();
   }
 
-  private render(args: { container: HTMLElement; keyboardShortcuts: KeyboardShortcutsApi; context: EditorContext }) {
+  private render(args: { container: HTMLElement; context: EditorContext }) {
     return new Promise<void>(res =>
       this.renderer.render(
         <EditorEnvelopeView
           exposing={self => (this.editorEnvelopeView = self)}
           loadingScreenContainer={this.specialDomElements.loadingScreenContainer}
-          keyboardShortcuts={args.keyboardShortcuts}
+          keyboardShortcutsService={this.keyboardShortcutsService}
           context={args.context}
           stateControlService={this.stateControlService}
           messageBus={this.envelopeBusInnerMessageHandler}
@@ -131,7 +118,7 @@ export class EditorEnvelopeController {
     );
   }
 
-  public start(args: { container: HTMLElement; keyboardShortcuts: KeyboardShortcutsApi; context: EditorContext }) {
+  public start(args: { container: HTMLElement; context: EditorContext }) {
     return this.render(args).then(() => {
       this.envelopeBusInnerMessageHandler.startListening();
       return this.envelopeBusInnerMessageHandler;

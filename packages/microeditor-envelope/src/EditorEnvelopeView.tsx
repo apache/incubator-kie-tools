@@ -19,7 +19,7 @@ import * as ReactDOM from "react-dom";
 import * as AppFormer from "@kogito-tooling/core-api";
 import { ChannelType, StateControlCommand } from "@kogito-tooling/core-api";
 import { LoadingScreen } from "./LoadingScreen";
-import { KeyboardShortcutsApi, KeyBindingsHelpOverlay } from "@kogito-tooling/keyboard-shortcuts";
+import { DefaultKeyboardShortcutsService, KeyBindingsHelpOverlay } from "@kogito-tooling/keyboard-shortcuts";
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
@@ -29,7 +29,7 @@ import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
   loadingScreenContainer: HTMLElement;
-  keyboardShortcuts: KeyboardShortcutsApi;
+  keyboardShortcutsService: DefaultKeyboardShortcutsService;
   context: AppFormer.EditorContext;
   stateControlService: StateControlService;
   messageBus: EnvelopeBusInnerMessageHandler;
@@ -79,13 +79,13 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
 
   public componentWillUnmount() {
     if (this.props.context.channel !== ChannelType.VSCODE) {
-      this.props.keyboardShortcuts.deregister(this.redoShortcutKeybindingId);
-      this.props.keyboardShortcuts.deregister(this.undoShortcutKeybindingId);
+      this.props.keyboardShortcutsService.deregister(this.redoShortcutKeybindingId);
+      this.props.keyboardShortcutsService.deregister(this.undoShortcutKeybindingId);
     }
   }
 
   private registerRedoShortcut() {
-    this.redoShortcutKeybindingId = this.props.keyboardShortcuts.registerKeyPress(
+    this.redoShortcutKeybindingId = this.props.keyboardShortcutsService.registerKeyPress(
       "shift+ctrl+z",
       "Edit | Redo last edit",
       async () => {
@@ -96,7 +96,7 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
   }
 
   private registerUndoShortcut() {
-    this.undoShortcutKeybindingId = this.props.keyboardShortcuts.registerKeyPress(
+    this.undoShortcutKeybindingId = this.props.keyboardShortcutsService.registerKeyPress(
       "ctrl+z",
       "Edit | Undo last edit",
       async () => {
@@ -110,7 +110,10 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
     return (
       <>
         {!this.state.loading && (
-          <KeyBindingsHelpOverlay keyboardShortcuts={this.props.keyboardShortcuts} context={this.props.context} />
+          <KeyBindingsHelpOverlay
+            keyboardShortcutsService={this.props.keyboardShortcutsService}
+            context={this.props.context}
+          />
         )}
         {this.LoadingScreenPortal()}
         {this.state.editor && this.state.editor.af_isReact && this.state.editor.af_componentRoot()}

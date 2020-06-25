@@ -18,7 +18,7 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
 const packageJson = require("./package.json");
-const envelope = require("../patternfly-base/webpackUtils");
+const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
 
 function getLatestGitTag() {
   const tagName = require("child_process")
@@ -153,7 +153,7 @@ module.exports = async (env, argv) => {
           exclude: /node_modules/,
           use: ["babel-loader"]
         },
-        ...envelope.patternflyLoaders
+        ...pfWebpackUtils.patternflyLoaders
       ]
     },
     resolve: {
