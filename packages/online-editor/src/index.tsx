@@ -50,7 +50,7 @@ function waitForEventWithFileData() {
     const file = {
       isReadOnly: false,
       editorType: extractFileExtension(e.detail.fileName) as EditorType,
-      fileName: e.detail.fileName,
+      fileName: removeFileExtension(e.detail.fileName),
       getFileContents: () => Promise.resolve(e.detail.fileContent),
     };
     ReactDOM.render(
