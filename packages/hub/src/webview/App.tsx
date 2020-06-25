@@ -114,7 +114,7 @@ export function App() {
 
   const vscode_install = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
-    electron.shell.openExternal("vscode:extension/kie-group.vscode-extension-kogito-bundle");
+    electron.shell.openExternal(`vscode:extension/${Constants.VSCODE_EXTENSION_PACKAGE_NAME}`);
   }, []);
 
   const vscode_requestUninstall = useCallback(() => {
