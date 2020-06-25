@@ -19,12 +19,8 @@ import { ArrowIcon } from "@patternfly/react-icons";
 
 export function OpenExternalEditorButton(props: { id: string; href: string }) {
   return (
-    <>
-      <div id={props.id} className="float-right">
-        <a href={props.href} target="blank" title="Open in Online Editor">
-          <ArrowIcon />
-        </a>
-      </div>
-    </>
+    <a className="float-right" href={props.href} target="blank" title="Open in Online Editor">
+      <ArrowIcon />
+    </a>
   );
 }

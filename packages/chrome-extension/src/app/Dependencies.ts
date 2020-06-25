@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,14 +58,8 @@ export class Dependencies {
 
     linksToFiles: () => {
       return Array.from(
-        document.querySelectorAll('div[role="grid"] > div[role="row"] > div[role="rowheader"] > span > a')
+        document.querySelectorAll('div[role="grid"] > div[role="row"] > div[role="rowheader"] > span > a[href*=blob]')
       ) as HTMLAnchorElement[];
-    },
-
-    fileSpanElements: () => {
-      return Array.from(
-        document.querySelectorAll('div[role="grid"] > div[role="row"] > div[role="rowheader"] > span')
-      ) as HTMLSpanElement[];
     }
   };
 
