@@ -35,7 +35,7 @@ func CheckSetup() error {
 }
 
 func checkKubernetesAndDomainSuffix() error {
-	if !IsOpenshift() && len(config.GetDomainSuffix()) <= 0 {
+	if !IsOpenshift() && !config.IsLocalCluster() && len(config.GetDomainSuffix()) <= 0 {
 		return fmt.Errorf("The 'domain_suffix' argument is required using Kubernetes cluster")
 	}
 

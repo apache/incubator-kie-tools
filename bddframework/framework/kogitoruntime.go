@@ -39,7 +39,7 @@ func DeployRuntimeService(namespace string, installerType InstallerType, service
 	}
 
 	if err == nil {
-		err = OnKogitoServiceDeployed(namespace, serviceHolder.GetName())
+		err = OnKogitoServiceDeployed(namespace, serviceHolder)
 	}
 
 	return err

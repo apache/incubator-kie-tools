@@ -20,9 +20,11 @@ import (
 	"sync"
 	"time"
 
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	apps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -300,15 +302,19 @@ func GetIngressURI(namespace, serviceName string) (string, error) {
 }
 
 // ExposeServiceOnKubernetes adds ingress CR to expose a service
-func ExposeServiceOnKubernetes(namespace, serviceName string) error {
-	host := serviceName
+func ExposeServiceOnKubernetes(namespace string, service v1alpha1.KogitoService) error {
+	host := service.GetName()
 	if !config.IsLocalCluster() {
 		host += fmt.Sprintf(".%s.%s", namespace, config.GetDomainSuffix())
+	}
+	port := int(service.GetSpec().GetHTTPPort())
+	if port <= 0 {
+		port = framework.DefaultExposedPort
 	}
 
 	ingress := v1beta1.Ingress{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:        serviceName,
+			Name:        service.GetName(),
 			Namespace:   namespace,
 			Annotations: map[string]string{"nginx.ingress.kubernetes.io/rewrite-target": "/"},
 		},
@@ -322,8 +328,8 @@ func ExposeServiceOnKubernetes(namespace, serviceName string) error {
 								{
 									Path: "/",
 									Backend: v1beta1.IngressBackend{
-										ServiceName: serviceName,
-										ServicePort: intstr.FromInt(8080),
+										ServiceName: service.GetName(),
+										ServicePort: intstr.FromInt(port),
 									},
 								},
 							},
