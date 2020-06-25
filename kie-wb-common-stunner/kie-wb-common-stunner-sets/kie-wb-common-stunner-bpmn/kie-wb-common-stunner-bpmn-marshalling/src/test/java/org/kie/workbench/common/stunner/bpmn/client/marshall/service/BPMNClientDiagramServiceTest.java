@@ -57,6 +57,7 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
+import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -412,7 +413,7 @@ public class BPMNClientDiagramServiceTest {
         verify(callback, times(1)).onError(errorArgumentCaptor.capture());
         ClientRuntimeError error = errorArgumentCaptor.getValue();
 
-        assertTrue(error.getMessage().endsWith(BPMNClientDiagramService.NO_DIAGRAM_MESSAGE));
+        assertTrue(error.getThrowable() instanceof DiagramParsingException);
     }
 
     @Test

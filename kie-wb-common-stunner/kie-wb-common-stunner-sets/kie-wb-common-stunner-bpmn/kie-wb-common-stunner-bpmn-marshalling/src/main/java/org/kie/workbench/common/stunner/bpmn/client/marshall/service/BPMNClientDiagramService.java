@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
+import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -121,7 +122,7 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
                     return promises.resolve();
                 })
                 .catch_((Promise.CatchOnRejectedCallbackFn<Collection<WorkItemDefinition>>) error -> {
-                    callback.onError(new ClientRuntimeError(error.toString()));
+                    callback.onError(new ClientRuntimeError(new DiagramParsingException(metadata, xml)));
                     return promises.resolve();
                 });
     }

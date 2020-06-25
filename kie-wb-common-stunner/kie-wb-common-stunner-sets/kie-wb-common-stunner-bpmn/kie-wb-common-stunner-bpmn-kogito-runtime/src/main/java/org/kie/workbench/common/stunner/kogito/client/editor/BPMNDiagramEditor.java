@@ -345,7 +345,9 @@ public class BPMNDiagramEditor extends AbstractDiagramEditor {
     }
 
     void flush() {
-        ClientSession session = getSessionPresenter().getInstance();
-        formsFlushManager.flush(session, formElementUUID);
+        if (getSessionPresenter() != null) {
+            ClientSession session = getSessionPresenter().getInstance();
+            formsFlushManager.flush(session, formElementUUID);
+        }
     }
 }
