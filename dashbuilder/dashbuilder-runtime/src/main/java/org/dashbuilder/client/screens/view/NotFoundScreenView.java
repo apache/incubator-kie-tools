@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.dashbuilder.client.screens.view;
 
 import javax.enterprise.context.Dependent;
@@ -20,62 +21,39 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.dashbuilder.client.RuntimeCommunication;
-import org.dashbuilder.client.navbar.AppNavBar;
+import elemental2.dom.HTMLParagraphElement;
 import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.dashbuilder.client.screens.RuntimeScreen;
+import org.dashbuilder.client.screens.NotFoundScreen;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
 @Templated
-public class RuntimeScreenView implements RuntimeScreen.View {
-
+public class NotFoundScreenView implements NotFoundScreen.View {
+    
     private static AppConstants i18n = AppConstants.INSTANCE;
-
+    
     @Inject
     @DataField
-    HTMLDivElement runtimePage;
-
+    HTMLDivElement root;
+    
     @Inject
-    AppNavBar appNavBar;
-
-    @Inject
-    RuntimeCommunication runtimeCommunication;
-
-    @Inject
-    BusyIndicatorView loading;
+    @DataField
+    HTMLParagraphElement subTitle;
 
     @Override
     public HTMLElement getElement() {
-        return runtimePage;
+        return root;
     }
 
     @Override
-    public void init(RuntimeScreen presenter) {
-        // empty
+    public void init(NotFoundScreen presenter) {
+        // do nothing
     }
-
+    
     @Override
-    public void addMenus(Menus menus) {
-        appNavBar.setupMenus(menus);
+    public void setNotFoundPerspective(String perspectiveName) {
+        subTitle.textContent = i18n.notFoundDashboard(perspectiveName);
     }
-
-    @Override
-    public void errorLoadingDashboards(final Throwable throwable) {
-        runtimeCommunication.showError(i18n.errorLoadingDashboards(), throwable);
-    }
-
-    @Override
-    public void loading() {
-        loading.showBusyIndicator(i18n.loadingDashboards());
-    }
-
-    @Override
-    public void stopLoading() {
-        loading.hideBusyIndicator();
-    }
-
+    
 }

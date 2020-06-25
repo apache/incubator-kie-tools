@@ -21,15 +21,19 @@ import java.util.Optional;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.jboss.errai.bus.server.annotations.Remote;
 
+/**
+ * Service to access RuntimeModel.
+ *
+ */
 @Remote
 public interface RuntimeModelService {
 
     /**
      * 
-     * Get a runtime model given an ID
+     * Get a runtime model given an ID.
      * 
      * @param runtimeModelId
-     * The Runtime model represented by runtimeModelId
+     * The Runtime model represented by runtimeModelId.
      * @return
      * An optional containing the RuntimeModel or empty if the runtime model couldn't be found or built.
      */

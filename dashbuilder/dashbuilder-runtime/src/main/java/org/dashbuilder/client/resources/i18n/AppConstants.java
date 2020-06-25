@@ -37,4 +37,8 @@ public interface AppConstants extends Messages {
 
     String uploadDashboardsTitle();
 
+    String notFoundScreenTitle();
+
+    String notFoundDashboard(String perspectiveName);
+
 }

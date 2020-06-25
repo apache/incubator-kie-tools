@@ -34,8 +34,8 @@ public class RuntimeModel {
 
     List<LayoutTemplate> layoutTemplates;
 
-    public RuntimeModel(@MapsTo("navTree") NavTree navTree,
-                        @MapsTo("layoutTemplates") List<LayoutTemplate> layoutTemplates) {
+    public RuntimeModel(@MapsTo("navTree") final NavTree navTree,
+                        @MapsTo("layoutTemplates") final List<LayoutTemplate> layoutTemplates) {
         this.navTree = navTree;
         this.layoutTemplates = layoutTemplates;
     }

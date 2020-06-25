@@ -16,21 +16,96 @@
 
 package org.dashbuilder.client;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
+import org.dashbuilder.client.perspective.NotFoundPerspective;
+import org.dashbuilder.client.resources.i18n.AppConstants;
+import org.dashbuilder.shared.model.RuntimeModel;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.Workbench;
+
+import static org.dashbuilder.client.screens.NotFoundScreen.TARGET_PARAM;
 
 @EntryPoint
 @ApplicationScoped
 @Bundle("resources/i18n/AppConstants.properties")
 public class RuntimeEntryPoint {
 
+    private static final String PERSPECTIVE_PARAM = "perspective";
+
+    private static AppConstants i18n = AppConstants.INSTANCE;
+
+    @Inject
+    Workbench workbench;
+
+    @Inject
+    ClientRuntimeModelLoader modelLoader;
+
+    @Inject
+    PlaceManager placeManager;
+
+    @Inject
+    RuntimeCommunication runtimeCommunication;
+
+    private String perspective;
+
     @PostConstruct
-    public void hideLoading() {
+    public void startup() {
+        workbench.addStartupBlocker(RuntimeEntryPoint.class);
+
+        Map<String, List<String>> params = Window.Location.getParameterMap();
+        boolean isStandalone = params.containsKey("standalone");
+        List<String> perspectiveParams = params.get(PERSPECTIVE_PARAM);
+
+        if (isStandalone && perspectiveParams != null && !perspectiveParams.isEmpty()) {
+            perspective = perspectiveParams.get(0);
+            modelLoader.loadModel(this::foundRuntimeModel,
+                                  this::notFound,
+                                  this::error);
+        } else {
+            this.hideLoading();
+        }
+    }
+
+    private void foundRuntimeModel(RuntimeModel runtimeModel) {
+        boolean perspectiveNotFound = runtimeModel.getLayoutTemplates().stream()
+                                                  .noneMatch(lt -> lt.getName().equals(perspective));
+        if (perspectiveNotFound) {
+            notFound();
+        } else {
+            this.hideLoading();
+        }
+    }
+
+    public void notFound() {
+        String newUrl = GWT.getHostPageBaseURL() + "?standalone&" +
+                        PERSPECTIVE_PARAM + "=" + NotFoundPerspective.ID + "&" +
+                        TARGET_PARAM + "=" + perspective;
+        DomGlobal.window.history.pushState(null,
+                                           "Dashbuilder Runtime | Not Found",
+                                           newUrl);
+        this.hideLoading();
+    }
+
+    public void error(Object e, Throwable t) {
+        runtimeCommunication.showError(i18n.errorLoadingDashboards(), t);
+        this.hideLoading();
+
+    }
+
+    private void hideLoading() {
+        workbench.removeStartupBlocker(RuntimeEntryPoint.class);
         Element loading = DomGlobal.document.getElementById("loading");
         if (loading != null) {
             loading.remove();

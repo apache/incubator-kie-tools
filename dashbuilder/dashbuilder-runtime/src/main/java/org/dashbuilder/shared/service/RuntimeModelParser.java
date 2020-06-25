@@ -21,11 +21,18 @@ import java.io.InputStream;
 import org.dashbuilder.shared.model.RuntimeModel;
 
 /**
- * Parses an imported content to RuntimeModel
+ * Parses an imported content to RuntimeModel.
  *
  */
 public interface RuntimeModelParser {
 
+    /**
+     * Parse the given input stream into a RuntimeModel.
+     * @param is
+     * The input stream with runtime model binary content to be parsed.
+     * @return
+     * The parsed runtime model.
+     */
     RuntimeModel parse(InputStream is);
 
 }

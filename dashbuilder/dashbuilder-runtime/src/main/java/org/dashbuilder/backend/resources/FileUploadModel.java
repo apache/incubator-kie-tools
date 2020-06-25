@@ -20,6 +20,10 @@ import javax.ws.rs.FormParam;
 
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 
+/**
+ * File sent by upload.
+ *
+ */
 public class FileUploadModel {
 
     private byte[] fileData;
@@ -30,7 +34,7 @@ public class FileUploadModel {
 
     @FormParam("selectedFile")
     @PartType("application/octet-stream")
-    public void setFileData(byte[] fileData) {
+    public void setFileData(final byte[] fileData) {
         this.fileData = fileData;
     }
 }

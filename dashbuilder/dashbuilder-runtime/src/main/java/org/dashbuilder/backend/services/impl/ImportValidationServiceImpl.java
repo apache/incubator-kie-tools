@@ -35,20 +35,23 @@ import static org.dashbuilder.shared.model.ImportDefinitions.PERSPECTIVE_PREFIX;
 @ApplicationScoped
 public class ImportValidationServiceImpl implements ImportValidationService {
 
+    /**
+     * Checks if the given file URL is valid for a Runtime Model.
+     */
     @Override
-    public boolean validate(String file) {
-        boolean hasDataset = false;
+    public boolean validate(final String file) {
+        boolean hasDatasetDir = false;
         boolean hasPage = false;
         boolean hasNavigation = false;
-        try (ZipInputStream zis = new ZipInputStream(new FileInputStream(file))) {
+        try (final ZipInputStream zis = new ZipInputStream(new FileInputStream(file))) {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
 
-                hasDataset = hasDataset || entryStartsWith(entry, DATASET_PREFIX);
+                hasDatasetDir = hasDatasetDir || entryStartsWith(entry, DATASET_PREFIX);
                 hasPage = hasPage || entryStartsWith(entry, PERSPECTIVE_PREFIX);
                 hasNavigation = hasNavigation || entryStartsWith(entry, NAVIGATION_PREFIX);
 
-                if (hasDataset && hasPage && hasNavigation) {
+                if (hasNavigation && hasDatasetDir && hasPage) {
                     return true;
                 }
             }

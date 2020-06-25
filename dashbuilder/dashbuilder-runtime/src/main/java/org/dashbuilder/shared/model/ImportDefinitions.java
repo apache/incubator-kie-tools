@@ -22,13 +22,15 @@ package org.dashbuilder.shared.model;
  */
 public class ImportDefinitions {
 
-    public static final String DATASET_PREFIX = "dashbuilder/datasets/definitions/";
-    public static final String NAVIGATION_PREFIX = "dashbuilder/navigation/navigation/";
-    public static final String PERSPECTIVE_PREFIX = "dashbuilder/navigation/navigation/";
-
+    public static final String DATASET_PREFIX = "dashbuilder/datasets";
+    public static final String DATASET_DEF_PREFIX = DATASET_PREFIX + "/definitions";
+    public static final String DATASET_SUFFIX = ".dset";
+    
+    public static final String PERSPECTIVE_PREFIX = "dashbuilder/perspectives";
     public static final String PERSPECTIVE_SUFFIX = "perspective_layout";
 
-    public static final String NAVIGATION_FILE = NAVIGATION_PREFIX + "navtree.json";
+    public static final String NAVIGATION_PREFIX = "dashbuilder/navigation";
+    public static final String NAVIGATION_FILE = NAVIGATION_PREFIX + "/navigation/navtree.json";
 
     private ImportDefinitions() {
 

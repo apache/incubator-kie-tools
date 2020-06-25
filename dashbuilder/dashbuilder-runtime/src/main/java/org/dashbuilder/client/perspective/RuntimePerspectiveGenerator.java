@@ -74,8 +74,9 @@ public class RuntimePerspectiveGenerator {
                                           Activity.class);
         beanManager.registerBeanTypeAlias(beanDef,
                                           WorkbenchScreenActivity.class);
-
-        activityBeansCache.addNewScreenActivity(beanManager.lookupBeans(activity.getIdentifier()).iterator().next());
+        String activityID = activity.getIdentifier();
+        activityBeansCache.removeActivity(activityID);
+        activityBeansCache.addNewScreenActivity(beanManager.lookupBeans(activityID).iterator().next());
         return activity;
     }
 
@@ -84,13 +85,14 @@ public class RuntimePerspectiveGenerator {
         final PerspectiveEditorActivity activity = new RuntimePerspectiveEditorActivity(perspective,
                                                                                         screen);
 
+        String perspectiveName = perspective.getName();
         beanManager.registerBean(new SingletonBeanDefinition<>(activity,
                                                                PerspectiveActivity.class,
                                                                new HashSet<>(Arrays.asList(DEFAULT_QUALIFIERS)),
-                                                               perspective.getName(),
+                                                               perspectiveName,
                                                                true));
-
-        activityBeansCache.addNewPerspectiveActivity(beanManager.lookupBeans(perspective.getName()).iterator().next());
+        activityBeansCache.removeActivity(perspectiveName);
+        activityBeansCache.addNewPerspectiveActivity(beanManager.lookupBeans(perspectiveName).iterator().next());
         return activity;
     }
 

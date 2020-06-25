@@ -24,7 +24,7 @@ import org.dashbuilder.shared.model.RuntimeModel;
 import static org.dashbuilder.shared.model.DashbuilderRuntimeMode.MULTIPLE_IMPORT;
 
 /**
- * Provides access to a saved ImportModelService
+ * Provides access to a saved ImportModelService.
  *
  */
 public interface RuntimeModelRegistry {
@@ -33,14 +33,13 @@ public interface RuntimeModelRegistry {
         return getMode() == MULTIPLE_IMPORT ||
                (getMode() == DashbuilderRuntimeMode.SINGLE_IMPORT && isEmpty());
     }
-    
+
     /**
-     * Returns the first model available 
+     * Returns the first model available. 
      * 
      * @return
      */
     Optional<RuntimeModel> single();
-    
 
     /**
      * Returns if this registry has at least one model.
@@ -56,7 +55,7 @@ public interface RuntimeModelRegistry {
     DashbuilderRuntimeMode getMode();
 
     /**
-     * Get a previously registered import model
+     * Get a previously registered import model.
      * @param id
      * @return
      */
@@ -75,6 +74,6 @@ public interface RuntimeModelRegistry {
      * @param filePath
      * The path to the file
      */
-    Optional<RuntimeModel> registerFile(String filePath);    
+    Optional<RuntimeModel> registerFile(String filePath);
 
 }

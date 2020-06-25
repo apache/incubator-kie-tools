@@ -40,7 +40,7 @@ import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.service.RuntimeModelParser;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
-import static org.dashbuilder.shared.model.ImportDefinitions.DATASET_PREFIX;
+import static org.dashbuilder.shared.model.ImportDefinitions.DATASET_DEF_PREFIX;
 import static org.dashbuilder.shared.model.ImportDefinitions.NAVIGATION_FILE;
 import static org.dashbuilder.shared.model.ImportDefinitions.PERSPECTIVE_SUFFIX;
 
@@ -73,7 +73,7 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         }
     }
 
-    protected RuntimeModel retrieveRuntimeModel(InputStream is) throws IOException {
+    protected RuntimeModel retrieveRuntimeModel(final InputStream is) throws IOException {
         List<DataSetContent> datasetContents = new ArrayList<>();
         List<LayoutTemplate> layoutTemplates = new ArrayList<>();
         Optional<String> navTreeOp = Optional.empty();
@@ -82,7 +82,7 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
             while ((entry = zis.getNextEntry()) != null) {
                 if (!entry.isDirectory()) {
                     String entryName = entry.getName();
-                    if (entryName.startsWith(DATASET_PREFIX)) {
+                    if (entryName.startsWith(DATASET_DEF_PREFIX)) {
                         datasetContents.add(retrieveDataSetContent(entry, zis));
                     }
 
@@ -105,12 +105,12 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         return new RuntimeModel(navTree, layoutTemplates);
     }
 
-    private LayoutTemplate retrieveLayoutTemplate(ZipInputStream zis) {
+    private LayoutTemplate retrieveLayoutTemplate(final ZipInputStream zis) {
         String content = nextEntryContent(zis);
         return gson.fromJson(content, LayoutTemplate.class);
     }
 
-    private DataSetContent retrieveDataSetContent(ZipEntry entry, ZipInputStream zis) {
+    private DataSetContent retrieveDataSetContent(final ZipEntry entry, final ZipInputStream zis) {
         String fileName = entry.getName().split("/")[3];
         String[] nameParts = fileName.split("\\.");
         String id = nameParts[0];
@@ -119,7 +119,7 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         return new DataSetContent(id, content, DataSetContentType.fromFileExtension(ext));
     }
 
-    private String nextEntryContent(ZipInputStream zis) {
+    private String nextEntryContent(final ZipInputStream zis) {
         try {
             final int BUFFER_SIZE = 1024;
             byte[] buffer = new byte[BUFFER_SIZE];

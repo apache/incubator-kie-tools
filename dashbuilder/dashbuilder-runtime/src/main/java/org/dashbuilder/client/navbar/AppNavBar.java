@@ -25,6 +25,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.workbench.Header;
 import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.Menus;
 
 @Templated
 @ApplicationScoped
@@ -42,10 +43,12 @@ public class AppNavBar implements Header {
 
     @AfterInitialization
     public void setup() {
-        menuBarPresenter.clear();
-        menuBarPresenter.clearContextMenu();
-        menuBarPresenter.addMenus(MenuFactory.newTopLevelCustomMenu(logoutMenu).endMenu().build());
-        header.appendChild(Js.cast(menuBarPresenter.getView().getElement()));
+        setupMenus();
+    }
+
+    public void setupMenus(final Menus menus) {
+        setupMenus();
+        menuBarPresenter.addMenus(menus);
     }
 
     @Override
@@ -56,5 +59,13 @@ public class AppNavBar implements Header {
     @Override
     public int getOrder() {
         return 20;
+    }
+    
+    private void setupMenus() {
+        menuBarPresenter.clear();
+        menuBarPresenter.clearContextMenu();
+        menuBarPresenter.addMenus(MenuFactory.newTopLevelCustomMenu(logoutMenu).endMenu().build());
+        header.innerHTML = "";
+        header.appendChild(Js.cast(menuBarPresenter.getView().getElement()));
     }
 }

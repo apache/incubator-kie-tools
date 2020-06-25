@@ -33,13 +33,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Listen for new dataset contents and register it accordingly
+ * Listen for new dataset contents and register it accordingly.
  *
  */
 @ApplicationScoped
 public class DataSetContentListener {
 
-    Logger logger = LoggerFactory.getLogger(DataSetContentListener.class);
+    private final Logger logger = LoggerFactory.getLogger(DataSetContentListener.class);
 
     @Inject
     DataSetDefRegistry registry;
@@ -61,7 +61,7 @@ public class DataSetContentListener {
         newDataSetContentEvent.getContent().forEach(this::registerDataSetContent);
     }
 
-    public void registerDataSetContent(DataSetContent content) {
+    public void registerDataSetContent(final DataSetContent content) {
         try {
             DataSetContentType contentType = content.getContentType();
             switch (contentType) {
@@ -80,13 +80,16 @@ public class DataSetContentListener {
         }
     }
 
-    private void registerDataSetDefinition(DataSetContent content) throws Exception {
+    private void registerDataSetDefinition(final DataSetContent content) throws Exception {
         try {
             DataSetDef dataSetDef = defMarshaller.fromJson(content.getContent());
             registry.registerDataSetDef(dataSetDef);
         } catch (Exception e) {
             logger.warn("Ignoring Dataset {}: error parsing Json", content.getId());
-            logger.debug("Error parsing dataset {}. Content: {}", content.getId(), content.getContent(), e);
+            logger.debug("Error parsing dataset {}. Content: {}",
+                         content.getId(),
+                         content.getContent(),
+                         e);
         }
     }
 }
