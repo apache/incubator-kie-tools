@@ -15,7 +15,7 @@
  */
 
 import HttpHeader = chrome.webRequest.HttpHeader;
-import { removeDirectories, removeFileExtension, extractFileExtension } from "./utils";
+import { removeDirectories, extractFileExtension } from "./utils";
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log("Kogito Tooling extension is running.");
