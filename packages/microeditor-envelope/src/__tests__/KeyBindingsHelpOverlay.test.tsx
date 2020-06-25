@@ -27,10 +27,14 @@ describe("KeyBindingsHelpOverlay", () => {
       channel: ChannelType.DESKTOP
     };
 
-    const keyboardShortcutsApi = new DefaultKeyboardShortcutsService(context);
-    keyboardShortcutsApi.registerKeyPress("ctrl+c", "Copy", () => Promise.resolve(), {});
+    const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: context });
 
-    const component = render(<KeyBindingsHelpOverlay keyboardShortcuts={keyboardShortcutsApi} context={context} />);
+    keyboardShortcutsService.registerKeyPress("ctrl+c", "Copy", () => Promise.resolve(), {});
+
+    const component = render(
+      <KeyBindingsHelpOverlay keyboardShortcutsService={keyboardShortcutsService} context={context} />
+    );
+
     fireEvent.click(component.getByTestId("keyboard-shortcuts-help-overlay-icon"));
 
     await component.findByTestId("keyboard-shortcuts-help-overlay");

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { KeyBinding } from "./DefaultKeyboardShortcutsService";
-
 /**
  * PUBLIC ENVELOPE API
  */
@@ -72,16 +70,6 @@ export interface KeyboardShortcutsApi {
    * @return An id representing this registration. This id can be used to 'deregister' the Keyboard Shortcut.
    */
   registerKeyPressOnce(combination: string, action: () => Thenable<void>, opts?: KeyBindingServiceOpts): number;
-
-  /**
-   * Returns a list of all the registered Keyboard Shortcuts.
-   */
-  registered(): KeyBinding[];
-
-  /**
-   * Execute delayed shortcuts after envelope load.
-   */
-  executeDelayedShortcutsRegistration(): void;
 }
 
 /**

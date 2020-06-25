@@ -19,7 +19,7 @@ import * as ReactDOM from "react-dom";
 import * as AppFormer from "@kogito-tooling/core-api";
 import { LoadingScreen } from "./LoadingScreen";
 import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
-import { KeyboardShortcutsApi } from "./api/keyboardShortcuts";
+import { DefaultKeyboardShortcutsService } from "./api/keyboardShortcuts";
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
@@ -28,7 +28,7 @@ import { EditorContext } from "./api/context";
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
   loadingScreenContainer: HTMLElement;
-  keyboardShortcuts: KeyboardShortcutsApi;
+  keyboardShortcutsService: DefaultKeyboardShortcutsService;
   context: EditorContext;
 }
 
@@ -67,7 +67,12 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
   public render() {
     return (
       <>
-        {!this.state.loading && <KeyBindingsHelpOverlay keyboardShortcuts={this.props.keyboardShortcuts} context={this.props.context}/>}
+        {!this.state.loading && (
+          <KeyBindingsHelpOverlay
+            keyboardShortcutsService={this.props.keyboardShortcutsService}
+            context={this.props.context}
+          />
+        )}
         {this.LoadingScreenPortal()}
         {this.state.editor && this.state.editor.af_isReact && this.state.editor.af_componentRoot()}
       </>

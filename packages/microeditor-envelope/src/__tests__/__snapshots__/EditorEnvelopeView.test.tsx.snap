@@ -9,12 +9,13 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
         "operatingSystem": "WINDOWS",
       }
     }
-    keyboardShortcuts={
+    keyboardShortcutsService={
       DefaultKeyboardShortcutsService {
-        "delayedKeyBindings": Array [],
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
+        "args": Object {
+          "editorContext": Object {
+            "channel": "VSCODE",
+            "operatingSystem": "WINDOWS",
+          },
         },
         "eventIdentifiers": 1,
         "keyBindings": Map {},
@@ -40,12 +41,13 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
         "operatingSystem": "WINDOWS",
       }
     }
-    keyboardShortcuts={
+    keyboardShortcutsService={
       DefaultKeyboardShortcutsService {
-        "delayedKeyBindings": Array [],
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
+        "args": Object {
+          "editorContext": Object {
+            "channel": "VSCODE",
+            "operatingSystem": "WINDOWS",
+          },
         },
         "eventIdentifiers": 1,
         "keyBindings": Map {},

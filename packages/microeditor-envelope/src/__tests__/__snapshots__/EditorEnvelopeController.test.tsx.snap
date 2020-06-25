@@ -9,12 +9,13 @@ exports[`EditorEnvelopeController after received content 1`] = `
     }
   }
   exposing={[Function]}
-  keyboardShortcuts={
+  keyboardShortcutsService={
     DefaultKeyboardShortcutsService {
-      "delayedKeyBindings": Array [],
-      "editorContext": Object {
-        "channel": "VSCODE",
-        "operatingSystem": "WINDOWS",
+      "args": Object {
+        "editorContext": Object {
+          "channel": "VSCODE",
+          "operatingSystem": "WINDOWS",
+        },
       },
       "eventIdentifiers": 2,
       "keyBindings": Map {
@@ -93,12 +94,13 @@ exports[`EditorEnvelopeController after received content 1`] = `
         "operatingSystem": "WINDOWS",
       }
     }
-    keyboardShortcuts={
+    keyboardShortcutsService={
       DefaultKeyboardShortcutsService {
-        "delayedKeyBindings": Array [],
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
+        "args": Object {
+          "editorContext": Object {
+            "channel": "VSCODE",
+            "operatingSystem": "WINDOWS",
+          },
         },
         "eventIdentifiers": 2,
         "keyBindings": Map {
@@ -393,12 +395,13 @@ exports[`EditorEnvelopeController opens 1`] = `
     }
   }
   exposing={[Function]}
-  keyboardShortcuts={
+  keyboardShortcutsService={
     DefaultKeyboardShortcutsService {
-      "delayedKeyBindings": Array [],
-      "editorContext": Object {
-        "channel": "VSCODE",
-        "operatingSystem": "WINDOWS",
+      "args": Object {
+        "editorContext": Object {
+          "channel": "VSCODE",
+          "operatingSystem": "WINDOWS",
+        },
       },
       "eventIdentifiers": 1,
       "keyBindings": Map {},
@@ -591,12 +594,13 @@ exports[`EditorEnvelopeController receives init request 1`] = `
     }
   }
   exposing={[Function]}
-  keyboardShortcuts={
+  keyboardShortcutsService={
     DefaultKeyboardShortcutsService {
-      "delayedKeyBindings": Array [],
-      "editorContext": Object {
-        "channel": "VSCODE",
-        "operatingSystem": "WINDOWS",
+      "args": Object {
+        "editorContext": Object {
+          "channel": "VSCODE",
+          "operatingSystem": "WINDOWS",
+        },
       },
       "eventIdentifiers": 1,
       "keyBindings": Map {},

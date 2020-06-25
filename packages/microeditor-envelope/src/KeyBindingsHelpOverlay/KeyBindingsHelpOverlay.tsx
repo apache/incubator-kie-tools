@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { KeyboardShortcutsApi } from "../api/keyboardShortcuts";
+import { DefaultKeyboardShortcutsService } from "../api/keyboardShortcuts";
 import {
   Modal,
   Text,
@@ -32,7 +32,10 @@ import { EditorContext } from "../api/context";
 import { OperatingSystem } from "@kogito-tooling/core-api";
 import "./styles.scss";
 
-export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShortcutsApi; context: EditorContext }) {
+export function KeyBindingsHelpOverlay(props: {
+  keyboardShortcutsService: DefaultKeyboardShortcutsService;
+  context: EditorContext;
+}) {
   const [showing, setShowing] = useState(false);
 
   const toggle = useCallback(() => {
@@ -40,7 +43,7 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
   }, [showing]);
 
   const keyBindings = useMemo(() => {
-    return removeDuplicatesByAttr(props.keyboardShortcuts.registered(), "combination")
+    return removeDuplicatesByAttr(props.keyboardShortcutsService.registered(), "combination")
       .filter(k => !k.opts?.hidden)
       .map(k => {
         return {
@@ -57,24 +60,24 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
         }
         return lhs;
       }, new Map<string, Set<{ label: string; combination: string }>>());
-  }, [props.keyboardShortcuts.registered()]);
+  }, [props.keyboardShortcutsService.registered()]);
 
   useEffect(() => {
-    const id = props.keyboardShortcuts.registerKeyPress(
+    const id = props.keyboardShortcutsService.registerKeyPress(
       "shift+/",
       "Help | Show keyboard shortcuts",
       async () => setShowing(true),
       { element: window }
     );
-    return () => props.keyboardShortcuts.deregister(id);
+    return () => props.keyboardShortcutsService.deregister(id);
   }, []);
 
   useEffect(() => {
     if (showing) {
-      const id = props.keyboardShortcuts.registerKeyPressOnce("esc", async () => setShowing(false), {
+      const id = props.keyboardShortcutsService.registerKeyPressOnce("esc", async () => setShowing(false), {
         element: window
       });
-      return () => props.keyboardShortcuts.deregister(id);
+      return () => props.keyboardShortcutsService.deregister(id);
     }
   }, [showing]);
 
@@ -88,7 +91,13 @@ export function KeyBindingsHelpOverlay(props: { keyboardShortcuts: KeyboardShort
         <KeyboardIcon />
       </div>
 
-      <Modal title={"Keyboard shortcuts"} isOpen={showing} width={"60%"} onClose={toggle} data-testid={"keyboard-shortcuts-help-overlay"}>
+      <Modal
+        title={"Keyboard shortcuts"}
+        isOpen={showing}
+        width={"60%"}
+        onClose={toggle}
+        data-testid={"keyboard-shortcuts-help-overlay"}
+      >
         <TextContent>
           <TextList component={TextListVariants.dl}>
             {Array.from(keyBindings.keys()).map(category => (
