@@ -151,7 +151,6 @@ export class KogitoEditor {
            * VS Code has his own state control API.
            */
         },
-        receive_guidedTourElementPositionRequest: _ => {
         receive_guidedTourElementPositionResponse: _ => {
           /* empty */
         },
