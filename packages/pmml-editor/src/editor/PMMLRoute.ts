@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { LanguageData, Router, Routes as CoreRoutes } from "@kogito-tooling/core-api";
+import { FACTORY_TYPE } from "./PMMLEditorFactory";
 
-const nodeExternals = require("webpack-node-externals");
-const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
-const { merge } = require("webpack-merge");
-const common = require("../../webpack.common.config");
+export class PMMLRoute implements CoreRoutes {
+  private languageData: Map<string, LanguageData> = new Map<string, LanguageData>();
 
-module.exports = merge(common, {
-  entry: {
-    index: "./src/index.ts"
-  },
-  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-  module: {
-    rules: [...pfWebpackUtils.patternflyLoaders]
+  constructor() {
+    this.languageData.set(FACTORY_TYPE, { type: FACTORY_TYPE });
   }
-});
+
+  public getRoutes(router: Router) {
+    return this.languageData;
+  }
+}

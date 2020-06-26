@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import { GwtAppFormerApi } from "./GwtAppFormerApi";
 import * as Core from "@kogito-tooling/core-api";
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
-import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlApi, GwtStateControlService } from "./gwtStateControl";
 import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
 import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
@@ -32,12 +30,18 @@ declare global {
   }
 }
 
+export const FACTORY_TYPE = "gwt";
+
 export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactory<GwtLanguageData> {
   constructor(
     private readonly xmlFormatter: XmlFormatter = new DefaultXmlFormatter(),
     private readonly gwtAppFormerApi = new GwtAppFormerApi(),
     private readonly gwtStateControlService = new GwtStateControlService()
   ) {}
+
+  public supports(languageData: GwtLanguageData) {
+    return languageData.type === FACTORY_TYPE;
+  }
 
   public createEditor(languageData: GwtLanguageData, messageBusClient: MessageBusClient<KogitoChannelApi>) {
     this.gwtAppFormerApi.setClientSideOnly(true);
