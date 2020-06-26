@@ -25,6 +25,7 @@ import { removeDirectories } from "../../common/utils";
 interface Props {
   onSave: () => void;
   onClose: () => void;
+  isEdited: boolean;
 }
 
 export function EditorToolbar(props: Props) {
@@ -37,11 +38,18 @@ export function EditorToolbar(props: Props) {
   const tooltipContent = <div>{context.file?.filePath!}</div>;
 
   const fileNameTitle = (
-    <Tooltip content={tooltipContent} position={TooltipPosition.bottom} maxWidth={"50em"}>
-      <Title headingLevel={"h3"} size={"xl"}>
-        {removeDirectories(context.file!.filePath)}
-      </Title>
-    </Tooltip>
+    <div data-testid="toolbar-title">
+      <Tooltip content={tooltipContent} position={TooltipPosition.bottom} maxWidth={"50em"}>
+        <Title headingLevel={"h3"} size={"xl"} className={"kogito--editor__toolbar-title"}>
+          {removeDirectories(context.file!.filePath)}
+        </Title>
+      </Tooltip>
+      {props.isEdited && (
+        <span className={"kogito--editor__toolbar-edited"} data-testid="is-dirty-indicator">
+          {" - Edited"}
+        </span>
+      )}
+    </div>
   );
 
   const headerToolbar = (
@@ -50,6 +58,7 @@ export function EditorToolbar(props: Props) {
       <ToolbarGroup className={"kogito--right"}>
         <ToolbarItem>
           <Button
+            data-testid="save-button"
             variant={"secondary"}
             onClick={props.onSave}
             className={"pf-u-display-flex-on-lg"}
@@ -59,7 +68,12 @@ export function EditorToolbar(props: Props) {
           </Button>
         </ToolbarItem>
         <ToolbarItem>
-          <Button variant={"plain"} onClick={props.onClose} aria-label={"Go to homepage"}>
+          <Button
+            variant={"plain"}
+            onClick={props.onClose}
+            aria-label={"Go to homepage"}
+            data-testid="close-editor-button"
+          >
             <CloseIcon />
           </Button>
         </ToolbarItem>
@@ -69,7 +83,9 @@ export function EditorToolbar(props: Props) {
 
   return (
     <PageHeader
-      logo={<Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} onClick={props.onClose} />}
+      logo={
+        <Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} onClick={props.onClose} />
+      }
       toolbar={headerToolbar}
       topNav={fileNameTitle}
       className={"kogito--editor__toolbar"}

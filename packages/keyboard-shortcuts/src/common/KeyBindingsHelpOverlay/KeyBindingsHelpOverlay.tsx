@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { DefaultKeyboardShortcutsService } from "../api/keyboardShortcuts";
+import { DefaultKeyboardShortcutsService } from "../../api";
 import {
   Modal,
   Text,
@@ -28,8 +28,7 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { KeyboardIcon } from "@patternfly/react-icons";
-import { EditorContext } from "../api/context";
-import { OperatingSystem } from "@kogito-tooling/core-api";
+import { EditorContext, OperatingSystem } from "@kogito-tooling/core-api";
 import "./styles.scss";
 
 export function KeyBindingsHelpOverlay(props: {

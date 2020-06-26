@@ -15,12 +15,12 @@
  */
 
 import { EditorContent, ChannelType } from "@kogito-tooling/core-api";
-import { EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
+import { EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
 import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
-import { GithubTokenModal } from '../common/GithubTokenModal';
+import { GithubTokenModal } from "../common/GithubTokenModal";
 import { GlobalContext } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
@@ -54,8 +54,19 @@ export function EditorPage(props: Props) {
   const [fullscreen, setFullscreen] = useState(false);
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
+  const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
+  const isDirty = useDirtyState(editorRef);
 
   const close = useCallback(() => {
+    if (!isDirty) {
+      window.location.href = window.location.href.split("?")[0].split("#")[0];
+    } else {
+      setShowUnsavedAlert(true);
+    }
+  }, [isDirty]);
+
+  const closeWithoutSaving = useCallback(() => {
+    setShowUnsavedAlert(false);
     window.location.href = window.location.href.split("?")[0].split("#")[0];
   }, []);
 
@@ -65,6 +76,8 @@ export function EditorPage(props: Props) {
   }, []);
 
   const requestDownload = useCallback(() => {
+    editorRef.current?.getStateControl().setSavedCommand();
+    setShowUnsavedAlert(false);
     action = ActionType.DOWNLOAD;
     editorRef.current?.requestContent();
   }, []);
@@ -229,6 +242,7 @@ export function EditorPage(props: Props) {
           isPageFullscreen={fullscreen}
           onPreview={requestPreview}
           onExportGist={requestExportGist}
+          isEdited={isDirty}
         />
       }
     >
@@ -242,11 +256,38 @@ export function EditorPage(props: Props) {
             />
           </div>
         )}
+        {!fullscreen && showUnsavedAlert && (
+          <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
+            <Alert
+              variant="warning"
+              title="Unsaved changes will be lost."
+              action={
+                <AlertActionCloseButton
+                  data-testid="unsaved-alert-close-button"
+                  onClose={() => setShowUnsavedAlert(false)}
+                />
+              }
+            >
+              <div>
+                <p>
+                  Click Save to download your progress before closing.{" "}
+                  <a data-testid="unsaved-alert-save-button" onClick={requestDownload}>
+                    Save
+                  </a>
+                </p>
+                <a data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
+                  {" Close without saving"}
+                </a>
+              </div>
+            </Alert>
+          </div>
+        )}
         {!fullscreen && githubTokenModalVisible && (
           <GithubTokenModal
             isOpen={githubTokenModalVisible}
             onClose={closeGithubTokenModal}
-            onContinue={continueExport} />
+            onContinue={continueExport}
+          />
         )}
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
         <EmbeddedEditor

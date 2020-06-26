@@ -44,6 +44,7 @@ interface Props {
   onClose: () => void;
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
+  isEdited: boolean;
 }
 
 export function EditorToolbar(props: Props) {
@@ -54,11 +55,9 @@ export function EditorToolbar(props: Props) {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
 
-  const { isPageFullscreen } = props;
-
   const logoProps = useMemo(() => {
-    return { href: window.location.href.split("?")[0].split("#")[0] };
-  }, []);
+    return { onClick: props.onClose };
+  }, [props.onClose]);
 
   const editorType = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
@@ -134,15 +133,22 @@ export function EditorToolbar(props: Props) {
   const filenameInput = (
     <>
       {!editingName && (
-        <Title
-          className={"kogito--editor__toolbar-title"}
-          headingLevel={"h3"}
-          size={"xl"}
-          onClick={editName}
-          title={"Rename"}
-        >
-          {context.file.fileName + "." + editorType}
-        </Title>
+        <div data-testid="toolbar-title">
+          <Title
+            className={"kogito--editor__toolbar-title"}
+            headingLevel={"h3"}
+            size={"xl"}
+            onClick={editName}
+            title={"Rename"}
+          >
+            {context.file.fileName + "." + editorType}
+          </Title>
+          {props.isEdited && (
+            <span className={"kogito--editor__toolbar-edited"} data-testid="is-dirty-indicator">
+              {" - Edited"}
+            </span>
+          )}
+        </div>
       )}
       {editingName && (
         <div className={"kogito--editor__toolbar-name-container"}>
@@ -170,6 +176,7 @@ export function EditorToolbar(props: Props) {
       <ToolbarGroup>
         <ToolbarItem>
           <Button
+            data-testid="save-button"
             variant={"secondary"}
             onClick={props.onDownload}
             className={"pf-u-display-none pf-u-display-flex-on-lg"}
@@ -235,6 +242,7 @@ export function EditorToolbar(props: Props) {
               variant={"plain"}
               onClick={props.onClose}
               aria-label={"Close"}
+              data-testid="close-editor-button"
             >
               <CloseIcon />
             </Button>
@@ -244,7 +252,7 @@ export function EditorToolbar(props: Props) {
     </Toolbar>
   );
 
-  return !isPageFullscreen ? (
+  return !props.isPageFullscreen ? (
     <PageHeader
       logo={<Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} />}
       logoProps={logoProps}

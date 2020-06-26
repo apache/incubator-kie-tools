@@ -10,7 +10,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
   }
   exposing={[Function]}
   keyboardShortcutsService={
-    DefaultKeyboardShortcutsService {
+    e {
       "args": Object {
         "editorContext": Object {
           "channel": "VSCODE",
@@ -86,8 +86,36 @@ exports[`EditorEnvelopeController after received content 1`] = `
       </div>
     </div>
   }
+  messageBus={
+    EnvelopeBusInnerMessageHandler {
+      "capturedInitRequestYet": true,
+      "envelopeBusApi": Object {
+        "postMessage": [Function],
+      },
+      "eventListener": [Function],
+      "id": undefined,
+      "impl": Object {
+        "receive_contentRequest": [Function],
+        "receive_contentResponse": [Function],
+        "receive_editorRedo": [Function],
+        "receive_editorUndo": [Function],
+        "receive_languageResponse": [Function],
+        "receive_previewRequest": [Function],
+        "receive_resourceContentList": [Function],
+        "receive_resourceContentResponse": [Function],
+      },
+      "targetOrigin": "test-target-origin",
+    }
+  }
+  stateControlService={
+    Object {
+      "redo": [MockFunction],
+      "registry": [MockFunction],
+      "undo": [MockFunction],
+    }
+  }
 >
-  <KeyBindingsHelpOverlay
+  <Component
     context={
       Object {
         "channel": "VSCODE",
@@ -95,7 +123,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
       }
     }
     keyboardShortcutsService={
-      DefaultKeyboardShortcutsService {
+      e {
         "args": Object {
           "editorContext": Object {
             "channel": "VSCODE",
@@ -255,7 +283,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
         />
       </Portal>
     </Modal>
-  </KeyBindingsHelpOverlay>
+  </Component>
   <Portal
     containerInfo={
       <div
@@ -396,7 +424,7 @@ exports[`EditorEnvelopeController opens 1`] = `
   }
   exposing={[Function]}
   keyboardShortcutsService={
-    DefaultKeyboardShortcutsService {
+    e {
       "args": Object {
         "editorContext": Object {
           "channel": "VSCODE",
@@ -462,6 +490,32 @@ exports[`EditorEnvelopeController opens 1`] = `
         </div>
       </div>
     </div>
+  }
+  messageBus={
+    EnvelopeBusInnerMessageHandler {
+      "capturedInitRequestYet": false,
+      "envelopeBusApi": Object {
+        "postMessage": [Function],
+      },
+      "eventListener": [Function],
+      "impl": Object {
+        "receive_contentRequest": [Function],
+        "receive_contentResponse": [Function],
+        "receive_editorRedo": [Function],
+        "receive_editorUndo": [Function],
+        "receive_languageResponse": [Function],
+        "receive_previewRequest": [Function],
+        "receive_resourceContentList": [Function],
+        "receive_resourceContentResponse": [Function],
+      },
+    }
+  }
+  stateControlService={
+    Object {
+      "redo": [MockFunction],
+      "registry": [MockFunction],
+      "undo": [MockFunction],
+    }
   }
 >
   <Portal
@@ -595,7 +649,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
   }
   exposing={[Function]}
   keyboardShortcutsService={
-    DefaultKeyboardShortcutsService {
+    e {
       "args": Object {
         "editorContext": Object {
           "channel": "VSCODE",
@@ -661,6 +715,34 @@ exports[`EditorEnvelopeController receives init request 1`] = `
         </div>
       </div>
     </div>
+  }
+  messageBus={
+    EnvelopeBusInnerMessageHandler {
+      "capturedInitRequestYet": true,
+      "envelopeBusApi": Object {
+        "postMessage": [Function],
+      },
+      "eventListener": [Function],
+      "id": undefined,
+      "impl": Object {
+        "receive_contentRequest": [Function],
+        "receive_contentResponse": [Function],
+        "receive_editorRedo": [Function],
+        "receive_editorUndo": [Function],
+        "receive_languageResponse": [Function],
+        "receive_previewRequest": [Function],
+        "receive_resourceContentList": [Function],
+        "receive_resourceContentResponse": [Function],
+      },
+      "targetOrigin": "test-target-origin",
+    }
+  }
+  stateControlService={
+    Object {
+      "redo": [MockFunction],
+      "registry": [MockFunction],
+      "undo": [MockFunction],
+    }
   }
 >
   <Portal

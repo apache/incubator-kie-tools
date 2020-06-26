@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -186,6 +186,15 @@
   padding: 1em;
 }
 
+.kogito--alert-container-unsaved {
+  position: fixed;
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1em;
+}
+
 /* TODO: Fix to only affect the correct header */
 .kogito--editor__toolbar .pf-c-page__header-nav {
   align-self: center;
@@ -210,4 +219,10 @@
 
 .kogito--editor__toolbar-toggle-icon-button {
   --pf-c-dropdown__toggle--FontSize: var(--pf-global--icon--FontSize--md);
+}
+
+.kogito--editor__toolbar-edited {
+  color: var(--pf-global--Color--400);
+  font-size: var(--pf-global--FontSize--xl);
+  font-weight: var(--pf-global--FontSize--xl);
 }

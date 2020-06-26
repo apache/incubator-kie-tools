@@ -21,7 +21,8 @@ import {
   ResourceContent,
   ResourceContentRequest,
   ResourcesList,
-  ResourceListRequest
+  ResourceListRequest,
+  StateControlCommand
 } from "@kogito-tooling/core-api";
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
@@ -38,9 +39,8 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   receive_resourceListRequest(request: ResourceListRequest): void;
   receive_previewRequest(previewSvg: string): void;
   receive_ready(): void;
-  notify_editorUndo(): void;
-  notify_editorRedo(): void;
   receive_newEdit(edit: KogitoEdit): void;
+  receive_stateControlCommandUpdate(command: StateControlCommand): void;
   receive_openFile(path: string): void;
 }
 
@@ -162,6 +162,9 @@ export class EnvelopeBusOuterMessageHandler {
         break;
       case EnvelopeBusMessageType.RETURN_PREVIEW:
         this.impl.receive_previewRequest(message.data as string);
+        break;
+      case EnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE:
+        this.impl.receive_stateControlCommandUpdate(message.data);
         break;
       default:
         console.info(`Unknown message type received: ${message.type}`);

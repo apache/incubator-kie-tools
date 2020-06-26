@@ -121,9 +121,7 @@ module.exports = async (env, argv) => {
       ]
     },
     devServer: {
-      historyApiFallback: {
-        disableDotRule: true
-      },
+      historyApiFallback: false,
       disableHostCheck: true,
       watchContentBase: true,
       contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],

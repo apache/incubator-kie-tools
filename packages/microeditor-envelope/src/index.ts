@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
+import { EditorContext } from "@kogito-tooling/core-api";
+import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "@kogito-tooling/keyboard-shortcuts";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { ReactElement } from "react";
 import * as ReactDOM from "react-dom";
-import { EditorContext } from "./api/context";
-import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "./api/keyboardShortcuts";
 import { ResourceContentApi, ResourceContentEditorCoordinator } from "./api/resourceContent";
-import { StateControl, StateControlApi } from "./api/stateControl";
+import { StateControlService, StateControlApi } from "./api/stateControl";
 import { EditorEnvelopeController } from "./EditorEnvelopeController";
 import { EditorFactory } from "./EditorFactory";
 import { Renderer } from "./Renderer";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { WorkspaceService, WorkspaceServiceApi } from "./api/workspaceService";
 
-export * from "./api/context/EditorContext";
 export * from "./api/resourceContent";
 export { EditorEnvelopeController } from "./EditorEnvelopeController";
 export * from "./EditorFactory";
@@ -70,14 +69,14 @@ export function init(args: {
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
-  const stateControl = new StateControl();
   const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: args.editorContext });
+  const stateControlService = new StateControlService();
   const workspaceService = new WorkspaceService();
   const editorEnvelopeController = new EditorEnvelopeController(
     args.busApi,
     args.editorFactory,
     specialDomElements,
-    stateControl,
+    stateControlService,
     renderer,
     resourceContentEditorCoordinator,
     keyboardShortcutsService
@@ -87,7 +86,7 @@ export function init(args: {
     window.envelope = {
       resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
       editorContext: args.editorContext,
-      stateControl: stateControl.exposeApi(messageBus),
+      stateControl: stateControlService.exposeApi(messageBus),
       keyboardShortcuts: keyboardShortcutsService.exposeApi(),
       workspaceService: workspaceService.exposeApi(messageBus)
     };

@@ -53,6 +53,15 @@
   left: 0;
 }
 
+.kogito--alert-container-unsaved {
+  position: fixed;
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1em;
+}
+
 .kogito--desktop__actions-gallery {
   --pf-l-gallery--GridTemplateColumns: repeat(
     auto-fill,
@@ -124,4 +133,14 @@
   .kogito--editor__toolbar .pf-c-page__header-nav {
     margin-right: 14em;
   }
+}
+
+.kogito--editor__toolbar-title {
+  display: inline;
+}
+
+.kogito--editor__toolbar-edited {
+  color: var(--pf-global--Color--400);
+  font-size: var(--pf-global--FontSize--xl);
+  font-weight: var(--pf-global--FontSize--xl);
 }

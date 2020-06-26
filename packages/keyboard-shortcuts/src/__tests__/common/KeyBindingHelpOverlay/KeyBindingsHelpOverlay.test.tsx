@@ -15,8 +15,8 @@
  */
 
 import * as React from "react";
-import { KeyBindingsHelpOverlay } from "../KeyBindingsHelpOverlay";
-import { DefaultKeyboardShortcutsService } from "../api/keyboardShortcuts";
+import { KeyBindingsHelpOverlay } from "../../../common/KeyBindingsHelpOverlay";
+import { DefaultKeyboardShortcutsService } from "../../../api";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
 import { fireEvent, render } from "@testing-library/react";
 

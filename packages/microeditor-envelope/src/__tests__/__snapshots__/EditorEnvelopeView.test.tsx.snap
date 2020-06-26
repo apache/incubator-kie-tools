@@ -2,7 +2,7 @@
 
 exports[`EditorEnvelopeView after loading stops 1`] = `
 <Fragment>
-  <KeyBindingsHelpOverlay
+  <Component
     context={
       Object {
         "channel": "VSCODE",
@@ -10,7 +10,7 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
       }
     }
     keyboardShortcutsService={
-      DefaultKeyboardShortcutsService {
+      e {
         "args": Object {
           "editorContext": Object {
             "channel": "VSCODE",
@@ -34,7 +34,7 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
 
 exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
 <Fragment>
-  <KeyBindingsHelpOverlay
+  <Component
     context={
       Object {
         "channel": "VSCODE",
@@ -42,7 +42,7 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
       }
     }
     keyboardShortcutsService={
-      DefaultKeyboardShortcutsService {
+      e {
         "args": Object {
           "editorContext": Object {
             "channel": "VSCODE",

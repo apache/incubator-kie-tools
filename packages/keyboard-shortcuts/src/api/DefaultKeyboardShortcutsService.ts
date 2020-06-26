@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
+import { EditorContext, OperatingSystem } from "@kogito-tooling/core-api";
 import { KeyBindingServiceOpts, KeyboardShortcutsApi } from "./KeyboardShorcutsApi";
-import { EditorContext } from "../context";
-import { OperatingSystem } from "@kogito-tooling/core-api";
 
 export interface KeyBinding {
   combination: string;

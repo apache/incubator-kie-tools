@@ -23,10 +23,7 @@ import { GithubService } from "../common/GithubService";
 import { GlobalContext, GlobalContextType } from "../common/GlobalContext";
 import { Routes } from "../common/Routes";
 
-export function usingTestingGlobalContext(
-  children: React.ReactElement,
-  ctx?: Partial<GlobalContextType>
-) {
+export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const usedCtx = {
     file: EMPTY_FILE_DMN,
     routes: new Routes(),

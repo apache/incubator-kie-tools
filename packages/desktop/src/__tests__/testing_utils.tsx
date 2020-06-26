@@ -21,7 +21,8 @@ import { GlobalContext, GlobalContextType } from "../webview/common/GlobalContex
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const usedCtx = {
     router: new EmbeddedEditorRouter(),
-    file: { filePath: "test.dmn", fileContent: "", fileType: "dmn" }
+    file: { filePath: "test.dmn", fileContent: "", fileType: "dmn" },
+    ...ctx
   };
   return {
     ctx: usedCtx,

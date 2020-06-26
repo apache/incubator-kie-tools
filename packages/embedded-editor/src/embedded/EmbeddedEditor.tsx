@@ -21,14 +21,16 @@ import {
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
-  ResourcesList
+  ResourcesList,
+  StateControlCommand
 } from "@kogito-tooling/core-api";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as CSS from "csstype";
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
-import { File } from "../common/File";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { File } from "../common";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
+import { StateControl } from "../stateControl";
 
 /**
  * Properties supported by the `EmbeddedEditor`.
@@ -45,10 +47,12 @@ export interface Props {
   /**
    * Channel in which the editor has been embedded.
    */
+
   channelType: ChannelType;
   /**
    * Optional callback for when the editors' content is returned followin a response for it.
    */
+
   onContentResponse?: (content: EditorContent) => void;
   /**
    * Optional callback for when setting the editors content resulted in an error.
@@ -101,6 +105,18 @@ export interface Props {
  */
 export type EmbeddedEditorRef = {
   /**
+   * Get an instance of the StateControl
+   */
+  getStateControl(): StateControl;
+  /**
+   * Notify the editor to redo the last command and update the state control.
+   */
+  notifyRedo(): void;
+  /**
+   * Notify the editor to undo the last command and update the state control.
+   */
+  notifyUndo(): void;
+  /**
    * Request the editor returns its current content.
    */
   requestContent(): void;
@@ -110,7 +126,7 @@ export type EmbeddedEditorRef = {
   requestPreview(): void;
   /**
    * Request to set the content of the editor; this will overwrite the content supplied by the `File.getFileContents()` passed in construction.
-   * @param content 
+   * @param content
    */
   setContent(content: string): void;
 } | null;
@@ -132,6 +148,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   forwardedRef
 ) => {
   const iframeRef: React.RefObject<HTMLIFrameElement> = useRef<HTMLIFrameElement>(null);
+  const stateControl = useMemo(() => new StateControl(), []);
 
   //Property functions default handling
   const onResourceContentRequest = useCallback(
@@ -153,6 +170,22 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     },
     [props.onResourceListRequest]
   );
+
+  const handleStateControlCommand = useCallback((stateControlCommand: StateControlCommand) => {
+    switch (stateControlCommand) {
+      case StateControlCommand.REDO:
+        stateControl.redo();
+        props.onEditorRedo?.();
+        break;
+      case StateControlCommand.UNDO:
+        stateControl.undo();
+        props.onEditorUndo?.();
+        break;
+      default:
+        console.info(`Unknown message type received: ${stateControlCommand}`);
+        break;
+    }
+  }, []);
 
   const envelopeUri = useMemo(() => props.envelopeUri ?? "envelope/envelope.html", [props.envelopeUri]);
 
@@ -196,20 +229,18 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         receive_resourceListRequest(request: ResourceListRequest) {
           onResourceListRequest(request).then(r => self.respond_resourceList(r!));
         },
-        notify_editorUndo: () => {
-          props.onEditorUndo?.();
-        },
-        notify_editorRedo: () => {
-          props.onEditorRedo?.();
-        },
         receive_openFile: (path: string) => {
           props.onOpenFile?.(path);
         },
         receive_newEdit(edit: KogitoEdit) {
+          stateControl.updateCommandStack(edit.id);
           props.onNewEdit?.(edit);
         },
         receive_previewRequest(previewSvg: string) {
           props.onPreviewResponse?.(previewSvg);
+        },
+        receive_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
+          handleStateControlCommand(stateControlCommand);
         }
       })
     );
@@ -218,7 +249,8 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     props.file.editorType,
     props.file.fileName,
     props.onResourceContentRequest,
-    props.onResourceListRequest
+    props.onResourceListRequest,
+    handleStateControlCommand
   ]);
 
   //Attach/detach bus when component attaches/detaches from DOM
@@ -242,6 +274,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       }
 
       return {
+        getStateControl: () => stateControl,
+        notifyRedo: () => envelopeBusOuterMessageHandler.notify_editorRedo(),
+        notifyUndo: () => envelopeBusOuterMessageHandler.notify_editorUndo(),
         requestContent: () => envelopeBusOuterMessageHandler.request_contentResponse(),
         requestPreview: () => envelopeBusOuterMessageHandler.request_previewResponse(),
         setContent: (content: string) => {

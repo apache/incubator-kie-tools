@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditorToolbar is dirty indicator should show the isDirty indicator when isEdited is true 1`] = `
+<div
+  data-testid="toolbar-title"
+>
+  <h3
+    class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
+    title="Rename"
+  >
+    new-file.undefined
+  </h3>
+  <span
+    class="kogito--editor__toolbar-edited"
+    data-testid="is-dirty-indicator"
+  >
+     - Edited
+  </span>
+</div>
+`;
+
+exports[`EditorToolbar is dirty indicator shouldn't show the isDirty indicator when isEdited is false 1`] = `
+<div
+  data-testid="toolbar-title"
+>
+  <h3
+    class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
+    title="Rename"
+  >
+    new-file.undefined
+  </h3>
+</div>
+`;

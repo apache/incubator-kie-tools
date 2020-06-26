@@ -15,3 +15,4 @@
  */
 
 export * from "./KogitoEdit";
+export * from "./StateControlCommand";

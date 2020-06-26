@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,22 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as AppFormer from "@kogito-tooling/core-api";
+import { ChannelType, StateControlCommand } from "@kogito-tooling/core-api";
 import { LoadingScreen } from "./LoadingScreen";
-import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
-import { DefaultKeyboardShortcutsService } from "./api/keyboardShortcuts";
+import { DefaultKeyboardShortcutsService, KeyBindingsHelpOverlay } from "@kogito-tooling/keyboard-shortcuts";
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
-import { EditorContext } from "./api/context";
+import { StateControlService } from "./api/stateControl";
+import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
 
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
   loadingScreenContainer: HTMLElement;
   keyboardShortcutsService: DefaultKeyboardShortcutsService;
-  context: EditorContext;
+  context: AppFormer.EditorContext;
+  stateControlService: StateControlService;
+  messageBus: EnvelopeBusInnerMessageHandler;
 }
 
 interface State {
@@ -38,6 +41,9 @@ interface State {
 }
 
 export class EditorEnvelopeView extends React.Component<Props, State> {
+  private redoShortcutKeybindingId: number;
+  private undoShortcutKeybindingId: number;
+
   constructor(props: Props) {
     super(props);
     this.state = { editor: undefined, loading: true };
@@ -62,6 +68,42 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
 
   private LoadingScreenPortal() {
     return ReactDOM.createPortal(<LoadingScreen visible={this.state.loading} />, this.props.loadingScreenContainer!);
+  }
+
+  public componentDidMount() {
+    if (this.props.context.channel !== ChannelType.VSCODE) {
+      this.registerRedoShortcut();
+      this.registerUndoShortcut();
+    }
+  }
+
+  public componentWillUnmount() {
+    if (this.props.context.channel !== ChannelType.VSCODE) {
+      this.props.keyboardShortcutsService.deregister(this.redoShortcutKeybindingId);
+      this.props.keyboardShortcutsService.deregister(this.undoShortcutKeybindingId);
+    }
+  }
+
+  private registerRedoShortcut() {
+    this.redoShortcutKeybindingId = this.props.keyboardShortcutsService.registerKeyPress(
+      "shift+ctrl+z",
+      "Edit | Redo last edit",
+      async () => {
+        this.props.stateControlService.redo();
+        this.props.messageBus.notify_stateControlCommandUpdate(StateControlCommand.REDO);
+      }
+    );
+  }
+
+  private registerUndoShortcut() {
+    this.undoShortcutKeybindingId = this.props.keyboardShortcutsService.registerKeyPress(
+      "ctrl+z",
+      "Edit | Undo last edit",
+      async () => {
+        this.props.stateControlService.undo();
+        this.props.messageBus.notify_stateControlCommandUpdate(StateControlCommand.UNDO);
+      }
+    );
   }
 
   public render() {

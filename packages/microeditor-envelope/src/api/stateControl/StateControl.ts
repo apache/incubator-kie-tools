@@ -29,7 +29,7 @@ export interface StateControlApi {
   setRedoCommand(redoCommand: () => void): void;
 }
 
-export class StateControl {
+export class StateControlService {
   private undoCommand: () => void;
   private redoCommand: () => void;
 

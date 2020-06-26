@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,8 @@ import {
   ResourceContent,
   ResourceContentOptions,
   ResourcesList,
-  ResourceListOptions
+  ResourceListOptions,
+  StateControlCommand
 } from "@kogito-tooling/core-api";
 
 export interface Impl {
@@ -120,6 +121,9 @@ export class EnvelopeBusInnerMessageHandler {
 
   public respond_previewRequest(previewSvg: string) {
     return this.send({ type: EnvelopeBusMessageType.RETURN_PREVIEW, data: previewSvg });
+  }
+  public notify_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
+    return this.send({ type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE, data: stateControlCommand });
   }
 
   private receive_initRequest(init: { origin: string; busId: string }) {

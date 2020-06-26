@@ -14,5 +14,7 @@
  * limitations under the License.
  */
 
-export * from "./KeyboardShorcutsApi";
-export * from "./DefaultKeyboardShortcutsService";
+export enum StateControlCommand {
+  UNDO,
+  REDO
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-export * from "./core";
 export * from "./appformer";
-export * from "./router";
 export * from "./content";
+export * from "./context";
+export * from "./core";
+export * from "./router";
 export * from "./stateControl";

@@ -15,7 +15,7 @@
  */
 
 import { ChannelType, EditorContent } from "@kogito-tooling/core-api";
-import { EditorType, EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
+import { EditorType, EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
 import "@patternfly/patternfly/patternfly.css";
 import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
 import * as electron from "electron";
@@ -56,12 +56,27 @@ export function EditorPage(props: Props) {
   const context = useContext(GlobalContext);
   const editorRef = useRef<EmbeddedEditorRef>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
-
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [saveFileSuccessAlertVisible, setSaveFileSuccessAlertVisible] = useState(false);
   const [savePreviewSuccessAlertVisible, setSavePreviewSuccessAlertVisible] = useState(false);
+  const isDirty = useDirtyState(editorRef);
+  const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
+
+  const onClose = useCallback(() => {
+    if (!isDirty) {
+      props.onClose();
+    } else {
+      setShowUnsavedAlert(true);
+    }
+  }, [isDirty]);
+
+  const onCloseWithoutSave = useCallback(() => {
+    setShowUnsavedAlert(false);
+    props.onClose();
+  }, []);
 
   const requestSaveFile = useCallback(() => {
+    setShowUnsavedAlert(false);
     contentRequestAction = ContentRequestActionType.SAVE;
     editorRef.current?.requestContent();
   }, []);
@@ -124,7 +139,7 @@ export function EditorPage(props: Props) {
     [previewRequestAction, context.file!.filePath]
   );
 
-  const saveFile = useCallback(() => {
+  const onSave = useCallback(() => {
     contentRequestData = {
       action: FileSaveActions.SAVE
     };
@@ -210,6 +225,7 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     electron.ipcRenderer.on("saveFileSuccess", () => {
+      editorRef.current?.getStateControl().setSavedCommand();
       setSaveFileSuccessAlertVisible(true);
       requestThumbnailPreview();
     });
@@ -244,10 +260,36 @@ export function EditorPage(props: Props) {
       <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
         <Stack>
           <StackItem>
-            <EditorToolbar onClose={props.onClose} onSave={saveFile} />
+            <EditorToolbar onClose={onClose} onSave={onSave} isEdited={isDirty}/>
           </StackItem>
-
           <StackItem className="pf-m-fill">
+            {showUnsavedAlert && (
+              <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
+                <Alert
+                  variant="warning"
+                  title="Unsaved changes will be lost."
+                  action={
+                    <AlertActionCloseButton
+                      data-testid="unsaved-alert-close-button"
+                      onClose={() => setShowUnsavedAlert(false)}
+                    />
+                  }
+                >
+                  <div>
+                    <p>
+                      Click Save to download your progress before closing.{" "}
+                      <a data-testid="unsaved-alert-save-button" onClick={requestSaveFile}>
+                        Save
+                      </a>
+                    </p>
+                    <a data-testid="unsaved-alert-close-without-save-button" onClick={onCloseWithoutSave}>
+                      {" "}
+                      Close without saving
+                    </a>
+                  </div>
+                </Alert>
+              </div>
+            )}
             {copySuccessAlertVisible && (
               <div className={"kogito--alert-container"}>
                 <Alert

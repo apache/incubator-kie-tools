@@ -26,7 +26,8 @@ import {
   ResourceContentRequest,
   ResourceContentService,
   Router,
-  ResourceListRequest
+  ResourceListRequest,
+  StateControlCommand
 } from "@kogito-tooling/core-api";
 import { Uri } from "vscode";
 
@@ -144,6 +145,11 @@ export class KogitoEditor {
             const parsedPath = __path.parse(this.uri.fsPath);
             fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, preview);
           }
+        },
+        receive_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
+          /*
+           * VS Code has his own state control API.
+           */
         }
       })
     );

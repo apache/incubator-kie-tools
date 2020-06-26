@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,4 @@
  * limitations under the License.
  */
 
-import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
-
-
-/**
- * PUBLIC ENVELOPE API
- */
-export interface EditorContext {
-    channel: ChannelType;
-    operatingSystem?: OperatingSystem;
-}
+export * from "./KeyBindingsHelpOverlay";
