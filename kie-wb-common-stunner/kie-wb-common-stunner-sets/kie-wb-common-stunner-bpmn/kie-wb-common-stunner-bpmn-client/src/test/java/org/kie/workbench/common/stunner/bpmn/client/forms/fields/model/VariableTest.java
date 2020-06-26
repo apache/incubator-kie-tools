@@ -151,7 +151,7 @@ public class VariableTest {
 
         String test2 = DIVIDER + DIVIDER;
         Variable result2 = Variable.deserialize(test2, variableType);
-        Variable expected2 = new Variable(variableType);
+        Variable expected2 = new Variable("", variableType);
         assertEquals(expected2, result2);
 
         String test3 = NAME + DIVIDER + DIVIDER;
@@ -170,7 +170,6 @@ public class VariableTest {
         assertEquals(expected5, result5);
 
         String test6 = NAME + DIVIDER + CUSTOM_DATA_TYPE + DIVIDER;
-        ;
         Variable result6 = Variable.deserialize(test6, variableType, Arrays.asList(DATA_TYPE));
         Variable expected6 = new Variable(NAME, variableType, null, CUSTOM_DATA_TYPE);
         assertEquals(expected6, result6);
@@ -214,27 +213,35 @@ public class VariableTest {
         Variable otherVariable7 = new Variable(null, null, DATA_TYPE, null);
         assertFalse(variable7.equals(otherVariable7));
 
-        //CUSTOM DATA TYPE
-        Variable variable8 = new Variable(null, null, null, CUSTOM_DATA_TYPE);
-        Variable otherVariable8 = new Variable(null, null, null, "Other Custom Data Type");
-        assertFalse(variable8.equals(otherVariable8));
+        Variable variable8 = new Variable(null, null, null, null);
+        Variable otherVariable8 = new Variable(null, null, "", null);
+        assertTrue(variable8.equals(otherVariable8));
 
-        Variable variable9 = new Variable(null, null, null, null);
-        Variable otherVariable9 = new Variable(null, null, null, CUSTOM_DATA_TYPE);
+        //CUSTOM DATA TYPE
+        Variable variable9 = new Variable(null, null, null, CUSTOM_DATA_TYPE);
+        Variable otherVariable9 = new Variable(null, null, null, "Other Custom Data Type");
         assertFalse(variable9.equals(otherVariable9));
 
-        //TAGS
-        Variable variable10 = new Variable(null, null, null, null, TAGS);
-        Variable otherVariable10 = new Variable(null, null, null, null, OTHER_TAGS);
+        Variable variable10 = new Variable(null, null, null, null);
+        Variable otherVariable10 = new Variable(null, null, null, CUSTOM_DATA_TYPE);
         assertFalse(variable10.equals(otherVariable10));
 
-        Variable variable11 = new Variable(null, null, null, null, null);
-        Variable otherVariable11 = new Variable(null, null, null, null, TAGS);
-        assertFalse(variable11.equals(otherVariable11));
+        Variable variable11 = new Variable(null, null, null, null);
+        Variable otherVariable11 = new Variable(null, null, null, "");
+        assertTrue(variable11.equals(otherVariable11));
 
-        Variable variable12 = new Variable(null, null, null, null, new ArrayList<>());
-        Variable otherVariable12 = new Variable(null, null, null, null, TAGS);
+        //TAGS
+        Variable variable12 = new Variable(null, null, null, null, TAGS);
+        Variable otherVariable12 = new Variable(null, null, null, null, OTHER_TAGS);
         assertFalse(variable12.equals(otherVariable12));
+
+        Variable variable13 = new Variable(null, null, null, null, null);
+        Variable otherVariable13 = new Variable(null, null, null, null, TAGS);
+        assertFalse(variable13.equals(otherVariable13));
+
+        Variable variable14 = new Variable(null, null, null, null, new ArrayList<>());
+        Variable otherVariable14 = new Variable(null, null, null, null, TAGS);
+        assertFalse(variable14.equals(otherVariable14));
     }
 
     @Test

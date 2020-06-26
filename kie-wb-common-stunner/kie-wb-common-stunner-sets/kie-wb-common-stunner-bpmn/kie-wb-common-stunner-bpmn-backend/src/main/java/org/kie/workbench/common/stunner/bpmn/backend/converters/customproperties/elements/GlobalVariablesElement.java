@@ -49,12 +49,6 @@ public class GlobalVariablesElement extends ElementDefinition<String> {
         setStringValue(element, value);
     }
 
-    private void setStringValue(BaseElement element, String value) {
-        Stream.of(value.split(","))
-                .map(this::extensionOf)
-                .forEach(getExtensionElements(element)::add);
-    }
-
     private Optional<String> getStringValue(BaseElement element) {
         List<ExtensionAttributeValue> extValues = element.getExtensionValues();
 
@@ -68,25 +62,27 @@ public class GlobalVariablesElement extends ElementDefinition<String> {
                 .collect(Collectors.toList());
 
         String globalVariables = globalExtensions.stream()
-                .filter(globalType -> globalType.getIdentifier() != null &&
-                        globalType.getIdentifier().length() > 0 &&
-                        globalType.getType() != null &&
-                        globalType.getType().length() > 0)
                 .map(globalType -> globalType.getIdentifier() + ":" + globalType.getType())
                 .collect(Collectors.joining(","));
 
         return Optional.ofNullable(globalVariables);
     }
 
-    protected FeatureMap.Entry extensionOf(String variable) {
+    private void setStringValue(BaseElement element, String value) {
+        Stream.of(value.split(","))
+                .map(GlobalVariablesElement::extensionOf)
+                .forEach(getExtensionElements(element)::add);
+    }
+
+    static FeatureMap.Entry extensionOf(String variable) {
         return new EStructuralFeatureImpl.SimpleFeatureMapEntry(
                 (EStructuralFeature.Internal) DOCUMENT_ROOT__GLOBAL,
                 globalTypeDataOf(variable));
     }
 
-    protected GlobalType globalTypeDataOf(String variable) {
+    static GlobalType globalTypeDataOf(String variable) {
         GlobalType globalType = DroolsFactory.eINSTANCE.createGlobalType();
-        String[] properties = variable.split(":");
+        String[] properties = variable.split(":", -1);
         globalType.setIdentifier(properties[0]);
         globalType.setType(properties[1]);
 
