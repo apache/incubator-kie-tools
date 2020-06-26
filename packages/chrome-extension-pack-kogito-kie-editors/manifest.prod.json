@@ -1,8 +1,8 @@
 {
-  "name": "KIE Group Chrome Extension",
+  "name": "BPMN, DMN and Test Scenario Editors for Github",
   "version": "0.5.2",
   "manifest_version": 2,
-  "description": "Visualize and edit BPMN or DMN files on GitHub",
+  "description": "Visualize and edit BPMN, DMN and Test Scenario files using a graphical editor on GitHub",
   "content_scripts": [
     {
       "run_at": "document_idle",
