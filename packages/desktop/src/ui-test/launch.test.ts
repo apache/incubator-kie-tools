@@ -1,6 +1,7 @@
 const helpers = require('./global-setup');
-const path = require( 'path');
 
+import * as path from 'path';
+import {Application, SpectronClient} from  'spectron';
 import { HomePage } from './utils/HomePage';
 import { EditorPage } from'./utils/EditorPage';
 
@@ -13,23 +14,35 @@ const UNSAVED_FILE = 'unsaved file';
 const GO_TO_HOMEPAGE_BUTTON_LOCATOR = '//button[@aria-label=\'Go to homepage\']';
 const BMP_TITLE = "Business Modeler Preview";
 
-const waitForLoadingSpinner = async (appClient) => {
+const waitForLoadingSpinner = async (appClient: SpectronClient) => {
   await appClient.waitUntil(
-    async () => await appClient.browserWindow.isVisible(new EditorPage().diagramLoadingScreenLocator()) === false)
+    async () => await appClient.isVisible(new EditorPage().diagramLoadingScreenLocator()) === false)
+}
+
+const checkBasicDimensions = async (app: Application): Promise<void> => {
+    await app.client.waitUntilWindowLoaded()
+    app.browserWindow.focus();
+    await app.client.getWindowCount().should.eventually.equal(1);
+    await app.browserWindow.isMinimized().should.eventually.be.false;
+    await app.browserWindow.isVisible().should.eventually.be.true;
+    await app.browserWindow.isFocused().should.eventually.be.true;
+    await app.browserWindow.getBounds().should.eventually.have.property('width').and.be.above(0)
+    await app.browserWindow.getBounds().should.eventually.have.property('height').and.be.above(0)
+    await app.client.getTitle().should.eventually.equal(BMP_TITLE)
 }
 
 describe('Application Startup', function () {
   helpers.setupTimeout(this)
 
-  let app;
+  let app: Application
 
   beforeEach(() => {
       return helpers.startApplication({
         args: [path.join(__dirname, '../../..')],
         port: 3000,
         startTimeout: 25000,
-        waitTimeout: 25000
-      }).then((startedApp) => { 
+        waitTimeout: 10000
+      }).then((startedApp: Application) => { 
         app = startedApp
       })
   });
@@ -38,17 +51,8 @@ describe('Application Startup', function () {
     return helpers.stopApplication(app)
   });
 
-  it('opens application window',  () => {
-    return app.client.waitUntilWindowLoaded()
-      .browserWindow.focus()
-      .getWindowCount().should.eventually.equal(1)
-      .browserWindow.isMinimized().should.eventually.be.false
-      .browserWindow.isDevToolsOpened().should.eventually.be.false
-      .browserWindow.isVisible().should.eventually.be.true
-      .browserWindow.isFocused().should.eventually.be.true
-      .browserWindow.getBounds().should.eventually.have.property('width').and.be.above(0)
-      .browserWindow.getBounds().should.eventually.have.property('height').and.be.above(0)
-      .getTitle().should.eventually.equal(BMP_TITLE)
+  it('opens application window',  async () => {
+    checkBasicDimensions(app);
   })
 
   describe('Editors can be opened', () => {
@@ -57,93 +61,62 @@ describe('Application Startup', function () {
     const editorPage = new EditorPage();
 
     it('opens BPMN editor - new file', async () => {
-      await app.client.waitUntilWindowLoaded().click(homePage.openNewBpmnDiagramButtonSelector());
-      await app.client.waitUntilWindowLoaded().getWindowCount().should.eventually.equal(1);
+      await app.client.waitUntilWindowLoaded()
+      await app.client.click(homePage.openNewBpmnDiagramButtonSelector());
+      await app.client.waitUntilWindowLoaded();
+      await app.client.getWindowCount().should.eventually.equal(1);
       await waitForLoadingSpinner(app.client);
-      await app.client.browserWindow.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
+      await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
       await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
-      await app.client.browserWindow.focus().waitUntilWindowLoaded();
-      await app.client.browserWindow.focus().click(GO_TO_HOMEPAGE_BUTTON_LOCATOR)
+      await app.client.waitUntilWindowLoaded();
+      await app.client.click(GO_TO_HOMEPAGE_BUTTON_LOCATOR)
 
-      return app.client.waitUntilWindowLoaded()
-      .browserWindow.focus()
-      .getWindowCount().should.eventually.equal(1)
-      .browserWindow.isMinimized().should.eventually.be.false
-      .browserWindow.isDevToolsOpened().should.eventually.be.false
-      .browserWindow.isVisible().should.eventually.be.true
-      .browserWindow.isFocused().should.eventually.be.true
-      .browserWindow.getBounds().should.eventually.have.property('width').and.be.above(0)
-      .browserWindow.getBounds().should.eventually.have.property('height').and.be.above(0)
-      .getTitle().should.eventually.equal(BMP_TITLE)
+      await checkBasicDimensions(app);
     })
 
     it('opens DMN editor - new file', async () => {
       await app.client.waitUntilWindowLoaded();
       await app.client.click(homePage.openNewDmnDiagramButtonSelector())
-      await app.client.waitUntilWindowLoaded().getWindowCount().should.eventually.equal(1)
+      await app.client.waitUntilWindowLoaded();
+      await app.client.getWindowCount().should.eventually.equal(1);
       await waitForLoadingSpinner(app.client)
            
-      await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
-      await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
-      await app.client.browserWindow.focus().waitUntilWindowLoaded();
-      await app.client.browserWindow.focus().click(GO_TO_HOMEPAGE_BUTTON_LOCATOR).waitUntilWindowLoaded()
+      await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE);
+      await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true;
+      await app.client.waitUntilWindowLoaded();
+      await app.client.click(GO_TO_HOMEPAGE_BUTTON_LOCATOR);
 
-      await app.client.waitUntilWindowLoaded()
-      .browserWindow.focus()
-      .getWindowCount().should.eventually.equal(1)
-      .browserWindow.isMinimized().should.eventually.be.false
-      .browserWindow.isDevToolsOpened().should.eventually.be.false
-      .browserWindow.isVisible().should.eventually.be.true
-      .browserWindow.isFocused().should.eventually.be.true
-      .browserWindow.getBounds().should.eventually.have.property('width').and.be.above(0)
-      .browserWindow.getBounds().should.eventually.have.property('height').and.be.above(0)
-      .getTitle().should.eventually.equal(BMP_TITLE)
+      checkBasicDimensions(app);
     })
 
     it('opens BPMN editor - sample file', async () => {
       await app.client.waitUntilWindowLoaded();
       await app.client.click(homePage.openSampleBpmnDiagramButtonSelector())
-      await app.client.waitUntilWindowLoaded().getWindowCount().should.eventually.equal(1)
+      await app.client.waitUntilWindowLoaded();
+      await app.client.getWindowCount().should.eventually.equal(1);
       await waitForLoadingSpinner(app.client)
       
       await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
       await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
-      await app.client.browserWindow.focus().waitUntilWindowLoaded();
-      await app.client.browserWindow.focus().click(GO_TO_HOMEPAGE_BUTTON_LOCATOR)
+      await app.client.waitUntilWindowLoaded();
+      await app.client.click(GO_TO_HOMEPAGE_BUTTON_LOCATOR)
 
-      await app.client.waitUntilWindowLoaded()
-      .browserWindow.focus()
-      .getWindowCount().should.eventually.equal(1)
-      .browserWindow.isMinimized().should.eventually.be.false
-      .browserWindow.isDevToolsOpened().should.eventually.be.false
-      .browserWindow.isVisible().should.eventually.be.true
-      .browserWindow.isFocused().should.eventually.be.true
-      .browserWindow.getBounds().should.eventually.have.property('width').and.be.above(0)
-      .browserWindow.getBounds().should.eventually.have.property('height').and.be.above(0)
-      .getTitle().should.eventually.equal(BMP_TITLE)
+      await checkBasicDimensions(app);
     })
 
     it('opens DMN editor - sample file', async () => {
       await app.client.waitUntilWindowLoaded();
       await app.client.click(homePage.openSampleDmnDiagramButtonSelector())
-      await app.client.waitUntilWindowLoaded().getWindowCount().should.eventually.equal(1)
+      await app.client.waitUntilWindowLoaded();
+      await app.client.getWindowCount().should.eventually.equal(1);
       await waitForLoadingSpinner(app.client)
       
       await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
       await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
-      await app.client.browserWindow.focus().waitUntilWindowLoaded();
-      await app.client.browserWindow.focus().click(GO_TO_HOMEPAGE_BUTTON_LOCATOR).waitUntilWindowLoaded()
+      await app.client.waitUntilWindowLoaded();
+      await app.client.click(GO_TO_HOMEPAGE_BUTTON_LOCATOR);
 
-      await app.client.waitUntilWindowLoaded()
-      .browserWindow.focus()
-      .getWindowCount().should.eventually.equal(1)
-      .browserWindow.isMinimized().should.eventually.be.false
-      .browserWindow.isDevToolsOpened().should.eventually.be.false
-      .browserWindow.isVisible().should.eventually.be.true
-      .browserWindow.isFocused().should.eventually.be.true
-      .browserWindow.getBounds().should.eventually.have.property('width').and.be.above(0)
-      .browserWindow.getBounds().should.eventually.have.property('height').and.be.above(0)
-      .getTitle().should.eventually.equal(BMP_TITLE)
+      await checkBasicDimensions(app);
     })
   })
 })
