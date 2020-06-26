@@ -23,19 +23,13 @@ import { OpenExternalEditorButton } from "./OpenExternalEditorButton";
 import { useGlobals } from "../common/GlobalContext";
 import { Router } from "@kogito-tooling/core-api";
 
-interface ExternalLinkInfo {
-  id: string;
-  url: string;
-  container: HTMLElement;
-}
-
 export function FileTreeWithExternalLink() {
   const { externalEditorManager, router, dependencies, logger } = useGlobals();
 
   const [links, setLinksToFiles] = useState<HTMLAnchorElement[]>([]);
 
   useEffect(() => {
-    const newLinks = filterLinks(dependencies.treeView.linksToFiles(), router);
+    const newLinks = filterLinksForSupportedFileExtensions(dependencies.treeView.linksToFiles(), router);
     if (newLinks.length === 0) {
       return;
     }
@@ -49,7 +43,7 @@ export function FileTreeWithExternalLink() {
         return;
       }
 
-      const newLinks = filterLinks(dependencies.treeView.linksToFiles(), router);
+      const newLinks = filterLinksForSupportedFileExtensions(dependencies.treeView.linksToFiles(), router);
       if (newLinks.length === 0) {
         return;
       }
@@ -76,7 +70,7 @@ export function FileTreeWithExternalLink() {
             id={externalLinkId(link)}
             href={createTargetUrl(link.pathname, externalEditorManager)}
           />,
-          link.parentElement!.parentElement!,
+          link.parentElement!,
           externalLinkId(link)
         )
       )}
@@ -84,11 +78,12 @@ export function FileTreeWithExternalLink() {
   );
 }
 
-function filterLinks(links: HTMLAnchorElement[], router: Router): HTMLAnchorElement[] {
-  return links.filter(fileLink =>
-    router.getLanguageData(extractOpenFileExtension(fileLink.href) as any)
-    && !document.getElementById(externalLinkId(fileLink))
-  );
+function filterLinksForSupportedFileExtensions(links: HTMLAnchorElement[], router: Router): HTMLAnchorElement[] {
+  return links.filter(fileLink => {
+    const fileExtension = extractOpenFileExtension(fileLink.href);
+    const isSupportedLanguage = fileExtension && router.getLanguageData(fileExtension);
+    return isSupportedLanguage && !document.getElementById(externalLinkId(fileLink));
+  });
 }
 
 function externalLinkId(fileLink: HTMLAnchorElement): string {
