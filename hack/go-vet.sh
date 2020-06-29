@@ -19,7 +19,7 @@ if [[ -z ${CI} ]]; then
     # enforce GOROOT
     export GOROOT=$(go env GOROOT)
     operator-sdk generate k8s
-    operator-sdk generate crds
+    operator-sdk generate crds --crd-version=v1beta1
     # get the openapi binary
     which ./bin/openapi-gen > /dev/null || go build -o ./bin/openapi-gen k8s.io/kube-openapi/cmd/openapi-gen
     # generate the openapi files
