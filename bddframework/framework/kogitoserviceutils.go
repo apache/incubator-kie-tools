@@ -83,6 +83,8 @@ func NewKogitoServiceSpec(replicas int32, fullImage string, defaultImageName str
 	return v1alpha1.KogitoServiceSpec{
 		Replicas: &replicas,
 		Image:    newImageOrDefault(fullImage, defaultImageName),
+		// Sets insecure image registry as service images can be stored in insecure registries
+		InsecureImageRegistry: true,
 	}
 }
 
