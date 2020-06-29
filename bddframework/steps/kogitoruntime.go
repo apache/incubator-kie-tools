@@ -40,6 +40,7 @@ import (
 func registerKogitoRuntimeSteps(s *godog.Suite, data *Data) {
 	// Deploy steps
 	s.Step(`^Deploy (quarkus|springboot) example service "([^"]*)" from runtime registry with configuration:$`, data.deployExampleServiceFromRuntimeRegistryWithConfiguration)
+	s.Step(`^Deploy runtime (quarkus|springboot) example service "([^"]*)" with configuration:$`, data.deployRuntimeExampleServiceWithConfiguration)
 
 	// Deployment steps
 	s.Step(`^Kogito Runtime "([^"]*)" has (\d+) pods running within (\d+) minutes$`, data.kogitoRuntimeHasPodsRunningWithinMinutes)
@@ -49,10 +50,18 @@ func registerKogitoRuntimeSteps(s *godog.Suite, data *Data) {
 }
 
 // Deploy service steps
-
 func (data *Data) deployExampleServiceFromRuntimeRegistryWithConfiguration(runtimeType, kogitoApplicationName string, table *messages.PickleStepArgument_PickleTable) error {
 	imageTag := data.ScenarioContext[getBuiltRuntimeImageTagContextKey(kogitoApplicationName)]
+	return data.deployExampleServiceFromImageWithConfiguration(runtimeType, kogitoApplicationName, imageTag, table)
+}
 
+// Can be renamed to deployExampleServiceWithConfiguration once KogitoApp is removed
+func (data *Data) deployRuntimeExampleServiceWithConfiguration(runtimeType, kogitoApplicationName string, table *messages.PickleStepArgument_PickleTable) error {
+	// Passing empty image tag so image values are not filled
+	return data.deployExampleServiceFromImageWithConfiguration(runtimeType, kogitoApplicationName, "", table)
+}
+
+func (data *Data) deployExampleServiceFromImageWithConfiguration(runtimeType, kogitoApplicationName, imageTag string, table *messages.PickleStepArgument_PickleTable) error {
 	kogitoRuntime, err := getKogitoRuntimeExamplesStub(data.Namespace, runtimeType, kogitoApplicationName, imageTag, table)
 	if err != nil {
 		return err

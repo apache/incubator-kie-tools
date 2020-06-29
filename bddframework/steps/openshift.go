@@ -23,6 +23,7 @@ import (
 func registerOpenShiftSteps(s *godog.Suite, data *Data) {
 	// Build steps
 	s.Step(`^Start build with name "([^"]*)" from local example service path "([^"]*)"$`, data.startBuildFromExampleServicePath)
+	s.Step(`^Start build with name "([^"]*)" from local example service file "([^"]*)"$`, data.startBuildFromExampleServiceFile)
 	s.Step(`^Build "([^"]*)" is complete after (\d+) minutes$`, data.buildIsCompleteAfterMinutes)
 
 	// BuildConfig steps
@@ -34,6 +35,12 @@ func registerOpenShiftSteps(s *godog.Suite, data *Data) {
 func (data *Data) startBuildFromExampleServicePath(buildName, localExamplePath string) error {
 	examplesRepositoryPath := data.KogitoExamplesLocation
 	_, err := framework.CreateCommand("oc", "start-build", buildName, "--from-dir="+examplesRepositoryPath+"/"+localExamplePath, "-n", data.Namespace).WithLoggerContext(data.Namespace).Execute()
+	return err
+}
+
+func (data *Data) startBuildFromExampleServiceFile(buildName, localExampleFilePath string) error {
+	examplesRepositoryPath := data.KogitoExamplesLocation
+	_, err := framework.CreateCommand("oc", "start-build", buildName, "--from-file="+examplesRepositoryPath+"/"+localExampleFilePath, "-n", data.Namespace).WithLoggerContext(data.Namespace).Execute()
 	return err
 }
 

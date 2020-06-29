@@ -45,6 +45,7 @@ func (data *Data) RegisterAllSteps(s *godog.Suite) {
 	registerInfinispanSteps(s, data)
 	registerKafkaSteps(s, data)
 	registerKogitoAppSteps(s, data)
+	registerKogitoBuildSteps(s, data)
 	registerKogitoRuntimeSteps(s, data)
 	registerKogitoDataIndexServiceSteps(s, data)
 	registerKogitoInfraSteps(s, data)
