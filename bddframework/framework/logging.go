@@ -316,7 +316,7 @@ func storeContainerLog(namespace string, podName, containerName string) {
 	if isContainerLoggingFinished(namespace, podName, containerName) {
 		GetLogger(namespace).Infof("Logging of container '%s' of pod '%s' already finished, retrieved log will be ignored.", containerName, podName)
 	} else {
-		log, err := getContainerLog(namespace, podName, containerName)
+		log, err := GetContainerLog(namespace, podName, containerName)
 		if err != nil {
 			GetLogger(namespace).Errorf("Error while retrieving log of container '%s' in pod '%s': %v", containerName, podName, err)
 			return
@@ -329,7 +329,8 @@ func storeContainerLog(namespace string, podName, containerName string) {
 	}
 }
 
-func getContainerLog(namespace, podName, containerName string) (string, error) {
+// GetContainerLog exported for Zookeeper workaround, can be unexported once https://github.com/strimzi/strimzi-kafka-operator/issues/3092 is fixed
+func GetContainerLog(namespace, podName, containerName string) (string, error) {
 	return kubernetes.PodC(kubeClient).GetLogs(namespace, podName, containerName)
 }
 

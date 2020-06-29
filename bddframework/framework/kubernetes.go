@@ -197,6 +197,11 @@ func IsCrdAvailable(crdName string) (bool, error) {
 	return kubernetes.ResourceC(kubeClient).Fetch(crdEntity)
 }
 
+// DeletePod deletes pod
+func DeletePod(pod *corev1.Pod) error {
+	return kubernetes.ResourceC(kubeClient).Delete(pod)
+}
+
 // CreateSecret creates a new secret
 func CreateSecret(namespace, name string, secretContent map[string]string) error {
 	GetLogger(namespace).Infof("Create Secret %s", name)
