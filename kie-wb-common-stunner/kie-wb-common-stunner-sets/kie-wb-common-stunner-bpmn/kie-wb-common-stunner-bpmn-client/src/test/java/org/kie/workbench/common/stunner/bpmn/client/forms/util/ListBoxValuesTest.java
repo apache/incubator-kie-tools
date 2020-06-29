@@ -17,12 +17,17 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEditor.ActivityDataIOEditorViewImpl;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentData;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ListBoxValuesTest {
 
@@ -344,17 +349,75 @@ public class ListBoxValuesTest {
         // Copy custom values as well as non-custom
         ListBoxValues copy1 = new ListBoxValues(listBoxValues,
                                                 true);
-        Assert.assertTrue(copy1.getAcceptableValuesWithCustomValues().size() == 8);
-        Assert.assertTrue(copy1.getAcceptableValuesWithoutCustomValues().size() == 4);
-        Assert.assertTrue(copy1.getAcceptableValuesWithCustomValues().contains("\"abc\""));
-        Assert.assertTrue(copy1.getAcceptableValuesWithCustomValues().contains("\"def\""));
+        assertTrue(copy1.getAcceptableValuesWithCustomValues().size() == 8);
+        assertTrue(copy1.getAcceptableValuesWithoutCustomValues().size() == 4);
+        assertTrue(copy1.getAcceptableValuesWithCustomValues().contains("\"abc\""));
+        assertTrue(copy1.getAcceptableValuesWithCustomValues().contains("\"def\""));
 
         // Don't copy custom values as well as non-custom
         ListBoxValues copy2 = new ListBoxValues(listBoxValues,
                                                 false);
-        Assert.assertTrue(copy2.getAcceptableValuesWithCustomValues().size() == 6);
-        Assert.assertTrue(copy2.getAcceptableValuesWithoutCustomValues().size() == 4);
+        assertTrue(copy2.getAcceptableValuesWithCustomValues().size() == 6);
+        assertTrue(copy2.getAcceptableValuesWithoutCustomValues().size() == 4);
         Assert.assertFalse(copy2.getAcceptableValuesWithCustomValues().contains("\"abc\""));
         Assert.assertFalse(copy2.getAcceptableValuesWithCustomValues().contains("\"def\""));
+    }
+
+    @Test
+    public void testAddNullValuesAsMap() {
+        ListBoxValues values = new ListBoxValues("Constant ...",
+                                                 "Edit ",
+                                                 null);
+        Map<String, String> testNull = null;
+        values.addValues(testNull);
+        assertTrue(values.getAcceptableValuesWithCustomValues().isEmpty());
+    }
+
+    @Test
+    public void testAddEmptyValuesAsMap() {
+        ListBoxValues values = new ListBoxValues("Constant ...",
+                                                 "Edit ",
+                                                 null);
+        Map<String, String> testEmpty = new HashMap<>();
+        values.addValues(testEmpty);
+        assertEquals(2, values.getAcceptableValuesWithCustomValues().size());
+        assertTrue(values.getAcceptableValuesWithoutCustomValues().isEmpty());
+        assertTrue(values.mapDisplayValuesToValues.isEmpty());
+    }
+
+    @Test
+    public void testAddValueWithDifferentKeysValues() {
+        ListBoxValues values = new ListBoxValues("Constant ...",
+                                                 "Edit ",
+                                                 null);
+        Map<String, String> testMap = new HashMap<>();
+        String displayName1 = "firstDisplayName";
+        String displayName2 = "secondDisplayName";
+        String valueName1 = "02firstKey";
+        String valueName2 = "01secondKey";
+        testMap.put(valueName1, displayName1);
+        testMap.put(valueName2, displayName2);
+        values.addValues(testMap);
+
+        assertEquals(4, values.getAcceptableValuesWithCustomValues().size());
+        assertEquals(2, values.getAcceptableValuesWithoutCustomValues().size());
+        assertEquals(2, values.mapDisplayValuesToValues.size());
+        assertEquals(displayName1, values.getDisplayNameForValue(valueName1));
+        assertEquals(displayName2, values.getDisplayNameForValue(valueName2));
+        assertEquals(valueName1, values.getValueForDisplayValue(displayName1));
+        assertEquals(valueName2, values.getValueForDisplayValue(displayName2));
+
+        String nonMappedValue = "nonMappedValue";
+        assertEquals(nonMappedValue, values.getDisplayNameForValue(nonMappedValue));
+    }
+
+    @Test
+    public void testEmptyValueDisplayNameMap() {
+        ListBoxValues values = new ListBoxValues("Constant ...",
+                                                 "Edit ",
+                                                 null);
+
+        String nonMappedValue = "nonMappedValue";
+        assertEquals(nonMappedValue, values.getDisplayNameForValue(nonMappedValue));
     }
 }

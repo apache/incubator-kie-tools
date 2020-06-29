@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.dataproviders;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -27,7 +27,11 @@ import javax.inject.Inject;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
 import org.kie.workbench.common.stunner.bpmn.forms.dataproviders.RequestRuleFlowGroupDataEvent;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.StreamSupport.stream;
 
 @Dependent
 public class RuleFlowGroupFormProvider implements SelectorDataProvider {
@@ -44,13 +48,44 @@ public class RuleFlowGroupFormProvider implements SelectorDataProvider {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public SelectorData getSelectorData(final FormRenderingContext context) {
+    public SelectorData<String> getSelectorData(final FormRenderingContext context) {
         requestRuleFlowGroupDataEvent.fire(new RequestRuleFlowGroupDataEvent());
-        return new SelectorData(toMap(dataProvider.getRuleFlowGroupNames()), null);
+        return new SelectorData<>(toMap(dataProvider.getRuleFlowGroupNames()), null);
     }
 
-    private static Map<String, String> toMap(final Iterable<String> items) {
-        return StreamSupport.stream(items.spliterator(), false).collect(Collectors.toMap(s -> s, s -> s));
+    // Map<T, String> is not supported by ListBoxValue which is used for ComboBox widget
+    private static Map<String, String> toMap(final Iterable<RuleFlowGroup> groups) {
+        return stream(groups.spliterator(), false)
+                .collect(groupingBy(RuleFlowGroup::getName)).entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> createDisplayNameWithPackages(entry.getValue())
+                ));
+    }
+
+    private static String createDisplayNameWithPackages(List<RuleFlowGroup> groups) {
+        return groups.get(0).getName()
+                + " "
+                + groups.stream()
+                .map(group -> getProjectFromPath(group.getPathUri()))
+                .distinct()
+                .collect(Collectors.joining(", ", "[", "]"));
+    }
+
+    private static String dropFileSystemAndGitBranchFromPath(String path) {
+        return path.substring(path.indexOf('@') + 1);
+    }
+
+    private static String getProjectFromPath(String path) {
+        String clearedPath = dropFileSystemAndGitBranchFromPath(path);
+        //Drop space
+        String pathAfterSpace = clearedPath.substring(getIndexOfFileSeparator(clearedPath) + 1);
+        return pathAfterSpace.substring(0, getIndexOfFileSeparator(pathAfterSpace));
+    }
+
+    // GWT compatible way to get file separation for Windows/Unix
+    private static int getIndexOfFileSeparator(String string) {
+        int index = string.indexOf('/');
+        return index == -1 ? string.indexOf('\\') : index;
     }
 }

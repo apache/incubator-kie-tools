@@ -23,6 +23,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
 import org.kie.workbench.common.stunner.bpmn.forms.dataproviders.RequestRuleFlowGroupDataEvent;
 import org.kie.workbench.common.stunner.bpmn.forms.dataproviders.RuleFlowGroupDataEvent;
 
@@ -39,7 +40,7 @@ public class RuleFlowGroupDataService {
         this.dataChangedEvent = dataChangedEvent;
     }
 
-    public List<String> getRuleFlowGroupNames() {
+    public List<RuleFlowGroup> getRuleFlowGroupNames() {
         return queryService.getRuleFlowGroupNames();
     }
 
@@ -48,7 +49,7 @@ public class RuleFlowGroupDataService {
     }
 
     void fireData() {
-        final List<String> groupNames = getRuleFlowGroupNames();
-        dataChangedEvent.fire(new RuleFlowGroupDataEvent(groupNames.toArray(new String[groupNames.size()])));
+        final RuleFlowGroup[] groupNames = getRuleFlowGroupNames().toArray(new RuleFlowGroup[0]);
+        dataChangedEvent.fire(new RuleFlowGroupDataEvent(groupNames));
     }
 }

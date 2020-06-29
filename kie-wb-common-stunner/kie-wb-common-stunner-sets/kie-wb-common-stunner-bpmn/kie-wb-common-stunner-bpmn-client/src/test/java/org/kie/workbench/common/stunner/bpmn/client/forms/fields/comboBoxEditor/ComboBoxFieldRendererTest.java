@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -35,9 +36,12 @@ public class ComboBoxFieldRendererTest {
     @Mock
     private ComboBoxFieldDefinition comboBoxFieldDefinition;
 
+    @Mock
+    private ClientTranslationService translationService;
+
     @Spy
     @InjectMocks
-    private ComboBoxFieldRenderer comboBoxFieldRenderer = new ComboBoxFieldRenderer(comboBoxWidgetView);
+    private ComboBoxFieldRenderer comboBoxFieldRenderer = new ComboBoxFieldRenderer(comboBoxWidgetView, translationService);
 
     @Test
     public void getName() throws Exception {

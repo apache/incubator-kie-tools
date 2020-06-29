@@ -32,6 +32,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
@@ -263,13 +264,12 @@ public class ComboBoxAllTest {
                 contains(StringUtils.createQuotedStringIfNotNumeric(customStringValue1)));
         assertTrue(getListBoxValues().getAcceptableValuesWithCustomValues().
                 contains(customNumericValue1));
-        assertTrue(!getListBoxValues().getAcceptableValuesWithCustomValues().
+        assertFalse(getListBoxValues().getAcceptableValuesWithCustomValues().
                 contains(customNumericValue2));
         assertTrue(getListBoxValues().getAcceptableValuesWithCustomValues().
                 contains(customNumericValue3));
         assertTrue(getListBoxValues().getAcceptableValuesWithCustomValues().
                 contains(StringUtils.createQuotedStringIfNotNumeric(customStringValue2)));
-//        System.out.println(comboBox.getListBoxValues().toString());
     }
 
     @Test
@@ -296,24 +296,19 @@ public class ComboBoxAllTest {
         setCustomValue(customDataType2);
         setNonCustomValue(customDataType1,
                           3);
-//        System.out.println(comboBox.getListBoxValues().toString());
     }
 
     private void setCustomValue(String value) {
         comboBox.view.listBoxGotFocus();
         comboBox.listBoxValueChanged(this.customPrompt);
-        assertEquals(listBox.isVisible(),
-                     false);
-        assertEquals(textBox.isVisible(),
-                     true);
+        assertFalse(listBox.isVisible());
+        assertTrue(textBox.isVisible());
         comboBox.view.textBoxGotFocus();
         textBox.setValue(value);
         comboBox.view.textBoxLostFocus();
         comboBox.view.listBoxGotFocus();
-        assertEquals(listBox.isVisible(),
-                     true);
-        assertEquals(textBox.isVisible(),
-                     false);
+        assertTrue(listBox.isVisible());
+        assertFalse(textBox.isVisible());
         String listBoxValue = this.quoteStringValues ? StringUtils.createQuotedStringIfNotNumeric(value) : value;
         verify(modelPresenter).setTextBoxModelValue(textBox,
                                                     value);
@@ -325,10 +320,8 @@ public class ComboBoxAllTest {
                                    int times) {
         comboBox.view.listBoxGotFocus();
         comboBox.listBoxValueChanged(value);
-        assertEquals(listBox.isVisible(),
-                     true);
-        assertEquals(textBox.isVisible(),
-                     false);
+        assertTrue(listBox.isVisible());
+        assertFalse(textBox.isVisible());
         verify(modelPresenter,
                times(times)).setListBoxModelValue(listBox,
                                                   value);
@@ -340,10 +333,8 @@ public class ComboBoxAllTest {
                                         int times) {
         comboBox.view.listBoxGotFocus();
         comboBox.listBoxValueChanged(this.editPrefix + value + this.editSuffix);
-        assertEquals(listBox.isVisible(),
-                     false);
-        assertEquals(textBox.isVisible(),
-                     true);
+        assertFalse(listBox.isVisible());
+        assertTrue(textBox.isVisible());
         verify(modelPresenter,
                times(times)).setTextBoxModelValue(textBox,
                                                   value);
@@ -356,10 +347,8 @@ public class ComboBoxAllTest {
         textBox.setValue(value);
         comboBox.view.textBoxLostFocus();
         comboBox.view.listBoxGotFocus();
-        assertEquals(listBox.isVisible(),
-                     true);
-        assertEquals(textBox.isVisible(),
-                     false);
+        assertTrue(listBox.isVisible());
+        assertFalse(textBox.isVisible());
         String listBoxValue = this.quoteStringValues ? StringUtils.createQuotedStringIfNotNumeric(value) : value;
         verify(modelPresenter).setTextBoxModelValue(textBox,
                                                     listBoxValue);

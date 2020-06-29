@@ -47,13 +47,9 @@ public class ComboBoxWidgetViewImpl extends Composite implements ComboBoxWidgetV
     protected TextBox customValueField;
 
     @DataField
-    protected ValueListBox<String> valueField = new ValueListBox<String>(new Renderer<String>() {
+    protected ValueListBox<String> valueField = new ValueListBox<>(new Renderer<String>() {
         public String render(final String object) {
-            String s = "";
-            if (object != null) {
-                s = object.toString();
-            }
-            return s;
+            return (object != null) ? object : "";
         }
 
         public void render(final String object,
@@ -120,7 +116,7 @@ public class ComboBoxWidgetViewImpl extends Composite implements ComboBoxWidgetV
     public void setValue(final String newValue,
                          final boolean fireEvents) {
         String oldValue = currentValue;
-        currentValue = newValue;
+        currentValue = listBoxValues.getValueForDisplayValue(newValue);
         initView();
         if (fireEvents) {
             ValueChangeEvent.fireIfNotEqual(this,
@@ -142,7 +138,7 @@ public class ComboBoxWidgetViewImpl extends Composite implements ComboBoxWidgetV
     }
 
     protected void initView() {
-        dataModel.setModelValue(currentValue);
+        dataModel.setModelValue(listBoxValues.getDisplayNameForValue(currentValue));
         if (dataModel.customValue != null) {
             customValueField.setValue(dataModel.customValue);
             valueField.setValue(dataModel.customValue);

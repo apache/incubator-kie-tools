@@ -18,12 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.widgets;
 
 import java.util.List;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.ValueListBox;
 
@@ -49,31 +44,13 @@ public class ComboBoxViewImpl implements ComboBoxView {
         this.textBox = textBox;
         this.textBox.setPlaceholder(placeholder);
         textBox.setVisible(false);
-        listBox.addValueChangeHandler(new ValueChangeHandler<String>() {
-            @Override
-            public void onValueChange(final ValueChangeEvent<String> valueChangeEvent) {
-                presenter.listBoxValueChanged(valueChangeEvent.getValue());
-            }
-        });
-        listBox.addDomHandler(new FocusHandler() {
-                                  @Override
-                                  public void onFocus(final FocusEvent focusEvent) {
-                                      listBoxGotFocus();
-                                  }
-                              },
+        listBox.addValueChangeHandler(valueChangeEvent -> presenter.listBoxValueChanged(valueChangeEvent.getValue()));
+        listBox.addDomHandler(focusEvent -> listBoxGotFocus(),
                               FocusEvent.getType());
-        textBox.addFocusHandler(new FocusHandler() {
-            @Override
-            public void onFocus(final FocusEvent focusEvent) {
-                textBoxGotFocus();
-            }
-        });
-        textBox.addBlurHandler(new BlurHandler() {
-            @Override
-            public void onBlur(final BlurEvent blurEvent) {
-                // Update ListBoxValues and set model values when textBox loses focus
-                textBoxLostFocus();
-            }
+        textBox.addFocusHandler(focusEvent -> textBoxGotFocus());
+        textBox.addBlurHandler(blurEvent -> {
+            // Update ListBoxValues and set model values when textBox loses focus
+            textBoxLostFocus();
         });
     }
 

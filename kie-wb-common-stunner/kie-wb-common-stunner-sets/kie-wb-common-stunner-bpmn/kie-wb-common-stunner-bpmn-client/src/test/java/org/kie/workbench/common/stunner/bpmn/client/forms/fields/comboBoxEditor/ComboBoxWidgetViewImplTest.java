@@ -52,7 +52,7 @@ public class ComboBoxWidgetViewImplTest {
         dataModel = mock(ComboBoxWidgetViewImpl.DataModel.class);
         view = mock(ComboBoxWidgetViewImpl.class);
         view.customValueField = customValueField;
-        ;
+
         view.valueComboBox = valueComboBox;
         view.dataModel = dataModel;
         doCallRealMethod().when(view).init();
@@ -79,6 +79,10 @@ public class ComboBoxWidgetViewImplTest {
 
     @Test
     public void testSetValue() {
+        ListBoxValues listBoxValues = new ListBoxValues(null,
+                                                        null,
+                                                        null);
+        view.setComboBoxValues(listBoxValues);
         String value = "test";
         view.setValue(value);
 

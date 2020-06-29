@@ -932,7 +932,7 @@ public class BusinessRuleTaskTest extends TaskTest<BusinessRuleTask> {
         assertNotNull(onExitScriptTypeValues.get(0));
 
         assertEquals(ruleLanguage, executionSet.getRuleLanguage().getValue());
-        assertEquals(ruleFlowGroup, executionSet.getRuleFlowGroup().getValue());
+        assertEquals(ruleFlowGroup, executionSet.getRuleFlowGroup().getName());
         assertEquals(namespace, executionSet.getNamespace().getValue());
         assertEquals(decisionName, executionSet.getDecisionName().getValue());
         assertEquals(dmnModelName, executionSet.getDmnModelName().getValue());

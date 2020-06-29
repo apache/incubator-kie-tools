@@ -24,6 +24,7 @@ import javax.enterprise.event.Event;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
 import org.kie.workbench.common.stunner.bpmn.forms.dataproviders.RequestRuleFlowGroupDataEvent;
 import org.kie.workbench.common.stunner.bpmn.forms.dataproviders.RuleFlowGroupDataEvent;
 import org.mockito.ArgumentCaptor;
@@ -51,13 +52,15 @@ public class RuleFlowGroupDataServiceTest {
 
     @Before
     public void setUp() {
-        when(queryService.getRuleFlowGroupNames()).thenReturn(Arrays.asList("g1", "g2"));
+        RuleFlowGroup group1 = new RuleFlowGroup("g1");
+        RuleFlowGroup group2 = new RuleFlowGroup("g2");
+        when(queryService.getRuleFlowGroupNames()).thenReturn(Arrays.asList(group1, group2));
         tested = new RuleFlowGroupDataService(queryService, dataChangedEvent);
     }
 
     @Test
     public void testGetRuleFlowGroupNames() {
-        List<String> names = tested.getRuleFlowGroupNames();
+        List<RuleFlowGroup> names = tested.getRuleFlowGroupNames();
         assertRightRuleFlowGroupNames(names);
     }
 
@@ -67,7 +70,7 @@ public class RuleFlowGroupDataServiceTest {
         ArgumentCaptor<RuleFlowGroupDataEvent> ec = ArgumentCaptor.forClass(RuleFlowGroupDataEvent.class);
         verify(dataChangedEvent, times(1)).fire(ec.capture());
         RuleFlowGroupDataEvent event = ec.getValue();
-        assertRightRuleFlowGroupNames(event.getGroupNames());
+        assertRightRuleFlowGroups(event.getGroups());
     }
 
 
@@ -78,17 +81,17 @@ public class RuleFlowGroupDataServiceTest {
         verify(tested).fireData();
     }
 
-    private static void assertRightRuleFlowGroupNames(String[] names) {
+    private static void assertRightRuleFlowGroups(RuleFlowGroup[] names) {
         assertNotNull(names);
         assertEquals(2, names.length);
-        assertEquals("g1", names[0]);
-        assertEquals("g2", names[1]);
+        assertEquals("g1", names[0].getName());
+        assertEquals("g2", names[1].getName());
     }
 
-    private static void assertRightRuleFlowGroupNames(List<String> names) {
+    private static void assertRightRuleFlowGroupNames(List<RuleFlowGroup> names) {
         assertNotNull(names);
         assertEquals(2, names.size());
-        assertTrue(names.contains("g1"));
-        assertTrue(names.contains("g2"));
+        assertTrue(names.contains(new RuleFlowGroup("g1")));
+        assertTrue(names.contains(new RuleFlowGroup("g2")));
     }
 }

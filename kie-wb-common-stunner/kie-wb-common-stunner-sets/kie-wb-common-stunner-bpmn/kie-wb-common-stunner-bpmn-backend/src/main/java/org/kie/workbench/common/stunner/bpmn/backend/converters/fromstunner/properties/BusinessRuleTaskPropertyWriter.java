@@ -55,7 +55,7 @@ public class BusinessRuleTaskPropertyWriter extends ActivityPropertyWriter {
     }
 
     public void setRuleFlowGroup(RuleFlowGroup ruleFlowGroup) {
-        CustomAttribute.ruleFlowGroup.of(baseElement).set(ruleFlowGroup.getValue());
+        CustomAttribute.ruleFlowGroup.of(baseElement).set(ruleFlowGroup.getName());
     }
 
     public void setNamespace(Namespace namespace) {

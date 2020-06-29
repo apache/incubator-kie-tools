@@ -121,7 +121,7 @@ public class FindRuleFlowNamesQueryTest {
     }
 
     @Test
-    public void testExistentGroupUpdated() {
+    public void testExistentGroup() {
         properties.add(property);
         properties.add(property);
 
@@ -129,9 +129,15 @@ public class FindRuleFlowNamesQueryTest {
         when(kObject.getKey()).thenReturn(FILE_PATH);
 
         List<RefactoringPageRow> list = testedBuilder.buildResponse(kObjects);
+        assertEquals(2, list.size());
+
         RefactoringMapPageRow row = (RefactoringMapPageRow) list.get(0);
-        assertEquals(1, list.size());
-        Map<?, ?> map = row.getValue();
+        assertMapPageRow(row.getValue());
+        row = (RefactoringMapPageRow) list.get(1);
+        assertMapPageRow(row.getValue());
+    }
+
+    private void assertMapPageRow(Map<?, ?> map) {
         assertEquals(3, map.size());
         assertEquals(FILE_NAME, map.get("filename"));
         assertEquals(path.toUri().toString(), map.get("pathuri"));

@@ -134,10 +134,10 @@ public class FindRuleFlowNamesQuery extends AbstractFindQuery implements NamedQu
             final List<RefactoringPageRow> result = new ArrayList(kObjects.size());
 
             for (final KObject kObject : kObjects) {
-                final Map<String, Map<String, String>> ruleFlowGroupNames = getRuleFlowGroupNamesNamesFromKObject(kObject);
-                for (String rkey : ruleFlowGroupNames.keySet()) {
+                final List<Map<String, String>> ruleFlowGroups = getRuleFlowGroupsFromKObject(kObject);
+                for (Map<String, String> group : ruleFlowGroups) {
                     RefactoringMapPageRow row = new RefactoringMapPageRow();
-                    row.setValue(ruleFlowGroupNames.get(rkey));
+                    row.setValue(group);
                     result.add(row);
                 }
             }
@@ -145,24 +145,25 @@ public class FindRuleFlowNamesQuery extends AbstractFindQuery implements NamedQu
             return result;
         }
 
-        private Map<String, Map<String, String>> getRuleFlowGroupNamesNamesFromKObject(final KObject kObject) {
-            final Map<String, Map<String, String>> ruleFlowGroupNames = new HashMap<>();
+        private List<Map<String, String>> getRuleFlowGroupsFromKObject(final KObject kObject) {
+            final List<Map<String, String>> ruleFlowGroups = new ArrayList<>();
             if (kObject == null) {
-                return ruleFlowGroupNames;
+                return ruleFlowGroups;
             }
             for (KProperty<?> property : kObject.getProperties()) {
                 if (SHARED_TERM.equals(property.getName())) {
                     Path path = getPath(kObject);
                     if (path != null) {
-                        ruleFlowGroupNames.put(property.getValue().toString(), new HashMap<>());
-                        ruleFlowGroupNames.get(property.getValue().toString()).put("name", property.getValue().toString());
-                        ruleFlowGroupNames.get(property.getValue().toString()).put("filename", path.getFileName());
-                        ruleFlowGroupNames.get(property.getValue().toString()).put("pathuri", path.toURI());
+                        Map<String, String> group = new HashMap<>();
+                        group.put("name", property.getValue().toString());
+                        group.put("filename", path.getFileName());
+                        group.put("pathuri", path.toURI());
+                        ruleFlowGroups.add(group);
                     }
                 }
             }
 
-            return ruleFlowGroupNames;
+            return ruleFlowGroups;
         }
 
         private Path getPath(KObject kObject) {

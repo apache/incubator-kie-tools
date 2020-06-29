@@ -25,6 +25,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
 import org.kie.workbench.common.stunner.bpmn.forms.dataproviders.RuleFlowGroupDataEvent;
 import org.kie.workbench.common.stunner.forms.client.session.StunnerFormsHandler;
 
@@ -34,7 +35,7 @@ import static java.util.Arrays.stream;
 public class RuleFlowGroupDataProvider {
 
     private final StunnerFormsHandler formsHandler;
-    final List<String> groupNames;
+    final List<RuleFlowGroup> groups;
 
     // CDI proxy.
     public RuleFlowGroupDataProvider() {
@@ -44,26 +45,26 @@ public class RuleFlowGroupDataProvider {
     @Inject
     public RuleFlowGroupDataProvider(final StunnerFormsHandler formsHandler) {
         this.formsHandler = formsHandler;
-        this.groupNames = new LinkedList<>();
+        this.groups = new LinkedList<>();
     }
 
-    public List<String> getRuleFlowGroupNames() {
-        return groupNames;
+    public List<RuleFlowGroup> getRuleFlowGroupNames() {
+        return groups;
     }
 
     void onRuleFlowGroupDataChanged(final @Observes RuleFlowGroupDataEvent event) {
-        setRuleFlowGroupNames(toList(event.getGroupNames()));
+        setRuleFlowGroupNames(toList(event.getGroups()));
     }
 
-    private void setRuleFlowGroupNames(final List<String> names) {
-        if (!groupNames.equals(names)) {
-            groupNames.clear();
-            groupNames.addAll(names);
+    private void setRuleFlowGroupNames(final List<RuleFlowGroup> groups) {
+        if (!this.groups.equals(groups)) {
+            this.groups.clear();
+            this.groups.addAll(groups);
             formsHandler.refreshCurrentSessionForms(BPMNDefinitionSet.class);
         }
     }
 
-    private static List<String> toList(final String[] s) {
+    private static List<RuleFlowGroup> toList(final RuleFlowGroup[] s) {
         return stream(s).collect(Collectors.toList());
     }
 }

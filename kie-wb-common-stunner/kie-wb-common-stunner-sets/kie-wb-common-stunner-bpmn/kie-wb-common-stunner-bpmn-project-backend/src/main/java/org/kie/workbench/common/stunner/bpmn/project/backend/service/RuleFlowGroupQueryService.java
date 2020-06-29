@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.project.backend.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,12 +32,14 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.PartType;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 @ApplicationScoped
 public class RuleFlowGroupQueryService {
 
     private final RefactoringQueryService queryService;
-    private final Function<List<RefactoringPageRow>, List<String>> resultToSelectorData;
+    private final Function<List<RefactoringPageRow>, List<RuleFlowGroup>> resultToSelectorData;
 
     //CDI proxy.
     public RuleFlowGroupQueryService() {
@@ -50,13 +53,12 @@ public class RuleFlowGroupQueryService {
     }
 
     RuleFlowGroupQueryService(final RefactoringQueryService queryService,
-                              final Function<List<RefactoringPageRow>, List<String>> resultToSelectorData) {
+                              final Function<List<RefactoringPageRow>, List<RuleFlowGroup>> resultToSelectorData) {
         this.queryService = queryService;
         this.resultToSelectorData = resultToSelectorData;
     }
 
-    @SuppressWarnings("unchecked")
-    public List<String> getRuleFlowGroupNames() {
+    public List<RuleFlowGroup> getRuleFlowGroupNames() {
         List<RefactoringPageRow> queryResult = queryService.query(
                 FindRuleFlowNamesQuery.NAME,
                 new Sets.Builder<ValueIndexTerm>()
@@ -68,18 +70,23 @@ public class RuleFlowGroupQueryService {
     }
 
     @SuppressWarnings("unchecked")
-    private static String getValue(final RefactoringPageRow row) {
-        return ((Map<String, String>) row.getValue()).get("name");
+    private static RuleFlowGroup getValue(final RefactoringPageRow row) {
+        Map<String, String> values = (Map<String, String>) row.getValue();
+        String name = values.get("name");
+        if (StringUtils.isEmpty(name)) {
+            return null;
+        }
+
+        RuleFlowGroup group = new RuleFlowGroup(name);
+        group.setFileName(values.get("filename"));
+        group.setPathUri(values.get("pathuri"));
+
+        return group;
     }
 
-    private static boolean isNotEmpty(final String s) {
-        return null != s && s.trim().length() > 0;
-    }
-
-    public static Function<List<RefactoringPageRow>, List<String>> DEFAULT_RESULT_CONVERTER =
+    public static final Function<List<RefactoringPageRow>, List<RuleFlowGroup>> DEFAULT_RESULT_CONVERTER =
             rows -> rows.stream()
                     .map(RuleFlowGroupQueryService::getValue)
-                    .filter(RuleFlowGroupQueryService::isNotEmpty)
-                    .distinct()
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 }

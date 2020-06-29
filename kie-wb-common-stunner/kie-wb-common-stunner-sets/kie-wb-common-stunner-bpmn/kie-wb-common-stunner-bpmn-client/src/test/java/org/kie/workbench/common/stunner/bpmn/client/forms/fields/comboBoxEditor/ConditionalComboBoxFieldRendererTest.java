@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitActi
 import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionalComboBoxFieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionalComboBoxFieldType;
 import org.kie.workbench.common.stunner.core.client.definition.adapter.binding.ClientBindingUtils;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.mockito.BDDMockito;
@@ -67,9 +68,13 @@ public class ConditionalComboBoxFieldRendererTest {
     @Mock
     private FormRenderingContext renderingContextParent;
 
+    @Mock
+    private ClientTranslationService translationService;
+
     @Spy
     @InjectMocks
     private ConditionalComboBoxFieldRenderer conditionalComboBoxFieldRenderer = new ConditionalComboBoxFieldRenderer(comboBoxFixedValuesWidgetView,
+                                                                                                                     translationService,
                                                                                                                      adapterManager);
 
     @Test

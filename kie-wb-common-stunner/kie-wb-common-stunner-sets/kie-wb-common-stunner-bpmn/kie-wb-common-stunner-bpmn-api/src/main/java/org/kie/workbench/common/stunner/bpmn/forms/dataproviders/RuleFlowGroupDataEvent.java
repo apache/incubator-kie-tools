@@ -18,17 +18,18 @@ package org.kie.workbench.common.stunner.bpmn.forms.dataproviders;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
 
 @Portable
 public class RuleFlowGroupDataEvent {
 
-    private final String[] groupNames;
+    private final RuleFlowGroup[] groups;
 
-    public RuleFlowGroupDataEvent(final @MapsTo("groupNames") String[] groupNames) {
-        this.groupNames = groupNames;
+    public RuleFlowGroupDataEvent(final @MapsTo("groupNames") RuleFlowGroup[] groups) {
+        this.groups = groups;
     }
 
-    public String[] getGroupNames() {
-        return groupNames;
+    public RuleFlowGroup[] getGroups() {
+        return groups;
     }
 }

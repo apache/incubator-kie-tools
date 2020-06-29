@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.adf.rendering.Renderer;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldDefinition;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 
 @Dependent
 @Renderer(fieldDefinition = ComboBoxFieldDefinition.class)
@@ -30,8 +31,8 @@ public class ComboBoxFieldRenderer
     public static final String TYPE_NAME = ComboBoxFieldDefinition.FIELD_TYPE.getTypeName();
 
     @Inject
-    public ComboBoxFieldRenderer(final ComboBoxWidgetView comboBoxEditor) {
-        super(comboBoxEditor);
+    public ComboBoxFieldRenderer(final ComboBoxWidgetView comboBoxEditor, final ClientTranslationService translationService) {
+        super(comboBoxEditor, translationService);
     }
 
     @Override

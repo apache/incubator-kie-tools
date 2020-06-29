@@ -24,8 +24,10 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerBPMNConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldDefinition;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -34,6 +36,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractComboBoxFieldRendererTest {
@@ -42,11 +45,14 @@ public class AbstractComboBoxFieldRendererTest {
     private ComboBoxWidgetView comboBoxWidgetView;
 
     @Mock
+    private ClientTranslationService translationService;
+
+    @Mock
     private ComboBoxFieldDefinition comboBoxFieldDefinition;
 
     @Spy
     @InjectMocks
-    private AbstractComboBoxFieldRenderer comboBoxFieldRenderer = new ComboBoxFieldRenderer(comboBoxWidgetView);
+    private AbstractComboBoxFieldRenderer comboBoxFieldRenderer = new ComboBoxFieldRenderer(comboBoxWidgetView, translationService);
 
     private Map<String, String> options;
 
@@ -59,6 +65,8 @@ public class AbstractComboBoxFieldRendererTest {
                     "1.77");
         options.put("gender",
                     "male");
+
+        when(translationService.getValue(StunnerBPMNConstants.EDIT)).thenReturn("Edit");
     }
 
     @Test

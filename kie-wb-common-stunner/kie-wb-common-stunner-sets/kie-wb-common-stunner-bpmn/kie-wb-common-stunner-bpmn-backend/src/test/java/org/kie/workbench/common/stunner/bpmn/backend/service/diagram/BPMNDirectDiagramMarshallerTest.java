@@ -1735,7 +1735,7 @@ public class BPMNDirectDiagramMarshallerTest {
         assertEquals("my business rule task",
                      businessRuleTask.getGeneral().getName().getValue());
         assertEquals("my-ruleflow-group",
-                     businessRuleTask.getExecutionSet().getRuleFlowGroup().getValue());
+                     businessRuleTask.getExecutionSet().getRuleFlowGroup().getName());
         assertEquals("true",
                      businessRuleTask.getExecutionSet().getIsAsync().getValue().toString());
 

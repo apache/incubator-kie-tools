@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionalComboBoxFieldDefinition;
 import org.kie.workbench.common.stunner.bpmn.util.MultipleFieldStringSerializer;
 import org.kie.workbench.common.stunner.core.client.definition.adapter.binding.ClientBindingUtils;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 
 /**
@@ -48,8 +49,9 @@ public class ConditionalComboBoxFieldRenderer extends AbstractComboBoxFieldRende
 
     @Inject
     public ConditionalComboBoxFieldRenderer(@FixedValues final ComboBoxFixedValuesWidgetView comboBoxEditor,
-                                            AdapterManager adapterManager) {
-        super(comboBoxEditor);
+                                            final ClientTranslationService translationService,
+                                            final AdapterManager adapterManager) {
+        super(comboBoxEditor, translationService);
         this.adapterManager = adapterManager;
     }
 

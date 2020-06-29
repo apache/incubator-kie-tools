@@ -97,4 +97,7 @@ public interface StunnerBPMNConstants {
 
     @TranslationKey(defaultValue = "Time period")
     String NOTIFICATION_EXPIRATION_TIMEPERIOD_LABEL = "notification.expiration.timeperiod.label";
+
+    @TranslationKey(defaultValue = "Edit")
+    String EDIT = "combobox.edit";
 }

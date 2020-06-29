@@ -31,6 +31,7 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueSharedPartIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.PartType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
 import org.uberfire.io.IOService;
 
 import static org.junit.Assert.assertEquals;
@@ -107,12 +108,16 @@ public class RuleFlowGroupQueryServiceTest {
         RefactoringPageRow emptyRow2 = mock(RefactoringPageRow.class);
         when(emptyRow2.getValue()).thenReturn(asMap(""));
         List<RefactoringPageRow> rows = Arrays.asList(row1, row2, row3, row4, row4_2, emptyRow1, emptyRow2);
-        List<String> result = RuleFlowGroupQueryService.DEFAULT_RESULT_CONVERTER.apply(rows);
-        assertEquals(4, result.size());
-        assertTrue(result.contains("row1"));
-        assertTrue(result.contains("row2"));
-        assertTrue(result.contains("row3"));
-        assertTrue(result.contains("row4"));
+        List<RuleFlowGroup> result = RuleFlowGroupQueryService.DEFAULT_RESULT_CONVERTER.apply(rows);
+        assertEquals(5, result.size());
+        RuleFlowGroup group1 = new RuleFlowGroup("row1");
+        RuleFlowGroup group2 = new RuleFlowGroup("row2");
+        RuleFlowGroup group3 = new RuleFlowGroup("row3");
+        RuleFlowGroup group4 = new RuleFlowGroup("row4");
+        assertTrue(result.contains(group1));
+        assertTrue(result.contains(group2));
+        assertTrue(result.contains(group3));
+        assertTrue(result.contains(group4));
     }
 
     private static Map<String, String> asMap(String s) {

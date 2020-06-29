@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleFlowGroup;
 import org.kie.workbench.common.stunner.bpmn.forms.dataproviders.RuleFlowGroupDataEvent;
 import org.kie.workbench.common.stunner.forms.client.session.StunnerFormsHandler;
 import org.mockito.Mock;
@@ -29,7 +30,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -53,23 +53,27 @@ public class RuleFlowGroupDataProviderTest {
 
     @Test
     public void testOnRuleFlowGroupDataChanged() {
+        RuleFlowGroup group1 = new RuleFlowGroup("g1");
+        RuleFlowGroup group2 = new RuleFlowGroup("g2");
         RuleFlowGroupDataEvent event = mock(RuleFlowGroupDataEvent.class);
-        when(event.getGroupNames()).thenReturn(new String[]{"g1", "g2"});
+        when(event.getGroups()).thenReturn(new RuleFlowGroup[]{group1, group2});
         tested.onRuleFlowGroupDataChanged(event);
         verify(formsHandler, times(1)).refreshCurrentSessionForms(eq(BPMNDefinitionSet.class));
-        List<String> values = tested.getRuleFlowGroupNames();
+        List<RuleFlowGroup> values = tested.getRuleFlowGroupNames();
         assertNotNull(values);
         assertEquals(2, values.size());
-        assertTrue(values.contains("g1"));
-        assertTrue(values.contains("g2"));
+        assertEquals("g1", values.get(0).getName());
+        assertEquals("g2", values.get(1).getName());
     }
 
     @Test
     public void testOnRuleFlowGroupDataNotChanged() {
-        tested.groupNames.add("g1");
-        tested.groupNames.add("g2");
+        RuleFlowGroup group1 = new RuleFlowGroup("g1");
+        RuleFlowGroup group2 = new RuleFlowGroup("g2");
+        tested.groups.add(group1);
+        tested.groups.add(group2);
         RuleFlowGroupDataEvent event = mock(RuleFlowGroupDataEvent.class);
-        when(event.getGroupNames()).thenReturn(new String[]{"g1", "g2"});
+        when(event.getGroups()).thenReturn(new RuleFlowGroup[]{group1, group2});
         tested.onRuleFlowGroupDataChanged(event);
         verify(formsHandler, never()).refreshCurrentSessionForms(any(Class.class));
     }

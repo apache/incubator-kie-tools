@@ -33,6 +33,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -83,13 +84,13 @@ public class BPMNDiagramProjectServiceTest {
     @Test
     public void getProjectTypeCase() {
         final ProjectType projectType = tested.getProjectType(projectPath);
-        assertEquals(projectType, ProjectType.CASE);
+        assertEquals(ProjectType.CASE, projectType);
     }
 
     @Test
     public void getProjectTypeNull() {
         when(directoryStream.spliterator()).thenReturn(Collections.<Path>emptyList().spliterator());
         final ProjectType projectType = tested.getProjectType(projectPath);
-        assertEquals(projectType, null);
+        assertNull(projectType);
     }
 }
