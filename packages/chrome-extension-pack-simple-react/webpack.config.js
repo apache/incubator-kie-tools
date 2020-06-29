@@ -18,6 +18,7 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
 const packageJson = require("./package.json");
+const pfWebpackUtils = require("../patternfly-base/webpackUtils");
 
 module.exports = {
   mode: "development",
@@ -40,7 +41,7 @@ module.exports = {
     ]),
     new ZipPlugin({
       filename: "kogito_tooling_examples_chrome_extension_simple_react_" + packageJson.version + ".zip",
-      pathPrefix: "dist/*"
+      pathPrefix: "dist"
     })
   ],
   module: {
@@ -56,7 +57,8 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: ["babel-loader"]
-      }
+      },
+      ...pfWebpackUtils.patternflyLoaders
     ]
   },
   resolve: {

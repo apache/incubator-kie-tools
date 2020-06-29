@@ -1,6 +1,6 @@
 {
   "name": "KIE :: Kogito Simple React Editor",
-  "version": "0.2.2",
+  "version": "0.5.1",
   "manifest_version": 2,
   "description": "KIE :: Kogito Simple React Editor",
   "content_scripts": [
@@ -12,7 +12,7 @@
     }
   ],
   "background": { "scripts": ["background.js"], "persistent": true },
-  "web_accessible_resources": ["envelope/*"],
+  "web_accessible_resources": ["envelope/*", "resources/*"],
   "permissions": [
     "webRequestBlocking",
     "webRequest",

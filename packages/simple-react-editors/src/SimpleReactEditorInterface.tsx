@@ -20,11 +20,9 @@ import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-enve
 import { SimpleReactEditor } from "./SimpleReactEditor";
 
 export class SimpleReactEditorInterface extends Editor {
-  private readonly messageBus: EnvelopeBusInnerMessageHandler;
-
   private self: SimpleReactEditor;
 
-  constructor(messageBus: EnvelopeBusInnerMessageHandler) {
+  constructor(private readonly messageBus: EnvelopeBusInnerMessageHandler) {
     super("readonly-react-editor");
     this.af_isReact = true;
     this.messageBus = messageBus;
@@ -38,8 +36,12 @@ export class SimpleReactEditorInterface extends Editor {
     return this.self.isDirty();
   }
 
-  public setContent(content: string): Promise<void> {
+  public setContent(path: string, content: string): Promise<void> {
     return this.self.setContent(content);
+  }
+
+  public getPreview(): Promise<string | undefined> {
+    return this.self.getPreview();
   }
 
   public af_componentRoot(): Element {

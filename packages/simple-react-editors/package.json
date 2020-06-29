@@ -1,16 +1,23 @@
 {
   "name": "simple-react-editors",
-  "version": "0.2.2",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "version": "0.5.1",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "license": "Apache-2.0",
   "private": false,
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling-examples.git"
+  },
   "scripts": {
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run build:fast",
     "build:prod": "yarn run build --mode production --devtool none"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.2.2"
+    "@kogito-tooling/core-api": "0.5.1"
   }
 }
