@@ -31,7 +31,7 @@
           <dmn:text>&lt; 1000</dmn:text>
         </dmn:inputValues>
       </dmn:input>
-      <dmn:output id='_CAFBB4C9-4CCA-4B51-9A86-00AC32F11DAD'/>
+      <dmn:output id='_CAFBB4C9-4CCA-4B51-9A86-00AC32F11DAD' typeRef='UNDEFINED'/>
       <dmn:annotation/>
       <dmn:rule id='_90A5DAA6-4B96-42FF-B786-B24FA23C0547'>
         <dmn:inputEntry id='_3CDA273C-57EB-4FD9-A86F-F4CCDF003F80'>

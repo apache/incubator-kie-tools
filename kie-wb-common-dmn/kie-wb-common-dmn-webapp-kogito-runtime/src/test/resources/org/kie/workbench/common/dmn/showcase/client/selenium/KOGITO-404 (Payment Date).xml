@@ -82,7 +82,7 @@
                             <semantic:text>employee.address.country</semantic:text>
                         </semantic:inputExpression>
                     </semantic:input>
-                    <semantic:output id='_ebc17c96-82c4-4373-ac30-4dbae4b4c886'/>
+                    <semantic:output id='_ebc17c96-82c4-4373-ac30-4dbae4b4c886' typeRef='UNDEFINED'/>
                     <semantic:annotation name='Description'/>
                     <semantic:rule id='_a346eaa2-d5f3-48b7-8623-348e53b26d4c'>
                         <semantic:inputEntry id='_94a86171-b02d-493a-b3a7-f333402dfe71'>

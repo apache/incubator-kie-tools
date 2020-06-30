@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
+import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDecisionRule;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDecisionTable;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITHitPolicy;
@@ -90,7 +91,7 @@ public class DecisionTablePropertyConverter {
         if (result.getOutput().size() == 1) {
             final OutputClause outputClause = result.getOutput().get(0);
             outputClause.setName(null); // DROOLS-3281
-            outputClause.setTypeRef(null); // DROOLS-5178
+            outputClause.setTypeRef(BuiltInType.UNDEFINED.asQName()); // DROOLS-5178
         }
 
         final List<JSITDecisionRule> jsiDecisionRules = dmn.getRule();
@@ -148,7 +149,7 @@ public class DecisionTablePropertyConverter {
         if (result.getOutput().size() == 1) {
             final JSITOutputClause at = Js.uncheckedCast(result.getOutput().get(0));
             at.setName(null); // DROOLS-3281
-            at.setTypeRef(null); // DROOLS-5178
+            at.setTypeRef(BuiltInType.UNDEFINED.name()); // DROOLS-5178
         }
         for (DecisionRule dr : wb.getRule()) {
             final JSITDecisionRule c = DecisionRulePropertyConverter.dmnFromWB(dr);

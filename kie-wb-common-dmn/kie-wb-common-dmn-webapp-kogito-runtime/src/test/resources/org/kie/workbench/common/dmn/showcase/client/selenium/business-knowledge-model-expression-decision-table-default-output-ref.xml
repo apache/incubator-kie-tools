@@ -21,7 +21,7 @@
             <dmn:text>input-1</dmn:text>
           </dmn:inputExpression>
         </dmn:input>
-        <dmn:output id='_82865AE0-AF73-4C6C-91C1-533C1521BF2C' typeRef='UNDEFINED'/>
+        <dmn:output id='_82865AE0-AF73-4C6C-91C1-533C1521BF2C'/>
         <dmn:annotation/>
         <dmn:rule id='_4E0C236E-D1C7-4354-A419-37DD368B4C40'>
           <dmn:inputEntry id='_CAA7F7C7-0865-4F12-B300-101E083CAC8B'>

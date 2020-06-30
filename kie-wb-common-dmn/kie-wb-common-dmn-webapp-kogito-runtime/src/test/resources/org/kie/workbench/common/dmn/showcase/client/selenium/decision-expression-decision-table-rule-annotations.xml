@@ -20,7 +20,7 @@
           <dmn:text>input-1</dmn:text>
         </dmn:inputExpression>
       </dmn:input>
-      <dmn:output id='_3C2E81E3-A8F7-4600-8FC1-7FACB5F85CB9'/>
+      <dmn:output id='_3C2E81E3-A8F7-4600-8FC1-7FACB5F85CB9' typeRef='UNDEFINED'/>
       <dmn:annotation name='annotation-1'/>
       <dmn:annotation name='annotation-2'/>
       <dmn:rule id='_2D2D5ABD-3C71-40E9-B493-73CDA49B3F53'>

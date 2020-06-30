@@ -19,7 +19,7 @@
           <dmn:text>input-1</dmn:text>
         </dmn:inputExpression>
       </dmn:input>
-      <dmn:output id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C'>
+      <dmn:output id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C' typeRef='UNDEFINED'>
         <dmn:outputValues id='_84B06D09-8129-4510-B954-1F3E56FF03DC'>
           <dmn:text>output</dmn:text>
         </dmn:outputValues>

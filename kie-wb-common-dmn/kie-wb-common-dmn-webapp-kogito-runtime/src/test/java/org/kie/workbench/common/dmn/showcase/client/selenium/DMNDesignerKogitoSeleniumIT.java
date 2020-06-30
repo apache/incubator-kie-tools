@@ -42,6 +42,11 @@ import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.showcase.client.model.DecisionTableSeleniumModel;
 import org.kie.workbench.common.dmn.showcase.client.model.ListSeleniumModel;
+import org.kie.workbench.common.dmn.showcase.client.selenium.locator.ContextMenuXPathLocator;
+import org.kie.workbench.common.dmn.showcase.client.selenium.locator.DecisionNavigatorXPathLocator;
+import org.kie.workbench.common.dmn.showcase.client.selenium.locator.EditorXPathLocator;
+import org.kie.workbench.common.dmn.showcase.client.selenium.locator.PropertiesPanelXPathLocator;
+import org.kie.workbench.common.dmn.showcase.client.selenium.locator.XPathLocator;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
@@ -99,18 +104,8 @@ public class DMNDesignerKogitoSeleniumIT {
     private static final String DECISON_NAVIGATOR_EXPANDED = "qe-docks-bar-expanded-W";
     private static final String PROPERTIES_PANEL = "qe-docks-item-E-DiagramEditorPropertiesScreen";
 
-    // editors
-    private static final String ACE_EDITOR = "//div[@class='ace_content']";
-    private static final String CANVAS = "//div[@class='canvas-panel']//canvas";
-
     // decision navigator
-    private static final String NODE = "//div[@id='decision-graphs-content']//ul/li[@title='%s']/div";
-    private static final String DECISION_TABLE = "//div[@id='decision-graphs-content']//ul/li[@title='%s']/ul/li[@title='Decision Table']/div";
-    private static final String LIST = "//div[@id='decision-graphs-content']//ul/li[@title='%s']/ul/li[@title='List']/div";
     private static final String NOT_PRESENT_IN_NAVIGATOR = "'%s' was not present in the decision navigator";
-
-    // context menus/popups
-    private static final String MENU_ENTRY = "//div[@data-field='cellEditorControlsContainer']//ul/li/a/span[text()='%s']";
 
     private static final Boolean HEADLESS = Boolean.valueOf(System.getProperty("org.kie.dmn.kogito.browser.headless"));
     private static final String SCREENSHOTS_DIR = System.getProperty("org.kie.dmn.kogito.screenshots.dir");
@@ -202,7 +197,7 @@ public class DMNDesignerKogitoSeleniumIT {
 
         waitOperation()
                 .withMessage("If invalid dmn is loaded, ace editor needs to be shown")
-                .until(element(ACE_EDITOR));
+                .until(element(EditorXPathLocator.aceEditor()));
     }
 
     @Test
@@ -237,7 +232,7 @@ public class DMNDesignerKogitoSeleniumIT {
                 .ignoreWhitespace()
                 .areIdentical();
     }
-    
+
     @Test
     public void testInputData() throws Exception {
         final String expected = loadResource("input-data.xml");
@@ -394,7 +389,7 @@ public class DMNDesignerKogitoSeleniumIT {
                 .hasXPath("/dmn:definitions" +
                                   "/dmn:decision[@id='_395E1E92-765B-47F5-9387-179B839277B1']" +
                                   "/dmn:decisionTable[@id='_1B2AE7B6-BF51-472E-99CB-A67875CE1B57']" +
-                                  "/dmn:output[@id='_3C2E81E3-A8F7-4600-8FC1-7FACB5F85CB9']");
+                                  "/dmn:output[@id='_3C2E81E3-A8F7-4600-8FC1-7FACB5F85CB9' and @typeRef='UNDEFINED']");
         XmlAssert.assertThat(actual)
                 .withNamespaceContext(NAMESPACES)
                 .hasXPath("/dmn:definitions" +
@@ -699,7 +694,7 @@ public class DMNDesignerKogitoSeleniumIT {
                                   "/dmn:context[@id='_AF3119C9-837D-4D56-A560-454A2F1A934D']" +
                                   "/dmn:contextEntry" +
                                   "/dmn:decisionTable[@id='_DB23F5EF-8D43-4A04-A270-B54CF89BC13B']" +
-                                  "/dmn:output[@id='_2B19E6D4-DCA2-4792-AB67-B4AF7E6879BB']");
+                                  "/dmn:output[@id='_2B19E6D4-DCA2-4792-AB67-B4AF7E6879BB' and @typeRef='UNDEFINED']");
         XmlAssert.assertThat(actual)
                 .withNamespaceContext(NAMESPACES)
                 .hasXPath("/dmn:definitions" +
@@ -982,7 +977,7 @@ public class DMNDesignerKogitoSeleniumIT {
                                   "/dmn:businessKnowledgeModel[@id='_1ACB205E-7221-4573-B555-7A7626FDFC8E']" +
                                   "/dmn:encapsulatedLogic[@id='_616FC696-1CE6-4210-A479-DEE11293ACA3' and @kind='FEEL']" +
                                   "/dmn:decisionTable[@id='_407EA8F3-1074-47EF-A764-4B2EFDD131E5']" +
-                                  "/dmn:output[@id='_82865AE0-AF73-4C6C-91C1-533C1521BF2C']");
+                                  "/dmn:output[@id='_82865AE0-AF73-4C6C-91C1-533C1521BF2C' and @typeRef='UNDEFINED']");
         XmlAssert.assertThat(actual)
                 .withNamespaceContext(NAMESPACES)
                 .hasXPath("/dmn:definitions" +
@@ -997,6 +992,30 @@ public class DMNDesignerKogitoSeleniumIT {
                                   "/dmn:encapsulatedLogic[@id='_616FC696-1CE6-4210-A479-DEE11293ACA3' and @kind='FEEL']" +
                                   "/dmn:decisionTable[@id='_407EA8F3-1074-47EF-A764-4B2EFDD131E5']" +
                                   "/dmn:rule[@id='_4E0C236E-D1C7-4354-A419-37DD368B4C40']");
+    }
+
+    /**
+     * Reproducer for DROOLS-5332
+     * Uses same DMN model as #testBusinessKnowledgeModelExpressionDecisionTable()
+     * just without decisionTable output typeRef explicitly set
+     */
+    @Test
+    public void testBusinessKnowledgeModelExpressionDecisionTableDefaultOutputRef() throws Exception {
+        final String expected = loadResource("business-knowledge-model-expression-decision-table-default-output-ref.xml");
+        setContent(expected);
+
+        final String actual = getContent();
+        assertThat(actual).isNotBlank();
+
+        XmlAssert.assertThat(actual)
+                .withNamespaceContext(NAMESPACES)
+                .hasXPath("/dmn:definitions" +
+                                  "/dmn:businessKnowledgeModel[@id='_1ACB205E-7221-4573-B555-7A7626FDFC8E']" +
+                                  "/dmn:encapsulatedLogic[@id='_616FC696-1CE6-4210-A479-DEE11293ACA3' and @kind='FEEL']" +
+                                  "/dmn:decisionTable[@id='_407EA8F3-1074-47EF-A764-4B2EFDD131E5']" +
+                                  "/dmn:output[@id='_82865AE0-AF73-4C6C-91C1-533C1521BF2C' and @typeRef='UNDEFINED']");
+
+        assertBKMFunctionCanBeOpened("BusinessKnowledgeModel-1");
     }
 
     @Test
@@ -2067,20 +2086,20 @@ public class DMNDesignerKogitoSeleniumIT {
                 .hasXPath("/dmn:definitions" +
                                   "/dmn:decision[@id='_97F03625-C4CB-4B07-8656-5807C18FA7EA']" +
                                   "/dmn:decisionTable[@id='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD']" +
-                                  "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C']");
+                                  "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C' and @typeRef='UNDEFINED']");
         XmlAssert.assertThat(actual)
                 .withNamespaceContext(NAMESPACES)
                 .doesNotHaveXPath("/dmn:definitions" +
                                           "/dmn:decision[@id='_97F03625-C4CB-4B07-8656-5807C18FA7EA']" +
                                           "/dmn:decisionTable[@id='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD']" +
-                                          "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C']" +
+                                          "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C' and @typeRef='UNDEFINED']" +
                                           "/dmn:outputValues");
         XmlAssert.assertThat(actual)
                 .withNamespaceContext(NAMESPACES)
                 .doesNotHaveXPath("/dmn:definitions" +
                                           "/dmn:decision[@id='_97F03625-C4CB-4B07-8656-5807C18FA7EA']" +
                                           "/dmn:decisionTable[@id='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD']" +
-                                          "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C']" +
+                                          "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C' and @typeRef='UNDEFINED']" +
                                           "/dmn:defaultOutputEntry");
     }
 
@@ -2103,13 +2122,13 @@ public class DMNDesignerKogitoSeleniumIT {
                 .hasXPath("/dmn:definitions" +
                                   "/dmn:decision[@id='_97F03625-C4CB-4B07-8656-5807C18FA7EA']" +
                                   "/dmn:decisionTable[@id='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD']" +
-                                  "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C']");
+                                  "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C' and @typeRef='UNDEFINED']");
         XmlAssert.assertThat(actual)
                 .withNamespaceContext(NAMESPACES)
                 .hasXPath("/dmn:definitions" +
                                   "/dmn:decision[@id='_97F03625-C4CB-4B07-8656-5807C18FA7EA']" +
                                   "/dmn:decisionTable[@id='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD']" +
-                                  "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C']" +
+                                  "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C' and @typeRef='UNDEFINED']" +
                                   "/dmn:outputValues" +
                                   "/dmn:text[text()='output']");
         XmlAssert.assertThat(actual)
@@ -2117,7 +2136,7 @@ public class DMNDesignerKogitoSeleniumIT {
                 .hasXPath("/dmn:definitions" +
                                   "/dmn:decision[@id='_97F03625-C4CB-4B07-8656-5807C18FA7EA']" +
                                   "/dmn:decisionTable[@id='_500030B0-6E85-4E9F-ADD9-CD6B6F400CBD']" +
-                                  "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C']" +
+                                  "/dmn:output[@id='_9831672B-26F3-4C2A-A4BF-A874A2BFDF9C' and @typeRef='UNDEFINED']" +
                                   "/dmn:defaultOutputEntry" +
                                   "/dmn:text[text()='default output']");
     }
@@ -2135,18 +2154,12 @@ public class DMNDesignerKogitoSeleniumIT {
                 .hasXPath("/dmn:definitions" +
                                   "/dmn:decision[@id='_DB91470A-68BD-432B-ADDD-6C8A6B134227']" +
                                   "/dmn:decisionTable[@id='_3020A76F-53F3-4523-B48D-D8BE634178AF']" +
-                                  "/dmn:output[@id='_76010FA4-0EB5-4B97-AECE-184EB03BCA50']");
+                                  "/dmn:output[@id='_76010FA4-0EB5-4B97-AECE-184EB03BCA50' and @typeRef='UNDEFINED']");
         XmlAssert.assertThat(actual)
                 .withNamespaceContext(NAMESPACES)
                 .hasXPath("/dmn:definitions" +
                                   "/dmn:decision[@id='_DB91470A-68BD-432B-ADDD-6C8A6B134227']" +
                                   "/dmn:variable[@id='_78742296-0BBA-45E4-88BE-29887F6BF819' and @typeRef='string']");
-        XmlAssert.assertThat(actual)
-                .withNamespaceContext(NAMESPACES)
-                .hasXPath("/dmn:definitions" +
-                                  "/dmn:decision[@id='_DB91470A-68BD-432B-ADDD-6C8A6B134227']" +
-                                  "/dmn:decisionTable[@id='_3020A76F-53F3-4523-B48D-D8BE634178AF']" +
-                                  "/dmn:output[@id='_76010FA4-0EB5-4B97-AECE-184EB03BCA50' and not(@typeRef)]");
     }
 
     @Test
@@ -2226,9 +2239,9 @@ public class DMNDesignerKogitoSeleniumIT {
 
     private void assertDiagramNodeIsPresentInDecisionNavigator(final String nodeName) {
         expandDecisionNavigatorDock();
-        final WebElement node = waitOperation()
+        waitOperation()
                 .withMessage(format(NOT_PRESENT_IN_NAVIGATOR, nodeName))
-                .until(element(NODE, nodeName));
+                .until(element(DecisionNavigatorXPathLocator.node(nodeName)));
         collapseDecisionNavigatorDock();
     }
 
@@ -2239,7 +2252,7 @@ public class DMNDesignerKogitoSeleniumIT {
         expandDecisionNavigatorDock();
         waitOperation()
                 .withMessage(format(NOT_PRESENT_IN_NAVIGATOR, decisionTable.getName()))
-                .until(element(DECISION_TABLE, decisionTable.getName()))
+                .until(element(DecisionNavigatorXPathLocator.decisionTable(decisionTable.getName())))
                 .click();
 
         expandPropertiesPanelDock();
@@ -2264,7 +2277,7 @@ public class DMNDesignerKogitoSeleniumIT {
         expandDecisionNavigatorDock();
         waitOperation()
                 .withMessage(format(NOT_PRESENT_IN_NAVIGATOR, list.getName()))
-                .until(element(LIST, list.getName()))
+                .until(element(DecisionNavigatorXPathLocator.list(list.getName())))
                 .click();
 
         final WebElement editor = getEditor();
@@ -2277,7 +2290,7 @@ public class DMNDesignerKogitoSeleniumIT {
 
         waitOperation()
                 .withMessage(format("Insert below entry in context menu not available"))
-                .until(element(MENU_ENTRY, "Insert below"))
+                .until(element(ContextMenuXPathLocator.insertBelow()))
                 .click();
 
         // move to the new cell and start edit mode
@@ -2285,6 +2298,23 @@ public class DMNDesignerKogitoSeleniumIT {
 
         // put in new value and finish edit mode
         getAutocompleteEditor().sendKeys(item, Keys.TAB);
+
+        collapseDecisionNavigatorDock();
+    }
+
+    private void assertBKMFunctionCanBeOpened(final String nodeName) {
+        expandDecisionNavigatorDock();
+        waitOperation()
+                .withMessage(format(NOT_PRESENT_IN_NAVIGATOR, nodeName))
+                .until(element(DecisionNavigatorXPathLocator.function(nodeName)))
+                .click();
+
+        assertThat(waitOperation()
+                           .withMessage("Expression editor can not be opened")
+                           .until(element(EditorXPathLocator.expressionEditorTitle()))
+                           .getText())
+                .as("Expression editor was not opened successfully")
+                .isEqualTo(nodeName);
 
         collapseDecisionNavigatorDock();
     }
@@ -2324,14 +2354,13 @@ public class DMNDesignerKogitoSeleniumIT {
 
     private void expandPropertiesPanelGroup(final String groupName) {
         waitOperation()
-                .until(element(".//div[@class='panel-title']/a/span[text()='%s']", groupName))
+                .until(element(PropertiesPanelXPathLocator.group(groupName)))
                 .click();
     }
 
     private void fillInProperty(final String propertyName, final String value) {
         waitOperation()
-                .until(element(".//label/span[text()='%s']/../../div[@data-field='fieldContainer']/input",
-                               propertyName))
+                .until(element(PropertiesPanelXPathLocator.property(propertyName)))
                 .sendKeys(value);
     }
 
@@ -2362,8 +2391,8 @@ public class DMNDesignerKogitoSeleniumIT {
         return editor;
     }
 
-    private ExpectedCondition<WebElement> element(final String xpathLocator, final String... parameters) {
-        return visibilityOfElementLocated(xpath(String.format(xpathLocator, parameters)));
+    private ExpectedCondition<WebElement> element(final XPathLocator xpathLocator) {
+        return visibilityOfElementLocated(xpath(xpathLocator.getXPathLocator()));
     }
 
     private File initScreenshotDirectory() {
