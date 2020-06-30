@@ -125,7 +125,7 @@ describe("EditorEnvelopeController", () => {
     expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined }]);
   });
 
-  test.skip("after received content", async () => {
+  test("after received content", async () => {
     const render = await startController();
 
     await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });

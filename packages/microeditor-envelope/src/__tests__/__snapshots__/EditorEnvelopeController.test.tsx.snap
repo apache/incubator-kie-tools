@@ -107,13 +107,6 @@ exports[`EditorEnvelopeController after received content 1`] = `
       "targetOrigin": "test-target-origin",
     }
   }
-  stateControlService={
-    Object {
-      "redo": [MockFunction],
-      "registry": [MockFunction],
-      "undo": [MockFunction],
-    }
-  }
 >
   <Component
     context={
