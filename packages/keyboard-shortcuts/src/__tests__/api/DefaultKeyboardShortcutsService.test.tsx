@@ -123,7 +123,7 @@ describe("DefaultKeyboardShortcutsService", () => {
   });
 });
 
-function fire(type: "keydown" | "keyup", opts: any) {
+function fire(type: "keydown" | "keyup", opts: KeyboardEventInit) {
   fireEvent(window, new KeyboardEvent(type, opts));
 }
 
