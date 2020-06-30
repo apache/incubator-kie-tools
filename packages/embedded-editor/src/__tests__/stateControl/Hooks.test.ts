@@ -23,7 +23,7 @@ import { act } from "react-test-renderer";
 describe("useEditorDirtyState", () => {
   let embeddedEditorRef: EmbeddedEditorRef;
   let stateControl: StateControl;
-  let editorRef;
+  let editorRef: React.MutableRefObject<EmbeddedEditorRef>;
 
   beforeEach(() => {
     stateControl = new StateControl();

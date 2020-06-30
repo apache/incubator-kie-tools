@@ -183,7 +183,7 @@ export class GithubService {
 
     return this.octokit.gists
       .create(gistContent)
-      .then(response => response.data.files[args.filename].raw_url)
+      .then(response => (response.data as any).files[args.filename].raw_url)
       .catch(e => Promise.reject("Not able to create gist on Github."));
   }
 
@@ -192,7 +192,7 @@ export class GithubService {
       .get({ gist_id: gistId })
       .then(response => {
         const filename = Object.keys(response.data.files)[0];
-        return response.data.files[filename].raw_url;
+        return (response.data as any).files[filename].raw_url;
       })
       .catch(e => Promise.reject("Not able to get gist from Github."));
   }

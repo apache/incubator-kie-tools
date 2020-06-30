@@ -34,7 +34,7 @@ export function extractEditorTypeFromUrl(): EditorType | undefined {
     ?.split("/")
     ?.pop()
     ?.toUpperCase() as string;
-  return typeFromUrl in EditorType ? EditorType[typeFromUrl] : undefined;
+  return typeFromUrl in EditorType ? (EditorType as any)[typeFromUrl] : undefined;
 }
 
 export function removeFileExtension(fileName: string) {

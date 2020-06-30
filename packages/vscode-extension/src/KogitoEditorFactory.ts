@@ -94,14 +94,7 @@ export class KogitoEditorFactory {
   }
 
   private isAssetInWorkspace(path: string): boolean {
-    const workspaceFolders = vscode.workspace.workspaceFolders?.map(folder => folder.uri.path);
-
-    for (const key in workspaceFolders) {
-      if (path.startsWith(workspaceFolders[key])) {
-        return true;
-      }
-    }
-    return false;
+    return vscode.workspace.workspaceFolders?.map(f => f.uri.path).find(p => path.startsWith(p)) !== undefined;
   }
 
   private getParentFolder(assetPath: string) {

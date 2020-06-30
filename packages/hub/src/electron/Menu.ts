@@ -23,7 +23,7 @@ export class Menu {
   private readonly window: BrowserWindow;
   private readonly userData: HubUserData;
 
-  private readonly macOSAppMenu;
+  private readonly macOSAppMenu: any;
 
   private readonly devMenu = {
     label: "Development Menu",
