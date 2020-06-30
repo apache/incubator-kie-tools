@@ -34,10 +34,6 @@ export class DummyEditor extends AppFormer.Editor {
     return this.ref!.getContent();
   }
 
-  public isDirty(): boolean {
-    return false;
-  }
-
   public setContent(content: string) {
     return this.ref!.setContent(content);
   }

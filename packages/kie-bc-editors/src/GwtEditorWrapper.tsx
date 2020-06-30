@@ -64,10 +64,6 @@ export class GwtEditorWrapper extends AppFormer.Editor {
     return this.gwtEditor.getContent().then(content => this.xmlFormatter.format(content));
   }
 
-  public isDirty() {
-    return this.gwtEditor.isDirty();
-  }
-
   public setContent(path: string, content: string) {
       setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
       return this.gwtEditor.setContent(path, content.trim()).catch(() => {
