@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { KogitoCommand } from "./KogitoCommand";
-import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
+import { GwtStateControlCommand } from "./GwtStateControlCommand";
+import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
 import { KogitoEdit } from "@kogito-tooling/core-api";
 
 /**
- * PUBLIC ENVELOPE API
+ * PUBLIC GWT EDITORS API
  * Represents a command registry API to be used on command-based editors.
  */
-export interface KogitoCommandRegistry<T> {
+export interface GwtCommandRegistry<T> {
   register(id: string, command: T): void;
   peek(): T | null;
   pop(): T | null;
@@ -32,18 +32,18 @@ export interface KogitoCommandRegistry<T> {
   setMaxSize(size: number): void;
 }
 
-export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T> {
+export class GwtCommandRegistryImpl<T> implements GwtCommandRegistry<T> {
   private readonly messageBus: EnvelopeBusInnerMessageHandler;
 
   private maxStackSize = 200;
-  private commands: Array<KogitoCommand<T>> = [];
+  private commands: Array<GwtStateControlCommand<T>> = [];
   private undoneCommands: string[] = [];
 
   constructor(messageBus: EnvelopeBusInnerMessageHandler) {
     this.messageBus = messageBus;
   }
 
-  private onNewCommand(newCommand: KogitoCommand<T>) {
+  private onNewCommand(newCommand: GwtStateControlCommand<T>) {
     if (!this.undoneCommands.includes(newCommand.getId())) {
       // Only notifying if the command is a new command. Also clearing the removedCommands registry, since the undone
       // commands won't be redone
@@ -61,7 +61,7 @@ export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T>
         this.commands.shift();
       }
 
-      const kogitoCommand = new KogitoCommand(id, command);
+      const kogitoCommand = new GwtStateControlCommand(id, command);
 
       this.commands.push(kogitoCommand);
       this.onNewCommand(kogitoCommand);

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import * as AppFormer from "@kogito-tooling/core-api";
+import * as Core from "@kogito-tooling/core-api";
 import * as React from "react";
 
-export class DummyEditor extends AppFormer.Editor {
+export class DummyEditor extends Core.Editor {
   private ref: DummyEditorComponent;
 
   constructor() {
@@ -32,6 +32,14 @@ export class DummyEditor extends AppFormer.Editor {
 
   public getContent() {
     return this.ref!.getContent();
+  }
+
+  public undo() {
+    /**/
+  }
+
+  public redo() {
+    /**/
   }
 
   public setContent(path: string, content: string) {

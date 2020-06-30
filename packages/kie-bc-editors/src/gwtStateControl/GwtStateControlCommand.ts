@@ -19,7 +19,7 @@
  * the command on the registry and a executable ({@template T}) that represents the real executable command pushed to
  * the registry.
  */
-export class KogitoCommand<T> {
+export class GwtStateControlCommand<T> {
 
   private readonly id: string;
   private readonly executable: T;

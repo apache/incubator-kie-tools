@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DefaultKogitoCommandRegistry } from "../../../api/stateControl";
+import { GwtCommandRegistryImpl } from "../../gwtStateControl";
 
 class Command {
   private id: string;
@@ -29,12 +29,12 @@ class Command {
 }
 
 const innerMessageHandler = jest.fn(() => ({
-  notify_newEdit: jest.fn(),
+  notify_newEdit: jest.fn()
 }));
 
 let messageBus: any;
 
-let registry:DefaultKogitoCommandRegistry<Command>;
+let registry: GwtCommandRegistryImpl<Command>;
 
 const COMMAND1 = new Command("1");
 const COMMAND2 = new Command("2");
@@ -42,26 +42,24 @@ const COMMAND3 = new Command("3");
 const COMMAND4 = new Command("4");
 
 describe("DefaultKogitoCommandRegistry", () => {
-
   beforeEach(() => {
     messageBus = new innerMessageHandler();
 
-    registry = new DefaultKogitoCommandRegistry<Command>(messageBus);
+    registry = new GwtCommandRegistryImpl<Command>(messageBus);
   });
 
   test("test basic add/remove elements", () => {
-
     registry.register(COMMAND1.getId, COMMAND1);
-    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "1"}));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({ id: "1" }));
 
     registry.register(COMMAND2.getId, COMMAND2);
-    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "2"}));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({ id: "2" }));
 
     registry.register(COMMAND3.getId, COMMAND3);
-    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "3"}));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({ id: "3" }));
 
     registry.register(COMMAND4.getId, COMMAND4);
-    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "4"}));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({ id: "4" }));
 
     expect(messageBus.notify_newEdit).toBeCalledTimes(4);
 
@@ -96,15 +94,14 @@ describe("DefaultKogitoCommandRegistry", () => {
   });
 
   test("test adding reaching max elements", () => {
-
     registry.setMaxSize(2);
 
     registry.register(COMMAND1.getId, COMMAND1);
 
-    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "1"}));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({ id: "1" }));
 
     registry.register(COMMAND2.getId, COMMAND2);
-    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "2"}));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({ id: "2" }));
 
     expect(messageBus.notify_newEdit).toBeCalledTimes(2);
 
@@ -129,12 +126,11 @@ describe("DefaultKogitoCommandRegistry", () => {
   });
 
   test("test basic adding elements after remove", () => {
-
     registry.register(COMMAND1.getId, COMMAND1);
-    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "1"}));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({ id: "1" }));
 
     registry.register(COMMAND2.getId, COMMAND2);
-    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "2"}));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({ id: "2" }));
 
     expect(messageBus.notify_newEdit).toBeCalledTimes(2);
 
@@ -170,7 +166,7 @@ describe("DefaultKogitoCommandRegistry", () => {
     expect(registry.isEmpty()).toBeFalsy();
 
     registry.register(COMMAND3.getId, COMMAND3);
-    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({id: "3"}));
+    expect(messageBus.notify_newEdit).toBeCalledWith(expect.objectContaining({ id: "3" }));
     expect(messageBus.notify_newEdit).toBeCalledTimes(3);
     expect(registry.getCommands()).toHaveLength(3);
     expect(registry.getCommands()).toContain(COMMAND1);
@@ -178,4 +174,3 @@ describe("DefaultKogitoCommandRegistry", () => {
     expect(registry.getCommands()).toContain(COMMAND3);
   });
 });
-
