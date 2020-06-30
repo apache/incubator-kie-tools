@@ -35,11 +35,11 @@ export class DummyEditor extends Core.Editor {
   }
 
   public undo() {
-    /**/
+    return Promise.resolve();
   }
 
   public redo() {
-    /**/
+    return Promise.resolve();
   }
 
   public setContent(content: string) {

@@ -23,14 +23,6 @@ import { DummyEditor } from "./DummyEditor";
 import { ResourceContentEditorCoordinator } from "../api/resourceContent";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 
-const StateControlMock = jest.fn(() => ({
-  undo: jest.fn(),
-  redo: jest.fn(),
-  registry: jest.fn()
-}));
-
-let stateControl: any;
-
 let loadingScreenContainer: HTMLElement;
 let envelopeContainer: HTMLElement;
 beforeEach(() => {
@@ -56,11 +48,12 @@ const languageData = {
 let sentMessages: Array<EnvelopeBusMessage<any>>;
 let controller: EditorEnvelopeController;
 let mockComponent: ReturnType<typeof mount>;
+let dummyEditor: DummyEditor;
 
 beforeEach(() => {
   sentMessages = [];
 
-  stateControl = new StateControlMock();
+  dummyEditor = new DummyEditor();
 
   controller = new EditorEnvelopeController(
     {
@@ -70,7 +63,7 @@ beforeEach(() => {
     },
     {
       createEditor(_: LanguageData) {
-        return Promise.resolve(new DummyEditor());
+        return Promise.resolve(dummyEditor);
       }
     },
     new SpecialDomElements(),
@@ -145,13 +138,19 @@ describe("EditorEnvelopeController", () => {
     expect(render.update()).toMatchSnapshot();
   });
 
-  test.skip("test notify undo/redo", async () => {
-    const render = await startController();
+  test("test notify undo/redo", async () => {
+    jest.spyOn(dummyEditor, "undo");
+    jest.spyOn(dummyEditor, "redo");
+
+    await startController();
+
+    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });
+    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
 
     await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO, data: "commandID" });
-    expect(stateControl.undo).toBeCalledTimes(1);
+    expect(dummyEditor.undo).toBeCalledTimes(1);
 
     await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_REDO, data: "commandID" });
-    expect(stateControl.redo).toBeCalledTimes(1);
+    expect(dummyEditor.redo).toBeCalledTimes(1);
   });
 });

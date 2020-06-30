@@ -64,12 +64,12 @@ export class GwtEditorWrapper extends Core.Editor {
     return <></>;
   }
 
-  public undo() {
-    this.stateControlService.undo();
+  public async undo() {
+    return this.stateControlService.undo();
   }
 
-  public redo() {
-    this.stateControlService.redo();
+  public async redo() {
+    return this.stateControlService.redo();
   }
 
   public getContent() {
