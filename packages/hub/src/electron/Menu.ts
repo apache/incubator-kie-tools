@@ -15,13 +15,11 @@
  */
 
 import { app, BrowserWindow, Menu as ElectronMenu } from "electron";
-import { HubUserData } from "./HubUserData";
 import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 import MenuItem = Electron.MenuItem;
 
 export class Menu {
   private readonly window: BrowserWindow;
-  private readonly userData: HubUserData;
 
   private readonly macOSAppMenu: any;
 
@@ -33,20 +31,12 @@ export class Menu {
         click: () => {
           this.window.webContents.openDevTools();
         }
-      },
-      {
-        label: "Clear User Data",
-        click: () => {
-          this.userData.clearAll();
-        }
       }
     ]
   };
 
-  constructor(window: BrowserWindow, userData: HubUserData) {
+  constructor(window: BrowserWindow) {
     this.window = window;
-    this.userData = userData;
-
     this.macOSAppMenu = [
       {
         label: "Business Modeler Hub Preview",

@@ -39,18 +39,12 @@ const commonConfig = {
       { from: "./static/images", to: "./images" },
       { from: "./static/index.html", to: "./index.html" },
       {
-        from:
-          "../vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_" +
-          packageJson.version +
-          ".vsix",
-        to: "./lib/vscode_extension.vsix"
-      },
-      {
         from: "../desktop/out/Business Modeler Preview-" + os.platform() + "-x64",
         to: "./lib/Business Modeler Preview-" + os.platform() + "-x64"
       },
       {
-        from: "./build", to: "./build"
+        from: "./build",
+        to: "./build"
       }
     ])
   ],

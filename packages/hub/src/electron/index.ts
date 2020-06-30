@@ -17,15 +17,12 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import * as path from "path";
 import { Menu } from "./Menu";
-import { HubUserData } from "./HubUserData";
 import * as os from "os";
 import * as child from "child_process";
 import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
 import { OperatingSystem } from "@kogito-tooling/core-api";
 import IpcMainEvent = Electron.IpcMainEvent;
-
-const vscode_EXTENSION_PATH = getApplicationPath("lib/vscode_extension.vsix");
 
 app.on("ready", () => {
   createWindow();
@@ -43,10 +40,14 @@ app.on("window-all-closed", () => {
   }
 });
 
+setInterval(() => {
+  ipcMain.emit("vscode__list_extensions", {});
+}, 2000);
+
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1000,
-    height: 760,
+    height: 780,
     show: false,
     icon: path.join(__dirname, "build/icon.png"),
     resizable: false,
@@ -59,12 +60,11 @@ function createWindow() {
   mainWindow.loadFile(path.join(__dirname, "index.html"));
   mainWindow.once("ready-to-show", () => mainWindow.show());
 
-  const hubUserData = new HubUserData();
-  const menu = new Menu(mainWindow, hubUserData);
+  const menu = new Menu(mainWindow);
   menu.setup();
 
   function checkIfVsCodeIsOpen(): Promise<CommandExecutionResult & { isOpen: boolean }> {
-    const vsCodeLocation = hubUserData.getVsCodeLocation()!;
+    const vsCodeLocation = getVsCodeLocation()!;
     const vscodeLocationForGrep = vsCodeLocation.replace(vsCodeLocation[0], `[${vsCodeLocation[0]}]`);
     return executeCommand({
       macOS: `ps aux | grep '${vscodeLocationForGrep}' | xargs echo`,
@@ -77,9 +77,9 @@ function createWindow() {
 
   function launchVsCode(): Promise<CommandExecutionResult> {
     return executeCommand({
-      macOS: `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code'`,
-      linux: `${hubUserData.getVsCodeLocation()}/bin/code`,
-      windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code`
+      macOS: `'${getVsCodeLocation()}/Contents/Resources/app/bin/code'`,
+      linux: `${getVsCodeLocation()}/bin/code`,
+      windows: `"${getVsCodeLocation()}\\bin\\code`
     });
   }
 
@@ -91,60 +91,31 @@ function createWindow() {
   ipcMain.on("vscode__launch", async (e: IpcMainEvent) => {
     if (!(await checkIfVsCodeIsOpen()).isOpen) {
       mainWindow.webContents.send("vscode__launch_complete", await launchVsCode());
-      return;
     }
-
-    mainWindow.webContents.send("vscode__already_open", {});
-  });
-
-  ipcMain.on("vscode__launch_after_told_to_close", async (e: IpcMainEvent) => {
-    if (!(await checkIfVsCodeIsOpen()).isOpen) {
-      mainWindow.webContents.send("vscode__launch_complete", await launchVsCode());
-      return;
-    }
-
-    mainWindow.webContents.send("vscode__still_open_after_told_to_close", {});
   });
 
   ipcMain.on("vscode__uninstall_extension", (e: IpcMainEvent) => {
     executeCommand({
-      macOS: `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code' --uninstall-extension ${
+      macOS: `'${getVsCodeLocation()}/Contents/Resources/app/bin/code' --uninstall-extension ${
         Constants.VSCODE_EXTENSION_PACKAGE_NAME
       }`,
-      linux: `'${hubUserData.getVsCodeLocation()}/bin/code' --uninstall-extension ${
-        Constants.VSCODE_EXTENSION_PACKAGE_NAME
-      }`,
-      windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code" --uninstall-extension ${
-        Constants.VSCODE_EXTENSION_PACKAGE_NAME
-      }`
+      linux: `'${getVsCodeLocation()}/bin/code' --uninstall-extension ${Constants.VSCODE_EXTENSION_PACKAGE_NAME}`,
+      windows: `"${getVsCodeLocation()}\\bin\\code" --uninstall-extension ${Constants.VSCODE_EXTENSION_PACKAGE_NAME}`
     }).then(result => {
       mainWindow.webContents.send("vscode__uninstall_extension_complete", { ...result });
-      hubUserData.deleteVsCodeLocation();
-    });
-  });
-
-  ipcMain.on("vscode__install_extension", (e: IpcMainEvent, data: { location: string }) => {
-    hubUserData.setVsCodeLocation(data.location);
-    executeCommand({
-      macOS: `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code' --install-extension "${vscode_EXTENSION_PATH}"`,
-      linux: `'${hubUserData.getVsCodeLocation()}/bin/code' --install-extension "${vscode_EXTENSION_PATH}"`,
-      windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code" --install-extension "${vscode_EXTENSION_PATH}"`
-    }).then(result => {
-      mainWindow.webContents.send("vscode__install_extension_complete", { ...result });
     });
   });
 
   ipcMain.on("vscode__list_extensions", (e: IpcMainEvent) => {
-    console.info("listing extensions");
-    if (!hubUserData.getVsCodeLocation()) {
+    if (!getVsCodeLocation()) {
       mainWindow.webContents.send("vscode__list_extensions_complete", { extensions: [] });
       return;
     }
 
     executeCommand({
-      macOS: `'${hubUserData.getVsCodeLocation()}/Contents/Resources/app/bin/code' --list-extensions`,
-      linux: `'${hubUserData.getVsCodeLocation()}/bin/code' --list-extensions`,
-      windows: `"${hubUserData.getVsCodeLocation()}\\bin\\code" --list-extensions`
+      macOS: `'${getVsCodeLocation()}/Contents/Resources/app/bin/code' --list-extensions`,
+      linux: `'${getVsCodeLocation()}/bin/code' --list-extensions`,
+      windows: `"${getVsCodeLocation()}\\bin\\code" --list-extensions`
     })
       .then(result => {
         if (!result.success) {
@@ -172,15 +143,20 @@ function createWindow() {
       mainWindow.webContents.send("desktop__launch_complete", result);
     });
   });
+}
 
-  //
-  //
-  //
-  //
-  // GENERAL
-  ipcMain.on("business_modeler_hub__init", (e: IpcMainEvent) => {
-    mainWindow.webContents.send("business_modeler_hub__init_complete", { username: os.userInfo().username });
-  });
+function getVsCodeLocation() {
+  switch (process.platform) {
+    case "darwin":
+      return "/Applications/Visual Studio Code.app/";
+      break;
+    case "win32":
+      return `C:\\Users\\${os.userInfo().username}\\AppData\\Local\\Programs\\Microsoft VS Code`;
+      break;
+    default:
+      return "/usr/share/code";
+      break;
+  }
 }
 
 function getApplicationPath(relativePath: string) {

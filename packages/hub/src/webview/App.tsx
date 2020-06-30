@@ -27,7 +27,6 @@ import {
   AlertProps,
   Brand,
   Button,
-  ButtonVariant,
   Card,
   CardBody,
   CardFooter,
@@ -36,7 +35,6 @@ import {
   Dropdown,
   DropdownItem,
   Gallery,
-  InputGroup,
   KebabToggle,
   Modal,
   Page,
@@ -44,7 +42,6 @@ import {
   PageSection,
   Text,
   TextContent,
-  TextInput,
   TextList,
   TextListItem,
   TextListVariants,
@@ -52,15 +49,13 @@ import {
   Title
 } from "@patternfly/react-core";
 import { Constants } from "../common/Constants";
-import { SearchIcon } from "@patternfly/react-icons";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
-import { getOperatingSystem, OperatingSystem } from "@kogito-tooling/core-api";
+import { OperatingSystem } from "@kogito-tooling/core-api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 
 enum ExtensionStatus {
   UNKNOWN,
   NOT_INSTALLED,
-  INSTALLING,
   INSTALLED,
   UNINSTALLING
 }
@@ -106,70 +101,26 @@ export function App() {
   //
   //
   // VSCODE
-  const [vscode_installModalOpen, setVscode_installModalOpen] = useState(false);
-  const [vscode_alreadyOpenModalOpen, setVscode_alreadyOpenModalOpen] = useState(false);
-  const [vscode_stillOpenAfterRelaunch, setVscode_stillOpenAfterRelaunch] = useState(false);
   const [vscode_kebabOpen, setVscode_kebabOpen] = useState(false);
-  const [vscode_location, setVscode_location] = useState("");
   const [vscode_status, setVscode_status] = useState(ExtensionStatus.UNKNOWN);
 
   const vscode_launch = useCallback(() => {
     electron.ipcRenderer.send("vscode__launch", {});
   }, []);
 
-  const vscode_launchAfterToldToClose = useCallback(() => {
-    setVscode_stillOpenAfterRelaunch(false);
-    electron.ipcRenderer.send("vscode__launch_after_told_to_close", {});
-  }, []);
-
-  const vscode_toggleInstallModal = useCallback(() => {
-    setVscode_installModalOpen(!vscode_installModalOpen);
-  }, [vscode_installModalOpen]);
-
-  const vscode_toggleAlreadyOpenModal = useCallback(() => {
-    setVscode_alreadyOpenModalOpen(!vscode_alreadyOpenModalOpen);
-  }, [vscode_alreadyOpenModalOpen]);
-
   const vscode_toggleKebab = useCallback(() => {
     setVscode_kebabOpen(!vscode_kebabOpen);
   }, [vscode_kebabOpen]);
 
-  const vscode_requestInstall = useCallback(() => {
-    electron.ipcRenderer.send("vscode__install_extension", { location: vscode_location });
-    setVscode_installModalOpen(false);
-    setVscode_status(ExtensionStatus.INSTALLING);
-  }, [vscode_location]);
+  const vscode_install = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    electron.shell.openExternal(`vscode:extension/${Constants.VSCODE_EXTENSION_PACKAGE_NAME}`);
+  }, []);
 
   const vscode_requestUninstall = useCallback(() => {
     electron.ipcRenderer.send("vscode__uninstall_extension", {});
-    setVscode_installModalOpen(false);
     setVscode_status(ExtensionStatus.UNINSTALLING);
-  }, [vscode_location]);
-
-  useElectronIpcResponse(
-    "vscode__already_open",
-    () => {
-      setVscode_alreadyOpenModalOpen(true);
-    },
-    []
-  );
-
-  useElectronIpcResponse(
-    "vscode__still_open_after_told_to_close",
-    () => {
-      setVscode_stillOpenAfterRelaunch(true);
-    },
-    []
-  );
-
-  useElectronIpcResponse(
-    "vscode__launch_complete",
-    () => {
-      setVscode_stillOpenAfterRelaunch(false);
-      setVscode_alreadyOpenModalOpen(false);
-    },
-    []
-  );
+  }, []);
 
   useElectronIpcResponse(
     "vscode__list_extensions_complete",
@@ -184,48 +135,19 @@ export function App() {
   );
 
   useElectronIpcResponse(
-    "vscode__install_extension_complete",
-    (data: CommandExecutionResult) => {
-      if (data.success) {
-        setVscode_status(ExtensionStatus.INSTALLED);
-        pushNewAlert({ variant: "success", title: "VS Code extension successfully installed." });
-      } else {
-        setVscode_status(ExtensionStatus.NOT_INSTALLED);
-        pushNewAlert({ variant: "danger", title: "Error while installing VS Code extension." });
-        console.info(data.output);
-      }
-    },
-    [pushNewAlert]
-  );
-
-  useElectronIpcResponse(
     "vscode__uninstall_extension_complete",
     (data: CommandExecutionResult) => {
       if (data.success) {
-        setVscode_status(ExtensionStatus.NOT_INSTALLED);
         pushNewAlert({ variant: "info", title: "VS Code extension successfully uninstalled." });
       } else {
-        setVscode_status(ExtensionStatus.INSTALLED);
         pushNewAlert({ variant: "danger", title: "Error while uninstalling VS Code extension." });
         console.info(data.output);
       }
+
+      electron.ipcRenderer.send("vscode__list_extensions", {});
     },
     [pushNewAlert]
   );
-
-  const vscode_chooseLocation = useCallback(() => {
-    return electron.remote.dialog.showOpenDialog({ properties: ["openDirectory", "openFile"] }).then(res => {
-      if (res.canceled) {
-        return;
-      }
-
-      setVscode_location(res.filePaths[0]);
-    });
-  }, []);
-
-  const vscode_locationChange = useCallback((value: string) => {
-    setVscode_location(value);
-  }, []);
 
   const vscode_message = useMemo(() => {
     switch (vscode_status) {
@@ -233,8 +155,6 @@ export function App() {
         return "Installed";
       case ExtensionStatus.UNINSTALLING:
         return "Uninstalling..";
-      case ExtensionStatus.INSTALLING:
-        return "Installing..";
       case ExtensionStatus.NOT_INSTALLED:
         return "Available";
       case ExtensionStatus.UNKNOWN:
@@ -273,28 +193,10 @@ export function App() {
   //
   // CHROME
   const [chrome_modalOpen, setChrome_modalOpen] = useState(false);
-  const [chrome_status, setChrome_status] = useState(ExtensionStatus.UNKNOWN);
 
   const chrome_toggleModal = useCallback(() => {
     setChrome_modalOpen(!chrome_modalOpen);
   }, [chrome_modalOpen]);
-
-  const chrome_message = useMemo(() => {
-    switch (chrome_status) {
-      case ExtensionStatus.INSTALLED:
-        return;
-      case ExtensionStatus.UNINSTALLING:
-        return "";
-      case ExtensionStatus.INSTALLING:
-        return "";
-      case ExtensionStatus.NOT_INSTALLED:
-        return "";
-      case ExtensionStatus.UNKNOWN:
-        return "";
-      default:
-        return "";
-    }
-  }, [chrome_status]);
 
   const chrome_openDownloadGoogleChrome = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -319,13 +221,6 @@ export function App() {
     electron.shell.openExternal(Constants.ONLINE_EDITOR_URL);
   }, []);
 
-  //
-  //
-  //GENERAL
-  useEffect(() => {
-    electron.ipcRenderer.send("business_modeler_hub__init", {});
-  }, []);
-
   useElectronIpcResponse(
     "desktop__launch_complete",
     (data: CommandExecutionResult) => {
@@ -343,25 +238,6 @@ export function App() {
             </>
           )
         });
-      }
-    },
-    []
-  );
-
-  useElectronIpcResponse(
-    "business_modeler_hub__init_complete",
-    (data: { username: string }) => {
-      switch (getOperatingSystem()) {
-        case OperatingSystem.MACOS:
-          setVscode_location("/Applications/Visual Studio Code.app/");
-          break;
-        case OperatingSystem.WINDOWS:
-          setVscode_location(`C:\\Users\\${data.username}\\AppData\\Local\\Programs\\Microsoft VS Code`);
-          break;
-        case OperatingSystem.LINUX:
-        default:
-          setVscode_location("/usr/share/code");
-          break;
       }
     },
     []
@@ -413,117 +289,48 @@ export function App() {
               />
             </CardHead>
             <CardBody>
-              <Title size={"xl"}>Kogito VS Code extension</Title>
-              <Title size={"xl"}>&nbsp;</Title>
+              <Title size={"xl"}>Kogito Bundle VS Code extension</Title>
               <br />
               <TextContent>
-                <Text>Launches VS Code ready to use with Kogito</Text>
+                <Text>Launches VS Code ready to use with Kogito BPMN, DMN and Test Scenario Editors</Text>
               </TextContent>
             </CardBody>
             <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
-              {(vscode_status === ExtensionStatus.NOT_INSTALLED || vscode_status === ExtensionStatus.INSTALLING) && (
-                <Button
-                  variant={"secondary"}
-                  isDisabled={vscode_status === ExtensionStatus.INSTALLING}
-                  onClick={vscode_toggleInstallModal}
-                >
+              {vscode_status === ExtensionStatus.NOT_INSTALLED && (
+                <Button variant={"secondary"} onClick={vscode_install}>
                   Install
                 </Button>
               )}
-              {(vscode_status === ExtensionStatus.INSTALLED || vscode_status === ExtensionStatus.UNINSTALLING) && (
-                <Button
-                  variant={"secondary"}
-                  isDisabled={vscode_status === ExtensionStatus.UNINSTALLING}
-                  onClick={vscode_launch}
-                >
+              {vscode_status === ExtensionStatus.INSTALLED && (
+                <Button variant={"secondary"} onClick={vscode_launch}>
                   Launch
                 </Button>
               )}
               <Text style={{ display: "flex", alignItems: "center" }}>{vscode_message}</Text>
             </CardFooter>
           </Card>
-          <Modal
-            isSmall={true}
-            title="Install VS Code extension"
-            isOpen={vscode_installModalOpen}
-            onClose={vscode_toggleInstallModal}
-            actions={[
-              <Button
-                key="confirm"
-                variant="primary"
-                onClick={vscode_requestInstall}
-                isDisabled={vscode_location === ""}
-              >
-                Install
-              </Button>,
-              <Button key="cancel" variant="link" onClick={vscode_toggleInstallModal}>
-                Cancel
-              </Button>
-            ]}
-          >
-            <Text>Choose VS Code to install extension</Text>
-            <InputGroup>
-              <TextInput
-                type="search"
-                aria-label="search input example"
-                value={vscode_location}
-                onChange={vscode_locationChange}
-              />
-              <Button
-                onClick={vscode_chooseLocation}
-                variant={ButtonVariant.plain}
-                aria-label="search button for search input"
-              >
-                <SearchIcon />
-              </Button>
-            </InputGroup>
-          </Modal>
-          <Modal
-            isSmall={true}
-            title={"Oops!"}
-            isOpen={vscode_alreadyOpenModalOpen}
-            onClose={vscode_toggleAlreadyOpenModal}
-            actions={[
-              <Button key="confirm" variant="primary" onClick={vscode_launchAfterToldToClose}>
-                Launch
-              </Button>,
-              <Button key="cancel" variant="link" onClick={vscode_toggleAlreadyOpenModal}>
-                Cancel
-              </Button>
-            ]}
-          >
-            {vscode_stillOpenAfterRelaunch && (
-              <>
-                <Alert variant="danger" isInline={true} title="Please close VS Code" />
-                <br />
-              </>
-            )}
-            <Text>Looks like VS Code is already open and was not started by Business Modeler Hub Preview.</Text>
-            <br />
-            <Text>Please close VS Code and retry.</Text>
-          </Modal>
           {/*CHROME*/}
           <Card className={"kogito--desktop__files-card"}>
             <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
             </CardHead>
             <CardBody>
-              <Title size={"xl"}>KIE GitHub Chrome Extension</Title>
+              <Title size={"xl"}>BPMN, DMN and Test Scenario Editors for GitHub</Title>
               <br />
               <TextContent>
-                <Text>Install the KIE GitHub Chrome Extension on Chrome browser</Text>
+                <Text>Install the BPMN, DMN and Test Scenario Editors for GitHub on Chrome browser</Text>
               </TextContent>
             </CardBody>
             <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
               <Button variant={"secondary"} onClick={chrome_toggleModal}>
                 Install
               </Button>
-              <Text style={{ display: "flex", alignItems: "center" }}>{chrome_message}</Text>
+              <Text style={{ display: "flex", alignItems: "center" }} />
             </CardFooter>
           </Card>
           <Modal
             width={"70%"}
-            title="Install KIE GitHub Chrome Extension on Chrome browser"
+            title="Install BPMN, DMN and Test Scenario Editor for GitHub on Chrome browser"
             isOpen={chrome_modalOpen}
             onClose={chrome_toggleModal}
             actions={[
@@ -534,8 +341,8 @@ export function App() {
           >
             <TextContent>
               <Text component={TextVariants.p}>
-                To be able to install and use the KIE GitHub Chrome Extension it's necessary to have the Chrome browser
-                installed on your computer.
+                To be able to install and use the BPMN, DMN and Test Scenario Editor for GitHub it's necessary to have
+                the Chrome browser installed on your computer.
               </Text>
               <Text component={TextVariants.p}>
                 In case you don't have it, you can download it{" "}
@@ -549,7 +356,7 @@ export function App() {
               </Text>
               <TextList component={TextListVariants.ol}>
                 <TextListItem>
-                  Open the KIE GitHub Chrome Extension on the{" "}
+                  Open the BPMN, DMN and Test Scenario Editor for GitHub on the{" "}
                   <Button variant={"link"} isInline={true} onClick={chrome_openKogitoToolingReleasesPage}>
                     Chrome Store
                   </Button>{" "}
