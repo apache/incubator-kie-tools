@@ -60,7 +60,7 @@ export class DesktopUserData {
   public getLastOpenedFiles(): Promise<RecentOpenedFile[]> {
     const updatedData: string[] = this.userData
       .get(LAST_OPENED_FILES_FIELD_NAME)
-      .filter(file => Files.exists(FS.newFile(file)));
+      .filter((file: string) => Files.exists(FS.newFile(file)));
     this.userData.set(LAST_OPENED_FILES_FIELD_NAME, updatedData);
 
     const validThumbnails = updatedData.map(file =>

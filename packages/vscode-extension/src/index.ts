@@ -42,7 +42,7 @@ export function startExtension(args: {
   const editorFactory = new KogitoEditorFactory(args.context, args.router, args.webviewLocation, editorStore, jobRegistry);
   const webviewProvider = new KogitoWebviewProvider(args.viewType, editorFactory, editorStore, args.context);
 
-  args.context.globalState.update("vscodePathResolver", (absolutePath) => editorStore.getActive()?.asWebviewUri(absolutePath));
+  args.context.globalState.update("vscodePathResolver", (absolutePath: vscode.Uri) => editorStore.getActive()?.asWebviewUri(absolutePath));
   args.context.subscriptions.push(webviewProvider.register());
   args.context.subscriptions.push(
     vscode.commands.registerCommand(args.getPreviewCommandId, () => {

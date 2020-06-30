@@ -76,7 +76,7 @@ export class UserData {
     fs.writeFileSync(this.dataPath, JSON.stringify(data));
   }
 
-  public clearResources(...resourceTypes) {
+  public clearResources(...resourceTypes: string[]) {
     resourceTypes.forEach(resourceType => {
       this.createResourceFolderIfNecessary(resourceType);
       const resourceTypeDir = path.join(this.basePath, resourceType);

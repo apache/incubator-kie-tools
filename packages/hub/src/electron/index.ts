@@ -188,8 +188,8 @@ function getApplicationPath(relativePath: string) {
 }
 
 function executeCommand(args: { macOS: string; linux: string; windows: string }): Promise<CommandExecutionResult> {
-  let command;
-  let platform;
+  let command: string;
+  let platform: OperatingSystem;
 
   switch (os.platform()) {
     case "darwin":

@@ -162,7 +162,7 @@ export class Menu {
     ]
   };
 
-  private readonly macOSAppMenu;
+  private readonly macOSAppMenu: any;
 
   private readonly editMenu = {
     label: "Edit",

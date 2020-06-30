@@ -16,7 +16,7 @@
 import { EditorType } from "../../common/EditorTypes";
 
 function extractValue(key: string): string {
-  return EditorType[key];
+  return (EditorType as any)[key];
 }
 
 describe("EditorTypes::definitions", () => {
