@@ -26,7 +26,9 @@ import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
 
 declare global {
   interface Window {
-    gwtStateControl: GwtStateControlApi;
+    gwt: {
+      stateControl: GwtStateControlApi;
+    };
   }
 }
 
@@ -38,11 +40,12 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
   ) {}
 
   public createEditor(languageData: GwtLanguageData, messageBus: EnvelopeBusInnerMessageHandler) {
+    this.gwtAppFormerApi.setClientSideOnly(true);
+    window.gwt = {
+      stateControl: this.gwtStateControlService.exposeApi(messageBus)
+    };
+
     const gwtFinishedLoading = new Promise<Core.Editor>(res => {
-      this.gwtAppFormerApi.setClientSideOnly(true);
-
-      window.gwtStateControl = this.gwtStateControlService.exposeApi(messageBus);
-
       this.gwtAppFormerApi.onFinishedLoading(() => {
         res(
           new GwtEditorWrapper(
