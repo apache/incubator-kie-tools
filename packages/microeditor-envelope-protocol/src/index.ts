@@ -16,7 +16,7 @@
 
 export * from "./EnvelopeBusOuterMessageHandler";
 export * from "./EnvelopeBusMessage";
-export * from "./InnerEnvelopeBusMessageType";
-export * from "./OuterEnvelopeBusMessageType";
+export * from "./MessageTypesYouCanSendToTheEnvelope";
+export * from "./MessageTypesYouCanSendToTheChannel";
 export * from "./EnvelopeBusApi";
 export * from "./EnvelopeBusMessageManager";

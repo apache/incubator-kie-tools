@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export enum OuterEnvelopeBusMessageType {
+export enum MessageTypesYouCanSendToTheChannel {
   REQUEST_RESOURCE_LIST,
   REQUEST_RESOURCE_CONTENT,
   REQUEST_CONTENT,

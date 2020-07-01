@@ -19,8 +19,6 @@ import {
   EnvelopeBusMessage,
   EnvelopeBusMessageManager,
   EnvelopeBusMessagePurpose,
-  InnerEnvelopeBusMessageType,
-  OuterEnvelopeBusMessageType
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import {
   EditorContent,
@@ -33,6 +31,10 @@ import {
   StateControlCommand
 } from "@kogito-tooling/core-api";
 import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
+import {
+  MessageTypesYouCanSendToTheChannel,
+  MessageTypesYouCanSendToTheEnvelope
+} from "@kogito-tooling/microeditor-envelope-protocol/dist/src";
 
 export interface Impl {
   receive_contentChangedNotification(content: EditorContent): void;
@@ -49,10 +51,10 @@ export class EnvelopeBusInnerMessageHandler {
   public targetOrigin: string;
   public associatedBusId: string;
   public eventListener?: any;
-  private readonly manager: EnvelopeBusMessageManager<OuterEnvelopeBusMessageType>;
+  private readonly manager: EnvelopeBusMessageManager<MessageTypesYouCanSendToTheChannel>;
 
   constructor(private readonly busApi: EnvelopeBusApi, private readonly impl: Impl) {
-    this.manager = new EnvelopeBusMessageManager<OuterEnvelopeBusMessageType>(m => this.send(m));
+    this.manager = new EnvelopeBusMessageManager<MessageTypesYouCanSendToTheChannel>(m => this.send(m));
   }
 
   public startListening() {
@@ -76,50 +78,50 @@ export class EnvelopeBusInnerMessageHandler {
   }
 
   public notify_setContentError(errorMessage: string) {
-    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, errorMessage);
+    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_SET_CONTENT_ERROR, errorMessage);
   }
 
   public notify_ready() {
-    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_READY, undefined);
+    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_READY, undefined);
   }
 
   public notify_newEdit(edit: KogitoEdit) {
-    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT, edit);
+    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_NEW_EDIT, edit);
   }
 
   public notify_openFile(path: string) {
-    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_EDITOR_OPEN_FILE, path);
+    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_OPEN_FILE, path);
   }
 
   public notify_guidedTourRefresh(userInteraction: UserInteraction) {
-    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_GUIDED_TOUR_USER_INTERACTION, userInteraction);
+    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_USER_INTERACTION, userInteraction);
   }
 
   public notify_guidedTourRegisterTutorial(tutorial: Tutorial) {
-    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL, tutorial);
+    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL, tutorial);
   }
 
   public notify_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
-    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE, stateControlCommand);
+    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_STATE_CONTROL_COMMAND_UPDATE, stateControlCommand);
   }
 
   public request_languageResponse() {
-    return this.manager.request<LanguageData>(OuterEnvelopeBusMessageType.REQUEST_LANGUAGE, undefined);
+    return this.manager.request<LanguageData>(MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE, undefined);
   }
 
   public request_contentResponse() {
-    return this.manager.request<EditorContent>(OuterEnvelopeBusMessageType.REQUEST_CONTENT, undefined);
+    return this.manager.request<EditorContent>(MessageTypesYouCanSendToTheChannel.REQUEST_CONTENT, undefined);
   }
 
   public request_resourceContent(path: string, opts?: ResourceContentOptions) {
-    return this.manager.request<ResourceContent | undefined>(OuterEnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT, {
+    return this.manager.request<ResourceContent | undefined>(MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_CONTENT, {
       path: path,
       opts: opts
     });
   }
 
   public request_resourceList(pattern: string, opts?: ResourceListOptions) {
-    return this.manager.request<ResourcesList>(OuterEnvelopeBusMessageType.REQUEST_RESOURCE_LIST, {
+    return this.manager.request<ResourcesList>(MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_LIST, {
       pattern: pattern,
       opts: opts
     });
@@ -133,24 +135,24 @@ export class EnvelopeBusInnerMessageHandler {
 
     switch (message.type) {
       //NOTIFICATIONS
-      case InnerEnvelopeBusMessageType.NOTIFY_EDITOR_UNDO:
+      case MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_UNDO:
         this.impl.receive_editorUndo();
         break;
-      case InnerEnvelopeBusMessageType.NOTIFY_EDITOR_REDO:
+      case MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_REDO:
         this.impl.receive_editorRedo();
         break;
       //REQUESTS
-      case InnerEnvelopeBusMessageType.REQUEST_INIT:
+      case MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT:
         const init = message.data as { origin: string; busId: string };
         this.impl.receive_initRequest(init).then(() => this.manager.respond(message, {}));
         break;
-      case InnerEnvelopeBusMessageType.REQUEST_PREVIEW:
+      case MessageTypesYouCanSendToTheEnvelope.REQUEST_PREVIEW:
         this.impl.receive_previewRequest().then(previewSvg => this.manager.respond(message, previewSvg));
         break;
-      case InnerEnvelopeBusMessageType.REQUEST_CONTENT:
+      case MessageTypesYouCanSendToTheEnvelope.REQUEST_CONTENT:
         this.impl.receive_contentRequest().then(content => this.manager.respond(message, content));
         break;
-      case InnerEnvelopeBusMessageType.REQUEST_GUIDED_TOUR_ELEMENT_POSITION:
+      case MessageTypesYouCanSendToTheEnvelope.REQUEST_GUIDED_TOUR_ELEMENT_POSITION:
         const selector = message.data as string;
         this.impl
           .receive_guidedTourElementPositionRequest(selector)

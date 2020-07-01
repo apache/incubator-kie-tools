@@ -15,10 +15,10 @@
  */
 
 import { EnvelopeBusMessage, EnvelopeBusMessagePurpose } from "./EnvelopeBusMessage";
-import { InnerEnvelopeBusMessageType } from "./InnerEnvelopeBusMessageType";
-import { OuterEnvelopeBusMessageType } from "./OuterEnvelopeBusMessageType";
+import { MessageTypesYouCanSendToTheEnvelope } from "./MessageTypesYouCanSendToTheEnvelope";
+import { MessageTypesYouCanSendToTheChannel } from "./MessageTypesYouCanSendToTheChannel";
 
-export class EnvelopeBusMessageManager<MessageType extends InnerEnvelopeBusMessageType | OuterEnvelopeBusMessageType> {
+export class EnvelopeBusMessageManager<MessageType extends MessageTypesYouCanSendToTheEnvelope | MessageTypesYouCanSendToTheChannel> {
   private readonly callbacks = new Map<string, { resolve: (arg: unknown) => void; reject: (arg: unknown) => void }>();
 
   constructor(private readonly send: (message: EnvelopeBusMessage<unknown>) => void) {}

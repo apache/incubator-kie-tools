@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { InnerEnvelopeBusMessageType } from "./InnerEnvelopeBusMessageType";
-import { OuterEnvelopeBusMessageType } from "./OuterEnvelopeBusMessageType";
+import { MessageTypesYouCanSendToTheEnvelope } from "./MessageTypesYouCanSendToTheEnvelope";
+import { MessageTypesYouCanSendToTheChannel } from "./MessageTypesYouCanSendToTheChannel";
 
 export interface EnvelopeBusMessage<T> {
-  type: InnerEnvelopeBusMessageType | OuterEnvelopeBusMessageType;
+  type: MessageTypesYouCanSendToTheEnvelope | MessageTypesYouCanSendToTheChannel;
   busId?: string;
   requestId?: string;
   data: T;

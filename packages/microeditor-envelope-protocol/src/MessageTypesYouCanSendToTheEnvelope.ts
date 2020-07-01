@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export enum InnerEnvelopeBusMessageType {
+export enum MessageTypesYouCanSendToTheEnvelope {
   REQUEST_GUIDED_TOUR_ELEMENT_POSITION,
   REQUEST_INIT,
   REQUEST_PREVIEW,

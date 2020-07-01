@@ -28,8 +28,8 @@ import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
 import { EnvelopeBusMessage, EnvelopeBusMessagePurpose } from "./EnvelopeBusMessage";
 import { EnvelopeBusApi } from "./EnvelopeBusApi";
 import { EnvelopeBusMessageManager } from "./EnvelopeBusMessageManager";
-import { InnerEnvelopeBusMessageType } from "./InnerEnvelopeBusMessageType";
-import { OuterEnvelopeBusMessageType } from "./OuterEnvelopeBusMessageType";
+import { MessageTypesYouCanSendToTheEnvelope } from "./MessageTypesYouCanSendToTheEnvelope";
+import { MessageTypesYouCanSendToTheChannel } from "./MessageTypesYouCanSendToTheChannel";
 
 export interface EnvelopeBusOuterMessageHandlerImpl {
   //nofity
@@ -51,7 +51,7 @@ export class EnvelopeBusOuterMessageHandler {
   public static INIT_POLLING_TIMEOUT_IN_MS = 10000;
   public static INIT_POLLING_INTERVAL_IN_MS = 10;
 
-  private readonly manager: EnvelopeBusMessageManager<InnerEnvelopeBusMessageType>;
+  private readonly manager: EnvelopeBusMessageManager<MessageTypesYouCanSendToTheEnvelope>;
 
   public initPolling: any | false;
   public initPollingTimeout: any | false;
@@ -61,7 +61,7 @@ export class EnvelopeBusOuterMessageHandler {
     this.busId = EnvelopeBusMessageManager.generateRandomId();
     this.initPolling = false;
     this.initPollingTimeout = false;
-    this.manager = new EnvelopeBusMessageManager<InnerEnvelopeBusMessageType>(m => this.busApi.postMessage(m));
+    this.manager = new EnvelopeBusMessageManager<MessageTypesYouCanSendToTheEnvelope>(m => this.busApi.postMessage(m));
   }
 
   public startInitPolling(origin: string) {
@@ -86,32 +86,32 @@ export class EnvelopeBusOuterMessageHandler {
 
   //NOTIFICATIONS
   public notify_editorUndo() {
-    this.manager.notify(InnerEnvelopeBusMessageType.NOTIFY_EDITOR_UNDO, undefined);
+    this.manager.notify(MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_UNDO, undefined);
   }
 
   public notify_editorRedo() {
-    this.manager.notify(InnerEnvelopeBusMessageType.NOTIFY_EDITOR_REDO, undefined);
+    this.manager.notify(MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_REDO, undefined);
   }
 
   public notify_contentChanged(content: EditorContent) {
-    this.manager.notify(InnerEnvelopeBusMessageType.NOTIFY_CONTENT_CHANGED, content);
+    this.manager.notify(MessageTypesYouCanSendToTheEnvelope.NOTIFY_CONTENT_CHANGED, content);
   }
 
   //REQUEST
   public request_contentResponse() {
-    return this.manager.request<EditorContent>(InnerEnvelopeBusMessageType.REQUEST_CONTENT, {});
+    return this.manager.request<EditorContent>(MessageTypesYouCanSendToTheEnvelope.REQUEST_CONTENT, {});
   }
 
   public request_previewResponse() {
-    return this.manager.request<string>(InnerEnvelopeBusMessageType.REQUEST_PREVIEW, {});
+    return this.manager.request<string>(MessageTypesYouCanSendToTheEnvelope.REQUEST_PREVIEW, {});
   }
 
   public request_initResponse(origin: string) {
-    return this.manager.request<void>(InnerEnvelopeBusMessageType.REQUEST_INIT, { origin: origin, busId: this.busId });
+    return this.manager.request<void>(MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT, { origin: origin, busId: this.busId });
   }
 
   public request_guidedTourElementPositionResponse(selector: string) {
-    return this.manager.request<Rect>(InnerEnvelopeBusMessageType.REQUEST_GUIDED_TOUR_ELEMENT_POSITION, selector);
+    return this.manager.request<Rect>(MessageTypesYouCanSendToTheEnvelope.REQUEST_GUIDED_TOUR_ELEMENT_POSITION, selector);
   }
 
   public receive(message: EnvelopeBusMessage<any>) {
@@ -126,40 +126,40 @@ export class EnvelopeBusOuterMessageHandler {
 
     switch (message.type) {
       //NOTIFICATIONS
-      case OuterEnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR:
+      case MessageTypesYouCanSendToTheChannel.NOTIFY_SET_CONTENT_ERROR:
         this.impl.receive_setContentError(message.data as string);
         break;
-      case OuterEnvelopeBusMessageType.NOTIFY_READY:
+      case MessageTypesYouCanSendToTheChannel.NOTIFY_READY:
         this.impl.receive_ready();
         break;
-      case OuterEnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT:
+      case MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_NEW_EDIT:
         this.impl.receive_newEdit(message.data as KogitoEdit);
         break;
-      case OuterEnvelopeBusMessageType.NOTIFY_EDITOR_OPEN_FILE:
+      case MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_OPEN_FILE:
         this.impl.receive_openFile(message.data as string);
         break;
-      case OuterEnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE:
+      case MessageTypesYouCanSendToTheChannel.NOTIFY_STATE_CONTROL_COMMAND_UPDATE:
         this.impl.receive_stateControlCommandUpdate(message.data);
         break;
-      case OuterEnvelopeBusMessageType.NOTIFY_GUIDED_TOUR_USER_INTERACTION:
+      case MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_USER_INTERACTION:
         this.impl.receive_guidedTourUserInteraction(message.data as UserInteraction);
         break;
-      case OuterEnvelopeBusMessageType.NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL:
+      case MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL:
         this.impl.receive_guidedTourRegisterTutorial(message.data as Tutorial);
         break;
       //REQUESTS
-      case OuterEnvelopeBusMessageType.REQUEST_LANGUAGE:
+      case MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE:
         this.impl.receive_languageRequest().then(language => this.manager.respond(message, language));
         break;
-      case OuterEnvelopeBusMessageType.REQUEST_CONTENT:
+      case MessageTypesYouCanSendToTheChannel.REQUEST_CONTENT:
         this.impl.receive_contentRequest().then(content => this.manager.respond(message, content));
         break;
-      case OuterEnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT:
+      case MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_CONTENT:
         this.impl
           .receive_resourceContentRequest(message.data as ResourceContentRequest)
           .then(resourceContent => this.manager.respond(message, resourceContent!));
         break;
-      case OuterEnvelopeBusMessageType.REQUEST_RESOURCE_LIST:
+      case MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_LIST:
         this.impl
           .receive_resourceListRequest(message.data as ResourceListRequest)
           .then(resourceList => this.manager.respond(message, resourceList));
