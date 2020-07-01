@@ -26,7 +26,7 @@ import {
 
 import * as vscode from "vscode";
 import * as nodePath from "path";
-import { WorkspaceFolder } from "vscode";
+import {RelativePattern, WorkspaceFolder} from "vscode";
 
 /**
  * Implementation of a ResourceContentService using the vscode apis to list/get assets.
@@ -39,9 +39,9 @@ export class VsCodeResourceContentService implements ResourceContentService {
   }
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
-    const expr = opts?.type === SearchType.ASSET_FOLDER ? this.currentAssetFolder + pattern : pattern;
-
-    const files = await vscode.workspace.findFiles(expr);
+    const expr = opts?.type === SearchType.ASSET_FOLDER ? this.currentAssetFolder + pattern : pattern; //TODO improve this
+    const includingRelativePattern = new RelativePattern(this.currentAssetFolder, pattern);
+    const files = await vscode.workspace.findFiles(includingRelativePattern);
     const paths = files.map(f => vscode.workspace.asRelativePath(f.path));
     return new ResourcesList(pattern, paths);
   }
