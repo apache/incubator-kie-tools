@@ -199,7 +199,7 @@ export class KogitoEditor {
 
   public async notify_editorRevert(): Promise<void> {
     const content = this.decoder.decode(await vscode.workspace.fs.readFile(this.uri));
-    this.envelopeBusOuterMessageHandler.respond_contentRequest({
+    this.envelopeBusOuterMessageHandler.notify_contentChanged({
       content: content,
       path: this.relativePath
     });

@@ -295,7 +295,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         requestContent: () => envelopeBusOuterMessageHandler.request_contentResponse(),
         requestPreview: () => envelopeBusOuterMessageHandler.request_previewResponse(),
         setContent: (content: string) => {
-          envelopeBusOuterMessageHandler.respond_contentRequest({ content: content });
+          envelopeBusOuterMessageHandler.notify_contentChanged({ content: content });
           return Promise.resolve();
         }
       };

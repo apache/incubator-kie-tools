@@ -99,6 +99,10 @@ export class EnvelopeBusOuterMessageHandler {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_REDO, data: undefined });
   }
 
+  public notify_contentChanged(content: EditorContent) {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: content });
+  }
+
   //REQUEST
   public request_contentResponse() {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined });
@@ -114,23 +118,6 @@ export class EnvelopeBusOuterMessageHandler {
 
   public request_guidedTourElementPositionResponse(selector: string) {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_GUIDED_TOUR_ELEMENT_POSITION, data: selector });
-  }
-
-  //RESPOND
-  public respond_languageRequest(languageData?: LanguageData) {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
-  }
-
-  public respond_contentRequest(content: EditorContent) {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: content });
-  }
-
-  public respond_resourceContent(content: ResourceContent) {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_RESOURCE_CONTENT, data: content });
-  }
-
-  public respond_resourceList(resourcesList: ResourcesList) {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_RESOURCE_LIST, data: resourcesList });
   }
 
   public receive(message: EnvelopeBusMessage<any>) {
@@ -177,20 +164,30 @@ export class EnvelopeBusOuterMessageHandler {
         break;
       //REQUESTS
       case EnvelopeBusMessageType.REQUEST_LANGUAGE:
-        this.impl.receive_languageRequest().then(p => this.respond_languageRequest(p));
+        this.impl.receive_languageRequest().then(p =>
+          this.busApi.postMessage({
+            type: EnvelopeBusMessageType.RETURN_LANGUAGE,
+            data: p
+          })
+        );
         break;
       case EnvelopeBusMessageType.REQUEST_CONTENT:
-        this.impl.receive_contentRequest().then(p => this.respond_contentRequest(p));
+        this.impl.receive_contentRequest().then(p =>
+          this.busApi.postMessage({
+            type: EnvelopeBusMessageType.RETURN_CONTENT,
+            data: p
+          })
+        );
         break;
       case EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT:
         this.impl
           .receive_resourceContentRequest(message.data as ResourceContentRequest)
-          .then(p => this.respond_resourceContent(p!));
+          .then(p => this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_RESOURCE_CONTENT, data: p! }));
         break;
       case EnvelopeBusMessageType.REQUEST_RESOURCE_LIST:
         this.impl
           .receive_resourceListRequest(message.data as ResourceListRequest)
-          .then(p => this.respond_resourceList(p));
+          .then(p => this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_RESOURCE_LIST, data: p }));
         break;
       //
       default:
