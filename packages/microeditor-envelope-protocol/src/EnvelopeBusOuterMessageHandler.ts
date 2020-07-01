@@ -28,6 +28,7 @@ import { UserInteraction, Tutorial, Rect } from "@kogito-tooling/guided-tour";
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
 import { EnvelopeBusApi } from "./EnvelopeBusApi";
+import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts";
 
 export interface EnvelopeBusOuterMessageHandlerImpl {
   pollInit(): void;
@@ -127,6 +128,11 @@ export class EnvelopeBusOuterMessageHandler {
   public request_guidedTourElementPositionResponse(selector: string) {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_GUIDED_TOUR_ELEMENT_POSITION, data: selector });
   }
+
+  public notify_keyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent) {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_KEYBOARD_EVENT, data: channelKeyboardEvent });
+  }
+
 
   public receive(message: EnvelopeBusMessage<any>) {
     if (message.busId !== this.busId) {

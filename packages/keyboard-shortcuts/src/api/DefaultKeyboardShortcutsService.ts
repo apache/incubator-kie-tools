@@ -101,7 +101,7 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
       combination,
       label,
       listener: (e: KeyboardEvent) => {
-        if (IGNORED_TAGS.includes((e.target as HTMLElement)?.tagName)) {
+        if (isTagToBeIgnored(e.target)) {
           console.debug(`Ignoring execution (${combination}) because target was ` + (e.target as HTMLElement)?.tagName);
           return true;
         }
@@ -152,7 +152,7 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
       combination,
       label,
       listener: (e: KeyboardEvent) => {
-        if (IGNORED_TAGS.includes((e.target as HTMLElement)?.tagName)) {
+        if (isTagToBeIgnored(e.target)) {
           console.debug(`Ignoring execution (${combination}) because target was ` + (e.target as HTMLElement)?.tagName);
           return true;
         }
@@ -249,6 +249,23 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
   public exposeApi(): KeyboardShortcutsApi {
     return this;
   }
+}
+
+export interface ChannelKeyboardEvent {
+  altKey: boolean;
+  ctrlKey: boolean;
+  shiftKey: boolean;
+  metaKey: boolean;
+  code: string;
+  type: string;
+  target?: EventTarget;
+}
+
+export function isTagToBeIgnored(target: EventTarget | null) {
+  if (target instanceof Element) {
+    return IGNORED_TAGS.includes(target.tagName);
+  }
+  return false;
 }
 
 function setsEqual(lhs: Set<unknown>, rhs: Set<unknown>) {

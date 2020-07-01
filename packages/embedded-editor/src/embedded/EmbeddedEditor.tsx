@@ -26,6 +26,7 @@ import {
 } from "@kogito-tooling/core-api";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoGuidedTour, UserInteraction, Tutorial, Rect } from "@kogito-tooling/guided-tour";
+import { ChannelKeyboardEvent, isTagToBeIgnored } from "@kogito-tooling/keyboard-shortcuts";
 import * as CSS from "csstype";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
@@ -268,6 +269,36 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     const requestPosition = (s: string) => envelopeBusOuterMessageHandler.request_guidedTourElementPositionResponse(s);
     KogitoGuidedTour.getInstance().registerPositionProvider(requestPosition);
   }, [envelopeBusOuterMessageHandler]);
+
+  // Forward keyboard events to envelope
+  useEffect(() => {
+    const listener = (e: KeyboardEvent) => {
+      if (isTagToBeIgnored(e.target)) {
+        console.debug("Ignoring execution of keyboard event on Embedded Editor");
+        return false;
+      }
+      const keyboardShortcut: ChannelKeyboardEvent = {
+        altKey: e.altKey,
+        ctrlKey: e.ctrlKey,
+        shiftKey: e.shiftKey,
+        metaKey: e.metaKey,
+        code: e.code,
+        type: e.type
+      };
+      console.debug(`New keyboard event (${JSON.stringify(keyboardShortcut)}) on Embedded Editor!`);
+      envelopeBusOuterMessageHandler.notify_keyboardEvent(keyboardShortcut);
+      return true;
+    };
+
+    window.addEventListener("keydown", listener);
+    window.addEventListener("keyup", listener);
+    window.addEventListener("keypress", listener);
+    return () => {
+      window.removeEventListener("keydown", listener);
+      window.removeEventListener("keyup", listener);
+      window.removeEventListener("keypress", listener);
+    };
+  }, []);
 
   //Attach/detach bus when component attaches/detaches from DOM
   useEffect(() => {
