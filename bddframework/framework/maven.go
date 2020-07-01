@@ -92,7 +92,7 @@ func (mvnCmd *mavenCommandStruct) Execute(targets ...string) (string, error) {
 		args = append(args, fmt.Sprintf("-P%s", strings.Join(mvnCmd.profiles, ",")))
 	}
 	if len(mvnCmd.otherOptions) > 0 {
-		args = append(args, strings.Join(mvnCmd.otherOptions, " "))
+		args = append(args, mvnCmd.otherOptions...)
 	}
 
 	cmd := CreateCommand(mavenCommandName, args...).InDirectory(mvnCmd.directory)
