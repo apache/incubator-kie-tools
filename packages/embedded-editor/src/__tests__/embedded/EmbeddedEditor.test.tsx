@@ -19,7 +19,7 @@ import {
   EditorContent,
   KogitoEdit,
   ResourceContentRequest,
-  ResourceListRequest,
+  ResourceListRequest
 } from "@kogito-tooling/core-api";
 import { EnvelopeBusMessageType, EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { mount } from "enzyme";
@@ -53,17 +53,12 @@ describe("EmbeddedEditor::ONLINE", () => {
   };
 
   beforeAll(() => spyOn<any>(EnvelopeBusOuterMessageHandler, "generateRandomBusId"));
+  beforeEach(() => jest.clearAllMocks());
 
   test("EmbeddedEditor::defaults", () => {
-    mount(
-      <EmbeddedEditor
-        ref={editorRef}
-        file={file}
-        router={router}
-        channelType={channelType}
-      />,
-      { attachTo: holder }
-    );
+    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, {
+      attachTo: holder
+    });
 
     expect(holder.firstElementChild?.getAttribute("id")).toBe("kogito-iframe");
     expect(holder.firstElementChild?.getAttribute("data-envelope-channel")).toBe(ChannelType.ONLINE);
@@ -75,15 +70,9 @@ describe("EmbeddedEditor::ONLINE", () => {
   test("EmbeddedEditor::setContent", () => {
     const spyRespond_contentRequest = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "respond_contentRequest");
 
-    mount(
-      <EmbeddedEditor
-        ref={editorRef}
-        file={file}
-        router={router}
-        channelType={channelType}
-      />,
-      { attachTo: holder }
-    );
+    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, {
+      attachTo: holder
+    });
 
     editorRef.current?.setContent("content");
 
@@ -93,15 +82,9 @@ describe("EmbeddedEditor::ONLINE", () => {
   test("EmbeddedEditor::requestContent", () => {
     const spyRequest_contentResponse = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "request_contentResponse");
 
-    mount(
-      <EmbeddedEditor
-        ref={editorRef}
-        file={file}
-        router={router}
-        channelType={channelType}
-      />,
-      { attachTo: holder }
-    );
+    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, {
+      attachTo: holder
+    });
 
     editorRef.current?.requestContent();
 
@@ -111,15 +94,9 @@ describe("EmbeddedEditor::ONLINE", () => {
   test("EmbeddedEditor::requestPreview", () => {
     const spyRequest_previewResponse = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "request_previewResponse");
 
-    mount(
-      <EmbeddedEditor
-        ref={editorRef}
-        file={file}
-        router={router}
-        channelType={channelType}
-      />,
-      { attachTo: holder }
-    );
+    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, {
+      attachTo: holder
+    });
 
     editorRef.current?.requestPreview();
 
@@ -192,16 +169,9 @@ describe("EmbeddedEditor::ONLINE", () => {
   test("EmbeddedEditor::onReady", async () => {
     const onReady = jest.fn(() => null);
 
-    mount(
-      <EmbeddedEditor
-        ref={editorRef}
-        file={file}
-        router={router}
-        channelType={channelType}
-        onReady={onReady}
-      />,
-      { attachTo: holder }
-    );
+    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} onReady={onReady} />, {
+      attachTo: holder
+    });
 
     await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_READY });
 
@@ -258,13 +228,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     const onNewEdit = jest.fn((edit: KogitoEdit) => null);
 
     mount(
-      <EmbeddedEditor
-        ref={editorRef}
-        file={file}
-        router={router}
-        channelType={channelType}
-        onNewEdit={onNewEdit}
-      />,
+      <EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} onNewEdit={onNewEdit} />,
       { attachTo: holder }
     );
 
@@ -294,5 +258,65 @@ describe("EmbeddedEditor::ONLINE", () => {
     expect(onPreviewResponse).toBeCalled();
 
     expect(document.body).toMatchSnapshot();
+  });
+
+  test("EmbeddedEditor::notify_keyboardEvent::keydown", async () => {
+    const spyNotify_notifyKeyboardEvent = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "notify_keyboardEvent");
+
+    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, {
+      attachTo: holder
+    });
+
+    const keyboardEvent = new KeyboardEvent("keydown", { ctrlKey: true });
+    window.dispatchEvent(keyboardEvent);
+
+    expect(spyNotify_notifyKeyboardEvent).toBeCalledWith({
+      altKey: false,
+      ctrlKey: true,
+      metaKey: false,
+      shiftKey: false,
+      type: "keydown",
+      code: ""
+    });
+  });
+
+  test("EmbeddedEditor::onPreviewResponse", async () => {
+    const spyNotify_notifyKeyboardEvent = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "notify_keyboardEvent");
+
+    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, {
+      attachTo: holder
+    });
+
+    const keyboardEvent = new KeyboardEvent("keyup", { altKey: true });
+    window.dispatchEvent(keyboardEvent);
+
+    expect(spyNotify_notifyKeyboardEvent).toBeCalledWith({
+      altKey: true,
+      ctrlKey: false,
+      metaKey: false,
+      shiftKey: false,
+      type: "keyup",
+      code: ""
+    });
+  });
+
+  test("EmbeddedEditor::onPreviewResponse", async () => {
+    const spyNotify_notifyKeyboardEvent = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "notify_keyboardEvent");
+
+    mount(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />, {
+      attachTo: holder
+    });
+
+    const keyboardEvent = new KeyboardEvent("keypress", { shiftKey: true, code: "10" });
+    window.dispatchEvent(keyboardEvent);
+
+    expect(spyNotify_notifyKeyboardEvent).toBeCalledWith({
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      shiftKey: true,
+      type: "keypress",
+      code: "10"
+    });
   });
 });
