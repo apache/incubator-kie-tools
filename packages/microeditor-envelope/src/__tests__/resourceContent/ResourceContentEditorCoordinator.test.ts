@@ -51,6 +51,9 @@ const handler = new EnvelopeBusInnerMessageHandler(
     },
     receive_previewRequest() {
       // do nothing
+    },
+    receive_guidedTourElementPositionRequest() {
+      // do nothing
     }
   })
 );

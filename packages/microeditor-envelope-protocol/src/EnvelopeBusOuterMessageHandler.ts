@@ -24,6 +24,7 @@ import {
   ResourceListRequest,
   StateControlCommand
 } from "@kogito-tooling/core-api";
+import { UserInteraction, Tutorial, Rect } from "@kogito-tooling/guided-tour";
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
 import { EnvelopeBusApi } from "./EnvelopeBusApi";
@@ -42,6 +43,9 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   receive_newEdit(edit: KogitoEdit): void;
   receive_stateControlCommandUpdate(command: StateControlCommand): void;
   receive_openFile(path: string): void;
+  receive_guidedTourUserInteraction(userInteraction: UserInteraction): void;
+  receive_guidedTourRegisterTutorial(tutorial: Tutorial): void;
+  receive_guidedTourElementPositionResponse(rect: Rect): void;
 }
 
 export class EnvelopeBusOuterMessageHandler {
@@ -120,6 +124,10 @@ export class EnvelopeBusOuterMessageHandler {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_PREVIEW, data: undefined });
   }
 
+  public request_guidedTourElementPositionResponse(selector: string) {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_GUIDED_TOUR_ELEMENT_POSITION, data: selector });
+  }
+
   public receive(message: EnvelopeBusMessage<any>) {
     if (message.busId !== this.busId) {
       return;
@@ -165,6 +173,15 @@ export class EnvelopeBusOuterMessageHandler {
         break;
       case EnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE:
         this.impl.receive_stateControlCommandUpdate(message.data);
+        break;
+      case EnvelopeBusMessageType.NOTIFY_GUIDED_TOUR_USER_INTERACTION:
+        this.impl.receive_guidedTourUserInteraction(message.data as UserInteraction);
+        break;
+      case EnvelopeBusMessageType.NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL:
+        this.impl.receive_guidedTourRegisterTutorial(message.data as Tutorial);
+        break;
+      case EnvelopeBusMessageType.RETURN_GUIDED_TOUR_ELEMENT_POSITION:
+        this.impl.receive_guidedTourElementPositionResponse(message.data as Rect);
         break;
       default:
         console.info(`Unknown message type received: ${message.type}`);

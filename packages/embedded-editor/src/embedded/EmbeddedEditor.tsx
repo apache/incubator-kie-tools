@@ -25,6 +25,7 @@ import {
   StateControlCommand
 } from "@kogito-tooling/core-api";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoGuidedTour, UserInteraction, Tutorial, Rect } from "@kogito-tooling/guided-tour";
 import * as CSS from "csstype";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
@@ -241,6 +242,16 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         },
         receive_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
           handleStateControlCommand(stateControlCommand);
+        },
+        receive_guidedTourUserInteraction(userInteraction: UserInteraction) {
+          KogitoGuidedTour.getInstance().onUserInteraction(userInteraction);
+        },
+        receive_guidedTourRegisterTutorial(tutorial: Tutorial) {
+          KogitoGuidedTour.getInstance().registerTutorial(tutorial);
+        },
+        receive_guidedTourElementPositionResponse(rect: Rect) {
+          const parentRect = iframeRef.current?.getBoundingClientRect();
+          KogitoGuidedTour.getInstance().onPositionReceived(rect, parentRect);
         }
       })
     );
@@ -252,6 +263,11 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     props.onResourceListRequest,
     handleStateControlCommand
   ]);
+
+  useEffect(() => {
+    const requestPosition = (s: string) => envelopeBusOuterMessageHandler.request_guidedTourElementPositionResponse(s);
+    KogitoGuidedTour.getInstance().registerPositionProvider(requestPosition);
+  }, [envelopeBusOuterMessageHandler]);
 
   //Attach/detach bus when component attaches/detaches from DOM
   useEffect(() => {

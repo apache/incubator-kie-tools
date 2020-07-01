@@ -75,9 +75,9 @@ export function App(props: Props) {
   return (
     <GlobalContext.Provider
       value={{
-        file: file,
-        routes: routes,
-        router: router,
+        file,
+        routes,
+        router,
         readonly: props.readonly,
         external: props.external,
         senderTabId: props.senderTabId,

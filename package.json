@@ -42,6 +42,7 @@
     "enzyme-to-json": "3.4.3",
     "file-loader": "4.2.0",
     "glob": "7.1.4",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^25.2.7",
     "jest-junit": "9.0.0",
     "jest-webextension-mock": "^3.5.0",

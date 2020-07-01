@@ -66,6 +66,9 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
       },
       receive_previewRequest: () => {
         receivedMessages.push(["receive_previewRequest"]);
+      },
+      receive_guidedTourElementPositionRequest: () => {
+        receivedMessages.push(["receive_guidedTourElementPositionRequest"]);
       }
     })
   );

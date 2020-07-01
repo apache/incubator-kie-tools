@@ -13,7 +13,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.5.2"
+    "@kogito-tooling/core-api": "0.5.2",
+    "@kogito-tooling/guided-tour": "0.5.2"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
