@@ -26,7 +26,7 @@ export interface EditorFactory<T extends LanguageData> {
    * Receives a messageBus to be used by the Editor to communicate with the outside of the envelope.
    */
   createEditor(
-    languageData1: LanguageData,
+    languageData: LanguageData,
     envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler
   ): Promise<Editor>;
 }
