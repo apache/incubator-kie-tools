@@ -45,7 +45,7 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   receive_openFile(path: string): void;
   receive_guidedTourUserInteraction(userInteraction: UserInteraction): void;
   receive_guidedTourRegisterTutorial(tutorial: Tutorial): void;
-  receive_guidedTourElementPositionResponse(rect: Rect): void;
+  receive_guidedTourElementPositionResponse(position: Rect): void;
 }
 
 export class EnvelopeBusOuterMessageHandler {

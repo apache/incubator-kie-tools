@@ -187,7 +187,7 @@ export class EnvelopeBusInnerMessageHandler {
         this.impl.receive_previewRequest();
         break;
       case EnvelopeBusMessageType.REQUEST_GUIDED_TOUR_ELEMENT_POSITION:
-        const selector = message.data as Rect;
+        const selector = message.data as string;
         this.impl.receive_guidedTourElementPositionRequest(selector);
         break;
       default:
