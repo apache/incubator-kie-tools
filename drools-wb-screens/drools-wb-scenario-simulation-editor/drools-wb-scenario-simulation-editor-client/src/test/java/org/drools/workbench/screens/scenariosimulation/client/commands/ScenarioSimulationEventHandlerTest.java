@@ -211,7 +211,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
                 this.fileUploadPopupPresenter = fileUploadPopupPresenterMock;
                 this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenterMock;
                 this.scenarioCommandManager = scenarioCommandManagerMock;
-                this.scenarioCommandRegistry = scenarioCommandRegistryMock;
+                this.scenarioCommandRegistryManager = scenarioCommandRegistryManagerMock;
                 this.notificationEvent = ScenarioSimulationEventHandlerTest.this.notificationEvent;
                 this.context = scenarioSimulationContextLocal;
             }
@@ -332,7 +332,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
     public void onRedoEvent() {
         RedoEvent event = new RedoEvent();
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioCommandRegistryMock, times(1)).redo(eq(scenarioSimulationContextLocal));
+        verify(scenarioCommandRegistryManagerMock, times(1)).redo(eq(scenarioSimulationContextLocal));
     }
 
     @Test
@@ -474,7 +474,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
     public void onUndoEvent() {
         UndoEvent event = new UndoEvent();
         scenarioSimulationEventHandler.onEvent(event);
-        verify(scenarioCommandRegistryMock, times(1)).undo(eq(scenarioSimulationContextLocal));
+        verify(scenarioCommandRegistryManagerMock, times(1)).undo(eq(scenarioSimulationContextLocal));
     }
 
     @Test
@@ -497,14 +497,14 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         when(scenarioCommandManagerMock.execute(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock))).thenReturn(CommandResultBuilder.SUCCESS);
         scenarioSimulationEventHandler.commonExecution(appendRowCommandMock, true);
         assertEquals(simulationMock, scenarioSimulationContextLocal.getStatus().getSimulation());
-        verify(scenarioCommandRegistryMock, times(1)).register(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock));
+        verify(scenarioCommandRegistryManagerMock, times(1)).register(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock));
         //
-        reset(scenarioCommandRegistryMock);
+        reset(scenarioCommandRegistryManagerMock);
         CommandResult<ScenarioSimulationViolation> status = new CommandResultImpl<>(CommandResult.Type.ERROR, Collections.singletonList(new ScenarioSimulationViolation("FAKE ERROR")));
         when(scenarioCommandManagerMock.execute(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock))).thenReturn(status);
         scenarioSimulationEventHandler.commonExecution(appendRowCommandMock, true);
         assertEquals(simulationMock, scenarioSimulationContextLocal.getStatus().getSimulation());
-        verify(scenarioCommandRegistryMock, never()).register(eq(appendRowCommandMock));
+        verify(scenarioCommandRegistryManagerMock, never()).register(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock));
     }
 
     @Test

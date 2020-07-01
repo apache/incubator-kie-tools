@@ -16,13 +16,12 @@
 package org.drools.workbench.screens.scenariosimulation.client.producers;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioCommandManager;
-import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioCommandRegistry;
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioCommandRegistryManager;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
@@ -38,8 +37,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 /**
  * <code>@Dependent</code> Class meant to be the only <i>Producer</i> for a given {@link org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter}
  */
-@Dependent
-public class ScenarioSimulationProducer {
+public abstract class AbstractScenarioSimulationProducer {
 
     @Inject
     protected ScenarioGridPanelProducer scenarioGridPanelProducer;
@@ -63,7 +61,7 @@ public class ScenarioSimulationProducer {
     protected ScenarioSimulationEventHandler scenarioSimulationEventHandler;
 
     @Inject
-    protected ScenarioCommandRegistry scenarioCommandRegistry;
+    protected ScenarioCommandRegistryManager scenarioCommandRegistryManager;
 
     @Inject
     protected ScenarioCommandManager scenarioCommandManager;
@@ -83,7 +81,7 @@ public class ScenarioSimulationProducer {
         scenarioSimulationEventHandler.setFileUploadPopupPresenter(fileUploadPopupPresenter);
         scenarioSimulationEventHandler.setNotificationEvent(notificationEvent);
         scenarioSimulationEventHandler.setScenarioCommandManager(scenarioCommandManager);
-        scenarioSimulationEventHandler.setScenarioCommandRegistry(scenarioCommandRegistry);
+        scenarioSimulationEventHandler.setScenarioCommandRegistryManager(scenarioCommandRegistryManager);
         scenarioSimulationEventHandler.setContext(scenarioGridPanelProducer.getScenarioSimulationContext());
     }
 

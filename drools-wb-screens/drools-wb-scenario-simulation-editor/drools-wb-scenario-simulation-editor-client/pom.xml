@@ -188,6 +188,10 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>appformer-client-api</artifactId>
+    </dependency>
 
   </dependencies>
 

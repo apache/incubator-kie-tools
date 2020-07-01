@@ -48,7 +48,7 @@ import org.drools.workbench.screens.scenariosimulation.client.events.UndoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.AbstractScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationHasBusyIndicatorDefaultErrorCallback;
 import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
-import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
+import org.drools.workbench.screens.scenariosimulation.client.producers.AbstractScenarioSimulationProducer;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
@@ -116,7 +116,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     @Mock
     private ScenarioSimulationView scenarioSimulationViewMock;
     @Mock
-    private ScenarioSimulationProducer scenarioSimulationProducerMock;
+    private AbstractScenarioSimulationProducer abstractScenarioSimulationProducerMock;
     @Mock
     private PlaceManager placeManagerMock;
     @Mock
@@ -157,9 +157,9 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
     @Before
     public void setup() {
         super.setup();
-        when(scenarioSimulationProducerMock.getScenarioSimulationView()).thenReturn(scenarioSimulationViewMock);
+        when(abstractScenarioSimulationProducerMock.getScenarioSimulationView()).thenReturn(scenarioSimulationViewMock);
         when(scenarioSimulationViewMock.getScenarioGridWidget()).thenReturn(scenarioGridWidgetSpy);
-        when(scenarioSimulationProducerMock.getScenarioBackgroundGridWidget()).thenReturn(backgroundGridWidgetSpy);
+        when(abstractScenarioSimulationProducerMock.getScenarioBackgroundGridWidget()).thenReturn(backgroundGridWidgetSpy);
         when(placeRequestMock.getIdentifier()).thenReturn(ScenarioSimulationEditorPresenter.IDENTIFIER);
         when(testToolsViewMock.getPresenter()).thenReturn(testToolsPresenterMock);
         when(testToolsActivityMock.getWidget()).thenReturn(testToolsViewMock);
@@ -167,7 +167,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(simulationMock.getUnmodifiableData()).thenReturn(Arrays.asList(new Scenario()));
         when(abstractScenarioSimulationDocksHandlerMock.getTestToolsPresenter()).thenReturn(Optional.ofNullable(testToolsPresenterMock));
 
-        this.presenterSpy = spy(new ScenarioSimulationEditorPresenter(scenarioSimulationProducerMock,
+        this.presenterSpy = spy(new ScenarioSimulationEditorPresenter(abstractScenarioSimulationProducerMock,
                                                                       mock(ScenarioSimulationResourceType.class),
                                                                       placeManagerMock,
                                                                       abstractScenarioSimulationDocksHandlerMock,

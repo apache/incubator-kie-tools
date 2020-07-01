@@ -41,7 +41,7 @@ import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioCommandManager;
-import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioCommandRegistry;
+import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioCommandRegistryManager;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationViolation;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.AppendRowCommand;
@@ -167,7 +167,7 @@ public abstract class AbstractScenarioSimulationTest {
     };
 
     @Mock
-    protected ScenarioCommandRegistry scenarioCommandRegistryMock;
+    protected ScenarioCommandRegistryManager scenarioCommandRegistryManagerMock;
     @Mock
     protected ScenarioCommandManager scenarioCommandManagerMock;
     @Mock
@@ -389,8 +389,8 @@ public abstract class AbstractScenarioSimulationTest {
         when(scenarioSimulationModelMock.getSimulation()).thenReturn(simulationMock);
         when(scenarioSimulationModelMock.getBackground()).thenReturn(backgroundMock);
 
-        when(scenarioCommandRegistryMock.undo(scenarioSimulationContextLocal)).thenReturn(CommandResultBuilder.SUCCESS);
-        when(scenarioCommandRegistryMock.redo(scenarioSimulationContextLocal)).thenReturn(CommandResultBuilder.SUCCESS);
+        when(scenarioCommandRegistryManagerMock.undo(scenarioSimulationContextLocal)).thenReturn(CommandResultBuilder.SUCCESS);
+        when(scenarioCommandRegistryManagerMock.redo(scenarioSimulationContextLocal)).thenReturn(CommandResultBuilder.SUCCESS);
 
         appendRowCommandMock = spy(new AppendRowCommand(GridWidget.SIMULATION) {
 

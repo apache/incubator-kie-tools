@@ -163,7 +163,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
 
     protected ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenter;
 
-    protected ScenarioCommandRegistry scenarioCommandRegistry;
+    protected ScenarioCommandRegistryManager scenarioCommandRegistryManager;
 
     protected ScenarioCommandManager scenarioCommandManager;
 
@@ -198,8 +198,8 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
         this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenter;
     }
 
-    public void setScenarioCommandRegistry(ScenarioCommandRegistry scenarioCommandRegistry) {
-        this.scenarioCommandRegistry = scenarioCommandRegistry;
+    public void setScenarioCommandRegistryManager(ScenarioCommandRegistryManager scenarioCommandRegistryManager) {
+        this.scenarioCommandRegistryManager = scenarioCommandRegistryManager;
     }
 
     public void setScenarioCommandManager(ScenarioCommandManager scenarioCommandManager) {
@@ -315,7 +315,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
 
     @Override
     public void onEvent(RedoEvent event) {
-        final CommandResult<ScenarioSimulationViolation> status = scenarioCommandRegistry.redo(context);
+        final CommandResult<ScenarioSimulationViolation> status = scenarioCommandRegistryManager.redo(context);
         if (Objects.equals(CommandResult.Type.ERROR, status.getType())) {
             commonNotifyError(status, ScenarioSimulationEditorConstants.INSTANCE.redo());
         }
@@ -440,7 +440,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
 
     @Override
     public void onEvent(UndoEvent event) {
-        final CommandResult<ScenarioSimulationViolation> status = scenarioCommandRegistry.undo(context);
+        final CommandResult<ScenarioSimulationViolation> status = scenarioCommandRegistryManager.undo(context);
         if (Objects.equals(CommandResult.Type.ERROR, status.getType())) {
             commonNotifyError(status, ScenarioSimulationEditorConstants.INSTANCE.undo());
         }
@@ -477,7 +477,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
                     .toString();
             commonNotifyError(status, operation);
         } else if (Objects.equals(CommandResultBuilder.SUCCESS, status) && (command instanceof AbstractScenarioGridCommand)) {
-            scenarioCommandRegistry.register(context, (AbstractScenarioGridCommand) command);
+            scenarioCommandRegistryManager.register(context, (AbstractScenarioGridCommand) command);
             if (focusGridAfterExecution && gridWidget.isPresent()) {
                 context.getScenarioGridPanelByGridWidget(gridWidget.get()).setFocus(true);
             }

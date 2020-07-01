@@ -74,11 +74,6 @@ public class ScenarioCellTextAreaDOMElementTest extends AbstractFactoriesTest {
             protected SimplePanel getContainer() {
                 return simplePanelMock;
             }
-
-            @Override
-            public String getValue() {
-                return "value";
-            }
         });
     }
 
@@ -135,6 +130,6 @@ public class ScenarioCellTextAreaDOMElementTest extends AbstractFactoriesTest {
     public void testDetachCancelEditMode() {
         scenarioCellTextAreaDOMElementSpy.detach();
 
-        verify(scenarioCellTextAreaDOMElementSpy).flush(eq("value"));
+        verify(scenarioGridCellMock).setEditingMode(false);
     }
 }

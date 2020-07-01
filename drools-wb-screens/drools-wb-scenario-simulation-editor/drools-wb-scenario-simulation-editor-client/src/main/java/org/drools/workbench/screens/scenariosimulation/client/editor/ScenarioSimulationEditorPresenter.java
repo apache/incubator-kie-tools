@@ -54,7 +54,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.AbstractS
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationHasBusyIndicatorDefaultErrorCallback;
 import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.CustomBusyPopup;
-import org.drools.workbench.screens.scenariosimulation.client.producers.ScenarioSimulationProducer;
+import org.drools.workbench.screens.scenariosimulation.client.producers.AbstractScenarioSimulationProducer;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetView;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.SettingsPresenter;
@@ -122,29 +122,29 @@ public class ScenarioSimulationEditorPresenter {
     }
 
     @Inject
-    public ScenarioSimulationEditorPresenter(final ScenarioSimulationProducer scenarioSimulationProducer,
+    public ScenarioSimulationEditorPresenter(final AbstractScenarioSimulationProducer abstractScenarioSimulationProducer,
                                              final ScenarioSimulationResourceType type,
                                              final PlaceManager placeManager,
                                              final AbstractScenarioSimulationDocksHandler abstractScenarioSimulationDocksHandler,
                                              final TextFileExport textFileExport,
                                              final ConfirmPopupPresenter confirmPopupPresenter) {
-        this.view = scenarioSimulationProducer.getScenarioSimulationView();
+        this.view = abstractScenarioSimulationProducer.getScenarioSimulationView();
         this.abstractScenarioSimulationDocksHandler = abstractScenarioSimulationDocksHandler;
         this.type = type;
         this.placeManager = placeManager;
-        this.eventBus = scenarioSimulationProducer.getEventBus();
+        this.eventBus = abstractScenarioSimulationProducer.getEventBus();
         this.textFileExport = textFileExport;
         this.confirmPopupPresenter = confirmPopupPresenter;
         view.init();
         initMenuItems();
-        scenarioSimulationProducer.setScenarioSimulationEditorPresenter(this);
+        abstractScenarioSimulationProducer.setScenarioSimulationEditorPresenter(this);
         scenarioMainGridWidget = view.getScenarioGridWidget();
         scenarioMainGridWidget.getScenarioSimulationContext().setScenarioSimulationEditorPresenter(this);
-        scenarioBackgroundGridWidget = scenarioSimulationProducer.getScenarioBackgroundGridWidget();
+        scenarioBackgroundGridWidget = abstractScenarioSimulationProducer.getScenarioBackgroundGridWidget();
         scenarioBackgroundGridWidget.getScenarioSimulationContext().setScenarioSimulationEditorPresenter(this);
         populateTestToolsCommand = createPopulateTestToolsCommand();
         scenarioPresenterId = SCENARIO_PRESENTER_COUNTER.getAndIncrement();
-        context = scenarioSimulationProducer.getScenarioSimulationContext();
+        context = abstractScenarioSimulationProducer.getScenarioSimulationContext();
     }
 
     public void setWrapper(ScenarioSimulationEditorWrapper scenarioSimulationEditorWrapper) {

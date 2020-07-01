@@ -22,6 +22,7 @@ import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNot
 import org.drools.workbench.screens.scenariosimulation.client.events.SetHeaderCellValueEvent;
 import org.drools.workbench.screens.scenariosimulation.client.factories.AbstractFactoriesTest;
 import org.drools.workbench.screens.scenariosimulation.client.metadata.ScenarioHeaderMetaData;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridCell;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +47,8 @@ public class ScenarioHeaderTextAreaDOMElementTest extends AbstractFactoriesTest 
 
     @Mock
     private ScenarioHeaderMetaData scenarioHeaderMetaDataMock;
+    @Mock
+    private ScenarioGridCell scenarioGridCellMock;
 
     @Before
     public void setup() {
@@ -54,11 +57,7 @@ public class ScenarioHeaderTextAreaDOMElementTest extends AbstractFactoriesTest 
         scenarioHeaderTextAreaDOMElement = spy(new ScenarioHeaderTextAreaDOMElement(textAreaMock, scenarioGridLayerMock, scenarioGridMock) {
             {
                 this.context = contextMock;
-            }
-
-            @Override
-            public String getValue() {
-                return "value";
+                this.scenarioGridCell = scenarioGridCellMock;
             }
         });
     }
@@ -123,6 +122,6 @@ public class ScenarioHeaderTextAreaDOMElementTest extends AbstractFactoriesTest 
     public void testDetachCancelEditMode() {
         scenarioHeaderTextAreaDOMElement.detach();
 
-        verify(scenarioHeaderTextAreaDOMElement).flush(eq("value"));
+        verify(scenarioGridCellMock).setEditingMode(false);
     }
 }

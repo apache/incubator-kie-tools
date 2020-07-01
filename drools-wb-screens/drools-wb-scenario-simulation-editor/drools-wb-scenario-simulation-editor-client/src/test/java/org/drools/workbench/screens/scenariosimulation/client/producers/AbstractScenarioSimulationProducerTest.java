@@ -30,14 +30,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class ScenarioSimulationProducerTest extends AbstractProducerTest {
+public class AbstractScenarioSimulationProducerTest extends AbstractProducerTest {
 
-    private ScenarioSimulationProducer scenarioSimulationProducer;
+    private AbstractScenarioSimulationProducer abstractScenarioSimulationProducer;
 
     @Before
     public void setup() {
         super.setup();
-        scenarioSimulationProducer = new ScenarioSimulationProducer() {
+        abstractScenarioSimulationProducer = new AbstractScenarioSimulationProducer() {
             {
                 this.scenarioSimulationEventHandler = scenarioSimulationEventHandlerMock;
                 this.deletePopupPresenter = deletePopupPresenterMock;
@@ -48,14 +48,14 @@ public class ScenarioSimulationProducerTest extends AbstractProducerTest {
                 this.scenarioGridPanelProducer = scenarioGridPanelProducerMock;
                 this.notificationEvent = notificationEventNew;
                 this.scenarioCommandManager = scenarioCommandManagerMock;
-                this.scenarioCommandRegistry = scenarioCommandRegistryMock;
+                this.scenarioCommandRegistryManager = scenarioCommandRegistryManagerMock;
             }
         };
     }
 
     @Test
     public void init() {
-        scenarioSimulationProducer.init();
+        abstractScenarioSimulationProducer.init();
         scenarioContextMenuRegistryMock.setEventBus(eq(eventBusMock));
         verify(scenarioSimulationEventHandlerMock, times(1)).setEventBus(eq(eventBusMock));
         verify(scenarioSimulationEventHandlerMock, times(1)).setDeletePopupPresenter(eq(deletePopupPresenterMock));
@@ -64,12 +64,12 @@ public class ScenarioSimulationProducerTest extends AbstractProducerTest {
         verify(scenarioSimulationEventHandlerMock, times(1)).setFileUploadPopupPresenter(eq(fileUploadPopupPresenterMock));
         verify(scenarioSimulationEventHandlerMock, times(1)).setNotificationEvent(eq(notificationEventNew));
         verify(scenarioSimulationEventHandlerMock, times(1)).setScenarioCommandManager(eq(scenarioCommandManagerMock));
-        verify(scenarioSimulationEventHandlerMock, times(1)).setScenarioCommandRegistry(eq(scenarioCommandRegistryMock));
+        verify(scenarioSimulationEventHandlerMock, times(1)).setScenarioCommandRegistryManager(eq(scenarioCommandRegistryManagerMock));
     }
 
     @Test
     public void getEventBus() {
-        EventBus retrieved = scenarioSimulationProducer.getEventBus();
+        EventBus retrieved = abstractScenarioSimulationProducer.getEventBus();
         assertNotNull(retrieved);
         assertEquals(retrieved, eventBusMock);
         verify(eventBusProducerMock, times(1)).getEventBus();
@@ -77,7 +77,7 @@ public class ScenarioSimulationProducerTest extends AbstractProducerTest {
 
     @Test
     public void getScenarioSimulationView() {
-        ScenarioSimulationView retrieved = scenarioSimulationProducer.getScenarioSimulationView();
+        ScenarioSimulationView retrieved = abstractScenarioSimulationProducer.getScenarioSimulationView();
         assertNotNull(retrieved);
         assertEquals(retrieved, scenarioSimulationViewMock);
         verify(scenarioGridPanelProducerMock, times(1)).getScenarioSimulationView(eq(eventBusMock));
@@ -85,13 +85,13 @@ public class ScenarioSimulationProducerTest extends AbstractProducerTest {
 
     @Test
     public void getScenarioBackgroundGridView() {
-        scenarioSimulationProducer.getScenarioBackgroundGridWidget();
+        abstractScenarioSimulationProducer.getScenarioBackgroundGridWidget();
         verify(scenarioGridPanelProducerMock, times(1)).getBackgroundGridWidget(eq(eventBusMock));
     }
 
     @Test
     public void setScenarioSimulationEditorPresenter() {
-        scenarioSimulationProducer.setScenarioSimulationEditorPresenter(scenarioSimulationEditorPresenterMock);
+        abstractScenarioSimulationProducer.setScenarioSimulationEditorPresenter(scenarioSimulationEditorPresenterMock);
         verify(scenarioSimulationEventHandlerMock, times(1)).setScenarioSimulationPresenter(eq(scenarioSimulationEditorPresenterMock));
     }
 }

@@ -143,6 +143,16 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>appformer-js-bridge</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>appformer-kogito-bridge</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-client-all</artifactId>
       <scope>provided</scope>
       <exclusions>
@@ -727,8 +737,10 @@
                 <compileSourcesArtifact>org.uberfire:uberfire-experimental-client</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-wires-core-grids</compileSourcesArtifact>
 
+                <!-- Appformer -->
                 <compileSourcesArtifact>org.uberfire:appformer-client-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
+                <compileSourcesArtifact>org.uberfire:appformer-kogito-bridge</compileSourcesArtifact>
 
                 <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-metadata-widget</compileSourcesArtifact>
                 <compileSourcesArtifact>org.kie.workbench.widgets:kie-wb-config-resource-widget</compileSourcesArtifact>

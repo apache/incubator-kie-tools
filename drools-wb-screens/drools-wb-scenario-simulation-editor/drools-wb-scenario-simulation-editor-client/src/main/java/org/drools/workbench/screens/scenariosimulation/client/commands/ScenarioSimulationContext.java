@@ -251,6 +251,14 @@ public class ScenarioSimulationContext {
         return getAbstractScesimGridModelByGridWidget(gridWidget).getScenarioExpressionCellTextAreaSingletonDOMElementFactory();
     }
 
+    public void setUndoButtonEnabledStatus(boolean enabled) {
+        scenarioSimulationEditorPresenter.setUndoButtonEnabledStatus(enabled);
+    }
+
+    public void setRedoButtonEnabledStatus(boolean enabled) {
+        scenarioSimulationEditorPresenter.setRedoButtonEnabledStatus(enabled);
+    }
+
     /**
      * Class representing the variable <b>Status</b> of the context
      */

@@ -115,7 +115,9 @@ public class ScenarioCellTextAreaDOMElement extends BaseDOMElement<String, TextA
 
     @Override
     public void detach() {
-        flush(getValue());
         super.detach();
+        if (scenarioGridCell != null) {
+            scenarioGridCell.setEditingMode(false);
+        }
     }
 }
