@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import * as AppFormer from "@kogito-tooling/core-api";
-import { EditorContent, EditorContext, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { EditorContent, EditorContext } from "@kogito-tooling/core-api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
@@ -30,6 +30,7 @@ import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandle
 
 export class EditorEnvelopeController {
   private readonly envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler;
+  public capturedInitRequestYet = false;
 
   private editorEnvelopeView?: EditorEnvelopeView;
 
@@ -42,35 +43,36 @@ export class EditorEnvelopeController {
     private readonly resourceContentEditorCoordinator: ResourceContentEditorCoordinator,
     private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService
   ) {
-    this.envelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(busApi, self => ({
-      receive_contentResponse: (editorContent: EditorContent) => {
-        const contentPath = editorContent.path || "";
-        const editor = this.getEditor();
-        if (editor) {
-          this.editorEnvelopeView!.setLoading();
-          editor
-            .setContent(contentPath, editorContent.content)
-            .finally(() => this.editorEnvelopeView!.setLoadingFinished())
-            .then(() => self.notify_ready());
+    this.envelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(busApi, {
+      receive_initRequest: async (init: { origin: string; busId: string }) => {
+        this.envelopeBusInnerMessageHandler.targetOrigin = init.origin;
+        this.envelopeBusInnerMessageHandler.associatedBusId = init.busId;
+
+        if (this.capturedInitRequestYet) {
+          return;
         }
+
+        this.capturedInitRequestYet = true;
+
+        const language = await this.envelopeBusInnerMessageHandler.request_languageResponse();
+        const editor = await editorFactory.createEditor(language, this.envelopeBusInnerMessageHandler);
+
+        await this.open(editor);
+        this.editorEnvelopeView!.setLoading();
+
+        const editorContent = await this.envelopeBusInnerMessageHandler.request_contentResponse();
+
+        await editor
+          .setContent(editorContent.path ?? "", editorContent.content)
+          .finally(() => this.editorEnvelopeView!.setLoadingFinished());
+
+        this.envelopeBusInnerMessageHandler.notify_ready();
       },
-      receive_contentRequest: () => {
-        const editor = this.getEditor();
-        if (editor) {
-          editor.getContent().then(content => self.respond_contentRequest({ content: content }));
-        }
-      },
-      receive_languageResponse: (languageData: LanguageData) => {
-        this.editorFactory
-          .createEditor(languageData, this.envelopeBusInnerMessageHandler)
-          .then(editor => this.open(editor))
-          .then(() => self.request_contentResponse());
-      },
-      receive_resourceContentResponse: (resourceContent: ResourceContent) => {
-        this.resourceContentEditorCoordinator.resolvePending(resourceContent);
-      },
-      receive_resourceContentList: (resourcesList: ResourcesList) => {
-        this.resourceContentEditorCoordinator.resolvePendingList(resourcesList);
+      receive_contentChangedNotification: (editorContent: EditorContent) => {
+        this.editorEnvelopeView!.setLoading();
+        this.getEditor()!
+          .setContent(editorContent.path ?? "", editorContent.content)
+          .finally(() => this.editorEnvelopeView!.setLoadingFinished());
       },
       receive_editorUndo: () => {
         this.stateControlService.undo();
@@ -78,17 +80,20 @@ export class EditorEnvelopeController {
       receive_editorRedo: () => {
         this.stateControlService.redo();
       },
-      receive_previewRequest: () => {
-        this.getEditor()
-          ?.getPreview()
-          .then(preview => self.respond_previewRequest(preview!))
-          .catch(error => console.log(`Error retrieving preview: ${error}`));
+      receive_contentRequest: async () => {
+        return this.getEditor()!
+          .getContent()
+          .then(content => ({ content: content }));
       },
-      receive_guidedTourElementPositionRequest: (selector: string) => {
-        const position = getGuidedTourElementPosition(selector);
-        self.respond_guidedTourElementPositionRequest(position);
+      receive_previewRequest: () => {
+        return this.getEditor()!
+          .getPreview()
+          .then(previewSvg => previewSvg ?? "");
+      },
+      receive_guidedTourElementPositionRequest: async (selector: string) => {
+        return getGuidedTourElementPosition(selector);
       }
-    }));
+    });
   }
 
   //TODO: Create messages to control the lifecycle of enveloped components?

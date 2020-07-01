@@ -81,15 +81,9 @@ export class KogitoEditor {
           this.panel.webview.postMessage(msg);
         }
       },
-      (self: EnvelopeBusOuterMessageHandler) => ({
-        pollInit: () => {
-          self.request_initResponse("vscode");
-        },
+      {
         receive_setContentError: (errorMessage: string) => {
           vscode.window.showErrorMessage(errorMessage);
-        },
-        receive_dirtyIndicatorChange: (isDirty: boolean) => {
-          this.updateDirtyIndicator(isDirty);
         },
         receive_ready(): void {
           /**/
@@ -128,22 +122,12 @@ export class KogitoEditor {
         receive_resourceListRequest: (request: ResourceListRequest) => {
           return this.resourceContentService.list(request.pattern, request.opts);
         }
-      })
+      }
     );
   }
 
   public asWebviewUri(absolutePath: Uri) {
     return this.panel.webview.asWebviewUri(absolutePath);
-  }
-
-  private updateDirtyIndicator(isDirty: boolean) {
-    const titleWithoutDirtyIndicator = this.panel.title.endsWith(KogitoEditor.DIRTY_INDICATOR)
-      ? this.panel.title.slice(0, -KogitoEditor.DIRTY_INDICATOR.length)
-      : this.panel.title;
-
-    this.panel.title = isDirty
-      ? `${titleWithoutDirtyIndicator}${KogitoEditor.DIRTY_INDICATOR}`
-      : titleWithoutDirtyIndicator;
   }
 
   public async requestSave(destination: vscode.Uri, cancellation: vscode.CancellationToken): Promise<void> {
@@ -170,7 +154,7 @@ export class KogitoEditor {
       }
       vscode.workspace.fs.writeFile(fileJob.target, this.encoder.encode(content.content)).then(() => {
         if (fileJob.type === JobType.SAVE) {
-          vscode.window.setStatusBarMessage("Saved successfully!", 3000);
+          vscode.window.setStatusBarMessage("Saved successfulli!", 3000);
         }
         this.jobRegistry.execute(this.envelopeBusOuterMessageHandler.busId);
       });
@@ -234,7 +218,7 @@ export class KogitoEditor {
       )
     );
 
-    this.envelopeBusOuterMessageHandler.startInitPolling();
+    this.envelopeBusOuterMessageHandler.startInitPolling("vscode");
   }
 
   public setupPanelActiveStatusChange() {

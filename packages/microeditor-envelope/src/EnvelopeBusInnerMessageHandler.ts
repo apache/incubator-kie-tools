@@ -17,7 +17,10 @@
 import {
   EnvelopeBusApi,
   EnvelopeBusMessage,
-  EnvelopeBusMessageType
+  EnvelopeBusMessageManager,
+  EnvelopeBusMessagePurpose,
+  InnerEnvelopeBusMessageType,
+  OuterEnvelopeBusMessageType
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import {
   EditorContent,
@@ -25,36 +28,31 @@ import {
   LanguageData,
   ResourceContent,
   ResourceContentOptions,
-  ResourcesList,
   ResourceListOptions,
+  ResourcesList,
   StateControlCommand
 } from "@kogito-tooling/core-api";
-import { UserInteraction, Tutorial, Rect } from "@kogito-tooling/guided-tour";
+import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
 
 export interface Impl {
-  receive_contentResponse(content: EditorContent): void;
-  receive_languageResponse(languageData: LanguageData): void;
-  receive_contentRequest(): void;
-  receive_resourceContentResponse(content: ResourceContent): void;
-  receive_resourceContentList(list: ResourcesList): void;
+  receive_contentChangedNotification(content: EditorContent): void;
   receive_editorUndo(): void;
   receive_editorRedo(): void;
-  receive_previewRequest(): void;
-  receive_guidedTourElementPositionRequest(selector: string): void;
+
+  receive_initRequest(init: { origin: string; busId: string }): Promise<void>;
+  receive_contentRequest(): Promise<EditorContent>;
+  receive_previewRequest(): Promise<string>;
+  receive_guidedTourElementPositionRequest(selector: string): Promise<Rect>;
 }
 
 export class EnvelopeBusInnerMessageHandler {
-  private readonly envelopeBusApi: EnvelopeBusApi;
-  private readonly impl: Impl;
-
-  public capturedInitRequestYet = false;
   public targetOrigin: string;
-  public id: string;
+  public associatedBusId: string;
   public eventListener?: any;
+  private readonly manager: EnvelopeBusMessageManager<OuterEnvelopeBusMessageType>;
 
-  constructor(busApi: EnvelopeBusApi, impl: (_this: EnvelopeBusInnerMessageHandler) => Impl) {
-    this.envelopeBusApi = busApi;
-    this.impl = impl(this);
+  constructor(private readonly busApi: EnvelopeBusApi, private readonly impl: Impl) {
+    this.manager = new EnvelopeBusMessageManager<OuterEnvelopeBusMessageType>(m => this.send(m));
   }
 
   public startListening() {
@@ -74,124 +72,92 @@ export class EnvelopeBusInnerMessageHandler {
     if (!this.targetOrigin) {
       throw new Error("Tried to send message without targetOrigin set");
     }
-    this.envelopeBusApi.postMessage({ ...message, busId: this.id }, this.targetOrigin);
-  }
-
-  public respond_initRequest() {
-    return this.send({ type: EnvelopeBusMessageType.RETURN_INIT, data: undefined });
-  }
-
-  public respond_contentRequest(content: EditorContent) {
-    return this.send({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: content });
-  }
-
-  public request_languageResponse() {
-    return this.send({ type: EnvelopeBusMessageType.REQUEST_LANGUAGE, data: undefined });
-  }
-
-  public request_contentResponse() {
-    return this.send({ type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined });
+    this.busApi.postMessage({ ...message, busId: this.associatedBusId }, this.targetOrigin);
   }
 
   public notify_setContentError(errorMessage: string) {
-    return this.send({ type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, data: errorMessage });
-  }
-
-  public notify_dirtyIndicatorChange(isDirty: boolean) {
-    return this.send({ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE, data: isDirty });
+    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR, errorMessage);
   }
 
   public notify_ready() {
-    return this.send({ type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined });
-  }
-
-  public request_resourceContent(path: string, opts?: ResourceContentOptions) {
-    return this.send({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT, data: { path: path, opts: opts } });
-  }
-
-  public request_resourceList(pattern: string, opts?: ResourceListOptions) {
-    return this.send({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_LIST, data: { pattern: pattern, opts: opts } });
+    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_READY, undefined);
   }
 
   public notify_newEdit(edit: KogitoEdit) {
-    return this.send({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT, data: edit });
+    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT, edit);
   }
 
   public notify_openFile(path: string) {
-    return this.send({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_OPEN_FILE, data: path });
+    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_EDITOR_OPEN_FILE, path);
   }
 
   public notify_guidedTourRefresh(userInteraction: UserInteraction) {
-    return this.send({ type: EnvelopeBusMessageType.NOTIFY_GUIDED_TOUR_USER_INTERACTION, data: userInteraction });
+    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_GUIDED_TOUR_USER_INTERACTION, userInteraction);
   }
 
   public notify_guidedTourRegisterTutorial(tutorial: Tutorial) {
-    return this.send({ type: EnvelopeBusMessageType.NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL, data: tutorial });
+    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL, tutorial);
   }
 
-  public respond_guidedTourElementPositionRequest(rect: Rect) {
-    return this.send({ type: EnvelopeBusMessageType.RETURN_GUIDED_TOUR_ELEMENT_POSITION, data: rect });
-  }
-
-  public respond_previewRequest(previewSvg: string) {
-    return this.send({ type: EnvelopeBusMessageType.RETURN_PREVIEW, data: previewSvg });
-  }
   public notify_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
-    return this.send({ type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE, data: stateControlCommand });
+    return this.manager.notify(OuterEnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE, stateControlCommand);
   }
 
-  private receive_initRequest(init: { origin: string; busId: string }) {
-    this.targetOrigin = init.origin;
-    this.id = init.busId;
+  public request_languageResponse() {
+    return this.manager.request<LanguageData>(OuterEnvelopeBusMessageType.REQUEST_LANGUAGE, undefined);
+  }
 
-    this.respond_initRequest();
+  public request_contentResponse() {
+    return this.manager.request<EditorContent>(OuterEnvelopeBusMessageType.REQUEST_CONTENT, undefined);
+  }
 
-    if (this.capturedInitRequestYet) {
-      return;
-    }
+  public request_resourceContent(path: string, opts?: ResourceContentOptions) {
+    return this.manager.request<ResourceContent | undefined>(OuterEnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT, {
+      path: path,
+      opts: opts
+    });
+  }
 
-    this.capturedInitRequestYet = true;
-    this.request_languageResponse();
+  public request_resourceList(pattern: string, opts?: ResourceListOptions) {
+    return this.manager.request<ResourcesList>(OuterEnvelopeBusMessageType.REQUEST_RESOURCE_LIST, {
+      pattern: pattern,
+      opts: opts
+    });
   }
 
   public receive(message: EnvelopeBusMessage<any>) {
+    if (message.purpose === EnvelopeBusMessagePurpose.RESPONSE) {
+      this.manager.callback(message);
+      return;
+    }
+
     switch (message.type) {
-      case EnvelopeBusMessageType.REQUEST_INIT:
-        const origin = message.data as string;
-        this.receive_initRequest({ origin: origin, busId: message.busId as string });
-        break;
-      case EnvelopeBusMessageType.RETURN_LANGUAGE:
-        this.impl.receive_languageResponse(message.data as LanguageData);
-        break;
-      case EnvelopeBusMessageType.RETURN_CONTENT:
-        this.impl.receive_contentResponse(message.data as EditorContent);
-        break;
-      case EnvelopeBusMessageType.REQUEST_CONTENT:
-        this.impl.receive_contentRequest();
-        break;
-      case EnvelopeBusMessageType.RETURN_RESOURCE_CONTENT:
-        const resourceContent = message.data as ResourceContent;
-        this.impl.receive_resourceContentResponse(resourceContent);
-        break;
-      case EnvelopeBusMessageType.RETURN_RESOURCE_LIST:
-        const resourcesList = message.data as ResourcesList;
-        this.impl.receive_resourceContentList(resourcesList);
-        break;
-      case EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO:
+      //NOTIFICATIONS
+      case InnerEnvelopeBusMessageType.NOTIFY_EDITOR_UNDO:
         this.impl.receive_editorUndo();
         break;
-      case EnvelopeBusMessageType.NOTIFY_EDITOR_REDO:
+      case InnerEnvelopeBusMessageType.NOTIFY_EDITOR_REDO:
         this.impl.receive_editorRedo();
         break;
-      case EnvelopeBusMessageType.REQUEST_PREVIEW:
-        this.impl.receive_previewRequest();
+      //REQUESTS
+      case InnerEnvelopeBusMessageType.REQUEST_INIT:
+        const init = message.data as { origin: string; busId: string };
+        this.impl.receive_initRequest(init).then(() => this.manager.respond(message, {}));
         break;
-      case EnvelopeBusMessageType.REQUEST_GUIDED_TOUR_ELEMENT_POSITION:
+      case InnerEnvelopeBusMessageType.REQUEST_PREVIEW:
+        this.impl.receive_previewRequest().then(previewSvg => this.manager.respond(message, previewSvg));
+        break;
+      case InnerEnvelopeBusMessageType.REQUEST_CONTENT:
+        this.impl.receive_contentRequest().then(content => this.manager.respond(message, content));
+        break;
+      case InnerEnvelopeBusMessageType.REQUEST_GUIDED_TOUR_ELEMENT_POSITION:
         const selector = message.data as string;
-        this.impl.receive_guidedTourElementPositionRequest(selector);
+        this.impl
+          .receive_guidedTourElementPositionRequest(selector)
+          .then(position => this.manager.respond(message, position));
         break;
       default:
-        console.info(`[Bus ${this.id}]: Unknown message type received: ${message.type}`);
+        console.info(`[Bus ${this.associatedBusId}]: Unknown message type received: ${message.type}`);
         break;
     }
   }

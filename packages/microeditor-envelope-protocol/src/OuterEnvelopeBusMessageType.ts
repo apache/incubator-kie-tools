@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-import { InnerEnvelopeBusMessageType } from "./InnerEnvelopeBusMessageType";
-import { OuterEnvelopeBusMessageType } from "./OuterEnvelopeBusMessageType";
+export enum OuterEnvelopeBusMessageType {
+  REQUEST_RESOURCE_LIST,
+  REQUEST_RESOURCE_CONTENT,
+  REQUEST_CONTENT,
+  REQUEST_LANGUAGE,
 
-export interface EnvelopeBusMessage<T> {
-  type: InnerEnvelopeBusMessageType | OuterEnvelopeBusMessageType;
-  busId?: string;
-  requestId?: string;
-  data: T;
-  purpose: EnvelopeBusMessagePurpose;
-}
-
-export enum EnvelopeBusMessagePurpose {
-  REQUEST = "request",
-  RESPONSE = "response",
-  NOTIFICATION = "notification"
+  NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL,
+  NOTIFY_GUIDED_TOUR_USER_INTERACTION,
+  NOTIFY_STATE_CONTROL_COMMAND_UPDATE,
+  NOTIFY_EDITOR_OPEN_FILE,
+  NOTIFY_EDITOR_NEW_EDIT,
+  NOTIFY_READY,
+  NOTIFY_SET_CONTENT_ERROR
 }

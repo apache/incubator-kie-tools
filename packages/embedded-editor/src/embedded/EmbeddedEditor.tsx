@@ -55,10 +55,6 @@ export interface Props {
    */
   onSetContentError?: (errorMessage: string) => void;
   /**
-   * Optional callback for when the editor signals its content is changed.
-   */
-  onDirtyIndicatorChange?: (isDirty: boolean) => void;
-  /**
    * Optional callback for when the editor has initialised and is considered ready.
    */
   onReady?: () => void;
@@ -191,15 +187,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           }
         }
       },
-      self => ({
-        pollInit() {
-          self.request_initResponse(window.location.origin);
-        },
+      {
         receive_setContentError(errorMessage: string) {
           props.onSetContentError?.(errorMessage);
-        },
-        receive_dirtyIndicatorChange(isDirty: boolean) {
-          props.onDirtyIndicatorChange?.(isDirty);
         },
         receive_ready() {
           props.onReady?.();
@@ -233,7 +223,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         receive_resourceListRequest(request: ResourceListRequest) {
           return onResourceListRequest(request);
         }
-      })
+      }
     );
   }, [
     props.router,
@@ -257,7 +247,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   useEffect(() => {
     const listener = (msg: MessageEvent) => envelopeBusOuterMessageHandler.receive(msg.data);
     window.addEventListener("message", listener, false);
-    envelopeBusOuterMessageHandler.startInitPolling();
+    envelopeBusOuterMessageHandler.startInitPolling(window.location.origin);
 
     return () => {
       envelopeBusOuterMessageHandler.stopInitPolling();

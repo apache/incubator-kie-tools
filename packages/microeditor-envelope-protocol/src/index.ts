@@ -16,5 +16,7 @@
 
 export * from "./EnvelopeBusOuterMessageHandler";
 export * from "./EnvelopeBusMessage";
-export * from "./EnvelopeBusMessageType";
+export * from "./InnerEnvelopeBusMessageType";
+export * from "./OuterEnvelopeBusMessageType";
 export * from "./EnvelopeBusApi";
+export * from "./EnvelopeBusMessageManager";

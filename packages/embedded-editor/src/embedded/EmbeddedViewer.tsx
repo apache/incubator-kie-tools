@@ -88,7 +88,6 @@ export const EmbeddedViewer = (props: Props) => {
       router={props.router}
       channelType={props.channelType}
       onSetContentError={noop}
-      onDirtyIndicatorChange={noop}
       onReady={noop}
       onResourceContentRequest={onResourceContentRequest}
       onResourceListRequest={onResourceListRequest}

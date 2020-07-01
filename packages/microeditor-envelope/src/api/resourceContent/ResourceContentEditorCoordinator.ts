@@ -15,61 +15,17 @@
  */
 
 import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
-import { ResourcesList, ResourceContent, ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/core-api";
+import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/core-api";
 import { ResourceContentApi } from "./ResourceContentApi";
 
 export class ResourceContentEditorCoordinator {
-  private pendingResourceRequests = new Map<string, (c: string) => void>();
-  private pendingResourceListRequests = new Map<string, (c: string[]) => void>();
-
-  public resolvePendingList(resourcesList: ResourcesList) {
-    const resourceListCallback = this.pendingResourceListRequests.get(resourcesList.pattern);
-    if (resourceListCallback) {
-      resourceListCallback(resourcesList.paths);
-      this.pendingResourceRequests.delete(resourcesList.pattern);
-    } else {
-      console.error(`[ResourceContentEditorCoordinator]: Callback for pattern "${resourcesList.pattern}" not found.`);
-    }
-  }
-
-  public resolvePending(resourceContent: ResourceContent) {
-    const resourceContentCallback = this.pendingResourceRequests.get(resourceContent.path);
-    if (resourceContentCallback) {
-      resourceContentCallback(resourceContent.content!);
-      this.pendingResourceRequests.delete(resourceContent.path);
-    } else {
-      console.error(`[ResourceContentEditorCoordinator]: Callback for resource "${resourceContent.path}" not found.`);
-    }
-  }
-
   public exposeApi(messageBus: EnvelopeBusInnerMessageHandler): ResourceContentApi {
-    const pendingResourceRequests = this.pendingResourceRequests;
-    const pendingResourceListRequests = this.pendingResourceListRequests;
     return {
       get(path: string, opts?: ResourceContentOptions) {
-        messageBus.request_resourceContent(path, opts);
-        return new Promise(resolve => {
-          const previousCallback = pendingResourceRequests.get(path);
-          pendingResourceRequests.set(path, (value: string) => {
-            if (previousCallback) {
-              previousCallback(value);
-            }
-            resolve(value);
-          });
-        });
+        return messageBus.request_resourceContent(path, opts).then(r => r?.content);
       },
       list(pattern: string, opts?: ResourceListOptions) {
-        messageBus.request_resourceList(pattern, opts);
-        return new Promise(resolve => {
-          const previousCallback = pendingResourceListRequests.get(pattern);
-          pendingResourceListRequests.set(pattern, (value: string[]) => {
-            value.sort();
-            if (previousCallback) {
-              previousCallback(value);
-            }
-            resolve(value);
-          });
-        });
+        return messageBus.request_resourceList(pattern, opts).then(r => r.paths);
       }
     };
   }
