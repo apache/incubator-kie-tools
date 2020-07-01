@@ -15,21 +15,21 @@
  */
 
 import * as vscode from "vscode";
+import { Uri } from "vscode";
 import * as fs from "fs";
 import * as __path from "path";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEditorJobRegistry, JobType } from "./KogitoEditorJobRegistry";
+import { JobType, KogitoEditorJobRegistry } from "./KogitoEditorJobRegistry";
 import {
   EditorContent,
   KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
-  Router,
   ResourceListRequest,
+  Router,
   StateControlCommand
 } from "@kogito-tooling/core-api";
-import { Uri } from "vscode";
 
 export class KogitoEditor {
   private static readonly DIRTY_INDICATOR = " *";
@@ -78,17 +78,13 @@ export class KogitoEditor {
     this.signalEdit = signalEdit;
     this.envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
       {
-        postMessage: msg => {
+        postMessage: (msg: any) => {
           this.panel.webview.postMessage(msg);
         }
       },
       (self: EnvelopeBusOuterMessageHandler) => ({
         pollInit: () => {
           self.request_initResponse("vscode");
-        },
-        receive_languageRequest: () => {
-          const pathFileExtension = this.uri.fsPath.split(".").pop()!;
-          self.respond_languageRequest(this.router.getLanguageData(pathFileExtension));
         },
         receive_contentResponse: (content: EditorContent) => {
           const fileJob = this.jobRegistry.resolve(self.busId);
@@ -102,37 +98,14 @@ export class KogitoEditor {
             this.jobRegistry.execute(self.busId);
           });
         },
-        receive_contentRequest: () => {
-          vscode.workspace.fs.readFile(initialBackup ?? this.uri).then(contentArray => {
-            initialBackup = undefined;
-            self.respond_contentRequest({
-              content: this.decoder.decode(contentArray),
-              path: this.relativePath
-            });
-          });
-        },
         receive_setContentError: (errorMessage: string) => {
           vscode.window.showErrorMessage(errorMessage);
         },
         receive_dirtyIndicatorChange: (isDirty: boolean) => {
           this.updateDirtyIndicator(isDirty);
         },
-        receive_resourceContentRequest: (request: ResourceContentRequest) => {
-          this.resourceContentService
-            .get(request.path, request.opts)
-            .then(content => self.respond_resourceContent(content!));
-        },
-        receive_resourceListRequest: (request: ResourceListRequest) => {
-          this.resourceContentService.list(request.pattern, request.opts).then(list => self.respond_resourceList(list));
-        },
         receive_ready(): void {
           /**/
-        },
-        notify_editorUndo: () => {
-          this.notify_editorUndo();
-        },
-        notify_editorRedo: () => {
-          this.notify_editorRedo();
         },
         receive_newEdit: (edit: KogitoEdit) => {
           this.notify_newEdit(edit);
@@ -140,7 +113,7 @@ export class KogitoEditor {
         receive_openFile: (path: string) => {
           this.notify_openFile(path);
         },
-        receive_previewRequest: preview => {
+        receive_previewResponse: (preview: string) => {
           if (preview) {
             const parsedPath = __path.parse(this.uri.fsPath);
             fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, preview);
@@ -159,6 +132,23 @@ export class KogitoEditor {
         },
         receive_guidedTourUserInteraction: _ => {
           /* empty */
+        },
+        //REQUESTS
+        receive_languageRequest: async () => {
+          const pathFileExtension = this.uri.fsPath.split(".").pop()!;
+          return this.router.getLanguageData(pathFileExtension);
+        },
+        receive_contentRequest: async () => {
+          return vscode.workspace.fs.readFile(initialBackup ?? this.uri).then(contentArray => {
+            initialBackup = undefined;
+            return { content: this.decoder.decode(contentArray), path: this.relativePath };
+          });
+        },
+        receive_resourceContentRequest: (request: ResourceContentRequest) => {
+          return this.resourceContentService.get(request.path, request.opts);
+        },
+        receive_resourceListRequest: (request: ResourceListRequest) => {
+          return this.resourceContentService.list(request.pattern, request.opts);
         }
       })
     );

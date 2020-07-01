@@ -25,10 +25,10 @@ import {
   StateControlCommand
 } from "@kogito-tooling/core-api";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
-import { KogitoGuidedTour, UserInteraction, Tutorial, Rect } from "@kogito-tooling/guided-tour";
+import { KogitoGuidedTour, Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
 import * as CSS from "csstype";
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { File } from "../common";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 import { StateControl } from "../stateControl";
@@ -204,16 +204,8 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         pollInit() {
           self.request_initResponse(window.location.origin);
         },
-        receive_languageRequest() {
-          self.respond_languageRequest(props.router.getLanguageData(props.file.editorType));
-        },
         receive_contentResponse(content: EditorContent) {
           props.onContentResponse?.(content);
-        },
-        receive_contentRequest() {
-          props.file
-            .getFileContents()
-            .then(c => self.respond_contentRequest({ content: c ?? "", path: props.file.fileName }));
         },
         receive_setContentError(errorMessage: string) {
           props.onSetContentError?.(errorMessage);
@@ -224,12 +216,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         receive_ready() {
           props.onReady?.();
         },
-        receive_resourceContentRequest(request: ResourceContentRequest) {
-          onResourceContentRequest(request).then(r => self.respond_resourceContent(r!));
-        },
-        receive_resourceListRequest(request: ResourceListRequest) {
-          onResourceListRequest(request).then(r => self.respond_resourceList(r!));
-        },
         receive_openFile: (path: string) => {
           props.onOpenFile?.(path);
         },
@@ -237,7 +223,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           stateControl.updateCommandStack(edit.id);
           props.onNewEdit?.(edit);
         },
-        receive_previewRequest(previewSvg: string) {
+        receive_previewResponse(previewSvg: string) {
           props.onPreviewResponse?.(previewSvg);
         },
         receive_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
@@ -252,6 +238,19 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         receive_guidedTourElementPositionResponse(position: Rect) {
           const parentRect = iframeRef.current?.getBoundingClientRect();
           KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
+        },
+        //requests
+        receive_languageRequest() {
+          return props.router.getLanguageData(props.file.editorType);
+        },
+        receive_contentRequest() {
+          return props.file.getFileContents().then(c => ({ content: c ?? "", path: props.file.fileName }));
+        },
+        receive_resourceContentRequest(request: ResourceContentRequest) {
+          return onResourceContentRequest(request);
+        },
+        receive_resourceListRequest(request: ResourceListRequest) {
+          return onResourceListRequest(request);
         }
       })
     );

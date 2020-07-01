@@ -20,31 +20,34 @@ import {
   LanguageData,
   ResourceContent,
   ResourceContentRequest,
-  ResourcesList,
   ResourceListRequest,
+  ResourcesList,
   StateControlCommand
 } from "@kogito-tooling/core-api";
-import { UserInteraction, Tutorial, Rect } from "@kogito-tooling/guided-tour";
+import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 import { EnvelopeBusMessageType } from "./EnvelopeBusMessageType";
 import { EnvelopeBusApi } from "./EnvelopeBusApi";
 
 export interface EnvelopeBusOuterMessageHandlerImpl {
   pollInit(): void;
-  receive_languageRequest(): void;
-  receive_contentRequest(): void;
-  receive_contentResponse(content: EditorContent): void;
+  //nofity
   receive_setContentError(errorMessage: string): void;
   receive_dirtyIndicatorChange(isDirty: boolean): void;
-  receive_resourceContentRequest(resourceContentService: ResourceContentRequest): void;
-  receive_resourceListRequest(request: ResourceListRequest): void;
-  receive_previewRequest(previewSvg: string): void;
   receive_ready(): void;
-  receive_newEdit(edit: KogitoEdit): void;
-  receive_stateControlCommandUpdate(command: StateControlCommand): void;
   receive_openFile(path: string): void;
   receive_guidedTourUserInteraction(userInteraction: UserInteraction): void;
   receive_guidedTourRegisterTutorial(tutorial: Tutorial): void;
+  receive_newEdit(edit: KogitoEdit): void;
+  receive_stateControlCommandUpdate(command: StateControlCommand): void;
+  //requests
+  receive_languageRequest(): Promise<LanguageData | undefined>;
+  receive_contentRequest(): Promise<EditorContent>;
+  receive_resourceContentRequest(resourceContentService: ResourceContentRequest): Promise<ResourceContent | undefined>;
+  receive_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;
+  //responses
+  receive_previewResponse(previewSvg: string): void;
+  receive_contentResponse(content: EditorContent): void;
   receive_guidedTourElementPositionResponse(position: Rect): void;
 }
 
@@ -88,18 +91,6 @@ export class EnvelopeBusOuterMessageHandler {
     this.initPollingTimeout = false;
   }
 
-  public respond_languageRequest(languageData?: LanguageData) {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
-  }
-
-  public respond_contentRequest(content: EditorContent) {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: content });
-  }
-
-  public request_contentResponse() {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined });
-  }
-
   public notify_editorUndo() {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO, data: undefined });
   }
@@ -108,16 +99,13 @@ export class EnvelopeBusOuterMessageHandler {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_REDO, data: undefined });
   }
 
+  //REQUEST
+  public request_contentResponse() {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined });
+  }
+
   public request_initResponse(origin: string) {
     this.busApi.postMessage({ busId: this.busId, type: EnvelopeBusMessageType.REQUEST_INIT, data: origin });
-  }
-
-  public respond_resourceContent(content: ResourceContent) {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_RESOURCE_CONTENT, data: content });
-  }
-
-  public respond_resourceList(resourcesList: ResourcesList) {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_RESOURCE_LIST, data: resourcesList });
   }
 
   public request_previewResponse() {
@@ -126,6 +114,23 @@ export class EnvelopeBusOuterMessageHandler {
 
   public request_guidedTourElementPositionResponse(selector: string) {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_GUIDED_TOUR_ELEMENT_POSITION, data: selector });
+  }
+
+  //RESPOND
+  public respond_languageRequest(languageData?: LanguageData) {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
+  }
+
+  public respond_contentRequest(content: EditorContent) {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: content });
+  }
+
+  public respond_resourceContent(content: ResourceContent) {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_RESOURCE_CONTENT, data: content });
+  }
+
+  public respond_resourceList(resourcesList: ResourcesList) {
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.RETURN_RESOURCE_LIST, data: resourcesList });
   }
 
   public receive(message: EnvelopeBusMessage<any>) {
@@ -137,14 +142,8 @@ export class EnvelopeBusOuterMessageHandler {
       case EnvelopeBusMessageType.RETURN_INIT:
         this.stopInitPolling();
         break;
-      case EnvelopeBusMessageType.REQUEST_LANGUAGE:
-        this.impl.receive_languageRequest();
-        break;
       case EnvelopeBusMessageType.RETURN_CONTENT:
         this.impl.receive_contentResponse(message.data as EditorContent);
-        break;
-      case EnvelopeBusMessageType.REQUEST_CONTENT:
-        this.impl.receive_contentRequest();
         break;
       case EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR:
         this.impl.receive_setContentError(message.data as string);
@@ -155,21 +154,14 @@ export class EnvelopeBusOuterMessageHandler {
       case EnvelopeBusMessageType.NOTIFY_READY:
         this.impl.receive_ready();
         break;
-      case EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT:
-        this.impl.receive_resourceContentRequest(message.data as ResourceContentRequest);
-        break;
-      case EnvelopeBusMessageType.REQUEST_RESOURCE_LIST:
-        this.impl.receive_resourceListRequest(message.data as ResourceListRequest);
-        break;
       case EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT:
-        const kogitoEdit = message.data as KogitoEdit;
-        this.impl.receive_newEdit(kogitoEdit);
+        this.impl.receive_newEdit(message.data as KogitoEdit);
         break;
       case EnvelopeBusMessageType.NOTIFY_EDITOR_OPEN_FILE:
         this.impl.receive_openFile(message.data as string);
         break;
       case EnvelopeBusMessageType.RETURN_PREVIEW:
-        this.impl.receive_previewRequest(message.data as string);
+        this.impl.receive_previewResponse(message.data as string);
         break;
       case EnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE:
         this.impl.receive_stateControlCommandUpdate(message.data);
@@ -183,6 +175,24 @@ export class EnvelopeBusOuterMessageHandler {
       case EnvelopeBusMessageType.RETURN_GUIDED_TOUR_ELEMENT_POSITION:
         this.impl.receive_guidedTourElementPositionResponse(message.data as Rect);
         break;
+      //REQUESTS
+      case EnvelopeBusMessageType.REQUEST_LANGUAGE:
+        this.impl.receive_languageRequest().then(p => this.respond_languageRequest(p));
+        break;
+      case EnvelopeBusMessageType.REQUEST_CONTENT:
+        this.impl.receive_contentRequest().then(p => this.respond_contentRequest(p));
+        break;
+      case EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT:
+        this.impl
+          .receive_resourceContentRequest(message.data as ResourceContentRequest)
+          .then(p => this.respond_resourceContent(p!));
+        break;
+      case EnvelopeBusMessageType.REQUEST_RESOURCE_LIST:
+        this.impl
+          .receive_resourceListRequest(message.data as ResourceListRequest)
+          .then(p => this.respond_resourceList(p));
+        break;
+      //
       default:
         console.info(`Unknown message type received: ${message.type}`);
         break;

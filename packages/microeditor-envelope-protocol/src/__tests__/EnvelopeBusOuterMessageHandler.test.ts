@@ -83,7 +83,7 @@ beforeEach(() => {
       receive_openFile(path: string): void {
         receivedMessages.push("receiveOpenFile_" + path);
       },
-      receive_previewRequest(previewSvg: string) {
+      receive_previewResponse(previewSvg: string) {
         receivedMessages.push("preview");
       },
       receive_stateControlCommandUpdate(command: StateControlCommand) {
