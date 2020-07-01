@@ -75,7 +75,8 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                                     new SyncPromises(),
                                     includedModelsPage,
                                     importsPageProvider,
-                                    contextProvider) {
+                                    contextProvider,
+                                    guidedTourBridgeInitializer) {
             @Override
             protected ElementWrapperWidget<?> getWidget(final HTMLElement element) {
                 return searchBarComponentWidget;

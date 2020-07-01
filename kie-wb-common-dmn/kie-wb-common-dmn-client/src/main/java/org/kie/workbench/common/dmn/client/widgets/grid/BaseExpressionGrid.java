@@ -388,7 +388,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     }
 
     private void fireExpressionEditorChanged() {
-        editorSelectedEvent.fire(new ExpressionEditorChanged());
+        getNodeUUID().ifPresent(nodeUUID -> editorSelectedEvent.fire(new ExpressionEditorChanged(nodeUUID)));
     }
 
     @Override

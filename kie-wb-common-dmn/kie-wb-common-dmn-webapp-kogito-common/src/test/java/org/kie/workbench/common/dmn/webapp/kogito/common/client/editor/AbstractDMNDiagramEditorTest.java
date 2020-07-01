@@ -37,6 +37,7 @@ import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -239,6 +240,9 @@ public abstract class AbstractDMNDiagramEditorTest {
     protected MonacoFEELInitializer feelInitializer;
 
     @Mock
+    protected GuidedTourBridgeInitializer guidedTourBridgeInitializer;
+
+    @Mock
     protected CanvasFileExport canvasFileExport;
 
     @Mock
@@ -315,6 +319,7 @@ public abstract class AbstractDMNDiagramEditorTest {
         verify(fileMenuBuilder).build();
 
         verify(multiPageEditorContainerView).init(eq(editor));
+        verify(guidedTourBridgeInitializer).init();
     }
 
     @Test

@@ -44,6 +44,7 @@ import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDi
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNEditorMenuSessionItems;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNProjectToolbarStateHandler;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.kogito.webapp.base.client.editor.KogitoScreen;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
@@ -123,7 +124,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements Kogito
                             final Promises promises,
                             final IncludedModelsPage includedModelsPage,
                             final IncludedModelsPageStateProviderImpl importsPageProvider,
-                            final EditorContextProvider contextProvider) {
+                            final EditorContextProvider contextProvider,
+                            final GuidedTourBridgeInitializer guidedTourBridgeInitializer) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -156,7 +158,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements Kogito
               promises,
               includedModelsPage,
               importsPageProvider,
-              contextProvider);
+              contextProvider,
+              guidedTourBridgeInitializer);
     }
 
     @Override

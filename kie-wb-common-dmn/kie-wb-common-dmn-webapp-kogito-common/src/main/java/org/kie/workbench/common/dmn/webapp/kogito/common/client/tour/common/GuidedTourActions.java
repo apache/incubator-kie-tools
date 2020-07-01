@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.grid.model;
+package org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.common;
 
-import org.uberfire.workbench.events.UberFireEvent;
-
-public class ExpressionEditorChanged implements UberFireEvent {
-
-    private final String nodeUUID;
-
-    public ExpressionEditorChanged(final String nodeUUID) {
-        this.nodeUUID = nodeUUID;
-    }
-
-    public String getNodeUUID() {
-        return nodeUUID;
-    }
+public enum GuidedTourActions {
+    CREATED, UPDATED, REMOVED
 }

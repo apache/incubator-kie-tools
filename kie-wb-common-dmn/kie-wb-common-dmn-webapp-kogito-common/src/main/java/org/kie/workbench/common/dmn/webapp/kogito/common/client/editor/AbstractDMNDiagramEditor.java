@@ -43,6 +43,7 @@ import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
@@ -125,6 +126,7 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     protected final IncludedModelsPage includedModelsPage;
     protected final IncludedModelsPageStateProviderImpl importsPageProvider;
     protected final EditorContextProvider contextProvider;
+    protected final GuidedTourBridgeInitializer guidedTourBridgeInitializer;
 
     public AbstractDMNDiagramEditor(final View view,
                                     final FileMenuBuilder fileMenuBuilder,
@@ -158,7 +160,8 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
                                     final Promises promises,
                                     final IncludedModelsPage includedModelsPage,
                                     final IncludedModelsPageStateProviderImpl importsPageProvider,
-                                    final EditorContextProvider contextProvider) {
+                                    final EditorContextProvider contextProvider,
+                                    final GuidedTourBridgeInitializer guidedTourBridgeInitializer) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -192,6 +195,7 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         this.includedModelsPage = includedModelsPage;
         this.importsPageProvider = importsPageProvider;
         this.contextProvider = contextProvider;
+        this.guidedTourBridgeInitializer = guidedTourBridgeInitializer;
     }
 
     @OnStartup
@@ -202,6 +206,7 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         decisionNavigatorDock.init(PERSPECTIVE_ID);
         diagramPropertiesDock.init(PERSPECTIVE_ID);
         diagramPreviewAndExplorerDock.init(PERSPECTIVE_ID);
+        guidedTourBridgeInitializer.init();
     }
 
     void superDoStartUp(final PlaceRequest place) {

@@ -167,6 +167,9 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     @Captor
     private ArgumentCaptor<RefreshFormPropertiesEvent> refreshFormPropertiesEventCaptor;
 
+    @Captor
+    private ArgumentCaptor<ExpressionEditorChanged> expressionEditorChangedArgumentCaptor;
+
     private Decision decision = new Decision();
 
     private interface MockHasCellEditorControlsHeaderMetaData extends HasCellEditorControls,
@@ -335,16 +338,23 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
     @Test
     public void testSelect() {
+        final String expectedUUID = "0000-1111-2222";
+
         doNothing().when(editorSelectedEvent).fire(any());
+        doReturn(Optional.of(expectedUUID)).when(grid).getNodeUUID();
 
         grid.select();
 
         verify(grid, never()).selectFirstCell();
-        verify(editorSelectedEvent).fire(any(ExpressionEditorChanged.class));
+        verify(editorSelectedEvent).fire(expressionEditorChangedArgumentCaptor.capture());
+        assertEquals(expectedUUID, expressionEditorChangedArgumentCaptor.getValue().getNodeUUID());
     }
 
     @Test
     public void testDeselect() {
+        final String expectedUUID = "0000-1111-2222";
+
+        doReturn(Optional.of(expectedUUID)).when(grid).getNodeUUID();
         grid.getModel().appendRow(new BaseGridRow());
         appendColumns(GridColumn.class);
 
@@ -355,8 +365,9 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
         grid.deselect();
 
         assertTrue(grid.getModel().getSelectedCells().isEmpty());
-        verify(editorSelectedEvent).fire(any(ExpressionEditorChanged.class));
         verify(grid).clearSelectedDomainObject();
+        verify(editorSelectedEvent).fire(expressionEditorChangedArgumentCaptor.capture());
+        assertEquals(expectedUUID, expressionEditorChangedArgumentCaptor.getValue().getNodeUUID());
     }
 
     @Test

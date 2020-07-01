@@ -229,7 +229,7 @@ public class DecisionNavigatorObserverTest {
         doReturn(Optional.of(item)).when(observer).getActiveParent();
 
         observer.init(presenter);
-        observer.onNestedElementAdded(new ExpressionEditorChanged());
+        observer.onNestedElementAdded(new ExpressionEditorChanged(""));
 
         verify(presenter).updateElement(node);
         verify(treePresenter).selectItem(uuid2);

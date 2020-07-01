@@ -43,6 +43,7 @@ import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDi
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.AbstractDMNDiagramEditor;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNEditorMenuSessionItems;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.DMNProjectToolbarStateHandler;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourBridgeInitializer;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
@@ -132,7 +133,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final CanvasFileExport canvasFileExport,
                             final IncludedModelsPage includedModelsPage,
                             final IncludedModelsPageStateProviderImpl importsPageProvider,
-                            final EditorContextProvider contextProvider) {
+                            final EditorContextProvider contextProvider,
+                            final GuidedTourBridgeInitializer guidedTourBridgeInitializer) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -165,7 +167,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               promises,
               includedModelsPage,
               importsPageProvider,
-              contextProvider);
+              contextProvider,
+              guidedTourBridgeInitializer);
         this.notificationEvent = notificationEvent;
         this.vfsService = vfsService;
     }

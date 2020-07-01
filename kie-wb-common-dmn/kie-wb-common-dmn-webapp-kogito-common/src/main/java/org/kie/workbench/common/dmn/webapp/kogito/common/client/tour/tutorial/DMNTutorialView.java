@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.dmn.client.widgets.grid.model;
+package org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.tutorial;
 
-import org.uberfire.workbench.events.UberFireEvent;
+import javax.enterprise.context.ApplicationScoped;
 
-public class ExpressionEditorChanged implements UberFireEvent {
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-    private final String nodeUUID;
+@Templated
+@ApplicationScoped
+public class DMNTutorialView implements DMNTutorial.View {
 
-    public ExpressionEditorChanged(final String nodeUUID) {
-        this.nodeUUID = nodeUUID;
+    @Override
+    public void init(final DMNTutorial presenter) {
+        // empty
     }
 
-    public String getNodeUUID() {
-        return nodeUUID;
+    public String getStepContent(final int step) {
+        return getElement().querySelectorAll(".step").item(step).innerHTML;
     }
 }
