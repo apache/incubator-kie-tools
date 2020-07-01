@@ -249,9 +249,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         receive_guidedTourRegisterTutorial(tutorial: Tutorial) {
           KogitoGuidedTour.getInstance().registerTutorial(tutorial);
         },
-        receive_guidedTourElementPositionResponse(rect: Rect) {
+        receive_guidedTourElementPositionResponse(position: Rect) {
           const parentRect = iframeRef.current?.getBoundingClientRect();
-          KogitoGuidedTour.getInstance().onPositionReceived(rect, parentRect);
+          KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
         }
       })
     );

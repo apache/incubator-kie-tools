@@ -16,15 +16,15 @@
 
 import { act } from "react-dom/test-utils";
 
-import { useStartTutorialListener, useUserInteractionListener, usePositionListener } from "../../../components/utils";
+import { usePositionListener, useStartTutorialListener, useUserInteractionListener } from "../../../components/utils";
 import { EventLabel } from "../../../core";
 
 testGuidedTourListener("useStartTutorialListener", "GuidedTour.startTutorial", useStartTutorialListener);
 testGuidedTourListener("useUserInteractionListener", "GuidedTour.userInteraction", useUserInteractionListener);
 testGuidedTourListener("usePositionListener", "GuidedTour.newPosition", usePositionListener);
 
-const addedListeners = {};
-const removedListeners = {};
+const addedListeners: any = {};
+const removedListeners: any = {};
 
 const realAddEventListener = document.addEventListener;
 const realRemoveEventListener = document.removeEventListener;

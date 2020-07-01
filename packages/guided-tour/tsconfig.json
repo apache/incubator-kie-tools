@@ -1,9 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "declaration": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "outDir": "dist"
   },
   "include": ["src"]
 }
