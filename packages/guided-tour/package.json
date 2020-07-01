@@ -1,0 +1,28 @@
+{
+  "name": "@kogito-tooling/guided-tour",
+  "version": "0.5.2",
+  "description": "Guided Tour component",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "source": "src/index.tsx",
+  "scripts": {
+    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
+    "test": "jest",
+    "build:fast": "rm -rf dist && webpack",
+    "build": "yarn run lint && yarn test && yarn run build:fast",
+    "build:prod": "yarn run build --mode production --devtool none",
+    "start": "rm -rf dist && webpack --watch"
+  },
+  "peerDependencies": {
+    "react": "16.12.0",
+    "react-dom": "16.12.0",
+    "@kogito-tooling/patternfly-base": "0.5.2"
+  },
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-react"
+  ],
+  "files": [
+    "dist"
+  ]
+}

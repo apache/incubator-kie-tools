@@ -23,12 +23,15 @@ import { GithubService } from "../../common/GithubService";
 
 const mockHistoryPush = jest.fn();
 
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
-  useHistory: () => ({
-    push: mockHistoryPush
-  })
-}));
+jest.mock("react-router", () => {
+  const ActualReactRouter = require.requireActual("react-router");
+  return {
+    ...ActualReactRouter,
+    useHistory: () => ({
+      push: mockHistoryPush
+    })
+  };
+});
 
 declare global {
   namespace NodeJS {

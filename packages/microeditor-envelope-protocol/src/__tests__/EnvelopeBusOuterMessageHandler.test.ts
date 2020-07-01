@@ -24,6 +24,7 @@ import {
   ResourceListRequest,
   StateControlCommand
 } from "@kogito-tooling/core-api";
+import { UserInteraction, Tutorial } from "@kogito-tooling/guided-tour";
 
 let sentMessages: Array<EnvelopeBusMessage<any>>;
 let receivedMessages: string[];
@@ -87,6 +88,15 @@ beforeEach(() => {
       },
       receive_stateControlCommandUpdate(command: StateControlCommand) {
         receivedMessages.push("receiveStateControlEvent_" + command);
+      },
+      receive_guidedTourUserInteraction(userInteraction: UserInteraction) {
+        receivedMessages.push("guidedTour_UserInteraction");
+      },
+      receive_guidedTourRegisterTutorial(tutorial: Tutorial) {
+        receivedMessages.push("guidedTour_RegisterTutorial");
+      },
+      receive_guidedTourElementPositionResponse(selector: string) {
+        receivedMessages.push("guidedTour_ElementPositionRequest");
       }
     })
   );
@@ -175,7 +185,11 @@ describe("receive", () => {
   });
 
   test("open file notification", () => {
-    handler.receive({ busId: handler.busId, type: EnvelopeBusMessageType.NOTIFY_EDITOR_OPEN_FILE, data: "file/path/to/open" });
+    handler.receive({
+      busId: handler.busId,
+      type: EnvelopeBusMessageType.NOTIFY_EDITOR_OPEN_FILE,
+      data: "file/path/to/open"
+    });
     expect(receivedMessages).toEqual(["receiveOpenFile_file/path/to/open"]);
   });
 });

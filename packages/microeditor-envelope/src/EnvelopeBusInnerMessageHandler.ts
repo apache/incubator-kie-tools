@@ -29,6 +29,7 @@ import {
   ResourceListOptions,
   StateControlCommand
 } from "@kogito-tooling/core-api";
+import { UserInteraction, Tutorial, Rect } from "@kogito-tooling/guided-tour";
 
 export interface Impl {
   receive_contentResponse(content: EditorContent): void;
@@ -39,6 +40,7 @@ export interface Impl {
   receive_editorUndo(): void;
   receive_editorRedo(): void;
   receive_previewRequest(): void;
+  receive_guidedTourElementPositionRequest(selector: string): void;
 }
 
 export class EnvelopeBusInnerMessageHandler {
@@ -119,6 +121,18 @@ export class EnvelopeBusInnerMessageHandler {
     return this.send({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_OPEN_FILE, data: path });
   }
 
+  public notify_guidedTourRefresh(userInteraction: UserInteraction) {
+    return this.send({ type: EnvelopeBusMessageType.NOTIFY_GUIDED_TOUR_USER_INTERACTION, data: userInteraction });
+  }
+
+  public notify_guidedTourRegisterTutorial(tutorial: Tutorial) {
+    return this.send({ type: EnvelopeBusMessageType.NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL, data: tutorial });
+  }
+
+  public respond_guidedTourElementPositionRequest(rect: Rect) {
+    return this.send({ type: EnvelopeBusMessageType.RETURN_GUIDED_TOUR_ELEMENT_POSITION, data: rect });
+  }
+
   public respond_previewRequest(previewSvg: string) {
     return this.send({ type: EnvelopeBusMessageType.RETURN_PREVIEW, data: previewSvg });
   }
@@ -171,6 +185,10 @@ export class EnvelopeBusInnerMessageHandler {
         break;
       case EnvelopeBusMessageType.REQUEST_PREVIEW:
         this.impl.receive_previewRequest();
+        break;
+      case EnvelopeBusMessageType.REQUEST_GUIDED_TOUR_ELEMENT_POSITION:
+        const selector = message.data as Rect;
+        this.impl.receive_guidedTourElementPositionRequest(selector);
         break;
       default:
         console.info(`[Bus ${this.id}]: Unknown message type received: ${message.type}`);

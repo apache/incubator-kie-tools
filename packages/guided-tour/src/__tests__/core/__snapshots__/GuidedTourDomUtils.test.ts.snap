@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GuidedTourDomUtils getGuidedTourHTMLElement creates the guided tour element when it's not present once 1`] = `
+<body>
+  <div
+    id="kgt-parent"
+    style="z-index: 999999; position: fixed"
+  />
+</body>
+`;
+
+exports[`GuidedTourDomUtils getGuidedTourHTMLElement does not raise any error when the guided tour element does not exist 1`] = `<body />`;
+
+exports[`GuidedTourDomUtils getGuidedTourHTMLElement removes the guided tour element when it exists 1`] = `<body />`;

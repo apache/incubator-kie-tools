@@ -150,6 +150,15 @@ export class KogitoEditor {
           /*
            * VS Code has his own state control API.
            */
+        },
+        receive_guidedTourElementPositionResponse: _ => {
+          /* empty */
+        },
+        receive_guidedTourRegisterTutorial: _ => {
+          /* empty */
+        },
+        receive_guidedTourUserInteraction: _ => {
+          /* empty */
         }
       })
     );
@@ -219,7 +228,9 @@ export class KogitoEditor {
   }
 
   public notify_openFile(filePath: string) {
-    const resolvedPath = __path.isAbsolute(filePath) ? filePath : __path.join(__path.dirname(this.uri.fsPath), filePath);
+    const resolvedPath = __path.isAbsolute(filePath)
+      ? filePath
+      : __path.join(__path.dirname(this.uri.fsPath), filePath);
     if (!fs.existsSync(resolvedPath)) {
       throw new Error(`Cannot open file at: ${resolvedPath}.`);
     }
