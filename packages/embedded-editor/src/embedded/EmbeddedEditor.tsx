@@ -25,7 +25,7 @@ import {
   StateControlCommand
 } from "@kogito-tooling/core-api";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
-import { KogitoGuidedTour, Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
+import { KogitoGuidedTour, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
 import * as CSS from "csstype";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
@@ -50,11 +50,6 @@ export interface Props {
    */
 
   channelType: ChannelType;
-  /**
-   * Optional callback for when the editors' content is returned followin a response for it.
-   */
-
-  onContentResponse?: (content: EditorContent) => void;
   /**
    * Optional callback for when setting the editors content resulted in an error.
    */
@@ -92,10 +87,6 @@ export interface Props {
    */
   onNewEdit?: (edit: KogitoEdit) => void;
   /**
-   * Optional callback for when a preview of editors' content is returned followin a response for it.
-   */
-  onPreviewResponse?: (previewSvg: string) => void;
-  /**
    * Optional relative URL for the `envelope.html` used as the inner bus `IFRAME`. Defaults to `envelope/envelope.html`
    */
   envelopeUri?: string;
@@ -120,11 +111,11 @@ export type EmbeddedEditorRef = {
   /**
    * Request the editor returns its current content.
    */
-  requestContent(): void;
+  requestContent(): Promise<EditorContent>;
   /**
    * Request the editor returns a preview of its current content.
    */
-  requestPreview(): void;
+  requestPreview(): Promise<string>;
   /**
    * Request to set the content of the editor; this will overwrite the content supplied by the `File.getFileContents()` passed in construction.
    * @param content
@@ -204,9 +195,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         pollInit() {
           self.request_initResponse(window.location.origin);
         },
-        receive_contentResponse(content: EditorContent) {
-          props.onContentResponse?.(content);
-        },
         receive_setContentError(errorMessage: string) {
           props.onSetContentError?.(errorMessage);
         },
@@ -223,9 +211,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           stateControl.updateCommandStack(edit.id);
           props.onNewEdit?.(edit);
         },
-        receive_previewResponse(previewSvg: string) {
-          props.onPreviewResponse?.(previewSvg);
-        },
         receive_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
           handleStateControlCommand(stateControlCommand);
         },
@@ -234,10 +219,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         },
         receive_guidedTourRegisterTutorial(tutorial: Tutorial) {
           KogitoGuidedTour.getInstance().registerTutorial(tutorial);
-        },
-        receive_guidedTourElementPositionResponse(position: Rect) {
-          const parentRect = iframeRef.current?.getBoundingClientRect();
-          KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
         },
         //requests
         receive_languageRequest() {
@@ -264,8 +245,12 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   ]);
 
   useEffect(() => {
-    const requestPosition = (s: string) => envelopeBusOuterMessageHandler.request_guidedTourElementPositionResponse(s);
-    KogitoGuidedTour.getInstance().registerPositionProvider(requestPosition);
+    KogitoGuidedTour.getInstance().registerPositionProvider((selector: string) =>
+      envelopeBusOuterMessageHandler.request_guidedTourElementPositionResponse(selector).then(position => {
+        const parentRect = iframeRef.current?.getBoundingClientRect();
+        KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
+      })
+    );
   }, [envelopeBusOuterMessageHandler]);
 
   //Attach/detach bus when component attaches/detaches from DOM

@@ -45,10 +45,6 @@ export interface EnvelopeBusOuterMessageHandlerImpl {
   receive_contentRequest(): Promise<EditorContent>;
   receive_resourceContentRequest(resourceContentService: ResourceContentRequest): Promise<ResourceContent | undefined>;
   receive_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;
-  //responses
-  receive_previewResponse(previewSvg: string): void;
-  receive_contentResponse(content: EditorContent): void;
-  receive_guidedTourElementPositionResponse(position: Rect): void;
 }
 
 export class EnvelopeBusOuterMessageHandler {
@@ -104,20 +100,24 @@ export class EnvelopeBusOuterMessageHandler {
   }
 
   //REQUEST
-  public request_contentResponse() {
+  public request_contentResponse(): Promise<EditorContent> {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined });
+    return Promise.resolve({ content: "" }); //FIXME: Tiago
   }
 
-  public request_initResponse(origin: string) {
+  public request_initResponse(origin: string): Promise<void> {
     this.busApi.postMessage({ busId: this.busId, type: EnvelopeBusMessageType.REQUEST_INIT, data: origin });
+    return Promise.resolve(); //FIXME: Tiago
   }
 
-  public request_previewResponse() {
+  public request_previewResponse(): Promise<string> {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_PREVIEW, data: undefined });
+    return Promise.resolve("");
   }
 
-  public request_guidedTourElementPositionResponse(selector: string) {
+  public request_guidedTourElementPositionResponse(selector: string): Promise<Rect> {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_GUIDED_TOUR_ELEMENT_POSITION, data: selector });
+    return Promise.resolve({} as any);
   }
 
   public receive(message: EnvelopeBusMessage<any>) {
@@ -130,7 +130,8 @@ export class EnvelopeBusOuterMessageHandler {
         this.stopInitPolling();
         break;
       case EnvelopeBusMessageType.RETURN_CONTENT:
-        this.impl.receive_contentResponse(message.data as EditorContent);
+        //FIXME: DO SOMETHING
+        // this.impl.receive_contentResponse(message.data as EditorContent);
         break;
       case EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR:
         this.impl.receive_setContentError(message.data as string);
@@ -148,7 +149,8 @@ export class EnvelopeBusOuterMessageHandler {
         this.impl.receive_openFile(message.data as string);
         break;
       case EnvelopeBusMessageType.RETURN_PREVIEW:
-        this.impl.receive_previewResponse(message.data as string);
+        //FIXME: DO SOMETHING
+        // this.impl.receive_previewResponse(message.data as string);
         break;
       case EnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE:
         this.impl.receive_stateControlCommandUpdate(message.data);
@@ -160,7 +162,8 @@ export class EnvelopeBusOuterMessageHandler {
         this.impl.receive_guidedTourRegisterTutorial(message.data as Tutorial);
         break;
       case EnvelopeBusMessageType.RETURN_GUIDED_TOUR_ELEMENT_POSITION:
-        this.impl.receive_guidedTourElementPositionResponse(message.data as Rect);
+        //FIXME: DO SOMETHING
+        // this.impl.receive_guidedTourElementPositionResponse(message.data as Rect);
         break;
       //REQUESTS
       case EnvelopeBusMessageType.REQUEST_LANGUAGE:

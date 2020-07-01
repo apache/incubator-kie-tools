@@ -87,7 +87,6 @@ export const EmbeddedViewer = (props: Props) => {
       file={props.file}
       router={props.router}
       channelType={props.channelType}
-      onContentResponse={noop}
       onSetContentError={noop}
       onDirtyIndicatorChange={noop}
       onReady={noop}
@@ -97,7 +96,6 @@ export const EmbeddedViewer = (props: Props) => {
       onEditorRedo={noop}
       onOpenFile={noop}
       onNewEdit={noop}
-      onPreviewResponse={noop}
       envelopeUri={props.envelopeUri}
     />
   );

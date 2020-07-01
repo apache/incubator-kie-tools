@@ -22,7 +22,6 @@ import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-enve
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { JobType, KogitoEditorJobRegistry } from "./KogitoEditorJobRegistry";
 import {
-  EditorContent,
   KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
@@ -86,18 +85,6 @@ export class KogitoEditor {
         pollInit: () => {
           self.request_initResponse("vscode");
         },
-        receive_contentResponse: (content: EditorContent) => {
-          const fileJob = this.jobRegistry.resolve(self.busId);
-          if (!fileJob || fileJob.cancellation.isCancellationRequested) {
-            return;
-          }
-          vscode.workspace.fs.writeFile(fileJob.target, this.encoder.encode(content.content)).then(() => {
-            if (fileJob.type === JobType.SAVE) {
-              vscode.window.setStatusBarMessage("Saved successfully!", 3000);
-            }
-            this.jobRegistry.execute(self.busId);
-          });
-        },
         receive_setContentError: (errorMessage: string) => {
           vscode.window.showErrorMessage(errorMessage);
         },
@@ -107,25 +94,10 @@ export class KogitoEditor {
         receive_ready(): void {
           /**/
         },
-        receive_newEdit: (edit: KogitoEdit) => {
-          this.notify_newEdit(edit);
-        },
-        receive_openFile: (path: string) => {
-          this.notify_openFile(path);
-        },
-        receive_previewResponse: (preview: string) => {
-          if (preview) {
-            const parsedPath = __path.parse(this.uri.fsPath);
-            fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, preview);
-          }
-        },
         receive_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
           /*
            * VS Code has his own state control API.
            */
-        },
-        receive_guidedTourElementPositionResponse: _ => {
-          /* empty */
         },
         receive_guidedTourRegisterTutorial: _ => {
           /* empty */
@@ -133,7 +105,13 @@ export class KogitoEditor {
         receive_guidedTourUserInteraction: _ => {
           /* empty */
         },
-        //REQUESTS
+        receive_newEdit: (edit: KogitoEdit) => {
+          this.notify_newEdit(edit);
+        },
+        receive_openFile: (path: string) => {
+          this.notify_openFile(path);
+        },
+        //requests
         receive_languageRequest: async () => {
           const pathFileExtension = this.uri.fsPath.split(".").pop()!;
           return this.router.getLanguageData(pathFileExtension);
@@ -185,7 +163,18 @@ export class KogitoEditor {
     type: JobType,
     cancellation: vscode.CancellationToken
   ): Promise<void> {
-    this.envelopeBusOuterMessageHandler.request_contentResponse();
+    this.envelopeBusOuterMessageHandler.request_contentResponse().then(content => {
+      const fileJob = this.jobRegistry.resolve(this.envelopeBusOuterMessageHandler.busId);
+      if (!fileJob || fileJob.cancellation.isCancellationRequested) {
+        return;
+      }
+      vscode.workspace.fs.writeFile(fileJob.target, this.encoder.encode(content.content)).then(() => {
+        if (fileJob.type === JobType.SAVE) {
+          vscode.window.setStatusBarMessage("Saved successfully!", 3000);
+        }
+        this.jobRegistry.execute(this.envelopeBusOuterMessageHandler.busId);
+      });
+    });
 
     return new Promise<void>(resolve =>
       this.jobRegistry.register(this.busId, {
@@ -228,7 +217,12 @@ export class KogitoEditor {
   }
 
   public requestPreview() {
-    this.envelopeBusOuterMessageHandler.request_previewResponse();
+    this.envelopeBusOuterMessageHandler.request_previewResponse().then(previewSvg => {
+      if (previewSvg) {
+        const parsedPath = __path.parse(this.uri.fsPath);
+        fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, previewSvg);
+      }
+    });
   }
 
   public setupEnvelopeBus() {

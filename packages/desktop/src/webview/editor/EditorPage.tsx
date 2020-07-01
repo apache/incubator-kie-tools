@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType, EditorContent } from "@kogito-tooling/core-api";
+import { ChannelType } from "@kogito-tooling/core-api";
 import { EditorType, EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
 import "@patternfly/patternfly/patternfly.css";
 import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
@@ -31,26 +31,9 @@ interface Props {
   onClose: () => void;
 }
 
-enum ContentRequestActionType {
-  NONE,
-  SAVE,
-  DOWNLOAD,
-  COPY
-}
-
-enum PreviewRequestActionType {
-  NONE,
-  SAVE,
-  THUMBNAIL
-}
-
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
-// FIXME: These variables should be moved inside the React hooks lifecycle.
-let contentRequestAction = ContentRequestActionType.NONE;
 let contentRequestData: { action: FileSaveActions; file?: File };
-
-let previewRequestAction = PreviewRequestActionType.NONE;
 
 export function EditorPage(props: Props) {
   const context = useContext(GlobalContext);
@@ -77,67 +60,51 @@ export function EditorPage(props: Props) {
 
   const requestSaveFile = useCallback(() => {
     setShowUnsavedAlert(false);
-    contentRequestAction = ContentRequestActionType.SAVE;
-    editorRef.current?.requestContent();
+    editorRef.current?.requestContent().then(content => {
+      contentRequestData.file = {
+        filePath: context.file!.filePath,
+        fileType: context.file!.fileType,
+        fileContent: content.content
+      };
+      electron.ipcRenderer.send("saveFile", contentRequestData);
+    });
   }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
-    contentRequestAction = ContentRequestActionType.COPY;
-    editorRef.current?.requestContent();
-  }, []);
-
-  const requestSavePreview = useCallback(() => {
-    previewRequestAction = PreviewRequestActionType.SAVE;
-    editorRef.current?.requestPreview();
-  }, []);
-
-  const requestThumbnailPreview = useCallback(() => {
-    previewRequestAction = PreviewRequestActionType.THUMBNAIL;
-    editorRef.current?.requestPreview();
-  }, []);
-
-  const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
-  const closeSaveFileSuccessAlert = useCallback(() => setSaveFileSuccessAlertVisible(false), []);
-  const closeSavePreviewSuccessAlert = useCallback(() => setSavePreviewSuccessAlertVisible(false), []);
-
-  const onContentResponse = useCallback(
-    (content: EditorContent) => {
-      if (contentRequestAction === ContentRequestActionType.SAVE) {
-        contentRequestData.file = {
-          filePath: context.file!.filePath,
-          fileType: context.file!.fileType,
-          fileContent: content.content
-        };
-        electron.ipcRenderer.send("saveFile", contentRequestData);
-      } else if (contentRequestAction === ContentRequestActionType.COPY && copyContentTextArea.current) {
+    editorRef.current?.requestContent().then(content => {
+      if (copyContentTextArea.current) {
         copyContentTextArea.current.value = content.content;
         copyContentTextArea.current.select();
         if (document.execCommand("copy")) {
           setCopySuccessAlertVisible(true);
         }
       }
-    },
-    [contentRequestData, copyContentTextArea.current, context.file!.filePath, context.file!.fileType]
-  );
+    });
+  }, []);
 
-  const onPreviewResponse = useCallback(
-    preview => {
-      if (previewRequestAction === PreviewRequestActionType.SAVE) {
-        electron.ipcRenderer.send("savePreview", {
-          filePath: context.file!.filePath,
-          fileType: "svg",
-          fileContent: preview
-        });
-      } else if (previewRequestAction === PreviewRequestActionType.THUMBNAIL) {
-        electron.ipcRenderer.send("saveThumbnail", {
-          filePath: context.file!.filePath,
-          fileType: "svg",
-          fileContent: preview
-        });
-      }
-    },
-    [previewRequestAction, context.file!.filePath]
-  );
+  const requestSavePreview = useCallback(() => {
+    editorRef.current?.requestPreview().then(previewSvg => {
+      electron.ipcRenderer.send("savePreview", {
+        filePath: context.file!.filePath,
+        fileType: "svg",
+        fileContent: previewSvg
+      });
+    });
+  }, []);
+
+  const requestThumbnailPreview = useCallback(() => {
+    editorRef.current?.requestPreview().then(previewSvg => {
+      electron.ipcRenderer.send("saveThumbnail", {
+        filePath: context.file!.filePath,
+        fileType: "svg",
+        fileContent: previewSvg
+      });
+    });
+  }, []);
+
+  const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
+  const closeSaveFileSuccessAlert = useCallback(() => setSaveFileSuccessAlertVisible(false), []);
+  const closeSavePreviewSuccessAlert = useCallback(() => setSavePreviewSuccessAlertVisible(false), []);
 
   const onSave = useCallback(() => {
     contentRequestData = {
@@ -260,7 +227,7 @@ export function EditorPage(props: Props) {
       <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
         <Stack>
           <StackItem>
-            <EditorToolbar onClose={onClose} onSave={onSave} isEdited={isDirty}/>
+            <EditorToolbar onClose={onClose} onSave={onSave} isEdited={isDirty} />
           </StackItem>
           <StackItem className="pf-m-fill">
             {showUnsavedAlert && (
@@ -322,8 +289,6 @@ export function EditorPage(props: Props) {
               file={file}
               router={context.router}
               channelType={ChannelType.DESKTOP}
-              onContentResponse={onContentResponse}
-              onPreviewResponse={onPreviewResponse}
               onReady={requestThumbnailPreview}
             />
           </StackItem>
