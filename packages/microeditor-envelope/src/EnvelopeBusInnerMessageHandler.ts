@@ -19,6 +19,8 @@ import {
   EnvelopeBusMessage,
   EnvelopeBusMessageManager,
   EnvelopeBusMessagePurpose,
+  MessageTypesYouCanSendToTheChannel,
+  MessageTypesYouCanSendToTheEnvelope
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import {
   EditorContent,
@@ -31,10 +33,6 @@ import {
   StateControlCommand
 } from "@kogito-tooling/core-api";
 import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
-import {
-  MessageTypesYouCanSendToTheChannel,
-  MessageTypesYouCanSendToTheEnvelope
-} from "@kogito-tooling/microeditor-envelope-protocol/dist/src";
 
 export interface Impl {
   receive_contentChangedNotification(content: EditorContent): void;
@@ -102,7 +100,10 @@ export class EnvelopeBusInnerMessageHandler {
   }
 
   public notify_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
-    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_STATE_CONTROL_COMMAND_UPDATE, stateControlCommand);
+    return this.manager.notify(
+      MessageTypesYouCanSendToTheChannel.NOTIFY_STATE_CONTROL_COMMAND_UPDATE,
+      stateControlCommand
+    );
   }
 
   public request_languageResponse() {
@@ -114,10 +115,13 @@ export class EnvelopeBusInnerMessageHandler {
   }
 
   public request_resourceContent(path: string, opts?: ResourceContentOptions) {
-    return this.manager.request<ResourceContent | undefined>(MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_CONTENT, {
-      path: path,
-      opts: opts
-    });
+    return this.manager.request<ResourceContent | undefined>(
+      MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_CONTENT,
+      {
+        path: path,
+        opts: opts
+      }
+    );
   }
 
   public request_resourceList(pattern: string, opts?: ResourceListOptions) {
@@ -140,6 +144,9 @@ export class EnvelopeBusInnerMessageHandler {
         break;
       case MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_REDO:
         this.impl.receive_editorRedo();
+        break;
+      case MessageTypesYouCanSendToTheEnvelope.NOTIFY_CONTENT_CHANGED:
+        this.impl.receive_contentChangedNotification(message.data as EditorContent);
         break;
       //REQUESTS
       case MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT:
