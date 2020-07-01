@@ -23,7 +23,7 @@
         <repository>
           <id>kie-internal-staging-repository-group</id>
           <name>KIE Internal Staging Repositories</name>
-          <url>https://origin-repository.jboss.org/nexus/content/groups/kie-internal-group</url>
+          <url>https://repository.jboss.org/nexus/content/groups/kie-internal-group</url>
           <layout>default</layout>
           <releases>
             <enabled>true</enabled>
@@ -52,7 +52,7 @@
         <pluginRepository>
           <id>kie-internal-staging-repository-group</id>
           <name>KIE Internal Staging Repositories</name>
-          <url>https://origin-repository.jboss.org/nexus/content/groups/kie-internal-group</url>
+          <url>https://repository.jboss.org/nexus/content/groups/kie-internal-group</url>
           <layout>default</layout>
           <releases>
             <enabled>true</enabled>
