@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionCacheRegistry;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.kogito.client.services.util.WidPresetResources;
 import org.kie.workbench.common.stunner.kogito.client.services.util.WorkItemIconCache;
 import org.uberfire.client.promise.Promises;
 
@@ -47,6 +48,8 @@ import static org.kie.workbench.common.stunner.core.util.StringUtils.nonEmpty;
 public class WorkItemDefinitionStandaloneClientService implements WorkItemDefinitionClientService {
 
     private static final String RESOURCE_ALL_WID_PATTERN = "*.wid";
+    private static final String MILESTONE_ICON = "defaultmilestoneicon.png";
+    private static final String MILESTONE_NAME = "Milestone";
 
     private final Promises promises;
     private final WorkItemDefinitionCacheRegistry registry;
@@ -112,15 +115,26 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
                                         return null;
                                     });
                         } else {
-                            success.onInvoke(emptyList());
+                            promises.all(presetWorkItemsLoader(loaded)).then(wids -> {
+                                wids.forEach(registry::register);
+                                success.onInvoke(wids);
+                                return null;
+                            }).catch_(error -> {
+                                failure.onInvoke(error);
+                                return null;
+                            });
                         }
                         return promises.resolve();
-                    })
-                    .catch_(error -> {
-                        failure.onInvoke(error);
-                        return null;
-                    });
+                    }).catch_(error -> {
+                failure.onInvoke(error);
+                return null;
+            });
         });
+    }
+
+    private Promise<Collection<WorkItemDefinition>> presetWorkItemsLoader(final Collection<WorkItemDefinition> preset) {
+        final List<WorkItemDefinition> wids = parse(WidPresetResources.INSTANCE.asText().getText());
+        return getPromises(wids, preset);
     }
 
     @SuppressWarnings("unchecked")
@@ -129,23 +143,41 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
         if (nonEmpty(path)) {
             return resourceContentService
                     .get(path)
-                    .then(value -> {
-                        final List<WorkItemDefinition> wids = parse(value);
-                        return promises.create((success, failure) -> {
-                            promises.all(wids, this::workItemIconLoader)
-                                    .then(wid -> {
-                                        loaded.addAll(wids);
-                                        success.onInvoke(loaded);
-                                        return promises.resolve();
-                                    })
-                                    .catch_(error -> {
-                                        failure.onInvoke(error);
-                                        return null;
-                                    });
-                        });
-                    });
+                    .then(value -> getPromises(addPresetWids(parse(value)), loaded));
         }
         return promises.resolve(emptyList());
+    }
+
+    private List<WorkItemDefinition> addPresetWids(final List<WorkItemDefinition> wids) {
+        String presets = WidPresetResources.INSTANCE.asText().getText();
+        if (null != presets && presets.startsWith("[")) {
+            List<WorkItemDefinition> presetWids = parse(presets);
+
+            if (wids.stream().filter(wid -> wid.getName().equals(MILESTONE_NAME)).count() == 0) {
+                WorkItemDefinition workItemDefinition = presetWids.stream()
+                        .filter(wid -> wid.getName().equals(MILESTONE_NAME))
+                        .findFirst().orElse(null);
+                if (null != workItemDefinition) {
+                    wids.add(workItemDefinition);
+                }
+            }
+        }
+        return wids;
+    }
+
+    private Promise<Collection<WorkItemDefinition>> getPromises(final List<WorkItemDefinition> wids, final Collection<WorkItemDefinition> loaded) {
+        return promises.create((success, failure) -> {
+            promises.all(wids, this::workItemIconLoader)
+                    .then(wid -> {
+                        loaded.addAll(wids);
+                        success.onInvoke(loaded);
+                        return promises.resolve();
+                    })
+                    .catch_(error -> {
+                        failure.onInvoke(error);
+                        return null;
+                    });
+        });
     }
 
     private Promise workItemIconLoader(final WorkItemDefinition wid) {
@@ -156,12 +188,28 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
                     if (!isIconDataUri(iconData)) {
                         iconData = iconDataUri(iconUri, iconData);
                     }
+                } else {
+                    iconData = getPresetIcon(iconUri);
+                }
+
+                if (nonEmpty(iconData)) {
                     wid.getIconDefinition().setIconData(iconData);
                 }
+
                 return promises.resolve();
             });
         }
         return promises.resolve();
+    }
+
+    protected static String getPresetIcon(final String iconUri) {
+        if (iconUri.equals(MILESTONE_ICON)) {
+            return WidPresetResources.INSTANCE
+                    .getMillestoneImage()
+                    .getSafeUri()
+                    .asString();
+        }
+        return "";
     }
 
     protected static boolean isIconDataUri(String iconData) {

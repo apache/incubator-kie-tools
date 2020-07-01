@@ -89,7 +89,8 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
         WorkItemDefinition milestone = items.get(3);
         assertNotNull(milestone);
         assertEquals("Milestone", milestone.getName());
-        assertEquals(getDefaultIconData(), milestone.getIconDefinition().getIconData());
+        assertEquals(WorkItemDefinitionStandaloneClientService.getPresetIcon("defaultmilestoneicon.png"),
+                     milestone.getIconDefinition().getIconData());
 
         WorkItemDefinition brTask = items.get(4);
         assertNotNull(brTask);
@@ -103,7 +104,7 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
     }
 
     @Test
-    public void testLoadNoWorkItems() {
+    public void testNoWorkItemsLoadPreset() {
         tested = new WorkItemDefinitionStandaloneClientService(promises,
                                                                registry,
                                                                new ResourceContentService() {
@@ -131,11 +132,11 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
                                                                },
                                                                new WorkItemIconCacheImpl(new BPMNStaticResourceContentService(promises)));
         call();
-        assertTrue(registry.items().isEmpty());
+        assertEquals(1, registry.items().size());
     }
 
     @Test
-    public void testLoadEmptyWorkItems() {
+    public void testEmptyWorkItemsLoadPreset() {
         tested = new WorkItemDefinitionStandaloneClientService(promises,
                                                                registry,
                                                                new ResourceContentService() {
@@ -163,7 +164,7 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
                                                                },
                                                                new WorkItemIconCacheImpl(new BPMNStaticResourceContentService(promises)));
         call();
-        assertTrue(registry.items().isEmpty());
+        assertEquals(1, registry.items().size());
     }
 
     @Test
@@ -181,6 +182,14 @@ public class WorkItemDefinitionStandaloneClientServiceTest {
         boolean dataUri = WorkItemDefinitionStandaloneClientService.isIconDataUri("data:test");
         assertFalse(notDataUri);
         assertTrue(dataUri);
+    }
+
+    @Test
+    public void testGetPresetIcon() {
+        assertEquals("getMillestoneImage",
+                     WorkItemDefinitionStandaloneClientService.getPresetIcon("defaultmilestoneicon.png"));
+        assertEquals("",
+                     WorkItemDefinitionStandaloneClientService.getPresetIcon("someicon.png"));
     }
 
     @Test
