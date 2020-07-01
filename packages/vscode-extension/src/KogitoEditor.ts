@@ -20,19 +20,15 @@ import * as fs from "fs";
 import * as __path from "path";
 import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { JobType, KogitoEditorJobRegistry } from "./KogitoEditorJobRegistry";
 import {
   KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
-  Router,
-  StateControlCommand
+  Router
 } from "@kogito-tooling/core-api";
 
 export class KogitoEditor {
-  private static readonly DIRTY_INDICATOR = " *";
-
   private readonly uri: vscode.Uri;
   private readonly relativePath: string;
   private readonly webviewLocation: string;
@@ -40,7 +36,6 @@ export class KogitoEditor {
   private readonly router: Router;
   private readonly panel: vscode.WebviewPanel;
   private readonly editorStore: KogitoEditorStore;
-  private readonly jobRegistry: KogitoEditorJobRegistry;
   private readonly envelopeBusOuterMessageHandler: EnvelopeBusOuterMessageHandler;
   private readonly resourceContentService: ResourceContentService;
   private readonly signalEdit: (edit: KogitoEdit) => void;
@@ -61,7 +56,6 @@ export class KogitoEditor {
     router: Router,
     webviewLocation: string,
     editorStore: KogitoEditorStore,
-    jobRegistry: KogitoEditorJobRegistry,
     resourceContentService: ResourceContentService,
     signalEdit: (edit: KogitoEdit) => void
   ) {
@@ -72,7 +66,6 @@ export class KogitoEditor {
     this.router = router;
     this.webviewLocation = webviewLocation;
     this.editorStore = editorStore;
-    this.jobRegistry = jobRegistry;
     this.resourceContentService = resourceContentService;
     this.signalEdit = signalEdit;
     this.envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
@@ -88,7 +81,7 @@ export class KogitoEditor {
         receive_ready(): void {
           /**/
         },
-        receive_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
+        receive_stateControlCommandUpdate: _ => {
           /*
            * VS Code has his own state control API.
            */
@@ -131,43 +124,29 @@ export class KogitoEditor {
   }
 
   public async requestSave(destination: vscode.Uri, cancellation: vscode.CancellationToken): Promise<void> {
-    return this.requestSaveOnPath(destination, JobType.SAVE, cancellation);
+    return this.envelopeBusOuterMessageHandler.request_contentResponse().then(content => {
+      if (cancellation.isCancellationRequested) {
+        return;
+      }
+      return vscode.workspace.fs.writeFile(destination, this.encoder.encode(content.content)).then(() => {
+        vscode.window.setStatusBarMessage("Saved successfully!", 3000);
+      });
+    });
   }
 
   public async requestBackup(destination: vscode.Uri, cancellation: vscode.CancellationToken): Promise<void> {
-    return this.requestSaveOnPath(destination, JobType.BACKUP, cancellation);
+    return this.envelopeBusOuterMessageHandler.request_contentResponse().then(content => {
+      if (cancellation.isCancellationRequested) {
+        return;
+      }
+      return vscode.workspace.fs.writeFile(destination, this.encoder.encode(content.content)).then(() => {
+        console.info("Backup saved.");
+      });
+    });
   }
 
   public async deleteBackup(destination: vscode.Uri): Promise<void> {
     await vscode.workspace.fs.delete(destination);
-  }
-
-  private async requestSaveOnPath(
-    destination: vscode.Uri,
-    type: JobType,
-    cancellation: vscode.CancellationToken
-  ): Promise<void> {
-    this.envelopeBusOuterMessageHandler.request_contentResponse().then(content => {
-      const fileJob = this.jobRegistry.resolve(this.envelopeBusOuterMessageHandler.busId);
-      if (!fileJob || fileJob.cancellation.isCancellationRequested) {
-        return;
-      }
-      vscode.workspace.fs.writeFile(fileJob.target, this.encoder.encode(content.content)).then(() => {
-        if (fileJob.type === JobType.SAVE) {
-          vscode.window.setStatusBarMessage("Saved successfulli!", 3000);
-        }
-        this.jobRegistry.execute(this.envelopeBusOuterMessageHandler.busId);
-      });
-    });
-
-    return new Promise<void>(resolve =>
-      this.jobRegistry.register(this.busId, {
-        type: type,
-        target: destination,
-        consumer: resolve,
-        cancellation: cancellation
-      })
-    );
   }
 
   public async notify_editorRevert(): Promise<void> {

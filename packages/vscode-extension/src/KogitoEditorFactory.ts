@@ -15,9 +15,8 @@
  */
 
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEditorJobRegistry } from "./KogitoEditorJobRegistry";
 import { KogitoEditor } from "./KogitoEditor";
-import { ResourceContentService, Router, KogitoEdit } from "@kogito-tooling/core-api";
+import { KogitoEdit, ResourceContentService, Router } from "@kogito-tooling/core-api";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 
@@ -27,7 +26,6 @@ import * as nodePath from "path";
 export class KogitoEditorFactory {
   private readonly context: vscode.ExtensionContext;
   private readonly editorStore: KogitoEditorStore;
-  private readonly jobRegistry: KogitoEditorJobRegistry;
   private readonly webviewLocation: string;
   private readonly router: Router;
 
@@ -35,12 +33,10 @@ export class KogitoEditorFactory {
     context: vscode.ExtensionContext,
     router: Router,
     webviewLocation: string,
-    editorStore: KogitoEditorStore,
-    jobRegistry: KogitoEditorJobRegistry
+    editorStore: KogitoEditorStore
   ) {
     this.context = context;
     this.editorStore = editorStore;
-    this.jobRegistry = jobRegistry;
     this.router = router;
     this.webviewLocation = webviewLocation;
   }
@@ -64,7 +60,7 @@ export class KogitoEditorFactory {
 
     const workspacePath = vscode.workspace.asRelativePath(path);
 
-    const contentService = this.createContentService(path, workspacePath);
+    const resourceContentService = this.createResourceContentService(path, workspacePath);
 
     const editor = new KogitoEditor(
       workspacePath,
@@ -75,8 +71,7 @@ export class KogitoEditorFactory {
       this.router,
       this.webviewLocation,
       this.editorStore,
-      this.jobRegistry,
-      contentService,
+      resourceContentService,
       signalEdit
     );
     this.editorStore.addAsActive(editor);
@@ -86,7 +81,7 @@ export class KogitoEditorFactory {
     editor.setupWebviewContent();
   }
 
-  public createContentService(path: string, workspacePath: string): ResourceContentService {
+  public createResourceContentService(path: string, workspacePath: string): ResourceContentService {
     if (this.isAssetInWorkspace(path)) {
       return new VsCodeResourceContentService(this.getParentFolder(workspacePath));
     }

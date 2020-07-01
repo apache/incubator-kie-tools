@@ -19,7 +19,6 @@ import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { Router } from "@kogito-tooling/core-api";
 import { KogitoWebviewProvider } from "./KogitoWebviewProvider";
-import { KogitoEditorJobRegistry } from "./KogitoEditorJobRegistry";
 
 /**
  * Starts a Kogito extension.
@@ -38,11 +37,12 @@ export function startExtension(args: {
   getPreviewCommandId: string;
 }) {
   const editorStore = new KogitoEditorStore();
-  const jobRegistry = new KogitoEditorJobRegistry();
-  const editorFactory = new KogitoEditorFactory(args.context, args.router, args.webviewLocation, editorStore, jobRegistry);
+  const editorFactory = new KogitoEditorFactory(args.context, args.router, args.webviewLocation, editorStore);
   const webviewProvider = new KogitoWebviewProvider(args.viewType, editorFactory, editorStore, args.context);
 
-  args.context.globalState.update("vscodePathResolver", (absolutePath: vscode.Uri) => editorStore.getActive()?.asWebviewUri(absolutePath));
+  args.context.globalState.update("vscodePathResolver", (absolutePath: vscode.Uri) =>
+    editorStore.getActive()?.asWebviewUri(absolutePath)
+  );
   args.context.subscriptions.push(webviewProvider.register());
   args.context.subscriptions.push(
     vscode.commands.registerCommand(args.getPreviewCommandId, () => {
