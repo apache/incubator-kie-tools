@@ -1,3 +1,4 @@
+<!-- Downloaded from http://dmg.org/pmml/v4-4-1/pmml-4-4.xsd -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.dmg.org/PMML-4_4" elementFormDefault="unqualified" targetNamespace="http://www.dmg.org/PMML-4_4"><xs:element name="DefineFunction">
   <xs:complexType>
     <xs:sequence>

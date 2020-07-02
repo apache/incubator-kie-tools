@@ -17,7 +17,7 @@ import { DataDictionary, DataField, Interval, PMML } from "@kogito-tooling/pmml-
 import { PMML2XML, XML2PMML } from "../../marshaller";
 
 describe("Interval tests", () => {
-  test("Empty", () => {
+  test("Empty collection on DataField", () => {
     const pmml: PMML = XML2PMML(`
       <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
         <DataDictionary>
@@ -57,6 +57,48 @@ describe("Interval tests", () => {
     const xml: string = PMML2XML(pmml);
 
     expect(xml).toContain(`<Interval closure="openOpen" leftMargin="0" rightMargin="100"/>`);
+  });
+
+  test("Add Interval::No leftMargin", () => {
+    const pmml: PMML = XML2PMML(`
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+        <DataDictionary>
+          <DataField name="field1" optype="categorical" dataType="string"/>
+        </DataDictionary>
+      </PMML>
+    `);
+
+    expect(pmml).not.toBeNull();
+
+    const dataField: DataField = pmml.DataDictionary.DataField[0];
+    const interval: Interval = new Interval({ closure: "openOpen", rightMargin: 100 });
+
+    dataField.Interval?.push(interval);
+
+    const xml: string = PMML2XML(pmml);
+
+    expect(xml).toContain(`<Interval closure="openOpen" rightMargin="100"/>`);
+  });
+
+  test("Add Interval::No rightMargin", () => {
+    const pmml: PMML = XML2PMML(`
+      <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+        <DataDictionary>
+          <DataField name="field1" optype="categorical" dataType="string"/>
+        </DataDictionary>
+      </PMML>
+    `);
+
+    expect(pmml).not.toBeNull();
+
+    const dataField: DataField = pmml.DataDictionary.DataField[0];
+    const interval: Interval = new Interval({ closure: "openOpen", leftMargin: 10 });
+
+    dataField.Interval?.push(interval);
+
+    const xml: string = PMML2XML(pmml);
+
+    expect(xml).toContain(`<Interval closure="openOpen" leftMargin="10"/>`);
   });
 
   test("Update Interval", () => {

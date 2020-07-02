@@ -14,48 +14,48 @@
  * limitations under the License.
  */
 export const SCORE_CARD_SIMPLE_PREDICATE: string = `
-  <PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
-    <Header/>
-    <DataDictionary numberOfFields="3">
-      <DataField name="input1" optype="continuous" dataType="double"/>
-      <DataField name="input2" optype="continuous" dataType="double"/>
-      <DataField name="score" optype="continuous" dataType="double"/>
-    </DataDictionary>
-    <Scorecard modelName="SimpleScorecard" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineMethod="other">
-      <MiningSchema>
-        <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
-        <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
-        <MiningField name="score" usageType="target"/>
-      </MiningSchema>
-      <Output>
-        <OutputField name="Score" feature="predictedValue" dataType="double" optype="continuous"/>
-        <OutputField name="Reason Code 1" rank="1" feature="reasonCode" dataType="string" optype="categorical"/>
-        <OutputField name="Reason Code 2" rank="2" feature="reasonCode" dataType="string" optype="categorical"/>
-      </Output>
-      <Characteristics>
-        <Characteristic name="input1Score" baselineScore="4" reasonCode="Input1ReasonCode">
-          <Attribute partialScore="-12">
-            <SimplePredicate field="input1" operator="lessOrEqual" value="10"/>
-          </Attribute>
-          <Attribute partialScore="50">
-            <SimplePredicate field="input1" operator="greaterThan" value="10"/>
-          </Attribute>
-        </Characteristic>
-        <Characteristic name="input2Score" baselineScore="8" reasonCode="Input2ReasonCode">
-          <Attribute partialScore="-8">
-            <SimplePredicate field="input2" operator="lessOrEqual" value="-5"/>
-          </Attribute>
-          <Attribute partialScore="32">
-            <SimplePredicate field="input2" operator="greaterThan" value="-5"/>
-          </Attribute>
-        </Characteristic>
-      </Characteristics>
-    </Scorecard>
-  </PMML>
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+  <Header/>
+  <DataDictionary numberOfFields="3">
+    <DataField name="input1" optype="continuous" dataType="double"/>
+    <DataField name="input2" optype="continuous" dataType="double"/>
+    <DataField name="score" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <Scorecard modelName="SimpleScorecard" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineMethod="other">
+    <MiningSchema>
+      <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="score" usageType="target"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Score" feature="predictedValue" dataType="double" optype="continuous"/>
+      <OutputField name="Reason Code 1" rank="1" feature="reasonCode" dataType="string" optype="categorical"/>
+      <OutputField name="Reason Code 2" rank="2" feature="reasonCode" dataType="string" optype="categorical"/>
+    </Output>
+    <Characteristics>
+      <Characteristic name="input1Score" baselineScore="4" reasonCode="Input1ReasonCode">
+        <Attribute partialScore="-12">
+          <SimplePredicate field="input1" operator="lessOrEqual" value="10"/>
+        </Attribute>
+        <Attribute partialScore="50">
+          <SimplePredicate field="input1" operator="greaterThan" value="10"/>
+        </Attribute>
+      </Characteristic>
+      <Characteristic name="input2Score" baselineScore="8" reasonCode="Input2ReasonCode">
+        <Attribute partialScore="-8">
+          <SimplePredicate field="input2" operator="lessOrEqual" value="-5"/>
+        </Attribute>
+        <Attribute partialScore="32">
+          <SimplePredicate field="input2" operator="greaterThan" value="-5"/>
+        </Attribute>
+      </Characteristic>
+    </Characteristics>
+  </Scorecard>
+</PMML>
 `;
 
 export const SCORE_CARD_COMPOUND_PREDICATE: string = `
-<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
   <Header/>
   <DataDictionary numberOfFields="5">
     <DataField name="input1" optype="continuous" dataType="double"/>
@@ -133,7 +133,7 @@ export const SCORE_CARD_COMPOUND_PREDICATE: string = `
 `;
 
 export const SCORE_CARD_NESTED_COMPOUND_PREDICATE: string = `
-<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
   <Header/>
   <DataDictionary numberOfFields="3">
     <DataField name="input1" optype="continuous" dataType="double"/>
@@ -196,7 +196,7 @@ export const SCORE_CARD_NESTED_COMPOUND_PREDICATE: string = `
 `;
 
 export const SCORE_CARD_BASIC_COMPLEX_PARTIAL_SCORE: string = `
-<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
   <Header/>
   <DataDictionary numberOfFields="3">
     <DataField name="input1" optype="continuous" dataType="double"/>
@@ -249,7 +249,7 @@ export const SCORE_CARD_BASIC_COMPLEX_PARTIAL_SCORE: string = `
 `;
 
 export const SCORE_CARD_NESTED_COMPLEX_PARTIAL_SCORE: string = `
-<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
   <Header/>
   <DataDictionary numberOfFields="3">
     <DataField name="input1" optype="continuous" dataType="double"/>

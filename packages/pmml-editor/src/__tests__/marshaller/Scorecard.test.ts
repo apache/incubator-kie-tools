@@ -19,6 +19,7 @@ import {
   CompoundPredicate,
   DataDictionary,
   False,
+  FieldName,
   MiningField,
   Model,
   OutputField,
@@ -39,6 +40,8 @@ import {
 } from "./TestData_ScoreCards";
 
 describe("Scorecard tests", () => {
+  type PredicateAssertion = (predicate: Predicate) => void;
+
   test("Scorecard::DataDictionary", () => {
     const pmml: PMML = XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
 
@@ -157,31 +160,26 @@ describe("Scorecard tests", () => {
     const characteristic0Attributes: Attribute[] = characteristics[0].Attribute as Attribute[];
     const characteristic1Attributes: Attribute[] = characteristics[1].Attribute as Attribute[];
 
-    expect(characteristic0Attributes[0].predicate).toBeInstanceOf(SimplePredicate);
-    expect(characteristic0Attributes[1].predicate).toBeInstanceOf(SimplePredicate);
-
-    const predicateC0A0: SimplePredicate = characteristic0Attributes[0].predicate as SimplePredicate;
-    expect(predicateC0A0.field).toBe("input1");
-    expect(predicateC0A0.operator).toBe("lessOrEqual");
-    expect(predicateC0A0.value).toBe("10");
-
-    const predicateC0A1: SimplePredicate = characteristic0Attributes[1].predicate as SimplePredicate;
-    expect(predicateC0A1.field).toBe("input1");
-    expect(predicateC0A1.operator).toBe("greaterThan");
-    expect(predicateC0A1.value).toBe("10");
-
-    expect(characteristic1Attributes[0].predicate).toBeInstanceOf(SimplePredicate);
-    expect(characteristic1Attributes[1].predicate).toBeInstanceOf(SimplePredicate);
-
-    const predicateC1A0: SimplePredicate = characteristic1Attributes[0].predicate as SimplePredicate;
-    expect(predicateC1A0.field).toBe("input2");
-    expect(predicateC1A0.operator).toBe("lessOrEqual");
-    expect(predicateC1A0.value).toBe("-5");
-
-    const predicateC1A1: SimplePredicate = characteristic1Attributes[1].predicate as SimplePredicate;
-    expect(predicateC1A1.field).toBe("input2");
-    expect(predicateC1A1.operator).toBe("greaterThan");
-    expect(predicateC1A1.value).toBe("-5");
+    assertSimplePredicate(characteristic0Attributes[0].predicate, {
+      field: "input1" as FieldName,
+      operator: "lessOrEqual",
+      value: "10"
+    });
+    assertSimplePredicate(characteristic0Attributes[1].predicate, {
+      field: "input1" as FieldName,
+      operator: "greaterThan",
+      value: "10"
+    });
+    assertSimplePredicate(characteristic1Attributes[0].predicate, {
+      field: "input2" as FieldName,
+      operator: "lessOrEqual",
+      value: "-5"
+    });
+    assertSimplePredicate(characteristic1Attributes[1].predicate, {
+      field: "input2" as FieldName,
+      operator: "greaterThan",
+      value: "-5"
+    });
   });
 
   test("Scorecard::Characteristics:Attributes::CompoundPredicate", () => {
@@ -218,101 +216,106 @@ describe("Scorecard tests", () => {
 
     //Characteristic 0, Attributes
     expect(characteristic0Attributes.length).toBe(3);
-    expect(characteristic0Attributes[0].predicate).toBeInstanceOf(CompoundPredicate);
-    expect(characteristic0Attributes[1].predicate).toBeInstanceOf(CompoundPredicate);
     expect(characteristic0Attributes[2].predicate).toBeInstanceOf(True);
 
     //Characteristic 0, Attribute 0
-    const predicateC0A0: CompoundPredicate = characteristic0Attributes[0].predicate as CompoundPredicate;
-    expect(predicateC0A0.booleanOperator).toBe("and");
-    expect(predicateC0A0.predicates?.length).toBe(2);
-    const predicateC0A0P0: Predicate[] = predicateC0A0.predicates as Predicate[];
-    expect(predicateC0A0P0[0]).toBeInstanceOf(SimplePredicate);
-    expect(predicateC0A0P0[1]).toBeInstanceOf(SimplePredicate);
-    const predicateC0A0P0P0: SimplePredicate = predicateC0A0P0[0] as SimplePredicate;
-    expect(predicateC0A0P0P0.field).toBe("input1");
-    expect(predicateC0A0P0P0.operator).toBe("lessOrEqual");
-    expect(predicateC0A0P0P0.value).toBe("-5");
-    const predicateC0A0P0P1: SimplePredicate = predicateC0A0P0[1] as SimplePredicate;
-    expect(predicateC0A0P0P1.field).toBe("input2");
-    expect(predicateC0A0P0P1.operator).toBe("lessOrEqual");
-    expect(predicateC0A0P0P1.value).toBe("-5");
+    assertCompoundPredicate(characteristic0Attributes[0].predicate, { booleanOperator: "and" }, [
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input1" as FieldName,
+          operator: "lessOrEqual",
+          value: "-5"
+        });
+      },
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input2" as FieldName,
+          operator: "lessOrEqual",
+          value: "-5"
+        });
+      }
+    ]);
 
     //Characteristic 0, Attribute 1
-    const predicateC0A1: CompoundPredicate = characteristic0Attributes[1].predicate as CompoundPredicate;
-    expect(predicateC0A1.booleanOperator).toBe("and");
-    expect(predicateC0A1.predicates?.length).toBe(2);
-    const predicateC0A1P0: Predicate[] = predicateC0A1.predicates as Predicate[];
-    expect(predicateC0A1P0[0]).toBeInstanceOf(SimplePredicate);
-    expect(predicateC0A1P0[1]).toBeInstanceOf(SimplePredicate);
-    const predicateC0A1P0P0: SimplePredicate = predicateC0A1P0[0] as SimplePredicate;
-    expect(predicateC0A1P0P0.field).toBe("input1");
-    expect(predicateC0A1P0P0.operator).toBe("greaterThan");
-    expect(predicateC0A1P0P0.value).toBe("-5");
-    const predicateC0A1P0P1: SimplePredicate = predicateC0A1P0[1] as SimplePredicate;
-    expect(predicateC0A1P0P1.field).toBe("input2");
-    expect(predicateC0A1P0P1.operator).toBe("greaterThan");
-    expect(predicateC0A1P0P1.value).toBe("-5");
+    assertCompoundPredicate(characteristic0Attributes[1].predicate, { booleanOperator: "and" }, [
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input1" as FieldName,
+          operator: "greaterThan",
+          value: "-5"
+        });
+      },
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input2" as FieldName,
+          operator: "greaterThan",
+          value: "-5"
+        });
+      }
+    ]);
 
     //Characteristic 1, Attributes
     expect(characteristic1Attributes.length).toBe(4);
-    expect(characteristic1Attributes[0].predicate).toBeInstanceOf(CompoundPredicate);
-    expect(characteristic1Attributes[1].predicate).toBeInstanceOf(CompoundPredicate);
     expect(characteristic1Attributes[2].predicate).toBeInstanceOf(False);
     expect(characteristic1Attributes[3].predicate).toBeInstanceOf(True);
 
     //Characteristic 1, Attribute 0
-    const predicateC1A0: CompoundPredicate = characteristic1Attributes[0].predicate as CompoundPredicate;
-    expect(predicateC1A0.booleanOperator).toBe("or");
-    expect(predicateC1A0.predicates?.length).toBe(2);
-    const predicateC1A0P0: Predicate[] = predicateC1A0.predicates as Predicate[];
-    expect(predicateC1A0P0[0]).toBeInstanceOf(SimplePredicate);
-    expect(predicateC1A0P0[1]).toBeInstanceOf(SimplePredicate);
-    const predicateC1A0P0P0: SimplePredicate = predicateC1A0P0[0] as SimplePredicate;
-    expect(predicateC1A0P0P0.field).toBe("input3");
-    expect(predicateC1A0P0P0.operator).toBe("equal");
-    expect(predicateC1A0P0P0.value).toBe("classA");
-    const predicateC1A0P0P1: SimplePredicate = predicateC1A0P0[1] as SimplePredicate;
-    expect(predicateC1A0P0P1.field).toBe("input4");
-    expect(predicateC1A0P0P1.operator).toBe("equal");
-    expect(predicateC1A0P0P1.value).toBe("classA");
+    assertCompoundPredicate(characteristic1Attributes[0].predicate, { booleanOperator: "or" }, [
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input3" as FieldName,
+          operator: "equal",
+          value: "classA"
+        });
+      },
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input4" as FieldName,
+          operator: "equal",
+          value: "classA"
+        });
+      }
+    ]);
 
     //Characteristic 1, Attribute 1
-    const predicateC1A1: CompoundPredicate = characteristic1Attributes[1].predicate as CompoundPredicate;
-    expect(predicateC1A1.booleanOperator).toBe("or");
-    expect(predicateC1A1.predicates?.length).toBe(2);
-    const predicateC1A1P0: Predicate[] = predicateC1A1.predicates as Predicate[];
-    expect(predicateC1A1P0[0]).toBeInstanceOf(SimplePredicate);
-    expect(predicateC1A1P0[1]).toBeInstanceOf(SimplePredicate);
-    const predicateC1A1P0P0: SimplePredicate = predicateC1A1P0[0] as SimplePredicate;
-    expect(predicateC1A1P0P0.field).toBe("input3");
-    expect(predicateC1A1P0P0.operator).toBe("equal");
-    expect(predicateC1A1P0P0.value).toBe("classB");
-    const predicateC1A1P0P1: SimplePredicate = predicateC1A1P0[1] as SimplePredicate;
-    expect(predicateC1A1P0P1.field).toBe("input4");
-    expect(predicateC1A1P0P1.operator).toBe("equal");
-    expect(predicateC1A1P0P1.value).toBe("classB");
+    assertCompoundPredicate(characteristic1Attributes[1].predicate, { booleanOperator: "or" }, [
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input3" as FieldName,
+          operator: "equal",
+          value: "classB"
+        });
+      },
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input4" as FieldName,
+          operator: "equal",
+          value: "classB"
+        });
+      }
+    ]);
 
     //Characteristic 2, Attributes
     expect(characteristic2Attributes.length).toBe(2);
-    expect(characteristic2Attributes[0].predicate).toBeInstanceOf(CompoundPredicate);
     expect(characteristic2Attributes[1].predicate).toBeInstanceOf(True);
 
     //Characteristic 2, Attribute 0
-    const predicateC2A0: CompoundPredicate = characteristic2Attributes[0].predicate as CompoundPredicate;
-    expect(predicateC2A0.booleanOperator).toBe("xor");
-    expect(predicateC2A0.predicates?.length).toBe(2);
-    const predicateC2A0P0: Predicate[] = predicateC2A0.predicates as Predicate[];
-    expect(predicateC2A0P0[0]).toBeInstanceOf(SimplePredicate);
-    expect(predicateC2A0P0[1]).toBeInstanceOf(SimplePredicate);
-    const predicateC2A0P0P0: SimplePredicate = predicateC2A0P0[0] as SimplePredicate;
-    expect(predicateC2A0P0P0.field).toBe("input3");
-    expect(predicateC2A0P0P0.operator).toBe("equal");
-    expect(predicateC2A0P0P0.value).toBe("classA");
-    const predicateC2A0P0P1: SimplePredicate = predicateC2A0P0[1] as SimplePredicate;
-    expect(predicateC2A0P0P1.field).toBe("input4");
-    expect(predicateC2A0P0P1.operator).toBe("equal");
-    expect(predicateC2A0P0P1.value).toBe("classA");
+    assertCompoundPredicate(characteristic2Attributes[0].predicate, { booleanOperator: "xor" }, [
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input3" as FieldName,
+          operator: "equal",
+          value: "classA"
+        });
+      },
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input4" as FieldName,
+          operator: "equal",
+          value: "classA"
+        });
+      }
+    ]);
   });
 
   test("Scorecard::Characteristics:Attributes::NestedCompoundPredicate", () => {
@@ -343,100 +346,101 @@ describe("Scorecard tests", () => {
 
     //Characteristic 0, Attributes
     expect(characteristic0Attributes.length).toBe(2);
-    expect(characteristic0Attributes[0].predicate).toBeInstanceOf(CompoundPredicate);
     expect(characteristic0Attributes[1].predicate).toBeInstanceOf(True);
 
     //Characteristic 0, Attribute 0
-    const predicateC0A0: CompoundPredicate = characteristic0Attributes[0].predicate as CompoundPredicate;
-    expect(predicateC0A0.booleanOperator).toBe("and");
-    expect(predicateC0A0.predicates?.length).toBe(2);
-    const predicateC0A0P0: Predicate[] = predicateC0A0.predicates as Predicate[];
-
-    expect(predicateC0A0P0[0]).toBeInstanceOf(CompoundPredicate);
-    const predicateC0A0P0P0: CompoundPredicate = predicateC0A0P0[0] as CompoundPredicate;
-    expect(predicateC0A0P0P0.booleanOperator).toBe("and");
-    expect(predicateC0A0P0P0.predicates?.length).toBe(3);
-    const predicateC0A0P0P0P0: Predicate[] = predicateC0A0P0P0.predicates as Predicate[];
-
-    expect(predicateC0A0P0P0P0[0]).toBeInstanceOf(True);
-    expect(predicateC0A0P0P0P0[1]).toBeInstanceOf(SimplePredicate);
-    expect(predicateC0A0P0P0P0[2]).toBeInstanceOf(SimplePredicate);
-    const predicateC0A0P0P0P0P0: SimplePredicate = predicateC0A0P0P0P0[1] as SimplePredicate;
-    expect(predicateC0A0P0P0P0P0.field).toBe("input1");
-    expect(predicateC0A0P0P0P0P0.operator).toBe("greaterThan");
-    expect(predicateC0A0P0P0P0P0.value).toBe("-15");
-    const predicateC0A0P0P0P0P1: SimplePredicate = predicateC0A0P0P0P0[2] as SimplePredicate;
-    expect(predicateC0A0P0P0P0P1.field).toBe("input1");
-    expect(predicateC0A0P0P0P0P1.operator).toBe("lessOrEqual");
-    expect(predicateC0A0P0P0P0P1.value).toBe("25.4");
-
-    expect(predicateC0A0P0[1]).toBeInstanceOf(SimplePredicate);
-    const predicateC0A0P0P1: SimplePredicate = predicateC0A0P0[1] as SimplePredicate;
-    expect(predicateC0A0P0P1.field).toBe("input2");
-    expect(predicateC0A0P0P1.operator).toBe("notEqual");
-    expect(predicateC0A0P0P1.value).toBe("classA");
+    assertCompoundPredicate(characteristic0Attributes[0].predicate, { booleanOperator: "and" }, [
+      (predicate: Predicate) => {
+        assertCompoundPredicate(predicate, { booleanOperator: "and" }, [
+          (predicate: Predicate) => {
+            expect(predicate).toBeInstanceOf(True);
+          },
+          (predicate: Predicate) => {
+            assertSimplePredicate(predicate, {
+              field: "input1" as FieldName,
+              operator: "greaterThan",
+              value: "-15"
+            });
+          },
+          (predicate: Predicate) => {
+            assertSimplePredicate(predicate, {
+              field: "input1" as FieldName,
+              operator: "lessOrEqual",
+              value: "25.4"
+            });
+          }
+        ]);
+      },
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input2" as FieldName,
+          operator: "notEqual",
+          value: "classA"
+        });
+      }
+    ]);
 
     //Characteristic 1, Attributes
     expect(characteristic1Attributes.length).toBe(3);
-    expect(characteristic1Attributes[0].predicate).toBeInstanceOf(CompoundPredicate);
-    expect(characteristic1Attributes[1].predicate).toBeInstanceOf(CompoundPredicate);
     expect(characteristic1Attributes[2].predicate).toBeInstanceOf(True);
 
     //Characteristic 1, Attribute 0
-    const predicateC1A0: CompoundPredicate = characteristic1Attributes[0].predicate as CompoundPredicate;
-    expect(predicateC1A0.booleanOperator).toBe("or");
-    expect(predicateC1A0.predicates?.length).toBe(2);
-    const predicateC1A0P0: Predicate[] = predicateC1A0.predicates as Predicate[];
-    expect(predicateC1A0P0[0]).toBeInstanceOf(SimplePredicate);
-    expect(predicateC1A0P0[1]).toBeInstanceOf(SimplePredicate);
-    const predicateC1A0P0P0: SimplePredicate = predicateC1A0P0[0] as SimplePredicate;
-    expect(predicateC1A0P0P0.field).toBe("input1");
-    expect(predicateC1A0P0P0.operator).toBe("lessOrEqual");
-    expect(predicateC1A0P0P0.value).toBe("-20");
-    const predicateC1A0P0P1: SimplePredicate = predicateC1A0P0[1] as SimplePredicate;
-    expect(predicateC1A0P0P1.field).toBe("input2");
-    expect(predicateC1A0P0P1.operator).toBe("equal");
-    expect(predicateC1A0P0P1.value).toBe("classA");
+    assertCompoundPredicate(characteristic1Attributes[0].predicate, { booleanOperator: "or" }, [
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input1" as FieldName,
+          operator: "lessOrEqual",
+          value: "-20"
+        });
+      },
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input2" as FieldName,
+          operator: "equal",
+          value: "classA"
+        });
+      }
+    ]);
 
-    //Characteristic 1, Attribute 1, First Compound
-    const predicateC1A1: CompoundPredicate = characteristic1Attributes[1].predicate as CompoundPredicate;
-    expect(predicateC1A1.booleanOperator).toBe("or");
-    expect(predicateC1A1.predicates?.length).toBe(2);
-    const predicateC1A1P0: Predicate[] = predicateC1A1.predicates as Predicate[];
-    expect(predicateC1A1P0[0]).toBeInstanceOf(CompoundPredicate);
-    expect(predicateC1A1P0[1]).toBeInstanceOf(SimplePredicate);
-    const predicateC1A1P0P1: SimplePredicate = predicateC1A1P0[1] as SimplePredicate;
-    expect(predicateC1A1P0P1.field).toBe("input2");
-    expect(predicateC1A1P0P1.operator).toBe("equal");
-    expect(predicateC1A1P0P1.value).toBe("classC");
-
-    //Characteristic 1, Attribute 1, Second nested Compound
-    const predicateC1A1P0P0: CompoundPredicate = predicateC1A1P0[0] as CompoundPredicate;
-    expect(predicateC1A1P0P0.booleanOperator).toBe("and");
-    expect(predicateC1A1P0P0.predicates?.length).toBe(2);
-    const predicateC1A1P0P0P0: Predicate[] = predicateC1A1P0P0.predicates as Predicate[];
-    expect(predicateC1A1P0P0P0[0]).toBeInstanceOf(CompoundPredicate);
-    expect(predicateC1A1P0P0P0[1]).toBeInstanceOf(SimplePredicate);
-    const predicateC1A1P0P0P0P1: SimplePredicate = predicateC1A1P0P0P0[1] as SimplePredicate;
-    expect(predicateC1A1P0P0P0P1.field).toBe("input2");
-    expect(predicateC1A1P0P0P0P1.operator).toBe("equal");
-    expect(predicateC1A1P0P0P0P1.value).toBe("classB");
-
-    //Characteristic 1, Attribute 1, Third nested Compound
-    const predicateC1A1P0P0P0P0: CompoundPredicate = predicateC1A1P0P0P0[0] as CompoundPredicate;
-    expect(predicateC1A1P0P0P0P0.booleanOperator).toBe("and");
-    expect(predicateC1A1P0P0P0P0.predicates?.length).toBe(2);
-    const predicateC1A1P0P0P0P0P0: Predicate[] = predicateC1A1P0P0P0P0.predicates as Predicate[];
-    expect(predicateC1A1P0P0P0P0P0[0]).toBeInstanceOf(SimplePredicate);
-    expect(predicateC1A1P0P0P0P0P0[1]).toBeInstanceOf(SimplePredicate);
-    const predicateC1A1P0P0P0P0P0P0: SimplePredicate = predicateC1A1P0P0P0P0P0[0] as SimplePredicate;
-    expect(predicateC1A1P0P0P0P0P0P0.field).toBe("input1");
-    expect(predicateC1A1P0P0P0P0P0P0.operator).toBe("greaterOrEqual");
-    expect(predicateC1A1P0P0P0P0P0P0.value).toBe("5");
-    const predicateC1A1P0P0P0P0P0P1: SimplePredicate = predicateC1A1P0P0P0P0P0[1] as SimplePredicate;
-    expect(predicateC1A1P0P0P0P0P0P1.field).toBe("input1");
-    expect(predicateC1A1P0P0P0P0P0P1.operator).toBe("lessThan");
-    expect(predicateC1A1P0P0P0P0P0P1.value).toBe("12");
+    //Characteristic 1, Attribute 1
+    assertCompoundPredicate(characteristic1Attributes[1].predicate, { booleanOperator: "or" }, [
+      (predicate: Predicate) => {
+        assertCompoundPredicate(predicate, { booleanOperator: "and" }, [
+          (predicate: Predicate) => {
+            assertCompoundPredicate(predicate, { booleanOperator: "and" }, [
+              (predicate: Predicate) => {
+                assertSimplePredicate(predicate, {
+                  field: "input1" as FieldName,
+                  operator: "greaterOrEqual",
+                  value: "5"
+                });
+              },
+              (predicate: Predicate) => {
+                assertSimplePredicate(predicate, {
+                  field: "input1" as FieldName,
+                  operator: "lessThan",
+                  value: "12"
+                });
+              }
+            ]);
+          },
+          (predicate: Predicate) => {
+            assertSimplePredicate(predicate, {
+              field: "input2" as FieldName,
+              operator: "equal",
+              value: "classB"
+            });
+          }
+        ]);
+      },
+      (predicate: Predicate) => {
+        assertSimplePredicate(predicate, {
+          field: "input2" as FieldName,
+          operator: "equal",
+          value: "classC"
+        });
+      }
+    ]);
   });
 
   test("Scorecard::BasicComplexPartialScore", () => {
@@ -548,4 +552,27 @@ describe("Scorecard tests", () => {
     const pmml2: PMML = XML2PMML(xml);
     expect(pmml).toEqual(pmml2);
   });
+
+  function assertSimplePredicate(actualPredicate: Predicate | undefined, expectedPredicate: SimplePredicate): void {
+    expect(actualPredicate).toBeInstanceOf(SimplePredicate);
+    const actualSimplePredicate: SimplePredicate = actualPredicate as SimplePredicate;
+    expect(actualSimplePredicate.field).toEqual(expectedPredicate.field);
+    expect(actualSimplePredicate.operator).toEqual(expectedPredicate.operator);
+    expect(actualSimplePredicate.value).toEqual(expectedPredicate.value);
+  }
+
+  function assertCompoundPredicate(
+    actualPredicate: Predicate | undefined,
+    expectedPredicate: CompoundPredicate,
+    assertions: PredicateAssertion[]
+  ): void {
+    expect(actualPredicate).toBeInstanceOf(CompoundPredicate);
+    const actualCompoundPredicate: CompoundPredicate = actualPredicate as CompoundPredicate;
+    const actualCompoundPredicatePredicates: Predicate[] = actualCompoundPredicate.predicates as Predicate[];
+    expect(actualCompoundPredicate.booleanOperator).toEqual(expectedPredicate.booleanOperator);
+    expect(actualCompoundPredicate.predicates?.length).toBe(assertions.length);
+    for (let i: number = 0; i < assertions.length; i++) {
+      assertions[i](actualCompoundPredicatePredicates[i]);
+    }
+  }
 });

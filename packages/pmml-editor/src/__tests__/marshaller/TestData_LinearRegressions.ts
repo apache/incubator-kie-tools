@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 export const LINEAR_REGRESSION_MODEL_1: string = `
-  <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
   <Header copyright="DMG.org"/>
   <DataDictionary numberOfFields="4">
     <DataField name="age" optype="continuous" dataType="double"/>
@@ -40,11 +40,11 @@ export const LINEAR_REGRESSION_MODEL_1: string = `
       <CategoricalPredictor name="car_location" value="garage" coefficient="-500.0"/>
     </RegressionTable>
   </RegressionModel>
-  </PMML>
-  `;
+</PMML>
+`;
 
 export const LINEAR_REGRESSION_MODEL_2: string = `
-  <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
   <Header copyright="DMG.org"/>
   <DataDictionary numberOfFields="2">
     <DataField name="water_temperature" optype="continuous" dataType="double"/>
@@ -64,11 +64,11 @@ export const LINEAR_REGRESSION_MODEL_2: string = `
       <CategoricalPredictor name="hemisphere" value="northern" coefficient="-2.0"/>
     </RegressionTable>
   </RegressionModel>
-  </PMML>
-  `;
+</PMML>
+`;
 
 export const LINEAR_REGRESSION_MODEL_3: string = `
-  <PMML xmlns="http://www.dmg.org/PMML-4_4" xmlns:cheese="http://cheese.org" version="4.4"> 
+<PMML xmlns="http://www.dmg.org/PMML-4_4" xmlns:cheese="http://cheese.org" version="4.4"> 
   <Header copyright="DMG.org">
     <Application name="application" version="1.0"/>
     <Annotation>annotation1</Annotation>
@@ -93,5 +93,5 @@ export const LINEAR_REGRESSION_MODEL_3: string = `
       <NumericPredictor name="age" exponent="1" coefficient="1.6"/>
     </RegressionTable>
   </RegressionModel>
-  </PMML>
-  `;
+</PMML>
+`;
