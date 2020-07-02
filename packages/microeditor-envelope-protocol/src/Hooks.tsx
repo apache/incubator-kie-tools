@@ -6,12 +6,8 @@ export function useSyncedKeyboardEvents(envelopeBusOuterMessageHandler: Envelope
   useEffect(() => {
     const listener = (keyboardEvent: KeyboardEvent) => {
       const keyboardShortcut = getChannelKeyboardEvent(keyboardEvent);
-      if (!keyboardShortcut) {
-        return false;
-      }
       console.debug(`New keyboard event (${JSON.stringify(keyboardShortcut)})!`);
       envelopeBusOuterMessageHandler.notify_channelKeyboardEvent(keyboardShortcut);
-      return true;
     };
 
     window.addEventListener("keydown", listener);

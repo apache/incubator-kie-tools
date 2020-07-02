@@ -29,7 +29,6 @@ import { EmbeddedEditor, EmbeddedEditorRef, EmbeddedEditorRouter } from "../../e
 import { StateControl } from "../../stateControl";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 import { render } from "@testing-library/react";
-import "@testing-library/jest-dom";
 
 describe("EmbeddedEditor::ONLINE", () => {
   const file: File = {

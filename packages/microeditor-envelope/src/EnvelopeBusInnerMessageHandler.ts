@@ -193,7 +193,7 @@ export class EnvelopeBusInnerMessageHandler {
         const selector = message.data as string;
         this.impl.receive_guidedTourElementPositionRequest(selector);
         break;
-      case EnvelopeBusMessageType.NOTIFY_KEYBOARD_EVENT:
+      case EnvelopeBusMessageType.NOTIFY_CHANNEL_KEYBOARD_EVENT:
         this.impl.receive_channelKeyboardEvent(message.data);
         break;
       default:

@@ -130,7 +130,7 @@ export class EnvelopeBusOuterMessageHandler {
   }
 
   public notify_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent) {
-    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_KEYBOARD_EVENT, data: channelKeyboardEvent });
+    this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_CHANNEL_KEYBOARD_EVENT, data: channelKeyboardEvent });
   }
 
 

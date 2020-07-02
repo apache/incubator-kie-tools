@@ -243,6 +243,16 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
   }
 }
 
+export interface ChannelKeyboardEvent {
+  altKey: boolean;
+  ctrlKey: boolean;
+  shiftKey: boolean;
+  metaKey: boolean;
+  code: string;
+  type: string;
+  channelOriginalTargetTagName?: string;
+}
+
 export function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKeyboardEvent {
   return {
     altKey: keyboardEvent.altKey,
@@ -253,16 +263,6 @@ export function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKe
     type: keyboardEvent.type,
     channelOriginalTargetTagName: (keyboardEvent.target as HTMLElement)?.tagName
   };
-}
-
-export interface ChannelKeyboardEvent {
-  altKey: boolean;
-  ctrlKey: boolean;
-  shiftKey: boolean;
-  metaKey: boolean;
-  code: string;
-  type: string;
-  channelOriginalTargetTagName?: string;
 }
 
 function getProcessableKeyboardEvent(
