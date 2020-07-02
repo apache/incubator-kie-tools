@@ -99,16 +99,16 @@ describe("Header tests", () => {
     expect(annotations.length).toBe(1);
     expect(annotations[0]).not.toBeUndefined();
     /* tslint:disable:no-string-literal */
-    expect(annotations[0]["text"]).toBe("annotation1");
+    expect((annotations[0] as any)["text"]).toBe("annotation1");
     /* tslint:enable:no-string-literal */
 
-    const annotation: Annotation = new Annotation({});
+    const annotation: Annotation[] = [new Annotation({})];
     /* tslint:disable:no-string-literal */
-    annotation["type"] = "text";
-    annotation["text"] = "annotation2";
+    (annotation[0] as any)["type"] = "text";
+    (annotation[0] as any)["text"] = "annotation2";
     /* tslint:enable:no-string-literal */
 
-    annotations.push(annotation);
+    annotations.push(annotation[0]);
     expect(annotations.length).toBe(2);
     expect(annotations[1]).not.toBeUndefined();
 
@@ -135,11 +135,11 @@ describe("Header tests", () => {
     expect(header.Annotation).toBeUndefined();
     expect(header.Timestamp).not.toBeUndefined();
 
-    const timestamp: Timestamp = header.Timestamp as Timestamp;
+    const timestamp: Timestamp[] = [header.Timestamp as Timestamp];
     /* tslint:disable:no-string-literal */
-    expect(timestamp["text"]).toBe("timestamp");
+    expect((timestamp[0] as any)["text"]).toBe("timestamp");
 
-    timestamp["text"] = "timestamp-changed";
+    (timestamp[0] as any)["text"] = "timestamp-changed";
     /* tslint:enable:no-string-literal */
     const xml: string = PMML2XML(pmml);
     expect(xml).toContain(`<Timestamp>timestamp-changed</Timestamp>`);
