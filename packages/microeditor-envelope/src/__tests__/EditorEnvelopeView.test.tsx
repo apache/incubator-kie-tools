@@ -71,7 +71,7 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
       receive_guidedTourElementPositionRequest: () => {
         receivedMessages.push(["receive_guidedTourElementPositionRequest"]);
       },
-      receive_keyboardEvent: (channelKeyboardEvent: ChannelKeyboardEvent) => {
+      receive_channelKeyboardEvent: (channelKeyboardEvent: ChannelKeyboardEvent) => {
         receivedMessages.push(["receive_previewRequest", channelKeyboardEvent]);
       }
     })

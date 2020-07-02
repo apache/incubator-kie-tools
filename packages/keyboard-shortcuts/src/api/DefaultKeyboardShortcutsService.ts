@@ -100,29 +100,25 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
     const keyBinding = {
       combination,
       label,
-      listener: (e: KeyboardEvent) => {
-        if (isTagToBeIgnored(e.target)) {
-          console.debug(`Ignoring execution (${combination}) because target was ` + (e.target as HTMLElement)?.tagName);
+      listener: (event: KeyboardEvent | CustomEvent<ChannelKeyboardEvent>) => {
+        const keyboardEvent = getProcessableKeyboardEvent(combination, event, opts);
+        if (!keyboardEvent) {
           return true;
         }
 
-        if (e.repeat && !opts?.repeat) {
-          return true;
-        }
-
-        if (e.type === "keydown") {
-          if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(e))) {
+        if (keyboardEvent.type === "keydown") {
+          if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(keyboardEvent))) {
             console.debug(`Fired (down) [${combination}]!`);
-            onKeyDown(e.target);
+            onKeyDown(keyboardEvent.target);
             return false;
           }
-        } else if (e.type === "keyup") {
+        } else if (keyboardEvent.type === "keyup") {
           if (
-            this.combinationKeySet(combination).has(MODIFIER_KEY_NAMES.get(e.code) ?? "") ||
-            this.combinationKeySet(combination).has(e.code)
+            this.combinationKeySet(combination).has(MODIFIER_KEY_NAMES.get(keyboardEvent.code) ?? "") ||
+            this.combinationKeySet(combination).has(keyboardEvent.code)
           ) {
             console.debug(`Fired (up) [${combination}]!`);
-            onKeyUp(e.target);
+            onKeyUp(keyboardEvent.target);
             return false;
           }
         }
@@ -151,19 +147,15 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
     const keyBinding = {
       combination,
       label,
-      listener: (e: KeyboardEvent) => {
-        if (isTagToBeIgnored(e.target)) {
-          console.debug(`Ignoring execution (${combination}) because target was ` + (e.target as HTMLElement)?.tagName);
+      listener: (event: KeyboardEvent | CustomEvent<ChannelKeyboardEvent>) => {
+        const keyboardEvent = getProcessableKeyboardEvent(combination, event, opts);
+        if (!keyboardEvent) {
           return true;
         }
 
-        if (e.repeat && !opts?.repeat) {
-          return true;
-        }
-
-        if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(e))) {
+        if (setsEqual(this.combinationKeySet(combination), this.pressedKeySet(keyboardEvent))) {
           console.debug(`Fired (press) [${combination}]!`);
-          onKeyPress(e.target);
+          onKeyPress(keyboardEvent.target);
           return false;
         }
 
@@ -251,6 +243,18 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
   }
 }
 
+export function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKeyboardEvent {
+  return {
+    altKey: keyboardEvent.altKey,
+    ctrlKey: keyboardEvent.ctrlKey,
+    shiftKey: keyboardEvent.shiftKey,
+    metaKey: keyboardEvent.metaKey,
+    code: keyboardEvent.code,
+    type: keyboardEvent.type,
+    channelOriginalTargetTagName: (keyboardEvent.target as HTMLElement)?.tagName
+  };
+}
+
 export interface ChannelKeyboardEvent {
   altKey: boolean;
   ctrlKey: boolean;
@@ -258,14 +262,30 @@ export interface ChannelKeyboardEvent {
   metaKey: boolean;
   code: string;
   type: string;
-  target?: EventTarget;
+  channelOriginalTargetTagName?: string;
 }
 
-export function isTagToBeIgnored(target: EventTarget | null) {
-  if (target instanceof Element) {
-    return IGNORED_TAGS.includes(target.tagName);
+function getProcessableKeyboardEvent(
+  combination: string,
+  event: KeyboardEvent | CustomEvent<ChannelKeyboardEvent>,
+  opts?: KeyBindingServiceOpts
+): KeyboardEvent | null {
+  if (event instanceof CustomEvent && IGNORED_TAGS.includes(event.detail.channelOriginalTargetTagName!)) {
+    console.debug(`Ignoring execution (${combination}) because target is ${event.detail.channelOriginalTargetTagName}`);
+    return null;
   }
-  return false;
+
+  const keyboardEvent = event instanceof CustomEvent ? new KeyboardEvent(event.detail.type, event.detail) : event;
+  if (keyboardEvent.target instanceof Element && IGNORED_TAGS.includes(keyboardEvent.target.tagName)) {
+    console.debug(`Ignoring execution (${combination}) because target is ${keyboardEvent.target.tagName}`);
+    return null;
+  }
+
+  if (keyboardEvent.repeat && !opts?.repeat) {
+    return null;
+  }
+
+  return keyboardEvent;
 }
 
 function setsEqual(lhs: Set<unknown>, rhs: Set<unknown>) {

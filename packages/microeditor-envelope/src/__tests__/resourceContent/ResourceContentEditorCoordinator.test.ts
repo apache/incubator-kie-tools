@@ -56,7 +56,7 @@ const handler = new EnvelopeBusInnerMessageHandler(
     receive_guidedTourElementPositionRequest() {
       // do nothing
     },
-    receive_keyboardEvent: (channelKeyboardEvent: ChannelKeyboardEvent) => {
+    receive_channelKeyboardEvent: (channelKeyboardEvent: ChannelKeyboardEvent) => {
       // do nothing
     }
   })

@@ -42,7 +42,7 @@ export interface Impl {
   receive_editorRedo(): void;
   receive_previewRequest(): void;
   receive_guidedTourElementPositionRequest(selector: string): void;
-  receive_keyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent): void;
+  receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent): void;
 }
 
 export class EnvelopeBusInnerMessageHandler {
@@ -194,7 +194,7 @@ export class EnvelopeBusInnerMessageHandler {
         this.impl.receive_guidedTourElementPositionRequest(selector);
         break;
       case EnvelopeBusMessageType.NOTIFY_KEYBOARD_EVENT:
-        this.impl.receive_keyboardEvent(message.data);
+        this.impl.receive_channelKeyboardEvent(message.data);
         break;
       default:
         console.info(`[Bus ${this.id}]: Unknown message type received: ${message.type}`);

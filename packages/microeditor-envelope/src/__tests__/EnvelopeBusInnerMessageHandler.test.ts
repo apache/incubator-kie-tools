@@ -65,7 +65,7 @@ beforeEach(() => {
       receive_guidedTourElementPositionRequest: (selector: string) => {
         receivedMessages.push(["receive_guidedTourElementPositionRequest", selector]);
       },
-      receive_keyboardEvent: (channelKeyboardEvent: ChannelKeyboardEvent) => {
+      receive_channelKeyboardEvent: (channelKeyboardEvent: ChannelKeyboardEvent) => {
         receivedMessages.push(["receive_previewRequest", channelKeyboardEvent]);
       }
     })

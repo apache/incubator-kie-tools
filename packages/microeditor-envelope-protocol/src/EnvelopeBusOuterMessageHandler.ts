@@ -129,7 +129,7 @@ export class EnvelopeBusOuterMessageHandler {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.REQUEST_GUIDED_TOUR_ELEMENT_POSITION, data: selector });
   }
 
-  public notify_keyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent) {
+  public notify_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent) {
     this.busApi.postMessage({ type: EnvelopeBusMessageType.NOTIFY_KEYBOARD_EVENT, data: channelKeyboardEvent });
   }
 
