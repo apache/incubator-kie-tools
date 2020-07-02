@@ -192,6 +192,10 @@ func cliInstall(serviceHolder *KogitoServiceHolder, cliName string) error {
 		}
 	}
 
+	if httpPort := serviceHolder.GetSpec().GetHTTPPort(); httpPort > 0 {
+		cmd = append(cmd, "--http-port", strconv.Itoa(int(httpPort)))
+	}
+
 	_, err := ExecuteCliCommandInNamespace(serviceHolder.GetNamespace(), cmd...)
 	return err
 }

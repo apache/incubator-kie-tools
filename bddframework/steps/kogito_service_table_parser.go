@@ -16,6 +16,7 @@ package steps
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
@@ -33,6 +34,7 @@ const (
 	kogitoServiceRuntimeEnvKey      = "runtime-env"
 	kogitoServiceServiceLabelKey    = "service-label"
 	kogitoServiceDeploymentLabelKey = "deployment-label"
+	kogitoServiceConfigKey          = "config"
 
 	// DataTable second column
 	kogitoServiceInfinispanUseKogitoInfraKey = "useKogitoInfra"
@@ -42,6 +44,7 @@ const (
 	kogitoServiceKafkaUseKogitoInfraKey      = "useKogitoInfra"
 	kogitoServiceKafkaExternalURIKey         = "externalURI"
 	kogitoServiceKafkaInstanceKey            = "instance"
+	kogitoServiceHTTPPortKey                 = "httpPort"
 )
 
 func configureKogitoServiceFromTable(table *messages.PickleStepArgument_PickleTable, kogitoService *framework.KogitoServiceHolder) (err error) {
@@ -77,6 +80,9 @@ func configureKogitoServiceFromTable(table *messages.PickleStepArgument_PickleTa
 
 		case kogitoServiceRuntimeLimitKey:
 			kogitoService.KogitoService.GetSpec().AddResourceLimit(getSecondColumn(row), getThirdColumn(row))
+
+		case kogitoServiceConfigKey:
+			err = parseKogitoServiceConfigRow(row, kogitoService)
 
 		default:
 			err = fmt.Errorf("Unrecognized configuration option: %s", firstColumn)
@@ -130,5 +136,21 @@ func parseKogitoServiceKafkaRow(row *messages.PickleStepArgument_PickleTable_Pic
 	} else {
 		return fmt.Errorf("Kogito service %s doesn't support Kafka configuration", kogitoService.KogitoService.GetName())
 	}
+	return nil
+}
+
+func parseKogitoServiceConfigRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoService *framework.KogitoServiceHolder) error {
+	secondColumn := getSecondColumn(row)
+
+	switch secondColumn {
+	case kogitoServiceHTTPPortKey:
+		httpPort, err := strconv.ParseInt(getThirdColumn(row), 10, 32)
+		if err != nil {
+			return err
+		}
+
+		kogitoService.KogitoService.GetSpec().SetHTTPPort(int32(httpPort))
+	}
+
 	return nil
 }
