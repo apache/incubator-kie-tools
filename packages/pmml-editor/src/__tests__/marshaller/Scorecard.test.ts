@@ -75,6 +75,26 @@ describe("Scorecard tests", () => {
     expect(model).toBeInstanceOf(Scorecard);
   });
 
+  test("Scorecard::Models::No modelName", () => {
+    const xml: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+      <Header/>
+      <DataDictionary/>
+      <Scorecard/>
+    </PMML>`;
+    const pmml: PMML = XML2PMML(xml);
+
+    expect(pmml).not.toBeNull();
+
+    expect(pmml.models).not.toBeUndefined();
+    const models: Model[] = pmml.models ?? [];
+    expect(models.length).toBe(1);
+
+    const model: Model = models[0];
+    expect(model).toBeInstanceOf(Scorecard);
+    const scorecard: Scorecard = model as Scorecard;
+    expect(scorecard.modelName).toBeUndefined();
+  });
+
   test("Scorecard::MiningSchema", () => {
     const pmml: PMML = XML2PMML(SCORE_CARD_SIMPLE_PREDICATE);
     const models: Model[] = pmml.models ?? [];
