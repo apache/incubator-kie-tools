@@ -33,9 +33,9 @@ function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKeyboardE
 export function useSyncedKeyboardEvents(envelopeBusOuterMessageHandler: EnvelopeBusOuterMessageHandler) {
   useEffect(() => {
     const listener = (keyboardEvent: KeyboardEvent) => {
-      const keyboardShortcut = getChannelKeyboardEvent(keyboardEvent);
-      console.debug(`New keyboard event (${JSON.stringify(keyboardShortcut)})!`);
-      envelopeBusOuterMessageHandler.notify_channelKeyboardEvent(keyboardShortcut);
+      const channelKeyboardEvent = getChannelKeyboardEvent(keyboardEvent);
+      console.debug(`New keyboard event (${JSON.stringify(channelKeyboardEvent)})!`);
+      envelopeBusOuterMessageHandler.notify_channelKeyboardEvent(channelKeyboardEvent);
     };
 
     window.addEventListener("keydown", listener);

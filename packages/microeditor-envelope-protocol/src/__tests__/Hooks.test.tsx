@@ -17,8 +17,8 @@
 import * as React from "react";
 import { renderHook } from "@testing-library/react-hooks";
 import { useSyncedKeyboardEvents } from "../Hooks";
-import {EnvelopeBusMessage} from "../EnvelopeBusMessage";
-import {EnvelopeBusOuterMessageHandler} from "../EnvelopeBusOuterMessageHandler";
+import { EnvelopeBusMessage } from "../EnvelopeBusMessage";
+import { EnvelopeBusOuterMessageHandler } from "../EnvelopeBusOuterMessageHandler";
 import {
   EditorContent,
   KogitoEdit,
@@ -26,7 +26,7 @@ import {
   ResourceListRequest,
   StateControlCommand
 } from "@kogito-tooling/core-api";
-import {Rect, Tutorial, UserInteraction} from "@kogito-tooling/guided-tour";
+import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
 
 let sentMessages: Array<EnvelopeBusMessage<any>>;
 let receivedMessages: string[];
@@ -104,13 +104,9 @@ beforeEach(() => {
   );
 });
 
-
 describe("useSyncedKeyboardEvents", () => {
   test("EmbeddedEditor::notify_keyboardEvent::keydown", async () => {
-    const spyNotify_notifyKeyboardEvent = jest.spyOn(
-      handler,
-      "notify_channelKeyboardEvent"
-    );
+    const spyNotify_notifyKeyboardEvent = jest.spyOn(handler, "notify_channelKeyboardEvent");
 
     renderHook(() => useSyncedKeyboardEvents(handler));
     window.dispatchEvent(new KeyboardEvent("keydown", { ctrlKey: true }));
@@ -127,10 +123,7 @@ describe("useSyncedKeyboardEvents", () => {
   });
 
   test("EmbeddedEditor::notify_keyboardEvent::keyup", async () => {
-    const spyNotify_notifyKeyboardEvent = jest.spyOn(
-      handler,
-      "notify_channelKeyboardEvent"
-    );
+    const spyNotify_notifyKeyboardEvent = jest.spyOn(handler, "notify_channelKeyboardEvent");
 
     renderHook(() => useSyncedKeyboardEvents(handler));
     window.dispatchEvent(new KeyboardEvent("keyup", { altKey: true }));
@@ -147,10 +140,7 @@ describe("useSyncedKeyboardEvents", () => {
   });
 
   test("EmbeddedEditor::notify_keyboardEvent::keyup", async () => {
-    const spyNotify_notifyKeyboardEvent = jest.spyOn(
-      handler,
-      "notify_channelKeyboardEvent"
-    );
+    const spyNotify_notifyKeyboardEvent = jest.spyOn(handler, "notify_channelKeyboardEvent");
 
     renderHook(() => useSyncedKeyboardEvents(handler));
     window.dispatchEvent(new KeyboardEvent("keypress", { shiftKey: true }));
