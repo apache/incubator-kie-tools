@@ -20,7 +20,7 @@ import { EditorContent, EditorContext } from "@kogito-tooling/core-api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
-import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
+import {Association, KogitoEnvelopeBus} from "./KogitoEnvelopeBus";
 import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
@@ -29,7 +29,7 @@ import { StateControlService } from "./api/stateControl";
 import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandler";
 
 export class EditorEnvelopeController {
-  private readonly kogitoEnvelopeBus: KogitoEnvelopeBus;
+  readonly kogitoEnvelopeBus: KogitoEnvelopeBus;
   public capturedInitRequestYet = false;
 
   private editorEnvelopeView?: EditorEnvelopeView;
@@ -44,9 +44,8 @@ export class EditorEnvelopeController {
     private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService
   ) {
     this.kogitoEnvelopeBus = new KogitoEnvelopeBus(busApi, {
-      receive_initRequest: async (init: { origin: string; busId: string }) => {
-        this.kogitoEnvelopeBus.targetOrigin = init.origin;
-        this.kogitoEnvelopeBus.associatedBusId = init.busId;
+      receive_initRequest: async (association: Association) => {
+        this.kogitoEnvelopeBus.associate(association);
 
         if (this.capturedInitRequestYet) {
           return;

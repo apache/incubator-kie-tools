@@ -10,7 +10,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
   }
   exposing={[Function]}
   keyboardShortcutsService={
-    e {
+    DefaultKeyboardShortcutsService {
       "args": Object {
         "editorContext": Object {
           "channel": "VSCODE",
@@ -87,23 +87,67 @@ exports[`EditorEnvelopeController after received content 1`] = `
     </div>
   }
   messageBus={
-    EnvelopeBusInnerMessageHandler {
-      "capturedInitRequestYet": true,
-      "envelopeBusApi": Object {
-        "postMessage": [Function],
-      },
-      "eventListener": [Function],
-      "id": undefined,
-      "impl": Object {
+    KogitoEnvelopeBus {
+      "api": Object {
+        "receive_contentChangedNotification": [Function],
         "receive_contentRequest": [Function],
-        "receive_contentResponse": [Function],
         "receive_editorRedo": [Function],
         "receive_editorUndo": [Function],
         "receive_guidedTourElementPositionRequest": [Function],
-        "receive_languageResponse": [Function],
+        "receive_initRequest": [Function],
         "receive_previewRequest": [Function],
-        "receive_resourceContentList": [Function],
-        "receive_resourceContentResponse": [Function],
+      },
+      "associatedBusId": "someBusId",
+      "busApi": Object {
+        "postMessage": [Function],
+      },
+      "eventListener": [Function],
+      "manager": EnvelopeBusMessageManager {
+        "api": Object {
+          "receive_contentChangedNotification": [Function],
+          "receive_contentRequest": [Function],
+          "receive_editorRedo": [Function],
+          "receive_editorUndo": [Function],
+          "receive_guidedTourElementPositionRequest": [Function],
+          "receive_initRequest": [Function],
+          "receive_previewRequest": [Function],
+        },
+        "apiMapping": Map {
+          0 => "receive_guidedTourElementPositionRequest",
+          1 => "receive_initRequest",
+          2 => "receive_previewRequest",
+          3 => "receive_contentRequest",
+          4 => "receive_contentChangedNotification",
+          5 => "receive_editorRedo",
+          6 => "receive_editorUndo",
+        },
+        "callbacks": Map {
+          "1" => Object {
+            "reject": [Function],
+            "resolve": [Function],
+          },
+          "2" => Object {
+            "reject": [Function],
+            "resolve": [Function],
+          },
+        },
+        "generateRandomId": [MockFunction] {
+          "calls": Array [
+            Array [],
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": "1",
+            },
+            Object {
+              "type": "return",
+              "value": "2",
+            },
+          ],
+        },
+        "send": [Function],
       },
       "targetOrigin": "test-target-origin",
     }
@@ -116,7 +160,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
     }
   }
 >
-  <Component
+  <KeyBindingsHelpOverlay
     context={
       Object {
         "channel": "VSCODE",
@@ -124,7 +168,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
       }
     }
     keyboardShortcutsService={
-      e {
+      DefaultKeyboardShortcutsService {
         "args": Object {
           "editorContext": Object {
             "channel": "VSCODE",
@@ -284,7 +328,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
         />
       </Portal>
     </Modal>
-  </Component>
+  </KeyBindingsHelpOverlay>
   <Portal
     containerInfo={
       <div
@@ -425,7 +469,7 @@ exports[`EditorEnvelopeController opens 1`] = `
   }
   exposing={[Function]}
   keyboardShortcutsService={
-    e {
+    DefaultKeyboardShortcutsService {
       "args": Object {
         "editorContext": Object {
           "channel": "VSCODE",
@@ -493,22 +537,41 @@ exports[`EditorEnvelopeController opens 1`] = `
     </div>
   }
   messageBus={
-    EnvelopeBusInnerMessageHandler {
-      "capturedInitRequestYet": false,
-      "envelopeBusApi": Object {
-        "postMessage": [Function],
-      },
-      "eventListener": [Function],
-      "impl": Object {
+    KogitoEnvelopeBus {
+      "api": Object {
+        "receive_contentChangedNotification": [Function],
         "receive_contentRequest": [Function],
-        "receive_contentResponse": [Function],
         "receive_editorRedo": [Function],
         "receive_editorUndo": [Function],
         "receive_guidedTourElementPositionRequest": [Function],
-        "receive_languageResponse": [Function],
+        "receive_initRequest": [Function],
         "receive_previewRequest": [Function],
-        "receive_resourceContentList": [Function],
-        "receive_resourceContentResponse": [Function],
+      },
+      "busApi": Object {
+        "postMessage": [Function],
+      },
+      "eventListener": [Function],
+      "manager": EnvelopeBusMessageManager {
+        "api": Object {
+          "receive_contentChangedNotification": [Function],
+          "receive_contentRequest": [Function],
+          "receive_editorRedo": [Function],
+          "receive_editorUndo": [Function],
+          "receive_guidedTourElementPositionRequest": [Function],
+          "receive_initRequest": [Function],
+          "receive_previewRequest": [Function],
+        },
+        "apiMapping": Map {
+          0 => "receive_guidedTourElementPositionRequest",
+          1 => "receive_initRequest",
+          2 => "receive_previewRequest",
+          3 => "receive_contentRequest",
+          4 => "receive_contentChangedNotification",
+          5 => "receive_editorRedo",
+          6 => "receive_editorUndo",
+        },
+        "callbacks": Map {},
+        "send": [Function],
       },
     }
   }
@@ -651,7 +714,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
   }
   exposing={[Function]}
   keyboardShortcutsService={
-    e {
+    DefaultKeyboardShortcutsService {
       "args": Object {
         "editorContext": Object {
           "channel": "VSCODE",
@@ -719,23 +782,58 @@ exports[`EditorEnvelopeController receives init request 1`] = `
     </div>
   }
   messageBus={
-    EnvelopeBusInnerMessageHandler {
-      "capturedInitRequestYet": true,
-      "envelopeBusApi": Object {
-        "postMessage": [Function],
-      },
-      "eventListener": [Function],
-      "id": undefined,
-      "impl": Object {
+    KogitoEnvelopeBus {
+      "api": Object {
+        "receive_contentChangedNotification": [Function],
         "receive_contentRequest": [Function],
-        "receive_contentResponse": [Function],
         "receive_editorRedo": [Function],
         "receive_editorUndo": [Function],
         "receive_guidedTourElementPositionRequest": [Function],
-        "receive_languageResponse": [Function],
+        "receive_initRequest": [Function],
         "receive_previewRequest": [Function],
-        "receive_resourceContentList": [Function],
-        "receive_resourceContentResponse": [Function],
+      },
+      "associatedBusId": "someBusId",
+      "busApi": Object {
+        "postMessage": [Function],
+      },
+      "eventListener": [Function],
+      "manager": EnvelopeBusMessageManager {
+        "api": Object {
+          "receive_contentChangedNotification": [Function],
+          "receive_contentRequest": [Function],
+          "receive_editorRedo": [Function],
+          "receive_editorUndo": [Function],
+          "receive_guidedTourElementPositionRequest": [Function],
+          "receive_initRequest": [Function],
+          "receive_previewRequest": [Function],
+        },
+        "apiMapping": Map {
+          0 => "receive_guidedTourElementPositionRequest",
+          1 => "receive_initRequest",
+          2 => "receive_previewRequest",
+          3 => "receive_contentRequest",
+          4 => "receive_contentChangedNotification",
+          5 => "receive_editorRedo",
+          6 => "receive_editorUndo",
+        },
+        "callbacks": Map {
+          "1" => Object {
+            "reject": [Function],
+            "resolve": [Function],
+          },
+        },
+        "generateRandomId": [MockFunction] {
+          "calls": Array [
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": "1",
+            },
+          ],
+        },
+        "send": [Function],
       },
       "targetOrigin": "test-target-origin",
     }

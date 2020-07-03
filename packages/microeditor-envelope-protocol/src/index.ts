@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./bus/";
+export * from "./bus";
 export * from "./kogito";
 

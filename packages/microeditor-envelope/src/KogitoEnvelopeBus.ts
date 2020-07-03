@@ -39,17 +39,22 @@ export interface KogitoEnvelopeApi {
   receive_editorUndo(): void;
   receive_editorRedo(): void;
   //requests
-  receive_initRequest(init: { origin: string; busId: string }): Promise<void>;
+  receive_initRequest(association: Association): Promise<void>;
   receive_contentRequest(): Promise<EditorContent>;
   receive_previewRequest(): Promise<string>;
   receive_guidedTourElementPositionRequest(selector: string): Promise<Rect>;
+}
+
+export interface Association {
+  origin: string;
+  busId: string;
 }
 
 export class KogitoEnvelopeBus {
   public targetOrigin: string;
   public associatedBusId: string;
   public eventListener?: any;
-  private readonly manager: EnvelopeBusMessageManager<
+  readonly manager: EnvelopeBusMessageManager<
     MessageTypesYouCanSendToTheChannel,
     MessageTypesYouCanSendToTheEnvelope,
     KogitoEnvelopeApi
@@ -72,6 +77,11 @@ export class KogitoEnvelopeBus {
         [MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_UNDO, "receive_editorUndo"]
       ])
     );
+  }
+
+  public associate(association: Association) {
+    this.targetOrigin = association.origin;
+    this.associatedBusId = association.busId;
   }
 
   public startListening() {

@@ -113,89 +113,124 @@ async function incomingMessage(message: EnvelopeBusMessage<any, any>) {
 }
 
 describe("EditorEnvelopeController", () => {
-  test.skip("opens", async () => {
+  test("opens", async () => {
     const render = await startController();
     expect(render).toMatchSnapshot();
   });
 
-  test.skip("receives init request", async () => {
+  test("receives init request", async () => {
     const render = await startController();
+    jest.spyOn(controller.kogitoEnvelopeBus.manager, "generateRandomId").mockReturnValueOnce("1");
     await incomingMessage({
+      requestId: "0",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      requestId: "1",
       type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
-      data: "test-target-origin"
+      data: { origin: "test-target-origin", busId: "someBusId" }
     });
 
     expect(sentMessages).toEqual([
-      { type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT, data: undefined },
-      { type: MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE, data: undefined }
+      {
+        busId: controller.kogitoEnvelopeBus.associatedBusId,
+        requestId: "1",
+        purpose: EnvelopeBusMessagePurpose.REQUEST,
+        type: MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE,
+        data: undefined
+      }
     ]);
     expect(render.update()).toMatchSnapshot();
   });
 
-  test.skip("receives language response", async () => {
+  test("receives language response", async () => {
     await startController();
+
+    jest.spyOn(controller.kogitoEnvelopeBus.manager, "generateRandomId").mockReturnValueOnce("1");
     await incomingMessage({
+      requestId: "0",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      requestId: "1",
       type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
-      data: "test-target-origin"
+      data: { origin: "test-target-origin", busId: "someBusId" }
     });
 
     sentMessages = [];
+    jest.spyOn(controller.kogitoEnvelopeBus.manager, "generateRandomId").mockReturnValueOnce("2");
     await incomingMessage({
-      purpose: EnvelopeBusMessagePurpose.REQUEST,
       requestId: "1",
+      purpose: EnvelopeBusMessagePurpose.RESPONSE,
       type: MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE,
       data: languageData
     });
 
-    expect(sentMessages).toEqual([{ type: MessageTypesYouCanSendToTheEnvelope.REQUEST_CONTENT, data: undefined }]);
+    expect(sentMessages).toEqual([
+      {
+        busId: controller.kogitoEnvelopeBus.associatedBusId,
+        requestId: "2",
+        purpose: EnvelopeBusMessagePurpose.REQUEST,
+        type: MessageTypesYouCanSendToTheChannel.REQUEST_CONTENT,
+        data: undefined
+      }
+    ]);
   });
 
-  test.skip("after received content", async () => {
+  test("after received content", async () => {
     const render = await startController();
 
+    jest.spyOn(controller.kogitoEnvelopeBus.manager, "generateRandomId").mockReturnValueOnce("1");
     await incomingMessage({
+      requestId: "0",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      requestId: "1",
       type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
-      data: "test-target-origin"
+      data: { origin: "test-target-origin", busId: "someBusId" }
     });
 
+    jest.spyOn(controller.kogitoEnvelopeBus.manager, "generateRandomId").mockReturnValueOnce("2");
     await incomingMessage({
-      purpose: EnvelopeBusMessagePurpose.REQUEST,
       requestId: "1",
+      purpose: EnvelopeBusMessagePurpose.RESPONSE,
       type: MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE,
       data: languageData
     });
+
+    await delay(0);
     sentMessages = [];
     await incomingMessage({
-      purpose: EnvelopeBusMessagePurpose.REQUEST,
-      requestId: "1",
+      requestId: "2",
+      purpose: EnvelopeBusMessagePurpose.RESPONSE,
       type: MessageTypesYouCanSendToTheChannel.REQUEST_CONTENT,
       data: { content: "test content" }
     });
 
-    expect(sentMessages).toEqual([{ type: MessageTypesYouCanSendToTheChannel.NOTIFY_READY, data: undefined }]);
+    expect(sentMessages).toEqual([
+      {
+        busId: controller.kogitoEnvelopeBus.associatedBusId,
+        purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
+        type: MessageTypesYouCanSendToTheChannel.NOTIFY_READY,
+        data: undefined
+      },
+      {
+        requestId: "0",
+        busId: controller.kogitoEnvelopeBus.associatedBusId,
+        purpose: EnvelopeBusMessagePurpose.RESPONSE,
+        type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
+        data: undefined
+      }
+    ]);
     expect(render.update()).toMatchSnapshot();
   });
 
-  test.skip("test notify undo/redo", async () => {
+  test("test notify undo/redo", async () => {
     const render = await startController();
 
     await incomingMessage({
-      purpose: EnvelopeBusMessagePurpose.REQUEST,
       requestId: "1",
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_UNDO,
       data: "commandID"
     });
     expect(stateControl.undo).toBeCalledTimes(1);
 
     await incomingMessage({
-      purpose: EnvelopeBusMessagePurpose.REQUEST,
-      requestId: "1",
+      requestId: "2",
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_REDO,
       data: "commandID"
     });
