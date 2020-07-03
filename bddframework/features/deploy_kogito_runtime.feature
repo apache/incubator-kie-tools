@@ -6,7 +6,7 @@ Feature: Deploy Kogito Runtime
     Given Namespace is created
 
   @smoke
-  Scenario Outline: Deploy Simplest Scenario using Kogito Runtime
+  Scenario Outline: Deploy <example-service> with Maven profile <profile> using Kogito Runtime
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
@@ -36,7 +36,7 @@ Feature: Deploy Kogito Runtime
 #####
 
   @persistence
-  Scenario Outline: Deploy Scenario with persistence using Kogito Runtime
+  Scenario Outline: Deploy <example-service> with Maven profile <profile> with persistence using Kogito Runtime
     Given Kogito Operator is deployed with Infinispan operator
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
@@ -81,7 +81,7 @@ Feature: Deploy Kogito Runtime
 #####
 
   @events
-  Scenario Outline: Deploy Scenario with events using Kogito Runtime
+  Scenario Outline: Deploy <example-service> with Maven profile <profile> with events using Kogito Runtime
     Given Kogito Operator is deployed with Infinispan and Kafka operators
     And Install Kogito Data Index with 1 replicas
     And Clone Kogito examples into local directory
@@ -122,7 +122,7 @@ Feature: Deploy Kogito Runtime
 
 #####
 
-  Scenario Outline: Deploy process-optaplanner-quarkus service without persistence
+  Scenario Outline: Deploy process-optaplanner-quarkus service with Maven profile <profile> without persistence
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
