@@ -16,7 +16,9 @@
 
 import { EnvelopeBusMessage, EnvelopeBusMessagePurpose } from "./EnvelopeBusMessage";
 
-export class EnvelopeBusMessageManager<MessageTypeToSend, MessageTypeToReceive, Api> {
+type ObjOnlyWithFunctions<T> = { [P in keyof T]: (a: any) => Promise<any> | void };
+
+export class EnvelopeBusMessageManager<MessageTypeToSend, MessageTypeToReceive, Api extends ObjOnlyWithFunctions<Api>> {
   private readonly callbacks = new Map<string, { resolve: (arg: unknown) => void; reject: (arg: unknown) => void }>();
 
   constructor(
@@ -33,9 +35,6 @@ export class EnvelopeBusMessageManager<MessageTypeToSend, MessageTypeToReceive, 
       purpose: EnvelopeBusMessagePurpose.REQUEST
     };
 
-    console.debug("Requesting..");
-    console.debug(message);
-
     this.send(message);
 
     return new Promise<T>((resolve, reject) => {
@@ -46,50 +45,40 @@ export class EnvelopeBusMessageManager<MessageTypeToSend, MessageTypeToReceive, 
   }
 
   public respond<T>(request: EnvelopeBusMessage<unknown, MessageTypeToReceive>, data: T): void {
-    console.debug("Responding..");
-    console.debug(request);
-
     if (request.purpose !== EnvelopeBusMessagePurpose.REQUEST) {
       throw new Error("Cannot respond a message that is not a request");
     }
+
     if (!request.requestId) {
       throw new Error("Cannot respond a request without a requestId");
     }
 
-    const response = {
+    this.send({
       requestId: request.requestId,
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       type: request.type,
       data
-    };
-
-    console.debug("With..");
-    console.debug(response);
-
-    this.send(response);
+    });
   }
 
   public notify<T>(type: MessageTypeToSend, data: T): void {
-    const notification = { purpose: EnvelopeBusMessagePurpose.NOTIFICATION, type, data };
-
-    console.debug("Notifying...");
-    console.debug(notification);
-
-    this.send(notification);
+    this.send({ purpose: EnvelopeBusMessagePurpose.NOTIFICATION, type, data });
   }
 
   public callback(response: EnvelopeBusMessage<unknown, MessageTypeToReceive>) {
-    console.debug("Executing response for " + response.type);
     if (response.purpose !== EnvelopeBusMessagePurpose.RESPONSE) {
       throw new Error("Cannot invoke callback with a message that is not a response");
     }
+    if (!response.requestId) {
+      throw new Error("Cannot acknowledge a response without a requestId");
+    }
 
-    const callback = this.callbacks.get(response.requestId!);
+    const callback = this.callbacks.get(response.requestId);
     if (!callback) {
       throw new Error("Callback not found for " + response);
     }
 
-    this.callbacks.delete(response.requestId!);
+    this.callbacks.delete(response.requestId);
     callback.resolve(response.data);
   }
   public receive(message: EnvelopeBusMessage<unknown, MessageTypeToReceive | MessageTypeToSend>) {
@@ -98,18 +87,18 @@ export class EnvelopeBusMessageManager<MessageTypeToSend, MessageTypeToReceive, 
       return;
     }
 
+    const messageDataAsArgs = message.data ? [message.data] : [];
+
     if (message.purpose === EnvelopeBusMessagePurpose.REQUEST) {
       const handle = this.apiMapping.get(message.type as MessageTypeToReceive)!;
-      const response = (this.api[handle] as any).apply(this.api, message.data ? [message.data] : []) as Promise<
-        unknown
-      >;
+      const response = this.api[handle].apply(this.api, messageDataAsArgs) as Promise<unknown>;
       response.then(r => this.respond(message as EnvelopeBusMessage<unknown, MessageTypeToReceive>, r));
       return;
     }
 
     if (message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
       const handle = this.apiMapping.get(message.type as MessageTypeToReceive)!;
-      (this.api[handle] as any).apply(this.api, message.data ? [message.data] : []);
+      this.api[handle].apply(this.api, messageDataAsArgs);
       return;
     }
   }
