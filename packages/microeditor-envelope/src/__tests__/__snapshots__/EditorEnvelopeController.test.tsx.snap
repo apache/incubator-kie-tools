@@ -121,16 +121,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
           5 => "receive_editorRedo",
           6 => "receive_editorUndo",
         },
-        "callbacks": Map {
-          "1" => Object {
-            "reject": [Function],
-            "resolve": [Function],
-          },
-          "2" => Object {
-            "reject": [Function],
-            "resolve": [Function],
-          },
-        },
+        "callbacks": Map {},
         "generateRandomId": [MockFunction] {
           "calls": Array [
             Array [],

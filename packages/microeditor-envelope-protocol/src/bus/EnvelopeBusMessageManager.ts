@@ -89,6 +89,7 @@ export class EnvelopeBusMessageManager<MessageTypeToSend, MessageTypeToReceive, 
       throw new Error("Callback not found for " + response);
     }
 
+    this.callbacks.delete(response.requestId!);
     callback.resolve(response.data);
   }
   public receive(message: EnvelopeBusMessage<unknown, MessageTypeToReceive | MessageTypeToSend>) {
