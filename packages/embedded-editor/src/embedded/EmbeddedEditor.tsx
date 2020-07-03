@@ -181,9 +181,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   const kogitoChannelBus = useMemo(() => {
     return new KogitoChannelBus(
       {
-        postMessage: msg => {
+        postMessage: message => {
           if (iframeRef.current && iframeRef.current.contentWindow) {
-            iframeRef.current.contentWindow.postMessage(msg, "*");
+            iframeRef.current.contentWindow.postMessage(message, "*");
           }
         }
       },

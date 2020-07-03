@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEnvelopeApi, KogitoEnvelopeBus } from "../KogitoEnvelopeBus";
+import { KogitoEnvelopeBus } from "../KogitoEnvelopeBus";
 import {
   EnvelopeBusMessage,
   EnvelopeBusMessagePurpose,
@@ -22,6 +22,7 @@ import {
   MessageTypesYouCanSendToTheEnvelope
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import { StateControlCommand } from "@kogito-tooling/core-api";
+import { KogitoEnvelopeApi } from "@kogito-tooling/microeditor-envelope-protocol";
 
 let api: KogitoEnvelopeApi;
 let envelopeBus: KogitoEnvelopeBus;

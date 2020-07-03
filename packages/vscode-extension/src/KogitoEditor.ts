@@ -70,9 +70,7 @@ export class KogitoEditor {
     this.signalEdit = signalEdit;
     this.kogitoChannelBus = new KogitoChannelBus(
       {
-        postMessage: (msg: any) => {
-          this.panel.webview.postMessage(msg);
-        }
+        postMessage: message => this.panel.webview.postMessage(message)
       },
       {
         receive_setContentError: (errorMessage: string) => {

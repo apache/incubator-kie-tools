@@ -14,8 +14,28 @@
  * limitations under the License.
  */
 
-export * from "./KogitoChannelBus";
-export * from "./MessageTypesYouCanSendToTheChannel";
-export * from "./MessageTypesYouCanSendToTheEnvelope";
-export * from "./KogitoChannelApi";
-export * from "./KogitoEnvelopeApi";
+import { EditorContent } from "@kogito-tooling/core-api";
+import { Rect } from "@kogito-tooling/guided-tour";
+
+export interface Association {
+  origin: string;
+  busId: string;
+}
+
+export interface KogitoEnvelopeApi {
+  //notifications
+  receive_contentChanged(content: EditorContent): void;
+
+  receive_editorUndo(): void;
+
+  receive_editorRedo(): void;
+
+  //requests
+  receive_initRequest(association: Association): Promise<void>;
+
+  receive_contentRequest(): Promise<EditorContent>;
+
+  receive_previewRequest(): Promise<string>;
+
+  receive_guidedTourElementPositionRequest(selector: string): Promise<Rect>;
+}

@@ -14,36 +14,12 @@
  * limitations under the License.
  */
 
-import {
-  EditorContent,
-  KogitoEdit,
-  LanguageData,
-  ResourceContent,
-  ResourceContentRequest,
-  ResourceListRequest,
-  ResourcesList,
-  StateControlCommand
-} from "@kogito-tooling/core-api";
-import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
+import { EditorContent } from "@kogito-tooling/core-api";
+import { Rect } from "@kogito-tooling/guided-tour";
 import { EnvelopeBus, EnvelopeBusMessage, EnvelopeBusMessageManager } from "../bus";
 import { MessageTypesYouCanSendToTheEnvelope } from "./MessageTypesYouCanSendToTheEnvelope";
 import { MessageTypesYouCanSendToTheChannel } from "./MessageTypesYouCanSendToTheChannel";
-
-export interface KogitoChannelApi {
-  //notification
-  receive_setContentError(errorMessage: string): void;
-  receive_ready(): void;
-  receive_openFile(path: string): void;
-  receive_guidedTourUserInteraction(userInteraction: UserInteraction): void;
-  receive_guidedTourRegisterTutorial(tutorial: Tutorial): void;
-  receive_newEdit(edit: KogitoEdit): void;
-  receive_stateControlCommandUpdate(command: StateControlCommand): void;
-  //requests
-  receive_languageRequest(): Promise<LanguageData | undefined>;
-  receive_contentRequest(): Promise<EditorContent>;
-  receive_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined>;
-  receive_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;
-}
+import { KogitoChannelApi } from "./KogitoChannelApi";
 
 export class KogitoChannelBus {
   public static INIT_POLLING_TIMEOUT_IN_MS = 10000;

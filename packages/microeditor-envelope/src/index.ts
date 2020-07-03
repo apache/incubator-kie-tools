@@ -20,7 +20,7 @@ import { EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import { ReactElement } from "react";
 import * as ReactDOM from "react-dom";
 import { ResourceContentApi, ResourceContentServiceCoordinator } from "./api/resourceContent";
-import { StateControlService, StateControlApi } from "./api/stateControl";
+import { StateControlApi, StateControlService } from "./api/stateControl";
 import { EditorEnvelopeController } from "./EditorEnvelopeController";
 import { EditorFactory } from "./EditorFactory";
 import { Renderer } from "./Renderer";

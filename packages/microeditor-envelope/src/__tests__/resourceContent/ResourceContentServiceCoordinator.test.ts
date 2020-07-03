@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-import {ResourceContentApi, ResourceContentServiceCoordinator} from "../../api/resourceContent";
-import {KogitoEnvelopeBus, KogitoEnvelopeApi} from "../../KogitoEnvelopeBus";
-import {ResourceContent, ResourcesList} from "@kogito-tooling/core-api";
+import { ResourceContentApi, ResourceContentServiceCoordinator } from "../../api/resourceContent";
+import { KogitoEnvelopeBus } from "../../KogitoEnvelopeBus";
+import { ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
 
 let coordinator: ResourceContentServiceCoordinator;
 let resourceContentApi: ResourceContentApi;
 let kogitoEnvelopeBus: KogitoEnvelopeBus;
 
 beforeEach(() => {
-
-  kogitoEnvelopeBus = new KogitoEnvelopeBus({ postMessage: _ => ({}) }, {
-    receive_initRequest: jest.fn(),
-    receive_contentChanged: jest.fn(),
-    receive_contentRequest: jest.fn(),
-    receive_editorUndo: jest.fn(),
-    receive_editorRedo: jest.fn(),
-    receive_previewRequest: jest.fn(),
-    receive_guidedTourElementPositionRequest: jest.fn()
-  });
+  kogitoEnvelopeBus = new KogitoEnvelopeBus(
+    { postMessage: _ => ({}) },
+    {
+      receive_initRequest: jest.fn(),
+      receive_contentChanged: jest.fn(),
+      receive_contentRequest: jest.fn(),
+      receive_editorUndo: jest.fn(),
+      receive_editorRedo: jest.fn(),
+      receive_previewRequest: jest.fn(),
+      receive_guidedTourElementPositionRequest: jest.fn()
+    }
+  );
   coordinator = new ResourceContentServiceCoordinator();
   kogitoEnvelopeBus.startListening();
   resourceContentApi = coordinator.exposeApi(kogitoEnvelopeBus);

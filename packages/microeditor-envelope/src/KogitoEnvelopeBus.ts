@@ -31,24 +31,8 @@ import {
   ResourcesList,
   StateControlCommand
 } from "@kogito-tooling/core-api";
-import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
-
-export interface KogitoEnvelopeApi {
-  //notifications
-  receive_contentChanged(content: EditorContent): void;
-  receive_editorUndo(): void;
-  receive_editorRedo(): void;
-  //requests
-  receive_initRequest(association: Association): Promise<void>;
-  receive_contentRequest(): Promise<EditorContent>;
-  receive_previewRequest(): Promise<string>;
-  receive_guidedTourElementPositionRequest(selector: string): Promise<Rect>;
-}
-
-export interface Association {
-  origin: string;
-  busId: string;
-}
+import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
+import { Association, KogitoEnvelopeApi } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export class KogitoEnvelopeBus {
   public targetOrigin: string;

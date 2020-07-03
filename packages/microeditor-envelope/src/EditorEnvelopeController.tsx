@@ -20,13 +20,14 @@ import { EditorContent, EditorContext } from "@kogito-tooling/core-api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
-import { Association, KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
+import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ResourceContentServiceCoordinator } from "./api/resourceContent";
 import { StateControlService } from "./api/stateControl";
 import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandler";
+import { Association } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export class EditorEnvelopeController {
   public readonly kogitoEnvelopeBus: KogitoEnvelopeBus;
