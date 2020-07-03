@@ -35,7 +35,7 @@ import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
 
 export interface KogitoEnvelopeApi {
   //notifications
-  receive_contentChangedNotification(content: EditorContent): void;
+  receive_contentChanged(content: EditorContent): void;
   receive_editorUndo(): void;
   receive_editorRedo(): void;
   //requests
@@ -72,7 +72,7 @@ export class KogitoEnvelopeBus {
         [MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT, "receive_initRequest"],
         [MessageTypesYouCanSendToTheEnvelope.REQUEST_PREVIEW, "receive_previewRequest"],
         [MessageTypesYouCanSendToTheEnvelope.REQUEST_CONTENT, "receive_contentRequest"],
-        [MessageTypesYouCanSendToTheEnvelope.NOTIFY_CONTENT_CHANGED, "receive_contentChangedNotification"],
+        [MessageTypesYouCanSendToTheEnvelope.NOTIFY_CONTENT_CHANGED, "receive_contentChanged"],
         [MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_REDO, "receive_editorRedo"],
         [MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_UNDO, "receive_editorUndo"]
       ])

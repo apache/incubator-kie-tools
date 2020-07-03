@@ -67,7 +67,7 @@ export class EditorEnvelopeController {
 
         this.kogitoEnvelopeBus.notify_ready();
       },
-      receive_contentChangedNotification: (editorContent: EditorContent) => {
+      receive_contentChanged: (editorContent: EditorContent) => {
         this.editorEnvelopeView!.setLoading();
         this.getEditor()!
           .setContent(editorContent.path ?? "", editorContent.content)

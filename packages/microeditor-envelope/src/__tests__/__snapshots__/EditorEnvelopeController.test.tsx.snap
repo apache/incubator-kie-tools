@@ -89,7 +89,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
   messageBus={
     KogitoEnvelopeBus {
       "api": Object {
-        "receive_contentChangedNotification": [Function],
+        "receive_contentChanged": [Function],
         "receive_contentRequest": [Function],
         "receive_editorRedo": [Function],
         "receive_editorUndo": [Function],
@@ -104,7 +104,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
       "eventListener": [Function],
       "manager": e {
         "api": Object {
-          "receive_contentChangedNotification": [Function],
+          "receive_contentChanged": [Function],
           "receive_contentRequest": [Function],
           "receive_editorRedo": [Function],
           "receive_editorUndo": [Function],
@@ -117,7 +117,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
           1 => "receive_initRequest",
           2 => "receive_previewRequest",
           3 => "receive_contentRequest",
-          4 => "receive_contentChangedNotification",
+          4 => "receive_contentChanged",
           5 => "receive_editorRedo",
           6 => "receive_editorUndo",
         },
@@ -539,7 +539,7 @@ exports[`EditorEnvelopeController opens 1`] = `
   messageBus={
     KogitoEnvelopeBus {
       "api": Object {
-        "receive_contentChangedNotification": [Function],
+        "receive_contentChanged": [Function],
         "receive_contentRequest": [Function],
         "receive_editorRedo": [Function],
         "receive_editorUndo": [Function],
@@ -553,7 +553,7 @@ exports[`EditorEnvelopeController opens 1`] = `
       "eventListener": [Function],
       "manager": e {
         "api": Object {
-          "receive_contentChangedNotification": [Function],
+          "receive_contentChanged": [Function],
           "receive_contentRequest": [Function],
           "receive_editorRedo": [Function],
           "receive_editorUndo": [Function],
@@ -566,7 +566,7 @@ exports[`EditorEnvelopeController opens 1`] = `
           1 => "receive_initRequest",
           2 => "receive_previewRequest",
           3 => "receive_contentRequest",
-          4 => "receive_contentChangedNotification",
+          4 => "receive_contentChanged",
           5 => "receive_editorRedo",
           6 => "receive_editorUndo",
         },
@@ -784,7 +784,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
   messageBus={
     KogitoEnvelopeBus {
       "api": Object {
-        "receive_contentChangedNotification": [Function],
+        "receive_contentChanged": [Function],
         "receive_contentRequest": [Function],
         "receive_editorRedo": [Function],
         "receive_editorUndo": [Function],
@@ -799,7 +799,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
       "eventListener": [Function],
       "manager": e {
         "api": Object {
-          "receive_contentChangedNotification": [Function],
+          "receive_contentChanged": [Function],
           "receive_contentRequest": [Function],
           "receive_editorRedo": [Function],
           "receive_editorUndo": [Function],
@@ -812,7 +812,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
           1 => "receive_initRequest",
           2 => "receive_previewRequest",
           3 => "receive_contentRequest",
-          4 => "receive_contentChangedNotification",
+          4 => "receive_contentChanged",
           5 => "receive_editorRedo",
           6 => "receive_editorUndo",
         },

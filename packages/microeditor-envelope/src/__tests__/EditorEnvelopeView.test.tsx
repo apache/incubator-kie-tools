@@ -37,7 +37,7 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
     },
     {
       receive_initRequest: jest.fn(),
-      receive_contentChangedNotification: jest.fn(),
+      receive_contentChanged: jest.fn(),
       receive_contentRequest: jest.fn(),
       receive_editorUndo: jest.fn(),
       receive_editorRedo: jest.fn(),

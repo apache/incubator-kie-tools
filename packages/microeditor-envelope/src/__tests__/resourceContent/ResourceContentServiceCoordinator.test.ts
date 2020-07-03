@@ -26,7 +26,7 @@ beforeEach(() => {
 
   kogitoEnvelopeBus = new KogitoEnvelopeBus({ postMessage: _ => ({}) }, {
     receive_initRequest: jest.fn(),
-    receive_contentChangedNotification: jest.fn(),
+    receive_contentChanged: jest.fn(),
     receive_contentRequest: jest.fn(),
     receive_editorUndo: jest.fn(),
     receive_editorRedo: jest.fn(),

@@ -39,7 +39,7 @@ beforeEach(() => {
     receive_guidedTourElementPositionRequest: jest.fn(),
     receive_editorUndo: jest.fn(),
     receive_editorRedo: jest.fn(),
-    receive_contentChangedNotification: jest.fn()
+    receive_contentChanged: jest.fn()
   };
 
   envelopeBus = new KogitoEnvelopeBus(
@@ -128,14 +128,14 @@ describe("receive", () => {
   });
 
   test("contentChangedNotification", async () => {
-    jest.spyOn(api, "receive_contentChangedNotification");
+    jest.spyOn(api, "receive_contentChanged");
     const newContent = { content: "this is the new content", path: "a/path" };
     await incomingMessage({
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_CONTENT_CHANGED,
       data: newContent
     });
-    expect(api.receive_contentChangedNotification).toHaveBeenCalledWith(newContent);
+    expect(api.receive_contentChanged).toHaveBeenCalledWith(newContent);
   });
 
   test("editorUndo notification", async () => {
