@@ -12,7 +12,6 @@
   "dependencies": {
     "@kogito-tooling/core-api": "0.5.2",
     "@kogito-tooling/patternfly-base": "0.5.2",
-    "@kogito-tooling/pmml-editor-codegen": "0.5.2",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
     "jsonata": "^1.8.3",

@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as XMLJS from "xml-js";
+import { PMML2XML, XML2PMML } from "../../marshaller";
 import {
   Attribute,
   Characteristic,
@@ -28,9 +30,7 @@ import {
   Scorecard,
   SimplePredicate,
   True
-} from "@kogito-tooling/pmml-editor-codegen";
-import * as XMLJS from "xml-js";
-import { PMML2XML, XML2PMML } from "../../marshaller";
+} from "../../marshaller/model/pmml4_4";
 import {
   SCORE_CARD_BASIC_COMPLEX_PARTIAL_SCORE,
   SCORE_CARD_COMPOUND_PREDICATE,

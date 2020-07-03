@@ -17,6 +17,8 @@
 import * as JSONata from "jsonata";
 import { Expression } from "jsonata";
 import * as XMLJS from "xml-js";
+import { JSON2UI_TRANSFORMATION as json2ui } from "./jsonata/JSON2UI";
+import { UI2JSON_TRANSFORMATION as ui2json } from "./jsonata/UI2JSON";
 import {
   Characteristics,
   CompoundPredicate,
@@ -27,9 +29,7 @@ import {
   Scorecard,
   SimplePredicate,
   True
-} from "@kogito-tooling/pmml-editor-codegen";
-import { JSON2UI_TRANSFORMATION as json2ui } from "./jsonata/JSON2UI";
-import { UI2JSON_TRANSFORMATION as ui2json } from "./jsonata/UI2JSON";
+} from "./model/pmml4_4";
 
 export function XML2PMML(xml: string): PMML {
   const doc: XMLJS.Element = XMLJS.xml2js(xml) as XMLJS.Element;

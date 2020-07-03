@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Annotation, Header, PMML, Timestamp } from "@kogito-tooling/pmml-editor-codegen";
 import { PMML2XML, XML2PMML } from "../../marshaller";
+import { Annotation, Header, PMML, Timestamp } from "../../marshaller/model/pmml4_4";
 
 describe("Header tests", () => {
   test("Attributes", () => {
