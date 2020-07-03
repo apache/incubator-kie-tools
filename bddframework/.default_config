@@ -1,3 +1,5 @@
 tests.build-image-version=latest
+tests.build-image-name-suffix=nightly
 tests.services-image-version=latest
+tests.services-image-name-suffix=nightly
 tests.examples-ref=master
