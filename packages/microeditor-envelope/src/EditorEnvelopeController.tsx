@@ -20,7 +20,7 @@ import { EditorContent, EditorContext } from "@kogito-tooling/core-api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
-import {Association, KogitoEnvelopeBus} from "./KogitoEnvelopeBus";
+import { Association, KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
