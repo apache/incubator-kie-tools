@@ -110,6 +110,6 @@ export class KogitoEnvelopeBus {
   }
 
   public receive(message: EnvelopeBusMessage<any, KogitoEnvelopeMessageTypes>) {
-    this.manager.receive(message);
+    this.manager.server.receive(message);
   }
 }

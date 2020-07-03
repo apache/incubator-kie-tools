@@ -26,6 +26,10 @@ export interface MessageBusClient<Api extends ObjOnlyWithFunctions<Api>> {
   notify<M extends FunctionPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): void;
 }
 
+export interface MessageBusServer<ApiToProvide extends ObjOnlyWithFunctions<ApiToProvide>, ApiToConsume extends ObjOnlyWithFunctions<ApiToConsume>> {
+  receive(message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>): void;
+}
+
 export class EnvelopeBusMessageManager<
   ApiToProvide extends ObjOnlyWithFunctions<ApiToProvide>,
   ApiToConsume extends ObjOnlyWithFunctions<ApiToConsume>
@@ -36,6 +40,12 @@ export class EnvelopeBusMessageManager<
     return {
       request: (m, ...a) => this.request(m, ...a),
       notify: (m, ...a) => this.notify(m, ...a)
+    };
+  }
+
+  public get server(): MessageBusServer<ApiToProvide, ApiToConsume> {
+    return {
+      receive: m => this.receive(m)
     };
   }
 
@@ -107,7 +117,7 @@ export class EnvelopeBusMessageManager<
     callback.resolve(response.data);
   }
 
-  public receive(
+  private receive(
     // We can receive messages from both the APIs we provide and consume.
     message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>>
   ) {

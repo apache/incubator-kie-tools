@@ -64,12 +64,12 @@ export class KogitoChannelBus {
     this.initPollingTimeout = false;
   }
 
-  public receive(message: EnvelopeBusMessage<any, KogitoEnvelopeMessageTypes>) {
+  public receive(message: EnvelopeBusMessage<unknown, KogitoEnvelopeMessageTypes>) {
     if (message.busId !== this.busId) {
       return;
     }
 
-    this.manager.receive(message);
+    this.manager.server.receive(message);
   }
 
   //
