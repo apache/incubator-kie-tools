@@ -1,22 +1,36 @@
-//Checks master branch for updates every day
-//If found triggers the pipeline, 
-//The pipeline is set to run between 12:00AM - 3:00AM UTC
+@Library('jenkins-pipeline-shared-libraries')_
 
-IMAGES = ["kogito-quarkus-ubi8", 
+// As Cekit is not compatible with podman, we use docker in that pipeline
+
+IMAGES = [
+            "kogito-quarkus-ubi8", 
             "kogito-quarkus-jvm-ubi8",
             "kogito-quarkus-ubi8-s2i",
             "kogito-springboot-ubi8",
             "kogito-springboot-ubi8-s2i",
             "kogito-data-index",
             "kogito-jobs-service",
-            "kogito-management-console"]
+            "kogito-management-console"
+         ]
 
+// Should be a single pipeline (not multibranch)
 pipeline {
-    agent { label 'jenkins-slave' }
+    agent {
+        label 'kogito-image-slave && !master'
+    }
+
+    // Needed for local build
+    tools {
+        jdk 'kie-jdk11'
+    }
+
     parameters {
         string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
+        
         string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Which branch to build ? Set if you are not on a multibranch pipeline.')
+        string(name: 'GIT_AUTHOR', defaultValue: 'kiegroup', description: 'Which Git author repository ?')
 
+        booleanParam(name: 'IMAGE_USE_OPENSHIFT_REGISTRY', defaultValue: false, description: 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
         string(name: 'IMAGE_REGISTRY_CREDENTIALS', defaultValue: '', description: 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
         string(name: 'IMAGE_REGISTRY', defaultValue: '', description: 'Image registry to use to deploy images')
         string(name: 'IMAGE_NAMESPACE', defaultValue: 'kiegroup', description: 'Image namespace to use to deploy images')
@@ -28,42 +42,25 @@ pipeline {
         booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests')
     }
 
-    // Keep commented if no env var is defined
-    // environment {
-        // Keep commented. It is for documentation only
-        // Cannot define here as an env variable defined here is immutable ...
-        // BRANCH_NAME => should be set by the multibranch pipeline. If single pipeline, then it is set with value from ${params.BUILD_BRANCH_NAME}
+    environment {
+        JAVA_HOME = "${GRAALVM_HOME}"
 
-        // OPENSHIFT_API => Taken from Jenkins global env
-        // OPENSHIFT_REGISTRY_ROUTE => Taken from Jenkins global env
-
-        // DEPLOY_IMAGE_REGISTRY_CREDENTIALS
-        // DEPLOY_IMAGE_USE_OPENSHIFT
-        // DEPLOY_IMAGE_REGISTRY
-        // DEPLOY_IMAGE_NAMESPACE
-        // DEPLOY_IMAGE_NAME_SUFFIX
-        // DEPLOY_IMAGE_TAG
-    // }
+        OPENSHIFT_API = credentials("OPENSHIFT_API")
+        OPENSHIFT_REGISTRY = credentials("OPENSHIFT_REGISTRY")
+        OPENSHIFT_CREDS_KEY = "OPENSHIFT_CREDS"
+    }
 
     stages {
         stage('Initialization') {
             steps {
-                script {
-                    cleanWorkspaces()
-                    sh "docker rm -f \$(docker ps -a -q) || date"
-                    sh "docker rmi -f \$(docker images -q) || date"
-                    
-                    setupImageEnvVarsFromParams("","DEPLOY")
+                script {  
+                    clean()
 
                     if (params.DISPLAY_NAME != "") {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
 
-                    if (env.BRANCH_NAME != "") {
-                        // Switch to branch if not on a multibranch pipeline
-                        env.BRANCH_NAME = params.BUILD_BRANCH_NAME
-                        checkout([$class: 'GitSCM', branches: [[name: env.BRANCH_NAME]], browser: [$class: 'GithubWeb', repoUrl: "${GIT_URL}"], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: '']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'user-kie-ci10', url: "${GIT_URL}"]]])
-                    }
+                    checkout(githubscm.resolveRepository("kogito-images", params.GIT_AUTHOR, params.BUILD_BRANCH_NAME, false))
 
                     // Set the mirror url only if no artifact repository is given
                     if (params.MAVEN_ARTIFACT_REPOSITORY == '' 
@@ -85,10 +82,25 @@ pipeline {
                     }
                     sh updateArtifactCmd
 
-                    // For debug
+                    // Debug purpose in case of issue
                     sh "cat modules/kogito-data-index/module.yaml"
                     sh "cat modules/kogito-jobs-service/module.yaml"
                     sh "cat modules/kogito-management-console/module.yaml"
+                }
+            }
+        }
+        stage('Setup tests repository') {
+            when {
+                expression {
+                    return params.MAVEN_ARTIFACT_REPOSITORY != ''
+                }
+            }
+            steps {
+                script {
+                    // Update repo in tests
+                    sh "python3 scripts/update-tests-maven-repo.py --repo-url ${params.MAVEN_ARTIFACT_REPOSITORY}"
+
+                    // Debug purpose in case of issue
                     sh "cat tests/test-apps/clone-repo.sh"
                     sh "cat tests/features/kogito-quarkus-ubi8-s2i.feature"
                     sh "cat tests/features/kogito-springboot-ubi8-s2i.feature"
@@ -130,12 +142,11 @@ pipeline {
             steps{
                 script {
                     build_stages = [:]
-                    IMAGES.each{ image -> build_stages["${image}"] = {
-                            createWorkspace("$image")
-                            copyWorkspace("$image")
-                            dir(getWorkspacePath("$image")){
+                    IMAGES.each{ image -> build_stages[image] = {
+                            initWorkspace(image)
+                            dir(getWorkspacePath(image)){
                                 try{
-                                    sh "make ${image} ignore_test=${params.SKIP_TESTS}"
+                                    sh "make ${image} ignore_test=${params.SKIP_TESTS} cekit_option='--work-dir .'"
                                 }
                                 finally{
                                     junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
@@ -158,32 +169,36 @@ pipeline {
         stage('Pushing') {
             steps {
                 script {
-                    if (env.DEPLOY_IMAGE_USE_OPENSHIFT == "true") {
+                    if (isDeployImageInOpenshiftRegistry()) {
                         loginOpenshiftRegistry()
-                        pushImages()
-                    } else if (env.DEPLOY_IMAGE_REGISTRY_CREDENTIALS != '') {
-                        withDockerRegistry([ credentialsId: "${DEPLOY_IMAGE_REGISTRY_CREDENTIALS}", url: "https://${DEPLOY_IMAGE_REGISTRY}" ]) {        
-                            pushImages()
-                        }
-                    } else {
-                        pushImages()
+                    } else if (getDeployImageRegistryCredentials() != ''){
+                        loginContainerRegistry(getDeployImageRegistry(), getDeployImageRegistryCredentials())
                     }
+                    pushImages()
                 }
-            }
-        }
-        stage('Finishing') {
-            steps {
-                sh "docker rmi -f \$(docker images -q) || date"
             }
         }
     }
     post {
         always {
             script{
-                cleanWorkspaces()
+                clean()
             }
         }
     }
+}
+
+void clean() {
+    cleanWorkspaces()
+    cleanImages()
+
+    // Clean Cekit cache, in case we reuse an old node
+    sh "rm -rf \$HOME/.cekit/cache"
+}
+
+void cleanImages(){
+    sh "docker rm -f \$(docker ps -a -q) || date"
+    sh "docker rmi -f \$(docker images -q) || date"
 }
 
 void tagImages() {
@@ -200,76 +215,80 @@ void pushImages() {
 
 String buildImageName(String imageName) {
     String finalImageName = imageName
-    if(env.DEPLOY_IMAGE_NAME_SUFFIX != null && env.DEPLOY_IMAGE_NAME_SUFFIX != '') {
-        finalImageName += "-" + env.DEPLOY_IMAGE_NAME_SUFFIX
+    if(getDeployImageNameSuffix() != ''){
+        finalImageName += "-" + getDeployImageNameSuffix()
     }
-    return "${DEPLOY_IMAGE_REGISTRY}/${DEPLOY_IMAGE_NAMESPACE}/${finalImageName}:${DEPLOY_IMAGE_TAG}"
+    return "${getDeployImageRegistry()}/${getDeployImageNamespace()}/${finalImageName}:${getDeployImageTag()}"
 }
 
-void loginOpenshiftRegistry() {
-    // Use creds & route as `jenkins-slave` is not running directly on Openshift
-    withCredentials([string(credentialsId: 'openshift-login-passwd', variable: 'OC_PASSWORD')]) {
-        sh "set +x && oc login -u admin -p ${OC_PASSWORD} --server=${OPENSHIFT_API} --insecure-skip-tls-verify"
-        sh "set +x && docker login -u admin -p \$(oc whoami -t) ${OPENSHIFT_REGISTRY_ROUTE}"
+void loginOpenshift(){
+    withCredentials([usernamePassword(credentialsId: env.OPENSHIFT_CREDS_KEY, usernameVariable: 'OC_USER', passwordVariable: 'OC_PWD')]){
+        sh "oc login --username=${OC_USER} --password=${OC_PWD} --server=${env.OPENSHIFT_API} --insecure-skip-tls-verify"
     }
 }
 
-/**
-    Setup env variables for image registry/namesapce/tag, depending on parameters
-*/
-void setupImageEnvVarsFromParams(String prefixParam, String prefixEnv) {
-    if(getParam(prefixParam, "IMAGE_REGISTRY") == '') {
-        setEnv(prefixEnv, "IMAGE_REGISTRY", env.OPENSHIFT_REGISTRY_ROUTE) // Use route as `jenkins-slave` is not running directly on Openshift
-        setEnv(prefixEnv, "IMAGE_NAMESPACE", "openshift")
-        setEnv(prefixEnv, "IMAGE_USE_OPENSHIFT", "true")
+void loginOpenshiftRegistry(){
+    loginOpenshift()
+    // username can be anything. See https://docs.openshift.com/container-platform/4.4/registry/accessing-the-registry.html#registry-accessing-directly_accessing-the-registry
+    sh "set +x && docker login -u anything -p \$(oc whoami -t) ${env.OPENSHIFT_REGISTRY}"
+}
+
+void loginContainerRegistry(String registry, String credsId){
+    withCredentials([usernamePassword(credentialsId: credsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
+        sh "docker login -u ${REGISTRY_USER} -p ${REGISTRY_PWD} ${registry}"
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
+// Deploy image information
+////////////////////////////////////////////////////////////////////////
+
+boolean isDeployImageInOpenshiftRegistry(){
+    return params.IMAGE_USE_OPENSHIFT_REGISTRY
+}
+
+String getDeployImageRegistryCredentials(){
+    return isDeployImageInOpenshiftRegistry() ? "" : params.IMAGE_REGISTRY_CREDENTIALS
+}
+
+String getDeployImageRegistry(){
+    return isDeployImageInOpenshiftRegistry() ? env.OPENSHIFT_REGISTRY : params.IMAGE_REGISTRY
+}
+
+String getDeployImageNamespace(){
+    return isDeployImageInOpenshiftRegistry() ? "openshift" : params.IMAGE_NAMESPACE
+}
+
+String getDeployImageNameSuffix(){
+    return params.IMAGE_NAME_SUFFIX
+}
+
+String getDeployImageTag(){
+    if (params.IMAGE_TAG != ""){
+        return params.IMAGE_TAG
     } else {
-        setEnvFromParam("IMAGE_REGISTRY_CREDENTIALS", prefixEnv, prefixParam)
-        setEnvFromParam("IMAGE_REGISTRY", prefixEnv, prefixParam)
-        setEnvFromParam("IMAGE_NAMESPACE", prefixEnv, prefixParam)
-        setEnv(prefixEnv, "IMAGE_USE_OPENSHIFT", "false")
-    }
-    if (getParam(prefixParam, "IMAGE_TAG") != '') {
-        setEnvFromParam("IMAGE_TAG", prefixEnv, prefixParam)
-    } else {
-        setEnv(prefixEnv, "IMAGE_TAG", sh(script: "echo ${GIT_COMMIT} | cut -c1-7", returnStdout: true).trim())
-    }
-    if(getParam(prefixParam, "IMAGE_NAME_SUFFIX") != '') {
-        setEnvFromParam("IMAGE_NAME_SUFFIX", prefixEnv, prefixParam)
+        return sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
     }
 }
 
-String getKey(String prefix, String envVarName) {
-    if (prefix == '') {
-        return envVarName
-    }
-    return "${prefix}_${envVarName}"
-}
 
-void setEnv(String keyPrefix, String keyId, String value){
-    echo "setEnv ${getKey(keyPrefix, keyId)} = ${value}"
-    env."${getKey(keyPrefix, keyId)}" = value
-}
+////////////////////////////////////////////////////////////////////////
+// Workspaces
+////////////////////////////////////////////////////////////////////////
 
-void setEnvFromParam(String keyId, String prefixEnv, String prefixParam){
-    setEnv(prefixEnv, keyId, getParam(prefixParam, keyId))
-}
-
-String getParam(String keyPrefix, String keyId){
-    return params."${getKey(keyPrefix, keyId)}"
-}
-
-void  createWorkspace(String image){
+void initWorkspace(String image){
     sh "mkdir -p ${getWorkspacePath(image)}"
-}
-void copyWorkspace(String image){
     sh "rsync -av --progress . ${getWorkspacePath(image)} --exclude workspaces"
 }
+
 void cleanWorkspaces(){
     sh "rm -rf ${getWorkspacesPath()}"
 }
+
 String getWorkspacesPath(){
     return "${WORKSPACE}/workspaces"
 }
+
 String getWorkspacePath(String image){
     return "${getWorkspacesPath()}/${image}"
 }

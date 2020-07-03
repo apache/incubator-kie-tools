@@ -10,17 +10,21 @@ IMAGES = ["kogito-quarkus-ubi8",
                     "kogito-management-console"]
 
 pipeline {
-    agent { label 'jenkins-slave' }
+    agent {
+        label 'kogito-image-slave && !master'
+    }
 
     parameters {
         string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
 
+        booleanParam(name: 'BASE_IMAGE_USE_OPENSHIFT_REGISTRY', defaultValue: false, description: 'Set to true if base image should be retrieved from Openshift registry.In this case, BASE_IMAGE_REGISTRY_CREDENTIALS, BASE_IMAGE_REGISTRY and BASE_IMAGE_NAMESPACE parameters will be ignored')
         string(name: 'BASE_IMAGE_REGISTRY_CREDENTIALS', defaultValue: '', description: 'Base Image registry credentials to use to deploy images. Will be ignored if no BASE_IMAGE_REGISTRY is given')
         string(name: 'BASE_IMAGE_REGISTRY', defaultValue: '', description: 'Base image registry')
         string(name: 'BASE_IMAGE_NAMESPACE', defaultValue: 'kiegroup', description: 'Base image namespace')
         string(name: 'BASE_IMAGE_NAME_SUFFIX', defaultValue: '', description: 'Base image name suffix')
         string(name: 'BASE_IMAGE_TAG', defaultValue: '', description: 'Base image tag')
 
+        booleanParam(name: 'PROMOTE_IMAGE_USE_OPENSHIFT_REGISTRY', defaultValue: false, description: 'Set to true if base image should be deployed in Openshift registry.In this case, PROMOTE_IMAGE_REGISTRY_CREDENTIALS, PROMOTE_IMAGE_REGISTRY and PROMOTE_IMAGE_NAMESPACE parameters will be ignored')
         string(name: 'PROMOTE_IMAGE_REGISTRY_CREDENTIALS', defaultValue: '', description: 'Promote Image registry credentials to use to deploy images. Will be ignored if no PROMOTE_IMAGE_REGISTRY is given')
         string(name: 'PROMOTE_IMAGE_REGISTRY', defaultValue: '', description: 'Promote image registry')
         string(name: 'PROMOTE_IMAGE_NAMESPACE', defaultValue: 'kiegroup', description: 'Promote image namespace')
@@ -30,37 +34,17 @@ pipeline {
         booleanParam(name: 'DEPLOY_WITH_LATEST_TAG', defaultValue: false, description: 'Set to true if you want the deployed images to also be with the `latest` tag')
     }
 
-    // Keep commented if no env var is defined
-    // environment {
-        // Keep commented. It is for documentation only
-        // Cannot define here as an env variable defined here is immutable ...
-
-        // OPENSHIFT_API => Taken from Jenkins global env
-        // OPENSHIFT_REGISTRY_ROUTE => Taken from Jenkins global env
-
-        // OLD_IMAGE_REGISTRY_CREDENTIALS
-        // OLD_IMAGE_USE_OPENSHIFT
-        // OLD_IMAGE_REGISTRY
-        // OLD_IMAGE_NAMESPACE
-        // OLD_IMAGE_NAME_SUFFIX
-        // OLD_IMAGE_TAG
-        
-        // NEW_IMAGE_REGISTRY_CREDENTIALS
-        // NEW_IMAGE_USE_OPENSHIFT
-        // NEW_IMAGE_REGISTRY
-        // NEW_IMAGE_NAMESPACE
-        // NEW_IMAGE_NAME_SUFFIX
-        // NEW_IMAGE_TAG
-    // }
+    environment {
+        OPENSHIFT_API = credentials("OPENSHIFT_API")
+        OPENSHIFT_REGISTRY = credentials("OPENSHIFT_REGISTRY")
+        OPENSHIFT_CREDS_KEY = "OPENSHIFT_CREDS"
+    }
 
     stages {
         stage('Initialization') {
             steps {
                 script {
-                    sh "docker rm -f \$(docker ps -a -q) || docker rmi -f \$(docker images -q) || date"
-
-                    setupImageEnvVarsFromParams("BASE","OLD")
-                    setupImageEnvVarsFromParams("PROMOTE","NEW")
+                    cleanImages()
 
                     if (params.DISPLAY_NAME != "") {
                         currentBuild.displayName = params.DISPLAY_NAME
@@ -71,16 +55,12 @@ pipeline {
         stage('Pull "old" images'){
             steps{
                 script {
-                    if (env.OLD_IMAGE_USE_OPENSHIFT == "true") {
+                    if (isOldImageInOpenshiftRegistry()) {
                         loginOpenshiftRegistry()
-                        pullImages()
-                    } else if (env.OLD_IMAGE_REGISTRY_CREDENTIALS != ''){
-                        withDockerRegistry([ credentialsId: "${OLD_IMAGE_REGISTRY_CREDENTIALS}", url: "https://${OLD_IMAGE_REGISTRY}" ]){        
-                            pullImages()
-                        }
-                    } else {
-                        pullImages()
+                    } else if (getOldImageRegistryCredentials() != ''){
+                        loginContainerRegistry(getOldImageRegistry(), getOldImageRegistryCredentials())
                     }
+                    pullImages()
                 }
             }
         }
@@ -94,57 +74,60 @@ pipeline {
         stage('Pushing'){
             steps{
                 script {
-                    if (env.NEW_IMAGE_USE_OPENSHIFT == "true") {
+                    if (isNewImageInOpenshiftRegistry()) {
                         loginOpenshiftRegistry()
-                        pushImages()
-                    } else if (env.NEW_IMAGE_REGISTRY_CREDENTIALS != ''){
-                        withDockerRegistry([ credentialsId: "${NEW_IMAGE_REGISTRY_CREDENTIALS}", url: "https://${NEW_IMAGE_REGISTRY}" ]){
-                            pushImages()
-                        }
-                    } else {
-                        pushImages()
+                    } else if (getNewImageRegistryCredentials() != ''){
+                        loginContainerRegistry(getNewImageRegistry(), getNewImageRegistryCredentials())
                     }
+                    pushImages()
                 }
             }
         }
-        stage('Finishing'){
-            steps{
-                sh "docker rmi -f \$(docker images -q) || date"
+    }
+    post {
+        always {
+            script {
+                cleanImages()
             }
         }
     }
 }
 
+void cleanImages(){
+    sh "podman rm -f \$(podman ps -a -q) || date"
+    sh "podman rmi -f \$(podman images -q) || date"
+}
+
 void pullImages(){
     for(String imageName : IMAGES){
-        sh "docker pull ${getOldImageFullTag(imageName)}"
+        sh "podman pull ${getOldImageFullTag(imageName)}"
     }
 }
 
 void tagImages() {
     for(String imageName : IMAGES){
-        sh "docker tag ${getOldImageFullTag(imageName)} ${getNewImageFullTag(imageName, env.NEW_IMAGE_TAG)}"
+        sh "podman tag ${getOldImageFullTag(imageName)} ${getNewImageFullTag(imageName, getNewImageTag())}"
         if(isDeployLatestTag()){
-            sh "docker tag ${getOldImageFullTag(imageName)} ${getNewImageFullTag(imageName, "latest")}"
+            sh "podman tag ${getOldImageFullTag(imageName)} ${getNewImageFullTag(imageName, "latest")}"
         }
     }
 }
 
 void pushImages(){
     for(String imageName : IMAGES){
-        sh "docker push ${getNewImageFullTag(imageName, env.NEW_IMAGE_TAG)}"
+        sh "podman push ${getNewImageFullTag(imageName, getNewImageTag())}"
         if(isDeployLatestTag()){
-            sh "docker push ${getNewImageFullTag(imageName, "latest")}"
+            sh "podman push ${getNewImageFullTag(imageName, "latest")}"
         }
     }
 }
 
 String getOldImageFullTag(String imageName){
-    return "${OLD_IMAGE_REGISTRY}/${OLD_IMAGE_NAMESPACE}/${buildImageNameWithSuffix(imageName, env.OLD_IMAGE_NAME_SUFFIX)}:${OLD_IMAGE_TAG}"
+    return "${getOldImageRegistry()}/${getOldImageNamespace()}/${buildImageNameWithSuffix(imageName, getOldImageNameSuffix())}:${getOldImageTag()}"
 }
 
 String getNewImageFullTag(String imageName, String tag){
-    return "${NEW_IMAGE_REGISTRY}/${NEW_IMAGE_NAMESPACE}/${buildImageNameWithSuffix(imageName, env.NEW_IMAGE_NAME_SUFFIX)}:${tag}"
+    return "${getNewImageRegistry()}/${getNewImageNamespace()}/${buildImageNameWithSuffix(imageName, getNewImageNameSuffix())}:${tag}"
 }
 
 String buildImageNameWithSuffix(String imageName, String suffix) {
@@ -159,54 +142,76 @@ boolean isDeployLatestTag(){
     return params.DEPLOY_WITH_LATEST_TAG
 }
 
-void loginOpenshiftRegistry() {
-    // Use creds & route as `jenkins-slave` is not running directly on Openshift
-    withCredentials([string(credentialsId: 'openshift-login-passwd', variable: 'OC_PASSWORD')]) {
-        sh "set +x && oc login -u admin -p ${OC_PASSWORD} --server=${OPENSHIFT_API} --insecure-skip-tls-verify"
-        sh "set +x && docker login -u admin -p \$(oc whoami -t) ${OPENSHIFT_REGISTRY_ROUTE}"
+void loginOpenshift(){
+    withCredentials([usernamePassword(credentialsId: env.OPENSHIFT_CREDS_KEY, usernameVariable: 'OC_USER', passwordVariable: 'OC_PWD')]){
+        sh "oc login --username=${OC_USER} --password=${OC_PWD} --server=${env.OPENSHIFT_API} --insecure-skip-tls-verify"
     }
 }
 
-/**
-    Setup env variables for image registry/namesapce/tag, depending on parameters
-*/
-void setupImageEnvVarsFromParams(String prefixParam, String prefixEnv) {
-    if(getParam(prefixParam, "IMAGE_REGISTRY") == '') {
-        setEnv(prefixEnv, "IMAGE_REGISTRY", env.OPENSHIFT_REGISTRY_ROUTE) // Use route as `jenkins-slave` is not running directly on Openshift
-        setEnv(prefixEnv, "IMAGE_NAMESPACE", "openshift")
-        setEnv(prefixEnv, "IMAGE_USE_OPENSHIFT", "true")
-    } else {
-        setEnvFromParam("IMAGE_REGISTRY_CREDENTIALS", prefixEnv, prefixParam)
-        setEnvFromParam("IMAGE_REGISTRY", prefixEnv, prefixParam)
-        setEnvFromParam("IMAGE_NAMESPACE", prefixEnv, prefixParam)
-        setEnv(prefixEnv, "IMAGE_USE_OPENSHIFT", "false")
-    }
-    if (getParam(prefixParam, "IMAGE_TAG") != '') {
-        setEnvFromParam("IMAGE_TAG", prefixEnv, prefixParam)
-    } else {
-        setEnv(prefixEnv, "IMAGE_TAG", sh(script: "echo ${GIT_COMMIT} | cut -c1-7", returnStdout: true).trim())
-    }
-    if(getParam(prefixParam, "IMAGE_NAME_SUFFIX") != '') {
-        setEnvFromParam("IMAGE_NAME_SUFFIX", prefixEnv, prefixParam)
+void loginOpenshiftRegistry(){
+    loginOpenshift()
+    // username can be anything. See https://docs.openshift.com/container-platform/4.4/registry/accessing-the-registry.html#registry-accessing-directly_accessing-the-registry
+    sh "set +x && podman login -u anything -p \$(oc whoami -t) --tls-verify=false ${env.OPENSHIFT_REGISTRY}"
+}
+
+void loginContainerRegistry(String registry, String credsId){
+    withCredentials([usernamePassword(credentialsId: credsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
+        sh "podman login -u ${REGISTRY_USER} -p ${REGISTRY_PWD} --tls-verify=false ${registry}"
     }
 }
 
-String getKey(String prefix, String envVarName) {
-    if (prefix == '') {
-        return envVarName
-    }
-    return "${prefix}_${envVarName}"
+////////////////////////////////////////////////////////////////////////
+// Old image information
+////////////////////////////////////////////////////////////////////////
+
+boolean isOldImageInOpenshiftRegistry(){
+    return params.BASE_IMAGE_USE_OPENSHIFT_REGISTRY
 }
 
-void setEnv(String keyPrefix, String keyId, String value){
-    echo "setEnv ${getKey(keyPrefix, keyId)} = ${value}"
-    env."${getKey(keyPrefix, keyId)}" = value
+String getOldImageRegistryCredentials(){
+    return isOldImageInOpenshiftRegistry() ? "" : params.BASE_IMAGE_REGISTRY_CREDENTIALS
 }
 
-void setEnvFromParam(String keyId, String prefixEnv, String prefixParam){
-    setEnv(prefixEnv, keyId, getParam(prefixParam, keyId))
+String getOldImageRegistry(){
+    return isOldImageInOpenshiftRegistry() ? env.OPENSHIFT_REGISTRY : params.BASE_IMAGE_REGISTRY
 }
 
-String getParam(String keyPrefix, String keyId){
-    return params."${getKey(keyPrefix, keyId)}"
+String getOldImageNamespace(){
+    return isOldImageInOpenshiftRegistry() ? "openshift" : params.BASE_IMAGE_NAMESPACE
+}
+
+String getOldImageNameSuffix(){
+    return params.BASE_IMAGE_NAME_SUFFIX
+}
+
+String getOldImageTag(){
+    return params.BASE_IMAGE_TAG
+}
+
+////////////////////////////////////////////////////////////////////////
+// New image information
+////////////////////////////////////////////////////////////////////////
+
+boolean isNewImageInOpenshiftRegistry(){
+    return params.PROMOTE_IMAGE_USE_OPENSHIFT_REGISTRY
+}
+
+String getNewImageRegistryCredentials(){
+    return isNewImageInOpenshiftRegistry() ? "" : params.PROMOTE_IMAGE_REGISTRY_CREDENTIALS
+}
+
+String getNewImageRegistry(){
+    return isNewImageInOpenshiftRegistry() ? env.OPENSHIFT_REGISTRY : params.PROMOTE_IMAGE_REGISTRY
+}
+
+String getNewImageNamespace(){
+    return isNewImageInOpenshiftRegistry() ? "openshift" : params.PROMOTE_IMAGE_NAMESPACE
+}
+
+String getNewImageNameSuffix(){
+    return params.PROMOTE_IMAGE_NAME_SUFFIX
+}
+
+String getNewImageTag(){
+    return params.PROMOTE_IMAGE_TAG
 }

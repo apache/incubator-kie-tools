@@ -70,6 +70,7 @@ if __name__ == "__main__":
     parser.add_argument('--bump-to', dest='bump_to', help='bump everything to the next version')
     parser.add_argument('--apps-branch', dest='apps_branch',
                         help='Update Behave tests to use the desired branch for kogito-examples')
+    parser.add_argument('--confirm', default=False, action='store_true', help='To confirm automatically the setup')
 
     args = parser.parse_args()
 
@@ -90,7 +91,8 @@ if __name__ == "__main__":
             print("Version will be updated to {0}".format(args.bump_to))
             print("Version on behave tests examples will be updated to version {0} and branch {1}".format(args.bump_to,
                                                                                                           tests_branch))
-            input("Is the information correct? If so press any key to continue...")
+            if not args.confirm:
+                input("Is the information correct? If so press any key to continue...")
 
             common.update_image_version(args.bump_to)
             common.update_image_stream(args.bump_to)

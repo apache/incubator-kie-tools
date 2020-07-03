@@ -23,41 +23,51 @@ the components, the builder images and the runtime images.
 Table of Contents
 =================
 
-* [Kogito Images](#kogito-container-images)
-    * [Kogito Images Requirements](#kogito-images-requirements)
-    * [Kogito Runtime and Builder Images](#kogito-runtime-and-builder-images)
-        * [Kogito Builder Images](#kogito-builder-images)
-            * [Kogito Quarkus Builder Image](#kogito-quarkus-builder-image)
-                * [Kogito Quarkus Builder Image Usage](#kogito-quarkus-builder-image-usage)
-                * [Kogito Quarkus Builder Image example](#kogito-quarkus-builder-image-example)
-            * [Kogito Spring Boot Builder Image](#kogito-spring-boot-builder-image)
-                * [Kogito Spring Boot Builder Image usage](#kogito-spring-boot-builder-image-usage)
-                * [Kogito Spring Boot Builder Image example](#kogito-spring-boot-builder-image-example) 
-            * [Improving Build Time](#improving-build-time)
-                * [Using incremental builds](#using-incremental-builds)
-                * [Using a Maven mirror](#using-a-maven-mirror)
-        * [Kogito Runtime Images](#kogito-runtime-images)
-            * [Binary Builds](#binary-builds)
-                * [KJAR Maven Project](#kjar-maven-project)
-                * [Assets Only](#assets-only)
-            * [Kogito Quarkus JVM Runtime Image](#kogito-quarkus-jvm-runtime-image)
-                * [Kogito Quarkus JVM Runtime Image usage](#kogito-quarkus-jvm-runtime-image-usage)
-                * [Kogito Quarkus JVM Runtime Image examples](#kogito-quarkus-jvm-runtime-image-examples)
-            * [Kogito Quarkus Native Runtime Image](#kogito-quarkus-native-runtime-image)
-                * [Kogito Quarkus Native Runtime Image usage](#kogito-quarkus-native-runtime-image-usage)
-                * [Kogito Quarkus Native Runtime Image example](#kogito-quarkus-native-runtime-image-example)
-            * [Kogito Spring Boot Runtime Image](#kogito-spring-boot-runtime-image)
-                * [Kogito Spring Boot Runtime Image usage](#kogito-spring-boot-runtime-image-usage)
-                * [Kogito Spring Boot Runtime Image example](#kogito-spring-boot-runtime-image-example)
-    * [Kogito Component Images](#kogito-components-images)
-        * [Kogito Data Index Component Image](#kogito-data-index-component-image)
-        * [Kogito Jobs Service Component Image](#kogito-jobs-service-component-image)
-        * [Kogito Management Console Component Image](#kogito-management-console-component-image)
-    * [Using Kogito Images to Deploy Apps on OpenShift](#using-kogito-images-to-deploy-apps-on-openshift)
-        * [Using released Images](#using-released-images)
-        * [Pushing the built images to a local OCP registry](#pushing-the-built-images-to-a-local-ocp-registry)
-    * [Contributing to Kogito Images repository](#contributing-to-kogito-images-repository)
-        * [Building Images](#building-images)
+- [Kogito Container Images](#kogito-container-images)
+- [Table of Contents](#table-of-contents)
+  - [Kogito Images Requirements](#kogito-images-requirements)
+  - [Kogito Runtime and Builder Images](#kogito-runtime-and-builder-images)
+    - [Kogito Builder Images](#kogito-builder-images)
+      - [Kogito Quarkus Builder Image](#kogito-quarkus-builder-image)
+        - [Kogito Quarkus Builder Image usage](#kogito-quarkus-builder-image-usage)
+        - [Kogito Quarkus Builder Image example](#kogito-quarkus-builder-image-example)
+      - [Kogito Spring Boot Builder Image](#kogito-spring-boot-builder-image)
+        - [Kogito Spring Boot Builder Image usage](#kogito-spring-boot-builder-image-usage)
+        - [Kogito Spring Boot Builder Image example](#kogito-spring-boot-builder-image-example)
+      - [Improving Build Time](#improving-build-time)
+        - [Using incremental builds](#using-incremental-builds)
+        - [Using a Maven mirror](#using-a-maven-mirror)
+    - [Kogito Runtime Images](#kogito-runtime-images)
+      - [Binary Builds](#binary-builds)
+        - [KJAR Maven Project](#kjar-maven-project)
+        - [Assets only](#assets-only)
+      - [Kogito Quarkus JVM Runtime Image](#kogito-quarkus-jvm-runtime-image)
+        - [Kogito Quarkus JVM Runtime Image usage](#kogito-quarkus-jvm-runtime-image-usage)
+        - [Kogito Quarkus JVM Runtime Image examples](#kogito-quarkus-jvm-runtime-image-examples)
+      - [Kogito Quarkus Native Runtime Image](#kogito-quarkus-native-runtime-image)
+        - [Kogito Quarkus Native Runtime Image usage](#kogito-quarkus-native-runtime-image-usage)
+        - [Kogito Quarkus Native Runtime Image example](#kogito-quarkus-native-runtime-image-example)
+      - [Kogito Spring Boot Runtime Image](#kogito-spring-boot-runtime-image)
+        - [Kogito Spring Boot Runtime Image usage](#kogito-spring-boot-runtime-image-usage)
+        - [Kogito Spring Boot Runtime Image example](#kogito-spring-boot-runtime-image-example)
+  - [Kogito Component Images](#kogito-component-images)
+    - [Kogito Data Index Component Image](#kogito-data-index-component-image)
+    - [Kogito Jobs Service Component Image](#kogito-jobs-service-component-image)
+    - [Kogito Management Console Component Image](#kogito-management-console-component-image)
+  - [Using Kogito Images to Deploy Apps on OpenShift](#using-kogito-images-to-deploy-apps-on-openshift)
+    - [Using released images](#using-released-images)
+    - [Pushing the built images to a local OCP registry:](#pushing-the-built-images-to-a-local-ocp-registry)
+  - [Contributing to Kogito Images repository](#contributing-to-kogito-images-repository)
+    - [Building Images](#building-images)
+      - [Image Modules](#image-modules)
+    - [Testing Images](#testing-images)
+      - [Behave tests](#behave-tests)
+        - [Running Behave tests](#running-behave-tests)
+        - [Writing Behave tests](#writing-behave-tests)
+      - [Bats tests](#bats-tests)
+        - [Running Bats tests](#running-bats-tests)
+        - [Writing Bats tests](#writing-bats-tests)
+    - [Reporting new issues](#reporting-new-issues)
             [Image Modules](#image-modules)
         * [Testing Images](#testing-images)
             * [Behave tests](#behave-tests)
@@ -896,6 +906,8 @@ With this Makefile you can:
       It uses the [push-local-registry.sh](scripts/push-local-registry.sh) script properly tag the images and push to the
       desired registry.
 
+- You can also add `cekit_option` to the make command, which will be appended to the Cekit command. Default is `cekit -v`.
+
 #### Image Modules
 
 CeKit can use modules to better separate concerns and reuse these modules on different images. 
@@ -958,6 +970,8 @@ make test
 
 CeKit also allows you to run a specific test.
 See [Writing Behave Tests](#writing-behave-tests).
+
+You can also add `cekit_option` to the make command, which will be appended to the Cekit command. Default is `cekit -v`.
 
 
 ##### Writing Behave tests

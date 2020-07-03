@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-#Script responsible for fetching the latest artifacts of kogito services and updating their module.yaml files
+#Script responsible for fetching the latest artifacts of kogito services and updating their module.yaml files as well as updating Maven version
 #Should be run from root directory of the repository
 #Sample usage:  python3 scripts/update-maven-information.py
 #
@@ -15,19 +15,13 @@ import common
 import xml.etree.ElementTree as ET
 import requests
 import subprocess as sp
-import re
 import os
 import argparse
 from ruamel.yaml import YAML
 
-MAVEN_MODULE="kogito-maven/3.6.x"
-
 DEFAULT_REPO_URL = "https://repository.jboss.org/nexus/content/groups/public/"
 DEFAULT_VERSION = "8.0.0-SNAPSHOT"
 DEFAULT_ARTIFACT_PATH = "org/kie/kogito"
-
-# behave tests that needs to be update
-S2I_BEHAVE_TESTS = {"kogito-quarkus-ubi8-s2i.feature", "kogito-springboot-ubi8-s2i.feature"}
 
 Modules = {
     #service-name: module-name(directory in which module's module.yaml file is present)
@@ -107,47 +101,11 @@ def update_artifacts(service,modulePath):
     with open(modulePath, 'w') as module:
         common.yaml_loader().dump(data, module)
 
-def update_test_apps_clone_repo(repo_url):
-    '''
-    Updates the clone-repo.sh script for testing with the given repository URL.
-    :param repo_url: Maven Repository URL to set
-    '''
-    file = 'tests/test-apps/clone-repo.sh'
-    print('Updating file {}'.format(file))
-    os.system('sed -i \'s|^export JBOSS_MAVEN_REPO_URL=.*|export JBOSS_MAVEN_REPO_URL=\"{}\"|\' '.format(repo_url) + file)
-
-def update_maven_repo_in_features(repo_url):
-    '''
-    Updates S2I feature tests with the given repository URL.
-    :param repo_url: Maven Repository URL to set
-    '''
-    base_dir = 'tests/features'
-    pattern_branch = re.compile('\|\s*variable[\s]*\|[\s]*value[\s]*\|')
-
-    for feature in S2I_BEHAVE_TESTS:
-        print("Updating feature {0}".format(feature))
-        with open(os.path.join(base_dir, feature)) as fe:
-            updated_value = pattern_branch.sub("| variable | value |\n      | JBOSS_MAVEN_REPO_URL | {} |".format(repo_url), fe.read())
-
-        with open(os.path.join(base_dir, feature), 'w') as fe:
-            fe.write(updated_value)
-
-def update_maven_repo_in_tests(repo_url):
-    '''
-    Updates images tests with the given repository URL.
-    :param repo_url: Maven Repository URL to set
-    '''
-    update_maven_repo_in_features(repo_url)
-    update_test_apps_clone_repo(repo_url)
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Update Maven information in repo from the given artifact url and version.')
     parser.add_argument('--repo-url', dest='repo_url', default=DEFAULT_REPO_URL, help='Defines the url of the repository to extract the artifacts from, defaults to {}'.format(DEFAULT_REPO_URL))
     parser.add_argument('--version', dest='version', default=DEFAULT_VERSION, help='Defines the version of artifacts to retrieve from the repository url, defaults to {}'.format(DEFAULT_VERSION))
     args = parser.parse_args()
-
-    if(args.repo_url != DEFAULT_REPO_URL):
-        update_maven_repo_in_tests(args.repo_url)
     
     # Update Kogito Service modules
     for serviceName, modulePath in Modules.items():
