@@ -29,7 +29,7 @@ import { StateControlService } from "./api/stateControl";
 import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandler";
 
 export class EditorEnvelopeController {
-  readonly kogitoEnvelopeBus: KogitoEnvelopeBus;
+  public readonly kogitoEnvelopeBus: KogitoEnvelopeBus;
   public capturedInitRequestYet = false;
 
   private editorEnvelopeView?: EditorEnvelopeView;

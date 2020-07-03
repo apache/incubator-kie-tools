@@ -10,7 +10,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
   }
   exposing={[Function]}
   keyboardShortcutsService={
-    DefaultKeyboardShortcutsService {
+    e {
       "args": Object {
         "editorContext": Object {
           "channel": "VSCODE",
@@ -102,7 +102,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
         "postMessage": [Function],
       },
       "eventListener": [Function],
-      "manager": EnvelopeBusMessageManager {
+      "manager": e {
         "api": Object {
           "receive_contentChangedNotification": [Function],
           "receive_contentRequest": [Function],
@@ -160,7 +160,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
     }
   }
 >
-  <KeyBindingsHelpOverlay
+  <Component
     context={
       Object {
         "channel": "VSCODE",
@@ -168,7 +168,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
       }
     }
     keyboardShortcutsService={
-      DefaultKeyboardShortcutsService {
+      e {
         "args": Object {
           "editorContext": Object {
             "channel": "VSCODE",
@@ -328,7 +328,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
         />
       </Portal>
     </Modal>
-  </KeyBindingsHelpOverlay>
+  </Component>
   <Portal
     containerInfo={
       <div
@@ -469,7 +469,7 @@ exports[`EditorEnvelopeController opens 1`] = `
   }
   exposing={[Function]}
   keyboardShortcutsService={
-    DefaultKeyboardShortcutsService {
+    e {
       "args": Object {
         "editorContext": Object {
           "channel": "VSCODE",
@@ -551,7 +551,7 @@ exports[`EditorEnvelopeController opens 1`] = `
         "postMessage": [Function],
       },
       "eventListener": [Function],
-      "manager": EnvelopeBusMessageManager {
+      "manager": e {
         "api": Object {
           "receive_contentChangedNotification": [Function],
           "receive_contentRequest": [Function],
@@ -714,7 +714,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
   }
   exposing={[Function]}
   keyboardShortcutsService={
-    DefaultKeyboardShortcutsService {
+    e {
       "args": Object {
         "editorContext": Object {
           "channel": "VSCODE",
@@ -797,7 +797,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
         "postMessage": [Function],
       },
       "eventListener": [Function],
-      "manager": EnvelopeBusMessageManager {
+      "manager": e {
         "api": Object {
           "receive_contentChangedNotification": [Function],
           "receive_contentRequest": [Function],

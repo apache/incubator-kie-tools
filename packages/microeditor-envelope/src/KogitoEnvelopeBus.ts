@@ -54,7 +54,7 @@ export class KogitoEnvelopeBus {
   public targetOrigin: string;
   public associatedBusId: string;
   public eventListener?: any;
-  readonly manager: EnvelopeBusMessageManager<
+  public readonly manager: EnvelopeBusMessageManager<
     MessageTypesYouCanSendToTheChannel,
     MessageTypesYouCanSendToTheEnvelope,
     KogitoEnvelopeApi
