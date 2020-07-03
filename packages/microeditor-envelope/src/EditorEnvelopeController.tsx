@@ -29,7 +29,7 @@ import { StateControlService } from "./api/stateControl";
 import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandler";
 
 export class EditorEnvelopeController {
-  private readonly envelopeBusInnerMessageHandler: KogitoEnvelopeBus;
+  private readonly kogitoEnvelopeBus: KogitoEnvelopeBus;
   public capturedInitRequestYet = false;
 
   private editorEnvelopeView?: EditorEnvelopeView;
@@ -43,10 +43,10 @@ export class EditorEnvelopeController {
     private readonly resourceContentEditorCoordinator: ResourceContentServiceCoordinator,
     private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService
   ) {
-    this.envelopeBusInnerMessageHandler = new KogitoEnvelopeBus(busApi, {
+    this.kogitoEnvelopeBus = new KogitoEnvelopeBus(busApi, {
       receive_initRequest: async (init: { origin: string; busId: string }) => {
-        this.envelopeBusInnerMessageHandler.targetOrigin = init.origin;
-        this.envelopeBusInnerMessageHandler.associatedBusId = init.busId;
+        this.kogitoEnvelopeBus.targetOrigin = init.origin;
+        this.kogitoEnvelopeBus.associatedBusId = init.busId;
 
         if (this.capturedInitRequestYet) {
           return;
@@ -54,19 +54,19 @@ export class EditorEnvelopeController {
 
         this.capturedInitRequestYet = true;
 
-        const language = await this.envelopeBusInnerMessageHandler.request_languageResponse();
-        const editor = await editorFactory.createEditor(language, this.envelopeBusInnerMessageHandler);
+        const language = await this.kogitoEnvelopeBus.request_languageResponse();
+        const editor = await editorFactory.createEditor(language, this.kogitoEnvelopeBus);
 
         await this.open(editor);
         this.editorEnvelopeView!.setLoading();
 
-        const editorContent = await this.envelopeBusInnerMessageHandler.request_contentResponse();
+        const editorContent = await this.kogitoEnvelopeBus.request_contentResponse();
 
         await editor
           .setContent(editorContent.path ?? "", editorContent.content)
           .finally(() => this.editorEnvelopeView!.setLoadingFinished());
 
-        this.envelopeBusInnerMessageHandler.notify_ready();
+        this.kogitoEnvelopeBus.notify_ready();
       },
       receive_contentChangedNotification: (editorContent: EditorContent) => {
         this.editorEnvelopeView!.setLoading();
@@ -120,7 +120,7 @@ export class EditorEnvelopeController {
           keyboardShortcutsService={this.keyboardShortcutsService}
           context={args.context}
           stateControlService={this.stateControlService}
-          messageBus={this.envelopeBusInnerMessageHandler}
+          messageBus={this.kogitoEnvelopeBus}
         />,
         args.container,
         res
@@ -130,12 +130,12 @@ export class EditorEnvelopeController {
 
   public start(args: { container: HTMLElement; context: EditorContext }) {
     return this.render(args).then(() => {
-      this.envelopeBusInnerMessageHandler.startListening();
-      return this.envelopeBusInnerMessageHandler;
+      this.kogitoEnvelopeBus.startListening();
+      return this.kogitoEnvelopeBus;
     });
   }
 
   public stop() {
-    this.envelopeBusInnerMessageHandler.stopListening();
+    this.kogitoEnvelopeBus.stopListening();
   }
 }

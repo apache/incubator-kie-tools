@@ -17,20 +17,20 @@
 import {
   EnvelopeBusMessage,
   EnvelopeBusMessagePurpose,
-  KogitoChannelBus,
   KogitoChannelApi,
+  KogitoChannelBus,
   MessageTypesYouCanSendToTheChannel,
   MessageTypesYouCanSendToTheEnvelope
 } from "../..";
 import { ContentType, ResourceContent, StateControlCommand } from "@kogito-tooling/core-api";
 
 let sentMessages: Array<EnvelopeBusMessage<unknown, any>>;
-let channelBusApi: KogitoChannelBus;
-let apiImpl: KogitoChannelApi;
+let channelBus: KogitoChannelBus;
+let api: KogitoChannelApi;
 
 beforeEach(() => {
   sentMessages = [];
-  apiImpl = {
+  api = {
     receive_setContentError: jest.fn(),
     receive_ready: jest.fn(),
     receive_newEdit: jest.fn(),
@@ -44,7 +44,7 @@ beforeEach(() => {
     receive_resourceListRequest: jest.fn()
   };
 
-  channelBusApi = new KogitoChannelBus({ postMessage: msg => sentMessages.push(msg) }, apiImpl);
+  channelBus = new KogitoChannelBus({ postMessage: msg => sentMessages.push(msg) }, api);
 });
 
 const delay = (ms: number) => {
@@ -53,63 +53,63 @@ const delay = (ms: number) => {
 
 describe("new instance", () => {
   test("does nothing", () => {
-    expect(channelBusApi.initPolling).toBeFalsy();
-    expect(channelBusApi.initPollingTimeout).toBeFalsy();
+    expect(channelBus.initPolling).toBeFalsy();
+    expect(channelBus.initPollingTimeout).toBeFalsy();
     expect(sentMessages.length).toEqual(0);
   });
 });
 
 describe("startInitPolling", () => {
   test("polls for init response", async () => {
-    jest.spyOn(channelBusApi, "stopInitPolling");
-    jest.spyOn(channelBusApi.manager, "generateRandomId").mockReturnValueOnce("reqId");
+    jest.spyOn(channelBus, "stopInitPolling");
+    jest.spyOn(channelBus.manager, "generateRandomId").mockReturnValueOnce("reqId");
 
-    channelBusApi.startInitPolling("tests");
-    expect(channelBusApi.initPolling).toBeTruthy();
-    expect(channelBusApi.initPollingTimeout).toBeTruthy();
+    channelBus.startInitPolling("tests");
+    expect(channelBus.initPolling).toBeTruthy();
+    expect(channelBus.initPollingTimeout).toBeTruthy();
 
     await delay(100); //waits for setInterval to kick in
 
-    await receive({
-      busId: channelBusApi.busId,
+    await incomingMessage({
+      busId: channelBus.busId,
       requestId: "reqId",
       type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: undefined
     });
 
-    expect(channelBusApi.stopInitPolling).toHaveBeenCalled();
-    expect(channelBusApi.initPolling).toBeFalsy();
-    expect(channelBusApi.initPollingTimeout).toBeFalsy();
+    expect(channelBus.stopInitPolling).toHaveBeenCalled();
+    expect(channelBus.initPolling).toBeFalsy();
+    expect(channelBus.initPollingTimeout).toBeFalsy();
   });
 
   test("stops polling after timeout", async () => {
-    jest.spyOn(channelBusApi, "stopInitPolling");
+    jest.spyOn(channelBus, "stopInitPolling");
     KogitoChannelBus.INIT_POLLING_TIMEOUT_IN_MS = 200;
 
-    channelBusApi.startInitPolling("tests");
-    expect(channelBusApi.initPolling).toBeTruthy();
-    expect(channelBusApi.initPollingTimeout).toBeTruthy();
+    channelBus.startInitPolling("tests");
+    expect(channelBus.initPolling).toBeTruthy();
+    expect(channelBus.initPollingTimeout).toBeTruthy();
 
     //more than the timeout
     await delay(300);
 
-    expect(channelBusApi.stopInitPolling).toHaveBeenCalled();
-    expect(channelBusApi.initPolling).toBeFalsy();
-    expect(channelBusApi.initPollingTimeout).toBeFalsy();
+    expect(channelBus.stopInitPolling).toHaveBeenCalled();
+    expect(channelBus.initPolling).toBeFalsy();
+    expect(channelBus.initPollingTimeout).toBeFalsy();
   });
 });
 
 describe("receive", () => {
   test("any message with different busId", () => {
-    channelBusApi.receive({
+    channelBus.receive({
       busId: "unknown-id",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       requestId: "any",
       type: MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE,
       data: undefined
     });
-    channelBusApi.receive({
+    channelBus.receive({
       busId: "unknown-id",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       requestId: "any",
@@ -118,106 +118,95 @@ describe("receive", () => {
     });
   });
 
-  test("setContentError", async () => {
-    jest.spyOn(apiImpl, "receive_setContentError");
-    channelBusApi.receive({
-      busId: channelBusApi.busId,
-      purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: MessageTypesYouCanSendToTheChannel.NOTIFY_SET_CONTENT_ERROR,
-      data: "this is the error"
-    });
-    expect(apiImpl.receive_setContentError).toHaveBeenCalledWith("this is the error");
-  });
-
   test("setContentError notification", async () => {
-    jest.spyOn(apiImpl, "receive_setContentError");
-    channelBusApi.receive({
-      busId: channelBusApi.busId,
+    jest.spyOn(api, "receive_setContentError");
+    channelBus.receive({
+      busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: MessageTypesYouCanSendToTheChannel.NOTIFY_SET_CONTENT_ERROR,
       data: "this is the error"
     });
-    expect(apiImpl.receive_setContentError).toHaveBeenCalledWith("this is the error");
+    expect(api.receive_setContentError).toHaveBeenCalledWith("this is the error");
   });
 
   test("ready notification", async () => {
-    jest.spyOn(apiImpl, "receive_ready");
-    channelBusApi.receive({
-      busId: channelBusApi.busId,
+    jest.spyOn(api, "receive_ready");
+    channelBus.receive({
+      busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: MessageTypesYouCanSendToTheChannel.NOTIFY_READY,
       data: undefined
     });
-    expect(apiImpl.receive_ready).toHaveBeenCalledWith();
+    expect(api.receive_ready).toHaveBeenCalledWith();
   });
 
   test("newEdit notification", async () => {
-    jest.spyOn(apiImpl, "receive_newEdit");
-    channelBusApi.receive({
-      busId: channelBusApi.busId,
+    jest.spyOn(api, "receive_newEdit");
+    channelBus.receive({
+      busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_NEW_EDIT,
       data: { id: "edit-id" }
     });
-    expect(apiImpl.receive_newEdit).toHaveBeenCalledWith({ id: "edit-id" });
+    expect(api.receive_newEdit).toHaveBeenCalledWith({ id: "edit-id" });
   });
   test("openFile notification", async () => {
-    jest.spyOn(apiImpl, "receive_openFile");
-    channelBusApi.receive({
-      busId: channelBusApi.busId,
+    jest.spyOn(api, "receive_openFile");
+    channelBus.receive({
+      busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_OPEN_FILE,
       data: "a/path"
     });
-    expect(apiImpl.receive_openFile).toHaveBeenCalledWith("a/path");
+    expect(api.receive_openFile).toHaveBeenCalledWith("a/path");
   });
   test("stateControlCommandUpdate notification", async () => {
-    jest.spyOn(apiImpl, "receive_stateControlCommandUpdate");
-    channelBusApi.receive({
-      busId: channelBusApi.busId,
+    jest.spyOn(api, "receive_stateControlCommandUpdate");
+    channelBus.receive({
+      busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: MessageTypesYouCanSendToTheChannel.NOTIFY_STATE_CONTROL_COMMAND_UPDATE,
       data: StateControlCommand.REDO
     });
-    expect(apiImpl.receive_stateControlCommandUpdate).toHaveBeenCalledWith(StateControlCommand.REDO);
+    expect(api.receive_stateControlCommandUpdate).toHaveBeenCalledWith(StateControlCommand.REDO);
   });
 
   test("guidedTourRegisterTutorial notification", async () => {
-    jest.spyOn(apiImpl, "receive_guidedTourRegisterTutorial");
-    channelBusApi.receive({
-      busId: channelBusApi.busId,
+    jest.spyOn(api, "receive_guidedTourRegisterTutorial");
+    channelBus.receive({
+      busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL,
       data: {}
     });
-    expect(apiImpl.receive_guidedTourRegisterTutorial).toHaveBeenCalledWith({});
+    expect(api.receive_guidedTourRegisterTutorial).toHaveBeenCalledWith({});
   });
 
   test("guidedTourUserInteraction notification", async () => {
-    jest.spyOn(apiImpl, "receive_guidedTourUserInteraction");
-    channelBusApi.receive({
-      busId: channelBusApi.busId,
+    jest.spyOn(api, "receive_guidedTourUserInteraction");
+    channelBus.receive({
+      busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_USER_INTERACTION,
       data: {}
     });
-    expect(apiImpl.receive_guidedTourUserInteraction).toHaveBeenCalledWith({});
+    expect(api.receive_guidedTourUserInteraction).toHaveBeenCalledWith({});
   });
 
   test("language request", async () => {
     const languageData = { type: "a-language" };
 
-    jest.spyOn(apiImpl, "receive_languageRequest").mockReturnValueOnce(Promise.resolve(languageData));
+    jest.spyOn(api, "receive_languageRequest").mockReturnValueOnce(Promise.resolve(languageData));
 
-    await receive({
-      busId: channelBusApi.busId,
+    await incomingMessage({
+      busId: channelBus.busId,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE,
       data: undefined
     });
 
-    expect(apiImpl.receive_languageRequest).toHaveBeenCalledWith();
+    expect(api.receive_languageRequest).toHaveBeenCalledWith();
     expect(sentMessages).toEqual([
       {
         requestId: "requestId",
@@ -231,17 +220,17 @@ describe("receive", () => {
   test("content request", async () => {
     const content = { content: "the language", path: "the path" };
 
-    jest.spyOn(apiImpl, "receive_contentRequest").mockReturnValueOnce(Promise.resolve(content));
+    jest.spyOn(api, "receive_contentRequest").mockReturnValueOnce(Promise.resolve(content));
 
-    await receive({
-      busId: channelBusApi.busId,
+    await incomingMessage({
+      busId: channelBus.busId,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: MessageTypesYouCanSendToTheChannel.REQUEST_CONTENT,
       data: undefined
     });
 
-    expect(apiImpl.receive_contentRequest).toHaveBeenCalledWith();
+    expect(api.receive_contentRequest).toHaveBeenCalledWith();
     expect(sentMessages).toEqual([
       {
         requestId: "requestId",
@@ -256,17 +245,17 @@ describe("receive", () => {
     const resourceContent = new ResourceContent("a/path", "the content", ContentType.TEXT);
     const resourceContentRequest = { path: "a/path", opts: { type: ContentType.TEXT } };
 
-    jest.spyOn(apiImpl, "receive_resourceContentRequest").mockReturnValueOnce(Promise.resolve(resourceContent));
+    jest.spyOn(api, "receive_resourceContentRequest").mockReturnValueOnce(Promise.resolve(resourceContent));
 
-    await receive({
-      busId: channelBusApi.busId,
+    await incomingMessage({
+      busId: channelBus.busId,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_CONTENT,
       data: resourceContentRequest
     });
 
-    expect(apiImpl.receive_resourceContentRequest).toHaveBeenCalledWith(resourceContentRequest);
+    expect(api.receive_resourceContentRequest).toHaveBeenCalledWith(resourceContentRequest);
     expect(sentMessages).toEqual([
       {
         requestId: "requestId",
@@ -281,17 +270,17 @@ describe("receive", () => {
     const resourceList = { pattern: "*", paths: ["a/resource/file.txt"] };
     const resourceListRequest = { path: "a/path", opts: { type: ContentType.TEXT } };
 
-    jest.spyOn(apiImpl, "receive_resourceListRequest").mockReturnValueOnce(Promise.resolve(resourceList));
+    jest.spyOn(api, "receive_resourceListRequest").mockReturnValueOnce(Promise.resolve(resourceList));
 
-    await receive({
-      busId: channelBusApi.busId,
+    await incomingMessage({
+      busId: channelBus.busId,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_LIST,
       data: resourceListRequest
     });
 
-    expect(apiImpl.receive_resourceListRequest).toHaveBeenCalledWith(resourceListRequest);
+    expect(api.receive_resourceListRequest).toHaveBeenCalledWith(resourceListRequest);
     expect(sentMessages).toEqual([
       {
         requestId: "requestId",
@@ -305,19 +294,19 @@ describe("receive", () => {
 
 describe("send", () => {
   test("request init", async () => {
-    jest.spyOn(channelBusApi.manager, "generateRandomId").mockReturnValueOnce("1");
-    const init = channelBusApi.request_initResponse("test-origin");
+    jest.spyOn(channelBus.manager, "generateRandomId").mockReturnValueOnce("1");
+    const init = channelBus.request_initResponse("test-origin");
     expect(sentMessages).toEqual([
       {
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "1",
         type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
-        data: { busId: channelBusApi.busId, origin: "test-origin" }
+        data: { busId: channelBus.busId, origin: "test-origin" }
       }
     ]);
 
-    await receive({
-      busId: channelBusApi.busId,
+    await incomingMessage({
+      busId: channelBus.busId,
       requestId: "1",
       type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
@@ -328,10 +317,10 @@ describe("send", () => {
   });
 
   test("request contentResponse", async () => {
-    jest.spyOn(channelBusApi.manager, "generateRandomId").mockReturnValueOnce("1");
-    const content = channelBusApi.request_contentResponse();
-    await receive({
-      busId: channelBusApi.busId,
+    jest.spyOn(channelBus.manager, "generateRandomId").mockReturnValueOnce("1");
+    const content = channelBus.request_contentResponse();
+    await incomingMessage({
+      busId: channelBus.busId,
       requestId: "1",
       type: MessageTypesYouCanSendToTheEnvelope.REQUEST_CONTENT,
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
@@ -342,10 +331,10 @@ describe("send", () => {
   });
 
   test("request preview", async () => {
-    jest.spyOn(channelBusApi.manager, "generateRandomId").mockReturnValueOnce("1");
-    const preview = channelBusApi.request_previewResponse();
-    await receive({
-      busId: channelBusApi.busId,
+    jest.spyOn(channelBus.manager, "generateRandomId").mockReturnValueOnce("1");
+    const preview = channelBus.request_previewResponse();
+    await incomingMessage({
+      busId: channelBus.busId,
       requestId: "1",
       type: MessageTypesYouCanSendToTheEnvelope.REQUEST_PREVIEW,
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
@@ -356,10 +345,10 @@ describe("send", () => {
   });
 
   test("request guidedTourElementPositionResponse", async () => {
-    jest.spyOn(channelBusApi.manager, "generateRandomId").mockReturnValueOnce("1");
-    const position = channelBusApi.request_guidedTourElementPositionResponse("my-selector");
-    await receive({
-      busId: channelBusApi.busId,
+    jest.spyOn(channelBus.manager, "generateRandomId").mockReturnValueOnce("1");
+    const position = channelBus.request_guidedTourElementPositionResponse("my-selector");
+    await incomingMessage({
+      busId: channelBus.busId,
       requestId: "1",
       type: MessageTypesYouCanSendToTheEnvelope.REQUEST_GUIDED_TOUR_ELEMENT_POSITION,
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
@@ -370,7 +359,7 @@ describe("send", () => {
   });
 
   test("notify contentChanged", () => {
-    channelBusApi.notify_contentChanged({ content: "new-content" });
+    channelBus.notify_contentChanged({ content: "new-content" });
     expect(sentMessages).toEqual([
       {
         type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_CONTENT_CHANGED,
@@ -381,7 +370,7 @@ describe("send", () => {
   });
 
   test("notify editorUndo", () => {
-    channelBusApi.notify_editorUndo();
+    channelBus.notify_editorUndo();
     expect(sentMessages).toEqual([
       {
         type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_UNDO,
@@ -392,7 +381,7 @@ describe("send", () => {
   });
 
   test("notify editorRedo", () => {
-    channelBusApi.notify_editorRedo();
+    channelBus.notify_editorRedo();
     expect(sentMessages).toEqual([
       {
         type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_REDO,
@@ -403,9 +392,9 @@ describe("send", () => {
   });
 });
 
-async function receive(
+async function incomingMessage(
   message: EnvelopeBusMessage<unknown, MessageTypesYouCanSendToTheChannel | MessageTypesYouCanSendToTheEnvelope>
 ) {
-  channelBusApi.receive(message);
+  channelBus.receive(message);
   await delay(0); // waits for next event loop iteration
 }
