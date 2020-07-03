@@ -42,6 +42,7 @@ TAR=${BRANCH}.tar.gz
 URL=${REPO}/archive/${TAR}
 CFLAGS="--redhat --build-tech-preview"
 BUILDER=
+BINARY_OUTPUT=build/_output/bin/kogito-cloud-operator
 
 while (( $# ))
 do
@@ -80,7 +81,7 @@ if [[ -z ${CI} ]]; then
     ./hack/go-test.sh
     BUILD_PARAMS=""
     if [[ ! -z ${BUILDER} ]]; then BUILD_PARAMS="${BUILD_PARAMS} --image-builder ${BUILDER}"; fi
-    operator-sdk build ${REGISTRY}/${IMAGE}:${TAG} ${BUILD_PARAMS}
+    operator-sdk build ${REGISTRY}/${IMAGE}:${TAG} ${BUILD_PARAMS} --go-build-args -o=${BINARY_OUTPUT}
     if [[ ${1} == "rhel" ]]; then
         if [[ ${LOCAL} != true ]]; then
             CFLAGS+=" --build-engine=osbs --build-osbs-target=??"
@@ -97,5 +98,5 @@ if [[ -z ${CI} ]]; then
             --overrides "{'artifacts': [{'name': 'kogito-operator.tar.gz', 'md5': '${MD5}', 'url': '${URL}'}]}"
     fi
 else
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o build/_output/bin/kogito-cloud-operator github.com/kiegroup/kogito-cloud-operator/cmd/manager
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o ${BINARY_OUTPUT} github.com/kiegroup/kogito-cloud-operator/cmd/manager
 fi
