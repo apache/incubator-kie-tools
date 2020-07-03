@@ -22,8 +22,8 @@ export type ObjOnlyWithFunctions<T> = { [P in keyof T]: (...a: any) => Promise<a
 export type ArgsType<T> = T extends (...args: infer A) => any ? A : never;
 
 export interface MessageBusClient<Api extends ObjOnlyWithFunctions<Api>> {
-  request<M extends FunctionPropertyNames<Api>>(method: M, args: ArgsType<Api[M]>): ReturnType<Api[M]>;
-  notify<M extends FunctionPropertyNames<Api>>(method: M, args: ArgsType<Api[M]>): void;
+  request<M extends FunctionPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): ReturnType<Api[M]>;
+  notify<M extends FunctionPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): void;
 }
 
 export class EnvelopeBusMessageManager<
@@ -34,8 +34,8 @@ export class EnvelopeBusMessageManager<
 
   public get client(): MessageBusClient<ApiToConsume> {
     return {
-      request: (m, a) => this.request(m, a),
-      notify: (m, a) => this.notify(m, a)
+      request: (m, ...a) => this.request(m, ...a),
+      notify: (m, ...a) => this.notify(m, ...a)
     };
   }
 
@@ -47,7 +47,7 @@ export class EnvelopeBusMessageManager<
     private readonly api: ApiToProvide
   ) {}
 
-  public request<M extends FunctionPropertyNames<ApiToConsume>>(method: M, args: ArgsType<ApiToConsume[M]>) {
+  private request<M extends FunctionPropertyNames<ApiToConsume>>(method: M, ...args: ArgsType<ApiToConsume[M]>) {
     const requestId = this.generateRandomId();
 
     this.send({
@@ -65,7 +65,7 @@ export class EnvelopeBusMessageManager<
     //TODO: Setup timeout to avoid memory leaks
   }
 
-  public notify<M extends FunctionPropertyNames<ApiToConsume>>(method: M, args: ArgsType<ApiToConsume[M]>): void {
+  private notify<M extends FunctionPropertyNames<ApiToConsume>>(method: M, ...args: ArgsType<ApiToConsume[M]>): void {
     this.send({
       type: method,
       data: args,

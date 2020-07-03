@@ -75,30 +75,30 @@ export class KogitoChannelBus {
   //
 
   public notify_editorUndo() {
-    this.manager.notify("receive_editorUndo", []);
+    this.manager.client.notify("receive_editorUndo");
   }
 
   public notify_editorRedo() {
-    this.manager.notify("receive_editorRedo", []);
+    this.manager.client.notify("receive_editorRedo");
   }
 
   public notify_contentChanged(content: EditorContent) {
-    this.manager.notify("receive_contentChanged", [content]);
+    this.manager.client.notify("receive_contentChanged", content);
   }
 
   public request_contentResponse() {
-    return this.manager.request("receive_contentRequest", []);
+    return this.manager.client.request("receive_contentRequest");
   }
 
   public request_previewResponse() {
-    return this.manager.request("receive_previewRequest", []);
+    return this.manager.client.request("receive_previewRequest");
   }
 
   public request_initResponse(origin: string) {
-    return this.manager.request("receive_initRequest", [{ origin: origin, busId: this.busId }]);
+    return this.manager.client.request("receive_initRequest", { origin: origin, busId: this.busId });
   }
 
   public request_guidedTourElementPositionResponse(selector: string) {
-    return this.manager.request("receive_guidedTourElementPositionRequest", [selector]);
+    return this.manager.client.request("receive_guidedTourElementPositionRequest", selector);
   }
 }
