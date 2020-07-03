@@ -17,22 +17,102 @@
 import * as React from "react";
 import { renderHook } from "@testing-library/react-hooks";
 import { useSyncedKeyboardEvents } from "../Hooks";
-import { getTestEnvelopeBusOuterMessageHandler, TestEnvelopeBusOuterMessageHandler } from "./utils";
+import {EnvelopeBusMessage} from "../EnvelopeBusMessage";
+import {EnvelopeBusOuterMessageHandler} from "../EnvelopeBusOuterMessageHandler";
+import {
+  EditorContent,
+  KogitoEdit,
+  ResourceContentRequest,
+  ResourceListRequest,
+  StateControlCommand
+} from "@kogito-tooling/core-api";
+import {Rect, Tutorial, UserInteraction} from "@kogito-tooling/guided-tour";
+
+let sentMessages: Array<EnvelopeBusMessage<any>>;
+let receivedMessages: string[];
+let handler: EnvelopeBusOuterMessageHandler;
+let initPollCount: number;
+
+beforeEach(() => {
+  sentMessages = [];
+  receivedMessages = [];
+  initPollCount = 0;
+
+  handler = new EnvelopeBusOuterMessageHandler(
+    {
+      postMessage: msg => sentMessages.push(msg)
+    },
+    self => ({
+      pollInit: () => {
+        initPollCount++;
+      },
+      receive_languageRequest() {
+        receivedMessages.push("languageRequest");
+      },
+      receive_contentRequest() {
+        receivedMessages.push("contentRequest");
+      },
+      receive_contentResponse(content: EditorContent) {
+        receivedMessages.push("contentResponse_" + content.content);
+      },
+      receive_setContentError: (errorMessage: string) => {
+        receivedMessages.push("setContentError_" + errorMessage);
+      },
+      receive_dirtyIndicatorChange(isDirty: boolean): void {
+        receivedMessages.push("dirtyIndicatorChange_" + isDirty);
+      },
+      receive_resourceContentRequest(resourceContentRequest: ResourceContentRequest): void {
+        receivedMessages.push("resourceContentRequest_" + resourceContentRequest.path);
+      },
+      receive_readResourceContentError(errorMessage: string): void {
+        receivedMessages.push("readResourceContentError_" + errorMessage);
+      },
+      receive_resourceListRequest(resourceListRequest: ResourceListRequest): void {
+        receivedMessages.push("resourceListRequest_" + resourceListRequest);
+      },
+      receive_ready() {
+        receivedMessages.push("ready");
+      },
+      notify_editorUndo() {
+        receivedMessages.push("undo");
+      },
+      notify_editorRedo() {
+        receivedMessages.push("redo");
+      },
+      receive_newEdit(edit: KogitoEdit) {
+        receivedMessages.push("receiveNewEdit_" + edit.id);
+      },
+      receive_openFile(path: string): void {
+        receivedMessages.push("receiveOpenFile_" + path);
+      },
+      receive_previewRequest(previewSvg: string) {
+        receivedMessages.push("preview");
+      },
+      receive_stateControlCommandUpdate(command: StateControlCommand) {
+        receivedMessages.push("receiveStateControlEvent_" + command);
+      },
+      receive_guidedTourUserInteraction(userInteraction: UserInteraction) {
+        receivedMessages.push("guidedTour_UserInteraction");
+      },
+      receive_guidedTourRegisterTutorial(tutorial: Tutorial) {
+        receivedMessages.push("guidedTour_RegisterTutorial");
+      },
+      receive_guidedTourElementPositionResponse(position: Rect) {
+        receivedMessages.push("guidedTour_ElementPositionRequest");
+      }
+    })
+  );
+});
+
 
 describe("useSyncedKeyboardEvents", () => {
-  let testEnvelopeBusOuterMessageHandler: TestEnvelopeBusOuterMessageHandler;
-
-  beforeEach(() => {
-    testEnvelopeBusOuterMessageHandler = getTestEnvelopeBusOuterMessageHandler();
-  });
-
   test("EmbeddedEditor::notify_keyboardEvent::keydown", async () => {
     const spyNotify_notifyKeyboardEvent = jest.spyOn(
-      testEnvelopeBusOuterMessageHandler.handler,
+      handler,
       "notify_channelKeyboardEvent"
     );
 
-    renderHook(() => useSyncedKeyboardEvents(testEnvelopeBusOuterMessageHandler.handler));
+    renderHook(() => useSyncedKeyboardEvents(handler));
     window.dispatchEvent(new KeyboardEvent("keydown", { ctrlKey: true }));
 
     expect(spyNotify_notifyKeyboardEvent).toBeCalledWith({
@@ -48,11 +128,11 @@ describe("useSyncedKeyboardEvents", () => {
 
   test("EmbeddedEditor::notify_keyboardEvent::keyup", async () => {
     const spyNotify_notifyKeyboardEvent = jest.spyOn(
-      testEnvelopeBusOuterMessageHandler.handler,
+      handler,
       "notify_channelKeyboardEvent"
     );
 
-    renderHook(() => useSyncedKeyboardEvents(testEnvelopeBusOuterMessageHandler.handler));
+    renderHook(() => useSyncedKeyboardEvents(handler));
     window.dispatchEvent(new KeyboardEvent("keyup", { altKey: true }));
 
     expect(spyNotify_notifyKeyboardEvent).toBeCalledWith({
@@ -68,11 +148,11 @@ describe("useSyncedKeyboardEvents", () => {
 
   test("EmbeddedEditor::notify_keyboardEvent::keyup", async () => {
     const spyNotify_notifyKeyboardEvent = jest.spyOn(
-      testEnvelopeBusOuterMessageHandler.handler,
+      handler,
       "notify_channelKeyboardEvent"
     );
 
-    renderHook(() => useSyncedKeyboardEvents(testEnvelopeBusOuterMessageHandler.handler));
+    renderHook(() => useSyncedKeyboardEvents(handler));
     window.dispatchEvent(new KeyboardEvent("keypress", { shiftKey: true }));
 
     expect(spyNotify_notifyKeyboardEvent).toBeCalledWith({

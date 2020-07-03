@@ -253,18 +253,6 @@ export interface ChannelKeyboardEvent {
   channelOriginalTargetTagName?: string;
 }
 
-export function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKeyboardEvent {
-  return {
-    altKey: keyboardEvent.altKey,
-    ctrlKey: keyboardEvent.ctrlKey,
-    shiftKey: keyboardEvent.shiftKey,
-    metaKey: keyboardEvent.metaKey,
-    code: keyboardEvent.code,
-    type: keyboardEvent.type,
-    channelOriginalTargetTagName: (keyboardEvent.target as HTMLElement)?.tagName
-  };
-}
-
 function getProcessableKeyboardEvent(
   combination: string,
   event: KeyboardEvent | CustomEvent<ChannelKeyboardEvent>,
