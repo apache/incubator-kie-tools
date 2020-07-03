@@ -65,6 +65,8 @@ export class KogitoEnvelopeBus {
     this.bus.postMessage({ ...message, busId: this.associatedBusId }, this.targetOrigin);
   }
 
+  //
+
   public notify_setContentError(errorMessage: string) {
     return this.manager.client.notify("receive_setContentError", errorMessage);
   }

@@ -26,8 +26,13 @@ export interface MessageBusClient<Api extends ObjOnlyWithFunctions<Api>> {
   notify<M extends FunctionPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): void;
 }
 
-export interface MessageBusServer<ApiToProvide extends ObjOnlyWithFunctions<ApiToProvide>, ApiToConsume extends ObjOnlyWithFunctions<ApiToConsume>> {
-  receive(message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>): void;
+export interface MessageBusServer<
+  ApiToProvide extends ObjOnlyWithFunctions<ApiToProvide>,
+  ApiToConsume extends ObjOnlyWithFunctions<ApiToConsume>
+> {
+  receive(
+    message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>
+  ): void;
 }
 
 export class EnvelopeBusMessageManager<
