@@ -49,6 +49,7 @@ function usage(){
   printf "\n--load_default_config\n\tTo be used if you want to directly use the default test config contained into ${SCRIPT_DIR}/../test/.default_config"
   printf "\n--container_engine\n\tTo be used if you want to specify engine to interact with images and containers. Default is docker."
   printf "\n--domain_suffix\n\tTo be used if you want to set a domain suffix for exposed services. Ignored when running tests on Openshift."
+  printf "\n--image_cache_mode\n\tUse this option to specify whether you want to use image cache for runtime images. Available options are 'always', 'never' or 'if-available'(default)."
 
   # operator information
   printf "\n--operator_image {NAME}\n\tOperator image name. Default is 'quay.io/kiegroup/kogito-cloud-operator' one."
@@ -69,6 +70,8 @@ function usage(){
   printf "\n--management_console_image_tag {IMAGE_TAG}\n\tSet the Kogito Management Console image tag ('services_image_version' is ignored)"
   printf "\n--runtime_application_image_registry {REGISTRY}\n\tSet the registry for built runtime applications."
   printf "\n--runtime_application_image_namespace {NAMESPACE}\n\tSet the namespace for built runtime applications."
+  printf "\n--runtime_application_image_name_suffix {NAME_SUFFIX}\n\tSet the image name suffix to append to usual image names for built runtime applications."
+  printf "\n--runtime_application_image_version {VERSION}\n\tSet the version for built runtime applications."
 
   # build
   printf "\n--custom_maven_repo {URI}\n\tSet a custom Maven repository url for S2I builds, in case your artifacts are in a specific repository. See https://github.com/kiegroup/kogito-images/README.md for more information."
@@ -211,6 +214,10 @@ case $1 in
     shift
     if addParamKeyValueIfAccepted "--tests.domain-suffix" ${1}; then shift; fi
   ;;
+  --image_cache_mode)
+    shift
+    if addParamKeyValueIfAccepted "--tests.image-cache-mode" ${1}; then shift; fi
+  ;;
 
   # operator information
   --operator_image)
@@ -268,6 +275,14 @@ case $1 in
   --runtime_application_image_namespace)
     shift
     if addParamKeyValueIfAccepted "--tests.runtime-application-image-namespace" ${1}; then shift; fi
+  ;;
+  --runtime_application_image_name_suffix)
+    shift
+    if addParamKeyValueIfAccepted "--tests.runtime-application-image-name-suffix" ${1}; then shift; fi
+  ;;
+  --runtime_application_image_version)
+    shift
+    if addParamKeyValueIfAccepted "--tests.runtime-application-image-version" ${1}; then shift; fi
   ;;
 
   # build
