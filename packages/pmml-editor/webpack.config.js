@@ -16,6 +16,7 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const nodeExternals = require("webpack-node-externals");
 const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
 
 module.exports = async (env, argv) => {
@@ -29,7 +30,7 @@ module.exports = async (env, argv) => {
       path: path.resolve(__dirname, "./dist"),
       filename: "[name].js"
     },
-    externals: {},
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
     plugins: [
       new CopyPlugin([
         { from: "./static/resources", to: "./resources" },
