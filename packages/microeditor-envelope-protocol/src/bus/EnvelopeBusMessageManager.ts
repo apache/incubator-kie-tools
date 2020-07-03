@@ -15,17 +15,19 @@
  */
 
 import { EnvelopeBusMessage, EnvelopeBusMessagePurpose } from "./EnvelopeBusMessage";
-import { MessageTypesYouCanSendToTheEnvelope } from "./MessageTypesYouCanSendToTheEnvelope";
-import { MessageTypesYouCanSendToTheChannel } from "./MessageTypesYouCanSendToTheChannel";
 
-export class EnvelopeBusMessageManager<MessageType extends MessageTypesYouCanSendToTheEnvelope | MessageTypesYouCanSendToTheChannel> {
+export class EnvelopeBusMessageManager<MessageTypeToSend, MessageTypeToReceive, Api> {
   private readonly callbacks = new Map<string, { resolve: (arg: unknown) => void; reject: (arg: unknown) => void }>();
 
-  constructor(private readonly send: (message: EnvelopeBusMessage<unknown>) => void) {}
+  constructor(
+    private readonly send: (message: EnvelopeBusMessage<unknown, MessageTypeToSend | MessageTypeToReceive>) => void,
+    private readonly api: Api,
+    private readonly apiMapping: Map<MessageTypeToReceive, keyof Api>
+  ) {}
 
-  public request<T>(type: MessageType, args: unknown): Promise<T> {
+  public request<T>(type: MessageTypeToSend, args: unknown): Promise<T> {
     const message = {
-      requestId: EnvelopeBusMessageManager.generateRandomId(),
+      requestId: this.generateRandomId(),
       type: type,
       data: args,
       purpose: EnvelopeBusMessagePurpose.REQUEST
@@ -43,7 +45,7 @@ export class EnvelopeBusMessageManager<MessageType extends MessageTypesYouCanSen
     //TODO: Setup timeout to avoid memory leaks
   }
 
-  public respond<T>(request: EnvelopeBusMessage<unknown>, data: T): void {
+  public respond<T>(request: EnvelopeBusMessage<unknown, MessageTypeToReceive>, data: T): void {
     console.debug("Responding..");
     console.debug(request);
 
@@ -67,7 +69,7 @@ export class EnvelopeBusMessageManager<MessageType extends MessageTypesYouCanSen
     this.send(response);
   }
 
-  public notify<T>(type: MessageType, data: T): void {
+  public notify<T>(type: MessageTypeToSend, data: T): void {
     const notification = { purpose: EnvelopeBusMessagePurpose.NOTIFICATION, type, data };
 
     console.debug("Notifying...");
@@ -76,14 +78,42 @@ export class EnvelopeBusMessageManager<MessageType extends MessageTypesYouCanSen
     this.send(notification);
   }
 
-  public callback(response: EnvelopeBusMessage<unknown>) {
+  public callback(response: EnvelopeBusMessage<unknown, MessageTypeToReceive>) {
+    console.debug("Executing response for " + response.type);
     if (response.purpose !== EnvelopeBusMessagePurpose.RESPONSE) {
       throw new Error("Cannot invoke callback with a message that is not a response");
     }
-    this.callbacks.get(response.requestId!)?.resolve(response.data);
+
+    const callback = this.callbacks.get(response.requestId!);
+    if (!callback) {
+      throw new Error("Callback not found for " + response);
+    }
+
+    callback.resolve(response.data);
+  }
+  public receive(message: EnvelopeBusMessage<unknown, MessageTypeToReceive | MessageTypeToSend>) {
+    if (message.purpose === EnvelopeBusMessagePurpose.RESPONSE) {
+      this.callback(message as EnvelopeBusMessage<unknown, MessageTypeToReceive>);
+      return;
+    }
+
+    if (message.purpose === EnvelopeBusMessagePurpose.REQUEST) {
+      const handle = this.apiMapping.get(message.type as MessageTypeToReceive)!;
+      const response = (this.api[handle] as any).apply(this.api, message.data ? [message.data] : []) as Promise<
+        unknown
+      >;
+      response.then(r => this.respond(message as EnvelopeBusMessage<unknown, MessageTypeToReceive>, r));
+      return;
+    }
+
+    if (message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
+      const handle = this.apiMapping.get(message.type as MessageTypeToReceive)!;
+      (this.api[handle] as any).apply(this.api, message.data ? [message.data] : []);
+      return;
+    }
   }
 
-  static generateRandomId() {
+  public generateRandomId() {
     return (
       "_" +
       Math.random()

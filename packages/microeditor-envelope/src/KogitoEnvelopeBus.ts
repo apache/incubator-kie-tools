@@ -18,7 +18,6 @@ import {
   EnvelopeBusApi,
   EnvelopeBusMessage,
   EnvelopeBusMessageManager,
-  EnvelopeBusMessagePurpose,
   MessageTypesYouCanSendToTheChannel,
   MessageTypesYouCanSendToTheEnvelope
 } from "@kogito-tooling/microeditor-envelope-protocol";
@@ -34,25 +33,45 @@ import {
 } from "@kogito-tooling/core-api";
 import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
 
-export interface Impl {
+export interface KogitoEnvelopeApi {
+  //notifications
   receive_contentChangedNotification(content: EditorContent): void;
   receive_editorUndo(): void;
   receive_editorRedo(): void;
-
+  //requests
   receive_initRequest(init: { origin: string; busId: string }): Promise<void>;
   receive_contentRequest(): Promise<EditorContent>;
   receive_previewRequest(): Promise<string>;
   receive_guidedTourElementPositionRequest(selector: string): Promise<Rect>;
 }
 
-export class EnvelopeBusInnerMessageHandler {
+export class KogitoEnvelopeBus {
   public targetOrigin: string;
   public associatedBusId: string;
   public eventListener?: any;
-  private readonly manager: EnvelopeBusMessageManager<MessageTypesYouCanSendToTheChannel>;
+  private readonly manager: EnvelopeBusMessageManager<
+    MessageTypesYouCanSendToTheChannel,
+    MessageTypesYouCanSendToTheEnvelope,
+    KogitoEnvelopeApi
+  >;
 
-  constructor(private readonly busApi: EnvelopeBusApi, private readonly impl: Impl) {
-    this.manager = new EnvelopeBusMessageManager<MessageTypesYouCanSendToTheChannel>(m => this.send(m));
+  constructor(private readonly busApi: EnvelopeBusApi, private readonly api: KogitoEnvelopeApi) {
+    this.manager = new EnvelopeBusMessageManager(
+      message => this.send(message),
+      api,
+      new Map([
+        [
+          MessageTypesYouCanSendToTheEnvelope.REQUEST_GUIDED_TOUR_ELEMENT_POSITION,
+          "receive_guidedTourElementPositionRequest"
+        ],
+        [MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT, "receive_initRequest"],
+        [MessageTypesYouCanSendToTheEnvelope.REQUEST_PREVIEW, "receive_previewRequest"],
+        [MessageTypesYouCanSendToTheEnvelope.REQUEST_CONTENT, "receive_contentRequest"],
+        [MessageTypesYouCanSendToTheEnvelope.NOTIFY_CONTENT_CHANGED, "receive_contentChangedNotification"],
+        [MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_REDO, "receive_editorRedo"],
+        [MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_UNDO, "receive_editorUndo"]
+      ])
+    );
   }
 
   public startListening() {
@@ -68,7 +87,9 @@ export class EnvelopeBusInnerMessageHandler {
     window.removeEventListener("message", this.eventListener);
   }
 
-  public send<T>(message: EnvelopeBusMessage<T>) {
+  public send<T>(
+    message: EnvelopeBusMessage<T, MessageTypesYouCanSendToTheChannel | MessageTypesYouCanSendToTheEnvelope>
+  ) {
     if (!this.targetOrigin) {
       throw new Error("Tried to send message without targetOrigin set");
     }
@@ -131,43 +152,9 @@ export class EnvelopeBusInnerMessageHandler {
     });
   }
 
-  public receive(message: EnvelopeBusMessage<any>) {
-    if (message.purpose === EnvelopeBusMessagePurpose.RESPONSE) {
-      this.manager.callback(message);
-      return;
-    }
-
-    switch (message.type) {
-      //NOTIFICATIONS
-      case MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_UNDO:
-        this.impl.receive_editorUndo();
-        break;
-      case MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_REDO:
-        this.impl.receive_editorRedo();
-        break;
-      case MessageTypesYouCanSendToTheEnvelope.NOTIFY_CONTENT_CHANGED:
-        this.impl.receive_contentChangedNotification(message.data as EditorContent);
-        break;
-      //REQUESTS
-      case MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT:
-        const init = message.data as { origin: string; busId: string };
-        this.impl.receive_initRequest(init).then(() => this.manager.respond(message, {}));
-        break;
-      case MessageTypesYouCanSendToTheEnvelope.REQUEST_PREVIEW:
-        this.impl.receive_previewRequest().then(previewSvg => this.manager.respond(message, previewSvg));
-        break;
-      case MessageTypesYouCanSendToTheEnvelope.REQUEST_CONTENT:
-        this.impl.receive_contentRequest().then(content => this.manager.respond(message, content));
-        break;
-      case MessageTypesYouCanSendToTheEnvelope.REQUEST_GUIDED_TOUR_ELEMENT_POSITION:
-        const selector = message.data as string;
-        this.impl
-          .receive_guidedTourElementPositionRequest(selector)
-          .then(position => this.manager.respond(message, position));
-        break;
-      default:
-        console.info(`[Bus ${this.associatedBusId}]: Unknown message type received: ${message.type}`);
-        break;
-    }
+  public receive(
+    message: EnvelopeBusMessage<any, MessageTypesYouCanSendToTheEnvelope | MessageTypesYouCanSendToTheChannel>
+  ) {
+    this.manager.receive(message);
   }
 }

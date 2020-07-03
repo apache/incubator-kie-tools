@@ -20,16 +20,16 @@ import { EditorContent, EditorContext } from "@kogito-tooling/core-api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
+import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
-import { ResourceContentEditorCoordinator } from "./api/resourceContent";
+import { ResourceContentServiceCoordinator } from "./api/resourceContent";
 import { StateControlService } from "./api/stateControl";
 import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandler";
 
 export class EditorEnvelopeController {
-  private readonly envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler;
+  private readonly envelopeBusInnerMessageHandler: KogitoEnvelopeBus;
   public capturedInitRequestYet = false;
 
   private editorEnvelopeView?: EditorEnvelopeView;
@@ -40,10 +40,10 @@ export class EditorEnvelopeController {
     private readonly specialDomElements: SpecialDomElements,
     private readonly stateControlService: StateControlService,
     private readonly renderer: Renderer,
-    private readonly resourceContentEditorCoordinator: ResourceContentEditorCoordinator,
+    private readonly resourceContentEditorCoordinator: ResourceContentServiceCoordinator,
     private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService
   ) {
-    this.envelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(busApi, {
+    this.envelopeBusInnerMessageHandler = new KogitoEnvelopeBus(busApi, {
       receive_initRequest: async (init: { origin: string; busId: string }) => {
         this.envelopeBusInnerMessageHandler.targetOrigin = init.origin;
         this.envelopeBusInnerMessageHandler.associatedBusId = init.busId;

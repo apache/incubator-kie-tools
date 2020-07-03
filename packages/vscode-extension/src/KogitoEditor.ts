@@ -18,7 +18,7 @@ import * as vscode from "vscode";
 import { Uri } from "vscode";
 import * as fs from "fs";
 import * as __path from "path";
-import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoChannelBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import {
   KogitoEdit,
@@ -36,7 +36,7 @@ export class KogitoEditor {
   private readonly router: Router;
   private readonly panel: vscode.WebviewPanel;
   private readonly editorStore: KogitoEditorStore;
-  private readonly envelopeBusOuterMessageHandler: EnvelopeBusOuterMessageHandler;
+  private readonly kogitoChannelBus: KogitoChannelBus;
   private readonly resourceContentService: ResourceContentService;
   private readonly signalEdit: (edit: KogitoEdit) => void;
 
@@ -44,7 +44,7 @@ export class KogitoEditor {
   private readonly decoder = new TextDecoder("utf-8");
 
   get busId(): string {
-    return this.envelopeBusOuterMessageHandler.busId;
+    return this.kogitoChannelBus.busId;
   }
 
   public constructor(
@@ -68,7 +68,7 @@ export class KogitoEditor {
     this.editorStore = editorStore;
     this.resourceContentService = resourceContentService;
     this.signalEdit = signalEdit;
-    this.envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
+    this.kogitoChannelBus = new KogitoChannelBus(
       {
         postMessage: (msg: any) => {
           this.panel.webview.postMessage(msg);
@@ -124,7 +124,7 @@ export class KogitoEditor {
   }
 
   public async requestSave(destination: vscode.Uri, cancellation: vscode.CancellationToken): Promise<void> {
-    return this.envelopeBusOuterMessageHandler.request_contentResponse().then(content => {
+    return this.kogitoChannelBus.request_contentResponse().then(content => {
       if (cancellation.isCancellationRequested) {
         return;
       }
@@ -135,7 +135,7 @@ export class KogitoEditor {
   }
 
   public async requestBackup(destination: vscode.Uri, cancellation: vscode.CancellationToken): Promise<void> {
-    return this.envelopeBusOuterMessageHandler.request_contentResponse().then(content => {
+    return this.kogitoChannelBus.request_contentResponse().then(content => {
       if (cancellation.isCancellationRequested) {
         return;
       }
@@ -151,18 +151,18 @@ export class KogitoEditor {
 
   public async notify_editorRevert(): Promise<void> {
     const content = this.decoder.decode(await vscode.workspace.fs.readFile(this.uri));
-    this.envelopeBusOuterMessageHandler.notify_contentChanged({
+    this.kogitoChannelBus.notify_contentChanged({
       content: content,
       path: this.relativePath
     });
   }
 
   public async notify_editorUndo(): Promise<void> {
-    this.envelopeBusOuterMessageHandler.notify_editorUndo();
+    this.kogitoChannelBus.notify_editorUndo();
   }
 
   public async notify_editorRedo(): Promise<void> {
-    this.envelopeBusOuterMessageHandler.notify_editorRedo();
+    this.kogitoChannelBus.notify_editorRedo();
   }
 
   public notify_newEdit(edit: KogitoEdit) {
@@ -180,7 +180,7 @@ export class KogitoEditor {
   }
 
   public requestPreview() {
-    this.envelopeBusOuterMessageHandler.request_previewResponse().then(previewSvg => {
+    this.kogitoChannelBus.request_previewResponse().then(previewSvg => {
       if (previewSvg) {
         const parsedPath = __path.parse(this.uri.fsPath);
         fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, previewSvg);
@@ -191,13 +191,13 @@ export class KogitoEditor {
   public setupEnvelopeBus() {
     this.context.subscriptions.push(
       this.panel.webview.onDidReceiveMessage(
-        msg => this.envelopeBusOuterMessageHandler.receive(msg),
+        msg => this.kogitoChannelBus.receive(msg),
         this,
         this.context.subscriptions
       )
     );
 
-    this.envelopeBusOuterMessageHandler.startInitPolling("vscode");
+    this.kogitoChannelBus.startInitPolling("vscode");
   }
 
   public setupPanelActiveStatusChange() {
@@ -219,7 +219,7 @@ export class KogitoEditor {
   public setupPanelOnDidDispose() {
     this.panel.onDidDispose(
       () => {
-        this.envelopeBusOuterMessageHandler.stopInitPolling();
+        this.kogitoChannelBus.stopInitPolling();
         this.editorStore.close(this);
       },
       this,

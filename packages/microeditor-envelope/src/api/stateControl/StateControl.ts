@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
+import { KogitoEnvelopeBus } from "../../KogitoEnvelopeBus";
 import { DefaultKogitoCommandRegistry, KogitoCommandRegistry } from "./KogitoCommandRegistry";
 
 /**
@@ -45,7 +45,7 @@ export class StateControlService {
     }
   }
 
-  public exposeApi(messageBus: EnvelopeBusInnerMessageHandler): StateControlApi {
+  public exposeApi(messageBus: KogitoEnvelopeBus): StateControlApi {
     const stateControl = this;
 
     return {

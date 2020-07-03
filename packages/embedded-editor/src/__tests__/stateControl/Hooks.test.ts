@@ -29,11 +29,11 @@ describe("useEditorDirtyState", () => {
     stateControl = new StateControl();
     embeddedEditorRef = {
       getStateControl: () => stateControl,
-      notifyUndo: () => jest.fn(() => null),
-      notifyRedo: () => jest.fn(() => null),
-      requestContent: () => jest.fn(() => null),
-      requestPreview: () => jest.fn(() => null),
-      setContent: () => jest.fn(() => null)
+      notifyUndo: jest.fn(),
+      notifyRedo: jest.fn(),
+      requestContent: jest.fn(),
+      requestPreview: jest.fn(),
+      setContent: jest.fn(),
     };
     editorRef = {
       current: embeddedEditorRef

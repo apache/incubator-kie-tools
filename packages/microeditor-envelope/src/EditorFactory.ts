@@ -16,7 +16,7 @@
 
 import * as AppFormer from "@kogito-tooling/core-api";
 import { LanguageData } from "@kogito-tooling/core-api";
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
+import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 
 /**
  * Factory of Editors to be created inside the envelope.
@@ -29,5 +29,5 @@ export interface EditorFactory<T extends LanguageData> {
    * @param languageData The custom LanguageData
    * @param messageBus The message bus
    */
-  createEditor(languageData: T, messageBus: EnvelopeBusInnerMessageHandler): Promise<AppFormer.Editor>;
+  createEditor(languageData: T, messageBus: KogitoEnvelopeBus): Promise<AppFormer.Editor>;
 }

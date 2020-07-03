@@ -19,7 +19,7 @@ import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "@kogito-t
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { ReactElement } from "react";
 import * as ReactDOM from "react-dom";
-import { ResourceContentApi, ResourceContentEditorCoordinator } from "./api/resourceContent";
+import { ResourceContentApi, ResourceContentServiceCoordinator } from "./api/resourceContent";
 import { StateControlService, StateControlApi } from "./api/stateControl";
 import { EditorEnvelopeController } from "./EditorEnvelopeController";
 import { EditorFactory } from "./EditorFactory";
@@ -31,7 +31,7 @@ import { GuidedTourApi, GuidedTourServiceCoordinator } from "./api/tour";
 export * from "./api/resourceContent";
 export { EditorEnvelopeController } from "./EditorEnvelopeController";
 export * from "./EditorFactory";
-export * from "./EnvelopeBusInnerMessageHandler";
+export * from "./KogitoEnvelopeBus";
 export { SpecialDomElements } from "./SpecialDomElements";
 
 declare global {
@@ -70,7 +70,7 @@ export function init(args: {
 }) {
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
-  const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
+  const resourceContentEditorCoordinator = new ResourceContentServiceCoordinator();
   const guidedTourService = new GuidedTourServiceCoordinator();
   const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: args.editorContext });
   const stateControlService = new StateControlService();

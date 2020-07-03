@@ -24,7 +24,7 @@ import {
   ResourcesList,
   StateControlCommand
 } from "@kogito-tooling/core-api";
-import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoChannelBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoGuidedTour, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
 import * as CSS from "csstype";
 import * as React from "react";
@@ -178,8 +178,8 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   const envelopeUri = useMemo(() => props.envelopeUri ?? "envelope/envelope.html", [props.envelopeUri]);
 
   //Setup envelope bus communication
-  const envelopeBusOuterMessageHandler = useMemo(() => {
-    return new EnvelopeBusOuterMessageHandler(
+  const kogitoChannelBus = useMemo(() => {
+    return new KogitoChannelBus(
       {
         postMessage: msg => {
           if (iframeRef.current && iframeRef.current.contentWindow) {
@@ -236,24 +236,24 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
   useEffect(() => {
     KogitoGuidedTour.getInstance().registerPositionProvider((selector: string) =>
-      envelopeBusOuterMessageHandler.request_guidedTourElementPositionResponse(selector).then(position => {
+      kogitoChannelBus.request_guidedTourElementPositionResponse(selector).then(position => {
         const parentRect = iframeRef.current?.getBoundingClientRect();
         KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
       })
     );
-  }, [envelopeBusOuterMessageHandler]);
+  }, [kogitoChannelBus]);
 
   //Attach/detach bus when component attaches/detaches from DOM
   useEffect(() => {
-    const listener = (msg: MessageEvent) => envelopeBusOuterMessageHandler.receive(msg.data);
+    const listener = (msg: MessageEvent) => kogitoChannelBus.receive(msg.data);
     window.addEventListener("message", listener, false);
-    envelopeBusOuterMessageHandler.startInitPolling(window.location.origin);
+    kogitoChannelBus.startInitPolling(window.location.origin);
 
     return () => {
-      envelopeBusOuterMessageHandler.stopInitPolling();
+      kogitoChannelBus.stopInitPolling();
       window.removeEventListener("message", listener);
     };
-  }, [envelopeBusOuterMessageHandler]);
+  }, [kogitoChannelBus]);
 
   //Forward reference methods
   useImperativeHandle(
@@ -265,17 +265,17 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
       return {
         getStateControl: () => stateControl,
-        notifyRedo: () => envelopeBusOuterMessageHandler.notify_editorRedo(),
-        notifyUndo: () => envelopeBusOuterMessageHandler.notify_editorUndo(),
-        requestContent: () => envelopeBusOuterMessageHandler.request_contentResponse(),
-        requestPreview: () => envelopeBusOuterMessageHandler.request_previewResponse(),
+        notifyRedo: () => kogitoChannelBus.notify_editorRedo(),
+        notifyUndo: () => kogitoChannelBus.notify_editorUndo(),
+        requestContent: () => kogitoChannelBus.request_contentResponse(),
+        requestPreview: () => kogitoChannelBus.request_previewResponse(),
         setContent: (content: string) => {
-          envelopeBusOuterMessageHandler.notify_contentChanged({ content: content });
+          kogitoChannelBus.notify_contentChanged({ content: content });
           return Promise.resolve();
         }
       };
     },
-    [envelopeBusOuterMessageHandler]
+    [kogitoChannelBus]
   );
 
   return (

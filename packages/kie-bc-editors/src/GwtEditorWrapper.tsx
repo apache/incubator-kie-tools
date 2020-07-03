@@ -17,7 +17,7 @@
 import * as React from "react";
 import * as AppFormer from "@kogito-tooling/core-api";
 import { GwtEditor } from "./GwtEditor";
-import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
+import { KogitoEnvelopeBus } from "@kogito-tooling/microeditor-envelope";
 import { editors } from "./GwtEditorRoutes";
 import { XmlFormatter } from "./XmlFormatter";
 
@@ -29,12 +29,12 @@ export class GwtEditorWrapper extends AppFormer.Editor {
 
   private readonly gwtEditor: GwtEditor;
   private readonly xmlFormatter: XmlFormatter;
-  private readonly messageBus: EnvelopeBusInnerMessageHandler;
+  private readonly messageBus: KogitoEnvelopeBus;
 
   constructor(
     editorId: string,
     gwtEditor: GwtEditor,
-    messageBus: EnvelopeBusInnerMessageHandler,
+    messageBus: KogitoEnvelopeBus,
     xmlFormatter: XmlFormatter
   ) {
     super("gwt-editor-wrapper");

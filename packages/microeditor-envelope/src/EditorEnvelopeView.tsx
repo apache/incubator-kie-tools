@@ -24,7 +24,7 @@ import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
 import { StateControlService } from "./api/stateControl";
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
+import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
@@ -32,7 +32,7 @@ interface Props {
   keyboardShortcutsService: DefaultKeyboardShortcutsService;
   context: AppFormer.EditorContext;
   stateControlService: StateControlService;
-  messageBus: EnvelopeBusInnerMessageHandler;
+  messageBus: KogitoEnvelopeBus;
 }
 
 interface State {

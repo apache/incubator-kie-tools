@@ -25,7 +25,7 @@ gwtAppFormerApi.setClientSideOnly(true);
 MicroEditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   busApi: {
-    postMessage<T>(message: EnvelopeBusMessage<T>, targetOrigin?: string, _?: any) {
+    postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, _?: any) {
       window.parent.postMessage(message, "*", _);
     }
   },

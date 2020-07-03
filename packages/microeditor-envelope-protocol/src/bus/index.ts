@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
-
-export interface EnvelopeBusApi {
-  postMessage<T>(message: EnvelopeBusMessage<T>, targetOrigin?: string, _?: any): void;
-}
+export * from "./EnvelopeBusMessage";
+export * from "./EnvelopeBusApi";
+export * from "./EnvelopeBusMessageManager";

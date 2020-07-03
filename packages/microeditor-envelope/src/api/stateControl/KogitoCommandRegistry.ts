@@ -15,7 +15,7 @@
  */
 
 import { KogitoCommand } from "./KogitoCommand";
-import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
+import { KogitoEnvelopeBus } from "../../KogitoEnvelopeBus";
 import { KogitoEdit } from "@kogito-tooling/core-api";
 
 /**
@@ -33,13 +33,13 @@ export interface KogitoCommandRegistry<T> {
 }
 
 export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T> {
-  private readonly messageBus: EnvelopeBusInnerMessageHandler;
+  private readonly messageBus: KogitoEnvelopeBus;
 
   private maxStackSize = 200;
   private commands: Array<KogitoCommand<T>> = [];
   private undoneCommands: string[] = [];
 
-  constructor(messageBus: EnvelopeBusInnerMessageHandler) {
+  constructor(messageBus: KogitoEnvelopeBus) {
     this.messageBus = messageBus;
   }
 

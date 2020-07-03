@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
+import { KogitoEnvelopeBus } from "../../KogitoEnvelopeBus";
 import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/core-api";
 import { ResourceContentApi } from "./ResourceContentApi";
 
-export class ResourceContentEditorCoordinator {
-  public exposeApi(messageBus: EnvelopeBusInnerMessageHandler): ResourceContentApi {
+export class ResourceContentServiceCoordinator {
+  public exposeApi(kogitoEnvelopeBus: KogitoEnvelopeBus): ResourceContentApi {
     return {
       get(path: string, opts?: ResourceContentOptions) {
-        return messageBus.request_resourceContent(path, opts).then(r => r?.content);
+        return kogitoEnvelopeBus.request_resourceContent(path, opts).then(r => r?.content);
       },
       list(pattern: string, opts?: ResourceListOptions) {
-        return messageBus.request_resourceList(pattern, opts).then(r => r.paths);
+        return kogitoEnvelopeBus.request_resourceList(pattern, opts).then(r => r.paths);
       }
     };
   }
