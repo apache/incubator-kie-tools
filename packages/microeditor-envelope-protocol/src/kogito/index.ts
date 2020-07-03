@@ -15,7 +15,5 @@
  */
 
 export * from "./KogitoChannelBus";
-export * from "./MessageTypesYouCanSendToTheChannel";
-export * from "./MessageTypesYouCanSendToTheEnvelope";
 export * from "./KogitoChannelApi";
 export * from "./KogitoEnvelopeApi";

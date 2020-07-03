@@ -16,35 +16,64 @@
 
 import { EnvelopeBusMessage, EnvelopeBusMessagePurpose } from "./EnvelopeBusMessage";
 
-type ObjOnlyWithFunctions<T> = { [P in keyof T]: (a: any) => Promise<any> | void };
+/* tslint:disable:ban-types */
+export type FunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? K : never }[keyof T];
+export type ObjOnlyWithFunctions<T> = { [P in keyof T]: (...a: any) => Promise<any> | void };
+export type ArgsType<T> = T extends (...args: infer A) => any ? A : never;
 
-export class EnvelopeBusMessageManager<MessageTypeToSend, MessageTypeToReceive, Api extends ObjOnlyWithFunctions<Api>> {
+export interface MessageBusClient<Api extends ObjOnlyWithFunctions<Api>> {
+  request<M extends FunctionPropertyNames<Api>>(method: M, args: ArgsType<Api[M]>): ReturnType<Api[M]>;
+  notify<M extends FunctionPropertyNames<Api>>(method: M, args: ArgsType<Api[M]>): void;
+}
+
+export class EnvelopeBusMessageManager<
+  ApiToProvide extends ObjOnlyWithFunctions<ApiToProvide>,
+  ApiToConsume extends ObjOnlyWithFunctions<ApiToConsume>
+> {
   private readonly callbacks = new Map<string, { resolve: (arg: unknown) => void; reject: (arg: unknown) => void }>();
 
+  public get client(): MessageBusClient<ApiToConsume> {
+    return {
+      request: (m, a) => this.request(m, a),
+      notify: (m, a) => this.notify(m, a)
+    };
+  }
+
   constructor(
-    private readonly send: (message: EnvelopeBusMessage<unknown, MessageTypeToSend | MessageTypeToReceive>) => void,
-    private readonly api: Api,
-    private readonly apiMapping: Map<MessageTypeToReceive, keyof Api>
+    private readonly send: (
+      // We can send messages for both the APIs we provide and consume
+      message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>>
+    ) => void,
+    private readonly api: ApiToProvide
   ) {}
 
-  public request<T>(type: MessageTypeToSend, args: unknown): Promise<T> {
-    const message = {
-      requestId: this.generateRandomId(),
-      type: type,
+  public request<M extends FunctionPropertyNames<ApiToConsume>>(method: M, args: ArgsType<ApiToConsume[M]>) {
+    const requestId = this.generateRandomId();
+
+    this.send({
+      requestId: requestId,
+      type: method,
       data: args,
       purpose: EnvelopeBusMessagePurpose.REQUEST
-    };
-
-    this.send(message);
-
-    return new Promise<T>((resolve, reject) => {
-      this.callbacks.set(message.requestId, { resolve, reject });
     });
 
+    return new Promise((resolve, reject) => {
+      this.callbacks.set(requestId, { resolve, reject });
+    }) as ReturnType<ApiToConsume[M]>;
+
+    //TODO: Reject promise when an error occurs. For that to be possible, add an "error" field on EnvelopeBusMessage
     //TODO: Setup timeout to avoid memory leaks
   }
 
-  public respond<T>(request: EnvelopeBusMessage<unknown, MessageTypeToReceive>, data: T): void {
+  public notify<M extends FunctionPropertyNames<ApiToConsume>>(method: M, args: ArgsType<ApiToConsume[M]>): void {
+    this.send({
+      type: method,
+      data: args,
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION
+    });
+  }
+
+  private respond<T>(request: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide>>, data: T): void {
     if (request.purpose !== EnvelopeBusMessagePurpose.REQUEST) {
       throw new Error("Cannot respond a message that is not a request");
     }
@@ -56,16 +85,12 @@ export class EnvelopeBusMessageManager<MessageTypeToSend, MessageTypeToReceive, 
     this.send({
       requestId: request.requestId,
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
-      type: request.type,
-      data
+      type: request.type as FunctionPropertyNames<ApiToProvide>,
+      data: data
     });
   }
 
-  public notify<T>(type: MessageTypeToSend, data: T): void {
-    this.send({ purpose: EnvelopeBusMessagePurpose.NOTIFICATION, type, data });
-  }
-
-  public callback(response: EnvelopeBusMessage<unknown, MessageTypeToReceive>) {
+  private callback(response: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume>>) {
     if (response.purpose !== EnvelopeBusMessagePurpose.RESPONSE) {
       throw new Error("Cannot invoke callback with a message that is not a response");
     }
@@ -81,24 +106,34 @@ export class EnvelopeBusMessageManager<MessageTypeToSend, MessageTypeToReceive, 
     this.callbacks.delete(response.requestId);
     callback.resolve(response.data);
   }
-  public receive(message: EnvelopeBusMessage<unknown, MessageTypeToReceive | MessageTypeToSend>) {
+
+  public receive(
+    // We can receive messages from both the APIs we provide and consume.
+    message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>>
+  ) {
     if (message.purpose === EnvelopeBusMessagePurpose.RESPONSE) {
-      this.callback(message as EnvelopeBusMessage<unknown, MessageTypeToReceive>);
+      // We can only receive responses for the API we consume.
+      this.callback(message as EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume>>);
       return;
     }
 
-    const messageDataAsArgs = message.data ? [message.data] : [];
-
     if (message.purpose === EnvelopeBusMessagePurpose.REQUEST) {
-      const handle = this.apiMapping.get(message.type as MessageTypeToReceive)!;
-      const response = this.api[handle].apply(this.api, messageDataAsArgs) as Promise<unknown>;
-      response.then(r => this.respond(message as EnvelopeBusMessage<unknown, MessageTypeToReceive>, r));
+      // We can only receive requests for the API we provide.
+      const method = message.type as FunctionPropertyNames<ApiToProvide>;
+      const response = this.api[method].apply(this.api, message.data);
+      if (!(response instanceof Promise)) {
+        throw new Error(`Cannot make a request to '${message.type}' because it does not return a Promise`);
+      }
+
+      // We can only respond to the API we provide.
+      response.then(r => this.respond(message as EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide>>, r));
       return;
     }
 
     if (message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
-      const handle = this.apiMapping.get(message.type as MessageTypeToReceive)!;
-      this.api[handle].apply(this.api, messageDataAsArgs);
+      // We can only receive notifications from the API we provide.
+      const method = message.type as FunctionPropertyNames<ApiToProvide>;
+      this.api[method].apply(this.api, message.data);
       return;
     }
   }

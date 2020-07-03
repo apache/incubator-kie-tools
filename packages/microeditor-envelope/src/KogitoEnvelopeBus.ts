@@ -15,52 +15,29 @@
  */
 
 import {
+  Association,
   EnvelopeBus,
   EnvelopeBusMessage,
   EnvelopeBusMessageManager,
-  MessageTypesYouCanSendToTheChannel,
-  MessageTypesYouCanSendToTheEnvelope
+  KogitoChannelApi,
+  KogitoEnvelopeApi,
+  KogitoEnvelopeMessageTypes
 } from "@kogito-tooling/microeditor-envelope-protocol";
-import {
-  EditorContent,
-  KogitoEdit,
-  LanguageData,
-  ResourceContent,
-  ResourceContentOptions,
-  ResourceListOptions,
-  ResourcesList,
-  StateControlCommand
-} from "@kogito-tooling/core-api";
+import { KogitoEdit, ResourceContentOptions, ResourceListOptions, StateControlCommand } from "@kogito-tooling/core-api";
 import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
-import { Association, KogitoEnvelopeApi } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export class KogitoEnvelopeBus {
   public targetOrigin: string;
   public associatedBusId: string;
   public eventListener?: any;
-  public readonly manager: EnvelopeBusMessageManager<
-    MessageTypesYouCanSendToTheChannel,
-    MessageTypesYouCanSendToTheEnvelope,
-    KogitoEnvelopeApi
-  >;
+  public readonly manager: EnvelopeBusMessageManager<KogitoEnvelopeApi, KogitoChannelApi>;
+
+  public get client() {
+    return this.manager.client;
+  }
 
   constructor(private readonly bus: EnvelopeBus, private readonly api: KogitoEnvelopeApi) {
-    this.manager = new EnvelopeBusMessageManager(
-      message => this.send(message),
-      api,
-      new Map([
-        [
-          MessageTypesYouCanSendToTheEnvelope.REQUEST_GUIDED_TOUR_ELEMENT_POSITION,
-          "receive_guidedTourElementPositionRequest"
-        ],
-        [MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT, "receive_initRequest"],
-        [MessageTypesYouCanSendToTheEnvelope.REQUEST_PREVIEW, "receive_previewRequest"],
-        [MessageTypesYouCanSendToTheEnvelope.REQUEST_CONTENT, "receive_contentRequest"],
-        [MessageTypesYouCanSendToTheEnvelope.NOTIFY_CONTENT_CHANGED, "receive_contentChanged"],
-        [MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_REDO, "receive_editorRedo"],
-        [MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_UNDO, "receive_editorUndo"]
-      ])
-    );
+    this.manager = new EnvelopeBusMessageManager(message => this.send(message), api);
   }
 
   public associate(association: Association) {
@@ -81,9 +58,7 @@ export class KogitoEnvelopeBus {
     window.removeEventListener("message", this.eventListener);
   }
 
-  public send<T>(
-    message: EnvelopeBusMessage<T, MessageTypesYouCanSendToTheChannel | MessageTypesYouCanSendToTheEnvelope>
-  ) {
+  public send<T>(message: EnvelopeBusMessage<T, KogitoEnvelopeMessageTypes>) {
     if (!this.targetOrigin) {
       throw new Error("Tried to send message without targetOrigin set");
     }
@@ -91,64 +66,50 @@ export class KogitoEnvelopeBus {
   }
 
   public notify_setContentError(errorMessage: string) {
-    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_SET_CONTENT_ERROR, errorMessage);
+    return this.manager.notify("receive_setContentError", [errorMessage]);
   }
 
   public notify_ready() {
-    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_READY, undefined);
+    return this.manager.notify("receive_ready", []);
   }
 
   public notify_newEdit(edit: KogitoEdit) {
-    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_NEW_EDIT, edit);
+    return this.manager.notify("receive_newEdit", [edit]);
   }
 
   public notify_openFile(path: string) {
-    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_OPEN_FILE, path);
+    return this.manager.notify("receive_openFile", [path]);
   }
 
   public notify_guidedTourRefresh(userInteraction: UserInteraction) {
-    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_USER_INTERACTION, userInteraction);
+    return this.manager.notify("receive_guidedTourUserInteraction", [userInteraction]);
   }
 
   public notify_guidedTourRegisterTutorial(tutorial: Tutorial) {
-    return this.manager.notify(MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL, tutorial);
+    return this.manager.notify("receive_guidedTourRegisterTutorial", [tutorial]);
   }
 
   public notify_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
-    return this.manager.notify(
-      MessageTypesYouCanSendToTheChannel.NOTIFY_STATE_CONTROL_COMMAND_UPDATE,
-      stateControlCommand
-    );
+    return this.manager.notify("receive_stateControlCommandUpdate", [stateControlCommand]);
   }
 
   public request_languageResponse() {
-    return this.manager.request<LanguageData>(MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE, undefined);
+    return this.manager.request("receive_languageRequest", []);
   }
 
   public request_contentResponse() {
-    return this.manager.request<EditorContent>(MessageTypesYouCanSendToTheChannel.REQUEST_CONTENT, undefined);
+    return this.manager.request("receive_contentRequest", []);
   }
 
   public request_resourceContent(path: string, opts?: ResourceContentOptions) {
-    return this.manager.request<ResourceContent | undefined>(
-      MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_CONTENT,
-      {
-        path: path,
-        opts: opts
-      }
-    );
+    return this.manager.request("receive_resourceContentRequest", [{ path: path, opts: opts }]);
   }
 
   public request_resourceList(pattern: string, opts?: ResourceListOptions) {
-    return this.manager.request<ResourcesList>(MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_LIST, {
-      pattern: pattern,
-      opts: opts
-    });
+    return this.manager.request("receive_resourceListRequest", [{ pattern: pattern, opts: opts }]);
   }
 
-  public receive(
-    message: EnvelopeBusMessage<any, MessageTypesYouCanSendToTheEnvelope | MessageTypesYouCanSendToTheChannel>
-  ) {
+  public receive(message: EnvelopeBusMessage<any, KogitoEnvelopeMessageTypes>) {
     this.manager.receive(message);
   }
 }

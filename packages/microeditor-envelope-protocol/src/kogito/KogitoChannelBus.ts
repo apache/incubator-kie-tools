@@ -15,46 +15,32 @@
  */
 
 import { EditorContent } from "@kogito-tooling/core-api";
-import { Rect } from "@kogito-tooling/guided-tour";
-import { EnvelopeBus, EnvelopeBusMessage, EnvelopeBusMessageManager } from "../bus";
-import { MessageTypesYouCanSendToTheEnvelope } from "./MessageTypesYouCanSendToTheEnvelope";
-import { MessageTypesYouCanSendToTheChannel } from "./MessageTypesYouCanSendToTheChannel";
+import { EnvelopeBus, EnvelopeBusMessage, EnvelopeBusMessageManager, FunctionPropertyNames } from "../bus";
 import { KogitoChannelApi } from "./KogitoChannelApi";
+import { KogitoEnvelopeApi } from "./KogitoEnvelopeApi";
+
+export type KogitoEnvelopeMessageTypes =
+  | FunctionPropertyNames<KogitoChannelApi>
+  | FunctionPropertyNames<KogitoEnvelopeApi>;
 
 export class KogitoChannelBus {
   public static INIT_POLLING_TIMEOUT_IN_MS = 10000;
   public static INIT_POLLING_INTERVAL_IN_MS = 100;
 
-  public readonly manager: EnvelopeBusMessageManager<
-    MessageTypesYouCanSendToTheEnvelope,
-    MessageTypesYouCanSendToTheChannel,
-    KogitoChannelApi
-  >;
+  public readonly manager: EnvelopeBusMessageManager<KogitoChannelApi, KogitoEnvelopeApi>;
 
   public initPolling: any | false;
   public initPollingTimeout: any | false;
   public busId: string;
 
+  public get client() {
+    return this.manager.client;
+  }
+
   public constructor(public bus: EnvelopeBus, api: KogitoChannelApi) {
     this.initPolling = false;
     this.initPollingTimeout = false;
-    this.manager = new EnvelopeBusMessageManager(
-      message => this.bus.postMessage(message),
-      api,
-      new Map([
-        [MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_LIST, "receive_resourceListRequest"],
-        [MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_CONTENT, "receive_resourceContentRequest"],
-        [MessageTypesYouCanSendToTheChannel.REQUEST_CONTENT, "receive_contentRequest"],
-        [MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE, "receive_languageRequest"],
-        [MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL, "receive_guidedTourRegisterTutorial"],
-        [MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_USER_INTERACTION, "receive_guidedTourUserInteraction"],
-        [MessageTypesYouCanSendToTheChannel.NOTIFY_STATE_CONTROL_COMMAND_UPDATE, "receive_stateControlCommandUpdate"],
-        [MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_OPEN_FILE, "receive_openFile"],
-        [MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_NEW_EDIT, "receive_newEdit"],
-        [MessageTypesYouCanSendToTheChannel.NOTIFY_READY, "receive_ready"],
-        [MessageTypesYouCanSendToTheChannel.NOTIFY_SET_CONTENT_ERROR, "receive_setContentError"]
-      ])
-    );
+    this.manager = new EnvelopeBusMessageManager(message => this.bus.postMessage(message), api);
     this.busId = this.manager.generateRandomId();
   }
 
@@ -78,9 +64,7 @@ export class KogitoChannelBus {
     this.initPollingTimeout = false;
   }
 
-  public receive(
-    message: EnvelopeBusMessage<any, MessageTypesYouCanSendToTheChannel | MessageTypesYouCanSendToTheEnvelope>
-  ) {
+  public receive(message: EnvelopeBusMessage<any, KogitoEnvelopeMessageTypes>) {
     if (message.busId !== this.busId) {
       return;
     }
@@ -88,39 +72,33 @@ export class KogitoChannelBus {
     this.manager.receive(message);
   }
 
-  //NOTIFICATIONS
+  //
+
   public notify_editorUndo() {
-    this.manager.notify(MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_UNDO, undefined);
+    this.manager.notify("receive_editorUndo", []);
   }
 
   public notify_editorRedo() {
-    this.manager.notify(MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_REDO, undefined);
+    this.manager.notify("receive_editorRedo", []);
   }
 
   public notify_contentChanged(content: EditorContent) {
-    this.manager.notify(MessageTypesYouCanSendToTheEnvelope.NOTIFY_CONTENT_CHANGED, content);
+    this.manager.notify("receive_contentChanged", [content]);
   }
 
-  //REQUEST
   public request_contentResponse() {
-    return this.manager.request<EditorContent>(MessageTypesYouCanSendToTheEnvelope.REQUEST_CONTENT, {});
+    return this.manager.request("receive_contentRequest", []);
   }
 
   public request_previewResponse() {
-    return this.manager.request<string>(MessageTypesYouCanSendToTheEnvelope.REQUEST_PREVIEW, {});
+    return this.manager.request("receive_previewRequest", []);
   }
 
   public request_initResponse(origin: string) {
-    return this.manager.request<void>(MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT, {
-      origin: origin,
-      busId: this.busId
-    });
+    return this.manager.request("receive_initRequest", [{ origin: origin, busId: this.busId }]);
   }
 
   public request_guidedTourElementPositionResponse(selector: string) {
-    return this.manager.request<Rect>(
-      MessageTypesYouCanSendToTheEnvelope.REQUEST_GUIDED_TOUR_ELEMENT_POSITION,
-      selector
-    );
+    return this.manager.request("receive_guidedTourElementPositionRequest", [selector]);
   }
 }

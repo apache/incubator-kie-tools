@@ -19,8 +19,7 @@ import {
   EnvelopeBusMessagePurpose,
   KogitoChannelApi,
   KogitoChannelBus,
-  MessageTypesYouCanSendToTheChannel,
-  MessageTypesYouCanSendToTheEnvelope
+  KogitoEnvelopeMessageTypes
 } from "../..";
 import { ContentType, ResourceContent, StateControlCommand } from "@kogito-tooling/core-api";
 
@@ -73,7 +72,7 @@ describe("startInitPolling", () => {
     await incomingMessage({
       busId: channelBus.busId,
       requestId: "reqId",
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
+      type: "receive_initRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: undefined
     });
@@ -106,15 +105,15 @@ describe("receive", () => {
       busId: "unknown-id",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       requestId: "any",
-      type: MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE,
-      data: undefined
+      type: "receive_languageRequest",
+      data: []
     });
     channelBus.receive({
       busId: "unknown-id",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       requestId: "any",
-      type: MessageTypesYouCanSendToTheChannel.REQUEST_CONTENT,
-      data: undefined
+      type: "receive_contentRequest",
+      data: []
     });
   });
 
@@ -123,8 +122,8 @@ describe("receive", () => {
     channelBus.receive({
       busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: MessageTypesYouCanSendToTheChannel.NOTIFY_SET_CONTENT_ERROR,
-      data: "this is the error"
+      type: "receive_setContentError",
+      data: ["this is the error"]
     });
     expect(api.receive_setContentError).toHaveBeenCalledWith("this is the error");
   });
@@ -134,8 +133,8 @@ describe("receive", () => {
     channelBus.receive({
       busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: MessageTypesYouCanSendToTheChannel.NOTIFY_READY,
-      data: undefined
+      type: "receive_ready",
+      data: []
     });
     expect(api.receive_ready).toHaveBeenCalledWith();
   });
@@ -145,8 +144,8 @@ describe("receive", () => {
     channelBus.receive({
       busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_NEW_EDIT,
-      data: { id: "edit-id" }
+      type: "receive_newEdit",
+      data: [{ id: "edit-id" }]
     });
     expect(api.receive_newEdit).toHaveBeenCalledWith({ id: "edit-id" });
   });
@@ -155,8 +154,8 @@ describe("receive", () => {
     channelBus.receive({
       busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_OPEN_FILE,
-      data: "a/path"
+      type: "receive_openFile",
+      data: ["a/path"]
     });
     expect(api.receive_openFile).toHaveBeenCalledWith("a/path");
   });
@@ -165,8 +164,8 @@ describe("receive", () => {
     channelBus.receive({
       busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: MessageTypesYouCanSendToTheChannel.NOTIFY_STATE_CONTROL_COMMAND_UPDATE,
-      data: StateControlCommand.REDO
+      type: "receive_stateControlCommandUpdate",
+      data: [StateControlCommand.REDO]
     });
     expect(api.receive_stateControlCommandUpdate).toHaveBeenCalledWith(StateControlCommand.REDO);
   });
@@ -176,10 +175,10 @@ describe("receive", () => {
     channelBus.receive({
       busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL,
-      data: {}
+      type: "receive_guidedTourRegisterTutorial",
+      data: []
     });
-    expect(api.receive_guidedTourRegisterTutorial).toHaveBeenCalledWith({});
+    expect(api.receive_guidedTourRegisterTutorial).toHaveBeenCalledWith();
   });
 
   test("guidedTourUserInteraction notification", async () => {
@@ -187,10 +186,10 @@ describe("receive", () => {
     channelBus.receive({
       busId: channelBus.busId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_USER_INTERACTION,
-      data: {}
+      type: "receive_guidedTourUserInteraction",
+      data: []
     });
-    expect(api.receive_guidedTourUserInteraction).toHaveBeenCalledWith({});
+    expect(api.receive_guidedTourUserInteraction).toHaveBeenCalledWith();
   });
 
   test("language request", async () => {
@@ -202,8 +201,8 @@ describe("receive", () => {
       busId: channelBus.busId,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE,
-      data: undefined
+      type: "receive_languageRequest",
+      data: []
     });
 
     expect(api.receive_languageRequest).toHaveBeenCalledWith();
@@ -211,7 +210,7 @@ describe("receive", () => {
       {
         requestId: "requestId",
         purpose: EnvelopeBusMessagePurpose.RESPONSE,
-        type: MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE,
+        type: "receive_languageRequest",
         data: languageData
       }
     ]);
@@ -226,8 +225,8 @@ describe("receive", () => {
       busId: channelBus.busId,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: MessageTypesYouCanSendToTheChannel.REQUEST_CONTENT,
-      data: undefined
+      type: "receive_contentRequest",
+      data: []
     });
 
     expect(api.receive_contentRequest).toHaveBeenCalledWith();
@@ -235,7 +234,7 @@ describe("receive", () => {
       {
         requestId: "requestId",
         purpose: EnvelopeBusMessagePurpose.RESPONSE,
-        type: MessageTypesYouCanSendToTheChannel.REQUEST_CONTENT,
+        type: "receive_contentRequest",
         data: content
       }
     ]);
@@ -251,8 +250,8 @@ describe("receive", () => {
       busId: channelBus.busId,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_CONTENT,
-      data: resourceContentRequest
+      type: "receive_resourceContentRequest",
+      data: [resourceContentRequest]
     });
 
     expect(api.receive_resourceContentRequest).toHaveBeenCalledWith(resourceContentRequest);
@@ -260,7 +259,7 @@ describe("receive", () => {
       {
         requestId: "requestId",
         purpose: EnvelopeBusMessagePurpose.RESPONSE,
-        type: MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_CONTENT,
+        type: "receive_resourceContentRequest",
         data: resourceContent
       }
     ]);
@@ -276,8 +275,8 @@ describe("receive", () => {
       busId: channelBus.busId,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_LIST,
-      data: resourceListRequest
+      type: "receive_resourceListRequest",
+      data: [resourceListRequest]
     });
 
     expect(api.receive_resourceListRequest).toHaveBeenCalledWith(resourceListRequest);
@@ -285,7 +284,7 @@ describe("receive", () => {
       {
         requestId: "requestId",
         purpose: EnvelopeBusMessagePurpose.RESPONSE,
-        type: MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_LIST,
+        type: "receive_resourceListRequest",
         data: resourceList
       }
     ]);
@@ -300,15 +299,15 @@ describe("send", () => {
       {
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "1",
-        type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
-        data: { busId: channelBus.busId, origin: "test-origin" }
+        type: "receive_initRequest",
+        data: [{ busId: channelBus.busId, origin: "test-origin" }]
       }
     ]);
 
     await incomingMessage({
       busId: channelBus.busId,
       requestId: "1",
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
+      type: "receive_initRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: undefined
     });
@@ -322,7 +321,7 @@ describe("send", () => {
     await incomingMessage({
       busId: channelBus.busId,
       requestId: "1",
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_CONTENT,
+      type: "receive_contentRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: { content: "the content", path: "the/path/" }
     });
@@ -336,7 +335,7 @@ describe("send", () => {
     await incomingMessage({
       busId: channelBus.busId,
       requestId: "1",
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_PREVIEW,
+      type: "receive_previewRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: "the-svg-string"
     });
@@ -350,7 +349,7 @@ describe("send", () => {
     await incomingMessage({
       busId: channelBus.busId,
       requestId: "1",
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_GUIDED_TOUR_ELEMENT_POSITION,
+      type: "receive_guidedTourElementPositionRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: {}
     });
@@ -362,9 +361,9 @@ describe("send", () => {
     channelBus.notify_contentChanged({ content: "new-content" });
     expect(sentMessages).toEqual([
       {
-        type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_CONTENT_CHANGED,
+        type: "receive_contentChanged",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        data: { content: "new-content" }
+        data: [{ content: "new-content" }]
       }
     ]);
   });
@@ -373,9 +372,9 @@ describe("send", () => {
     channelBus.notify_editorUndo();
     expect(sentMessages).toEqual([
       {
-        type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_UNDO,
+        type: "receive_editorUndo",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        data: undefined
+        data: []
       }
     ]);
   });
@@ -384,17 +383,15 @@ describe("send", () => {
     channelBus.notify_editorRedo();
     expect(sentMessages).toEqual([
       {
-        type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_REDO,
+        type: "receive_editorRedo",
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        data: undefined
+        data: []
       }
     ]);
   });
 });
 
-async function incomingMessage(
-  message: EnvelopeBusMessage<unknown, MessageTypesYouCanSendToTheChannel | MessageTypesYouCanSendToTheEnvelope>
-) {
+async function incomingMessage(message: EnvelopeBusMessage<unknown, KogitoEnvelopeMessageTypes>) {
   channelBus.receive(message);
   await delay(0); // waits for next event loop iteration
 }

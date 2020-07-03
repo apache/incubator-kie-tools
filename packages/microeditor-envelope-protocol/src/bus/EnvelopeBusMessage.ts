@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-export interface EnvelopeBusMessage<D, Type> {
-  type: Type;
-  busId?: string;
-  requestId?: string;
+export interface EnvelopeBusMessage<D, T> {
   data: D;
+  type: T;
+  busId?: string; // Used for messages going from the envelope to the channel
+  requestId?: string; // Used when purpose is REQUEST or RESPONSE
   purpose: EnvelopeBusMessagePurpose;
 }
 

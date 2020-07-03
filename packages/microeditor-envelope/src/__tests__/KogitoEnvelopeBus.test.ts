@@ -18,11 +18,9 @@ import { KogitoEnvelopeBus } from "../KogitoEnvelopeBus";
 import {
   EnvelopeBusMessage,
   EnvelopeBusMessagePurpose,
-  MessageTypesYouCanSendToTheChannel,
-  MessageTypesYouCanSendToTheEnvelope
+  KogitoEnvelopeApi
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import { StateControlCommand } from "@kogito-tooling/core-api";
-import { KogitoEnvelopeApi } from "@kogito-tooling/microeditor-envelope-protocol";
 
 let api: KogitoEnvelopeApi;
 let envelopeBus: KogitoEnvelopeBus;
@@ -118,8 +116,8 @@ describe("receive", () => {
     await incomingMessage({
       requestId: "any",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
-      data: { origin: "org", busId: "the-bus-id" }
+      type: "receive_initRequest",
+      data: [{ origin: "org", busId: "the-bus-id" }]
     });
     sentMessages = [];
   });
@@ -128,13 +126,13 @@ describe("receive", () => {
     envelopeBus.stopListening();
   });
 
-  test("contentChangedNotification", async () => {
+  test("contentChanged notifcation", async () => {
     jest.spyOn(api, "receive_contentChanged");
     const newContent = { content: "this is the new content", path: "a/path" };
     await incomingMessage({
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_CONTENT_CHANGED,
-      data: newContent
+      type: "receive_contentChanged",
+      data: [newContent]
     });
     expect(api.receive_contentChanged).toHaveBeenCalledWith(newContent);
   });
@@ -143,8 +141,8 @@ describe("receive", () => {
     jest.spyOn(api, "receive_editorUndo");
     await incomingMessage({
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_UNDO,
-      data: undefined
+      type: "receive_editorUndo",
+      data: []
     });
     expect(api.receive_editorUndo).toHaveBeenCalledWith();
   });
@@ -153,30 +151,31 @@ describe("receive", () => {
     jest.spyOn(api, "receive_editorRedo");
     await incomingMessage({
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_REDO,
-      data: undefined
+      type: "receive_editorRedo",
+      data: []
     });
     expect(api.receive_editorRedo).toHaveBeenCalledWith();
   });
 
   test("init request", async () => {
     jest.spyOn(api, "receive_initRequest");
+    const association = { origin: "org", busId: "the-bus-id" };
 
     await incomingMessage({
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
-      data: { origin: "org", busId: "the-bus-id" }
+      type: "receive_initRequest",
+      data: [association]
     });
 
-    expect(api.receive_initRequest).toHaveBeenCalledWith({ origin: "org", busId: "the-bus-id" });
+    expect(api.receive_initRequest).toHaveBeenCalledWith(association);
     expect(sentMessages).toEqual([
       [
         {
           busId: "the-bus-id",
           requestId: "requestId",
           purpose: EnvelopeBusMessagePurpose.RESPONSE,
-          type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
+          type: "receive_initRequest",
           data: undefined
         },
         "org"
@@ -191,8 +190,8 @@ describe("receive", () => {
     await incomingMessage({
       requestId: "3",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_PREVIEW,
-      data: undefined
+      type: "receive_previewRequest",
+      data: []
     });
 
     expect(api.receive_previewRequest).toHaveBeenCalledWith();
@@ -202,7 +201,7 @@ describe("receive", () => {
           busId: "the-bus-id",
           requestId: "3",
           purpose: EnvelopeBusMessagePurpose.RESPONSE,
-          type: MessageTypesYouCanSendToTheEnvelope.REQUEST_PREVIEW,
+          type: "receive_previewRequest",
           data: previewSvgString
         },
         "org"
@@ -217,8 +216,8 @@ describe("receive", () => {
     await incomingMessage({
       requestId: "3",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_CONTENT,
-      data: undefined
+      type: "receive_contentRequest",
+      data: []
     });
 
     expect(api.receive_contentRequest).toHaveBeenCalledWith();
@@ -228,7 +227,7 @@ describe("receive", () => {
           busId: "the-bus-id",
           requestId: "3",
           purpose: EnvelopeBusMessagePurpose.RESPONSE,
-          type: MessageTypesYouCanSendToTheEnvelope.REQUEST_CONTENT,
+          type: "receive_contentRequest",
           data: content
         },
         "org"
@@ -243,8 +242,8 @@ describe("receive", () => {
     await incomingMessage({
       requestId: "3",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_GUIDED_TOUR_ELEMENT_POSITION,
-      data: undefined
+      type: "receive_guidedTourElementPositionRequest",
+      data: []
     });
 
     expect(api.receive_guidedTourElementPositionRequest).toHaveBeenCalledWith();
@@ -254,7 +253,7 @@ describe("receive", () => {
           busId: "the-bus-id",
           requestId: "3",
           purpose: EnvelopeBusMessagePurpose.RESPONSE,
-          type: MessageTypesYouCanSendToTheEnvelope.REQUEST_GUIDED_TOUR_ELEMENT_POSITION,
+          type: "receive_guidedTourElementPositionRequest",
           data: rect
         },
         "org"
@@ -270,7 +269,7 @@ describe("send without being initialized", () => {
         data: "anything",
         requestId: "some-id",
         purpose: EnvelopeBusMessagePurpose.RESPONSE,
-        type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT
+        type: "receive_initRequest"
       })
     ).toThrow();
   });
@@ -282,21 +281,22 @@ describe("send", () => {
     await incomingMessage({
       requestId: "2",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
-      data: { origin: "tgt-orgn", busId: "the-bus-id" }
+      type: "receive_initRequest",
+      data: [{ origin: "tgt-orgn", busId: "the-bus-id" }]
     });
     sentMessages = [];
   });
 
   test("notify stateControlCommandUpdate", () => {
-    envelopeBus.notify_stateControlCommandUpdate(StateControlCommand.REDO);
+    const command = StateControlCommand.REDO;
+    envelopeBus.notify_stateControlCommandUpdate(command);
     expect(sentMessages).toEqual([
       [
         {
           busId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-          type: MessageTypesYouCanSendToTheChannel.NOTIFY_STATE_CONTROL_COMMAND_UPDATE,
-          data: StateControlCommand.REDO
+          type: "receive_stateControlCommandUpdate",
+          data: [command]
         },
         "tgt-orgn"
       ]
@@ -310,8 +310,8 @@ describe("send", () => {
         {
           busId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-          type: MessageTypesYouCanSendToTheChannel.NOTIFY_READY,
-          data: undefined
+          type: "receive_ready",
+          data: []
         },
         "tgt-orgn"
       ]
@@ -319,15 +319,15 @@ describe("send", () => {
   });
 
   test("notify openFile", () => {
-    const path = "path";
+    const path = "some/path";
     envelopeBus.notify_openFile(path);
     expect(sentMessages).toEqual([
       [
         {
           busId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-          type: MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_OPEN_FILE,
-          data: path
+          type: "receive_openFile",
+          data: [path]
         },
         "tgt-orgn"
       ]
@@ -342,8 +342,8 @@ describe("send", () => {
         {
           busId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-          type: MessageTypesYouCanSendToTheChannel.NOTIFY_EDITOR_NEW_EDIT,
-          data: kogitoEdit
+          type: "receive_newEdit",
+          data: [kogitoEdit]
         },
         "tgt-orgn"
       ]
@@ -358,8 +358,8 @@ describe("send", () => {
         {
           busId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-          type: MessageTypesYouCanSendToTheChannel.NOTIFY_SET_CONTENT_ERROR,
-          data: error
+          type: "receive_setContentError",
+          data: [error]
         },
         "tgt-orgn"
       ]
@@ -374,8 +374,8 @@ describe("send", () => {
         {
           busId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-          type: MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_REGISTER_TUTORIAL,
-          data: tutorial
+          type: "receive_guidedTourRegisterTutorial",
+          data: [tutorial]
         },
         "tgt-orgn"
       ]
@@ -390,8 +390,8 @@ describe("send", () => {
         {
           busId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-          type: MessageTypesYouCanSendToTheChannel.NOTIFY_GUIDED_TOUR_USER_INTERACTION,
-          data: userInteraction
+          type: "receive_guidedTourUserInteraction",
+          data: [userInteraction]
         },
         "tgt-orgn"
       ]

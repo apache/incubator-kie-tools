@@ -112,15 +112,6 @@ exports[`EditorEnvelopeController after received content 1`] = `
           "receive_initRequest": [Function],
           "receive_previewRequest": [Function],
         },
-        "apiMapping": Map {
-          0 => "receive_guidedTourElementPositionRequest",
-          1 => "receive_initRequest",
-          2 => "receive_previewRequest",
-          3 => "receive_contentRequest",
-          4 => "receive_contentChanged",
-          5 => "receive_editorRedo",
-          6 => "receive_editorUndo",
-        },
         "callbacks": Map {},
         "generateRandomId": [MockFunction] {
           "calls": Array [
@@ -552,15 +543,6 @@ exports[`EditorEnvelopeController opens 1`] = `
           "receive_initRequest": [Function],
           "receive_previewRequest": [Function],
         },
-        "apiMapping": Map {
-          0 => "receive_guidedTourElementPositionRequest",
-          1 => "receive_initRequest",
-          2 => "receive_previewRequest",
-          3 => "receive_contentRequest",
-          4 => "receive_contentChanged",
-          5 => "receive_editorRedo",
-          6 => "receive_editorUndo",
-        },
         "callbacks": Map {},
         "send": [Function],
       },
@@ -797,15 +779,6 @@ exports[`EditorEnvelopeController receives init request 1`] = `
           "receive_guidedTourElementPositionRequest": [Function],
           "receive_initRequest": [Function],
           "receive_previewRequest": [Function],
-        },
-        "apiMapping": Map {
-          0 => "receive_guidedTourElementPositionRequest",
-          1 => "receive_initRequest",
-          2 => "receive_previewRequest",
-          3 => "receive_contentRequest",
-          4 => "receive_contentChanged",
-          5 => "receive_editorRedo",
-          6 => "receive_editorUndo",
         },
         "callbacks": Map {
           "1" => Object {

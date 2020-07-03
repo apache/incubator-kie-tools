@@ -20,8 +20,6 @@ import { mount } from "enzyme";
 import {
   EnvelopeBusMessage,
   EnvelopeBusMessagePurpose,
-  MessageTypesYouCanSendToTheChannel,
-  MessageTypesYouCanSendToTheEnvelope
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import { ChannelType, LanguageData, OperatingSystem } from "@kogito-tooling/core-api";
 import { DummyEditor } from "./DummyEditor";
@@ -124,8 +122,8 @@ describe("EditorEnvelopeController", () => {
     await incomingMessage({
       requestId: "0",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
-      data: { origin: "test-target-origin", busId: "someBusId" }
+      type: "receive_initRequest",
+      data: [{ origin: "test-target-origin", busId: "someBusId" }]
     });
 
     expect(sentMessages).toEqual([
@@ -133,8 +131,8 @@ describe("EditorEnvelopeController", () => {
         busId: controller.kogitoEnvelopeBus.associatedBusId,
         requestId: "1",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
-        type: MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE,
-        data: undefined
+        type: "receive_languageRequest",
+        data: []
       }
     ]);
     expect(render.update()).toMatchSnapshot();
@@ -147,8 +145,8 @@ describe("EditorEnvelopeController", () => {
     await incomingMessage({
       requestId: "0",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
-      data: { origin: "test-target-origin", busId: "someBusId" }
+      type: "receive_initRequest",
+      data: [{ origin: "test-target-origin", busId: "someBusId" }]
     });
 
     sentMessages = [];
@@ -156,7 +154,7 @@ describe("EditorEnvelopeController", () => {
     await incomingMessage({
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
-      type: MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE,
+      type: "receive_languageRequest",
       data: languageData
     });
 
@@ -165,8 +163,8 @@ describe("EditorEnvelopeController", () => {
         busId: controller.kogitoEnvelopeBus.associatedBusId,
         requestId: "2",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
-        type: MessageTypesYouCanSendToTheChannel.REQUEST_CONTENT,
-        data: undefined
+        type: "receive_contentRequest",
+        data: []
       }
     ]);
   });
@@ -178,15 +176,15 @@ describe("EditorEnvelopeController", () => {
     await incomingMessage({
       requestId: "0",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
-      type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
-      data: { origin: "test-target-origin", busId: "someBusId" }
+      type: "receive_initRequest",
+      data: [{ origin: "test-target-origin", busId: "someBusId" }]
     });
 
     jest.spyOn(controller.kogitoEnvelopeBus.manager, "generateRandomId").mockReturnValueOnce("2");
     await incomingMessage({
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
-      type: MessageTypesYouCanSendToTheChannel.REQUEST_LANGUAGE,
+      type: "receive_languageRequest",
       data: languageData
     });
 
@@ -195,7 +193,7 @@ describe("EditorEnvelopeController", () => {
     await incomingMessage({
       requestId: "2",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
-      type: MessageTypesYouCanSendToTheChannel.REQUEST_CONTENT,
+      type: "receive_contentRequest",
       data: { content: "test content" }
     });
 
@@ -203,14 +201,14 @@ describe("EditorEnvelopeController", () => {
       {
         busId: controller.kogitoEnvelopeBus.associatedBusId,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-        type: MessageTypesYouCanSendToTheChannel.NOTIFY_READY,
-        data: undefined
+        type: "receive_ready",
+        data: []
       },
       {
         requestId: "0",
         busId: controller.kogitoEnvelopeBus.associatedBusId,
         purpose: EnvelopeBusMessagePurpose.RESPONSE,
-        type: MessageTypesYouCanSendToTheEnvelope.REQUEST_INIT,
+        type: "receive_initRequest",
         data: undefined
       }
     ]);
@@ -223,16 +221,16 @@ describe("EditorEnvelopeController", () => {
     await incomingMessage({
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_UNDO,
-      data: "commandID"
+      type: "receive_editorUndo",
+      data: ["commandID"]
     });
     expect(stateControl.undo).toBeCalledTimes(1);
 
     await incomingMessage({
       requestId: "2",
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
-      type: MessageTypesYouCanSendToTheEnvelope.NOTIFY_EDITOR_REDO,
-      data: "commandID"
+      type: "receive_editorRedo",
+      data: ["commandID"]
     });
     expect(stateControl.redo).toBeCalledTimes(1);
   });
