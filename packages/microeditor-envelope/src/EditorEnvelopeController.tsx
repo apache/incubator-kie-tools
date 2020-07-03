@@ -18,7 +18,7 @@ import * as React from "react";
 import * as AppFormer from "@kogito-tooling/core-api";
 import { EditorContent, EditorContext } from "@kogito-tooling/core-api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
-import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import {Association, KogitoEnvelopeBus} from "./KogitoEnvelopeBus";
 import { EditorFactory } from "./EditorFactory";
@@ -35,7 +35,7 @@ export class EditorEnvelopeController {
   private editorEnvelopeView?: EditorEnvelopeView;
 
   constructor(
-    busApi: EnvelopeBusApi,
+    bus: EnvelopeBus,
     private readonly editorFactory: EditorFactory<any>,
     private readonly specialDomElements: SpecialDomElements,
     private readonly stateControlService: StateControlService,
@@ -43,7 +43,7 @@ export class EditorEnvelopeController {
     private readonly resourceContentEditorCoordinator: ResourceContentServiceCoordinator,
     private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService
   ) {
-    this.kogitoEnvelopeBus = new KogitoEnvelopeBus(busApi, {
+    this.kogitoEnvelopeBus = new KogitoEnvelopeBus(bus, {
       receive_initRequest: async (association: Association) => {
         this.kogitoEnvelopeBus.associate(association);
 

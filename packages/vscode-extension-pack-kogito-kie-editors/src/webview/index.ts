@@ -27,7 +27,7 @@ gwtAppFormerApi.setClientSideOnly(true);
 
 MicroEditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
-  busApi: acquireVsCodeApi(),
+  bus: acquireVsCodeApi(),
   editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi, new DefaultXmlFormatter()),
   editorContext: { channel: ChannelType.VSCODE, operatingSystem: getOperatingSystem() }
 });

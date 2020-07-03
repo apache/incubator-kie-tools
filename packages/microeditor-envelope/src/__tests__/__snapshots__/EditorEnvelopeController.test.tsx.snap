@@ -98,7 +98,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
         "receive_previewRequest": [Function],
       },
       "associatedBusId": "someBusId",
-      "busApi": Object {
+      "bus": Object {
         "postMessage": [Function],
       },
       "eventListener": [Function],
@@ -538,7 +538,7 @@ exports[`EditorEnvelopeController opens 1`] = `
         "receive_initRequest": [Function],
         "receive_previewRequest": [Function],
       },
-      "busApi": Object {
+      "bus": Object {
         "postMessage": [Function],
       },
       "eventListener": [Function],
@@ -784,7 +784,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
         "receive_previewRequest": [Function],
       },
       "associatedBusId": "someBusId",
-      "busApi": Object {
+      "bus": Object {
         "postMessage": [Function],
       },
       "eventListener": [Function],

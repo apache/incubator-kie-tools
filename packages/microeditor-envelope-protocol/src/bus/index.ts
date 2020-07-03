@@ -15,5 +15,5 @@
  */
 
 export * from "./EnvelopeBusMessage";
-export * from "./EnvelopeBusApi";
+export * from "./EnvelopeBus";
 export * from "./EnvelopeBusMessageManager";

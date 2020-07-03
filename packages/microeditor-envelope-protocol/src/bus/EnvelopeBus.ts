@@ -16,6 +16,6 @@
 
 import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
 
-export interface EnvelopeBusApi {
+export interface EnvelopeBus {
   postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, _?: any): void;
 }

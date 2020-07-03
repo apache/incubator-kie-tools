@@ -15,7 +15,7 @@
  */
 
 import {
-  EnvelopeBusApi,
+  EnvelopeBus,
   EnvelopeBusMessage,
   EnvelopeBusMessageManager,
   MessageTypesYouCanSendToTheChannel,
@@ -60,7 +60,7 @@ export class KogitoEnvelopeBus {
     KogitoEnvelopeApi
   >;
 
-  constructor(private readonly busApi: EnvelopeBusApi, private readonly api: KogitoEnvelopeApi) {
+  constructor(private readonly bus: EnvelopeBus, private readonly api: KogitoEnvelopeApi) {
     this.manager = new EnvelopeBusMessageManager(
       message => this.send(message),
       api,
@@ -103,7 +103,7 @@ export class KogitoEnvelopeBus {
     if (!this.targetOrigin) {
       throw new Error("Tried to send message without targetOrigin set");
     }
-    this.busApi.postMessage({ ...message, busId: this.associatedBusId }, this.targetOrigin);
+    this.bus.postMessage({ ...message, busId: this.associatedBusId }, this.targetOrigin);
   }
 
   public notify_setContentError(errorMessage: string) {

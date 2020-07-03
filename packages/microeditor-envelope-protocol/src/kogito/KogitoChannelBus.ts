@@ -25,7 +25,7 @@ import {
   StateControlCommand
 } from "@kogito-tooling/core-api";
 import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
-import { EnvelopeBusApi, EnvelopeBusMessage, EnvelopeBusMessageManager } from "../bus";
+import { EnvelopeBus, EnvelopeBusMessage, EnvelopeBusMessageManager } from "../bus";
 import { MessageTypesYouCanSendToTheEnvelope } from "./MessageTypesYouCanSendToTheEnvelope";
 import { MessageTypesYouCanSendToTheChannel } from "./MessageTypesYouCanSendToTheChannel";
 
@@ -59,12 +59,12 @@ export class KogitoChannelBus {
   public initPollingTimeout: any | false;
   public busId: string;
 
-  public constructor(public busApi: EnvelopeBusApi, apiImpl: KogitoChannelApi) {
+  public constructor(public bus: EnvelopeBus, api: KogitoChannelApi) {
     this.initPolling = false;
     this.initPollingTimeout = false;
     this.manager = new EnvelopeBusMessageManager(
-      message => this.busApi.postMessage(message),
-      apiImpl,
+      message => this.bus.postMessage(message),
+      api,
       new Map([
         [MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_LIST, "receive_resourceListRequest"],
         [MessageTypesYouCanSendToTheChannel.REQUEST_RESOURCE_CONTENT, "receive_resourceContentRequest"],

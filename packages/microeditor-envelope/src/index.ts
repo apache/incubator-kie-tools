@@ -16,7 +16,7 @@
 
 import { EditorContext } from "@kogito-tooling/core-api";
 import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "@kogito-tooling/keyboard-shortcuts";
-import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import { ReactElement } from "react";
 import * as ReactDOM from "react-dom";
 import { ResourceContentApi, ResourceContentServiceCoordinator } from "./api/resourceContent";
@@ -56,15 +56,15 @@ class ReactDomRenderer implements Renderer {
 }
 
 /**
- * Starts the envelope at a container. Uses busApi to send messages out of the envelope and creates editors based on the editorFactory provided.
+ * Starts the envelope at a container. Uses bus to send messages out of the envelope and creates editors based on the editorFactory provided.
  * @param args.container The DOM element where the envelope should be rendered.
- * @param args.busApi The implementation of EnvelopeBusApi to send messages out of the envelope.
+ * @param args.bus The implementation of EnvelopeBus to send messages out of the envelope.
  * @param args.editorFactory The factory of Editors using a LanguageData implementation.
  * @param args.editorContext The context for Editors with information about the running channel.
  */
 export function init(args: {
   container: HTMLElement;
-  busApi: EnvelopeBusApi;
+  bus: EnvelopeBus;
   editorFactory: EditorFactory<any>;
   editorContext: EditorContext;
 }) {
@@ -76,7 +76,7 @@ export function init(args: {
   const stateControlService = new StateControlService();
   const workspaceService = new WorkspaceService();
   const editorEnvelopeController = new EditorEnvelopeController(
-    args.busApi,
+    args.bus,
     args.editorFactory,
     specialDomElements,
     stateControlService,
