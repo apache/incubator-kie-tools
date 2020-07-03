@@ -2,6 +2,7 @@
 
 exports[`EmbeddedViewer::ONLINE EmbeddedViewer::defaults 1`] = `
 <body>
+  <div />
   <div>
     <iframe
       data-envelope-channel="ONLINE"
@@ -17,6 +18,7 @@ exports[`EmbeddedViewer::ONLINE EmbeddedViewer::defaults 1`] = `
 
 exports[`EmbeddedViewer::ONLINE EmbeddedViewer::onResourceContentRequest 1`] = `
 <body>
+  <div />
   <div>
     <iframe
       data-envelope-channel="ONLINE"
@@ -32,6 +34,7 @@ exports[`EmbeddedViewer::ONLINE EmbeddedViewer::onResourceContentRequest 1`] = `
 
 exports[`EmbeddedViewer::ONLINE EmbeddedViewer::onResourceListRequest 1`] = `
 <body>
+  <div />
   <div>
     <iframe
       data-envelope-channel="ONLINE"
