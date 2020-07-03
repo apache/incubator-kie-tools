@@ -40,11 +40,17 @@ public class ProcessType implements BPMNProperty {
     @FieldValue
     private String value;
 
+    private static final String DefaultValue = "Public";
+    private static final String InvalidValue = "None";
+
     public ProcessType() {
-        this("Public");
+        this(DefaultValue);
     }
 
-    public ProcessType(final String value) {
+    public ProcessType(String value) {
+        if (value != null && value.equals(InvalidValue)) {
+            value = DefaultValue;
+        }
         this.value = value;
     }
 
@@ -69,5 +75,4 @@ public class ProcessType implements BPMNProperty {
         }
         return false;
     }
-
 }

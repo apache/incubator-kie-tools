@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.diagram;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -43,6 +44,22 @@ public class ProcessTypeTest {
         test.setValue("Private");
         assertTrue(test.getValue().equals("Private"));
     }
+
+    @Test
+    public void testNewProcessType() {
+        ProcessType test = new ProcessType();
+        assertTrue(test.getValue().equals("Public"));
+
+        test = new ProcessType("Private");
+        assertTrue(test.getValue().equals("Private"));
+
+        test = new ProcessType(null);
+        assertEquals(null, test.getValue());
+
+        test = new ProcessType("None");
+        assertEquals("Public", test.getValue());
+    }
+
 
     @Test
     public void testHashCode() {
