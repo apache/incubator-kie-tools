@@ -43,10 +43,6 @@ export class KogitoEditor {
   private readonly encoder = new TextEncoder();
   private readonly decoder = new TextDecoder("utf-8");
 
-  get busId(): string {
-    return this.kogitoChannelBus.busId;
-  }
-
   public constructor(
     relativePath: string,
     uri: vscode.Uri,
