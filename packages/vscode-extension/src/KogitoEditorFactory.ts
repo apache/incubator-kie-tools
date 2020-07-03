@@ -62,13 +62,7 @@ export class KogitoEditorFactory {
       localResourceRoots: [vscode.Uri.file(this.context.extensionPath)]
     };
 
-    //TODO improve this
-    let workspacePath;
-    if (vscode.workspace.workspaceFolders) {
-      workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;;
-    } else {
-      workspacePath = path;
-    }
+    const workspacePath = vscode.workspace.asRelativePath(path);
 
     const contentService = this.createContentService(path, workspacePath);
 
@@ -94,7 +88,7 @@ export class KogitoEditorFactory {
 
   public createContentService(path: string, workspacePath: string): ResourceContentService {
     if (this.isAssetInWorkspace(path)) {
-      return new VsCodeResourceContentService(workspacePath);
+      return new VsCodeResourceContentService(this.getParentFolder(workspacePath));
     }
     return new VsCodeNodeResourceContentService(this.getParentFolder(path));
   }

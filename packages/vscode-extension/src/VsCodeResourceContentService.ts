@@ -39,8 +39,9 @@ export class VsCodeResourceContentService implements ResourceContentService {
   }
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
-    const expr = opts?.type === SearchType.ASSET_FOLDER ? this.currentAssetFolder + pattern : pattern; //TODO improve this
-    const includingRelativePattern = new RelativePattern(this.currentAssetFolder, pattern);
+    const workspaceFolder = vscode.workspace!.workspaceFolders![0].uri.fsPath + nodePath.sep;
+    const basePath = opts?.type === SearchType.ASSET_FOLDER ? workspaceFolder + this.currentAssetFolder : workspaceFolder;
+    const includingRelativePattern = new RelativePattern(basePath, pattern);
     const files = await vscode.workspace.findFiles(includingRelativePattern);
     const paths = files.map(f => vscode.workspace.asRelativePath(f.path));
     return new ResourcesList(pattern, paths);
