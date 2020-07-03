@@ -16,7 +16,6 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/test"
 	"io"
 	"io/ioutil"
 	"math/rand"
@@ -29,6 +28,7 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/test"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
@@ -199,6 +199,11 @@ func CreateFile(folder, fileName, fileContent string) error {
 		return fmt.Errorf("Error closing file %s in folder %s: %v ", fileName, folder, err)
 	}
 	return nil
+}
+
+// DeleteFile deletes a file
+func DeleteFile(folder, fileName string) error {
+	return os.Remove(folder + "/" + fileName)
 }
 
 // MustParseEnabledDisabled parse a boolean string value

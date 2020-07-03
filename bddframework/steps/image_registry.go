@@ -40,7 +40,7 @@ func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistr
 		return err
 	}
 
-	if err := framework.GetContainerEngine(data.Namespace).PullImage(imageTag).GetError(); err != nil {
+	if needToBuildImage(data.Namespace, imageTag) {
 		// Not found in registry, so we need to build and push the application
 		// Build the application
 		err = data.localServiceBuiltByMavenWithProfile(contextDir, profile)
@@ -59,6 +59,12 @@ func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistr
 		if err != nil {
 			return err
 		}
+
+		//Delete Dockerfile
+		err = framework.DeleteFile(projectLocation, "Dockerfile")
+		if err != nil {
+			return err
+		}
 	} else {
 		framework.GetLogger(data.Namespace).Infof("Using cached Kogito image from %s", imageTag)
 	}
@@ -68,6 +74,23 @@ func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistr
 	data.ScenarioContext[getBuiltRuntimeImageTagContextKey(kogitoApplicationName)] = imageTag
 
 	return nil
+}
+
+// Returns true if the image has to be built
+func needToBuildImage(namespace, imageTag string) bool {
+	switch config.GetImageCacheMode() {
+	case config.UseImageCacheAlways:
+		return false
+	case config.UseImageCacheNever:
+		return true
+	case config.UseImageCacheIfAvailable:
+		{
+			// Check if image is available in registry, error means it is not available
+			err := framework.GetContainerEngine(namespace).PullImage(imageTag).GetError()
+			return err != nil
+		}
+	}
+	return true
 }
 
 // Returns complete Kogito image tag, registry and namespace is retrieved from test configuration
@@ -82,26 +105,35 @@ func getKogitoImageTag(projectLocation, mavenProfiles string) (string, error) {
 		return "", errors.New("Runtime application image namespace must be set to build the image")
 	}
 
+	runtimeApplicationImageVersion := config.GetRuntimeApplicationImageVersion()
+	if len(runtimeApplicationImageVersion) == 0 {
+		runtimeApplicationImageVersion = "latest"
+	}
+
 	kogitoImageName := getKogitoImageName(projectLocation, mavenProfiles)
-	buildImageTag := fmt.Sprintf("%s/%s/%s:latest", runtimeApplicationImageRegistry, runtimeApplicationImageNamespace, kogitoImageName)
+	buildImageTag := fmt.Sprintf("%s/%s/%s:%s", runtimeApplicationImageRegistry, runtimeApplicationImageNamespace, kogitoImageName, runtimeApplicationImageVersion)
 	return buildImageTag, nil
 }
 
 // Returns Kogito image name in the form of "<project location base>(-<maven profile>)*"
 func getKogitoImageName(projectLocation, mavenProfiles string) string {
-	kogitoApplicationName := filepath.Base(projectLocation)
+	kogitoApplicationBaseName := filepath.Base(projectLocation)
+	kogitoApplicationNameParts := []string{kogitoApplicationBaseName}
 
-	if len(mavenProfiles) == 0 {
-		return kogitoApplicationName
+	if len(mavenProfiles) > 0 {
+		mavenProfilesSlice := strings.Split(mavenProfiles, ",")
+
+		// Sort profiles to generate consistent image name
+		sort.Strings(mavenProfilesSlice)
+
+		kogitoApplicationNameParts = append(kogitoApplicationNameParts, mavenProfilesSlice...)
 	}
 
-	mavenProfilesSlice := strings.Split(mavenProfiles, ",")
+	if runtimeApplicationImageNameSuffix := config.GetRuntimeApplicationImageNameSuffix(); len(runtimeApplicationImageNameSuffix) > 0 {
+		kogitoApplicationNameParts = append(kogitoApplicationNameParts, runtimeApplicationImageNameSuffix)
+	}
 
-	// Sort profiles to generate consistent image name
-	sort.Strings(mavenProfilesSlice)
-
-	joinedMavenProfiles := strings.Join(mavenProfilesSlice, "-")
-	return fmt.Sprintf("%s-%s", kogitoApplicationName, joinedMavenProfiles)
+	return strings.Join(kogitoApplicationNameParts, "-")
 }
 
 // Returns context tag used to store built runtime image tag

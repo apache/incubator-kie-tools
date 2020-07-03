@@ -16,11 +16,13 @@ package framework
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
 var verifications = []func() error{
 	checkKubernetesAndDomainSuffix,
+	checkImageCacheMode,
 }
 
 // CheckSetup verifies the configuration is correct
@@ -40,4 +42,12 @@ func checkKubernetesAndDomainSuffix() error {
 	}
 
 	return nil
+}
+
+func checkImageCacheMode() error {
+	imageCacheMode := config.GetImageCacheMode()
+	if imageCacheMode.IsValid() {
+		return nil
+	}
+	return (fmt.Errorf("Invalid image cache mode: %s", imageCacheMode))
 }

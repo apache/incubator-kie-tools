@@ -32,6 +32,7 @@ type TestConfig struct {
 	crDeploymentOnly bool
 	containerEngine  string
 	domainSuffix     string
+	imageCacheMode   string
 
 	// operator information
 	operatorImageName string
@@ -42,15 +43,17 @@ type TestConfig struct {
 	cliPath           string
 
 	// runtime
-	servicesImageRegistry            string
-	servicesImageNamespace           string
-	servicesImageNameSuffix          string
-	servicesImageVersion             string
-	dataIndexImageTag                string
-	jobsServiceImageTag              string
-	mgmtConsoleImageTag              string
-	runtimeApplicationImageRegistry  string
-	runtimeApplicationImageNamespace string
+	servicesImageRegistry             string
+	servicesImageNamespace            string
+	servicesImageNameSuffix           string
+	servicesImageVersion              string
+	dataIndexImageTag                 string
+	jobsServiceImageTag               string
+	mgmtConsoleImageTag               string
+	runtimeApplicationImageRegistry   string
+	runtimeApplicationImageNamespace  string
+	runtimeApplicationImageNameSuffix string
+	runtimeApplicationImageVersion    string
 
 	// build
 	customMavenRepoURL   string
@@ -108,6 +111,7 @@ func BindFlags(set *flag.FlagSet) {
 	set.BoolVar(&env.crDeploymentOnly, prefix+"cr-deployment-only", false, "Use this option if you have no CLI to test against. It will use only direct CR deployments.")
 	set.StringVar(&env.containerEngine, prefix+"container-engine", defaultContainerEngine, "Engine used to interact with images and local containers.")
 	set.StringVar(&env.domainSuffix, prefix+"domain-suffix", "", "Set the domain suffix for exposed services. Ignored when running tests on Openshift.")
+	set.StringVar(&env.imageCacheMode, prefix+"image-cache-mode", "if-available", "Use this option to specify whether you want to use image cache for runtime images. Available options are 'always', 'never' or 'if-available'(default).")
 
 	// operator information
 	set.StringVar(&env.operatorImageName, prefix+"operator-image-name", defaultOperatorImageName, "Operator image name")
@@ -127,6 +131,8 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.mgmtConsoleImageTag, prefix+"management-console-image-tag", "", "Set the Kogito Management Console image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.runtimeApplicationImageRegistry, prefix+"runtime-application-image-registry", "", "Set the runtime application (built Kogito application image) image registry")
 	set.StringVar(&env.runtimeApplicationImageNamespace, prefix+"runtime-application-image-namespace", "", "Set the runtime application (built Kogito application image) image namespace")
+	set.StringVar(&env.runtimeApplicationImageNameSuffix, prefix+"runtime-application-image-name-suffix", "", "Set the runtime application (built Kogito application image) image name suffix")
+	set.StringVar(&env.runtimeApplicationImageVersion, prefix+"runtime-application-image-version", "", "Set the runtime application (built Kogito application image) image version")
 
 	// build
 	set.StringVar(&env.customMavenRepoURL, prefix+"custom-maven-repo-url", "", "Set a custom Maven repository url for S2I builds, in case your artifacts are in a specific repository. See https://github.com/kiegroup/kogito-images/README.md for more information")
@@ -191,6 +197,11 @@ func GetContainerEngine() string {
 // GetDomainSuffix returns the domain suffix for exposed services
 func GetDomainSuffix() string {
 	return env.domainSuffix
+}
+
+// GetImageCacheMode returns image cache mode
+func GetImageCacheMode() ImageCacheMode {
+	return ImageCacheMode(env.imageCacheMode)
 }
 
 // operator information
@@ -262,6 +273,16 @@ func GetRuntimeApplicationImageRegistry() string {
 // GetRuntimeApplicationImageNamespace return the namespace for runtime application images
 func GetRuntimeApplicationImageNamespace() string {
 	return env.runtimeApplicationImageNamespace
+}
+
+// GetRuntimeApplicationImageNameSuffix return the name suffix for runtime application images
+func GetRuntimeApplicationImageNameSuffix() string {
+	return env.runtimeApplicationImageNameSuffix
+}
+
+// GetRuntimeApplicationImageVersion return the version for runtime application images
+func GetRuntimeApplicationImageVersion() string {
+	return env.runtimeApplicationImageVersion
 }
 
 // build
