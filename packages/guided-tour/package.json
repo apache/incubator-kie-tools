@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/guided-tour",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "Guided Tour component",
   "license": "Apache-2.0",
   "main": "dist/index.js",
@@ -15,9 +15,9 @@
     "start": "rm -rf dist && webpack --watch"
   },
   "peerDependencies": {
+    "@kogito-tooling/patternfly-base": "0.5.2",
     "react": "16.12.0",
-    "react-dom": "16.12.0",
-    "@kogito-tooling/patternfly-base": "0.5.2"
+    "react-dom": "16.12.0"
   },
   "presets": [
     "@babel/preset-env",
