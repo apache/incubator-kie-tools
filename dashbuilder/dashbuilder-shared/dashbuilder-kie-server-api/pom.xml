@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>org.dashbuilder</groupId>
 		<artifactId>dashbuilder-shared</artifactId>
-		<version>7.40.0-SNAPSHOT</version>
+		<version>7.41.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>dashbuilder-kie-server-api</artifactId>
