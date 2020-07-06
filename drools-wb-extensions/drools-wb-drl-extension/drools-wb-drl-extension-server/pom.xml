@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-wb-drl-extension</artifactId>
-    <version>7.40.0-SNAPSHOT</version>
+    <version>7.41.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-wb-drl-extension-server</artifactId>
