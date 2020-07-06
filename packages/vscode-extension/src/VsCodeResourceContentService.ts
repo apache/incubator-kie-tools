@@ -26,7 +26,7 @@ import {
 
 import * as vscode from "vscode";
 import * as nodePath from "path";
-import {RelativePattern, WorkspaceFolder} from "vscode";
+import { RelativePattern, WorkspaceFolder } from "vscode";
 
 /**
  * Implementation of a ResourceContentService using the vscode apis to list/get assets.
