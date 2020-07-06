@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -133,6 +134,11 @@ public class RuntimeModelRegistryImpl implements RuntimeModelRegistry {
         } catch (Exception e) {
             throw new IllegalArgumentException("Error parsing import model.");
         }
+    }
+
+    @Override
+    public Set<String> availableModels() {
+        return runtimeModels.keySet();
     }
 
 }

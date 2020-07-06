@@ -17,6 +17,7 @@
 package org.dashbuilder.shared.service;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.model.RuntimeModel;
@@ -75,5 +76,10 @@ public interface RuntimeModelRegistry {
      * The path to the file
      */
     Optional<RuntimeModel> registerFile(String filePath);
-
+    
+    /**
+     * List all models that are currently available.
+     */
+    Set<String> availableModels();
+    
 }

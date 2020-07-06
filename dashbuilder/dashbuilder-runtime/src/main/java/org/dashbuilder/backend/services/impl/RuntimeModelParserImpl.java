@@ -121,11 +121,11 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
 
     private String nextEntryContent(final ZipInputStream zis) {
         try {
-            final int BUFFER_SIZE = 1024;
+            final int BUFFER_SIZE = 8192;
             byte[] buffer = new byte[BUFFER_SIZE];
             int read = 0;
             String output = "";
-            while ((read = zis.read(buffer, 0, BUFFER_SIZE)) >= 0) {
+            while ((read = zis.read(buffer, 0, BUFFER_SIZE)) != -1) {
                 output = output.concat(new String(buffer, 0, read));
             }
             return output.trim();

@@ -86,6 +86,7 @@
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>default</web-resource-name>
+			<url-pattern>/rest/*</url-pattern>
 			<url-pattern>/dashbuilder.html</url-pattern>
 			<url-pattern>/org.dashbuilder.DashbuilderRuntime/*</url-pattern>
 			<url-pattern>*.erraiBus</url-pattern>
