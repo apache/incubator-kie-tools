@@ -16,9 +16,9 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import "@patternfly/patternfly/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly-addons.css";
-import "@patternfly/patternfly/patternfly.css";
+import "@patternfly/patternfly/base/patternfly-variables.css";
+import "@patternfly/patternfly/patternfly-addons.scss";
+import "@patternfly/patternfly/patternfly.scss";
 import "../../static/resources/style.css";
 import * as electron from "electron";
 import {

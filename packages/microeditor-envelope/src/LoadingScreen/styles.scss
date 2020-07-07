@@ -1,6 +1,6 @@
-@import "../../../../node_modules/@patternfly/patternfly/sass-utilities/all";
-@import "../../../../node_modules/@patternfly/patternfly/variables";
-@import "../../../../node_modules/@patternfly/patternfly/_themes.scss";
+@import "../../../../node_modules/@patternfly/patternfly/sass-utilities/_all.scss";
+@import "../../../../node_modules/@patternfly/patternfly/base/_variables.scss";
+@import "../../../../node_modules/@patternfly/patternfly/base/_themes.scss";
 
 // Toggle dark theme
 :not(.vscode-dark) {

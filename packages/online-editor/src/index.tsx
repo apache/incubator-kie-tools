@@ -116,7 +116,7 @@ function showResponseError(statusCode: number, description: string) {
       <Alert
         variant={AlertVariant.danger}
         title="An error happened while fetching your file"
-        action={<AlertActionLink onClick={goToHomePage}>Go to Home Page</AlertActionLink>}
+        actionClose={<AlertActionLink onClick={goToHomePage}>Go to Home Page</AlertActionLink>}
       >
         <br />
         <b>Error details: </b>
@@ -135,7 +135,7 @@ function showFetchError(description: string) {
       <Alert
         variant={AlertVariant.danger}
         title="An unexpected error happened while trying to fetch your file"
-        action={<AlertActionLink onClick={goToHomePage} children={"Go to Home Page"} />}
+        actionClose={<AlertActionLink onClick={goToHomePage} children={"Go to Home Page"} />}
       >
         <br />
         <b>Error details: </b>
