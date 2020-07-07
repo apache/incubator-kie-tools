@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/guided-tour",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Guided Tour component",
   "license": "Apache-2.0",
   "main": "dist/index.js",
