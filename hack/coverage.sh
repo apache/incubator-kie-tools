@@ -33,6 +33,7 @@ if [[ $result == 1 ]]; then
 fi
 
 go tool cover -html=$1 -o $1
+echo "Coverage for $1 is $coverage"
 echo "Please see the detailed coverage report in artifacts section in $1 file"
 
 exit ${code:0}

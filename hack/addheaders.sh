@@ -13,8 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if ! hash addlicense 2>/dev/null; then
-  go get -u github.com/google/addlicense
-fi
+which addlicense > /dev/null || go get -u github.com/google/addlicense
 
 addlicense -c "Red Hat, Inc. and/or its affiliates" -l=apache cmd hack pkg test version tools.go
