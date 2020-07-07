@@ -24,6 +24,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
 type (
@@ -72,7 +74,30 @@ func WaitForSuccessfulHTTPRequest(namespace string, requestInfo HTTPRequestInfo,
 
 // ExecuteHTTPRequest executes an HTTP request
 func ExecuteHTTPRequest(namespace string, requestInfo HTTPRequestInfo) (*http.Response, error) {
-	return ExecuteHTTPRequestC(&http.Client{}, namespace, requestInfo)
+	// Setup a retry in case the first time it did not work
+	retry := 0
+	var resp *http.Response
+	var err error
+	for retry < config.GetHTTPRetryNumber() {
+		resp, err := ExecuteHTTPRequestC(&http.Client{}, namespace, requestInfo)
+		if err == nil && checkHTTPResponseSuccessful(namespace, resp) {
+			return resp, err
+		} else if err != nil {
+			GetLogger(namespace).Warnf("Error while making http call: %v", err)
+		} else if resp != nil {
+			GetLogger(namespace).Warnf("Http call was not successful. Response code: %d", resp.StatusCode)
+			if resp.StatusCode == 500 {
+				// In case of 500, it is server error and we don't need to call again
+				return resp, err
+			}
+		} else {
+			GetLogger(namespace).Warn("Http call was not successful. No response available ...")
+		}
+		GetLogger(namespace).Warnf("Retrying in 1 second ...")
+		retry++
+		time.Sleep(1 * time.Second)
+	}
+	return resp, err
 }
 
 // ExecuteHTTPRequestC executes an HTTP request using a given client

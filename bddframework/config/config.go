@@ -33,6 +33,7 @@ type TestConfig struct {
 	containerEngine  string
 	domainSuffix     string
 	imageCacheMode   string
+	httpRetryNumber  int
 
 	// operator information
 	operatorImageName string
@@ -86,7 +87,8 @@ const (
 
 	defaultKogitoExamplesURI = "https://github.com/kiegroup/kogito-examples"
 
-	defaultLoadFactor = 1
+	defaultLoadFactor      = 1
+	defaultHTTPRetryNumber = 3
 
 	defaultContainerEngine = "docker"
 )
@@ -112,6 +114,7 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.containerEngine, prefix+"container-engine", defaultContainerEngine, "Engine used to interact with images and local containers.")
 	set.StringVar(&env.domainSuffix, prefix+"domain-suffix", "", "Set the domain suffix for exposed services. Ignored when running tests on Openshift.")
 	set.StringVar(&env.imageCacheMode, prefix+"image-cache-mode", "if-available", "Use this option to specify whether you want to use image cache for runtime images. Available options are 'always', 'never' or 'if-available'(default).")
+	set.IntVar(&env.httpRetryNumber, prefix+"http-retry-nb", defaultHTTPRetryNumber, "Set the retry number for all HTTP calls in case it fails (and response code != 500). Default value is 3.")
 
 	// operator information
 	set.StringVar(&env.operatorImageName, prefix+"operator-image-name", defaultOperatorImageName, "Operator image name")
@@ -202,6 +205,11 @@ func GetDomainSuffix() string {
 // GetImageCacheMode returns image cache mode
 func GetImageCacheMode() ImageCacheMode {
 	return ImageCacheMode(env.imageCacheMode)
+}
+
+// GetHTTPRetryNumber return the number of retries to be applied for http calls
+func GetHTTPRetryNumber() int {
+	return env.httpRetryNumber
 }
 
 // operator information
