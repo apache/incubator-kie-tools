@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
-      # This bash script will set an output for this step. It can be used with steps.version.outputs.version
+      # This bash script will set an output version for this step. It can be used with steps.version.outputs.version
       - name: Output version
         id: version
         run: |
@@ -43,6 +43,14 @@ jobs:
 
       - name: Download dependencies
         run: yarn run init
+
+      - name: Check yarn.lock md5
+        id: check-yarn-lock-md5
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          git diff yarn.lock;
+          [ "0" == "$(git diff yarn.lock | wc -l)" ]
+        shell: bash
 
       - name: "Build :: prod and pack"
         run: yarn run build:prod
