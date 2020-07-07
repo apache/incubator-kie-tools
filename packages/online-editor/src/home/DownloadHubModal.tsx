@@ -18,6 +18,7 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import {
   Modal,
+  ModalVariant,
   Button,
   Select,
   SelectOption,
@@ -85,7 +86,7 @@ export function DownloadHubModal(props: {}) {
         <Modal
           title="The Business Modeler Hub Preview allows you to access:"
           isOpen={true}
-          isLarge={true}
+          variant={ModalVariant.large}
           onClose={onClose}
           footer={
             <ModalBoxFooter
@@ -135,8 +136,8 @@ export function DownloadHubModal(props: {}) {
               onToggle={onSelectOsToggle}
               onSelect={onSelectOperatingSystem}
               selections={operationalSystem}
-              isExpanded={isSelectExpanded}
-              ariaLabelledBy={"select-os"}
+              isOpen={isSelectExpanded}
+              aria-labelledby={"select-os"}
               isDisabled={false}
               width={"135px"}
               direction={SelectDirection.up}
@@ -154,7 +155,7 @@ export function DownloadHubModal(props: {}) {
         <Modal
           title="Thank you for downloading Business Modeler Hub Preview!"
           isOpen={true}
-          isLarge={true}
+          variant={ModalVariant.large}
           onClose={onClose}
           footer={
             <ModalBoxFooter

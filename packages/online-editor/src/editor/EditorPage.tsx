@@ -252,13 +252,13 @@ export function EditorPage(props: Props) {
         />
       }
     >
-      <PageSection isFilled={true} noPadding={true} noPaddingMobile={true} style={{ flexBasis: "100%" }}>
+      <PageSection isFilled={true} padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
         {!fullscreen && copySuccessAlertVisible && (
           <div className={"kogito--alert-container"}>
             <Alert
               variant="success"
               title="Content copied to clipboard"
-              action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
+              actionClose={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
             />
           </div>
         )}
@@ -267,7 +267,7 @@ export function EditorPage(props: Props) {
             <Alert
               variant="warning"
               title="Unsaved changes will be lost."
-              action={
+              actionClose={
                 <AlertActionCloseButton
                   data-testid="unsaved-alert-close-button"
                   onClose={() => setShowUnsavedAlert(false)}

@@ -487,7 +487,7 @@ export function HomePage(props: Props) {
               isOpen={isLinkDropdownOpen}
               toggle={
                 <DropdownToggle
-                  iconComponent={null}
+                  icon={null}
                   onToggle={setIsLinkDropdownOpen}
                   aria-label="External links to extensions"
                 >
@@ -503,7 +503,7 @@ export function HomePage(props: Props) {
               position="right"
               isOpen={isUserDropdownOpen}
               toggle={
-                <DropdownToggle iconComponent={null} onToggle={setIsUserDropdownOpen} aria-label="Links">
+                <DropdownToggle icon={null} onToggle={setIsUserDropdownOpen} aria-label="Links">
                   <OutlinedQuestionCircleIcon />
                 </DropdownToggle>
               }
@@ -519,7 +519,7 @@ export function HomePage(props: Props) {
     <PageHeader
       logo={<Brand src={"images/BusinessModeler_Logo_38x389.svg"} alt="Logo" />}
       logoProps={logoProps}
-      toolbar={headerToolbar}
+      headerTools={headerToolbar}
     />
   );
 
@@ -546,7 +546,7 @@ export function HomePage(props: Props) {
         </TextContent>
       </PageSection>
       <PageSection className="pf-u-px-2xl-on-lg">
-        <Gallery gutter="lg" className="kogito--editor-landing__gallery">
+        <Gallery hasGutter={true} className="kogito--editor-landing__gallery">
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
@@ -633,14 +633,14 @@ export function HomePage(props: Props) {
                   label="URL"
                   fieldId="url-text-input"
                   data-testid="url-form-input"
-                  isValid={isUrlInputTextValid}
+                  validated={isUrlInputTextValid ? "default" : "error"}
                   helperText={helperMessageForInputFileFromUrlState}
                   helperTextInvalid={helperInvalidMessageForInputFileFromUrlState}
                 >
                   <TextInput
                     isRequired={true}
                     onBlur={onInputFileFromUrlBlur}
-                    isValid={isUrlInputTextValid}
+                    validated={isUrlInputTextValid ? "default" : "error"}
                     autoComplete={"off"}
                     value={inputFileUrl}
                     onChange={inputFileFromUrlChanged}

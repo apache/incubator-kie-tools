@@ -194,7 +194,7 @@ export function EditorToolbar(props: Props) {
                 id={"toggle-id-lg"}
                 className={"kogito--editor__toolbar-toggle-icon-button"}
                 onToggle={isOpen => setMenuOpen(isOpen)}
-                iconComponent={CaretDownIcon}
+                icon={CaretDownIcon}
               >
                 File actions
               </DropdownToggle>
@@ -215,7 +215,7 @@ export function EditorToolbar(props: Props) {
                 className={"kogito--editor__toolbar-toggle-icon-button"}
                 id={"toggle-id-sm"}
                 onToggle={isOpen => setKebabOpen(isOpen)}
-                iconComponent={EllipsisVIcon}
+                icon={EllipsisVIcon}
               />
             }
             isOpen={isKebabOpen}
@@ -256,7 +256,7 @@ export function EditorToolbar(props: Props) {
     <PageHeader
       logo={<Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} />}
       logoProps={logoProps}
-      toolbar={headerToolbar}
+      headerTools={headerToolbar}
       topNav={filenameInput}
       className={"kogito--editor__toolbar"}
     />
