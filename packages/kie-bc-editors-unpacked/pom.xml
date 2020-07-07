@@ -37,9 +37,9 @@
     </repositories>
 
     <properties>
-        <version.dmn.webapp>7.38.0.Final</version.dmn.webapp>
-        <version.bpmn.webapp>7.38.0.Final</version.bpmn.webapp>
-        <version.scesim.webapp>7.38.0.Final</version.scesim.webapp>
+        <version.dmn.webapp>7.40.0.20200703</version.dmn.webapp>
+        <version.bpmn.webapp>7.40.0.20200703</version.bpmn.webapp>
+        <version.scesim.webapp>7.40.0.20200703</version.scesim.webapp>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

@@ -1,32 +1,35 @@
-We are happy to announce a fresh new Kogito Tooling release! 🎉
+# 0.6.0 (alpha)
 
-On this release, we did a lot of improvements and bug fixes. The highlight of this release is that the VS Code team released today Custom Binary Editor support and we are finally able to run our VS Code extension without experimental features parameters. \o/
-
-**NOTE**: This release only works on VS Code 1.46.0 and later.
-
-
-New features
----
-
+## New features
 VS Code
-
-- [KOGITO-2385](https://issues.redhat.com/browse/KOGITO-2385) Adapt to new VSCode API 1.46.0
-- [KOGITO-1777](https://issues.redhat.com/browse/KOGITO-1777) VSCode Store Extension Release
-- [KOGITO-1802](https://issues.redhat.com/browse/KOGITO-1802) Create new VSCode Extensions Distributions
-- [KOGITO-1803](https://issues.redhat.com/browse/KOGITO-1803) Plug VSCode extensions on RH Developers CI
-
-Fixed issues
----
- 
-VS Code
-
-- [KOGITO-1034](https://issues.redhat.com/browse/KOGITO-1034) VSCode standard keyboard shortcuts don't work while extension is enabled
-- [KOGITO-1748](https://issues.redhat.com/browse/KOGITO-1748) VSCode editor - Package property is empty when the process is created
-- [KOGITO-2128](https://issues.redhat.com/browse/KOGITO-2128) Cannot open a diagram on a new VsCode window
-- [KOGITO-2343](https://issues.redhat.com/browse/KOGITO-2343) Shortcuts are always active for nodes (conflict)
+- [KOGITO-2076](https://issues.redhat.com/browse/KOGITO-2076) Open File API
+- [KOGITO-2180](https://issues.redhat.com/browse/KOGITO-2180) Use KeyboardShortcutsAPI with StateControlAPI (Undo/Redo)
+- [KOGITO-2542](https://issues.redhat.com/browse/KOGITO-2542) Update Hub to install VS Code extension from Marketplace
+- [KOGITO-766](https://issues.redhat.com/browse/KOGITO-766) Keyboard Shortcuts API
+- [KOGITO-1373](https://issues.redhat.com/browse/KOGITO-1373) Integrate the new StateControl API (Undo/Redo/Is Dirty) on the different channels
+- [KOGITO-2132](https://issues.redhat.com/browse/KOGITO-2132) Adapt to new VS Code 1.46
 
 Editors
+- [KOGITO-1776](https://issues.redhat.com/browse/KOGITO-1776) [DMN Designer] Create a "Load Projects From Client" button
+- [KOGITO-2615](https://issues.redhat.com/browse/KOGITO-2615) [Guided Tour - DMN] All anchors in the DMN guide tour must be target="_blank"
+- [KOGITO-2137](https://issues.redhat.com/browse/KOGITO-2137) [Scesim Editor] Integrate SceSim with State Control API
+- [KOGITO-2337](https://issues.redhat.com/browse/KOGITO-2337) [SCESIM Editor] Enable UNDO/REDO
+- [KOGITO-697](https://issues.redhat.com/browse/KOGITO-697) [DMN Designer] Support Included Models on Kogito
 
-- [KOGITO-1747](https://issues.redhat.com/browse/KOGITO-1747) [Scesim Editor] Cannot use list data type inside structure
-- [KOGITO-2189](https://issues.redhat.com/browse/KOGITO-2189) [Scesim Editor] Columns widths are not correctly saved
-- [KOGITO-1722](https://issues.redhat.com/browse/KOGITO-1722) [Scesim Editor] Remove "Run scenario" from context menu
+## Fixed issues
+VS Code
+- [KOGITO-745](https://issues.redhat.com/browse/KOGITO-745) Command Y to undo isn't mapped
+- [KOGITO-2490](https://issues.redhat.com/browse/KOGITO-2490) Shortcuts should not be triggered when typing on text inputs
+- [KOGITO-2493](https://issues.redhat.com/browse/KOGITO-2493) Update and use @types/vscode
+- [KOGITO-2580](https://issues.redhat.com/browse/KOGITO-2580) Add noImplicitAny property back into tsconfig.json
+- [KOGITO-2581](https://issues.redhat.com/browse/KOGITO-2581) Delete isDirty method on core-api
+
+Editors
+- [KOGITO-1196](https://issues.redhat.com/browse/KOGITO-1196) Editor goes back horizontally when diagram is bigger than default
+- [KOGITO-1661](https://issues.redhat.com/browse/KOGITO-1661) BPMN Examples have 'null' in process type property
+- [KOGITO-1818](https://issues.redhat.com/browse/KOGITO-1818) Adding node behaves unexpectedly when node has an outgoing edge without target
+- [KOGITO-1997](https://issues.redhat.com/browse/KOGITO-1997) Stunner - Process metadata attribute value should be a free string
+- [KOGITO-2166](https://issues.redhat.com/browse/KOGITO-2166) VS Code editor - Package property: default is not a valid Java package name
+- [KOGITO-2510](https://issues.redhat.com/browse/KOGITO-2510) kie-tooling-store DMN packing don't add scesim as languages and custom editor
+- [KOGITO-1552](https://issues.redhat.com/browse/KOGITO-1552) [DMN Designer] Open a DMN file with an included model - DRG Elements
+- [KOGITO-1553](https://issues.redhat.com/browse/KOGITO-1553) [DMN Designer] Open a DMN file with an included model - Included Models tab
