@@ -29,14 +29,6 @@ jobs:
           echo ::set-output name=version::$(node -e "console.log(require('./lerna.json').version);")
         shell: bash
 
-      # This bash script will set an output yarn.lock md5 for this step. It can be used with steps.yarn-lock-md5.outputs.md5
-      - name: Output yarn.lock md5
-        id: yarn-lock-md5
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          echo ::set-output name=md5::$(md5sum yarn.lock)
-        shell: bash
-
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
@@ -56,7 +48,7 @@ jobs:
         id: check-yarn-lock-md5
         if: matrix.os == 'ubuntu-latest'
         run: |
-          [ "${{ steps.yarn-lock-md5.outputs.md5 }}" == "$(md5sum yarn.lock)" ]
+          [ "0" == "$(git diff yarn.lock | wc -l)" ]
         shell: bash
 
       - name: "Build :: prod and pack"
