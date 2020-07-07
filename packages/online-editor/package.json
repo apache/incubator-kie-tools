@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/online-editor",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -10,10 +10,10 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.5.2",
-    "@kogito-tooling/guided-tour": "0.5.2",
-    "@kogito-tooling/embedded-editor": "0.5.2",
-    "@kogito-tooling/patternfly-base": "0.5.2",
+    "@kogito-tooling/core-api": "0.6.0",
+    "@kogito-tooling/embedded-editor": "0.6.0",
+    "@kogito-tooling/guided-tour": "0.6.0",
+    "@kogito-tooling/patternfly-base": "0.6.0",
     "@octokit/rest": "16.35.0",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",

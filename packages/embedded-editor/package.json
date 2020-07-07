@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/embedded-editor",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -13,12 +13,12 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.5.2",
-    "@kogito-tooling/guided-tour": "0.5.2",
-    "@kogito-tooling/kie-bc-editors": "0.5.2",
-    "@kogito-tooling/microeditor-envelope": "0.5.2",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.5.2",
-    "@kogito-tooling/patternfly-base": "0.5.2"
+    "@kogito-tooling/core-api": "0.6.0",
+    "@kogito-tooling/guided-tour": "0.6.0",
+    "@kogito-tooling/kie-bc-editors": "0.6.0",
+    "@kogito-tooling/microeditor-envelope": "0.6.0",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.6.0",
+    "@kogito-tooling/patternfly-base": "0.6.0"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
