@@ -254,6 +254,24 @@
     [[ "${output}" != *"--tests.image-cache-mode"* ]]
 }
 
+@test "invoke run-tests with http_retry_nb" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --http_retry_nb 3 --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.http-retry-nb=3" ]]
+}
+
+@test "invoke run-tests with http_retry_nb missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --http_retry_nb --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.http-retry-nb"* ]]
+}
+
+@test "invoke run-tests with http_retry_nb empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --http_retry_nb "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.http-retry-nb"* ]]
+}
+
 # operator information
 
 @test "invoke run-tests with operator_image" {
