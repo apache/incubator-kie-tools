@@ -150,9 +150,6 @@ Feature: Deploy quarkus service
       | native   | minutes |
       | disabled | 10      |
 
-    # Disabled until Quarkus 1.6+ is used due to https://github.com/quarkusio/quarkus/issues/9954 
-    # Follow-up issue: https://issues.redhat.com/browse/KOGITO-2616
-    @disabled
     @native
     Examples:
       | native  | minutes |
