@@ -48,6 +48,7 @@ jobs:
         id: check-yarn-lock-md5
         if: matrix.os == 'ubuntu-latest'
         run: |
+          git diff yarn.lock;
           [ "0" == "$(git diff yarn.lock | wc -l)" ]
         shell: bash
 
