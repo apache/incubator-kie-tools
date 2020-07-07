@@ -20,6 +20,7 @@ export interface EnvelopeBusMessage<D, T> {
   busId?: string; // Used for messages going from the envelope to the channel
   requestId?: string; // Used when purpose is REQUEST or RESPONSE
   purpose: EnvelopeBusMessagePurpose;
+  error?: any; //Used on RESPONSES when an exception happens when processing a request
 }
 
 export enum EnvelopeBusMessagePurpose {

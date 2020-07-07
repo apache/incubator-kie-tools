@@ -88,7 +88,11 @@ export class EnvelopeBusMessageManager<
     });
   }
 
-  private respond<T>(request: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide>>, data: T): void {
+  private respond<T>(
+    request: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide>>,
+    data: T,
+    error?: any
+  ): void {
     if (request.purpose !== EnvelopeBusMessagePurpose.REQUEST) {
       throw new Error("Cannot respond a message that is not a request");
     }
@@ -101,7 +105,8 @@ export class EnvelopeBusMessageManager<
       requestId: request.requestId,
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       type: request.type as FunctionPropertyNames<ApiToProvide>,
-      data: data
+      data: data,
+      error: error
     });
   }
 
@@ -119,7 +124,13 @@ export class EnvelopeBusMessageManager<
     }
 
     this.callbacks.delete(response.requestId);
-    callback.resolve(response.data);
+
+    if (!response.error) {
+      callback.resolve(response.data);
+    } else {
+      console.error(JSON.stringify(response.error));
+      callback.reject(response.error);
+    }
   }
 
   private receive(
@@ -134,14 +145,14 @@ export class EnvelopeBusMessageManager<
 
     if (message.purpose === EnvelopeBusMessagePurpose.REQUEST) {
       // We can only receive requests for the API we provide.
-      const method = message.type as FunctionPropertyNames<ApiToProvide>;
-      const response = this.api[method].apply(this.api, message.data);
+      const request = message as EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide>>;
+
+      const response = this.api[request.type].apply(this.api, request.data);
       if (!(response instanceof Promise)) {
-        throw new Error(`Cannot make a request to '${message.type}' because it does not return a Promise`);
+        throw new Error(`Cannot make a request to '${request.type}' because it does not return a Promise`);
       }
 
-      // We can only respond to the API we provide.
-      response.then(r => this.respond(message as EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide>>, r));
+      response.then(data => this.respond(request, data)).catch(err => this.respond(request, undefined, err));
       return;
     }
 
