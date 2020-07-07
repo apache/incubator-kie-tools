@@ -34,7 +34,7 @@ jobs:
         id: yarn-lock-md5
         if: matrix.os == 'ubuntu-latest'
         run: |
-          echo ::set-output name=md5::$(md5 yarn.lock)")
+          echo ::set-output name=md5::$(md5 yarn.lock)
         shell: bash
 
       - name: Setup Node
@@ -56,7 +56,7 @@ jobs:
         id: check-yarn-lock-md5
         if: matrix.os == 'ubuntu-latest'
         run: |
-          [ "${{ steps.yarn-lock-md5.outputs.md5 }}" == "$(md5 yarn.lock);")" ]
+          [ "${{ steps.yarn-lock-md5.outputs.md5 }}" == "$(md5 yarn.lock)" ]
         shell: bash
 
       - name: "Build :: prod and pack"
