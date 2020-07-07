@@ -30,6 +30,7 @@ func (data *Data) localServiceBuiltByMaven(serviceName string) error {
 	serviceRepositoryPath := data.KogitoExamplesLocation + "/" + serviceName
 	output, err := framework.CreateMavenCommand(serviceRepositoryPath).
 		SkipTests().
+		UpdateArtifacts().
 		WithLoggerContext(data.Namespace).
 		Execute("clean", "package")
 	framework.GetLogger(data.Namespace).Debugf(output)
@@ -41,6 +42,7 @@ func (data *Data) localServiceBuiltByMavenWithProfile(serviceName, profile strin
 	serviceRepositoryPath := data.KogitoExamplesLocation + "/" + serviceName
 	output, err := framework.CreateMavenCommand(serviceRepositoryPath).
 		SkipTests().
+		UpdateArtifacts().
 		Profiles(profile).
 		WithLoggerContext(data.Namespace).
 		Execute("clean", "package")

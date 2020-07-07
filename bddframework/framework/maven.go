@@ -40,6 +40,8 @@ type MavenCommand interface {
 
 	// SkipTests will skip testing automatically
 	SkipTests() MavenCommand
+	// UpdateArtifacts will force the update of local artifacts
+	UpdateArtifacts() MavenCommand
 	// Profiles sets the profiles to execute
 	Profiles(profiles ...string) MavenCommand
 }
@@ -48,9 +50,10 @@ type mavenCommandStruct struct {
 	directory     string
 	loggerContext string
 
-	profiles     []string
-	otherOptions []string
-	skipTests    bool
+	profiles        []string
+	otherOptions    []string
+	skipTests       bool
+	updateArtifacts bool
 }
 
 func (mvnCmd *mavenCommandStruct) WithLoggerContext(loggerContext string) MavenCommand {
@@ -65,6 +68,11 @@ func (mvnCmd *mavenCommandStruct) InDirectory(directory string) MavenCommand {
 
 func (mvnCmd *mavenCommandStruct) SkipTests() MavenCommand {
 	mvnCmd.skipTests = true
+	return mvnCmd
+}
+
+func (mvnCmd *mavenCommandStruct) UpdateArtifacts() MavenCommand {
+	mvnCmd.updateArtifacts = true
 	return mvnCmd
 }
 
@@ -85,6 +93,10 @@ func (mvnCmd *mavenCommandStruct) Execute(targets ...string) (string, error) {
 
 	if mvnCmd.skipTests {
 		mvnCmd.otherOptions = append(mvnCmd.otherOptions, "-DskipTests")
+	}
+
+	if mvnCmd.updateArtifacts {
+		mvnCmd.otherOptions = append(mvnCmd.otherOptions, "-U")
 	}
 
 	args = append(args, targets...)
