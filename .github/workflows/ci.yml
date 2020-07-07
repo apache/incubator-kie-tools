@@ -22,11 +22,19 @@ jobs:
       - uses: actions/checkout@v2
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
-      # This bash script will set an output for this step. It can be used with steps.version.outputs.version
+      # This bash script will set an output version for this step. It can be used with steps.version.outputs.version
       - name: Output version
         id: version
         run: |
           echo ::set-output name=version::$(node -e "console.log(require('./lerna.json').version);")
+        shell: bash
+
+      # This bash script will set an output yarn.lock md5 for this step. It can be used with steps.yarn-lock-md5.outputs.md5
+      - name: Output yarn.lock md5
+        id: yarn-lock-md5
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          echo ::set-output name=md5::$(md5 yarn.lock);")
         shell: bash
 
       - name: Setup Node
@@ -43,6 +51,13 @@ jobs:
 
       - name: Download dependencies
         run: yarn run init
+
+      - name: Check yarn.lock md5
+        id: check-yarn-lock-md5
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          [ "${{ steps.yarn-lock-md5.outputs.md5 }}" == "$(md5 yarn.lock);")" ]
+        shell: bash
 
       - name: "Build :: prod and pack"
         run: yarn run build:prod
