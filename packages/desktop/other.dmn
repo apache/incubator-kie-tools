@@ -1,0 +1,31 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_56FBFAA6-5996-4F3D-925A-386F03644E76" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_EB50BA17-C319-4314-B18B-7315E3DC37E6" name="unsaved file" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_56FBFAA6-5996-4F3D-925A-386F03644E76">
+  <dmn:extensionElements/>
+  <dmn:businessKnowledgeModel id="_736815E7-983A-4910-8420-C4A54F05BB8B" name="BusinessKnowledgeModel-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_F2DC30C8-499E-4C47-9605-1DD60EC87C44" name="BusinessKnowledgeModel-1"/>
+    <dmn:encapsulatedLogic id="_B4C322C8-CFA5-43E2-8901-78431B49B95A" kind="FEEL">
+      <dmn:literalExpression id="_056AE5D1-D8DB-4647-83C0-FD8E5E38FEF1">
+        <dmn:text/>
+      </dmn:literalExpression>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_056AE5D1-D8DB-4647-83C0-FD8E5E38FEF1"/>
+          <kie:ComponentWidths dmnElementRef="_B4C322C8-CFA5-43E2-8901-78431B49B95A"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-_736815E7-983A-4910-8420-C4A54F05BB8B" dmnElementRef="_736815E7-983A-4910-8420-C4A54F05BB8B" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="484" y="290" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

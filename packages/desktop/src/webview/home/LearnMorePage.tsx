@@ -49,7 +49,7 @@ export function LearnMorePage() {
 
   return (
     <PageSection>
-      <Grid sm={12} lg={6} gutter="lg">
+      <Grid sm={12} lg={6} hasGutter={true}>
         <Card className={"''"}>
           <CardHeader className={"''"}>
             <Title size={"lg"} className={"''"} headingLevel={"h2"}>
@@ -130,7 +130,7 @@ export function LearnMorePage() {
             </Title>
           </CardHeader>
           <CardBody className={"''"}>
-            <Split gutter="lg">
+            <Split hasGutter={true}>
               <SplitItem isFilled={true}>
                 These simple BPMN and DMN editors are here to allow you to collaborate quickly and to help introduce you
                 to the new tools and capabilities of Process Automation. Feel free to get in touch in the

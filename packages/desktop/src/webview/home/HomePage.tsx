@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { Brand, Nav, NavItem, NavList, Page, PageHeader, PageSidebar } from "@patternfly/react-core";
+import { Brand, Nav, NavItem, NavList, Page, PageHeader, PageSection, PageSidebar } from "@patternfly/react-core";
 import { useCallback, useState } from "react";
 import { FilesPage } from "./FilesPage";
 import { LearnMorePage } from "./LearnMorePage";
@@ -41,7 +41,7 @@ export function HomePage(props: Props) {
   const header = <PageHeader logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Business Modeler Logo" />} />;
 
   const navigation = (
-    <Nav onSelect={onNavSelect} className={"pf-m-dark"}>
+    <Nav onSelect={onNavSelect} theme={"dark"}>
       <NavList>
         <NavItem itemId={NavItems.FILES} isActive={activeNavItem === NavItems.FILES}>
           Files
@@ -53,14 +53,16 @@ export function HomePage(props: Props) {
     </Nav>
   );
 
-  const sidebar = <PageSidebar nav={navigation} isNavOpen={true} className={"pf-m-dark"} />;
+  const sidebar = <PageSidebar nav={navigation} isNavOpen={true} theme={"dark"} />;
 
   return (
     <Page header={header} sidebar={sidebar} className={"kogito--editor-landing"}>
-      {activeNavItem === NavItems.FILES && (
-        <FilesPage openFile={props.openFile} openFileByPath={props.openFileByPath} />
-      )}
-      {activeNavItem === NavItems.LEARN_MORE && <LearnMorePage />}
+      <PageSection>
+        {activeNavItem === NavItems.FILES && (
+          <FilesPage openFile={props.openFile} openFileByPath={props.openFileByPath} />
+        )}
+        {activeNavItem === NavItems.LEARN_MORE && <LearnMorePage />}
+      </PageSection>
     </Page>
   );
 }

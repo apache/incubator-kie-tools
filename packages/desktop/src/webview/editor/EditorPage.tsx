@@ -257,7 +257,7 @@ export function EditorPage(props: Props) {
 
   return (
     <Page className={"kogito--editor-page"}>
-      <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
+      <PageSection variant="dark" padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
         <Stack>
           <StackItem>
             <EditorToolbar onClose={onClose} onSave={onSave} isEdited={isDirty}/>
@@ -268,7 +268,7 @@ export function EditorPage(props: Props) {
                 <Alert
                   variant="warning"
                   title="Unsaved changes will be lost."
-                  action={
+                  actionClose={
                     <AlertActionCloseButton
                       data-testid="unsaved-alert-close-button"
                       onClose={() => setShowUnsavedAlert(false)}
@@ -295,7 +295,7 @@ export function EditorPage(props: Props) {
                 <Alert
                   variant="success"
                   title="Content copied to clipboard"
-                  action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
+                  actionClose={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
                 />
               </div>
             )}
@@ -304,7 +304,7 @@ export function EditorPage(props: Props) {
                 <Alert
                   variant="success"
                   title={"File saved successfully!"}
-                  action={<AlertActionCloseButton onClose={closeSaveFileSuccessAlert} />}
+                  actionClose={<AlertActionCloseButton onClose={closeSaveFileSuccessAlert} />}
                 />
               </div>
             )}
@@ -313,7 +313,7 @@ export function EditorPage(props: Props) {
                 <Alert
                   variant="success"
                   title={"Preview saved successfully!"}
-                  action={<AlertActionCloseButton onClose={closeSavePreviewSuccessAlert} />}
+                  actionClose={<AlertActionCloseButton onClose={closeSavePreviewSuccessAlert} />}
                 />
               </div>
             )}

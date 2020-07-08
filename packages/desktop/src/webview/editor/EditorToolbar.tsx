@@ -86,7 +86,7 @@ export function EditorToolbar(props: Props) {
       logo={
         <Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} onClick={props.onClose} />
       }
-      toolbar={headerToolbar}
+      headerTools={headerToolbar}
       topNav={fileNameTitle}
       className={"kogito--editor__toolbar"}
     />
