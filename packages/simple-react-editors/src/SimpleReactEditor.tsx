@@ -54,10 +54,6 @@ export class SimpleReactEditor extends React.Component<Props, State> {
     return this.state.content;
   }
 
-  public isDirty(): boolean {
-    throw new Error("Method not implemented.");
-  }
-
   public getPreview(): Promise<string | undefined> {
     throw new Error("Method not implemented.");
   }

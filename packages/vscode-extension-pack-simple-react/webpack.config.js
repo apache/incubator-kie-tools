@@ -15,7 +15,7 @@
  */
 
 const path = require("path");
-const pfWebpackUtils = require("../patternfly-base/webpackUtils");
+const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
 
 const commonConfig = {
   mode: "development",

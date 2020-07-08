@@ -3,7 +3,7 @@
   "displayName": "KIE :: Kogito Simple React Editor",
   "description": "",
   "main": "./dist/extension/extension.js",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.46.0"
@@ -71,9 +71,9 @@
     "webpack-cli": "3.3.10"
   },
   "dependencies": {
-    "@kogito-tooling/patternfly-base": "0.5.1",
-    "@kogito-tooling/microeditor-envelope": "0.5.1",
-    "@kogito-tooling/vscode-extension": "0.5.1",
-    "simple-react-editors": "0.5.1"
+    "@kogito-tooling/microeditor-envelope": "0.6.0",
+    "@kogito-tooling/patternfly-base": "0.6.0",
+    "@kogito-tooling/vscode-extension": "0.6.0",
+    "simple-react-editors": "0.6.0"
   }
 }

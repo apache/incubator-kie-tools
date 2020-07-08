@@ -1134,75 +1134,92 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@kogito-tooling/chrome-extension@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/chrome-extension/-/chrome-extension-0.5.1.tgz#ccd2f73f5f2f6ddbf9cabf5cebbb6d0c854ae18f"
-  integrity sha512-H/1paUGZ01z2BKj/7BM9gjXB32Eo/rprvns70pGi4/os+jIlqz4lvMddKlClliXkTZ0PpqVEQOFbZPiOEeyXAg==
+"@kogito-tooling/chrome-extension@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/chrome-extension/-/chrome-extension-0.6.0.tgz#b1a4efe211601bf665b69deae9ecff18eb17692a"
+  integrity sha512-yC5PSTuH7Y2uvVLoyuIfoABvbBC9Q5AKv8n3oEymtEDQd5M0ox7RpqrTkpdeYv/TLoGm5F4NKrBB5VB/rMKegw==
   dependencies:
-    "@kogito-tooling/embedded-editor" "0.5.1"
+    "@kogito-tooling/embedded-editor" "0.6.0"
     "@octokit/rest" "16.35.0"
     "@types/chrome" "0.0.81"
     minimatch "3.0.4"
 
-"@kogito-tooling/core-api@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/core-api/-/core-api-0.5.1.tgz#037bceca3836161644851f013e0ec66affc7a6e1"
-  integrity sha512-FiE2o2g+I0HgDx6n1tJm1dI4v3/XCdkY/siLR4pYUWGMrRAwumSM9v97XCP5mqoWTOvi8GYeJZ8niiBUYfDcVQ==
+"@kogito-tooling/core-api@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/core-api/-/core-api-0.6.0.tgz#e77a614070370b8115f53a42da384af849991d1c"
+  integrity sha512-xWl9/PjUfTJsZjNQWEB6x9iheN2RSwZ3wYksvEMlBFtAIlYGgiUaQqvZUtFVUBrmVRNNlsRqKgZZ48OgxyffEA==
   dependencies:
     react "16.12.0"
     react-dom "16.12.0"
 
-"@kogito-tooling/embedded-editor@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/embedded-editor/-/embedded-editor-0.5.1.tgz#5520a01c028569cbda00d3364e3d66ecfdeb4aa5"
-  integrity sha512-tRozCgKYZ4uQCY86wJV2akkQPFEcDMkVnjxFiKCipxDCwUyqQCBXOuInXzDK460V/tC0FlpYz8OXY/sf8ZXnvA==
+"@kogito-tooling/embedded-editor@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/embedded-editor/-/embedded-editor-0.6.0.tgz#9a338c2b65d8bbe694e54d4a03fc63d2d1eed3a9"
+  integrity sha512-3j4xm4ZvPUcUSP5puytxAVQdRjNF5Y6DlQNzmYncM/zpeSzD0O/lXw5Is67fOB66ugg0mfkVh79Rvi+G9WjhHQ==
   dependencies:
-    "@kogito-tooling/core-api" "0.5.1"
-    "@kogito-tooling/kie-bc-editors" "0.5.1"
-    "@kogito-tooling/microeditor-envelope" "0.5.1"
-    "@kogito-tooling/microeditor-envelope-protocol" "0.5.1"
+    "@kogito-tooling/core-api" "0.6.0"
+    "@kogito-tooling/guided-tour" "0.6.0"
+    "@kogito-tooling/kie-bc-editors" "0.6.0"
+    "@kogito-tooling/microeditor-envelope" "0.6.0"
+    "@kogito-tooling/microeditor-envelope-protocol" "0.6.0"
+    "@kogito-tooling/patternfly-base" "0.6.0"
 
-"@kogito-tooling/kie-bc-editors@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-bc-editors/-/kie-bc-editors-0.5.1.tgz#f12141dd5cc078aceb00d30bf88e102904074b64"
-  integrity sha512-2TEXxNBpjVnf2pRaJTJdeN/Ugo/Frchl+kAMaVVnvr939wk166R0SUAnWYKd/haXOzU9ArZH1k18pDyp44l+kg==
+"@kogito-tooling/guided-tour@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/guided-tour/-/guided-tour-0.6.0.tgz#739080b9c74b8f2a7753c08ebd2d0359a928cb94"
+  integrity sha512-o8ik/itVN8nhUxN+5QKzg7AHAQfq7CkIrxIUeevAYn6qylI9AK60NaLp6RhE5BCbho6kyZhvTfpFUojVSIfGoA==
+
+"@kogito-tooling/keyboard-shortcuts@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/keyboard-shortcuts/-/keyboard-shortcuts-0.6.0.tgz#a78f9fa891019987d3e9b443dca917da547d7255"
+  integrity sha512-X/HjnRhdWbu1nsBnar06DQHBhwsoBEV0ixT9d9j7MXAVsnfMtPfk9jRoTJ/7Je4rrL3WPGncBZ4T5fhwpuc4jA==
   dependencies:
-    "@kogito-tooling/core-api" "0.5.1"
-    "@kogito-tooling/microeditor-envelope" "0.5.1"
+    "@kogito-tooling/core-api" "0.6.0"
 
-"@kogito-tooling/microeditor-envelope-protocol@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/microeditor-envelope-protocol/-/microeditor-envelope-protocol-0.5.1.tgz#22367284e976fb67d1270051cdfedbb1eceb84d1"
-  integrity sha512-A+oXpY+E3IsOnUzFcNuwdX2s/nwmvSs7LhuQKjr/8UzI7ThUk5CtL4n2IYpqvEaBA5AE3otAwnhTTyT6mqpRoQ==
+"@kogito-tooling/kie-bc-editors@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-bc-editors/-/kie-bc-editors-0.6.0.tgz#f985db626587833fd40847f5a2026f152d0490b6"
+  integrity sha512-RXDGr6Z9nWbzXYdS1q7bHtYImoBAg3fz/bEutGOCCdfI4UWBvmy3upG06bzdil7Is+aJ8BwyQLmA+MD4NucrNw==
   dependencies:
-    "@kogito-tooling/core-api" "0.5.1"
+    "@kogito-tooling/core-api" "0.6.0"
+    "@kogito-tooling/microeditor-envelope" "0.6.0"
 
-"@kogito-tooling/microeditor-envelope@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/microeditor-envelope/-/microeditor-envelope-0.5.1.tgz#c64f431feed171b170edc05d2a692ca440a6af53"
-  integrity sha512-NUjwUzaL+JHyID1+J8wueIf0OSu7xUu2wgBZsYlALVuoNMO/SHrrEPoZd5apV/Cxf1VVNghZzTOmR/0nwYyJww==
+"@kogito-tooling/microeditor-envelope-protocol@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/microeditor-envelope-protocol/-/microeditor-envelope-protocol-0.6.0.tgz#524399a7af109f6fee855260a4974fc938cfe939"
+  integrity sha512-LhgabJjrlmYQazFEgODo9KAIf1L4ynloznYbE+tNRx3RZ/0a+HhHD6bx6HdAyWe4BEpD0yLQmdSsCfm3915bTg==
   dependencies:
-    "@kogito-tooling/core-api" "0.5.1"
-    "@kogito-tooling/microeditor-envelope-protocol" "0.5.1"
-    "@kogito-tooling/patternfly-base" "0.5.1"
+    "@kogito-tooling/core-api" "0.6.0"
+    "@kogito-tooling/guided-tour" "0.6.0"
 
-"@kogito-tooling/patternfly-base@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/patternfly-base/-/patternfly-base-0.5.1.tgz#a1645fff8ee7db80e4f69a505fa17b25f1d3ede8"
-  integrity sha512-RPS6KTsR2QWAQLnZ9Nbje8hr9sbbC9v7aarymSrc0r1EwwGXgpzNt4jyONj0xahqw/Gaov1EoB0wItwXzMW0sQ==
+"@kogito-tooling/microeditor-envelope@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/microeditor-envelope/-/microeditor-envelope-0.6.0.tgz#4e79d4aeef6900c3e817b59cf8ba4b05293942fd"
+  integrity sha512-4C8PCc/yjdlRLSDvUABrVhIlDe1a4Gy5/mDDY1qZz96BNCtKbwMY7iDAwXAx1PyQHLP/SddK3w71Byv44CnoAw==
+  dependencies:
+    "@kogito-tooling/core-api" "0.6.0"
+    "@kogito-tooling/guided-tour" "0.6.0"
+    "@kogito-tooling/keyboard-shortcuts" "0.6.0"
+    "@kogito-tooling/microeditor-envelope-protocol" "0.6.0"
+    "@kogito-tooling/patternfly-base" "0.6.0"
+
+"@kogito-tooling/patternfly-base@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/patternfly-base/-/patternfly-base-0.6.0.tgz#d5a7e54f6a5897353faa699b376125dfee6a40b2"
+  integrity sha512-nMFsS6Gfz+awEvZ8TjFpcq9Cp62hoOmqfStR6iOMxTmkGBENWRALTBwAVyRkJzfilz8FUCNxrs0D/JkDIY4U7w==
   dependencies:
     "@patternfly/patternfly" "2.71.5"
     "@patternfly/react-core" "3.153.13"
     "@patternfly/react-icons" "3.15.16"
 
-"@kogito-tooling/vscode-extension@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/vscode-extension/-/vscode-extension-0.5.1.tgz#d63ce5de05bd6202b50f183ad30f3f2807e006ab"
-  integrity sha512-or0NVhncppbhCj1Zy+qqLkQIRbP/rOZQmv5ed8usPMz+sjbyAXvo6HF2wvaMkUEUi0AknjTfVG787IicNxfh1Q==
+"@kogito-tooling/vscode-extension@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/vscode-extension/-/vscode-extension-0.6.0.tgz#b17b95ef56ea68b9ad813c6e25110f0f099f20ad"
+  integrity sha512-uKgUazEXnXYhFmVrQ4P43ZxRajz7biBdpSZemnIn/5TSUoay2kmbHm4AxZgipaPJWs0tpAudhs60+5MPMhqT7w==
   dependencies:
-    "@kogito-tooling/core-api" "0.5.1"
-    "@kogito-tooling/microeditor-envelope" "0.5.1"
-    "@kogito-tooling/microeditor-envelope-protocol" "0.5.1"
+    "@kogito-tooling/core-api" "0.6.0"
+    "@kogito-tooling/microeditor-envelope" "0.6.0"
+    "@kogito-tooling/microeditor-envelope-protocol" "0.6.0"
 
 "@lerna/add@3.18.0":
   version "3.18.0"
