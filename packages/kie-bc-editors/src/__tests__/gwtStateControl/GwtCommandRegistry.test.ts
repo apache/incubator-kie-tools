@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GwtCommandRegistryImpl } from "../../gwtStateControl";
+import { KogitoCommandRegistryImpl } from "../../gwtStateControl";
 
 class Command {
   private id: string;
@@ -34,7 +34,7 @@ const innerMessageHandler = jest.fn(() => ({
 
 let messageBus: any;
 
-let registry: GwtCommandRegistryImpl<Command>;
+let registry: KogitoCommandRegistryImpl<Command>;
 
 const COMMAND1 = new Command("1");
 const COMMAND2 = new Command("2");
@@ -45,7 +45,7 @@ describe("DefaultKogitoCommandRegistry", () => {
   beforeEach(() => {
     messageBus = new innerMessageHandler();
 
-    registry = new GwtCommandRegistryImpl<Command>(messageBus);
+    registry = new KogitoCommandRegistryImpl<Command>(messageBus);
   });
 
   test("test basic add/remove elements", () => {

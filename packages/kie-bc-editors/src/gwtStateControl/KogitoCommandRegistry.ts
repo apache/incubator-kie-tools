@@ -22,7 +22,7 @@ import { KogitoEdit } from "@kogito-tooling/core-api";
  * PUBLIC GWT EDITORS API
  * Represents a command registry API to be used on command-based editors.
  */
-export interface GwtCommandRegistry<T> {
+export interface KogitoCommandRegistry<T> {
   register(id: string, command: T): void;
   peek(): T | null;
   pop(): T | null;
@@ -32,7 +32,7 @@ export interface GwtCommandRegistry<T> {
   setMaxSize(size: number): void;
 }
 
-export class GwtCommandRegistryImpl<T> implements GwtCommandRegistry<T> {
+export class KogitoCommandRegistryImpl<T> implements KogitoCommandRegistry<T> {
   private readonly messageBus: EnvelopeBusInnerMessageHandler;
 
   private maxStackSize = 200;

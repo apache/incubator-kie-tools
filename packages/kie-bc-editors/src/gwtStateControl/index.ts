@@ -16,4 +16,4 @@
 
 export * from "./GwtStateControl";
 export * from "./GwtStateControlCommand";
-export * from "./GwtCommandRegistry";
+export * from "./KogitoCommandRegistry";
