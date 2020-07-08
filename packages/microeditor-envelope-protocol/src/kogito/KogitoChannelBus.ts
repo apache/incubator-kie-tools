@@ -29,8 +29,8 @@ export class KogitoChannelBus {
 
   public readonly manager: EnvelopeBusMessageManager<KogitoChannelApi, KogitoEnvelopeApi>;
 
-  public initPolling: any | false;
-  public initPollingTimeout: any | false;
+  public initPolling?: ReturnType<typeof setInterval>;
+  public initPollingTimeout?: ReturnType<typeof setTimeout>;
   public busId: string;
 
   public get client() {
@@ -38,8 +38,8 @@ export class KogitoChannelBus {
   }
 
   public constructor(public bus: EnvelopeBus, api: KogitoChannelApi) {
-    this.initPolling = false;
-    this.initPollingTimeout = false;
+    this.initPolling = undefined;
+    this.initPollingTimeout = undefined;
     this.manager = new EnvelopeBusMessageManager(message => this.bus.postMessage(message), api);
     this.busId = this.manager.generateRandomId();
   }
@@ -58,10 +58,10 @@ export class KogitoChannelBus {
   }
 
   public stopInitPolling() {
-    clearInterval(this.initPolling as number);
-    this.initPolling = false;
-    clearTimeout(this.initPollingTimeout as number);
-    this.initPollingTimeout = false;
+    clearInterval(this.initPolling!);
+    this.initPolling = undefined;
+    clearTimeout(this.initPollingTimeout!);
+    this.initPollingTimeout = undefined;
   }
 
   public receive(message: EnvelopeBusMessage<unknown, KogitoEnvelopeMessageTypes>) {
@@ -72,33 +72,31 @@ export class KogitoChannelBus {
     this.manager.server.receive(message);
   }
 
-  //
-
   public notify_editorUndo() {
-    this.manager.client.notify("receive_editorUndo");
+    this.client.notify("receive_editorUndo");
   }
 
   public notify_editorRedo() {
-    this.manager.client.notify("receive_editorRedo");
+    this.client.notify("receive_editorRedo");
   }
 
   public notify_contentChanged(content: EditorContent) {
-    this.manager.client.notify("receive_contentChanged", content);
+    this.client.notify("receive_contentChanged", content);
   }
 
   public request_contentResponse() {
-    return this.manager.client.request("receive_contentRequest");
+    return this.client.request("receive_contentRequest");
   }
 
   public request_previewResponse() {
-    return this.manager.client.request("receive_previewRequest");
+    return this.client.request("receive_previewRequest");
   }
 
   public request_initResponse(origin: string) {
-    return this.manager.client.request("receive_initRequest", { origin: origin, busId: this.busId });
+    return this.client.request("receive_initRequest", { origin: origin, busId: this.busId });
   }
 
   public request_guidedTourElementPositionResponse(selector: string) {
-    return this.manager.client.request("receive_guidedTourElementPositionRequest", selector);
+    return this.client.request("receive_guidedTourElementPositionRequest", selector);
   }
 }

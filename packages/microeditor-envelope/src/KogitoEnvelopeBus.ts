@@ -65,50 +65,48 @@ export class KogitoEnvelopeBus {
     this.bus.postMessage({ ...message, busId: this.associatedBusId }, this.targetOrigin);
   }
 
-  //
-
   public notify_setContentError(errorMessage: string) {
-    return this.manager.client.notify("receive_setContentError", errorMessage);
+    return this.client.notify("receive_setContentError", errorMessage);
   }
 
   public notify_ready() {
-    return this.manager.client.notify("receive_ready");
+    return this.client.notify("receive_ready");
   }
 
   public notify_newEdit(edit: KogitoEdit) {
-    return this.manager.client.notify("receive_newEdit", edit);
+    return this.client.notify("receive_newEdit", edit);
   }
 
   public notify_openFile(path: string) {
-    return this.manager.client.notify("receive_openFile", path);
+    return this.client.notify("receive_openFile", path);
   }
 
   public notify_guidedTourRefresh(userInteraction: UserInteraction) {
-    return this.manager.client.notify("receive_guidedTourUserInteraction", userInteraction);
+    return this.client.notify("receive_guidedTourUserInteraction", userInteraction);
   }
 
   public notify_guidedTourRegisterTutorial(tutorial: Tutorial) {
-    return this.manager.client.notify("receive_guidedTourRegisterTutorial", tutorial);
+    return this.client.notify("receive_guidedTourRegisterTutorial", tutorial);
   }
 
   public notify_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
-    return this.manager.client.notify("receive_stateControlCommandUpdate", stateControlCommand);
+    return this.client.notify("receive_stateControlCommandUpdate", stateControlCommand);
   }
 
   public request_languageResponse() {
-    return this.manager.client.request("receive_languageRequest");
+    return this.client.request("receive_languageRequest");
   }
 
   public request_contentResponse() {
-    return this.manager.client.request("receive_contentRequest");
+    return this.client.request("receive_contentRequest");
   }
 
   public request_resourceContent(path: string, opts?: ResourceContentOptions) {
-    return this.manager.client.request("receive_resourceContentRequest", { path: path, opts: opts });
+    return this.client.request("receive_resourceContentRequest", { path: path, opts: opts });
   }
 
   public request_resourceList(pattern: string, opts?: ResourceListOptions) {
-    return this.manager.client.request("receive_resourceListRequest", { pattern: pattern, opts: opts });
+    return this.client.request("receive_resourceListRequest", { pattern: pattern, opts: opts });
   }
 
   public receive(message: EnvelopeBusMessage<any, KogitoEnvelopeMessageTypes>) {
