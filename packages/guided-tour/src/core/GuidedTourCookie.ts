@@ -26,20 +26,29 @@ export class GuidedTourCookie {
   }
 
   private getCookie(name: string) {
-    const value = "; " + document.cookie;
-    const parts = value.split("; " + name + "=");
+    try {
+      const value = "; " + document.cookie;
+      const parts = value.split("; " + name + "=");
 
-    if (parts.length === 2) {
-      return parts
-        .pop()!
-        .split(";")
-        .shift();
+      if (parts.length === 2) {
+        return parts
+          .pop()!
+          .split(";")
+          .shift();
+      }
+    } catch (error) {
+      console.error("Cookies are not supported");
+      return "NO";
     }
   }
 
   private setCookie(name: string, value: string) {
-    const date = new Date();
-    date.setTime(date.getTime() + 365 * 24 * 60 * 60); // expires in 1 year
-    document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
+    try {
+      const date = new Date();
+      date.setTime(date.getTime() + 365 * 24 * 60 * 60); // expires in 1 year
+      document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
+    } catch (error) {
+      console.error("Cookies are not supported");
+    }
   }
 }
