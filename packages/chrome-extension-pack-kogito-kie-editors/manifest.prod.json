@@ -1,6 +1,6 @@
 {
   "name": "BPMN, DMN and Test Scenario Editors for Github",
-  "version": "0.5.2",
+  "version": "0.6.1",
   "manifest_version": 2,
   "description": "Visualize and edit BPMN, DMN and Test Scenario files using a graphical editor on GitHub",
   "content_scripts": [
@@ -22,9 +22,7 @@
     "48": "resources/icon_48.png",
     "128": "resources/icon_128.png"
   },
-  "browser_action": {
-    "default_icon": "resources/icon_16.png"
-  },
+  "browser_action": { "default_icon": "resources/icon_16.png" },
   "background": { "scripts": ["background.js"], "persistent": true },
   "web_accessible_resources": ["resources/*"],
   "permissions": [
