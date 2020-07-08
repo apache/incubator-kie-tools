@@ -58,7 +58,7 @@ func DeleteNamespace(namespace string) error {
 func IsNamespace(namespace string) (bool, error) {
 	ns, err := kubernetes.NamespaceC(kubeClient).Fetch(namespace)
 	if err != nil {
-		return false, fmt.Errorf("Cannot create namespace %s: %v", namespace, err)
+		return false, fmt.Errorf("Cannot checking namespace %s: %v", namespace, err)
 	}
 	return ns != nil, nil
 }
@@ -70,6 +70,7 @@ func OperateOnNamespaceIfExists(namespace string, operate func(namespace string)
 	} else if ok {
 		return operate(namespace)
 	}
+	GetLogger(namespace).Warn("Namespace not found for operation")
 	return nil
 }
 
