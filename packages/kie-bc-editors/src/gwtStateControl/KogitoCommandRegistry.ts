@@ -32,7 +32,7 @@ export interface KogitoCommandRegistry<T> {
   setMaxSize(size: number): void;
 }
 
-export class DefaultKogitoCommandRegistryImpl<T> implements KogitoCommandRegistry<T> {
+export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T> {
   private readonly messageBus: EnvelopeBusInnerMessageHandler;
 
   private maxStackSize = 200;
