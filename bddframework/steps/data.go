@@ -180,24 +180,22 @@ func respinZookeeperWhenStuck(data *Data) {
 		case <-scanningPeriod.C:
 			namespaceExists, err := framework.IsNamespace(data.Namespace)
 			if err != nil {
-				return
-			}
-			if namespaceExists {
+				framework.GetLogger(data.Namespace).Errorf("Error while checking existence of namespace for zookeeper workaround: %v", err)
+			} else if namespaceExists {
 				pods, err := framework.GetPodsWithLabels(data.Namespace, map[string]string{"app.kubernetes.io/name": "zookeeper"})
 				if err != nil {
-					return
-				}
-
-				for _, pod := range pods.Items {
-					// Ignore possible errors as container may not be initialized yet
-					log, _ := framework.GetContainerLog(data.Namespace, pod.GetName(), "zookeeper")
-					if strings.Contains(log, "java.io.FileNotFoundException: /tmp/zookeeper/cluster.keystore.p12") {
-						// If zookeeper is stuck just respin the pod
-						err := framework.DeletePod(&pod)
-						if err != nil {
-							framework.GetMainLogger().Errorf("Error while terminating zookeeper pod %s: %v", pod.GetName(), err)
+					framework.GetLogger(data.Namespace).Errorf("Error while getting zookeeper pods for zookeeper workaround: %v", err)
+				} else {
+					for _, pod := range pods.Items {
+						// Ignore possible errors as container may not be initialized yet
+						log, _ := framework.GetContainerLog(data.Namespace, pod.GetName(), "zookeeper")
+						if strings.Contains(log, "java.io.FileNotFoundException: /tmp/zookeeper/cluster.keystore.p12") {
+							// If zookeeper is stuck just respin the pod
+							err := framework.DeletePod(&pod)
+							if err != nil {
+								framework.GetLogger(data.Namespace).Errorf("Error while terminating zookeeper pod %s: %v", pod.GetName(), err)
+							}
 						}
-						return
 					}
 				}
 			}
