@@ -1,5 +1,13 @@
 #!/usr/bin/env bats
 
+function go() { 
+    echo "$@" 
+}
+
+setup() {
+    export -f go
+}
+
 @test "invoke run-tests with dry_run" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
     [ "$status" -eq 0 ]
