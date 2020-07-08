@@ -25,7 +25,7 @@ export class ResourceContentServiceCoordinator {
         return kogitoEnvelopeBus.request_resourceContent(path, opts).then(r => r?.content);
       },
       list(pattern: string, opts?: ResourceListOptions) {
-        return kogitoEnvelopeBus.request_resourceList(pattern, opts).then(r => r.paths);
+        return kogitoEnvelopeBus.request_resourceList(pattern, opts).then(r => r.paths.sort());
       }
     };
   }
