@@ -18,18 +18,10 @@ import * as JSONata from "jsonata";
 import { Expression } from "jsonata";
 import * as XMLJS from "xml-js";
 import { JSON2UI_TRANSFORMATION as json2ui } from "./jsonata/JSON2UI";
+import { regressionModelFactory } from "./jsonata/json2ui/RegressionModel";
+import { scorecardFactory } from "./jsonata/json2ui/Scorecard";
 import { UI2JSON_TRANSFORMATION as ui2json } from "./jsonata/UI2JSON";
-import {
-  Characteristics,
-  CompoundPredicate,
-  False,
-  FieldName,
-  MiningSchema,
-  PMML,
-  Scorecard,
-  SimplePredicate,
-  True
-} from "./model/pmml4_4";
+import { CompoundPredicate, False, FieldName, PMML, SimplePredicate, True } from "./model/pmml4_4";
 
 export function XML2PMML(xml: string): PMML {
   const doc: XMLJS.Element = XMLJS.xml2js(xml) as XMLJS.Element;
@@ -37,6 +29,7 @@ export function XML2PMML(xml: string): PMML {
   expression.registerFunction("merge", merge);
   expression.registerFunction("singletonArray", singletonArray);
   expression.registerFunction("scorecardFactory", scorecardFactory);
+  expression.registerFunction("regressionModelFactory", regressionModelFactory);
   expression.registerFunction("json2uiSimplePredicateFactory", json2uiSimplePredicateFactory);
   expression.registerFunction("json2uiCompoundPredicateFactory", json2uiCompoundPredicateFactory);
   expression.registerFunction("json2uiTruePredicateFactory", json2uiTruePredicateFactory);
@@ -78,18 +71,6 @@ function singletonArray(value: any): any[] {
     return value;
   }
   return [value];
-}
-
-//Construction of a Scorecard data-structure can be peformed in the JSONata mapping however
-//TypeScript's instanceof operator relies on the applicable constructor function having been
-//called and therefore we must instantiate the object itself. Furthermore the recurrsive hieracical
-//nature of CompoundPredicates cannot be handled by a JSONata mapping.
-function scorecardFactory(): Scorecard {
-  return new Scorecard({
-    MiningSchema: new MiningSchema({ MiningField: [] }),
-    Characteristics: new Characteristics({ Characteristic: [] }),
-    functionName: "regression"
-  });
 }
 
 function json2uiSimplePredicateFactory(): SimplePredicate {

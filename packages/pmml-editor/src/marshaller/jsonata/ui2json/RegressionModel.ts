@@ -21,74 +21,75 @@ import { MODEL_VERIFICATION } from "./ModelVerification";
 import { OUTPUT } from "./Output";
 import { TARGETS } from "./Targets";
 
-const PREDICATE: string = `[
-  $v.predicate[] ~> $map(function($v, $i) {
-    $ui2jsonPredicateFactory($v)
-  })
-]`;
-
-const COMPLEX_PARTIAL_SCORE: string = `[
-  $v.ComplexPartialScore ~> $map(function($v, $i) {
-    $v
-  })
-]`;
-
-const ATTRIBUTE: string = `
-$v.Attribute ~> $map(function($v, $i) {
-  {
-    "type": "element",
-    "name": "Attribute",
-    "attributes": {
-      "reasonCode": $v.reasonCode,
-      "partialScore": $v.partialScore
-    },
-    "elements": $append(${PREDICATE}, ${COMPLEX_PARTIAL_SCORE})
-  }
-})`;
-
-const CHARACTERISTIC: string = `[
-  $v.Characteristic ~> $map(function($v, $i) {
+const NUMERIC_PREDICTOR: string = `[
+  $v.NumericPredictor ~> $map(function($v, $i) {
     {
       "type": "element", 
-      "name": "Characteristic", 
+      "name": "NumericPredictor", 
       "attributes": {
         "name": $v.name,
-        "reasonCode": $v.reasonCode,
-        "baselineScore": $v.baselineScore
-      },
-      "elements": ${ATTRIBUTE}
+        "exponent": $v.exponent,
+        "coefficient": $v.coefficient
+      }
     }
   })
 ]`;
 
-const CHARACTERISTICS: string = `
-$v.Characteristics ~> $map(function($v, $i) {
-  {
-    "type": "element",
-    "name": "Characteristics",
-    "elements": ${CHARACTERISTIC}
-  }
-})`;
+const CATEGORICAL_PREDICTOR: string = `[
+  $v.CategoricalPredictor ~> $map(function($v, $i) {
+    {
+      "type": "element", 
+      "name": "CategoricalPredictor", 
+      "attributes": {
+        "name": $v.name,
+        "value": $v.value,
+        "coefficient": $v.coefficient
+      }
+    }
+  })
+]`;
 
-export const SCORE_CARD: string = `[
-  models[(_type = "Scorecard")] ~> $map(function($v, $i) {
+const PREDICTOR_TERM: string = `[
+  $v.PredictorTerm ~> $map(function($v, $i) {
+    $v
+  })
+]`;
+
+const REGRESSION_TABLE: string = `[
+  $v.RegressionTable ~> $map(function($v, $i) {
+    {
+      "type": "element", 
+      "name": "RegressionTable", 
+      "attributes": {
+        "intercept": $v.intercept,
+        "targetCategory": $v.targetCategory 
+      },
+      "elements": $append(${NUMERIC_PREDICTOR},
+                    $append(${CATEGORICAL_PREDICTOR},
+                      $append([], ${PREDICTOR_TERM})
+                    )
+                  )
+    }
+  })
+]`;
+
+export const REGRESSION_MODEL: string = `[
+  models[(_type = "RegressionModel")] ~> $map(function($v, $i) {
     {
       "type": "element",
-      "name": "Scorecard",
+      "name": "RegressionModel",
       "attributes": {
         "modelName": $v.modelName,
         "functionName": $v.functionName,
         "algorithmName": $v.algorithmName,
-        "initialScore": $v.initialScore,
-        "useReasonCodes": $v.useReasonCodes,
-        "reasonCodeAlgorithm": $v.reasonCodeAlgorithm,
-        "baselineScore": $v.baselineScore,
-        "baselineMethod": $v.baselineMethod,
+        "modelType": $v.modelType,
+        "targetFieldName": $v.targetFieldName,
+        "normalizationMethod": $v.normalizationMethod,
         "isScorable": $v.isScorable
       },
-      "elements": $append(${MINING_SCHEMA}, 
+      "elements": $append(${MINING_SCHEMA},
                     $append(${OUTPUT}, 
-                      $append(${CHARACTERISTICS},
+                      $append(${REGRESSION_TABLE}, 
                         $append(${MODEL_STATS},
                           $append(${MODEL_EXPLANATION},
                             $append(${MODEL_VERIFICATION},

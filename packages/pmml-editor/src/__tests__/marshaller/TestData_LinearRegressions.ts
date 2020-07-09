@@ -46,7 +46,7 @@ export const LINEAR_REGRESSION_MODEL_1: string = `
 export const LINEAR_REGRESSION_MODEL_2: string = `
 <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
   <Header copyright="DMG.org"/>
-  <DataDictionary numberOfFields="2">
+  <DataDictionary numberOfFields="3">
     <DataField name="water_temperature" optype="continuous" dataType="double"/>
     <DataField name="hemisphere" optype="categorical" dataType="string">
       <Value value="northern"/>
