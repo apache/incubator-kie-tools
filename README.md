@@ -6,6 +6,8 @@
 This package extends uniforms to provide [Patternfly React](https://www.patternfly.org/v4/) components inside your forms.
 For more information about `uniforms` please go to https://uniforms.tools/ 
 
+Looking for building mobile enabled forms? Check [Uniforms-ionic](https://github.com/aerogear/uniforms-ionic) package that provides Ionic extensions
+
 ### 1. Install the required packages
 
 To start using uniforms, we have to install three independent packages:
