@@ -10,6 +10,7 @@ export type NestFieldProps = {
   fields?: any[];
   itemProps?: object;
   showInlineError?: boolean;
+  disabled?: boolean;
   name: string;
 } & HTMLProps<HTMLDivElement>;
 
@@ -22,6 +23,7 @@ const Nest = ({
   label,
   name,
   showInlineError,
+  disabled,
   ...props
 }: NestFieldProps) => {
 
@@ -35,7 +37,7 @@ const Nest = ({
           ? injectName(name, children)
           : fields?.map(key => (
               <>
-                <AutoField key={key} isDisabled={props.disabled} name={joinName(name, key)} {...itemProps} />
+                <AutoField key={key} disabled={disabled} name={joinName(name, key)} {...itemProps} />
                 {/* 
                   Not ideal to use a <br> tag, but a layout workaround that
                   won't impact further nested fields
