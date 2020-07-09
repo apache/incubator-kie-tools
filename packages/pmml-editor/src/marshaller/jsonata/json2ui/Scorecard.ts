@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Characteristics, MiningSchema, Scorecard } from "../../model/pmml4_4";
-import { LOCAL_TRANSFORMATION } from "./LocalTransformation";
+import { LOCAL_TRANSFORMATIONS } from "./LocalTransformations";
 import { MINING_SCHEMA } from "./MiningSchema";
 import { MODEL_EXPLANATION } from "./ModelExplanation";
 import { MODEL_STATS } from "./ModelStats";
@@ -70,7 +70,7 @@ elements.elements[(name = "Scorecard")] ~> $map(function($v, $i) {
       ${MODEL_EXPLANATION},
       ${MODEL_VERIFICATION},
       ${TARGETS},
-      ${LOCAL_TRANSFORMATION}
+      ${LOCAL_TRANSFORMATIONS}
     }
   ])
 })`;

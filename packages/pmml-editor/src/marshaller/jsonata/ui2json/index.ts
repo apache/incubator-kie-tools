@@ -15,7 +15,7 @@
  */
 export * from "./DataDictionary";
 export * from "./Header";
-export * from "./LocalTransformation";
+export * from "./LocalTransformations";
 export * from "./MiningSchema";
 export * from "./ModelExplanation";
 export * from "./ModelStats";

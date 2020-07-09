@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LOCAL_TRANSFORMATION } from "./LocalTransformation";
+import { LOCAL_TRANSFORMATIONS } from "./LocalTransformations";
 import { MINING_SCHEMA } from "./MiningSchema";
 import { MODEL_EXPLANATION } from "./ModelExplanation";
 import { MODEL_STATS } from "./ModelStats";
@@ -93,7 +93,7 @@ export const SCORE_CARD: string = `[
                           $append(${MODEL_EXPLANATION},
                             $append(${MODEL_VERIFICATION},
                               $append(${TARGETS},
-                                $append([], ${LOCAL_TRANSFORMATION})
+                                $append([], ${LOCAL_TRANSFORMATIONS})
                               )
                             )
                           )

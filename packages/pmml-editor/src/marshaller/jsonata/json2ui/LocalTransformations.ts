@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const LOCAL_TRANSFORMATION: string = `
+export const LOCAL_TRANSFORMATIONS: string = `
   "LocalTransformations": $v.elements[(name = "LocalTransformations")] ~> $map(function($v, $i) {
     $v
 })`;
