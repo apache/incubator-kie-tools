@@ -1,5 +1,6 @@
 import React, { HTMLProps } from 'react';
 import { connectField, joinName, injectName, filterDOMProps } from 'uniforms/es5';
+import { Card, CardBody } from '@patternfly/react-core';
 
 import AutoField from './AutoField';
 
@@ -27,16 +28,25 @@ const Nest = ({
 }: NestFieldProps) => {
 
   return (
-    <div
+    <Card
       {...filterDOMProps(props)}
     >
-      {label && <label>{label}</label>}
-      {children
-        ? injectName(name, children)
-        : fields?.map(key => (
-            <AutoField key={key} disabled={disabled} name={joinName(name, key)} {...itemProps} />
-          ))}
-    </div>
+      <CardBody>
+        {label && <label>{label}</label>}
+        {children
+          ? injectName(name, children)
+          : fields?.map(key => (
+              <>
+                <AutoField key={key} disabled={disabled} name={joinName(name, key)} {...itemProps} />
+                {/* 
+                  Not ideal to use a <br> tag, but a layout workaround that
+                  won't impact further nested fields
+                */}
+                <br />
+              </>
+        ))}
+      </CardBody>
+    </Card>
   );
   
 }

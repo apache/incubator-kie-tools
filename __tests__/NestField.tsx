@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card } from '@patternfly/react-core';
 import { AutoField, NestField } from 'uniforms-patternfly';
 
 import createContext from './_createContext';
@@ -46,8 +47,8 @@ test('<NestField> - renders custom content if given', () => {
   );
 
   expect(wrapper.find(AutoField)).toHaveLength(0);
-  expect(wrapper.find('article')).toHaveLength(1);
-  expect(wrapper.find('article').prop('data-test')).toBe('content');
+  expect(wrapper.find('article').at(1)).toHaveLength(1);
+  expect(wrapper.find('article').at(1).prop('data-test')).toBe('content');
 });
 
 test('<NestField> - renders a label', () => {
@@ -83,19 +84,19 @@ test('<NestField> - renders a wrapper with unknown props', () => {
 
   expect(
     wrapper
-      .find('div')
+      .find(Card)
       .at(0)
       .prop('data-x'),
   ).toBe('x');
   expect(
     wrapper
-      .find('div')
+      .find(Card)
       .at(0)
       .prop('data-y'),
   ).toBe('y');
   expect(
     wrapper
-      .find('div')
+      .find(Card)
       .at(0)
       .prop('data-z'),
   ).toBe('z');
