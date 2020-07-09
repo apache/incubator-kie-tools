@@ -15,12 +15,9 @@
  */
 
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
-import { DefaultXmlFormatter, GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
+import {  GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import { EnvelopeBusMessage } from "@kogito-tooling/microeditor-envelope-protocol";
 import { ChannelType, getOperatingSystem } from "@kogito-tooling/core-api";
-
-const gwtAppFormerApi = new GwtAppFormerApi();
-gwtAppFormerApi.setClientSideOnly(true);
 
 MicroEditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
@@ -29,6 +26,6 @@ MicroEditorEnvelope.init({
       window.parent.postMessage(message, targetOrigin!, _);
     }
   },
-  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi, new DefaultXmlFormatter()),
+  editorFactory: new GwtEditorWrapperFactory(),
   editorContext: { channel: ChannelType.GITHUB, operatingSystem: getOperatingSystem() }
 });
