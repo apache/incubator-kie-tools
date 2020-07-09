@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/bash
 # Copyright 2019 Red Hat, Inc. and/or its affiliates
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,12 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SCRIPT_NAME=`basename $0`
 
 function usage(){
   printf "Build the operator."
   printf "\n"
-  printf "\n${SCRIPT_NAME} [options]*"
+  printf "\n[options]*"
   printf "\n"
   printf "\nOptions:"
   printf "\n"
@@ -30,19 +29,18 @@ function usage(){
   printf "\n"
 }
 
-. ./hack/go-mod-env.sh
+# include
+source ./hack/go-mod-env.sh
+source ./hack/export-version.sh
 
 # Default values
-REPO=https://github.com/kiegroup/kogito-cloud-operator
-BRANCH=master
 REGISTRY=quay.io/kiegroup
 IMAGE=kogito-cloud-operator
 TAG=0.12.0
-TAR=${BRANCH}.tar.gz
-URL=${REPO}/archive/${TAR}
-CFLAGS="--redhat --build-tech-preview"
-BUILDER=
 BINARY_OUTPUT=build/_output/bin/kogito-cloud-operator
+
+setGoModEnv
+go generate ./...
 
 while (( $# ))
 do
@@ -75,28 +73,13 @@ case $1 in
 esac
 done
 
-setGoModEnv
-go generate ./...
-if [[ -z ${CI} ]]; then
-    ./hack/go-test.sh
-    BUILD_PARAMS=""
-    if [[ ! -z ${BUILDER} ]]; then BUILD_PARAMS="${BUILD_PARAMS} --image-builder ${BUILDER}"; fi
-    operator-sdk build ${REGISTRY}/${IMAGE}:${TAG} ${BUILD_PARAMS} --go-build-args -o=${BINARY_OUTPUT}
-    if [[ ${1} == "rhel" ]]; then
-        if [[ ${LOCAL} != true ]]; then
-            CFLAGS+=" --build-engine=osbs --build-osbs-target=??"
-            if [[ ${2} == "release" ]]; then
-                CFLAGS+=" --build-osbs-release"
-            fi
-        fi
-        wget -q ${URL} -O ${TAR}
-        MD5=$(md5sum ${TAR} | awk {'print $1'})
-        rm ${TAR}
-
-        echo "${CFLAGS}"
-        cekit build "${CFLAGS}" \
-            --overrides "{'artifacts': [{'name': 'kogito-operator.tar.gz', 'md5': '${MD5}', 'url': '${URL}'}]}"
-    fi
-else
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o ${BINARY_OUTPUT} github.com/kiegroup/kogito-cloud-operator/cmd/manager
+if [[ -z ${CUSTOM_IMAGE_TAG} ]]; then
+    CUSTOM_IMAGE_TAG=${REGISTRY}/${IMAGE}:${TAG}
 fi
+if [[ -z ${BUILDER} ]]; then
+    BUILDER=podman
+fi
+
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o ${BINARY_OUTPUT} github.com/kiegroup/kogito-cloud-operator/cmd/manager
+
+operator-sdk build "${CUSTOM_IMAGE_TAG}" --image-builder ${BUILDER}

@@ -17,15 +17,16 @@
 ./hack/go-mod.sh
 # enforce GOROOT
 export GOROOT=$(go env GOROOT)
+export GOPATH=$(go env GOPATH)
 operator-sdk generate k8s
 operator-sdk generate crds --crd-version=v1beta1
 # get the openapi binary
-which ./bin/openapi-gen > /dev/null || go build -o ./bin/openapi-gen k8s.io/kube-openapi/cmd/openapi-gen
+which openapi-gen > /dev/null || go build -o $GOPATH/bin/openapi-gen k8s.io/kube-openapi/cmd/openapi-gen
 # generate the openapi files
 echo "Generating openapi files"
-./bin/openapi-gen --logtostderr=true -o "" -i github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1 -O zz_generated.openapi -p ./pkg/apis/app/v1alpha1 -h ./hack/boilerplate.go.txt -r "-"
-./bin/openapi-gen --logtostderr=true -o "" -i github.com/kiegroup/kogito-cloud-operator/pkg/apis/kafka/v1beta1 -O zz_generated.openapi -p ./pkg/apis/kafka/v1beta1 -h ./hack/boilerplate.go.txt -r "-"
+openapi-gen --logtostderr=true -o "" -i github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1 -O zz_generated.openapi -p ./pkg/apis/app/v1alpha1 -h ./hack/boilerplate.go.txt -r "-"
+openapi-gen --logtostderr=true -o "" -i github.com/kiegroup/kogito-cloud-operator/pkg/apis/kafka/v1beta1 -O zz_generated.openapi -p ./pkg/apis/kafka/v1beta1 -h ./hack/boilerplate.go.txt -r "-"
 
-operator-sdk generate csv --csv-version 0.12.0 --update-crds --operator-name kogito-operator
+./hack/generate-manifests.sh
 
 go vet ./...
