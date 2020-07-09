@@ -3,7 +3,7 @@
 `uniforms` is a plugin for React to be able to create dynamic forms with built-in state management and form validation. 
 `uniforms` provides you with simple re-usable form components which allows for rapid prototyping and cleaner React components.
 
-This package extends uniforms to provide ![Patternfly React](https://www.patternfly.org/v4/) components inside your forms.
+This package extends uniforms to provide [Patternfly React](https://www.patternfly.org/v4/) components inside your forms.
 For more information about `uniforms` please go to https://uniforms.tools/ 
 
 ### 1. Install the required packages
