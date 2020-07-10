@@ -80,7 +80,8 @@ function waitForNScriptsToLoad(remaining: number) {
 describe("GwtEditorWrapperFactory", () => {
   test("create editor", async () => {
     const editorCreation = gwtEditorWrapperFactory.createEditor(testLanguageData, {
-      notify_ready: jest.fn()
+      notify: jest.fn(),
+      request: jest.fn()
     } as any);
 
     await waitForNScriptsToLoad(jsResource.paths.length);

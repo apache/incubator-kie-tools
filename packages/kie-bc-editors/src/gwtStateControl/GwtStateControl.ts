@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { KogitoEnvelopeBus } from "@kogito-tooling/microeditor-envelope";
 import { DefaultKogitoCommandRegistry, KogitoCommandRegistry } from "./KogitoCommandRegistry";
+import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
 
 /**
  * PUBLIC GWT EDITORS API
@@ -45,7 +45,7 @@ export class GwtStateControlService {
     }
   }
 
-  public exposeApi(messageBus: KogitoEnvelopeBus): GwtStateControlApi {
+  public exposeApi(messageBus: MessageBusClient<KogitoChannelApi>): GwtStateControlApi {
     const stateControl = this;
 
     return {

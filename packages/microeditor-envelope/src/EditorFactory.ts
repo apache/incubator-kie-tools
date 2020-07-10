@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 import { Editor, LanguageData } from "@kogito-tooling/core-api";
+import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
 
 /**
  * Factory of Editors to be created inside the envelope.
@@ -25,5 +25,5 @@ export interface EditorFactory<T extends LanguageData> {
    * Returns an Editor based on a LanguageData.
    * Receives a messageBus to be used by the Editor to communicate with the outside of the envelope.
    */
-  createEditor(languageData: T, messageBus: KogitoEnvelopeBus): Promise<Editor>;
+  createEditor(languageData: T, messageBusClient: MessageBusClient<KogitoChannelApi>): Promise<Editor>;
 }

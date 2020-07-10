@@ -53,7 +53,7 @@ export class EditorEnvelopeController {
         this.capturedInitRequestYet = true;
 
         const language = await this.kogitoEnvelopeBus.request_languageResponse();
-        const editor = await editorFactory.createEditor(language, this.kogitoEnvelopeBus);
+        const editor = await editorFactory.createEditor(language, this.kogitoEnvelopeBus.client);
 
         await this.open(editor);
         this.editorEnvelopeView!.setLoading();

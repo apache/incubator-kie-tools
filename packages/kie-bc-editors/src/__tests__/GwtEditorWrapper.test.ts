@@ -18,6 +18,8 @@ import { GwtEditorWrapper } from "../GwtEditorWrapper";
 import { GwtStateControlService } from "../gwtStateControl";
 
 const MockEditor = jest.fn(() => ({
+  undo: jest.fn(),
+  redo: jest.fn(),
   getContent: jest.fn(),
   setContent: jest.fn(() => Promise.resolve()),
   isDirty: jest.fn(),
@@ -25,13 +27,13 @@ const MockEditor = jest.fn(() => ({
 }));
 
 const mockEditor = new MockEditor();
-const mockMessageBus = { notify_setContentError: jest.fn() };
+const mockMessageBus = { notify: jest.fn(), request: jest.fn() };
 const mockXmlFormatter = { format: (c: string) => c };
 
 const wrapper = new GwtEditorWrapper(
   "MockEditorId",
   mockEditor,
-  mockMessageBus as any,
+  mockMessageBus,
   mockXmlFormatter,
   new GwtStateControlService()
 );
@@ -49,7 +51,7 @@ describe("GwtEditorWrapper", () => {
 
     await wrapper.setContent("path", " a content ");
     expect(mockEditor.setContent).toHaveBeenCalledWith("path", "a content");
-    expect(mockMessageBus.notify_setContentError).toHaveBeenCalled();
+    expect(mockMessageBus.notify).toHaveBeenCalled();
   });
 
   test("af_onOpen removes header", () => {
