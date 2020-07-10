@@ -104,6 +104,26 @@ public class ColumnIndexUtilitiesTest {
     }
 
     @Test
+    public void testGetHeaderBlockEndColumnIndexWithIndexOutOfBounds() {
+        //MetaDataGroups: [""][""][""][""]
+        assertEquals(3,
+                     ColumnIndexUtilities.getHeaderBlockEndColumnIndex(columns,
+                                                                       columns.get(0).getHeaderMetaData().get(0),
+                                                                       0,
+                                                                       4));
+    }
+
+    @Test
+    public void testGetHeaderBlockEndColumnIndexWithIndexOutOfBounds2() {
+        //MetaDataGroups: [""][""][""][""]
+        assertEquals(3,
+                     ColumnIndexUtilities.getHeaderBlockEndColumnIndex(columns,
+                                                                       columns.get(0).getHeaderMetaData().get(0),
+                                                                       0,
+                                                                       100));
+    }
+
+    @Test
     public void testGetUiHeaderRowIndex() {
         final BaseGridData model = new BaseGridData();
         columns.forEach(col -> model.appendColumn(col));

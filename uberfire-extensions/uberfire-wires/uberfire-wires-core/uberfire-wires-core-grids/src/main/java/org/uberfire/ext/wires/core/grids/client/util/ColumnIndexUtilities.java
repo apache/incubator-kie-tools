@@ -78,8 +78,8 @@ public class ColumnIndexUtilities {
                                                    final int headerColumnIndex) {
         //Forward-track adding width of following columns sharing header MetaData
         int candidateHeaderColumnIndex = headerColumnIndex;
-        if (candidateHeaderColumnIndex == allColumns.size() - 1) {
-            return candidateHeaderColumnIndex;
+        if (candidateHeaderColumnIndex >= allColumns.size() - 1) {
+            return allColumns.size() - 1;
         }
         while (candidateHeaderColumnIndex < allColumns.size() - 1) {
             final GridColumn candidateColumn = allColumns.get(candidateHeaderColumnIndex + 1);
