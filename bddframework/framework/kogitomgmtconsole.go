@@ -21,9 +21,8 @@ import (
 )
 
 // InstallKogitoManagementConsole install the Kogito Management Console component
-func InstallKogitoManagementConsole(namespace string, installerType InstallerType, replicas int) error {
-	resource := newManagementConsoleResource(namespace, replicas)
-	return InstallService(&KogitoServiceHolder{KogitoService: resource}, installerType, "mgmt-console")
+func InstallKogitoManagementConsole(installerType InstallerType, managementConsole *KogitoServiceHolder) error {
+	return InstallService(managementConsole, installerType, "mgmt-console")
 }
 
 // WaitForKogitoManagementConsoleService wait for Kogito Management Console to be deployed
@@ -35,7 +34,8 @@ func getManagementConsoleServiceName() string {
 	return infrastructure.DefaultMgmtConsoleName
 }
 
-func newManagementConsoleResource(namespace string, replicas int) *v1alpha1.KogitoMgmtConsole {
+// GetKogitoManagementConsoleResourceStub Get basic KogitoManagementConsole stub with all needed fields initialized
+func GetKogitoManagementConsoleResourceStub(namespace string, replicas int) *v1alpha1.KogitoMgmtConsole {
 	return &v1alpha1.KogitoMgmtConsole{
 		ObjectMeta: NewObjectMetadata(namespace, getManagementConsoleServiceName()),
 		Spec: v1alpha1.KogitoMgmtConsoleSpec{

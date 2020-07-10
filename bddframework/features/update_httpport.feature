@@ -24,6 +24,7 @@ Feature: Update the HTTP Port field in Kogito Services
   @kafka
   Scenario: Update HTTP Port for Management Console
     Given Kogito Operator is deployed with Infinispan and Kafka operators
+    And Install Kogito Data Index with 1 replicas
     And Kogito Data Index has 1 pods running within 10 minutes
     When Install Kogito Management Console with 1 replicas with configuration:
       | config | httpPort | 9082 |

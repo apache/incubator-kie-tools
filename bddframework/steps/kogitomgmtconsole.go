@@ -16,17 +16,34 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
+	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
 // RegisterCliSteps register all CLI steps existing
 func registerKogitoManagementConsoleSteps(s *godog.Suite, data *Data) {
 	s.Step(`^Install Kogito Management Console with (\d+) replicas$`, data.installKogitoManagementConsoleWithReplicas)
+	s.Step(`^Install Kogito Management Console with (\d+) replicas with configuration:$`, data.installKogitoManagementConsoleWithReplicasWithConfiguration)
 	s.Step(`^Kogito Management Console has (\d+) pods running within (\d+) minutes$`, data.kogitoManagementConsoleHasPodsRunningWithinMinutes)
 }
 
 func (data *Data) installKogitoManagementConsoleWithReplicas(replicas int) error {
-	return framework.InstallKogitoManagementConsole(data.Namespace, framework.GetDefaultInstallerType(), replicas)
+	managementConsole := &framework.KogitoServiceHolder{
+		KogitoService: framework.GetKogitoManagementConsoleResourceStub(data.Namespace, replicas),
+	}
+	return framework.InstallKogitoManagementConsole(framework.GetDefaultInstallerType(), managementConsole)
+}
+
+func (data *Data) installKogitoManagementConsoleWithReplicasWithConfiguration(replicas int, table *messages.PickleStepArgument_PickleTable) error {
+	managementConsole := &framework.KogitoServiceHolder{
+		KogitoService: framework.GetKogitoManagementConsoleResourceStub(data.Namespace, replicas),
+	}
+
+	if err := configureKogitoServiceFromTable(table, managementConsole); err != nil {
+		return err
+	}
+
+	return framework.InstallKogitoManagementConsole(framework.GetDefaultInstallerType(), managementConsole)
 }
 
 func (data *Data) kogitoManagementConsoleHasPodsRunningWithinMinutes(pods, timeoutInMin int) error {
