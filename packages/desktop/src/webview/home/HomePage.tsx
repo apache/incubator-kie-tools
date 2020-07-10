@@ -38,6 +38,10 @@ export function HomePage(props: Props) {
     setActiveNavItem(selectedItem.itemId);
   }, []);
 
+  const testCallback = useCallback(obj => {
+    console.log(obj)
+  }, [])
+
   const header = <PageHeader logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Business Modeler Logo" />} />;
 
   const navigation = (
@@ -56,7 +60,7 @@ export function HomePage(props: Props) {
   const sidebar = <PageSidebar nav={navigation} isNavOpen={true} theme={"dark"} />;
 
   return (
-    <Page header={header} sidebar={sidebar} className={"kogito--editor-landing"}>
+    <Page header={header} sidebar={sidebar} className={"kogito--editor-landing"} onPageResize={testCallback}>
       <PageSection>
         {activeNavItem === NavItems.FILES && (
           <FilesPage openFile={props.openFile} openFileByPath={props.openFileByPath} />
