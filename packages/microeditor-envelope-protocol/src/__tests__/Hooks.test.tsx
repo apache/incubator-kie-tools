@@ -139,7 +139,7 @@ describe("useSyncedKeyboardEvents", () => {
     });
   });
 
-  test("EmbeddedEditor::notify_keyboardEvent::keyup", async () => {
+  test("EmbeddedEditor::notify_keyboardEvent::keypress", async () => {
     const spyNotify_notifyKeyboardEvent = jest.spyOn(handler, "notify_channelKeyboardEvent");
 
     renderHook(() => useSyncedKeyboardEvents(handler));
@@ -150,6 +150,23 @@ describe("useSyncedKeyboardEvents", () => {
       ctrlKey: false,
       shiftKey: true,
       metaKey: false,
+      code: "",
+      type: "keypress",
+      channelOriginalTargetTagName: undefined
+    });
+  });
+
+  test("EmbeddedEditor::notify_keyboardEvent::keypress::metakey", async () => {
+    const spyNotify_notifyKeyboardEvent = jest.spyOn(handler, "notify_channelKeyboardEvent");
+
+    renderHook(() => useSyncedKeyboardEvents(handler));
+    window.dispatchEvent(new KeyboardEvent("keypress", { metaKey: true }));
+
+    expect(spyNotify_notifyKeyboardEvent).toBeCalledWith({
+      altKey: false,
+      ctrlKey: false,
+      shiftKey: false,
+      metaKey: true,
       code: "",
       type: "keypress",
       channelOriginalTargetTagName: undefined
