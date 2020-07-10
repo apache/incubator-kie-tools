@@ -27,7 +27,6 @@ import {
   ResourceContent,
   ResourcesList
 } from "@kogito-tooling/core-api";
-import { StateControlService } from "../api/stateControl";
 import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
 
 let loadingScreenContainer: HTMLElement;
@@ -83,7 +82,6 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
       context={context}
       exposing={self => (view = self)}
       loadingScreenContainer={loadingScreenContainer}
-      stateControlService={new StateControlService()}
       messageBus={messageBus}
     />
   );

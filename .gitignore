@@ -10,3 +10,6 @@ packages/kie-bc-editors-unpacked/dmn
 packages/kie-bc-editors-unpacked/bpmn
 packages/kie-bc-editors-unpacked/scesim
 .vscode/
+.classpath
+.project
+.settings/

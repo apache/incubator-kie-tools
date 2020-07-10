@@ -17,15 +17,15 @@
 import { GwtAppFormerApi } from "../GwtAppFormerApi";
 import { DummyEditor } from "./DummyEditor";
 import { GwtEditor } from "../GwtEditor";
-import * as AppFormer from "@kogito-tooling/core-api";
+import * as Core from "@kogito-tooling/core-api";
 
 class DummyGwtEditor {
-  private wrappedEditor: AppFormer.Editor;
+  private wrappedEditor: Core.Editor;
 
-  constructor(wrappedEditor: AppFormer.Editor) {
+  constructor(wrappedEditor: Core.Editor) {
     this.wrappedEditor = wrappedEditor;
   }
-  public get(): AppFormer.Editor {
+  public get(): Core.Editor {
     return this.wrappedEditor;
   }
 }
