@@ -24,12 +24,11 @@ import org.appformer.kogito.bridge.client.stateControl.registry.interop.KogitoJS
 /**
  * Represents the TypeScript StateControl engine present on the Envelope
  */
-@JsType(isNative = true, namespace = "window", name = "envelope")
+@JsType(isNative = true, namespace = "window", name = "gwt")
 public class StateControl {
 
     /**
      * Retrieves the {@link KogitoJSCommandRegistry}
-     *
      * @param <C> Anything that can be considered a command
      * @return The {@link KogitoJSCommandRegistry}
      */
@@ -39,7 +38,6 @@ public class StateControl {
     /**
      * Sets the {@link StateControlCommand} that will be called when the StateControl engine is notified to undo last
      * command on the {@link KogitoJSCommandRegistry}
-     *
      * @param command The command to execute on undo
      */
     @JsMethod
@@ -48,12 +46,11 @@ public class StateControl {
     /**
      * Sets the {@link StateControlCommand} that will be called when the StateControl engine is notified to redo last
      * undone command on the {@link KogitoJSCommandRegistry}
-     *
      * @param command The command to execute on redo
      */
     @JsMethod
     public native void setRedoCommand(StateControlCommand command);
 
     @JsProperty(name = "stateControl")
-    public static native StateControl get();
+    public native static StateControl get();
 }
