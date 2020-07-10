@@ -120,13 +120,6 @@ exports[`EditorEnvelopeController after received content 1`] = `
       "targetOrigin": "test-target-origin",
     }
   }
-  stateControlService={
-    Object {
-      "redo": [MockFunction],
-      "registry": [MockFunction],
-      "undo": [MockFunction],
-    }
-  }
 >
   <Component
     context={
@@ -536,13 +529,6 @@ exports[`EditorEnvelopeController opens 1`] = `
       },
     }
   }
-  stateControlService={
-    Object {
-      "redo": [MockFunction],
-      "registry": [MockFunction],
-      "undo": [MockFunction],
-    }
-  }
 >
   <Portal
     containerInfo={
@@ -779,13 +765,6 @@ exports[`EditorEnvelopeController receives init request 1`] = `
         "send": [Function],
       },
       "targetOrigin": "test-target-origin",
-    }
-  }
-  stateControlService={
-    Object {
-      "redo": [MockFunction],
-      "registry": [MockFunction],
-      "undo": [MockFunction],
     }
   }
 >

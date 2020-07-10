@@ -15,30 +15,34 @@
  */
 
 import * as React from "react";
-import * as AppFormer from "@kogito-tooling/core-api";
+import * as Core from "@kogito-tooling/core-api";
 import { GwtEditor } from "./GwtEditor";
 import { KogitoEnvelopeBus } from "@kogito-tooling/microeditor-envelope";
 import { editors } from "./GwtEditorRoutes";
 import { XmlFormatter } from "./XmlFormatter";
+import { GwtStateControlService } from "./gwtStateControl";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
-export class GwtEditorWrapper extends AppFormer.Editor {
+export class GwtEditorWrapper extends Core.Editor {
   public readonly af_componentTitle: string;
   public readonly editorId: string;
 
   private readonly gwtEditor: GwtEditor;
   private readonly xmlFormatter: XmlFormatter;
   private readonly messageBus: KogitoEnvelopeBus;
+  private readonly stateControlService: GwtStateControlService;
 
   constructor(
     editorId: string,
     gwtEditor: GwtEditor,
     messageBus: KogitoEnvelopeBus,
-    xmlFormatter: XmlFormatter
+    xmlFormatter: XmlFormatter,
+    stateControlService: GwtStateControlService
   ) {
     super("gwt-editor-wrapper");
     this.af_componentTitle = editorId;
+    this.stateControlService = stateControlService;
     this.af_isReact = true;
     this.gwtEditor = gwtEditor;
     this.messageBus = messageBus;
@@ -60,18 +64,26 @@ export class GwtEditorWrapper extends AppFormer.Editor {
     return <></>;
   }
 
+  public async undo() {
+    return this.stateControlService.undo();
+  }
+
+  public async redo() {
+    return this.stateControlService.redo();
+  }
+
   public getContent() {
     return this.gwtEditor.getContent().then(content => this.xmlFormatter.format(content));
   }
 
   public setContent(path: string, content: string) {
-      setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
-      return this.gwtEditor.setContent(path, content.trim()).catch(() => {
-        this.messageBus.notify_setContentError(
-          `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
-        );
-        return Promise.resolve();
-      });
+    setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
+    return this.gwtEditor.setContent(path, content.trim()).catch(() => {
+      this.messageBus.notify_setContentError(
+        `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
+      );
+      return Promise.resolve();
+    });
   }
 
   public getPreview(): Promise<string | undefined> {

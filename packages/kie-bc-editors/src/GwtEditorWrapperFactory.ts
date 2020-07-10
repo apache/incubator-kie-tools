@@ -15,31 +15,45 @@
  */
 
 import { GwtAppFormerApi } from "./GwtAppFormerApi";
-import * as AppFormer from "@kogito-tooling/core-api";
+import * as Core from "@kogito-tooling/core-api";
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { KogitoEnvelopeBus } from "@kogito-tooling/microeditor-envelope";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { XmlFormatter } from "./XmlFormatter";
+import { GwtStateControlApi, GwtStateControlService } from "./gwtStateControl";
+import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
+
+declare global {
+  interface Window {
+    gwt: {
+      stateControl: GwtStateControlApi;
+    };
+  }
+}
 
 export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactory<GwtLanguageData> {
-  private readonly appFormerGwtApi: GwtAppFormerApi;
-  private readonly xmlFormatter: XmlFormatter;
-
-  constructor(appFormerGwtApi: GwtAppFormerApi, xmlFormatter: XmlFormatter) {
-    this.appFormerGwtApi = appFormerGwtApi;
-    this.xmlFormatter = xmlFormatter;
-  }
+  constructor(
+    private readonly xmlFormatter: XmlFormatter = new DefaultXmlFormatter(),
+    private readonly gwtAppFormerApi = new GwtAppFormerApi(),
+    private readonly gwtStateControlService = new GwtStateControlService()
+  ) {}
 
   public createEditor(languageData: GwtLanguageData, messageBus: KogitoEnvelopeBus) {
-    const gwtFinishedLoading = new Promise<AppFormer.Editor>(res => {
-      this.appFormerGwtApi.onFinishedLoading(() => {
+    this.gwtAppFormerApi.setClientSideOnly(true);
+    window.gwt = {
+      stateControl: this.gwtStateControlService.exposeApi(messageBus)
+    };
+
+    const gwtFinishedLoading = new Promise<Core.Editor>(res => {
+      this.gwtAppFormerApi.onFinishedLoading(() => {
         res(
           new GwtEditorWrapper(
             languageData.editorId,
-            this.appFormerGwtApi.getEditor(languageData.editorId),
+            this.gwtAppFormerApi.getEditor(languageData.editorId),
             messageBus,
-            this.xmlFormatter
+            this.xmlFormatter,
+            this.gwtStateControlService
           )
         );
         return Promise.resolve();

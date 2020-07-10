@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DefaultXmlFormatter, GwtAppFormerApi, GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
+import { GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { ChannelType, getOperatingSystem } from "@kogito-tooling/core-api";
 
@@ -22,12 +22,9 @@ declare global {
   export const acquireVsCodeApi: any;
 }
 
-const gwtAppFormerApi = new GwtAppFormerApi();
-gwtAppFormerApi.setClientSideOnly(true);
-
 MicroEditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  editorFactory: new GwtEditorWrapperFactory(gwtAppFormerApi, new DefaultXmlFormatter()),
+  editorFactory: new GwtEditorWrapperFactory(),
   editorContext: { channel: ChannelType.VSCODE, operatingSystem: getOperatingSystem() }
 });

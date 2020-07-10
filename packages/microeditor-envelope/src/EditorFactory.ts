@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-import * as AppFormer from "@kogito-tooling/core-api";
-import { LanguageData } from "@kogito-tooling/core-api";
 import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
+import { Editor, LanguageData } from "@kogito-tooling/core-api";
 
 /**
  * Factory of Editors to be created inside the envelope.
  */
 export interface EditorFactory<T extends LanguageData> {
-
   /**
    * Returns an Editor based on a LanguageData.
    * Receives a messageBus to be used by the Editor to communicate with the outside of the envelope.
-   * @param languageData The custom LanguageData
-   * @param messageBus The message bus
    */
-  createEditor(languageData: T, messageBus: KogitoEnvelopeBus): Promise<AppFormer.Editor>;
+  createEditor(languageData: T, messageBus: KogitoEnvelopeBus): Promise<Editor>;
 }

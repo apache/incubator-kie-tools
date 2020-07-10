@@ -257,6 +257,9 @@ export class KogitoEditor {
                 .panel-heading.uf-listbar-panel-header span {
                     color: white !important;
                 }
+                body {
+                    background-color: #fff !important
+                }
             </style>
         
             <title></title>

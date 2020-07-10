@@ -16,27 +16,25 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import * as AppFormer from "@kogito-tooling/core-api";
+import * as Core from "@kogito-tooling/core-api";
 import { ChannelType, StateControlCommand } from "@kogito-tooling/core-api";
 import { LoadingScreen } from "./LoadingScreen";
 import { DefaultKeyboardShortcutsService, KeyBindingsHelpOverlay } from "@kogito-tooling/keyboard-shortcuts";
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
-import { StateControlService } from "./api/stateControl";
 import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
   loadingScreenContainer: HTMLElement;
   keyboardShortcutsService: DefaultKeyboardShortcutsService;
-  context: AppFormer.EditorContext;
-  stateControlService: StateControlService;
+  context: Core.EditorContext;
   messageBus: KogitoEnvelopeBus;
 }
 
 interface State {
-  editor?: AppFormer.Editor;
+  editor?: Core.Editor;
   loading: boolean;
 }
 
@@ -54,7 +52,7 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
     return this.state.editor;
   }
 
-  public setEditor(editor: AppFormer.Editor) {
+  public setEditor(editor: Core.Editor) {
     return new Promise(res => this.setState({ editor: editor }, res));
   }
 
@@ -89,7 +87,7 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
       "shift+ctrl+z",
       "Edit | Redo last edit",
       async () => {
-        this.props.stateControlService.redo();
+        this.getEditor()!.redo();
         this.props.messageBus.notify_stateControlCommandUpdate(StateControlCommand.REDO);
       }
     );
@@ -100,7 +98,7 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
       "ctrl+z",
       "Edit | Undo last edit",
       async () => {
-        this.props.stateControlService.undo();
+        this.getEditor()!.undo();
         this.props.messageBus.notify_stateControlCommandUpdate(StateControlCommand.UNDO);
       }
     );
