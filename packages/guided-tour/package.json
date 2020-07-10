@@ -15,7 +15,6 @@
     "start": "rm -rf dist && webpack --watch"
   },
   "peerDependencies": {
-    "@kogito-tooling/patternfly-base": "0.5.2",
     "react": "16.12.0",
     "react-dom": "16.12.0"
   },
