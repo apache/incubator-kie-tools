@@ -40,8 +40,8 @@ export class KogitoChannelBus {
   public constructor(public bus: EnvelopeBus, api: KogitoChannelApi) {
     this.initPolling = undefined;
     this.initPollingTimeout = undefined;
-    this.manager = new EnvelopeBusMessageManager(message => this.bus.postMessage(message), api);
-    this.busId = this.manager.generateRandomId();
+    this.manager = new EnvelopeBusMessageManager(message => this.bus.postMessage(message), api, "KogitoChannelBus");
+    this.busId = this.generateRandomId();
   }
 
   public startInitPolling(origin: string) {
@@ -98,5 +98,14 @@ export class KogitoChannelBus {
 
   public request_guidedTourElementPositionResponse(selector: string) {
     return this.client.request("receive_guidedTourElementPositionRequest", selector);
+  }
+
+  public generateRandomId() {
+    return (
+      "_" +
+      Math.random()
+        .toString(36)
+        .substr(2, 9)
+    );
   }
 }

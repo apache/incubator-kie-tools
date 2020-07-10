@@ -37,7 +37,7 @@ export class KogitoEnvelopeBus {
   }
 
   constructor(private readonly bus: EnvelopeBus, private readonly api: KogitoEnvelopeApi) {
-    this.manager = new EnvelopeBusMessageManager(message => this.send(message), api);
+    this.manager = new EnvelopeBusMessageManager(message => this.send(message), api, "KogitoEnvelopeBus");
   }
 
   public associate(association: Association) {

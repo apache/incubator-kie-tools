@@ -61,7 +61,6 @@ describe("new instance", () => {
 describe("startInitPolling", () => {
   test("polls for init response", async () => {
     jest.spyOn(channelBus, "stopInitPolling");
-    jest.spyOn(channelBus.manager, "generateRandomId").mockReturnValueOnce("reqId");
 
     channelBus.startInitPolling("tests");
     expect(channelBus.initPolling).toBeTruthy();
@@ -71,7 +70,7 @@ describe("startInitPolling", () => {
 
     await incomingMessage({
       busId: channelBus.busId,
-      requestId: "reqId",
+      requestId: "KogitoChannelBus_0",
       type: "receive_initRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: undefined
@@ -293,12 +292,11 @@ describe("receive", () => {
 
 describe("send", () => {
   test("request init", async () => {
-    jest.spyOn(channelBus.manager, "generateRandomId").mockReturnValueOnce("1");
     const init = channelBus.request_initResponse("test-origin");
     expect(sentMessages).toEqual([
       {
         purpose: EnvelopeBusMessagePurpose.REQUEST,
-        requestId: "1",
+        requestId: "KogitoChannelBus_0",
         type: "receive_initRequest",
         data: [{ busId: channelBus.busId, origin: "test-origin" }]
       }
@@ -306,7 +304,7 @@ describe("send", () => {
 
     await incomingMessage({
       busId: channelBus.busId,
-      requestId: "1",
+      requestId: "KogitoChannelBus_0",
       type: "receive_initRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: undefined
@@ -316,11 +314,10 @@ describe("send", () => {
   });
 
   test("request contentResponse", async () => {
-    jest.spyOn(channelBus.manager, "generateRandomId").mockReturnValueOnce("1");
     const content = channelBus.request_contentResponse();
     await incomingMessage({
       busId: channelBus.busId,
-      requestId: "1",
+      requestId: "KogitoChannelBus_0",
       type: "receive_contentRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: { content: "the content", path: "the/path/" }
@@ -330,11 +327,10 @@ describe("send", () => {
   });
 
   test("request preview", async () => {
-    jest.spyOn(channelBus.manager, "generateRandomId").mockReturnValueOnce("1");
     const preview = channelBus.request_previewResponse();
     await incomingMessage({
       busId: channelBus.busId,
-      requestId: "1",
+      requestId: "KogitoChannelBus_0",
       type: "receive_previewRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: "the-svg-string"
@@ -344,11 +340,10 @@ describe("send", () => {
   });
 
   test("request guidedTourElementPositionResponse", async () => {
-    jest.spyOn(channelBus.manager, "generateRandomId").mockReturnValueOnce("1");
     const position = channelBus.request_guidedTourElementPositionResponse("my-selector");
     await incomingMessage({
       busId: channelBus.busId,
-      requestId: "1",
+      requestId: "KogitoChannelBus_0",
       type: "receive_guidedTourElementPositionRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: {}

@@ -54,16 +54,21 @@ export class EnvelopeBusMessageManager<
     };
   }
 
+  private requestIdCounter: number;
+
   constructor(
     private readonly send: (
       // We can send messages for both the APIs we provide and consume
       message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>>
     ) => void,
-    private readonly api: ApiToProvide
-  ) {}
+    private readonly api: ApiToProvide,
+    private readonly name: string = `${new Date().getMilliseconds()}`
+  ) {
+    this.requestIdCounter = 0;
+  }
 
   private request<M extends FunctionPropertyNames<ApiToConsume>>(method: M, ...args: ArgsType<ApiToConsume[M]>) {
-    const requestId = this.generateRandomId();
+    const requestId = this.getNextRequestId();
 
     this.send({
       requestId: requestId,
@@ -76,7 +81,6 @@ export class EnvelopeBusMessageManager<
       this.callbacks.set(requestId, { resolve, reject });
     }) as ReturnType<ApiToConsume[M]>;
 
-    //TODO: Reject promise when an error occurs. For that to be possible, add an "error" field on EnvelopeBusMessage
     //TODO: Setup timeout to avoid memory leaks
   }
 
@@ -164,12 +168,7 @@ export class EnvelopeBusMessageManager<
     }
   }
 
-  public generateRandomId() {
-    return (
-      "_" +
-      Math.random()
-        .toString(36)
-        .substr(2, 9)
-    );
+  public getNextRequestId() {
+    return `${this.name}_${this.requestIdCounter++}`;
   }
 }

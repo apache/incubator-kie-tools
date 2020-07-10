@@ -113,22 +113,8 @@ exports[`EditorEnvelopeController after received content 1`] = `
           "receive_previewRequest": [Function],
         },
         "callbacks": Map {},
-        "generateRandomId": [MockFunction] {
-          "calls": Array [
-            Array [],
-            Array [],
-          ],
-          "results": Array [
-            Object {
-              "type": "return",
-              "value": "1",
-            },
-            Object {
-              "type": "return",
-              "value": "2",
-            },
-          ],
-        },
+        "name": "KogitoEnvelopeBus",
+        "requestIdCounter": 2,
         "send": [Function],
       },
       "targetOrigin": "test-target-origin",
@@ -544,6 +530,8 @@ exports[`EditorEnvelopeController opens 1`] = `
           "receive_previewRequest": [Function],
         },
         "callbacks": Map {},
+        "name": "KogitoEnvelopeBus",
+        "requestIdCounter": 0,
         "send": [Function],
       },
     }
@@ -781,22 +769,13 @@ exports[`EditorEnvelopeController receives init request 1`] = `
           "receive_previewRequest": [Function],
         },
         "callbacks": Map {
-          "1" => Object {
+          "KogitoEnvelopeBus_0" => Object {
             "reject": [Function],
             "resolve": [Function],
           },
         },
-        "generateRandomId": [MockFunction] {
-          "calls": Array [
-            Array [],
-          ],
-          "results": Array [
-            Object {
-              "type": "return",
-              "value": "1",
-            },
-          ],
-        },
+        "name": "KogitoEnvelopeBus",
+        "requestIdCounter": 1,
         "send": [Function],
       },
       "targetOrigin": "test-target-origin",

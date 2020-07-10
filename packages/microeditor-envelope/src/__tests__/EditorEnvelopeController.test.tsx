@@ -118,9 +118,8 @@ describe("EditorEnvelopeController", () => {
 
   test("receives init request", async () => {
     const render = await startController();
-    jest.spyOn(controller.kogitoEnvelopeBus.manager, "generateRandomId").mockReturnValueOnce("1");
     await incomingMessage({
-      requestId: "0",
+      requestId: "KogitoChannelBus_0",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_initRequest",
       data: [{ origin: "test-target-origin", busId: "someBusId" }]
@@ -129,7 +128,7 @@ describe("EditorEnvelopeController", () => {
     expect(sentMessages).toEqual([
       {
         busId: controller.kogitoEnvelopeBus.associatedBusId,
-        requestId: "1",
+        requestId: "KogitoEnvelopeBus_0",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         type: "receive_languageRequest",
         data: []
@@ -141,18 +140,16 @@ describe("EditorEnvelopeController", () => {
   test("receives language response", async () => {
     await startController();
 
-    jest.spyOn(controller.kogitoEnvelopeBus.manager, "generateRandomId").mockReturnValueOnce("1");
     await incomingMessage({
-      requestId: "0",
+      requestId: "KogitoChannelBus_0",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_initRequest",
       data: [{ origin: "test-target-origin", busId: "someBusId" }]
     });
 
     sentMessages = [];
-    jest.spyOn(controller.kogitoEnvelopeBus.manager, "generateRandomId").mockReturnValueOnce("2");
     await incomingMessage({
-      requestId: "1",
+      requestId: "KogitoEnvelopeBus_0",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       type: "receive_languageRequest",
       data: languageData
@@ -161,7 +158,7 @@ describe("EditorEnvelopeController", () => {
     expect(sentMessages).toEqual([
       {
         busId: controller.kogitoEnvelopeBus.associatedBusId,
-        requestId: "2",
+        requestId: "KogitoEnvelopeBus_1",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         type: "receive_contentRequest",
         data: []
@@ -172,17 +169,15 @@ describe("EditorEnvelopeController", () => {
   test("after received content", async () => {
     const render = await startController();
 
-    jest.spyOn(controller.kogitoEnvelopeBus.manager, "generateRandomId").mockReturnValueOnce("1");
     await incomingMessage({
-      requestId: "0",
+      requestId: "KogitoChannelBus_0",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_initRequest",
       data: [{ origin: "test-target-origin", busId: "someBusId" }]
     });
 
-    jest.spyOn(controller.kogitoEnvelopeBus.manager, "generateRandomId").mockReturnValueOnce("2");
     await incomingMessage({
-      requestId: "1",
+      requestId: "KogitoEnvelopeBus_0",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       type: "receive_languageRequest",
       data: languageData
@@ -191,7 +186,7 @@ describe("EditorEnvelopeController", () => {
     await delay(0);
     sentMessages = [];
     await incomingMessage({
-      requestId: "2",
+      requestId: "KogitoEnvelopeBus_1",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       type: "receive_contentRequest",
       data: { content: "test content" }
@@ -205,7 +200,7 @@ describe("EditorEnvelopeController", () => {
         data: []
       },
       {
-        requestId: "0",
+        requestId: "KogitoChannelBus_0",
         busId: controller.kogitoEnvelopeBus.associatedBusId,
         purpose: EnvelopeBusMessagePurpose.RESPONSE,
         type: "receive_initRequest",
