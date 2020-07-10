@@ -15,6 +15,8 @@
  */
 
 import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { render, fireEvent } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import { useSyncedKeyboardEvents } from "../Hooks";
 import { EnvelopeBusMessage } from "../EnvelopeBusMessage";
@@ -156,20 +158,20 @@ describe("useSyncedKeyboardEvents", () => {
     });
   });
 
-  test("EmbeddedEditor::notify_keyboardEvent::keypress::metakey", async () => {
+  test("EmbeddedEditor::notify_keyboardEvent::keydown::metakey", async () => {
     const spyNotify_notifyKeyboardEvent = jest.spyOn(handler, "notify_channelKeyboardEvent");
 
-    renderHook(() => useSyncedKeyboardEvents(handler));
-    window.dispatchEvent(new KeyboardEvent("keypress", { metaKey: true }));
+    renderHook(() => useSyncedKeyboardEvents(handler, document.body))
+    fireEvent(document.body, new KeyboardEvent("keydown", { metaKey: true, code: "KeyA" }));
 
     expect(spyNotify_notifyKeyboardEvent).toBeCalledWith({
       altKey: false,
       ctrlKey: false,
       shiftKey: false,
       metaKey: true,
-      code: "",
-      type: "keypress",
-      channelOriginalTargetTagName: undefined
+      code: "KeyA",
+      type: "keydown",
+      channelOriginalTargetTagName: "BODY"
     });
   });
 });

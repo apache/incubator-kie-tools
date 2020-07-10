@@ -30,7 +30,10 @@ function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKeyboardE
   };
 }
 
-export function useSyncedKeyboardEvents(envelopeBusOuterMessageHandler: EnvelopeBusOuterMessageHandler) {
+export function useSyncedKeyboardEvents(
+  envelopeBusOuterMessageHandler: EnvelopeBusOuterMessageHandler,
+  element: HTMLElement | Window = window
+) {
   useEffect(() => {
     const listener = (keyboardEvent: KeyboardEvent) => {
       const channelKeyboardEvent = getChannelKeyboardEvent(keyboardEvent);
@@ -38,13 +41,13 @@ export function useSyncedKeyboardEvents(envelopeBusOuterMessageHandler: Envelope
       envelopeBusOuterMessageHandler.notify_channelKeyboardEvent(channelKeyboardEvent);
     };
 
-    window.addEventListener("keydown", listener);
-    window.addEventListener("keyup", listener);
-    window.addEventListener("keypress", listener);
+    element.addEventListener("keydown", listener);
+    element.addEventListener("keyup", listener);
+    element.addEventListener("keypress", listener);
     return () => {
-      window.removeEventListener("keydown", listener);
-      window.removeEventListener("keyup", listener);
-      window.removeEventListener("keypress", listener);
+      element.removeEventListener("keydown", listener);
+      element.removeEventListener("keyup", listener);
+      element.removeEventListener("keypress", listener);
     };
   }, [envelopeBusOuterMessageHandler]);
 }
