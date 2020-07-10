@@ -33,16 +33,34 @@ enum NavItems {
 
 export function HomePage(props: Props) {
   const [activeNavItem, setActiveNavItem] = useState<NavItems>(NavItems.FILES);
+  const [isNavOpen, setIsNavOpen] = useState(true);
 
   const onNavSelect = useCallback(selectedItem => {
     setActiveNavItem(selectedItem.itemId);
   }, []);
 
-  const testCallback = useCallback(obj => {
-    console.log(obj)
-  }, [])
+  const testCallback = useCallback(
+    obj => {
+      if (obj.mobileView) {
+        setIsNavOpen(false);
+      } else {
+        setIsNavOpen(true);
+      }
+    },
+    [isNavOpen]
+  );
 
-  const header = <PageHeader logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Business Modeler Logo" />} />;
+  const onNavToggle = useCallback(() => {
+    setIsNavOpen(!isNavOpen)
+  }, [isNavOpen])
+
+  const header = (
+    <PageHeader
+      showNavToggle={true}
+      onNavToggle={onNavToggle}
+      logo={<Brand src={"images/BusinessModeler_Logo.svg"} alt="Business Modeler Logo" />}
+    />
+  );
 
   const navigation = (
     <Nav onSelect={onNavSelect} theme={"dark"}>
@@ -57,7 +75,7 @@ export function HomePage(props: Props) {
     </Nav>
   );
 
-  const sidebar = <PageSidebar nav={navigation} isNavOpen={true} theme={"dark"} />;
+  const sidebar = <PageSidebar nav={navigation} isNavOpen={isNavOpen} theme={"dark"} />;
 
   return (
     <Page header={header} sidebar={sidebar} className={"kogito--editor-landing"} onPageResize={testCallback}>
