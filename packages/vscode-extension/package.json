@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@kogito-tooling/core-api": "0.6.1",
+    "@kogito-tooling/keyboard-shortcuts": "0.6.1",
     "@kogito-tooling/microeditor-envelope": "0.6.1",
     "@kogito-tooling/microeditor-envelope-protocol": "0.6.1"
   }

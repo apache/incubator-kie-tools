@@ -24,11 +24,11 @@ import {
   ResourcesList,
   StateControlCommand
 } from "@kogito-tooling/core-api";
-import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EnvelopeBusOuterMessageHandler, useSyncedKeyboardEvents } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoGuidedTour, UserInteraction, Tutorial, Rect } from "@kogito-tooling/guided-tour";
 import * as CSS from "csstype";
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { File } from "../common";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 import { StateControl } from "../stateControl";
@@ -264,6 +264,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     handleStateControlCommand
   ]);
 
+  // Forward keyboard events to envelope
+  useSyncedKeyboardEvents(envelopeBusOuterMessageHandler);
+
   useEffect(() => {
     const requestPosition = (s: string) => envelopeBusOuterMessageHandler.request_guidedTourElementPositionResponse(s);
     KogitoGuidedTour.getInstance().registerPositionProvider(requestPosition);
@@ -308,6 +311,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     <iframe
       ref={iframeRef}
       id={"kogito-iframe"}
+      data-testid={"kogito-iframe"}
       src={envelopeUri}
       title="Kogito editor"
       style={containerStyles}
