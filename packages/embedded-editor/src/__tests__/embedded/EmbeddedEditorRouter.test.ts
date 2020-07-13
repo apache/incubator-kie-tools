@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {LanguageData, Router, Routes} from "@kogito-tooling/core-api";
-import {EditorType} from "../../common/EditorTypes";
-import {EmbeddedEditorRouter} from "../../embedded/EmbeddedEditorRouter";
+import { LanguageData, Router, Routes } from "@kogito-tooling/core-api";
+import { EditorType } from "../../common/EditorTypes";
+import { EmbeddedEditorRouter } from "../../embedded/EmbeddedEditorRouter";
 
 describe("EmbeddedEditorRouter", () => {
   const languages: Map<string, LanguageData> = new Map<string, LanguageData>();
