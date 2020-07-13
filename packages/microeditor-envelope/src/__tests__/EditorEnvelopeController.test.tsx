@@ -17,8 +17,12 @@
 import { EditorEnvelopeController } from "../EditorEnvelopeController";
 import { SpecialDomElements } from "../SpecialDomElements";
 import { cleanup, fireEvent, getByTestId, render } from "@testing-library/react";
-import { EnvelopeBusMessage, EnvelopeBusMessagePurpose } from "@kogito-tooling/microeditor-envelope-protocol";
-import { ChannelType, LanguageData, OperatingSystem } from "@kogito-tooling/core-api";
+import {
+  EnvelopeBusMessage,
+  EnvelopeBusMessagePurpose,
+  LanguageData
+} from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
 import { DummyEditor } from "./DummyEditor";
 import { ResourceContentServiceCoordinator } from "../api/resourceContent";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";

@@ -15,21 +15,16 @@
  */
 
 import * as React from "react";
-import * as Core from "@kogito-tooling/core-api";
-import { EditorContent, EditorContext, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
-import { EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
-import {
-  ChannelKeyboardEvent,
-  DefaultKeyboardShortcutsService,
-} from "@kogito-tooling/keyboard-shortcuts";
+import { EditorContent, EditorContext } from "@kogito-tooling/core-api";
+import { Association, EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelKeyboardEvent, DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
-import { EditorFactory } from "./EditorFactory";
+import { Editor, EditorFactory } from "@kogito-tooling/editor-api";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ResourceContentServiceCoordinator } from "./api/resourceContent";
 import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandler";
-import { Association } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export class EditorEnvelopeController {
   public readonly kogitoEnvelopeBus: KogitoEnvelopeBus;
@@ -104,7 +99,7 @@ export class EditorEnvelopeController {
   //TODO: No-op when same Editor class?
   //TODO: Can I open an editor if there's already an open one?
   //TODO: What about close and shutdown methods?
-  private open(editor: Core.Editor) {
+  private open(editor: Editor) {
     return this.editorEnvelopeView!.setEditor(editor).then(() => {
       editor.af_onStartup();
       editor.af_onOpen();

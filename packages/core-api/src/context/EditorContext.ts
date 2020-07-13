@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import { ChannelType, OperatingSystem } from "../core";
+import { ChannelType } from "./ChannelType";
+import { OperatingSystem } from "./OperatingSystem";
 
 /**
  * PUBLIC ENVELOPE API
  */
 export interface EditorContext {
-    channel: ChannelType;
-    operatingSystem?: OperatingSystem;
+  channel: ChannelType;
+  operatingSystem?: OperatingSystem;
 }

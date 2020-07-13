@@ -15,3 +15,5 @@
  */
 
 export * from "./EditorContext";
+export * from "./ChannelType";
+export * from "./OperatingSystem";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LanguageData } from "@kogito-tooling/core-api";
+import { LanguageData } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export interface GwtLanguageData extends LanguageData {
   type: string;

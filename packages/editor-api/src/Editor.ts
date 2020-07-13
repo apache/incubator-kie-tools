@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-import { Component } from "./Component";
-import { ComponentTypes } from "./ComponentTypes";
-
 /**
  * Editor component API. Implement this class to create an Editor.
  */
-export abstract class Editor extends Component {
-  public af_componentTitle?: string = undefined;
-  public af_subscriptions: Map<string, (event: any) => void> = new Map();
+export abstract class Editor {
+  public af_isReact: boolean = false;
+  public af_componentId: string;
+  public af_componentTitle: string;
 
   protected constructor(componentId: string) {
-    super({ type: ComponentTypes.EDITOR, af_componentId: componentId });
+    this.af_componentId = componentId;
   }
 
   public abstract setContent(path: string, content: string): Promise<void>;
@@ -37,4 +35,34 @@ export abstract class Editor extends Component {
   public abstract undo(): Promise<void>;
 
   public abstract redo(): Promise<void>;
+
+  public abstract af_componentRoot(): React.ReactPortal | React.ReactElement<any> | HTMLElement | string;
+
+  public af_onStartup(): void {
+    //
+  }
+
+  public af_onOpen(): void {
+    //
+  }
+
+  public af_onFocus(): void {
+    //
+  }
+
+  public af_onLostFocus(): void {
+    //
+  }
+
+  public af_onMayClose(): boolean {
+    return true;
+  }
+
+  public af_onClose(): void {
+    //
+  }
+
+  public af_onShutdown(): void {
+    //
+  }
 }

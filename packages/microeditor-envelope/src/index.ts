@@ -21,17 +21,11 @@ import { ReactElement } from "react";
 import * as ReactDOM from "react-dom";
 import { ResourceContentApi, ResourceContentServiceCoordinator } from "./api/resourceContent";
 import { EditorEnvelopeController } from "./EditorEnvelopeController";
-import { EditorFactory } from "./EditorFactory";
+import { EditorFactory } from "@kogito-tooling/editor-api";
 import { Renderer } from "./Renderer";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { WorkspaceService, WorkspaceServiceApi } from "./api/workspaceService";
 import { GuidedTourApi, GuidedTourServiceCoordinator } from "./api/tour";
-
-export * from "./api/resourceContent";
-export { EditorEnvelopeController } from "./EditorEnvelopeController";
-export * from "./EditorFactory";
-export * from "./KogitoEnvelopeBus";
-export { SpecialDomElements } from "./SpecialDomElements";
 
 declare global {
   interface Window {

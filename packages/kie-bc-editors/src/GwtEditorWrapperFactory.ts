@@ -15,9 +15,8 @@
  */
 
 import { GwtAppFormerApi } from "./GwtAppFormerApi";
-import * as Core from "@kogito-tooling/core-api";
-import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
+import { Editor, EditorFactory } from "@kogito-tooling/editor-api";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlApi, GwtStateControlService } from "./gwtStateControl";
@@ -32,7 +31,7 @@ declare global {
   }
 }
 
-export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactory<GwtLanguageData> {
+export class GwtEditorWrapperFactory implements EditorFactory<GwtLanguageData> {
   constructor(
     private readonly xmlFormatter: XmlFormatter = new DefaultXmlFormatter(),
     private readonly gwtAppFormerApi = new GwtAppFormerApi(),
@@ -45,7 +44,7 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
       stateControl: this.gwtStateControlService.exposeApi(messageBusClient)
     };
 
-    const gwtFinishedLoading = new Promise<Core.Editor>(res => {
+    const gwtFinishedLoading = new Promise<Editor>(res => {
       this.gwtAppFormerApi.onFinishedLoading(() => {
         res(
           new GwtEditorWrapper(

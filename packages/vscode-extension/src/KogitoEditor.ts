@@ -18,14 +18,13 @@ import * as vscode from "vscode";
 import { Uri } from "vscode";
 import * as fs from "fs";
 import * as __path from "path";
-import { KogitoChannelBus } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoChannelBus, Router } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import {
   KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
-  Router
 } from "@kogito-tooling/core-api";
 
 export class KogitoEditor {

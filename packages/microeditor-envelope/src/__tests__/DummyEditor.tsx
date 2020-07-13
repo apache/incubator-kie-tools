@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import * as Core from "@kogito-tooling/core-api";
 import * as React from "react";
+import { Editor } from "@kogito-tooling/editor-api";
 
-export class DummyEditor extends Core.Editor {
+export class DummyEditor extends Editor {
   private ref: DummyEditorComponent;
 
   constructor() {

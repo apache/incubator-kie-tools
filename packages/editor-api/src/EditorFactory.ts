@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Editor, LanguageData } from "@kogito-tooling/core-api";
-import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoChannelApi, LanguageData, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { Editor } from "./Editor";
 
 /**
  * Factory of Editors to be created inside the envelope.

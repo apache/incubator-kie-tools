@@ -18,6 +18,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as Core from "@kogito-tooling/core-api";
 import { ChannelType, StateControlCommand } from "@kogito-tooling/core-api";
+import { Editor } from "@kogito-tooling/editor-api";
 import { LoadingScreen } from "./LoadingScreen";
 import { DefaultKeyboardShortcutsService, KeyBindingsHelpOverlay } from "@kogito-tooling/keyboard-shortcuts";
 import "@patternfly/patternfly/patternfly-variables.css";
@@ -34,7 +35,7 @@ interface Props {
 }
 
 interface State {
-  editor?: Core.Editor;
+  editor?: Editor;
   loading: boolean;
 }
 
@@ -52,7 +53,7 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
     return this.state.editor;
   }
 
-  public setEditor(editor: Core.Editor) {
+  public setEditor(editor: Editor) {
     return new Promise(res => this.setState({ editor: editor }, res));
   }
 
