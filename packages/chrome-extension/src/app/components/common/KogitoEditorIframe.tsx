@@ -17,7 +17,7 @@
 import { ChannelType, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
 import { EditorType, EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
-import { useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { runScriptOnPage } from "../../utils";
 import { useGitHubApi } from "../common/GitHubContext";
 import { useGlobals } from "./GlobalContext";
@@ -47,6 +47,16 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   const resourceContentService = useMemo(() => {
     return resourceContentServiceFactory.createNew(githubApi.octokit(), repoInfo);
   }, [repoInfo]);
+
+  const onResourceContentRequest = useCallback(
+    (request: ResourceContentRequest) => resourceContentService.get(request.path, request.opts),
+    [resourceContentService]
+  );
+
+  const onResourceContentList = useCallback(
+    (request: ResourceListRequest) => resourceContentService.list(request.pattern, request.opts),
+    [resourceContentService]
+  );
 
   //Wrap file content into object for EmbeddedEditor
   const file = useMemo(() => {
@@ -121,12 +131,8 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           router={router}
           channelType={ChannelType.GITHUB}
           onReady={onEditorReady}
-          onResourceContentRequest={(request: ResourceContentRequest) =>
-            resourceContentService.get(request.path, request.opts)
-          }
-          onResourceListRequest={(request: ResourceListRequest) =>
-            resourceContentService.list(request.pattern, request.opts)
-          }
+          onResourceContentRequest={onResourceContentRequest}
+          onResourceListRequest={onResourceContentList}
           envelopeUri={router.getRelativePathTo(editorIndexPath)}
         />
       </div>
