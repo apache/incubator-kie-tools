@@ -33,4 +33,8 @@ export abstract class Editor extends Component {
   public abstract getContent(): Promise<string>;
 
   public abstract getPreview(): Promise<string | undefined>;
+
+  public abstract undo(): Promise<void>;
+
+  public abstract redo(): Promise<void>;
 }

@@ -15,6 +15,7 @@
  */
 
 import { GwtEditorWrapper } from "../GwtEditorWrapper";
+import { GwtStateControlService } from "../gwtStateControl";
 
 const MockEditor = jest.fn(() => ({
   getContent: jest.fn(),
@@ -27,7 +28,13 @@ const mockEditor = new MockEditor();
 const mockMessageBus = { notify_setContentError: jest.fn() };
 const mockXmlFormatter = { format: (c: string) => c };
 
-const wrapper = new GwtEditorWrapper("MockEditorId", mockEditor, mockMessageBus as any, mockXmlFormatter);
+const wrapper = new GwtEditorWrapper(
+  "MockEditorId",
+  mockEditor,
+  mockMessageBus as any,
+  mockXmlFormatter,
+  new GwtStateControlService()
+);
 
 describe("GwtEditorWrapper", () => {
   test("set content", async () => {

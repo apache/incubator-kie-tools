@@ -15,5 +15,12 @@
  */
 export * from "./DataDictionary";
 export * from "./Header";
+export * from "./LocalTransformations";
 export * from "./MiningSchema";
+export * from "./ModelExplanation";
+export * from "./ModelStats";
+export * from "./ModelVerification";
+export * from "./Output";
+export * from "./RegressionModel";
 export * from "./Scorecard";
+export * from "./Targets";
