@@ -17,8 +17,11 @@
 import * as React from "react";
 import * as Core from "@kogito-tooling/core-api";
 import { EditorContent, EditorContext, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
+import {
+  ChannelKeyboardEvent,
+  DefaultKeyboardShortcutsService,
+} from "@kogito-tooling/keyboard-shortcuts";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 import { EditorFactory } from "./EditorFactory";
@@ -90,6 +93,9 @@ export class EditorEnvelopeController {
       },
       receive_guidedTourElementPositionRequest: async (selector: string) => {
         return getGuidedTourElementPosition(selector);
+      },
+      receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent) {
+        window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));
       }
     });
   }

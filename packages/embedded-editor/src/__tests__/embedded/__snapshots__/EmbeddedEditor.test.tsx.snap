@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::defaults 1`] = `
+<iframe
+  data-envelope-channel="ONLINE"
+  data-testid="kogito-iframe"
+  id="kogito-iframe"
+  src="envelope/envelope.html"
+  style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+  title="Kogito editor"
+/>
+`;
+
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::onNewEdit 1`] = `
+<iframe
+  data-envelope-channel="ONLINE"
+  data-testid="kogito-iframe"
+  id="kogito-iframe"
+  src="envelope/envelope.html"
+  style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+  title="Kogito editor"
+/>
+`;
+
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::onReady 1`] = `
+<iframe
+  data-envelope-channel="ONLINE"
+  data-testid="kogito-iframe"
+  id="kogito-iframe"
+  src="envelope/envelope.html"
+  style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+  title="Kogito editor"
+/>
+`;
+
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::onResourceContentRequest 1`] = `
+<iframe
+  data-envelope-channel="ONLINE"
+  data-testid="kogito-iframe"
+  id="kogito-iframe"
+  src="envelope/envelope.html"
+  style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+  title="Kogito editor"
+/>
+`;
+
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::onResourceListRequest 1`] = `
+<iframe
+  data-envelope-channel="ONLINE"
+  data-testid="kogito-iframe"
+  id="kogito-iframe"
+  src="envelope/envelope.html"
+  style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+  title="Kogito editor"
+/>
+`;
+
+exports[`EmbeddedEditor::ONLINE EmbeddedEditor::onSetContentError 1`] = `
+<iframe
+  data-envelope-channel="ONLINE"
+  data-testid="kogito-iframe"
+  id="kogito-iframe"
+  src="envelope/envelope.html"
+  style="display: flex; flex: 1; flex-direction: column; width: 100%; height: 100%; margin: 0px; padding: 0px; overflow: hidden;"
+  title="Kogito editor"
+/>
+`;

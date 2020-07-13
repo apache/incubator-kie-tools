@@ -25,7 +25,8 @@ import {
   StateControlCommand
 } from "@kogito-tooling/core-api";
 import { KogitoChannelBus } from "@kogito-tooling/microeditor-envelope-protocol";
-import { KogitoGuidedTour, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
+import { useSyncedKeyboardEvents } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoGuidedTour, UserInteraction, Tutorial, Rect } from "@kogito-tooling/guided-tour";
 import * as CSS from "csstype";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
@@ -212,7 +213,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         },
         //requests
         receive_languageRequest() {
-          return props.router.getLanguageData(props.file.editorType);
+          return Promise.resolve(props.router.getLanguageData(props.file.editorType));
         },
         receive_contentRequest() {
           return props.file.getFileContents().then(c => ({ content: c ?? "", path: props.file.fileName }));
@@ -233,6 +234,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     props.onResourceListRequest,
     handleStateControlCommand
   ]);
+
+  // Forward keyboard events to envelope
+  useSyncedKeyboardEvents(kogitoChannelBus.client);
 
   useEffect(() => {
     KogitoGuidedTour.getInstance().registerPositionProvider((selector: string) =>
@@ -282,6 +286,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     <iframe
       ref={iframeRef}
       id={"kogito-iframe"}
+      data-testid={"kogito-iframe"}
       src={envelopeUri}
       title="Kogito editor"
       style={containerStyles}

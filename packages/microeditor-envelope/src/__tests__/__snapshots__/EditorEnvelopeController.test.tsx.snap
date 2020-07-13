@@ -89,6 +89,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
   messageBus={
     KogitoEnvelopeBus {
       "api": Object {
+        "receive_channelKeyboardEvent": [Function],
         "receive_contentChanged": [Function],
         "receive_contentRequest": [Function],
         "receive_editorRedo": [Function],
@@ -104,6 +105,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
       "eventListener": [Function],
       "manager": e {
         "api": Object {
+          "receive_channelKeyboardEvent": [Function],
           "receive_contentChanged": [Function],
           "receive_contentRequest": [Function],
           "receive_editorRedo": [Function],
@@ -500,6 +502,7 @@ exports[`EditorEnvelopeController opens 1`] = `
   messageBus={
     KogitoEnvelopeBus {
       "api": Object {
+        "receive_channelKeyboardEvent": [Function],
         "receive_contentChanged": [Function],
         "receive_contentRequest": [Function],
         "receive_editorRedo": [Function],
@@ -514,6 +517,7 @@ exports[`EditorEnvelopeController opens 1`] = `
       "eventListener": [Function],
       "manager": e {
         "api": Object {
+          "receive_channelKeyboardEvent": [Function],
           "receive_contentChanged": [Function],
           "receive_contentRequest": [Function],
           "receive_editorRedo": [Function],
@@ -731,6 +735,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
   messageBus={
     KogitoEnvelopeBus {
       "api": Object {
+        "receive_channelKeyboardEvent": [Function],
         "receive_contentChanged": [Function],
         "receive_contentRequest": [Function],
         "receive_editorRedo": [Function],
@@ -746,6 +751,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
       "eventListener": [Function],
       "manager": e {
         "api": Object {
+          "receive_channelKeyboardEvent": [Function],
           "receive_contentChanged": [Function],
           "receive_contentRequest": [Function],
           "receive_editorRedo": [Function],

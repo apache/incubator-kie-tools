@@ -20,7 +20,7 @@ import { EmbeddedEditorRef } from "../../embedded";
 import { useDirtyState, StateControl } from "../../stateControl";
 import { act } from "react-test-renderer";
 
-describe("useEditorDirtyState", () => {
+describe("useDirtyState", () => {
   let embeddedEditorRef: EmbeddedEditorRef;
   let stateControl: StateControl;
   let editorRef: React.MutableRefObject<EmbeddedEditorRef>;

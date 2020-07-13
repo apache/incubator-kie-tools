@@ -16,6 +16,7 @@
 
 import { EditorContent } from "@kogito-tooling/core-api";
 import { Rect } from "@kogito-tooling/guided-tour";
+import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts";
 
 export interface Association {
   origin: string;
@@ -30,4 +31,5 @@ export interface KogitoEnvelopeApi {
   receive_contentRequest(): Promise<EditorContent>;
   receive_previewRequest(): Promise<string>;
   receive_guidedTourElementPositionRequest(selector: string): Promise<Rect>;
+  receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent): void;
 }

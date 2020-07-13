@@ -18,9 +18,9 @@ import * as React from "react";
 import { shallow } from "enzyme";
 import { EditorEnvelopeView } from "../EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
+import { KogitoEnvelopeBus } from "../KogitoEnvelopeBus";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
-import { KogitoEnvelopeBus } from "../KogitoEnvelopeBus";
 
 let loadingScreenContainer: HTMLElement;
 beforeEach(() => (loadingScreenContainer = document.body.appendChild(document.createElement("div"))));
@@ -41,7 +41,8 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
       receive_editorUndo: jest.fn(),
       receive_editorRedo: jest.fn(),
       receive_previewRequest: jest.fn(),
-      receive_guidedTourElementPositionRequest: jest.fn()
+      receive_guidedTourElementPositionRequest: jest.fn(),
+      receive_channelKeyboardEvent: jest.fn()
     }
   );
 

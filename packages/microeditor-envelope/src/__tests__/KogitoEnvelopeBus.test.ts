@@ -38,7 +38,8 @@ beforeEach(() => {
     receive_guidedTourElementPositionRequest: jest.fn(),
     receive_editorUndo: jest.fn(),
     receive_editorRedo: jest.fn(),
-    receive_contentChanged: jest.fn()
+    receive_contentChanged: jest.fn(),
+    receive_channelKeyboardEvent: jest.fn()
   };
 
   envelopeBus = new KogitoEnvelopeBus(

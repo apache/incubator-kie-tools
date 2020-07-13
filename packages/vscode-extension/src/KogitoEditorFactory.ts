@@ -16,28 +16,29 @@
 
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditor } from "./KogitoEditor";
-import { KogitoEdit, ResourceContentService, Router } from "@kogito-tooling/core-api";
+import { KogitoEdit, ResourceContentService, Routes } from "@kogito-tooling/core-api";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 
 import * as vscode from "vscode";
 import * as nodePath from "path";
+import { DefaultVsCodeRouter } from "./DefaultVsCodeRouter";
 
 export class KogitoEditorFactory {
   private readonly context: vscode.ExtensionContext;
   private readonly editorStore: KogitoEditorStore;
   private readonly webviewLocation: string;
-  private readonly router: Router;
+  private readonly routes: Routes;
 
   constructor(
     context: vscode.ExtensionContext,
-    router: Router,
+    routes: Routes,
     webviewLocation: string,
     editorStore: KogitoEditorStore
   ) {
     this.context = context;
     this.editorStore = editorStore;
-    this.router = router;
+    this.routes = routes;
     this.webviewLocation = webviewLocation;
   }
 
@@ -58,6 +59,8 @@ export class KogitoEditorFactory {
       localResourceRoots: [vscode.Uri.file(this.context.extensionPath)]
     };
 
+    const router = new DefaultVsCodeRouter(this.context, webviewPanel.webview, this.routes);
+
     const workspacePath = vscode.workspace.asRelativePath(path);
 
     const resourceContentService = this.createResourceContentService(path, workspacePath);
@@ -68,7 +71,7 @@ export class KogitoEditorFactory {
       initialBackup,
       webviewPanel,
       this.context,
-      this.router,
+      router,
       this.webviewLocation,
       this.editorStore,
       resourceContentService,
