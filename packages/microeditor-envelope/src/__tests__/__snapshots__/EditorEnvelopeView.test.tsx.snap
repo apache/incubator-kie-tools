@@ -1,80 +1,156 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EditorEnvelopeView after loading stops 1`] = `
-<Fragment>
-  <Component
-    context={
-      Object {
-        "channel": "VSCODE",
-        "operatingSystem": "WINDOWS",
-      }
-    }
-    keyboardShortcutsService={
-      e {
-        "args": Object {
-          "editorContext": Object {
-            "channel": "VSCODE",
-            "operatingSystem": "WINDOWS",
-          },
-        },
-        "eventIdentifiers": 1,
-        "keyBindings": Map {},
-      }
-    }
-  />
-  <Portal
-    containerInfo={<div />}
-  >
-    <LoadingScreen
-      visible={false}
-    />
-  </Portal>
-</Fragment>
+<body>
+  <div />
+  <div>
+    <div
+      class="kogito-tooling--keyboard-shortcuts-icon"
+      data-testid="keyboard-shortcuts-help-overlay-icon"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 576 512"
+        width="1em"
+      >
+        <path
+          d="M528 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h480c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM128 180v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm288 0v-40c0-6.627-5.373-12-12-12H172c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h232c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12z"
+          transform=""
+        />
+      </svg>
+    </div>
+  </div>
+  <div />
+</body>
 `;
 
 exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
-<Fragment>
-  <Component
-    context={
-      Object {
-        "channel": "VSCODE",
-        "operatingSystem": "WINDOWS",
-      }
-    }
-    keyboardShortcutsService={
-      e {
-        "args": Object {
-          "editorContext": Object {
-            "channel": "VSCODE",
-            "operatingSystem": "WINDOWS",
-          },
-        },
-        "eventIdentifiers": 1,
-        "keyBindings": Map {},
-      }
-    }
-  />
-  <Portal
-    containerInfo={<div />}
-  >
-    <LoadingScreen
-      visible={false}
-    />
-  </Portal>
-  <DummyEditorComponent
-    exposing={[Function]}
-  />
-</Fragment>
+<body>
+  <div />
+  <div>
+    <div
+      class="kogito-tooling--keyboard-shortcuts-icon"
+      data-testid="keyboard-shortcuts-help-overlay-icon"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 576 512"
+        width="1em"
+      >
+        <path
+          d="M528 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h480c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM128 180v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm288 0v-40c0-6.627-5.373-12-12-12H172c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h232c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12z"
+          transform=""
+        />
+      </svg>
+    </div>
+    <div
+      data-testid="dummy-editor"
+    >
+      Here's the dummy content: 
+      
+    </div>
+  </div>
+  <div />
+</body>
+`;
+
+exports[`EditorEnvelopeView after set content 1`] = `
+<body>
+  <div />
+  <div>
+    <div
+      class="kogito-tooling--keyboard-shortcuts-icon"
+      data-testid="keyboard-shortcuts-help-overlay-icon"
+    >
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 576 512"
+        width="1em"
+      >
+        <path
+          d="M528 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h480c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM128 180v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm288 0v-40c0-6.627-5.373-12-12-12H172c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h232c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12z"
+          transform=""
+        />
+      </svg>
+    </div>
+    <div
+      data-testid="dummy-editor"
+    >
+      Here's the dummy content: 
+      some-test-content
+    </div>
+  </div>
+  <div />
+</body>
 `;
 
 exports[`EditorEnvelopeView first open 1`] = `
-<Fragment>
-  <Portal
-    containerInfo={<div />}
-  >
-    <LoadingScreen
-      visible={true}
-    />
-  </Portal>
-</Fragment>
+<body>
+  <div>
+    <div
+      class="kogito-tooling--loading-screen"
+      data-testid="loading-screen-div"
+      style="opacity: 1;"
+    >
+      <div
+        class="pf-c-page"
+      >
+        <main
+          class="pf-c-page__main"
+          role="main"
+          tabindex="-1"
+        >
+          <div
+            class="pf-l-bullseye"
+          >
+            <div
+              class="pf-c-empty-state pf-m-lg"
+            >
+              <div
+                class="pf-u-mb-lg"
+              >
+                <div
+                  aria-valuetext="Loading..."
+                  class="pf-c-spinner"
+                  role="progressbar"
+                >
+                  <div
+                    class="pf-c-spinner__clipper"
+                  />
+                  <div
+                    class="pf-c-spinner__lead-ball"
+                  />
+                  <div
+                    class="pf-c-spinner__tail-ball"
+                  />
+                </div>
+              </div>
+              <h5
+                class="pf-c-title pf-m-lg"
+              >
+                Loading...
+              </h5>
+              <div
+                class="pf-c-empty-state__body"
+              />
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+  <div />
+</body>
 `;

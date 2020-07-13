@@ -1,120 +1,115 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LoadingScreen when just made not visible 1`] = `
-<div
-  className="kogito-tooling--loading-screen"
-  onTransitionEnd={[Function]}
-  style={
-    Object {
-      "opacity": 0,
-      "transition": "opacity 400ms",
-    }
-  }
->
+<div>
   <div
-    className="pf-c-page"
+    class="kogito-tooling--loading-screen"
+    data-testid="loading-screen-div"
+    style="opacity: 0; transition: opacity 400ms;"
   >
-    <main
-      className="pf-c-page__main"
-      role="main"
-      tabIndex={-1}
+    <div
+      class="pf-c-page"
     >
-      <div
-        className="pf-l-bullseye"
+      <main
+        class="pf-c-page__main"
+        role="main"
+        tabindex="-1"
       >
         <div
-          className="pf-c-empty-state pf-m-lg"
+          class="pf-l-bullseye"
         >
           <div
-            className="pf-u-mb-lg"
+            class="pf-c-empty-state pf-m-lg"
           >
             <div
-              aria-valuetext="Loading..."
-              className="pf-c-spinner"
-              role="progressbar"
+              class="pf-u-mb-lg"
             >
               <div
-                className="pf-c-spinner__clipper"
-              />
-              <div
-                className="pf-c-spinner__lead-ball"
-              />
-              <div
-                className="pf-c-spinner__tail-ball"
-              />
+                aria-valuetext="Loading..."
+                class="pf-c-spinner"
+                role="progressbar"
+              >
+                <div
+                  class="pf-c-spinner__clipper"
+                />
+                <div
+                  class="pf-c-spinner__lead-ball"
+                />
+                <div
+                  class="pf-c-spinner__tail-ball"
+                />
+              </div>
             </div>
+            <h5
+              class="pf-c-title pf-m-lg"
+            >
+              Loading...
+            </h5>
+            <div
+              class="pf-c-empty-state__body"
+            />
           </div>
-          <h5
-            className="pf-c-title pf-m-lg"
-          >
-            Loading...
-          </h5>
-          <div
-            className="pf-c-empty-state__body"
-          />
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   </div>
 </div>
 `;
 
-exports[`LoadingScreen when not visible after fadeout delay 1`] = `<Fragment />`;
+exports[`LoadingScreen when not visible after fadeout delay 1`] = `<div />`;
 
 exports[`LoadingScreen when visible 1`] = `
-<div
-  className="kogito-tooling--loading-screen"
-  onTransitionEnd={[Function]}
-  style={
-    Object {
-      "opacity": 1,
-    }
-  }
->
+<div>
   <div
-    className="pf-c-page"
+    class="kogito-tooling--loading-screen"
+    data-testid="loading-screen-div"
+    style="opacity: 1;"
   >
-    <main
-      className="pf-c-page__main"
-      role="main"
-      tabIndex={-1}
+    <div
+      class="pf-c-page"
     >
-      <div
-        className="pf-l-bullseye"
+      <main
+        class="pf-c-page__main"
+        role="main"
+        tabindex="-1"
       >
         <div
-          className="pf-c-empty-state pf-m-lg"
+          class="pf-l-bullseye"
         >
           <div
-            className="pf-u-mb-lg"
+            class="pf-c-empty-state pf-m-lg"
           >
             <div
-              aria-valuetext="Loading..."
-              className="pf-c-spinner"
-              role="progressbar"
+              class="pf-u-mb-lg"
             >
               <div
-                className="pf-c-spinner__clipper"
-              />
-              <div
-                className="pf-c-spinner__lead-ball"
-              />
-              <div
-                className="pf-c-spinner__tail-ball"
-              />
+                aria-valuetext="Loading..."
+                class="pf-c-spinner"
+                role="progressbar"
+              >
+                <div
+                  class="pf-c-spinner__clipper"
+                />
+                <div
+                  class="pf-c-spinner__lead-ball"
+                />
+                <div
+                  class="pf-c-spinner__tail-ball"
+                />
+              </div>
             </div>
+            <h5
+              class="pf-c-title pf-m-lg"
+            >
+              Loading...
+            </h5>
+            <div
+              class="pf-c-empty-state__body"
+            />
           </div>
-          <h5
-            className="pf-c-title pf-m-lg"
-          >
-            Loading...
-          </h5>
-          <div
-            className="pf-c-empty-state__body"
-          />
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   </div>
 </div>
 `;

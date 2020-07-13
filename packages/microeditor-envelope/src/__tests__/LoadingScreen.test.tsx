@@ -15,29 +15,24 @@
  */
 
 import * as React from "react";
-import { shallow } from "enzyme";
-import { FADE_OUT_DELAY, LoadingScreen } from "../LoadingScreen";
-
-const delay = (ms: number) => {
-  return new Promise(res => setTimeout(res, ms));
-};
+import { fireEvent, render } from "@testing-library/react";
+import { LoadingScreen } from "../LoadingScreen";
 
 describe("LoadingScreen", () => {
   test("when visible", () => {
-    const render = shallow(<LoadingScreen visible={true} />);
-    expect(render).toMatchSnapshot();
+    const { container } = render(<LoadingScreen visible={true} />);
+    expect(container).toMatchSnapshot();
   });
 
   test("when just made not visible", () => {
-    const render = shallow(<LoadingScreen visible={false} />);
-    expect(render).toMatchSnapshot();
+    const { container } = render(<LoadingScreen visible={false} />);
+    expect(container).toMatchSnapshot();
   });
 
   test("when not visible after fadeout delay", async () => {
-    const render = shallow(<LoadingScreen visible={false} />);
-    render.simulate("transitionEnd");
+    const { getByTestId, container } = render(<LoadingScreen visible={false} />);
+    fireEvent.transitionEnd(getByTestId("loading-screen-div"));
 
-    await delay(FADE_OUT_DELAY);
-    expect(render).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 });
