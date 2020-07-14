@@ -20,7 +20,9 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,9 +32,11 @@ import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,6 +68,8 @@ public class ImportsWidgetViewImplTest {
     public void setup() {
         this.view = new ImportsWidgetViewImpl(addImportPopup,
                                               lockRequired);
+        view.table = mock(CellTable.class);
+
         this.view.init(presenter);
 
         internalFactTypes.add(internal1);
@@ -147,6 +153,66 @@ public class ImportsWidgetViewImplTest {
         verify(addImportPopup).setContent(eq(view.getAddImportCommand()),
                                           eq(externalFactTypes));
         verify(addImportPopup).show();
+    }
+
+    @Test
+    public void testUpdateRenderedColumnsUpdateNotNeeded() {
+        when(view.table.getColumnCount()).thenReturn(2);
+        view.setContent(Collections.singletonList(new Import("com.demo.Address")),
+                        Collections.singletonList(new Import("com.demo.Address")),
+                        Collections.emptyList(),
+                        false);
+
+        view.updateRenderedColumns();
+
+        verify(view.table, never()).removeColumn(any(Column.class));
+        verify(view.table, never()).addColumn(any(Column.class),
+                                              anyString());
+    }
+
+    @Test
+    public void testUpdateRenderedColumnsRemoveNotNeededBecauseBuiltIn() {
+        when(view.table.getColumnCount()).thenReturn(2);
+        view.setContent(Collections.singletonList(new Import("java.lang.Number")),
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        false);
+
+        view.updateRenderedColumns();
+
+        verify(view.table).removeColumn(any(Column.class));
+        verify(view.table, never()).addColumn(any(Column.class),
+                                              anyString());
+    }
+
+    @Test
+    public void testUpdateRenderedColumnsRemoveColumnNeeded() {
+        when(view.table.getColumnCount()).thenReturn(1);
+        view.setContent(Collections.singletonList(new Import("com.demo.Address")),
+                        Collections.singletonList(new Import("com.demo.Address")),
+                        Collections.emptyList(),
+                        false);
+
+        view.updateRenderedColumns();
+
+        verify(view.table, never()).removeColumn(any(Column.class));
+        verify(view.table).addColumn(any(Column.class),
+                                     eq("remove"));
+    }
+
+    @Test
+    public void testUpdateRenderedColumnsRemoveColumnNotNeeded() {
+        when(view.table.getColumnCount()).thenReturn(2);
+        view.setContent(Collections.singletonList(internal1),
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        false);
+
+        view.updateRenderedColumns();
+
+        verify(view.table).removeColumn(any(Column.class));
+        verify(view.table, never()).addColumn(any(Column.class),
+                                              anyString());
     }
 
     @Test

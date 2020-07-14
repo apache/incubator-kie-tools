@@ -104,6 +104,8 @@ public class ImportsWidgetPresenterTest {
                                     importsFactTypesCaptor.capture(),
                                     eq(false));
 
+        verify(view).updateRenderedColumns();
+
         assertEquals(3,
                      internalFactTypesCaptor.getValue().size());
         assertContains("Internal1",
@@ -231,6 +233,8 @@ public class ImportsWidgetPresenterTest {
                times(1)).fire(importAddedEventCaptor.capture());
         assertEquals("NewImport1",
                      importAddedEventCaptor.getValue().getImport().getType());
+
+        verify(view, times(2)).updateRenderedColumns();
     }
 
     @Test
@@ -253,6 +257,8 @@ public class ImportsWidgetPresenterTest {
                              importsNew,
                              false);
 
+        verify(view, times(2)).updateRenderedColumns();
+
         assertEquals(1, presenter.getInternalFactTypes().size());
         assertEquals("A", presenter.getInternalFactTypes().get(0).getType());
 
@@ -272,6 +278,8 @@ public class ImportsWidgetPresenterTest {
                              false);
 
         presenter.onAddImport(new Import("org.pkg1.External1"));
+
+        verify(view, times(2)).updateRenderedColumns();
 
         assertEquals(1,
                      imports.getImports().size());
@@ -294,6 +302,8 @@ public class ImportsWidgetPresenterTest {
 
         presenter.onRemoveImport(new Import("Internal1"));
 
+        verify(view, times(2)).updateRenderedColumns();
+
         assertEquals(0,
                      imports.getImports().size());
 
@@ -315,6 +325,8 @@ public class ImportsWidgetPresenterTest {
                              false);
 
         presenter.onRemoveImport(new Import("org.pkg1.External1"));
+
+        verify(view, times(2)).updateRenderedColumns();
 
         assertEquals(0,
                      imports.getImports().size());

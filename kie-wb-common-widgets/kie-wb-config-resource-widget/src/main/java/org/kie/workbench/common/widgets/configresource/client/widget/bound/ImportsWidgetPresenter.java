@@ -96,6 +96,7 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
                         getExternalFactTypes(),
                         getModelFactTypes(),
                         isReadOnly);
+        view.updateRenderedColumns();
     }
 
     @Override
@@ -112,6 +113,7 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
         //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
         importAddedEvent.fire(new ImportAddedEvent(dmo,
                                                    importType));
+        view.updateRenderedColumns();
     }
 
     @Override
@@ -123,6 +125,7 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
         //Signal change to any other interested consumers (e.g. some editors support rendering of unknown fact-types)
         importRemovedEvent.fire(new ImportRemovedEvent(dmo,
                                                        importType));
+        view.updateRenderedColumns();
     }
 
     @Override

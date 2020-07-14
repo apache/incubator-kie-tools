@@ -22,8 +22,10 @@ import java.util.List;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -43,6 +45,7 @@ import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
+import org.kie.workbench.common.widgets.configresource.client.widget.BuiltInTypeImportHelper;
 import org.kie.workbench.common.widgets.configresource.client.widget.Sorters;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
@@ -78,6 +81,25 @@ public class ImportsWidgetViewImpl
 
     private boolean isReadOnly = false;
 
+    final ButtonCell deleteImportButton = new ButtonCell(IconType.TRASH,
+                                                         ButtonType.DANGER,
+                                                         ButtonSize.SMALL);
+    final Column<Import, String> deleteImportColumn = new Column<Import, String>(deleteImportButton) {
+        @Override
+        public String getValue(final Import importType) {
+            return ImportConstants.INSTANCE.remove();
+        }
+
+        @Override
+        public void render(final Cell.Context context,
+                           final Import object,
+                           final SafeHtmlBuilder sb) {
+            if (!BuiltInTypeImportHelper.isBuiltIn(object)) {
+                super.render(context, object, sb);
+            }
+        }
+    };
+
     public ImportsWidgetViewImpl() {
         //CDI proxy
     }
@@ -111,15 +133,6 @@ public class ImportsWidgetViewImpl
             }
         };
 
-        final ButtonCell deleteImportButton = new ButtonCell(IconType.TRASH,
-                                                             ButtonType.DANGER,
-                                                             ButtonSize.SMALL);
-        final Column<Import, String> deleteImportColumn = new Column<Import, String>(deleteImportButton) {
-            @Override
-            public String getValue(final Import importType) {
-                return ImportConstants.INSTANCE.remove();
-            }
-        };
         deleteImportColumn.setFieldUpdater((index, importType, value) -> {
             if (isReadOnly) {
                 return;
@@ -179,6 +192,7 @@ public class ImportsWidgetViewImpl
             getDataProvider().getList().add(importType);
             getDataProvider().getList().sort(Sorters.sortByFQCN());
             lockRequired.fire(new LockRequiredEvent());
+            updateRenderedColumns();
         };
     }
 
@@ -191,6 +205,7 @@ public class ImportsWidgetViewImpl
             getDataProvider().getList().remove(i);
             getDataProvider().getList().sort(Sorters.sortByFQCN());
             lockRequired.fire(new LockRequiredEvent());
+            updateRenderedColumns();
         };
     }
 
@@ -200,5 +215,20 @@ public class ImportsWidgetViewImpl
 
     ListDataProvider<Import> getDataProvider() {
         return dataProvider;
+    }
+
+    @Override
+    public void updateRenderedColumns() {
+        final boolean isAtLeastOneImportRemovable = getDataProvider().getList()
+                .stream()
+                .anyMatch(iType -> !BuiltInTypeImportHelper.isBuiltIn(iType));
+
+        final int columnCount = table.getColumnCount();
+        if (isAtLeastOneImportRemovable && columnCount == 1) {
+            table.addColumn(deleteImportColumn,
+                            ImportConstants.INSTANCE.remove());
+        } else if (!isAtLeastOneImportRemovable && columnCount > 1) {
+            table.removeColumn(deleteImportColumn);
+        }
     }
 }

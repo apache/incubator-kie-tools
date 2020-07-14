@@ -47,6 +47,7 @@ public class ImportsWidgetPresenter
 
         view.setContent(importTypes.getImports().getImports(),
                         isReadOnly);
+        view.updateRenderedColumns();
     }
 
     @Override

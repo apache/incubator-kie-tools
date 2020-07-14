@@ -16,10 +16,13 @@
 package org.kie.workbench.common.widgets.configresource.client.widget.unbound;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,9 +31,15 @@ import org.mockito.Mock;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ImportsWidgetViewImplTest {
@@ -54,9 +63,10 @@ public class ImportsWidgetViewImplTest {
 
     @Before
     public void setup() {
-        this.view = new ImportsWidgetViewImpl(addImportPopup,
-                                              lockRequired);
+        this.view = spy(new ImportsWidgetViewImpl(addImportPopup,
+                                                  lockRequired));
         this.view.init(presenter);
+        view.table = mock(CellTable.class);
 
         imports.add(import1);
         imports.add(import2);
@@ -88,6 +98,7 @@ public class ImportsWidgetViewImplTest {
         view.makeAddImportCommand().execute();
 
         verify(lockRequired).fire(any(LockRequiredEvent.class));
+        verify(view).updateRenderedColumns();
 
         final List<Import> imports = view.getDataProvider().getList();
         assertEquals(4,
@@ -108,6 +119,7 @@ public class ImportsWidgetViewImplTest {
         view.makeRemoveImportCommand().execute(import2);
 
         verify(lockRequired).fire(any(LockRequiredEvent.class));
+        verify(view).updateRenderedColumns();
 
         final List<Import> imports = view.getDataProvider().getList();
         assertEquals(2,
@@ -125,5 +137,44 @@ public class ImportsWidgetViewImplTest {
 
         verify(addImportPopup).setCommand(eq(view.getAddImportCommand()));
         verify(addImportPopup).show();
+    }
+
+    @Test
+    public void testUpdateRenderedColumnsUpdateNotNeeded() {
+        when(view.table.getColumnCount()).thenReturn(2);
+        view.setContent(Arrays.asList(new Import("com.demo.Address")),
+                        false);
+
+        view.updateRenderedColumns();
+
+        verify(view.table, never()).removeColumn(any(Column.class));
+        verify(view.table, never()).addColumn(any(Column.class),
+                                              anyString());
+    }
+
+    @Test
+    public void testUpdateRenderedColumnsRemoveNotNeededBecauseBuiltIn() {
+        when(view.table.getColumnCount()).thenReturn(2);
+        view.setContent(Arrays.asList(new Import("java.lang.Number")),
+                        false);
+
+        view.updateRenderedColumns();
+
+        verify(view.table).removeColumn(any(Column.class));
+        verify(view.table, never()).addColumn(any(Column.class),
+                                              anyString());
+    }
+
+    @Test
+    public void testUpdateRenderedColumnsRemoveColumnNeeded() {
+        when(view.table.getColumnCount()).thenReturn(1);
+        view.setContent(Arrays.asList(new Import("com.demo.Address")),
+                        false);
+
+        view.updateRenderedColumns();
+
+        verify(view.table, never()).removeColumn(any(Column.class));
+        verify(view.table).addColumn(any(Column.class),
+                                     eq("remove"));
     }
 }

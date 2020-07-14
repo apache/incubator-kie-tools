@@ -27,8 +27,11 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ImportsWidgetPresenterTest {
@@ -65,6 +68,7 @@ public class ImportsWidgetPresenterTest {
         verify(view,
                times(1)).setContent(importsArgumentCaptor.capture(),
                                     eq(false));
+        verify(view).updateRenderedColumns();
 
         final List<Import> importsArgument = importsArgumentCaptor.getValue();
 

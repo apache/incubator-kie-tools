@@ -18,12 +18,11 @@ package org.kie.workbench.common.screens.library.client.settings.sections.extern
 
 import javax.inject.Inject;
 
-import elemental2.dom.Element;
-import elemental2.dom.Event;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.widgets.client.widget.ListItemPresenter;
 import org.kie.workbench.common.widgets.client.widget.ListItemView;
+import org.kie.workbench.common.widgets.configresource.client.widget.BuiltInTypeImportHelper;
 
 public class ExternalDataObjectsItemPresenter extends ListItemPresenter<Import, ExternalDataObjectsPresenter, ExternalDataObjectsItemPresenter.View> {
 
@@ -35,6 +34,10 @@ public class ExternalDataObjectsItemPresenter extends ListItemPresenter<Import, 
                                   IsElement {
 
         void setTypeName(final String typeName);
+
+        void hideRemoveButton();
+
+        void showRemoveButton();
     }
 
     @Inject
@@ -52,6 +55,9 @@ public class ExternalDataObjectsItemPresenter extends ListItemPresenter<Import, 
         view.init(this);
         view.setTypeName(import_.getType());
 
+        final String typeName = import_.getType();
+        setRemoveButtonVisibility(typeName);
+
         return this;
     }
 
@@ -61,9 +67,10 @@ public class ExternalDataObjectsItemPresenter extends ListItemPresenter<Import, 
         parentPresenter.fireChangeEvent();
     }
 
-    public void onTypeNameChange(final String typeName){
+    public void onTypeNameChange(final String typeName) {
         import_.setType(typeName);
         parentPresenter.fireChangeEvent();
+        setRemoveButtonVisibility(typeName);
     }
 
     @Override
@@ -73,5 +80,13 @@ public class ExternalDataObjectsItemPresenter extends ListItemPresenter<Import, 
 
     public View getView() {
         return view;
+    }
+
+    private void setRemoveButtonVisibility(final String typeName) {
+        if (BuiltInTypeImportHelper.isBuiltIn(typeName)) {
+            view.hideRemoveButton();
+        } else {
+            view.showRemoveButton();
+        }
     }
 }

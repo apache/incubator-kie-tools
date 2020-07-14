@@ -48,6 +48,7 @@ import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
+import org.kie.workbench.common.widgets.configresource.client.widget.BuiltInTypeImportHelper;
 import org.kie.workbench.common.widgets.configresource.client.widget.Sorters;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
@@ -84,6 +85,69 @@ public class ImportsWidgetViewImpl
 
     private boolean isReadOnly = false;
 
+    final TextColumn<Import> importTypeColumn = new TextColumn<Import>() {
+
+        @Override
+        public String getValue(final Import importType) {
+            return importType.getType();
+        }
+    };
+
+    private ButtonCell deleteImportButton = new ButtonCell(IconType.TRASH,
+                                                           ButtonType.DANGER,
+                                                           ButtonSize.SMALL) {
+        @Override
+        public void render(final com.google.gwt.cell.client.Cell.Context context,
+                           final SafeHtml data,
+                           final SafeHtmlBuilder sb) {
+            //Don't render a "Delete" button for "internal" Fact Types
+            if (isExternalImport(context.getIndex()) &&
+                    !BuiltInTypeImportHelper.isBuiltIn(getDataProvider().getList().get(context.getIndex()))) {
+                super.render(context,
+                             data,
+                             sb);
+            }
+        }
+
+        @Override
+        public void onBrowserEvent(final Context context,
+                                   final Element parent,
+                                   final String value,
+                                   final NativeEvent event,
+                                   final ValueUpdater<String> valueUpdater) {
+            //Don't act on cell interactions for "internal" Fact Types
+            if (isExternalImport(context.getIndex())) {
+                super.onBrowserEvent(context,
+                                     parent,
+                                     value,
+                                     event,
+                                     valueUpdater);
+            }
+        }
+
+        @Override
+        protected void onEnterKeyDown(final Context context,
+                                      final Element parent,
+                                      final String value,
+                                      final NativeEvent event,
+                                      final ValueUpdater<String> valueUpdater) {
+            //Don't act on cell interactions for "internal" Fact Types
+            if (isExternalImport(context.getIndex())) {
+                super.onEnterKeyDown(context,
+                                     parent,
+                                     value,
+                                     event,
+                                     valueUpdater);
+            }
+        }
+    };
+    private Column<Import, String> deleteImportColumn = new Column<Import, String>(deleteImportButton) {
+        @Override
+        public String getValue(final Import importType) {
+            return ImportConstants.INSTANCE.remove();
+        }
+    };
+
     public ImportsWidgetViewImpl() {
         //CDI proxy
     }
@@ -109,67 +173,11 @@ public class ImportsWidgetViewImpl
         table.setEmptyTableWidget(new Label(ImportConstants.INSTANCE.noImportsDefined()));
 
         //Columns
-        final TextColumn<Import> importTypeColumn = new TextColumn<Import>() {
+        table.addColumn(importTypeColumn,
+                        new TextHeader(ImportConstants.INSTANCE.importType()));
+        table.addColumn(deleteImportColumn,
+                        ImportConstants.INSTANCE.remove());
 
-            @Override
-            public String getValue(final Import importType) {
-                return importType.getType();
-            }
-        };
-
-        final ButtonCell deleteImportButton = new ButtonCell(IconType.TRASH,
-                                                             ButtonType.DANGER,
-                                                             ButtonSize.SMALL) {
-            @Override
-            public void render(final com.google.gwt.cell.client.Cell.Context context,
-                               final SafeHtml data,
-                               final SafeHtmlBuilder sb) {
-                //Don't render a "Delete" button for "internal" Fact Types
-                if (isExternalImport(context.getIndex())) {
-                    super.render(context,
-                                 data,
-                                 sb);
-                }
-            }
-
-            @Override
-            public void onBrowserEvent(final Context context,
-                                       final Element parent,
-                                       final String value,
-                                       final NativeEvent event,
-                                       final ValueUpdater<String> valueUpdater) {
-                //Don't act on cell interactions for "internal" Fact Types
-                if (isExternalImport(context.getIndex())) {
-                    super.onBrowserEvent(context,
-                                         parent,
-                                         value,
-                                         event,
-                                         valueUpdater);
-                }
-            }
-
-            @Override
-            protected void onEnterKeyDown(final Context context,
-                                          final Element parent,
-                                          final String value,
-                                          final NativeEvent event,
-                                          final ValueUpdater<String> valueUpdater) {
-                //Don't act on cell interactions for "internal" Fact Types
-                if (isExternalImport(context.getIndex())) {
-                    super.onEnterKeyDown(context,
-                                         parent,
-                                         value,
-                                         event,
-                                         valueUpdater);
-                }
-            }
-        };
-        final Column<Import, String> deleteImportColumn = new Column<Import, String>(deleteImportButton) {
-            @Override
-            public String getValue(final Import importType) {
-                return ImportConstants.INSTANCE.remove();
-            }
-        };
         deleteImportColumn.setFieldUpdater((index,
                                             importType,
                                             value) -> {
@@ -183,11 +191,6 @@ public class ImportsWidgetViewImpl
                                                                                   null);
             confirm.show();
         });
-
-        table.addColumn(importTypeColumn,
-                        new TextHeader(ImportConstants.INSTANCE.importType()));
-        table.addColumn(deleteImportColumn,
-                        ImportConstants.INSTANCE.remove());
 
         //Link display
         getDataProvider().addDataDisplay(table);
@@ -257,5 +260,20 @@ public class ImportsWidgetViewImpl
 
     ListDataProvider<Import> getDataProvider() {
         return dataProvider;
+    }
+
+    @Override
+    public void updateRenderedColumns() {
+        final boolean isAtLeastOneImportRemovable = getDataProvider().getList()
+                .stream()
+                .anyMatch(iType -> isExternalImport(iType) && !BuiltInTypeImportHelper.isBuiltIn(iType));
+
+        final int columnCount = table.getColumnCount();
+        if (isAtLeastOneImportRemovable && columnCount == 1) {
+            table.addColumn(deleteImportColumn,
+                            ImportConstants.INSTANCE.remove());
+        } else if (!isAtLeastOneImportRemovable && columnCount > 1) {
+            table.removeColumn(deleteImportColumn);
+        }
     }
 }

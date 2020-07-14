@@ -55,6 +55,16 @@ public class ExternalDataObjectsItemView implements ExternalDataObjectsItemPrese
         this.typeName.value = typeName;
     }
 
+    @Override
+    public void hideRemoveButton() {
+        removeButton.hidden = true;
+    }
+
+    @Override
+    public void showRemoveButton() {
+        removeButton.hidden = false;
+    }
+
     @EventHandler("type-name")
     public void onVersionChange(final @ForEvent("change") Event event) {
         presenter.onTypeNameChange(typeName.value);

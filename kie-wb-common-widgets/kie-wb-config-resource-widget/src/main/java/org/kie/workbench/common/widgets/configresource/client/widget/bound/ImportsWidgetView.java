@@ -46,4 +46,10 @@ public interface ImportsWidgetView
                     final List<Import> externalFactTypes,
                     final List<Import> modelFactTypes,
                     final boolean isReadOnly);
+
+    /**
+     * Method refresh the set of used columns according to actual imports.
+     * We do not render 'Remove' column if just non removable imports are present.
+     */
+    void updateRenderedColumns();
 }
