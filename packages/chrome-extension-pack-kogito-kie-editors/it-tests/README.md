@@ -2,15 +2,7 @@
 Integration tests for Kogito Chrome extrension. Uses selenium to test the Kogito plugin in Chrome browser.
 
 ## Installation
-1. Add chrome driver to path
-
-Download chromedriver from https://chromedriver.chromium.org/downloads.
-```
-unzip chromedriver_linux64.zip
-export PATH=/path/to/chromedriver:$PATH
-```
-
-2. Set UNZIPPED_CHROME_EXTENSION_PATH variable 
+1. Set UNZIPPED_CHROME_EXTENSION_PATH variable 
 
 Tests need UNZIPPED_CHROME_EXTENSION_PATH environment variable to be set to directory with unzipped Chome Extension.
 If the variable is not set,  `chrome-extension-pack-kogito-kie-editors/dist` is used.
@@ -19,7 +11,9 @@ unzip chrome_extension_kogito_kie_editors_X.Y.Z.zip
 export UNZIPPED_CHROME_EXTENSION_PATH=/path/to/unzipped/dist 
 ```
 
-3. Follow the instruction in the project README to run productized build
+2. Follow the instruction in the project README to run productized build 
+
+These tests are part of `yarn run build:prod` command run.
 
 ## Repository strucure
 
