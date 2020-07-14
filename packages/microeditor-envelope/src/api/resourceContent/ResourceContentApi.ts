@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/core-api";
+import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/microeditor-envelope-protocol";
 
 /**
  * PUBLIC ENVELOPE API

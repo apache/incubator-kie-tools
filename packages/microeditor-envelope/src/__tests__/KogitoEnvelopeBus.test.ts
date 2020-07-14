@@ -20,7 +20,7 @@ import {
   EnvelopeBusMessagePurpose,
   KogitoEnvelopeApi
 } from "@kogito-tooling/microeditor-envelope-protocol";
-import { StateControlCommand } from "@kogito-tooling/core-api";
+import { StateControlCommand } from "@kogito-tooling/microeditor-envelope-protocol";
 
 let api: KogitoEnvelopeApi;
 let envelopeBus: KogitoEnvelopeBus;

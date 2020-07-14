@@ -17,5 +17,4 @@
 export * from "./KogitoChannelBus";
 export * from "./KogitoChannelApi";
 export * from "./KogitoEnvelopeApi";
-export * from "./LanguageData";
-export * from "./Router";
+export * from "./api";

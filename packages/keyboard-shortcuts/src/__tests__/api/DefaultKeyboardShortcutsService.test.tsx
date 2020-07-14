@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { DefaultKeyboardShortcutsService } from "../../api";
-import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 import { fireEvent, render } from "@testing-library/react";
 
 describe("DefaultKeyboardShortcutsService", () => {

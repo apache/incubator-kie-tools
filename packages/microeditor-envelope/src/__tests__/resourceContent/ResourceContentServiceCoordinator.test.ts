@@ -16,7 +16,7 @@
 
 import { ResourceContentApi, ResourceContentServiceCoordinator } from "../../api/resourceContent";
 import { KogitoEnvelopeBus } from "../../KogitoEnvelopeBus";
-import { ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { ResourceContent, ResourcesList } from "@kogito-tooling/microeditor-envelope-protocol";
 
 let coordinator: ResourceContentServiceCoordinator;
 let resourceContentApi: ResourceContentApi;

@@ -22,7 +22,7 @@ import {
   ResourceListOptions,
   ResourcesList,
   SearchType
-} from "@kogito-tooling/core-api";
+} from "@kogito-tooling/microeditor-envelope-protocol";
 
 import * as fs from "fs";
 import * as minimatch from "minimatch";

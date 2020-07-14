@@ -18,13 +18,13 @@ import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
 import {
   EditorContent,
   KogitoEdit,
+  LanguageData,
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
   StateControlCommand
-} from "@kogito-tooling/core-api";
-import { LanguageData } from "./LanguageData";
+} from "../kogito/api";
 
 export interface KogitoChannelApi {
   receive_setContentError(errorMessage: string): void;

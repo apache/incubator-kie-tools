@@ -28,7 +28,7 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { KeyboardIcon } from "@patternfly/react-icons";
-import { EditorContext, OperatingSystem } from "@kogito-tooling/core-api";
+import { EditorContext, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 import "./styles.scss";
 
 export function KeyBindingsHelpOverlay(props: {

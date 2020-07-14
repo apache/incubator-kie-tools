@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
@@ -14,4 +15,12 @@
  * limitations under the License.
  */
 
-import "@testing-library/jest-dom";
+export interface ChannelKeyboardEvent {
+    altKey: boolean;
+    ctrlKey: boolean;
+    shiftKey: boolean;
+    metaKey: boolean;
+    code: string;
+    type: string;
+    channelOriginalTargetTagName?: string;
+}

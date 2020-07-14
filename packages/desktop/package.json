@@ -10,7 +10,6 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.6.1",
     "@kogito-tooling/embedded-editor": "0.6.1",
     "@kogito-tooling/patternfly-base": "0.6.1",
     "electron": "7.1.9",

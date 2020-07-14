@@ -22,7 +22,7 @@ import {
   EnvelopeBusMessagePurpose,
   LanguageData
 } from "@kogito-tooling/microeditor-envelope-protocol";
-import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 import { DummyEditor } from "./DummyEditor";
 import { ResourceContentServiceCoordinator } from "../api/resourceContent";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType, getOperatingSystem } from "@kogito-tooling/core-api";
+import { ChannelType, getOperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 import { GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { EnvelopeBusMessage } from "@kogito-tooling/microeditor-envelope-protocol";

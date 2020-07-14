@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorContext, OperatingSystem } from "@kogito-tooling/core-api";
+import { EditorContext, OperatingSystem, ChannelKeyboardEvent } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KeyBindingServiceOpts, KeyboardShortcutsApi } from "./KeyboardShorcutsApi";
 
 export interface KeyBinding {
@@ -241,16 +241,6 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
   public exposeApi(): KeyboardShortcutsApi {
     return this;
   }
-}
-
-export interface ChannelKeyboardEvent {
-  altKey: boolean;
-  ctrlKey: boolean;
-  shiftKey: boolean;
-  metaKey: boolean;
-  code: string;
-  type: string;
-  channelOriginalTargetTagName?: string;
 }
 
 function getProcessableKeyboardEvent(

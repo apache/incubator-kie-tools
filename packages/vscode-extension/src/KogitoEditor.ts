@@ -25,7 +25,7 @@ import {
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
-} from "@kogito-tooling/core-api";
+} from "@kogito-tooling/microeditor-envelope-protocol";
 
 export class KogitoEditor {
   private readonly uri: vscode.Uri;

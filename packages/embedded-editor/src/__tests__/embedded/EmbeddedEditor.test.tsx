@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType, KogitoEdit } from "@kogito-tooling/core-api";
+import { ChannelType, KogitoEdit } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EnvelopeBusMessagePurpose, KogitoChannelBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
 import { EditorType, File } from "../../common";

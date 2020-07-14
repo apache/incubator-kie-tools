@@ -15,9 +15,11 @@
  */
 
 import { useEffect } from "react";
-import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts";
-import { KogitoEnvelopeApi } from "./kogito";
-import { MessageBusClient } from "./bus/EnvelopeBusMessageManager";
+import {
+  ChannelKeyboardEvent,
+  KogitoEnvelopeApi,
+  MessageBusClient
+} from "@kogito-tooling/microeditor-envelope-protocol";
 
 function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKeyboardEvent {
   return {

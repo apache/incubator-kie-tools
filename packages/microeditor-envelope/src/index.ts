@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorContext } from "@kogito-tooling/core-api";
+import { EditorContext } from "@kogito-tooling/microeditor-envelope-protocol";
 import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "@kogito-tooling/keyboard-shortcuts";
 import { EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import { ReactElement } from "react";

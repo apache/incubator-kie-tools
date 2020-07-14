@@ -20,7 +20,7 @@ import { EditorEnvelopeView } from "../EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
 import { KogitoEnvelopeBus } from "../KogitoEnvelopeBus";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
-import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 
 function renderEditorEnvelopeView(): EditorEnvelopeView {
   let view: EditorEnvelopeView;

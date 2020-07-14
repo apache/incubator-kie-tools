@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import * as Core from "@kogito-tooling/core-api";
-import { ChannelType, StateControlCommand } from "@kogito-tooling/core-api";
+import * as Core from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelType, StateControlCommand } from "@kogito-tooling/microeditor-envelope-protocol";
 import { Editor } from "@kogito-tooling/editor-api";
 import { LoadingScreen } from "./LoadingScreen";
 import { DefaultKeyboardShortcutsService, KeyBindingsHelpOverlay } from "@kogito-tooling/keyboard-shortcuts";

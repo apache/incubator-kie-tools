@@ -21,7 +21,7 @@ import {
   KogitoChannelBus,
   KogitoEnvelopeMessageTypes
 } from "../..";
-import { ContentType, ResourceContent, StateControlCommand } from "@kogito-tooling/core-api";
+import { ContentType, ResourceContent, StateControlCommand } from "../../kogito/api";
 
 let sentMessages: Array<EnvelopeBusMessage<unknown, any>>;
 let channelBus: KogitoChannelBus;

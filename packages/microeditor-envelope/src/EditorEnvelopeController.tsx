@@ -15,9 +15,9 @@
  */
 
 import * as React from "react";
-import { EditorContent, EditorContext } from "@kogito-tooling/core-api";
+import { ChannelKeyboardEvent, EditorContent, EditorContext } from "@kogito-tooling/microeditor-envelope-protocol";
 import { Association, EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
-import { ChannelKeyboardEvent, DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 import { Editor, EditorFactory } from "@kogito-tooling/editor-api";

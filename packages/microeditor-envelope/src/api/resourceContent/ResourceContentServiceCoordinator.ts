@@ -15,7 +15,7 @@
  */
 
 import { KogitoEnvelopeBus } from "../../KogitoEnvelopeBus";
-import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/core-api";
+import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/microeditor-envelope-protocol";
 import { ResourceContentApi } from "./ResourceContentApi";
 
 export class ResourceContentServiceCoordinator {

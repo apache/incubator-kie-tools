@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorContent } from "@kogito-tooling/core-api";
+import { EditorContent } from "../kogito/api";
 import { EnvelopeBus, EnvelopeBusMessage, EnvelopeBusMessageManager, FunctionPropertyNames } from "../bus";
 import { KogitoChannelApi } from "./KogitoChannelApi";
 import { KogitoEnvelopeApi } from "./KogitoEnvelopeApi";

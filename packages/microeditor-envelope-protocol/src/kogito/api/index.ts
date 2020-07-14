@@ -14,5 +14,21 @@
  * limitations under the License.
  */
 
-export * from "./KogitoEdit";
+export * from "./ResourceContentOptions";
+export * from "./ResourceListOptions";
+export * from "./SearchType";
+export * from "./ResourceContentRequest";
+export * from "./LanguageData";
+export * from "./OperatingSystem";
+export * from "./ChannelType";
+export * from "./EditorContext";
+export * from "./ResourceContentService";
 export * from "./StateControlCommand";
+export * from "./KogitoEdit";
+export * from "./ResourcesList";
+export * from "./ResourceListRequest";
+export * from "./EditorContent";
+export * from "./ResourceContent";
+export * from "./ContentType";
+export * from "./Router";
+export * from "./ChannelKeyboardEvent"

@@ -23,7 +23,7 @@ import {
   KogitoEnvelopeApi,
   KogitoEnvelopeMessageTypes
 } from "@kogito-tooling/microeditor-envelope-protocol";
-import { KogitoEdit, ResourceContentOptions, ResourceListOptions, StateControlCommand } from "@kogito-tooling/core-api";
+import { KogitoEdit, ResourceContentOptions, ResourceListOptions, StateControlCommand } from "@kogito-tooling/microeditor-envelope-protocol";
 import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
 
 export class KogitoEnvelopeBus {
