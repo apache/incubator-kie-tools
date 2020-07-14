@@ -766,8 +766,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         verify(decisionTableSelectedEvent,
                times(1)).fire(any(DecisionTableSelectedEvent.class));
-        verify(lockManager,
-               times(1)).acquireLock();
+
+        // 3 rows created during the setup + 1 select action
+        verify(lockManager, times(4)).acquireLock();
     }
 
     @Test
@@ -1104,6 +1105,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                times(1)).appendRow();
         verify(modellerPresenter,
                times(1)).updateLinks();
+        // 3 rows created during the setup + 1 row created on this test
+        verify(lockManager,
+               times(4)).acquireLock();
     }
 
     @Test
@@ -1261,6 +1265,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         verify(clipboard,
                times(1)).setData(any(Set.class));
+        // 3 rows created during the setup + 1 selected cell on this test
+        verify(lockManager,
+               times(4)).acquireLock();
     }
 
     @Test
@@ -1282,6 +1289,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         verify(clipboard,
                times(1)).setData(any(Set.class));
+        // 3 rows created during the setup + 1 selected cell on this test
+        verify(lockManager,
+               times(4)).acquireLock();
     }
 
     @Test
@@ -1305,6 +1315,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         verify(clipboard,
                times(1)).getData();
+        // 3 rows created during the setup + 2 selected cells on this test
+        verify(lockManager,
+               times(5)).acquireLock();
     }
 
     @Test
@@ -1329,6 +1342,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(synchronizer,
                times(1)).deleteCell(rowRangeCaptor.capture(),
                                     columnIndexCaptor.capture());
+        // 3 rows created during the setup + 1 selected cell on this test
+        verify(lockManager,
+               times(4)).acquireLock();
 
         checkDTSelectionsChangedEventFired(2);
 
@@ -1361,6 +1377,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(synchronizer,
                never()).deleteCell(any(GridData.Range.class),
                                    any(Integer.class));
+        // 3 rows created during the setup + 1 selected cell on this test
+        verify(lockManager,
+               times(4)).acquireLock();
         checkDTSelectionsChangedEventFired(1);
     }
 
@@ -1391,6 +1410,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(synchronizer,
                never()).deleteCell(any(GridData.Range.class),
                                    eq(3));
+        // 3 rows created during the setup + 2 selected cells on this test
+        verify(lockManager,
+               times(5)).acquireLock();
         checkDTSelectionsChangedEventFired(3);
 
         final GridCell<?> booleanCell = uiModel.getCell(0,
@@ -1434,6 +1456,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         verify(synchronizer,
                times(1)).deleteColumn(eq(column));
+        // 3 rows created during the setup + 1 selected cell on this test
+        verify(lockManager,
+               times(4)).acquireLock();
         checkDTSelectionsChangedEventFired(2);
     }
 
@@ -1461,6 +1486,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
                times(1)).deleteRow(eq(1));
 
         checkDTSelectionsChangedEventFired(4);
+        // 3 rows created during the setup + 2 selected cells on this test
+        verify(lockManager,
+               times(5)).acquireLock();
     }
 
     @Test
@@ -1489,6 +1517,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         verify(synchronizer,
                times(1)).insertRow(eq(0));
+        // 3 rows created during the setup + 1 selected cell on this test
+        verify(lockManager,
+               times(4)).acquireLock();
     }
 
     @Test
@@ -1503,6 +1534,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         verify(synchronizer,
                never()).insertRow(any(Integer.class));
+        // 3 rows created during the setup + 2 selected cells on this test
+        verify(lockManager,
+               times(5)).acquireLock();
     }
 
     @Test
@@ -1523,6 +1557,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         verify(synchronizer,
                times(1)).insertRow(eq(1));
+        // 3 rows created during the setup + 1 selected cell on this test
+        verify(lockManager,
+               times(4)).acquireLock();
     }
 
     @Test
@@ -1537,6 +1574,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         verify(synchronizer,
                never()).insertRow(any(Integer.class));
+        // 3 rows created during the setup + 2 selected cells on this test
+        verify(lockManager,
+               times(5)).acquireLock();
     }
 
     @Test
@@ -1559,6 +1599,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(synchronizer,
                times(1)).setCellOtherwiseState(eq(0),
                                                eq(0));
+        // 3 rows created during the setup + 1 selected cell on this test
+        verify(lockManager,
+               times(4)).acquireLock();
     }
 
     @Test
@@ -1574,6 +1617,9 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(synchronizer,
                never()).setCellOtherwiseState(any(Integer.class),
                                               any(Integer.class));
+        // 3 rows created during the setup + 2 selected cells on this test
+        verify(lockManager,
+               times(5)).acquireLock();
     }
 
     @Test

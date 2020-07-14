@@ -392,6 +392,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                 final Range rows = super.selectCell(rowIndex,
                                                     columnIndex);
                 decisionTableSelectionsChangedEvent.fire(new DecisionTableSelectionsChangedEvent(GuidedDecisionTablePresenter.this));
+                lockManager.acquireLock();
                 return rows;
             }
 
@@ -405,6 +406,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                                      width,
                                                      height);
                 decisionTableSelectionsChangedEvent.fire(new DecisionTableSelectionsChangedEvent(GuidedDecisionTablePresenter.this));
+                lockManager.acquireLock();
                 return rows;
             }
 
@@ -941,6 +943,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         }
         try {
             synchronizer.appendRow();
+            lockManager.acquireLock();
 
             refreshView();
 
