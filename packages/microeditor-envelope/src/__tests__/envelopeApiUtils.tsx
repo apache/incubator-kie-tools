@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useContext } from "react";
-import { EditorContext, KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EnvelopeContext, EnvelopeContextType } from "@kogito-tooling/editor-api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import * as React from "react";
 
-export interface EnvelopeContextType {
-  channelApi: MessageBusClient<KogitoChannelApi>;
-  context: EditorContext;
+export const DEFAULT_TESTING_ENVELOPE_CONTEXT: EnvelopeContextType = {
+  channelApi: {} as any,
+  context: {} as any,
   services: {
-    keyboardShortcuts: DefaultKeyboardShortcutsService;
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({} as any),
     guidedTour: {
-      isEnabled: () => boolean;
-    };
+      isEnabled: () => false
+    }
+  }
+};
+
+export function usingEnvelopeApi(children: React.ReactElement, ctx?: Partial<EnvelopeContextType>) {
+  const usedCtx = { ...DEFAULT_TESTING_ENVELOPE_CONTEXT, ...ctx };
+  return {
+    ctx: usedCtx,
+    wrapper: (
+      <EnvelopeContext.Provider key={""} value={usedCtx}>
+        {children}
+      </EnvelopeContext.Provider>
+    )
   };
-}
-
-export const EnvelopeContext = React.createContext<EnvelopeContextType>({} as any);
-
-export function useEnvelopeApi() {
-  return useContext(EnvelopeContext);
 }

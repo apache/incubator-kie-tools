@@ -16,3 +16,4 @@
 
 export * from "./Editor";
 export * from "./EditorFactory";
+export * from "./EnvelopeContext";

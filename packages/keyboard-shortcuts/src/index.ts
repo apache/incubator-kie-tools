@@ -14,6 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./api"
-export * from "./common"
-export * from "./Hooks"
+export * from "./DefaultKeyboardShortcutsService"
+export * from "./KeyboardShorcutsApi"

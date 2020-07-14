@@ -16,7 +16,6 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { DefaultKeyboardShortcutsService } from "../../api";
 import {
   Modal,
   Text,
@@ -30,23 +29,22 @@ import {
 import { KeyboardIcon } from "@patternfly/react-icons";
 import { EditorContext, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 import "./styles.scss";
+import { useEnvelopeApi } from "@kogito-tooling/editor-api";
 
-export function KeyBindingsHelpOverlay(props: {
-  keyboardShortcutsService: DefaultKeyboardShortcutsService;
-  context: EditorContext;
-}) {
+export function KeyBindingsHelpOverlay() {
   const [showing, setShowing] = useState(false);
+  const envelopeApi = useEnvelopeApi();
 
   const toggle = useCallback(() => {
     setShowing(!showing);
   }, [showing]);
 
   const keyBindings = useMemo(() => {
-    return removeDuplicatesByAttr(props.keyboardShortcutsService.registered(), "combination")
+    return removeDuplicatesByAttr(envelopeApi.services.keyboardShortcuts.registered(), "combination")
       .filter(k => !k.opts?.hidden)
       .map(k => {
         return {
-          combination: handleMacOsCombination(k.combination, props.context),
+          combination: handleMacOsCombination(k.combination, envelopeApi.context),
           category: k.label.split("|")[0]?.trim(),
           label: k.label.split("|")[1]?.trim()
         };
@@ -59,24 +57,24 @@ export function KeyBindingsHelpOverlay(props: {
         }
         return lhs;
       }, new Map<string, Set<{ label: string; combination: string }>>());
-  }, [props.keyboardShortcutsService.registered()]);
+  }, [envelopeApi.services.keyboardShortcuts.registered()]);
 
   useEffect(() => {
-    const id = props.keyboardShortcutsService.registerKeyPress(
+    const id = envelopeApi.services.keyboardShortcuts.registerKeyPress(
       "shift+/",
       "Help | Show keyboard shortcuts",
       async () => setShowing(true),
       { element: window }
     );
-    return () => props.keyboardShortcutsService.deregister(id);
+    return () => envelopeApi.services.keyboardShortcuts.deregister(id);
   }, []);
 
   useEffect(() => {
     if (showing) {
-      const id = props.keyboardShortcutsService.registerKeyPressOnce("esc", async () => setShowing(false), {
+      const id = envelopeApi.services.keyboardShortcuts.registerKeyPressOnce("esc", async () => setShowing(false), {
         element: window
       });
-      return () => props.keyboardShortcutsService.deregister(id);
+      return () => envelopeApi.services.keyboardShortcuts.deregister(id);
     }
   }, [showing]);
 

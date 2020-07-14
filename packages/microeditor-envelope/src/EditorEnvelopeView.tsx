@@ -18,13 +18,15 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as Core from "@kogito-tooling/microeditor-envelope-protocol";
 import { ChannelType, StateControlCommand } from "@kogito-tooling/microeditor-envelope-protocol";
-import { Editor } from "@kogito-tooling/editor-api";
+import { Editor, EnvelopeContext } from "@kogito-tooling/editor-api";
 import { LoadingScreen } from "./LoadingScreen";
-import { DefaultKeyboardShortcutsService, KeyBindingsHelpOverlay } from "@kogito-tooling/keyboard-shortcuts";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import "@patternfly/patternfly/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/patternfly/patternfly.css";
 import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
+import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
+import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
 
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
@@ -107,16 +109,22 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
 
   public render() {
     return (
-      <>
-        {!this.state.loading && (
-          <KeyBindingsHelpOverlay
-            keyboardShortcutsService={this.props.keyboardShortcutsService}
-            context={this.props.context}
-          />
-        )}
+      <EnvelopeContext.Provider
+        value={{
+          channelApi: this.props.messageBus.client,
+          context: this.props.context,
+          services: {
+            keyboardShortcuts: this.props.keyboardShortcutsService,
+            guidedTour: {
+              isEnabled: () => KogitoGuidedTour.getInstance().isEnabled()
+            }
+          }
+        }}
+      >
+        {!this.state.loading && <KeyBindingsHelpOverlay />}
         {this.LoadingScreenPortal()}
         {this.state.editor && this.state.editor.af_isReact && this.state.editor.af_componentRoot()}
-      </>
+      </EnvelopeContext.Provider>
     );
   }
 }
