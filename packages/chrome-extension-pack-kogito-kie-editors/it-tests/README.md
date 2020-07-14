@@ -2,20 +2,7 @@
 Integration tests for Kogito Chrome extrension. Uses selenium to test the Kogito plugin in Chrome browser.
 
 ## Installation
-1. Install yarn
-
-```
-sudo dnf install yarnpkg -y
-```
-
-2. Install project dependencies
-
-###
-```
-yarn install
-```
-
-3. Add chrome driver to path
+1. Add chrome driver to path
 
 Download chromedriver from https://chromedriver.chromium.org/downloads.
 ```
@@ -23,28 +10,29 @@ unzip chromedriver_linux64.zip
 export PATH=/path/to/chromedriver:$PATH
 ```
 
-4. Run tests
+2. Set UNZIPPED_CHROME_EXTENSION_PATH variable 
 
 Tests need UNZIPPED_CHROME_EXTENSION_PATH environment variable to be set to directory with unzipped Chome Extension.
+If the variable is not set,  `chrome-extension-pack-kogito-kie-editors/dist` is used.
 ```
-unzip chrome_extension_kogito_kie_editors_0.X.Y.zip
-export UNZIPPED_CHROME_EXTENSION_PATH=dist 
-yarn run tests
+unzip chrome_extension_kogito_kie_editors_X.Y.Z.zip
+export UNZIPPED_CHROME_EXTENSION_PATH=/path/to/unzipped/dist 
 ```
+
+3. Follow the instruction in the project README to run productized build
 
 ## Repository strucure
 
-| File / directory     | Description                                     |
-| -------------------- | ----------------------------------------------- |
-| `test/`              | Tests and test framework                        |
-| `.gitignore`         | List of files ignored by git                    |
-| `README.md`          | This README file                                |
-| `package.json`       | Main declaration file                           |
-| `tsconfig.json`      | TypeScript configuration file                   |
+| File / directory     | Description                                       |
+| -------------------- | ------------------------------------------------- |
+| `framework/`         | Test framework contains pages and page fragments. |  
+| `tests/`             | Test directory contains only test classes.        |
+| `utils/`             | Test utils contains other testing tools.          |
+| `README.md`          | This README file                                  |
 
 ## Basic test structure
 ```typescript
-import Tools from "./utils/Tools";
+import Tools from "../utils/Tools";
 
 const TEST_NAME = "SimpleTest"
 
@@ -71,9 +59,9 @@ afterEach(async () => {
 
 ## Framework
 
-- `Tools` class shoud be inicialized before every tests by `let tools = await Tools.init()`. It creates selenium driver and it servers as basic entry point for the framework. 
+- `Tools` class shoud be inicialized before every test by `let tools = await Tools.init(TEST_NAME)`. It creates selenium driver and it servers as basic entry point for the framework. 
 After every test `finishTest()` method should be called to quit the driver and create screenshots.
-- `Page` class represents whole browser page. Page can be created by `await tools.openPage(PageClass, url)` or `await tools.createPage(PageClass)`.
+- `Page` class represents single browser page. Page can be created by `await tools.openPage(PageClass, url)` or `await tools.createPage(PageClass)`.
 - `PageFragment` class represent part of Page defined by root `Element`. PageFragment can be created by `await tools.createPageFragment(PageFragmentClass, rootElement)`.
 - `Element` class represents element on Page. Element can be created by:
   - Find by locator: `await tools.by(locatorBy).getElement()`
