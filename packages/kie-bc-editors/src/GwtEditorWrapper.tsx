@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { GwtEditor } from "./GwtAppFormerApi";
+import { getGuidedTourElementPosition, GwtEditor } from "./GwtAppFormerApi";
 import { Editor } from "@kogito-tooling/editor-api";
 import { editors } from "./GwtEditorRoutes";
 import { XmlFormatter } from "./XmlFormatter";
@@ -74,6 +74,10 @@ export class GwtEditorWrapper extends Editor {
 
   public getContent() {
     return this.gwtEditor.getContent().then(content => this.xmlFormatter.format(content));
+  }
+
+  public getElementPosition(selector: string) {
+    return Promise.resolve(getGuidedTourElementPosition(selector));
   }
 
   public setContent(path: string, content: string) {

@@ -18,6 +18,7 @@ import * as React from "react";
 import {
   Association,
   ChannelKeyboardEvent,
+  DEFAULT_RECT,
   EditorContent,
   EditorContext,
   EnvelopeBus
@@ -28,7 +29,6 @@ import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 import { Editor, EditorFactory, EnvelopeContext, EnvelopeContextType } from "@kogito-tooling/editor-api";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
-import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandler";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 
 export class EditorEnvelopeController {
@@ -93,7 +93,9 @@ export class EditorEnvelopeController {
           .then(previewSvg => previewSvg ?? "");
       },
       receive_guidedTourElementPositionRequest: async (selector: string) => {
-        return getGuidedTourElementPosition(selector);
+        return this.getEditor()!
+          .getElementPosition(selector)
+          .then(rect => rect ?? DEFAULT_RECT); //FIXME: tiago -> check with guilherme
       },
       receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent) {
         window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));

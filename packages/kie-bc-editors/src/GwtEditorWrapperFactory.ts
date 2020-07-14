@@ -104,7 +104,7 @@ export class GwtEditorWrapperFactory implements EditorFactory<GwtLanguageData> {
           envelopeContext.channelApi.notify("receive_guidedTourRegisterTutorial", tutorial);
         },
         isEnabled(): boolean {
-          return true; //FIXME: tiago -> KogitoGuidedTour.getInstance().isEnabled();
+          return envelopeContext.services.guidedTour.isEnabled();
         }
       },
       resourceContentEditorService: {

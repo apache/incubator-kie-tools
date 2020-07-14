@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { Rect } from "@kogito-tooling/microeditor-envelope-protocol";
+
 /**
  * Editor component API. Implement this class to create an Editor.
  */
@@ -31,6 +33,8 @@ export abstract class Editor {
   public abstract getContent(): Promise<string>;
 
   public abstract getPreview(): Promise<string | undefined>;
+
+  public abstract getElementPosition(selector: string): Promise<Rect | undefined>;
 
   public abstract undo(): Promise<void>;
 

@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import { Editor } from "@kogito-tooling/editor-api";
+import { DEFAULT_RECT } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export class DummyEditor extends Editor {
   private ref: DummyEditorComponent;
@@ -32,6 +33,10 @@ export class DummyEditor extends Editor {
 
   public getContent() {
     return this.ref!.getContent();
+  }
+
+  public getElementPosition(selector: string) {
+    return Promise.resolve(DEFAULT_RECT);
   }
 
   public undo() {
