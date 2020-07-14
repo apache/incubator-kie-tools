@@ -14,5 +14,12 @@
  * limitations under the License.
  */
 
-export * from "./WorkspaceServiceApi";
-export * from "./WorkspaceService";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
+
+/**
+ * PUBLIC ENVELOPE API
+ */
+export interface EditorContextApi {
+  channel: ChannelType;
+  operatingSystem?: OperatingSystem;
+}

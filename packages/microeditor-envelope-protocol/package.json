@@ -12,9 +12,6 @@
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
-  "dependencies": {
-    "@kogito-tooling/guided-tour": "0.6.1"
-  },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "jest --silent --verbose",

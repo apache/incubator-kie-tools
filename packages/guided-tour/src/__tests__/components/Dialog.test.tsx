@@ -16,10 +16,11 @@
 
 import * as React from "react";
 import { act } from "react-dom/test-utils";
-import { useContextMock, renderedComponent, render, setupContainer, teardownContainer, triggerClick } from "../utils";
+import { render, renderedComponent, setupContainer, teardownContainer, triggerClick, useContextMock } from "../utils";
 
 import { Dialog } from "../../components";
-import { KogitoGuidedTour, Tutorial, DemoMode, Rect, DEFAULT_RECT, AutoMode } from "../..";
+import { KogitoGuidedTour } from "../..";
+import { AutoMode, DEFAULT_RECT, DemoMode, Rect, Tutorial } from "@kogito-tooling/microeditor-envelope-protocol";
 
 jest.useFakeTimers();
 

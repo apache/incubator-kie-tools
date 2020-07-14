@@ -16,17 +16,40 @@
 
 import { GwtAppFormerApi } from "./GwtAppFormerApi";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
-import { Editor, EditorFactory } from "@kogito-tooling/editor-api";
+import { Editor, EditorFactory, EnvelopeContextType } from "@kogito-tooling/editor-api";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { XmlFormatter } from "./XmlFormatter";
-import { GwtStateControlApi, GwtStateControlService } from "./gwtStateControl";
+import { GwtStateControlService } from "./gwtStateControl";
 import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
-import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import {
+  ResourceContentOptions,
+  ResourceListOptions,
+  Tutorial,
+  UserInteraction
+} from "@kogito-tooling/microeditor-envelope-protocol";
+import { GuidedTourApi } from "./api/GuidedTourApi";
+import { ResourceContentApi } from "./api/ResourceContentApi";
+import { KeyboardShortcutsApi } from "./api/KeyboardShorcutsApi";
+import { WorkspaceServiceApi } from "./api/WorkspaceServiceApi";
+import { StateControlApi } from "./api/StateControlApi";
+import { EditorContextApi } from "./api/EditorContextApi";
 
 declare global {
   interface Window {
     gwt: {
-      stateControl: GwtStateControlApi;
+      stateControl: StateControlApi;
+    };
+  }
+}
+
+declare global {
+  interface Window {
+    envelope: {
+      guidedTourService: GuidedTourApi;
+      editorContext: EditorContextApi;
+      resourceContentEditorService?: ResourceContentApi;
+      keyboardShortcuts: KeyboardShortcutsApi;
+      workspaceService: WorkspaceServiceApi;
     };
   }
 }
@@ -38,23 +61,14 @@ export class GwtEditorWrapperFactory implements EditorFactory<GwtLanguageData> {
     private readonly gwtStateControlService = new GwtStateControlService()
   ) {}
 
-  public createEditor(languageData: GwtLanguageData, messageBusClient: MessageBusClient<KogitoChannelApi>) {
+  public createEditor(languageData: GwtLanguageData, envelopeContext: EnvelopeContextType) {
     this.gwtAppFormerApi.setClientSideOnly(true);
-    window.gwt = {
-      stateControl: this.gwtStateControlService.exposeApi(messageBusClient)
-    };
+
+    this.exposeEnvelopeContext(envelopeContext);
 
     const gwtFinishedLoading = new Promise<Editor>(res => {
       this.gwtAppFormerApi.onFinishedLoading(() => {
-        res(
-          new GwtEditorWrapper(
-            languageData.editorId,
-            this.gwtAppFormerApi.getEditor(languageData.editorId),
-            messageBusClient,
-            this.xmlFormatter,
-            this.gwtStateControlService
-          )
-        );
+        res(this.newGwtEditorWrapper(languageData, envelopeContext));
         return Promise.resolve();
       });
     });
@@ -62,6 +76,55 @@ export class GwtEditorWrapperFactory implements EditorFactory<GwtLanguageData> {
     return Promise.all(languageData.resources.map(resource => this.loadResource(resource))).then(() => {
       return gwtFinishedLoading;
     });
+  }
+
+  private newGwtEditorWrapper(languageData: GwtLanguageData, envelopeContext: EnvelopeContextType) {
+    return new GwtEditorWrapper(
+      languageData.editorId,
+      this.gwtAppFormerApi.getEditor(languageData.editorId),
+      envelopeContext.channelApi,
+      this.xmlFormatter,
+      this.gwtStateControlService
+    );
+  }
+
+  private exposeEnvelopeContext(envelopeContext: EnvelopeContextType) {
+    window.gwt = {
+      stateControl: this.gwtStateControlService.exposeApi(envelopeContext.channelApi)
+    };
+
+    window.envelope = {
+      editorContext: envelopeContext.context,
+      keyboardShortcuts: envelopeContext.services.keyboardShortcuts,
+      guidedTourService: {
+        refresh(userInteraction: UserInteraction): void {
+          envelopeContext.channelApi.notify("receive_guidedTourUserInteraction", userInteraction);
+        },
+        registerTutorial(tutorial: Tutorial): void {
+          envelopeContext.channelApi.notify("receive_guidedTourRegisterTutorial", tutorial);
+        },
+        isEnabled(): boolean {
+          return true; //FIXME: tiago -> KogitoGuidedTour.getInstance().isEnabled();
+        }
+      },
+      resourceContentEditorService: {
+        get(path: string, opts?: ResourceContentOptions) {
+          return envelopeContext.channelApi
+            .request("receive_resourceContentRequest", { path, opts })
+            .then(r => r?.content);
+        },
+        list(pattern: string, opts?: ResourceListOptions) {
+          return envelopeContext.channelApi
+            .request("receive_resourceListRequest", { pattern, opts })
+            .then(r => r.paths.sort());
+        }
+      },
+      workspaceService: {
+        openFile(path: string): void {
+          envelopeContext.channelApi.notify("receive_openFile", path);
+        }
+      }
+    };
   }
 
   private loadResource(resource: Resource) {

@@ -21,6 +21,7 @@ import { DummyEditor } from "./DummyEditor";
 import { KogitoEnvelopeBus } from "../KogitoEnvelopeBus";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
+import { usingEnvelopeApi } from "./envelopeApiUtils";
 
 function renderEditorEnvelopeView(): EditorEnvelopeView {
   let view: EditorEnvelopeView;
@@ -42,13 +43,15 @@ function renderEditorEnvelopeView(): EditorEnvelopeView {
   );
 
   render(
-    <EditorEnvelopeView
-      keyboardShortcutsService={new DefaultKeyboardShortcutsService({ editorContext: context })}
-      context={context}
-      exposing={self => (view = self)}
-      loadingScreenContainer={loadingScreenContainer}
-      messageBus={kogitoEnvelopeBus}
-    />
+    usingEnvelopeApi(
+      <EditorEnvelopeView
+        keyboardShortcutsService={new DefaultKeyboardShortcutsService({ editorContext: context })}
+        context={context}
+        exposing={self => (view = self)}
+        loadingScreenContainer={loadingScreenContainer}
+        messageBus={kogitoEnvelopeBus}
+      />
+    ).wrapper
   );
 
   return view!;

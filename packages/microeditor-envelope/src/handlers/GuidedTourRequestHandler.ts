@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Rect } from "@kogito-tooling/guided-tour";
+import { Rect } from "@kogito-tooling/microeditor-envelope-protocol";
 
 function getPositionProvider() {
   return window.JsInterop__Envelope__GuidedTour__GuidedTourCustomSelectorPositionProvider.getInstance();

@@ -17,11 +17,12 @@
 import * as React from "react";
 import { useEffect } from "react";
 
-import { Title, Text, Button, List, ListItem, Divider } from "@patternfly/react-core";
+import { Button, Divider, List, ListItem, Text, Title } from "@patternfly/react-core";
 import { BookOpenIcon, TrophyIcon } from "@patternfly/react-icons";
 
-import { File, EditorType } from "@kogito-tooling/embedded-editor";
-import { KogitoGuidedTour, DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/guided-tour";
+import { EditorType, File } from "@kogito-tooling/embedded-editor";
+import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
+import { DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export function useDmnTour(isEditorReady: boolean, file: File) {
   useEffect(() => {

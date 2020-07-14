@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { KogitoGuidedTour, Tutorial, UserInteraction } from "..";
+import { KogitoGuidedTour } from "..";
+import { Tutorial, UserInteraction } from "@kogito-tooling/microeditor-envelope-protocol";
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";

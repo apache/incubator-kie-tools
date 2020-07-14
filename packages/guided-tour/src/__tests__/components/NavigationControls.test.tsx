@@ -16,10 +16,11 @@
 
 import * as React from "react";
 import { act } from "react-dom/test-utils";
-import { useContextMock, renderedComponent, render, setupContainer, teardownContainer, triggerClick } from "../utils";
+import { render, renderedComponent, setupContainer, teardownContainer, triggerClick, useContextMock } from "../utils";
 
 import { NavigationControls } from "../../components";
-import { KogitoGuidedTour, DemoMode } from "../..";
+import { KogitoGuidedTour } from "../..";
+import { DemoMode } from "@kogito-tooling/microeditor-envelope-protocol";
 
 describe("NavigationControls", () => {
   beforeEach(setupContainer);

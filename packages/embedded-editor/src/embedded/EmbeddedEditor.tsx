@@ -17,16 +17,19 @@
 import {
   ChannelType,
   EditorContent,
+  KogitoChannelBus,
   KogitoEdit,
+  Rect,
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
-  StateControlCommand
+  StateControlCommand,
+  Tutorial,
+  UserInteraction
 } from "@kogito-tooling/microeditor-envelope-protocol";
-import { KogitoChannelBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts-channel";
-import { KogitoGuidedTour, UserInteraction, Tutorial, Rect } from "@kogito-tooling/guided-tour";
+import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 import * as CSS from "csstype";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";

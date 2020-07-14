@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorContent } from "../kogito/api";
-import { Rect } from "@kogito-tooling/guided-tour";
-import { ChannelKeyboardEvent } from "./api";
+import { ChannelKeyboardEvent, EditorContent, Rect } from "./api";
 
 export interface Association {
   origin: string;

@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-import { KogitoEnvelopeBus } from "../../KogitoEnvelopeBus";
 import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/microeditor-envelope-protocol";
-import { ResourceContentApi } from "./ResourceContentApi";
 
-export class ResourceContentServiceCoordinator {
-  public exposeApi(kogitoEnvelopeBus: KogitoEnvelopeBus): ResourceContentApi {
-    return {
-      get(path: string, opts?: ResourceContentOptions) {
-        return kogitoEnvelopeBus.request_resourceContent(path, opts).then(r => r?.content);
-      },
-      list(pattern: string, opts?: ResourceListOptions) {
-        return kogitoEnvelopeBus.request_resourceList(pattern, opts).then(r => r.paths.sort());
-      }
-    };
-  }
+/**
+ * PUBLIC ENVELOPE API
+ */
+export interface ResourceContentApi {
+  get(path: string, opts?: ResourceContentOptions): Promise<string | undefined>;
+  list(pattern: string, opts?: ResourceListOptions): Promise<string[]>;
 }

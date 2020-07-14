@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
@@ -14,15 +15,8 @@
  * limitations under the License.
  */
 
-import { WorkspaceServiceApi } from "./WorkspaceServiceApi";
-import { KogitoEnvelopeBus } from "../../KogitoEnvelopeBus";
-
-export class WorkspaceService {
-  public exposeApi(messageBus: KogitoEnvelopeBus): WorkspaceServiceApi {
-    return {
-      openFile(path: string): void {
-        messageBus.notify_openFile(path);
-      }
-    };
-  }
+export interface KeyboardShortcutRegisterOpts {
+    hidden?: boolean;
+    element?: EventTarget;
+    repeat?: boolean;
 }

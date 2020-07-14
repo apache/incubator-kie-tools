@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { GwtAppFormerApi } from "../GwtAppFormerApi";
+import { GwtAppFormerApi, GwtEditor } from "../GwtAppFormerApi";
 import { DummyEditor } from "./DummyEditor";
-import { GwtEditor } from "../GwtEditor";
 import { Editor } from "@kogito-tooling/editor-api";
 
 class DummyGwtEditor {

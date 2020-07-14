@@ -15,4 +15,4 @@
  */
 
 export * from "./DefaultKeyboardShortcutsService"
-export * from "./KeyboardShorcutsApi"
+export * from "./KeyboardShortcutRegisterOpts"

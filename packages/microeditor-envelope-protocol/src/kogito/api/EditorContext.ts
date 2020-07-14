@@ -17,9 +17,6 @@
 import { ChannelType } from "./ChannelType";
 import { OperatingSystem } from "./OperatingSystem";
 
-/**
- * PUBLIC ENVELOPE API
- */
 export interface EditorContext {
   channel: ChannelType;
   operatingSystem?: OperatingSystem;

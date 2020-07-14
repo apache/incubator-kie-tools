@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
 import {
   EditorContent,
   KogitoEdit,
@@ -23,8 +22,10 @@ import {
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
-  StateControlCommand
-} from "../kogito/api";
+  StateControlCommand,
+  Tutorial,
+  UserInteraction
+} from "./api";
 
 export interface KogitoChannelApi {
   receive_setContentError(errorMessage: string): void;

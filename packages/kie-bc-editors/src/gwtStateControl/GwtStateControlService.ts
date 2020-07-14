@@ -14,20 +14,9 @@
  * limitations under the License.
  */
 
-import { DefaultKogitoCommandRegistry, KogitoCommandRegistry } from "./KogitoCommandRegistry";
+import { DefaultKogitoCommandRegistry } from "./KogitoCommandRegistry";
 import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
-
-/**
- * PUBLIC GWT EDITORS API
- *
- * GWT State Control API for command-based editors. It gives access to the {@link KogitoCommandRegistry} and allows setting
- * the editor undo & redo commands for a correct integration with the envelope.
- */
-export interface GwtStateControlApi {
-  registry: KogitoCommandRegistry<any>;
-  setUndoCommand(undoCommand: () => void): void;
-  setRedoCommand(redoCommand: () => void): void;
-}
+import { StateControlApi } from "../api/StateControlApi";
 
 export class GwtStateControlService {
   private undoCommand: () => void;
@@ -45,7 +34,7 @@ export class GwtStateControlService {
     }
   }
 
-  public exposeApi(messageBus: MessageBusClient<KogitoChannelApi>): GwtStateControlApi {
+  public exposeApi(messageBus: MessageBusClient<KogitoChannelApi>): StateControlApi {
     const stateControl = this;
 
     return {

@@ -17,20 +17,9 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import {
-  AutoMode,
-  BlockMode,
-  DemoMode,
-  Mode,
-  Rect,
-  Step,
-  SubTutorialMode,
-  Tutorial,
-  UserInteraction,
-  DEFAULT_RECT
-} from "./api";
+import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/microeditor-envelope-protocol";
 import { GuidedTour } from "./components";
-import { GuidedTourDomUtils, GuidedTourEventBus, GuidedTourCookie } from "./core";
+import { GuidedTourCookie, GuidedTourDomUtils, GuidedTourEventBus } from "./core";
 
 class KogitoGuidedTour {
   private static instance?: KogitoGuidedTour;
@@ -154,16 +143,4 @@ class KogitoGuidedTour {
   }
 }
 
-export {
-  KogitoGuidedTour,
-  UserInteraction,
-  Mode,
-  BlockMode,
-  AutoMode,
-  DemoMode,
-  SubTutorialMode,
-  Rect,
-  Step,
-  Tutorial,
-  DEFAULT_RECT
-};
+export { KogitoGuidedTour };

@@ -15,19 +15,25 @@
  */
 
 import * as React from "react";
-import { ChannelKeyboardEvent, EditorContent, EditorContext } from "@kogito-tooling/microeditor-envelope-protocol";
-import { Association, EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
+import {
+  Association,
+  ChannelKeyboardEvent,
+  EditorContent,
+  EditorContext,
+  EnvelopeBus
+} from "@kogito-tooling/microeditor-envelope-protocol";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
-import { Editor, EditorFactory } from "@kogito-tooling/editor-api";
+import { Editor, EditorFactory, EnvelopeContext, EnvelopeContextType } from "@kogito-tooling/editor-api";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
-import { ResourceContentServiceCoordinator } from "./api/resourceContent";
 import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandler";
+import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 
 export class EditorEnvelopeController {
   public readonly kogitoEnvelopeBus: KogitoEnvelopeBus;
+  public readonly envelopeContext: EnvelopeContextType;
   public capturedInitRequestYet = false;
 
   private editorEnvelopeView?: EditorEnvelopeView;
@@ -37,7 +43,7 @@ export class EditorEnvelopeController {
     private readonly editorFactory: EditorFactory<any>,
     private readonly specialDomElements: SpecialDomElements,
     private readonly renderer: Renderer,
-    private readonly resourceContentEditorCoordinator: ResourceContentServiceCoordinator,
+    private readonly editorContext: EditorContext,
     private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService
   ) {
     this.kogitoEnvelopeBus = new KogitoEnvelopeBus(bus, {
@@ -51,7 +57,7 @@ export class EditorEnvelopeController {
         this.capturedInitRequestYet = true;
 
         const language = await this.kogitoEnvelopeBus.request_languageResponse();
-        const editor = await editorFactory.createEditor(language, this.kogitoEnvelopeBus.client);
+        const editor = await editorFactory.createEditor(language, this.envelopeContext);
 
         await this.open(editor);
         this.editorEnvelopeView!.setLoading();
@@ -93,6 +99,17 @@ export class EditorEnvelopeController {
         window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));
       }
     });
+
+    this.envelopeContext = {
+      channelApi: this.kogitoEnvelopeBus.client,
+      context: editorContext,
+      services: {
+        keyboardShortcuts: keyboardShortcutsService,
+        guidedTour: {
+          isEnabled: () => KogitoGuidedTour.getInstance().isEnabled()
+        }
+      }
+    };
   }
 
   //TODO: Create messages to control the lifecycle of enveloped components?
@@ -110,23 +127,25 @@ export class EditorEnvelopeController {
     return this.editorEnvelopeView!.getEditor();
   }
 
-  private render(args: { container: HTMLElement; context: EditorContext }) {
+  private render(args: { container: HTMLElement }) {
     return new Promise<void>(res =>
       this.renderer.render(
-        <EditorEnvelopeView
-          exposing={self => (this.editorEnvelopeView = self)}
-          loadingScreenContainer={this.specialDomElements.loadingScreenContainer}
-          keyboardShortcutsService={this.keyboardShortcutsService}
-          context={args.context}
-          messageBus={this.kogitoEnvelopeBus}
-        />,
+        <EnvelopeContext.Provider value={this.envelopeContext}>
+          <EditorEnvelopeView
+            exposing={self => (this.editorEnvelopeView = self)}
+            loadingScreenContainer={this.specialDomElements.loadingScreenContainer}
+            keyboardShortcutsService={this.keyboardShortcutsService}
+            context={this.editorContext}
+            messageBus={this.kogitoEnvelopeBus}
+          />
+        </EnvelopeContext.Provider>,
         args.container,
         res
       )
     );
   }
 
-  public start(args: { container: HTMLElement; context: EditorContext }) {
+  public start(args: { container: HTMLElement }) {
     return this.render(args).then(() => {
       this.kogitoEnvelopeBus.startListening();
       return this.kogitoEnvelopeBus;

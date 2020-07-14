@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { GwtEditor } from "./GwtEditor";
+import { GwtEditor } from "./GwtAppFormerApi";
 import { Editor } from "@kogito-tooling/editor-api";
 import { editors } from "./GwtEditorRoutes";
 import { XmlFormatter } from "./XmlFormatter";

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { GwtEditor } from "./GwtEditor";
-
 declare global {
   //Exposed API of AppFormerGwt
   interface Window {
@@ -24,6 +22,12 @@ declare global {
     erraiBusApplicationRoot: string;
     erraiBusRemoteCommunicationEnabled: boolean;
   }
+}
+
+export interface GwtEditor {
+  getContent(): Promise<string>;
+  setContent(path: string, content: string): Promise<void>;
+  getPreview(): Promise<string | undefined>;
 }
 
 export class GwtAppFormerApi {

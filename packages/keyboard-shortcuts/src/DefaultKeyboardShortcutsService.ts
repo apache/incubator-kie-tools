@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { EditorContext, OperatingSystem, ChannelKeyboardEvent } from "@kogito-tooling/microeditor-envelope-protocol";
-import { KeyBindingServiceOpts, KeyboardShortcutsApi } from "./KeyboardShorcutsApi";
+import { ChannelKeyboardEvent, EditorContext, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KeyboardShortcutRegisterOpts } from "./KeyboardShortcutRegisterOpts";
 
 export interface KeyBinding {
   combination: string;
   label: string;
-  opts?: KeyBindingServiceOpts;
+  opts?: KeyboardShortcutRegisterOpts;
   listener: (e: KeyboardEvent) => boolean;
 }
 
@@ -81,7 +81,7 @@ const KEY_CODES = new Map<string, string>([
 
 const IGNORED_TAGS = ["INPUT", "TEXTAREA", "SELECT", "OPTION"];
 
-export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
+export class DefaultKeyboardShortcutsService {
   private eventIdentifiers = 1;
 
   private readonly keyBindings = new Map<number, KeyBinding>();
@@ -93,7 +93,7 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
     label: string,
     onKeyDown: (target: EventTarget | null) => Thenable<void>,
     onKeyUp: (target: EventTarget | null) => Thenable<void>,
-    opts?: KeyBindingServiceOpts
+    opts?: KeyboardShortcutRegisterOpts
   ) {
     console.debug(`Registering shortcut (down/up) for ${combination} - ${label}: ${opts?.repeat}`);
 
@@ -140,7 +140,7 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
     combination: string,
     label: string,
     onKeyPress: (target: EventTarget | null) => Thenable<void>,
-    opts?: KeyBindingServiceOpts
+    opts?: KeyboardShortcutRegisterOpts
   ) {
     console.debug(`Registering shortcut (press) for ${combination} - ${label}: ${opts?.repeat}`);
 
@@ -174,7 +174,7 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
   public registerKeyPressOnce(
     combination: string,
     onKeyPress: (target: EventTarget | null) => Thenable<void>,
-    opts?: KeyBindingServiceOpts
+    opts?: KeyboardShortcutRegisterOpts
   ) {
     const id = this.registerKeyPress(
       combination,
@@ -237,16 +237,12 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsApi {
   public registered() {
     return Array.from(this.keyBindings.values());
   }
-
-  public exposeApi(): KeyboardShortcutsApi {
-    return this;
-  }
 }
 
 function getProcessableKeyboardEvent(
   combination: string,
   event: KeyboardEvent | CustomEvent<ChannelKeyboardEvent>,
-  opts?: KeyBindingServiceOpts
+  opts?: KeyboardShortcutRegisterOpts
 ): KeyboardEvent | null {
   if (event instanceof CustomEvent && IGNORED_TAGS.includes(event.detail.channelOriginalTargetTagName!)) {
     console.debug(`Ignoring execution (${combination}) because target is ${event.detail.channelOriginalTargetTagName}`);

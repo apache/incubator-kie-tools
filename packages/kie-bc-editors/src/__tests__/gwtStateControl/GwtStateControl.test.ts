@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import { GwtStateControlService, GwtStateControlApi } from "../../gwtStateControl";
+import { GwtStateControlService } from "../../gwtStateControl";
+import { StateControlApi } from "../../api/StateControlApi";
 
 const innerMessageHandler = jest.fn();
 
 let messageBus;
 
 let stateControlService: GwtStateControlService;
-let stateControlApi: GwtStateControlApi;
+let stateControlApi: StateControlApi;
 
 describe("StateControl", () => {
   beforeEach(() => {

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { GwtEditorWrapperFactory } from "../GwtEditorWrapperFactory";
-import { GwtLanguageData, Resource } from "../GwtLanguageData";
+import {GwtEditorWrapperFactory} from "../GwtEditorWrapperFactory";
+import {GwtLanguageData, Resource} from "../GwtLanguageData";
 
 const cssResource: Resource = {
   type: "css",
@@ -50,18 +50,13 @@ const testLanguageData: GwtLanguageData = {
   resources: [cssResource, jsResource]
 };
 
-const gwtEditorWrapperFactory: GwtEditorWrapperFactory = new GwtEditorWrapperFactory(
-  {
-    format: (c: string) => c
+const gwtEditorWrapperFactory: GwtEditorWrapperFactory = new GwtEditorWrapperFactory({ format: (c: string) => c }, {
+  onFinishedLoading: (callback: () => Promise<any>) => {
+    window.appFormerGwtFinishedLoading = callback;
   },
-  {
-    onFinishedLoading: (callback: () => Promise<any>) => {
-      window.appFormerGwtFinishedLoading = callback;
-    },
-    getEditor: jest.fn(),
-    setClientSideOnly: jest.fn()
-  } as any
-);
+  getEditor: jest.fn(),
+  setClientSideOnly: jest.fn()
+} as any);
 
 function waitForNScriptsToLoad(remaining: number) {
   if (remaining <= 0) {
@@ -80,9 +75,16 @@ function waitForNScriptsToLoad(remaining: number) {
 describe("GwtEditorWrapperFactory", () => {
   test("create editor", async () => {
     const editorCreation = gwtEditorWrapperFactory.createEditor(testLanguageData, {
-      notify: jest.fn(),
-      request: jest.fn()
-    } as any);
+      channelApi: {
+        notify: jest.fn(),
+        request: jest.fn()
+      },
+      context: {} as any,
+      services: {
+        keyboardShortcuts: {} as any,
+        guidedTour: {} as any,
+      }
+    });
 
     await waitForNScriptsToLoad(jsResource.paths.length);
     await window.appFormerGwtFinishedLoading();
