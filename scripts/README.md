@@ -123,7 +123,7 @@ This script also accepts `--version` as argument in specifying the current versi
 
 ```bash
 $ python update-maven-information.py --version='8.0.0-SNAPSHOT'
-$ python update-maven-information.py --version='0.10.0'
+$ python update-maven-information.py --version='0.12.0'
 ```
 if no argument is given, it takes the default value of `8.0.0-SNAPSHOT`
 
