@@ -17,7 +17,7 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
-const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
 module.exports = {
   mode: "development",
@@ -57,7 +57,7 @@ module.exports = {
         exclude: /node_modules/,
         use: ["babel-loader"]
       },
-      ...pfWebpackUtils.patternflyLoaders
+      ...pfWebpackOptions.patternflyRules
     ]
   },
   resolve: {

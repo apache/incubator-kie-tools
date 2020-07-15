@@ -21,7 +21,7 @@ exports[`FilesPage empty page 1`] = `
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -43,7 +43,7 @@ exports[`FilesPage empty page 1`] = `
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -65,7 +65,7 @@ exports[`FilesPage empty page 1`] = `
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -87,7 +87,7 @@ exports[`FilesPage empty page 1`] = `
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -109,7 +109,7 @@ exports[`FilesPage empty page 1`] = `
         class="pf-c-card kogito--desktop__actions-card--wide"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl"
@@ -136,27 +136,36 @@ exports[`FilesPage empty page 1`] = `
               <div
                 class="pf-c-form__group"
               >
-                <label
-                  class="pf-c-form__label"
-                  for="url-text-input"
+                <div
+                  class="pf-c-form__group-label"
                 >
-                  <span
-                    class="pf-c-form__label-text"
+                  <label
+                    class="pf-c-form__label"
+                    for="url-text-input"
                   >
-                    URL
-                  </span>
-                </label>
-                <input
-                  aria-describedby="url-text-input-helper"
-                  aria-invalid="false"
-                  class="pf-c-form-control"
-                  id="url-text-input"
-                  name="urlText"
-                  placeholder="URL"
-                  required=""
-                  type="url"
-                  value=""
-                />
+                    <span
+                      class="pf-c-form__label-text"
+                    >
+                      URL
+                    </span>
+                  </label>
+                   
+                </div>
+                <div
+                  class="pf-c-form__group-control"
+                >
+                  <input
+                    aria-describedby="url-text-input-helper"
+                    aria-invalid="false"
+                    class="pf-c-form-control"
+                    id="url-text-input"
+                    name="urlText"
+                    placeholder="URL"
+                    required=""
+                    type="url"
+                    value=""
+                  />
+                </div>
               </div>
             </form>
           </div>
@@ -165,7 +174,11 @@ exports[`FilesPage empty page 1`] = `
           class="pf-c-card__footer"
         >
           <button
+            aria-disabled="false"
             class="pf-c-button pf-m-secondary"
+            data-ouia-component-id="0"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
             type="button"
           >
             Open from source
@@ -183,92 +196,126 @@ exports[`FilesPage empty page 1`] = `
       Recent Files
     </h3>
     <div
-      class="pf-l-toolbar"
+      class="pf-c-toolbar"
+      id="pf-random-id-0"
     >
       <div
-        class="pf-l-toolbar__group"
+        class="pf-c-toolbar__content"
       >
         <div
-          class="pf-c-select"
-          style="width: 7em;"
+          class="pf-c-toolbar__content-section"
         >
-          <button
-            aria-expanded="false"
-            aria-haspopup="listbox"
-            aria-labelledby=" pf-toggle-id-0"
-            class="pf-c-select__toggle"
-            id="pf-toggle-id-0"
-            type="button"
+          <div
+            class="pf-c-toolbar__item"
           >
             <div
-              class="pf-c-select__toggle-wrapper"
+              class="pf-c-select"
+              data-ouia-component-id="1"
+              data-ouia-component-type="PF4/Select"
+              data-ouia-safe="true"
             >
-              <span
-                class="pf-c-select__toggle-text"
+              <button
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby=" pf-toggle-id-0"
+                class="pf-c-select__toggle"
+                id="pf-toggle-id-0"
+                type="button"
               >
-                All
-              </span>
+                <div
+                  class="pf-c-select__toggle-wrapper"
+                >
+                  <span
+                    class="pf-c-select__toggle-text"
+                  >
+                    All
+                  </span>
+                </div>
+                <span
+                  class="pf-c-select__toggle-arrow"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 320 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                      transform=""
+                    />
+                  </svg>
+                </span>
+              </button>
             </div>
-            <svg
-              aria-hidden="true"
-              class="pf-c-select__toggle-arrow"
-              fill="currentColor"
-              height="1em"
-              role="img"
-              style="vertical-align: -0.125em;"
-              viewBox="0 0 320 512"
-              width="1em"
+          </div>
+          <div
+            class="pf-c-toolbar__item"
+          >
+            <div
+              class="pf-c-input-group"
             >
-              <path
-                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                transform=""
+              <input
+                aria-invalid="false"
+                aria-label="search input example"
+                class="pf-c-form-control"
+                id="searchInput"
+                name="searchInput"
+                placeholder="Search"
+                type="search"
+                value=""
               />
-            </svg>
-          </button>
+            </div>
+          </div>
+          <div
+            class="pf-c-toolbar__item"
+          >
+            <button
+              aria-disabled="false"
+              aria-label="sort file view"
+              class="pf-c-button pf-m-plain kogito--filter-btn"
+              data-ouia-component-id="2"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe="true"
+              data-testid="orderAlphabeticallyButton"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 448 512"
+                width="1em"
+              >
+                <path
+                  d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
+                  transform=""
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
-      <div
-        class="pf-l-toolbar__group"
-      >
         <div
-          class="pf-c-input-group"
+          class="pf-c-toolbar__expandable-content"
+          id="pf-random-id-0-expandable-content-0"
         >
-          <input
-            aria-invalid="false"
-            aria-label="search input example"
-            class="pf-c-form-control"
-            id="searchInput"
-            name="searchInput"
-            placeholder="Search"
-            type="search"
-            value=""
+          <div
+            class="pf-c-toolbar__group"
           />
         </div>
       </div>
       <div
-        class="pf-l-toolbar__item"
+        class="pf-c-toolbar__content pf-m-hidden"
+        hidden=""
       >
-        <button
-          aria-label="sort file view"
-          class="pf-c-button pf-m-plain kogito--filter-btn"
-          data-testid="orderAlphabeticallyButton"
-          type="button"
-        >
-          <svg
-            aria-hidden="true"
-            fill="currentColor"
-            height="1em"
-            role="img"
-            style="vertical-align: -0.125em;"
-            viewBox="0 0 448 512"
-            width="1em"
-          >
-            <path
-              d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
-              transform=""
-            />
-          </svg>
-        </button>
+        <div
+          class="pf-c-toolbar__group"
+        />
       </div>
     </div>
   </section>
@@ -305,7 +352,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -327,7 +374,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -349,7 +396,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -371,7 +418,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -393,7 +440,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
         class="pf-c-card kogito--desktop__actions-card--wide"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl"
@@ -420,27 +467,36 @@ exports[`FilesPage three recent files in different directories listed ordered al
               <div
                 class="pf-c-form__group"
               >
-                <label
-                  class="pf-c-form__label"
-                  for="url-text-input"
+                <div
+                  class="pf-c-form__group-label"
                 >
-                  <span
-                    class="pf-c-form__label-text"
+                  <label
+                    class="pf-c-form__label"
+                    for="url-text-input"
                   >
-                    URL
-                  </span>
-                </label>
-                <input
-                  aria-describedby="url-text-input-helper"
-                  aria-invalid="false"
-                  class="pf-c-form-control"
-                  id="url-text-input"
-                  name="urlText"
-                  placeholder="URL"
-                  required=""
-                  type="url"
-                  value=""
-                />
+                    <span
+                      class="pf-c-form__label-text"
+                    >
+                      URL
+                    </span>
+                  </label>
+                   
+                </div>
+                <div
+                  class="pf-c-form__group-control"
+                >
+                  <input
+                    aria-describedby="url-text-input-helper"
+                    aria-invalid="false"
+                    class="pf-c-form-control"
+                    id="url-text-input"
+                    name="urlText"
+                    placeholder="URL"
+                    required=""
+                    type="url"
+                    value=""
+                  />
+                </div>
               </div>
             </form>
           </div>
@@ -449,7 +505,11 @@ exports[`FilesPage three recent files in different directories listed ordered al
           class="pf-c-card__footer"
         >
           <button
+            aria-disabled="false"
             class="pf-c-button pf-m-secondary"
+            data-ouia-component-id="17"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
             type="button"
           >
             Open from source
@@ -467,92 +527,126 @@ exports[`FilesPage three recent files in different directories listed ordered al
       Recent Files
     </h3>
     <div
-      class="pf-l-toolbar"
+      class="pf-c-toolbar"
+      id="pf-random-id-4"
     >
       <div
-        class="pf-l-toolbar__group"
+        class="pf-c-toolbar__content"
       >
         <div
-          class="pf-c-select"
-          style="width: 7em;"
+          class="pf-c-toolbar__content-section"
         >
-          <button
-            aria-expanded="false"
-            aria-haspopup="listbox"
-            aria-labelledby=" pf-toggle-id-8"
-            class="pf-c-select__toggle"
-            id="pf-toggle-id-8"
-            type="button"
+          <div
+            class="pf-c-toolbar__item"
           >
             <div
-              class="pf-c-select__toggle-wrapper"
+              class="pf-c-select"
+              data-ouia-component-id="20"
+              data-ouia-component-type="PF4/Select"
+              data-ouia-safe="true"
             >
-              <span
-                class="pf-c-select__toggle-text"
+              <button
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby=" pf-toggle-id-8"
+                class="pf-c-select__toggle"
+                id="pf-toggle-id-8"
+                type="button"
               >
-                All
-              </span>
+                <div
+                  class="pf-c-select__toggle-wrapper"
+                >
+                  <span
+                    class="pf-c-select__toggle-text"
+                  >
+                    All
+                  </span>
+                </div>
+                <span
+                  class="pf-c-select__toggle-arrow"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 320 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                      transform=""
+                    />
+                  </svg>
+                </span>
+              </button>
             </div>
-            <svg
-              aria-hidden="true"
-              class="pf-c-select__toggle-arrow"
-              fill="currentColor"
-              height="1em"
-              role="img"
-              style="vertical-align: -0.125em;"
-              viewBox="0 0 320 512"
-              width="1em"
+          </div>
+          <div
+            class="pf-c-toolbar__item"
+          >
+            <div
+              class="pf-c-input-group"
             >
-              <path
-                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                transform=""
+              <input
+                aria-invalid="false"
+                aria-label="search input example"
+                class="pf-c-form-control"
+                id="searchInput"
+                name="searchInput"
+                placeholder="Search"
+                type="search"
+                value=""
               />
-            </svg>
-          </button>
+            </div>
+          </div>
+          <div
+            class="pf-c-toolbar__item"
+          >
+            <button
+              aria-disabled="false"
+              aria-label="sort file view"
+              class="pf-c-button pf-m-plain kogito--filter-btn-pressed"
+              data-ouia-component-id="19"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe="true"
+              data-testid="orderAlphabeticallyButton"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 448 512"
+                width="1em"
+              >
+                <path
+                  d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
+                  transform=""
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
-      <div
-        class="pf-l-toolbar__group"
-      >
         <div
-          class="pf-c-input-group"
+          class="pf-c-toolbar__expandable-content"
+          id="pf-random-id-4-expandable-content-5"
         >
-          <input
-            aria-invalid="false"
-            aria-label="search input example"
-            class="pf-c-form-control"
-            id="searchInput"
-            name="searchInput"
-            placeholder="Search"
-            type="search"
-            value=""
+          <div
+            class="pf-c-toolbar__group"
           />
         </div>
       </div>
       <div
-        class="pf-l-toolbar__item"
+        class="pf-c-toolbar__content pf-m-hidden"
+        hidden=""
       >
-        <button
-          aria-label="sort file view"
-          class="pf-c-button pf-m-plain kogito--filter-btn-pressed"
-          data-testid="orderAlphabeticallyButton"
-          type="button"
-        >
-          <svg
-            aria-hidden="true"
-            fill="currentColor"
-            height="1em"
-            role="img"
-            style="vertical-align: -0.125em;"
-            viewBox="0 0 448 512"
-            width="1em"
-          >
-            <path
-              d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
-              transform=""
-            />
-          </svg>
-        </button>
+        <div
+          class="pf-c-toolbar__group"
+        />
       </div>
     </div>
   </section>
@@ -581,7 +675,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
           class="pf-c-card__footer"
         >
           <h3
-            class="pf-c-title kogito--desktop__filename"
+            class="pf-c-title pf-m-md kogito--desktop__filename"
           >
             a.dmn
           </h3>
@@ -606,7 +700,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
           class="pf-c-card__footer"
         >
           <h3
-            class="pf-c-title kogito--desktop__filename"
+            class="pf-c-title pf-m-md kogito--desktop__filename"
           >
             b.dmn
           </h3>
@@ -631,7 +725,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
           class="pf-c-card__footer"
         >
           <h3
-            class="pf-c-title kogito--desktop__filename"
+            class="pf-c-title pf-m-md kogito--desktop__filename"
           >
             c.dmn
           </h3>
@@ -663,7 +757,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -685,7 +779,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -707,7 +801,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -729,7 +823,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -751,7 +845,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
         class="pf-c-card kogito--desktop__actions-card--wide"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl"
@@ -778,27 +872,36 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
               <div
                 class="pf-c-form__group"
               >
-                <label
-                  class="pf-c-form__label"
-                  for="url-text-input"
+                <div
+                  class="pf-c-form__group-label"
                 >
-                  <span
-                    class="pf-c-form__label-text"
+                  <label
+                    class="pf-c-form__label"
+                    for="url-text-input"
                   >
-                    URL
-                  </span>
-                </label>
-                <input
-                  aria-describedby="url-text-input-helper"
-                  aria-invalid="false"
-                  class="pf-c-form-control"
-                  id="url-text-input"
-                  name="urlText"
-                  placeholder="URL"
-                  required=""
-                  type="url"
-                  value=""
-                />
+                    <span
+                      class="pf-c-form__label-text"
+                    >
+                      URL
+                    </span>
+                  </label>
+                   
+                </div>
+                <div
+                  class="pf-c-form__group-control"
+                >
+                  <input
+                    aria-describedby="url-text-input-helper"
+                    aria-invalid="false"
+                    class="pf-c-form-control"
+                    id="url-text-input"
+                    name="urlText"
+                    placeholder="URL"
+                    required=""
+                    type="url"
+                    value=""
+                  />
+                </div>
               </div>
             </form>
           </div>
@@ -807,7 +910,11 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
           class="pf-c-card__footer"
         >
           <button
+            aria-disabled="false"
             class="pf-c-button pf-m-secondary"
+            data-ouia-component-id="28"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
             type="button"
           >
             Open from source
@@ -825,92 +932,126 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       Recent Files
     </h3>
     <div
-      class="pf-l-toolbar"
+      class="pf-c-toolbar"
+      id="pf-random-id-6"
     >
       <div
-        class="pf-l-toolbar__group"
+        class="pf-c-toolbar__content"
       >
         <div
-          class="pf-c-select"
-          style="width: 7em;"
+          class="pf-c-toolbar__content-section"
         >
-          <button
-            aria-expanded="false"
-            aria-haspopup="listbox"
-            aria-labelledby=" pf-toggle-id-13"
-            class="pf-c-select__toggle"
-            id="pf-toggle-id-13"
-            type="button"
+          <div
+            class="pf-c-toolbar__item"
           >
             <div
-              class="pf-c-select__toggle-wrapper"
+              class="pf-c-select"
+              data-ouia-component-id="31"
+              data-ouia-component-type="PF4/Select"
+              data-ouia-safe="true"
             >
-              <span
-                class="pf-c-select__toggle-text"
+              <button
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby=" pf-toggle-id-13"
+                class="pf-c-select__toggle"
+                id="pf-toggle-id-13"
+                type="button"
               >
-                All
-              </span>
+                <div
+                  class="pf-c-select__toggle-wrapper"
+                >
+                  <span
+                    class="pf-c-select__toggle-text"
+                  >
+                    All
+                  </span>
+                </div>
+                <span
+                  class="pf-c-select__toggle-arrow"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 320 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                      transform=""
+                    />
+                  </svg>
+                </span>
+              </button>
             </div>
-            <svg
-              aria-hidden="true"
-              class="pf-c-select__toggle-arrow"
-              fill="currentColor"
-              height="1em"
-              role="img"
-              style="vertical-align: -0.125em;"
-              viewBox="0 0 320 512"
-              width="1em"
+          </div>
+          <div
+            class="pf-c-toolbar__item"
+          >
+            <div
+              class="pf-c-input-group"
             >
-              <path
-                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                transform=""
+              <input
+                aria-invalid="false"
+                aria-label="search input example"
+                class="pf-c-form-control"
+                id="searchInput"
+                name="searchInput"
+                placeholder="Search"
+                type="search"
+                value=""
               />
-            </svg>
-          </button>
+            </div>
+          </div>
+          <div
+            class="pf-c-toolbar__item"
+          >
+            <button
+              aria-disabled="false"
+              aria-label="sort file view"
+              class="pf-c-button pf-m-plain kogito--filter-btn-pressed"
+              data-ouia-component-id="30"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe="true"
+              data-testid="orderAlphabeticallyButton"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 448 512"
+                width="1em"
+              >
+                <path
+                  d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
+                  transform=""
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
-      <div
-        class="pf-l-toolbar__group"
-      >
         <div
-          class="pf-c-input-group"
+          class="pf-c-toolbar__expandable-content"
+          id="pf-random-id-6-expandable-content-8"
         >
-          <input
-            aria-invalid="false"
-            aria-label="search input example"
-            class="pf-c-form-control"
-            id="searchInput"
-            name="searchInput"
-            placeholder="Search"
-            type="search"
-            value=""
+          <div
+            class="pf-c-toolbar__group"
           />
         </div>
       </div>
       <div
-        class="pf-l-toolbar__item"
+        class="pf-c-toolbar__content pf-m-hidden"
+        hidden=""
       >
-        <button
-          aria-label="sort file view"
-          class="pf-c-button pf-m-plain kogito--filter-btn-pressed"
-          data-testid="orderAlphabeticallyButton"
-          type="button"
-        >
-          <svg
-            aria-hidden="true"
-            fill="currentColor"
-            height="1em"
-            role="img"
-            style="vertical-align: -0.125em;"
-            viewBox="0 0 448 512"
-            width="1em"
-          >
-            <path
-              d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
-              transform=""
-            />
-          </svg>
-        </button>
+        <div
+          class="pf-c-toolbar__group"
+        />
       </div>
     </div>
   </section>
@@ -939,7 +1080,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
           class="pf-c-card__footer"
         >
           <h3
-            class="pf-c-title kogito--desktop__filename"
+            class="pf-c-title pf-m-md kogito--desktop__filename"
           >
             a.dmn
           </h3>
@@ -964,7 +1105,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
           class="pf-c-card__footer"
         >
           <h3
-            class="pf-c-title kogito--desktop__filename"
+            class="pf-c-title pf-m-md kogito--desktop__filename"
           >
             b.bpmn
           </h3>
@@ -989,7 +1130,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
           class="pf-c-card__footer"
         >
           <h3
-            class="pf-c-title kogito--desktop__filename"
+            class="pf-c-title pf-m-md kogito--desktop__filename"
           >
             b.dmn
           </h3>
@@ -1014,7 +1155,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
           class="pf-c-card__footer"
         >
           <h3
-            class="pf-c-title kogito--desktop__filename"
+            class="pf-c-title pf-m-md kogito--desktop__filename"
           >
             c.bpmn
           </h3>
@@ -1046,7 +1187,7 @@ exports[`FilesPage three recent files listed 1`] = `
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -1068,7 +1209,7 @@ exports[`FilesPage three recent files listed 1`] = `
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -1090,7 +1231,7 @@ exports[`FilesPage three recent files listed 1`] = `
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -1112,7 +1253,7 @@ exports[`FilesPage three recent files listed 1`] = `
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -1134,7 +1275,7 @@ exports[`FilesPage three recent files listed 1`] = `
         class="pf-c-card kogito--desktop__actions-card--wide"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl"
@@ -1161,27 +1302,36 @@ exports[`FilesPage three recent files listed 1`] = `
               <div
                 class="pf-c-form__group"
               >
-                <label
-                  class="pf-c-form__label"
-                  for="url-text-input"
+                <div
+                  class="pf-c-form__group-label"
                 >
-                  <span
-                    class="pf-c-form__label-text"
+                  <label
+                    class="pf-c-form__label"
+                    for="url-text-input"
                   >
-                    URL
-                  </span>
-                </label>
-                <input
-                  aria-describedby="url-text-input-helper"
-                  aria-invalid="false"
-                  class="pf-c-form-control"
-                  id="url-text-input"
-                  name="urlText"
-                  placeholder="URL"
-                  required=""
-                  type="url"
-                  value=""
-                />
+                    <span
+                      class="pf-c-form__label-text"
+                    >
+                      URL
+                    </span>
+                  </label>
+                   
+                </div>
+                <div
+                  class="pf-c-form__group-control"
+                >
+                  <input
+                    aria-describedby="url-text-input-helper"
+                    aria-invalid="false"
+                    class="pf-c-form-control"
+                    id="url-text-input"
+                    name="urlText"
+                    placeholder="URL"
+                    required=""
+                    type="url"
+                    value=""
+                  />
+                </div>
               </div>
             </form>
           </div>
@@ -1190,7 +1340,11 @@ exports[`FilesPage three recent files listed 1`] = `
           class="pf-c-card__footer"
         >
           <button
+            aria-disabled="false"
             class="pf-c-button pf-m-secondary"
+            data-ouia-component-id="6"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
             type="button"
           >
             Open from source
@@ -1208,92 +1362,126 @@ exports[`FilesPage three recent files listed 1`] = `
       Recent Files
     </h3>
     <div
-      class="pf-l-toolbar"
+      class="pf-c-toolbar"
+      id="pf-random-id-2"
     >
       <div
-        class="pf-l-toolbar__group"
+        class="pf-c-toolbar__content"
       >
         <div
-          class="pf-c-select"
-          style="width: 7em;"
+          class="pf-c-toolbar__content-section"
         >
-          <button
-            aria-expanded="false"
-            aria-haspopup="listbox"
-            aria-labelledby=" pf-toggle-id-3"
-            class="pf-c-select__toggle"
-            id="pf-toggle-id-3"
-            type="button"
+          <div
+            class="pf-c-toolbar__item"
           >
             <div
-              class="pf-c-select__toggle-wrapper"
+              class="pf-c-select"
+              data-ouia-component-id="9"
+              data-ouia-component-type="PF4/Select"
+              data-ouia-safe="true"
             >
-              <span
-                class="pf-c-select__toggle-text"
+              <button
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby=" pf-toggle-id-3"
+                class="pf-c-select__toggle"
+                id="pf-toggle-id-3"
+                type="button"
               >
-                All
-              </span>
+                <div
+                  class="pf-c-select__toggle-wrapper"
+                >
+                  <span
+                    class="pf-c-select__toggle-text"
+                  >
+                    All
+                  </span>
+                </div>
+                <span
+                  class="pf-c-select__toggle-arrow"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 320 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                      transform=""
+                    />
+                  </svg>
+                </span>
+              </button>
             </div>
-            <svg
-              aria-hidden="true"
-              class="pf-c-select__toggle-arrow"
-              fill="currentColor"
-              height="1em"
-              role="img"
-              style="vertical-align: -0.125em;"
-              viewBox="0 0 320 512"
-              width="1em"
+          </div>
+          <div
+            class="pf-c-toolbar__item"
+          >
+            <div
+              class="pf-c-input-group"
             >
-              <path
-                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                transform=""
+              <input
+                aria-invalid="false"
+                aria-label="search input example"
+                class="pf-c-form-control"
+                id="searchInput"
+                name="searchInput"
+                placeholder="Search"
+                type="search"
+                value=""
               />
-            </svg>
-          </button>
+            </div>
+          </div>
+          <div
+            class="pf-c-toolbar__item"
+          >
+            <button
+              aria-disabled="false"
+              aria-label="sort file view"
+              class="pf-c-button pf-m-plain kogito--filter-btn"
+              data-ouia-component-id="8"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe="true"
+              data-testid="orderAlphabeticallyButton"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 448 512"
+                width="1em"
+              >
+                <path
+                  d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
+                  transform=""
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
-      <div
-        class="pf-l-toolbar__group"
-      >
         <div
-          class="pf-c-input-group"
+          class="pf-c-toolbar__expandable-content"
+          id="pf-random-id-2-expandable-content-2"
         >
-          <input
-            aria-invalid="false"
-            aria-label="search input example"
-            class="pf-c-form-control"
-            id="searchInput"
-            name="searchInput"
-            placeholder="Search"
-            type="search"
-            value=""
+          <div
+            class="pf-c-toolbar__group"
           />
         </div>
       </div>
       <div
-        class="pf-l-toolbar__item"
+        class="pf-c-toolbar__content pf-m-hidden"
+        hidden=""
       >
-        <button
-          aria-label="sort file view"
-          class="pf-c-button pf-m-plain kogito--filter-btn"
-          data-testid="orderAlphabeticallyButton"
-          type="button"
-        >
-          <svg
-            aria-hidden="true"
-            fill="currentColor"
-            height="1em"
-            role="img"
-            style="vertical-align: -0.125em;"
-            viewBox="0 0 448 512"
-            width="1em"
-          >
-            <path
-              d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
-              transform=""
-            />
-          </svg>
-        </button>
+        <div
+          class="pf-c-toolbar__group"
+        />
       </div>
     </div>
   </section>
@@ -1322,7 +1510,7 @@ exports[`FilesPage three recent files listed 1`] = `
           class="pf-c-card__footer"
         >
           <h3
-            class="pf-c-title kogito--desktop__filename"
+            class="pf-c-title pf-m-md kogito--desktop__filename"
           >
             b.dmn
           </h3>
@@ -1347,7 +1535,7 @@ exports[`FilesPage three recent files listed 1`] = `
           class="pf-c-card__footer"
         >
           <h3
-            class="pf-c-title kogito--desktop__filename"
+            class="pf-c-title pf-m-md kogito--desktop__filename"
           >
             a.dmn
           </h3>
@@ -1372,7 +1560,7 @@ exports[`FilesPage three recent files listed 1`] = `
           class="pf-c-card__footer"
         >
           <h3
-            class="pf-c-title kogito--desktop__filename"
+            class="pf-c-title pf-m-md kogito--desktop__filename"
           >
             c.dmn
           </h3>
@@ -1404,7 +1592,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -1426,7 +1614,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -1448,7 +1636,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -1470,7 +1658,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl pf-u-mb-md"
@@ -1492,7 +1680,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
         class="pf-c-card kogito--desktop__actions-card--wide"
       >
         <div
-          class="pf-c-card__header pf-c-title pf-m-md"
+          class="pf-c-card__header"
         >
           <h3
             class="pf-c-title pf-m-xl"
@@ -1519,27 +1707,36 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
               <div
                 class="pf-c-form__group"
               >
-                <label
-                  class="pf-c-form__label"
-                  for="url-text-input"
+                <div
+                  class="pf-c-form__group-label"
                 >
-                  <span
-                    class="pf-c-form__label-text"
+                  <label
+                    class="pf-c-form__label"
+                    for="url-text-input"
                   >
-                    URL
-                  </span>
-                </label>
-                <input
-                  aria-describedby="url-text-input-helper"
-                  aria-invalid="false"
-                  class="pf-c-form-control"
-                  id="url-text-input"
-                  name="urlText"
-                  placeholder="URL"
-                  required=""
-                  type="url"
-                  value=""
-                />
+                    <span
+                      class="pf-c-form__label-text"
+                    >
+                      URL
+                    </span>
+                  </label>
+                   
+                </div>
+                <div
+                  class="pf-c-form__group-control"
+                >
+                  <input
+                    aria-describedby="url-text-input-helper"
+                    aria-invalid="false"
+                    class="pf-c-form-control"
+                    id="url-text-input"
+                    name="urlText"
+                    placeholder="URL"
+                    required=""
+                    type="url"
+                    value=""
+                  />
+                </div>
               </div>
             </form>
           </div>
@@ -1548,7 +1745,11 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
           class="pf-c-card__footer"
         >
           <button
+            aria-disabled="false"
             class="pf-c-button pf-m-secondary"
+            data-ouia-component-id="43"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
             type="button"
           >
             Open from source
@@ -1566,92 +1767,126 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
       Recent Files
     </h3>
     <div
-      class="pf-l-toolbar"
+      class="pf-c-toolbar"
+      id="pf-random-id-8"
     >
       <div
-        class="pf-l-toolbar__group"
+        class="pf-c-toolbar__content"
       >
         <div
-          class="pf-c-select"
-          style="width: 7em;"
+          class="pf-c-toolbar__content-section"
         >
-          <button
-            aria-expanded="false"
-            aria-haspopup="listbox"
-            aria-labelledby=" pf-toggle-id-20"
-            class="pf-c-select__toggle"
-            id="pf-toggle-id-20"
-            type="button"
+          <div
+            class="pf-c-toolbar__item"
           >
             <div
-              class="pf-c-select__toggle-wrapper"
+              class="pf-c-select"
+              data-ouia-component-id="46"
+              data-ouia-component-type="PF4/Select"
+              data-ouia-safe="true"
             >
-              <span
-                class="pf-c-select__toggle-text"
+              <button
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby=" pf-toggle-id-20"
+                class="pf-c-select__toggle"
+                id="pf-toggle-id-20"
+                type="button"
               >
-                All
-              </span>
+                <div
+                  class="pf-c-select__toggle-wrapper"
+                >
+                  <span
+                    class="pf-c-select__toggle-text"
+                  >
+                    All
+                  </span>
+                </div>
+                <span
+                  class="pf-c-select__toggle-arrow"
+                >
+                  <svg
+                    aria-hidden="true"
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style="vertical-align: -0.125em;"
+                    viewBox="0 0 320 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
+                      transform=""
+                    />
+                  </svg>
+                </span>
+              </button>
             </div>
-            <svg
-              aria-hidden="true"
-              class="pf-c-select__toggle-arrow"
-              fill="currentColor"
-              height="1em"
-              role="img"
-              style="vertical-align: -0.125em;"
-              viewBox="0 0 320 512"
-              width="1em"
+          </div>
+          <div
+            class="pf-c-toolbar__item"
+          >
+            <div
+              class="pf-c-input-group"
             >
-              <path
-                d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"
-                transform=""
+              <input
+                aria-invalid="false"
+                aria-label="search input example"
+                class="pf-c-form-control"
+                id="searchInput"
+                name="searchInput"
+                placeholder="Search"
+                type="search"
+                value=""
               />
-            </svg>
-          </button>
+            </div>
+          </div>
+          <div
+            class="pf-c-toolbar__item"
+          >
+            <button
+              aria-disabled="false"
+              aria-label="sort file view"
+              class="pf-c-button pf-m-plain kogito--filter-btn"
+              data-ouia-component-id="45"
+              data-ouia-component-type="PF4/Button"
+              data-ouia-safe="true"
+              data-testid="orderAlphabeticallyButton"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="currentColor"
+                height="1em"
+                role="img"
+                style="vertical-align: -0.125em;"
+                viewBox="0 0 448 512"
+                width="1em"
+              >
+                <path
+                  d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
+                  transform=""
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
-      <div
-        class="pf-l-toolbar__group"
-      >
         <div
-          class="pf-c-input-group"
+          class="pf-c-toolbar__expandable-content"
+          id="pf-random-id-8-expandable-content-12"
         >
-          <input
-            aria-invalid="false"
-            aria-label="search input example"
-            class="pf-c-form-control"
-            id="searchInput"
-            name="searchInput"
-            placeholder="Search"
-            type="search"
-            value=""
+          <div
+            class="pf-c-toolbar__group"
           />
         </div>
       </div>
       <div
-        class="pf-l-toolbar__item"
+        class="pf-c-toolbar__content pf-m-hidden"
+        hidden=""
       >
-        <button
-          aria-label="sort file view"
-          class="pf-c-button pf-m-plain kogito--filter-btn"
-          data-testid="orderAlphabeticallyButton"
-          type="button"
-        >
-          <svg
-            aria-hidden="true"
-            fill="currentColor"
-            height="1em"
-            role="img"
-            style="vertical-align: -0.125em;"
-            viewBox="0 0 448 512"
-            width="1em"
-          >
-            <path
-              d="M176 352h-48V48a16 16 0 0 0-16-16H80a16 16 0 0 0-16 16v304H16c-14.19 0-21.36 17.24-11.29 27.31l80 96a16 16 0 0 0 22.62 0l80-96C197.35 369.26 190.22 352 176 352zm240-64H288a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h56l-61.26 70.45A32 32 0 0 0 272 446.37V464a16 16 0 0 0 16 16h128a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16h-56l61.26-70.45A32 32 0 0 0 432 321.63V304a16 16 0 0 0-16-16zm31.06-85.38l-59.27-160A16 16 0 0 0 372.72 32h-41.44a16 16 0 0 0-15.07 10.62l-59.27 160A16 16 0 0 0 272 224h24.83a16 16 0 0 0 15.23-11.08l4.42-12.92h71l4.41 12.92A16 16 0 0 0 407.16 224H432a16 16 0 0 0 15.06-21.38zM335.61 144L352 96l16.39 48z"
-              transform=""
-            />
-          </svg>
-        </button>
+        <div
+          class="pf-c-toolbar__group"
+        />
       </div>
     </div>
   </section>
@@ -1680,7 +1915,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
           class="pf-c-card__footer"
         >
           <h3
-            class="pf-c-title kogito--desktop__filename"
+            class="pf-c-title pf-m-md kogito--desktop__filename"
           >
             b.dmn
           </h3>
@@ -1705,7 +1940,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
           class="pf-c-card__footer"
         >
           <h3
-            class="pf-c-title kogito--desktop__filename"
+            class="pf-c-title pf-m-md kogito--desktop__filename"
           >
             a.dmn
           </h3>
@@ -1730,7 +1965,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
           class="pf-c-card__footer"
         >
           <h3
-            class="pf-c-title kogito--desktop__filename"
+            class="pf-c-title pf-m-md kogito--desktop__filename"
           >
             c.dmn
           </h3>

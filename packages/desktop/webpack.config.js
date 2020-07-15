@@ -16,7 +16,7 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
 const commonConfig = {
   mode: "development",
@@ -84,7 +84,7 @@ module.exports = [
     entry: {
       "webview/index": "./src/webview/index.tsx"
     },
-    module: { rules: [...commonConfig.module.rules, ...pfWebpackUtils.patternflyLoaders] },
+    module: { rules: [...commonConfig.module.rules, ...pfWebpackOptions.patternflyRules] },
     plugins: [
       new CopyPlugin([
         { from: "./static/samples", to: "./samples" },

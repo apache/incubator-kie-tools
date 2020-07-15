@@ -17,7 +17,7 @@
 const path = require("path");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
 const commonConfig = {
   mode: "development",
@@ -77,7 +77,7 @@ module.exports = [
       "webview/index": "./src/webview/index.ts"
     },
     module: {
-      rules: [...commonConfig.module.rules, ...pfWebpackUtils.patternflyLoaders]
+      rules: [...commonConfig.module.rules, ...pfWebpackOptions.patternflyRules]
     },
     plugins: [
       new CopyWebpackPlugin([

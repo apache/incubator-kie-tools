@@ -154,7 +154,6 @@ exports[`EditorEnvelopeController after received content 1`] = `
         color="currentColor"
         noVerticalAlign={false}
         size="sm"
-        title={null}
       >
         <svg
           aria-hidden={true}
@@ -250,17 +249,18 @@ exports[`EditorEnvelopeController after received content 1`] = `
           <div />
         </body>
       }
-      ariaDescribedById=""
+      aria-describedby=""
+      aria-label=""
+      aria-labelledby=""
       className=""
       data-testid="keyboard-shortcuts-help-overlay"
-      hideTitle={false}
-      isFooterLeftAligned={false}
-      isLarge={false}
+      hasNoBodyWrapper={false}
       isOpen={false}
-      isSmall={false}
       onClose={[Function]}
+      ouiaSafe={true}
       showClose={true}
       title="Keyboard shortcuts"
+      variant="default"
       width="60%"
     >
       <Portal
@@ -268,18 +268,21 @@ exports[`EditorEnvelopeController after received content 1`] = `
       >
         <ModalContent
           actions={Array []}
-          ariaDescribedById=""
+          aria-describedby=""
+          aria-label=""
+          aria-labelledby=""
+          boxId="pf-modal-part-0"
           className=""
           data-testid="keyboard-shortcuts-help-overlay"
-          hideTitle={false}
-          id="pf-modal-0"
-          isFooterLeftAligned={false}
-          isLarge={false}
+          descriptorId="pf-modal-part-2"
+          hasNoBodyWrapper={false}
           isOpen={false}
-          isSmall={false}
+          labelId="pf-modal-part-1"
           onClose={[Function]}
+          ouiaSafe={true}
           showClose={true}
           title="Keyboard shortcuts"
+          variant="default"
           width="60%"
         />
       </Portal>

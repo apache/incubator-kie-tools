@@ -16,7 +16,6 @@
 
 const path = require("path");
 const BG_IMAGES_DIRNAME = "bgimages";
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 /**
  * Two scenarios for nodeModulesDir:
@@ -28,7 +27,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const nodeModulesDir = "../.." + (__dirname.includes("node_modules") ? "" : "/node_modules");
 
 module.exports = {
-  patternflyLoaders: [
+  patternflyRules: [
     {
       test: /\.s[ac]ss$/i,
       use: ["style-loader", "css-loader", "sass-loader"]

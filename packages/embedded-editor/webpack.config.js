@@ -17,7 +17,7 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
 const commonConfig = {
   mode: "development",
@@ -27,6 +27,7 @@ const commonConfig = {
       {
         test: /\.tsx?$/,
         include: path.resolve(__dirname, "src"),
+        exclude: path.resolve(__dirname, "src/__tests__"),
         use: [
           {
             loader: "ts-loader",
@@ -40,8 +41,7 @@ const commonConfig = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         use: ["babel-loader"]
-      },
-      ...pfWebpackUtils.patternflyLoaders
+      }
     ]
   },
   resolve: {
@@ -71,6 +71,9 @@ module.exports = [
     devtool: "inline-source-map",
     entry: {
       "envelope/envelope": "./src/envelope/envelope.ts"
+    },
+    module: {
+      rules: [...commonConfig.module.rules, ...pfWebpackOptions.patternflyRules]
     },
     output: {
       path: path.resolve(__dirname, "./dist"),

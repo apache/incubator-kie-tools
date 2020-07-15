@@ -16,7 +16,7 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
 function getLatestGitTag() {
   const tagName = require("child_process")
@@ -117,7 +117,7 @@ module.exports = async (env, argv) => {
             ]
           }
         },
-        ...pfWebpackUtils.patternflyLoaders
+        ...pfWebpackOptions.patternflyRules
       ]
     },
     devServer: {
