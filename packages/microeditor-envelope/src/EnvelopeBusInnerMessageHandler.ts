@@ -25,11 +25,12 @@ import {
   LanguageData,
   ResourceContent,
   ResourceContentOptions,
-  ResourcesList,
   ResourceListOptions,
+  ResourcesList,
   StateControlCommand
 } from "@kogito-tooling/core-api";
 import { UserInteraction, Tutorial, Rect } from "@kogito-tooling/guided-tour";
+import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts";
 
 export interface Impl {
   receive_contentResponse(content: EditorContent): void;
@@ -41,6 +42,7 @@ export interface Impl {
   receive_editorRedo(): void;
   receive_previewRequest(): void;
   receive_guidedTourElementPositionRequest(selector: string): void;
+  receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent): void;
 }
 
 export class EnvelopeBusInnerMessageHandler {
@@ -136,6 +138,7 @@ export class EnvelopeBusInnerMessageHandler {
   public respond_previewRequest(previewSvg: string) {
     return this.send({ type: EnvelopeBusMessageType.RETURN_PREVIEW, data: previewSvg });
   }
+
   public notify_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
     return this.send({ type: EnvelopeBusMessageType.NOTIFY_STATE_CONTROL_COMMAND_UPDATE, data: stateControlCommand });
   }
@@ -189,6 +192,9 @@ export class EnvelopeBusInnerMessageHandler {
       case EnvelopeBusMessageType.REQUEST_GUIDED_TOUR_ELEMENT_POSITION:
         const selector = message.data as string;
         this.impl.receive_guidedTourElementPositionRequest(selector);
+        break;
+      case EnvelopeBusMessageType.NOTIFY_CHANNEL_KEYBOARD_EVENT:
+        this.impl.receive_channelKeyboardEvent(message.data);
         break;
       default:
         console.info(`[Bus ${this.id}]: Unknown message type received: ${message.type}`);

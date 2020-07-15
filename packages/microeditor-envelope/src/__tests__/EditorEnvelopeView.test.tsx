@@ -18,7 +18,7 @@ import * as React from "react";
 import { shallow } from "enzyme";
 import { EditorEnvelopeView } from "../EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import { ChannelKeyboardEvent, DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import {
   ChannelType,
   EditorContent,
@@ -69,6 +69,9 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
       },
       receive_guidedTourElementPositionRequest: () => {
         receivedMessages.push(["receive_guidedTourElementPositionRequest"]);
+      },
+      receive_channelKeyboardEvent: (channelKeyboardEvent: ChannelKeyboardEvent) => {
+        receivedMessages.push(["receive_previewRequest", channelKeyboardEvent]);
       }
     })
   );

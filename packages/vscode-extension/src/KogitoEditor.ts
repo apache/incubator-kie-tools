@@ -29,7 +29,6 @@ import {
   ResourceListRequest,
   StateControlCommand
 } from "@kogito-tooling/core-api";
-import { Uri } from "vscode";
 
 export class KogitoEditor {
   private static readonly DIRTY_INDICATOR = " *";
@@ -162,10 +161,6 @@ export class KogitoEditor {
         }
       })
     );
-  }
-
-  public asWebviewUri(absolutePath: Uri) {
-    return this.panel.webview.asWebviewUri(absolutePath);
   }
 
   private updateDirtyIndicator(isDirty: boolean) {

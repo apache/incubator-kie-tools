@@ -16,7 +16,8 @@
 
 import { ResourceContentApi, ResourceContentEditorCoordinator } from "../../api/resourceContent";
 import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
-import { EditorContent, KogitoEdit, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { EditorContent, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts";
 
 let coordinator: ResourceContentEditorCoordinator;
 let resourceContentEditorService: ResourceContentApi;
@@ -53,6 +54,9 @@ const handler = new EnvelopeBusInnerMessageHandler(
       // do nothing
     },
     receive_guidedTourElementPositionRequest() {
+      // do nothing
+    },
+    receive_channelKeyboardEvent: (channelKeyboardEvent: ChannelKeyboardEvent) => {
       // do nothing
     }
   })
