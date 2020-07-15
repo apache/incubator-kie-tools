@@ -21,12 +21,12 @@ import {
   DropdownPosition,
   TextInput,
   Title,
-  Toolbar,
-  ToolbarGroup,
-  ToolbarItem,
+  PageHeaderTools,
+  PageHeaderToolsItem,
+  PageHeaderToolsGroup,
   PageHeader,
   Brand,
-  DropdownToggle,
+  DropdownToggle
 } from "@patternfly/react-core";
 import { CloseIcon, ExpandIcon, EllipsisVIcon } from "@patternfly/react-icons";
 import * as React from "react";
@@ -97,9 +97,17 @@ export function EditorToolbar(props: Props) {
           key={`dropdown-${dropdownId}-save`}
           component={"button"}
           onClick={props.onDownload}
-          className={"pf-u-display-none-on-lg"}
+          className={"pf-u-display-none-on-xl"}
         >
           Save
+        </DropdownItem>,
+        <DropdownItem
+          key={`dropdown-${dropdownId}-fullscreen`}
+          component="button"
+          onClick={props.onFullScreen}
+          className={"pf-u-display-none-on-xl"}
+        >
+          Full Screen
         </DropdownItem>,
         <React.Fragment key={`dropdown-${dropdownId}-fragment`}>
           {context.external && !context.readonly && (
@@ -137,16 +145,10 @@ export function EditorToolbar(props: Props) {
     );
 
   const filenameInput = (
-    <>
+    <React.Fragment>
       {!editingName && (
-        <div data-testid="toolbar-title">
-          <Title
-            className={"kogito--editor__toolbar-title"}
-            headingLevel={"h3"}
-            size={"xl"}
-            onClick={editName}
-            title={"Rename"}
-          >
+        <div data-testid="toolbar-title" className="kogito--editor__toolbar-title">
+          <Title headingLevel={"h3"} size={"xl"} onClick={editName} title={"Rename"} aria-label={"File name"}>
             {context.file.fileName + "." + editorType}
           </Title>
           {props.isEdited && (
@@ -165,7 +167,7 @@ export function EditorToolbar(props: Props) {
             autoFocus={true}
             value={name}
             type={"text"}
-            aria-label={"fileName"}
+            aria-label={"File name"}
             className={"pf-c-title pf-m-xl"}
             onChange={setName}
             onKeyUp={onNameInputKeyUp}
@@ -173,26 +175,39 @@ export function EditorToolbar(props: Props) {
           />
         </div>
       )}
-    </>
+    </React.Fragment>
   );
 
   const headerToolbar = (
     // TODO: The toolbar should be switched out for DataToolbar and possibly the Overflow menu
-    <Toolbar>
-      <ToolbarGroup>
-        <ToolbarItem>
-          <Button
-            data-testid="save-button"
-            variant={"tertiary"}
-            onClick={props.onDownload}
-            className={"pf-u-display-none pf-u-display-flex-on-lg"}
-          >
+    <PageHeaderTools>
+      <PageHeaderToolsGroup>
+        <PageHeaderToolsItem
+          visibility={{
+            default: "hidden",
+            "2xl": "visible",
+            xl: "visible",
+            lg: "hidden",
+            md: "hidden",
+            sm: "hidden"
+          }}
+        >
+          <Button data-testid="save-button" variant={"tertiary"} onClick={props.onDownload} aria-label={"Save button"}>
             Save
           </Button>
-        </ToolbarItem>
-      </ToolbarGroup>
-      <ToolbarGroup>
-        <ToolbarItem className={"pf-u-display-none pf-u-display-flex-on-lg"}>
+        </PageHeaderToolsItem>
+      </PageHeaderToolsGroup>
+      <PageHeaderToolsGroup>
+        <PageHeaderToolsItem
+          visibility={{
+            default: "hidden",
+            "2xl": "visible",
+            xl: "visible",
+            lg: "hidden",
+            md: "hidden",
+            sm: "hidden"
+          }}
+        >
           <Dropdown
             onSelect={() => setMenuOpen(false)}
             toggle={
@@ -209,29 +224,19 @@ export function EditorToolbar(props: Props) {
             dropdownItems={kebabItems("lg")}
             position={DropdownPosition.right}
           />
-        </ToolbarItem>
-      </ToolbarGroup>
-      <ToolbarGroup>
-        <ToolbarItem className={"pf-u-display-none-on-lg"}>
-          <Dropdown
-            onSelect={() => setKebabOpen(false)}
-            toggle={
-              <DropdownToggle
-                className={"kogito--editor__toolbar-toggle-icon-button"}
-                id={"toggle-id-sm"}
-                toggleIndicator={null}
-                onToggle={isOpen => setKebabOpen(isOpen)}
-              >,
-                <EllipsisVIcon />
-              </DropdownToggle>
-            }
-            isOpen={isKebabOpen}
-            isPlain={true}
-            dropdownItems={kebabItems("sm")}
-            position={DropdownPosition.right}
-          />
-        </ToolbarItem>
-        <ToolbarItem className={"pf-u-display-none pf-u-display-flex-on-lg"}>
+        </PageHeaderToolsItem>
+      </PageHeaderToolsGroup>
+      <PageHeaderToolsGroup>
+        <PageHeaderToolsItem
+          visibility={{
+            default: "hidden",
+            "2xl": "visible",
+            xl: "visible",
+            lg: "hidden",
+            md: "hidden",
+            sm: "hidden"
+          }}
+        >
           <Button
             className={"kogito--editor__toolbar-icon-button"}
             variant={"plain"}
@@ -240,9 +245,46 @@ export function EditorToolbar(props: Props) {
           >
             <ExpandIcon />
           </Button>
-        </ToolbarItem>
+        </PageHeaderToolsItem>
+        <PageHeaderToolsItem
+          visibility={{
+            default: "visible",
+            "2xl": "hidden",
+            xl: "hidden",
+            lg: "visible",
+            md: "visible",
+            sm: "visible"
+          }}
+        >
+          <Dropdown
+            onSelect={() => setKebabOpen(false)}
+            toggle={
+              <DropdownToggle
+                className={"kogito--editor__toolbar-toggle-icon-button"}
+                id={"toggle-id-sm"}
+                toggleIndicator={null}
+                onToggle={isOpen => setKebabOpen(isOpen)}
+              >
+                <EllipsisVIcon />
+              </DropdownToggle>
+            }
+            isOpen={isKebabOpen}
+            isPlain={true}
+            dropdownItems={kebabItems("sm")}
+            position={DropdownPosition.right}
+          />
+        </PageHeaderToolsItem>
         {!context.external && (
-          <ToolbarItem>
+          <PageHeaderToolsItem
+            visibility={{
+              default: "visible",
+              "2xl": "visible",
+              xl: "visible",
+              lg: "visible",
+              md: "visible",
+              sm: "visible"
+            }}
+          >
             <Button
               className={"kogito--editor__toolbar-icon-button"}
               variant={"plain"}
@@ -252,10 +294,10 @@ export function EditorToolbar(props: Props) {
             >
               <CloseIcon />
             </Button>
-          </ToolbarItem>
+          </PageHeaderToolsItem>
         )}
-      </ToolbarGroup>
-    </Toolbar>
+      </PageHeaderToolsGroup>
+    </PageHeaderTools>
   );
 
   return !props.isPageFullscreen ? (
@@ -265,6 +307,7 @@ export function EditorToolbar(props: Props) {
       headerTools={headerToolbar}
       topNav={filenameInput}
       className={"kogito--editor__toolbar"}
+      aria-label={"Page header"}
     />
   ) : null;
 }
