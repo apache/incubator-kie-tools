@@ -30,6 +30,7 @@ const Nest = ({
   return (
     <Card
       {...filterDOMProps(props)}
+      style={{ marginBottom: '1.5rem' }}
     >
       <CardBody>
         {label && <label>{label}</label>}
@@ -38,11 +39,6 @@ const Nest = ({
           : fields?.map(key => (
               <>
                 <AutoField key={key} disabled={disabled} name={joinName(name, key)} {...itemProps} />
-                {/* 
-                  Not ideal to use a <br> tag, but a layout workaround that
-                  won't impact further nested fields
-                */}
-                <br />
               </>
         ))}
       </CardBody>
