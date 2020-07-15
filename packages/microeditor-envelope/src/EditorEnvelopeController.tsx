@@ -56,19 +56,19 @@ export class EditorEnvelopeController {
 
         this.capturedInitRequestYet = true;
 
-        const language = await this.kogitoEnvelopeBus.request_languageResponse();
+        const language = await this.kogitoEnvelopeBus.client.request("receive_languageRequest");
         const editor = await editorFactory.createEditor(language, this.envelopeContext);
 
         await this.open(editor);
         this.editorEnvelopeView!.setLoading();
 
-        const editorContent = await this.kogitoEnvelopeBus.request_contentResponse();
+        const editorContent = await this.kogitoEnvelopeBus.client.request("receive_contentRequest");
 
         await editor
           .setContent(editorContent.path ?? "", editorContent.content)
           .finally(() => this.editorEnvelopeView!.setLoadingFinished());
 
-        this.kogitoEnvelopeBus.notify_ready();
+        this.kogitoEnvelopeBus.client.notify("receive_ready");
       },
       receive_contentChanged: (editorContent: EditorContent) => {
         this.editorEnvelopeView!.setLoading();
@@ -95,7 +95,7 @@ export class EditorEnvelopeController {
       receive_guidedTourElementPositionRequest: async (selector: string) => {
         return this.getEditor()!
           .getElementPosition(selector)
-          .then(rect => rect ?? DEFAULT_RECT); //FIXME: tiago -> check with guilherme
+          .then(rect => rect ?? DEFAULT_RECT);
       },
       receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent) {
         window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));

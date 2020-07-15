@@ -32,6 +32,6 @@ export interface EnvelopeContextType {
 
 export const EnvelopeContext = React.createContext<EnvelopeContextType>({} as any);
 
-export function useEnvelopeApi() {
+export function useEnvelopeContext() {
   return useContext(EnvelopeContext);
 }

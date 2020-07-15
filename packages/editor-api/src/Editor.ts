@@ -40,33 +40,13 @@ export abstract class Editor {
 
   public abstract redo(): Promise<void>;
 
-  public abstract af_componentRoot(): React.ReactPortal | React.ReactElement<any> | HTMLElement | string;
+  public abstract af_componentRoot(): React.ReactPortal | React.ReactElement | HTMLElement | string;
 
   public af_onStartup(): void {
     //
   }
 
   public af_onOpen(): void {
-    //
-  }
-
-  public af_onFocus(): void {
-    //
-  }
-
-  public af_onLostFocus(): void {
-    //
-  }
-
-  public af_onMayClose(): boolean {
-    return true;
-  }
-
-  public af_onClose(): void {
-    //
-  }
-
-  public af_onShutdown(): void {
     //
   }
 }

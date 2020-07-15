@@ -18,9 +18,9 @@ import { KogitoEnvelopeBus } from "../KogitoEnvelopeBus";
 import {
   EnvelopeBusMessage,
   EnvelopeBusMessagePurpose,
-  KogitoEnvelopeApi
+  KogitoEnvelopeApi,
+  StateControlCommand
 } from "@kogito-tooling/microeditor-envelope-protocol";
-import { StateControlCommand } from "@kogito-tooling/microeditor-envelope-protocol";
 
 let api: KogitoEnvelopeApi;
 let envelopeBus: KogitoEnvelopeBus;
@@ -290,7 +290,7 @@ describe("send", () => {
 
   test("notify stateControlCommandUpdate", () => {
     const command = StateControlCommand.REDO;
-    envelopeBus.notify_stateControlCommandUpdate(command);
+    envelopeBus.client.notify("receive_stateControlCommandUpdate", command);
     expect(sentMessages).toEqual([
       [
         {
@@ -305,7 +305,7 @@ describe("send", () => {
   });
 
   test("notify ready", () => {
-    envelopeBus.notify_ready();
+    envelopeBus.client.notify("receive_ready");
     expect(sentMessages).toEqual([
       [
         {
@@ -321,7 +321,7 @@ describe("send", () => {
 
   test("notify openFile", () => {
     const path = "some/path";
-    envelopeBus.notify_openFile(path);
+    envelopeBus.client.notify("receive_openFile", path);
     expect(sentMessages).toEqual([
       [
         {
@@ -337,7 +337,7 @@ describe("send", () => {
 
   test("notify newEdit", () => {
     const kogitoEdit = { id: "the-edit-id" };
-    envelopeBus.notify_newEdit(kogitoEdit);
+    envelopeBus.client.notify("receive_newEdit", kogitoEdit);
     expect(sentMessages).toEqual([
       [
         {
@@ -353,7 +353,7 @@ describe("send", () => {
 
   test("notify setContentError", () => {
     const error = "the error";
-    envelopeBus.notify_setContentError(error);
+    envelopeBus.client.notify("receive_setContentError", error);
     expect(sentMessages).toEqual([
       [
         {
@@ -369,7 +369,7 @@ describe("send", () => {
 
   test("notify guidedTourRegisterTutorial", () => {
     const tutorial = {} as any;
-    envelopeBus.notify_guidedTourRegisterTutorial(tutorial);
+    envelopeBus.client.notify("receive_guidedTourRegisterTutorial", tutorial);
     expect(sentMessages).toEqual([
       [
         {
@@ -385,7 +385,7 @@ describe("send", () => {
 
   test("notify guidedTourRefresh", () => {
     const userInteraction = {} as any;
-    envelopeBus.notify_guidedTourRefresh(userInteraction);
+    envelopeBus.client.notify("receive_guidedTourUserInteraction", userInteraction);
     expect(sentMessages).toEqual([
       [
         {

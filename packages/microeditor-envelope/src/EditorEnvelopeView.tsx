@@ -66,10 +66,6 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
     return this.setState({ loading: true });
   }
 
-  private LoadingScreenPortal() {
-    return ReactDOM.createPortal(<LoadingScreen visible={this.state.loading} />, this.props.loadingScreenContainer!);
-  }
-
   public componentDidMount() {
     if (this.props.context.channel !== ChannelType.VSCODE) {
       this.registerRedoShortcut();
@@ -90,7 +86,7 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
       "Edit | Redo last edit",
       async () => {
         this.getEditor()!.redo();
-        this.props.messageBus.notify_stateControlCommandUpdate(StateControlCommand.REDO);
+        this.props.messageBus.client.notify("receive_stateControlCommandUpdate", StateControlCommand.REDO);
       }
     );
   }
@@ -101,7 +97,7 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
       "Edit | Undo last edit",
       async () => {
         this.getEditor()!.undo();
-        this.props.messageBus.notify_stateControlCommandUpdate(StateControlCommand.UNDO);
+        this.props.messageBus.client.notify("receive_stateControlCommandUpdate", StateControlCommand.UNDO);
       }
     );
   }
@@ -110,7 +106,7 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
     return (
       <>
         {!this.state.loading && <KeyBindingsHelpOverlay />}
-        {this.LoadingScreenPortal()}
+        {ReactDOM.createPortal(<LoadingScreen visible={this.state.loading} />, this.props.loadingScreenContainer!)}
         {this.state.editor && this.state.editor.af_isReact && this.state.editor.af_componentRoot()}
       </>
     );
