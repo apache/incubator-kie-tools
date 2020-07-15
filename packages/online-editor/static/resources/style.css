@@ -24,10 +24,6 @@
   color: var(--pf-global--Color--light-100);
 }
 
-.kogito--editor-hub-download_modal-footer {
-  --pf-c-modal-box__footer--MarginTop: 0.5rem;
-}
-
 .kogito--editor-landing__gallery {
   --pf-l-gallery--GridTemplateColumns: repeat(auto-fill, minmax(23em, 1fr));
 }

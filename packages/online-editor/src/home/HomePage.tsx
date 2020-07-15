@@ -37,9 +37,9 @@ import {
   TextInput,
   TextVariants,
   Title,
-  Toolbar,
-  ToolbarGroup,
-  ToolbarItem
+  PageHeaderTools,
+  PageHeaderToolsGroup,
+  PageHeaderToolsItem
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import * as React from "react";
@@ -450,16 +450,13 @@ export function HomePage(props: Props) {
 
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
-      <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
+      <Link to={context.routes.downloadHub.url({})}>
         Get Business Modeler Hub Preview
       </Link>
     </DropdownItem>
   ];
 
   const userDropdownItems = [
-    /*<DropdownItem key="">
-      <Link to ={'/'}>Documentation</Link>
-    </DropdownItem>,*/
     <DropdownItem key="">
       <a href={"https://groups.google.com/forum/#!forum/kogito-development"} target={"_blank"}>
         Online forum <ExternalLinkAltIcon className="pf-u-mx-sm" />
@@ -471,48 +468,41 @@ export function HomePage(props: Props) {
   const [isLinkDropdownOpen, setIsLinkDropdownOpen] = useState(false);
 
   const headerToolbar = (
-    <>
-      <Toolbar>
-        <ToolbarGroup>
-          <ToolbarItem className="pf-u-display-none pf-u-display-flex-on-lg">
-            <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
-              Get Business Modeler Hub Preview
-              {/*<Button variant="plain">Get Business Modeler Hub Preview</Button>*/}
-            </Link>
-          </ToolbarItem>
-          <ToolbarItem className="pf-u-display-none-on-lg">
-            <Dropdown
-              isPlain={true}
-              position="right"
-              isOpen={isLinkDropdownOpen}
-              toggle={
-                <DropdownToggle
-                  icon={null}
-                  onToggle={setIsLinkDropdownOpen}
-                  aria-label="External links to extensions"
-                >
-                  <ExternalLinkAltIcon />
-                </DropdownToggle>
-              }
-              dropdownItems={linkDropdownItems}
-            />
-          </ToolbarItem>
-          <ToolbarItem>
-            <Dropdown
-              isPlain={true}
-              position="right"
-              isOpen={isUserDropdownOpen}
-              toggle={
-                <DropdownToggle icon={null} onToggle={setIsUserDropdownOpen} aria-label="Links">
-                  <OutlinedQuestionCircleIcon />
-                </DropdownToggle>
-              }
-              dropdownItems={userDropdownItems}
-            />
-          </ToolbarItem>
-        </ToolbarGroup>
-      </Toolbar>
-    </>
+    <PageHeaderTools>
+      <PageHeaderToolsGroup>
+        <PageHeaderToolsItem className="pf-u-display-none pf-u-display-flex-on-lg">
+          <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
+            Get Business Modeler Hub Preview
+          </Link>
+        </PageHeaderToolsItem>
+        <PageHeaderToolsItem className="pf-u-display-none-on-lg">
+          <Dropdown
+            isPlain={true}
+            position="right"
+            isOpen={isLinkDropdownOpen}
+            toggle={
+              <DropdownToggle toggleIndicator={null} onToggle={setIsLinkDropdownOpen} aria-label="External links to hub">
+                <ExternalLinkAltIcon />
+              </DropdownToggle>
+            }
+            dropdownItems={linkDropdownItems}
+          />
+        </PageHeaderToolsItem>
+        <PageHeaderToolsItem>
+          <Dropdown
+            isPlain={true}
+            position="right"
+            isOpen={isUserDropdownOpen}
+            toggle={
+              <DropdownToggle toggleIndicator={null} onToggle={setIsUserDropdownOpen} aria-label="Links">
+                <OutlinedQuestionCircleIcon />
+              </DropdownToggle>
+            }
+            dropdownItems={userDropdownItems}
+          />
+        </PageHeaderToolsItem>
+      </PageHeaderToolsGroup>
+    </PageHeaderTools>
   );
 
   const Header = (
