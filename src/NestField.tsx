@@ -33,7 +33,7 @@ const Nest = ({
       style={{ marginBottom: '1.5rem' }}
     >
       <CardBody>
-        {label && <label>{label}</label>}
+        {label && <label><b>{label}</b></label>}
         {children
           ? injectName(name, children)
           : fields?.map(key => (
