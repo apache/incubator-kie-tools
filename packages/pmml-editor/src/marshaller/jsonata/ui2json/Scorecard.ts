@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { LOCAL_TRANSFORMATIONS } from "./LocalTransformations";
 import { MINING_SCHEMA } from "./MiningSchema";
+import { MODEL_EXPLANATION } from "./ModelExplanation";
+import { MODEL_STATS } from "./ModelStats";
+import { MODEL_VERIFICATION } from "./ModelVerification";
+import { OUTPUT } from "./Output";
+import { TARGETS } from "./Targets";
 
 const PREDICATE: string = `[
   $v.predicate[] ~> $map(function($v, $i) {
@@ -64,74 +70,7 @@ $v.Characteristics ~> $map(function($v, $i) {
   }
 })`;
 
-const OUTPUT_FIELD: string = `[
-  $v.OutputField ~> $map(function($v, $i) {
-    {
-      "type": "element", 
-      "name": "OutputField", 
-      "attributes": {
-        "name": $v.name,
-        "displayName": $v.displayName,
-        "optype": $v.optype,
-        "dataType": $v.dataType,
-        "targetField": $v.targetField,
-        "feature": $v.feature,
-        "value": $v.value,
-        "ruleFeature": $v.ruleFeature,
-        "algorithm": $v.algorithm,
-        "rank": $v.rank,
-        "rankBasis": $v.rankBasis,
-        "rankOrder": RankOrder$v.rankOrder,
-        "isMultiValued": $v.isMultiValued, 
-        "segmentId": $v.segmentId,
-        "isFinalResult": $v.isFinalResult      
-      },
-      "elements": $append([], [])
-    }
-  })
-]`;
-
-const OUTPUT: string = `[
-  $v.Output ~> $map(function($v, $i) {
-    {
-      "type": "element",
-      "name": "Output",
-      "elements": ${OUTPUT_FIELD}
-    }
-  })
-]`;
-
-const MODEL_STATS: string = `[
-  $v.ModelStats ~> $map(function($v, $i) {
-    $v
-  })
-]`;
-
-const MODEL_EXPLANATION: string = `[
-  $v.ModelExplanation ~> $map(function($v, $i) {
-    $v
-  })
-]`;
-
-const MODEL_VERIFICATION: string = `[
-  $v.ModelVerification ~> $map(function($v, $i) {
-    $v
-  })
-]`;
-
-const TARGETS: string = `[
-  $v.Targets ~> $map(function($v, $i) {
-    $v
-  })
-]`;
-
-const LOCAL_TRANSFORMATION: string = `[
-  $v.LocalTransformations ~> $map(function($v, $i) {
-    $v
-  })
-]`;
-
-export const MODELS_SCORECARD: string = `[
+export const SCORE_CARD: string = `[
   models[(_type = "Scorecard")] ~> $map(function($v, $i) {
     {
       "type": "element",
@@ -154,7 +93,7 @@ export const MODELS_SCORECARD: string = `[
                           $append(${MODEL_EXPLANATION},
                             $append(${MODEL_VERIFICATION},
                               $append(${TARGETS},
-                                $append([], ${LOCAL_TRANSFORMATION})
+                                $append([], ${LOCAL_TRANSFORMATIONS})
                               )
                             )
                           )

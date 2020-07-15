@@ -95,6 +95,7 @@ exports[`EditorEnvelopeController after received content 1`] = `
       "eventListener": [Function],
       "id": undefined,
       "impl": Object {
+        "receive_channelKeyboardEvent": [Function],
         "receive_contentRequest": [Function],
         "receive_contentResponse": [Function],
         "receive_editorRedo": [Function],
@@ -106,13 +107,6 @@ exports[`EditorEnvelopeController after received content 1`] = `
         "receive_resourceContentResponse": [Function],
       },
       "targetOrigin": "test-target-origin",
-    }
-  }
-  stateControlService={
-    Object {
-      "redo": [MockFunction],
-      "registry": [MockFunction],
-      "undo": [MockFunction],
     }
   }
 >
@@ -503,6 +497,7 @@ exports[`EditorEnvelopeController opens 1`] = `
       },
       "eventListener": [Function],
       "impl": Object {
+        "receive_channelKeyboardEvent": [Function],
         "receive_contentRequest": [Function],
         "receive_contentResponse": [Function],
         "receive_editorRedo": [Function],
@@ -513,13 +508,6 @@ exports[`EditorEnvelopeController opens 1`] = `
         "receive_resourceContentList": [Function],
         "receive_resourceContentResponse": [Function],
       },
-    }
-  }
-  stateControlService={
-    Object {
-      "redo": [MockFunction],
-      "registry": [MockFunction],
-      "undo": [MockFunction],
     }
   }
 >
@@ -730,6 +718,7 @@ exports[`EditorEnvelopeController receives init request 1`] = `
       "eventListener": [Function],
       "id": undefined,
       "impl": Object {
+        "receive_channelKeyboardEvent": [Function],
         "receive_contentRequest": [Function],
         "receive_contentResponse": [Function],
         "receive_editorRedo": [Function],
@@ -741,13 +730,6 @@ exports[`EditorEnvelopeController receives init request 1`] = `
         "receive_resourceContentResponse": [Function],
       },
       "targetOrigin": "test-target-origin",
-    }
-  }
-  stateControlService={
-    Object {
-      "redo": [MockFunction],
-      "registry": [MockFunction],
-      "undo": [MockFunction],
     }
   }
 >

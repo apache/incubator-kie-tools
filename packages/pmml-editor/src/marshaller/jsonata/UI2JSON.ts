@@ -15,9 +15,16 @@
  */
 import { DATA_DICTIONARY } from "./ui2json/DataDictionary";
 import { HEADER } from "./ui2json/Header";
-import { MODELS_SCORECARD } from "./ui2json/Scorecard";
+import { SCORE_CARD } from "./ui2json/Scorecard";
+import { REGRESSION_MODEL } from "./ui2json/RegressionModel";
 
-const MODELS: string = `$append([], ${MODELS_SCORECARD})`;
+const MODELS: string = `$append(
+  [],
+  $append(
+    ${SCORE_CARD},
+    ${REGRESSION_MODEL}
+  )
+)`;
 
 const PMML: string = `
 "elements": [

@@ -20,7 +20,6 @@ import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { ReactElement } from "react";
 import * as ReactDOM from "react-dom";
 import { ResourceContentApi, ResourceContentEditorCoordinator } from "./api/resourceContent";
-import { StateControlService, StateControlApi } from "./api/stateControl";
 import { EditorEnvelopeController } from "./EditorEnvelopeController";
 import { EditorFactory } from "./EditorFactory";
 import { Renderer } from "./Renderer";
@@ -40,7 +39,6 @@ declare global {
       guidedTourService: GuidedTourApi;
       editorContext: EditorContext;
       resourceContentEditorService?: ResourceContentApi;
-      stateControl: StateControlApi;
       keyboardShortcuts: KeyboardShortcutsApi;
       workspaceService: WorkspaceServiceApi;
     };
@@ -73,13 +71,11 @@ export function init(args: {
   const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
   const guidedTourService = new GuidedTourServiceCoordinator();
   const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: args.editorContext });
-  const stateControlService = new StateControlService();
   const workspaceService = new WorkspaceService();
   const editorEnvelopeController = new EditorEnvelopeController(
     args.busApi,
     args.editorFactory,
     specialDomElements,
-    stateControlService,
     renderer,
     resourceContentEditorCoordinator,
     keyboardShortcutsService
@@ -90,7 +86,6 @@ export function init(args: {
       guidedTourService: guidedTourService.exposeApi(messageBus),
       resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
       editorContext: args.editorContext,
-      stateControl: stateControlService.exposeApi(messageBus),
       keyboardShortcuts: keyboardShortcutsService.exposeApi(),
       workspaceService: workspaceService.exposeApi(messageBus)
     };

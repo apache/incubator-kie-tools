@@ -23,6 +23,7 @@ import {
   ResourcesList,
   StateControlCommand
 } from "@kogito-tooling/core-api";
+import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts";
 
 let handler: EnvelopeBusInnerMessageHandler;
 let receivedMessages: any[];
@@ -63,6 +64,9 @@ beforeEach(() => {
       },
       receive_guidedTourElementPositionRequest: (selector: string) => {
         receivedMessages.push(["receive_guidedTourElementPositionRequest", selector]);
+      },
+      receive_channelKeyboardEvent: (channelKeyboardEvent: ChannelKeyboardEvent) => {
+        receivedMessages.push(["receive_previewRequest", channelKeyboardEvent]);
       }
     })
   );

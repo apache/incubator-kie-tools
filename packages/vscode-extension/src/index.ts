@@ -17,32 +17,37 @@
 import * as vscode from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
-import { Router } from "@kogito-tooling/core-api";
 import { KogitoWebviewProvider } from "./KogitoWebviewProvider";
 import { KogitoEditorJobRegistry } from "./KogitoEditorJobRegistry";
+import { Routes } from "@kogito-tooling/core-api";
 
 /**
  * Starts a Kogito extension.
  *
  *  @param args.extensionName The extension name. Used to fetch the extension configuration for supported languages.
  *  @param args.webviewLocation The relative path to search for an "index.js" file for the WebView panel.
- *  @param args.context The vscode.ExtensionContext provided on the activate method of the extensin.
- *  @param args.router The Router to be used to find resources for each language.
+ *  @param args.context The vscode.ExtensionContext provided on the activate method of the extension.
+ *  @param args.routes The routes to be used to find resources for each language.
  */
 export function startExtension(args: {
   extensionName: string;
   webviewLocation: string;
   context: vscode.ExtensionContext;
-  router: Router;
+  routes: Routes;
   viewType: string;
   getPreviewCommandId: string;
 }) {
   const editorStore = new KogitoEditorStore();
   const jobRegistry = new KogitoEditorJobRegistry();
-  const editorFactory = new KogitoEditorFactory(args.context, args.router, args.webviewLocation, editorStore, jobRegistry);
+  const editorFactory = new KogitoEditorFactory(
+    args.context,
+    args.routes,
+    args.webviewLocation,
+    editorStore,
+    jobRegistry
+  );
   const webviewProvider = new KogitoWebviewProvider(args.viewType, editorFactory, editorStore, args.context);
 
-  args.context.globalState.update("vscodePathResolver", (absolutePath: vscode.Uri) => editorStore.getActive()?.asWebviewUri(absolutePath));
   args.context.subscriptions.push(webviewProvider.register());
   args.context.subscriptions.push(
     vscode.commands.registerCommand(args.getPreviewCommandId, () => {

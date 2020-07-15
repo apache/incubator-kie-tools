@@ -13,7 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Characteristics, MiningSchema, Scorecard } from "../../model/pmml4_4";
+import { LOCAL_TRANSFORMATIONS } from "./LocalTransformations";
 import { MINING_SCHEMA } from "./MiningSchema";
+import { MODEL_EXPLANATION } from "./ModelExplanation";
+import { MODEL_STATS } from "./ModelStats";
+import { MODEL_VERIFICATION } from "./ModelVerification";
+import { OUTPUT } from "./Output";
+import { TARGETS } from "./Targets";
 
 const COMPLEX_PARTIAL_SCORE: string = `
   "ComplexPartialScore": $v.elements[(name = "ComplexPartialScore")] ~> $map(function($v, $i) {
@@ -47,43 +54,6 @@ const CHARACTERISTICS: string = `
   })]
 }`;
 
-const OUTPUT: string = `
-"Output": {
-  "OutputField": [$v.elements[(name = "Output")].elements[(name = "OutputField")] ~> $map(function($v, $i) {
-    $merge([
-      $v.attributes,
-      {
-        "rank": $number($v.attributes.rank)
-      }
-    ])
-  })] 
-}`;
-
-const MODEL_STATS: string = `
-  "ModelStats": $v.elements[(name = "ModelStats")] ~> $map(function($v, $i) {
-    $v
-})`;
-
-const MODEL_EXPLANATION: string = `
-  "ModelExplanation": $v.elements[(name = "ModelExplanation")] ~> $map(function($v, $i) {
-    $v
-})`;
-
-const MODEL_VERIFICATION: string = `
-  "ModelVerification": $v.elements[(name = "ModelVerification")] ~> $map(function($v, $i) {
-    $v
-})`;
-
-const TARGETS: string = `
-  "Targets": $v.elements[(name = "Targets")] ~> $map(function($v, $i) {
-    $v
-})`;
-
-const LOCAL_TRANSFORMATION: string = `
-  "LocalTransformations": $v.elements[(name = "LocalTransformations")] ~> $map(function($v, $i) {
-    $v
-})`;
-
 export const SCORE_CARD: string = `
 elements.elements[(name = "Scorecard")] ~> $map(function($v, $i) {
   $merge([
@@ -100,7 +70,19 @@ elements.elements[(name = "Scorecard")] ~> $map(function($v, $i) {
       ${MODEL_EXPLANATION},
       ${MODEL_VERIFICATION},
       ${TARGETS},
-      ${LOCAL_TRANSFORMATION}
+      ${LOCAL_TRANSFORMATIONS}
     }
   ])
 })`;
+
+//Construction of a Scorecard data-structure can be peformed in the JSONata mapping however
+//TypeScript's instanceof operator relies on the applicable constructor function having been
+//called and therefore we must instantiate the object itself. Furthermore the recurrsive hieracical
+//nature of CompoundPredicates cannot be handled by a JSONata mapping.
+export function scorecardFactory(): Scorecard {
+  return new Scorecard({
+    MiningSchema: new MiningSchema({ MiningField: [] }),
+    Characteristics: new Characteristics({ Characteristic: [] }),
+    functionName: "regression"
+  });
+}

@@ -39,14 +39,17 @@ describe("DefaultKeyboardShortcutsService", () => {
       editorContext: { operatingSystem: OperatingSystem.LINUX, channel: ChannelType.ONLINE }
     });
 
-    const [action] = getActionForKeyPress("ctrl+a", keyboardShortcutsService);
-    expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
-
-    const input = render(<input data-testid={"an-input"} />).getByTestId("an-input");
+    const input = render(<input data-testid={"an-input"}/>).getByTestId("an-input");
+    const [actionOnInput] = getActionForKeyPress("ctrl+a", keyboardShortcutsService, { element: input });
     fireEvent(input, new KeyboardEvent("keydown", { ctrlKey: true, code: "KeyA" }));
+    expect(actionOnInput).not.toHaveBeenCalled();
 
-    expect(action).not.toHaveBeenCalled();
-    expect(keyboardShortcutsService.registered().length).toStrictEqual(1);
+    const div = render(<div data-testid={"a-div"}/>).getByTestId("a-div");
+    const [actionOnDiv] = getActionForKeyPress("ctrl+a", keyboardShortcutsService, { element: div });
+    fireEvent(div, new KeyboardEvent("keydown", { ctrlKey: true, code: "KeyA" }));
+    expect(actionOnDiv).toHaveBeenCalled();
+
+    expect(keyboardShortcutsService.registered().length).toStrictEqual(2);
   });
 
   test("keyPress on macOS", async () => {
@@ -127,7 +130,7 @@ function fire(type: "keydown" | "keyup", opts: KeyboardEventInit) {
   fireEvent(window, new KeyboardEvent(type, opts));
 }
 
-function getActionForKeyPress(combination: string, api: DefaultKeyboardShortcutsService) {
+function getActionForKeyPress(combination: string, api: DefaultKeyboardShortcutsService, opts: any = {}) {
   const fn = jest.fn();
   const id = api.registerKeyPress(
     combination,
@@ -136,7 +139,7 @@ function getActionForKeyPress(combination: string, api: DefaultKeyboardShortcuts
       fn();
       return Promise.resolve();
     },
-    {}
+    opts
   );
 
   return [fn, id];

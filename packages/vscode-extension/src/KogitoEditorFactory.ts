@@ -17,23 +17,24 @@
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorJobRegistry } from "./KogitoEditorJobRegistry";
 import { KogitoEditor } from "./KogitoEditor";
-import { ResourceContentService, Router, KogitoEdit } from "@kogito-tooling/core-api";
+import { ResourceContentService, KogitoEdit, Routes } from "@kogito-tooling/core-api";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 
 import * as vscode from "vscode";
 import * as nodePath from "path";
+import { DefaultVsCodeRouter } from "./DefaultVsCodeRouter";
 
 export class KogitoEditorFactory {
   private readonly context: vscode.ExtensionContext;
   private readonly editorStore: KogitoEditorStore;
   private readonly jobRegistry: KogitoEditorJobRegistry;
   private readonly webviewLocation: string;
-  private readonly router: Router;
+  private readonly routes: Routes;
 
   constructor(
     context: vscode.ExtensionContext,
-    router: Router,
+    routes: Routes,
     webviewLocation: string,
     editorStore: KogitoEditorStore,
     jobRegistry: KogitoEditorJobRegistry
@@ -41,7 +42,7 @@ export class KogitoEditorFactory {
     this.context = context;
     this.editorStore = editorStore;
     this.jobRegistry = jobRegistry;
-    this.router = router;
+    this.routes = routes;
     this.webviewLocation = webviewLocation;
   }
 
@@ -62,6 +63,8 @@ export class KogitoEditorFactory {
       localResourceRoots: [vscode.Uri.file(this.context.extensionPath)]
     };
 
+    const router = new DefaultVsCodeRouter(this.context, webviewPanel.webview, this.routes);
+
     const workspacePath = vscode.workspace.asRelativePath(path);
 
     const contentService = this.createContentService(path, workspacePath);
@@ -72,7 +75,7 @@ export class KogitoEditorFactory {
       initialBackup,
       webviewPanel,
       this.context,
-      this.router,
+      router,
       this.webviewLocation,
       this.editorStore,
       this.jobRegistry,

@@ -81,8 +81,4 @@ export class KogitoEditorStore {
 
     return found;
   }
-
-  public getActive() {
-    return this.activeEditor;
-  }
 }

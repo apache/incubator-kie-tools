@@ -15,9 +15,12 @@
  */
 
 import * as React from "react";
-import * as AppFormer from "@kogito-tooling/core-api";
+import * as Core from "@kogito-tooling/core-api";
 import { EditorContent, EditorContext, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import {
+  ChannelKeyboardEvent,
+  DefaultKeyboardShortcutsService,
+} from "@kogito-tooling/keyboard-shortcuts";
 import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
@@ -25,7 +28,6 @@ import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
 import { ResourceContentEditorCoordinator } from "./api/resourceContent";
-import { StateControlService } from "./api/stateControl";
 import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandler";
 
 export class EditorEnvelopeController {
@@ -37,7 +39,6 @@ export class EditorEnvelopeController {
     busApi: EnvelopeBusApi,
     private readonly editorFactory: EditorFactory<any>,
     private readonly specialDomElements: SpecialDomElements,
-    private readonly stateControlService: StateControlService,
     private readonly renderer: Renderer,
     private readonly resourceContentEditorCoordinator: ResourceContentEditorCoordinator,
     private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService
@@ -73,10 +74,10 @@ export class EditorEnvelopeController {
         this.resourceContentEditorCoordinator.resolvePendingList(resourcesList);
       },
       receive_editorUndo: () => {
-        this.stateControlService.undo();
+        this.getEditor()!.undo();
       },
       receive_editorRedo: () => {
-        this.stateControlService.redo();
+        this.getEditor()!.redo();
       },
       receive_previewRequest: () => {
         this.getEditor()
@@ -87,6 +88,9 @@ export class EditorEnvelopeController {
       receive_guidedTourElementPositionRequest: (selector: string) => {
         const position = getGuidedTourElementPosition(selector);
         self.respond_guidedTourElementPositionRequest(position);
+      },
+      receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent) {
+        window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));
       }
     }));
   }
@@ -95,7 +99,7 @@ export class EditorEnvelopeController {
   //TODO: No-op when same Editor class?
   //TODO: Can I open an editor if there's already an open one?
   //TODO: What about close and shutdown methods?
-  private open(editor: AppFormer.Editor) {
+  private open(editor: Core.Editor) {
     return this.editorEnvelopeView!.setEditor(editor).then(() => {
       editor.af_onStartup();
       editor.af_onOpen();
@@ -114,7 +118,6 @@ export class EditorEnvelopeController {
           loadingScreenContainer={this.specialDomElements.loadingScreenContainer}
           keyboardShortcutsService={this.keyboardShortcutsService}
           context={args.context}
-          stateControlService={this.stateControlService}
           messageBus={this.envelopeBusInnerMessageHandler}
         />,
         args.container,
