@@ -128,9 +128,12 @@ Feature: Deploy quarkus service
     Given Kogito Operator is deployed with Infinispan and Kafka operators
     And Install Kogito Data Index with 1 replicas
     And Deploy quarkus example service "process-quarkus-example" with configuration:
-      | config | native      | <native> |
-      | config | persistence | enabled  |
-      | config | events      | enabled  |
+      | config        | native      | <native> |
+      | config        | persistence | enabled  |
+      | config        | events      | enabled  |
+      | build-request | cpu         | <build-request-cpu>     |
+      | build-request | memory      | <build-request-memory>  |
+      | build-limit   | cpu         | <build-limit-cpu>       |
     And Kogito application "process-quarkus-example" has 1 pods running within <minutes> minutes
 
     When Start "orders" process on service "process-quarkus-example" within 3 minutes with body:
@@ -147,13 +150,13 @@ Feature: Deploy quarkus service
     Then GraphQL request on Data Index service returns ProcessInstances processName "orders" within 2 minutes
 
     Examples:
-      | native   | minutes |
-      | disabled | 10      |
+      | native   | minutes | build-request-cpu | build-limit-cpu | build-request-memory |
+      | disabled | 10      | 1                 | 4               | 4Gi                  |
 
     @native
     Examples:
-      | native  | minutes |
-      | enabled | 20      |
+      | native   | minutes | build-request-cpu | build-limit-cpu | build-request-memory |
+      | enabled  | 20      | 4                 | 8               | 10Gi                 |
 
 #####
 
