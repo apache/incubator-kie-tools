@@ -17,7 +17,15 @@
 import * as React from "react";
 import { useContext, useMemo } from "react";
 import { GlobalContext } from "../common/GlobalContext";
-import { PageHeader, Brand, Toolbar, ToolbarGroup, ToolbarItem, Button, Title } from "@patternfly/react-core";
+import {
+  PageHeader,
+  Brand,
+  PageHeaderTools,
+  PageHeaderToolsGroup,
+  PageHeaderToolsItem,
+  Button,
+  Title
+} from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
 import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";
 import { removeDirectories } from "../../common/utils";
@@ -54,9 +62,9 @@ export function EditorToolbar(props: Props) {
 
   const headerToolbar = (
     // TODO: The toolbar should be switched out for DataToolbar and possibly the Overflow menu
-    <Toolbar>
-      <ToolbarGroup className={"kogito--right"}>
-        <ToolbarItem>
+    <PageHeaderTools>
+      <PageHeaderToolsGroup className={"kogito--right"}>
+        <PageHeaderToolsItem>
           <Button
             data-testid="save-button"
             variant={"tertiary"}
@@ -66,8 +74,8 @@ export function EditorToolbar(props: Props) {
           >
             Save
           </Button>
-        </ToolbarItem>
-        <ToolbarItem>
+        </PageHeaderToolsItem>
+        <PageHeaderToolsItem>
           <Button
             variant={"plain"}
             onClick={props.onClose}
@@ -76,9 +84,9 @@ export function EditorToolbar(props: Props) {
           >
             <CloseIcon />
           </Button>
-        </ToolbarItem>
-      </ToolbarGroup>
-    </Toolbar>
+        </PageHeaderToolsItem>
+      </PageHeaderToolsGroup>
+    </PageHeaderTools>
   );
 
   return (
