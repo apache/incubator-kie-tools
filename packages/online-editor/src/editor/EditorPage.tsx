@@ -16,7 +16,7 @@
 
 import { EditorContent, ChannelType } from "@kogito-tooling/core-api";
 import { EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
-import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
+import {Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection} from "@patternfly/react-core";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
@@ -273,18 +273,21 @@ export function EditorPage(props: Props) {
                   onClose={() => setShowUnsavedAlert(false)}
                 />
               }
-            >
-              <div>
-                <p>
-                  Click Save to download your progress before closing.{" "}
-                  <a data-testid="unsaved-alert-save-button" onClick={requestDownload}>
+              actionLinks={
+                <React.Fragment>
+                  <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestDownload}>
                     Save
-                  </a>
-                </p>
-                <a data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
-                  {" Close without saving"}
-                </a>
-              </div>
+                  </AlertActionLink>
+                  <AlertActionLink
+                    data-testid="unsaved-alert-close-without-save-button"
+                    onClick={closeWithoutSaving}
+                  >
+                    Close without saving
+                  </AlertActionLink>
+                </React.Fragment>
+              }
+            >
+              <p>Click Save to download your progress before closing. </p>
             </Alert>
           </div>
         )}
