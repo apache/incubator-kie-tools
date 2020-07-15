@@ -40,45 +40,38 @@ exports[`EditorEnvelopeController after received content 1`] = `
       >
         <div
           class="pf-c-page"
+          tabindex="-1"
         >
           <main
             class="pf-c-page__main"
-            role="main"
             tabindex="-1"
           >
             <div
               class="pf-l-bullseye"
             >
-              <div
-                class="pf-c-empty-state pf-m-lg"
-              >
-                <div
-                  class="pf-u-mb-lg"
-                >
-                  <div
+              <div>
+                <div>
+                  <span
                     aria-valuetext="Loading..."
-                    class="pf-c-spinner"
+                    class="pf-c-spinner pf-m-xl"
                     role="progressbar"
                   >
-                    <div
+                    <span
                       class="pf-c-spinner__clipper"
                     />
-                    <div
+                    <span
                       class="pf-c-spinner__lead-ball"
                     />
-                    <div
+                    <span
                       class="pf-c-spinner__tail-ball"
                     />
-                  </div>
+                  </span>
                 </div>
                 <h5
-                  class="pf-c-title pf-m-lg"
+                  class="pf-c-title pf-m-md"
                 >
                   Loading...
                 </h5>
-                <div
-                  class="pf-c-empty-state__body"
-                />
               </div>
             </div>
           </main>
@@ -192,45 +185,38 @@ exports[`EditorEnvelopeController after received content 1`] = `
             >
               <div
                 class="pf-c-page"
+                tabindex="-1"
               >
                 <main
                   class="pf-c-page__main"
-                  role="main"
                   tabindex="-1"
                 >
                   <div
                     class="pf-l-bullseye"
                   >
-                    <div
-                      class="pf-c-empty-state pf-m-lg"
-                    >
-                      <div
-                        class="pf-u-mb-lg"
-                      >
-                        <div
+                    <div>
+                      <div>
+                        <span
                           aria-valuetext="Loading..."
-                          class="pf-c-spinner"
+                          class="pf-c-spinner pf-m-xl"
                           role="progressbar"
                         >
-                          <div
+                          <span
                             class="pf-c-spinner__clipper"
                           />
-                          <div
+                          <span
                             class="pf-c-spinner__lead-ball"
                           />
-                          <div
+                          <span
                             class="pf-c-spinner__tail-ball"
                           />
-                        </div>
+                        </span>
                       </div>
                       <h5
-                        class="pf-c-title pf-m-lg"
+                        class="pf-c-title pf-m-md"
                       >
                         Loading...
                       </h5>
-                      <div
-                        class="pf-c-empty-state__body"
-                      />
                     </div>
                   </div>
                 </main>
@@ -293,45 +279,38 @@ exports[`EditorEnvelopeController after received content 1`] = `
         >
           <div
             class="pf-c-page"
+            tabindex="-1"
           >
             <main
               class="pf-c-page__main"
-              role="main"
               tabindex="-1"
             >
               <div
                 class="pf-l-bullseye"
               >
-                <div
-                  class="pf-c-empty-state pf-m-lg"
-                >
-                  <div
-                    class="pf-u-mb-lg"
-                  >
-                    <div
+                <div>
+                  <div>
+                    <span
                       aria-valuetext="Loading..."
-                      class="pf-c-spinner"
+                      class="pf-c-spinner pf-m-xl"
                       role="progressbar"
                     >
-                      <div
+                      <span
                         class="pf-c-spinner__clipper"
                       />
-                      <div
+                      <span
                         class="pf-c-spinner__lead-ball"
                       />
-                      <div
+                      <span
                         class="pf-c-spinner__tail-ball"
                       />
-                    </div>
+                    </span>
                   </div>
                   <h5
-                    class="pf-c-title pf-m-lg"
+                    class="pf-c-title pf-m-md"
                   >
                     Loading...
                   </h5>
-                  <div
-                    class="pf-c-empty-state__body"
-                  />
                 </div>
               </div>
             </main>
@@ -353,51 +332,60 @@ exports[`EditorEnvelopeController after received content 1`] = `
           }
         }
       >
-        <div
-          className="pf-c-page"
+        <Page
+          defaultManagedSidebarIsOpen={true}
+          isManagedSidebar={false}
+          mainTabIndex={-1}
+          onPageResize={[Function]}
+          tabIndex={-1}
         >
-          <main
-            className="pf-c-page__main"
-            role="main"
+          <div
+            className="pf-c-page"
             tabIndex={-1}
           >
-            <div
-              className="pf-l-bullseye"
+            <main
+              className="pf-c-page__main"
+              tabIndex={-1}
             >
-              <div
-                className="pf-c-empty-state pf-m-lg"
-              >
+              <Bullseye>
                 <div
-                  className="pf-u-mb-lg"
+                  className="pf-l-bullseye"
                 >
-                  <div
-                    aria-valuetext="Loading..."
-                    className="pf-c-spinner"
-                    role="progressbar"
-                  >
-                    <div
-                      className="pf-c-spinner__clipper"
-                    />
-                    <div
-                      className="pf-c-spinner__lead-ball"
-                    />
-                    <div
-                      className="pf-c-spinner__tail-ball"
-                    />
+                  <div>
+                    <div>
+                      <Spinner>
+                        <span
+                          aria-valuetext="Loading..."
+                          className="pf-c-spinner pf-m-xl"
+                          role="progressbar"
+                        >
+                          <span
+                            className="pf-c-spinner__clipper"
+                          />
+                          <span
+                            className="pf-c-spinner__lead-ball"
+                          />
+                          <span
+                            className="pf-c-spinner__tail-ball"
+                          />
+                        </span>
+                      </Spinner>
+                    </div>
+                    <Title
+                      headingLevel="h5"
+                    >
+                      <h5
+                        className="pf-c-title pf-m-md"
+                      >
+                        Loading...
+                      </h5>
+                    </Title>
                   </div>
                 </div>
-                <h5
-                  className="pf-c-title pf-m-lg"
-                >
-                  Loading...
-                </h5>
-                <div
-                  className="pf-c-empty-state__body"
-                />
-              </div>
-            </div>
-          </main>
-        </div>
+              </Bullseye>
+            </main>
+          </div>
+        </Page>
       </div>
     </LoadingScreen>
   </Portal>
@@ -443,45 +431,38 @@ exports[`EditorEnvelopeController opens 1`] = `
       >
         <div
           class="pf-c-page"
+          tabindex="-1"
         >
           <main
             class="pf-c-page__main"
-            role="main"
             tabindex="-1"
           >
             <div
               class="pf-l-bullseye"
             >
-              <div
-                class="pf-c-empty-state pf-m-lg"
-              >
-                <div
-                  class="pf-u-mb-lg"
-                >
-                  <div
+              <div>
+                <div>
+                  <span
                     aria-valuetext="Loading..."
-                    class="pf-c-spinner"
+                    class="pf-c-spinner pf-m-xl"
                     role="progressbar"
                   >
-                    <div
+                    <span
                       class="pf-c-spinner__clipper"
                     />
-                    <div
+                    <span
                       class="pf-c-spinner__lead-ball"
                     />
-                    <div
+                    <span
                       class="pf-c-spinner__tail-ball"
                     />
-                  </div>
+                  </span>
                 </div>
                 <h5
-                  class="pf-c-title pf-m-lg"
+                  class="pf-c-title pf-m-md"
                 >
                   Loading...
                 </h5>
-                <div
-                  class="pf-c-empty-state__body"
-                />
               </div>
             </div>
           </main>
@@ -522,45 +503,38 @@ exports[`EditorEnvelopeController opens 1`] = `
         >
           <div
             class="pf-c-page"
+            tabindex="-1"
           >
             <main
               class="pf-c-page__main"
-              role="main"
               tabindex="-1"
             >
               <div
                 class="pf-l-bullseye"
               >
-                <div
-                  class="pf-c-empty-state pf-m-lg"
-                >
-                  <div
-                    class="pf-u-mb-lg"
-                  >
-                    <div
+                <div>
+                  <div>
+                    <span
                       aria-valuetext="Loading..."
-                      class="pf-c-spinner"
+                      class="pf-c-spinner pf-m-xl"
                       role="progressbar"
                     >
-                      <div
+                      <span
                         class="pf-c-spinner__clipper"
                       />
-                      <div
+                      <span
                         class="pf-c-spinner__lead-ball"
                       />
-                      <div
+                      <span
                         class="pf-c-spinner__tail-ball"
                       />
-                    </div>
+                    </span>
                   </div>
                   <h5
-                    class="pf-c-title pf-m-lg"
+                    class="pf-c-title pf-m-md"
                   >
                     Loading...
                   </h5>
-                  <div
-                    class="pf-c-empty-state__body"
-                  />
                 </div>
               </div>
             </main>
@@ -581,51 +555,60 @@ exports[`EditorEnvelopeController opens 1`] = `
           }
         }
       >
-        <div
-          className="pf-c-page"
+        <Page
+          defaultManagedSidebarIsOpen={true}
+          isManagedSidebar={false}
+          mainTabIndex={-1}
+          onPageResize={[Function]}
+          tabIndex={-1}
         >
-          <main
-            className="pf-c-page__main"
-            role="main"
+          <div
+            className="pf-c-page"
             tabIndex={-1}
           >
-            <div
-              className="pf-l-bullseye"
+            <main
+              className="pf-c-page__main"
+              tabIndex={-1}
             >
-              <div
-                className="pf-c-empty-state pf-m-lg"
-              >
+              <Bullseye>
                 <div
-                  className="pf-u-mb-lg"
+                  className="pf-l-bullseye"
                 >
-                  <div
-                    aria-valuetext="Loading..."
-                    className="pf-c-spinner"
-                    role="progressbar"
-                  >
-                    <div
-                      className="pf-c-spinner__clipper"
-                    />
-                    <div
-                      className="pf-c-spinner__lead-ball"
-                    />
-                    <div
-                      className="pf-c-spinner__tail-ball"
-                    />
+                  <div>
+                    <div>
+                      <Spinner>
+                        <span
+                          aria-valuetext="Loading..."
+                          className="pf-c-spinner pf-m-xl"
+                          role="progressbar"
+                        >
+                          <span
+                            className="pf-c-spinner__clipper"
+                          />
+                          <span
+                            className="pf-c-spinner__lead-ball"
+                          />
+                          <span
+                            className="pf-c-spinner__tail-ball"
+                          />
+                        </span>
+                      </Spinner>
+                    </div>
+                    <Title
+                      headingLevel="h5"
+                    >
+                      <h5
+                        className="pf-c-title pf-m-md"
+                      >
+                        Loading...
+                      </h5>
+                    </Title>
                   </div>
                 </div>
-                <h5
-                  className="pf-c-title pf-m-lg"
-                >
-                  Loading...
-                </h5>
-                <div
-                  className="pf-c-empty-state__body"
-                />
-              </div>
-            </div>
-          </main>
-        </div>
+              </Bullseye>
+            </main>
+          </div>
+        </Page>
       </div>
     </LoadingScreen>
   </Portal>
@@ -663,45 +646,38 @@ exports[`EditorEnvelopeController receives init request 1`] = `
       >
         <div
           class="pf-c-page"
+          tabindex="-1"
         >
           <main
             class="pf-c-page__main"
-            role="main"
             tabindex="-1"
           >
             <div
               class="pf-l-bullseye"
             >
-              <div
-                class="pf-c-empty-state pf-m-lg"
-              >
-                <div
-                  class="pf-u-mb-lg"
-                >
-                  <div
+              <div>
+                <div>
+                  <span
                     aria-valuetext="Loading..."
-                    class="pf-c-spinner"
+                    class="pf-c-spinner pf-m-xl"
                     role="progressbar"
                   >
-                    <div
+                    <span
                       class="pf-c-spinner__clipper"
                     />
-                    <div
+                    <span
                       class="pf-c-spinner__lead-ball"
                     />
-                    <div
+                    <span
                       class="pf-c-spinner__tail-ball"
                     />
-                  </div>
+                  </span>
                 </div>
                 <h5
-                  class="pf-c-title pf-m-lg"
+                  class="pf-c-title pf-m-md"
                 >
                   Loading...
                 </h5>
-                <div
-                  class="pf-c-empty-state__body"
-                />
               </div>
             </div>
           </main>
@@ -744,45 +720,38 @@ exports[`EditorEnvelopeController receives init request 1`] = `
         >
           <div
             class="pf-c-page"
+            tabindex="-1"
           >
             <main
               class="pf-c-page__main"
-              role="main"
               tabindex="-1"
             >
               <div
                 class="pf-l-bullseye"
               >
-                <div
-                  class="pf-c-empty-state pf-m-lg"
-                >
-                  <div
-                    class="pf-u-mb-lg"
-                  >
-                    <div
+                <div>
+                  <div>
+                    <span
                       aria-valuetext="Loading..."
-                      class="pf-c-spinner"
+                      class="pf-c-spinner pf-m-xl"
                       role="progressbar"
                     >
-                      <div
+                      <span
                         class="pf-c-spinner__clipper"
                       />
-                      <div
+                      <span
                         class="pf-c-spinner__lead-ball"
                       />
-                      <div
+                      <span
                         class="pf-c-spinner__tail-ball"
                       />
-                    </div>
+                    </span>
                   </div>
                   <h5
-                    class="pf-c-title pf-m-lg"
+                    class="pf-c-title pf-m-md"
                   >
                     Loading...
                   </h5>
-                  <div
-                    class="pf-c-empty-state__body"
-                  />
                 </div>
               </div>
             </main>
@@ -803,51 +772,60 @@ exports[`EditorEnvelopeController receives init request 1`] = `
           }
         }
       >
-        <div
-          className="pf-c-page"
+        <Page
+          defaultManagedSidebarIsOpen={true}
+          isManagedSidebar={false}
+          mainTabIndex={-1}
+          onPageResize={[Function]}
+          tabIndex={-1}
         >
-          <main
-            className="pf-c-page__main"
-            role="main"
+          <div
+            className="pf-c-page"
             tabIndex={-1}
           >
-            <div
-              className="pf-l-bullseye"
+            <main
+              className="pf-c-page__main"
+              tabIndex={-1}
             >
-              <div
-                className="pf-c-empty-state pf-m-lg"
-              >
+              <Bullseye>
                 <div
-                  className="pf-u-mb-lg"
+                  className="pf-l-bullseye"
                 >
-                  <div
-                    aria-valuetext="Loading..."
-                    className="pf-c-spinner"
-                    role="progressbar"
-                  >
-                    <div
-                      className="pf-c-spinner__clipper"
-                    />
-                    <div
-                      className="pf-c-spinner__lead-ball"
-                    />
-                    <div
-                      className="pf-c-spinner__tail-ball"
-                    />
+                  <div>
+                    <div>
+                      <Spinner>
+                        <span
+                          aria-valuetext="Loading..."
+                          className="pf-c-spinner pf-m-xl"
+                          role="progressbar"
+                        >
+                          <span
+                            className="pf-c-spinner__clipper"
+                          />
+                          <span
+                            className="pf-c-spinner__lead-ball"
+                          />
+                          <span
+                            className="pf-c-spinner__tail-ball"
+                          />
+                        </span>
+                      </Spinner>
+                    </div>
+                    <Title
+                      headingLevel="h5"
+                    >
+                      <h5
+                        className="pf-c-title pf-m-md"
+                      >
+                        Loading...
+                      </h5>
+                    </Title>
                   </div>
                 </div>
-                <h5
-                  className="pf-c-title pf-m-lg"
-                >
-                  Loading...
-                </h5>
-                <div
-                  className="pf-c-empty-state__body"
-                />
-              </div>
-            </div>
-          </main>
-        </div>
+              </Bullseye>
+            </main>
+          </div>
+        </Page>
       </div>
     </LoadingScreen>
   </Portal>

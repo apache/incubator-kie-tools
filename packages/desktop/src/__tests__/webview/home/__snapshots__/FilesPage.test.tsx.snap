@@ -6,13 +6,17 @@ exports[`FilesPage empty page 1`] = `
     class="pf-c-page__main-section"
   >
     <div
-      class="pf-c-content"
+      class="kogito--desktop__actions-title"
     >
-      <h2
-        class="pf-c-title pf-m-2xl"
+      <div
+        class="pf-c-content"
       >
-        Create new file
-      </h2>
+        <h1
+          class="pf-c-title pf-m-2xl"
+        >
+          Create new file
+        </h1>
+      </div>
     </div>
     <div
       class="pf-l-gallery pf-m-gutter kogito--desktop__actions-gallery"
@@ -337,13 +341,17 @@ exports[`FilesPage three recent files in different directories listed ordered al
     class="pf-c-page__main-section"
   >
     <div
-      class="pf-c-content"
+      class="kogito--desktop__actions-title"
     >
-      <h2
-        class="pf-c-title pf-m-2xl"
+      <div
+        class="pf-c-content"
       >
-        Create new file
-      </h2>
+        <h1
+          class="pf-c-title pf-m-2xl"
+        >
+          Create new file
+        </h1>
+      </div>
     </div>
     <div
       class="pf-l-gallery pf-m-gutter kogito--desktop__actions-gallery"
@@ -742,13 +750,17 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
     class="pf-c-page__main-section"
   >
     <div
-      class="pf-c-content"
+      class="kogito--desktop__actions-title"
     >
-      <h2
-        class="pf-c-title pf-m-2xl"
+      <div
+        class="pf-c-content"
       >
-        Create new file
-      </h2>
+        <h1
+          class="pf-c-title pf-m-2xl"
+        >
+          Create new file
+        </h1>
+      </div>
     </div>
     <div
       class="pf-l-gallery pf-m-gutter kogito--desktop__actions-gallery"
@@ -1172,13 +1184,17 @@ exports[`FilesPage three recent files listed 1`] = `
     class="pf-c-page__main-section"
   >
     <div
-      class="pf-c-content"
+      class="kogito--desktop__actions-title"
     >
-      <h2
-        class="pf-c-title pf-m-2xl"
+      <div
+        class="pf-c-content"
       >
-        Create new file
-      </h2>
+        <h1
+          class="pf-c-title pf-m-2xl"
+        >
+          Create new file
+        </h1>
+      </div>
     </div>
     <div
       class="pf-l-gallery pf-m-gutter kogito--desktop__actions-gallery"
@@ -1577,13 +1593,17 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
     class="pf-c-page__main-section"
   >
     <div
-      class="pf-c-content"
+      class="kogito--desktop__actions-title"
     >
-      <h2
-        class="pf-c-title pf-m-2xl"
+      <div
+        class="pf-c-content"
       >
-        Create new file
-      </h2>
+        <h1
+          class="pf-c-title pf-m-2xl"
+        >
+          Create new file
+        </h1>
+      </div>
     </div>
     <div
       class="pf-l-gallery pf-m-gutter kogito--desktop__actions-gallery"

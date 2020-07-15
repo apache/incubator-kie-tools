@@ -11,51 +11,26 @@ exports[`LoadingScreen when just made not visible 1`] = `
     }
   }
 >
-  <div
-    className="pf-c-page"
+  <Page
+    defaultManagedSidebarIsOpen={true}
+    isManagedSidebar={false}
+    mainTabIndex={-1}
+    onPageResize={[Function]}
+    tabIndex={-1}
   >
-    <main
-      className="pf-c-page__main"
-      role="main"
-      tabIndex={-1}
-    >
-      <div
-        className="pf-l-bullseye"
-      >
-        <div
-          className="pf-c-empty-state pf-m-lg"
-        >
-          <div
-            className="pf-u-mb-lg"
-          >
-            <div
-              aria-valuetext="Loading..."
-              className="pf-c-spinner"
-              role="progressbar"
-            >
-              <div
-                className="pf-c-spinner__clipper"
-              />
-              <div
-                className="pf-c-spinner__lead-ball"
-              />
-              <div
-                className="pf-c-spinner__tail-ball"
-              />
-            </div>
-          </div>
-          <h5
-            className="pf-c-title pf-m-lg"
-          >
-            Loading...
-          </h5>
-          <div
-            className="pf-c-empty-state__body"
-          />
+    <Bullseye>
+      <div>
+        <div>
+          <Spinner />
         </div>
+        <Title
+          headingLevel="h5"
+        >
+          Loading...
+        </Title>
       </div>
-    </main>
-  </div>
+    </Bullseye>
+  </Page>
 </div>
 `;
 
@@ -71,50 +46,25 @@ exports[`LoadingScreen when visible 1`] = `
     }
   }
 >
-  <div
-    className="pf-c-page"
+  <Page
+    defaultManagedSidebarIsOpen={true}
+    isManagedSidebar={false}
+    mainTabIndex={-1}
+    onPageResize={[Function]}
+    tabIndex={-1}
   >
-    <main
-      className="pf-c-page__main"
-      role="main"
-      tabIndex={-1}
-    >
-      <div
-        className="pf-l-bullseye"
-      >
-        <div
-          className="pf-c-empty-state pf-m-lg"
-        >
-          <div
-            className="pf-u-mb-lg"
-          >
-            <div
-              aria-valuetext="Loading..."
-              className="pf-c-spinner"
-              role="progressbar"
-            >
-              <div
-                className="pf-c-spinner__clipper"
-              />
-              <div
-                className="pf-c-spinner__lead-ball"
-              />
-              <div
-                className="pf-c-spinner__tail-ball"
-              />
-            </div>
-          </div>
-          <h5
-            className="pf-c-title pf-m-lg"
-          >
-            Loading...
-          </h5>
-          <div
-            className="pf-c-empty-state__body"
-          />
+    <Bullseye>
+      <div>
+        <div>
+          <Spinner />
         </div>
+        <Title
+          headingLevel="h5"
+        >
+          Loading...
+        </Title>
       </div>
-    </main>
-  </div>
+    </Bullseye>
+  </Page>
 </div>
 `;
