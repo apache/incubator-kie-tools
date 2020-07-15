@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-export * from "./KogitoChannelBus";
-export * from "./KogitoChannelApi";
-export * from "./KogitoEnvelopeApi";
-export * from "./api";
-export * from "./Hooks";
+import { KogitoChannelBus } from "./KogitoChannelBus";
+import { useEffect } from "react";
+
+export function useConnectedKogitoChannelBus(envelopeTargetOrigin: string, kogitoChannelBus: KogitoChannelBus) {
+  useEffect(() => {
+    const listener = (msg: MessageEvent) => kogitoChannelBus.receive(msg.data);
+    window.addEventListener("message", listener, false);
+    kogitoChannelBus.startInitPolling(envelopeTargetOrigin);
+
+    return () => {
+      kogitoChannelBus.stopInitPolling();
+      window.removeEventListener("message", listener);
+    };
+  }, [kogitoChannelBus]);
+}

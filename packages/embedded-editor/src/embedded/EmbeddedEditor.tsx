@@ -19,13 +19,13 @@ import {
   EditorContent,
   KogitoChannelBus,
   KogitoEdit,
-  Rect,
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
   StateControlCommand,
   Tutorial,
+  useConnectedKogitoChannelBus,
   UserInteraction
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts-channel";
@@ -241,6 +241,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   // Forward keyboard events to envelope
   useSyncedKeyboardEvents(kogitoChannelBus.client);
 
+  //Attach/detach bus when component attaches/detaches from DOM
+  useConnectedKogitoChannelBus(window.location.origin, kogitoChannelBus);
+
   useEffect(() => {
     KogitoGuidedTour.getInstance().registerPositionProvider((selector: string) =>
       kogitoChannelBus.request_guidedTourElementPositionResponse(selector).then(position => {
@@ -248,18 +251,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
       })
     );
-  }, [kogitoChannelBus]);
-
-  //Attach/detach bus when component attaches/detaches from DOM
-  useEffect(() => {
-    const listener = (msg: MessageEvent) => kogitoChannelBus.receive(msg.data);
-    window.addEventListener("message", listener, false);
-    kogitoChannelBus.startInitPolling(window.location.origin);
-
-    return () => {
-      kogitoChannelBus.stopInitPolling();
-      window.removeEventListener("message", listener);
-    };
   }, [kogitoChannelBus]);
 
   //Forward reference methods
@@ -276,10 +267,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         notifyUndo: () => kogitoChannelBus.notify_editorUndo(),
         requestContent: () => kogitoChannelBus.request_contentResponse(),
         requestPreview: () => kogitoChannelBus.request_previewResponse(),
-        setContent: (content: string) => {
-          kogitoChannelBus.notify_contentChanged({ content: content });
-          return Promise.resolve();
-        }
+        setContent: async (content: string) => kogitoChannelBus.notify_contentChanged({ content: content })
       };
     },
     [kogitoChannelBus]
