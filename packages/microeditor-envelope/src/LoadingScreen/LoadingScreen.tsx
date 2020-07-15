@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { useLayoutEffect, useState } from "react";
+import { Bullseye, Page, Spinner, Title } from "@patternfly/react-core"
 import "./styles.scss";
-import "./spinner.scss";
 
 export const FADE_OUT_DELAY = 400;
 
@@ -47,23 +47,16 @@ export function LoadingScreen(props: { visible: boolean }) {
         style={{ ...cssAnimation }}
         onTransitionEnd={() => setMustRender(false)}
       >
-        <div className="pf-c-page">
-          <main role="main" className="pf-c-page__main" tabIndex={-1}>
-            <div className="pf-l-bullseye">
-              <div className="pf-c-empty-state pf-m-lg">
-                <div className="pf-u-mb-lg">
-                  <div className="pf-c-spinner" role="progressbar" aria-valuetext="Loading...">
-                    <div className="pf-c-spinner__clipper" />
-                    <div className="pf-c-spinner__lead-ball" />
-                    <div className="pf-c-spinner__tail-ball" />
-                  </div>
-                </div>
-                <h5 className="pf-c-title pf-m-lg">Loading...</h5>
-                <div className="pf-c-empty-state__body" />
+        <Page tabIndex={-1}>
+          <Bullseye>
+            <div>
+              <div>
+                <Spinner />
               </div>
+              <Title headingLevel={"h5"}>Loading...</Title>
             </div>
-          </main>
-        </div>
+          </Bullseye>
+        </Page>
       </div>
     )) || <></>
   );
