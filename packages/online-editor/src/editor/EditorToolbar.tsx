@@ -26,9 +26,9 @@ import {
   ToolbarItem,
   PageHeader,
   Brand,
-  DropdownToggle
+  DropdownToggle,
 } from "@patternfly/react-core";
-import { CloseIcon, ExpandIcon, CaretDownIcon, EllipsisVIcon } from "@patternfly/react-icons";
+import { CloseIcon, ExpandIcon, EllipsisVIcon } from "@patternfly/react-icons";
 import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
@@ -90,45 +90,51 @@ export function EditorToolbar(props: Props) {
     [saveNewName, cancelNewName]
   );
 
-  const kebabItems = useMemo(
-    () => [
-      <DropdownItem
-        key={"download"}
-        component={"button"}
-        onClick={props.onDownload}
-        className={"pf-u-display-none-on-lg"}
-      >
-        Download
-      </DropdownItem>,
-      <>
-        {context.external && !context.readonly && (
-          <DropdownItem key={"sendchangestogithub"} component={"button"} onClick={props.onSave}>
-            Send changes to GitHub
-          </DropdownItem>
-        )}
-      </>,
-      <DropdownItem key={"copy"} component={"button"} onClick={props.onCopyContentToClipboard}>
-        Copy source
-      </DropdownItem>,
-      <DropdownItem key="downloadSVG" component="button" onClick={props.onPreview}>
-        Download SVG
-      </DropdownItem>,
-      <DropdownItem key="exportGist" component="button" onClick={props.onExportGist}>
-        Gist it!
-      </DropdownItem>
-      /*<DropdownItem key={"geturl"} component={"button"} onClick={() => {}}>
-        Get shareable URL
-      </DropdownItem>*/
-    ],
-    [
-      context.external,
-      context.readonly,
-      props.onSave,
-      props.onDownload,
-      props.onCopyContentToClipboard,
-      props.onExportGist
-    ]
-  );
+  const kebabItems = (dropdownId: string) =>
+    useMemo(
+      () => [
+        <DropdownItem
+          key={`dropdown-${dropdownId}-save`}
+          component={"button"}
+          onClick={props.onDownload}
+          className={"pf-u-display-none-on-lg"}
+        >
+          Save
+        </DropdownItem>,
+        <React.Fragment key={`dropdown-${dropdownId}-fragment`}>
+          {context.external && !context.readonly && (
+            <DropdownItem
+              key={`dropdown-${dropdownId}-send-changes-to-github`}
+              component={"button"}
+              onClick={props.onSave}
+            >
+              Send changes to GitHub
+            </DropdownItem>
+          )}
+        </React.Fragment>,
+        <DropdownItem
+          key={`dropdown-${dropdownId}-copy-source`}
+          component={"button"}
+          onClick={props.onCopyContentToClipboard}
+        >
+          Copy source
+        </DropdownItem>,
+        <DropdownItem key={`dropdown-${dropdownId}-download-svg`} component="button" onClick={props.onPreview}>
+          Download SVG
+        </DropdownItem>,
+        <DropdownItem key={`dropdown-${dropdownId}-export-gist`} component="button" onClick={props.onExportGist}>
+          Gist it!
+        </DropdownItem>
+      ],
+      [
+        context.external,
+        context.readonly,
+        props.onSave,
+        props.onDownload,
+        props.onCopyContentToClipboard,
+        props.onExportGist
+      ]
+    );
 
   const filenameInput = (
     <>
@@ -177,7 +183,7 @@ export function EditorToolbar(props: Props) {
         <ToolbarItem>
           <Button
             data-testid="save-button"
-            variant={"secondary"}
+            variant={"tertiary"}
             onClick={props.onDownload}
             className={"pf-u-display-none pf-u-display-flex-on-lg"}
           >
@@ -194,14 +200,13 @@ export function EditorToolbar(props: Props) {
                 id={"toggle-id-lg"}
                 className={"kogito--editor__toolbar-toggle-icon-button"}
                 onToggle={isOpen => setMenuOpen(isOpen)}
-                icon={CaretDownIcon}
               >
                 File actions
               </DropdownToggle>
             }
             isOpen={isMenuOpen}
             isPlain={true}
-            dropdownItems={kebabItems}
+            dropdownItems={kebabItems("lg")}
             position={DropdownPosition.right}
           />
         </ToolbarItem>
@@ -214,17 +219,18 @@ export function EditorToolbar(props: Props) {
               <DropdownToggle
                 className={"kogito--editor__toolbar-toggle-icon-button"}
                 id={"toggle-id-sm"}
+                toggleIndicator={null}
                 onToggle={isOpen => setKebabOpen(isOpen)}
-                icon={EllipsisVIcon}
-              />
+              >,
+                <EllipsisVIcon />
+              </DropdownToggle>
             }
             isOpen={isKebabOpen}
             isPlain={true}
-            dropdownItems={kebabItems}
+            dropdownItems={kebabItems("sm")}
             position={DropdownPosition.right}
           />
         </ToolbarItem>
-
         <ToolbarItem className={"pf-u-display-none pf-u-display-flex-on-lg"}>
           <Button
             className={"kogito--editor__toolbar-icon-button"}
