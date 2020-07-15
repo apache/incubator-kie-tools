@@ -62,6 +62,10 @@
   padding: 1em;
 }
 
+.kogito--desktop__actions-title {
+  padding-bottom: var(--pf-global--spacer--md);
+}
+
 .kogito--desktop__actions-gallery {
   --pf-l-gallery--GridTemplateColumns: repeat(
     auto-fill,

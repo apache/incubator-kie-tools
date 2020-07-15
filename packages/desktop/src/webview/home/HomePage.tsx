@@ -51,8 +51,8 @@ export function HomePage(props: Props) {
   );
 
   const onNavToggle = useCallback(() => {
-    setIsNavOpen(!isNavOpen)
-  }, [isNavOpen])
+    setIsNavOpen(!isNavOpen);
+  }, [isNavOpen]);
 
   const header = (
     <PageHeader
@@ -79,12 +79,10 @@ export function HomePage(props: Props) {
 
   return (
     <Page header={header} sidebar={sidebar} className={"kogito--editor-landing"} onPageResize={testCallback}>
-      <PageSection>
-        {activeNavItem === NavItems.FILES && (
-          <FilesPage openFile={props.openFile} openFileByPath={props.openFileByPath} />
-        )}
-        {activeNavItem === NavItems.LEARN_MORE && <LearnMorePage />}
-      </PageSection>
+      {activeNavItem === NavItems.FILES && (
+        <FilesPage openFile={props.openFile} openFileByPath={props.openFileByPath} />
+      )}
+      {activeNavItem === NavItems.LEARN_MORE && <LearnMorePage />}
     </Page>
   );
 }

@@ -281,40 +281,40 @@ export function FilesPage(props: Props) {
 
   return (
     <>
+      {importFileErrorDetails.type === ImportFileErrorType.RESPONSE && (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            variant={AlertVariant.danger}
+            title="An error happened while fetching your file"
+            actionClose={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
+          >
+            <br />
+            <b>Error details: </b>
+            {importFileErrorDetails.statusCode}
+            {importFileErrorDetails.statusCode && importFileErrorDetails.description && " - "}
+            {importFileErrorDetails.description}
+          </Alert>
+        </div>
+      )}
+      {importFileErrorDetails.type === ImportFileErrorType.FETCH && (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            variant={AlertVariant.danger}
+            title="An unexpected error happened while trying to fetch your file"
+            actionClose={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
+          >
+            <br />
+            <b>Error details: </b>
+            {importFileErrorDetails.description}
+          </Alert>
+        </div>
+      )}
       <PageSection>
-        {importFileErrorDetails.type === ImportFileErrorType.RESPONSE && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              variant={AlertVariant.danger}
-              title="An error happened while fetching your file"
-              actionClose={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
-            >
-              <br />
-              <b>Error details: </b>
-              {importFileErrorDetails.statusCode}
-              {importFileErrorDetails.statusCode && importFileErrorDetails.description && " - "}
-              {importFileErrorDetails.description}
-            </Alert>
-          </div>
-        )}
-        {importFileErrorDetails.type === ImportFileErrorType.FETCH && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              variant={AlertVariant.danger}
-              title="An unexpected error happened while trying to fetch your file"
-              actionClose={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
-            >
-              <br />
-              <b>Error details: </b>
-              {importFileErrorDetails.description}
-            </Alert>
-          </div>
-        )}
-        <TextContent>
-          <Title size={"2xl"} headingLevel={"h2"}>
-            {"Create new file"}
-          </Title>
-        </TextContent>
+        <div className={"kogito--desktop__actions-title"}>
+          <TextContent>
+            <Title headingLevel={"h1"}>Create new file</Title>
+          </TextContent>
+        </div>
         <Gallery hasGutter={true} className="kogito--desktop__actions-gallery">
           <Card
             className={"kogito--desktop__actions-card"}

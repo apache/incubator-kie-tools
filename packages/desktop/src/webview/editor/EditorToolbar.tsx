@@ -59,7 +59,7 @@ export function EditorToolbar(props: Props) {
         <ToolbarItem>
           <Button
             data-testid="save-button"
-            variant={"secondary"}
+            variant={"tertiary"}
             onClick={props.onSave}
             className={"pf-u-display-flex-on-lg"}
             aria-label={"Save file"}
