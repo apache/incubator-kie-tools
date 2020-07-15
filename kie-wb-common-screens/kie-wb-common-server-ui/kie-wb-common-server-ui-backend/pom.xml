@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.workbench.screens</groupId>
@@ -27,25 +27,7 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-project-api</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.uberfire</groupId>
-          <artifactId>uberfire-client-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -60,17 +42,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-io</artifactId>
-    </dependency>
-
-    <!-- EJB for AsyncDispatcher -->
-    <dependency>
-      <groupId>org.jboss.spec.javax.ejb</groupId>
-      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.server</groupId>
-      <artifactId>kie-server-client</artifactId>
     </dependency>
 
     <dependency>
@@ -126,11 +97,6 @@
     <dependency>
       <groupId>org.kie.server</groupId>
       <artifactId>kie-server-controller-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.server</groupId>
-      <artifactId>kie-server-common</artifactId>
     </dependency>
 
     <dependency>
@@ -388,6 +354,11 @@
           <groupId>org.codehaus.cargo</groupId>
           <artifactId>cargo-core-uberjar</artifactId>
         </exclusion>
+        <exclusion>
+          <!-- already on classpath - 'uberfire-commons' -->
+          <groupId>io.netty</groupId>
+          <artifactId>netty-transport-native-epoll</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -428,7 +399,7 @@
 
         <executions>
           <execution>
-            <id>copy-dependencies-transitive</id> 
+            <id>copy-dependencies-transitive</id>
             <phase>pre-integration-test</phase>
             <goals>
               <goal>single</goal>
