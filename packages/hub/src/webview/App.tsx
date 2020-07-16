@@ -315,10 +315,10 @@ export function App() {
               <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
             </CardHeader>
             <CardBody>
-              <Title headingLevel={"h1"} size={"xl"}>BPMN, DMN and Test Scenario Editors for GitHub</Title>
+              <Title headingLevel={"h1"} size={"xl"}>BPMN, DMN & Test Scenario Editors for GitHub</Title>
               <br />
               <TextContent>
-                <Text>Install the BPMN, DMN and Test Scenario Editors for GitHub on Chrome browser</Text>
+                <Text>Install the BPMN, DMN & Test Scenario Editors for GitHub on Chrome browser</Text>
               </TextContent>
             </CardBody>
             <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
@@ -330,7 +330,7 @@ export function App() {
           </Card>
           <Modal
             width={"70%"}
-            title="Install BPMN, DMN and Test Scenario Editor for GitHub on Chrome browser"
+            title="Install BPMN, DMN & Test Scenario Editor for GitHub"
             isOpen={chrome_modalOpen}
             onClose={chrome_toggleModal}
             actions={[
