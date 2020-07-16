@@ -32,8 +32,6 @@ enum NavItems {
 }
 
 enum NavState {
-  OPEN,
-  CLOSE,
   MANUAL_OPEN,
   MANUAL_CLOSE,
   RESIZED_OPEN,
@@ -42,7 +40,7 @@ enum NavState {
 
 export function HomePage(props: Props) {
   const [activeNavItem, setActiveNavItem] = useState(NavItems.FILES);
-  const [navState, setNavState] = useState(NavState.OPEN);
+  const [navState, setNavState] = useState(NavState.RESIZED_OPEN);
 
   const onNavSelect = useCallback(selectedItem => {
     setActiveNavItem(selectedItem.itemId);
@@ -67,12 +65,6 @@ export function HomePage(props: Props) {
 
   const onNavToggle = useCallback(() => {
     switch (navState) {
-      case NavState.CLOSE:
-        setNavState(NavState.OPEN);
-        break;
-      case NavState.OPEN:
-        setNavState(NavState.CLOSE);
-        break;
       case NavState.RESIZED_CLOSE:
         setNavState(NavState.MANUAL_OPEN);
         break;
@@ -88,8 +80,8 @@ export function HomePage(props: Props) {
     }
   }, [navState]);
 
-  const navIsOpen = useMemo(() => {
-    return navState === NavState.OPEN || navState === NavState.RESIZED_OPEN || navState === NavState.MANUAL_OPEN;
+  const isNavOpen = useMemo(() => {
+    return navState === NavState.RESIZED_OPEN || navState === NavState.MANUAL_OPEN;
   }, [navState]);
 
   const header = (
@@ -113,7 +105,7 @@ export function HomePage(props: Props) {
     </Nav>
   );
 
-  const sidebar = <PageSidebar nav={navigation} isNavOpen={navIsOpen} theme={"dark"} />;
+  const sidebar = <PageSidebar nav={navigation} isNavOpen={isNavOpen} theme={"dark"} />;
 
   return (
     <Page header={header} sidebar={sidebar} className={"kogito--editor-landing"} onPageResize={onPageResize}>
