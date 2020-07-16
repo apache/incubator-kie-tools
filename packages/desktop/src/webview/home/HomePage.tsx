@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { Brand, Nav, NavItem, NavList, Page, PageHeader, PageSidebar } from "@patternfly/react-core";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FilesPage } from "./FilesPage";
 import { LearnMorePage } from "./LearnMorePage";
 import { File } from "../../common/File";
@@ -31,28 +31,66 @@ enum NavItems {
   LEARN_MORE
 }
 
+enum NavState {
+  OPEN,
+  CLOSE,
+  MANUAL_OPEN,
+  MANUAL_CLOSE,
+  RESIZED_OPEN,
+  RESIZED_CLOSE
+}
+
 export function HomePage(props: Props) {
-  const [activeNavItem, setActiveNavItem] = useState<NavItems>(NavItems.FILES);
-  const [isNavOpen, setIsNavOpen] = useState(true);
+  const [activeNavItem, setActiveNavItem] = useState(NavItems.FILES);
+  const [navState, setNavState] = useState(NavState.OPEN);
 
   const onNavSelect = useCallback(selectedItem => {
     setActiveNavItem(selectedItem.itemId);
   }, []);
 
-  const testCallback = useCallback(
-    obj => {
-      if (obj.mobileView) {
-        setIsNavOpen(false);
-      } else {
-        setIsNavOpen(true);
+  const onPageResize = useCallback(
+    ({ mobileView }) => {
+      if (
+        mobileView &&
+        ((navState !== NavState.MANUAL_OPEN && navState !== NavState.MANUAL_CLOSE))
+      ) {
+        setNavState(NavState.RESIZED_CLOSE);
+      } else if (
+        !mobileView &&
+        ((navState !== NavState.MANUAL_CLOSE && navState !== NavState.MANUAL_OPEN))
+      ) {
+        setNavState(NavState.RESIZED_OPEN);
       }
     },
-    [isNavOpen]
+    [navState]
   );
 
   const onNavToggle = useCallback(() => {
-    setIsNavOpen(!isNavOpen);
-  }, [isNavOpen]);
+    switch (navState) {
+      case NavState.CLOSE:
+        setNavState(NavState.OPEN);
+        break;
+      case NavState.OPEN:
+        setNavState(NavState.CLOSE);
+        break;
+      case NavState.RESIZED_CLOSE:
+        setNavState(NavState.MANUAL_OPEN);
+        break;
+      case NavState.RESIZED_OPEN:
+        setNavState(NavState.MANUAL_CLOSE);
+        break;
+      case NavState.MANUAL_CLOSE:
+        setNavState(NavState.RESIZED_OPEN);
+        break;
+      case NavState.MANUAL_OPEN:
+        setNavState(NavState.RESIZED_CLOSE);
+        break;
+    }
+  }, [navState]);
+
+  const navIsOpen = useMemo(() => {
+    return navState === NavState.OPEN || navState === NavState.RESIZED_OPEN || navState === NavState.MANUAL_OPEN;
+  }, [navState]);
 
   const header = (
     <PageHeader
@@ -75,10 +113,10 @@ export function HomePage(props: Props) {
     </Nav>
   );
 
-  const sidebar = <PageSidebar nav={navigation} isNavOpen={isNavOpen} theme={"dark"} />;
+  const sidebar = <PageSidebar nav={navigation} isNavOpen={navIsOpen} theme={"dark"} />;
 
   return (
-    <Page header={header} sidebar={sidebar} className={"kogito--editor-landing"} onPageResize={testCallback}>
+    <Page header={header} sidebar={sidebar} className={"kogito--editor-landing"} onPageResize={onPageResize}>
       {activeNavItem === NavItems.FILES && (
         <FilesPage openFile={props.openFile} openFileByPath={props.openFileByPath} />
       )}
