@@ -192,8 +192,9 @@ public class BaseCellSelectionManager implements CellSelectionManager {
                                                                                           columnHeaderMetaData,
                                                                                           selectedHeaderCell.getRowIndex(),
                                                                                           uiColumnIndex);
-
         int proposedUiColumnIndex = uiColumnIndex + direction.getDeltaX();
+        final int hiddenColumnXCompensation = computeHiddenColumnsCompensation(proposedUiColumnIndex, direction);
+        proposedUiColumnIndex = proposedUiColumnIndex + hiddenColumnXCompensation;
 
         if (direction == SelectionExtension.LEFT) {
             proposedUiColumnIndex = Math.min(headerBlockStartIndex - 1,
@@ -313,6 +314,25 @@ public class BaseCellSelectionManager implements CellSelectionManager {
         return maxUiColumnIndex;
     }
 
+    /**
+     * @return count of hidden columns that are as one hidden section starting on given index
+     */
+    private int computeHiddenColumnsCompensation(final int startingIndex,
+                                                 final SelectionExtension direction) {
+        int index = startingIndex;
+        int hiddenColumnsCount = 0;
+        if (gridModel.getColumnCount() > 0) {
+            while (!gridModel.getColumns().get(index).isVisible()) {
+                hiddenColumnsCount++;
+                index += direction.getDeltaX();
+                if (index < 0 || index >= gridModel.getColumnCount()) {
+                    break;
+                }
+            }
+        }
+        return hiddenColumnsCount * direction.getDeltaX();
+    }
+
     private boolean moveSelection(final GridData.SelectedCell origin,
                                   final SelectionExtension direction) {
         final int dx = direction.getDeltaX();
@@ -321,7 +341,9 @@ public class BaseCellSelectionManager implements CellSelectionManager {
         final int currentUiColumnIndex = ColumnIndexUtilities.findUiColumnIndex(gridModel.getColumns(),
                                                                                 origin.getColumnIndex());
         final int proposedUiRowIndex = currentUiRowIndex + dy;
-        final int proposedUiColumnIndex = currentUiColumnIndex + dx;
+        int proposedUiColumnIndex = currentUiColumnIndex + dx;
+        final int hiddenColumnXCompensation = computeHiddenColumnsCompensation(proposedUiColumnIndex, direction);
+        proposedUiColumnIndex = proposedUiColumnIndex + hiddenColumnXCompensation;
 
         if (canMoveFromDataToHeader(direction, proposedUiRowIndex)) {
             return moveFromDataToHeader(proposedUiColumnIndex);

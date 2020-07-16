@@ -104,6 +104,8 @@ public class BaseCellSelectionManagerTest {
                                                                                     100));
     private GridColumn<String> col2 = spy(new BaseGridTest.MockMergableGridColumn<>("col2",
                                                                                     100));
+    private GridColumn<String> col3 = spy(new BaseGridTest.MockMergableGridColumn<>("col3",
+                                                                                    100));
 
     private Bounds visibleBounds = new BaseBounds(-1000,
                                                   -1000,
@@ -119,6 +121,7 @@ public class BaseCellSelectionManagerTest {
         gridWidgetData.appendRow(new BaseGridRow(ROW_HEIGHT));
         gridWidgetData.appendColumn(col1);
         gridWidgetData.appendColumn(col2);
+        gridWidgetData.appendColumn(col3);
 
         when(gridWidget.getModel()).thenReturn(gridWidgetData);
 
@@ -128,7 +131,7 @@ public class BaseCellSelectionManagerTest {
         when(gridWidget.getRenderer()).thenReturn(gridWidgetRenderer);
         when(gridWidget.getRendererHelper()).thenReturn(gridWidgetRendererHelper);
         when(gridWidget.getLayer()).thenReturn(gridLayer);
-        when(gridWidget.getWidth()).thenReturn(200.0);
+        when(gridWidget.getWidth()).thenReturn(300.0);
         when(gridWidget.getHeader()).thenReturn(gridWidgetHeader);
         when(gridWidget.getHeight()).thenReturn(HEADER_HEIGHT + (ROW_HEIGHT * 2));
         when(gridWidget.getViewport()).thenReturn(viewport);
@@ -254,7 +257,7 @@ public class BaseCellSelectionManagerTest {
     @Test
     public void selectCellColumnCoordinateGreaterThanColumnCount() {
         cellSelectionManager.selectCell(0,
-                                        2,
+                                        3,
                                         false,
                                         false);
 
@@ -382,6 +385,28 @@ public class BaseCellSelectionManagerTest {
     }
 
     @Test
+    public void adjustSelectionLeftAndFindVisible() {
+        // DROOLS-5442
+        when(col2.isVisible()).thenReturn(false);
+
+        cellSelectionManager.selectCell(0,
+                                        2,
+                                        false,
+                                        false);
+        cellSelectionManager.adjustSelection(SelectionExtension.LEFT,
+                                             false);
+
+        final List<GridData.SelectedCell> selectedCells = gridWidgetData.getSelectedCells();
+        assertEquals(1,
+                     selectedCells.size());
+        assertTrue(selectedCells.contains(new GridData.SelectedCell(0,
+                                                                    0)));
+        assertEquals(new GridData.SelectedCell(0,
+                                               0),
+                     gridWidgetData.getSelectedCellsOrigin());
+    }
+
+    @Test
     public void adjustSelectionLeftWithShiftKey() {
         cellSelectionManager.selectCell(0,
                                         1,
@@ -418,6 +443,28 @@ public class BaseCellSelectionManagerTest {
                                                                     1)));
         assertEquals(new GridData.SelectedCell(0,
                                                1),
+                     gridWidgetData.getSelectedCellsOrigin());
+    }
+
+    @Test
+    public void adjustSelectionRightAndFindVisible() {
+        // DROOLS-5442
+        when(col2.isVisible()).thenReturn(false);
+
+        cellSelectionManager.selectCell(0,
+                                        0,
+                                        false,
+                                        false);
+        cellSelectionManager.adjustSelection(SelectionExtension.RIGHT,
+                                             false);
+
+        final List<GridData.SelectedCell> selectedCells = gridWidgetData.getSelectedCells();
+        assertEquals(1,
+                     selectedCells.size());
+        assertTrue(selectedCells.contains(new GridData.SelectedCell(0,
+                                                                    2)));
+        assertEquals(new GridData.SelectedCell(0,
+                                               2),
                      gridWidgetData.getSelectedCellsOrigin());
     }
 
