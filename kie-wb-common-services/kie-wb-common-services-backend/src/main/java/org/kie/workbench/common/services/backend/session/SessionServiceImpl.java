@@ -21,6 +21,9 @@ import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.workbench.common.services.backend.builder.core.Builder;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfo;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfoImpl;
 import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.shared.project.KieModule;
 
@@ -41,7 +44,7 @@ public class SessionServiceImpl
     @Override
     public KieSession newKieSession(KieModule project, String ksessionName) {
 
-        KieContainer kieContainer = buildInfoService.getBuildInfo(project).getKieContainer();
+        final KieContainer kieContainer = getKieContainer(project);
 
         //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
         if (kieContainer == null) {
@@ -54,7 +57,7 @@ public class SessionServiceImpl
     @Override
     public KieSession newDefaultKieSessionWithPseudoClock(final KieModule project) {
 
-        KieContainer kieContainer = buildInfoService.getBuildInfo(project).getKieContainer();
+        final KieContainer kieContainer = getKieContainer(project);
 
         //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
         if (kieContainer == null) {
@@ -66,5 +69,17 @@ public class SessionServiceImpl
         conf.setClockType(ClockType.PSEUDO_CLOCK);
 
         return kieContainer.getKieBase().newKieSession(conf, null);
+    }
+
+    private KieContainer getKieContainer(final KieModule project) {
+        final BuildInfo buildInfo = buildInfoService.getBuildInfo(project);
+        if (buildInfo instanceof BuildInfoImpl) {
+            // The kie builder needs to be cloned so that the original does not get altered.
+            final Builder clone = ((BuildInfoImpl) buildInfo).getBuilder().clone();
+            
+            clone.build();
+            return clone.getKieContainer();
+        }
+        throw new IllegalStateException("Failed to clone Builder.");
     }
 }
