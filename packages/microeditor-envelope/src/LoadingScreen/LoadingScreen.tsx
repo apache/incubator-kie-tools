@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useLayoutEffect, useState } from "react";
-import { Bullseye, Page, Spinner, Title } from "@patternfly/react-core"
+import { Bullseye, Page, Spinner, Title } from "@patternfly/react-core";
 import "./styles.scss";
 
 export const FADE_OUT_DELAY = 400;
@@ -31,14 +31,11 @@ export function LoadingScreen(props: { visible: boolean }) {
     cssAnimation = { opacity: 0, transition: `opacity ${FADE_OUT_DELAY}ms` };
   }
 
-  useLayoutEffect(
-    () => {
-      if (props.visible) {
-        setMustRender(true);
-      }
-    },
-    [props.visible]
-  );
+  useLayoutEffect(() => {
+    if (props.visible) {
+      setMustRender(true);
+    }
+  }, [props.visible]);
 
   return (
     (mustRender && (

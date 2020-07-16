@@ -23,8 +23,7 @@ import {
   Select,
   SelectOption,
   SelectDirection,
-  SelectVariant,
-  ModalBoxFooter
+  SelectVariant
 } from "@patternfly/react-core";
 import { Redirect } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
@@ -122,7 +121,7 @@ export function DownloadHubModal(props: {}) {
           </p>
           <br />
           <p>Operation System:</p>
-          <div style={{width:"140px"}}>
+          <div style={{ width: "140px" }}>
             <Select
               variant={SelectVariant.single}
               aria-label="Select OS"

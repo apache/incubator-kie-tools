@@ -28,7 +28,6 @@ import {
   Form,
   FormGroup,
   Gallery,
-  GalleryItem,
   InputGroup,
   PageSection,
   Select,

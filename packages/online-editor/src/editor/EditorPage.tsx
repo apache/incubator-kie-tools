@@ -16,7 +16,7 @@
 
 import { EditorContent, ChannelType } from "@kogito-tooling/core-api";
 import { EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
-import {Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection} from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
@@ -278,10 +278,7 @@ export function EditorPage(props: Props) {
                   <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestDownload}>
                     Save
                   </AlertActionLink>
-                  <AlertActionLink
-                    data-testid="unsaved-alert-close-without-save-button"
-                    onClick={closeWithoutSaving}
-                  >
+                  <AlertActionLink data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
                     Close without saving
                   </AlertActionLink>
                 </React.Fragment>

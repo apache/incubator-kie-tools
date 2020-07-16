@@ -450,9 +450,7 @@ export function HomePage(props: Props) {
 
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
-      <Link to={context.routes.downloadHub.url({})}>
-        Get Business Modeler Hub Preview
-      </Link>
+      <Link to={context.routes.downloadHub.url({})}>Get Business Modeler Hub Preview</Link>
     </DropdownItem>
   ];
 
@@ -481,7 +479,11 @@ export function HomePage(props: Props) {
             position="right"
             isOpen={isLinkDropdownOpen}
             toggle={
-              <DropdownToggle toggleIndicator={null} onToggle={setIsLinkDropdownOpen} aria-label="External links to hub">
+              <DropdownToggle
+                toggleIndicator={null}
+                onToggle={setIsLinkDropdownOpen}
+                aria-label="External links to hub"
+              >
                 <ExternalLinkAltIcon />
               </DropdownToggle>
             }

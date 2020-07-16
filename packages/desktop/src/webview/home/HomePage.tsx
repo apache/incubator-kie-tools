@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { Brand, Nav, NavItem, NavList, Page, PageHeader, PageSection, PageSidebar } from "@patternfly/react-core";
+import { Brand, Nav, NavItem, NavList, Page, PageHeader, PageSidebar } from "@patternfly/react-core";
 import { useCallback, useState } from "react";
 import { FilesPage } from "./FilesPage";
 import { LearnMorePage } from "./LearnMorePage";
