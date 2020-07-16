@@ -145,7 +145,7 @@ export function EditorToolbar(props: Props) {
     );
 
   const filenameInput = (
-    <React.Fragment>
+    <>
       {!editingName && (
         <div data-testid="toolbar-title" className="kogito--editor__toolbar-title">
           <Title headingLevel={"h3"} size={"xl"} onClick={editName} title={"Rename"} aria-label={"File name"}>
@@ -175,7 +175,7 @@ export function EditorToolbar(props: Props) {
           />
         </div>
       )}
-    </React.Fragment>
+    </>
   );
 
   const headerToolbar = (
