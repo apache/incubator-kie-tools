@@ -24,6 +24,7 @@ import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.service.KieServiceOverviewLoader;
@@ -98,7 +99,8 @@ public class ProjectDiagramServiceControllerTest
                                                                                       moduleService,
                                                                                       new KieServiceOverviewLoader(metadataService,
                                                                                                                    moduleService,
-                                                                                                                   projectService));
+                                                                                                                   projectService),
+                                                                                      mock(User.class));
         service.initialize();
         return service;
     }

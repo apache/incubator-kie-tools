@@ -30,6 +30,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.backend.service.KieServiceOverviewLoader;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -69,6 +70,7 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
              null,
              null,
              null,
+             null,
              null);
     }
 
@@ -82,7 +84,8 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                                      final Event<ResourceOpenedEvent> resourceOpenedEvent,
                                      final CommentedOptionFactory commentedOptionFactory,
                                      final KieModuleService moduleService,
-                                     final KieServiceOverviewLoader overviewLoader) {
+                                     final KieServiceOverviewLoader overviewLoader,
+                                     final User identity) {
         this.ioService = ioService;
         this.sessionInfo = sessionInfo;
         this.resourceOpenedEvent = resourceOpenedEvent;
@@ -93,7 +96,8 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                                           registryFactory,
                                           ioService,
                                           moduleService,
-                                          overviewLoader);
+                                          overviewLoader,
+                                          identity);
     }
 
     @PostConstruct
@@ -209,13 +213,15 @@ public class ProjectDiagramServiceImpl extends KieService<ProjectDiagram>
                                                               final BackendRegistryFactory registryFactory,
                                                               final IOService ioService,
                                                               final KieModuleService moduleService,
-                                                              final KieServiceOverviewLoader overviewLoader) {
+                                                              final KieServiceOverviewLoader overviewLoader,
+                                                              final User identity) {
         return new ProjectDiagramServiceController(definitionManager,
                                                    factoryManager,
                                                    definitionSetServiceInstances,
                                                    ioService,
                                                    registryFactory,
                                                    moduleService,
-                                                   overviewLoader);
+                                                   overviewLoader,
+                                                   identity);
     }
 }

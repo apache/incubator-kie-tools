@@ -23,6 +23,7 @@ import javax.enterprise.inject.Instance;
 
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.backend.service.KieServiceOverviewLoader;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
@@ -57,11 +58,13 @@ class ProjectDiagramServiceController extends AbstractVFSDiagramService<ProjectM
                                     final IOService ioService,
                                     final BackendRegistryFactory registryFactory,
                                     final KieModuleService moduleService,
-                                    final KieServiceOverviewLoader overviewLoader) {
+                                    final KieServiceOverviewLoader overviewLoader,
+                                    final User identity) {
         super(definitionManager,
               factoryManager,
               definitionSetServiceInstances,
-              registryFactory);
+              registryFactory,
+              identity);
         this.ioService = ioService;
         this.moduleService = moduleService;
         this.overviewLoader = overviewLoader;

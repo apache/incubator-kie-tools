@@ -57,6 +57,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.SimpleFileVisitor;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
@@ -240,8 +241,9 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
                               metadata);
 
         verify(ioService,
-               times(1)).write(expectedNioPath,
-                               DIAGRAM_MARSHALLED);
+               times(1)).write(eq(expectedNioPath),
+                               eq(DIAGRAM_MARSHALLED),
+                               any(CommentedOption.class));
     }
 
     @Test
@@ -353,7 +355,9 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
 
         final Path svgPath = diagramService.saveOrUpdateSvg(path, DIAGRAM_SVG);
         ArgumentCaptor<org.uberfire.java.nio.file.Path> svgPathCaptor = ArgumentCaptor.forClass(org.uberfire.java.nio.file.Path.class);
-        verify(ioService).write(svgPathCaptor.capture(), eq(DIAGRAM_SVG));
+        verify(ioService).write(svgPathCaptor.capture(),
+                                eq(DIAGRAM_SVG),
+                                any(CommentedOption.class));
         assertEquals(svgPath.getFileName(), svgPathCaptor.getValue().getFileName().toString());
         assertEquals(DIAGRAM_FILE_ID + AbstractVFSDiagramService.SVG_SUFFIX, svgPath.getFileName());
     }

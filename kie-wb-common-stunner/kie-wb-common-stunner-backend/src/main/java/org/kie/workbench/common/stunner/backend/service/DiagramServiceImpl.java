@@ -25,6 +25,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.service.AbstractVFSDiagramService;
@@ -62,6 +63,7 @@ public class DiagramServiceImpl
              null,
              null,
              null,
+             null,
              null);
     }
 
@@ -70,11 +72,13 @@ public class DiagramServiceImpl
                               final FactoryManager factoryManager,
                               final Instance<DefinitionSetService> definitionSetServiceInstances,
                               final BackendRegistryFactory registryFactory,
-                              final BackendFileSystemBootstrap backendFileSystemManager) {
+                              final BackendFileSystemBootstrap backendFileSystemManager,
+                              final User identity) {
         super(definitionManager,
               factoryManager,
               definitionSetServiceInstances,
-              registryFactory);
+              registryFactory,
+              identity);
         this.backendFileSystemManager = backendFileSystemManager;
     }
 

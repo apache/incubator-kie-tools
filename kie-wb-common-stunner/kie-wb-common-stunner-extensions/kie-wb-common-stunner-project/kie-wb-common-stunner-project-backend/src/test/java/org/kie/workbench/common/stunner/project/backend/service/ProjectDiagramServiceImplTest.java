@@ -29,6 +29,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -138,7 +139,8 @@ public class ProjectDiagramServiceImplTest {
                                                        moduleService,
                                                        new KieServiceOverviewLoader(metadataService,
                                                                                     moduleService,
-                                                                                    projectService)) {
+                                                                                    projectService),
+                                                                                    mock(User.class)) {
 
             {
                 metadataService = ProjectDiagramServiceImplTest.this.metadataService;
@@ -151,7 +153,8 @@ public class ProjectDiagramServiceImplTest {
                                                                       final BackendRegistryFactory registryFactory,
                                                                       final @Named("ioStrategy") IOService ioService,
                                                                       final KieModuleService moduleService,
-                                                                      final KieServiceOverviewLoader overviewLoader) {
+                                                                      final KieServiceOverviewLoader overviewLoader,
+                                                                      final User identity) {
                 return diagramServiceController;
             }
         };
