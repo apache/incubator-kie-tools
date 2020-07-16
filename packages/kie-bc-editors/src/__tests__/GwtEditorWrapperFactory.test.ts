@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {GwtEditorWrapperFactory} from "../GwtEditorWrapperFactory";
-import {GwtLanguageData, Resource} from "../GwtLanguageData";
+import { GwtEditorWrapperFactory } from "../GwtEditorWrapperFactory";
+import { GwtLanguageData, Resource } from "../GwtLanguageData";
 
 const cssResource: Resource = {
   type: "css",
@@ -82,7 +82,7 @@ describe("GwtEditorWrapperFactory", () => {
       context: {} as any,
       services: {
         keyboardShortcuts: {} as any,
-        guidedTour: {} as any,
+        guidedTour: {} as any
       }
     });
 
