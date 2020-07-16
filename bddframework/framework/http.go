@@ -79,7 +79,7 @@ func ExecuteHTTPRequest(namespace string, requestInfo HTTPRequestInfo) (*http.Re
 	var resp *http.Response
 	var err error
 	for retry < config.GetHTTPRetryNumber() {
-		resp, err := ExecuteHTTPRequestC(&http.Client{}, namespace, requestInfo)
+		resp, err = ExecuteHTTPRequestC(&http.Client{}, namespace, requestInfo)
 		if err == nil && checkHTTPResponseSuccessful(namespace, resp) {
 			return resp, err
 		} else if err != nil {
