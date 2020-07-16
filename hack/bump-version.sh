@@ -29,7 +29,7 @@ if [ -z "$new_version" ]; then
 fi
 
 sed -i "s/$old_version/$new_version/g" cmd/kogito/version/version.go README.md version/version.go deploy/operator.yaml deploy/olm-catalog/kogito-operator/kogito-operator.package.yaml hack/go-build.sh hack/go-vet.sh .osdk-scorecard.yaml
-operator-sdk generate csv --csv-version "$new_version" --from-version "$old_version"  --update-crds --operator-name kogito-operator
+operator-sdk generate csv --apis-dir ./pkg/apis/apps/v1alpha1 --verbose --csv-version "$new_version" --from-version "$old_version"  --update-crds --operator-name kogito-operator
 
 # rewrite test default config, all other configuration into the file will be overridden
 test_config_file="test/.default_config"

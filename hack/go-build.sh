@@ -36,7 +36,7 @@ source ./hack/export-version.sh
 # Default values
 REGISTRY=quay.io/kiegroup
 IMAGE=kogito-cloud-operator
-TAG=0.12.0
+TAG="${OP_VERSION}"
 BINARY_OUTPUT=build/_output/bin/kogito-cloud-operator
 
 setGoModEnv
