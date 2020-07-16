@@ -21,8 +21,10 @@ import (
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/messages-go/v10"
+	appv1alpha1 "github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	imgv1 "github.com/openshift/api/image/v1"
 )
 
 // Data contains all data needed by Gherkin steps to run
@@ -112,6 +114,9 @@ func (data *Data) AfterScenario(pickle *messages.Pickle, err error) error {
 		}
 		if err := framework.BumpEvents(data.Namespace); err != nil {
 			framework.GetMainLogger().Errorf("Error bumping events for namespace %s: %v", namespace, err)
+		}
+		if err := framework.LogKubernetesObjects(data.Namespace, &imgv1.ImageStreamList{}, &appv1alpha1.KogitoRuntimeList{}, &appv1alpha1.KogitoBuildList{}, &appv1alpha1.KogitoDataIndexList{}, &appv1alpha1.KogitoInfraList{}, &appv1alpha1.KogitoJobsServiceList{}, &appv1alpha1.KogitoMgmtConsoleList{}); err != nil {
+			framework.GetMainLogger().Errorf("Error logging Kubernetes objects for namespace %s: %v", namespace, err)
 		}
 		return nil
 	})

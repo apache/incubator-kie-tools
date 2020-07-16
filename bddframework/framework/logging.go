@@ -16,16 +16,19 @@ package framework
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"os"
+	"reflect"
 	"time"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/logger"
 	"go.uber.org/zap"
 	"k8s.io/api/events/v1beta1"
+	"k8s.io/apimachinery/pkg/runtime"
 
 	"io/ioutil"
 )
@@ -429,4 +432,31 @@ func getDefaultIfNull(value string) string {
 		return "-"
 	}
 	return value
+}
+
+// LogKubernetesObjects log Kubernetes objects for test analysis
+func LogKubernetesObjects(namespace string, runtimeObjects ...runtime.Object) error {
+	for _, runtimeObject := range runtimeObjects {
+		objectName := reflect.TypeOf(runtimeObject).Elem().Name()
+
+		// Fetch list
+		err := kubernetes.ResourceC(kubeClient).ListWithNamespace(namespace, runtimeObject)
+		if err != nil {
+			return fmt.Errorf("Error retrieving %s from namespace %s: %v", objectName, namespace, err)
+		}
+
+		// Format JSON to readable format
+		json, err := json.MarshalIndent(runtimeObject, "", "  ")
+		if err != nil {
+			return fmt.Errorf("Error marshalling %s in namespace %s: %v", objectName, namespace, err)
+		}
+
+		// Write to log folder
+		err = ioutil.WriteFile(getLogFile(namespace, objectName), []byte(json), 0644)
+		if err != nil {
+			return fmt.Errorf("Error storing %s into the file: %v", objectName, err)
+		}
+	}
+
+	return nil
 }
