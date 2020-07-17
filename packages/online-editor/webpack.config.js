@@ -17,6 +17,8 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
+const { merge } = require("webpack-merge");
+const common = require("../../webpack.common.config");
 
 function getLatestGitTag() {
   const tagName = require("child_process")
@@ -55,25 +57,10 @@ function getDownloadHubArgs(argv) {
 module.exports = async (env, argv) => {
   const [downloadHub_linuxUrl, downloadHub_macOsUrl, downloadHub_windowsUrl] = getDownloadHubArgs(argv);
 
-  return {
-    mode: "development",
-    devtool: "inline-source-map",
+  return merge(common, {
     entry: {
       index: "./src/index.tsx"
     },
-    output: {
-      path: path.resolve(__dirname, "./dist"),
-      filename: "[name].js"
-    },
-    stats: {
-      excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
-      excludeModules: true
-    },
-    performance: {
-      maxAssetSize: 30000000,
-      maxEntrypointSize: 30000000
-    },
-    externals: {},
     plugins: [
       new CopyPlugin([
         { from: "./static/resources", to: "./resources" },
@@ -88,10 +75,6 @@ module.exports = async (env, argv) => {
     ],
     module: {
       rules: [
-        {
-          test: /\.tsx?$/,
-          loader: "ts-loader"
-        },
         {
           test: /DownloadHubModal\.tsx$/,
           loader: "string-replace-loader",
@@ -122,10 +105,6 @@ module.exports = async (env, argv) => {
       contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
       compress: true,
       port: 9001
-    },
-    resolve: {
-      extensions: [".tsx", ".ts", ".js", ".jsx"],
-      modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
     }
-  };
+  });
 };

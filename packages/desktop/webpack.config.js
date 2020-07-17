@@ -14,72 +14,35 @@
  * limitations under the License.
  */
 
-const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
-
-const commonConfig = {
-  mode: "development",
-  devtool: "inline-source-map",
-  output: {
-    path: path.resolve(__dirname, "./dist"),
-    filename: "[name].js"
-  },
-  stats: {
-    excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
-    excludeModules: true
-  },
-  performance: {
-    maxAssetSize: 30000000,
-    maxEntrypointSize: 30000000
-  },
-  externals: {
-    electron: "commonjs electron"
-  },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader"
-      }
-    ]
-  },
-  devServer: {
-    historyApiFallback: {
-      disableDotRule: true
-    },
-    disableHostCheck: true,
-    watchContentBase: true,
-    contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static"), path.join(__dirname, "./build")],
-    compress: true,
-    port: 9001
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
-  }
-};
+const { merge } = require("webpack-merge");
+const common = require("../../webpack.common.config");
 
 module.exports = [
-  {
-    ...commonConfig,
+  merge(common, {
     target: "electron-main",
     entry: {
       index: "./src/backend/index.ts"
+    },
+    externals: {
+      electron: "commonjs electron"
     },
     plugins: [new CopyPlugin([{ from: "./build", to: "./build" }])],
     node: {
       __dirname: false,
       __filename: false
     }
-  },
-  {
-    ...commonConfig,
+  }),
+  merge(common, {
     target: "web",
     entry: {
       "webview/index": "./src/webview/index.tsx"
     },
-    module: { rules: [...commonConfig.module.rules, ...pfWebpackUtils.patternflyLoaders] },
+    externals: {
+      electron: "commonjs electron"
+    },
+    module: { rules: [...pfWebpackUtils.patternflyLoaders] },
     plugins: [
       new CopyPlugin([
         { from: "./static/samples", to: "./samples" },
@@ -91,5 +54,5 @@ module.exports = [
         { from: "../kie-bc-editors-unpacked/bpmn", to: "./gwt-editors/bpmn" }
       ])
     ]
-  }
+  })
 ];

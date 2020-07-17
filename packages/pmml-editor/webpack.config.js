@@ -18,56 +18,32 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const nodeExternals = require("webpack-node-externals");
 const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
+const { merge } = require("webpack-merge");
+const common = require("../../webpack.common.config");
 
-module.exports = async (env, argv) => {
-  return {
-    mode: "development",
-    devtool: "inline-source-map",
-    entry: {
-      index: "./src/index.tsx"
+module.exports = merge(common, {
+  entry: {
+    index: "./src/index.tsx"
+  },
+  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
+  plugins: [
+    new CopyPlugin([
+      { from: "./static/resources", to: "./resources" },
+      { from: "./static/images", to: "./images" },
+      { from: "./static/index.html", to: "./index.html" },
+      { from: "./static/favicon.ico", to: "./favicon.ico" }
+    ])
+  ],
+  module: {
+    rules: [...pfWebpackUtils.patternflyLoaders]
+  },
+  devServer: {
+    historyApiFallback: {
+      disableDotRule: true
     },
-    output: {
-      path: path.resolve(__dirname, "./dist"),
-      filename: "[name].js"
-    },
-    stats: {
-      excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
-      excludeModules: true
-    },
-    performance: {
-      maxAssetSize: 30000000,
-      maxEntrypointSize: 30000000
-    },
-    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-    plugins: [
-      new CopyPlugin([
-        { from: "./static/resources", to: "./resources" },
-        { from: "./static/images", to: "./images" },
-        { from: "./static/index.html", to: "./index.html" },
-        { from: "./static/favicon.ico", to: "./favicon.ico" }
-      ])
-    ],
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/,
-          loader: "ts-loader"
-        },
-        ...pfWebpackUtils.patternflyLoaders
-      ]
-    },
-    devServer: {
-      historyApiFallback: {
-        disableDotRule: true
-      },
-      disableHostCheck: true,
-      watchContentBase: true,
-      contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
-      port: 9001
-    },
-    resolve: {
-      extensions: [".tsx", ".ts", ".js", ".jsx"],
-      modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
-    }
-  };
-};
+    disableHostCheck: true,
+    watchContentBase: true,
+    contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
+    port: 9001
+  }
+});

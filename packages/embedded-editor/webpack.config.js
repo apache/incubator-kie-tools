@@ -14,62 +14,29 @@
  * limitations under the License.
  */
 
-const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
 const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
-
-const commonConfig = {
-  mode: "development",
-  devtool: "inline-source-map",
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader"
-      },
-      ...pfWebpackUtils.patternflyLoaders
-    ]
-  },
-  stats: {
-    excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
-    excludeModules: true
-  },
-  performance: {
-    maxAssetSize: 30000000,
-    maxEntrypointSize: 30000000
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
-  }
-};
+const { merge } = require("webpack-merge");
+const common = require("../../webpack.common.config");
 
 module.exports = [
-  {
-    ...commonConfig,
+  merge(common, {
     entry: {
       index: "./src/index.ts"
     },
     output: {
-      path: path.resolve(__dirname, "./dist"),
-      filename: "[name].js",
       libraryTarget: "umd",
       globalObject: "this"
     },
+    module: { rules: [...pfWebpackUtils.patternflyLoaders] },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
     plugins: [new CopyPlugin([{ from: "./static/envelope", to: "./envelope" }])]
-  },
-  {
-    ...commonConfig,
-    mode: "development",
-    devtool: "inline-source-map",
+  }),
+  merge(common, {
     entry: {
       "envelope/envelope": "./src/envelope/envelope.ts"
     },
-    output: {
-      path: path.resolve(__dirname, "./dist"),
-      filename: "[name].js"
-    }
-  }
+    module: { rules: [...pfWebpackUtils.patternflyLoaders] },
+  })
 ];
