@@ -466,6 +466,7 @@ public class Builder implements Serializable {
 
                             break;
                         case DELETE:
+                        case RENAME:
                             delete(nonKieResourceValidatorRemovedMessages,
                                    resource);
                     }
