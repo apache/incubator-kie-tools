@@ -1,6 +1,6 @@
 {
   "name": "uniforms-patternfly",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Patternfly forms for uniforms",
   "repository": "git@github.com:aerogear/uniforms-patternfly.git",
   "author": "Gianluca <gzuccare@redhat.com>",
