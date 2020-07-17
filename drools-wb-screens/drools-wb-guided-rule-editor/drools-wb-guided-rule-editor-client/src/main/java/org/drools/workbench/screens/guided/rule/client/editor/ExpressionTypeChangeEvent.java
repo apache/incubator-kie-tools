@@ -20,7 +20,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class ExpressionTypeChangeEvent extends GwtEvent<ExpressionTypeChangeHandler> {
 
-    private static final GwtEvent.Type<ExpressionTypeChangeHandler> TYPE = new GwtEvent.Type<ExpressionTypeChangeHandler>();
+    private static final GwtEvent.Type<ExpressionTypeChangeHandler> TYPE = new GwtEvent.Type<>();
     private String oldType;
     private String newType;
 
@@ -41,12 +41,7 @@ public class ExpressionTypeChangeEvent extends GwtEvent<ExpressionTypeChangeHand
 
     @Override
     protected void dispatch( ExpressionTypeChangeHandler handler ) {
-
-        try {
-            handler.onExpressionTypeChanged( this );
-        } catch ( Throwable e ) {
-            e.printStackTrace();
-        }
+        handler.onExpressionTypeChanged( this );
     }
 
     @Override

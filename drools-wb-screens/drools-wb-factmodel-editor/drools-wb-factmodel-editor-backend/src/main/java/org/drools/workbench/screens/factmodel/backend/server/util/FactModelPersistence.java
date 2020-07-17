@@ -75,7 +75,7 @@ public class FactModelPersistence {
         for (int i = 0; i < mm.getFields().size(); i++) {
             FieldMetaModel f = mm.getFields().get(i);
             sb.append("\n\t");
-            sb.append(f.name).append(": ").append(f.type);
+            sb.append(f.getName()).append(": ").append(f.getType());
         }
         sb.append("\nend");
         return sb.toString();
@@ -84,7 +84,7 @@ public class FactModelPersistence {
     private static StringBuilder buildAnnotationDRL(AnnotationMetaModel a) {
         final StringBuilder sb = new StringBuilder();
         sb.append("@");
-        sb.append(a.name);
+        sb.append(a.getName());
         sb.append("(");
         for (final Map.Entry<String, String> e : a.getValues().entrySet()) {
             if (e.getKey() != null && e.getKey().length() > 0) {
@@ -146,7 +146,7 @@ public class FactModelPersistence {
             return emptyList();
         }
         final List<TypeDeclarationDescr> types = pkg.getTypeDeclarations();
-        final List<FactMetaModel> list = new ArrayList<FactMetaModel>(types.size());
+        final List<FactMetaModel> list = new ArrayList<>(types.size());
         for (final TypeDeclarationDescr td : types) {
             final FactMetaModel mm = new FactMetaModel();
             mm.setName(td.getTypeName());
@@ -178,7 +178,7 @@ public class FactModelPersistence {
     }
 
     private static Map<String, String> extractStringValues(final AnnotationDescr descr) {
-        final Map<String, String> values = new HashMap<String, String>();
+        final Map<String, String> values = new HashMap<>();
         for (Map.Entry<String, Object> e : descr.getValues().entrySet()) {
             values.put(e.getKey(),
                        descr.getValueAsString(e.getKey()));

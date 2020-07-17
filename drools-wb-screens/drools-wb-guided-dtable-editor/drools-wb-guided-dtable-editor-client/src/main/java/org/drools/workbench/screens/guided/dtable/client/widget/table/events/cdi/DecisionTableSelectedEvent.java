@@ -37,7 +37,7 @@ public class DecisionTableSelectedEvent {
         this.isLockRequired = isLockRequired;
     }
 
-    public static DecisionTableSelectedEvent NONE = new DecisionTableSelectedEvent();
+    public static final DecisionTableSelectedEvent NONE = new DecisionTableSelectedEvent();
 
     private DecisionTableSelectedEvent() {
         dtPresenter = Optional.empty();

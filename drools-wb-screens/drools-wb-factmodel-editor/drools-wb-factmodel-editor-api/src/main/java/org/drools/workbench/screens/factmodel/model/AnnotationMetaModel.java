@@ -23,8 +23,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class AnnotationMetaModel {
 
-    public String name;
-    public Map<String, String> values = new HashMap<String, String>();
+    private String name;
+    private Map<String, String> values = new HashMap<>();
 
     public AnnotationMetaModel() {
     }
@@ -33,6 +33,10 @@ public class AnnotationMetaModel {
                                 Map<String, String> values ) {
         this.name = name;
         this.values = values;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Map<String, String> getValues() {

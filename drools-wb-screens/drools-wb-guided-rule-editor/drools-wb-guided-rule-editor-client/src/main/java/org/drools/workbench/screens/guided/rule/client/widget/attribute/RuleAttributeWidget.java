@@ -16,17 +16,14 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget.attribute;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -59,7 +56,7 @@ public class RuleAttributeWidget extends Composite {
     public static final String LOCK_LHS = "freeze_conditions";
     public static final String LOCK_RHS = "freeze_actions";
 
-    public static final String[] DIALECTS = {"java", "mvel"};
+    public static final List<String> DIALECTS = Collections.unmodifiableList(Arrays.asList("java", "mvel"));
 
     /**
      * If the rule attribute is represented visually by a checkbox, these are
@@ -116,7 +113,7 @@ public class RuleAttributeWidget extends Composite {
         final String[] chooseOption = {GuidedRuleEditorResources.CONSTANTS.Choose()};
         return Stream
                 .concat(Stream.of(chooseOption),
-                        Stream.of(Attribute.values()).map(attribute -> attribute.getAttributeName()))
+                        Stream.of(Attribute.values()).map(Attribute::getAttributeName))
                 .toArray(String[]::new);
     }
 
@@ -129,31 +126,28 @@ public class RuleAttributeWidget extends Composite {
         final String attributeName = at.getAttributeName();
         if (attributeName.equals(Attribute.DIALECT.getAttributeName())) {
             final ListBox lb = new ListBox();
-            lb.addItem(DIALECTS[0]);
-            lb.addItem(DIALECTS[1]);
+            lb.addItem(DIALECTS.get(0));
+            lb.addItem(DIALECTS.get(1));
             lb.setEnabled(!isReadOnly);
             if (!isReadOnly) {
-                lb.addChangeHandler(new ChangeHandler() {
-                    @Override
-                    public void onChange(ChangeEvent event) {
-                        final int selectedIndex = lb.getSelectedIndex();
-                        if (selectedIndex < 0) {
-                            return;
-                        }
-                        at.setValue(lb.getValue(selectedIndex));
+                lb.addChangeHandler(event -> {
+                    final int selectedIndex = lb.getSelectedIndex();
+                    if (selectedIndex < 0) {
+                        return;
                     }
+                    at.setValue(lb.getValue(selectedIndex));
                 });
             }
             if (at.getValue() == null || at.getValue().isEmpty()) {
                 lb.setSelectedIndex(1);
-                at.setValue(DIALECTS[1]);
-            } else if (at.getValue().equals(DIALECTS[0])) {
+                at.setValue(DIALECTS.get(1));
+            } else if (at.getValue().equals(DIALECTS.get(0))) {
                 lb.setSelectedIndex(0);
-            } else if (at.getValue().equals(DIALECTS[1])) {
+            } else if (at.getValue().equals(DIALECTS.get(1))) {
                 lb.setSelectedIndex(1);
             } else {
                 lb.setSelectedIndex(1);
-                at.setValue(DIALECTS[1]);
+                at.setValue(DIALECTS.get(1));
             }
             editor = lb;
         } else if (Objects.equals(DataType.TYPE_STRING, Attribute.getAttributeDataType(attributeName))) {
@@ -216,11 +210,7 @@ public class RuleAttributeWidget extends Composite {
             box.setValue((at.getValue().equals(TRUE_VALUE)));
         }
 
-        box.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                at.setValue((box.getValue()) ? TRUE_VALUE : FALSE_VALUE);
-            }
-        });
+        box.addClickHandler(event -> at.setValue((box.getValue()) ? TRUE_VALUE : FALSE_VALUE));
         return box;
     }
 
@@ -230,28 +220,18 @@ public class RuleAttributeWidget extends Composite {
         box.setEnabled(!isReadOnly);
         ((InputElement) box.getElement().cast()).setSize((rm.getValue().length() < 3) ? 3 : rm.getValue().length());
         box.setText(rm.getValue());
-        box.addChangeHandler(new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                rm.setValue(box.getText());
-            }
-        });
+        box.addChangeHandler(event -> rm.setValue(box.getText()));
 
-        box.addKeyUpHandler(new KeyUpHandler() {
-            public void onKeyUp(KeyUpEvent event) {
-                ((InputElement) box.getElement().cast()).setSize(box.getText().length());
-            }
-        });
+        box.addKeyUpHandler(event -> ((InputElement) box.getElement().cast()).setSize(box.getText().length()));
         return box;
     }
 
     private Image getRemoveIcon(final int idx) {
         Image remove = new Image(ItemImages.INSTANCE.deleteItemSmall());
-        remove.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                if (Window.confirm(GuidedRuleEditorResources.CONSTANTS.RemoveThisRuleOption())) {
-                    model.removeAttribute(idx);
-                    parent.refreshWidget();
-                }
+        remove.addClickHandler(event -> {
+            if (Window.confirm(GuidedRuleEditorResources.CONSTANTS.RemoveThisRuleOption())) {
+                model.removeAttribute(idx);
+                parent.refreshWidget();
             }
         });
         return remove;
@@ -259,12 +239,10 @@ public class RuleAttributeWidget extends Composite {
 
     private Image getRemoveMetaIcon(final int idx) {
         Image remove = new Image(ItemImages.INSTANCE.deleteItemSmall());
-        remove.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                if (Window.confirm(GuidedRuleEditorResources.CONSTANTS.RemoveThisRuleOption())) {
-                    model.removeMetadata(idx);
-                    parent.refreshWidget();
-                }
+        remove.addClickHandler(event -> {
+            if (Window.confirm(GuidedRuleEditorResources.CONSTANTS.RemoveThisRuleOption())) {
+                model.removeMetadata(idx);
+                parent.refreshWidget();
             }
         });
         return remove;

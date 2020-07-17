@@ -208,7 +208,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                                                              final ConversionResult result,
                                                              final PackageDataModelOracle dmo) {
 
-        final List<DataListener> listeners = new ArrayList<DataListener>();
+        final List<DataListener> listeners = new ArrayList<>();
         final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener(result,
                                                                                                        dmo);
         listeners.add(listener);
@@ -304,8 +304,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                 final List<FieldMetaModel> fields = factMetaModel.getFields();
 
                 for (FieldMetaModel fieldMetaModel : fields) {
-                    final String fieldName = fieldMetaModel.name;
-                    final String fieldType = fieldMetaModel.type;
+                    final String fieldName = fieldMetaModel.getName();
+                    final String fieldType = fieldMetaModel.getType();
                     //Guvnor 5.5 (and earlier) does not have MultipleType
                     boolean isMultiple = false;
                     ObjectProperty property = new ObjectPropertyImpl(fieldName,
@@ -339,8 +339,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
     private void addAnnotations(final DataObject dataObject,
                                 final List<AnnotationMetaModel> annotationMetaModelList) {
         for (AnnotationMetaModel annotationMetaModel : annotationMetaModelList) {
-            final String name = annotationMetaModel.name;
-            final Map<String, String> values = annotationMetaModel.values;
+            final String name = annotationMetaModel.getName();
+            final Map<String, String> values = annotationMetaModel.getValues();
 
             Annotation annotation;
             String key = DroolsDomainAnnotations.VALUE_PARAM;
@@ -453,7 +453,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         final ProjectImports projectImports = loadProjectImports(externalImportsPath);
 
         //Make collections of existing Imports so we don't duplicate them when adding the new
-        List<String> existingImports = new ArrayList<String>();
+        List<String> existingImports = new ArrayList<>();
         for (org.kie.soup.project.datamodel.imports.Import item : projectImports.getImports().getImports()) {
             existingImports.add(item.getType());
         }

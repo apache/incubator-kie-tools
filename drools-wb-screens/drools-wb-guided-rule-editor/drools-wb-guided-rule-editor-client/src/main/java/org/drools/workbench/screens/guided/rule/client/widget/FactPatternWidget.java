@@ -22,14 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -41,6 +35,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
@@ -55,8 +50,6 @@ import org.drools.workbench.models.datamodel.rule.builder.DRLConstraintValueBuil
 import org.drools.workbench.models.datamodel.rule.visitors.ToStringExpressionVisitor;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.ConstraintValueEditor;
-import org.drools.workbench.screens.guided.rule.client.editor.ExpressionTypeChangeEvent;
-import org.drools.workbench.screens.guided.rule.client.editor.ExpressionTypeChangeHandler;
 import org.drools.workbench.screens.guided.rule.client.editor.MoveDownButton;
 import org.drools.workbench.screens.guided.rule.client.editor.MoveUpButton;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
@@ -69,10 +62,8 @@ import org.drools.workbench.screens.guided.rule.client.util.RefreshUtil;
 import org.drools.workbench.screens.guided.rule.client.widget.operator.SingleFieldConstraintOperatorSelector;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.kie.soup.project.datamodel.oracle.DataType;
-import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
@@ -81,7 +72,7 @@ import org.uberfire.ext.widgets.common.client.common.SmallLabel;
  */
 public class FactPatternWidget extends RuleModellerWidget {
 
-    private final Map<SingleFieldConstraint, ConstraintValueEditor> constraintValueEditors = new HashMap<SingleFieldConstraint, ConstraintValueEditor>();
+    private final Map<SingleFieldConstraint, ConstraintValueEditor> constraintValueEditors = new HashMap<>();
     private FactPattern pattern;
     private FlexTable layout = new FlexTable();
     private Connectives connectives;
@@ -187,7 +178,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         layout.setWidget(1,
                          0,
                          table);
-        List<FieldConstraint> parents = new ArrayList<FieldConstraint>();
+        List<FieldConstraint> parents = new ArrayList<>();
 
         for (int i = 0; i < sortedConst.size(); i++) {
             traverseSingleFieldConstraints(sortedConst,
@@ -224,14 +215,11 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     private ClickHandler createClickHandlerForClearImageButton(final int currentRow) {
-        return new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                if (Window.confirm(GuidedRuleEditorResources.CONSTANTS.RemoveThisItem())) {
-                    setModified(true);
-                    pattern.removeConstraint(currentRow);
-                    getModeller().refreshWidget();
-                }
+        return event -> {
+            if (Window.confirm(GuidedRuleEditorResources.CONSTANTS.RemoveThisItem())) {
+                setModified(true);
+                pattern.removeConstraint(currentRow);
+                getModeller().refreshWidget();
             }
         };
     }
@@ -285,7 +273,7 @@ public class FactPatternWidget extends RuleModellerWidget {
      * @return a sorted list of constraints ready for display.
      */
     private List<FieldConstraint> sortConstraints(FieldConstraint[] constraints) {
-        List<FieldConstraint> sortedConst = new ArrayList<FieldConstraint>(constraints.length);
+        List<FieldConstraint> sortedConst = new ArrayList<>(constraints.length);
         for (int i = 0; i < constraints.length; i++) {
             FieldConstraint current = constraints[i];
             if (current instanceof SingleFieldConstraint) {
@@ -358,14 +346,9 @@ public class FactPatternWidget extends RuleModellerWidget {
      */
     private Widget compositeFieldConstraintEditor(final CompositeFieldConstraint constraint) {
         FlexTable t = new FlexTable();
-        String desc = null;
+        String desc;
 
-        ClickHandler click = new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                popupCreator.showPatternPopupForComposite(constraint);
-            }
-        };
+        ClickHandler click = event -> popupCreator.showPatternPopupForComposite(constraint);
 
         if (constraint.getCompositeJunctionType().equals(CompositeFieldConstraint.COMPOSITE_TYPE_AND)) {
             desc = GuidedRuleEditorResources.CONSTANTS.AllOf() + ":";
@@ -386,7 +369,6 @@ public class FactPatternWidget extends RuleModellerWidget {
         FlexTable inner = new FlexTable();
         if (nested != null) {
             for (int i = 0; i < nested.length; i++) {
-                final int currentId = i;
                 this.renderFieldConstraint(inner,
                                            i,
                                            nested[i],
@@ -397,14 +379,11 @@ public class FactPatternWidget extends RuleModellerWidget {
                 final int currentRow = i;
                 Image clear = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
                 clear.setTitle(GuidedRuleEditorResources.CONSTANTS.RemoveThisNestedRestriction());
-                clear.addClickHandler(new ClickHandler() {
-
-                    public void onClick(ClickEvent event) {
-                        if (Window.confirm(GuidedRuleEditorResources.CONSTANTS.RemoveThisItemFromNestedConstraint())) {
-                            setModified(true);
-                            constraint.removeConstraint(currentRow);
-                            getModeller().refreshWidget();
-                        }
+                clear.addClickHandler(event -> {
+                    if (Window.confirm(GuidedRuleEditorResources.CONSTANTS.RemoveThisItemFromNestedConstraint())) {
+                        setModified(true);
+                        constraint.removeConstraint(currentRow);
+                        getModeller().refreshWidget();
                     }
                 });
                 if (!this.readOnly) {
@@ -452,7 +431,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         inner.setWidget(row,
                         0,
                         new HTML("&nbsp;&nbsp;&nbsp;&nbsp;"));
-        if (constraint.getConstraintValueType() != SingleFieldConstraint.TYPE_PREDICATE) {
+        if (constraint.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE) {
 
             HorizontalPanel ebContainer = null;
             if (constraint instanceof SingleFieldConstraintEBLeftSide) {
@@ -492,7 +471,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                          ebContainer);
                 }
             }
-        } else if (constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_PREDICATE) {
+        } else if (constraint.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE) {
             inner.setWidget(row,
                             1,
                             predicateEditor(constraint));
@@ -507,31 +486,25 @@ public class FactPatternWidget extends RuleModellerWidget {
                                          final HasCEPWindow c) {
         final HorizontalPanel hp = new HorizontalPanel();
         modeller.getDataModelOracle().isFactTypeAnEvent(pattern.getFactType(),
-                                                        new Callback<Boolean>() {
-                                                            @Override
-                                                            public void callback(final Boolean result) {
-                                                                if (Boolean.TRUE.equals(result)) {
-                                                                    final Label lbl = new Label(HumanReadableConstants.INSTANCE.OverCEPWindow());
-                                                                    lbl.setStyleName("paddedLabel");
-                                                                    hp.add(lbl);
+                                                        result -> {
+                                                            if (Boolean.TRUE.equals(result)) {
+                                                                final Label lbl = new Label(HumanReadableConstants.INSTANCE.OverCEPWindow());
+                                                                lbl.setStyleName("paddedLabel");
+                                                                hp.add(lbl);
 
-                                                                    final CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown(c,
-                                                                                                                                          readOnly);
+                                                                final CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown(c,
+                                                                                                                                      readOnly);
 
-                                                                    if (!isReadOnly()) {
-                                                                        cwo.addValueChangeHandler(new ValueChangeHandler<OperatorSelection>() {
-
-                                                                            public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
-                                                                                setModified(true);
-                                                                                OperatorSelection selection = event.getValue();
-                                                                                String selected = selection.getValue();
-                                                                                c.getWindow().setOperator(selected);
-                                                                            }
-                                                                        });
-                                                                    }
-
-                                                                    hp.add(cwo);
+                                                                if (!isReadOnly()) {
+                                                                    cwo.addValueChangeHandler(event ->  {
+                                                                        setModified(true);
+                                                                        OperatorSelection selection = event.getValue();
+                                                                        String selected = selection.getValue();
+                                                                        c.getWindow().setOperator(selected);
+                                                                    });
                                                                 }
+
+                                                                hp.add(cwo);
                                                             }
                                                         });
         return hp;
@@ -543,28 +516,21 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                       final int col,
                                                       HorizontalPanel ebContainer) {
         ExpressionBuilder eb = (ExpressionBuilder) ebContainer.getWidget(0);
-        eb.addExpressionTypeChangeHandler(new ExpressionTypeChangeHandler() {
-
-            public void onExpressionTypeChanged(ExpressionTypeChangeEvent event) {
-                try {
-                    //Change "operator" drop-down as the content depends on data-type
-                    constraint.setFieldType(event.getNewType());
-                    inner.setWidget(row,
-                                    1 + col,
-                                    operatorDropDown(constraint,
-                                                     inner,
-                                                     row,
-                                                     2 + col));
-                    //Change "value" editor to the pen icon as the applicable Widget depends on data-type
-                    constraint.setConstraintValueType(SingleFieldConstraint.TYPE_UNDEFINED);
-                    constraint.setValue("");
-                    inner.setWidget(row,
-                                    2 + col,
-                                    createValueEditor(constraint));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        eb.addExpressionTypeChangeHandler(event -> {
+            //Change "operator" drop-down as the content depends on data-type
+            constraint.setFieldType(event.getNewType());
+            inner.setWidget(row,
+                            1 + col,
+                            operatorDropDown(constraint,
+                                             inner,
+                                             row,
+                                             2 + col));
+            //Change "value" editor to the pen icon as the applicable Widget depends on data-type
+            constraint.setConstraintValueType(BaseSingleFieldConstraint.TYPE_UNDEFINED);
+            constraint.setValue("");
+            inner.setWidget(row,
+                            2 + col,
+                            createValueEditor(constraint));
         });
     }
 
@@ -587,12 +553,9 @@ public class FactPatternWidget extends RuleModellerWidget {
         box.setText(c.getValue());
 
         if (!this.readOnly) {
-            box.addChangeHandler(new ChangeHandler() {
-
-                public void onChange(ChangeEvent event) {
-                    setModified(true);
-                    c.setValue(box.getText());
-                }
+            box.addChangeHandler(event -> {
+                setModified(true);
+                c.setValue(box.getText());
             });
             box.setWidth("100%");
             pred.add(box);
@@ -607,14 +570,7 @@ public class FactPatternWidget extends RuleModellerWidget {
      * This returns the pattern label.
      */
     private Widget getPatternLabel(final FactPattern fp) {
-        ClickHandler click = new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                popupCreator.showPatternPopup(fp,
-                                              null,
-                                              false);
-            }
-        };
+        ClickHandler click = event -> popupCreator.showPatternPopup(fp, null, false);
 
         String patternName = (pattern.isBound()) ? pattern.getFactType() + " <b>[" + pattern.getBoundName() + "]</b>" : pattern.getFactType();
 
@@ -664,19 +620,15 @@ public class FactPatternWidget extends RuleModellerWidget {
         constraintValueEditor.init();
 
         //If any literal value changes set to dirty and refresh dependent enumerations
-        constraintValueEditor.setOnValueChangeCommand(new Command() {
-            public void execute() {
-                constraintValueEditor.hideError();
-                setModified(true);
-                RefreshUtil.refreshConstraintValueEditorsDropDownData(constraintValueEditors, constraint);
-            }
+        constraintValueEditor.setOnValueChangeCommand(() -> {
+            constraintValueEditor.hideError();
+            setModified(true);
+            RefreshUtil.refreshConstraintValueEditorsDropDownData(constraintValueEditors, constraint);
         });
         //If a Template Key value changes only set to dirty
-        constraintValueEditor.setOnTemplateValueChangeCommand(new Command() {
-            public void execute() {
+        constraintValueEditor.setOnTemplateValueChangeCommand(() -> {
                 constraintValueEditor.hideError();
                 setModified(true);
-            }
         });
 
         //Keep a reference to the value editors so they can be refreshed for dependent enums
@@ -757,34 +709,20 @@ public class FactPatternWidget extends RuleModellerWidget {
         bindingLabel.append(fieldName);
 
         if (bindable && showBinding && !this.readOnly) {
-            ClickHandler click = new ClickHandler() {
-
-                public void onClick(final ClickEvent event) {
-                    //If field name is "this" use parent FactPattern type otherwise we can use the Constraint's field type
-                    String fieldName = con.getFieldName();
-                    if (DataType.TYPE_THIS.equals(fieldName)) {
-                        getConnectives().getDataModelOracle().getFieldCompletions(pattern.getFactType(),
-                                                                                  new Callback<ModelField[]>() {
-                                                                                      @Override
-                                                                                      public void callback(final ModelField[] fields) {
-                                                                                          popupCreator.showBindFieldPopup(pattern,
-                                                                                                                          con,
-                                                                                                                          fields,
-                                                                                                                          popupCreator);
-                                                                                      }
-                                                                                  });
-                    } else {
-                        getConnectives().getDataModelOracle().getFieldCompletions(con.getFieldType(),
-                                                                                  new Callback<ModelField[]>() {
-                                                                                      @Override
-                                                                                      public void callback(final ModelField[] fields) {
-                                                                                          popupCreator.showBindFieldPopup(pattern,
-                                                                                                                          con,
-                                                                                                                          fields,
-                                                                                                                          popupCreator);
-                                                                                      }
-                                                                                  });
-                    }
+            ClickHandler click = event -> {
+                //If field name is "this" use parent FactPattern type otherwise we can use the Constraint's field type
+                if (DataType.TYPE_THIS.equals(fieldName)) {
+                    getConnectives().getDataModelOracle().getFieldCompletions(pattern.getFactType(),
+                                                                              fields -> popupCreator.showBindFieldPopup(pattern,
+                                                                                                                        con,
+                                                                                                                        fields,
+                                                                                                                        popupCreator));
+                } else {
+                    getConnectives().getDataModelOracle().getFieldCompletions(con.getFieldType(),
+                                                                              fields ->  popupCreator.showBindFieldPopup(pattern,
+                                                                                                                         con,
+                                                                                                                         fields,
+                                                                                                                         popupCreator));
                 }
             };
             ClickableLabel cl = new ClickableLabel(bindingLabel.toString(),

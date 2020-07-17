@@ -20,8 +20,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class FieldMetaModel {
 
-    public String name;
-    public String type;
+    private String name;
+    private String type;
 
     public FieldMetaModel() {
     }
@@ -32,4 +32,11 @@ public class FieldMetaModel {
         this.type = type;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
 }
