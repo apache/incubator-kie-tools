@@ -1,6 +1,8 @@
 Kogito
 ------
 
+Meaningless change
+
 **Kogito** is the next generation of business automation platform focused on cloud-native development, deployment and execution.
 
 <p align="center"><img width=55% height=55% src="docs/kogito.png"></p>
