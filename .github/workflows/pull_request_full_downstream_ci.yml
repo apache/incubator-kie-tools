@@ -1,0 +1,227 @@
+name: Pull Request CI - Full Downstream
+
+on:
+  pull_request:
+    branches: "**"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest]
+        node: [12.16.3]
+        yarn: [1.19.1]
+    env:
+      MERGE_WARNING_MESSAGE: "ATTENTION: A merge attempt is being made to get the changes in ${{ github.event.pull_request.user.login }}/${{ github.head_ref }}. If a conflict happens, please do a rebase/merge manually in the branch ${{ github.event.pull_request.user.login }}/${{ github.head_ref }} to get the latest kiegroup/master commits."
+
+    steps:
+      - name: Clone droolsjbpm-build-bootstrap
+        uses: actions/checkout@v2
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          repository: kiegroup/droolsjbpm-build-bootstrap
+          fetch-depth: 0
+
+      - name: Build droolsjbpm-build-bootstrap
+        run: |
+          git config --global user.email "kogito-tooling-bot@gmail.com"
+          git config --global user.name "Kogito Tooling Bot (kiegroup)"
+          git remote add ${{ github.event.pull_request.user.login }} https://github.com/${{ github.event.pull_request.user.login }}/droolsjbpm-build-bootstrap.git
+          git fetch --all
+          if [ -n "$(git show-ref refs/remotes/${{ github.event.pull_request.user.login }}/${{ github.head_ref }})" ]; then
+            echo $MERGE_WARNING_MESSAGE
+            git merge ${{ github.event.pull_request.user.login }}/${{ github.head_ref }}
+          fi
+          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2
+
+      - name: Clone kie-soup
+        uses: actions/checkout@v2
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          repository: kiegroup/kie-soup
+          fetch-depth: 0
+
+      - name: Build kie-soup
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          git config --global user.email "kogito-tooling-bot@gmail.com"
+          git config --global user.name "Kogito Tooling Bot (kiegroup)"
+          git remote add ${{ github.event.pull_request.user.login }} https://github.com/${{ github.event.pull_request.user.login }}/kie-soup.git
+          git fetch --all
+          if [ -n "$(git show-ref refs/remotes/${{ github.event.pull_request.user.login }}/${{ github.head_ref }})" ]; then
+            echo $MERGE_WARNING_MESSAGE
+            git merge ${{ github.event.pull_request.user.login }}/${{ github.head_ref }}
+          fi
+          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2
+
+      - name: Clone appformer
+        uses: actions/checkout@v2
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          repository: kiegroup/appformer
+          fetch-depth: 0
+
+      - name: Build appformer
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          git config --global user.email "kogito-tooling-bot@gmail.com"
+          git config --global user.name "Kogito Tooling Bot (kiegroup)"
+          git remote add ${{ github.event.pull_request.user.login }} https://github.com/${{ github.event.pull_request.user.login }}/appformer.git
+          git fetch --all
+          if [ -n "$(git show-ref refs/remotes/${{ github.event.pull_request.user.login }}/${{ github.head_ref }})" ]; then
+            echo $MERGE_WARNING_MESSAGE
+            git merge ${{ github.event.pull_request.user.login }}/${{ github.head_ref }}
+          fi
+          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2
+
+      - name: Clone kie-wb-common
+        uses: actions/checkout@v2
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          repository: kiegroup/kie-wb-common
+          fetch-depth: 0
+
+      - name: Build kie-wb-common
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          git config --global user.email "kogito-tooling-bot@gmail.com"
+          git config --global user.name "Kogito Tooling Bot (kiegroup)"
+          git remote add ${{ github.event.pull_request.user.login }} https://github.com/${{ github.event.pull_request.user.login }}/kie-wb-common.git
+          git fetch --all
+          if [ -n "$(git show-ref refs/remotes/${{ github.event.pull_request.user.login }}/${{ github.head_ref }})" ]; then
+            echo $MERGE_WARNING_MESSAGE
+            git merge ${{ github.event.pull_request.user.login }}/${{ github.head_ref }}
+          fi
+          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2
+          mvn clean install -DskipTests -Denforcer.skip -pl kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime
+          mvn clean install -DskipTests -Denforcer.skip -pl kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime
+
+      - name: Upload DMN editor (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: dmn-editor
+          path: kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime
+
+      - name: Upload BPMN editor (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: bpmn-editor
+          path: kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime
+
+      - name: Clone drools-wb
+        uses: actions/checkout@v2
+        if: matrix.os == 'ubuntu-latest'
+        with:
+          repository: kiegroup/drools-wb
+          fetch-depth: 0
+
+      - name: Build drools-wb
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          git config --global user.email "kogito-tooling-bot@gmail.com"
+          git config --global user.name "Kogito Tooling Bot (kiegroup)"
+          git remote add ${{ github.event.pull_request.user.login }} https://github.com/${{ github.event.pull_request.user.login }}/drools-wb.git
+          git fetch --all
+          if [ -n "$(git show-ref refs/remotes/${{ github.event.pull_request.user.login }}/${{ github.head_ref }})" ]; then
+            echo $MERGE_WARNING_MESSAGE
+            git merge ${{ github.event.pull_request.user.login }}/${{ github.head_ref }}
+          fi
+          mvn clean install -DskipTests -Denforcer.skip -pl drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime -am -T 2
+
+      - name: Upload SceSim editor (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: scesim-editor
+          path: drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime
+
+      - uses: actions/checkout@v2
+      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+      # This bash script will set an output version for this step. It can be used with steps.version.outputs.version
+      - name: Output version
+        id: version
+        run: |
+          echo ::set-output name=version::$(node -e "console.log(require('./lerna.json').version);")
+        shell: bash
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Setup Yarn
+        run: npm install -g yarn@${{ matrix.yarn }}
+
+      - name: Start Xvfb (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
+      - name: Download dependencies
+        run: yarn run init
+
+      - name: Check yarn.lock md5
+        id: check-yarn-lock-md5
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          git diff yarn.lock;
+          [ "0" == "$(git diff yarn.lock | wc -l)" ]
+        shell: bash
+
+      - name: "Build :: prod and pack"
+        run: yarn run build:prod
+        env:
+          DISPLAY: ":99.0"
+
+      - name: Upload VSCode Extension (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: vscode-extension
+          path: packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
+
+      - name: Upload Desktop App - Ubuntu (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: desktop-app-linux
+          path: "packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz"
+
+      - name: Upload Desktop App - macOS (macOS only)
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: desktop-app-macos
+          path: "packages/desktop/out/Business Modeler Preview-darwin-x64.zip"
+
+      - name: Upload Desktop App - Windows (Windows only)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: desktop-app-windows
+          path: "packages/desktop/out/Business Modeler Preview-win32-x64"
+
+      - name: Upload Hub App - Ubuntu (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: hub-app-linux
+          path: "packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz"
+
+      - name: Upload Hub App - macOS (macOS only)
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: hub-app-macos
+          path: "packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip"
+
+      - name: Upload Hub App - Windows (Windows only)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: hub-app-windows
+          path: "packages/hub/out/Business Modeler Hub Preview-win32-x64"

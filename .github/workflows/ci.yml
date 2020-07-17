@@ -10,6 +10,7 @@ on:
 
 jobs:
   build:
+    if: github.event_name != 'schedule' || github.repository == 'kiegroup/kogito-tooling'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -77,13 +78,6 @@ jobs:
         with:
           name: vscode-extension
           path: packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
-
-      - name: Upload Chrome Extension (Ubuntu only)
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v1
-        with:
-          name: chrome-extension
-          path: packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.zip
 
       - name: Upload Desktop App - Ubuntu (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
