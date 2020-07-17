@@ -46,12 +46,12 @@ export default class SideBar extends PageFragment {
     public async openExplorer(): Promise<Explorer> {
         const diagramButton: Element = await this.tools.by(SideBar.EXPLORER_BUTTON_LOCATOR).wait(2000).untilPresent();
         const sideBar = await this.openSideBar(diagramButton, "Explore Diagram");
-        return this.tools.createPageFragment(Explorer, sideBar);
+        return await this.tools.createPageFragment(Explorer, sideBar);
     }
 
     public async openProperties(): Promise<Properties> {
         const propButton = await this.tools.by(SideBar.PROP_BUTTON_LOCATOR).getElement();
         const sideBar = await this.openSideBar(propButton, "Properties");
-        return this.tools.createPageFragment(Properties, sideBar);
+        return await this.tools.createPageFragment(Properties, sideBar);
     }
 }

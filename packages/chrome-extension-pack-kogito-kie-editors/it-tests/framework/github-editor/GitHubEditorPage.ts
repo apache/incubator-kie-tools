@@ -53,13 +53,13 @@ export default class GitHubEditorPage extends EditorPage {
 
         await this.tools.window().switchToSecondWindow();
 
-        return this.tools.createPage(OnlineEditorPage);
+        return await this.tools.createPage(OnlineEditorPage);
     }
 
     public async fullScreen(): Promise<FullscreenPage> {
         const fullScreenButton: Element = await this.tools.by(GitHubEditorPage.FULL_SCREEN_BUTTON_LOCATOR).getElement();
         // regular click sometimes does not work
         await fullScreenButton.click();
-        return this.tools.createPage(FullscreenPage);
+        return await this.tools.createPage(FullscreenPage);
     }
 }

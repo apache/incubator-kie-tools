@@ -30,6 +30,6 @@ export default class BpmnEditor extends Editor {
     public async getSideBar(): Promise<SideBar> {
         const sideBar: Locator = await this.tools.by(BpmnEditor.SIDE_BAR_LOCATOR);
         await sideBar.wait(1000).untilPresent();
-        return this.tools.createPageFragment(SideBar, await sideBar.getElement());
+        return await this.tools.createPageFragment(SideBar, await sideBar.getElement());
     }
 }

@@ -15,11 +15,11 @@ export default class GitHubListItem extends PageFragment {
     public async open(): Promise<GitHubEditorPage> {
         const link: Element = await this.root.findElement(GitHubListItem.LINK_LOCATOR);
         await link.click();
-        return this.tools.createPage(GitHubEditorPage);
+        return await this.tools.createPage(GitHubEditorPage);
     }
 
     public async getLinkToOnlineEditor(): Promise<string> {
         const linkToOnlineEditor: Element = await this.root.findElement(GitHubListItem.LINK_TO_ONLINE_EDITOR);
-        return linkToOnlineEditor.getAttribute("href");
+        return await linkToOnlineEditor.getAttribute("href");
     }
 }

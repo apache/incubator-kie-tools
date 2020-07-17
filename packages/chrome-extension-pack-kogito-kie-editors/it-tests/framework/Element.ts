@@ -35,7 +35,7 @@ export default class Element {
     public async getText(): Promise<string> {
         return await ErrorProcessor.run(
             async () => {
-                return this.webElement.getText();
+                return await this.webElement.getText();
             },
             "Error while getting text from element."
         );

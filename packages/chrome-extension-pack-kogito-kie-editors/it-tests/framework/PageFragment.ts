@@ -14,7 +14,7 @@ export default abstract class PageFragment {
     public abstract async waitUntilLoaded(): Promise<void>;
 
     public static async create<T extends PageFragment>(type: new (tools: Tools, root: Element) => T, tools: Tools, root: Element): Promise<T> {
-        const pageFragment = new type(tools, root);
+        const pageFragment: T = new type(tools, root);
         await pageFragment.waitUntilLoaded();
         return pageFragment;
     }

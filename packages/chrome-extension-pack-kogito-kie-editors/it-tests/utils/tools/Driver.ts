@@ -7,27 +7,27 @@ import { resolve } from "path";
 export default class Driver {
 
     public static async init(): Promise<WebDriver> {
-        // get path to unzipped extension
-        let chromeExtensionPath = process.env.UNZIPPED_CHROME_EXTENSION_PATH;
-        if (!chromeExtensionPath) {
-            chromeExtensionPath = resolve("dist");
+        // get path to unzipped extension or set to default 'dist' directory
+        const chromeExtensionPath: string = process.env.UNZIPPED_CHROME_EXTENSION_PATH ?
+            resolve(process.env.UNZIPPED_CHROME_EXTENSION_PATH) : resolve("dist");
 
-            if (!existsSync(chromeExtensionPath)) {
-                throw new Error("Please set UNZIPPED_CHROME_EXTENSION_PATH variable to unziped Chrome extension directory." +
-                    "For example: export UNZIPPED_CHROME_EXTENSION_PATH=dist");
-            }
+        // check the path exists
+        if (!existsSync(chromeExtensionPath)) {
+            throw new Error("Please set UNZIPPED_CHROME_EXTENSION_PATH variable to unziped Chrome extension directory. " +
+                "For example: export UNZIPPED_CHROME_EXTENSION_PATH=/path/to/dist. " +
+                "Directory " + chromeExtensionPath + " does not exist.");
         }
 
         // init chrome options
-        const chromeOptions = new Options();
+        const chromeOptions: Options = new Options();
         chromeOptions.addArguments("--load-extension=" + chromeExtensionPath);
 
         // init chrome driver log
-        const LOGS_DIR = "logs";
+        const LOGS_DIR: string = resolve("logs");
         if (!existsSync(LOGS_DIR)) {
             mkdirSync(LOGS_DIR);
         }
-        const chromeServiceBuilder = new ServiceBuilder();
+        const chromeServiceBuilder: ServiceBuilder = new ServiceBuilder();
         chromeServiceBuilder.loggingTo(LOGS_DIR + "/chromedriver.log").enableVerboseLogging();
 
         // init chrome driver
@@ -40,7 +40,7 @@ export default class Driver {
 
         // maximize chrome browser window
         await ErrorProcessor.run(
-            async() => {
+            async () => {
                 await driver.manage().window().maximize();
             },
             "Error while maximizing browser window."

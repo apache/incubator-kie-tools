@@ -58,11 +58,11 @@ export default class Tools {
     }
 
     public async createPage<T extends Page>(type: new (tools: Tools) => T): Promise<T> {
-        return Page.create(type, this);
+        return await Page.create(type, this);
     }
 
-    public async createPageFragment<T extends PageFragment>(type: new (tools: Tools, root: Element) => T, root: Element): Promise<T> {
-        return PageFragment.create(type, this, root);
+    public async createPageFragment<T extends PageFragment>(type: new (tools: Tools, root: Element) => T,root: Element): Promise<T> {
+        return await PageFragment.create(type, this, root);
     }
 
     public static async init(testName: string): Promise<Tools> {

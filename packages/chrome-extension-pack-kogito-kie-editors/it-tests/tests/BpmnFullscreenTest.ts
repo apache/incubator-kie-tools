@@ -4,7 +4,6 @@ import FullscreenPage from "../framework/fullscreen-editor/FullscreenPage";
 import GitHubEditorPage from "../framework/github-editor/GitHubEditorPage";
 import SideBar from "../framework/editor/SideBar";
 import Tools from "../utils/Tools";
-import { platform } from "os";
 
 const TEST_NAME = "BpmnFullScreenTest";
 
@@ -36,13 +35,10 @@ test(TEST_NAME, async () => {
 
     expect(await fullScreenPage.getExitFullscreenUrl()).toBe(processUrl + "#");
 
-    // pushing the exit button causes that other buttons does not work on Mac
-    if (platform() === "darwin") {
-        await fullScreenPage.scrollToTop();
-        bpmnPage = await fullScreenPage.exitFullscreen();
-        expect(await bpmnPage.isEditorVisible()).toBe(true);
-        expect(await bpmnPage.isSourceVisible()).toBe(false);
-    }
+    await fullScreenPage.scrollToTop();
+    bpmnPage = await fullScreenPage.exitFullscreen();
+    expect(await bpmnPage.isEditorVisible()).toBe(true);
+    expect(await bpmnPage.isSourceVisible()).toBe(false);
 });
 
 afterEach(async () => {

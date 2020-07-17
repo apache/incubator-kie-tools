@@ -10,6 +10,6 @@ export default class DmnSideBar extends SideBar {
     public async openDecisionNavigator(): Promise<DecisionNavigator> {
         const navigatorButton: Element = await this.tools.by(DmnSideBar.NAVIGATOR_BUTTON_LOCATOR).wait(2000).untilPresent();
         const sideBar: Element = await this.openSideBar(navigatorButton, "Decision Navigator");
-        return this.tools.createPageFragment(DecisionNavigator, sideBar);
+        return await this.tools.createPageFragment(DecisionNavigator, sideBar);
     }
 }

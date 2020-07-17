@@ -12,13 +12,13 @@ export default class DmnEditor extends Editor {
 
     public async getDmnPalette(): Promise<DmnPalette> {
         const palette: Element = await this.tools.by(DmnEditor.PALETTE_LOCATOR).getElement();
-        return this.tools.createPageFragment(DmnPalette, palette);
+        return await this.tools.createPageFragment(DmnPalette, palette);
     }
 
     public async getSideBar(): Promise<DmnSideBar> {
         const sideBar: Locator = this.tools.by(DmnEditor.SIDE_BAR_LOCATOR);
         await sideBar.wait(1000).untilPresent();
-        return this.tools.createPageFragment(DmnSideBar, await sideBar.getElement());
+        return await this.tools.createPageFragment(DmnSideBar, await sideBar.getElement());
     }
 
     public async dragAndDropAnnotationToCanvas(): Promise<void> {

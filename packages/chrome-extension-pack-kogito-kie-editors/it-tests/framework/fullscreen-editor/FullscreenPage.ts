@@ -12,7 +12,7 @@ export default class FullscreenPage extends EditorPage {
 
         // regular click does not work, clickJs() breaks other tests, sendKeys() does not work on Mac
         await exitButton.sendKeys(Key.ENTER);
-        return this.tools.createPage(GitHubEditorPage);
+        return await this.tools.createPage(GitHubEditorPage);
     }
 
     public async waitUntilLoaded(): Promise<void> {

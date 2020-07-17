@@ -35,7 +35,7 @@ export default class Clipboard {
         );
     }
 
-    private async pasteContentToHelperInput(input: WebElement) {
+    private async pasteContentToHelperInput(input: WebElement): Promise<void> {
         await ErrorProcessor.run(
             async () => {
                 await input.sendKeys(this.getCtrvKeys());
@@ -44,7 +44,7 @@ export default class Clipboard {
         );
     }
 
-    private getCtrvKeys() {
+    private getCtrvKeys(): string {
         // "darwin" is  MacOS
         if (platform() === "darwin") {
             return Key.SHIFT + Key.INSERT;

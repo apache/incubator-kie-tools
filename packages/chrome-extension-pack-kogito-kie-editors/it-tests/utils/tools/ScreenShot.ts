@@ -18,23 +18,22 @@ export default class Screenshots {
     }
 
     public async takePng(fileName: string): Promise<void> {
-        const pngPath = join(this.screenshotsDir, fileName + ".png");
-        await ErrorProcessor.run(
+        const image: string = await ErrorProcessor.run(
             async () => {
-                await this.driver.takeScreenshot().then((image) => {
-                    writeFileSync(pngPath, image, "base64");
-                });
+                return await this.driver.takeScreenshot();
             },
-            "Error while taking png screenshot."
+            "Error while taking png screenshot with name: " + fileName
         );
+        const pngPath = join(this.screenshotsDir, fileName + ".png");
+        writeFileSync(pngPath, image, "base64");
     }
 
     public async takeHtml(fileName: string): Promise<void> {
-        const pageSource = await ErrorProcessor.run(
+        const pageSource: string = await ErrorProcessor.run(
             async () => {
                 return await this.driver.getPageSource();
             },
-            "Error while getting page source."
+            "Error while getting page source with name: " + fileName
         );
         const htmlPath = join(this.screenshotsDir, fileName + ".html");
         writeFileSync(htmlPath, pageSource, "utf8");

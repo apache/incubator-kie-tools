@@ -15,6 +15,6 @@ export default class GitHubListPage extends Page {
         const item: Element = await this.tools.by(By.xpath(`//div[@role="rowheader"]/span[.//a[text()='${name}']]`))
             .wait(5000)
             .untilPresent();
-        return this.tools.createPageFragment(GitHubListItem, item);
+        return await this.tools.createPageFragment(GitHubListItem, item);
     }
 }

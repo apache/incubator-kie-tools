@@ -17,11 +17,11 @@ export default abstract class EditorPage extends Page {
 
     public async getDmnEditor(): Promise<DmnEditor> {
         const editor: Element = await this.getEditor();
-        return this.tools.createPageFragment(DmnEditor, editor);
+        return await this.tools.createPageFragment(DmnEditor, editor);
     }
 
     public async getBpmnEditor(): Promise<BpmnEditor> {
         const editor: Element = await this.getEditor();
-        return this.tools.createPageFragment(BpmnEditor, editor);
+        return await this.tools.createPageFragment(BpmnEditor, editor);
     }
 }
