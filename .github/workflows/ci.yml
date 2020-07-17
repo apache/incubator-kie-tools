@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    if: github.event_name != 'schedule' || github.repository == 'kiegroup/kogito-tooling'
+    if: github.repository == 'kiegroup/kogito-tooling' || github.event_name != 'schedule'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
