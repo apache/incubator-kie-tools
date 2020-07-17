@@ -32,7 +32,7 @@ const Nest = ({
       {...filterDOMProps(props)}
       style={{ marginBottom: '1.5rem' }}
     >
-      <CardBody>
+      <CardBody className="pf-c-form">
         {label && <label><b>{label}</b></label>}
         {children
           ? injectName(name, children)
@@ -44,7 +44,6 @@ const Nest = ({
       </CardBody>
     </Card>
   );
-  
 }
 
 export default connectField(Nest, {
