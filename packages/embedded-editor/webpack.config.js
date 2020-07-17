@@ -26,23 +26,18 @@ const commonConfig = {
     rules: [
       {
         test: /\.tsx?$/,
-        include: path.resolve(__dirname, "src"),
-        use: [
-          {
-            loader: "ts-loader",
-            options: {
-              configFile: path.resolve("./tsconfig.json")
-            }
-          }
-        ]
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: ["babel-loader"]
+        loader: "ts-loader"
       },
       ...pfWebpackUtils.patternflyLoaders
     ]
+  },
+  stats: {
+    excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
+    excludeModules: true
+  },
+  performance: {
+    maxAssetSize: 30000000,
+    maxEntrypointSize: 30000000
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".jsx"],

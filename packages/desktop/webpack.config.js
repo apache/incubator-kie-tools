@@ -25,6 +25,14 @@ const commonConfig = {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js"
   },
+  stats: {
+    excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
+    excludeModules: true
+  },
+  performance: {
+    maxAssetSize: 30000000,
+    maxEntrypointSize: 30000000
+  },
   externals: {
     electron: "commonjs electron"
   },
@@ -32,20 +40,7 @@ const commonConfig = {
     rules: [
       {
         test: /\.tsx?$/,
-        include: path.resolve(__dirname, "src"),
-        use: [
-          {
-            loader: "ts-loader",
-            options: {
-              configFile: path.resolve("./tsconfig.json")
-            }
-          }
-        ]
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: ["babel-loader"]
+        loader: "ts-loader"
       }
     ]
   },

@@ -29,6 +29,14 @@ const commonConfig = {
     libraryTarget: "umd",
     umdNamedDefine: true
   },
+  stats: {
+    excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
+    excludeModules: true
+  },
+  performance: {
+    maxAssetSize: 30000000,
+    maxEntrypointSize: 30000000
+  },
   externals: {
     vscode: "commonjs vscode"
   },
@@ -43,15 +51,7 @@ const commonConfig = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader",
-        options: {
-          configFile: path.resolve("./tsconfig.json")
-        }
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: ["babel-loader"]
+        loader: "ts-loader"
       }
     ]
   },

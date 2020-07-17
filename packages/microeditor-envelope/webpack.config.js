@@ -30,6 +30,14 @@ module.exports = {
     filename: "[name].js",
     libraryTarget: "commonjs2"
   },
+  stats: {
+    excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
+    excludeModules: true
+  },
+  performance: {
+    maxAssetSize: 30000000,
+    maxEntrypointSize: 30000000
+  },
   externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   plugins: [
     new CircularDependencyPlugin({
@@ -42,20 +50,7 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        include: path.resolve(__dirname, "src"),
-        use: [
-          {
-            loader: "ts-loader",
-            options: {
-              configFile: path.resolve("./tsconfig.json")
-            }
-          }
-        ]
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: ["babel-loader"]
+        loader: "ts-loader"
       },
       ...pfWebpackUtils.patternflyLoaders
     ]

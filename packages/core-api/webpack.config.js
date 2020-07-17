@@ -30,6 +30,14 @@ module.exports = {
     libraryTarget: "umd",
     globalObject: "this"
   },
+  stats: {
+    excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
+    excludeModules: true
+  },
+  performance: {
+    maxAssetSize: 30000000,
+    maxEntrypointSize: 30000000
+  },
   externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   plugins: [
     new CircularDependencyPlugin({
@@ -42,15 +50,7 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader",
-        options: {
-          configFile: path.resolve("./tsconfig.json")
-        }
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: ["babel-loader"]
+        loader: "ts-loader"
       }
     ]
   },

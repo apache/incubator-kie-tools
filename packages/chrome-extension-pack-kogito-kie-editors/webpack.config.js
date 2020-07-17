@@ -87,6 +87,14 @@ module.exports = async (env, argv) => {
       path: path.resolve(__dirname, "./dist"),
       filename: "[name].js"
     },
+    stats: {
+      excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
+      excludeModules: true
+    },
+    performance: {
+      maxAssetSize: 30000000,
+      maxEntrypointSize: 30000000
+    },
     externals: {},
     devServer: {
       contentBase: [path.join(__dirname, "..", "kie-bc-editors-unpacked")],
@@ -115,10 +123,7 @@ module.exports = async (env, argv) => {
       rules: [
         {
           test: /\.tsx?$/,
-          loader: "ts-loader",
-          options: {
-            configFile: path.resolve("./tsconfig.json")
-          }
+          loader: "ts-loader"
         },
         {
           test: /ChromeRouter\.ts$/,
@@ -147,11 +152,6 @@ module.exports = async (env, argv) => {
               }
             ]
           }
-        },
-        {
-          test: /\.jsx?$/,
-          exclude: /node_modules/,
-          use: ["babel-loader"]
         },
         ...pfWebpackUtils.patternflyLoaders
       ]

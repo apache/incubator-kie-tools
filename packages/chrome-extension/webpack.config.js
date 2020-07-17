@@ -28,25 +28,25 @@ module.exports = {
     filename: "[name].js",
     libraryTarget: "commonjs2"
   },
+  stats: {
+    excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
+    excludeModules: true
+  },
+  performance: {
+    maxAssetSize: 30000000,
+    maxEntrypointSize: 30000000
+  },
   externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   plugins: [],
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader",
-        options: {
-          configFile: path.resolve("./tsconfig.json")
-        }
+        loader: "ts-loader"
       },
       {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"]
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: ["babel-loader"]
       }
     ]
   },

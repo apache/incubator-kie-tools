@@ -17,7 +17,7 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
-const envelope = require("../patternfly-base/webpackUtils")
+const envelope = require("../patternfly-base/webpackUtils");
 
 module.exports = {
   mode: "development",
@@ -29,6 +29,14 @@ module.exports = {
     path: path.resolve(__dirname, "./dist"),
     filename: "[name].js",
     libraryTarget: "commonjs2"
+  },
+  stats: {
+    excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
+    excludeModules: true
+  },
+  performance: {
+    maxAssetSize: 30000000,
+    maxEntrypointSize: 30000000
   },
   externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   plugins: [
@@ -42,20 +50,7 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        include: path.resolve(__dirname, "src"),
-        use: [
-          {
-            loader: "ts-loader",
-            options: {
-              configFile: path.resolve("./tsconfig.json")
-            }
-          }
-        ]
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: ["babel-loader"]
+        loader: "ts-loader"
       },
       ...envelope.patternflyLoaders
     ]

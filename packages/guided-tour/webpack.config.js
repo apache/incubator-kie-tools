@@ -30,21 +30,21 @@ module.exports = {
     filename: "[name].js",
     libraryTarget: "umd"
   },
+  stats: {
+    excludeAssets: [name => !name.endsWith(".js"), /gwt-editors\/.*/, /editors\/.*/],
+    excludeModules: true
+  },
+  performance: {
+    maxAssetSize: 30000000,
+    maxEntrypointSize: 30000000
+  },
   externals: ["react", "react-dom", /^@patternfly\/.+$/],
   plugins: [new CopyPlugin([{ from: "./static/css", to: "./css" }])],
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        include: path.resolve(__dirname, "src"),
-        use: [
-          {
-            loader: "ts-loader",
-            options: {
-              configFile: path.resolve("./tsconfig.json")
-            }
-          }
-        ]
+        loader: "ts-loader"
       },
       {
         test: /\.(js|jsx)$/,
