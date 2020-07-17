@@ -143,7 +143,7 @@ function build_kogito_app() {
         log_info "---> Generating $RUNTIME_TYPE project structure..."
         $MAVEN_HOME/bin/mvn archetype:generate -B -DarchetypeGroupId=org.kie.kogito -DarchetypeArtifactId=$ARCHETYPE_ARTIFACT_ID \
         -DarchetypeVersion=$KOGITO_VERSION -DgroupId=$PROJECT_GROUP_ID -DartifactId=$PROJECT_ARTIFACT_ID -Dversion=$PROJECT_VERSION \
-        -s $KOGITO_HOME/.m2/settings.xml
+        ${MAVEN_ARGS_APPEND} -s $KOGITO_HOME/.m2/settings.xml
 
         # copy resources into the generated project
         for item in *
