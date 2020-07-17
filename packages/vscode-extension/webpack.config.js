@@ -15,7 +15,6 @@
  */
 
 const nodeExternals = require("webpack-node-externals");
-const CircularDependencyPlugin = require("circular-dependency-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
@@ -28,11 +27,4 @@ module.exports = merge(common, {
     libraryTarget: "commonjs2"
   },
   externals: [{ vscode: "commonjs vscode" }, nodeExternals({ modulesDir: "../../node_modules" })],
-  plugins: [
-    new CircularDependencyPlugin({
-      exclude: /node_modules/, // exclude detection of files based on a RegExp
-      failOnError: false, // add errors to webpack instead of warnings
-      cwd: process.cwd() // set the current working directory for displaying module paths
-    })
-  ]
 });
