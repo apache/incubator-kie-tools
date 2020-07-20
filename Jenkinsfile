@@ -25,17 +25,16 @@ pipeline{
         stage('Initialization'){
             steps{
                 script{
-                    cleanWorkspaces()                    
+                    clean()
                     
                     // Set the mirror url only if exist
                     if (env.MAVEN_MIRROR_REPOSITORY != null
                             && env.MAVEN_MIRROR_REPOSITORY != ''){
                         env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
                     }
+
                     githubscm.checkoutIfExists('kogito-images', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
                 }
-                sh "docker rm -f \$(docker ps -a -q) || date"
-                sh "docker rmi -f \$(docker images -q) || date"
             }
         }
         stage('Validate CeKit Image and Modules descriptors'){
@@ -68,15 +67,14 @@ pipeline{
             steps{
                 script {
                     build_stages = [:]
-                    IMAGES.each{ image -> build_stages["${image}"] = {
-                            createWorkspace("$image")
-                            copyWorkspace("$image")
-                            dir(getWorkspacePath("$image")){
+                    IMAGES.each{ image -> build_stages[image] = {
+                            initWorkspace(image)
+                            dir(getWorkspacePath(image)){
                                 try{
-                                    sh "make ${image}"
+                                    sh "make ${image} cekit_option='--work-dir .'"
                                 }
                                 finally{
-                                    junit 'target/test/results/*.xml'
+                                    junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
                                 }
                             
                             }
@@ -86,35 +84,43 @@ pipeline{
                 }
             }
         }
-        stage('Finishing'){
-            steps{
-                sh "docker rmi -f \$(docker images -q) || date"
-            }
-        }
     }
     post{
         always{
             script{
-                cleanWorkspaces()
+                clean()
             }
         }
     }
 }
 
+void clean() {
+    cleanWorkspaces()
+    cleanImages()
 
-
-void  createWorkspace(String image){
-    sh "mkdir -p ${getWorkspacePath(image)}"
+    // Clean Cekit cache, in case we reuse an old node
+    sh "rm -rf \$HOME/.cekit/cache"
 }
-void copyWorkspace(String image){
+
+void cleanImages(){
+    sh "docker rm -f \$(docker ps -a -q) || date"
+    sh "docker rmi -f \$(docker images -q) || date"
+}
+
+
+void initWorkspace(String image){
+    sh "mkdir -p ${getWorkspacePath(image)}"
     sh "rsync -av --progress . ${getWorkspacePath(image)} --exclude workspaces"
 }
+
 void cleanWorkspaces(){
     sh "rm -rf ${getWorkspacesPath()}"
 }
+
 String getWorkspacesPath(){
     return "${WORKSPACE}/workspaces"
 }
+
 String getWorkspacePath(String image){
     return "${getWorkspacesPath()}/${image}"
 }
