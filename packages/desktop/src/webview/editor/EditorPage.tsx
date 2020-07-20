@@ -16,7 +16,6 @@
 
 import { ChannelType, EditorContent } from "@kogito-tooling/core-api";
 import { EditorType, EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
-import "@patternfly/patternfly/patternfly.css";
 import {
   Alert,
   AlertActionCloseButton,
