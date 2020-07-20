@@ -121,11 +121,11 @@ jobs:
           fi
           mvn clean install -DskipTests -Denforcer.skip -pl drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime -am -T 2
 
-      - name: Upload SceSim editor
+      - name: Upload Test Scenario editor
         uses: actions/upload-artifact@v1
         with:
           name: scesim-editor-fdb
-          path: drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime
+          path: drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime/
 
       - uses: actions/checkout@v2
       - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
