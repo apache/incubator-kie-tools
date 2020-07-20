@@ -122,14 +122,11 @@ export function LearnMorePage() {
               <SplitItem isFilled={true}>
                 These simple BPMN and DMN editors are here to allow you to collaborate quickly and to help introduce you
                 to the new tools and capabilities of Process Automation. Feel free to get in touch in the{" "}
-                <Button
-                  type={"button"}
-                  variant={"link"}
-                  isInline={true}
+                <a
                   onClick={event => externalLink(event, "https://groups.google.com/forum/#!forum/kogito-development")}
                 >
                   forum
-                </Button>
+                </a>
                 .
               </SplitItem>
               <SplitItem>
