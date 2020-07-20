@@ -17,9 +17,9 @@
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
 import bpsim.ElementParameters;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import org.eclipse.bpmn2.FlowElement;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomElement;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 
 public class PropertyWriter extends BasePropertyWriter {
 
@@ -38,8 +38,10 @@ public class PropertyWriter extends BasePropertyWriter {
         if (value == null || value.isEmpty()) {
             return;
         }
-        flowElement.setName(SafeHtmlUtils.htmlEscape(value.trim()));
-        CustomElement.name.of(flowElement).set(value);
+
+        String escaped = StringUtils.replaceIllegalCharsAttribute(value.trim());
+        flowElement.setName(escaped);
+        CustomElement.name.of(flowElement).set(escaped);
     }
 
     public ElementParameters getSimulationParameters() {

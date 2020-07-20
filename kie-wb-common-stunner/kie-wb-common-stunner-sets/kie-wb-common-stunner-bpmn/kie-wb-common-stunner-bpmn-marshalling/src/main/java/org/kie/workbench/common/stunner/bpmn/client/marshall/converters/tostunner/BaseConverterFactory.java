@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunn
 import org.kie.workbench.common.stunner.bpmn.client.marshall.MarshallingRequest;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.activities.BaseCallActivityConverter;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.artifacts.DataObjectConverter;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.artifacts.TextAnnotationConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.events.EndEventConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.events.IntermediateCatchEventConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.events.IntermediateThrowEventConverter;
@@ -28,7 +30,6 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunne
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.processes.BaseSubProcessConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.tasks.BaseTaskConverter;
-import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.textannotation.TextAnnotationConverter;
 
 public abstract class BaseConverterFactory {
 
@@ -46,6 +47,7 @@ public abstract class BaseConverterFactory {
     private final LaneConverter laneConverter;
     private final GatewayConverter gatewayConverter;
     private final TextAnnotationConverter textAnnotationConverter;
+    private final DataObjectConverter dataObjectConverter;
 
     public BaseConverterFactory(DefinitionResolver definitionResolver,
                                 TypedFactoryManager factoryManager,
@@ -68,6 +70,7 @@ public abstract class BaseConverterFactory {
         this.gatewayConverter = new GatewayConverter(factoryManager, propertyReaderFactory, mode);
         this.edgeConverter = new EdgeConverterManager(factoryManager, propertyReaderFactory, mode);
         this.textAnnotationConverter = new TextAnnotationConverter(factoryManager, propertyReaderFactory);
+        this.dataObjectConverter = new DataObjectConverter(factoryManager, propertyReaderFactory);
     }
 
     public FlowElementConverter flowElementConverter() {
@@ -120,5 +123,9 @@ public abstract class BaseConverterFactory {
 
     public TextAnnotationConverter textAnnotationConverter() {
         return textAnnotationConverter;
+    }
+
+    public DataObjectConverter dataObjectConverter() {
+        return dataObjectConverter;
     }
 }

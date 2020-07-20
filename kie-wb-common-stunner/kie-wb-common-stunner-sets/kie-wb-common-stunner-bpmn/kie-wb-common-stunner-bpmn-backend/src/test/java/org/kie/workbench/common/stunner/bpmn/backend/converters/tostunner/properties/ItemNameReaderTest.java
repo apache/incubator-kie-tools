@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
 import org.eclipse.bpmn2.DataInput;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Property;
@@ -42,6 +43,9 @@ public class ItemNameReaderTest {
 
     @Mock
     private DataOutput dataOutput;
+
+    @Mock
+    private DataObject dataObject;
 
     @Test
     public void testGetPropertyName() {
@@ -83,6 +87,13 @@ public class ItemNameReaderTest {
         when(dataOutput.getName()).thenReturn(null);
         when(dataOutput.getId()).thenReturn(ID);
         testGetName(ID, dataOutput);
+    }
+
+    @Test
+    public void testGetDataObject() {
+        when(dataObject.getName()).thenReturn(null);
+        when(dataObject.getId()).thenReturn(ID);
+        testGetName(ID, dataObject);
     }
 
     private void testGetName(String expectedValue, ItemAwareElement element) {

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
 import org.eclipse.bpmn2.DataInput;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Property;
@@ -36,6 +37,8 @@ public class ItemNameReader {
             name = ((DataInput) element).getName();
         } else if (element instanceof DataOutput) {
             name = ((DataOutput) element).getName();
+        } else if (element instanceof DataObject) {
+            name = ((DataObject) element).getName();
         }
         // legacy uses ID instead of name
         name = name == null ? element.getId() : name;

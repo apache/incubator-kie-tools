@@ -202,6 +202,10 @@ public abstract class AbstractDiagramEditor extends MultiPageEditorContainerPres
                                translationService);
     }
 
+    protected ClientTranslationService getTranslationService() {
+        return translationService;
+    }
+
     protected AbstractDiagramEditorCore<Metadata, Diagram, KogitoDiagramResourceImpl, DiagramEditorProxy<KogitoDiagramResourceImpl>> makeCore(final View view,
                                                                                                                                               final TextEditorView xmlEditorView,
                                                                                                                                               final Event<NotificationEvent> notificationEvent,

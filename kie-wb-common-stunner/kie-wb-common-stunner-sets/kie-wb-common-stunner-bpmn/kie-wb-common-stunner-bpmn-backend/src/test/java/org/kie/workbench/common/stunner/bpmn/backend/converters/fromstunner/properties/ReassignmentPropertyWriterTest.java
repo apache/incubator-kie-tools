@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -42,7 +43,7 @@ public class ReassignmentPropertyWriterTest {
 
     @Test
     public void addOneNotStartedReassignmentValue() {
-        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope);
+        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope, new HashSet<>());
 
         ReassignmentsInfo reassignmentsInfo = new ReassignmentsInfo();
         reassignmentsInfo.getValue().addValue(getReassignmentValue(AssociationType.NOT_STARTED_REASSIGN.getName()));
@@ -54,7 +55,7 @@ public class ReassignmentPropertyWriterTest {
 
     @Test
     public void addTwoNotStartedReassignmentValue() {
-        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope);
+        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope, new HashSet<>());
 
         ReassignmentsInfo reassignmentsInfo = new ReassignmentsInfo();
         reassignmentsInfo.getValue().addValue(getReassignmentValue(AssociationType.NOT_COMPLETED_REASSIGN.getName()));
@@ -69,7 +70,7 @@ public class ReassignmentPropertyWriterTest {
 
     @Test
     public void addOneNotCompletedReassignmentValue() {
-        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope);
+        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope, new HashSet<>());
 
         ReassignmentsInfo reassignmentsInfo = new ReassignmentsInfo();
         reassignmentsInfo.getValue().addValue(getReassignmentValue(AssociationType.NOT_COMPLETED_REASSIGN.getName()));
@@ -81,7 +82,7 @@ public class ReassignmentPropertyWriterTest {
 
     @Test
     public void addTwoNotCompletedReassignmentValue() {
-        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope);
+        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope, new HashSet<>());
 
         ReassignmentsInfo reassignmentsInfo = new ReassignmentsInfo();
         reassignmentsInfo.getValue().addValue(getReassignmentValue(AssociationType.NOT_COMPLETED_REASSIGN.getName()));

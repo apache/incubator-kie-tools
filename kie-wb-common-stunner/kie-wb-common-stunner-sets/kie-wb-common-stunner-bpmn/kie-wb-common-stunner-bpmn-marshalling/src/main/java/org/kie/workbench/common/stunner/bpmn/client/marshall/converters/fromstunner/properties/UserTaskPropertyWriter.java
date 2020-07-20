@@ -19,7 +19,9 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstu
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.PotentialOwner;
 import org.eclipse.bpmn2.ResourceAssignmentExpression;
@@ -57,8 +59,8 @@ public class UserTaskPropertyWriter extends MultipleInstanceActivityPropertyWrit
     private final CustomInput<String> notStartedNotify;
     private final CustomInput<String> notCompletedNotify;
 
-    public UserTaskPropertyWriter(UserTask task, VariableScope variableScope) {
-        super(task, variableScope);
+    public UserTaskPropertyWriter(UserTask task, VariableScope variableScope, Set<DataObject> dataObjects) {
+        super(task, variableScope,dataObjects);
         this.task = task;
 
         this.skippable = CustomInput.skippable.of(task);

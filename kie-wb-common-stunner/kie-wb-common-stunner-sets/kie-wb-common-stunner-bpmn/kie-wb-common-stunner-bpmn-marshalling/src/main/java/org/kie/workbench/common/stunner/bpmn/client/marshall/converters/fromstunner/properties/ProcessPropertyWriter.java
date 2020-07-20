@@ -130,6 +130,8 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
 
         if (p instanceof SubProcessPropertyWriter) {
             addSubProcess((SubProcessPropertyWriter) p);
+        } else if (p instanceof DataObjectPropertyWriter) {
+            process.getFlowElements().addAll(((DataObjectPropertyWriter)p).getDataObjects());
         }
     }
 
@@ -146,6 +148,7 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
                 addSubProcess((SubProcessPropertyWriter) el);
             }
         });
+        process.getFlowElements().addAll(p.getDataObjects());
     }
 
     @Override

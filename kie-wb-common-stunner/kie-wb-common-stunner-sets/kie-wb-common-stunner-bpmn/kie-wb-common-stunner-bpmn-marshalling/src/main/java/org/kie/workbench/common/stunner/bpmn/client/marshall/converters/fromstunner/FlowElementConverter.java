@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.DataObject;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.TextAnnotation;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -68,6 +69,9 @@ public class FlowElementConverter {
         }
         if (def instanceof TextAnnotation) {
             return Result.success(converterFactory.textAnnotationConverter().toElement(cast(node)));
+        }
+        if (def instanceof DataObject) {
+            return Result.success(converterFactory.dataObjectConverter().toElement(cast(node)));
         }
         if (def instanceof BaseSubprocess || def instanceof Lane) {
             return resultIgnored(def);

@@ -19,17 +19,23 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstu
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import bpsim.ElementParameters;
 import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.SubProcess;
 
 class Processes {
+
+    private Processes() {
+
+    }
 
     static void addChildElement(
             BasePropertyWriter p,
@@ -47,7 +53,6 @@ class Processes {
                 process.getFlowElements().add((FlowElement) p.getElement());
             } else {
                 process.getFlowElements().add(0, (FlowElement) p.getElement());
-                p.getElement();
             }
         } else if (p.getElement() instanceof Artifact) {
             if (process instanceof Process) {
@@ -63,6 +68,14 @@ class Processes {
                 simulationParameters.add(sp);
             }
         }
+
+        if (p instanceof DataObjectPropertyWriter) {
+            itemDefinitions.addAll(((DataObjectPropertyWriter) p).getDataObjects()
+                                           .stream()
+                                           .map(ItemAwareElement::getItemSubjectRef)
+                                           .collect(Collectors.toSet()));
+        }
+
         itemDefinitions.addAll(p.getItemDefinitions());
         rootElements.addAll(p.getRootElements());
         rootElements.addAll(p.getInterfaces());

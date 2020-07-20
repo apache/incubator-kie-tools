@@ -35,6 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.activities.CallActivityConverter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.artifacts.ArtifactsConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.events.EndEventConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.events.IntermediateCatchEventConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.events.IntermediateThrowEventConverter;
@@ -42,7 +43,6 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.events
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.gateways.GatewayConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes.SubProcessConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.tasks.TaskConverter;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.textannotation.TextAnnotationConverter;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -88,7 +88,7 @@ public class FlowElementConverterTest {
     private CallActivityConverter callActivityConverter;
 
     @Mock
-    private TextAnnotationConverter textAnnotationConverter;
+    private ArtifactsConverter artifactsConverter;
 
     @Before
     public void setUp() {
@@ -101,7 +101,7 @@ public class FlowElementConverterTest {
         when(converterFactory.subProcessConverter()).thenReturn(subProcessConverter);
         when(converterFactory.callActivityConverter()).thenReturn(callActivityConverter);
         when(converterFactory.getDefinitionResolver()).thenReturn(definitionResolver);
-        when(converterFactory.textAnnotationConverter()).thenReturn(textAnnotationConverter);
+        when(converterFactory.artifactsConverter()).thenReturn(artifactsConverter);
 
         tested = new FlowElementConverter(converterFactory);
     }
@@ -147,13 +147,16 @@ public class FlowElementConverterTest {
 
         TextAnnotation textAnnotation = mock(TextAnnotation.class);
         tested.convertNode(textAnnotation);
-        verify(textAnnotationConverter).convert(textAnnotation);
+        verify(artifactsConverter).convert(textAnnotation);
+
+        DataObjectReference dataObjectReference = mock(DataObjectReference.class);
+        tested.convertNode(dataObjectReference);
+        verify(artifactsConverter).convert(dataObjectReference);
     }
 
     @Test
     public void convertUnsupported() {
         assertUnsupported(DataStoreReference.class);
-        assertUnsupported(DataObjectReference.class);
         assertUnsupported(DataObject.class);
     }
 

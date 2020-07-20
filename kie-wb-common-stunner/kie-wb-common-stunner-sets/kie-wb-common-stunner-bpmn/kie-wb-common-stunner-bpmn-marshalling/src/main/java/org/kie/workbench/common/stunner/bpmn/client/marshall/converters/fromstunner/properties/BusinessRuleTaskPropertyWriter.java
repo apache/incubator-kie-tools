@@ -16,7 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
+import java.util.Set;
+
 import org.eclipse.bpmn2.BusinessRuleTask;
+import org.eclipse.bpmn2.DataObject;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomInput;
@@ -36,8 +39,8 @@ public class BusinessRuleTaskPropertyWriter extends ActivityPropertyWriter {
     private final CustomInput<String> dmnModelName;
     private final CustomInput<String> decisionName;
 
-    public BusinessRuleTaskPropertyWriter(BusinessRuleTask task, VariableScope variableScope) {
-        super(task, variableScope);
+    public BusinessRuleTaskPropertyWriter(BusinessRuleTask task, VariableScope variableScope, Set<DataObject> dataObejcts) {
+        super(task, variableScope, dataObejcts);
         this.task = task;
 
         this.namespace = CustomInput.namespace.of(task);

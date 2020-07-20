@@ -65,8 +65,9 @@ public class FlowElementConverter extends AbstractConverter {
                                     converterFactory.callActivityConverter()::convert)
                 .<TextAnnotation>when(e -> e instanceof TextAnnotation,
                                       converterFactory.textAnnotationConverter()::convert)
+                .<DataObjectReference>when(e -> e instanceof DataObjectReference,
+                                  converterFactory.dataObjectConverter()::convert)
                 .ignore(e -> e instanceof DataStoreReference, DataStoreReference.class)
-                .ignore(e -> e instanceof DataObjectReference, DataObjectReference.class)
                 .ignore(e -> e instanceof DataObject, DataObject.class)
                 .defaultValue(Result.ignored("FlowElement not found", getNotFoundMessage(flowElement)))
                 .inputDecorator(BPMNElementDecorators.flowElementDecorator())

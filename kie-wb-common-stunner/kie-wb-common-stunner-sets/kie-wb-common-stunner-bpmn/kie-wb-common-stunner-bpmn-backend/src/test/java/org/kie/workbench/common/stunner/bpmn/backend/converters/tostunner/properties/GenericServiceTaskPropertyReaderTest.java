@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
+import java.util.HashSet;
+
 import org.eclipse.bpmn2.ServiceTask;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.junit.Before;
@@ -60,7 +62,7 @@ public class GenericServiceTaskPropertyReaderTest {
                                             "inMessageStructure",
                                             "outMessageStructure");
 
-        GenericServiceTaskPropertyWriter writer = new GenericServiceTaskPropertyWriter(serviceTask, null);
+        GenericServiceTaskPropertyWriter writer = new GenericServiceTaskPropertyWriter(serviceTask, null, new HashSet<>());
         writer.setValue(value);
         writer.setSLADueDate(SLA_DUE_DATE);
         writer.setAsync(false);

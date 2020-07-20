@@ -85,7 +85,7 @@ public class BPMNPaletteDefinitionBuilder
             .add(BPMNCategories.GATEWAYS)
             .add(BPMNCategories.CONTAINERS)
             .add(BPMNCategories.SERVICE_TASKS)
-            .add(BPMNCategories.TEXT_ANNOTATION)
+            .add(BPMNCategories.ARTIFACTS)
             .build();
 
     private static final Map<String, String> CUSTOM_GROUPS = new Maps.Builder<String, String>()

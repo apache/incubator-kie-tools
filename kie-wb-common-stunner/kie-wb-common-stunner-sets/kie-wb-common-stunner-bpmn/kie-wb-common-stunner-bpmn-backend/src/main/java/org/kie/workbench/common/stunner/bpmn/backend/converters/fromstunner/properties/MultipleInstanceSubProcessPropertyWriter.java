@@ -16,12 +16,15 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.Set;
+
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.SubProcess;
 
 public class MultipleInstanceSubProcessPropertyWriter extends SubProcessPropertyWriter {
 
-    public MultipleInstanceSubProcessPropertyWriter(SubProcess process, VariableScope variableScope) {
-        super(process, variableScope);
+    public MultipleInstanceSubProcessPropertyWriter(SubProcess process, VariableScope variableScope, Set<DataObject> dataObjects) {
+        super(process, variableScope, dataObjects);
         setUpLoopCharacteristics();
     }
 

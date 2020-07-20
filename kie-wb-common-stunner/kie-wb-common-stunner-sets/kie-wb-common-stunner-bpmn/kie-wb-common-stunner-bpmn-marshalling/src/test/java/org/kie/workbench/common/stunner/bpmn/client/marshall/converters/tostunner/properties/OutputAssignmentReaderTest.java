@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties;
 
 import org.eclipse.bpmn2.Assignment;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
@@ -30,9 +31,9 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.URL;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.AssociationDeclaration;
 
+import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -62,10 +63,12 @@ public class OutputAssignmentReaderTest {
     }
 
     @Test
-    public void testFromAssociationWithNonPropertyItem() {
-        ItemAwareElement item = mock(ItemAwareElement.class);
+    public void testFromAssociationWithDataObjectItem() {
+        ItemAwareElement item = mock(DataObject.class);
         DataOutputAssociation outputAssociation = mockDataOutputAssociation(SOURCE_NAME, item);
-        assertNull(OutputAssignmentReader.fromAssociation(outputAssociation));
+        OutputAssignmentReader outputReader = OutputAssignmentReader.fromAssociation(outputAssociation);
+        assertNotNull(outputReader);
+        assertNotNull(SOURCE_NAME, outputReader.getAssociationDeclaration());
     }
 
     @Test

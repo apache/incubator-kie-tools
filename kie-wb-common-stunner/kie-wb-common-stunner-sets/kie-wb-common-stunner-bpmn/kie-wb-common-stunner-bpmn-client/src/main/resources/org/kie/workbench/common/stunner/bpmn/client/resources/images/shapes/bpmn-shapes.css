@@ -95,12 +95,12 @@
     stroke-width: 0.5px;
 }
 
-.text_annotation_main{
+.text_annotation_main {
     fill:none;
     stroke:#000000;
     stroke-miterlimit:10;
 }
-.text_annotation_background{
+.text_annotation_background {
     fill:none;
     stroke:#000000;
     stroke-opacity:0;
@@ -114,6 +114,30 @@
 .task_background {
     fill: white;
     stroke: none;
+}
+
+.annotation_group_data_object {
+    opacity: 1;
+}
+
+.annotation_data_object_icon {
+    opacity: 1;
+    fill: #000000;
+}
+
+.annotation_data_object_main {
+    fill:white;
+    stroke:#000000;
+    stroke-width:7;
+    stroke-linejoin:miter;
+    stroke-miterlimit:1;
+    stroke-dasharray:0;
+    stroke-opacity:1;
+}
+
+.annotation_data_object_fold {
+    fill:white;
+    stroke:none;
 }
 
 .task_group_user {
@@ -174,6 +198,10 @@
 }
 
 #genericServiceTask .task_group_generic_service {
+    opacity: 1;
+}
+
+#dataObject .annotation_group_data_object {
     opacity: 1;
 }
 

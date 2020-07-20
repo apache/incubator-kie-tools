@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
+import java.util.HashSet;
+
 import org.eclipse.bpmn2.AdHocSubProcess;
 import org.eclipse.bpmn2.FormalExpression;
 import org.junit.Test;
@@ -36,7 +38,7 @@ import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.t
 public class AdHocSubProcessPropertyWriterTest {
 
     private AdHocSubProcessPropertyWriter tested = new AdHocSubProcessPropertyWriter(bpmn2.createAdHocSubProcess(),
-                                                                                     new FlatVariableScope());
+                                                                                     new FlatVariableScope(), new HashSet<>());
 
     @Test
     public void testSetAdHocAutostart_true() throws Exception {

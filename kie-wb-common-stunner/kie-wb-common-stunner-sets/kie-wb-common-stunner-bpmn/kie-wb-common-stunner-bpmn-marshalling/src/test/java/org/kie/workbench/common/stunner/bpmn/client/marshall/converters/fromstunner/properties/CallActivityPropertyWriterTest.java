@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
+import java.util.HashSet;
+
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
@@ -28,7 +30,8 @@ public class CallActivityPropertyWriterTest {
 
     private CallActivityPropertyWriter tested =
             new CallActivityPropertyWriter(bpmn2.createCallActivity(),
-                                           new FlatVariableScope());
+                                           new FlatVariableScope(),
+                                           new HashSet<>());
 
     @Test
     public void testSetCase_true() throws Exception {

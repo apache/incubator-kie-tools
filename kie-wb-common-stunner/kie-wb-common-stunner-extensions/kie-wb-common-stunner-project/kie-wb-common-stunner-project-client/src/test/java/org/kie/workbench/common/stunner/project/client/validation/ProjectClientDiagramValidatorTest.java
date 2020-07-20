@@ -19,7 +19,9 @@ package org.kie.workbench.common.stunner.project.client.validation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Spliterators;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +33,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.DomainValidator;
 import org.kie.workbench.common.stunner.core.validation.ModelValidator;
 import org.kie.workbench.common.stunner.core.validation.impl.ElementViolationImpl;
 import org.kie.workbench.common.stunner.project.service.ProjectValidationService;
@@ -62,6 +65,9 @@ public class ProjectClientDiagramValidatorTest {
     @Mock
     private Metadata metadata;
 
+    @Mock
+    private ManagedInstance<DomainValidator> validators;
+
     private TestingGraphMockHandler graphTestHandler;
 
     private String uuid = UUID.uuid();
@@ -69,7 +75,7 @@ public class ProjectClientDiagramValidatorTest {
     private ElementViolationImpl backendViolation;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.graphTestHandler = new TestingGraphMockHandler();
         treeWalkTraverseProcessor = new TreeWalkTraverseProcessorImpl();
         backendViolation = new ElementViolationImpl.Builder().setUuid(uuid).build();
@@ -77,11 +83,13 @@ public class ProjectClientDiagramValidatorTest {
         when(diagram.getName()).thenReturn("Test diagram");
         when(diagram.getMetadata()).thenReturn(metadata);
         when(validationService.validate(diagram)).thenReturn(violations);
+        when(validators.spliterator()).thenReturn(Spliterators.emptySpliterator());
         clientDiagramValidator = new ProjectClientDiagramValidator(graphTestHandler.getDefinitionManager(),
                                                                    graphTestHandler.getRuleManager(),
                                                                    treeWalkTraverseProcessor,
                                                                    modelValidator,
-                                                                   new CallerMock<>(validationService));
+                                                                   new CallerMock<>(validationService),
+                                                                   validators);
     }
 
     @Test

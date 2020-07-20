@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.DataObject;
 import org.kie.workbench.common.stunner.bpmn.definition.DirectionalAssociation;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndCompensationEvent;
@@ -234,8 +235,11 @@ public class CaseManagementShapeFactory implements ShapeFactory<BPMNDefinition, 
                           new CaseManagementSvgNullShapeDef(),
                           () -> shapeDefFactory)
                 .delegate(TextAnnotation.class,
-                           new CaseManagementSvgNullShapeDef(),
-                           () -> shapeDefFactory);
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory)
+                .delegate(DataObject.class,
+                          new CaseManagementSvgNullShapeDef(),
+                          () -> shapeDefFactory);
     }
 
     @Override

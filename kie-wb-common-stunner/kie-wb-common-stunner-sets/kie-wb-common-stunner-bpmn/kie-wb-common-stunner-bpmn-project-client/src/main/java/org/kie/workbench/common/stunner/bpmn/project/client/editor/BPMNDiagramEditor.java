@@ -149,7 +149,6 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
         stunnerDocks.stream()
                 .filter(dock -> dock.getPlaceRequest().getIdentifier().compareTo(id) == 0)
                 .forEach(action);
-
     }
 
     public void openPropertiesDocks() {

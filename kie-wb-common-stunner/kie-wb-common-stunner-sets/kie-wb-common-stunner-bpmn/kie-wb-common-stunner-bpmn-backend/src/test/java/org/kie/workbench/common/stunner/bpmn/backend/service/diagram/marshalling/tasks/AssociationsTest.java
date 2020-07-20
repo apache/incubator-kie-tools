@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.tasks;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.bpmn2.Assignment;
@@ -70,7 +71,7 @@ public class AssociationsTest extends BPMNDiagramMarshallerBaseTest {
         StartEvent startEvent = bpmn2.createStartEvent();
         startEvent.setId(id);
         CatchEventPropertyWriter p =
-                new CatchEventPropertyWriter(startEvent, new FlatVariableScope());
+                new CatchEventPropertyWriter(startEvent, new FlatVariableScope(), new HashSet<>());
         p.setAssignmentsInfo(new AssignmentsInfo(decl));
 
         assertEquals(1, p.getItemDefinitions().size());

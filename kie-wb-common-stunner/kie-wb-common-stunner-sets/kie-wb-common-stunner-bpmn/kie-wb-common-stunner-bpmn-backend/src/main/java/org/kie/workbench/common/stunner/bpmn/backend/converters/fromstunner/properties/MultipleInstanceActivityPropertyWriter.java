@@ -18,16 +18,19 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.InputSet;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.OutputSet;
@@ -45,8 +48,10 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
     private InputSet inputSet;
     private OutputSet outputSet;
 
-    public MultipleInstanceActivityPropertyWriter(Activity activity, VariableScope variableScope) {
-        super(activity, variableScope);
+    public MultipleInstanceActivityPropertyWriter(Activity activity,
+                                                  VariableScope variableScope,
+                                                  Set<DataObject> dataObjects) {
+        super(activity, variableScope, dataObjects);
     }
 
     public void setCollectionInput(String collectionInput) {
@@ -61,18 +66,36 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
         ioSpec.getDataInputs().add(dataInputElement);
 
         // check whether this exist
-        findPropertyById(collectionInput).ifPresent(prop -> {
-            dataInputElement.setItemSubjectRef(prop.getItemSubjectRef());
+        Optional<Property> property = findPropertyById(collectionInput);
+        Optional<DataObject> dataObject = findDataObjectById(collectionInput);
 
-            miloop.setLoopDataInputRef(dataInputElement);
+        if (property.isPresent()) {
+            processDataInput(dataInputElement, property.get());
+        } else if (dataObject.isPresent()) {
+            processDataInput(dataInputElement, dataObject.get());
+        }
+    }
 
-            addSafe(inputSet.getDataInputRefs(), dataInputElement);
+    private Optional<DataObject> findDataObjectById(String id) {
+        return dataObjects.stream().filter(elm -> elm.getId().equals(id)).findFirst();
+    }
 
-            DataInputAssociation dia = Bpmn2Factory.eINSTANCE.createDataInputAssociation();
-            dia.getSourceRef().add(prop);
-            dia.setTargetRef(dataInputElement);
-            addSafe(activity.getDataInputAssociations(), dia);
-        });
+    private void processDataInput(DataInput dataInputElement, ItemAwareElement prop) {
+        dataInputElement.setItemSubjectRef(prop.getItemSubjectRef());
+
+        miloop.setLoopDataInputRef(dataInputElement);
+
+        addSafe(inputSet.getDataInputRefs(), dataInputElement);
+
+        DataInputAssociation dia = Bpmn2Factory.eINSTANCE.createDataInputAssociation();
+        dia.getSourceRef().add(prop);
+        dia.setTargetRef(dataInputElement);
+        addSafe(activity.getDataInputAssociations(), dia);
+    }
+
+    protected static void addSafe(List<DataInput> inputs, DataInput dataInput) {
+        inputs.removeIf(existingDataInput -> dataInput.getId().equals(existingDataInput.getId()));
+        inputs.add(dataInput);
     }
 
     public void setCollectionOutput(String collectionOutput) {
@@ -86,19 +109,27 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
         DataOutput dataOutputElement = createDataOutput(id, suffix);
         addSafe(ioSpec.getDataOutputs(), dataOutputElement);
 
-        // check whether this exist or throws
-        findPropertyById(collectionOutput).ifPresent(prop -> {
-            dataOutputElement.setItemSubjectRef(prop.getItemSubjectRef());
+        Optional<Property> property = findPropertyById(collectionOutput);
+        Optional<DataObject> dataObject = findDataObjectById(collectionOutput);
 
-            miloop.setLoopDataOutputRef(dataOutputElement);
+        if (property.isPresent()) {
+            processDataOutput(dataOutputElement, property.get());
+        } else if (dataObject.isPresent()) {
+            processDataOutput(dataOutputElement, dataObject.get());
+        }
+    }
 
-            addSafe(outputSet.getDataOutputRefs(), dataOutputElement);
+    private void processDataOutput(DataOutput dataOutputElement, ItemAwareElement prop) {
+        dataOutputElement.setItemSubjectRef(prop.getItemSubjectRef());
 
-            DataOutputAssociation doa = Bpmn2Factory.eINSTANCE.createDataOutputAssociation();
-            doa.getSourceRef().add(dataOutputElement);
-            doa.setTargetRef(prop);
-            addSafe(activity.getDataOutputAssociations(), doa);
-        });
+        miloop.setLoopDataOutputRef(dataOutputElement);
+
+        addSafe(outputSet.getDataOutputRefs(), dataOutputElement);
+
+        DataOutputAssociation doa = Bpmn2Factory.eINSTANCE.createDataOutputAssociation();
+        doa.getSourceRef().add(dataOutputElement);
+        doa.setTargetRef(prop);
+        addSafe(activity.getDataOutputAssociations(), doa);
     }
 
     public void setInput(String name) {
@@ -223,14 +254,9 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
         return item;
     }
 
-    protected static void addSafe(List<DataInput> inputs, DataInput dataInput) {
-        inputs.removeIf(existingDataInput -> dataInput.getId().equals(existingDataInput.getId()));
-        inputs.add(dataInput);
-    }
-
-    protected static void addSafe(List<DataInputAssociation> associations, DataInputAssociation inputAssociation) {
-        associations.removeIf(existingDia -> inputAssociation.getTargetRef().getId().equals(existingDia.getTargetRef().getId()));
-        associations.add(inputAssociation);
+    protected static void addSafe(List<DataOutputAssociation> associations, DataOutputAssociation outputAssociation) {
+        associations.removeIf(existingDoa -> existingDoa.getSourceRef() != null && !existingDoa.getSourceRef().isEmpty() && outputAssociation.getSourceRef().get(0).getId().equals(existingDoa.getSourceRef().get(0).getId()));
+        associations.add(outputAssociation);
     }
 
     protected static void addSafe(List<DataOutput> outputs, DataOutput dataOutput) {
@@ -238,9 +264,9 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
         outputs.add(dataOutput);
     }
 
-    protected static void addSafe(List<DataOutputAssociation> associations, DataOutputAssociation outputAssociation) {
-        associations.removeIf(existingDoa -> existingDoa.getSourceRef() != null && !existingDoa.getSourceRef().isEmpty() && outputAssociation.getSourceRef().get(0).getId().equals(existingDoa.getSourceRef().get(0).getId()));
-        associations.add(outputAssociation);
+    protected static void addSafe(List<DataInputAssociation> associations, DataInputAssociation inputAssociation) {
+        associations.removeIf(existingDia -> inputAssociation.getTargetRef().getId().equals(existingDia.getTargetRef().getId()));
+        associations.add(inputAssociation);
     }
 
     private Optional<Property> findPropertyById(String id) {

@@ -21,13 +21,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
 
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.DataObject;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessVariables;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.uberfire.commons.data.Pair;
@@ -72,11 +76,33 @@ public class VariablesProvider
                 BaseProcessVariables processVars = bpmnDiagram.getProcessData().getProcessVariables();
                 addPropertyVariableToResult(result, processVars.getValue());
 
+
+                Iterable<Node> nodes = sessionManager.getCurrentSession().getCanvasHandler().getDiagram().getGraph().nodes();
+
+                StreamSupport.stream(nodes.spliterator(), false)
+                        .filter(this::isBPMNDefinition)
+                        .map(elm -> (Node<View<BPMNDefinition>, Edge>) elm)
+                        .forEach(elm -> processNode(elm, result));
+
                 CaseFileVariables caseVars = bpmnDiagram.getCaseManagementSet().getCaseFileVariables();
                 addCaseFileVariableToResult(result, caseVars.getValue());
             }
         }
+
         return result;
+    }
+
+    private void processNode(Node<View<BPMNDefinition>, Edge> elm, Collection<Pair<Object, String>> result) {
+            if(elm.getContent().getDefinition() instanceof DataObject) {
+                DataObject dataObject = (DataObject)elm.getContent().getDefinition();
+                String name = dataObject.getName().getValue();
+                result.add(new Pair(name, name));
+            }
+    }
+
+    protected boolean isBPMNDefinition(Node node) {
+        return node.getContent() instanceof View &&
+                ((View) node.getContent()).getDefinition() instanceof BPMNDefinition;
     }
 
     private void addPropertyVariableToResult(Collection<Pair<Object, String>> result, String element) {

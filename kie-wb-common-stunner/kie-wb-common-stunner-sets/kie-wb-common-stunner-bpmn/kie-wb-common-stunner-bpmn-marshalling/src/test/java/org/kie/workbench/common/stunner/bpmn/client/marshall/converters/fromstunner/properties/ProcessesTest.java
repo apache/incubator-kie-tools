@@ -22,6 +22,7 @@ import java.util.Map;
 import bpsim.ElementParameters;
 import org.eclipse.bpmn2.Artifact;
 import org.eclipse.bpmn2.BaseElement;
+import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.FlowElementsContainer;
 import org.eclipse.bpmn2.ItemDefinition;
@@ -29,6 +30,7 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.impl.ArtifactImpl;
+import org.eclipse.bpmn2.impl.DataObjectReferenceImpl;
 import org.eclipse.bpmn2.impl.FlowElementImpl;
 import org.eclipse.emf.common.util.EList;
 import org.junit.Before;
@@ -49,6 +51,9 @@ public class ProcessesTest {
     private PropertyWriter propertyWriter;
 
     @Mock
+    private DataObjectPropertyWriter dataObjectPropertyWriter;
+
+    @Mock
     private BoundaryEventPropertyWriter boundaryEventPropertyWriter;
 
     @Mock
@@ -62,6 +67,9 @@ public class ProcessesTest {
 
     @Mock
     private FlowElement flowElement;
+
+    @Mock
+    private DataObjectReference dataObjectReferenceElement;
 
     @Mock
     private Artifact artifact;
@@ -96,6 +104,10 @@ public class ProcessesTest {
         when(propertyWriter.getSimulationParameters()).thenReturn(propertyWriterElementParameters);
         when(propertyWriter.getItemDefinitions()).thenReturn(propertyWriterItemDefinitions);
 
+        when(dataObjectPropertyWriter.getRootElements()).thenReturn(propertyWriterRootElements);
+        when(dataObjectPropertyWriter.getSimulationParameters()).thenReturn(propertyWriterElementParameters);
+        when(dataObjectPropertyWriter.getItemDefinitions()).thenReturn(propertyWriterItemDefinitions);
+
         when(boundaryEventPropertyWriter.getRootElements()).thenReturn(propertyWriterRootElements);
         when(boundaryEventPropertyWriter.getSimulationParameters()).thenReturn(propertyWriterElementParameters);
         when(boundaryEventPropertyWriter.getItemDefinitions()).thenReturn(propertyWriterItemDefinitions);
@@ -126,6 +138,16 @@ public class ProcessesTest {
     private void testAddFlowElementCase(FlowElementsContainer container) {
         testAddElementChild(propertyWriter, container, flowElement);
         verify(flowElements).add(0, flowElement);
+    }
+
+    @Test
+    public void testAddDataObject() {
+        dataObjectReferenceElement = new DataObjectReferenceImpl() {
+        };
+        dataObjectReferenceElement.setId(ELEMENT_ID);
+        when(process.getFlowElements()).thenReturn(flowElements);
+        testAddElementChild(dataObjectPropertyWriter, process, dataObjectReferenceElement);
+        verify(flowElements).add(0, dataObjectReferenceElement);
     }
 
     @Test

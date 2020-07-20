@@ -361,7 +361,7 @@ public class BPMNDirectDiagramMarshallerTest {
     public void testExecution() throws Exception {
         final Diagram<Graph, Metadata> diagram = unmarshall(EXECUTION);
         String result = tested.marshall(diagram);
-        assertDiagram(diagram, 20);
+        assertDiagram(diagram, 23);
     }
 
     @Test

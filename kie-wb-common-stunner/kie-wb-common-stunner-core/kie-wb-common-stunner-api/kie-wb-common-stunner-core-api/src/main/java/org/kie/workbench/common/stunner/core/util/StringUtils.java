@@ -113,6 +113,34 @@ public class StringUtils {
     }
 
     /**
+     * Replacing unsafe characters by HTML escaping.
+     * <p>
+     * IMPORTANT NOTE
+     * Url encoding is not supported on the Engine side so this method should be used for attribute values.
+     * @param value a string to escape illegal characters on the client side for Data Objects
+     * @return an escaped string
+     */
+    public static String replaceIllegalCharsForDataObjects(final String value) {
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < value.length(); i++) {
+            final char c = value.charAt(i);
+            switch (c) {
+                case '#':
+                case '"':
+                case ':':
+                case ' ':
+                    sb.append("-");
+                    break;
+                default:
+                    sb.append(c);
+                    break;
+            }
+        }
+        return sb.toString();
+    }
+
+
+    /**
      * Returning unsafe characters by HTML escaping to the string.
      * @param value string encoded by {@link StringUtils#replaceIllegalCharsAttribute}
      * @return a decoded string

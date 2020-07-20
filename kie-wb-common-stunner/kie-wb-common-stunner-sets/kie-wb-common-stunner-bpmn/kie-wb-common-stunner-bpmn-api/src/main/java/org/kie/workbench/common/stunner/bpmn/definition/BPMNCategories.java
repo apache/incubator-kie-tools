@@ -38,5 +38,4 @@ public class BPMNCategories {
 
     public static final String SERVICE_TASKS = "ServiceTasks";
 
-    public static final String TEXT_ANNOTATION = "TextAnnotations";
 }

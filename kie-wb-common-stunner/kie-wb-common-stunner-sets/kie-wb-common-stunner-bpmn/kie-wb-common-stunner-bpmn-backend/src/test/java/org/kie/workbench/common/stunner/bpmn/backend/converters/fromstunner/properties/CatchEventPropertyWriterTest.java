@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.HashSet;
+
 import bpsim.ElementParameters;
 import org.eclipse.bpmn2.StartEvent;
 import org.junit.Test;
@@ -35,7 +37,7 @@ public class CatchEventPropertyWriterTest {
         CatchEventPropertyWriter p =
                 new CatchEventPropertyWriter(
                         startEvent,
-                        new FlatVariableScope());
+                        new FlatVariableScope(), new HashSet<>());
 
         SimulationAttributeSet defaults = new SimulationAttributeSet();
         p.setSimulationSet(defaults);

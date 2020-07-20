@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.DataObject;
 import org.kie.workbench.common.stunner.bpmn.definition.DirectionalAssociation;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EndCompensationEvent;
@@ -598,6 +599,13 @@ public class CaseManagementShapeFactoryTest {
         assertShapeConstructionNotSupported(new DirectionalAssociation(),
                                             connectorAssertions);
         assertShapeGlyph(new DirectionalAssociation());
+    }
+
+    @Test
+    public void checkDataObject() {
+        assertShapeConstructionNotSupported(new DataObject(),
+                                            connectorAssertions);
+        assertShapeGlyph(new DataObject());
     }
 
     @SuppressWarnings("unchecked")

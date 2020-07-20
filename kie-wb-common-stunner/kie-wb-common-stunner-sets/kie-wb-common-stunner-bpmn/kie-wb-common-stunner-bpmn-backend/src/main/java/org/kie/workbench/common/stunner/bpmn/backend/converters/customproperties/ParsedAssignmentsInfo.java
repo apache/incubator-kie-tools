@@ -18,9 +18,11 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.custompropertie
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.eclipse.bpmn2.DataObject;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.InitializedVariable.InitializedInputVariable;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.InitializedVariable.InitializedOutputVariable;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.VariableScope;
@@ -184,7 +186,7 @@ public class ParsedAssignmentsInfo {
         return associations;
     }
 
-    public List<InitializedInputVariable> createInitializedInputVariables(String parentId, VariableScope variableScope) {
+    public List<InitializedInputVariable> createInitializedInputVariables(String parentId, VariableScope variableScope, Set<DataObject> dataObjects) {
         return getInputs()
                 .getDeclarations()
                 .stream()
@@ -192,11 +194,12 @@ public class ParsedAssignmentsInfo {
                         parentId,
                         variableScope,
                         varDecl,
-                        associations.lookupInput(varDecl.getTypedIdentifier().getName())))
+                        associations.lookupInput(varDecl.getTypedIdentifier().getName()),
+                        dataObjects))
                 .collect(Collectors.toList());
     }
 
-    public List<InitializedOutputVariable> createInitializedOutputVariables(String parentId, VariableScope variableScope) {
+    public List<InitializedOutputVariable> createInitializedOutputVariables(String parentId, VariableScope variableScope, Set<DataObject> dataObjects) {
         List<InitializedOutputVariable> initializedOutputVariables = new ArrayList<>();
 
         getOutputs()
@@ -207,7 +210,8 @@ public class ParsedAssignmentsInfo {
                                 parentId,
                                 variableScope,
                                 varDecl,
-                                null));
+                                null,
+                                dataObjects));
                     } else {
                         initializedOutputVariables.addAll(associations.lookupOutputs(varDecl.getTypedIdentifier().getName())
                                                                   .stream()
@@ -215,7 +219,8 @@ public class ParsedAssignmentsInfo {
                                                                           parentId,
                                                                           variableScope,
                                                                           getOutputs().lookup(outputDec.getSource().replace(" ", "-")),
-                                                                          outputDec))
+                                                                          outputDec,
+                                                                          dataObjects))
                                                                   .collect(Collectors.toList()));
                     }
                 });

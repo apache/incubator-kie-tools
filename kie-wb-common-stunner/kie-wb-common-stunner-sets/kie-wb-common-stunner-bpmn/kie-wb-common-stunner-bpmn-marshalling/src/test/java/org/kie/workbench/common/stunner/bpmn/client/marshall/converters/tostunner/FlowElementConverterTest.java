@@ -35,6 +35,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.activities.CallActivityConverter;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.artifacts.DataObjectConverter;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.artifacts.TextAnnotationConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.events.EndEventConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.events.IntermediateCatchEventConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.events.IntermediateThrowEventConverter;
@@ -42,7 +44,6 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunne
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.gateways.GatewayConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.processes.SubProcessConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.tasks.TaskConverter;
-import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.textannotation.TextAnnotationConverter;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -90,6 +91,9 @@ public class FlowElementConverterTest {
     @Mock
     private TextAnnotationConverter textAnnotationConverter;
 
+    @Mock
+    private DataObjectConverter dataObjectConverter;
+
     @Before
     public void setUp() {
         when(converterFactory.startEventConverter()).thenReturn(startEventConverter);
@@ -102,6 +106,7 @@ public class FlowElementConverterTest {
         when(converterFactory.callActivityConverter()).thenReturn(callActivityConverter);
         when(converterFactory.getDefinitionResolver()).thenReturn(definitionResolver);
         when(converterFactory.textAnnotationConverter()).thenReturn(textAnnotationConverter);
+        when(converterFactory.dataObjectConverter()).thenReturn(dataObjectConverter);
         tested = new FlowElementConverter(converterFactory);
     }
 
@@ -147,12 +152,15 @@ public class FlowElementConverterTest {
         TextAnnotation textAnnotation = mock(TextAnnotation.class);
         tested.convertNode(textAnnotation);
         verify(textAnnotationConverter).convert(textAnnotation);
+
+        DataObjectReference dataObjectReference = mock(DataObjectReference.class);
+        tested.convertNode(dataObjectReference);
+        verify(dataObjectConverter).convert(dataObjectReference);
     }
 
     // TODO: Kogito - @Test
     public void convertUnsupported() {
         assertUnsupported(DataStoreReference.class);
-        assertUnsupported(DataObjectReference.class);
         assertUnsupported(DataObject.class);
     }
 

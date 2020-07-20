@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.pro
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -42,7 +43,7 @@ public class NotificationPropertyWriterTest {
 
     @Test
     public void addOneNotStartedNotifyValue() {
-        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope);
+        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope, new HashSet<>());
 
         NotificationsInfo notificationsInfo = new NotificationsInfo();
         notificationsInfo.getValue().addValue(getNotificationValue(AssociationType.NOT_STARTED_NOTIFY.getName()));
@@ -54,7 +55,7 @@ public class NotificationPropertyWriterTest {
 
     @Test
     public void addTwoNotStartedNotifyValue() {
-        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope);
+        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope, new HashSet<>());
 
         NotificationsInfo notificationsInfo = new NotificationsInfo();
         notificationsInfo.getValue().addValue(getNotificationValue(AssociationType.NOT_STARTED_NOTIFY.getName()));
@@ -69,7 +70,7 @@ public class NotificationPropertyWriterTest {
 
     @Test
     public void addOneNotCompletedNotifyValue() {
-        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope);
+        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope, new HashSet<>());
 
         NotificationsInfo notificationsInfo = new NotificationsInfo();
         notificationsInfo.getValue().addValue(getNotificationValue(AssociationType.NOT_COMPLETED_NOTIFY.getName()));
@@ -81,7 +82,7 @@ public class NotificationPropertyWriterTest {
 
     @Test
     public void addTwoNotCompletedNotifyValue() {
-        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope);
+        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope, new HashSet<>());
 
         NotificationsInfo notificationsInfo = new NotificationsInfo();
         notificationsInfo.getValue().addValue(getNotificationValue(AssociationType.NOT_COMPLETED_NOTIFY.getName()));

@@ -17,9 +17,11 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.InputSet;
 import org.eclipse.bpmn2.ThrowEvent;
@@ -33,17 +35,19 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner
 public class ThrowEventPropertyWriter extends EventPropertyWriter {
 
     private final ThrowEvent throwEvent;
+    private final Set<DataObject> dataObjects;
 
-    public ThrowEventPropertyWriter(ThrowEvent flowElement, VariableScope variableScope) {
+    public ThrowEventPropertyWriter(ThrowEvent flowElement, VariableScope variableScope, Set<DataObject> dataObjects) {
         super(flowElement, variableScope);
         this.throwEvent = flowElement;
+        this.dataObjects = dataObjects;
     }
 
     @Override
     public void setAssignmentsInfo(AssignmentsInfo info) {
         ParsedAssignmentsInfo assignmentsInfo = ParsedAssignmentsInfo.of(info);
         List<InitializedInputVariable> inputs =
-                assignmentsInfo.createInitializedInputVariables(getId(), variableScope);
+                assignmentsInfo.createInitializedInputVariables(getId(), variableScope, dataObjects);
 
         if (inputs.isEmpty()) {
             return;

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.bpmn2.InputSet;
@@ -35,7 +36,7 @@ public class ActivityPropertyWriterTest {
     public void testEmptyInputOutputSet() {
         Task task = bpmn2.createTask();
         ActivityPropertyWriter activityPropertyWriter =
-                new ActivityPropertyWriter(task, new FlatVariableScope());
+                new ActivityPropertyWriter(task, new FlatVariableScope(), new HashSet<>());
         activityPropertyWriter.setAssignmentsInfo(new AssignmentsInfo(
                 "||||"
         ));
@@ -46,7 +47,7 @@ public class ActivityPropertyWriterTest {
     public void testNotEmptyInputSet() {
         Task task = bpmn2.createTask();
         ActivityPropertyWriter activityPropertyWriter =
-                new ActivityPropertyWriter(task, new FlatVariableScope());
+                new ActivityPropertyWriter(task, new FlatVariableScope(), new HashSet<>());
         activityPropertyWriter.setAssignmentsInfo(new AssignmentsInfo(
                 "|A:String|||"
         ));
@@ -59,7 +60,7 @@ public class ActivityPropertyWriterTest {
     public void testNotEmptyOutputSet() {
         Task task = bpmn2.createTask();
         ActivityPropertyWriter activityPropertyWriter =
-                new ActivityPropertyWriter(task, new FlatVariableScope());
+                new ActivityPropertyWriter(task, new FlatVariableScope(), new HashSet<>());
         activityPropertyWriter.setAssignmentsInfo(new AssignmentsInfo(
                 "||A:String||"
         ));
@@ -72,7 +73,7 @@ public class ActivityPropertyWriterTest {
     public void testItShouldCreateOneInputSet() {
         Task task = bpmn2.createTask();
         ActivityPropertyWriter activityPropertyWriter =
-                new ActivityPropertyWriter(task, new FlatVariableScope());
+                new ActivityPropertyWriter(task, new FlatVariableScope(), new HashSet<>());
         activityPropertyWriter.setAssignmentsInfo(new AssignmentsInfo(
                 "|A:String|||"
         ));

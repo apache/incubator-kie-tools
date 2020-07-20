@@ -21,8 +21,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import bpsim.ElementParameters;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Property;
 import org.eclipse.bpmn2.SubProcess;
@@ -51,8 +53,8 @@ public class SubProcessPropertyWriter extends MultipleInstanceActivityPropertyWr
     private Collection<ElementParameters> simulationParameters = new ArrayList<>();
     private Map<String, BasePropertyWriter> childElements = new HashMap<>();
 
-    public SubProcessPropertyWriter(SubProcess process, VariableScope variableScope) {
-        super(process, variableScope);
+    public SubProcessPropertyWriter(SubProcess process, VariableScope variableScope, Set<DataObject> dataObjects) {
+        super(process, variableScope, dataObjects);
         this.process = process;
     }
 

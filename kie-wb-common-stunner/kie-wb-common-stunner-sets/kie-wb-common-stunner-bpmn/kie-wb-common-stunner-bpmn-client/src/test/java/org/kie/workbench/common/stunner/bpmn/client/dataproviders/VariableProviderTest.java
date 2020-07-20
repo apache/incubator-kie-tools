@@ -25,10 +25,14 @@ import org.junit.Test;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.DataObject;
+import org.kie.workbench.common.stunner.bpmn.definition.property.artifacts.DataObjectType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.artifacts.DataObjectTypeValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -36,12 +40,16 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
 
 import static org.jgroups.util.Util.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 public class VariableProviderTest
         extends AbstractProcessFilteredNodeProviderBaseTest {
@@ -69,11 +77,61 @@ public class VariableProviderTest
         when(view.getDefinition()).thenReturn(definition);
     }
 
+    @Mock
+    private View<DataObject> dataObjectView;
+
+    @Mock
+    private View<Object> otherView;
+
     @Override
     protected List<Element> mockModes() {
         List<Element> nodes = new ArrayList<>();
         nodes.add(mockRootNode(PROCESS_VARIABLES, CASE_FILE_VARIABLES));
+        Node<View<DataObject>, ?> dataObjectNode;
+
+        DataObject dataObject = new DataObject();
+        dataObject.getGeneral().getDocumentation().setValue("doc");
+        dataObject.setName(new Name("name"));
+        dataObject.setType(new DataObjectType(new DataObjectTypeValue("name")));
+
+        dataObjectNode = new NodeImpl<>(UUID.uuid());
+        dataObjectNode.setContent(dataObjectView);
+        when(dataObjectView.getDefinition()).thenReturn(dataObject);
+
+        nodes.add(dataObjectNode);
         return nodes;
+    }
+
+    @Test
+    public void testViewAndContent() {
+        Node<View<DataObject>, ?> dataObjectNode;
+
+        DataObject dataObject = new DataObject();
+        dataObject.getGeneral().getDocumentation().setValue("doc");
+        dataObject.setName(new Name("name"));
+        dataObject.setType(new DataObjectType(new DataObjectTypeValue("name")));
+
+        dataObjectNode = new NodeImpl<>(UUID.uuid());
+        dataObjectNode.setContent(dataObjectView);
+        when(dataObjectView.getDefinition()).thenReturn(dataObject);
+
+        boolean isBPMNDefinition = ((VariablesProvider) provider).isBPMNDefinition(dataObjectNode);
+        assertTrue(" Must be a BPMN Definition", isBPMNDefinition);
+
+        Node<View<Object>, ?> objectNode = new NodeImpl<>(UUID.uuid());
+        objectNode.setContent(otherView);
+        when(otherView.getDefinition()).thenReturn(new Object());
+
+        isBPMNDefinition = ((VariablesProvider) provider).isBPMNDefinition(objectNode);
+        assertFalse(" Must not be a BPMN Definition", isBPMNDefinition);
+
+        Node<Element, ?> objectNode2 = new NodeImpl<>(UUID.uuid());
+        Element someElement = mock(Element.class);
+        objectNode2.setContent(someElement);
+        when(otherView.getDefinition()).thenReturn(new Object());
+
+        isBPMNDefinition = ((VariablesProvider) provider).isBPMNDefinition(objectNode2);
+        assertFalse(" Must not be a BPMN Definition", isBPMNDefinition);
     }
 
     @Test
@@ -104,7 +162,7 @@ public class VariableProviderTest
 
     @Override
     protected void verifyValues(Map values) {
-        assertEquals(4,
+        assertEquals(5,
                      values.size());
 
         assertEquals("var1",

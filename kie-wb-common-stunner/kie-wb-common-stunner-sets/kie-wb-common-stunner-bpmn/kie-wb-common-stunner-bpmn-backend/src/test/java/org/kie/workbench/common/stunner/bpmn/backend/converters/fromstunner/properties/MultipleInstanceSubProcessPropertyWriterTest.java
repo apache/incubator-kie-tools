@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.HashSet;
+
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.SubProcess;
@@ -32,14 +34,15 @@ public class MultipleInstanceSubProcessPropertyWriterTest {
 
     private MultipleInstanceSubProcessPropertyWriter tested =
             new MultipleInstanceSubProcessPropertyWriter(bpmn2.createSubProcess(),
-                                                         new FlatVariableScope());
+                                                         new FlatVariableScope(),
+                                                         new HashSet<>());
 
     @Test
     public void nullInputOutputsShouldNotThrow() {
         SubProcess subProcess = bpmn2.createSubProcess();
         MultipleInstanceSubProcessPropertyWriter p =
                 new MultipleInstanceSubProcessPropertyWriter(
-                        subProcess, new FlatVariableScope());
+                        subProcess, new FlatVariableScope(), new HashSet<>());
 
         assertThatCode(() -> {
             p.setInput(null);
@@ -57,7 +60,7 @@ public class MultipleInstanceSubProcessPropertyWriterTest {
         SubProcess subProcess = bpmn2.createSubProcess();
         MultipleInstanceSubProcessPropertyWriter p =
                 new MultipleInstanceSubProcessPropertyWriter(
-                        subProcess, new FlatVariableScope());
+                        subProcess, new FlatVariableScope(), new HashSet<>());
         p.setCompletionCondition(expression);
         MultiInstanceLoopCharacteristics loopCharacteristics =
                 (MultiInstanceLoopCharacteristics) subProcess.getLoopCharacteristics();

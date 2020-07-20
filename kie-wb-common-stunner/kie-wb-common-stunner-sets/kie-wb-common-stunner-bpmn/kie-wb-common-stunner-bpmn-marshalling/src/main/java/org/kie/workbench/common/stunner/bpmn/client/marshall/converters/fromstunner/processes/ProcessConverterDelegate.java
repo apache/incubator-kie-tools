@@ -29,9 +29,12 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstun
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.ActivityPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.BasePropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.BoundaryEventPropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.DataObjectPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.LanePropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.ProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.SubProcessPropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.definition.DataObject;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -64,11 +67,23 @@ class ProcessConverterDelegate {
                 .forEach(p::addChildElement);
 
         context.nodes()
+                .sorted((t0, t1) -> {
+                    boolean isDO1 = (((ViewImpl) t0.getContent()).getDefinition() instanceof DataObject);
+                    boolean isDO2 = (((ViewImpl) t1.getContent()).getDefinition() instanceof DataObject);
+
+                    return Boolean.compare(isDO2, isDO1);
+                })
                 .filter(e -> !processed.contains(e.getUUID())) // skip processed
                 .map(converterFactory.viewDefinitionConverter()::toFlowElement)
                 .filter(Result::notIgnored)
                 .map(Result::value)
-                .forEach(p::addChildElement);
+                .forEach(item -> {
+                    if (item instanceof DataObjectPropertyWriter) {
+                        final org.eclipse.bpmn2.DataObject dataObjectRef = ((DataObjectPropertyWriter) item).getElement().getDataObjectRef();
+                    }
+
+                    p.addChildElement(item);
+                });
 
         convertLanes(context, processed, p);
     }

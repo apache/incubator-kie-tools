@@ -25,6 +25,7 @@ import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.BusinessRuleTask;
 import org.eclipse.bpmn2.CallActivity;
 import org.eclipse.bpmn2.CatchEvent;
+import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.Definitions;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Gateway;
@@ -144,5 +145,9 @@ public class PropertyReaderFactory {
 
     public DefinitionsPropertyReader of(Definitions el) {
         return new DefinitionsPropertyReader(el, diagram, definitionResolver.getShape(el.getId()), definitionResolver.getResolutionFactor());
+    }
+
+    public DataObjectPropertyReader of(DataObjectReference el) {
+        return new DataObjectPropertyReader(el, diagram, definitionResolver.getShape(el.getId()), definitionResolver.getResolutionFactor());
     }
 }

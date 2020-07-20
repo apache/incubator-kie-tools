@@ -22,12 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import bpsim.BPSimDataType;
 import bpsim.BpsimPackage;
 import bpsim.ElementParameters;
 import bpsim.Scenario;
 import bpsim.ScenarioParameters;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.LaneSet;
 import org.eclipse.bpmn2.Process;
@@ -58,6 +60,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseP
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpsim;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.util.DataObjectUtils.maybeAddDataObjectToItemDefinitions;
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.util.DataObjectUtils.maybeAddDataObjects;
 
 public class ProcessPropertyWriter extends BasePropertyWriter implements ElementContainer {
 
@@ -67,16 +71,19 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
     private final BPMNPlane bpmnPlane;
     private Map<String, BasePropertyWriter> childElements = new HashMap<>();
     private Collection<ElementParameters> simulationParameters = new ArrayList<>();
+    private final Set<DataObject> dataObjects;
 
-    public ProcessPropertyWriter(Process process, VariableScope variableScope) {
+    public ProcessPropertyWriter(Process process, VariableScope variableScope, Set<DataObject> dataObjects) {
         super(process, variableScope);
         this.process = process;
+        this.dataObjects = dataObjects;
 
         this.bpmnDiagram = di.createBPMNDiagram();
         bpmnDiagram.setId(process.getId());
 
         this.bpmnPlane = di.createBPMNPlane();
         bpmnDiagram.setPlane(bpmnPlane);
+
     }
 
     public void setId(String value) {
@@ -130,7 +137,11 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
 
         if (p instanceof SubProcessPropertyWriter) {
             addSubProcess((SubProcessPropertyWriter) p);
+        } else if (p instanceof DataObjectPropertyWriter) {
+            DataObject dataObject = ((DataObjectPropertyWriter) p).getElement().getDataObjectRef();
+            maybeAddDataObjectToItemDefinitions(itemDefinitions, dataObject);
         }
+        maybeAddDataObjectToItemDefinitions(itemDefinitions, dataObjects);
     }
 
     // recursively add all child shapes and edges (`di:` namespace)
@@ -140,6 +151,9 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
                 p.getChildElements();
 
         childElements.forEach(el -> {
+            if (el instanceof DataObjectPropertyWriter) {
+                maybeAddDataObjects(process, dataObjects);
+            }
             addChildShape(el.getShape());
             addChildEdge(el.getEdge());
             if (el instanceof SubProcessPropertyWriter) {
@@ -189,7 +203,6 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
     public void setProcessVariables(BaseProcessVariables processVariables) {
         String value = processVariables.getValue();
         DeclarationList declarationList = DeclarationList.fromString(value);
-
         List<Property> properties = process.getProperties();
         declarationList.getDeclarations().forEach(decl -> {
             VariableScope.Variable variable =
@@ -283,5 +296,9 @@ public class ProcessPropertyWriter extends BasePropertyWriter implements Element
         defaultScenario.getElementParameters().addAll(simulationParameters);
 
         return relationship;
+    }
+
+    public Set<DataObject> getDataObjects() {
+        return dataObjects;
     }
 }

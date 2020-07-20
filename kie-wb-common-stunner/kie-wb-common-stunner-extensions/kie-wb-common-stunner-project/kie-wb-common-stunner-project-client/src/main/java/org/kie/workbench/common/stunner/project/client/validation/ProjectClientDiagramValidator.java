@@ -28,6 +28,7 @@ import javax.enterprise.inject.Specializes;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.validation.ClientDiagramValidator;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -35,6 +36,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.DomainValidator;
 import org.kie.workbench.common.stunner.core.validation.ModelValidator;
 import org.kie.workbench.common.stunner.project.service.ProjectValidationService;
 
@@ -50,6 +52,7 @@ public class ProjectClientDiagramValidator extends ClientDiagramValidator {
              null,
              null,
              null,
+             null,
              null);
     }
 
@@ -58,11 +61,13 @@ public class ProjectClientDiagramValidator extends ClientDiagramValidator {
                                          final RuleManager ruleManager,
                                          final TreeWalkTraverseProcessor treeWalkTraverseProcessor,
                                          final ModelValidator modelValidator,
-                                         final Caller<ProjectValidationService> validationService) {
+                                         final Caller<ProjectValidationService> validationService,
+                                         final ManagedInstance<DomainValidator> validators) {
         super(definitionManager,
               ruleManager,
               treeWalkTraverseProcessor,
-              modelValidator);
+              modelValidator,
+              validators);
         this.validationService = validationService;
     }
 

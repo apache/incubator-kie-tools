@@ -25,13 +25,17 @@ import org.eclipse.bpmn2.Process;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.ConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.DefinitionsBuildingContext;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.FlowElementConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.lanes.LaneConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.ProcessPropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseFileVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseIdPrefix;
 import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseManagementSet;
@@ -39,11 +43,17 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.cm.CaseRoles;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.GlobalVariables;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsAsync;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
+import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.verify;
@@ -110,6 +120,17 @@ public class RootProcessConverterTest {
         when(converterFactory.subProcessConverter()).thenReturn(subProcessConverter);
         when(converterFactory.viewDefinitionConverter()).thenReturn(viewDefinitionConverter);
         when(converterFactory.laneConverter()).thenReturn(laneConverter);
+    }
+
+    @Test
+    public void testFlowElementConverter() {
+        final FlowElementConverter viewDefinitionConverter = new FlowElementConverter(converterFactory);
+        NodeImpl<View<? extends BPMNViewDefinition>> n = new NodeImpl<>("n");
+        EventSubprocess subProcessNode = new EventSubprocess();
+        subProcessNode.getExecutionSet().setIsAsync(new IsAsync(true));
+        n.setContent(new ViewImpl<>(subProcessNode, Bounds.create()));
+        final Result<PropertyWriter> propertyWriterResult = viewDefinitionConverter.toFlowElement(n);
+        assertTrue(propertyWriterResult.isIgnored());
     }
 
     @Test

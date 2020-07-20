@@ -18,16 +18,19 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstu
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.InputSet;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.OutputSet;
@@ -46,8 +49,8 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
     private InputSet inputSet;
     private OutputSet outputSet;
 
-    public MultipleInstanceActivityPropertyWriter(Activity activity, VariableScope variableScope) {
-        super(activity, variableScope);
+    public MultipleInstanceActivityPropertyWriter(Activity activity, VariableScope variableScope, Set<DataObject> dataObjects) {
+        super(activity, variableScope, dataObjects);
     }
 
     public void setCollectionInput(String collectionInput) {
@@ -62,18 +65,15 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
         ioSpec.getDataInputs().add(dataInputElement);
 
         // check whether this exist
-        findPropertyById(collectionInput).ifPresent(prop -> {
-            dataInputElement.setItemSubjectRef(prop.getItemSubjectRef());
+        Optional<Property> property = findPropertyById(collectionInput);
+        Optional<DataObject> dataObject = findDataObjectById(collectionInput);
 
-            miloop.setLoopDataInputRef(dataInputElement);
+        if (property.isPresent()) {
+            processDataInput(dataInputElement, property.get());
+        } else if (dataObject.isPresent()) {
+            processDataInput(dataInputElement, dataObject.get());
+        }
 
-            addSafe(inputSet.getDataInputRefs(), dataInputElement);
-
-            DataInputAssociation dia = Bpmn2Factory.eINSTANCE.createDataInputAssociation();
-            dia.getSourceRef().add(prop);
-            dia.setTargetRef(dataInputElement);
-            addSafe(activity.getDataInputAssociations(), dia);
-        });
     }
 
     public void setCollectionOutput(String collectionOutput) {
@@ -87,19 +87,14 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
         DataOutput dataOutputElement = createDataOutput(id, suffix);
         addSafe(ioSpec.getDataOutputs(), dataOutputElement);
 
-        // check whether this exist or throws
-        findPropertyById(collectionOutput).ifPresent(prop -> {
-            dataOutputElement.setItemSubjectRef(prop.getItemSubjectRef());
+        Optional<Property> property = findPropertyById(collectionOutput);
+        Optional<DataObject> dataObject = findDataObjectById(collectionOutput);
 
-            miloop.setLoopDataOutputRef(dataOutputElement);
-
-            addSafe(outputSet.getDataOutputRefs(), dataOutputElement);
-
-            DataOutputAssociation doa = Bpmn2Factory.eINSTANCE.createDataOutputAssociation();
-            doa.getSourceRef().add(dataOutputElement);
-            doa.setTargetRef(prop);
-            addSafe(activity.getDataOutputAssociations(), doa);
-        });
+        if (property.isPresent()) {
+            processDataOutput(dataOutputElement, property.get());
+        } else if (dataObject.isPresent()) {
+            processDataOutput(dataOutputElement, dataObject.get());
+        }
     }
 
     public void setInput(String name) {
@@ -248,4 +243,35 @@ public class MultipleInstanceActivityPropertyWriter extends ActivityPropertyWrit
         return variableScope.lookup(id)
                 .map(VariableScope.Variable::getTypedIdentifier);
     }
+
+    private Optional<DataObject> findDataObjectById(String id) {
+        return  getDataObjects().stream().filter(elm -> elm.getId().equals(id)).findFirst();
+    }
+
+    private void processDataInput(DataInput dataInputElement, ItemAwareElement prop) {
+        dataInputElement.setItemSubjectRef(prop.getItemSubjectRef());
+
+        miloop.setLoopDataInputRef(dataInputElement);
+
+        addSafe(inputSet.getDataInputRefs(), dataInputElement);
+
+        DataInputAssociation dia = Bpmn2Factory.eINSTANCE.createDataInputAssociation();
+        dia.getSourceRef().add(prop);
+        dia.setTargetRef(dataInputElement);
+        addSafe(activity.getDataInputAssociations(), dia);
+    }
+
+    private void processDataOutput(DataOutput dataOutputElement, ItemAwareElement prop) {
+        dataOutputElement.setItemSubjectRef(prop.getItemSubjectRef());
+
+        miloop.setLoopDataOutputRef(dataOutputElement);
+
+        addSafe(outputSet.getDataOutputRefs(), dataOutputElement);
+
+        DataOutputAssociation doa = Bpmn2Factory.eINSTANCE.createDataOutputAssociation();
+        doa.getSourceRef().add(dataOutputElement);
+        doa.setTargetRef(prop);
+        addSafe(activity.getDataOutputAssociations(), doa);
+    }
+
 }

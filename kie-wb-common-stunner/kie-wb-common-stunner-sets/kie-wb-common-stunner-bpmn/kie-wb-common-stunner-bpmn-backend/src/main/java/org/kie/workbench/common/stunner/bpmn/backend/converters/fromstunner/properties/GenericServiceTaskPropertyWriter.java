@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.Set;
+
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.Interface;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Message;
@@ -36,8 +39,8 @@ public class GenericServiceTaskPropertyWriter extends MultipleInstanceActivityPr
     private final ServiceTask task;
     private final Interface iface;
 
-    public GenericServiceTaskPropertyWriter(ServiceTask task, VariableScope variableScope) {
-        super(task, variableScope);
+    public GenericServiceTaskPropertyWriter(ServiceTask task, VariableScope variableScope, Set<DataObject> dataObjects) {
+        super(task, variableScope, dataObjects);
         this.task = task;
         this.iface = bpmn2.createInterface();
     }

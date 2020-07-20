@@ -77,6 +77,18 @@ public interface StunnerWidgetsConstants {
     @TranslationKey(defaultValue = "Info")
     String MarshallingResponsePopup_UnknownMessageLabel = "MarshallingResponsePopup.UnknownMessageLabel";
 
+    @TranslationKey(defaultValue = "Data Object Exists with Same Name and Different Type - Will be Changed to (Object)")
+    String MarshallingResponsePopup_DataObjectsSameNameDifferentType = "MarshallingMessage.dataObjectsSameNameDifferentType";
+
+    @TranslationKey(defaultValue = "Data Object-Name")
+    String MarshallingResponsePopup_dataObjectWithName = "MarshallingMessage.dataObjectWithName";
+
+    @TranslationKey(defaultValue = "contains Illegal Chars ([space], #, :, [quotes]), will be replaced with (-)")
+    String MarshallingResponsePopup_dataObjectWithIllegalCharacters = "MarshallingMessage.dataObjectWithIllegalCharacters";
+
+    @TranslationKey(defaultValue = "Data Object with Invalid Name Exists")
+    String MarshallingResponsePopup_dataObjectWithInvalidName = "MarshallingMessage.dataObjectWithInvalidName";
+
     @TranslationKey(defaultValue = "Info")
     String SessionCardinalityStateHandler_EmptyStateCaption = "SessionCardinalityStateHandler.EmptyStateCaption";
 

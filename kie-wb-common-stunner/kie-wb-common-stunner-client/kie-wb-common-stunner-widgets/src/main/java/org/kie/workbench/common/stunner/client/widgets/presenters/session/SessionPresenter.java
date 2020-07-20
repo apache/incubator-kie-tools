@@ -88,7 +88,7 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
 
         View showMessage(final String message);
 
-        View showWarning();
+        View showWarning(final String message);
 
         View showError(final String message);
 

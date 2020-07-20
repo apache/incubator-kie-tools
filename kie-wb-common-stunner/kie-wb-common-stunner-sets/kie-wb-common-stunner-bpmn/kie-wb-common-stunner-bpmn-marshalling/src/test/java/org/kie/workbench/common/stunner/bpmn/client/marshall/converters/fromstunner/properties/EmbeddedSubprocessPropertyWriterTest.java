@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
+import java.util.HashSet;
+
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
@@ -26,7 +28,8 @@ import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.f
 public class EmbeddedSubprocessPropertyWriterTest {
 
     private SubProcessPropertyWriter tested = new SubProcessPropertyWriter(bpmn2.createSubProcess(),
-                                                                           new FlatVariableScope());
+                                                                           new FlatVariableScope(),
+                                                                           new HashSet<>());
 
     @Test
     public void testSetIsAsync() {

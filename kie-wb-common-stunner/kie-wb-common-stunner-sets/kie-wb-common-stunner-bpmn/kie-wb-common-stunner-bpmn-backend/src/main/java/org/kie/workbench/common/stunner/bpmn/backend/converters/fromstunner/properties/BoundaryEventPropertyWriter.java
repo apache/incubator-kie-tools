@@ -17,8 +17,10 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.bpmn2.BoundaryEvent;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.EventDefinition;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -34,8 +36,8 @@ public class BoundaryEventPropertyWriter extends CatchEventPropertyWriter {
 
     private final BoundaryEvent event;
 
-    public BoundaryEventPropertyWriter(BoundaryEvent event, VariableScope variableScope) {
-        super(event, variableScope);
+    public BoundaryEventPropertyWriter(BoundaryEvent event, VariableScope variableScope, Set<DataObject> dataObjects) {
+        super(event, variableScope, dataObjects);
         this.event = event;
     }
 

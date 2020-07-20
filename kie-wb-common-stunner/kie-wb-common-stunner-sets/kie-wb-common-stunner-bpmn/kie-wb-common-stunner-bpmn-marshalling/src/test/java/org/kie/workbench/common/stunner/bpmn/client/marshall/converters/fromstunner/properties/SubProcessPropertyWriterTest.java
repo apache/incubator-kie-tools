@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
+import java.util.HashSet;
+
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.emf.ecore.xmi.util.ECollections;
 import org.junit.Test;
@@ -42,7 +44,7 @@ public class SubProcessPropertyWriterTest extends AbstractBasePropertyWriterTest
 
     @Override
     protected SubProcessPropertyWriter newPropertyWriter(SubProcess baseElement, VariableScope variableScope) {
-        return new SubProcessPropertyWriter(baseElement, variableScope);
+        return new SubProcessPropertyWriter(baseElement, variableScope, new HashSet<>());
     }
 
     @Override
@@ -56,10 +58,10 @@ public class SubProcessPropertyWriterTest extends AbstractBasePropertyWriterTest
         when(process.getFlowElements()).thenReturn(ECollections.newBasicEList());
 
         BoundaryEventPropertyWriter boundaryEventPropertyWriter =
-                new BoundaryEventPropertyWriter(bpmn2.createBoundaryEvent(), variableScope);
+                new BoundaryEventPropertyWriter(bpmn2.createBoundaryEvent(), variableScope, new HashSet<>());
 
         UserTaskPropertyWriter userTaskPropertyWriter =
-                new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope);
+                new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope, new HashSet<>());
 
         propertyWriter.addChildElement(boundaryEventPropertyWriter);
         propertyWriter.addChildElement(userTaskPropertyWriter);

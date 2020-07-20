@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.bpmn2.Assignment;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
@@ -90,10 +91,12 @@ public class OutputAssignmentReaderTest {
     }
 
     @Test
-    public void testFromAssociationWithNonPropertyItem() {
-        ItemAwareElement item = mock(ItemAwareElement.class);
+    public void testFromAssociationWithDataObjectItem() {
+        ItemAwareElement item = mock(DataObject.class);
         DataOutputAssociation outputAssociation = mockDataOutputAssociation(SOURCE_NAME, item);
-        assertNull(OutputAssignmentReader.fromAssociation(outputAssociation));
+        OutputAssignmentReader outputReader = OutputAssignmentReader.fromAssociation(outputAssociation);
+        assertNotNull(outputReader);
+        assertNotNull(SOURCE_NAME, outputReader.getAssociationDeclaration());
     }
 
     private void assertResult(String sourceName, String targetId, AssociationDeclaration.Type type, AssociationDeclaration associationDeclaration) {

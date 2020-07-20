@@ -68,4 +68,5 @@ public interface BPMNGlyphFactory {
     ImageStripGlyph ASSOCIATION = ImageStripGlyph.create(BPMNIconsStrip.class, 63);
     ImageStripGlyph TASK_GENERIC_SERVICE = ImageStripGlyph.create(BPMNIconsStrip.class, 64);
     ImageStripGlyph TEXT_ANNOTATION = ImageStripGlyph.create(BPMNIconsStrip.class, 65);
+    ImageStripGlyph DATA_OBJECT = ImageStripGlyph.create(BPMNIconsStrip.class, 66);
 }

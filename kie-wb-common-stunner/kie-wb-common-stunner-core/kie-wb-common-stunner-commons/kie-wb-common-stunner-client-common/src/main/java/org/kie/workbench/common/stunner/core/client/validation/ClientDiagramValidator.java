@@ -19,9 +19,11 @@ package org.kie.workbench.common.stunner.core.client.validation;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.validation.DomainValidator;
 import org.kie.workbench.common.stunner.core.validation.ModelValidator;
 import org.kie.workbench.common.stunner.core.validation.impl.AbstractDiagramValidator;
 
@@ -33,6 +35,7 @@ public class ClientDiagramValidator extends AbstractDiagramValidator {
         this(null,
              null,
              null,
+             null,
              null);
     }
 
@@ -40,10 +43,12 @@ public class ClientDiagramValidator extends AbstractDiagramValidator {
     public ClientDiagramValidator(final DefinitionManager definitionManager,
                                   final RuleManager ruleManager,
                                   final TreeWalkTraverseProcessor treeWalkTraverseProcessor,
-                                  final ModelValidator modelValidator) {
+                                  final ModelValidator modelValidator,
+                                  final ManagedInstance<DomainValidator> validators) {
         super(definitionManager,
               ruleManager,
               treeWalkTraverseProcessor,
-              modelValidator);
+              modelValidator,
+              validators);
     }
 }

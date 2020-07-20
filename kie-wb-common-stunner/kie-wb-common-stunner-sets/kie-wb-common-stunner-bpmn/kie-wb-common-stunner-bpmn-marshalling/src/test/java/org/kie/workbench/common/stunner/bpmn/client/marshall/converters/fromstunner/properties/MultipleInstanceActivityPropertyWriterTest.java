@@ -16,14 +16,18 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
@@ -35,6 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util.FormalExpressionBodyHandler;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -43,6 +48,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class MultipleInstanceActivityPropertyWriterTest {
@@ -71,7 +78,7 @@ public class MultipleInstanceActivityPropertyWriterTest {
         when(variableScope.lookup(PROPERTY_ID)).thenReturn(Optional.of(variable));
         Property property = mockProperty(PROPERTY_ID, ITEM_ID);
         when(variable.getTypedIdentifier()).thenReturn(property);
-        writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope);
+        writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope, new HashSet<>());
     }
 
     @Test
@@ -96,6 +103,12 @@ public class MultipleInstanceActivityPropertyWriterTest {
         assertDontHasDataInputAssociation(activity, INPUT_VARIABLE_ID, inputId);
     }
 
+    private static DataObject mockDataObject(String id) {
+        DataObject element = Bpmn2Factory.eINSTANCE.createDataObject();
+        element.setId(id);
+        return element;
+    }
+
     @Test
     public void testSetCollectionInput() {
         writer.setCollectionInput(PROPERTY_ID);
@@ -104,6 +117,39 @@ public class MultipleInstanceActivityPropertyWriterTest {
         assertHasDataInput(activity.getIoSpecification(), inputId, ITEM_ID, IN_COLLECTION);
         assertHasDataInputAssociation(activity, PROPERTY_ID, inputId);
         assertEquals(inputId, ((MultiInstanceLoopCharacteristics) activity.getLoopCharacteristics()).getLoopDataInputRef().getId());
+        // Test with Data Objects
+        when(variableScope.lookup(PROPERTY_ID)).thenReturn(Optional.empty());
+
+        Set<DataObject> dataObjects = new HashSet<>();
+        DataObject dataObject = mockDataObject(PROPERTY_ID);
+
+        dataObjects.add(dataObject);
+        writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope, dataObjects);
+        writer.setCollectionInput(PROPERTY_ID);
+        assertInputsInitialized();
+        inputId = ACTIVITY_ID + "_" + IN_COLLECTION + "InputX";
+        assertHasDataInput(activity.getIoSpecification(), inputId, ITEM_ID, IN_COLLECTION);
+        assertHasDataInputAssociation(activity, PROPERTY_ID, inputId);
+        // Test no option
+        when(variableScope.lookup(PROPERTY_ID)).thenReturn(Optional.empty());
+
+        dataObjects.clear();
+        dataObject = mockDataObject("SomeOtherId");
+
+        dataObjects.add(dataObject);
+        writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope, dataObjects);
+        writer.setCollectionInput(PROPERTY_ID);
+        assertInputsInitialized();
+        inputId = ACTIVITY_ID + "_" + IN_COLLECTION + "InputX";
+        assertHasDataInput(activity.getIoSpecification(), inputId, ITEM_ID, IN_COLLECTION);
+        assertHasDataInputAssociation(activity, PROPERTY_ID, inputId);
+    }
+
+    @Test
+    public void testSetCollectionInputEmpty() {
+        writer = spy(writer);
+        writer.setCollectionInput(null);
+        verify(writer, Mockito.times(0)).setUpLoopCharacteristics();
     }
 
     @Test
@@ -160,6 +206,32 @@ public class MultipleInstanceActivityPropertyWriterTest {
         assertHasDataOutput(activity.getIoSpecification(), outputId, ITEM_ID, OUT_COLLECTION);
         assertHasDataOutputAssociation(activity, outputId, PROPERTY_ID);
         assertEquals(outputId, ((MultiInstanceLoopCharacteristics) activity.getLoopCharacteristics()).getLoopDataOutputRef().getId());
+
+        // Test with Data Objects
+        when(variableScope.lookup(PROPERTY_ID)).thenReturn(Optional.empty());
+
+        Set<DataObject> dataObjects = new HashSet<>();
+        DataObject dataObject = mockDataObject(PROPERTY_ID);
+
+        dataObjects.add(dataObject);
+        writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope, dataObjects);
+        writer.setCollectionOutput(PROPERTY_ID);
+        assertOutputsInitialized();
+        outputId = ACTIVITY_ID + "_" + OUT_COLLECTION + "OutputX";
+        assertHasDataOutputAssociation(activity, outputId, PROPERTY_ID);
+
+        // Test no option
+        when(variableScope.lookup(PROPERTY_ID)).thenReturn(Optional.empty());
+
+        dataObjects.clear();
+        dataObject = mockDataObject("SomeOtherId");
+
+        dataObjects.add(dataObject);
+        writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope, dataObjects);
+        writer.setCollectionOutput(PROPERTY_ID);
+        assertOutputsInitialized();
+        outputId = ACTIVITY_ID + "_" + OUT_COLLECTION + "OutputX";
+        assertHasDataOutputAssociation(activity, outputId, PROPERTY_ID);
     }
 
     @Test

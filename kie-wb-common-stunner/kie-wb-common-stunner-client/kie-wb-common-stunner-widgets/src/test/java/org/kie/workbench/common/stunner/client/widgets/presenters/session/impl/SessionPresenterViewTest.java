@@ -252,13 +252,13 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
         when(view.getSettings()).thenReturn(settings);
 
         //call 3 times
-        view.showWarning();
-        view.showWarning();
-        view.showWarning();
+        view.showWarning("Warning");
+        view.showWarning("Warning");
+        view.showWarning("Warning");
 
         //called just once
         verify(settings).setType("warning kie-session-notification");
-        verify(view).showNotification(warning, DETAILS_MESSAGE, IconType.EXCLAMATION_TRIANGLE);
+        verify(view, times(1)).showNotification(warning, "Warning", IconType.EXCLAMATION_TRIANGLE);
     }
 
     @Test

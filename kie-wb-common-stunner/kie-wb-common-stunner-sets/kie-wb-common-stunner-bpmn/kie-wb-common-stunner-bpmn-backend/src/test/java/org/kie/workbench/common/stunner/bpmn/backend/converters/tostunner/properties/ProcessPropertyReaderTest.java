@@ -84,7 +84,7 @@ public class ProcessPropertyReaderTest {
     @Test
     public void getProcessType() {
         ProcessPropertyWriter writer = new ProcessPropertyWriter(
-                bpmn2.createProcess(), null);
+                bpmn2.createProcess(), null, null);
         writer.setType(ProcessType.PRIVATE.getName());
 
         tested = new ProcessPropertyReader(writer.getProcess(),

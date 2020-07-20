@@ -16,11 +16,18 @@
 
 package org.kie.workbench.common.stunner.core.validation.impl;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import javax.enterprise.inject.Instance;
+
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +43,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.DomainValidator;
+import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelValidator;
 import org.kie.workbench.common.stunner.core.validation.Violation;
@@ -58,6 +67,11 @@ public class DiagramValidatorTest {
 
     public static final String MODEL_VIOLATION = "model violation";
     public static final String RULE_VIOLATION = "rule violation";
+
+    public static final String DEF_SET_ID = "defSetId";
+    public static final String UUID_0 = "uuid0";
+    public static final String UUID_1 = "uuid1";
+
     @Mock
     ModelValidator modelValidator;
 
@@ -66,6 +80,31 @@ public class DiagramValidatorTest {
 
     @Mock
     Metadata metadata;
+
+    Instance<DomainValidator> validators;
+
+    @Mock
+    private DomainValidator domainValidator;
+
+    private List<DomainViolation> domainViolationList;
+
+    @Mock
+    private DomainViolation domainViolation;
+
+    @Mock
+    private DomainViolation domainViolation2;
+
+    @Mock
+    private DomainViolation domainViolation3;
+
+    @Mock
+    private DomainViolation domainViolation4;
+
+    @Mock
+    private DomainViolation domainViolationNull;
+
+    @Mock
+    private DomainViolation domainViolationNullStr;
 
     private TestDiagramValidator tested;
     private TestingGraphMockHandler graphTestHandler;
@@ -76,7 +115,7 @@ public class DiagramValidatorTest {
             super(graphTestHandler.getDefinitionManager(),
                   graphTestHandler.getRuleManager(),
                   new TreeWalkTraverseProcessorImpl(),
-                  modelValidator);
+                  modelValidator, new ManagedInstanceStub<>(domainValidator));
         }
     }
 
@@ -118,6 +157,25 @@ public class DiagramValidatorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testValidateDiagram1InvalidBean() {
+
+        domainViolationList = Arrays.asList(domainViolation,
+                                            domainViolation2,
+                                            domainViolation3,
+                                            domainViolation4,
+                                            domainViolationNull,
+                                            domainViolationNullStr);
+        domainValidator = new DomainValidator() {
+            @Override
+            public String getDefinitionSetId() {
+                return DEF_SET_ID;
+            }
+
+            @Override
+            public void validate(Diagram entity, Consumer<Collection<DomainViolation>> resultConsumer) {
+                resultConsumer.accept(domainViolationList);
+            }
+        };
+
         final TestingGraphInstanceBuilder.TestGraph1 graph1 = TestingGraphInstanceBuilder.newGraph1(graphTestHandler);
         when(diagram.getGraph()).thenReturn(graphTestHandler.graph);
 
@@ -275,6 +333,22 @@ public class DiagramValidatorTest {
                            .allMatch(v -> v.getMessage().equals(RULE_VIOLATION)));
     }
 
+    private void mockViolations(List<DomainViolation> violations) {
+        violations.stream().forEach(v -> {
+            when(v.getViolationType()).thenReturn(Violation.Type.ERROR);
+            when(v.getUUID()).thenReturn(UUID_1);
+        });
+
+        DomainViolation first = violations.get(0);
+        when(first.getUUID()).thenReturn(UUID_0);
+
+        DomainViolation last1 = violations.get(violations.size() - 2);
+        when(last1.getUUID()).thenReturn(null);
+
+        DomainViolation last = violations.get(violations.size() - 1);
+        when(last.getUUID()).thenReturn("null");
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     public void testValidateDiagramWithNullBean() {
@@ -282,5 +356,53 @@ public class DiagramValidatorTest {
         nullNode.setContent(null);
         when(diagram.getGraph()).thenReturn(graphTestHandler.graph);
         tested.validate(diagram, this::assertNoErrors);
+    }
+
+    public class ManagedInstanceStub<T> implements ManagedInstance<T> {
+
+        private final T[] instances;
+
+        public ManagedInstanceStub(T... instances) {
+            this.instances = instances;
+        }
+
+        @Override
+        public ManagedInstance<T> select(Annotation... annotations) {
+            return this;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <U extends T> ManagedInstance<U> select(Class<U> aClass, Annotation... annotations) {
+            return (ManagedInstance<U>) this;
+        }
+
+        @Override
+        public boolean isUnsatisfied() {
+            return false;
+        }
+
+        @Override
+        public boolean isAmbiguous() {
+            return false;
+        }
+
+        @Override
+        public void destroy(T t) {
+        }
+
+        @Override
+        public void destroyAll() {
+        }
+
+        @Override
+        public Iterator<T> iterator() {
+            return Arrays.asList(this.instances).iterator();
+        }
+
+        @Override
+        public T get() {
+            return instances[0];
+        }
     }
 }

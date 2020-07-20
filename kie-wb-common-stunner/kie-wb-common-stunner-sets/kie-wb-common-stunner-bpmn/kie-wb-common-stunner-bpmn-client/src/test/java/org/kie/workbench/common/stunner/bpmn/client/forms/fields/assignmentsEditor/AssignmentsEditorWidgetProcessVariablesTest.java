@@ -26,10 +26,13 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.DataObject;
 import org.kie.workbench.common.stunner.bpmn.definition.EmbeddedSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.MultipleInstanceSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.bpmn.definition.property.artifacts.DataObjectType;
+import org.kie.workbench.common.stunner.bpmn.definition.property.artifacts.DataObjectTypeValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
@@ -37,19 +40,28 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.variables.Proce
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.session.impl.DefaultViewerSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AssignmentsEditorWidgetProcessVariablesTest {
@@ -69,6 +81,8 @@ public class AssignmentsEditorWidgetProcessVariablesTest {
     @Mock
     private EditorSession clientSession;
     @Mock
+    private DefaultViewerSession viewerSession;
+    @Mock
     private UserTask userTask;
     @Mock
     private TaskGeneralSet taskGeneralSet;
@@ -79,6 +93,8 @@ public class AssignmentsEditorWidgetProcessVariablesTest {
     @Mock
     private Diagram diagram;
     @Mock
+    private Metadata metadata;
+    @Mock
     private GraphUtils graphUtils;
     @Mock
     private Graph graph;
@@ -88,6 +104,8 @@ public class AssignmentsEditorWidgetProcessVariablesTest {
     private BPMNDiagramImpl bpmnDiagram;
     @Mock
     private View nodeView;
+    @Mock
+    private View<Object> otherView;
     @Mock
     private View parentNodeView;
     @Mock
@@ -114,6 +132,12 @@ public class AssignmentsEditorWidgetProcessVariablesTest {
     private MultipleInstanceSubprocess multipleInstanceSubprocess;
     @Mock
     private EmbeddedSubprocess embeddedSubprocess;
+    @Mock
+    private View<DataObject> dataObjectView;
+    @Mock
+    private Node<View<DataObject>, ?> dataObjectNode;
+    @Mock
+    private Node dataObjectparentNode;
 
     @Before
     public void setup() {
@@ -124,6 +148,8 @@ public class AssignmentsEditorWidgetProcessVariablesTest {
         when(canvasSessionManager.getCurrentSession()).thenReturn(clientSession);
         when(clientSession.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getCanvasRootUUID()).thenReturn("rootId");
         when(diagram.getGraph()).thenReturn(graph);
         List<Edge> edges = new ArrayList<>();
         List<String> selectedNodes = new ArrayList<>();
@@ -139,6 +165,7 @@ public class AssignmentsEditorWidgetProcessVariablesTest {
         when(selectionControl.getSelectedItems()).thenReturn(selectedNodes);
         when(widget.getSelectedElementUUID(clientSession)).thenReturn(SELECTED_ELEMENT_UUID);
         when(widget.getSelectedElement()).thenReturn(node);
+        when(node.getUUID()).thenReturn("nodeId");
         when(node.getContent()).thenReturn(nodeView);
         when(parentNode.getContent()).thenReturn(parentNodeView);
         when(nodeView.getDefinition()).thenReturn(bpmnDiagram);
@@ -148,6 +175,8 @@ public class AssignmentsEditorWidgetProcessVariablesTest {
         when(parentNodeProcessData.getProcessVariables()).thenReturn(parentNodeProcessVariables);
         when(parentNodeProcessVariables.getValue()).thenReturn(PARENT_NODE_PROCESS_VARIABLES);
         when(graphUtils.getParent(node)).thenReturn(parentNode);
+        when(parentNode.getUUID()).thenReturn("rootId");
+        when(widget.isBPMNDefinition(any())).thenCallRealMethod();
     }
 
     @Test
@@ -157,6 +186,81 @@ public class AssignmentsEditorWidgetProcessVariablesTest {
         when(eventSubprocess.getProcessData()).thenReturn(parentNodeProcessData);
         createWidget();
         assertEquals(PROCESS_VARIABLES + "," + PARENT_NODE_PROCESS_VARIABLES, widget.getProcessVariables());
+    }
+
+    @Test
+    public void testGetProcessVariableEventSubprocessViewerSessionUnselected() {
+        when(viewerSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasSessionManager.getCurrentSession()).thenReturn(viewerSession);
+        testAddGraphNodes();
+        when(parentNodeView.getDefinition()).thenReturn(eventSubprocess);
+        when(eventSubprocess.getProcessData()).thenReturn(parentNodeProcessData);
+        createWidget();
+        assertEquals(PROCESS_VARIABLES + "," + PARENT_NODE_PROCESS_VARIABLES, widget.getProcessVariables());
+    }
+
+    @Test
+    public void testGetProcessVariableEventSubprocessSelectionNull() {
+        when(selectionControl.getSelectedItems()).thenReturn(null);
+        testAddGraphNodes();
+        when(parentNodeView.getDefinition()).thenReturn(eventSubprocess);
+        when(eventSubprocess.getProcessData()).thenReturn(parentNodeProcessData);
+        createWidget();
+        assertEquals(PROCESS_VARIABLES + "," + PARENT_NODE_PROCESS_VARIABLES, widget.getProcessVariables());
+    }
+
+    @Test
+    public void testGetProcessVariableEventSubprocessSelectionEmpty() {
+        when(selectionControl.getSelectedItems()).thenReturn(new ArrayList<>());
+        testAddGraphNodes();
+        when(parentNodeView.getDefinition()).thenReturn(eventSubprocess);
+        when(eventSubprocess.getProcessData()).thenReturn(parentNodeProcessData);
+        createWidget();
+        assertEquals(PROCESS_VARIABLES + "," + PARENT_NODE_PROCESS_VARIABLES, widget.getProcessVariables());
+    }
+
+    @Test
+    public void testGetProcessVariableEventSubprocessSelectionControlNull() {
+        when(clientSession.getSelectionControl()).thenReturn(null);
+
+        testAddGraphNodes();
+        when(parentNodeView.getDefinition()).thenReturn(eventSubprocess);
+        when(eventSubprocess.getProcessData()).thenReturn(parentNodeProcessData);
+        createWidget();
+
+        assertEquals(PROCESS_VARIABLES + "," + PARENT_NODE_PROCESS_VARIABLES, widget.getProcessVariables());
+    }
+
+    @Test
+    public void testViewAndContent() {
+        Node<View<DataObject>, ?> dataObjectNode;
+
+        DataObject dataObject = new DataObject();
+        dataObject.getGeneral().getDocumentation().setValue("doc");
+        dataObject.setName(new Name("name"));
+        dataObject.setType(new DataObjectType(new DataObjectTypeValue("name")));
+
+        dataObjectNode = new NodeImpl<>(UUID.uuid());
+        dataObjectNode.setContent(dataObjectView);
+        when(dataObjectView.getDefinition()).thenReturn(dataObject);
+
+        boolean isBPMNDefinition = widget.isBPMNDefinition(dataObjectNode);
+        assertTrue(" Must be a BPMN Definition", isBPMNDefinition);
+
+        Node<View<Object>, ?> objectNode = new NodeImpl<>(UUID.uuid());
+        objectNode.setContent(otherView);
+        when(otherView.getDefinition()).thenReturn(new Object());
+
+        isBPMNDefinition = widget.isBPMNDefinition(objectNode);
+        assertFalse(" Must not be a BPMN Definition", isBPMNDefinition);
+
+        Node<Element, ?> objectNode2 = new NodeImpl<>(UUID.uuid());
+        Element someElement = mock(Element.class);
+        objectNode2.setContent(someElement);
+        when(otherView.getDefinition()).thenReturn(new Object());
+
+        isBPMNDefinition = widget.isBPMNDefinition(objectNode2);
+        assertFalse(" Must not be a BPMN Definition", isBPMNDefinition);
     }
 
     @Test
@@ -193,6 +297,30 @@ public class AssignmentsEditorWidgetProcessVariablesTest {
         when(eventSubprocess.getProcessData()).thenReturn(parentNodeProcessData);
         createWidget();
         assertEquals(PARENT_NODE_PROCESS_VARIABLES + "," + PROCESS_VARIABLES, widget.getProcessVariables());
+    }
+
+    @Test
+    public void testGetProcessVariableFromDataObjects() {
+
+        DataObject dataObject = new DataObject();
+        dataObject.getGeneral().getDocumentation().setValue("doc");
+        dataObject.setName(new Name("name"));
+        dataObject.setType(new DataObjectType(new DataObjectTypeValue("com.myType.dataObject")));
+
+        final String uuid = UUID.uuid();
+        when(dataObjectNode.getUUID()).thenReturn("uuid");
+        when(dataObjectNode.getContent()).thenReturn(dataObjectView);
+        when(dataObjectView.getDefinition()).thenReturn(dataObject);
+
+        graphNodes.clear();
+        graphNodes.add(dataObjectNode);
+        graphNodes.add(parentNode);
+
+        when(parentNodeView.getDefinition()).thenReturn(dataObjectNode);
+        when(dataObjectNode.getUUID()).thenReturn("rootId");
+
+        createWidget();
+        assertEquals(dataObject.getName().getValue() + ":" + dataObject.getType().getValue().getType(), widget.getProcessVariables());
     }
 
     private void testAddGraphNodes() {

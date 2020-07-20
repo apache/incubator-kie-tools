@@ -46,7 +46,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 public abstract class AbstractProjectDiagramEditorCore<M extends Metadata, D extends Diagram<Graph, M>,
         C extends KogitoDiagramResource<D>, P extends ProjectDiagramEditorProxy<C>> extends AbstractDiagramEditorCore<M,
-                D, C, P> {
+        D, C, P> {
 
     public AbstractProjectDiagramEditorCore(final View baseEditorView,
                                             final TextEditorView xmlEditorView,

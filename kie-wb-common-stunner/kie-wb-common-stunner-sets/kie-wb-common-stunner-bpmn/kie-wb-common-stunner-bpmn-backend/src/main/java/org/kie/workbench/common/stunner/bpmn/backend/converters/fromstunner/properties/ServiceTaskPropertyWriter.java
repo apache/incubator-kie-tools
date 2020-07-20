@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.Set;
+
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.Task;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
@@ -28,8 +31,8 @@ public class ServiceTaskPropertyWriter extends ActivityPropertyWriter {
 
     private final Task task;
 
-    public ServiceTaskPropertyWriter(Task task, VariableScope variableScope) {
-        super(task, variableScope);
+    public ServiceTaskPropertyWriter(Task task, VariableScope variableScope, Set<DataObject> dataObject) {
+        super(task, variableScope, dataObject);
         this.task = task;
     }
 

@@ -16,8 +16,11 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.Set;
+
 import org.eclipse.bpmn2.AdHocOrdering;
 import org.eclipse.bpmn2.AdHocSubProcess;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.FormalExpression;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseAdHocActivationCondition;
@@ -33,8 +36,8 @@ public class AdHocSubProcessPropertyWriter extends SubProcessPropertyWriter {
 
     private final AdHocSubProcess process;
 
-    public AdHocSubProcessPropertyWriter(AdHocSubProcess process, VariableScope variableScope) {
-        super(process, variableScope);
+    public AdHocSubProcessPropertyWriter(AdHocSubProcess process, VariableScope variableScope, Set<DataObject> dataObjects) {
+        super(process, variableScope, dataObjects);
         this.process = process;
     }
 

@@ -19,6 +19,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.NodeMatch;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNViewDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseArtifacts;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
@@ -28,7 +29,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
-import org.kie.workbench.common.stunner.bpmn.definition.TextAnnotation;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -46,10 +46,10 @@ public class FlowElementConverter {
                 .when(BaseCatchingIntermediateEvent.class, converterFactory.intermediateCatchEventConverter()::toFlowElement)
                 .when(BaseThrowingIntermediateEvent.class, converterFactory.intermediateThrowEventConverter()::toFlowElement)
                 .when(BaseEndEvent.class, converterFactory.endEventConverter()::toFlowElement)
+                .when(BaseArtifacts.class, converterFactory.textAnnotationConverter()::toElement)
                 .when(BaseTask.class, converterFactory.taskConverter()::toFlowElement)
                 .when(BaseGateway.class, converterFactory.gatewayConverter()::toFlowElement)
                 .when(BaseReusableSubprocess.class, converterFactory.reusableSubprocessConverter()::toFlowElement)
-                .when(TextAnnotation.class, converterFactory.textAnnotationConverter()::toElement)
                 .ignore(BaseSubprocess.class)
                 .ignore(Lane.class)
                 .apply(node);

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import com.github.javaparser.utils.Pair;
@@ -44,7 +45,7 @@ public class UserTaskPropertyWriterTest {
     @Test
     public void startsFromUnderscore() {
         UserTask userTask = bpmn2.createUserTask();
-        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(userTask, variableScope);
+        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(userTask, variableScope, new HashSet<>());
         Actors actor = new Actors();
         actor.setValue("startsFromUnderscore");
         userTaskPropertyWriter.setActors(actor);
@@ -55,7 +56,7 @@ public class UserTaskPropertyWriterTest {
     @Test
     public void testEmptyOutputSets() {
         UserTask userTask = bpmn2.createUserTask();
-        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(userTask, variableScope);
+        UserTaskPropertyWriter userTaskPropertyWriter = new UserTaskPropertyWriter(userTask, variableScope, new HashSet<>());
         assertEquals(0, userTaskPropertyWriter.getIoSpecification().getOutputSets().size());
     }
 

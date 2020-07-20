@@ -34,7 +34,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -50,25 +49,12 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         startElement = "general",
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-public class TextAnnotation implements BPMNViewDefinition {
-
-    @Category
-    public static final transient String category = BPMNCategories.TEXT_ANNOTATION;
+public class TextAnnotation extends BaseArtifacts {
 
     @PropertySet
     @FormField
     @Valid
     protected BPMNGeneralSet general;
-
-    @PropertySet
-    @Valid
-    protected BackgroundSet backgroundSet;
-
-    @PropertySet
-    private FontSet fontSet;
-
-    @PropertySet
-    protected RectangleDimensionsSet dimensionsSet;
 
     @Labels
     private final static Set<String> labels = new Sets.Builder<String>()
@@ -88,14 +74,8 @@ public class TextAnnotation implements BPMNViewDefinition {
                           final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                           final @MapsTo("fontSet") FontSet fontSet,
                           final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
+        super(backgroundSet, fontSet, dimensionsSet);
         this.general = general;
-        this.backgroundSet = backgroundSet;
-        this.fontSet = fontSet;
-        this.dimensionsSet = dimensionsSet;
-    }
-
-    public String getCategory() {
-        return category;
     }
 
     public Set<String> getLabels() {
@@ -106,32 +86,8 @@ public class TextAnnotation implements BPMNViewDefinition {
         return general;
     }
 
-    public BackgroundSet getBackgroundSet() {
-        return backgroundSet;
-    }
-
-    public FontSet getFontSet() {
-        return fontSet;
-    }
-
-    public void setFontSet(final FontSet fontSet) {
-        this.fontSet = fontSet;
-    }
-
-    public void setBackgroundSet(final BackgroundSet backgroundSet) {
-        this.backgroundSet = backgroundSet;
-    }
-
     public void setGeneral(final BPMNGeneralSet general) {
         this.general = general;
-    }
-
-    public RectangleDimensionsSet getDimensionsSet() {
-        return dimensionsSet;
-    }
-
-    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
-        this.dimensionsSet = dimensionsSet;
     }
 
     @Override

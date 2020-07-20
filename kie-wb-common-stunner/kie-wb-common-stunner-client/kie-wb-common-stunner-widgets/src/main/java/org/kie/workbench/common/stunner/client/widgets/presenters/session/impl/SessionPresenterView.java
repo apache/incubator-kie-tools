@@ -53,7 +53,6 @@ import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
 import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Error;
 import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Info;
-import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Notifications;
 import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Warning;
 
 // TODO: i18n.
@@ -62,7 +61,7 @@ import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.Stu
 public class SessionPresenterView extends Composite
         implements SessionPresenter.View {
 
-    protected static final int DELAY = 1000;
+    protected static final int DELAY = 3000;
     protected static final int NOTIFICATION_LOCK_TIMEOUT = DELAY + 1000;
 
     @Inject
@@ -207,11 +206,11 @@ public class SessionPresenterView extends Composite
     }
 
     @Override
-    public SessionPresenter.View showWarning() {
+    public SessionPresenter.View showWarning(final String message) {
         singleNotify(() -> {
             getSettings().setType(kieNotificationCssClass(NotifyType.WARNING));
             showNotification(translate(SessionPresenterView_Warning),
-                             translate(SessionPresenterView_Notifications),
+                             message,
                              IconType.EXCLAMATION_TRIANGLE);
         });
         return this;

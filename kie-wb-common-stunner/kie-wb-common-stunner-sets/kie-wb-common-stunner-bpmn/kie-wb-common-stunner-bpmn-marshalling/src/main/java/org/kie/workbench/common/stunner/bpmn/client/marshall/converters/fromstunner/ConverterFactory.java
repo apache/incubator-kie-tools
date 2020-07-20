@@ -16,6 +16,8 @@
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner;
 
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.activities.ReusableSubprocessConverter;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.artifacts.DataObjectConverter;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.artifacts.TextAnnotationConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.associations.AssociationConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.events.EndEventConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.events.IntermediateCatchEventConverter;
@@ -28,7 +30,6 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstun
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.sequenceflows.SequenceFlowConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.tasks.TaskConverter;
-import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.textannotation.TextAnnotationConverter;
 
 public class ConverterFactory {
 
@@ -46,6 +47,7 @@ public class ConverterFactory {
     private final EdgeConverter edgeConverter;
     private final FlowElementPostConverter flowElementPostConverter;
     private final TextAnnotationConverter textAnnotationConverter;
+    private final DataObjectConverter dataObjectConverter;
 
     public ConverterFactory(DefinitionsBuildingContext context,
                             PropertyWriterFactory propertyWriterFactory) {
@@ -65,6 +67,7 @@ public class ConverterFactory {
         this.edgeConverter = new EdgeConverter(this);
         this.flowElementPostConverter = new FlowElementPostConverter();
         this.textAnnotationConverter = new TextAnnotationConverter(propertyWriterFactory);
+        this.dataObjectConverter = new DataObjectConverter(propertyWriterFactory);
     }
 
     public TaskConverter taskConverter() {
@@ -129,5 +132,9 @@ public class ConverterFactory {
 
     public TextAnnotationConverter textAnnotationConverter() {
         return textAnnotationConverter;
+    }
+
+    public DataObjectConverter dataObjectConverter() {
+        return dataObjectConverter;
     }
 }

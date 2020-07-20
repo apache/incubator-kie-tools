@@ -60,7 +60,7 @@ public class GenericServiceTaskPropertyReaderTest {
                                             "inMessageStructure",
                                             "outMessageStructure");
 
-        GenericServiceTaskPropertyWriter writer = new GenericServiceTaskPropertyWriter(serviceTask, null);
+        GenericServiceTaskPropertyWriter writer = new GenericServiceTaskPropertyWriter(serviceTask, null, null);
         writer.setValue(value);
         writer.setSLADueDate(SLA_DUE_DATE);
         writer.setAsync(false);

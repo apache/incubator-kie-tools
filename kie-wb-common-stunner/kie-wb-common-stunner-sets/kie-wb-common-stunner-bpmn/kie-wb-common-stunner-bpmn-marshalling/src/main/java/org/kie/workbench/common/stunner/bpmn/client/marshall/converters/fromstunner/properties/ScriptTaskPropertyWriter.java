@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
+import java.util.Set;
+
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.Scripts;
@@ -27,8 +30,8 @@ public class ScriptTaskPropertyWriter extends ActivityPropertyWriter {
 
     private final ScriptTask scriptTask;
 
-    public ScriptTaskPropertyWriter(ScriptTask scriptTask, VariableScope variableScope) {
-        super(scriptTask, variableScope);
+    public ScriptTaskPropertyWriter(ScriptTask scriptTask, VariableScope variableScope, Set<DataObject> dataObjects) {
+        super(scriptTask, variableScope, dataObjects);
         this.scriptTask = scriptTask;
     }
 

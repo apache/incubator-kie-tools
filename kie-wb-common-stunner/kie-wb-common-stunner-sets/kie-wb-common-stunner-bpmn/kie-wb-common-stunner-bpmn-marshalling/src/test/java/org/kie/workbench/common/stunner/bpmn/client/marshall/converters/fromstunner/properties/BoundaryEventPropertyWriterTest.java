@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
+import java.util.HashSet;
+
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.EventDefinition;
@@ -51,7 +53,7 @@ public class BoundaryEventPropertyWriterTest extends AbstractBasePropertyWriterT
 
     @Override
     protected BoundaryEventPropertyWriter newPropertyWriter(BoundaryEvent baseElement, VariableScope variableScope) {
-        return new BoundaryEventPropertyWriter(baseElement, variableScope);
+        return new BoundaryEventPropertyWriter(baseElement, variableScope, new HashSet<>());
     }
 
     @Override

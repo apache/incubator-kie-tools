@@ -17,8 +17,12 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
+import org.eclipse.bpmn2.DataObject;
+import org.eclipse.bpmn2.DataObjectReference;
+import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.di.BPMNEdge;
 import org.eclipse.bpmn2.di.BPMNShape;
@@ -58,7 +62,7 @@ public class ProcessPropertyWriterTest {
     public void before() {
         this.variableScope = new FlatVariableScope();
         this.p = new ProcessPropertyWriter(
-                bpmn2.createProcess(), variableScope);
+                bpmn2.createProcess(), variableScope, new HashSet<>());
     }
 
     @Test
@@ -73,17 +77,33 @@ public class ProcessPropertyWriterTest {
         Process process = p.getProcess();
 
         BoundaryEventPropertyWriter boundaryEventPropertyWriter =
-                new BoundaryEventPropertyWriter(bpmn2.createBoundaryEvent(), variableScope);
+                new BoundaryEventPropertyWriter(bpmn2.createBoundaryEvent(), variableScope, new HashSet<>());
 
         UserTaskPropertyWriter userTaskPropertyWriter =
-                new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope);
+                new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope, new HashSet<>());
 
+        SubProcessPropertyWriter subProcessPropertyWriter = new SubProcessPropertyWriter(bpmn2.createSubProcess(), variableScope, new HashSet<>());
+
+        final DataObjectReference dataObjectReference = bpmn2.createDataObjectReference();
+        DataObjectPropertyWriter dataObjectPropertyWriter = new DataObjectPropertyWriter(dataObjectReference, variableScope, new HashSet<>());
+
+        final DataObject dataObject = dataObjectPropertyWriter.getElement().getDataObjectRef();
+        dataObject.getItemSubjectRef();
+
+        ItemDefinition itemDefinition = mock(ItemDefinition.class);
+        when(itemDefinition.getId()).thenReturn("someId");
+        dataObject.setItemSubjectRef(itemDefinition);
+
+        dataObject.getItemSubjectRef();
+        subProcessPropertyWriter.addChildElement(dataObjectPropertyWriter);
+        p.addChildElement(subProcessPropertyWriter);
         p.addChildElement(boundaryEventPropertyWriter);
         p.addChildElement(userTaskPropertyWriter);
 
         // boundary event should always occur after other nodes (compat with old marshallers)
         assertThat(process.getFlowElements().get(0)).isEqualTo(userTaskPropertyWriter.getFlowElement());
-        assertThat(process.getFlowElements().get(1)).isEqualTo(boundaryEventPropertyWriter.getFlowElement());
+        assertThat(process.getFlowElements().get(1)).isEqualTo(subProcessPropertyWriter.getFlowElement());
+        assertThat(process.getFlowElements().get(2)).isEqualTo(boundaryEventPropertyWriter.getFlowElement());
     }
 
     @Test

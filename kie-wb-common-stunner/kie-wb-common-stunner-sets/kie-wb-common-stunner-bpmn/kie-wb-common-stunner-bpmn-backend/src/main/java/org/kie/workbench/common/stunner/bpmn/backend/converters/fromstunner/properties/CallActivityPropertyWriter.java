@@ -16,7 +16,10 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.Set;
+
 import org.eclipse.bpmn2.CallActivity;
+import org.eclipse.bpmn2.DataObject;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomAttribute;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties.Scripts;
@@ -28,8 +31,8 @@ public class CallActivityPropertyWriter extends MultipleInstanceActivityProperty
 
     private final CallActivity activity;
 
-    public CallActivityPropertyWriter(CallActivity activity, VariableScope variableScope) {
-        super(activity, variableScope);
+    public CallActivityPropertyWriter(CallActivity activity, VariableScope variableScope, Set<DataObject> dataObjects) {
+        super(activity, variableScope, dataObjects);
         this.activity = activity;
     }
 

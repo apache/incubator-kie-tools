@@ -37,8 +37,8 @@ public class BPMNCategoryDefinitionProviderTest {
     }
 
     @Test
-    public void testTextAnnotationCategory() {
-        SvgDataUriGlyph apply = (SvgDataUriGlyph) tested.glyphProvider().apply(BPMNCategories.TEXT_ANNOTATION);
-        assertEquals(apply.getSvg().asString(), "categoryTextAnnotation");
+    public void testArtifactsCategory() {
+        SvgDataUriGlyph apply = (SvgDataUriGlyph) tested.glyphProvider().apply(BPMNCategories.ARTIFACTS);
+        assertEquals(apply.getSvg().asString(), "categoryArtifacts");
     }
 }

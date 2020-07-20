@@ -19,9 +19,11 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunn
 import java.util.Optional;
 
 import org.eclipse.bpmn2.Assignment;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.Property;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.AssociationDeclaration;
@@ -32,9 +34,10 @@ public class OutputAssignmentReader {
     private final AssociationDeclaration associationDeclaration;
 
     public static OutputAssignmentReader fromAssociation(DataOutputAssociation out) {
-        if (out.getTargetRef() instanceof Property) {
+
+        if (out.getTargetRef() instanceof ItemAwareElement) {
             String sourceName = ((DataOutput) out.getSourceRef().get(0)).getName();
-            return new OutputAssignmentReader(sourceName, (Property) out.getTargetRef());
+            return new OutputAssignmentReader(sourceName, out.getTargetRef());
         }
 
         if (out.getAssignment() != null && !out.getAssignment().isEmpty() && out.getSourceRef() != null && !out.getSourceRef().isEmpty()) {
@@ -45,7 +48,7 @@ public class OutputAssignmentReader {
         return null;
     }
 
-    OutputAssignmentReader(String sourceName, Property target) {
+    OutputAssignmentReader(String sourceName, ItemAwareElement target) {
         String propertyName = getPropertyName(target);
         this.associationDeclaration = new AssociationDeclaration(
                 AssociationDeclaration.Direction.Output,
@@ -70,8 +73,13 @@ public class OutputAssignmentReader {
     }
 
     // fallback to ID for https://issues.jboss.org/browse/JBPM-6708
-    private static String getPropertyName(Property prop) {
-        return prop.getName() == null ? prop.getId() : prop.getName();
+    private static String getPropertyName(ItemAwareElement prop) {
+        if(prop instanceof Property) {
+            return ((Property)prop).getName() == null ? prop.getId() : ((Property)prop).getName();
+        } else if(prop instanceof DataObject) {
+            return ((DataObject)prop).getName() == null ? prop.getId() : ((DataObject)prop).getName();
+        }
+        return null;
     }
 
     private String encode(String body) {

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.properties;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.bpmn2.Assignment;
@@ -71,9 +72,9 @@ public class ParsedAssignmentsInfoTest {
 
         VariableScope variableScope = new FlatVariableScope();
         List<InitializedVariable.InitializedInputVariable> initializedInputVariables =
-                tested.createInitializedInputVariables("", variableScope);
+                tested.createInitializedInputVariables("", variableScope, new HashSet<>());
 
-        assertEquals(initializedInputVariables.size(), 1);
+        assertEquals(1, initializedInputVariables.size());
 
         InitializedVariable.InitializedInputVariable initializedInputVariable =
                 initializedInputVariables.get(0);
@@ -115,7 +116,7 @@ public class ParsedAssignmentsInfoTest {
         variableScope.declare("", "BooleanTest", "Boolean");
 
         List<InitializedVariable.InitializedOutputVariable> initializedOutputVariables =
-                tested.createInitializedOutputVariables("", variableScope);
+                tested.createInitializedOutputVariables("", variableScope, new HashSet<>());
 
         assertEquals(1, initializedOutputVariables.size());
 
@@ -152,7 +153,7 @@ public class ParsedAssignmentsInfoTest {
 
         VariableScope variableScope = new FlatVariableScope();
         List<InitializedVariable.InitializedOutputVariable> initializedOutputVariables =
-                testedNoAssociation.createInitializedOutputVariables("", variableScope);
+                testedNoAssociation.createInitializedOutputVariables("", variableScope, new HashSet<>());
 
         assertEquals(1, initializedOutputVariables.size());
 
@@ -185,7 +186,7 @@ public class ParsedAssignmentsInfoTest {
         variableScope.declare("", "BooleanTest2", "Boolean");
 
         List<InitializedVariable.InitializedOutputVariable> initializedOutputVariables =
-                testedDuplicates.createInitializedOutputVariables("", variableScope);
+                testedDuplicates.createInitializedOutputVariables("", variableScope, new HashSet<>());
 
         assertEquals(2, initializedOutputVariables.size());
 

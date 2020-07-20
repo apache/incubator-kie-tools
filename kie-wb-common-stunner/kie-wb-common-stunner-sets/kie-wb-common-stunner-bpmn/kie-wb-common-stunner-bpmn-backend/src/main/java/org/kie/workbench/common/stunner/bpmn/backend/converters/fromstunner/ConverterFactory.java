@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner;
 
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.activities.ReusableSubprocessConverter;
+import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.arifacts.ArtifactsConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.associations.AssociationConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.events.EndEventConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.events.IntermediateCatchEventConverter;
@@ -28,7 +29,6 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.proc
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.sequenceflows.SequenceFlowConverter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.tasks.TaskConverter;
-import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.textannotation.TextAnnotationConverter;
 
 public class ConverterFactory {
 
@@ -45,7 +45,7 @@ public class ConverterFactory {
     private final ReusableSubprocessConverter reusableSubprocessConverter;
     private final EdgeConverter edgeConverter;
     private final FlowElementPostConverter flowElementPostConverter;
-    private final TextAnnotationConverter textAnnotationConverter;
+    private final ArtifactsConverter artifactsConverter;
 
     public ConverterFactory(DefinitionsBuildingContext context,
                             PropertyWriterFactory propertyWriterFactory) {
@@ -64,7 +64,7 @@ public class ConverterFactory {
         this.reusableSubprocessConverter = new ReusableSubprocessConverter(propertyWriterFactory);
         this.edgeConverter = new EdgeConverter(this);
         this.flowElementPostConverter = new FlowElementPostConverter();
-        this.textAnnotationConverter = new TextAnnotationConverter(propertyWriterFactory);
+        this.artifactsConverter = new ArtifactsConverter(propertyWriterFactory);
     }
 
     public TaskConverter taskConverter() {
@@ -127,7 +127,7 @@ public class ConverterFactory {
         return flowElementPostConverter;
     }
 
-    public TextAnnotationConverter textAnnotationConverter() {
-        return textAnnotationConverter;
+    public ArtifactsConverter textAnnotationConverter() {
+        return artifactsConverter;
     }
 }

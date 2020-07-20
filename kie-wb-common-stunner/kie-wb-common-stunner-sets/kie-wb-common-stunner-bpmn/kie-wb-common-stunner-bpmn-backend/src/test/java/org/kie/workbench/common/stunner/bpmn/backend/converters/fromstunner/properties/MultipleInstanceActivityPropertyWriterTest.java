@@ -16,24 +16,32 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.bpmn2.Activity;
+import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.DataAssociation;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.FormalExpression;
 import org.eclipse.bpmn2.InputOutputSpecification;
+import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
 import org.eclipse.bpmn2.MultiInstanceLoopCharacteristics;
 import org.eclipse.bpmn2.Property;
+import org.eclipse.bpmn2.impl.ItemAwareElementImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -42,6 +50,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class MultipleInstanceActivityPropertyWriterTest {
@@ -70,7 +80,7 @@ public class MultipleInstanceActivityPropertyWriterTest {
         when(variableScope.lookup(PROPERTY_ID)).thenReturn(Optional.of(variable));
         Property property = mockProperty(PROPERTY_ID, ITEM_ID);
         when(variable.getTypedIdentifier()).thenReturn(property);
-        writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope);
+        writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope, new HashSet<>());
     }
 
     @Test
@@ -81,6 +91,49 @@ public class MultipleInstanceActivityPropertyWriterTest {
         assertHasDataInput(activity.getIoSpecification(), inputId, ITEM_ID, IN_COLLECTION);
         assertHasDataInputAssociation(activity, PROPERTY_ID, inputId);
         assertEquals(inputId, ((MultiInstanceLoopCharacteristics) activity.getLoopCharacteristics()).getLoopDataInputRef().getId());
+
+        // Test with Data Objects
+        when(variableScope.lookup(PROPERTY_ID)).thenReturn(Optional.empty());
+
+        Set<DataObject> dataObjects = new HashSet<>();
+        DataObject dataObject = mockDataObject(PROPERTY_ID);
+
+        dataObjects.add(dataObject);
+        writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope, dataObjects);
+        writer.setCollectionInput(PROPERTY_ID);
+        assertInputsInitialized();
+        inputId = ACTIVITY_ID + "_" + IN_COLLECTION + "InputX";
+        assertHasDataInput(activity.getIoSpecification(), inputId, ITEM_ID, IN_COLLECTION);
+        assertHasDataInputAssociation(activity, PROPERTY_ID, inputId);
+        // Test no option
+        when(variableScope.lookup(PROPERTY_ID)).thenReturn(Optional.empty());
+
+        dataObjects.clear();
+        dataObject = mockDataObject("SomeOtherId");
+
+        dataObjects.add(dataObject);
+        writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope, dataObjects);
+        writer.setCollectionInput(PROPERTY_ID);
+        assertInputsInitialized();
+        inputId = ACTIVITY_ID + "_" + IN_COLLECTION + "InputX";
+        assertHasDataInput(activity.getIoSpecification(), inputId, ITEM_ID, IN_COLLECTION);
+        assertHasDataInputAssociation(activity, PROPERTY_ID, inputId);
+    }
+
+    @Test
+    public void testCreateItemDefinitionNoType() {
+        ItemDefinition definition = writer.createItemDefinition("variableOne", "");
+        assertEquals("Must Be Object Type", Object.class.getName(), definition.getStructureRef());
+
+        definition = writer.createItemDefinition("variableTwo", "java.lang.String");
+        assertEquals("Must Be String Type", String.class.getName(), definition.getStructureRef());
+    }
+
+    @Test
+    public void testSetCollectionInputEmpty() {
+        writer = spy(writer);
+        writer.setCollectionInput(null);
+        verify(writer, Mockito.times(0)).setUpLoopCharacteristics();
     }
 
     @Test
@@ -159,6 +212,101 @@ public class MultipleInstanceActivityPropertyWriterTest {
         assertHasDataOutput(activity.getIoSpecification(), outputId, ITEM_ID, OUT_COLLECTION);
         assertHasDataOutputAssociation(activity, outputId, PROPERTY_ID);
         assertEquals(outputId, ((MultiInstanceLoopCharacteristics) activity.getLoopCharacteristics()).getLoopDataOutputRef().getId());
+
+        // Test with Data Objects
+        when(variableScope.lookup(PROPERTY_ID)).thenReturn(Optional.empty());
+
+        Set<DataObject> dataObjects = new HashSet<>();
+        DataObject dataObject = mockDataObject(PROPERTY_ID);
+
+        dataObjects.add(dataObject);
+        writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope, dataObjects);
+        writer.setCollectionOutput(PROPERTY_ID);
+        assertOutputsInitialized();
+        outputId = ACTIVITY_ID + "_" + OUT_COLLECTION + "OutputX";
+        assertHasDataOutputAssociation(activity, outputId, PROPERTY_ID);
+
+        // Test with Data Objects
+        when(variableScope.lookup(PROPERTY_ID)).thenReturn(Optional.empty());
+
+        dataObject = mockDataObject(PROPERTY_ID);
+
+        dataObjects.add(dataObject);
+        writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope, dataObjects);
+        writer.setCollectionOutput(PROPERTY_ID);
+        assertOutputsInitialized();
+        outputId = ACTIVITY_ID + "_" + OUT_COLLECTION + "OutputX";
+        assertHasDataOutputAssociation(activity, outputId, PROPERTY_ID);
+
+        // Test no option
+        when(variableScope.lookup(PROPERTY_ID)).thenReturn(Optional.empty());
+
+        dataObjects.clear();
+        dataObject = mockDataObject("SomeOtherId");
+
+        dataObjects.add(dataObject);
+        writer = new MultipleInstanceActivityPropertyWriter(activity, variableScope, dataObjects);
+        writer.setCollectionOutput(PROPERTY_ID);
+        assertOutputsInitialized();
+        outputId = ACTIVITY_ID + "_" + OUT_COLLECTION + "OutputX";
+        assertHasDataOutputAssociation(activity, outputId, PROPERTY_ID);
+    }
+
+    @Test
+    public void testAddSafeCollectionOutput() {
+
+        List<DataOutputAssociation> associations = new ArrayList<>();
+        DataOutputAssociation outputAssociation = mock(DataOutputAssociation.class);
+        associations.add(outputAssociation);
+        DataOutputAssociation outputAssociation2 = mock(DataOutputAssociation.class);
+
+        when(outputAssociation.getSourceRef()).thenReturn(null);
+        writer.addSafe(associations, outputAssociation2);
+
+        associations.clear();
+        associations.add(outputAssociation);
+
+        when(outputAssociation.getSourceRef()).thenReturn(new ArrayList<>());
+        writer.addSafe(associations, outputAssociation2);
+
+        associations.clear();
+        associations.add(outputAssociation);
+
+        List<ItemAwareElement> list = new ArrayList<>();
+        ItemAwareElementImpl element = mock(ItemAwareElementImpl.class);
+        when(element.getId()).thenReturn("elementId");
+        list.add(element);
+        when(outputAssociation.getSourceRef()).thenReturn(list);
+        when(outputAssociation2.getSourceRef()).thenReturn(list);
+
+        writer.addSafe(associations, outputAssociation2);
+
+        associations.clear();
+        associations.add(outputAssociation);
+        // Different Ids
+        list = new ArrayList<>();
+        element = mock(ItemAwareElementImpl.class);
+        when(element.getId()).thenReturn("elementId");
+        list.add(element);
+
+        List<ItemAwareElement> list2 = new ArrayList<>();
+        ItemAwareElementImpl element2 = mock(ItemAwareElementImpl.class);
+        when(element2.getId()).thenReturn("elementId");
+        list2.add(element2);
+
+        when(element.getId()).thenReturn("elementId2");
+        list.add(element);
+        when(outputAssociation.getSourceRef()).thenReturn(list);
+        when(outputAssociation2.getSourceRef()).thenReturn(list2);
+
+        writer.addSafe(associations, outputAssociation2);
+        assertTrue(associations.contains(outputAssociation2));
+    }
+
+    private static DataObject mockDataObject(String id) {
+        DataObject element = Bpmn2Factory.eINSTANCE.createDataObject();
+        element.setId(id);
+        return element;
     }
 
     @Test

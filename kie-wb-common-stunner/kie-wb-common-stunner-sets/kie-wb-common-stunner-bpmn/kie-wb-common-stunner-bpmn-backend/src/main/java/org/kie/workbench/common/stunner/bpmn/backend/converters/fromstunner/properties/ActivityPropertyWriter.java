@@ -17,11 +17,13 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
 import java.util.List;
+import java.util.Set;
 
 import bpsim.ElementParameters;
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.DataInput;
 import org.eclipse.bpmn2.DataInputAssociation;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.InputOutputSpecification;
@@ -41,9 +43,12 @@ public class ActivityPropertyWriter extends PropertyWriter {
 
     protected final Activity activity;
     private ElementParameters simulationParameters;
+    protected final Set<DataObject> dataObjects;
 
-    public ActivityPropertyWriter(Activity activity, VariableScope variableScope) {
+
+    public ActivityPropertyWriter(Activity activity, VariableScope variableScope, Set<DataObject> dataObjects) {
         super(activity, variableScope);
+        this.dataObjects = dataObjects;
         this.activity = activity;
     }
 
@@ -64,7 +69,8 @@ public class ActivityPropertyWriter extends PropertyWriter {
     public void setAssignmentsInfo(AssignmentsInfo info) {
         final ParsedAssignmentsInfo assignmentsInfo = ParsedAssignmentsInfo.of(info);
         final List<InitializedInputVariable> inputs = assignmentsInfo.createInitializedInputVariables(getId(),
-                                                                                                      variableScope);
+                                                                                                      variableScope,
+                                                                                                      dataObjects);
         if (!inputs.isEmpty()) {
             final InputOutputSpecification ioSpec = getIoSpecification();
             for (InitializedInputVariable input : inputs) {
@@ -84,7 +90,8 @@ public class ActivityPropertyWriter extends PropertyWriter {
             }
         }
         final List<InitializedOutputVariable> outputs = assignmentsInfo.createInitializedOutputVariables(getId(),
-                                                                                                         variableScope);
+                                                                                                         variableScope,
+                                                                                                         dataObjects);
         if (!outputs.isEmpty()) {
             final InputOutputSpecification ioSpec = getIoSpecification();
             for (InitializedOutputVariable output : outputs) {

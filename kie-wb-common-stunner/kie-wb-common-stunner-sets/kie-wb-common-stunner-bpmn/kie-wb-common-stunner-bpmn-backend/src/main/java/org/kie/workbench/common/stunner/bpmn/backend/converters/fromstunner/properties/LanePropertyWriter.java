@@ -16,9 +16,16 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.eclipse.bpmn2.Auditing;
+import org.eclipse.bpmn2.CategoryValue;
+import org.eclipse.bpmn2.DataObjectReference;
 import org.eclipse.bpmn2.FlowNode;
 import org.eclipse.bpmn2.Lane;
+import org.eclipse.bpmn2.Monitoring;
+import org.eclipse.bpmn2.impl.FlowNodeImpl;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.CustomElement;
 
 public class LanePropertyWriter extends BasePropertyWriter {
@@ -42,6 +49,38 @@ public class LanePropertyWriter extends BasePropertyWriter {
 
     @Override
     public void addChild(BasePropertyWriter child) {
-        lane.getFlowNodeRefs().add((FlowNode) child.getElement());
+        if (child instanceof DataObjectPropertyWriter) {
+            final DataObjectReference element = (DataObjectReference) child.getElement();
+
+            FlowNode node = new FlowNodeImpl() {
+                @Override
+                public Auditing getAuditing() {
+                    return element.getAuditing();
+                }
+
+                @Override
+                public Monitoring getMonitoring() {
+                    return element.getMonitoring();
+                }
+
+                @Override
+                public List<CategoryValue> getCategoryValueRef() {
+                    return element.getCategoryValueRef();
+                }
+
+                @Override
+                public String getName() {
+                    return element.getName();
+                }
+
+                @Override
+                public String toString() {
+                    return element.toString();
+                }
+            };
+            lane.getFlowNodeRefs().add(node);
+        } else {
+            lane.getFlowNodeRefs().add((FlowNode) child.getElement());
+        }
     }
 }

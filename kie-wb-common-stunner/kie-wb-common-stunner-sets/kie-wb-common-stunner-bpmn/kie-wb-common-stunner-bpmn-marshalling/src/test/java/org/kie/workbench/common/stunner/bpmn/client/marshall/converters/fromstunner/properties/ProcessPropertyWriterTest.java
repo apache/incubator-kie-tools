@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.bpmn2.Process;
@@ -75,17 +76,21 @@ public class ProcessPropertyWriterTest {
         Process process = p.getProcess();
 
         BoundaryEventPropertyWriter boundaryEventPropertyWriter =
-                new BoundaryEventPropertyWriter(bpmn2.createBoundaryEvent(), variableScope);
+                new BoundaryEventPropertyWriter(bpmn2.createBoundaryEvent(), variableScope, new HashSet<>());
 
         UserTaskPropertyWriter userTaskPropertyWriter =
-                new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope);
+                new UserTaskPropertyWriter(bpmn2.createUserTask(), variableScope, new HashSet<>());
+
+        DataObjectPropertyWriter dataObjectPropertyWriter = new DataObjectPropertyWriter(bpmn2.createDataObjectReference(), variableScope, new HashSet<>());
 
         p.addChildElement(boundaryEventPropertyWriter);
         p.addChildElement(userTaskPropertyWriter);
+        p.addChildElement(dataObjectPropertyWriter);
 
         // boundary event should always occur after other nodes (compat with old marshallers)
-        assertThat(process.getFlowElements().get(0)).isEqualTo(userTaskPropertyWriter.getFlowElement());
-        assertThat(process.getFlowElements().get(1)).isEqualTo(boundaryEventPropertyWriter.getFlowElement());
+        assertThat(process.getFlowElements().get(0)).isEqualTo(dataObjectPropertyWriter.getFlowElement());
+        assertThat(process.getFlowElements().get(1)).isEqualTo(userTaskPropertyWriter.getFlowElement());
+        assertThat(process.getFlowElements().get(2)).isEqualTo(boundaryEventPropertyWriter.getFlowElement());
     }
 
     @Test

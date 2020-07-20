@@ -29,6 +29,8 @@ import org.eclipse.bpmn2.Process;
 import org.eclipse.bpmn2.RootElement;
 import org.eclipse.bpmn2.SubProcess;
 
+import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.util.DataObjectUtils.maybeAddDataObjects;
+
 class Processes {
 
     static void addChildElement(
@@ -43,11 +45,11 @@ class Processes {
         if (p.getElement() instanceof FlowElement) {
             // compatibility fix: boundary events should always occur at the bottom
             // otherwise they will be drawn at an incorrect position on load
-            if (p instanceof BoundaryEventPropertyWriter) {
+            if ((p instanceof BoundaryEventPropertyWriter) ||
+                    (p instanceof DataObjectPropertyWriter)) {
                 process.getFlowElements().add((FlowElement) p.getElement());
             } else {
                 process.getFlowElements().add(0, (FlowElement) p.getElement());
-                p.getElement();
             }
         } else if (p.getElement() instanceof Artifact) {
             if (process instanceof Process) {
@@ -66,5 +68,9 @@ class Processes {
         itemDefinitions.addAll(p.getItemDefinitions());
         rootElements.addAll(p.getRootElements());
         rootElements.addAll(p.getInterfaces());
+
+        if(p instanceof DataObjectPropertyWriter) {
+            maybeAddDataObjects(process, ((DataObjectPropertyWriter)p).getDataObjects());
+        }
     }
 }

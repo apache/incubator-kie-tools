@@ -19,8 +19,11 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEdi
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -48,13 +51,17 @@ import org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseUserTask;
+import org.kie.workbench.common.stunner.bpmn.definition.DataObject;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
+import org.kie.workbench.common.stunner.bpmn.util.DataObjectUtils;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -73,6 +80,7 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     protected boolean isSingleInputVar = false;
     protected boolean hasOutputVars = false;
     protected boolean isSingleOutputVar = false;
+
     @Inject
     SessionManager canvasSessionManager;
     @Inject
@@ -108,6 +116,7 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     public AssignmentsEditorWidget() {
     }
 
+    // create bean to hold cache and inject to source
     @EventHandler("assignmentsButton")
     public void onClickAssignmentsButton(final ClickEvent clickEvent) {
         showAssignmentsDialog();
@@ -142,6 +151,128 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         }
     }
 
+    protected void initTextBox() {
+
+        Map<String, String> assignmentsProperties = AssignmentParser.parseAssignmentsInfo(assignmentsInfo);
+
+        String variableCountsString = getVariableCountsString(assignmentsProperties.get(AssignmentParser.DATAINPUT),
+                                                              assignmentsProperties.get(AssignmentParser.DATAINPUTSET),
+                                                              assignmentsProperties.get(AssignmentParser.DATAOUTPUT),
+                                                              assignmentsProperties.get(AssignmentParser.DATAOUTPUTSET),
+                                                              getProcessVariables(),
+                                                              assignmentsProperties.get(AssignmentParser.ASSIGNMENTS),
+                                                              getDisallowedPropertyNames());
+        assignmentsTextBox.setText(variableCountsString);
+    }
+
+    String getVariableCountsString(final String datainput,
+                                             final String datainputset,
+                                             final String dataoutput,
+                                             final String dataoutputset,
+                                             final String processvars,
+                                             final String assignments,
+                                             final String disallowedpropertynames) {
+        String inputvars = null;
+        if (datainput != null) {
+            inputvars = datainput;
+        }
+        if (datainputset != null) {
+            inputvars = datainputset;
+        }
+        String outputvars = null;
+        if (dataoutput != null) {
+            outputvars = dataoutput;
+        }
+        if (dataoutputset != null) {
+            outputvars = dataoutputset;
+        }
+        AssignmentData assignmentData = new AssignmentData(inputvars,
+                                                           outputvars,
+                                                           processvars,
+                                                           assignments,
+                                                           disallowedpropertynames);
+        return assignmentData.getVariableCountsString(hasInputVars,
+                                                      isSingleInputVar,
+                                                      hasOutputVars,
+                                                      isSingleOutputVar);
+    }
+
+    protected String getProcessVariables() {
+        Diagram diagram = canvasSessionManager.getCurrentSession().getCanvasHandler().getDiagram();
+        Node selectedElement = getSelectedElement();
+        String variables = VariableUtils.encodeProcessVariables(diagram, selectedElement);
+        StringBuilder sb = new StringBuilder();
+        if (!variables.isEmpty()) {
+            sb.append(variables);
+        }
+
+        String dataObjects =
+                DataObjectUtils.findDataObjects(canvasSessionManager.getCurrentSession(), graphUtils, getSelectedElement(), getParentIds()).stream()
+                        .map(AssignmentsEditorWidget::dataObjectToProcessVariableFormat)
+                        .collect(Collectors.joining(","));
+
+        if (!dataObjects.isEmpty()) {
+            sb.append(dataObjects);
+        }
+
+        return sb.toString();
+    }
+
+    String getDisallowedPropertyNames() {
+        if (bpmnModel instanceof BaseUserTask) {
+            return DEFAULT_IGNORED_PROPERTY_NAMES;
+        } else {
+            return "";
+        }
+    }
+
+    protected Node getSelectedElement() {
+        String elementUUID = getSelectedElementUUID(canvasSessionManager.getCurrentSession());
+        if (elementUUID != null) {
+            return canvasSessionManager.getCurrentSession().getCanvasHandler().getDiagram().getGraph().getNode(elementUUID);
+        }
+        return null;
+    }
+
+    Set<String> getParentIds() {
+        Set<String> parentIds = new HashSet<>();
+        final Node selectedElement = getSelectedElement();
+        Element parent = GraphUtils.getParent(selectedElement);
+
+        if (selectedElement != null) {
+            final String mainDiagramId = canvasSessionManager.getCurrentSession().getCanvasHandler().getDiagram().getMetadata().getCanvasRootUUID();
+            parentIds.add(parent.getUUID());
+
+            while (!parent.getUUID().equals(mainDiagramId)) {
+                parent = graphUtils.getParent(parent.asNode());
+                parentIds.add(parent.getUUID());
+            }
+        }
+        return parentIds;
+    }
+
+    private static String dataObjectToProcessVariableFormat(DataObject dataObject) {
+        return dataObject.getName().getValue() + ":" + dataObject.getType().getValue().getType();
+    }
+
+    protected String getSelectedElementUUID(ClientSession clientSession) {
+        if (clientSession instanceof EditorSession) {
+            final SelectionControl selectionControl = ((EditorSession) clientSession).getSelectionControl();
+            if (null != selectionControl) {
+                final Collection<String> selectedItems = selectionControl.getSelectedItems();
+                if (null != selectedItems && !selectedItems.isEmpty()) {
+                    return selectedItems.iterator().next();
+                }
+            }
+        }
+        return null;
+    }
+
+    protected boolean isBPMNDefinition(Node node) {
+        return node.getContent() instanceof View &&
+                ((View) node.getContent()).getDefinition() instanceof BPMNDefinition;
+    }
+
     protected void setBPMNModel(final BPMNDefinition bpmnModel) {
         this.bpmnModel = bpmnModel;
 
@@ -157,18 +288,6 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
             hasOutputVars = false;
             isSingleOutputVar = false;
         }
-    }
-
-    protected void initTextBox() {
-        Map<String, String> assignmentsProperties = AssignmentParser.parseAssignmentsInfo(assignmentsInfo);
-        String variableCountsString = getVariableCountsString(assignmentsProperties.get(AssignmentParser.DATAINPUT),
-                                                              assignmentsProperties.get(AssignmentParser.DATAINPUTSET),
-                                                              assignmentsProperties.get(AssignmentParser.DATAOUTPUT),
-                                                              assignmentsProperties.get(AssignmentParser.DATAOUTPUTSET),
-                                                              getProcessVariables(),
-                                                              assignmentsProperties.get(AssignmentParser.ASSIGNMENTS),
-                                                              getDisallowedPropertyNames());
-        assignmentsTextBox.setText(variableCountsString);
     }
 
     @Override
@@ -250,15 +369,17 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
             setValue(assignmentsInfoString,
                      true);
         };
-        activityDataIOEditor.setCallback(callback);
 
+        activityDataIOEditor.setCallback(callback);
         activityDataIOEditor.setAssignmentData(assignmentData);
         activityDataIOEditor.setDisallowedPropertyNames(assignmentData.getDisallowedPropertyNames());
         activityDataIOEditor.setInputAssignmentRows(assignmentData.getAssignmentRows(Variable.VariableType.INPUT));
         activityDataIOEditor.setOutputAssignmentRows(assignmentData.getAssignmentRows(Variable.VariableType.OUTPUT));
         activityDataIOEditor.setDataTypes(assignmentData.getDataTypes(),
                                           assignmentData.getDataTypeDisplayNames());
-        activityDataIOEditor.setProcessVariables(assignmentData.getProcessVariableNames());
+        activityDataIOEditor.setProcessVariables(assignmentData.getProcessVariableNames().stream()
+                                                         .distinct()
+                                                         .collect(Collectors.toList()));
         activityDataIOEditor.configureDialog(taskName,
                                              hasInputVars,
                                              isSingleInputVar,
@@ -281,33 +402,6 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
             }
         }
         return taskName;
-    }
-
-    protected String getProcessVariables() {
-        Diagram diagram = canvasSessionManager.getCurrentSession().getCanvasHandler().getDiagram();
-        Node selectedElement = getSelectedElement();
-        return VariableUtils.encodeProcessVariables(diagram, selectedElement);
-    }
-
-    protected Node getSelectedElement() {
-        String elementUUID = getSelectedElementUUID(canvasSessionManager.getCurrentSession());
-        if (elementUUID != null) {
-            return canvasSessionManager.getCurrentSession().getCanvasHandler().getDiagram().getGraph().getNode(elementUUID);
-        }
-        return null;
-    }
-
-    protected String getSelectedElementUUID(ClientSession clientSession) {
-        if (clientSession instanceof EditorSession) {
-            final SelectionControl selectionControl = ((EditorSession) clientSession).getSelectionControl();
-            if (null != selectionControl) {
-                final Collection<String> selectedItems = selectionControl.getSelectedItems();
-                if (null != selectedItems && !selectedItems.isEmpty()) {
-                    return selectedItems.iterator().next();
-                }
-            }
-        }
-        return null;
     }
 
     protected String formatDataTypes(final List<String> dataTypes) {
@@ -351,45 +445,5 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
                 append(dataOutputs)
                 .append('|').append(assignmentData.getAssignmentsString());
         return sb.toString();
-    }
-
-    protected String getVariableCountsString(final String datainput,
-                                             final String datainputset,
-                                             final String dataoutput,
-                                             final String dataoutputset,
-                                             final String processvars,
-                                             final String assignments,
-                                             final String disallowedpropertynames) {
-        String inputvars = null;
-        if (datainput != null) {
-            inputvars = datainput;
-        }
-        if (datainputset != null) {
-            inputvars = datainputset;
-        }
-        String outputvars = null;
-        if (dataoutput != null) {
-            outputvars = dataoutput;
-        }
-        if (dataoutputset != null) {
-            outputvars = dataoutputset;
-        }
-        AssignmentData assignmentData = new AssignmentData(inputvars,
-                                                           outputvars,
-                                                           processvars,
-                                                           assignments,
-                                                           disallowedpropertynames);
-        return assignmentData.getVariableCountsString(hasInputVars,
-                                                      isSingleInputVar,
-                                                      hasOutputVars,
-                                                      isSingleOutputVar);
-    }
-
-    protected String getDisallowedPropertyNames() {
-        if (bpmnModel instanceof BaseUserTask) {
-            return DEFAULT_IGNORED_PROPERTY_NAMES;
-        } else {
-            return "";
-        }
     }
 }

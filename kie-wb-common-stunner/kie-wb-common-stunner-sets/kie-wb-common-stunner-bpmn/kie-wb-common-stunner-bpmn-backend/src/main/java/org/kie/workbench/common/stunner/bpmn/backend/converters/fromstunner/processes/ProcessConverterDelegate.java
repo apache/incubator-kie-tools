@@ -32,6 +32,8 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.LanePropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.ProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.properties.SubProcessPropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.definition.DataObject;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -64,6 +66,12 @@ class ProcessConverterDelegate {
                 .forEach(p::addChildElement);
 
         context.nodes()
+                .sorted((t0, t1) -> {
+                    boolean isDO1 = (((ViewImpl) t0.getContent()).getDefinition() instanceof DataObject);
+                    boolean isDO2 = (((ViewImpl) t1.getContent()).getDefinition() instanceof DataObject);
+
+                    return Boolean.compare(isDO2, isDO1);
+                })
                 .filter(e -> !processed.contains(e.getUUID())) // skip processed
                 .map(converterFactory.viewDefinitionConverter()::toFlowElement)
                 .filter(Result::notIgnored)

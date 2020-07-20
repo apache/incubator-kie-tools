@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEdi
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +51,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -149,6 +151,9 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
+
+    @Mock
+    private Metadata metadata;
 
     @Mock
     private SelectionControl selectionControl;
@@ -547,7 +552,11 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         when(canvasSessionManager.getCurrentSession()).thenReturn(session);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getCanvasRootUUID()).thenReturn("rootId");
+        when(widget.getParentIds()).thenReturn(new HashSet<>());
         when(diagram.getGraph()).thenReturn(graph);
+
         when(session.getSelectionControl()).thenReturn(selectionControl);
         List<String> selectedItems = Collections.singletonList("UUID");
         when(selectionControl.getSelectedItems()).thenReturn(selectedItems);

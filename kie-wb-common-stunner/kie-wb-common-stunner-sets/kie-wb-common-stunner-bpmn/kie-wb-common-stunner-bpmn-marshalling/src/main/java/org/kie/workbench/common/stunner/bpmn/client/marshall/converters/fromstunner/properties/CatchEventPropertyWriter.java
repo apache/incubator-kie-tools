@@ -17,9 +17,11 @@
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
 import java.util.List;
+import java.util.Set;
 
 import bpsim.ElementParameters;
 import org.eclipse.bpmn2.CatchEvent;
+import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataOutput;
 import org.eclipse.bpmn2.DataOutputAssociation;
 import org.eclipse.bpmn2.EventDefinition;
@@ -36,17 +38,20 @@ public class CatchEventPropertyWriter extends EventPropertyWriter {
 
     private final CatchEvent event;
     private ElementParameters simulationParameters;
+    private final Set<DataObject> dataObjects;
 
-    public CatchEventPropertyWriter(CatchEvent event, VariableScope variableScope) {
+
+    public CatchEventPropertyWriter(CatchEvent event, VariableScope variableScope, Set<DataObject> dataObjects) {
         super(event, variableScope);
         this.event = event;
+        this.dataObjects = dataObjects;
     }
 
     public void setAssignmentsInfo(AssignmentsInfo info) {
         ParsedAssignmentsInfo assignmentsInfo = ParsedAssignmentsInfo.of(info);
         List<InitializedOutputVariable> outputs =
                 assignmentsInfo.createInitializedOutputVariables(
-                        getId(), variableScope);
+                        getId(), variableScope, dataObjects);
 
         if (outputs.isEmpty()) {
             return;
