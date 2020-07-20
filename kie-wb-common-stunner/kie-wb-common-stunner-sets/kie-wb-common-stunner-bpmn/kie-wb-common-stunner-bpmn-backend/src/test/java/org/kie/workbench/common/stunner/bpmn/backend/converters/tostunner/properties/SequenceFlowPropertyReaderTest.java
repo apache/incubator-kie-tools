@@ -25,10 +25,12 @@ import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.dd.dc.Bounds;
 import org.eclipse.dd.dc.Point;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.TestDefinitionsWriter;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -36,6 +38,7 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunn
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class SequenceFlowPropertyReaderTest {
 
     private static final String SCRIPT = "SCRIPT";

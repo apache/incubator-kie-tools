@@ -22,11 +22,14 @@ import java.net.URLEncoder;
 import org.eclipse.bpmn2.Assignment;
 import org.eclipse.bpmn2.FormalExpression;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties.AssociationDeclaration;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InputAssignmentReaderTest {
 
     public static final String ID = "PARENT_ID";

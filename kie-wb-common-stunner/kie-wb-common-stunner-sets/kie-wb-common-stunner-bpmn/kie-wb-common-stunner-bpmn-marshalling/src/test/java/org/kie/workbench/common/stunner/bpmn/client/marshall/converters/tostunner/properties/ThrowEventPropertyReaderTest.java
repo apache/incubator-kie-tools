@@ -20,10 +20,13 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.emf.common.util.ECollections;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ThrowEventPropertyReaderTest extends BaseEventPropertyReaderTest {
 
     @Mock

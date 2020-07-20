@@ -25,8 +25,10 @@ import org.eclipse.bpmn2.di.BPMNPlane;
 import org.eclipse.bpmn2.di.BPMNShape;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.CustomElement;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.DefinitionResolver;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
@@ -34,6 +36,7 @@ import static junit.framework.TestCase.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.di;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MultipleInstanceSubProcessPropertyReaderTest {
 
     private DefinitionResolver definitionResolverReal;

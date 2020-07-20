@@ -30,8 +30,10 @@ import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.TestUtils.mockBounds;
@@ -39,6 +41,7 @@ import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.T
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class BoundaryEventPropertyReaderTest extends CatchEventPropertyReaderTest {
 
     private static final String DOCKER_INFO_METADATA_ELEMENT_NAME = "dockerinfo";

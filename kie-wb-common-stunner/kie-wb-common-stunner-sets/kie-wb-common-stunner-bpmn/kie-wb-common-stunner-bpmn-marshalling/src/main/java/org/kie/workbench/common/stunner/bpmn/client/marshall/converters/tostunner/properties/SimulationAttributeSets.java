@@ -36,6 +36,11 @@ public class SimulationAttributeSets {
             return new SimulationAttributeSet();
         }
         Parameter processingTime = timeParams.getProcessingTime();
+        if (processingTime == null
+                || processingTime.getParameterValue() == null
+                || processingTime.getParameterValue().isEmpty()) {
+            return new SimulationAttributeSet();
+        }
         ParameterValue paramValue = processingTime.getParameterValue().get(0);
 
         return Match.<ParameterValue, SimulationAttributeSet>of()

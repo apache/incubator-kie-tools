@@ -20,12 +20,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.ParsedReassignmentsInfos;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.associations.AssociationType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.reassignment.ReassignmentValue;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ParsedReassignmentsInfosTest {
 
     @Test

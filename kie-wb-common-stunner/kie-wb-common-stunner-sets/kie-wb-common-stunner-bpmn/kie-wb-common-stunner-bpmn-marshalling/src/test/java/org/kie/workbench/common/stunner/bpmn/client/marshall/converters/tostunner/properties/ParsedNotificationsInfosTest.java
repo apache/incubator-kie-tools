@@ -20,13 +20,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.ParsedNotificationsInfos;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.associations.AssociationType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationValue;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ParsedNotificationsInfosTest {
 
     @Test

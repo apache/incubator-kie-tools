@@ -30,12 +30,20 @@ import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunn
 
 public class SimulationAttributeSets {
 
+    private SimulationAttributeSets() {
+    }
+
     public static SimulationAttributeSet of(ElementParameters eleType) {
         TimeParameters timeParams = eleType.getTimeParameters();
         if (timeParams == null) {
             return new SimulationAttributeSet();
         }
         Parameter processingTime = timeParams.getProcessingTime();
+        if (processingTime == null
+                || processingTime.getParameterValue() == null
+                || processingTime.getParameterValue().isEmpty()) {
+            return new SimulationAttributeSet();
+        }
         ParameterValue paramValue = processingTime.getParameterValue().get(0);
 
         return Match.of(ParameterValue.class, SimulationAttributeSet.class)
