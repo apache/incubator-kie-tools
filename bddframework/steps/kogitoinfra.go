@@ -19,11 +19,11 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-func registerKogitoInfraSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Install Kogito Infra "([^"]*)"$`, data.installKogitoInfra)
-	s.Step(`^Remove Kogito Infra "([^"]*)"$`, data.removeKogitoInfra)
-	s.Step(`^Kogito Infra "([^"]*)" should be running within (\d+) minutes$`, data.kogitoInfraShouldBeRunningWithinMinutes)
-	s.Step(`^Kogito Infra "([^"]*)" should NOT be running within (\d+) minutes$`, data.kogitoInfraShouldNOTBeRunningWithinMinutes)
+func registerKogitoInfraSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Install Kogito Infra "([^"]*)"$`, data.installKogitoInfra)
+	ctx.Step(`^Remove Kogito Infra "([^"]*)"$`, data.removeKogitoInfra)
+	ctx.Step(`^Kogito Infra "([^"]*)" should be running within (\d+) minutes$`, data.kogitoInfraShouldBeRunningWithinMinutes)
+	ctx.Step(`^Kogito Infra "([^"]*)" should NOT be running within (\d+) minutes$`, data.kogitoInfraShouldNOTBeRunningWithinMinutes)
 }
 
 func (data *Data) installKogitoInfra(component string) error {

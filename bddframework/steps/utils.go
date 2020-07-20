@@ -17,6 +17,7 @@ package steps
 import (
 	"fmt"
 
+	"github.com/cucumber/godog"
 	"github.com/cucumber/messages-go/v10"
 	"github.com/gobuffalo/packr/v2"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
@@ -33,6 +34,9 @@ const (
 	boxExamplesPath = "../../deploy/examples"
 )
 
+// TableRow represents a row of godog.Table made to a step definition
+type TableRow = messages.PickleStepArgument_PickleTable_PickleTableRow
+
 func addDefaultJavaOptionsIfNotProvided(spec v1alpha1.KogitoServiceSpec) {
 	javaOptionsProvided := false
 	for _, env := range spec.Envs {
@@ -46,21 +50,21 @@ func addDefaultJavaOptionsIfNotProvided(spec v1alpha1.KogitoServiceSpec) {
 	}
 }
 
-func getFirstColumn(row *messages.PickleStepArgument_PickleTable_PickleTableRow) string {
+func getFirstColumn(row *TableRow) string {
 	return row.Cells[0].Value
 }
 
-func getSecondColumn(row *messages.PickleStepArgument_PickleTable_PickleTableRow) string {
+func getSecondColumn(row *TableRow) string {
 	return row.Cells[1].Value
 }
 
-func getThirdColumn(row *messages.PickleStepArgument_PickleTable_PickleTableRow) string {
+func getThirdColumn(row *TableRow) string {
 	return row.Cells[2].Value
 }
 
 // parseResourceRequirementsTable is useful for steps that check resource requirements, table is a subset of KogitoApp
 // configuration table
-func parseResourceRequirementsTable(table *messages.PickleStepArgument_PickleTable) (build, runtime *v1.ResourceRequirements, err error) {
+func parseResourceRequirementsTable(table *godog.Table) (build, runtime *v1.ResourceRequirements, err error) {
 	build = &v1.ResourceRequirements{Limits: v1.ResourceList{}, Requests: v1.ResourceList{}}
 	runtime = &v1.ResourceRequirements{Limits: v1.ResourceList{}, Requests: v1.ResourceList{}}
 

@@ -19,12 +19,12 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-func registerKubernetesSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Namespace is created$`, data.namespaceIsCreated)
-	s.Step(`^Namespace is deleted$`, data.namespaceIsDeleted)
+func registerKubernetesSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Namespace is created$`, data.namespaceIsCreated)
+	ctx.Step(`^Namespace is deleted$`, data.namespaceIsDeleted)
 
-	s.Step(`^CLI create namespace$`, data.cliCreateNamespace)
-	s.Step(`^CLI use namespace$`, data.cliUseNamespace)
+	ctx.Step(`^CLI create namespace$`, data.cliCreateNamespace)
+	ctx.Step(`^CLI use namespace$`, data.cliUseNamespace)
 }
 
 func (data *Data) namespaceIsCreated() error {

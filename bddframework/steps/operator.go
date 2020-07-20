@@ -22,12 +22,12 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-func registerOperatorSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Kogito operator should be installed with dependencies$`, data.kogitoOperatorShouldBeInstalledWithDependencies)
-	s.Step(`^Kogito Operator is deployed$`, data.kogitoOperatorIsDeployed)
-	s.Step(`^Kogito Operator is deployed with ((?:Infinispan|Kafka|Keycloak|, | and )+) (?:operator|operators)$`, data.kogitoOperatorIsDeployedWithDependencies)
+func registerOperatorSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Kogito operator should be installed with dependencies$`, data.kogitoOperatorShouldBeInstalledWithDependencies)
+	ctx.Step(`^Kogito Operator is deployed$`, data.kogitoOperatorIsDeployed)
+	ctx.Step(`^Kogito Operator is deployed with ((?:Infinispan|Kafka|Keycloak|, | and )+) (?:operator|operators)$`, data.kogitoOperatorIsDeployedWithDependencies)
 
-	s.Step(`^CLI install Kogito operator$`, data.cliInstallKogitoOperator)
+	ctx.Step(`^CLI install Kogito operator$`, data.cliInstallKogitoOperator)
 }
 
 func (data *Data) kogitoOperatorShouldBeInstalledWithDependencies() error {

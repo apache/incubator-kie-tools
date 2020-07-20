@@ -19,7 +19,6 @@ import (
 	"path/filepath"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
@@ -38,16 +37,16 @@ const (
 	kogitoBuildNativeKey = "native"
 )
 
-func registerKogitoBuildSteps(s *godog.Suite, data *Data) {
+func registerKogitoBuildSteps(ctx *godog.ScenarioContext, data *Data) {
 	// Deploy steps
-	s.Step(`^Build (quarkus|springboot) example service "([^"]*)" with configuration:$`, data.buildExampleServiceWithConfiguration)
-	s.Step(`^Build binary (quarkus|springboot) service "([^"]*)" with configuration:$`, data.buildBinaryServiceWithConfiguration)
-	s.Step(`^Build (quarkus|springboot) example service "([^"]*)" from local file with configuration:$`, data.buildExampleServiceFromLocalFileWithConfiguration)
+	ctx.Step(`^Build (quarkus|springboot) example service "([^"]*)" with configuration:$`, data.buildExampleServiceWithConfiguration)
+	ctx.Step(`^Build binary (quarkus|springboot) service "([^"]*)" with configuration:$`, data.buildBinaryServiceWithConfiguration)
+	ctx.Step(`^Build (quarkus|springboot) example service "([^"]*)" from local file with configuration:$`, data.buildExampleServiceFromLocalFileWithConfiguration)
 }
 
 // Build service steps
 
-func (data *Data) buildExampleServiceWithConfiguration(runtimeType, contextDir string, table *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) buildExampleServiceWithConfiguration(runtimeType, contextDir string, table *godog.Table) error {
 	kogitoBuild, err := getKogitoBuildConfiguredStub(data.Namespace, runtimeType, filepath.Base(contextDir), table)
 	if err != nil {
 		return err
@@ -64,7 +63,7 @@ func (data *Data) buildExampleServiceWithConfiguration(runtimeType, contextDir s
 	return framework.DeployKogitoBuild(data.Namespace, framework.CRInstallerType, kogitoBuild)
 }
 
-func (data *Data) buildBinaryServiceWithConfiguration(runtimeType, serviceName string, table *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) buildBinaryServiceWithConfiguration(runtimeType, serviceName string, table *godog.Table) error {
 	kogitoBuild, err := getKogitoBuildConfiguredStub(data.Namespace, runtimeType, serviceName, table)
 	if err != nil {
 		return err
@@ -76,7 +75,7 @@ func (data *Data) buildBinaryServiceWithConfiguration(runtimeType, serviceName s
 	return framework.DeployKogitoBuild(data.Namespace, framework.CRInstallerType, kogitoBuild)
 }
 
-func (data *Data) buildExampleServiceFromLocalFileWithConfiguration(runtimeType, serviceName string, table *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) buildExampleServiceFromLocalFileWithConfiguration(runtimeType, serviceName string, table *godog.Table) error {
 	kogitoBuild, err := getKogitoBuildConfiguredStub(data.Namespace, runtimeType, serviceName, table)
 	if err != nil {
 		return err
@@ -91,7 +90,7 @@ func (data *Data) buildExampleServiceFromLocalFileWithConfiguration(runtimeType,
 // Misc methods
 
 // getKogitoBuildConfiguredStub Get basic KogitoBuild stub initialized from table
-func getKogitoBuildConfiguredStub(namespace, runtimeType, serviceName string, table *messages.PickleStepArgument_PickleTable) (*v1alpha1.KogitoBuild, error) {
+func getKogitoBuildConfiguredStub(namespace, runtimeType, serviceName string, table *godog.Table) (*v1alpha1.KogitoBuild, error) {
 	kogitoBuild := framework.GetKogitoBuildStub(namespace, runtimeType, serviceName)
 
 	if err := configureKogitoBuildFromTable(table, kogitoBuild); err != nil {
@@ -105,7 +104,7 @@ func getKogitoBuildConfiguredStub(namespace, runtimeType, serviceName string, ta
 
 // Table parsing
 
-func configureKogitoBuildFromTable(table *messages.PickleStepArgument_PickleTable, kogitoBuild *v1alpha1.KogitoBuild) (err error) {
+func configureKogitoBuildFromTable(table *godog.Table, kogitoBuild *v1alpha1.KogitoBuild) (err error) {
 	if len(table.Rows) == 0 { // Using default configuration
 		return nil
 	}
@@ -133,7 +132,7 @@ func configureKogitoBuildFromTable(table *messages.PickleStepArgument_PickleTabl
 	return
 }
 
-func parseKogitoBuildConfigRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoBuild *v1alpha1.KogitoBuild) error {
+func parseKogitoBuildConfigRow(row *TableRow, kogitoBuild *v1alpha1.KogitoBuild) error {
 	secondColumn := getSecondColumn(row)
 
 	switch secondColumn {

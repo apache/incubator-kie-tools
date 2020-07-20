@@ -19,18 +19,17 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-func registerHTTPSteps(s *godog.Suite, data *Data) {
-	s.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" is successful within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathIsSuccessfulWithinMinutes)
-	s.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should return an array of size (\d+) within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithinMinutes)
-	s.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should contain a string "([^"]*)" within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldContainAstringWithinMinutes)
-	s.Step(`^HTTP POST request on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceWithPathAndBody)
-	s.Step(`^HTTP POST request on service "([^"]*)" is successful within (\d+) minutes with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody)
-	s.Step(`^(\d+) HTTP POST requests using (\d+) threads on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestsUsingThreadsOnServiceWithPathAndBody)
-	s.Step(`^(\d+) HTTP POST requests with report using (\d+) threads on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestsWithReportUsingThreadsOnServiceWithPathAndBody)
+func registerHTTPSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" is successful within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathIsSuccessfulWithinMinutes)
+	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should return an array of size (\d+) within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithinMinutes)
+	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should contain a string "([^"]*)" within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldContainAstringWithinMinutes)
+	ctx.Step(`^HTTP POST request on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceWithPathAndBody)
+	ctx.Step(`^HTTP POST request on service "([^"]*)" is successful within (\d+) minutes with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody)
+	ctx.Step(`^(\d+) HTTP POST requests using (\d+) threads on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestsUsingThreadsOnServiceWithPathAndBody)
+	ctx.Step(`^(\d+) HTTP POST requests with report using (\d+) threads on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestsWithReportUsingThreadsOnServiceWithPathAndBody)
 }
 
 func (data *Data) httpGetRequestOnServiceWithPathIsSuccessfulWithinMinutes(serviceName, path string, timeoutInMin int) error {
@@ -42,7 +41,7 @@ func (data *Data) httpGetRequestOnServiceWithPathIsSuccessfulWithinMinutes(servi
 	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, requestInfo, timeoutInMin)
 }
 
-func (data *Data) httpPostRequestOnServiceWithPathAndBody(serviceName, path string, body *messages.PickleStepArgument_PickleDocString) error {
+func (data *Data) httpPostRequestOnServiceWithPathAndBody(serviceName, path string, body *godog.DocString) error {
 	path = data.ResolveWithScenarioContext(path)
 	bodyContent := data.ResolveWithScenarioContext(body.GetContent())
 	framework.GetLogger(data.Namespace).Debugf("httpPostRequestOnServiceWithPathAndBody with service %s, path %s and %s bodyContent %s", serviceName, path, body.GetMediaType(), bodyContent)
@@ -60,7 +59,7 @@ func (data *Data) httpPostRequestOnServiceWithPathAndBody(serviceName, path stri
 	return nil
 }
 
-func (data *Data) httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody(serviceName string, timeoutInMin int, path string, body *messages.PickleStepArgument_PickleDocString) error {
+func (data *Data) httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody(serviceName string, timeoutInMin int, path string, body *godog.DocString) error {
 	path = data.ResolveWithScenarioContext(path)
 	bodyContent := data.ResolveWithScenarioContext(body.GetContent())
 	framework.GetLogger(data.Namespace).Debugf("httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody with service %s, path %s, %s bodyContent %s and timeout %d", serviceName, path, body.GetMediaType(), bodyContent, timeoutInMin)
@@ -101,15 +100,15 @@ func (data *Data) httpGetRequestOnServiceWithPathShouldContainAstringWithinMinut
 		})
 }
 
-func (data *Data) httpPostRequestsUsingThreadsOnServiceWithPathAndBody(requestCount, threadCount int, serviceName, path string, body *messages.PickleStepArgument_PickleDocString) error {
+func (data *Data) httpPostRequestsUsingThreadsOnServiceWithPathAndBody(requestCount, threadCount int, serviceName, path string, body *godog.DocString) error {
 	return executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBody(data, requestCount, threadCount, false, serviceName, path, body)
 }
 
-func (data *Data) httpPostRequestsWithReportUsingThreadsOnServiceWithPathAndBody(requestCount, threadCount int, serviceName, path string, body *messages.PickleStepArgument_PickleDocString) error {
+func (data *Data) httpPostRequestsWithReportUsingThreadsOnServiceWithPathAndBody(requestCount, threadCount int, serviceName, path string, body *godog.DocString) error {
 	return executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBody(data, requestCount, threadCount, true, serviceName, path, body)
 }
 
-func executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBody(data *Data, requestCount int, threadCount int, report bool, serviceName string, path string, body *messages.PickleStepArgument_PickleDocString) error {
+func executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBody(data *Data, requestCount int, threadCount int, report bool, serviceName string, path string, body *godog.DocString) error {
 	path = data.ResolveWithScenarioContext(path)
 	bodyContent := data.ResolveWithScenarioContext(body.GetContent())
 	framework.GetLogger(data.Namespace).Infof("httpPostRequestsUsingThreadsOnServiceWithPathAndBody with requests %d, threads %d, report %t, service %s, path %s and %s bodyContent %s", requestCount, threadCount, report, serviceName, path, body.GetMediaType(), bodyContent)

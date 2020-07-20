@@ -16,7 +16,6 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
@@ -35,11 +34,11 @@ import (
 	| runtime-env      | varName        | varValue                  |
 */
 
-func registerKogitoJobsServiceSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Install Kogito Jobs Service with (\d+) replicas$`, data.installKogitoJobsServiceWithReplicas)
-	s.Step(`^Install Kogito Jobs Service with (\d+) replicas with configuration:$`, data.installKogitoJobsServiceWithReplicasWithConfiguration)
-	s.Step(`^Kogito Jobs Service has (\d+) pods running within (\d+) minutes$`, data.kogitoJobsServiceHasPodsRunningWithinMinutes)
-	s.Step(`^Scale Kogito Jobs Service to (\d+) pods within (\d+) minutes$`, data.scaleKogitoJobsServiceToPodsWithinMinutes)
+func registerKogitoJobsServiceSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Install Kogito Jobs Service with (\d+) replicas$`, data.installKogitoJobsServiceWithReplicas)
+	ctx.Step(`^Install Kogito Jobs Service with (\d+) replicas with configuration:$`, data.installKogitoJobsServiceWithReplicasWithConfiguration)
+	ctx.Step(`^Kogito Jobs Service has (\d+) pods running within (\d+) minutes$`, data.kogitoJobsServiceHasPodsRunningWithinMinutes)
+	ctx.Step(`^Scale Kogito Jobs Service to (\d+) pods within (\d+) minutes$`, data.scaleKogitoJobsServiceToPodsWithinMinutes)
 }
 
 func (data *Data) installKogitoJobsServiceWithReplicas(replicas int) error {
@@ -47,7 +46,7 @@ func (data *Data) installKogitoJobsServiceWithReplicas(replicas int) error {
 	return framework.InstallKogitoJobsService(framework.GetDefaultInstallerType(), &framework.KogitoServiceHolder{KogitoService: jobsService})
 }
 
-func (data *Data) installKogitoJobsServiceWithReplicasWithConfiguration(replicas int, table *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) installKogitoJobsServiceWithReplicasWithConfiguration(replicas int, table *godog.Table) error {
 	jobsService := &framework.KogitoServiceHolder{
 		KogitoService: framework.GetKogitoJobsServiceResourceStub(data.Namespace, replicas),
 	}

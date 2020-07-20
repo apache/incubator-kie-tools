@@ -18,20 +18,19 @@ import (
 	"fmt"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-func registerProcessSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Start "([^"]*)" process on service "([^"]*)" with body:$`, data.startProcessOnService)
-	s.Step(`^Start "([^"]*)" process on service "([^"]*)" within (\d+) minutes with body:$`, data.startProcessOnServiceWithinMinutes)
-	s.Step(`^Service "([^"]*)" with process name "([^"]*)" is available$`, data.serviceWithProcessNameIsAvailable)
-	s.Step(`^Service "([^"]*)" with process name "([^"]*)" is available within (\d+) minutes$`, data.serviceWithProcessNameIsAvailableWithinMinutes)
-	s.Step(`^Service "([^"]*)" contains (\d+) (?:instance|instances) of process with name "([^"]*)"$`, data.serviceContainsInstancesOfProcess)
-	s.Step(`^Service "([^"]*)" contains (\d+) (?:instance|instances) of process with name "([^"]*)" within (\d+) minutes$`, data.serviceContainsInstancesOfProcessWithinMinutes)
+func registerProcessSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Start "([^"]*)" process on service "([^"]*)" with body:$`, data.startProcessOnService)
+	ctx.Step(`^Start "([^"]*)" process on service "([^"]*)" within (\d+) minutes with body:$`, data.startProcessOnServiceWithinMinutes)
+	ctx.Step(`^Service "([^"]*)" with process name "([^"]*)" is available$`, data.serviceWithProcessNameIsAvailable)
+	ctx.Step(`^Service "([^"]*)" with process name "([^"]*)" is available within (\d+) minutes$`, data.serviceWithProcessNameIsAvailableWithinMinutes)
+	ctx.Step(`^Service "([^"]*)" contains (\d+) (?:instance|instances) of process with name "([^"]*)"$`, data.serviceContainsInstancesOfProcess)
+	ctx.Step(`^Service "([^"]*)" contains (\d+) (?:instance|instances) of process with name "([^"]*)" within (\d+) minutes$`, data.serviceContainsInstancesOfProcessWithinMinutes)
 }
 
-func (data *Data) startProcessOnService(processName, serviceName string, body *messages.PickleStepArgument_PickleDocString) error {
+func (data *Data) startProcessOnService(processName, serviceName string, body *godog.DocString) error {
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
@@ -45,7 +44,7 @@ func (data *Data) startProcessOnService(processName, serviceName string, body *m
 	return nil
 }
 
-func (data *Data) startProcessOnServiceWithinMinutes(processName, serviceName string, timeoutInMin int, body *messages.PickleStepArgument_PickleDocString) error {
+func (data *Data) startProcessOnServiceWithinMinutes(processName, serviceName string, timeoutInMin int, body *godog.DocString) error {
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err

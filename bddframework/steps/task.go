@@ -18,14 +18,13 @@ import (
 	"fmt"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-func registerTaskSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Service "([^"]*)" contains (\d+) (?:task|tasks) of process with name "([^"]*)" and task name "([^"]*)"$`, data.serviceContainsTasksOfProcessWithNameAndTaskName)
-	s.Step(`^Complete "([^"]*)" task on service "([^"]*)" and process with name "([^"]*)" with body:$`, data.completeTaskOnServiceAndProcessWithName)
-	s.Step(`^Complete "([^"]*)" task on service "([^"]*)" and process with name "([^"]*)" by user "([^"]*)" with body:$`, data.completeTaskOnServiceAndProcessWithNameAndUser)
+func registerTaskSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Service "([^"]*)" contains (\d+) (?:task|tasks) of process with name "([^"]*)" and task name "([^"]*)"$`, data.serviceContainsTasksOfProcessWithNameAndTaskName)
+	ctx.Step(`^Complete "([^"]*)" task on service "([^"]*)" and process with name "([^"]*)" with body:$`, data.completeTaskOnServiceAndProcessWithName)
+	ctx.Step(`^Complete "([^"]*)" task on service "([^"]*)" and process with name "([^"]*)" by user "([^"]*)" with body:$`, data.completeTaskOnServiceAndProcessWithNameAndUser)
 }
 
 func (data *Data) serviceContainsTasksOfProcessWithNameAndTaskName(serviceName string, numberOfTasks int, processName, taskName string) error {
@@ -55,7 +54,7 @@ func (data *Data) serviceContainsTasksOfProcessWithNameAndTaskName(serviceName s
 	return nil
 }
 
-func (data *Data) completeTaskOnServiceAndProcessWithName(taskName, serviceName, processName string, body *messages.PickleStepArgument_PickleDocString) error {
+func (data *Data) completeTaskOnServiceAndProcessWithName(taskName, serviceName, processName string, body *godog.DocString) error {
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err
@@ -84,7 +83,7 @@ func (data *Data) completeTaskOnServiceAndProcessWithName(taskName, serviceName,
 	return nil
 }
 
-func (data *Data) completeTaskOnServiceAndProcessWithNameAndUser(taskName, serviceName, processName, user string, body *messages.PickleStepArgument_PickleDocString) error {
+func (data *Data) completeTaskOnServiceAndProcessWithNameAndUser(taskName, serviceName, processName, user string, body *godog.DocString) error {
 	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
 	if err != nil {
 		return err

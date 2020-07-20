@@ -27,8 +27,8 @@ import (
 )
 
 // registerImageRegistrySteps register all existing image registry steps
-func registerImageRegistrySteps(s *godog.Suite, data *Data) {
-	s.Step(`^Local example service "([^"]*)" is built by Maven using profile "([^"]*)" and deployed to runtime registry$`, data.localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistry)
+func registerImageRegistrySteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Local example service "([^"]*)" is built by Maven using profile "([^"]*)" and deployed to runtime registry$`, data.localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistry)
 }
 
 // Build local service and deploy it to registry if the registry doesn't contain such image already

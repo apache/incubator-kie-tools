@@ -20,7 +20,6 @@ import (
 	infinispan "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
@@ -47,12 +46,12 @@ var performanceInfinispanContainerSpec = infinispan.InfinispanContainerSpec{
 	CPU:          "1",
 }
 
-func registerInfinispanSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Infinispan instance "([^"]*)" is deployed with configuration:$`, data.infinispanInstanceIsDeployedWithConfiguration)
-	s.Step(`^Infinispan instance "([^"]*)" is deployed for performance within (\d+) minute\(s\) with configuration:$`, data.infinispanInstanceIsDeployedForPerformanceWithinMinutesWithConfiguration)
+func registerInfinispanSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Infinispan instance "([^"]*)" is deployed with configuration:$`, data.infinispanInstanceIsDeployedWithConfiguration)
+	ctx.Step(`^Infinispan instance "([^"]*)" is deployed for performance within (\d+) minute\(s\) with configuration:$`, data.infinispanInstanceIsDeployedForPerformanceWithinMinutesWithConfiguration)
 }
 
-func (data *Data) infinispanInstanceIsDeployedWithConfiguration(name string, table *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) infinispanInstanceIsDeployedWithConfiguration(name string, table *godog.Table) error {
 	if err := createInfinispanSecret(data.Namespace, externalInfinispanSecret, table); err != nil {
 		return err
 	}
@@ -66,7 +65,7 @@ func (data *Data) infinispanInstanceIsDeployedWithConfiguration(name string, tab
 	return framework.WaitForPodsWithLabel(data.Namespace, "app", "infinispan-pod", 1, 3)
 }
 
-func (data *Data) infinispanInstanceIsDeployedForPerformanceWithinMinutesWithConfiguration(name string, timeOutInMin int, table *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) infinispanInstanceIsDeployedForPerformanceWithinMinutesWithConfiguration(name string, timeOutInMin int, table *godog.Table) error {
 	if err := createInfinispanSecret(data.Namespace, externalInfinispanSecret, table); err != nil {
 		return err
 	}
@@ -84,7 +83,7 @@ func (data *Data) infinispanInstanceIsDeployedForPerformanceWithinMinutesWithCon
 
 // Misc methods
 
-func createInfinispanSecret(namespace, secretName string, table *messages.PickleStepArgument_PickleTable) error {
+func createInfinispanSecret(namespace, secretName string, table *godog.Table) error {
 	credentials := make(map[string]string)
 	credentials["operator"] = "supersecretoperatorpassword" // Credentials required by Infinispan operator
 
@@ -100,7 +99,7 @@ func createInfinispanSecret(namespace, secretName string, table *messages.Pickle
 
 // Table parsing
 
-func getInfinispanCredentialsFromTable(table *messages.PickleStepArgument_PickleTable) (username, password string, err error) {
+func getInfinispanCredentialsFromTable(table *godog.Table) (username, password string, err error) {
 
 	if len(table.Rows) == 0 { // Using default configuration
 		return

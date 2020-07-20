@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/cucumber/messages-go/v10"
+	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
@@ -47,7 +47,7 @@ const (
 	kogitoServiceHTTPPortKey                 = "httpPort"
 )
 
-func configureKogitoServiceFromTable(table *messages.PickleStepArgument_PickleTable, kogitoService *framework.KogitoServiceHolder) (err error) {
+func configureKogitoServiceFromTable(table *godog.Table, kogitoService *framework.KogitoServiceHolder) (err error) {
 	if len(table.Rows) == 0 { // Using default configuration
 		return nil
 	}
@@ -96,7 +96,7 @@ func configureKogitoServiceFromTable(table *messages.PickleStepArgument_PickleTa
 	return
 }
 
-func parseKogitoServiceInfinispanRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoService *framework.KogitoServiceHolder) error {
+func parseKogitoServiceInfinispanRow(row *TableRow, kogitoService *framework.KogitoServiceHolder) error {
 	secondColumn := getSecondColumn(row)
 
 	if infinispanAware, ok := kogitoService.KogitoService.GetSpec().(v1alpha1.InfinispanAware); ok {
@@ -119,7 +119,7 @@ func parseKogitoServiceInfinispanRow(row *messages.PickleStepArgument_PickleTabl
 	return nil
 }
 
-func parseKogitoServiceKafkaRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoService *framework.KogitoServiceHolder) error {
+func parseKogitoServiceKafkaRow(row *TableRow, kogitoService *framework.KogitoServiceHolder) error {
 	secondColumn := getSecondColumn(row)
 
 	if kafkaAware, ok := kogitoService.KogitoService.GetSpec().(v1alpha1.KafkaAware); ok {
@@ -139,7 +139,7 @@ func parseKogitoServiceKafkaRow(row *messages.PickleStepArgument_PickleTable_Pic
 	return nil
 }
 
-func parseKogitoServiceConfigRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoService *framework.KogitoServiceHolder) error {
+func parseKogitoServiceConfigRow(row *TableRow, kogitoService *framework.KogitoServiceHolder) error {
 	secondColumn := getSecondColumn(row)
 
 	switch secondColumn {

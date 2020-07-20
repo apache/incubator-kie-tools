@@ -25,7 +25,6 @@ import (
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/colors"
-	"github.com/cucumber/messages-go/v10"
 
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
@@ -39,7 +38,7 @@ const (
 	performanceTag = "@performance"
 )
 
-var opt = godog.Options{
+var godogOpts = godog.Options{
 	Output:    colors.Colored(os.Stdout),
 	Format:    "junit",
 	Randomize: time.Now().UTC().UnixNano(),
@@ -47,18 +46,18 @@ var opt = godog.Options{
 }
 
 func init() {
-	godog.BindFlags("godog.", flag.CommandLine, &opt)
+	godog.BindFlags("godog.", flag.CommandLine, &godogOpts)
 	config.BindFlags(flag.CommandLine)
 }
 
 func TestMain(m *testing.M) {
 	flag.Parse()
-	opt.Paths = flag.Args()
+	godogOpts.Paths = flag.Args()
 
 	configureTags()
 	configureTestOutput()
 
-	features, err := parseFeatures(opt.Tags, opt.Paths)
+	features, err := parseFeatures(godogOpts.Tags, godogOpts.Paths)
 	if err != nil {
 		panic(fmt.Errorf("Error parsing features: %v", err))
 	}
@@ -76,11 +75,12 @@ func TestMain(m *testing.M) {
 			}
 		}
 
-		status := godog.RunWithOptions("godogs", func(s *godog.Suite) {
-			if err := FeatureContext(s); err != nil {
-				panic(fmt.Errorf("Error while setting feature context %v", err))
-			}
-		}, opt)
+		status := godog.TestSuite{
+			Name:                 "godogs",
+			TestSuiteInitializer: InitializeTestSuite,
+			ScenarioInitializer:  InitializeScenario,
+			Options:              &godogOpts,
+		}.Run()
 
 		if st := m.Run(); st > status {
 			status = st
@@ -94,7 +94,7 @@ func configureTags() {
 	if config.IsSmokeTests() {
 		// Filter with smoke tag
 		appendTag(smokeTag)
-	} else if !strings.Contains(opt.Tags, performanceTag) {
+	} else if !strings.Contains(godogOpts.Tags, performanceTag) {
 		if config.IsPerformanceTests() {
 			// Turn on performance tests
 			appendTag(performanceTag)
@@ -104,17 +104,17 @@ func configureTags() {
 		}
 	}
 
-	if !strings.Contains(opt.Tags, disabledTag) {
+	if !strings.Contains(godogOpts.Tags, disabledTag) {
 		// Ignore disabled tag
 		appendTag("~" + disabledTag)
 	}
 }
 
 func appendTag(tag string) {
-	if len(opt.Tags) > 0 {
-		opt.Tags += " && "
+	if len(godogOpts.Tags) > 0 {
+		godogOpts.Tags += " && "
 	}
-	opt.Tags += tag
+	godogOpts.Tags += tag
 }
 
 func configureTestOutput() {
@@ -133,32 +133,34 @@ func configureTestOutput() {
 		panic(fmt.Errorf("Error creating junit file: %v", err))
 	}
 
-	opt.Output = io.MultiWriter(opt.Output, mainLogFile)
+	godogOpts.Output = io.MultiWriter(godogOpts.Output, mainLogFile)
 }
 
-func FeatureContext(s *godog.Suite) error {
+func InitializeTestSuite(ctx *godog.TestSuiteContext) {
 	// Create kube client
 	if err := framework.InitKubeClient(); err != nil {
-		return err
+		panic(err)
 	}
 
 	// Verify Setup
 	if err := framework.CheckSetup(); err != nil {
-		return err
+		panic(err)
 	}
+}
 
+func InitializeScenario(ctx *godog.ScenarioContext) {
 	// Register Steps
 	data := &steps.Data{}
-	data.RegisterAllSteps(s)
+	data.RegisterAllSteps(ctx)
 
 	// Scenario handlers
-	s.BeforeScenario(func(pickle *messages.Pickle) {
-		if err := data.BeforeScenario(pickle); err != nil {
+	ctx.BeforeScenario(func(scenario *godog.Scenario) {
+		if err := data.BeforeScenario(scenario); err != nil {
 			framework.GetLogger(data.Namespace).Errorf("Error in configuring data for before scenario  %v", err)
 		}
 	})
-	s.AfterScenario(func(pickle *messages.Pickle, err error) {
-		if err := data.AfterScenario(pickle, err); err != nil {
+	ctx.AfterScenario(func(scenario *godog.Scenario, err error) {
+		if err := data.AfterScenario(scenario, err); err != nil {
 			framework.GetLogger(data.Namespace).Errorf("Error in configuring data for After scenario  %v", err)
 		}
 
@@ -169,15 +171,14 @@ func FeatureContext(s *godog.Suite) error {
 	})
 
 	// Step handlers
-	s.BeforeStep(func(s *messages.Pickle_PickleStep) {
+	ctx.BeforeStep(func(s *godog.Step) {
 		framework.GetLogger(data.Namespace).Infof("Step %s", s.Text)
 	})
-	s.AfterStep(func(s *messages.Pickle_PickleStep, err error) {
+	ctx.AfterStep(func(s *godog.Step, err error) {
 		if err != nil {
 			framework.GetLogger(data.Namespace).Errorf("Error in step '%s': %v", s.Text, err)
 		}
 	})
-	return nil
 }
 
 func deleteNamespaceIfExists(namespace string) {
@@ -195,16 +196,16 @@ func deleteNamespaceIfExists(namespace string) {
 
 func matchingFeature(filterTags string, features []*feature) bool {
 	for _, ft := range features {
-		if matchesPickles(filterTags, ft.pickles) {
+		if matchesScenarios(filterTags, ft.scenarios) {
 			return true
 		}
 	}
 	return false
 }
 
-func matchesPickles(filterTags string, pickles []*messages.Pickle) bool {
-	for _, pickle := range pickles {
-		if matchesTags(filterTags, pickle.Tags) {
+func matchesScenarios(filterTags string, scenarios []*godog.Scenario) bool {
+	for _, scenario := range scenarios {
+		if matchesTags(filterTags, scenario.Tags) {
 			return true
 		}
 	}
@@ -215,13 +216,13 @@ func showScenarios(features []*feature, showSteps bool) {
 	mainLogger := framework.GetMainLogger()
 	mainLogger.Info("------------------ SHOW SCENARIOS ------------------")
 	for _, ft := range features {
-		// Placeholders in names are now replaced directly into names for each pickle
-		if len(ft.pickles) > 0 {
+		// Placeholders in names are now replaced directly into names for each scenario
+		if len(ft.scenarios) > 0 {
 			mainLogger.Infof("Feature: %s", ft.document.GetFeature().GetName())
-			for _, pickle := range ft.pickles {
-				mainLogger.Infof("    Scenario: %s", pickle.GetName())
+			for _, scenario := range ft.scenarios {
+				mainLogger.Infof("    Scenario: %s", scenario.GetName())
 				if showSteps {
-					for _, step := range pickle.Steps {
+					for _, step := range scenario.Steps {
 						mainLogger.Infof("        Step: %s", step.GetText())
 					}
 				}

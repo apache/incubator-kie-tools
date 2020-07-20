@@ -27,12 +27,13 @@ import (
 	"strings"
 
 	"github.com/cucumber/gherkin-go/v11"
+	"github.com/cucumber/godog"
 	"github.com/cucumber/messages-go/v10"
 )
 
 type feature struct {
-	document *messages.GherkinDocument
-	pickles  []*messages.Pickle
+	document  *messages.GherkinDocument
+	scenarios []*godog.Scenario
 }
 
 func parseFeatures(filter string, paths []string) ([]*feature, error) {
@@ -99,11 +100,11 @@ func parseFeatureFile(path string, newIDFunc func() string) (*feature, error) {
 		return nil, fmt.Errorf("%s - %v", path, err)
 	}
 
-	pickles := gherkin.Pickles(*ft, path, newIDFunc)
+	scenarios := gherkin.Pickles(*ft, path, newIDFunc)
 
 	return &feature{
-		document: ft,
-		pickles:  pickles,
+		document:  ft,
+		scenarios: scenarios,
 	}, nil
 }
 
@@ -144,14 +145,14 @@ func applyTagFilter(tags string, ft *feature) {
 	if len(tags) == 0 {
 		return
 	}
-	var pickles []*messages.Pickle
-	for _, pickle := range ft.pickles {
-		if matchesTags(tags, pickle.Tags) {
-			pickles = append(pickles, pickle)
+	var scenarios []*godog.Scenario
+	for _, scenario := range ft.scenarios {
+		if matchesTags(tags, scenario.Tags) {
+			scenarios = append(scenarios, scenario)
 		}
 	}
 
-	ft.pickles = pickles
+	ft.scenarios = scenarios
 }
 
 // based on http://behat.readthedocs.org/en/v2.5/guides/6.cli.html#gherkin-filters

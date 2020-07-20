@@ -24,8 +24,8 @@ import (
 )
 
 // registerGitSteps register all existing GIT steps
-func registerGitSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Clone Kogito examples into local directory$`, data.cloneKogitoExamplesIntoLocalDirectory)
+func registerGitSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Clone Kogito examples into local directory$`, data.cloneKogitoExamplesIntoLocalDirectory)
 }
 
 func (data *Data) cloneKogitoExamplesIntoLocalDirectory() error {

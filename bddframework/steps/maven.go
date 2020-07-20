@@ -20,9 +20,9 @@ import (
 )
 
 // registerMavenSteps register all existing Maven steps
-func registerMavenSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Local example service "([^"]*)" is built by Maven$`, data.localServiceBuiltByMaven)
-	s.Step(`^Local example service "([^"]*)" is built by Maven using profile "([^"]*)"$`, data.localServiceBuiltByMavenWithProfile)
+func registerMavenSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Local example service "([^"]*)" is built by Maven$`, data.localServiceBuiltByMaven)
+	ctx.Step(`^Local example service "([^"]*)" is built by Maven using profile "([^"]*)"$`, data.localServiceBuiltByMavenWithProfile)
 }
 
 // Build local service

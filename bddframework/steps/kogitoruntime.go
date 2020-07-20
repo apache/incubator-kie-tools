@@ -16,7 +16,6 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/resource"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
@@ -37,31 +36,31 @@ import (
 	| runtime-env      | varName        | varValue                  |
 */
 
-func registerKogitoRuntimeSteps(s *godog.Suite, data *Data) {
+func registerKogitoRuntimeSteps(ctx *godog.ScenarioContext, data *Data) {
 	// Deploy steps
-	s.Step(`^Deploy (quarkus|springboot) example service "([^"]*)" from runtime registry with configuration:$`, data.deployExampleServiceFromRuntimeRegistryWithConfiguration)
-	s.Step(`^Deploy runtime (quarkus|springboot) example service "([^"]*)" with configuration:$`, data.deployRuntimeExampleServiceWithConfiguration)
+	ctx.Step(`^Deploy (quarkus|springboot) example service "([^"]*)" from runtime registry with configuration:$`, data.deployExampleServiceFromRuntimeRegistryWithConfiguration)
+	ctx.Step(`^Deploy runtime (quarkus|springboot) example service "([^"]*)" with configuration:$`, data.deployRuntimeExampleServiceWithConfiguration)
 
 	// Deployment steps
-	s.Step(`^Kogito Runtime "([^"]*)" has (\d+) pods running within (\d+) minutes$`, data.kogitoRuntimeHasPodsRunningWithinMinutes)
+	ctx.Step(`^Kogito Runtime "([^"]*)" has (\d+) pods running within (\d+) minutes$`, data.kogitoRuntimeHasPodsRunningWithinMinutes)
 
 	// Kogito Runtime steps
-	s.Step(`^Scale Kogito Runtime "([^"]*)" to (\d+) pods within (\d+) minutes$`, data.scaleKogitoRuntimeToPodsWithinMinutes)
+	ctx.Step(`^Scale Kogito Runtime "([^"]*)" to (\d+) pods within (\d+) minutes$`, data.scaleKogitoRuntimeToPodsWithinMinutes)
 }
 
 // Deploy service steps
-func (data *Data) deployExampleServiceFromRuntimeRegistryWithConfiguration(runtimeType, kogitoApplicationName string, table *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) deployExampleServiceFromRuntimeRegistryWithConfiguration(runtimeType, kogitoApplicationName string, table *godog.Table) error {
 	imageTag := data.ScenarioContext[getBuiltRuntimeImageTagContextKey(kogitoApplicationName)]
 	return data.deployExampleServiceFromImageWithConfiguration(runtimeType, kogitoApplicationName, imageTag, table)
 }
 
 // Can be renamed to deployExampleServiceWithConfiguration once KogitoApp is removed
-func (data *Data) deployRuntimeExampleServiceWithConfiguration(runtimeType, kogitoApplicationName string, table *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) deployRuntimeExampleServiceWithConfiguration(runtimeType, kogitoApplicationName string, table *godog.Table) error {
 	// Passing empty image tag so image values are not filled
 	return data.deployExampleServiceFromImageWithConfiguration(runtimeType, kogitoApplicationName, "", table)
 }
 
-func (data *Data) deployExampleServiceFromImageWithConfiguration(runtimeType, kogitoApplicationName, imageTag string, table *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) deployExampleServiceFromImageWithConfiguration(runtimeType, kogitoApplicationName, imageTag string, table *godog.Table) error {
 	kogitoRuntime, err := getKogitoRuntimeExamplesStub(data.Namespace, runtimeType, kogitoApplicationName, imageTag, table)
 	if err != nil {
 		return err
@@ -94,7 +93,7 @@ func (data *Data) scaleKogitoRuntimeToPodsWithinMinutes(name string, nbPods, tim
 // Misc methods
 
 // getKogitoRuntimeExamplesStub Get basic KogitoRuntime stub with GIT properties initialized to common Kogito examples
-func getKogitoRuntimeExamplesStub(namespace, runtimeType, name, imageTag string, table *messages.PickleStepArgument_PickleTable) (*framework.KogitoServiceHolder, error) {
+func getKogitoRuntimeExamplesStub(namespace, runtimeType, name, imageTag string, table *godog.Table) (*framework.KogitoServiceHolder, error) {
 	kogitoRuntime := &framework.KogitoServiceHolder{
 		KogitoService: framework.GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag),
 	}

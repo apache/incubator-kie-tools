@@ -20,7 +20,6 @@ import (
 	"strings"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
@@ -93,27 +92,27 @@ const (
 	envVarSpringBootKafkaBootstrapServers = "SPRING_KAFKA_BOOTSTRAP_SERVERS"
 )
 
-func registerKogitoAppSteps(s *godog.Suite, data *Data) {
+func registerKogitoAppSteps(ctx *godog.ScenarioContext, data *Data) {
 	// Deploy steps
-	s.Step(`^Deploy (quarkus|springboot) example service "([^"]*)" with configuration:$`, data.deployExampleServiceWithConfiguration)
-	s.Step(`^Create (quarkus|springboot) service "([^"]*)"$`, data.createService)
-	s.Step(`^Create (quarkus|springboot) service "([^"]*)" with configuration:$`, data.createServiceWithConfiguration)
-	s.Step(`^Deploy (quarkus|springboot) service from example file "([^"]*)"$`, data.deployServiceFromExampleFile)
+	ctx.Step(`^Deploy (quarkus|springboot) example service "([^"]*)" with configuration:$`, data.deployExampleServiceWithConfiguration)
+	ctx.Step(`^Create (quarkus|springboot) service "([^"]*)"$`, data.createService)
+	ctx.Step(`^Create (quarkus|springboot) service "([^"]*)" with configuration:$`, data.createServiceWithConfiguration)
+	ctx.Step(`^Deploy (quarkus|springboot) service from example file "([^"]*)"$`, data.deployServiceFromExampleFile)
 
 	// DeploymentConfig steps
-	s.Step(`^Kogito application "([^"]*)" has (\d+) pods running within (\d+) minutes$`, data.kogitoApplicationHasPodsRunningWithinMinutes)
-	s.Step(`^Kogito application "([^"]*)" has pods with runtime resources within (\d+) minutes:$`, data.kogitoApplicationHaveResourcesWithinMinutes)
+	ctx.Step(`^Kogito application "([^"]*)" has (\d+) pods running within (\d+) minutes$`, data.kogitoApplicationHasPodsRunningWithinMinutes)
+	ctx.Step(`^Kogito application "([^"]*)" has pods with runtime resources within (\d+) minutes:$`, data.kogitoApplicationHaveResourcesWithinMinutes)
 
 	// Kogito applications steps
-	s.Step(`^Scale Kogito application "([^"]*)" to (\d+) pods within (\d+) minutes$`, data.scaleKogitoApplicationToPodsWithinMinutes)
+	ctx.Step(`^Scale Kogito application "([^"]*)" to (\d+) pods within (\d+) minutes$`, data.scaleKogitoApplicationToPodsWithinMinutes)
 
 	// Logging steps
-	s.Step(`^Kogito application "([^"]*)" log contains text "([^"]*)" within (\d+) minutes$`, data.kogitoApplicationLogContainsTextWithinMinutes)
+	ctx.Step(`^Kogito application "([^"]*)" log contains text "([^"]*)" within (\d+) minutes$`, data.kogitoApplicationLogContainsTextWithinMinutes)
 }
 
 // Deploy service steps
 
-func (data *Data) deployExampleServiceWithConfiguration(runtimeType, contextDir string, table *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) deployExampleServiceWithConfiguration(runtimeType, contextDir string, table *godog.Table) error {
 	kogitoAppHolder, err := getKogitoAppHolder(data.Namespace, runtimeType, filepath.Base(contextDir), table)
 	if err != nil {
 		return err
@@ -137,10 +136,10 @@ func (data *Data) deployExampleServiceWithConfiguration(runtimeType, contextDir 
 }
 
 func (data *Data) createService(runtimeType, serviceName string) error {
-	return data.createServiceWithConfiguration(runtimeType, serviceName, &messages.PickleStepArgument_PickleTable{})
+	return data.createServiceWithConfiguration(runtimeType, serviceName, &godog.Table{})
 }
 
-func (data *Data) createServiceWithConfiguration(runtimeType, serviceName string, table *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) createServiceWithConfiguration(runtimeType, serviceName string, table *godog.Table) error {
 	kogitoAppHolder, err := getKogitoAppHolder(data.Namespace, runtimeType, serviceName, table)
 	if err != nil {
 		return err
@@ -165,7 +164,7 @@ func (data *Data) kogitoApplicationHasPodsRunningWithinMinutes(dcName string, po
 	return framework.WaitForDeploymentConfigRunning(data.Namespace, dcName, podNb, timeoutInMin)
 }
 
-func (data *Data) kogitoApplicationHaveResourcesWithinMinutes(dcName string, timeoutInMin int, dt *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) kogitoApplicationHaveResourcesWithinMinutes(dcName string, timeoutInMin int, dt *godog.Table) error {
 	_, requirements, err := parseResourceRequirementsTable(dt)
 
 	if err != nil {
@@ -194,7 +193,7 @@ func (data *Data) kogitoApplicationLogContainsTextWithinMinutes(dcName, logText 
 
 // DeployServiceFromExampleFile deploy service from example YAML file (example is located in deploy/examples folder)
 func deployServiceFromExampleFile(namespace, runtimeType, exampleFile string) error {
-	kogitoAppHolder, err := getKogitoAppHolder(namespace, runtimeType, "name-should-be overwritten-from-yaml", &messages.PickleStepArgument_PickleTable{})
+	kogitoAppHolder, err := getKogitoAppHolder(namespace, runtimeType, "name-should-be overwritten-from-yaml", &godog.Table{})
 	if err != nil {
 		return err
 	}
@@ -215,7 +214,7 @@ func deployServiceFromExampleFile(namespace, runtimeType, exampleFile string) er
 }
 
 // getKogitoAppHolder Get basic KogitoApp stub with GIT properties initialized to common Kogito examples
-func getKogitoAppHolder(namespace, runtimeType, serviceName string, table *messages.PickleStepArgument_PickleTable) (*framework.KogitoAppHolder, error) {
+func getKogitoAppHolder(namespace, runtimeType, serviceName string, table *godog.Table) (*framework.KogitoAppHolder, error) {
 	kogitoApp := &framework.KogitoAppHolder{
 		KogitoApp: framework.GetKogitoAppStub(namespace, runtimeType, serviceName),
 	}
@@ -253,7 +252,7 @@ func addInfinispanEnvVars(kogitoApp *framework.KogitoAppHolder) {
 	}
 }
 
-func configureKogitoAppFromTable(table *messages.PickleStepArgument_PickleTable, kogitoApp *framework.KogitoAppHolder) error {
+func configureKogitoAppFromTable(table *godog.Table, kogitoApp *framework.KogitoAppHolder) error {
 	if len(table.Rows) == 0 { // Using default configuration
 		return nil
 	}
@@ -311,7 +310,7 @@ func configureKogitoAppFromTable(table *messages.PickleStepArgument_PickleTable,
 	return nil
 }
 
-func parseKogitoAppConfigRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoApp *framework.KogitoAppHolder, profilesPtr *[]string) {
+func parseKogitoAppConfigRow(row *TableRow, kogitoApp *framework.KogitoAppHolder, profilesPtr *[]string) {
 	secondColumn := getSecondColumn(row)
 
 	switch secondColumn {
@@ -339,7 +338,7 @@ func parseKogitoAppConfigRow(row *messages.PickleStepArgument_PickleTable_Pickle
 	}
 }
 
-func parseKogitoAppInfinispanRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoApp *framework.KogitoAppHolder, profilesPtr *[]string) {
+func parseKogitoAppInfinispanRow(row *TableRow, kogitoApp *framework.KogitoAppHolder, profilesPtr *[]string) {
 	secondColumn := getSecondColumn(row)
 
 	switch secondColumn {
@@ -359,7 +358,7 @@ func parseKogitoAppInfinispanRow(row *messages.PickleStepArgument_PickleTable_Pi
 	}
 }
 
-func parseKogitoAppKafkaRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoApp *framework.KogitoAppHolder, profilesPtr *[]string) {
+func parseKogitoAppKafkaRow(row *TableRow, kogitoApp *framework.KogitoAppHolder, profilesPtr *[]string) {
 	secondColumn := getSecondColumn(row)
 
 	switch secondColumn {

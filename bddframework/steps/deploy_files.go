@@ -18,16 +18,15 @@ import (
 	"fmt"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
 const sourceLocation = "src/main/resources"
 
-func registerKogitoDeployFilesSteps(s *godog.Suite, data *Data) {
+func registerKogitoDeployFilesSteps(ctx *godog.ScenarioContext, data *Data) {
 	// Deploy steps
-	s.Step(`^Deploy (quarkus|springboot) file "([^"]*)" from example service "([^"]*)"$`, data.deployFileFromExampleService)
-	s.Step(`^Deploy (quarkus|springboot) folder from example service "([^"]*)"$`, data.deployFolderFromExampleService)
+	ctx.Step(`^Deploy (quarkus|springboot) file "([^"]*)" from example service "([^"]*)"$`, data.deployFileFromExampleService)
+	ctx.Step(`^Deploy (quarkus|springboot) folder from example service "([^"]*)"$`, data.deployFolderFromExampleService)
 }
 
 // Deploy steps
@@ -45,7 +44,7 @@ func (data *Data) deployFolderFromExampleService(runtimeType, serviceName string
 func deploySourceFilesFromPath(namespace, runtimeType, serviceName, path string) error {
 	framework.GetLogger(namespace).Infof("Deploy %s example %s with source files in path %s", runtimeType, serviceName, path)
 
-	kogitoAppHolder, err := getKogitoAppHolder(namespace, runtimeType, serviceName, &messages.PickleStepArgument_PickleTable{})
+	kogitoAppHolder, err := getKogitoAppHolder(namespace, runtimeType, serviceName, &godog.Table{})
 	if err != nil {
 		return err
 	}

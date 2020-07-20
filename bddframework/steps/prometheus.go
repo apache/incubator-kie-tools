@@ -19,9 +19,9 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-func registerPrometheusSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Prometheus Operator is deployed$`, data.prometheusOperatorIsDeployed)
-	s.Step(`^Prometheus instance is deployed, monitoring services with label name "([^"]*)" and value "([^"]*)"$`, data.prometheusInstanceIsDeployed)
+func registerPrometheusSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Prometheus Operator is deployed$`, data.prometheusOperatorIsDeployed)
+	ctx.Step(`^Prometheus instance is deployed, monitoring services with label name "([^"]*)" and value "([^"]*)"$`, data.prometheusInstanceIsDeployed)
 }
 
 func (data *Data) prometheusOperatorIsDeployed() error {

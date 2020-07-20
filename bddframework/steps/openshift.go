@@ -16,19 +16,18 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
-func registerOpenShiftSteps(s *godog.Suite, data *Data) {
+func registerOpenShiftSteps(ctx *godog.ScenarioContext, data *Data) {
 	// Build steps
-	s.Step(`^Start build with name "([^"]*)" from local example service path "([^"]*)"$`, data.startBuildFromExampleServicePath)
-	s.Step(`^Start build with name "([^"]*)" from local example service file "([^"]*)"$`, data.startBuildFromExampleServiceFile)
-	s.Step(`^Build "([^"]*)" is complete after (\d+) minutes$`, data.buildIsCompleteAfterMinutes)
+	ctx.Step(`^Start build with name "([^"]*)" from local example service path "([^"]*)"$`, data.startBuildFromExampleServicePath)
+	ctx.Step(`^Start build with name "([^"]*)" from local example service file "([^"]*)"$`, data.startBuildFromExampleServiceFile)
+	ctx.Step(`^Build "([^"]*)" is complete after (\d+) minutes$`, data.buildIsCompleteAfterMinutes)
 
 	// BuildConfig steps
-	s.Step(`^BuildConfig "([^"]*)" is created after (\d+) minutes$`, data.buildConfigIsCreatedAfterMinutes)
-	s.Step(`^BuildConfig "([^"]*)" is created with build resources within (\d+) minutes:$`, data.buildConfigHasResourcesWithinMinutes)
+	ctx.Step(`^BuildConfig "([^"]*)" is created after (\d+) minutes$`, data.buildConfigIsCreatedAfterMinutes)
+	ctx.Step(`^BuildConfig "([^"]*)" is created with build resources within (\d+) minutes:$`, data.buildConfigHasResourcesWithinMinutes)
 }
 
 // Build steps
@@ -52,7 +51,7 @@ func (data *Data) buildConfigIsCreatedAfterMinutes(buildConfigName string, timeo
 	return framework.WaitForBuildConfigCreated(data.Namespace, buildConfigName, timeoutInMin)
 }
 
-func (data *Data) buildConfigHasResourcesWithinMinutes(buildConfigName string, timeoutInMin int, dt *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) buildConfigHasResourcesWithinMinutes(buildConfigName string, timeoutInMin int, dt *godog.Table) error {
 	requirements, _, err := parseResourceRequirementsTable(dt)
 
 	if err != nil {

@@ -20,7 +20,6 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
 	appv1alpha1 "github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
@@ -39,40 +38,40 @@ type Data struct {
 }
 
 // RegisterAllSteps register all steps available to the test suite
-func (data *Data) RegisterAllSteps(s *godog.Suite) {
-	registerGitSteps(s, data)
-	registerGraphQLSteps(s, data)
-	registerHTTPSteps(s, data)
-	registerImageRegistrySteps(s, data)
-	registerInfinispanSteps(s, data)
-	registerKafkaSteps(s, data)
-	registerKogitoAppSteps(s, data)
-	registerKogitoBuildSteps(s, data)
-	registerKogitoRuntimeSteps(s, data)
-	registerKogitoDataIndexServiceSteps(s, data)
-	registerKogitoInfraSteps(s, data)
-	registerKogitoJobsServiceSteps(s, data)
-	registerKogitoManagementConsoleSteps(s, data)
-	registerKubernetesSteps(s, data)
-	registerMavenSteps(s, data)
-	registerOpenShiftSteps(s, data)
-	registerOperatorSteps(s, data)
-	registerPrometheusSteps(s, data)
-	registerProcessSteps(s, data)
-	registerTaskSteps(s, data)
-	registerKogitoDeployFilesSteps(s, data)
+func (data *Data) RegisterAllSteps(ctx *godog.ScenarioContext) {
+	registerGitSteps(ctx, data)
+	registerGraphQLSteps(ctx, data)
+	registerHTTPSteps(ctx, data)
+	registerImageRegistrySteps(ctx, data)
+	registerInfinispanSteps(ctx, data)
+	registerKafkaSteps(ctx, data)
+	registerKogitoAppSteps(ctx, data)
+	registerKogitoBuildSteps(ctx, data)
+	registerKogitoRuntimeSteps(ctx, data)
+	registerKogitoDataIndexServiceSteps(ctx, data)
+	registerKogitoInfraSteps(ctx, data)
+	registerKogitoJobsServiceSteps(ctx, data)
+	registerKogitoManagementConsoleSteps(ctx, data)
+	registerKubernetesSteps(ctx, data)
+	registerMavenSteps(ctx, data)
+	registerOpenShiftSteps(ctx, data)
+	registerOperatorSteps(ctx, data)
+	registerPrometheusSteps(ctx, data)
+	registerProcessSteps(ctx, data)
+	registerTaskSteps(ctx, data)
+	registerKogitoDeployFilesSteps(ctx, data)
 }
 
 // BeforeScenario configure the data before a scenario is launched
-func (data *Data) BeforeScenario(pickle *messages.Pickle) error {
+func (data *Data) BeforeScenario(scenario *godog.Scenario) error {
 	data.StartTime = time.Now()
 	data.Namespace = getNamespaceName()
 	data.KogitoExamplesLocation = createTemporaryFolder()
-	data.ScenarioName = pickle.GetName()
+	data.ScenarioName = scenario.GetName()
 	data.ScenarioContext = map[string]string{}
 
 	var err error
-	framework.GetLogger(data.Namespace).Info(fmt.Sprintf("Scenario %s", pickle.GetName()))
+	framework.GetLogger(data.Namespace).Info(fmt.Sprintf("Scenario %s", scenario.GetName()))
 	go func() {
 		err = framework.StartPodLogCollector(data.Namespace)
 	}()
@@ -104,7 +103,7 @@ func createTemporaryFolder() string {
 }
 
 // AfterScenario executes some actions on data after a scenario is finished
-func (data *Data) AfterScenario(pickle *messages.Pickle, err error) error {
+func (data *Data) AfterScenario(scenario *godog.Scenario, err error) error {
 	error := framework.OperateOnNamespaceIfExists(data.Namespace, func(namespace string) error {
 		if err := framework.StopPodLogCollector(namespace); err != nil {
 			framework.GetMainLogger().Errorf("Error stopping log collector on namespace %s: %v", namespace, err)
@@ -121,7 +120,7 @@ func (data *Data) AfterScenario(pickle *messages.Pickle, err error) error {
 		return nil
 	})
 
-	handleScenarioResult(data, pickle, err)
+	handleScenarioResult(data, scenario, err)
 	logScenarioDuration(data)
 	deleteTemporaryExamplesFolder(data)
 
@@ -151,14 +150,14 @@ func logScenarioDuration(data *Data) {
 	framework.GetLogger(data.Namespace).Infof("Scenario duration: %s", duration.String())
 }
 
-func handleScenarioResult(data *Data, pickle *messages.Pickle, err error) {
-	newLogFolderName := fmt.Sprintf("%s - %s", strings.ReplaceAll(pickle.GetName(), "/", "_"), data.Namespace)
+func handleScenarioResult(data *Data, scenario *godog.Scenario, err error) {
+	newLogFolderName := fmt.Sprintf("%s - %s", strings.ReplaceAll(scenario.GetName(), "/", "_"), data.Namespace)
 	if err != nil {
-		framework.GetLogger(data.Namespace).Errorf("Error in scenario '%s': %v", pickle.GetName(), err)
+		framework.GetLogger(data.Namespace).Errorf("Error in scenario '%s': %v", scenario.GetName(), err)
 
 		newLogFolderName = "error - " + newLogFolderName
 	} else {
-		framework.GetLogger(data.Namespace).Infof("Successful scenario '%s'", pickle.GetName())
+		framework.GetLogger(data.Namespace).Infof("Successful scenario '%s'", scenario.GetName())
 	}
 	err = framework.RenameLogFolder(data.Namespace, newLogFolderName)
 	if err != nil {

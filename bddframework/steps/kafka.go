@@ -22,8 +22,8 @@ import (
 
 const defaultReplicas = 1
 
-func registerKafkaSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Kafka instance "([^"]*)" is deployed$`, data.kafkaInstanceIsDeployed)
+func registerKafkaSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Kafka instance "([^"]*)" is deployed$`, data.kafkaInstanceIsDeployed)
 }
 
 func (data *Data) kafkaInstanceIsDeployed(name string) error {

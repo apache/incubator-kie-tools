@@ -16,7 +16,6 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
@@ -33,10 +32,10 @@ import (
 	| runtime-env     | varName     | varValue                  |
 */
 
-func registerKogitoDataIndexServiceSteps(s *godog.Suite, data *Data) {
-	s.Step(`^Install Kogito Data Index with (\d+) replicas$`, data.installKogitoDataIndexServiceWithReplicas)
-	s.Step(`^Install Kogito Data Index with (\d+) replicas with configuration:$`, data.installKogitoDataIndexServiceWithReplicasWithConfiguration)
-	s.Step(`^Kogito Data Index has (\d+) pods running within (\d+) minutes$`, data.kogitoDataIndexHasPodsRunningWithinMinutes)
+func registerKogitoDataIndexServiceSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Install Kogito Data Index with (\d+) replicas$`, data.installKogitoDataIndexServiceWithReplicas)
+	ctx.Step(`^Install Kogito Data Index with (\d+) replicas with configuration:$`, data.installKogitoDataIndexServiceWithReplicasWithConfiguration)
+	ctx.Step(`^Kogito Data Index has (\d+) pods running within (\d+) minutes$`, data.kogitoDataIndexHasPodsRunningWithinMinutes)
 }
 
 func (data *Data) installKogitoDataIndexServiceWithReplicas(replicas int) error {
@@ -44,7 +43,7 @@ func (data *Data) installKogitoDataIndexServiceWithReplicas(replicas int) error 
 	return framework.InstallKogitoDataIndexService(data.Namespace, framework.GetDefaultInstallerType(), &framework.KogitoServiceHolder{KogitoService: dataIndex})
 }
 
-func (data *Data) installKogitoDataIndexServiceWithReplicasWithConfiguration(replicas int, table *messages.PickleStepArgument_PickleTable) error {
+func (data *Data) installKogitoDataIndexServiceWithReplicasWithConfiguration(replicas int, table *godog.Table) error {
 	dataIndex := &framework.KogitoServiceHolder{
 		KogitoService: framework.GetKogitoDataIndexResourceStub(data.Namespace, replicas),
 	}
