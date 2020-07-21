@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-import { useContext } from "react";
-import { I18nContext } from "./i18nContext";
-import { TranslationBundle } from "./types";
+import { TranslationBundles } from "@kogito-tooling/i18n"
 
-export const useTranslation = <Bundle extends TranslationBundle<Bundle>>() => {
-  const { locale, setLocale, dictionary } = useContext(I18nContext);
-  return { locale, setLocale, i18n: dictionary as Bundle };
-};
+export interface OnlineBundles extends TranslationBundles<OnlineBundles> {
+  downloadHubModal: {
+    beforeDownload: {
+      title: string,
+      vscodeDescription: string,
+      githubChromeDescription: string,
+      desktopDescription: string,
+      businessModelerDescription: string,
+      operationSystem: string,
+    },
+    afterDownload: {
+      title: string,
+    }
+  }
+}

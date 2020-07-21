@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import { useContext } from "react";
-import { I18nContext } from "./i18nContext";
-import { TranslationBundle } from "./types";
+import { TermsBundle } from "../TermsBundle";
 
-export const useTranslation = <Bundle extends TranslationBundle<Bundle>>() => {
-  const { locale, setLocale, dictionary } = useContext(I18nContext);
-  return { locale, setLocale, i18n: dictionary as Bundle };
+export const en_US: TermsBundle = {
+  cancel: "Cancel",
+  close: "Close",
+  download: "Download",
+  exit: "Exit",
+  save: "Save"
 };

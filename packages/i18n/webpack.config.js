@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
-const envelope = require("../patternfly-base/webpackUtils")
 
 module.exports = {
   mode: "development",
@@ -57,7 +56,6 @@ module.exports = {
         exclude: /node_modules/,
         use: ["babel-loader"]
       },
-      ...envelope.patternflyLoaders
     ]
   },
   resolve: {

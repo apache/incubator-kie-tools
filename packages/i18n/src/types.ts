@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-import { useContext } from "react";
-import { I18nContext } from "./i18nContext";
-import { TranslationBundle } from "./types";
+// Interpolation function
+type TranslationBundleInterpolation = (...args: Array<string | number>) => string;
 
-export const useTranslation = <Bundle extends TranslationBundle<Bundle>>() => {
-  const { locale, setLocale, dictionary } = useContext(I18nContext);
-  return { locale, setLocale, i18n: dictionary as Bundle };
+// The Bundle type
+export type TranslationBundle<Bundle> = {
+  [K in keyof Bundle]: string | TranslationBundleInterpolation | TranslationBundle<any>;
 };
+
+// Locales that isn't the default should implement this interface
+export type DeepOptional<TBundle> = {
+  [K in keyof TBundle]?: DeepOptional<TBundle[K]>;
+};
+
