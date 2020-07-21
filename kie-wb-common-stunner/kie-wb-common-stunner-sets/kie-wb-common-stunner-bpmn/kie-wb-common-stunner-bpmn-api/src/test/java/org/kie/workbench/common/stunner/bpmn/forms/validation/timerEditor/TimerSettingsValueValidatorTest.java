@@ -112,7 +112,10 @@ public class TimerSettingsValueValidatorTest
             "R5/2030-08-20T17:59Z/PT5S",
             "R2/PT3S/2021-04-15T08:15:00Z",
             "R5/2020-04-30T17:55-04:00/P5Y1M4DT13H30M0,4S",
-            "R5/2020-04-30T17:55-04:00/P5Y1M4DT13H30M0.4S"
+            "R5/2020-04-30T17:55-04:00/P5Y1M4DT13H30M0.4S",
+            "R5/2020-02-29T08:15:00Z/P1Y2M3DT2H30M2S",
+            "R5/2024-02-29T08:15:00Z/P1Y2M3DT2H30M2S",
+            "R5/2020-02-29T08:15:00Z/2024-02-29T08:15:00Z"
     };
 
     private static final String[] INVALID_ISO_TIME_CYCLE_DURATIONS = {
@@ -150,6 +153,10 @@ public class TimerSettingsValueValidatorTest
             "R2/PT3S/2021-04-32T08:15:00Z",
             "R5/2020-04-30T17:55-04:00/P5Y1M4DT13H30,5M0,4S",
             "R5/2020-04-30T17:55-04:00/P5Y1M4DT13H30.5M0.4S",
+            "R2/PT3S/2021-02-29T08:15:00Z",
+            "R2/PT3S/2021-06-31T08:15:00Z",
+            "R5/2021-02-29T15:36:00Z/PT5S",
+            "R5/2021-02-30T15:36:00Z/PT5S",
             "etc"
     };
 
@@ -190,7 +197,9 @@ public class TimerSettingsValueValidatorTest
             "2030-08-20T17:59Z",
             "2020-05-01T15:45:00Z",
             "2030-08-20T22:14-00:30",
-            "2013-10-24T20:15:00+02:00"
+            "2013-10-24T20:15:00+02:00",
+            "2020-02-29T22:14-00:30",
+            "2024-02-29T22:14-00:30"
     };
 
     private static final String[] INVALID_TIME_DATES = {
@@ -200,6 +209,9 @@ public class TimerSettingsValueValidatorTest
             "2013-10-24T25:15:00+02:05",
             "2013-10-24T20:75:47+00:00",
             "2013-10-24T20:15:75+00:00",
+            "2021-02-29T22:14-00:30",
+            "2025-02-29T22:14-00:30",
+            "2025-06-31T22:14-00:30",
             "etc"
     };
 

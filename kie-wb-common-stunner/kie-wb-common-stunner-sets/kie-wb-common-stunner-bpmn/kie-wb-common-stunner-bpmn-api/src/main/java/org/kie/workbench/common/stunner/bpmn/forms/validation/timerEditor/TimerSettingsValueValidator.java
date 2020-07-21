@@ -16,9 +16,14 @@
 
 package org.kie.workbench.common.stunner.bpmn.forms.validation.timerEditor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import com.google.gwt.i18n.shared.DateTimeFormat;
+import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import org.kie.soup.commons.cron.CronExpression;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
@@ -39,6 +44,8 @@ public class TimerSettingsValueValidator
     public static final String ISO = "none";
 
     public static final String CRON = "cron";
+
+    public static final String DATE_PATTERN = "(\\d{4}-\\d{2}-\\d{2})";
 
     /**
      * ISO8601-Duration
@@ -82,6 +89,8 @@ public class TimerSettingsValueValidator
     private static final RegExp repeatableStartEndExpr = RegExp.compile("^" + ISO_REPEATABLE_START_END_INTERVAL + "$");
 
     private static final RegExp repeatablePeriodEndExpr = RegExp.compile("^" + ISO_REPEATABLE_PERIOD_END_INTERVAL + "$");
+
+    private static final RegExp datePattern = RegExp.compile(DATE_PATTERN, "g");
 
     public void initialize(ValidTimerSettingsValue constraintAnnotation) {
     }
@@ -148,15 +157,15 @@ public class TimerSettingsValueValidator
     }
 
     private static boolean isValidRepeatableDateTimeInterval(final String value) {
-        return hasSomething(value) && repeatableDateTimeExpr.test(value);
+        return hasSomething(value) && repeatableDateTimeExpr.test(value) && mayHaveValidDate(value);
     }
 
     private static boolean isValidRepeatableStartEndInterval(final String value) {
-        return hasSomething(value) && repeatableStartEndExpr.test(value);
+        return hasSomething(value) && repeatableStartEndExpr.test(value) && mayHaveValidDate(value);
     }
 
     private static boolean isValidRepeatablePeriodEndInterval(final String value) {
-        return hasSomething(value) && repeatablePeriodEndExpr.test(value);
+        return hasSomething(value) && repeatablePeriodEndExpr.test(value) && mayHaveValidDate(value);
     }
 
     private static boolean isValidCronExpression(final String value) {
@@ -172,10 +181,36 @@ public class TimerSettingsValueValidator
     }
 
     private static boolean isValidTimeDate(final String value) {
-        return hasSomething(value) && dateTimeExpr.test(value);
+        return hasSomething(value) && dateTimeExpr.test(value) && mayHaveValidDate(value);
     }
 
     private static boolean hasSomething(final String value) {
         return value != null && !value.trim().isEmpty();
+    }
+
+    private static List<String> fetchDateStrings(final String value) {
+        List<String> matches = new ArrayList<>();
+        MatchResult matcher = datePattern.exec(value);
+
+        while (null != matcher) {
+            matches.add(matcher.getGroup(1));
+            matcher = datePattern.exec(value);
+        }
+
+        return matches;
+    }
+
+    // if the ISO expression has dates, they must be valid ones
+    private static boolean mayHaveValidDate(final String value) {
+        List<String> matches = fetchDateStrings(value);
+        if (!matches.isEmpty()) {
+            try {
+                DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
+                matches.forEach(dateTimeFormat::parseStrict);
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
+        }
+        return true;
     }
 }
