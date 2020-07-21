@@ -16,6 +16,7 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.IDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
@@ -49,6 +50,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -202,6 +204,20 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
     }
 
     @Test
+    public void testMoveShapeTopToParentOnMoveStart() {
+        WiresContainer parent = mock(WiresContainer.class);
+        IContainer container = mock(IContainer.class);
+        when(parentPicker.getParent()).thenReturn(parent);
+        when(parent.getContainer()).thenReturn(container);
+
+        tested.onMoveStart(2, 7);
+
+        verify(alignAndDistributeControl, times(1)).dragStart();
+        verify(parentPicker, times(1)).getParent();
+        verify(container, times(1)).moveToTop(shape.getGroup());
+    }
+
+    @Test
     public void testOnMove() {
         when(parentPicker.onMove(anyDouble(), anyDouble())).thenReturn(false);
         when(m_dockingAndControl.onMove(anyDouble(), anyDouble())).thenReturn(false);
@@ -227,8 +243,8 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
     @Test
     public void testAcceptContainment() {
         Point2D somePoint = new Point2D(1, 2);
-        when(locationAcceptor.accept(eq(new WiresContainer[] {shape}),
-                                     eq(new Point2D[] {somePoint})))
+        when(locationAcceptor.accept(eq(new WiresContainer[]{shape}),
+                                     eq(new Point2D[]{somePoint})))
                 .thenReturn(true);
         when(m_containmentControl.accept()).thenReturn(true);
         when(m_dockingAndControl.accept()).thenReturn(false);
@@ -241,8 +257,8 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
     @Test
     public void testAcceptDocking() {
         Point2D somePoint = new Point2D(1, 2);
-        when(locationAcceptor.accept(eq(new WiresContainer[] {shape}),
-                                     eq(new Point2D[] {somePoint})))
+        when(locationAcceptor.accept(eq(new WiresContainer[]{shape}),
+                                     eq(new Point2D[]{somePoint})))
                 .thenReturn(true);
         when(m_containmentControl.accept()).thenReturn(false);
         when(m_dockingAndControl.accept()).thenReturn(true);
@@ -344,9 +360,9 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
     }
 
     @Test
-    public void testDestroy(){
+    public void testDestroy() {
         tested.destroy();
-        assertEquals(tested.getAdjust(), new Point2D(0d,0d));
+        assertEquals(tested.getAdjust(), new Point2D(0d, 0d));
         verify(m_dockingAndControl).destroy();
         verify(m_containmentControl).destroy();
         verify(parentPicker).destroy();
@@ -375,5 +391,4 @@ public class WiresShapeControlImplTest extends AbstractWiresControlTest {
         assertFalse(tested.isOutOfBounds(800d, 800d));
         assertTrue(tested.isOutOfBounds(1191d, 1191d));
     }
-
 }

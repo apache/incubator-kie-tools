@@ -15,12 +15,15 @@
  */
 package com.ait.lienzo.client.core.shape.wires;
 
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeMouseDownEvent;
 import com.ait.lienzo.client.core.event.OnEventHandlers;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresCompositeShapeHandler;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
@@ -43,6 +46,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -63,10 +67,16 @@ public class SelectionManagerTest
     private SelectionManager.SelectionShapeProvider selectionShapeProvider;
 
     @Mock
+    private SelectionManager.SelectionDragHandler selectionDragHandler;
+
+    @Mock
     private Shape<?> selectionShape;
 
     @Mock
     private NodeMouseDownEvent mouseEvent;
+
+    @Mock
+    private NodeDragEndEvent dragEndEvent;
 
     @Mock
     private WiresLayer wiresLayer;
@@ -153,7 +163,8 @@ public class SelectionManagerTest
     }
 
     @Test
-    public void testNodesHighlightedAfterSelection() {
+    public void testNodesHighlightedAfterSelection()
+    {
         realManager.setSelectionShapeProvider(selectionShapeProvider);
         realManager.setSelectionCreationInProcess(true);
 
@@ -174,6 +185,44 @@ public class SelectionManagerTest
 
         verify(selectedItems, never()).notifyListener();
         verify(selectedItems, times(1)).selectShapes();
+    }
+
+    @Test
+    public void testReinforceSelectionShapeOnTop()
+    {
+        Layer layer = mock(Layer.class);
+        selectionDragHandler.m_selectionManager = manager;
+        selectionDragHandler.m_selectionManager.m_startBoundingBox = mock(BoundingBox.class);
+        selectionDragHandler.multipleShapeHandler = mock(WiresCompositeShapeHandler.class);
+        doCallRealMethod().when(selectionDragHandler).onNodeDragEnd(dragEndEvent);
+        doCallRealMethod().when(selectionDragHandler).reinforceSelectionShapeOnTop();
+        when(selectionShape.getLayer()).thenReturn(layer);
+        doNothing().when(selectionDragHandler).updateSelectionShapeForExternallyConnectedConnectors(anyInt(),
+                                                                                                    anyInt(),
+                                                                                                    any(BoundingBox.class));
+        selectionDragHandler.onNodeDragEnd(dragEndEvent);
+
+        verify(layer, times(1)).moveToTop(selectionShape);
+    }
+
+    @Test
+    public void testReinforceSelectionShapeOnTopShapeNull()
+    {
+        SelectionManager selectionManager = mock(SelectionManager.class);
+        selectionDragHandler.m_selectionManager = selectionManager;
+        selectionDragHandler.m_selectionManager.m_startBoundingBox = mock(BoundingBox.class);
+        selectionDragHandler.multipleShapeHandler = mock(WiresCompositeShapeHandler.class);
+        doCallRealMethod().when(selectionDragHandler).onNodeDragEnd(dragEndEvent);
+        doCallRealMethod().when(selectionDragHandler).reinforceSelectionShapeOnTop();
+        doCallRealMethod().when(selectionManager).getSelectionShape();
+        Shape<?> shape = selectionDragHandler.m_selectionManager.getSelectionShape();
+        when(selectionShapeProvider.getShape()).thenReturn(shape);
+        doNothing().when(selectionDragHandler).updateSelectionShapeForExternallyConnectedConnectors(anyInt(),
+                                                                                                    anyInt(),
+                                                                                                    any(BoundingBox.class));
+        selectionDragHandler.onNodeDragEnd(dragEndEvent);
+
+        verify(layer, never()).moveToTop(selectionShape);
     }
 
     @Test
@@ -201,7 +250,6 @@ public class SelectionManagerTest
 
         verify(manager).drawSelectionShape(eq(expectedX), eq(expectedY), eq(expectedWidth), eq(expectedHeight), eq(overLayer));
         verify(overLayer).draw();
-        verify(selectionShape, never()).moveToTop();
     }
 
     @Test

@@ -38,14 +38,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -75,6 +78,15 @@ public class ScrollablePanelHandlerTest {
     @Mock
     private ScrollPosition scrollPosition;
 
+    @Mock
+    private AbsolutePanel scrollablePanel;
+
+    @Mock
+    private Element element;
+
+    @Mock
+    private Style style;
+
     private ScrollablePanelHandler tested;
 
     @Before
@@ -85,6 +97,10 @@ public class ScrollablePanelHandlerTest {
         when(layer.getViewport()).thenReturn(viewport);
         when(viewport.getTransform()).thenReturn(transform);
         when(tested.scrollPosition()).thenReturn(scrollPosition);
+
+        doReturn(scrollablePanel).when(panel).getInternalScrollPanel();
+        doReturn(element).when(scrollablePanel).getElement();
+        doReturn(style).when(element).getStyle();
     }
 
     @Test
@@ -124,18 +140,22 @@ public class ScrollablePanelHandlerTest {
     @Test
     public void testSynchronizeScrollSize() {
 
-        final AbsolutePanel panel = mock(AbsolutePanel.class);
-        final Integer internalScrollPanelWidth = 42;
-        final Integer internalScrollPanelHeight = 58;
+        final Integer newScrollPanelWidth = 42;
+        final Integer newScrollPanelHeight = 58;
+        final Integer curInternalScrollPanelWidth = 40;
+        final Integer curInternalScrollPanelHeight = 50;
 
-        doReturn(internalScrollPanelWidth).when(tested).calculateInternalScrollPanelWidth();
-        doReturn(internalScrollPanelHeight).when(tested).calculateInternalScrollPanelHeight();
-        doReturn(panel).when(tested).getInternalScrollPanel();
+        doReturn(newScrollPanelWidth).when(tested).calculateInternalScrollPanelWidth();
+        doReturn(newScrollPanelHeight).when(tested).calculateInternalScrollPanelHeight();
+        doReturn(String.valueOf(curInternalScrollPanelWidth)).when(style).getProperty("width");
+        doReturn(String.valueOf(curInternalScrollPanelHeight)).when(style).getProperty("height");
+        doReturn(newScrollPanelWidth).when(element).getScrollWidth();
+        doReturn(newScrollPanelHeight).when(element).getScrollHeight();
 
         tested.synchronizeScrollSize();
 
-        verify(panel).setPixelSize(eq(internalScrollPanelWidth),
-                                   eq(internalScrollPanelHeight));
+        verify(scrollablePanel).setPixelSize(eq(newScrollPanelWidth),
+                                             eq(newScrollPanelHeight));
     }
 
     @Test
@@ -218,6 +238,61 @@ public class ScrollablePanelHandlerTest {
         assertEquals(DEFAULT_INTERNAL_SCROLL_HEIGHT,
                      panelHeight,
                      0);
+    }
+
+    @Test
+    public void testRefreshEqualBounds() {
+
+        final int newScrollPanelWidth = 42;
+        final int newScrollPanelHeight = 58;
+
+        doReturn(newScrollPanelWidth).when(tested).calculateInternalScrollPanelWidth();
+        doReturn(newScrollPanelHeight).when(tested).calculateInternalScrollPanelHeight();
+        doReturn(String.valueOf(newScrollPanelWidth)).when(style).getProperty("width");
+        doReturn(String.valueOf(newScrollPanelHeight)).when(style).getProperty("height");
+        doReturn(newScrollPanelWidth).when(element).getScrollWidth();
+        doReturn(newScrollPanelHeight).when(element).getScrollHeight();
+        doNothing().when(tested).setScrollBarsPosition(anyDouble(), anyDouble());
+
+        tested.refresh();
+
+        verify(tested, times(1)).synchronizeScrollSize(anyInt(), anyInt());
+        verify(tested, times(1)).refreshScrollPosition();
+        verify(scrollablePanel, never()).setPixelSize(anyInt(), anyInt());
+    }
+
+    @Test
+    public void testRefreshDifferentWidth() {
+
+        final int newScrollPanelWidth = 42;
+        final int newScrollPanelHeight = 58;
+
+        doReturn(newScrollPanelWidth).when(tested).calculateInternalScrollPanelWidth();
+        doReturn(newScrollPanelHeight).when(tested).calculateInternalScrollPanelHeight();
+        doNothing().when(tested).synchronizeScrollSize(newScrollPanelWidth, newScrollPanelHeight);
+        doNothing().when(tested).refreshScrollPosition();
+
+        tested.refresh();
+
+        verify(tested, times(1)).synchronizeScrollSize(newScrollPanelWidth, newScrollPanelHeight);
+        verify(tested, times(1)).refreshScrollPosition();
+    }
+
+    @Test
+    public void testRefreshDifferentHeight() {
+
+        final int newScrollPanelWidth = 42;
+        final int newScrollPanelHeight = 58;
+
+        doReturn(newScrollPanelWidth).when(tested).calculateInternalScrollPanelWidth();
+        doReturn(newScrollPanelHeight).when(tested).calculateInternalScrollPanelHeight();
+        doNothing().when(tested).synchronizeScrollSize(newScrollPanelWidth, newScrollPanelHeight);
+        doNothing().when(tested).refreshScrollPosition();
+
+        tested.refresh();
+
+        verify(tested, times(1)).synchronizeScrollSize(newScrollPanelWidth, newScrollPanelHeight);
+        verify(tested, times(1)).refreshScrollPosition();
     }
 
     @Test

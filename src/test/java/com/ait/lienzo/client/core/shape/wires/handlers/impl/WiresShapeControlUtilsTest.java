@@ -79,23 +79,23 @@ public class WiresShapeControlUtilsTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testMoveShapeUpToParent() {
+    public void testMoveShapeTopToParent() {
         WiresShape shape = mock(WiresShape.class);
         Group shapeGroup = mock(Group.class);
         when(shape.getGroup()).thenReturn(shapeGroup);
         WiresContainer parent = mock(WiresContainer.class);
         IContainer parentContainer = mock(IContainer.class);
         when(parent.getContainer()).thenReturn(parentContainer);
-        WiresShapeControlUtils.moveShapeUpToParent(shape, parent);
-        verify(parentContainer, times(1)).moveUp(eq(shapeGroup));
+        WiresShapeControlUtils.moveShapeTopToParent(shape, parent);
+        verify(parentContainer, times(1)).moveToTop(eq(shapeGroup));
         verify(parentContainer, never()).moveDown(anyObject());
-        verify(parentContainer, never()).moveToTop(anyObject());
+        verify(parentContainer, never()).moveUp(anyObject());
         verify(parentContainer, never()).moveToBottom(anyObject());
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testMoveShapeAndConnectorsUpToParent() {
+    public void testMoveShapeAndConnectorsTopToParent() {
         WiresShape shape = mock(WiresShape.class);
         Group shapeGroup = mock(Group.class);
         when(shape.getGroup()).thenReturn(shapeGroup);
@@ -114,10 +114,10 @@ public class WiresShapeControlUtilsTest {
         when(connection.getConnector()).thenReturn(connector);
         Group connectorGroup = mock(Group.class);
         when(connector.getGroup()).thenReturn(connectorGroup);
-        WiresShapeControlUtils.moveShapeUpToParent(shape, parent);
-        verify(parentContainer, times(1)).moveUp(eq(shapeGroup));
+        WiresShapeControlUtils.moveShapeTopToParent(shape, parent);
+        verify(parentContainer, times(1)).moveToTop(eq(shapeGroup));
         verify(parentContainer, never()).moveDown(anyObject());
-        verify(parentContainer, never()).moveToTop(anyObject());
+        verify(parentContainer, never()).moveUp(anyObject());
         verify(parentContainer, never()).moveToBottom(anyObject());
         verify(connectorGroup, times(1)).moveToTop();
         verify(connectorGroup, never()).moveUp();
