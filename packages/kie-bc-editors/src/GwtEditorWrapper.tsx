@@ -17,10 +17,10 @@
 import * as React from "react";
 import * as Core from "@kogito-tooling/core-api";
 import { GwtEditor } from "./GwtEditor";
-import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
 import { editors } from "./GwtEditorRoutes";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
+import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -30,13 +30,13 @@ export class GwtEditorWrapper extends Core.Editor {
 
   private readonly gwtEditor: GwtEditor;
   private readonly xmlFormatter: XmlFormatter;
-  private readonly messageBus: EnvelopeBusInnerMessageHandler;
+  private readonly messageBusClient: MessageBusClient<KogitoChannelApi>;
   private readonly stateControlService: GwtStateControlService;
 
   constructor(
     editorId: string,
     gwtEditor: GwtEditor,
-    messageBus: EnvelopeBusInnerMessageHandler,
+    messageBus: MessageBusClient<KogitoChannelApi>,
     xmlFormatter: XmlFormatter,
     stateControlService: GwtStateControlService
   ) {
@@ -45,7 +45,7 @@ export class GwtEditorWrapper extends Core.Editor {
     this.stateControlService = stateControlService;
     this.af_isReact = true;
     this.gwtEditor = gwtEditor;
-    this.messageBus = messageBus;
+    this.messageBusClient = messageBus;
     this.editorId = editorId;
     this.xmlFormatter = xmlFormatter;
   }
@@ -79,7 +79,8 @@ export class GwtEditorWrapper extends Core.Editor {
   public setContent(path: string, content: string) {
     setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
     return this.gwtEditor.setContent(path, content.trim()).catch(() => {
-      this.messageBus.notify_setContentError(
+      this.messageBusClient.notify(
+        "receive_setContentError",
         `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
       );
       return Promise.resolve();

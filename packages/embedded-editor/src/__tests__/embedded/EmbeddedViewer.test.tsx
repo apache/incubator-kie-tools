@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { ChannelType, ContentType, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
-import { EnvelopeBusMessageType, EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelType } from "@kogito-tooling/core-api";
 import * as React from "react";
 import { EditorType, File } from "../../common";
 import { EmbeddedEditorRouter, EmbeddedViewer } from "../../embedded";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 import { render } from "@testing-library/react";
+import { EnvelopeBusMessagePurpose, KogitoChannelBus } from "@kogito-tooling/microeditor-envelope-protocol";
 
 describe("EmbeddedViewer::ONLINE", () => {
   const file: File = {
@@ -29,30 +29,29 @@ describe("EmbeddedViewer::ONLINE", () => {
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false
   };
-  const router: EmbeddedEditorRouter = new EmbeddedEditorRouter();
-  const channelType: ChannelType = ChannelType.ONLINE;
-  const holder: HTMLElement = document.body.appendChild(document.createElement("div"));
 
-  beforeEach(() => {
-    spyOn<any>(EnvelopeBusOuterMessageHandler, "generateRandomBusId");
+  const router = new EmbeddedEditorRouter();
+  const channelType = ChannelType.ONLINE;
+  const busId = "test-bus-id";
+
+  beforeAll(() => {
+    jest.spyOn(KogitoChannelBus.prototype, "generateRandomId").mockReturnValue(busId);
   });
 
   test("EmbeddedViewer::defaults", () => {
-    const { getByTestId } = render(<EmbeddedViewer file={file} router={router} channelType={channelType} />);
+    const { getByTestId, container } = render(<EmbeddedViewer file={file} router={router} channelType={channelType} />);
 
     expect(getByTestId("kogito-iframe")).toBeVisible();
     expect(getByTestId("kogito-iframe")).toHaveAttribute("data-envelope-channel", ChannelType.ONLINE);
     expect(getByTestId("kogito-iframe")).toHaveAttribute("src", "envelope/envelope.html");
 
-    expect(document.body).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
   });
 
   test("EmbeddedViewer::onResourceContentRequest", async () => {
-    const onResourceContentRequest = jest.fn((request: ResourceContentRequest) =>
-      Promise.resolve({ path: "", type: ContentType.TEXT })
-    );
+    const onResourceContentRequest = jest.fn(() => Promise.resolve({} as any));
 
-    render(
+    const { container } = render(
       <EmbeddedViewer
         file={file}
         router={router}
@@ -61,19 +60,22 @@ describe("EmbeddedViewer::ONLINE", () => {
       />
     );
 
-    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT, data: { path: "" } });
+    await incomingMessage({
+      busId: busId,
+      requestId: "1",
+      purpose: EnvelopeBusMessagePurpose.REQUEST,
+      type: "receive_resourceContentRequest",
+      data: [{ path: "" }]
+    });
 
     expect(onResourceContentRequest).toBeCalled();
-
-    expect(document.body).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
   });
 
   test("EmbeddedViewer::onResourceListRequest", async () => {
-    const onResourceListRequest = jest.fn((request: ResourceListRequest) =>
-      Promise.resolve({ pattern: "", paths: [] })
-    );
+    const onResourceListRequest = jest.fn(() => Promise.resolve({} as any));
 
-    render(
+    const { container } = render(
       <EmbeddedViewer
         file={file}
         router={router}
@@ -82,10 +84,15 @@ describe("EmbeddedViewer::ONLINE", () => {
       />
     );
 
-    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_LIST, data: { pattern: "", paths: [] } });
+    await incomingMessage({
+      busId: busId,
+      requestId: "1",
+      purpose: EnvelopeBusMessagePurpose.REQUEST,
+      type: "receive_resourceListRequest",
+      data: [{ pattern: "", paths: [] }]
+    });
 
     expect(onResourceListRequest).toBeCalled();
-
-    expect(document.body).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
   });
 });

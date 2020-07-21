@@ -19,6 +19,8 @@ const CopyPlugin = require("copy-webpack-plugin");
 const ZipPlugin = require("zip-webpack-plugin");
 const packageJson = require("./package.json");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
+const { merge } = require("webpack-merge");
+const common = require("../../webpack.common.config");
 
 function getLatestGitTag() {
   const tagName = require("child_process")
@@ -74,20 +76,13 @@ module.exports = async (env, argv) => {
   const [router_targetOrigin, router_relativePath] = getRouterArgs(argv);
   const [onlineEditor_url, manifestFile] = getOnlineEditorArgs(argv);
 
-  return {
-    mode: "development",
-    devtool: "inline-source-map",
+  return merge(common, {
     entry: {
       "content_scripts/github": "./src/github-content-script.ts",
       "content_scripts/online-editor": "./src/online-editor-content-script.ts",
       background: "./src/background.ts",
       "envelope/index": "./src/envelope/index.ts"
     },
-    output: {
-      path: path.resolve(__dirname, "./dist"),
-      filename: "[name].js"
-    },
-    externals: {},
     devServer: {
       contentBase: [path.join(__dirname, "..", "kie-bc-editors-unpacked")],
       compress: true,
@@ -97,14 +92,8 @@ module.exports = async (env, argv) => {
     },
     plugins: [
       new CopyPlugin([
-        {
-          from: "./static",
-          to: "."
-        },
-        {
-          from: `./${manifestFile}`,
-          to: "./manifest.json"
-        }
+        { from: "./static", to: "." },
+        { from: `./${manifestFile}`, to: "./manifest.json" }
       ]),
       new ZipPlugin({
         filename: "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
@@ -113,13 +102,6 @@ module.exports = async (env, argv) => {
     ],
     module: {
       rules: [
-        {
-          test: /\.tsx?$/,
-          loader: "ts-loader",
-          options: {
-            configFile: path.resolve("./tsconfig.json")
-          }
-        },
         {
           test: /ChromeRouter\.ts$/,
           loader: "string-replace-loader",
@@ -148,17 +130,8 @@ module.exports = async (env, argv) => {
             ]
           }
         },
-        {
-          test: /\.jsx?$/,
-          exclude: /node_modules/,
-          use: ["babel-loader"]
-        },
         ...pfWebpackOptions.patternflyRules
       ]
-    },
-    resolve: {
-      extensions: [".tsx", ".ts", ".js", ".jsx"],
-      modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
     }
-  };
+  });
 };

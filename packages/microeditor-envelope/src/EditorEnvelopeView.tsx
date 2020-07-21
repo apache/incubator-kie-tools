@@ -23,14 +23,14 @@ import { DefaultKeyboardShortcutsService, KeyBindingsHelpOverlay } from "@kogito
 import "@patternfly/patternfly/base/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/patternfly/patternfly.scss";
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
+import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
   loadingScreenContainer: HTMLElement;
   keyboardShortcutsService: DefaultKeyboardShortcutsService;
   context: Core.EditorContext;
-  messageBus: EnvelopeBusInnerMessageHandler;
+  messageBus: KogitoEnvelopeBus;
 }
 
 interface State {

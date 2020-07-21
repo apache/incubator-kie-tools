@@ -15,11 +15,11 @@
  */
 
 import { GuidedTourApi } from "./GuidedTourApi";
-import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
+import { KogitoEnvelopeBus } from "../../KogitoEnvelopeBus";
 import { UserInteraction, Tutorial, KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 
 export class GuidedTourServiceCoordinator {
-  public exposeApi(messageBus: EnvelopeBusInnerMessageHandler): GuidedTourApi {
+  public exposeApi(messageBus: KogitoEnvelopeBus): GuidedTourApi {
     return {
       refresh(userInteraction: UserInteraction): void {
         messageBus.notify_guidedTourRefresh(userInteraction);

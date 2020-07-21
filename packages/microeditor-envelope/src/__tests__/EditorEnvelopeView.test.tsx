@@ -18,16 +18,9 @@ import * as React from "react";
 import { shallow } from "enzyme";
 import { EditorEnvelopeView } from "../EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
-import { ChannelKeyboardEvent, DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
-import {
-  ChannelType,
-  EditorContent,
-  LanguageData,
-  OperatingSystem,
-  ResourceContent,
-  ResourcesList
-} from "@kogito-tooling/core-api";
-import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
+import { KogitoEnvelopeBus } from "../KogitoEnvelopeBus";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
 
 let loadingScreenContainer: HTMLElement;
 beforeEach(() => (loadingScreenContainer = document.body.appendChild(document.createElement("div"))));
@@ -36,44 +29,21 @@ afterEach(() => loadingScreenContainer.remove());
 function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shallow>] {
   let view: EditorEnvelopeView;
   const context = { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS };
-  const receivedMessages: any[] = [];
   const sentMessages: any[] = [];
-  const messageBus = new EnvelopeBusInnerMessageHandler(
+  const kogitoEnvelopeBus = new KogitoEnvelopeBus(
     {
       postMessage: (message, targetOrigin) => sentMessages.push([message, targetOrigin])
     },
-    self => ({
-      receive_contentResponse: (content: EditorContent) => {
-        receivedMessages.push(["contentResponse", content]);
-      },
-      receive_languageResponse: (languageData: LanguageData) => {
-        receivedMessages.push(["languageResponse", languageData]);
-      },
-      receive_contentRequest: () => {
-        receivedMessages.push(["contentRequest", undefined]);
-      },
-      receive_resourceContentResponse: (content: ResourceContent) => {
-        receivedMessages.push(["resourceContent", content]);
-      },
-      receive_resourceContentList: (resourcesList: ResourcesList) => {
-        receivedMessages.push(["resourceContentList", resourcesList]);
-      },
-      receive_editorRedo(): void {
-        receivedMessages.push(["notify_editorRedo", undefined]);
-      },
-      receive_editorUndo(): void {
-        receivedMessages.push(["notify_editorUndo", undefined]);
-      },
-      receive_previewRequest: () => {
-        receivedMessages.push(["receive_previewRequest"]);
-      },
-      receive_guidedTourElementPositionRequest: () => {
-        receivedMessages.push(["receive_guidedTourElementPositionRequest"]);
-      },
-      receive_channelKeyboardEvent: (channelKeyboardEvent: ChannelKeyboardEvent) => {
-        receivedMessages.push(["receive_previewRequest", channelKeyboardEvent]);
-      }
-    })
+    {
+      receive_initRequest: jest.fn(),
+      receive_contentChanged: jest.fn(),
+      receive_contentRequest: jest.fn(),
+      receive_editorUndo: jest.fn(),
+      receive_editorRedo: jest.fn(),
+      receive_previewRequest: jest.fn(),
+      receive_guidedTourElementPositionRequest: jest.fn(),
+      receive_channelKeyboardEvent: jest.fn()
+    }
   );
 
   const render = shallow(
@@ -82,9 +52,10 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
       context={context}
       exposing={self => (view = self)}
       loadingScreenContainer={loadingScreenContainer}
-      messageBus={messageBus}
+      messageBus={kogitoEnvelopeBus}
     />
   );
+
   return [view!, render];
 }
 

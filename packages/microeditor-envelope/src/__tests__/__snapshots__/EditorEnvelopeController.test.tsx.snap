@@ -80,24 +80,37 @@ exports[`EditorEnvelopeController after received content 1`] = `
     </div>
   }
   messageBus={
-    EnvelopeBusInnerMessageHandler {
-      "capturedInitRequestYet": true,
-      "envelopeBusApi": Object {
-        "postMessage": [Function],
-      },
-      "eventListener": [Function],
-      "id": undefined,
-      "impl": Object {
+    KogitoEnvelopeBus {
+      "api": Object {
         "receive_channelKeyboardEvent": [Function],
+        "receive_contentChanged": [Function],
         "receive_contentRequest": [Function],
-        "receive_contentResponse": [Function],
         "receive_editorRedo": [Function],
         "receive_editorUndo": [Function],
         "receive_guidedTourElementPositionRequest": [Function],
-        "receive_languageResponse": [Function],
+        "receive_initRequest": [Function],
         "receive_previewRequest": [Function],
-        "receive_resourceContentList": [Function],
-        "receive_resourceContentResponse": [Function],
+      },
+      "associatedBusId": "someBusId",
+      "bus": Object {
+        "postMessage": [Function],
+      },
+      "eventListener": [Function],
+      "manager": e {
+        "api": Object {
+          "receive_channelKeyboardEvent": [Function],
+          "receive_contentChanged": [Function],
+          "receive_contentRequest": [Function],
+          "receive_editorRedo": [Function],
+          "receive_editorUndo": [Function],
+          "receive_guidedTourElementPositionRequest": [Function],
+          "receive_initRequest": [Function],
+          "receive_previewRequest": [Function],
+        },
+        "callbacks": Map {},
+        "name": "KogitoEnvelopeBus",
+        "requestIdCounter": 2,
+        "send": [Function],
       },
       "targetOrigin": "test-target-origin",
     }
@@ -471,23 +484,36 @@ exports[`EditorEnvelopeController opens 1`] = `
     </div>
   }
   messageBus={
-    EnvelopeBusInnerMessageHandler {
-      "capturedInitRequestYet": false,
-      "envelopeBusApi": Object {
-        "postMessage": [Function],
-      },
-      "eventListener": [Function],
-      "impl": Object {
+    KogitoEnvelopeBus {
+      "api": Object {
         "receive_channelKeyboardEvent": [Function],
+        "receive_contentChanged": [Function],
         "receive_contentRequest": [Function],
-        "receive_contentResponse": [Function],
         "receive_editorRedo": [Function],
         "receive_editorUndo": [Function],
         "receive_guidedTourElementPositionRequest": [Function],
-        "receive_languageResponse": [Function],
+        "receive_initRequest": [Function],
         "receive_previewRequest": [Function],
-        "receive_resourceContentList": [Function],
-        "receive_resourceContentResponse": [Function],
+      },
+      "bus": Object {
+        "postMessage": [Function],
+      },
+      "eventListener": [Function],
+      "manager": e {
+        "api": Object {
+          "receive_channelKeyboardEvent": [Function],
+          "receive_contentChanged": [Function],
+          "receive_contentRequest": [Function],
+          "receive_editorRedo": [Function],
+          "receive_editorUndo": [Function],
+          "receive_guidedTourElementPositionRequest": [Function],
+          "receive_initRequest": [Function],
+          "receive_previewRequest": [Function],
+        },
+        "callbacks": Map {},
+        "name": "KogitoEnvelopeBus",
+        "requestIdCounter": 0,
+        "send": [Function],
       },
     }
   }
@@ -686,24 +712,42 @@ exports[`EditorEnvelopeController receives init request 1`] = `
     </div>
   }
   messageBus={
-    EnvelopeBusInnerMessageHandler {
-      "capturedInitRequestYet": true,
-      "envelopeBusApi": Object {
-        "postMessage": [Function],
-      },
-      "eventListener": [Function],
-      "id": undefined,
-      "impl": Object {
+    KogitoEnvelopeBus {
+      "api": Object {
         "receive_channelKeyboardEvent": [Function],
+        "receive_contentChanged": [Function],
         "receive_contentRequest": [Function],
-        "receive_contentResponse": [Function],
         "receive_editorRedo": [Function],
         "receive_editorUndo": [Function],
         "receive_guidedTourElementPositionRequest": [Function],
-        "receive_languageResponse": [Function],
+        "receive_initRequest": [Function],
         "receive_previewRequest": [Function],
-        "receive_resourceContentList": [Function],
-        "receive_resourceContentResponse": [Function],
+      },
+      "associatedBusId": "someBusId",
+      "bus": Object {
+        "postMessage": [Function],
+      },
+      "eventListener": [Function],
+      "manager": e {
+        "api": Object {
+          "receive_channelKeyboardEvent": [Function],
+          "receive_contentChanged": [Function],
+          "receive_contentRequest": [Function],
+          "receive_editorRedo": [Function],
+          "receive_editorUndo": [Function],
+          "receive_guidedTourElementPositionRequest": [Function],
+          "receive_initRequest": [Function],
+          "receive_previewRequest": [Function],
+        },
+        "callbacks": Map {
+          "KogitoEnvelopeBus_0" => Object {
+            "reject": [Function],
+            "resolve": [Function],
+          },
+        },
+        "name": "KogitoEnvelopeBus",
+        "requestIdCounter": 1,
+        "send": [Function],
       },
       "targetOrigin": "test-target-origin",
     }

@@ -15,105 +15,27 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { render, fireEvent } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import { useSyncedKeyboardEvents } from "../Hooks";
-import { EnvelopeBusMessage } from "../EnvelopeBusMessage";
-import { EnvelopeBusOuterMessageHandler } from "../EnvelopeBusOuterMessageHandler";
-import {
-  EditorContent,
-  KogitoEdit,
-  ResourceContentRequest,
-  ResourceListRequest,
-  StateControlCommand
-} from "@kogito-tooling/core-api";
-import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
+import { KogitoEnvelopeApi } from "../kogito/KogitoEnvelopeApi";
+import { MessageBusClient } from "../bus/EnvelopeBusMessageManager";
 
-let sentMessages: Array<EnvelopeBusMessage<any>>;
-let receivedMessages: string[];
-let handler: EnvelopeBusOuterMessageHandler;
-let initPollCount: number;
+let messageBusClient: MessageBusClient<KogitoEnvelopeApi>;
 
 beforeEach(() => {
-  sentMessages = [];
-  receivedMessages = [];
-  initPollCount = 0;
-
-  handler = new EnvelopeBusOuterMessageHandler(
-    {
-      postMessage: msg => sentMessages.push(msg)
-    },
-    self => ({
-      pollInit: () => {
-        initPollCount++;
-      },
-      receive_languageRequest() {
-        receivedMessages.push("languageRequest");
-      },
-      receive_contentRequest() {
-        receivedMessages.push("contentRequest");
-      },
-      receive_contentResponse(content: EditorContent) {
-        receivedMessages.push("contentResponse_" + content.content);
-      },
-      receive_setContentError: (errorMessage: string) => {
-        receivedMessages.push("setContentError_" + errorMessage);
-      },
-      receive_dirtyIndicatorChange(isDirty: boolean): void {
-        receivedMessages.push("dirtyIndicatorChange_" + isDirty);
-      },
-      receive_resourceContentRequest(resourceContentRequest: ResourceContentRequest): void {
-        receivedMessages.push("resourceContentRequest_" + resourceContentRequest.path);
-      },
-      receive_readResourceContentError(errorMessage: string): void {
-        receivedMessages.push("readResourceContentError_" + errorMessage);
-      },
-      receive_resourceListRequest(resourceListRequest: ResourceListRequest): void {
-        receivedMessages.push("resourceListRequest_" + resourceListRequest);
-      },
-      receive_ready() {
-        receivedMessages.push("ready");
-      },
-      notify_editorUndo() {
-        receivedMessages.push("undo");
-      },
-      notify_editorRedo() {
-        receivedMessages.push("redo");
-      },
-      receive_newEdit(edit: KogitoEdit) {
-        receivedMessages.push("receiveNewEdit_" + edit.id);
-      },
-      receive_openFile(path: string): void {
-        receivedMessages.push("receiveOpenFile_" + path);
-      },
-      receive_previewRequest(previewSvg: string) {
-        receivedMessages.push("preview");
-      },
-      receive_stateControlCommandUpdate(command: StateControlCommand) {
-        receivedMessages.push("receiveStateControlEvent_" + command);
-      },
-      receive_guidedTourUserInteraction(userInteraction: UserInteraction) {
-        receivedMessages.push("guidedTour_UserInteraction");
-      },
-      receive_guidedTourRegisterTutorial(tutorial: Tutorial) {
-        receivedMessages.push("guidedTour_RegisterTutorial");
-      },
-      receive_guidedTourElementPositionResponse(position: Rect) {
-        receivedMessages.push("guidedTour_ElementPositionRequest");
-      }
-    })
-  );
+  messageBusClient = {
+    notify: jest.fn(),
+    request: jest.fn()
+  };
 });
 
 describe("useSyncedKeyboardEvents", () => {
-  test("EmbeddedEditor::notify_keyboardEvent::keydown", async () => {
-    const spyNotify_notifyKeyboardEvent = jest.spyOn(handler, "notify_channelKeyboardEvent");
-
-    renderHook(() => useSyncedKeyboardEvents(handler));
+  test("EmbeddedEditor::notify keyboardEvent::keydown", async () => {
+    renderHook(() => useSyncedKeyboardEvents(messageBusClient));
     window.dispatchEvent(new KeyboardEvent("keydown", { ctrlKey: true }));
 
-    expect(spyNotify_notifyKeyboardEvent).toBeCalledWith({
+    expect(messageBusClient.notify).toBeCalledWith("receive_channelKeyboardEvent", {
       altKey: false,
       ctrlKey: true,
       shiftKey: false,
@@ -124,13 +46,11 @@ describe("useSyncedKeyboardEvents", () => {
     });
   });
 
-  test("EmbeddedEditor::notify_keyboardEvent::keyup", async () => {
-    const spyNotify_notifyKeyboardEvent = jest.spyOn(handler, "notify_channelKeyboardEvent");
-
-    renderHook(() => useSyncedKeyboardEvents(handler));
+  test("EmbeddedEditor::notify keyboardEvent::keyup", async () => {
+    renderHook(() => useSyncedKeyboardEvents(messageBusClient));
     window.dispatchEvent(new KeyboardEvent("keyup", { altKey: true }));
 
-    expect(spyNotify_notifyKeyboardEvent).toBeCalledWith({
+    expect(messageBusClient.notify).toBeCalledWith("receive_channelKeyboardEvent", {
       altKey: true,
       ctrlKey: false,
       shiftKey: false,
@@ -141,13 +61,11 @@ describe("useSyncedKeyboardEvents", () => {
     });
   });
 
-  test("EmbeddedEditor::notify_keyboardEvent::keypress", async () => {
-    const spyNotify_notifyKeyboardEvent = jest.spyOn(handler, "notify_channelKeyboardEvent");
-
-    renderHook(() => useSyncedKeyboardEvents(handler));
+  test("EmbeddedEditor::notify keyboardEvent::keypress", async () => {
+    renderHook(() => useSyncedKeyboardEvents(messageBusClient));
     window.dispatchEvent(new KeyboardEvent("keypress", { shiftKey: true }));
 
-    expect(spyNotify_notifyKeyboardEvent).toBeCalledWith({
+    expect(messageBusClient.notify).toBeCalledWith("receive_channelKeyboardEvent", {
       altKey: false,
       ctrlKey: false,
       shiftKey: true,
@@ -159,12 +77,10 @@ describe("useSyncedKeyboardEvents", () => {
   });
 
   test("EmbeddedEditor::notify_keyboardEvent::keydown::metakey", async () => {
-    const spyNotify_notifyKeyboardEvent = jest.spyOn(handler, "notify_channelKeyboardEvent");
-
-    renderHook(() => useSyncedKeyboardEvents(handler, document.body))
+    renderHook(() => useSyncedKeyboardEvents(messageBusClient, document.body));
     fireEvent(document.body, new KeyboardEvent("keydown", { metaKey: true, code: "KeyA" }));
 
-    expect(spyNotify_notifyKeyboardEvent).toBeCalledWith({
+    expect(messageBusClient.notify).toBeCalledWith("receive_channelKeyboardEvent", {
       altKey: false,
       ctrlKey: false,
       shiftKey: false,

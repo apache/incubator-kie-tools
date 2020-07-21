@@ -17,61 +17,63 @@
 import * as React from "react";
 import * as Core from "@kogito-tooling/core-api";
 import { EditorContent, EditorContext, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import {
   ChannelKeyboardEvent,
   DefaultKeyboardShortcutsService,
 } from "@kogito-tooling/keyboard-shortcuts";
-import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
+import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 import { EditorFactory } from "./EditorFactory";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
-import { ResourceContentEditorCoordinator } from "./api/resourceContent";
+import { ResourceContentServiceCoordinator } from "./api/resourceContent";
 import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandler";
+import { Association } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export class EditorEnvelopeController {
-  private readonly envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler;
+  public readonly kogitoEnvelopeBus: KogitoEnvelopeBus;
+  public capturedInitRequestYet = false;
 
   private editorEnvelopeView?: EditorEnvelopeView;
 
   constructor(
-    busApi: EnvelopeBusApi,
+    bus: EnvelopeBus,
     private readonly editorFactory: EditorFactory<any>,
     private readonly specialDomElements: SpecialDomElements,
     private readonly renderer: Renderer,
-    private readonly resourceContentEditorCoordinator: ResourceContentEditorCoordinator,
+    private readonly resourceContentEditorCoordinator: ResourceContentServiceCoordinator,
     private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService
   ) {
-    this.envelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(busApi, self => ({
-      receive_contentResponse: (editorContent: EditorContent) => {
-        const contentPath = editorContent.path || "";
-        const editor = this.getEditor();
-        if (editor) {
-          this.editorEnvelopeView!.setLoading();
-          editor
-            .setContent(contentPath, editorContent.content)
-            .finally(() => this.editorEnvelopeView!.setLoadingFinished())
-            .then(() => self.notify_ready());
+    this.kogitoEnvelopeBus = new KogitoEnvelopeBus(bus, {
+      receive_initRequest: async (association: Association) => {
+        this.kogitoEnvelopeBus.associate(association);
+
+        if (this.capturedInitRequestYet) {
+          return;
         }
+
+        this.capturedInitRequestYet = true;
+
+        const language = await this.kogitoEnvelopeBus.request_languageResponse();
+        const editor = await editorFactory.createEditor(language, this.kogitoEnvelopeBus.client);
+
+        await this.open(editor);
+        this.editorEnvelopeView!.setLoading();
+
+        const editorContent = await this.kogitoEnvelopeBus.request_contentResponse();
+
+        await editor
+          .setContent(editorContent.path ?? "", editorContent.content)
+          .finally(() => this.editorEnvelopeView!.setLoadingFinished());
+
+        this.kogitoEnvelopeBus.notify_ready();
       },
-      receive_contentRequest: () => {
-        const editor = this.getEditor();
-        if (editor) {
-          editor.getContent().then(content => self.respond_contentRequest({ content: content }));
-        }
-      },
-      receive_languageResponse: (languageData: LanguageData) => {
-        this.editorFactory
-          .createEditor(languageData, this.envelopeBusInnerMessageHandler)
-          .then(editor => this.open(editor))
-          .then(() => self.request_contentResponse());
-      },
-      receive_resourceContentResponse: (resourceContent: ResourceContent) => {
-        this.resourceContentEditorCoordinator.resolvePending(resourceContent);
-      },
-      receive_resourceContentList: (resourcesList: ResourcesList) => {
-        this.resourceContentEditorCoordinator.resolvePendingList(resourcesList);
+      receive_contentChanged: (editorContent: EditorContent) => {
+        this.editorEnvelopeView!.setLoading();
+        this.getEditor()!
+          .setContent(editorContent.path ?? "", editorContent.content)
+          .finally(() => this.editorEnvelopeView!.setLoadingFinished());
       },
       receive_editorUndo: () => {
         this.getEditor()!.undo();
@@ -79,20 +81,23 @@ export class EditorEnvelopeController {
       receive_editorRedo: () => {
         this.getEditor()!.redo();
       },
-      receive_previewRequest: () => {
-        this.getEditor()
-          ?.getPreview()
-          .then(preview => self.respond_previewRequest(preview!))
-          .catch(error => console.log(`Error retrieving preview: ${error}`));
+      receive_contentRequest: async () => {
+        return this.getEditor()!
+          .getContent()
+          .then(content => ({ content: content }));
       },
-      receive_guidedTourElementPositionRequest: (selector: string) => {
-        const position = getGuidedTourElementPosition(selector);
-        self.respond_guidedTourElementPositionRequest(position);
+      receive_previewRequest: () => {
+        return this.getEditor()!
+          .getPreview()
+          .then(previewSvg => previewSvg ?? "");
+      },
+      receive_guidedTourElementPositionRequest: async (selector: string) => {
+        return getGuidedTourElementPosition(selector);
       },
       receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent) {
         window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));
       }
-    }));
+    });
   }
 
   //TODO: Create messages to control the lifecycle of enveloped components?
@@ -118,7 +123,7 @@ export class EditorEnvelopeController {
           loadingScreenContainer={this.specialDomElements.loadingScreenContainer}
           keyboardShortcutsService={this.keyboardShortcutsService}
           context={args.context}
-          messageBus={this.envelopeBusInnerMessageHandler}
+          messageBus={this.kogitoEnvelopeBus}
         />,
         args.container,
         res
@@ -128,12 +133,12 @@ export class EditorEnvelopeController {
 
   public start(args: { container: HTMLElement; context: EditorContext }) {
     return this.render(args).then(() => {
-      this.envelopeBusInnerMessageHandler.startListening();
-      return this.envelopeBusInnerMessageHandler;
+      this.kogitoEnvelopeBus.startListening();
+      return this.kogitoEnvelopeBus;
     });
   }
 
   public stop() {
-    this.envelopeBusInnerMessageHandler.stopListening();
+    this.kogitoEnvelopeBus.stopListening();
   }
 }

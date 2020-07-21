@@ -15,7 +15,7 @@
  */
 
 import { Editor, LanguageData } from "@kogito-tooling/core-api";
-import { EnvelopeBusInnerMessageHandler } from "./EnvelopeBusInnerMessageHandler";
+import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
 
 /**
  * Factory of Editors to be created inside the envelope.
@@ -25,8 +25,5 @@ export interface EditorFactory<T extends LanguageData> {
    * Returns an Editor based on a LanguageData.
    * Receives a messageBus to be used by the Editor to communicate with the outside of the envelope.
    */
-  createEditor(
-    languageData: LanguageData,
-    envelopeBusInnerMessageHandler: EnvelopeBusInnerMessageHandler
-  ): Promise<Editor>;
+  createEditor(languageData: T, messageBusClient: MessageBusClient<KogitoChannelApi>): Promise<Editor>;
 }

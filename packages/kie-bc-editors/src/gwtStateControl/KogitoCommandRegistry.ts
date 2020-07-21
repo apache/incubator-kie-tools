@@ -15,8 +15,8 @@
  */
 
 import { GwtStateControlCommand } from "./GwtStateControlCommand";
-import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
 import { KogitoEdit } from "@kogito-tooling/core-api";
+import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
 
 /**
  * PUBLIC GWT EDITORS API
@@ -33,21 +33,17 @@ export interface KogitoCommandRegistry<T> {
 }
 
 export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T> {
-  private readonly messageBus: EnvelopeBusInnerMessageHandler;
-
   private maxStackSize = 200;
   private commands: Array<GwtStateControlCommand<T>> = [];
   private undoneCommands: string[] = [];
 
-  constructor(messageBus: EnvelopeBusInnerMessageHandler) {
-    this.messageBus = messageBus;
-  }
+  constructor(private readonly messageBus: MessageBusClient<KogitoChannelApi>) {}
 
   private onNewCommand(newCommand: GwtStateControlCommand<T>) {
     if (!this.undoneCommands.includes(newCommand.getId())) {
       // Only notifying if the command is a new command. Also clearing the removedCommands registry, since the undone
       // commands won't be redone
-      this.messageBus.notify_newEdit(new KogitoEdit(newCommand.getId()));
+      this.messageBus.notify("receive_newEdit", new KogitoEdit(newCommand.getId()));
       this.undoneCommands = [];
     } else {
       // Removing the command from the removedCommands registry since it's been registered again (redo).

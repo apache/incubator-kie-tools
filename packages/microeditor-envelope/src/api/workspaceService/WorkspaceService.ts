@@ -15,10 +15,10 @@
  */
 
 import { WorkspaceServiceApi } from "./WorkspaceServiceApi";
-import { EnvelopeBusInnerMessageHandler } from "../../EnvelopeBusInnerMessageHandler";
+import { KogitoEnvelopeBus } from "../../KogitoEnvelopeBus";
 
 export class WorkspaceService {
-  public exposeApi(messageBus: EnvelopeBusInnerMessageHandler): WorkspaceServiceApi {
+  public exposeApi(messageBus: KogitoEnvelopeBus): WorkspaceServiceApi {
     return {
       openFile(path: string): void {
         messageBus.notify_openFile(path);
