@@ -25,9 +25,9 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.ServiceTaskShapeViewHandler;
+import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.CustomTaskShapeViewHandler;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
@@ -46,11 +46,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class ServiceTaskShapeDefTest {
+public class CustomTaskShapeDefTest {
 
     private static final String WID_ID = "id1";
     private static final String WID_ICON_DATA = "iconData1";
-    private static final String DEF_ID = BindableAdapterUtils.getDynamicDefinitionId(ServiceTask.class,
+    private static final String DEF_ID = BindableAdapterUtils.getDynamicDefinitionId(CustomTask.class,
                                                                                      WID_ID);
     private static final WorkItemDefinition DEF = new WorkItemDefinition()
             .setName(WID_ID)
@@ -81,13 +81,13 @@ public class ServiceTaskShapeDefTest {
     @Mock
     private ImageProxy imageProxy;
 
-    private ServiceTaskShapeDef tested;
-    private ServiceTask task;
+    private CustomTaskShapeDef tested;
+    private CustomTask task;
 
     @Before
     @SuppressWarnings("unchecked")
     public void init() throws Exception {
-        this.task = new ServiceTask();
+        this.task = new CustomTask();
         task.getDimensionsSet().getWidth().setValue(WIDTH);
         task.getDimensionsSet().getHeight().setValue(HEIGHT);
         this.task.setName(WID_ID);
@@ -96,13 +96,13 @@ public class ServiceTaskShapeDefTest {
         when(registry.items()).thenReturn(Collections.singleton(DEF));
         when(registry.get(eq(WID_ID))).thenReturn(DEF);
         when(view.getChildren()).thenReturn(Collections.singletonList(imageSvgPrimitive));
-        when(imageSvgPrimitive.getId()).thenReturn(ServiceTaskShapeViewHandler.WID_ICON_ID);
+        when(imageSvgPrimitive.getId()).thenReturn(CustomTaskShapeViewHandler.WID_ICON_ID);
         when(imageSvgPrimitive.get()).thenReturn(imagePrimitive);
-        when(imageSvgPrimitive.getPrimitiveId()).thenReturn(ServiceTaskShapeViewHandler.WID_ICON_ID);
-        when(imagePrimitive.getID()).thenReturn(ServiceTaskShapeViewHandler.WID_ICON_ID);
+        when(imageSvgPrimitive.getPrimitiveId()).thenReturn(CustomTaskShapeViewHandler.WID_ICON_ID);
+        when(imagePrimitive.getID()).thenReturn(CustomTaskShapeViewHandler.WID_ICON_ID);
         when(imagePrimitive.getImageProxy()).thenReturn(imageProxy);
-        this.tested = new ServiceTaskShapeDef(() -> registry,
-                                              iconDataGlyphGenerator);
+        this.tested = new CustomTaskShapeDef(() -> registry,
+                                             iconDataGlyphGenerator);
     }
 
     @Test
@@ -125,7 +125,7 @@ public class ServiceTaskShapeDefTest {
     public void testGetGlyph() {
         Glyph expected = mock(Glyph.class);
         when(iconDataGlyphGenerator.apply(eq(WID_ICON_DATA))).thenReturn(expected);
-        Glyph glyph = tested.getGlyph(ServiceTask.class,
+        Glyph glyph = tested.getGlyph(CustomTask.class,
                                       DEF_ID);
         assertEquals(expected, glyph);
     }

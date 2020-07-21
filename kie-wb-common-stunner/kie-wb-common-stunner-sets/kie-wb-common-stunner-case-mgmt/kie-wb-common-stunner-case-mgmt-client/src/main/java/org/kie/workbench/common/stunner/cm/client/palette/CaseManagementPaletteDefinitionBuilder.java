@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.cm.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.CaseReusableSubprocess;
@@ -118,7 +118,7 @@ public class CaseManagementPaletteDefinitionBuilder
     private Predicate<String> isDefinitionAllowed() {
         return isType(CaseManagementDiagram.class)
                 .or(isType(NoneTask.class))
-                .or(isType(ServiceTask.class))
+                .or(isType(CustomTask.class))
                 .or(isType(Lane.class))
                 .or(isType(StartNoneEvent.class))
                 .or(isType(EndNoneEvent.class))

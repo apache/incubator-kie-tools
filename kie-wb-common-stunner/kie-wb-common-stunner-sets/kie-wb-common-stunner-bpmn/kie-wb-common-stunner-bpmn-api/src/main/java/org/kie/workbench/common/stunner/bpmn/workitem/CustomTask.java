@@ -60,14 +60,14 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         startElement = "general",
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)}
 )
-public class ServiceTask extends BaseServiceTask implements DataIOModel {
+public class CustomTask extends BaseCustomTask implements DataIOModel {
 
     @PropertySet
     @FormField(
             afterElement = "general"
     )
     @Valid
-    protected ServiceTaskExecutionSet executionSet;
+    protected CustomTaskExecutionSet executionSet;
 
     @PropertySet
     @FormField(
@@ -89,19 +89,19 @@ public class ServiceTask extends BaseServiceTask implements DataIOModel {
     private String defaultHandler;
 
     public static boolean isWorkItem(final Object definition) {
-        return ClassUtils.isTypeOf(ServiceTask.class,
+        return ClassUtils.isTypeOf(CustomTask.class,
                                    definition);
     }
 
-    public ServiceTask() {
-        this("Service Task",
-             "Service Task",
-             BPMNCategories.SERVICE_TASKS,
+    public CustomTask() {
+        this("Custom Task",
+             "Custom Task",
+             BPMNCategories.CUSTOM_TASKS,
              "",
-             new TaskGeneralSet(new Name("Service Task"),
+             new TaskGeneralSet(new Name("Custom Task"),
                                 new Documentation()),
              new DataIOSet(),
-             new ServiceTaskExecutionSet(),
+             new CustomTaskExecutionSet(),
              new BackgroundSet(),
              new FontSet(),
              new RectangleDimensionsSet(),
@@ -109,18 +109,18 @@ public class ServiceTask extends BaseServiceTask implements DataIOModel {
              new TaskType(TaskTypes.SERVICE_TASK));
     }
 
-    public ServiceTask(@MapsTo("name") String name,
-                       @MapsTo("description") String description,
-                       @MapsTo("category") String category,
-                       @MapsTo("defaultHandler") String defaultHandler,
-                       @MapsTo("general") TaskGeneralSet general,
-                       @MapsTo("dataIOSet") DataIOSet dataIOSet,
-                       @MapsTo("executionSet") ServiceTaskExecutionSet executionSet,
-                       @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                       @MapsTo("fontSet") FontSet fontSet,
-                       @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
-                       @MapsTo("simulationSet") SimulationSet simulationSet,
-                       @MapsTo("taskType") TaskType taskType) {
+    public CustomTask(@MapsTo("name") String name,
+                      @MapsTo("description") String description,
+                      @MapsTo("category") String category,
+                      @MapsTo("defaultHandler") String defaultHandler,
+                      @MapsTo("general") TaskGeneralSet general,
+                      @MapsTo("dataIOSet") DataIOSet dataIOSet,
+                      @MapsTo("executionSet") CustomTaskExecutionSet executionSet,
+                      @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                      @MapsTo("fontSet") FontSet fontSet,
+                      @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
+                      @MapsTo("simulationSet") SimulationSet simulationSet,
+                      @MapsTo("taskType") TaskType taskType) {
         super(general,
               backgroundSet,
               fontSet,
@@ -196,11 +196,11 @@ public class ServiceTask extends BaseServiceTask implements DataIOModel {
         this.dataIOSet = dataIOSet;
     }
 
-    public ServiceTaskExecutionSet getExecutionSet() {
+    public CustomTaskExecutionSet getExecutionSet() {
         return executionSet;
     }
 
-    public void setExecutionSet(ServiceTaskExecutionSet executionSet) {
+    public void setExecutionSet(CustomTaskExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 
@@ -213,8 +213,8 @@ public class ServiceTask extends BaseServiceTask implements DataIOModel {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof ServiceTask) {
-            ServiceTask other = (ServiceTask) o;
+        if (o instanceof CustomTask) {
+            CustomTask other = (CustomTask) o;
             return super.equals(other) &&
                     executionSet.equals(other.executionSet) &&
                     dataIOSet.equals(other.dataIOSet);

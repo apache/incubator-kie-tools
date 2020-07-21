@@ -43,8 +43,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskFactory;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTaskFactory;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -84,7 +84,7 @@ public class BPMNPaletteDefinitionBuilder
             .add(BPMNCategories.SUB_PROCESSES)
             .add(BPMNCategories.GATEWAYS)
             .add(BPMNCategories.CONTAINERS)
-            .add(BPMNCategories.SERVICE_TASKS)
+            .add(BPMNCategories.CUSTOM_TASKS)
             .add(BPMNCategories.ARTIFACTS)
             .build();
 
@@ -96,7 +96,7 @@ public class BPMNPaletteDefinitionBuilder
     private final ExpandedPaletteDefinitionBuilder paletteDefinitionBuilder;
     private final StunnerTranslationService translationService;
     private final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry;
-    private final Function<WorkItemDefinition, ServiceTask> serviceTaskBuilder;
+    private final Function<WorkItemDefinition, CustomTask> customTaskBuilder;
     private final DefinitionUtils definitionUtils;
     private final CategoryDefinitionProvider categoryDefinitionProvider;
 
@@ -121,7 +121,7 @@ public class BPMNPaletteDefinitionBuilder
              paletteDefinitionBuilder,
              translationService,
              workItemDefinitionRegistry::get,
-             wid -> new ServiceTaskFactory.ServiceTaskBuilder(wid).build(),
+             wid -> new CustomTaskFactory.CustomTaskBuilder(wid).build(),
              definitionUtils,
              categoryDefinitionProvider);
     }
@@ -130,14 +130,14 @@ public class BPMNPaletteDefinitionBuilder
                                  final ExpandedPaletteDefinitionBuilder paletteDefinitionBuilder,
                                  final StunnerTranslationService translationService,
                                  final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry,
-                                 final Function<WorkItemDefinition, ServiceTask> serviceTaskBuilder,
+                                 final Function<WorkItemDefinition, CustomTask> customTaskBuilder,
                                  final DefinitionUtils definitionUtils,
                                  final BPMNCategoryDefinitionProvider categoryDefinitionProvider) {
         this.definitionManager = definitionManager;
         this.paletteDefinitionBuilder = paletteDefinitionBuilder;
         this.translationService = translationService;
         this.workItemDefinitionRegistry = workItemDefinitionRegistry;
-        this.serviceTaskBuilder = serviceTaskBuilder;
+        this.customTaskBuilder = customTaskBuilder;
         this.definitionUtils = definitionUtils;
         this.categoryDefinitionProvider = categoryDefinitionProvider;
     }
@@ -175,8 +175,8 @@ public class BPMNPaletteDefinitionBuilder
                            paletteDefinition
                                    .getItems()
                                    .sort(Comparator.comparingInt(item -> getCategoryOrder(item.getId())));
-                           createPaletteServiceTasksCategory(paletteDefinition,
-                                                             paletteDefinitionConsumer);
+                           createPaletteCustomTasksCategory(paletteDefinition,
+                                                            paletteDefinitionConsumer);
                        });
     }
 
@@ -196,30 +196,30 @@ public class BPMNPaletteDefinitionBuilder
                 .negate();
     }
 
-    private void createPaletteServiceTasksCategory(final DefaultPaletteDefinition paletteDefinition,
-                                                   final Consumer<DefaultPaletteDefinition> callback) {
+    private void createPaletteCustomTasksCategory(final DefaultPaletteDefinition paletteDefinition,
+                                                  final Consumer<DefaultPaletteDefinition> callback) {
         final ExpandedPaletteDefinitionBuilder.ItemMessageProvider categoryMessageProvider =
                 paletteDefinitionBuilder.getCategoryMessageProvider();
         final Function<String, Glyph> categoryGlyphProvider = paletteDefinitionBuilder.getCategoryGlyphProvider();
         final Collection<WorkItemDefinition> workItemDefinitions = workItemDefinitionRegistry.get().items();
         if (!workItemDefinitions.isEmpty()) {
-            final String serviceTasksTitle = categoryMessageProvider.getTitle(BPMNCategories.SERVICE_TASKS);
-            final String serviceTasksDesc = categoryMessageProvider.getDescription(BPMNCategories.SERVICE_TASKS);
+            final String customTasksTitle = categoryMessageProvider.getTitle(BPMNCategories.CUSTOM_TASKS);
+            final String customTasksDesc = categoryMessageProvider.getDescription(BPMNCategories.CUSTOM_TASKS);
             final DefaultPaletteCategory workItemsCategory = new CategoryBuilder()
-                    .setItemId(BPMNCategories.SERVICE_TASKS)
-                    .setTitle(serviceTasksTitle)
-                    .setDescription(serviceTasksDesc)
-                    .setTooltip(serviceTasksTitle)
+                    .setItemId(BPMNCategories.CUSTOM_TASKS)
+                    .setTitle(customTasksTitle)
+                    .setDescription(customTasksDesc)
+                    .setTooltip(customTasksTitle)
                     .setGlyph(categoryGlyphProvider
-                                      .apply(BPMNCategories.SERVICE_TASKS))
+                                      .apply(BPMNCategories.CUSTOM_TASKS))
                     .build();
 
             int i = 0;
             for (final WorkItemDefinition workItemDefinition : workItemDefinitions) {
-                final ServiceTask serviceTask = serviceTaskBuilder.apply(workItemDefinition);
+                final CustomTask customTask = customTaskBuilder.apply(workItemDefinition);
                 final DefinitionAdapter<Object> adapter =
-                        definitionManager.adapters().registry().getDefinitionAdapter(serviceTask.getClass());
-                final String category = adapter.getCategory(serviceTask);
+                        definitionManager.adapters().registry().getDefinitionAdapter(customTask.getClass());
+                final String category = adapter.getCategory(customTask);
                 DefaultPaletteGroup subcategoryGroup = null;
                 final Optional<DefaultPaletteItem> subcategoryGroupOp = workItemsCategory.getItems().stream()
                         .filter(item -> category.equals(item.getId()))
@@ -234,9 +234,9 @@ public class BPMNPaletteDefinitionBuilder
                 } else {
                     subcategoryGroup = (DefaultPaletteGroup) subcategoryGroupOp.get();
                 }
-                final String defId = adapter.getId(serviceTask).value();
-                final String title = adapter.getTitle(serviceTask);
-                final String description = adapter.getDescription(serviceTask);
+                final String defId = adapter.getId(customTask).value();
+                final String title = adapter.getTitle(customTask);
+                final String description = adapter.getDescription(customTask);
                 final DefaultPaletteItem item =
                         new ItemBuilder()
                                 .setItemId(defId)

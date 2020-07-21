@@ -125,7 +125,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.bpmn.workitem.service.WorkItemDefinitionLookupService;
 import org.kie.workbench.common.stunner.core.StunnerTestingGraphAPI;
@@ -401,7 +401,7 @@ public class BPMNDirectDiagramMarshallerTest {
         assertDiagram(diagram, 4);
 
         Node<? extends Definition, ?> log = diagram.getGraph().getNode("_AE76ACC9-CCD0-425D-BD40-5E4F3533A1DF");
-        assertTrue(log.getContent().getDefinition() instanceof ServiceTask);
+        assertTrue(log.getContent().getDefinition() instanceof CustomTask);
     }
 
     @Test
@@ -415,10 +415,10 @@ public class BPMNDirectDiagramMarshallerTest {
         Node<? extends Definition, ?> ws = diagram.getGraph().getNode("_FD3F17AB-199B-4A59-A8B4-CBDCCDBFF7DA");
         Node<? extends Definition, ?> log = diagram.getGraph().getNode("_324A9674-039E-4B80-80EF-A9B6A44ACA33");
 
-        assertTrue(email.getContent().getDefinition() instanceof ServiceTask);
-        assertTrue(rest.getContent().getDefinition() instanceof ServiceTask);
-        assertTrue(ws.getContent().getDefinition() instanceof ServiceTask);
-        assertTrue(log.getContent().getDefinition() instanceof ServiceTask);
+        assertTrue(email.getContent().getDefinition() instanceof CustomTask);
+        assertTrue(rest.getContent().getDefinition() instanceof CustomTask);
+        assertTrue(ws.getContent().getDefinition() instanceof CustomTask);
+        assertTrue(log.getContent().getDefinition() instanceof CustomTask);
     }
 
     @Test
@@ -3635,8 +3635,8 @@ public class BPMNDirectDiagramMarshallerTest {
                       5);
         // Email service task assertions.
         Node<? extends Definition, ?> emailNode = diagram.getGraph().getNode("_277CE006-5E6E-4960-A68C-CC8A5347C33F");
-        assertTrue(emailNode.getContent().getDefinition() instanceof ServiceTask);
-        ServiceTask email = (ServiceTask) emailNode.getContent().getDefinition();
+        assertTrue(emailNode.getContent().getDefinition() instanceof CustomTask);
+        CustomTask email = (CustomTask) emailNode.getContent().getDefinition();
         assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getName(),
                      email.getName());
         assertEquals(WorkItemDefinitionMockRegistry.EMAIL.getCategory(),
@@ -3651,8 +3651,8 @@ public class BPMNDirectDiagramMarshallerTest {
                      email.getGeneral().getDocumentation().getValue());
         // Log service task assertions.
         Node<? extends Definition, ?> logNode = diagram.getGraph().getNode("_A940748F-A658-4FB8-84FD-B69F4B7A9205");
-        assertTrue(logNode.getContent().getDefinition() instanceof ServiceTask);
-        ServiceTask log = (ServiceTask) logNode.getContent().getDefinition();
+        assertTrue(logNode.getContent().getDefinition() instanceof CustomTask);
+        CustomTask log = (CustomTask) logNode.getContent().getDefinition();
         assertEquals(WorkItemDefinitionMockRegistry.LOG.getName(),
                      log.getName());
         assertEquals(WorkItemDefinitionMockRegistry.LOG.getCategory(),

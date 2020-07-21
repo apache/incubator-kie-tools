@@ -113,8 +113,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskEx
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.WaitForCompletion;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessVariables;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTaskExecutionSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -172,15 +172,15 @@ public class HashCodeAndEqualityTest {
 
     @Test
     public void testServiceTaskHashCode() {
-        ServiceTask a = new ServiceTask();
-        ServiceTask b = new ServiceTask();
+        CustomTask a = new CustomTask();
+        CustomTask b = new CustomTask();
         assertEquals(a.hashCode(), b.hashCode());
     }
 
     @Test
     public void testServiceTaskEquals() {
-        ServiceTask a = new ServiceTask();
-        ServiceTask b = new ServiceTask();
+        CustomTask a = new CustomTask();
+        CustomTask b = new CustomTask();
         assertEquals(a, b);
         assertFalse(a.equals(19));
         assertFalse(a.equals(null));
@@ -1472,21 +1472,21 @@ public class HashCodeAndEqualityTest {
     @Test
     public void testServiceTaskExecutionSetEqualsAndHashCode() {
         TestCaseBuilder.newTestCase()
-                .addTrueCase(new ServiceTaskExecutionSet(),
-                             new ServiceTaskExecutionSet())
+                .addTrueCase(new CustomTaskExecutionSet(),
+                             new CustomTaskExecutionSet())
 
-                .addTrueCase(new ServiceTaskExecutionSet(new TaskName(),
-                                                         new IsAsync(),
-                                                         new AdHocAutostart(),
-                                                         new OnEntryAction(),
-                                                         new OnExitAction(),
-                                                         new SLADueDate()),
-                             new ServiceTaskExecutionSet(new TaskName(),
-                                                         new IsAsync(),
-                                                         new AdHocAutostart(),
-                                                         new OnEntryAction(),
-                                                         new OnExitAction(),
-                                                         new SLADueDate()))
+                .addTrueCase(new CustomTaskExecutionSet(new TaskName(),
+                                                        new IsAsync(),
+                                                        new AdHocAutostart(),
+                                                        new OnEntryAction(),
+                                                        new OnExitAction(),
+                                                        new SLADueDate()),
+                             new CustomTaskExecutionSet(new TaskName(),
+                                                        new IsAsync(),
+                                                        new AdHocAutostart(),
+                                                        new OnEntryAction(),
+                                                        new OnExitAction(),
+                                                        new SLADueDate()))
                 .test();
     }
 

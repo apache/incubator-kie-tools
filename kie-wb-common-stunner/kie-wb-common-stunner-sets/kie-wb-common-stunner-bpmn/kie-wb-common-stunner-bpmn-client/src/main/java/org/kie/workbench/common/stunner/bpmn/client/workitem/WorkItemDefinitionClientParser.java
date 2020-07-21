@@ -106,7 +106,7 @@ public class WorkItemDefinitionClientParser {
         }
 
         if (empty(wid.getCategory())) {
-            wid.setCategory(BPMNCategories.SERVICE_TASKS);
+            wid.setCategory(BPMNCategories.CUSTOM_TASKS);
         }
         return wid;
     }

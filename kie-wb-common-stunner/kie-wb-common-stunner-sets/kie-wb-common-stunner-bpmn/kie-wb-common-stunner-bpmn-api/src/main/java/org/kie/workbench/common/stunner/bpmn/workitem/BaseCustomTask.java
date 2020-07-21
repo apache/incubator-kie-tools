@@ -26,12 +26,12 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Simu
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 
-public abstract class BaseServiceTask extends BaseTask {
+public abstract class BaseCustomTask extends BaseTask {
 
     @Category
-    public static final transient String category = BPMNCategories.SERVICE_TASKS;
+    public static final transient String category = BPMNCategories.CUSTOM_TASKS;
 
-    public BaseServiceTask(TaskGeneralSet general, BackgroundSet backgroundSet, FontSet fontSet, RectangleDimensionsSet dimensionsSet, SimulationSet simulationSet, TaskType taskType) {
+    public BaseCustomTask(TaskGeneralSet general, BackgroundSet backgroundSet, FontSet fontSet, RectangleDimensionsSet dimensionsSet, SimulationSet simulationSet, TaskType taskType) {
         super(general, backgroundSet, fontSet, dimensionsSet, simulationSet, taskType);
     }
 }

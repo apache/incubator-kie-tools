@@ -18,9 +18,9 @@ package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshallin
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 
-public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
+public class LogCustomTaskTest extends BaseCustomTaskTest<CustomTask> {
 
     private static final String BPMN_TASK_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/logServiceTasks.bpmn";
 
@@ -65,7 +65,7 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     private static final boolean AD_HOC_AUTOSTART = true;
     private static final boolean NOT_AD_HOC_AUTOSTART = false;
 
-    public LogServiceTaskTest() throws Exception {
+    public LogCustomTaskTest() throws Exception {
     }
 
     @Test
@@ -90,10 +90,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
 
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
-                                                             FILLED_TOP_LEVEL_TASK_JAVA_ID,
-                                                             ZERO_INCOME_EDGES,
-                                                             HAS_NO_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
+                                                            FILLED_TOP_LEVEL_TASK_JAVA_ID,
+                                                            ZERO_INCOME_EDGES,
+                                                            HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertServiceTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVA,
@@ -105,10 +105,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
-                                                                   FILLED_TOP_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                   ZERO_INCOME_EDGES,
-                                                                   HAS_NO_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
+                                                                  FILLED_TOP_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                  ZERO_INCOME_EDGES,
+                                                                  HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertServiceTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVASCRIPT,
@@ -120,10 +120,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
-                                                             FILLED_TOP_LEVEL_TASK_MVEL_ID,
-                                                             ZERO_INCOME_EDGES,
-                                                             HAS_NO_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
+                                                            FILLED_TOP_LEVEL_TASK_MVEL_ID,
+                                                            ZERO_INCOME_EDGES,
+                                                            HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertServiceTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_MVEL,
@@ -145,10 +145,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     public void testUnmarshallTopLevelEmptyTaskProperties() {
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
-                                                        EMPTY_TOP_LEVEL_TASK_ID,
-                                                        ZERO_INCOME_EDGES,
-                                                        HAS_NO_OUTCOME_EDGE);
+        CustomTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
+                                                       EMPTY_TOP_LEVEL_TASK_ID,
+                                                       ZERO_INCOME_EDGES,
+                                                       HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(emptyTopLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
 
         assertServiceTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
@@ -184,10 +184,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
 
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
-                                                                    FILLED_SUBPROCESS_LEVEL_TASK_JAVA_ID,
-                                                                    ZERO_INCOME_EDGES,
-                                                                    HAS_NO_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
+                                                                   FILLED_SUBPROCESS_LEVEL_TASK_JAVA_ID,
+                                                                   ZERO_INCOME_EDGES,
+                                                                   HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVA,
@@ -199,10 +199,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
-                                                                          FILLED_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                          ZERO_INCOME_EDGES,
-                                                                          HAS_NO_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
+                                                                         FILLED_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                         ZERO_INCOME_EDGES,
+                                                                         HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVASCRIPT,
@@ -214,10 +214,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
-                                                                    FILLED_SUBPROCESS_LEVEL_TASK_MVEL_ID,
-                                                                    ZERO_INCOME_EDGES,
-                                                                    HAS_NO_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
+                                                                   FILLED_SUBPROCESS_LEVEL_TASK_MVEL_ID,
+                                                                   ZERO_INCOME_EDGES,
+                                                                   HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_MVEL,
@@ -239,10 +239,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     public void testUnmarshallSubprocessLevelTaskEmptyProperties() {
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
-                                                               EMPTY_SUBPROCESS_LEVEL_TASK_ID,
-                                                               ZERO_INCOME_EDGES,
-                                                               HAS_NO_OUTCOME_EDGE);
+        CustomTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
+                                                              EMPTY_SUBPROCESS_LEVEL_TASK_ID,
+                                                              ZERO_INCOME_EDGES,
+                                                              HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(emptySubprocessLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertServiceTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
                                       EMPTY_VALUE,
@@ -277,10 +277,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
 
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
-                                                             FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVA_ID,
-                                                             ONE_INCOME_EDGE,
-                                                             HAS_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
+                                                            FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVA_ID,
+                                                            ONE_INCOME_EDGE,
+                                                            HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertServiceTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVA,
@@ -292,10 +292,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
-                                                                   FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                   ONE_INCOME_EDGE,
-                                                                   HAS_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
+                                                                  FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                  ONE_INCOME_EDGE,
+                                                                  HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertServiceTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVASCRIPT,
@@ -307,10 +307,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
-                                                             FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID,
-                                                             ONE_INCOME_EDGE,
-                                                             HAS_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
+                                                            FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID,
+                                                            ONE_INCOME_EDGE,
+                                                            HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertServiceTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_MVEL,
@@ -332,10 +332,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     public void testUnmarshallTopLevelTaskOneIncomeEmptyProperties() {
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
-                                                        EMPTY_ONE_INCOME_TOP_LEVEL_TASK_ID,
-                                                        ONE_INCOME_EDGE,
-                                                        HAS_OUTCOME_EDGE);
+        CustomTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
+                                                       EMPTY_ONE_INCOME_TOP_LEVEL_TASK_ID,
+                                                       ONE_INCOME_EDGE,
+                                                       HAS_OUTCOME_EDGE);
         assertGeneralSet(emptyTopLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertServiceTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
                                       EMPTY_VALUE,
@@ -357,10 +357,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     public void testUnmarshallSubprocessLevelTaskOneIncomeEmptyProperties() {
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
-                                                               EMPTY_ONE_INCOME_SUBPROCESS_LEVEL_TASK_ID,
-                                                               ONE_INCOME_EDGE,
-                                                               HAS_OUTCOME_EDGE);
+        CustomTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
+                                                              EMPTY_ONE_INCOME_SUBPROCESS_LEVEL_TASK_ID,
+                                                              ONE_INCOME_EDGE,
+                                                              HAS_OUTCOME_EDGE);
         assertGeneralSet(emptySubprocessLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertServiceTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
                                       EMPTY_VALUE,
@@ -395,10 +395,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
 
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
-                                                                    FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVA_ID,
-                                                                    ONE_INCOME_EDGE,
-                                                                    HAS_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
+                                                                   FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVA_ID,
+                                                                   ONE_INCOME_EDGE,
+                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVA,
@@ -410,10 +410,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
-                                                                          FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                          ONE_INCOME_EDGE,
-                                                                          HAS_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
+                                                                         FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                         ONE_INCOME_EDGE,
+                                                                         HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVASCRIPT,
@@ -425,10 +425,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
-                                                                    FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_MVEL_ID,
-                                                                    ONE_INCOME_EDGE,
-                                                                    HAS_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
+                                                                   FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_MVEL_ID,
+                                                                   ONE_INCOME_EDGE,
+                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_MVEL,
@@ -463,10 +463,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
 
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
-                                                             FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVA_ID,
-                                                             TWO_INCOME_EDGES,
-                                                             HAS_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
+                                                            FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVA_ID,
+                                                            TWO_INCOME_EDGES,
+                                                            HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertServiceTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVA,
@@ -478,10 +478,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
-                                                                   FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                   TWO_INCOME_EDGES,
-                                                                   HAS_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
+                                                                  FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                  TWO_INCOME_EDGES,
+                                                                  HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertServiceTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVASCRIPT,
@@ -493,10 +493,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
-                                                             FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID,
-                                                             TWO_INCOME_EDGES,
-                                                             HAS_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
+                                                            FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID,
+                                                            TWO_INCOME_EDGES,
+                                                            HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertServiceTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_MVEL,
@@ -518,10 +518,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     public void testUnmarshallTopLevelTaskTwoIncomesEmptyProperties() {
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
-                                                        EMPTY_TWO_INCOMES_TOP_LEVEL_TASK_ID,
-                                                        TWO_INCOME_EDGES,
-                                                        HAS_OUTCOME_EDGE);
+        CustomTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
+                                                       EMPTY_TWO_INCOMES_TOP_LEVEL_TASK_ID,
+                                                       TWO_INCOME_EDGES,
+                                                       HAS_OUTCOME_EDGE);
         assertGeneralSet(emptyTopLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertServiceTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
                                       EMPTY_VALUE,
@@ -543,10 +543,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     public void testUnmarshallSubprocessLevelTaskTwoIncomesEmptyProperties() {
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
-                                                               EMPTY_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_ID,
-                                                               TWO_INCOME_EDGES,
-                                                               HAS_OUTCOME_EDGE);
+        CustomTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
+                                                              EMPTY_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_ID,
+                                                              TWO_INCOME_EDGES,
+                                                              HAS_OUTCOME_EDGE);
         assertGeneralSet(emptySubprocessLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertServiceTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
                                       EMPTY_VALUE,
@@ -581,10 +581,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
 
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
-                                                                    FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVA_ID,
-                                                                    TWO_INCOME_EDGES,
-                                                                    HAS_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
+                                                                   FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVA_ID,
+                                                                   TWO_INCOME_EDGES,
+                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVA,
@@ -596,10 +596,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
-                                                                          FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                          TWO_INCOME_EDGES,
-                                                                          HAS_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
+                                                                         FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                         TWO_INCOME_EDGES,
+                                                                         HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVASCRIPT,
@@ -611,10 +611,10 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
-                                                                    FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_MVEL_ID,
-                                                                    TWO_INCOME_EDGES,
-                                                                    HAS_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
+                                                                   FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_MVEL_ID,
+                                                                   TWO_INCOME_EDGES,
+                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_MVEL,
@@ -681,8 +681,8 @@ public class LogServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     }
 
     @Override
-    Class<ServiceTask> getTaskType() {
-        return ServiceTask.class;
+    Class<CustomTask> getTaskType() {
+        return CustomTask.class;
     }
 
     @Override

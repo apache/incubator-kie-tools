@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.GenericServiceTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseUserTaskExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -81,10 +81,10 @@ public abstract class BaseTaskConverterTest {
     private Node<View<NoneTask>, Edge> noneTaskNode;
 
     @Mock
-    private Node<View<ServiceTask>, Edge> serviceTaskNode;
+    private Node<View<CustomTask>, Edge> serviceTaskNode;
 
     @Mock
-    private View<ServiceTask> serviceTaskContent;
+    private View<CustomTask> serviceTaskContent;
 
     @Mock
     protected View<GenericServiceTask> genericServiceTaskContent;
@@ -148,12 +148,12 @@ public abstract class BaseTaskConverterTest {
     public void convertServiceTask() {
         org.eclipse.bpmn2.ServiceTask task = mock(org.eclipse.bpmn2.ServiceTask.class);
         ServiceTaskPropertyReader serviceTaskPropertyReader = mock(ServiceTaskPropertyReader.class);
-        ServiceTask definition = new ServiceTask();
+        CustomTask definition = new CustomTask();
         FeatureMap attributes = mock(FeatureMap.class);
         FeatureMap.Entry ruleAttr = mock(FeatureMap.Entry.class);
         EStructuralFeature ruleFeature = mock(EStructuralFeature.class);
 
-        when(factoryManager.newNode(anyString(), eq(ServiceTask.class))).thenReturn(serviceTaskNode);
+        when(factoryManager.newNode(anyString(), eq(CustomTask.class))).thenReturn(serviceTaskNode);
         when(serviceTaskNode.getContent()).thenReturn(serviceTaskContent);
         when(serviceTaskContent.getDefinition()).thenReturn(definition);
         when(propertyReaderFactory.ofCustom(task)).thenReturn(Optional.of(serviceTaskPropertyReader));

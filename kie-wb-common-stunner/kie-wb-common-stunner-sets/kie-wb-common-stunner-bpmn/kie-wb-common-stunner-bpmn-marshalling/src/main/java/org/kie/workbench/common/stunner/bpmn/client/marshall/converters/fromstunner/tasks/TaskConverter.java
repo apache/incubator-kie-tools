@@ -38,8 +38,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseUserTa
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTaskExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -68,7 +68,7 @@ public class TaskConverter {
         if (def instanceof BaseUserTask) {
             return userTask(cast(node));
         }
-        if (def instanceof ServiceTask) {
+        if (def instanceof CustomTask) {
             return serviceTask(cast(node));
         }
         if (def instanceof GenericServiceTask) {
@@ -110,11 +110,11 @@ public class TaskConverter {
         return p;
     }
 
-    private PropertyWriter serviceTask(Node<View<ServiceTask>, ?> n) {
+    private PropertyWriter serviceTask(Node<View<CustomTask>, ?> n) {
         Task task = bpmn2.createTask();
         task.setId(n.getUUID());
 
-        ServiceTask definition = n.getContent().getDefinition();
+        CustomTask definition = n.getContent().getDefinition();
         ServiceTaskPropertyWriter p = propertyWriterFactory.of(task);
 
         p.setServiceTaskName(definition.getName());
@@ -126,7 +126,7 @@ public class TaskConverter {
         p.setAssignmentsInfo(
                 definition.getDataIOSet().getAssignmentsinfo());
 
-        ServiceTaskExecutionSet executionSet =
+        CustomTaskExecutionSet executionSet =
                 definition.getExecutionSet();
 
         p.setTaskName(executionSet.getTaskName().getValue());

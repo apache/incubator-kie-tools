@@ -43,7 +43,7 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
 @Bindable
 @PropertySet
 @FormDefinition(startElement = "isAsync")
-public class ServiceTaskExecutionSet implements BPMNPropertySet {
+public class CustomTaskExecutionSet implements BPMNPropertySet {
 
     @Property
     @SkipFormField
@@ -77,7 +77,7 @@ public class ServiceTaskExecutionSet implements BPMNPropertySet {
     @Valid
     private SLADueDate slaDueDate;
 
-    public ServiceTaskExecutionSet() {
+    public CustomTaskExecutionSet() {
         this(new TaskName("Service Task"),
              new IsAsync(),
              new AdHocAutostart(),
@@ -88,12 +88,12 @@ public class ServiceTaskExecutionSet implements BPMNPropertySet {
              new SLADueDate());
     }
 
-    public ServiceTaskExecutionSet(final @MapsTo("taskName") TaskName taskName,
-                                   final @MapsTo("isAsync") IsAsync isAsync,
-                                   final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
-                                   final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
-                                   final @MapsTo("onExitAction") OnExitAction onExitAction,
-                                   final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
+    public CustomTaskExecutionSet(final @MapsTo("taskName") TaskName taskName,
+                                  final @MapsTo("isAsync") IsAsync isAsync,
+                                  final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
+                                  final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
+                                  final @MapsTo("onExitAction") OnExitAction onExitAction,
+                                  final @MapsTo("slaDueDate") SLADueDate slaDueDate) {
         this.taskName = taskName;
         this.isAsync = isAsync;
         this.adHocAutostart = adHocAutostart;
@@ -162,8 +162,8 @@ public class ServiceTaskExecutionSet implements BPMNPropertySet {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof ServiceTaskExecutionSet) {
-            ServiceTaskExecutionSet other = (ServiceTaskExecutionSet) o;
+        if (o instanceof CustomTaskExecutionSet) {
+            CustomTaskExecutionSet other = (CustomTaskExecutionSet) o;
             return Objects.equals(taskName, other.taskName) &&
                     Objects.equals(isAsync, other.isAsync) &&
                     Objects.equals(adHocAutostart, other.adHocAutostart) &&

@@ -61,7 +61,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleIn
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.MultipleInstanceSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.UserTaskExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -518,8 +518,8 @@ public class VariableUtilsTest {
         return result;
     }
 
-    private ServiceTask mockServiceTask(String name, String assignmentsInfoValue) {
-        ServiceTask result = mock(ServiceTask.class);
+    private CustomTask mockServiceTask(String name, String assignmentsInfoValue) {
+        CustomTask result = mock(CustomTask.class);
         TaskGeneralSet generalSet = mockTaskGeneralSet(name);
         when(result.getGeneral()).thenReturn(generalSet);
         AssignmentsInfo assignmentsInfo = mockAssignmentsInfo(assignmentsInfoValue);

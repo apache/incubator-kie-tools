@@ -30,8 +30,8 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Height;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Width;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
@@ -47,7 +47,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class ServiceTaskShapeViewHandlerTest {
+public class CustomTaskShapeViewHandlerTest {
 
     private static final String WID_ID = "id1";
     private static final String WID_ICON_DATA = "iconData1";
@@ -75,15 +75,15 @@ public class ServiceTaskShapeViewHandlerTest {
     @Mock
     private Attributes svgAttr;
 
-    private ServiceTaskShapeViewHandler tested;
-    private ServiceTask task;
+    private CustomTaskShapeViewHandler tested;
+    private CustomTask task;
     private Width width;
     private Height height;
 
     @Before
     @SuppressWarnings("unchecked")
     public void init() {
-        task = new ServiceTask();
+        task = new CustomTask();
         task.setName(WID_ID);
         task.setDimensionsSet(new RectangleDimensionsSet());
         width = spy(new Width(0d));
@@ -94,17 +94,17 @@ public class ServiceTaskShapeViewHandlerTest {
         when(registry.items()).thenReturn(Collections.singleton(DEF));
         when(registry.get(eq(WID_ID))).thenReturn(DEF);
         when(view.getChildren()).thenReturn(Collections.singletonList(iconSVGPrimiite));
-        when(iconSVGPrimiite.getId()).thenReturn(ServiceTaskShapeViewHandler.WID_ICON_ID);
+        when(iconSVGPrimiite.getId()).thenReturn(CustomTaskShapeViewHandler.WID_ICON_ID);
         when(iconSVGPrimiite.get()).thenReturn(icon);
-        when(iconSVGPrimiite.getPrimitiveId()).thenReturn(ServiceTaskShapeViewHandler.WID_ICON_ID);
-        when(icon.getID()).thenReturn(ServiceTaskShapeViewHandler.WID_ICON_ID);
+        when(iconSVGPrimiite.getPrimitiveId()).thenReturn(CustomTaskShapeViewHandler.WID_ICON_ID);
+        when(icon.getID()).thenReturn(CustomTaskShapeViewHandler.WID_ICON_ID);
         when(icon.getImageProxy()).thenReturn(imageProxy);
         when(view.getPrimitive()).thenReturn(iconSVGPrimiite);
         when(icon.getAttributes()).thenReturn(svgAttr);
         when(svgAttr.getHeight()).thenReturn(HEIGHT);
         when(svgAttr.getWidth()).thenReturn(WIDTH);
 
-        this.tested = new ServiceTaskShapeViewHandler(() -> registry);
+        this.tested = new CustomTaskShapeViewHandler(() -> registry);
     }
 
     @Test
@@ -113,8 +113,8 @@ public class ServiceTaskShapeViewHandlerTest {
         when(imageProxy.isLoaded()).thenReturn(true);
         when(icon.getBoundingBox()).thenReturn(new BoundingBox(0d,
                                                                0d,
-                                                               ServiceTaskShapeViewHandler.WID_ICON_WIDTH * 2,
-                                                               ServiceTaskShapeViewHandler.WID_ICON_HEIGHT * 2));
+                                                               CustomTaskShapeViewHandler.WID_ICON_WIDTH * 2,
+                                                               CustomTaskShapeViewHandler.WID_ICON_HEIGHT * 2));
         tested.handle(task, view);
         ArgumentCaptor<ImageShapeLoadedHandler> loadedHandlerArgumentCaptor =
                 ArgumentCaptor.forClass(ImageShapeLoadedHandler.class);

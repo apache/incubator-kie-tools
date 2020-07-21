@@ -38,8 +38,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseUserTa
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRuleTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleLanguage;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTaskExecutionSet;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -59,7 +59,7 @@ public class TaskConverter {
                 .when(ScriptTask.class, this::scriptTask)
                 .when(BusinessRuleTask.class, this::businessRuleTask)
                 .when(BaseUserTask.class, this::userTask)
-                .when(ServiceTask.class, this::serviceTask)
+                .when(CustomTask.class, this::customTask)
                 .when(GenericServiceTask.class, this::genericServiceTask)
                 .apply(node)
                 .value();
@@ -99,11 +99,11 @@ public class TaskConverter {
         return p;
     }
 
-    private PropertyWriter serviceTask(Node<View<ServiceTask>, ?> n) {
+    private PropertyWriter customTask(Node<View<CustomTask>, ?> n) {
         org.eclipse.bpmn2.Task task = bpmn2.createTask();
         task.setId(n.getUUID());
 
-        ServiceTask definition = n.getContent().getDefinition();
+        CustomTask definition = n.getContent().getDefinition();
         ServiceTaskPropertyWriter p = propertyWriterFactory.of(task);
 
         p.setServiceTaskName(definition.getName());
@@ -115,7 +115,7 @@ public class TaskConverter {
         p.setAssignmentsInfo(
                 definition.getDataIOSet().getAssignmentsinfo());
 
-        ServiceTaskExecutionSet executionSet =
+        CustomTaskExecutionSet executionSet =
                 definition.getExecutionSet();
 
         p.setTaskName(executionSet.getTaskName().getValue());

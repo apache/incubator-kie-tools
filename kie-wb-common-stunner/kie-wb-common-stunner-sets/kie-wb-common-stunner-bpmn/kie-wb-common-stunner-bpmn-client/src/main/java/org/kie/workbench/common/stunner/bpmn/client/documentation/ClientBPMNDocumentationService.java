@@ -96,8 +96,8 @@ import org.kie.workbench.common.stunner.bpmn.documentation.model.general.General
 import org.kie.workbench.common.stunner.bpmn.documentation.model.general.Imports;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.general.ProcessOverview;
 import org.kie.workbench.common.stunner.bpmn.documentation.model.general.ProcessVariablesTotal;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.client.widgets.components.glyph.DOMGlyphRenderers;
@@ -463,11 +463,11 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
         private DefinitionHelper() {
 
             iconFactory = new Maps.Builder<Class, Function<Object, Optional<String>>>()
-                    .put(ServiceTask.class, def -> getServiceTaskIcon(def))
+                    .put(CustomTask.class, def -> getServiceTaskIcon(def))
                     .build();
 
             categoryFactory = new Maps.Builder<Class, Function<Object, Optional<String>>>()
-                    .put(ServiceTask.class, def -> getServiceTaskCategory(def))
+                    .put(CustomTask.class, def -> getServiceTaskCategory(def))
                     .build();
         }
 
@@ -495,9 +495,9 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
 
         private Optional<String> getServiceTaskIcon(Object definition) {
             return Optional.ofNullable(definition)
-                    .filter(def -> def instanceof ServiceTask)
-                    .map(def -> (ServiceTask) def)
-                    .map(ServiceTask::getName)
+                    .filter(def -> def instanceof CustomTask)
+                    .map(def -> (CustomTask) def)
+                    .map(org.kie.workbench.common.stunner.bpmn.workitem.CustomTask::getName)
                     .map(name -> Optional.ofNullable(workItemDefinitionRegistry
                                                              .get()
                                                              .get(name))
@@ -518,9 +518,9 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
 
         private Optional<String> getServiceTaskCategory(Object definition) {
             return Optional.ofNullable(definition)
-                    .filter(def -> def instanceof ServiceTask)
-                    .map(def -> (ServiceTask) def)
-                    .map(ServiceTask::getName)
+                    .filter(def -> def instanceof CustomTask)
+                    .map(def -> (CustomTask) def)
+                    .map(org.kie.workbench.common.stunner.bpmn.workitem.CustomTask::getName)
                     .map(name -> Optional.ofNullable(workItemDefinitionRegistry
                                                              .get()
                                                              .get(name))

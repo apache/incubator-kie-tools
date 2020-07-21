@@ -27,24 +27,24 @@ import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactory;
 
 @ApplicationScoped
-public class ServiceTaskFactory
-        implements DefinitionFactory<ServiceTask> {
+public class CustomTaskFactory
+        implements DefinitionFactory<CustomTask> {
 
-    private static final String PREFIX = BindableAdapterUtils.getGenericClassName(ServiceTask.class);
+    private static final String PREFIX = BindableAdapterUtils.getGenericClassName(CustomTask.class);
 
     private final Supplier<WorkItemDefinitionRegistry> registry;
 
     // CDI proxy.
-    protected ServiceTaskFactory() {
+    protected CustomTaskFactory() {
         this.registry = null;
     }
 
     @Inject
-    public ServiceTaskFactory(final Instance<WorkItemDefinitionRegistry> registry) {
+    public CustomTaskFactory(final Instance<WorkItemDefinitionRegistry> registry) {
         this.registry = registry::get;
     }
 
-    public ServiceTaskFactory(final Supplier<WorkItemDefinitionRegistry> registry) {
+    public CustomTaskFactory(final Supplier<WorkItemDefinitionRegistry> registry) {
         this.registry = registry;
     }
 
@@ -54,18 +54,18 @@ public class ServiceTaskFactory
     }
 
     @Override
-    public ServiceTask build(final String identifier) {
-        final String name = BindableAdapterUtils.getDynamicId(ServiceTask.class,
+    public CustomTask build(final String identifier) {
+        final String name = BindableAdapterUtils.getDynamicId(CustomTask.class,
                                                               identifier);
         return null != name ?
                 buildItem(name) :
-                ServiceTaskBuilder.newInstance();
+                CustomTaskBuilder.newInstance();
     }
 
-    public ServiceTask buildItem(final String workItemName) {
+    public CustomTask buildItem(final String workItemName) {
         final WorkItemDefinition workItemDefinition = getRegistry().get(workItemName);
         if (null != workItemDefinition) {
-            return new ServiceTaskBuilder(workItemDefinition)
+            return new CustomTaskBuilder(workItemDefinition)
                     .build();
         }
         throw new RuntimeException("No service task builder found for [" + workItemName + "]");
@@ -76,42 +76,42 @@ public class ServiceTaskFactory
         return registry.get();
     }
 
-    public static class ServiceTaskBuilder implements Builder<ServiceTask> {
+    public static class CustomTaskBuilder implements Builder<CustomTask> {
 
         private final WorkItemDefinition workItemDefinition;
 
-        public ServiceTaskBuilder(final WorkItemDefinition workItemDefinition) {
+        public CustomTaskBuilder(final WorkItemDefinition workItemDefinition) {
             this.workItemDefinition = workItemDefinition;
         }
 
-        public static ServiceTask newInstance() {
-            return new ServiceTask();
+        public static CustomTask newInstance() {
+            return new CustomTask();
         }
 
         @Override
-        public ServiceTask build() {
-            final ServiceTask serviceTask = newInstance();
+        public CustomTask build() {
+            final CustomTask customTask = newInstance();
             final String name = workItemDefinition.getName();
             setProperties(workItemDefinition,
-                          serviceTask);
-            serviceTask.getExecutionSet().getTaskName().setValue(name);
-            serviceTask.getGeneral().getName().setValue(workItemDefinition.getDisplayName());
-            serviceTask.getGeneral().getDocumentation().setValue(workItemDefinition.getDocumentation());
-            serviceTask.setDescription(workItemDefinition.getDescription());
-            serviceTask.getDataIOSet()
+                          customTask);
+            customTask.getExecutionSet().getTaskName().setValue(name);
+            customTask.getGeneral().getName().setValue(workItemDefinition.getDisplayName());
+            customTask.getGeneral().getDocumentation().setValue(workItemDefinition.getDocumentation());
+            customTask.setDescription(workItemDefinition.getDescription());
+            customTask.getDataIOSet()
                     .getAssignmentsinfo()
                     .setValue(workItemDefinition.getParameters() + workItemDefinition.getResults());
-            return serviceTask;
+            return customTask;
         }
 
-        public static ServiceTask setProperties(final WorkItemDefinition workItemDefinition,
-                                                final ServiceTask serviceTask) {
+        public static CustomTask setProperties(final WorkItemDefinition workItemDefinition,
+                                               final CustomTask customTask) {
             final String name = workItemDefinition.getName();
-            serviceTask.setName(name);
-            serviceTask.getTaskType().setRawType(name);
-            serviceTask.setCategory(workItemDefinition.getCategory());
-            serviceTask.setDefaultHandler(workItemDefinition.getDefaultHandler());
-            return serviceTask;
+            customTask.setName(name);
+            customTask.getTaskType().setRawType(name);
+            customTask.setCategory(workItemDefinition.getCategory());
+            customTask.setDefaultHandler(workItemDefinition.getDefaultHandler());
+            return customTask;
         }
     }
 }

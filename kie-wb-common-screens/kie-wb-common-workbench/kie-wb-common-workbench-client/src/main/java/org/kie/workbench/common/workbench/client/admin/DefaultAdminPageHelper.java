@@ -403,14 +403,14 @@ public class DefaultAdminPageHelper {
                                 AdminPageOptions.WITH_BREADCRUMBS);
 
         adminPage.addTool("root",
-                                constants.ServiceTasksAdministration(),
+                                constants.CustomTasksAdministration(),
                                 new Sets.Builder().add("fa").add("fa-cogs").build(),
                                 "services",
                                 () -> {
                                     final Command accessServiceTasks = () -> placeManager.goTo(PerspectiveIds.SERVICE_TASK_ADMIN);
                                     accessServiceTasks.execute();
                                     addAdminBreadcrumbs(PerspectiveIds.SERVICE_TASK_ADMIN,
-                                                        constants.ServiceTasksAdministration(),
+                                                        constants.CustomTasksAdministration(),
                                                         accessServiceTasks);
                                 });
     }

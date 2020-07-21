@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.Picture;
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientUtils;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeViewHandler;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGPrimitive;
@@ -31,8 +31,8 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGViewUtils;
 import static org.kie.workbench.common.stunner.client.lienzo.util.LienzoPictureUtils.forceLoad;
 import static org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils.scale;
 
-public class ServiceTaskShapeViewHandler
-        implements ShapeViewHandler<ServiceTask, SVGShapeView<?>> {
+public class CustomTaskShapeViewHandler
+        implements ShapeViewHandler<CustomTask, SVGShapeView<?>> {
 
     public static final String URL_DATA_IMAGE = "data:image";
     public static final String WID_ICON_ID = "task_service_icon";
@@ -41,12 +41,12 @@ public class ServiceTaskShapeViewHandler
 
     private final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry;
 
-    public ServiceTaskShapeViewHandler(final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry) {
+    public CustomTaskShapeViewHandler(final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry) {
         this.workItemDefinitionRegistry = workItemDefinitionRegistry;
     }
 
     @Override
-    public void handle(final ServiceTask bean,
+    public void handle(final CustomTask bean,
                        final SVGShapeView<?> view) {
         // Obtain the work item's icon data url.
         final String itemIconData = workItemDefinitionRegistry

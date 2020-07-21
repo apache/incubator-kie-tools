@@ -34,7 +34,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ServiceTaskFactoryTest {
+public class CustomTaskFactoryTest {
 
     @Mock
     private WorkItemDefinitionRegistry registry;
@@ -61,12 +61,12 @@ public class ServiceTaskFactoryTest {
                     .setParameters(WID_PARAMS)
                     .setResults(WID_RESULTS);
 
-    private ServiceTaskFactory tested;
+    private CustomTaskFactory tested;
 
     @Before
     public void init() {
         when(registry.get(eq(WID_NAME))).thenReturn(WORK_ITEM_DEFINITION);
-        tested = new ServiceTaskFactory(() -> registry);
+        tested = new CustomTaskFactory(() -> registry);
     }
 
     @Test
@@ -75,28 +75,28 @@ public class ServiceTaskFactoryTest {
         assertFalse(tested.accepts(getId(NoneTask.class)));
         assertFalse(tested.accepts(getId(ScriptTask.class)));
         assertFalse(tested.accepts(getId(BusinessRuleTask.class)));
-        assertTrue(tested.accepts(getId(ServiceTask.class)));
-        assertTrue(tested.accepts(getId(ServiceTask.class) + ".Email"));
-        assertTrue(tested.accepts(getId(ServiceTask.class) + ".Log"));
+        assertTrue(tested.accepts(getId(CustomTask.class)));
+        assertTrue(tested.accepts(getId(CustomTask.class) + ".Email"));
+        assertTrue(tested.accepts(getId(CustomTask.class) + ".Log"));
         assertTrue(tested.accepts(getWorkItemDefinitionName()));
     }
 
     @Test
     public void testBuild() {
-        final ServiceTask serviceTask = tested.build(getWorkItemDefinitionName());
-        assertEquals(WID_NAME, serviceTask.getName());
-        assertEquals(WID_NAME, serviceTask.getTaskType().getRawType());
-        assertEquals(WID_NAME, serviceTask.getExecutionSet().getTaskName().getValue());
-        assertEquals(WID_CAT, serviceTask.getCategory());
-        assertEquals(WID_HANDLER, serviceTask.getDefaultHandler());
-        assertEquals(WID_DISP_NAME, serviceTask.getGeneral().getName().getValue());
-        assertEquals(WID_DOC, serviceTask.getGeneral().getDocumentation().getValue());
-        assertEquals(WID_DESC, serviceTask.getDescription());
-        assertEquals(WID_PARAMS + WID_RESULTS, serviceTask.getDataIOSet().getAssignmentsinfo().getValue());
+        final CustomTask customTask = tested.build(getWorkItemDefinitionName());
+        assertEquals(WID_NAME, customTask.getName());
+        assertEquals(WID_NAME, customTask.getTaskType().getRawType());
+        assertEquals(WID_NAME, customTask.getExecutionSet().getTaskName().getValue());
+        assertEquals(WID_CAT, customTask.getCategory());
+        assertEquals(WID_HANDLER, customTask.getDefaultHandler());
+        assertEquals(WID_DISP_NAME, customTask.getGeneral().getName().getValue());
+        assertEquals(WID_DOC, customTask.getGeneral().getDocumentation().getValue());
+        assertEquals(WID_DESC, customTask.getDescription());
+        assertEquals(WID_PARAMS + WID_RESULTS, customTask.getDataIOSet().getAssignmentsinfo().getValue());
     }
 
     private static String getWorkItemDefinitionName() {
-        return getId(ServiceTask.class) + "." + WID_NAME;
+        return getId(CustomTask.class) + "." + WID_NAME;
     }
 
     private static String getId(final Class<?> clazz) {

@@ -64,7 +64,7 @@ public class DefaultAdminPageHelperTest {
     private static String STUNNER_PREFERENCES = "StunnerPreferences";
     private static String EXPERIMENTAL_SETTINGS = "ExperimentalSettings";
     private static String MANAGE_PREFERENCES = "ManagePreferences";
-    private static String SERTIVCE_TASKS_ADMIN = "ServiceTasksAdministration";
+    private static String CUSTOM_TASKS_ADMIN = "CustomTasksAdministration";
     private static String DATA_TRANSFER = "DataTransfer";
     private static String ARCHETYPES = "Archetypes";
 
@@ -558,7 +558,7 @@ public class DefaultAdminPageHelperTest {
     private void verifyServiceTasksAdminWasAdded() {
         verify(adminPage,
                times(1)).addTool(eq("root"),
-                                                eq(SERTIVCE_TASKS_ADMIN),
+                                                eq(CUSTOM_TASKS_ADMIN),
                                                 any(),
                                                 eq("services"),
                                                 any());
@@ -567,7 +567,7 @@ public class DefaultAdminPageHelperTest {
     private void verifyServiceTasksAdminWasNotAdded() {
         verify(adminPage,
                never()).addTool(eq("root"),
-                                                eq(SERTIVCE_TASKS_ADMIN),
+                                                eq(CUSTOM_TASKS_ADMIN),
                                                 any(),
                                                 eq("services"),
                                                 any());

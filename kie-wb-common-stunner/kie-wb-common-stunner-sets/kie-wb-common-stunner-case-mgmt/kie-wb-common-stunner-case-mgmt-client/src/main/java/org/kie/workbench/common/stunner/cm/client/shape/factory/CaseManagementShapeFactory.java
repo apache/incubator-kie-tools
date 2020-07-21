@@ -63,7 +63,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.TextAnnotation;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgDiagramShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgNullShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSvgStageShapeDef;
@@ -126,7 +126,7 @@ public class CaseManagementShapeFactory implements ShapeFactory<BPMNDefinition, 
                 .delegate(BusinessRuleTask.class,
                           new CaseManagementSvgNullShapeDef(),
                           () -> shapeDefFactory)
-                .delegate(ServiceTask.class,
+                .delegate(CustomTask.class,
                           new CaseManagementSvgNullShapeDef(),
                           () -> shapeDefFactory)
                 .delegate(StartNoneEvent.class,

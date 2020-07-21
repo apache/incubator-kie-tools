@@ -109,7 +109,7 @@ public class WorkItemDefinitionClientParserTest {
         assertEquals("Email", wid1.getName());
         assertEquals("Email", wid1.getDisplayName());
         assertEquals("defaultemailicon.gif", wid1.getIconDefinition().getUri());
-        assertEquals(BPMNCategories.SERVICE_TASKS, wid1.getCategory());
+        assertEquals(BPMNCategories.CUSTOM_TASKS, wid1.getCategory());
         assertTrue(wid1.getResults().isEmpty());
         assertEquals(EMAIL_WID_EXTRACTED_PARAMETERS, wid1.getParameters());
 

@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.cm.backend;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskFactory;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTaskFactory;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.backend.BackendFactoryManager;
@@ -45,7 +45,7 @@ public class MockApplicationFactoryManager extends BackendFactoryManager {
     private final StunnerTestingModelFactory testScopeModelFactory;
     private final EdgeFactory<Object> connectionEdgeFactory;
     private final NodeFactory<Object> viewNodeFactory;
-    private final ServiceTaskFactory serviceTaskFactory;
+    private final CustomTaskFactory customTaskFactory;
 
     public MockApplicationFactoryManager(final DefinitionManager definitionManager,
                                          final GraphFactory graphFactory,
@@ -57,7 +57,7 @@ public class MockApplicationFactoryManager extends BackendFactoryManager {
         this.testScopeModelFactory = testScopeModelFactory;
         this.connectionEdgeFactory = connectionEdgeFactory;
         this.viewNodeFactory = viewNodeFactory;
-        this.serviceTaskFactory = new ServiceTaskFactory(() -> null);
+        this.customTaskFactory = new CustomTaskFactory(() -> null);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class MockApplicationFactoryManager extends BackendFactoryManager {
             Graph graph = graphFactory.build(uuid, CM_DEF_SET_ID);
             return graph;
         }
-        Object model = testScopeModelFactory.accepts(id) ? testScopeModelFactory.build(id) : serviceTaskFactory.build(id);
+        Object model = testScopeModelFactory.accepts(id) ? testScopeModelFactory.build(id) : customTaskFactory.build(id);
         if (null != model) {
             Class<? extends ElementFactory> element = BackendDefinitionAdapter.getGraphFactory(model.getClass());
             if (element.isAssignableFrom(NodeFactory.class)) {

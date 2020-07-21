@@ -21,20 +21,20 @@ import java.util.List;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
-import org.kie.workbench.common.stunner.bpmn.workitem.BaseServiceTask;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.workitem.BaseCustomTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTaskExecutionSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public abstract class BaseServiceTaskTest<T extends BaseServiceTask> extends TaskTest<T> {
+public abstract class BaseCustomTaskTest<T extends BaseCustomTask> extends TaskTest<T> {
 
     protected static final String SLA_DUE_DATE = "12/25/1983";
 
-    public BaseServiceTaskTest() throws Exception {
+    public BaseCustomTaskTest() throws Exception {
     }
 
-    void assertServiceTaskExecutionSet(ServiceTaskExecutionSet executionSet,
+    void assertServiceTaskExecutionSet(CustomTaskExecutionSet executionSet,
                                        String onEntryActionScriptValue,
                                        String onEntryActionScriptLanguage,
                                        String onExitActionScriptValue,

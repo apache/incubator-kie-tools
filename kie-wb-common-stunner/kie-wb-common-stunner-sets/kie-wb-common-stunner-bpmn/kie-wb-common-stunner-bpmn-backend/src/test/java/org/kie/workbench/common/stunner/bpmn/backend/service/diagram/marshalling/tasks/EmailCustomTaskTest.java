@@ -18,41 +18,41 @@ package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshallin
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 
-public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
+public class EmailCustomTaskTest extends BaseCustomTaskTest<CustomTask> {
 
-    private static final String BPMN_TASK_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/webServiceTasks.bpmn";
+    private static final String BPMN_TASK_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/emailServiceTasks.bpmn";
 
-    private static final String EMPTY_TOP_LEVEL_TASK_ID = "_5A6F1F2B-0DA7-4CC9-A0DC-3E084C1CC04B";
-    private static final String FILLED_TOP_LEVEL_TASK_JAVA_ID = "_A1F87E6F-4661-40A0-82FD-40EFA8B4EB0D";
-    private static final String FILLED_TOP_LEVEL_TASK_JAVASCRIPT_ID = "_CECED7C4-5723-4A2A-87ED-C335149B2B09";
-    private static final String FILLED_TOP_LEVEL_TASK_MVEL_ID = "_88C979F8-BA89-45C5-B537-E0A69354C77D";
+    private static final String EMPTY_TOP_LEVEL_TASK_ID = "_E9FCC849-3CA2-45EE-9D82-1DF4943ED5D5";
+    private static final String FILLED_TOP_LEVEL_TASK_JAVA_ID = "_0DB9E25C-DB6D-4523-B93F-5FB8B06E641B";
+    private static final String FILLED_TOP_LEVEL_TASK_JAVASCRIPT_ID = "_6D492D46-452E-4325-A173-95E45F162D2F";
+    private static final String FILLED_TOP_LEVEL_TASK_MVEL_ID = "_3FD1AC6E-DF1F-4216-B264-3B0F39B5C456";
 
-    private static final String EMPTY_SUBPROCESS_LEVEL_TASK_ID = "_5D642034-18F7-4923-B5A5-522E7DA239A6";
-    private static final String FILLED_SUBPROCESS_LEVEL_TASK_JAVA_ID = "_35A8D726-E7BD-4C1C-BE59-F4798BFE7D41";
-    private static final String FILLED_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID = "_597F6FAF-BE24-4D85-AF01-B97B98404A03";
-    private static final String FILLED_SUBPROCESS_LEVEL_TASK_MVEL_ID = "_68B36482-F5F7-401D-A3A1-A9F396F5BB65";
+    private static final String EMPTY_SUBPROCESS_LEVEL_TASK_ID = "_1503949A-282E-47EA-9FBF-D97169BC7032";
+    private static final String FILLED_SUBPROCESS_LEVEL_TASK_JAVA_ID = "_720E61CF-E5BC-4502-892F-94F733DFA472";
+    private static final String FILLED_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID = "_BD87C14A-25FC-4A89-9166-C75A401630C1";
+    private static final String FILLED_SUBPROCESS_LEVEL_TASK_MVEL_ID = "_464DB47C-DB7E-46DB-A01E-73316E224E5E";
 
-    private static final String EMPTY_ONE_INCOME_SUBPROCESS_LEVEL_TASK_ID = "_B31AD4AA-05F4-4FFC-931D-3D2B08FC5BD2";
-    private static final String FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVA_ID = "_52DDB629-4972-4322-857A-FC3784F063C9";
-    private static final String FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID = "_C79B91B0-0EC1-47B4-B4C6-0EBECFE86BFE";
-    private static final String FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_MVEL_ID = "_C6C31E27-BC23-4F39-B842-1BB7E46A732B";
+    private static final String EMPTY_ONE_INCOME_SUBPROCESS_LEVEL_TASK_ID = "_B559A21B-BA5F-478C-88DC-E55266B0F1B8";
+    private static final String FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVA_ID = "_80E21A45-5F93-4C1A-9500-A0B874844E69";
+    private static final String FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID = "_99CAF167-96D5-43B7-B971-563BACDEB8BD";
+    private static final String FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_MVEL_ID = "_5B167803-E9CF-417C-89FD-076614F64662";
 
-    private static final String EMPTY_ONE_INCOME_TOP_LEVEL_TASK_ID = "_3DAE301C-D97B-46FA-819B-D977C9C4E40D";
-    private static final String FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVA_ID = "_93B7896F-D263-46D8-BC54-9E117FB426C3";
-    private static final String FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVASCRIPT_ID = "_B413F625-D2B0-4243-88F1-15C275695752";
-    private static final String FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID = "_EBAEE436-8140-4E58-8C74-D31EE2225D9E";
+    private static final String EMPTY_ONE_INCOME_TOP_LEVEL_TASK_ID = "_8702AF93-BA74-433C-BDF5-355447EC01D1";
+    private static final String FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVA_ID = "_B6F7C712-EADC-4DEA-ACC9-D291A13B86E3";
+    private static final String FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVASCRIPT_ID = "_A775A42C-7E90-441F-8757-B877CC2548D8";
+    private static final String FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID = "_792EAC3D-AFEE-4876-A47F-74C84519527F";
 
-    private static final String EMPTY_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_ID = "_CED3E374-DC2F-49C3-9793-66E6DD305CFF";
-    private static final String FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVA_ID = "_C9E2A420-7C21-4E30-BE2A-36583F0A0C07";
-    private static final String FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID = "_098C8C0E-A580-4CA6-B4C0-604E934BD2A8";
-    private static final String FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_MVEL_ID = "_914BF590-F197-4294-86BF-9978E2FF1AED";
+    private static final String EMPTY_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_ID = "_46FCD1B0-0D9D-4FE6-97E7-897BCC0E8123";
+    private static final String FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVA_ID = "_4D90EE12-4931-47B2-8A96-DD48671F736E";
+    private static final String FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID = "_41D5F885-3642-4705-8858-2EBE700115BE";
+    private static final String FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_MVEL_ID = "_7A5403EB-596A-45F8-91B4-86A194A2560D";
 
-    private static final String EMPTY_TWO_INCOMES_TOP_LEVEL_TASK_ID = "_34A5EEA0-7164-4DF3-B321-5651606EFF70";
-    private static final String FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVA_ID = "_48F6449C-CF57-4BE7-9778-32BABF22228B";
-    private static final String FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID = "_32F3054C-C641-409A-8EA4-2857801DAE7A";
-    private static final String FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID = "_43B109C6-A65C-40DF-97DF-33723FC77B3B";
+    private static final String EMPTY_TWO_INCOMES_TOP_LEVEL_TASK_ID = "_47E10EF2-1922-48FD-8202-C565D48D34B1";
+    private static final String FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVA_ID = "_0BDF4C17-FE34-4240-A415-6E21CDB1E86A";
+    private static final String FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID = "_CC5D0205-42B1-4232-BAEE-64227F611C40";
+    private static final String FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID = "_C95FA20B-538C-4803-B73C-A6C081E56840";
 
     private static final int AMOUNT_OF_NODES_IN_DIAGRAM = 69;
 
@@ -65,35 +65,35 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     private static final boolean AD_HOC_AUTOSTART = true;
     private static final boolean NOT_AD_HOC_AUTOSTART = false;
 
-    public WebServiceTaskTest() throws Exception {
+    public EmailCustomTaskTest() throws Exception {
     }
 
     @Test
     @Override
     public void testUnmarshallTopLevelTaskFilledProperties() {
-        final String TASK_NAME_JAVA = "WebService task01 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVA = "WebService task01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_JAVA = "Email task01 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVA = "Email task01 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action from Email Task.\");";
 
-        final String TASK_NAME_JAVASCRIPT = "WebService task04 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVASCRIPT = "WebService task04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_JAVASCRIPT = "Email task04 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVASCRIPT = "Email task04 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action from Email Task.\");";
 
-        final String TASK_NAME_MVEL = "WebService task07 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_MVEL = "WebService task07 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_MVEL = "Email task07 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_MVEL = "Email task07 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action from Email Task.\");";
 
-        final String TASK_DATA_INPUT_OUTPUT = "|Endpoint:String,Interface:String,Mode:String,Namespace:String,Operation:String,Parameter:String,Url:String,input:String||Result:java.lang.Object,output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT = "|Body:String,From:String,Subject:String,To:String,input:String||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
 
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
-                                                             FILLED_TOP_LEVEL_TASK_JAVA_ID,
-                                                             ZERO_INCOME_EDGES,
-                                                             HAS_NO_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
+                                                            FILLED_TOP_LEVEL_TASK_JAVA_ID,
+                                                            ZERO_INCOME_EDGES,
+                                                            HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertServiceTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVA,
@@ -105,10 +105,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
-                                                                   FILLED_TOP_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                   ZERO_INCOME_EDGES,
-                                                                   HAS_NO_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
+                                                                  FILLED_TOP_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                  ZERO_INCOME_EDGES,
+                                                                  HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertServiceTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVASCRIPT,
@@ -120,10 +120,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
-                                                             FILLED_TOP_LEVEL_TASK_MVEL_ID,
-                                                             ZERO_INCOME_EDGES,
-                                                             HAS_NO_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
+                                                            FILLED_TOP_LEVEL_TASK_MVEL_ID,
+                                                            ZERO_INCOME_EDGES,
+                                                            HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertServiceTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_MVEL,
@@ -145,10 +145,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     public void testUnmarshallTopLevelEmptyTaskProperties() {
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
-                                                        EMPTY_TOP_LEVEL_TASK_ID,
-                                                        ZERO_INCOME_EDGES,
-                                                        HAS_NO_OUTCOME_EDGE);
+        CustomTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
+                                                       EMPTY_TOP_LEVEL_TASK_ID,
+                                                       ZERO_INCOME_EDGES,
+                                                       HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(emptyTopLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
 
         assertServiceTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
@@ -165,29 +165,29 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     @Test
     @Override
     public void testUnmarshallSubprocessLevelTaskFilledProperties() {
-        final String TASK_NAME_JAVA = "WebService task10 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVA = "WebService task10 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_JAVA = "Email task10 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVA = "Email task10 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action from Email Task.\");";
 
-        final String TASK_NAME_JAVASCRIPT = "WebService task13 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVASCRIPT = "WebService task13 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_JAVASCRIPT = "Email task13 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVASCRIPT = "Email task13 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action from Email Task.\");";
 
-        final String TASK_NAME_MVEL = "WebService task16 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_MVEL = "WebService task16 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_MVEL = "Email task16 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_MVEL = "Email task16 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action from Email Task.\");";
 
-        final String TASK_DATA_INPUT_OUTPUT = "|Endpoint:String,Interface:String,Mode:String,Namespace:String,Operation:String,Parameter:String,Url:String,input:String||Result:java.lang.Object,output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT = "|Body:String,From:String,Subject:String,To:String,input:String||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
 
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
-                                                                    FILLED_SUBPROCESS_LEVEL_TASK_JAVA_ID,
-                                                                    ZERO_INCOME_EDGES,
-                                                                    HAS_NO_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
+                                                                   FILLED_SUBPROCESS_LEVEL_TASK_JAVA_ID,
+                                                                   ZERO_INCOME_EDGES,
+                                                                   HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVA,
@@ -199,10 +199,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
-                                                                          FILLED_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                          ZERO_INCOME_EDGES,
-                                                                          HAS_NO_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
+                                                                         FILLED_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                         ZERO_INCOME_EDGES,
+                                                                         HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVASCRIPT,
@@ -214,10 +214,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
-                                                                    FILLED_SUBPROCESS_LEVEL_TASK_MVEL_ID,
-                                                                    ZERO_INCOME_EDGES,
-                                                                    HAS_NO_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
+                                                                   FILLED_SUBPROCESS_LEVEL_TASK_MVEL_ID,
+                                                                   ZERO_INCOME_EDGES,
+                                                                   HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_MVEL,
@@ -239,10 +239,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     public void testUnmarshallSubprocessLevelTaskEmptyProperties() {
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
-                                                               EMPTY_SUBPROCESS_LEVEL_TASK_ID,
-                                                               ZERO_INCOME_EDGES,
-                                                               HAS_NO_OUTCOME_EDGE);
+        CustomTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
+                                                              EMPTY_SUBPROCESS_LEVEL_TASK_ID,
+                                                              ZERO_INCOME_EDGES,
+                                                              HAS_NO_OUTCOME_EDGE);
         assertGeneralSet(emptySubprocessLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertServiceTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
                                       EMPTY_VALUE,
@@ -258,29 +258,29 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     @Test
     @Override
     public void testUnmarshallTopLevelTaskOneIncomeFilledProperties() {
-        final String TASK_NAME_JAVA = "WebService task02 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVA = "WebService task02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_JAVA = "Email task02 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVA = "Email task02 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action from Email Task.\");";
 
-        final String TASK_NAME_JAVASCRIPT = "WebService task05 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVASCRIPT = "WebService task05 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_JAVASCRIPT = "Email task05 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVASCRIPT = "Email task05 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action from Email Task.\");";
 
-        final String TASK_NAME_MVEL = "WebService task08 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_MVEL = "WebService task08 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_MVEL = "Email task08 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_MVEL = "Email task08 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action from Email Task.\");";
 
-        final String TASK_DATA_INPUT_OUTPUT = "|Endpoint:String,Interface:String,Mode:String,Namespace:String,Operation:String,Parameter:String,Url:String,input:String||Result:java.lang.Object,output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT = "|Body:String,From:String,Subject:String,To:String,input:String||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
 
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
-                                                             FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVA_ID,
-                                                             ONE_INCOME_EDGE,
-                                                             HAS_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
+                                                            FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVA_ID,
+                                                            ONE_INCOME_EDGE,
+                                                            HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertServiceTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVA,
@@ -292,10 +292,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
-                                                                   FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                   ONE_INCOME_EDGE,
-                                                                   HAS_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
+                                                                  FILLED_ONE_INCOME_TOP_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                  ONE_INCOME_EDGE,
+                                                                  HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertServiceTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVASCRIPT,
@@ -307,10 +307,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
-                                                             FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID,
-                                                             ONE_INCOME_EDGE,
-                                                             HAS_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
+                                                            FILLED_ONE_INCOME_TOP_LEVEL_TASK_MVEL_ID,
+                                                            ONE_INCOME_EDGE,
+                                                            HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertServiceTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_MVEL,
@@ -318,7 +318,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       TASK_ON_EXIT_ACTION_MVEL,
                                       TASK_SCRIPT_MVEL_LANGUAGE,
                                       IS_ASYNC,
-                                      AD_HOC_AUTOSTART, SLA_DUE_DATE);
+                                      AD_HOC_AUTOSTART,
+                                      SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskMvel.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
     }
 
@@ -331,10 +332,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     public void testUnmarshallTopLevelTaskOneIncomeEmptyProperties() {
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
-                                                        EMPTY_ONE_INCOME_TOP_LEVEL_TASK_ID,
-                                                        ONE_INCOME_EDGE,
-                                                        HAS_OUTCOME_EDGE);
+        CustomTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
+                                                       EMPTY_ONE_INCOME_TOP_LEVEL_TASK_ID,
+                                                       ONE_INCOME_EDGE,
+                                                       HAS_OUTCOME_EDGE);
         assertGeneralSet(emptyTopLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertServiceTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
                                       EMPTY_VALUE,
@@ -356,10 +357,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     public void testUnmarshallSubprocessLevelTaskOneIncomeEmptyProperties() {
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
-                                                               EMPTY_ONE_INCOME_SUBPROCESS_LEVEL_TASK_ID,
-                                                               ONE_INCOME_EDGE,
-                                                               HAS_OUTCOME_EDGE);
+        CustomTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
+                                                              EMPTY_ONE_INCOME_SUBPROCESS_LEVEL_TASK_ID,
+                                                              ONE_INCOME_EDGE,
+                                                              HAS_OUTCOME_EDGE);
         assertGeneralSet(emptySubprocessLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertServiceTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
                                       EMPTY_VALUE,
@@ -375,29 +376,29 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     @Test
     @Override
     public void testUnmarshallSubprocessLevelTaskOneIncomeFilledProperties() {
-        final String TASK_NAME_JAVA = "WebService task11 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVA = "WebService task11 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_JAVA = "Email task11 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVA = "Email task11 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action from Email Task.\");";
 
-        final String TASK_NAME_JAVASCRIPT = "WebService task14 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVASCRIPT = "WebService task14 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_JAVASCRIPT = "Email task14 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVASCRIPT = "Email task14 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action from Email Task.\");";
 
-        final String TASK_NAME_MVEL = "WebService task17 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_MVEL = "WebService task17 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_MVEL = "Email task17 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_MVEL = "Email task17 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action from Email Task.\");";
 
-        final String TASK_DATA_INPUT_OUTPUT = "|Endpoint:String,Interface:String,Mode:String,Namespace:String,Operation:String,Parameter:String,Url:String,input:String||Result:java.lang.Object,output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT = "|Body:String,From:String,Subject:String,To:String,input:String||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
 
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
-                                                                    FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVA_ID,
-                                                                    ONE_INCOME_EDGE,
-                                                                    HAS_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
+                                                                   FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVA_ID,
+                                                                   ONE_INCOME_EDGE,
+                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVA,
@@ -409,10 +410,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
-                                                                          FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                          ONE_INCOME_EDGE,
-                                                                          HAS_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
+                                                                         FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                         ONE_INCOME_EDGE,
+                                                                         HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVASCRIPT,
@@ -424,10 +425,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
-                                                                    FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_MVEL_ID,
-                                                                    ONE_INCOME_EDGE,
-                                                                    HAS_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
+                                                                   FILLED_ONE_INCOME_SUBPROCESS_LEVEL_TASK_MVEL_ID,
+                                                                   ONE_INCOME_EDGE,
+                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_MVEL,
@@ -443,29 +444,29 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     @Test
     @Override
     public void testUnmarshallTopLevelTaskTwoIncomesFilledProperties() {
-        final String TASK_NAME_JAVA = "WebService task03 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVA = "WebService task03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_JAVA = "Email task03 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVA = "Email task03 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action from Email Task.\");";
 
-        final String TASK_NAME_JAVASCRIPT = "WebService task06 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVASCRIPT = "WebService task06 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_JAVASCRIPT = "Email task06 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVASCRIPT = "Email task06 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action from Email Task.\");";
 
-        final String TASK_NAME_MVEL = "WebService task09 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_MVEL = "WebService task09 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_MVEL = "Email task09 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_MVEL = "Email task09 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action from Email Task.\");";
 
-        final String TASK_DATA_INPUT_OUTPUT = "|Endpoint:String,Interface:String,Mode:String,Namespace:String,Operation:String,Parameter:String,Url:String,input:String||Result:java.lang.Object,output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT = "|Body:String,From:String,Subject:String,To:String,input:String||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
 
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
-                                                             FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVA_ID,
-                                                             TWO_INCOME_EDGES,
-                                                             HAS_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskJava = getTaskNodeById(getDiagram(),
+                                                            FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVA_ID,
+                                                            TWO_INCOME_EDGES,
+                                                            HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertServiceTaskExecutionSet(filledTopLevelTaskJava.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVA,
@@ -477,10 +478,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
-                                                                   FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                   TWO_INCOME_EDGES,
-                                                                   HAS_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskJavascript = getTaskNodeById(getDiagram(),
+                                                                  FILLED_TWO_INCOMES_TOP_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                  TWO_INCOME_EDGES,
+                                                                  HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertServiceTaskExecutionSet(filledTopLevelTaskJavascript.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVASCRIPT,
@@ -492,10 +493,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledTopLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
-                                                             FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID,
-                                                             TWO_INCOME_EDGES,
-                                                             HAS_OUTCOME_EDGE);
+        CustomTask filledTopLevelTaskMvel = getTaskNodeById(getDiagram(),
+                                                            FILLED_TWO_INCOMES_TOP_LEVEL_TASK_MVEL_ID,
+                                                            TWO_INCOME_EDGES,
+                                                            HAS_OUTCOME_EDGE);
         assertGeneralSet(filledTopLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertServiceTaskExecutionSet(filledTopLevelTaskMvel.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_MVEL,
@@ -517,10 +518,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     public void testUnmarshallTopLevelTaskTwoIncomesEmptyProperties() {
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
-                                                        EMPTY_TWO_INCOMES_TOP_LEVEL_TASK_ID,
-                                                        TWO_INCOME_EDGES,
-                                                        HAS_OUTCOME_EDGE);
+        CustomTask emptyTopLevelTask = getTaskNodeById(getDiagram(),
+                                                       EMPTY_TWO_INCOMES_TOP_LEVEL_TASK_ID,
+                                                       TWO_INCOME_EDGES,
+                                                       HAS_OUTCOME_EDGE);
         assertGeneralSet(emptyTopLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertServiceTaskExecutionSet(emptyTopLevelTask.getExecutionSet(),
                                       EMPTY_VALUE,
@@ -542,10 +543,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     public void testUnmarshallSubprocessLevelTaskTwoIncomesEmptyProperties() {
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
-                                                               EMPTY_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_ID,
-                                                               TWO_INCOME_EDGES,
-                                                               HAS_OUTCOME_EDGE);
+        CustomTask emptySubprocessLevelTask = getTaskNodeById(getDiagram(),
+                                                              EMPTY_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_ID,
+                                                              TWO_INCOME_EDGES,
+                                                              HAS_OUTCOME_EDGE);
         assertGeneralSet(emptySubprocessLevelTask.getGeneral(), EMPTY_VALUE, EMPTY_VALUE);
         assertServiceTaskExecutionSet(emptySubprocessLevelTask.getExecutionSet(),
                                       EMPTY_VALUE,
@@ -561,29 +562,29 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     @Test
     @Override
     public void testUnmarshallSubprocessLevelTaskTwoIncomesFilledProperties() {
-        final String TASK_NAME_JAVA = "WebService task12 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVA = "WebService task12 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_JAVA = "Email task12 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVA = "Email task12 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_JAVA = "System.out.println(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_JAVA = "System.out.println(\"On Exit Action from Email Task.\");";
 
-        final String TASK_NAME_JAVASCRIPT = "WebService task15 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_JAVASCRIPT = "WebService task15 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_JAVASCRIPT = "Email task15 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_JAVASCRIPT = "Email task15 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_JAVASCRIPT = "console.log(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_JAVASCRIPT = "console.log(\"On Exit Action from Email Task.\");";
 
-        final String TASK_NAME_MVEL = "WebService task18 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
-        final String TASK_DOCUMENTATION_MVEL = "WebService task18 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
-        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action from WebService Task.\");";
-        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action from WebService Task.\");";
+        final String TASK_NAME_MVEL = "Email task18 name ~!@#$%^&*()_+`-={}|[]\\:\";'<>?,./";
+        final String TASK_DOCUMENTATION_MVEL = "Email task18 doc\n ~!@#$%^&*()_+`1234567890-={}|[]\\:\";'<>?,./";
+        final String TASK_ON_ENTRY_ACTION_MVEL = "System.out.println(\"On Entry Action from Email Task.\");";
+        final String TASK_ON_EXIT_ACTION_MVEL = "System.out.println(\"On Exit Action from Email Task.\");";
 
-        final String TASK_DATA_INPUT_OUTPUT = "|Endpoint:String,Interface:String,Mode:String,Namespace:String,Operation:String,Parameter:String,Url:String,input:String||Result:java.lang.Object,output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
+        final String TASK_DATA_INPUT_OUTPUT = "|Body:String,From:String,Subject:String,To:String,input:String||output:String|[din]processGlobalVar->input,[dout]output->processGlobalVar";
 
         assertDiagram(getDiagram(), AMOUNT_OF_NODES_IN_DIAGRAM);
 
-        ServiceTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
-                                                                    FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVA_ID,
-                                                                    TWO_INCOME_EDGES,
-                                                                    HAS_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskJava = getTaskNodeById(getDiagram(),
+                                                                   FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVA_ID,
+                                                                   TWO_INCOME_EDGES,
+                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJava.getGeneral(), TASK_NAME_JAVA, TASK_DOCUMENTATION_JAVA);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskJava.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVA,
@@ -595,10 +596,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJava.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
-                                                                          FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
-                                                                          TWO_INCOME_EDGES,
-                                                                          HAS_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskJavascript = getTaskNodeById(getDiagram(),
+                                                                         FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_JAVASCRIPT_ID,
+                                                                         TWO_INCOME_EDGES,
+                                                                         HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskJavascript.getGeneral(), TASK_NAME_JAVASCRIPT, TASK_DOCUMENTATION_JAVASCRIPT);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskJavascript.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_JAVASCRIPT,
@@ -610,10 +611,10 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
                                       SLA_DUE_DATE);
         assertDataIOSet(filledSubprocessLevelTaskJavascript.getDataIOSet(), TASK_DATA_INPUT_OUTPUT);
 
-        ServiceTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
-                                                                    FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_MVEL_ID,
-                                                                    TWO_INCOME_EDGES,
-                                                                    HAS_OUTCOME_EDGE);
+        CustomTask filledSubprocessLevelTaskMvel = getTaskNodeById(getDiagram(),
+                                                                   FILLED_TWO_INCOMES_SUBPROCESS_LEVEL_TASK_MVEL_ID,
+                                                                   TWO_INCOME_EDGES,
+                                                                   HAS_OUTCOME_EDGE);
         assertGeneralSet(filledSubprocessLevelTaskMvel.getGeneral(), TASK_NAME_MVEL, TASK_DOCUMENTATION_MVEL);
         assertServiceTaskExecutionSet(filledSubprocessLevelTaskMvel.getExecutionSet(),
                                       TASK_ON_ENTRY_ACTION_MVEL,
@@ -680,8 +681,8 @@ public class WebServiceTaskTest extends BaseServiceTaskTest<ServiceTask> {
     }
 
     @Override
-    Class<ServiceTask> getTaskType() {
-        return ServiceTask.class;
+    Class<CustomTask> getTaskType() {
+        return CustomTask.class;
     }
 
     @Override

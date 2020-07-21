@@ -35,8 +35,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.TextAnnotation;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.IconDefinition;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -114,7 +114,7 @@ public class BPMNPaletteDefinitionBuilderTest {
     private AbstractCanvasHandler canvasHandler;
 
     @Mock
-    private ServiceTask serviceTask;
+    private CustomTask customTask;
 
     private BPMNPaletteDefinitionBuilder tested;
 
@@ -125,10 +125,10 @@ public class BPMNPaletteDefinitionBuilderTest {
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.registry()).thenReturn(adapterRegistry);
         when(adapterRegistry.getDefinitionAdapter(any(Class.class))).thenReturn(widAdapter);
-        when(widAdapter.getId(eq(serviceTask))).thenReturn(DefinitionId.build(WID_NAME));
-        when(widAdapter.getCategory(eq(serviceTask))).thenReturn(WID_CAT);
-        when(widAdapter.getTitle(eq(serviceTask))).thenReturn(WID_DISPLAY_NAME);
-        when(widAdapter.getDescription(eq(serviceTask))).thenReturn(WID_DESC);
+        when(widAdapter.getId(eq(customTask))).thenReturn(DefinitionId.build(WID_NAME));
+        when(widAdapter.getCategory(eq(customTask))).thenReturn(WID_CAT);
+        when(widAdapter.getTitle(eq(customTask))).thenReturn(WID_DISPLAY_NAME);
+        when(widAdapter.getDescription(eq(customTask))).thenReturn(WID_DESC);
         ExpandedPaletteDefinitionBuilder paletteDefinitionBuilder = spy(new ExpandedPaletteDefinitionBuilder(definitionUtils,
                                                                                                              profileManager,
                                                                                                              definitionsRegistry,
@@ -139,8 +139,8 @@ public class BPMNPaletteDefinitionBuilderTest {
             return null;
         }).when(paletteDefinitionBuilder).build(eq(canvasHandler),
                                                 any(Consumer.class));
-        Function<WorkItemDefinition, ServiceTask> serviceTaskBuilder =
-                wid -> WID.equals(wid) ? serviceTask : null;
+        Function<WorkItemDefinition, CustomTask> serviceTaskBuilder =
+                wid -> WID.equals(wid) ? customTask : null;
         tested = new BPMNPaletteDefinitionBuilder(definitionManager,
                                                   paletteDefinitionBuilder,
                                                   translationService,

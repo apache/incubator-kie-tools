@@ -171,7 +171,7 @@ public interface DefaultWorkbenchConstants
 
     String EditProfilePreferencesHelp();
 
-    String ServiceTasksAdministration();
+    String CustomTasksAdministration();
 
     String DataTransfer();
 

@@ -70,8 +70,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.RuleLangua
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.Script;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -113,8 +113,8 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
         return propertyReaderFactory
                 .ofCustom(task)
                 .map(p -> {
-                    final Node<View<ServiceTask>, Edge> node = factoryManager.newNode(task.getId(), ServiceTask.class);
-                    final ServiceTask definition = node.getContent().getDefinition();
+                    final Node<View<CustomTask>, Edge> node = factoryManager.newNode(task.getId(), CustomTask.class);
+                    final CustomTask definition = node.getContent().getDefinition();
                     definition.setName(p.getServiceTaskName());
                     definition.getTaskType().setRawType(p.getServiceTaskName());
                     definition.setDescription(p.getServiceTaskDescription());
@@ -130,14 +130,14 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
                             p.getAssignmentsInfo()
                     ));
 
-                    definition.setExecutionSet(new ServiceTaskExecutionSet(
+                    definition.setExecutionSet(new CustomTaskExecutionSet(
                             new TaskName(p.getTaskName()),
                             new IsAsync(p.isAsync()),
                             new AdHocAutostart(p.isAdHocAutoStart()),
                             new OnEntryAction(p.getOnEntryAction()),
                             new OnExitAction(p.getOnExitAction()),
                             new SLADueDate(p.getSlaDueDate())
-        ));
+                    ));
 
                     definition.setSimulationSet(p.getSimulationSet());
 

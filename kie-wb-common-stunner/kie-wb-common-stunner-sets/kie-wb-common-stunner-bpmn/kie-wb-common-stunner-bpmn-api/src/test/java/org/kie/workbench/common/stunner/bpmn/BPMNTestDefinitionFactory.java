@@ -17,15 +17,15 @@
 package org.kie.workbench.common.stunner.bpmn;
 
 import org.kie.workbench.common.stunner.bpmn.definition.factory.BPMNDefinitionSetModelFactoryImpl;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTaskFactory;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTaskFactory;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.factory.definition.TypeDefinitionFactory;
 
 public class BPMNTestDefinitionFactory implements TypeDefinitionFactory<Object> {
 
     private final BPMNDefinitionSetModelFactoryImpl modelFactory;
-    private final ServiceTaskFactory workItemFactory;
+    private final CustomTaskFactory workItemFactory;
 
     public BPMNTestDefinitionFactory() {
         this(new WorkItemDefinitionMockRegistry());
@@ -33,12 +33,12 @@ public class BPMNTestDefinitionFactory implements TypeDefinitionFactory<Object> 
 
     public BPMNTestDefinitionFactory(final WorkItemDefinitionRegistry workItemDefinitionRegistry) {
         this.modelFactory = new BPMNDefinitionSetModelFactoryImpl();
-        this.workItemFactory = new ServiceTaskFactory(() -> workItemDefinitionRegistry);
+        this.workItemFactory = new CustomTaskFactory(() -> workItemDefinitionRegistry);
     }
 
     @Override
     public boolean accepts(Class<?> type) {
-        return ServiceTask.class.equals(type) || modelFactory.accepts(type);
+        return CustomTask.class.equals(type) || modelFactory.accepts(type);
     }
 
     @Override

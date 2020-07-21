@@ -22,9 +22,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
-import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.ServiceTaskShapeViewHandler;
+import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.CustomTaskShapeViewHandler;
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientUtils;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry;
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.HorizontalAlignment;
@@ -34,26 +34,26 @@ import org.kie.workbench.common.stunner.core.client.shape.view.handler.SizeHandl
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
-public class ServiceTaskShapeDef extends BaseDimensionedShapeDef
-        implements BPMNSvgShapeDef<ServiceTask> {
+public class CustomTaskShapeDef extends BaseDimensionedShapeDef
+        implements BPMNSvgShapeDef<CustomTask> {
 
     public static final double ICON_WIDTH = 30d;
     private final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry;
     private final Function<String, Glyph> iconDataGlyphGenerator;
 
-    public ServiceTaskShapeDef(final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry) {
+    public CustomTaskShapeDef(final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry) {
         this(workItemDefinitionRegistry,
              data -> ImageDataUriGlyph.create(() -> data));
     }
 
-    ServiceTaskShapeDef(final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry,
-                        final Function<String, Glyph> iconDataGlyphGenerator) {
+    CustomTaskShapeDef(final Supplier<WorkItemDefinitionRegistry> workItemDefinitionRegistry,
+                       final Function<String, Glyph> iconDataGlyphGenerator) {
         this.workItemDefinitionRegistry = workItemDefinitionRegistry;
         this.iconDataGlyphGenerator = iconDataGlyphGenerator;
     }
 
     @Override
-    public SizeHandler<ServiceTask, SVGShapeView> newSizeHandler() {
+    public SizeHandler<CustomTask, SVGShapeView> newSizeHandler() {
         return newSizeHandlerBuilder()
                 .width(task -> task.getDimensionsSet().getWidth().getValue())
                 .height(task -> task.getDimensionsSet().getHeight().getValue())
@@ -66,25 +66,25 @@ public class ServiceTaskShapeDef extends BaseDimensionedShapeDef
 
     @Override
     @SuppressWarnings("unchecked")
-    public BiConsumer<ServiceTask, SVGShapeView> viewHandler() {
-        return new CompositeShapeViewHandler<ServiceTask, SVGShapeView>()
+    public BiConsumer<CustomTask, SVGShapeView> viewHandler() {
+        return new CompositeShapeViewHandler<CustomTask, SVGShapeView>()
                 .register(newViewAttributesHandler())
-                .register(new ServiceTaskShapeViewHandler(workItemDefinitionRegistry))::handle;
+                .register(new CustomTaskShapeViewHandler(workItemDefinitionRegistry))::handle;
     }
 
     @Override
     public SVGShapeView<?> newViewInstance(final BPMNSVGViewFactory factory,
-                                           final ServiceTask workItem) {
+                                           final CustomTask workItem) {
 
         return newViewInstance(Optional.ofNullable(workItem.getDimensionsSet().getWidth()),
                                Optional.ofNullable(workItem.getDimensionsSet().getHeight()),
                                factory.serviceTask());
     }
 
-    public Glyph getGlyph(final Class<? extends ServiceTask> type,
+    public Glyph getGlyph(final Class<? extends CustomTask> type,
                           final String defId) {
         final String name = defId.substring(defId.lastIndexOf(".") + 1, defId.length());
-        final String itemIconData = ServiceTask.class.getSimpleName().equals(name) ? null :
+        final String itemIconData = CustomTask.class.getSimpleName().equals(name) ? null :
                 workItemDefinitionRegistry
                         .get()
                         .get(name)
@@ -95,7 +95,7 @@ public class ServiceTaskShapeDef extends BaseDimensionedShapeDef
     }
 
     @Override
-    public FontHandler<ServiceTask, SVGShapeView> newFontHandler() {
+    public FontHandler<CustomTask, SVGShapeView> newFontHandler() {
         return newFontHandlerBuilder()
                 .margin(HorizontalAlignment.LEFT, ICON_WIDTH)
                 .build();

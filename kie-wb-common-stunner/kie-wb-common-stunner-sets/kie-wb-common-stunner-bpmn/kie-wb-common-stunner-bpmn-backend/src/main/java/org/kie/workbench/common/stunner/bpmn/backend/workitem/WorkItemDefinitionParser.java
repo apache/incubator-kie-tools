@@ -180,7 +180,7 @@ public class WorkItemDefinitionParser {
         // Category.
         set(workDefinitionMap,
             "category",
-            BPMNCategories.SERVICE_TASKS,
+            BPMNCategories.CUSTOM_TASKS,
             workDefinition::setCategory);
 
         // Icon.

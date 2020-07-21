@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.GenericServiceTask;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
-import org.kie.workbench.common.stunner.bpmn.workitem.ServiceTask;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle.HorizontalAlignment;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.CompositeShapeViewHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.handler.FontHandler;
@@ -72,7 +72,7 @@ public class TaskShapeDef extends BaseDimensionedShapeDef
                     .put(UserTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
                     .put(ScriptTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
                     .put(BusinessRuleTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
-                    .put(ServiceTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
+                    .put(CustomTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
                     .put(GenericServiceTask.class, DEFAULT_TASK_MARGINS_WITH_ICON)
                     .build();
 
