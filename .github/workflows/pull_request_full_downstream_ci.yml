@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    if: github.event == 'pull_request' || (github.event.issue.number == 221 && startsWith(github.event.comment.body, 'Build:'))
+    if: github.event_name == 'pull_request' || (github.event.issue.number == 221 && startsWith(github.event.comment.body, 'Build:'))
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -35,7 +35,7 @@ jobs:
           echo ::set-output name=ref::$y
           
       - name: Create comment
-        if: github.event == 'issue_comment'
+        if: github.event_name == 'issue_comment'
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ github.event.issue.number }}
