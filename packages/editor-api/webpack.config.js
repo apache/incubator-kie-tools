@@ -14,40 +14,17 @@
  * limitations under the License.
  */
 
-const path = require("path");
 const nodeExternals = require("webpack-node-externals");
-const CircularDependencyPlugin = require("circular-dependency-plugin");
+const { merge } = require("webpack-merge");
+const common = require("../../webpack.common.config");
 
-module.exports = {
-  mode: "development",
-  devtool: "inline-source-map",
+module.exports = merge(common, {
   entry: {
     index: "./src/index.ts"
   },
   output: {
-    path: path.resolve(__dirname, "./dist"),
-    filename: "[name].js",
     libraryTarget: "umd",
     globalObject: "this"
   },
-  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-  plugins: [
-    new CircularDependencyPlugin({
-      exclude: /node_modules/, // exclude detection of files based on a RegExp
-      failOnError: false, // add errors to webpack instead of warnings
-      cwd: process.cwd() // set the current working directory for displaying module paths
-    })
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader"
-      }
-    ]
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
-  }
-};
+  externals: [nodeExternals({ modulesDir: "../../node_modules" })]
+});
