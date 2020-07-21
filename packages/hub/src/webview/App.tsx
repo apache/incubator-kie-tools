@@ -264,7 +264,7 @@ export function App() {
           ))}
         </div>
         <Gallery hasGutter={true} className={"kogito-desktop__file-gallery"}>
-          <Card className={"kogito--desktop__files-card"}>
+          <Card>
             <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/vscode-logo.svg"} />
               <Dropdown
@@ -310,7 +310,7 @@ export function App() {
             </CardFooter>
           </Card>
           {/*CHROME*/}
-          <Card className={"kogito--desktop__files-card"}>
+          <Card>
             <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
             </CardHeader>
@@ -375,7 +375,7 @@ export function App() {
             </TextContent>
           </Modal>
           {/*DESKTOP*/}
-          <Card className={"kogito--desktop__files-card"}>
+          <Card>
             <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/desktop-logo.svg"} />
               <Dropdown
@@ -405,7 +405,7 @@ export function App() {
             </CardFooter>
           </Card>
           {/**/}
-          <Card className={"kogito--desktop__files-card"}>
+          <Card>
             <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/online-logo.svg"} />
             </CardHeader>
