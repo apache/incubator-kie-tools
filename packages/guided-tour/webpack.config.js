@@ -14,48 +14,22 @@
  * limitations under the License.
  */
 
-const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const envelope = require("../patternfly-base/webpackUtils");
+const { merge } = require("webpack-merge");
+const common = require("../../webpack.common.config");
 
-module.exports = {
-  mode: "development",
-  devtool: "inline-source-map",
+module.exports = merge(common, {
   entry: {
     index: "./src/index.tsx"
   },
   target: "node",
   output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "[name].js",
     libraryTarget: "umd"
   },
   externals: ["react", "react-dom", /^@patternfly\/.+$/],
   plugins: [new CopyPlugin([{ from: "./static/css", to: "./css" }])],
   module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        include: path.resolve(__dirname, "src"),
-        use: [
-          {
-            loader: "ts-loader",
-            options: {
-              configFile: path.resolve("./tsconfig.json")
-            }
-          }
-        ]
-      },
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: ["babel-loader"]
-      },
-      ...envelope.patternflyLoaders
-    ]
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
+    rules: [...envelope.patternflyLoaders]
   }
-};
+});
