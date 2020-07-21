@@ -124,6 +124,8 @@ public class WiresShapeControlImpl
 
         // Delegate move start to the align and distribute control.
         if (m_alignAndDistributeControl != null) {
+            // move selected shapes and its connectors to top before dragging.
+            moveShapeTopToParent();
             m_alignAndDistributeControl.dragStart();
         }
 
@@ -132,17 +134,15 @@ public class WiresShapeControlImpl
 
         //setting the child connectors that should be moved with the Shape
         m_connectors = getShape().getChildShapes() != null && !getShape().getChildShapes().isEmpty() ?
-                       WiresShapeControlUtils.lookupChildrenConnectorsToUpdate(getShape()).values() :
-                       Collections.<WiresConnector>emptyList();
+                WiresShapeControlUtils.lookupChildrenConnectorsToUpdate(getShape()).values() :
+                Collections.<WiresConnector>emptyList();
 
         forEachConnectorControl(new Consumer<WiresConnectorControl>() {
             @Override
-            public void accept(WiresConnectorControl control)
-            {
+            public void accept(WiresConnectorControl control) {
                 control.onMoveStart(x, y);
             }
         });
-
     }
 
     @Override
@@ -235,8 +235,7 @@ public class WiresShapeControlImpl
 
         forEachConnectorControl(new Consumer<WiresConnectorControl>() {
             @Override
-            public void accept(WiresConnectorControl control)
-            {
+            public void accept(WiresConnectorControl control) {
                 control.onMove(dx,
                                dy);
             }
@@ -244,9 +243,6 @@ public class WiresShapeControlImpl
 
         WiresShapeControlUtils.checkForAndApplyLineSplice(getWiresManager(),
                                                           getShape());
-
-        moveShapeUpToParent();
-
         return adjust;
     }
 
@@ -287,8 +283,7 @@ public class WiresShapeControlImpl
         }
         forEachConnectorControl(new Consumer<WiresConnectorControl>() {
             @Override
-            public void accept(WiresConnectorControl control)
-            {
+            public void accept(WiresConnectorControl control) {
                 control.onMoveComplete();
             }
         });
@@ -323,17 +318,13 @@ public class WiresShapeControlImpl
 
         forEachConnectorControl(new Consumer<WiresConnectorControl>() {
             @Override
-            public void accept(WiresConnectorControl control)
-            {
+            public void accept(WiresConnectorControl control) {
                 control.execute();
             }
         });
 
         WiresShapeControlUtils.checkForAndApplyLineSplice(getWiresManager(),
                                                           getShape());
-
-        moveShapeUpToParent();
-
         clear();
     }
 
@@ -349,8 +340,7 @@ public class WiresShapeControlImpl
         }
         forEachConnectorControl(new Consumer<WiresConnectorControl>() {
             @Override
-            public void accept(WiresConnectorControl control)
-            {
+            public void accept(WiresConnectorControl control) {
                 control.clear();
             }
         });
@@ -372,8 +362,7 @@ public class WiresShapeControlImpl
         getShape().shapeMoved();
         forEachConnectorControl(new Consumer<WiresConnectorControl>() {
             @Override
-            public void accept(WiresConnectorControl control)
-            {
+            public void accept(WiresConnectorControl control) {
                 control.reset();
             }
         });
@@ -488,8 +477,8 @@ public class WiresShapeControlImpl
         return getShape().getWiresManager();
     }
 
-    private void moveShapeUpToParent() {
+    void moveShapeTopToParent() {
         WiresContainer parent = getParentPickerControl().getParent();
-        WiresShapeControlUtils.moveShapeUpToParent(getShape(), parent);
+        WiresShapeControlUtils.moveShapeTopToParent(getShape(), parent);
     }
 }

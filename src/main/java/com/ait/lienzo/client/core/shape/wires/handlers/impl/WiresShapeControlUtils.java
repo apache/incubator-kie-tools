@@ -44,10 +44,10 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
 public class WiresShapeControlUtils {
 
-    public static void moveShapeUpToParent(final WiresShape shape,
-                                           final WiresContainer parent) {
+    public static void moveShapeTopToParent(final WiresShape shape,
+                                            final WiresContainer parent) {
         if (null != parent && null != parent.getContainer()) {
-            parent.getContainer().moveUp(shape.getGroup());
+            parent.getContainer().moveToTop(shape.getGroup());
         }
         moveConnectorsToTop(shape, new ArrayList<WiresShape>());
     }
@@ -59,14 +59,14 @@ public class WiresShapeControlUtils {
         for (WiresConnector connector : connectors) {
             connector.getGroup().moveToTop();
         }
-            final NFastArrayList<WiresShape> childShapes = shape.getChildShapes();
-            if (null != childShapes) {
-                for (WiresShape childShape : childShapes) {
-                    if (!processed.contains(childShape)) {
-                        moveConnectorsToTop(childShape, processed);
-                    }
+        final NFastArrayList<WiresShape> childShapes = shape.getChildShapes();
+        if (null != childShapes) {
+            for (WiresShape childShape : childShapes) {
+                if (!processed.contains(childShape)) {
+                    moveConnectorsToTop(childShape, processed);
                 }
             }
+        }
     }
 
     public static NFastArrayList<WiresConnector> getConnectors(final WiresShape shape) {
@@ -90,7 +90,7 @@ public class WiresShapeControlUtils {
     }
 
     public static void excludeFromIndex(final WiresLayerIndex index,
-                                       final WiresShape shape) {
+                                        final WiresShape shape) {
         index.exclude(shape);
         final NFastArrayList<WiresShape> children = shape.getChildShapes();
         for (int i = 0; i < children.size(); i++) {
@@ -98,6 +98,7 @@ public class WiresShapeControlUtils {
                              children.get(i));
         }
     }
+
     public static Point2D getViewportRelativeLocation(final Viewport viewport,
                                                       final AbstractNodeMouseEvent mouseEvent) {
         return getViewportRelativeLocation(viewport,
@@ -146,7 +147,7 @@ public class WiresShapeControlUtils {
     }
 
     public static boolean isConnected(final WiresConnection connection) {
-        return  null != connection && null != connection.getMagnet();
+        return null != connection && null != connection.getMagnet();
     }
 
     public static boolean isConnected(final WiresConnector connector) {
@@ -174,7 +175,6 @@ public class WiresShapeControlUtils {
                             connectors.put(connector.uuid(), connector);
                         }
                     }
-
                 }
             }
         }
@@ -261,9 +261,9 @@ public class WiresShapeControlUtils {
 
                     // get first and last segment, this can happen if shape straddles multiple segments of the line
                     int pointIndex = WiresConnector.getIndexForSelectedSegment(c,
-                                                                                          (int) x,
-                                                                                          (int) y,
-                                                                                          oldPoints);
+                                                                               (int) x,
+                                                                               (int) y,
+                                                                               oldPoints);
                     if (pointIndex < firstSegmentIndex) {
                         firstSegmentIndex = pointIndex;
                     }

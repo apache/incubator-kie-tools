@@ -118,7 +118,7 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
 
     private SelectionShapeProvider     m_selectionShapeProvider;
 
-    private       BoundingBox          m_startBoundingBox;
+    BoundingBox          m_startBoundingBox;
 
     private       Point2D              m_start;
 
@@ -1245,8 +1245,8 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
                                                         DragConstraintEnforcer,
                                                         NodeMouseClickHandler
     {
-        private final SelectionManager m_selectionManager;
-        private final WiresCompositeShapeHandler multipleShapeHandler;
+        SelectionManager m_selectionManager;
+        WiresCompositeShapeHandler multipleShapeHandler;
         private int adjustX = 0;
         private int adjustY = 0;
         private boolean running;
@@ -1322,9 +1322,20 @@ public class SelectionManager implements NodeMouseDoubleClickHandler, NodeMouseC
             multipleShapeHandler.onNodeDragEnd(event);
             m_selectionManager.rebuildSelectionArea();
             running = false;
+
+            reinforceSelectionShapeOnTop();
         }
 
-        private void updateSelectionShapeForExternallyConnectedConnectors(int dx,
+        void reinforceSelectionShapeOnTop()
+        {
+            Shape<?> shape = m_selectionManager.getSelectionShape();
+            if (null != shape )
+            {
+                shape.getLayer().moveToTop(shape);
+            }
+        }
+
+        void updateSelectionShapeForExternallyConnectedConnectors(int dx,
                                                                           int dy,
                                                                           BoundingBox originalBox)
         {

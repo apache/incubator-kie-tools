@@ -20,7 +20,12 @@ import com.ait.lienzo.client.core.event.ViewportTransformChangedHandler;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.event.dom.client.ScrollEvent;
+import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 
 public class ScrollablePanelHandler
@@ -151,11 +156,18 @@ public class ScrollablePanelHandler
 
     void synchronizeScrollSize()
     {
-        final int width  = calculateInternalScrollPanelWidth();
-        final int height = calculateInternalScrollPanelHeight();
-        getInternalScrollPanel().setPixelSize(width,
-                                              height);
-        getPanel().fireLienzoPanelBoundsChangedEvent();
+        synchronizeScrollSize(calculateInternalScrollPanelWidth(),
+                              calculateInternalScrollPanelHeight());
+    }
+
+    void synchronizeScrollSize(final int width, final int height)
+    {
+        if (!getInternalScrollPanel().getElement().getStyle().getProperty("width").equals(Integer.toString(width))
+                || !getInternalScrollPanel().getElement().getStyle().getProperty("height").equals(Integer.toString(height)))
+        {
+            getInternalScrollPanel().setPixelSize(width, height);
+            getPanel().fireLienzoPanelBoundsChangedEvent();
+        }
     }
 
     Integer calculateInternalScrollPanelWidth()
