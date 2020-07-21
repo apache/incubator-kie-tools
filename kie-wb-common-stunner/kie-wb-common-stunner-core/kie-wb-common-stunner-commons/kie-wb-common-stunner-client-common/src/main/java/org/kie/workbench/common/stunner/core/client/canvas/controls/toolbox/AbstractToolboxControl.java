@@ -52,7 +52,9 @@ public abstract class AbstractToolboxControl
 
         @Override
         public boolean test(String s) {
-            return (null == id && count == 0) || (null != id && count == 1 && id.equals(s)) || (null != id && count > 1 && !id.equals(s));
+            return (null == id && count == 0) ||
+                    (null != id && count == 1 && id.equals(s)) ||
+                    (null != id && count > 1);
         }
     }
 
@@ -109,16 +111,10 @@ public abstract class AbstractToolboxControl
         handleCanvasShapeRemovedEvent(event);
     }
 
-    private String lastSelected = "";
-
     protected void handleCanvasSelectionEvent(final CanvasSelectionEvent event) {
         if (checkEventContext(event)) {
             if (1 == event.getIdentifiers().size()) {
                 final String uuid = event.getIdentifiers().iterator().next();
-                if (lastSelected.equals(uuid)) {
-                    return;
-                }
-                lastSelected = uuid;
                 show(uuid);
             } else {
                 showMultiple(event.getIdentifiers());
@@ -129,14 +125,12 @@ public abstract class AbstractToolboxControl
     protected void handleCanvasClearSelectionEvent(final CanvasClearSelectionEvent event) {
         if (checkEventContext(event)) {
             toolboxControl.destroyToolboxes();
-            lastSelected = "";
             clear();
         }
     }
 
     protected void handleCanvasShapeRemovedEvent(final CanvasShapeRemovedEvent event) {
         if (checkEventContext(event)) {
-            lastSelected = "";
             clear();
         }
     }

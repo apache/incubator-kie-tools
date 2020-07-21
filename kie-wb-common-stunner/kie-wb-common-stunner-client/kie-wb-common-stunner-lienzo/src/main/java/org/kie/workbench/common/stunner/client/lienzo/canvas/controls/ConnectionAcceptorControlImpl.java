@@ -71,18 +71,20 @@ public class ConnectionAcceptorControlImpl
     public boolean allowSource(final Node source,
                                final Edge<ViewConnector<?>, Node> connector,
                                final Connection connection) {
-        if (isSourceChanged(source,
-                            connector,
-                            connection)) {
+
+        if (isSourceConnectionChanged(connector, connection)) {
             final CommandResult<CanvasViolation> violations =
                     getCommandManager().allow(getCanvasHandler(),
                                               canvasCommandFactory.setSourceNode(source,
                                                                                  connector,
                                                                                  connection));
             final boolean accepts = isAccept(violations);
-            highlight(source,
-                      connector,
-                      accepts);
+
+            if (isSourceChanged(source, connector)) {
+                highlight(source,
+                          connector,
+                          accepts);
+            }
             return accepts;
         }
         return true;
@@ -93,18 +95,21 @@ public class ConnectionAcceptorControlImpl
     public boolean allowTarget(final Node target,
                                final Edge<ViewConnector<?>, Node> connector,
                                final Connection connection) {
-        if (isTargetChanged(target,
-                            connector,
-                            connection)) {
+
+        if (isTargetConnectionChanged(connector, connection)) {
             final CommandResult<CanvasViolation> violations =
                     getCommandManager().allow(getCanvasHandler(),
                                               canvasCommandFactory.setTargetNode(target,
                                                                                  connector,
                                                                                  connection));
             final boolean accepts = isAccept(violations);
-            highlight(target,
-                      connector,
-                      accepts);
+
+            if (isTargetChanged(target, connector)) {
+                highlight(target,
+                          connector,
+                          accepts);
+            }
+
             return accepts;
         }
         return true;
@@ -116,9 +121,7 @@ public class ConnectionAcceptorControlImpl
                                 final Edge<ViewConnector<?>, Node> connector,
                                 final Connection connection) {
         ensureUnHighLight();
-        if (isSourceChanged(source,
-                            connector,
-                            connection)) {
+        if (isSourceChanged(source, connector)) {
             final CommandResult<CanvasViolation> violations =
                     getCommandManager().execute(getCanvasHandler(),
                                                 canvasCommandFactory.setSourceNode(source,
@@ -135,9 +138,7 @@ public class ConnectionAcceptorControlImpl
                                 final Edge<ViewConnector<?>, Node> connector,
                                 final Connection connection) {
         ensureUnHighLight();
-        if (isTargetChanged(target,
-                            connector,
-                            connection)) {
+        if (isTargetChanged(target, connector)) {
             final CommandResult<CanvasViolation> violations =
                     getCommandManager().execute(getCanvasHandler(),
                                                 canvasCommandFactory.setTargetNode(target,
@@ -150,33 +151,42 @@ public class ConnectionAcceptorControlImpl
 
     @SuppressWarnings("unchecked")
     private static boolean isSourceChanged(final Node node,
-                                           final Edge<ViewConnector<?>, Node> connector,
-                                           final Connection connection) {
+                                           final Edge<ViewConnector<?>, Node> connector) {
+
+        return !eqNode(node, connector.getSourceNode());
+    }
+
+    @SuppressWarnings("unchecked")
+    private static boolean isSourceConnectionChanged(final Edge<ViewConnector<?>, Node> connector,
+                                                     final Connection connection) {
+
         final ViewConnector vc = connector.getContent();
-        return (!eq(node,
-                    connector.getSourceNode(),
-                    connection,
-                    null != vc ? vc.getSourceConnection() : Optional.empty()));
+        return !eqConnection(connection, null != vc ? vc.getSourceConnection() : Optional.empty());
     }
 
     @SuppressWarnings("unchecked")
     private static boolean isTargetChanged(final Node node,
-                                           final Edge<ViewConnector<?>, Node> connector,
-                                           final Connection connection) {
-        final ViewConnector vc = connector.getContent();
-        return (!eq(node,
-                    connector.getTargetNode(),
-                    connection,
-                    null != vc ? vc.getTargetConnection() : Optional.empty()));
+                                           final Edge<ViewConnector<?>, Node> connector) {
+
+        return !eqNode(node, connector.getTargetNode());
     }
 
-    private static boolean eq(final Element<?> e1,
-                              final Element<?> e2,
-                              final Connection c1,
-                              final Optional<Connection> c2) {
-        return eq(e1,
-                  e2) && eq(c1,
-                            c2.orElse(null));
+    @SuppressWarnings("unchecked")
+    private static boolean isTargetConnectionChanged(final Edge<ViewConnector<?>, Node> connector,
+                                                     final Connection connection) {
+
+        final ViewConnector vc = connector.getContent();
+        return !eqConnection(connection, null != vc ? vc.getTargetConnection() : Optional.empty());
+    }
+
+    private static boolean eqNode(final Element<?> e1,
+                                  final Element<?> e2) {
+        return eq(e1, e2);
+    }
+
+    private static boolean eqConnection(final Connection c1,
+                                        final Optional<Connection> c2) {
+        return eq(c1, c2.orElse(null));
     }
 
     @SuppressWarnings("unchecked")
@@ -257,7 +267,9 @@ public class ConnectionAcceptorControlImpl
     private void highlight(final Node node,
                            final Edge<ViewConnector<?>, Node> connector,
                            final boolean valid) {
+
         canvasHighlight.unhighLight();
+
         if (null != node && valid) {
             if (!node.getInEdges().contains(connector)) {
                 canvasHighlight.highLight(node);

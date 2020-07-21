@@ -195,6 +195,7 @@ public class ConnectionAcceptorControlImplTest {
         verify(commandManager,
                never()).execute(any(AbstractCanvasHandler.class),
                                 any(SetConnectionSourceNodeCommand.class));
+        verify(highlight, never()).unhighLight();
     }
 
     @Test
@@ -234,6 +235,7 @@ public class ConnectionAcceptorControlImplTest {
         verify(commandManager,
                never()).execute(any(AbstractCanvasHandler.class),
                                 any(SetConnectionSourceNodeCommand.class));
+        verify(highlight, never()).unhighLight();
     }
 
     @Test
@@ -289,17 +291,11 @@ public class ConnectionAcceptorControlImplTest {
                                                   connection);
         assertTrue(allow);
         verify(commandManager,
-               times(1)).execute(eq(canvasHandler),
-                                 eq(setConnectionSourceNodeCommand));
+               never()).execute(eq(canvasHandler),
+                                eq(setConnectionSourceNodeCommand));
         verify(commandManager,
                never()).allow(any(AbstractCanvasHandler.class),
                               any(SetConnectionSourceNodeCommand.class));
-        assertEquals(node,
-                     setConnectionSourceNodeCommand.getNode());
-        assertEquals(edge,
-                     setConnectionSourceNodeCommand.getEdge());
-        assertEquals(connection,
-                     setConnectionSourceNodeCommand.getConnection());
         verify(highlight, times(1)).unhighLight();
     }
 
@@ -312,17 +308,8 @@ public class ConnectionAcceptorControlImplTest {
                                                   connection);
         assertTrue(allow);
         verify(commandManager,
-               times(1)).execute(eq(canvasHandler),
-                                 eq(setConnectionTargetNodeCommand));
-        verify(commandManager,
                never()).allow(any(AbstractCanvasHandler.class),
                               any(SetConnectionTargetNodeCommand.class));
-        assertEquals(node,
-                     setConnectionTargetNodeCommand.getNode());
-        assertEquals(edge,
-                     setConnectionTargetNodeCommand.getEdge());
-        assertEquals(connection,
-                     setConnectionTargetNodeCommand.getConnection());
         verify(highlight, times(1)).unhighLight();
     }
 
