@@ -1,11 +1,14 @@
-name: Pull Request CI - Full Downstream
+name: CI - Full Downstream
 
 on:
+  issue_comment:
+    types: [created]
   pull_request:
     branches: "**"
 
 jobs:
   build:
+    if: github.event_name == 'pull_request' || (github.event.issue.number == 221 && startsWith(github.event.comment.body, 'Build:'))
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -14,9 +17,32 @@ jobs:
         node: [12.16.3]
         yarn: [1.19.1]
     env:
-      MERGE_WARNING_MESSAGE: "ATTENTION: A merge attempt is being made to get the changes in ${{ github.event.pull_request.user.login }}/${{ github.head_ref }}. If a conflict happens, please do a rebase/merge manually in the branch ${{ github.event.pull_request.user.login }}/${{ github.head_ref }} to get the latest kiegroup/master commits."
+      MERGE_WARNING_MESSAGE: "ATTENTION: A merge attempt is being made to get your changes. If a conflict happens, please do a rebase/merge manually in your branch to get the latest kiegroup/master commits."
 
     steps:
+      - name: Output Build info
+        id: buildInfo
+        run: |
+          if [ -z "${{ github.event.pull_request }}" ]; then
+            x=$(node -e "console.log('${{ github.event.comment.body }}'.match(/Build: (.+)\/(.+)$/)[1])"); 
+            y=$(node -e "console.log('${{ github.event.comment.body }}'.match(/Build: (.+)\/(.+)$/)[2])");
+          else 
+            x=${{ github.event.pull_request.user.login }}
+            y=${{ github.head_ref }}
+          fi
+          
+          echo ::set-output name=user::$x
+          echo ::set-output name=ref::$y
+          
+      - name: Create comment
+        if: github.event_name == 'issue_comment'
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            [KOGITO-TOOLING-BUILD] @${{ github.actor }} Build triggered for ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}. Check progress at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          reactions: rocket
+          
       - name: Clone droolsjbpm-build-bootstrap
         uses: actions/checkout@v2
         with:
@@ -27,11 +53,11 @@ jobs:
         run: |
           git config --global user.email "kietooling@gmail.com"
           git config --global user.name "Kogito Tooling Bot"
-          git remote add ${{ github.event.pull_request.user.login }} https://github.com/${{ github.event.pull_request.user.login }}/droolsjbpm-build-bootstrap.git
+          git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/droolsjbpm-build-bootstrap.git
           git fetch --all || true
-          if [ -n "$(git show-ref refs/remotes/${{ github.event.pull_request.user.login }}/${{ github.head_ref }})" ]; then
+          if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
             echo $MERGE_WARNING_MESSAGE
-            git merge ${{ github.event.pull_request.user.login }}/${{ github.head_ref }}
+            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
           fi
           mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2
 
@@ -45,11 +71,11 @@ jobs:
         run: |
           git config --global user.email "kietooling@gmail.com"
           git config --global user.name "Kogito Tooling Bot"
-          git remote add ${{ github.event.pull_request.user.login }} https://github.com/${{ github.event.pull_request.user.login }}/kie-soup.git
+          git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kie-soup.git
           git fetch --all || true
-          if [ -n "$(git show-ref refs/remotes/${{ github.event.pull_request.user.login }}/${{ github.head_ref }})" ]; then
+          if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
             echo $MERGE_WARNING_MESSAGE
-            git merge ${{ github.event.pull_request.user.login }}/${{ github.head_ref }}
+            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
           fi
           mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2
 
@@ -63,11 +89,11 @@ jobs:
         run: |
           git config --global user.email "kietooling@gmail.com"
           git config --global user.name "Kogito Tooling Bot"
-          git remote add ${{ github.event.pull_request.user.login }} https://github.com/${{ github.event.pull_request.user.login }}/appformer.git
+          git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/appformer.git
           git fetch --all || true
-          if [ -n "$(git show-ref refs/remotes/${{ github.event.pull_request.user.login }}/${{ github.head_ref }})" ]; then
+          if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
             echo $MERGE_WARNING_MESSAGE
-            git merge ${{ github.event.pull_request.user.login }}/${{ github.head_ref }}
+            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
           fi
           mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2
 
@@ -81,11 +107,11 @@ jobs:
         run: |
           git config --global user.email "kietooling@gmail.com"
           git config --global user.name "Kogito Tooling Bot"
-          git remote add ${{ github.event.pull_request.user.login }} https://github.com/${{ github.event.pull_request.user.login }}/kie-wb-common.git
+          git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kie-wb-common.git
           git fetch --all || true
-          if [ -n "$(git show-ref refs/remotes/${{ github.event.pull_request.user.login }}/${{ github.head_ref }})" ]; then
+          if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
             echo $MERGE_WARNING_MESSAGE
-            git merge ${{ github.event.pull_request.user.login }}/${{ github.head_ref }}
+            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
           fi
           mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2
           mvn clean install -DskipTests -Denforcer.skip -pl kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime
@@ -113,11 +139,11 @@ jobs:
         run: |
           git config --global user.email "kietooling@gmail.com"
           git config --global user.name "Kogito Tooling Bot"
-          git remote add ${{ github.event.pull_request.user.login }} https://github.com/${{ github.event.pull_request.user.login }}/drools-wb.git
+          git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/drools-wb.git
           git fetch --all || true
-          if [ -n "$(git show-ref refs/remotes/${{ github.event.pull_request.user.login }}/${{ github.head_ref }})" ]; then
+          if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
             echo $MERGE_WARNING_MESSAGE
-            git merge ${{ github.event.pull_request.user.login }}/${{ github.head_ref }}
+            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
           fi
           mvn clean install -DskipTests -Denforcer.skip -pl drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime -am -T 2
 

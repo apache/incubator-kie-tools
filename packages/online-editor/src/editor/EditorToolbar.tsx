@@ -179,7 +179,6 @@ export function EditorToolbar(props: Props) {
   );
 
   const headerToolbar = (
-    // TODO: The toolbar should be switched out for DataToolbar and possibly the Overflow menu
     <PageHeaderTools>
       <PageHeaderToolsGroup>
         <PageHeaderToolsItem

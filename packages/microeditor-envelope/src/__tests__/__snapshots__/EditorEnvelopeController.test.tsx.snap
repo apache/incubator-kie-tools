@@ -1,877 +1,214 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EditorEnvelopeController after received content 1`] = `
-<EditorEnvelopeView
-  context={
-    Object {
-      "channel": "VSCODE",
-      "operatingSystem": "WINDOWS",
-    }
-  }
-  exposing={[Function]}
-  keyboardShortcutsService={
-    e {
-      "args": Object {
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
-        },
-      },
-      "eventIdentifiers": 2,
-      "keyBindings": Map {
-        1 => Object {
-          "combination": "shift+/",
-          "label": "Help | Show keyboard shortcuts",
-          "listener": [Function],
-          "opts": Object {
-            "element": [Window],
-          },
-        },
-      },
-    }
-  }
-  loadingScreenContainer={
-    <div
-      id="loading-screen"
-    >
-      <div
-        class="kogito-tooling--loading-screen"
-        style="opacity: 0; transition: opacity 400ms;"
-      >
-        <div
-          class="pf-c-page"
-          tabindex="-1"
-        >
-          <main
-            class="pf-c-page__main"
-            tabindex="-1"
-          >
-            <div
-              class="pf-l-bullseye"
-            >
-              <div>
-                <div>
-                  <span
-                    aria-valuetext="Loading..."
-                    class="pf-c-spinner pf-m-xl"
-                    role="progressbar"
-                  >
-                    <span
-                      class="pf-c-spinner__clipper"
-                    />
-                    <span
-                      class="pf-c-spinner__lead-ball"
-                    />
-                    <span
-                      class="pf-c-spinner__tail-ball"
-                    />
-                  </span>
-                </div>
-                <h5
-                  class="pf-c-title pf-m-md"
-                >
-                  Loading...
-                </h5>
-              </div>
-            </div>
-          </main>
-        </div>
-      </div>
-    </div>
-  }
-  messageBus={
-    KogitoEnvelopeBus {
-      "api": Object {
-        "receive_channelKeyboardEvent": [Function],
-        "receive_contentChanged": [Function],
-        "receive_contentRequest": [Function],
-        "receive_editorRedo": [Function],
-        "receive_editorUndo": [Function],
-        "receive_guidedTourElementPositionRequest": [Function],
-        "receive_initRequest": [Function],
-        "receive_previewRequest": [Function],
-      },
-      "associatedBusId": "someBusId",
-      "bus": Object {
-        "postMessage": [Function],
-      },
-      "eventListener": [Function],
-      "manager": e {
-        "api": Object {
-          "receive_channelKeyboardEvent": [Function],
-          "receive_contentChanged": [Function],
-          "receive_contentRequest": [Function],
-          "receive_editorRedo": [Function],
-          "receive_editorUndo": [Function],
-          "receive_guidedTourElementPositionRequest": [Function],
-          "receive_initRequest": [Function],
-          "receive_previewRequest": [Function],
-        },
-        "callbacks": Map {},
-        "name": "KogitoEnvelopeBus",
-        "requestIdCounter": 2,
-        "send": [Function],
-      },
-      "targetOrigin": "test-target-origin",
-    }
-  }
->
-  <Component
-    context={
-      Object {
-        "channel": "VSCODE",
-        "operatingSystem": "WINDOWS",
-      }
-    }
-    keyboardShortcutsService={
-      e {
-        "args": Object {
-          "editorContext": Object {
-            "channel": "VSCODE",
-            "operatingSystem": "WINDOWS",
-          },
-        },
-        "eventIdentifiers": 2,
-        "keyBindings": Map {
-          1 => Object {
-            "combination": "shift+/",
-            "label": "Help | Show keyboard shortcuts",
-            "listener": [Function],
-            "opts": Object {
-              "element": [Window],
-            },
-          },
-        },
-      }
-    }
+<body>
+  <div
+    id="loading-screen"
+  />
+  <div
+    id="envelopeContainer"
   >
     <div
-      className="kogito-tooling--keyboard-shortcuts-icon"
+      class="kogito-tooling--keyboard-shortcuts-icon"
       data-testid="keyboard-shortcuts-help-overlay-icon"
-      onClick={[Function]}
     >
-      <KeyboardIcon
-        color="currentColor"
-        noVerticalAlign={false}
-        size="sm"
+      <svg
+        aria-hidden="true"
+        fill="currentColor"
+        height="1em"
+        role="img"
+        style="vertical-align: -0.125em;"
+        viewBox="0 0 576 512"
+        width="1em"
       >
-        <svg
-          aria-hidden={true}
-          aria-labelledby={null}
-          fill="currentColor"
-          height="1em"
-          role="img"
-          style={
-            Object {
-              "verticalAlign": "-0.125em",
-            }
-          }
-          viewBox="0 0 576 512"
-          width="1em"
-        >
-          <path
-            d="M528 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h480c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM128 180v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm288 0v-40c0-6.627-5.373-12-12-12H172c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h232c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12z"
-            transform=""
-          />
-        </svg>
-      </KeyboardIcon>
-    </div>
-    <Modal
-      actions={Array []}
-      appendTo={
-        <body>
-          <div
-            id="envelopeContainer"
-          />
-          <div
-            id="envelopeContainer"
-          />
-          <div
-            id="envelopeContainer"
-          />
-          <div
-            id="loading-screen"
-          >
-            <div
-              class="kogito-tooling--loading-screen"
-              style="opacity: 0; transition: opacity 400ms;"
-            >
-              <div
-                class="pf-c-page"
-                tabindex="-1"
-              >
-                <main
-                  class="pf-c-page__main"
-                  tabindex="-1"
-                >
-                  <div
-                    class="pf-l-bullseye"
-                  >
-                    <div>
-                      <div>
-                        <span
-                          aria-valuetext="Loading..."
-                          class="pf-c-spinner pf-m-xl"
-                          role="progressbar"
-                        >
-                          <span
-                            class="pf-c-spinner__clipper"
-                          />
-                          <span
-                            class="pf-c-spinner__lead-ball"
-                          />
-                          <span
-                            class="pf-c-spinner__tail-ball"
-                          />
-                        </span>
-                      </div>
-                      <h5
-                        class="pf-c-title pf-m-md"
-                      >
-                        Loading...
-                      </h5>
-                    </div>
-                  </div>
-                </main>
-              </div>
-            </div>
-          </div>
-          <div
-            id="envelopeContainer"
-          />
-          <div />
-        </body>
-      }
-      aria-describedby=""
-      aria-label=""
-      aria-labelledby=""
-      className=""
-      data-testid="keyboard-shortcuts-help-overlay"
-      hasNoBodyWrapper={false}
-      isOpen={false}
-      onClose={[Function]}
-      ouiaSafe={true}
-      showClose={true}
-      title="Keyboard shortcuts"
-      variant="default"
-      width="60%"
-    >
-      <Portal
-        containerInfo={<div />}
-      >
-        <ModalContent
-          actions={Array []}
-          aria-describedby=""
-          aria-label=""
-          aria-labelledby=""
-          boxId="pf-modal-part-0"
-          className=""
-          data-testid="keyboard-shortcuts-help-overlay"
-          descriptorId="pf-modal-part-2"
-          hasNoBodyWrapper={false}
-          isOpen={false}
-          labelId="pf-modal-part-1"
-          onClose={[Function]}
-          ouiaSafe={true}
-          showClose={true}
-          title="Keyboard shortcuts"
-          variant="default"
-          width="60%"
+        <path
+          d="M528 448H48c-26.51 0-48-21.49-48-48V112c0-26.51 21.49-48 48-48h480c26.51 0 48 21.49 48 48v288c0 26.51-21.49 48-48 48zM128 180v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm-336 96v-40c0-6.627-5.373-12-12-12H76c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12zm288 0v-40c0-6.627-5.373-12-12-12H172c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h232c6.627 0 12-5.373 12-12zm96 0v-40c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v40c0 6.627 5.373 12 12 12h40c6.627 0 12-5.373 12-12z"
+          transform=""
         />
-      </Portal>
-    </Modal>
-  </Component>
-  <Portal
-    containerInfo={
-      <div
-        id="loading-screen"
-      >
-        <div
-          class="kogito-tooling--loading-screen"
-          style="opacity: 0; transition: opacity 400ms;"
-        >
-          <div
-            class="pf-c-page"
-            tabindex="-1"
-          >
-            <main
-              class="pf-c-page__main"
-              tabindex="-1"
-            >
-              <div
-                class="pf-l-bullseye"
-              >
-                <div>
-                  <div>
-                    <span
-                      aria-valuetext="Loading..."
-                      class="pf-c-spinner pf-m-xl"
-                      role="progressbar"
-                    >
-                      <span
-                        class="pf-c-spinner__clipper"
-                      />
-                      <span
-                        class="pf-c-spinner__lead-ball"
-                      />
-                      <span
-                        class="pf-c-spinner__tail-ball"
-                      />
-                    </span>
-                  </div>
-                  <h5
-                    class="pf-c-title pf-m-md"
-                  >
-                    Loading...
-                  </h5>
-                </div>
-              </div>
-            </main>
-          </div>
-        </div>
-      </div>
-    }
-  >
-    <LoadingScreen
-      visible={false}
+      </svg>
+    </div>
+    <div
+      data-testid="dummy-editor"
     >
-      <div
-        className="kogito-tooling--loading-screen"
-        onTransitionEnd={[Function]}
-        style={
-          Object {
-            "opacity": 0,
-            "transition": "opacity 400ms",
-          }
-        }
-      >
-        <Page
-          defaultManagedSidebarIsOpen={true}
-          isManagedSidebar={false}
-          mainTabIndex={-1}
-          onPageResize={[Function]}
-          tabIndex={-1}
-        >
-          <div
-            className="pf-c-page"
-            tabIndex={-1}
-          >
-            <main
-              className="pf-c-page__main"
-              tabIndex={-1}
-            >
-              <Bullseye>
-                <div
-                  className="pf-l-bullseye"
-                >
-                  <div>
-                    <div>
-                      <Spinner>
-                        <span
-                          aria-valuetext="Loading..."
-                          className="pf-c-spinner pf-m-xl"
-                          role="progressbar"
-                        >
-                          <span
-                            className="pf-c-spinner__clipper"
-                          />
-                          <span
-                            className="pf-c-spinner__lead-ball"
-                          />
-                          <span
-                            className="pf-c-spinner__tail-ball"
-                          />
-                        </span>
-                      </Spinner>
-                    </div>
-                    <Title
-                      headingLevel="h5"
-                    >
-                      <h5
-                        className="pf-c-title pf-m-md"
-                      >
-                        Loading...
-                      </h5>
-                    </Title>
-                  </div>
-                </div>
-              </Bullseye>
-            </main>
-          </div>
-        </Page>
-      </div>
-    </LoadingScreen>
-  </Portal>
-  <DummyEditorComponent
-    exposing={[Function]}
-  >
-    <div>
       Here's the dummy content: 
       test content
     </div>
-  </DummyEditorComponent>
-</EditorEnvelopeView>
+  </div>
+  <div />
+</body>
 `;
 
 exports[`EditorEnvelopeController opens 1`] = `
-<EditorEnvelopeView
-  context={
-    Object {
-      "channel": "VSCODE",
-      "operatingSystem": "WINDOWS",
-    }
-  }
-  exposing={[Function]}
-  keyboardShortcutsService={
-    e {
-      "args": Object {
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
-        },
-      },
-      "eventIdentifiers": 1,
-      "keyBindings": Map {},
-    }
-  }
-  loadingScreenContainer={
+<body>
+  <div
+    id="loading-screen"
+  >
     <div
-      id="loading-screen"
+      class="kogito-tooling--loading-screen"
+      data-testid="loading-screen-div"
+      style="opacity: 1;"
     >
       <div
-        class="kogito-tooling--loading-screen"
-        style="opacity: 1;"
+        class="pf-c-page"
+        tabindex="-1"
       >
-        <div
-          class="pf-c-page"
+        <main
+          class="pf-c-page__main"
           tabindex="-1"
         >
-          <main
-            class="pf-c-page__main"
-            tabindex="-1"
+          <div
+            class="pf-l-bullseye"
           >
-            <div
-              class="pf-l-bullseye"
-            >
+            <div>
               <div>
-                <div>
-                  <span
-                    aria-valuetext="Loading..."
-                    class="pf-c-spinner pf-m-xl"
-                    role="progressbar"
-                  >
-                    <span
-                      class="pf-c-spinner__clipper"
-                    />
-                    <span
-                      class="pf-c-spinner__lead-ball"
-                    />
-                    <span
-                      class="pf-c-spinner__tail-ball"
-                    />
-                  </span>
-                </div>
-                <h5
-                  class="pf-c-title pf-m-md"
+                <span
+                  aria-valuetext="Loading..."
+                  class="pf-c-spinner pf-m-xl"
+                  role="progressbar"
                 >
-                  Loading...
-                </h5>
+                  <span
+                    class="pf-c-spinner__clipper"
+                  />
+                  <span
+                    class="pf-c-spinner__lead-ball"
+                  />
+                  <span
+                    class="pf-c-spinner__tail-ball"
+                  />
+                </span>
               </div>
+              <h5
+                class="pf-c-title pf-m-md"
+              >
+                Loading...
+              </h5>
             </div>
-          </main>
-        </div>
+          </div>
+        </main>
       </div>
     </div>
-  }
-  messageBus={
-    KogitoEnvelopeBus {
-      "api": Object {
-        "receive_channelKeyboardEvent": [Function],
-        "receive_contentChanged": [Function],
-        "receive_contentRequest": [Function],
-        "receive_editorRedo": [Function],
-        "receive_editorUndo": [Function],
-        "receive_guidedTourElementPositionRequest": [Function],
-        "receive_initRequest": [Function],
-        "receive_previewRequest": [Function],
-      },
-      "bus": Object {
-        "postMessage": [Function],
-      },
-      "eventListener": [Function],
-      "manager": e {
-        "api": Object {
-          "receive_channelKeyboardEvent": [Function],
-          "receive_contentChanged": [Function],
-          "receive_contentRequest": [Function],
-          "receive_editorRedo": [Function],
-          "receive_editorUndo": [Function],
-          "receive_guidedTourElementPositionRequest": [Function],
-          "receive_initRequest": [Function],
-          "receive_previewRequest": [Function],
-        },
-        "callbacks": Map {},
-        "name": "KogitoEnvelopeBus",
-        "requestIdCounter": 0,
-        "send": [Function],
-      },
-    }
-  }
->
-  <Portal
-    containerInfo={
-      <div
-        id="loading-screen"
-      >
-        <div
-          class="kogito-tooling--loading-screen"
-          style="opacity: 1;"
-        >
-          <div
-            class="pf-c-page"
-            tabindex="-1"
-          >
-            <main
-              class="pf-c-page__main"
-              tabindex="-1"
-            >
-              <div
-                class="pf-l-bullseye"
-              >
-                <div>
-                  <div>
-                    <span
-                      aria-valuetext="Loading..."
-                      class="pf-c-spinner pf-m-xl"
-                      role="progressbar"
-                    >
-                      <span
-                        class="pf-c-spinner__clipper"
-                      />
-                      <span
-                        class="pf-c-spinner__lead-ball"
-                      />
-                      <span
-                        class="pf-c-spinner__tail-ball"
-                      />
-                    </span>
-                  </div>
-                  <h5
-                    class="pf-c-title pf-m-md"
-                  >
-                    Loading...
-                  </h5>
-                </div>
-              </div>
-            </main>
-          </div>
-        </div>
-      </div>
-    }
-  >
-    <LoadingScreen
-      visible={true}
-    >
-      <div
-        className="kogito-tooling--loading-screen"
-        onTransitionEnd={[Function]}
-        style={
-          Object {
-            "opacity": 1,
-          }
-        }
-      >
-        <Page
-          defaultManagedSidebarIsOpen={true}
-          isManagedSidebar={false}
-          mainTabIndex={-1}
-          onPageResize={[Function]}
-          tabIndex={-1}
-        >
-          <div
-            className="pf-c-page"
-            tabIndex={-1}
-          >
-            <main
-              className="pf-c-page__main"
-              tabIndex={-1}
-            >
-              <Bullseye>
-                <div
-                  className="pf-l-bullseye"
-                >
-                  <div>
-                    <div>
-                      <Spinner>
-                        <span
-                          aria-valuetext="Loading..."
-                          className="pf-c-spinner pf-m-xl"
-                          role="progressbar"
-                        >
-                          <span
-                            className="pf-c-spinner__clipper"
-                          />
-                          <span
-                            className="pf-c-spinner__lead-ball"
-                          />
-                          <span
-                            className="pf-c-spinner__tail-ball"
-                          />
-                        </span>
-                      </Spinner>
-                    </div>
-                    <Title
-                      headingLevel="h5"
-                    >
-                      <h5
-                        className="pf-c-title pf-m-md"
-                      >
-                        Loading...
-                      </h5>
-                    </Title>
-                  </div>
-                </div>
-              </Bullseye>
-            </main>
-          </div>
-        </Page>
-      </div>
-    </LoadingScreen>
-  </Portal>
-</EditorEnvelopeView>
+  </div>
+  <div
+    id="envelopeContainer"
+  />
+</body>
 `;
 
 exports[`EditorEnvelopeController receives init request 1`] = `
-<EditorEnvelopeView
-  context={
-    Object {
-      "channel": "VSCODE",
-      "operatingSystem": "WINDOWS",
-    }
-  }
-  exposing={[Function]}
-  keyboardShortcutsService={
-    e {
-      "args": Object {
-        "editorContext": Object {
-          "channel": "VSCODE",
-          "operatingSystem": "WINDOWS",
-        },
-      },
-      "eventIdentifiers": 1,
-      "keyBindings": Map {},
-    }
-  }
-  loadingScreenContainer={
+<body>
+  <div
+    id="loading-screen"
+  >
     <div
-      id="loading-screen"
+      class="kogito-tooling--loading-screen"
+      data-testid="loading-screen-div"
+      style="opacity: 1;"
     >
       <div
-        class="kogito-tooling--loading-screen"
-        style="opacity: 1;"
+        class="pf-c-page"
+        tabindex="-1"
       >
-        <div
-          class="pf-c-page"
+        <main
+          class="pf-c-page__main"
           tabindex="-1"
         >
-          <main
-            class="pf-c-page__main"
-            tabindex="-1"
+          <div
+            class="pf-l-bullseye"
           >
-            <div
-              class="pf-l-bullseye"
-            >
+            <div>
               <div>
-                <div>
-                  <span
-                    aria-valuetext="Loading..."
-                    class="pf-c-spinner pf-m-xl"
-                    role="progressbar"
-                  >
-                    <span
-                      class="pf-c-spinner__clipper"
-                    />
-                    <span
-                      class="pf-c-spinner__lead-ball"
-                    />
-                    <span
-                      class="pf-c-spinner__tail-ball"
-                    />
-                  </span>
-                </div>
-                <h5
-                  class="pf-c-title pf-m-md"
+                <span
+                  aria-valuetext="Loading..."
+                  class="pf-c-spinner pf-m-xl"
+                  role="progressbar"
                 >
-                  Loading...
-                </h5>
+                  <span
+                    class="pf-c-spinner__clipper"
+                  />
+                  <span
+                    class="pf-c-spinner__lead-ball"
+                  />
+                  <span
+                    class="pf-c-spinner__tail-ball"
+                  />
+                </span>
               </div>
+              <h5
+                class="pf-c-title pf-m-md"
+              >
+                Loading...
+              </h5>
             </div>
-          </main>
-        </div>
+          </div>
+        </main>
       </div>
     </div>
-  }
-  messageBus={
-    KogitoEnvelopeBus {
-      "api": Object {
-        "receive_channelKeyboardEvent": [Function],
-        "receive_contentChanged": [Function],
-        "receive_contentRequest": [Function],
-        "receive_editorRedo": [Function],
-        "receive_editorUndo": [Function],
-        "receive_guidedTourElementPositionRequest": [Function],
-        "receive_initRequest": [Function],
-        "receive_previewRequest": [Function],
-      },
-      "associatedBusId": "someBusId",
-      "bus": Object {
-        "postMessage": [Function],
-      },
-      "eventListener": [Function],
-      "manager": e {
-        "api": Object {
-          "receive_channelKeyboardEvent": [Function],
-          "receive_contentChanged": [Function],
-          "receive_contentRequest": [Function],
-          "receive_editorRedo": [Function],
-          "receive_editorUndo": [Function],
-          "receive_guidedTourElementPositionRequest": [Function],
-          "receive_initRequest": [Function],
-          "receive_previewRequest": [Function],
-        },
-        "callbacks": Map {
-          "KogitoEnvelopeBus_0" => Object {
-            "reject": [Function],
-            "resolve": [Function],
-          },
-        },
-        "name": "KogitoEnvelopeBus",
-        "requestIdCounter": 1,
-        "send": [Function],
-      },
-      "targetOrigin": "test-target-origin",
-    }
-  }
->
-  <Portal
-    containerInfo={
-      <div
-        id="loading-screen"
-      >
-        <div
-          class="kogito-tooling--loading-screen"
-          style="opacity: 1;"
-        >
-          <div
-            class="pf-c-page"
-            tabindex="-1"
-          >
-            <main
-              class="pf-c-page__main"
-              tabindex="-1"
-            >
-              <div
-                class="pf-l-bullseye"
-              >
-                <div>
-                  <div>
-                    <span
-                      aria-valuetext="Loading..."
-                      class="pf-c-spinner pf-m-xl"
-                      role="progressbar"
-                    >
-                      <span
-                        class="pf-c-spinner__clipper"
-                      />
-                      <span
-                        class="pf-c-spinner__lead-ball"
-                      />
-                      <span
-                        class="pf-c-spinner__tail-ball"
-                      />
-                    </span>
-                  </div>
-                  <h5
-                    class="pf-c-title pf-m-md"
-                  >
-                    Loading...
-                  </h5>
-                </div>
-              </div>
-            </main>
-          </div>
-        </div>
-      </div>
-    }
+  </div>
+  <div
+    id="envelopeContainer"
+  />
+</body>
+`;
+
+exports[`EditorEnvelopeController receives language response 1`] = `
+<body>
+  <div
+    id="loading-screen"
   >
-    <LoadingScreen
-      visible={true}
+    <div
+      class="kogito-tooling--loading-screen"
+      data-testid="loading-screen-div"
+      style="opacity: 1;"
     >
       <div
-        className="kogito-tooling--loading-screen"
-        onTransitionEnd={[Function]}
-        style={
-          Object {
-            "opacity": 1,
-          }
-        }
+        class="pf-c-page"
+        tabindex="-1"
       >
-        <Page
-          defaultManagedSidebarIsOpen={true}
-          isManagedSidebar={false}
-          mainTabIndex={-1}
-          onPageResize={[Function]}
-          tabIndex={-1}
+        <main
+          class="pf-c-page__main"
+          tabindex="-1"
         >
           <div
-            className="pf-c-page"
-            tabIndex={-1}
+            class="pf-l-bullseye"
           >
-            <main
-              className="pf-c-page__main"
-              tabIndex={-1}
-            >
-              <Bullseye>
-                <div
-                  className="pf-l-bullseye"
+            <div>
+              <div>
+                <span
+                  aria-valuetext="Loading..."
+                  class="pf-c-spinner pf-m-xl"
+                  role="progressbar"
                 >
-                  <div>
-                    <div>
-                      <Spinner>
-                        <span
-                          aria-valuetext="Loading..."
-                          className="pf-c-spinner pf-m-xl"
-                          role="progressbar"
-                        >
-                          <span
-                            className="pf-c-spinner__clipper"
-                          />
-                          <span
-                            className="pf-c-spinner__lead-ball"
-                          />
-                          <span
-                            className="pf-c-spinner__tail-ball"
-                          />
-                        </span>
-                      </Spinner>
-                    </div>
-                    <Title
-                      headingLevel="h5"
-                    >
-                      <h5
-                        className="pf-c-title pf-m-md"
-                      >
-                        Loading...
-                      </h5>
-                    </Title>
-                  </div>
-                </div>
-              </Bullseye>
-            </main>
+                  <span
+                    class="pf-c-spinner__clipper"
+                  />
+                  <span
+                    class="pf-c-spinner__lead-ball"
+                  />
+                  <span
+                    class="pf-c-spinner__tail-ball"
+                  />
+                </span>
+              </div>
+              <h5
+                class="pf-c-title pf-m-md"
+              >
+                Loading...
+              </h5>
+            </div>
           </div>
-        </Page>
+        </main>
       </div>
-    </LoadingScreen>
-  </Portal>
-</EditorEnvelopeView>
+    </div>
+  </div>
+  <div
+    id="envelopeContainer"
+  >
+    <div
+      data-testid="dummy-editor"
+    >
+      Here's the dummy content: 
+      
+    </div>
+  </div>
+</body>
 `;

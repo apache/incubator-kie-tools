@@ -11,8 +11,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@patternfly/patternfly": "^4.16.7",
-    "@patternfly/react-core": "^4.23.1",
-    "@patternfly/react-icons": "^4.4.2"
+    "@patternfly/patternfly": "4.16.7",
+    "@patternfly/react-core": "4.23.1",
+    "@patternfly/react-icons": "4.4.2"
   }
 }

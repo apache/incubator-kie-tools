@@ -1,70 +1,101 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LoadingScreen when just made not visible 1`] = `
-<div
-  className="kogito-tooling--loading-screen"
-  onTransitionEnd={[Function]}
-  style={
-    Object {
-      "opacity": 0,
-      "transition": "opacity 400ms",
-    }
-  }
->
-  <Page
-    defaultManagedSidebarIsOpen={true}
-    isManagedSidebar={false}
-    mainTabIndex={-1}
-    onPageResize={[Function]}
-    tabIndex={-1}
+<div>
+  <div
+    class="kogito-tooling--loading-screen"
+    data-testid="loading-screen-div"
+    style="opacity: 0; transition: opacity 400ms;"
   >
-    <Bullseye>
-      <div>
-        <div>
-          <Spinner />
-        </div>
-        <Title
-          headingLevel="h5"
+    <div
+      class="pf-c-page"
+      tabindex="-1"
+    >
+      <main
+        class="pf-c-page__main"
+        tabindex="-1"
+      >
+        <div
+          class="pf-l-bullseye"
         >
-          Loading...
-        </Title>
-      </div>
-    </Bullseye>
-  </Page>
+          <div>
+            <div>
+              <span
+                aria-valuetext="Loading..."
+                class="pf-c-spinner pf-m-xl"
+                role="progressbar"
+              >
+                <span
+                  class="pf-c-spinner__clipper"
+                />
+                <span
+                  class="pf-c-spinner__lead-ball"
+                />
+                <span
+                  class="pf-c-spinner__tail-ball"
+                />
+              </span>
+            </div>
+            <h5
+              class="pf-c-title pf-m-md"
+            >
+              Loading...
+            </h5>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
 </div>
 `;
 
-exports[`LoadingScreen when not visible after fadeout delay 1`] = `<Fragment />`;
+exports[`LoadingScreen when not visible after fadeout delay 1`] = `<div />`;
 
 exports[`LoadingScreen when visible 1`] = `
-<div
-  className="kogito-tooling--loading-screen"
-  onTransitionEnd={[Function]}
-  style={
-    Object {
-      "opacity": 1,
-    }
-  }
->
-  <Page
-    defaultManagedSidebarIsOpen={true}
-    isManagedSidebar={false}
-    mainTabIndex={-1}
-    onPageResize={[Function]}
-    tabIndex={-1}
+<div>
+  <div
+    class="kogito-tooling--loading-screen"
+    data-testid="loading-screen-div"
+    style="opacity: 1;"
   >
-    <Bullseye>
-      <div>
-        <div>
-          <Spinner />
-        </div>
-        <Title
-          headingLevel="h5"
+    <div
+      class="pf-c-page"
+      tabindex="-1"
+    >
+      <main
+        class="pf-c-page__main"
+        tabindex="-1"
+      >
+        <div
+          class="pf-l-bullseye"
         >
-          Loading...
-        </Title>
-      </div>
-    </Bullseye>
-  </Page>
+          <div>
+            <div>
+              <span
+                aria-valuetext="Loading..."
+                class="pf-c-spinner pf-m-xl"
+                role="progressbar"
+              >
+                <span
+                  class="pf-c-spinner__clipper"
+                />
+                <span
+                  class="pf-c-spinner__lead-ball"
+                />
+                <span
+                  class="pf-c-spinner__tail-ball"
+                />
+              </span>
+            </div>
+            <h5
+              class="pf-c-title pf-m-md"
+            >
+              Loading...
+            </h5>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
 </div>
 `;

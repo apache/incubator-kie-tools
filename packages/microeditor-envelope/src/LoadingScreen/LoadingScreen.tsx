@@ -42,6 +42,7 @@ export function LoadingScreen(props: { visible: boolean }) {
       <div
         className="kogito-tooling--loading-screen"
         style={{ ...cssAnimation }}
+        data-testid={"loading-screen-div"}
         onTransitionEnd={() => setMustRender(false)}
       >
         <Page tabIndex={-1}>

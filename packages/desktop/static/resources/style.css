@@ -23,7 +23,16 @@
   overflow-y: hidden;
 }
 
-/* TODO: Fix to only affect the correct header */
+.kogito--editor__toolbar {
+  --pf-c-page__header--MinHeight: 6.75rem;
+}
+
+@media (min-width: 1200px) {
+  .kogito--editor__toolbar {
+    --pf-c-page__header--MinHeight: unset;
+  }
+}
+
 .kogito--editor__toolbar .pf-c-page__header-nav {
   align-self: center;
   justify-content: center;
