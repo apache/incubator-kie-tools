@@ -15,7 +15,6 @@
  */
 
 module.exports = {
-  setupFiles: ["<rootDir>/jest/jest-env-setup.js"],
   reporters: ["default"],
   moduleDirectories: ["node_modules", "src"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
