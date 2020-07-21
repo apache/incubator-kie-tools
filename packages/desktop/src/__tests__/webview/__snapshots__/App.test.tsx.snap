@@ -1052,7 +1052,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                 class="pf-c-page__header-tools"
               >
                 <div
-                  class="pf-c-page__header-tools-group kogito--right"
+                  class="pf-c-page__header-tools-group"
                 >
                   <div
                     class="pf-c-page__header-tools-item"

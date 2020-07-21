@@ -61,9 +61,8 @@ export function EditorToolbar(props: Props) {
   );
 
   const headerToolbar = (
-    // TODO: The toolbar should be switched out for DataToolbar and possibly the Overflow menu
     <PageHeaderTools>
-      <PageHeaderToolsGroup className={"kogito--right"}>
+      <PageHeaderToolsGroup>
         <PageHeaderToolsItem>
           <Button
             data-testid="save-button"
