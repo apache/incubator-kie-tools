@@ -115,25 +115,6 @@
   }
 }
 
-.kogito--editor__toolbar-section {
-  --pf-c-page__main-nav--PaddingBottom: var(--pf-global--spacer--sm);
-  border-bottom: var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100);
-}
-
-.kogito--editor__toolbar-section h3 {
-  border: var(--pf-global--BorderWidth--sm) solid transparent;
-  padding: 0.17em 0.3em;
-}
-
-.kogito--editor__toolbar-section h3:hover {
-  border: var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100);
-  border-radius: var(--pf-global--BorderRadius--sm);
-}
-
-.kogito--editor__toolbar-section button {
-  outline: none;
-}
-
 .kogito--editor__toolbar-name-container {
   display: inline-block;
   position: relative;
