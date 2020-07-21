@@ -16,7 +16,6 @@
 
 module.exports = {
   setupFiles: ["<rootDir>/jest/jest-env-setup.js"],
-  snapshotSerializers: ["<rootDir>/../../node_modules/enzyme-to-json/serializer"],
   reporters: ["default"],
   moduleDirectories: ["node_modules", "src"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
