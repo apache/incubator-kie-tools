@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,17 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessage } from "./EnvelopeBusMessage";
+export interface EnvelopeBusMessage<D, T> {
+  data: D;
+  type: T;
+  busId?: string; // Used for messages going from the envelope to the channel
+  requestId?: string; // Used when purpose is REQUEST or RESPONSE
+  purpose: EnvelopeBusMessagePurpose;
+  error?: any; //Used on RESPONSES when an exception happens when processing a request
+}
 
-export interface EnvelopeBusApi {
-  postMessage<T>(message: EnvelopeBusMessage<T>, targetOrigin?: string, _?: any): void;
+export enum EnvelopeBusMessagePurpose {
+  REQUEST = "request",
+  RESPONSE = "response",
+  NOTIFICATION = "notification"
 }

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./EnvelopeBusOuterMessageHandler";
-export * from "./EnvelopeBusMessage";
-export * from "./EnvelopeBusMessageType";
-export * from "./EnvelopeBusApi";
+export * from "./bus";
+export * from "./kogito";
 export * from "./Hooks";

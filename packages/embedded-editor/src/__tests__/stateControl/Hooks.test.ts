@@ -20,7 +20,7 @@ import { EmbeddedEditorRef } from "../../embedded";
 import { useDirtyState, StateControl } from "../../stateControl";
 import { act } from "react-test-renderer";
 
-describe("useEditorDirtyState", () => {
+describe("useDirtyState", () => {
   let embeddedEditorRef: EmbeddedEditorRef;
   let stateControl: StateControl;
   let editorRef: React.MutableRefObject<EmbeddedEditorRef>;
@@ -29,11 +29,11 @@ describe("useEditorDirtyState", () => {
     stateControl = new StateControl();
     embeddedEditorRef = {
       getStateControl: () => stateControl,
-      notifyUndo: () => jest.fn(() => null),
-      notifyRedo: () => jest.fn(() => null),
-      requestContent: () => jest.fn(() => null),
-      requestPreview: () => jest.fn(() => null),
-      setContent: () => jest.fn(() => null)
+      notifyUndo: jest.fn(),
+      notifyRedo: jest.fn(),
+      requestContent: jest.fn(),
+      requestPreview: jest.fn(),
+      setContent: jest.fn(),
     };
     editorRef = {
       current: embeddedEditorRef

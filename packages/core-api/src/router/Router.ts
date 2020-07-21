@@ -33,7 +33,7 @@ export abstract class Router {
    * Returns the LanguageData from the provided routes as a Map indexed by the file extensions.
    */
   public getLanguageDataByFileExtension() {
-    const allLanguageData = new Map<string, any>();
+    const allLanguageData = new Map<string, LanguageData>();
     this.routesArray.reduce((map, routes) => {
       routes.getRoutes(this).forEach((v, k) => map.set(k, v));
       return map;

@@ -21,8 +21,8 @@ import { ChannelType, getOperatingSystem } from "@kogito-tooling/core-api";
 
 MicroEditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
-  busApi: {
-    postMessage<T>(message: EnvelopeBusMessage<T>, targetOrigin?: string, _?: any) {
+  bus: {
+    postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, _?: any) {
       window.parent.postMessage(message, targetOrigin!, _);
     }
   },

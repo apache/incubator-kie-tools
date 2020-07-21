@@ -15,4 +15,4 @@
  */
 
 export * from "./ResourceContentApi";
-export * from "./ResourceContentEditorCoordinator";
+export * from "./ResourceContentServiceCoordinator";

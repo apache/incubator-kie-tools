@@ -17,12 +17,12 @@
 import { GwtAppFormerApi } from "./GwtAppFormerApi";
 import * as Core from "@kogito-tooling/core-api";
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
-import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlApi, GwtStateControlService } from "./gwtStateControl";
 import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
+import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
 
 declare global {
   interface Window {
@@ -39,10 +39,10 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
     private readonly gwtStateControlService = new GwtStateControlService()
   ) {}
 
-  public createEditor(languageData: GwtLanguageData, messageBus: EnvelopeBusInnerMessageHandler) {
+  public createEditor(languageData: GwtLanguageData, messageBusClient: MessageBusClient<KogitoChannelApi>) {
     this.gwtAppFormerApi.setClientSideOnly(true);
     window.gwt = {
-      stateControl: this.gwtStateControlService.exposeApi(messageBus)
+      stateControl: this.gwtStateControlService.exposeApi(messageBusClient)
     };
 
     const gwtFinishedLoading = new Promise<Core.Editor>(res => {
@@ -51,7 +51,7 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
           new GwtEditorWrapper(
             languageData.editorId,
             this.gwtAppFormerApi.getEditor(languageData.editorId),
-            messageBus,
+            messageBusClient,
             this.xmlFormatter,
             this.gwtStateControlService
           )

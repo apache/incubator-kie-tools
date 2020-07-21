@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-import { GuidedTourApi } from "./GuidedTourApi";
 import { KogitoEnvelopeBus } from "../../KogitoEnvelopeBus";
-import { UserInteraction, Tutorial, KogitoGuidedTour } from "@kogito-tooling/guided-tour";
+import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/core-api";
+import { ResourceContentApi } from "./ResourceContentApi";
 
-export class GuidedTourServiceCoordinator {
-  public exposeApi(messageBus: KogitoEnvelopeBus): GuidedTourApi {
+export class ResourceContentServiceCoordinator {
+  public exposeApi(kogitoEnvelopeBus: KogitoEnvelopeBus): ResourceContentApi {
     return {
-      refresh(userInteraction: UserInteraction): void {
-        messageBus.notify_guidedTourRefresh(userInteraction);
+      get(path: string, opts?: ResourceContentOptions) {
+        return kogitoEnvelopeBus.request_resourceContent(path, opts).then(r => r?.content);
       },
-      registerTutorial(tutorial: Tutorial): void {
-        messageBus.notify_guidedTourRegisterTutorial(tutorial);
-      },
-      isEnabled(): boolean {
-        return KogitoGuidedTour.getInstance().isEnabled();
+      list(pattern: string, opts?: ResourceListOptions) {
+        return kogitoEnvelopeBus.request_resourceList(pattern, opts).then(r => r.paths.sort());
       }
     };
   }

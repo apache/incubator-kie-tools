@@ -17,14 +17,18 @@
 import { EditorEnvelopeController } from "../EditorEnvelopeController";
 import { SpecialDomElements } from "../SpecialDomElements";
 import { mount } from "enzyme";
-import { EnvelopeBusMessage, EnvelopeBusMessageType } from "@kogito-tooling/microeditor-envelope-protocol";
+import {
+  EnvelopeBusMessage,
+  EnvelopeBusMessagePurpose,
+} from "@kogito-tooling/microeditor-envelope-protocol";
 import { ChannelType, LanguageData, OperatingSystem } from "@kogito-tooling/core-api";
 import { DummyEditor } from "./DummyEditor";
-import { ResourceContentEditorCoordinator } from "../api/resourceContent";
+import { ResourceContentServiceCoordinator } from "../api/resourceContent";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 
 let loadingScreenContainer: HTMLElement;
 let envelopeContainer: HTMLElement;
+
 beforeEach(() => {
   loadingScreenContainer = document.body.appendChild(document.createElement("div"));
   loadingScreenContainer.setAttribute("id", "loading-screen");
@@ -45,7 +49,7 @@ const languageData = {
   resources: []
 };
 
-let sentMessages: Array<EnvelopeBusMessage<any>>;
+let sentMessages: Array<EnvelopeBusMessage<any, any>>;
 let controller: EditorEnvelopeController;
 let mockComponent: ReturnType<typeof mount>;
 let dummyEditor: DummyEditor;
@@ -73,7 +77,7 @@ beforeEach(() => {
         callback();
       }
     },
-    new ResourceContentEditorCoordinator(),
+    new ResourceContentServiceCoordinator(),
     new DefaultKeyboardShortcutsService({
       editorContext: { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS }
     })
@@ -93,7 +97,7 @@ async function startController() {
   return mockComponent!;
 }
 
-async function incomingMessage(message: any) {
+async function incomingMessage(message: EnvelopeBusMessage<any, any>) {
   window.postMessage(message, window.location.origin);
   await delay(0); //waits til next event loop iteration
 }
@@ -106,35 +110,95 @@ describe("EditorEnvelopeController", () => {
 
   test("receives init request", async () => {
     const render = await startController();
-    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });
+    await incomingMessage({
+      requestId: "KogitoChannelBus_0",
+      purpose: EnvelopeBusMessagePurpose.REQUEST,
+      type: "receive_initRequest",
+      data: [{ origin: "test-target-origin", busId: "someBusId" }]
+    });
 
     expect(sentMessages).toEqual([
-      { type: EnvelopeBusMessageType.RETURN_INIT, data: undefined },
-      { type: EnvelopeBusMessageType.REQUEST_LANGUAGE, data: undefined }
+      {
+        busId: controller.kogitoEnvelopeBus.associatedBusId,
+        requestId: "KogitoEnvelopeBus_0",
+        purpose: EnvelopeBusMessagePurpose.REQUEST,
+        type: "receive_languageRequest",
+        data: []
+      }
     ]);
     expect(render.update()).toMatchSnapshot();
   });
 
   test("receives language response", async () => {
     await startController();
-    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });
+
+    await incomingMessage({
+      requestId: "KogitoChannelBus_0",
+      purpose: EnvelopeBusMessagePurpose.REQUEST,
+      type: "receive_initRequest",
+      data: [{ origin: "test-target-origin", busId: "someBusId" }]
+    });
 
     sentMessages = [];
-    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
+    await incomingMessage({
+      requestId: "KogitoEnvelopeBus_0",
+      purpose: EnvelopeBusMessagePurpose.RESPONSE,
+      type: "receive_languageRequest",
+      data: languageData
+    });
 
-    expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.REQUEST_CONTENT, data: undefined }]);
+    expect(sentMessages).toEqual([
+      {
+        busId: controller.kogitoEnvelopeBus.associatedBusId,
+        requestId: "KogitoEnvelopeBus_1",
+        purpose: EnvelopeBusMessagePurpose.REQUEST,
+        type: "receive_contentRequest",
+        data: []
+      }
+    ]);
   });
 
   test("after received content", async () => {
     const render = await startController();
 
-    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });
+    await incomingMessage({
+      requestId: "KogitoChannelBus_0",
+      purpose: EnvelopeBusMessagePurpose.REQUEST,
+      type: "receive_initRequest",
+      data: [{ origin: "test-target-origin", busId: "someBusId" }]
+    });
 
-    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
+    await incomingMessage({
+      requestId: "KogitoEnvelopeBus_0",
+      purpose: EnvelopeBusMessagePurpose.RESPONSE,
+      type: "receive_languageRequest",
+      data: languageData
+    });
+
+    await delay(0);
     sentMessages = [];
-    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT, data: { content: "test content" } });
+    await incomingMessage({
+      requestId: "KogitoEnvelopeBus_1",
+      purpose: EnvelopeBusMessagePurpose.RESPONSE,
+      type: "receive_contentRequest",
+      data: { content: "test content" }
+    });
 
-    expect(sentMessages).toEqual([{ type: EnvelopeBusMessageType.NOTIFY_READY, data: undefined }]);
+    expect(sentMessages).toEqual([
+      {
+        busId: controller.kogitoEnvelopeBus.associatedBusId,
+        purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
+        type: "receive_ready",
+        data: []
+      },
+      {
+        requestId: "KogitoChannelBus_0",
+        busId: controller.kogitoEnvelopeBus.associatedBusId,
+        purpose: EnvelopeBusMessagePurpose.RESPONSE,
+        type: "receive_initRequest",
+        data: undefined
+      }
+    ]);
     expect(render.update()).toMatchSnapshot();
   });
 
@@ -144,13 +208,34 @@ describe("EditorEnvelopeController", () => {
 
     await startController();
 
-    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_INIT, data: "test-target-origin" });
-    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_LANGUAGE, data: languageData });
+    await incomingMessage({
+      requestId: "KogitoChannelBus_0",
+      purpose: EnvelopeBusMessagePurpose.REQUEST,
+      type: "receive_initRequest",
+      data: [{ origin: "test-target-origin", busId: "someBusId" }]
+    });
 
-    await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_UNDO, data: "commandID" });
+    await incomingMessage({
+      requestId: "KogitoEnvelopeBus_0",
+      purpose: EnvelopeBusMessagePurpose.RESPONSE,
+      type: "receive_languageRequest",
+      data: languageData
+    });
+
+    await incomingMessage({
+      requestId: "1",
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
+      type: "receive_editorUndo",
+      data: ["commandID"]
+    });
     expect(dummyEditor.undo).toBeCalledTimes(1);
 
-    await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_REDO, data: "commandID" });
+    await incomingMessage({
+      requestId: "2",
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
+      type: "receive_editorRedo",
+      data: ["commandID"]
+    });
     expect(dummyEditor.redo).toBeCalledTimes(1);
   });
 });

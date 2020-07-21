@@ -16,10 +16,10 @@
 
 import { EditorContext } from "@kogito-tooling/core-api";
 import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "@kogito-tooling/keyboard-shortcuts";
-import { EnvelopeBusApi } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import { ReactElement } from "react";
 import * as ReactDOM from "react-dom";
-import { ResourceContentApi, ResourceContentEditorCoordinator } from "./api/resourceContent";
+import { ResourceContentApi, ResourceContentServiceCoordinator } from "./api/resourceContent";
 import { EditorEnvelopeController } from "./EditorEnvelopeController";
 import { EditorFactory } from "./EditorFactory";
 import { Renderer } from "./Renderer";
@@ -30,7 +30,7 @@ import { GuidedTourApi, GuidedTourServiceCoordinator } from "./api/tour";
 export * from "./api/resourceContent";
 export { EditorEnvelopeController } from "./EditorEnvelopeController";
 export * from "./EditorFactory";
-export * from "./EnvelopeBusInnerMessageHandler";
+export * from "./KogitoEnvelopeBus";
 export { SpecialDomElements } from "./SpecialDomElements";
 
 declare global {
@@ -54,26 +54,26 @@ class ReactDomRenderer implements Renderer {
 }
 
 /**
- * Starts the envelope at a container. Uses busApi to send messages out of the envelope and creates editors based on the editorFactory provided.
+ * Starts the envelope at a container. Uses bus to send messages out of the envelope and creates editors based on the editorFactory provided.
  * @param args.container The DOM element where the envelope should be rendered.
- * @param args.busApi The implementation of EnvelopeBusApi to send messages out of the envelope.
+ * @param args.bus The implementation of EnvelopeBus to send messages out of the envelope.
  * @param args.editorFactory The factory of Editors using a LanguageData implementation.
  * @param args.editorContext The context for Editors with information about the running channel.
  */
 export function init(args: {
   container: HTMLElement;
-  busApi: EnvelopeBusApi;
+  bus: EnvelopeBus;
   editorFactory: EditorFactory<any>;
   editorContext: EditorContext;
 }) {
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
-  const resourceContentEditorCoordinator = new ResourceContentEditorCoordinator();
+  const resourceContentEditorCoordinator = new ResourceContentServiceCoordinator();
   const guidedTourService = new GuidedTourServiceCoordinator();
   const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: args.editorContext });
   const workspaceService = new WorkspaceService();
   const editorEnvelopeController = new EditorEnvelopeController(
-    args.busApi,
+    args.bus,
     args.editorFactory,
     specialDomElements,
     renderer,

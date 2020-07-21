@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ChannelType, EditorContent, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
-import { EditorType, EmbeddedEditor, EmbeddedEditorRef, StateControl } from "@kogito-tooling/embedded-editor";
+import { ChannelType, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
+import { EditorType, EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { runScriptOnPage } from "../../utils";
@@ -34,7 +34,10 @@ interface Props {
   readonly: boolean;
 }
 
-const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEditorRef, Props> = (props, forwardedRef) => {
+const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEditorRef, Props> = (
+  props,
+  forwardedRef
+) => {
   const githubApi = useGitHubApi();
   const editorRef = useRef<EmbeddedEditorRef>(null);
   const { router, editorIndexPath, resourceContentServiceFactory } = useGlobals();
@@ -45,6 +48,16 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     return resourceContentServiceFactory.createNew(githubApi.octokit(), repoInfo);
   }, [repoInfo]);
 
+  const onResourceContentRequest = useCallback(
+    (request: ResourceContentRequest) => resourceContentService.get(request.path, request.opts),
+    [resourceContentService]
+  );
+
+  const onResourceContentList = useCallback(
+    (request: ResourceListRequest) => resourceContentService.list(request.pattern, request.opts),
+    [resourceContentService]
+  );
+
   //Wrap file content into object for EmbeddedEditor
   const file = useMemo(() => {
     return {
@@ -52,7 +65,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
       editorType: props.openFileExtension as EditorType,
       getFileContents: props.getFileContents,
       isReadOnly: props.readonly
-    }
+    };
   }, [props.contentPath, props.openFileExtension, props.getFileContents, props.readonly]);
 
   useEffect(() => {
@@ -71,27 +84,25 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
       .then(c => editorRef.current?.setContent(c ?? ""))
       .then(() => {
         task = window.setInterval(
-          () => editorRef.current?.requestContent(),
+          () =>
+            editorRef.current?.requestContent().then(editorContent => {
+              if (props.readonly) {
+                return;
+              }
+
+              //keep line breaks
+              const content = editorContent.content.split("\n").join("\\n");
+
+              runScriptOnPage(
+                `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}").CodeMirror.setValue('${content}')`
+              );
+            }),
           GITHUB_EDITOR_SYNC_POLLING_INTERVAL
         );
       });
 
     return () => clearInterval(task);
   }, [textMode]);
-
-  //When requests for the EmbeddedEditor content completes update CodeMirror's value
-  const onContentResponse = useCallback((editorContent: EditorContent) => {
-    if (props.readonly) {
-      return;
-    }
-
-    //keep line breaks
-    const content = editorContent.content.split("\n").join("\\n");
-
-    runScriptOnPage(
-      `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}").CodeMirror.setValue('${content}')`
-    );
-  }, [props.readonly]);
 
   //Forward reference methods to set content programmatically vs property
   useImperativeHandle(
@@ -120,9 +131,8 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           router={router}
           channelType={ChannelType.GITHUB}
           onReady={onEditorReady}
-          onContentResponse={onContentResponse}
-          onResourceContentRequest={(request: ResourceContentRequest) => resourceContentService.get(request.path, request.opts)}
-          onResourceListRequest={(request: ResourceListRequest) => resourceContentService.list(request.pattern, request.opts)}
+          onResourceContentRequest={onResourceContentRequest}
+          onResourceListRequest={onResourceContentList}
           envelopeUri={router.getRelativePathTo(editorIndexPath)}
         />
       </div>
