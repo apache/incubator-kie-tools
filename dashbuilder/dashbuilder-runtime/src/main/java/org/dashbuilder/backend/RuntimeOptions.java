@@ -16,7 +16,6 @@
 
 package org.dashbuilder.backend;
 
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
 
