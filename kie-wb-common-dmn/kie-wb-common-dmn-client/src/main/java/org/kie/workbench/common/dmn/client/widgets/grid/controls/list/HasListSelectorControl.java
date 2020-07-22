@@ -21,6 +21,8 @@ import java.util.List;
 
 import org.uberfire.mvp.Command;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 public interface HasListSelectorControl {
 
     interface ListSelectorItem {
@@ -60,12 +62,32 @@ public interface HasListSelectorControl {
     interface ListSelectorHeaderItem extends ListSelectorItem {
 
         String getText();
+        String getIconClass();
 
         static ListSelectorHeaderItem build(final String text) {
             return new ListSelectorHeaderItem() {
                 @Override
                 public String getText() {
                     return text;
+                }
+
+                @Override
+                public String getIconClass() {
+                    return EMPTY;
+                }
+            };
+        }
+
+        static ListSelectorHeaderItem buildWithIcon(final String text, final String iconClass) {
+            return new ListSelectorHeaderItem() {
+                @Override
+                public String getText() {
+                    return text;
+                }
+
+                @Override
+                public String getIconClass() {
+                    return iconClass;
                 }
             };
         }

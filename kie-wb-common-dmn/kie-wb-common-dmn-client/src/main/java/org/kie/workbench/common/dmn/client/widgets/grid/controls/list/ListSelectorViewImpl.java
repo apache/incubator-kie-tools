@@ -124,6 +124,7 @@ public class ListSelectorViewImpl implements ListSelectorView {
             final ListSelectorHeaderItem ti = (ListSelectorHeaderItem) item;
             final ListSelectorHeaderItemView selector = listSelectorHeaderItemViews.get();
             selector.setText(ti.getText());
+            selector.setIconClass(ti.getIconClass());
             listSelectorItemView = Optional.of(selector);
         }
 

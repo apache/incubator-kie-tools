@@ -24,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -48,5 +49,6 @@ public class HasListSelectorControlTest {
     public void testSelectorHeaderItemBuild() {
         final ListSelectorHeaderItem item = ListSelectorHeaderItem.build(TEXT);
         assertThat(item.getText()).isEqualTo(TEXT);
+        assertThat(item.getIconClass()).isEqualTo(EMPTY);
     }
 }

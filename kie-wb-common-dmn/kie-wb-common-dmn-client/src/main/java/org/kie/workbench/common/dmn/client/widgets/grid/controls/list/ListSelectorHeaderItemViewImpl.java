@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid.controls.list;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.gwtbootstrap3.client.ui.Icon;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -30,17 +31,26 @@ public class ListSelectorHeaderItemViewImpl implements ListSelectorHeaderItemVie
     @DataField
     private Span text;
 
+    @DataField
+    private Icon icon;
+
     public ListSelectorHeaderItemViewImpl() {
         //CDI proxy
     }
 
     @Inject
-    public ListSelectorHeaderItemViewImpl(final Span text) {
+    public ListSelectorHeaderItemViewImpl(final Span text, final Icon icon) {
         this.text = text;
+        this.icon = icon;
     }
 
     @Override
     public void setText(final String text) {
         this.text.setTextContent(text);
+    }
+
+    @Override
+    public void setIconClass(final String iconClass) {
+        this.icon.getElement().setClassName(iconClass);
     }
 }
