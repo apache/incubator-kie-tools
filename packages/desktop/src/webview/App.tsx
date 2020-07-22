@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
-import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import { Alert, AlertActionCloseButton, AlertVariant } from "@patternfly/react-core";
 import * as electron from "electron";
 import * as React from "react";
@@ -28,6 +26,7 @@ import { File } from "../common/File";
 import { GlobalContext } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
+import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 
 interface Props {
@@ -47,15 +46,15 @@ export function App(props: Props) {
 
   const [invalidFileTypeErrorVisible, setInvalidFileTypeErrorVisible] = useState(false);
 
-  const desktopRouter = useMemo(
-    () =>
-      new EmbeddedEditorRouter(
-        new GwtEditorRoutes({
-          dmnPath: "gwt-editors/dmn",
-          bpmnPath: "gwt-editors/bpmn",
-          scesimPath: "gwt-editors/scesim"
-        })
-      ),
+  const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
+    () => ({
+      targetOrigin: window.location.origin,
+      mapping: new Map([
+        ["bpmn", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
+        ["bpmn2", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
+        ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/envelope.html" }],
+      ])
+    }),
     []
   );
 
@@ -99,7 +98,7 @@ export function App(props: Props) {
       case Pages.HOME:
         return <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
       case Pages.EDITOR:
-        return <EditorPage editorType={file!.fileType} onClose={goToHomePage} />;
+        return <EditorPage fileExtension={file!.fileType} onClose={goToHomePage} />;
       default:
         return <></>;
     }
@@ -118,7 +117,7 @@ export function App(props: Props) {
 
   useEffect(() => {
     electron.ipcRenderer.on("openFile", (event: IpcRendererEvent, data: { file: File }) => {
-      if (desktopRouter.getLanguageData(data.file.fileType)) {
+      if (editorEnvelopeLocator.mapping.has(data.file.fileType)) {
         if (page === Pages.EDITOR) {
           setPage(Pages.HOME);
         }
@@ -159,7 +158,7 @@ export function App(props: Props) {
     <GlobalContext.Provider
       value={{
         file: file,
-        router: desktopRouter
+        editorEnvelopeLocator: editorEnvelopeLocator
       }}
     >
       {invalidFileTypeErrorVisible && (

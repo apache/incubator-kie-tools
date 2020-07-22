@@ -18,26 +18,30 @@ import { EnvelopeBusMessage, EnvelopeBusMessagePurpose } from "./EnvelopeBusMess
 
 /* tslint:disable:ban-types */
 export type FunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? K : never }[keyof T];
-export type ObjOnlyWithFunctions<T> = { [P in keyof T]: (...a: any) => Promise<any> | void };
+export type ApiDefinition<T> = { [P in keyof T]: (...a: any) => Promise<any> | void };
 export type ArgsType<T> = T extends (...args: infer A) => any ? A : never;
 
-export interface MessageBusClient<Api extends ObjOnlyWithFunctions<Api>> {
+export interface MessageBusClient<Api extends ApiDefinition<Api>> {
   request<M extends FunctionPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): ReturnType<Api[M]>;
   notify<M extends FunctionPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): void;
 }
 
 export interface MessageBusServer<
-  ApiToProvide extends ObjOnlyWithFunctions<ApiToProvide>,
-  ApiToConsume extends ObjOnlyWithFunctions<ApiToConsume>
+  ApiToProvide extends ApiDefinition<ApiToProvide>,
+  ApiToConsume extends ApiDefinition<ApiToConsume>
 > {
   receive(
-    message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>
+    message: EnvelopeBusMessage<
+      unknown,
+      FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>
+    >,
+    api: ApiToProvide
   ): void;
 }
 
 export class EnvelopeBusMessageManager<
-  ApiToProvide extends ObjOnlyWithFunctions<ApiToProvide>,
-  ApiToConsume extends ObjOnlyWithFunctions<ApiToConsume>
+  ApiToProvide extends ApiDefinition<ApiToProvide>,
+  ApiToConsume extends ApiDefinition<ApiToConsume>
 > {
   private readonly callbacks = new Map<string, { resolve: (arg: unknown) => void; reject: (arg: unknown) => void }>();
 
@@ -50,7 +54,7 @@ export class EnvelopeBusMessageManager<
 
   public get server(): MessageBusServer<ApiToProvide, ApiToConsume> {
     return {
-      receive: m => this.receive(m)
+      receive: (m, api) => this.receive(m, api)
     };
   }
 
@@ -61,7 +65,6 @@ export class EnvelopeBusMessageManager<
       // We can send messages for both the APIs we provide and consume
       message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>>
     ) => void,
-    private readonly api: ApiToProvide,
     private readonly name: string = `${new Date().getMilliseconds()}`
   ) {
     this.requestIdCounter = 0;
@@ -139,7 +142,8 @@ export class EnvelopeBusMessageManager<
 
   private receive(
     // We can receive messages from both the APIs we provide and consume.
-    message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>>
+    message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>>,
+    api: ApiToProvide
   ) {
     if (message.purpose === EnvelopeBusMessagePurpose.RESPONSE) {
       // We can only receive responses for the API we consume.
@@ -151,7 +155,7 @@ export class EnvelopeBusMessageManager<
       // We can only receive requests for the API we provide.
       const request = message as EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide>>;
 
-      const response = this.api[request.type].apply(this.api, request.data);
+      const response = api[request.type].apply(api, request.data);
       if (!(response instanceof Promise)) {
         throw new Error(`Cannot make a request to '${request.type}' because it does not return a Promise`);
       }
@@ -163,7 +167,7 @@ export class EnvelopeBusMessageManager<
     if (message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
       // We can only receive notifications from the API we provide.
       const method = message.type as FunctionPropertyNames<ApiToProvide>;
-      this.api[method].apply(this.api, message.data);
+      api[method]?.apply(api, message.data);
       return;
     }
   }

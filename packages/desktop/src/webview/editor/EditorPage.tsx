@@ -15,7 +15,7 @@
  */
 
 import { ChannelType } from "@kogito-tooling/microeditor-envelope-protocol";
-import { EditorType, EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
+import { EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
 import {
   Alert,
   AlertActionCloseButton,
@@ -34,7 +34,7 @@ import { EditorToolbar } from "./EditorToolbar";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 
 interface Props {
-  editorType: string;
+  fileExtension: string;
   onClose: () => void;
 }
 
@@ -67,20 +67,20 @@ export function EditorPage(props: Props) {
 
   const requestSaveFile = useCallback(() => {
     setShowUnsavedAlert(false);
-    editorRef.current?.requestContent().then(content => {
+    editorRef.current?.getContent().then(content => {
       contentRequestData.file = {
         filePath: context.file!.filePath,
         fileType: context.file!.fileType,
-        fileContent: content.content
+        fileContent: content
       };
       electron.ipcRenderer.send("saveFile", contentRequestData);
     });
   }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
-    editorRef.current?.requestContent().then(content => {
+    editorRef.current?.getContent().then(content => {
       if (copyContentTextArea.current) {
-        copyContentTextArea.current.value = content.content;
+        copyContentTextArea.current.value = content;
         copyContentTextArea.current.select();
         if (document.execCommand("copy")) {
           setCopySuccessAlertVisible(true);
@@ -90,7 +90,7 @@ export function EditorPage(props: Props) {
   }, []);
 
   const requestSavePreview = useCallback(() => {
-    editorRef.current?.requestPreview().then(previewSvg => {
+    editorRef.current?.getPreview().then(previewSvg => {
       electron.ipcRenderer.send("savePreview", {
         filePath: context.file!.filePath,
         fileType: "svg",
@@ -100,7 +100,7 @@ export function EditorPage(props: Props) {
   }, []);
 
   const requestThumbnailPreview = useCallback(() => {
-    editorRef.current?.requestPreview().then(previewSvg => {
+    editorRef.current?.getPreview().then(previewSvg => {
       electron.ipcRenderer.send("saveThumbnail", {
         filePath: context.file!.filePath,
         fileType: "svg",
@@ -222,7 +222,7 @@ export function EditorPage(props: Props) {
   const file = useMemo(
     () => ({
       fileName: context.file?.filePath ?? "",
-      editorType: context.file?.fileType as EditorType,
+      fileExtension: context.file?.fileType!,
       getFileContents: () => Promise.resolve(context.file?.fileContent ?? ""),
       isReadOnly: false
     }),
@@ -296,9 +296,9 @@ export function EditorPage(props: Props) {
             <EmbeddedEditor
               ref={editorRef}
               file={file}
-              router={context.router}
               channelType={ChannelType.DESKTOP}
-              onReady={requestThumbnailPreview}
+              receive_ready={requestThumbnailPreview}
+              editorEnvelopeLocator={context.editorEnvelopeLocator}
             />
           </StackItem>
         </Stack>

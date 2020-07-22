@@ -16,7 +16,7 @@
 
 import { GwtStateControlCommand } from "./GwtStateControlCommand";
 import { KogitoEdit } from "@kogito-tooling/microeditor-envelope-protocol";
-import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoEditorChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
 
 /**
  * PUBLIC GWT EDITORS API
@@ -37,7 +37,7 @@ export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T>
   private commands: Array<GwtStateControlCommand<T>> = [];
   private undoneCommands: string[] = [];
 
-  constructor(private readonly messageBus: MessageBusClient<KogitoChannelApi>) {}
+  constructor(private readonly messageBus: MessageBusClient<KogitoEditorChannelApi>) {}
 
   private onNewCommand(newCommand: GwtStateControlCommand<T>) {
     if (!this.undoneCommands.includes(newCommand.getId())) {

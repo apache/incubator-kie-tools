@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-import { KogitoChannelBus } from "./KogitoChannelBus";
+import { KogitoEditorChannel } from "./KogitoEditorChannel";
 import { useEffect } from "react";
+import { EditorInitArgs } from "./KogitoEditorEnvelopeApi";
+import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
 
-export function useConnectedKogitoChannelBus(envelopeTargetOrigin: string, kogitoChannelBus: KogitoChannelBus) {
+export function useConnectedKogitoEditorChannel(
+    channel: KogitoEditorChannel,
+    api: KogitoEditorChannelApi,
+    targetOrigin: string,
+    editorInitArgs: EditorInitArgs
+) {
   useEffect(() => {
-    const listener = (msg: MessageEvent) => kogitoChannelBus.receive(msg.data);
+    const listener = (msg: MessageEvent) => channel.receive(msg.data, api);
     window.addEventListener("message", listener, false);
-    kogitoChannelBus.startInitPolling(envelopeTargetOrigin);
+    channel.startInitPolling(targetOrigin, editorInitArgs);
 
     return () => {
-      kogitoChannelBus.stopInitPolling();
+      channel.stopInitPolling();
       window.removeEventListener("message", listener);
     };
-  }, [kogitoChannelBus]);
+  }, [channel, targetOrigin, editorInitArgs, api]);
 }

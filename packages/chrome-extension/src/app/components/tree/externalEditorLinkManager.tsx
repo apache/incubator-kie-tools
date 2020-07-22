@@ -25,11 +25,10 @@ export function addExternalEditorLinks(args: Globals) {
     ReactDOM.render(
       <Main
         id={args.id}
-        router={args.router}
+        editorEnvelopeLocator={args.editorEnvelopeLocator}
         logger={args.logger}
         githubAuthTokenCookieName={args.githubAuthTokenCookieName}
         extensionIconUrl={args.extensionIconUrl}
-        editorIndexPath={args.editorIndexPath}
         resourceContentServiceFactory={args.resourceContentServiceFactory}
         externalEditorManager={args.externalEditorManager}
         dependencies={args.dependencies}

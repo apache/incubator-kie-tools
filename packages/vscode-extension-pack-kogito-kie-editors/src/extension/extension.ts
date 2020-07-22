@@ -15,7 +15,6 @@
  */
 
 import * as vscode from "vscode";
-import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
 import * as KogitoVsCode from "@kogito-tooling/vscode-extension";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -23,15 +22,18 @@ export function activate(context: vscode.ExtensionContext) {
 
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-pack-kogito-kie-editors",
-    webviewLocation: "dist/webview/index.js",
     context: context,
     viewType: "kieKogitoWebviewEditors",
     getPreviewCommandId: "extension.kogito.getPreviewSvg",
-    routes: new GwtEditorRoutes({
-      bpmnPath: "dist/webview/editors/bpmn",
-      dmnPath: "dist/webview/editors/dmn",
-      scesimPath: "dist/webview/editors/scesim"
-    })
+    editorEnvelopeLocator: {
+      targetOrigin: "vscode",
+      mapping: new Map([
+        ["bpmn", { resourcesPathPrefix: "dist/webview/editors/bpmn", envelopePath: "dist/webview/index.js" }],
+        ["bpmn2", { resourcesPathPrefix: "dist/webview/editors/bpmn", envelopePath: "dist/webview/index.js" }],
+        ["dmn", { resourcesPathPrefix: "dist/webview/editors/dmn", envelopePath: "dist/webview/index.js" }],
+        ["scesim", { resourcesPathPrefix: "dist/webview/editors/scesim", envelopePath: "dist/webview/index.js" }]
+      ])
+    }
   });
 
   console.info("Extension is successfully setup.");

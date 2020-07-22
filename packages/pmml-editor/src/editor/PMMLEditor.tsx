@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoEditorChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
 
 export interface Props {
   exposing: (s: PMMLEditor) => void;
-  messageBusClient: MessageBusClient<KogitoChannelApi>;
+  messageBusClient: MessageBusClient<KogitoEditorChannelApi>;
 }
 
 export interface State {

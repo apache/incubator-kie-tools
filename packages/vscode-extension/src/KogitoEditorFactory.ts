@@ -16,40 +16,28 @@
 
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditor } from "./KogitoEditor";
-import { KogitoEdit, ResourceContentService, Routes } from "@kogito-tooling/microeditor-envelope-protocol";
+import {
+  EditorEnvelopeLocator,
+  EnvelopeMapping,
+  ResourceContentService
+} from "@kogito-tooling/microeditor-envelope-protocol";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
-
 import * as vscode from "vscode";
+import { Uri, Webview } from "vscode";
 import * as nodePath from "path";
-import { DefaultVsCodeRouter } from "./DefaultVsCodeRouter";
+import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
+import { KogitoEditableDocument } from "./KogitoEditableDocument";
 
 export class KogitoEditorFactory {
-  private readonly context: vscode.ExtensionContext;
-  private readonly editorStore: KogitoEditorStore;
-  private readonly webviewLocation: string;
-  private readonly routes: Routes;
-
   constructor(
-    context: vscode.ExtensionContext,
-    routes: Routes,
-    webviewLocation: string,
-    editorStore: KogitoEditorStore
-  ) {
-    this.context = context;
-    this.editorStore = editorStore;
-    this.routes = routes;
-    this.webviewLocation = webviewLocation;
-  }
+    private readonly context: vscode.ExtensionContext,
+    private readonly editorStore: KogitoEditorStore,
+    private readonly editorEnvelopeLocator: EditorEnvelopeLocator
+  ) {}
 
-  public configureNew(
-    uri: vscode.Uri,
-    initialBackup: vscode.Uri | undefined,
-    webviewPanel: vscode.WebviewPanel,
-    signalEdit: (edit: KogitoEdit) => void
-  ) {
-    const path = uri.fsPath;
-    if (path.length <= 0) {
+  public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditableDocument) {
+    if (document.uri.fsPath.length <= 0) {
       throw new Error("parameter 'path' cannot be empty");
     }
 
@@ -59,36 +47,56 @@ export class KogitoEditorFactory {
       localResourceRoots: [vscode.Uri.file(this.context.extensionPath)]
     };
 
-    const router = new DefaultVsCodeRouter(this.context, webviewPanel.webview, this.routes);
+    const editorEnvelopeLocator = this.getEditorEnvelopeLocatorForWebview(webviewPanel.webview);
+    const resourceContentService = this.createResourceContentService(document.uri.fsPath, document.relativePath);
 
-    const workspacePath = vscode.workspace.asRelativePath(path);
-
-    const resourceContentService = this.createResourceContentService(path, workspacePath);
+    const envelopeMapping = editorEnvelopeLocator.mapping.get(document.fileExtension);
+    if (!envelopeMapping) {
+      throw new Error(`No envelope mapping found for '${document.fileExtension}'`);
+    }
 
     const editor = new KogitoEditor(
-      workspacePath,
-      uri,
-      initialBackup,
+      document,
       webviewPanel,
       this.context,
-      router,
-      this.webviewLocation,
       this.editorStore,
-      resourceContentService,
-      signalEdit
+      envelopeMapping,
+      editorEnvelopeLocator
     );
+
+    const editorChannelApi = new KogitoEditorChannelApiImpl(document, editor, resourceContentService);
+
     this.editorStore.addAsActive(editor);
-    editor.setupEnvelopeBus();
+    editor.startListening(editorChannelApi);
+    editor.startInitPolling();
     editor.setupPanelActiveStatusChange();
     editor.setupPanelOnDidDispose();
     editor.setupWebviewContent();
   }
 
+  private getEditorEnvelopeLocatorForWebview(webview: vscode.Webview): EditorEnvelopeLocator {
+    return {
+      targetOrigin: this.editorEnvelopeLocator.targetOrigin,
+      mapping: [...this.editorEnvelopeLocator.mapping.entries()].reduce((mapping, [fileExtension, m]) => {
+        mapping.set(fileExtension, {
+          envelopePath: this.getWebviewPath(webview, m.envelopePath),
+          resourcesPathPrefix: this.getWebviewPath(webview, m.resourcesPathPrefix)
+        });
+        return mapping;
+      }, new Map<string, EnvelopeMapping>())
+    };
+  }
+
+  private getWebviewPath(webview: Webview, relativePath: string) {
+    return webview.asWebviewUri(Uri.file(this.context.asAbsolutePath(relativePath))).toString();
+  }
+
   public createResourceContentService(path: string, workspacePath: string): ResourceContentService {
     if (this.isAssetInWorkspace(path)) {
       return new VsCodeResourceContentService(this.getParentFolder(workspacePath));
+    } else {
+      return new VsCodeNodeResourceContentService(this.getParentFolder(path));
     }
-    return new VsCodeNodeResourceContentService(this.getParentFolder(path));
   }
 
   private isAssetInWorkspace(path: string): boolean {

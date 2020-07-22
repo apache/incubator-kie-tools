@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { GlobalContext, GlobalContextType } from "../webview/common/GlobalContext";
+import { EnvelopeMapping } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
+
+  const dmnEnvelopeMapping: EnvelopeMapping = {
+    envelopePath: "envelope/envelope.html",
+    resourcesPathPrefix: ""
+  };
+
   const usedCtx = {
-    router: new EmbeddedEditorRouter(),
+    editorEnvelopeLocator: { targetOrigin: window.location.origin, mapping: new Map([["dmn", dmnEnvelopeMapping]]) },
     file: { filePath: "test.dmn", fileContent: "", fileType: "dmn" },
     ...ctx
   };

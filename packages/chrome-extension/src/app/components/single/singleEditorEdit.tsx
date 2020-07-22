@@ -44,7 +44,7 @@ export function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo }) {
     return;
   }
 
-  if (!args.router.getLanguageData(openFileExtension)) {
+  if (!args.editorEnvelopeLocator.mapping.has(openFileExtension)) {
     args.logger.log(`No enhanced editor available for "${openFileExtension}" format.`);
     return;
   }
@@ -56,12 +56,11 @@ export function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo }) {
   ReactDOM.render(
     <Main
       id={args.id}
-      router={args.router}
+      editorEnvelopeLocator={args.editorEnvelopeLocator}
       dependencies={args.dependencies}
       logger={args.logger}
       githubAuthTokenCookieName={args.githubAuthTokenCookieName}
       extensionIconUrl={args.extensionIconUrl}
-      editorIndexPath={args.editorIndexPath}
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >

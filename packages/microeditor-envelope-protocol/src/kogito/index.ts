@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-export * from "./KogitoChannelBus";
-export * from "./KogitoChannelApi";
-export * from "./KogitoEnvelopeApi";
+export * from "./KogitoEditorChannel";
+export * from "./KogitoEditorChannelApi";
+export * from "./KogitoEditorEnvelopeApi";
 export * from "./api";
 export * from "./Hooks";
+export * from "./Channel";

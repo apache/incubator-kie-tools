@@ -19,34 +19,24 @@ import { Rect } from "@kogito-tooling/microeditor-envelope-protocol";
 /**
  * Editor component API. Implement this class to create an Editor.
  */
-export abstract class Editor {
-  public af_isReact: boolean = false;
-  public af_componentId: string;
-  public af_componentTitle: string;
+export interface Editor extends EditorApi {
+  af_isReact: boolean;
+  af_componentId: string;
+  af_componentTitle: string;
 
-  protected constructor(componentId: string) {
-    this.af_componentId = componentId;
-  }
+  af_componentRoot(): React.ReactPortal | React.ReactElement | HTMLElement | string;
+  af_onStartup?(): void;
+  af_onOpen?(): void;
+}
 
-  public abstract setContent(path: string, content: string): Promise<void>;
-
-  public abstract getContent(): Promise<string>;
-
-  public abstract getPreview(): Promise<string | undefined>;
-
-  public abstract getElementPosition(selector: string): Promise<Rect | undefined>;
-
-  public abstract undo(): Promise<void>;
-
-  public abstract redo(): Promise<void>;
-
-  public abstract af_componentRoot(): React.ReactPortal | React.ReactElement | HTMLElement | string;
-
-  public af_onStartup(): void {
-    //
-  }
-
-  public af_onOpen(): void {
-    //
-  }
+/**
+ * Editor component API. Basic Editor feature definitions.
+ */
+export interface EditorApi {
+  setContent(path: string, content: string): Promise<void>;
+  getContent(): Promise<string>;
+  getPreview(): Promise<string | undefined>;
+  getElementPosition(selector: string): Promise<Rect | undefined>;
+  undo(): Promise<void>;
+  redo(): Promise<void>;
 }

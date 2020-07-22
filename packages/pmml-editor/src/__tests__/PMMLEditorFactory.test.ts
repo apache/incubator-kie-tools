@@ -19,69 +19,29 @@ import {
   EditorContext,
   EnvelopeBus,
   EnvelopeBusMessage,
-  KogitoChannelApi,
-  KogitoChannelBus,
-  KogitoEdit,
-  LanguageData,
-  OperatingSystem,
-  ResourceContentRequest,
-  ResourceListRequest,
-  ResourcesList,
-  StateControlCommand,
-  Tutorial,
-  UserInteraction
+  OperatingSystem
 } from "@kogito-tooling/microeditor-envelope-protocol";
-import { FACTORY_TYPE, PMMLEditorFactory } from "../editor/PMMLEditorFactory";
-import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
-import { Editor, EnvelopeContextType } from "@kogito-tooling/editor-api";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import {FACTORY_TYPE, PMMLEditorFactory} from "../editor/PMMLEditorFactory";
+import {PMMLEditorInterface} from "../editor/PMMLEditorInterface";
+import {Editor, KogitoEditorEnvelopeContextType} from "@kogito-tooling/editor-api";
+import {DefaultKeyboardShortcutsService} from "@kogito-tooling/keyboard-shortcuts";
 
-const languageData: LanguageData = { type: "unused" };
 
 const bus: EnvelopeBus = {
   postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any) {
     /*NOP*/
   }
 };
-const api: KogitoChannelApi = {
-  receive_setContentError(_: string) {
-    /*NOP*/
-  },
-  receive_ready() {
-    /*NOP*/
-  },
-  receive_openFile(_: string) {
-    /*NOP*/
-  },
-  receive_guidedTourUserInteraction(_: UserInteraction) {
-    /*NOP*/
-  },
-  receive_guidedTourRegisterTutorial(_: Tutorial) {
-    /*NOP*/
-  },
-  receive_newEdit(_: KogitoEdit) {
-    /*NOP*/
-  },
-  receive_stateControlCommandUpdate(_: StateControlCommand) {
-    /*NOP*/
-  },
-  receive_languageRequest() {
-    return Promise.resolve(languageData);
-  },
-  receive_contentRequest() {
-    return Promise.resolve({ content: "" });
-  },
-  receive_resourceContentRequest(_: ResourceContentRequest) {
-    return Promise.resolve(undefined);
-  },
-  receive_resourceListRequest(_: ResourceListRequest) {
-    return Promise.resolve(new ResourcesList("", []));
-  }
+
+const messageBusClient = {
+  notify: jest.fn(),
+  request: jest.fn()
 };
-const messageBus: KogitoChannelBus = new KogitoChannelBus(bus, api);
+
+
 const editorContext: EditorContext = { channel: ChannelType.EMBEDDED, operatingSystem: OperatingSystem.LINUX };
-const envelopeContext: EnvelopeContextType = {
-  channelApi: messageBus.client,
+const envelopeContext: KogitoEditorEnvelopeContextType = {
+  channelApi: messageBusClient,
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
@@ -92,12 +52,12 @@ const envelopeContext: EnvelopeContextType = {
 describe("PMMLEditorFactory", () => {
   test("Unsupported LanguageData type", () => {
     const factory: PMMLEditorFactory = new PMMLEditorFactory();
-    expect(factory.supports({ type: "unsupported" })).toBeFalsy();
+    expect(factory.supports("unsupported")).toBeFalsy();
   });
 
   test("Supported LanguageData type", () => {
     const factory: PMMLEditorFactory = new PMMLEditorFactory();
-    expect(factory.supports({ type: FACTORY_TYPE })).toBeTruthy();
+    expect(factory.supports(FACTORY_TYPE)).toBeTruthy();
   });
 
   test("Supported type::CreateEditor", () => {
@@ -105,7 +65,7 @@ describe("PMMLEditorFactory", () => {
 
     jest.spyOn(factory, "createEditor");
 
-    const created: Promise<Editor> = factory.createEditor({ type: FACTORY_TYPE }, envelopeContext);
+    const created: Promise<Editor> = factory.createEditor(envelopeContext, {fileExtension: FACTORY_TYPE, resourcesPathPrefix: ""});
     expect(created).resolves.toBeInstanceOf(PMMLEditorInterface);
   });
 });

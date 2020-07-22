@@ -14,26 +14,32 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorRouter, EMPTY_FILE_DMN } from "@kogito-tooling/embedded-editor";
-import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
+import { EMPTY_FILE_DMN } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
 import { GithubService } from "../common/GithubService";
 import { GlobalContext, GlobalContextType } from "../common/GlobalContext";
 import { Routes } from "../common/Routes";
+import { EnvelopeMapping } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
+  const envelopeMapping: EnvelopeMapping = {
+    envelopePath: "envelope/envelope.html",
+    resourcesPathPrefix: ""
+  };
+
   const usedCtx = {
     file: EMPTY_FILE_DMN,
     routes: new Routes(),
-    router: new EmbeddedEditorRouter(
-      new GwtEditorRoutes({
-        bpmnPath: "gwt-editors/bpmn",
-        dmnPath: "gwt-editors/dmn",
-        scesimPath: "gwt-editors/scesim"
-      })
-    ),
+    editorEnvelopeLocator: {
+      targetOrigin: window.location.origin,
+      mapping: new Map([
+        ["dmn", envelopeMapping],
+        ["bpmn", envelopeMapping],
+        ["bpmn2", envelopeMapping]
+      ])
+    },
     readonly: false,
     external: false,
     senderTabId: undefined,
