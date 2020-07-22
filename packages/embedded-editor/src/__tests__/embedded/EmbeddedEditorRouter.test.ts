@@ -31,8 +31,7 @@ describe("EmbeddedEditorRouter", () => {
   });
 
   test("EmbeddedEditorRouter::getLanguageData", () => {
-    const languageData: LanguageData = router.getLanguageData(EditorType.DMN);
-    expect(languageData).not.toBeNull();
+    expect(router.getLanguageData(EditorType.DMN)).not.toBeNull();
   });
 
   test("EmbeddedEditorRouter::getTargetOrigin", () => {

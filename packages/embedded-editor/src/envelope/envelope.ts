@@ -21,8 +21,8 @@ import { EnvelopeBusMessage } from "@kogito-tooling/microeditor-envelope-protoco
 
 MicroEditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
-  busApi: {
-    postMessage<T>(message: EnvelopeBusMessage<T>, targetOrigin?: string, _?: any) {
+  bus: {
+    postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, _?: any) {
       window.parent.postMessage(message, "*", _);
     }
   },

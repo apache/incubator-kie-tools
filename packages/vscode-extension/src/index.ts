@@ -18,7 +18,6 @@ import * as vscode from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoWebviewProvider } from "./KogitoWebviewProvider";
-import { KogitoEditorJobRegistry } from "./KogitoEditorJobRegistry";
 import { Routes } from "@kogito-tooling/core-api";
 
 /**
@@ -38,14 +37,7 @@ export function startExtension(args: {
   getPreviewCommandId: string;
 }) {
   const editorStore = new KogitoEditorStore();
-  const jobRegistry = new KogitoEditorJobRegistry();
-  const editorFactory = new KogitoEditorFactory(
-    args.context,
-    args.routes,
-    args.webviewLocation,
-    editorStore,
-    jobRegistry
-  );
+  const editorFactory = new KogitoEditorFactory(args.context, args.routes, args.webviewLocation, editorStore);
   const webviewProvider = new KogitoWebviewProvider(args.viewType, editorFactory, editorStore, args.context);
 
   args.context.subscriptions.push(webviewProvider.register());

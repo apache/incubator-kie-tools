@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { EnvelopeBusMessage } from "@kogito-tooling/microeditor-envelope-protocol";
+
 /**
  * Delay the event by the given number of miliseconds.
  * @param ms
@@ -26,7 +28,7 @@ export const delay = (ms: number) => {
  * Post a message to the inter-frame communication bus and await a response.
  * @param message
  */
-export async function incomingMessage(message: any) {
+export async function incomingMessage(message: EnvelopeBusMessage<any, any>) {
   window.postMessage(message, window.location.origin);
   await delay(0); //waits til next event loop iteration
 }

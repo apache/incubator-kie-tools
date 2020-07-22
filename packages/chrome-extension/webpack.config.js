@@ -14,44 +14,24 @@
  * limitations under the License.
  */
 
-const path = require("path");
 const nodeExternals = require("webpack-node-externals");
+const { merge } = require("webpack-merge");
+const common = require("../../webpack.common.config");
 
-module.exports = {
-  mode: "development",
-  devtool: "inline-source-map",
+module.exports = merge(common, {
   entry: {
     index: "./src/index.ts"
   },
   output: {
-    path: path.resolve(__dirname, "./dist"),
-    filename: "[name].js",
     libraryTarget: "commonjs2"
   },
   externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-  plugins: [],
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        loader: "ts-loader",
-        options: {
-          configFile: path.resolve("./tsconfig.json")
-        }
-      },
-      {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"]
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: ["babel-loader"]
       }
     ]
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js", ".jsx"],
-    modules: [path.resolve("../../node_modules"), path.resolve("./node_modules"), path.resolve("./src")]
   }
-};
+});

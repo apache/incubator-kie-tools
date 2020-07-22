@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-import {
-  ChannelType,
-  EditorContent,
-  KogitoEdit,
-  ResourceContentRequest,
-  ResourceListRequest
-} from "@kogito-tooling/core-api";
-import { EnvelopeBusMessageType, EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelType, KogitoEdit } from "@kogito-tooling/core-api";
+import { EnvelopeBusMessagePurpose, KogitoChannelBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
-import { RefObject } from "react";
 import { EditorType, File } from "../../common";
 import { EmbeddedEditor, EmbeddedEditorRef, EmbeddedEditorRouter } from "../../embedded";
-import { StateControl } from "../../stateControl";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 import { render } from "@testing-library/react";
 
@@ -37,25 +29,18 @@ describe("EmbeddedEditor::ONLINE", () => {
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false
   };
-  const router: EmbeddedEditorRouter = new EmbeddedEditorRouter();
-  const channelType: ChannelType = ChannelType.ONLINE;
+  const router = new EmbeddedEditorRouter();
+  const channelType = ChannelType.ONLINE;
+  const editorRef = React.createRef<EmbeddedEditorRef>();
+  const busId = "test-bus-id";
 
-  const editorRef: RefObject<EmbeddedEditorRef> = {
-    current: {
-      getStateControl: () => new StateControl(),
-      requestContent: () => "",
-      requestPreview: () => "",
-      setContent: (content: string) => null,
-      notifyRedo: () => "",
-      notifyUndo: () => ""
-    }
-  };
-
-  beforeAll(() => spyOn<any>(EnvelopeBusOuterMessageHandler, "generateRandomBusId"));
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.spyOn(KogitoChannelBus.prototype, "generateRandomId").mockReturnValue(busId);
+    jest.clearAllMocks();
+  });
 
   test("EmbeddedEditor::defaults", () => {
-    const { getByTestId } = render(
+    const { getByTestId, container } = render(
       <EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />
     );
 
@@ -63,63 +48,37 @@ describe("EmbeddedEditor::ONLINE", () => {
     expect(getByTestId("kogito-iframe")).toHaveAttribute("data-envelope-channel", ChannelType.ONLINE);
     expect(getByTestId("kogito-iframe")).toHaveAttribute("src", "envelope/envelope.html");
 
-    expect(document.body).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
   });
 
   test("EmbeddedEditor::setContent", () => {
-    const spyRespond_contentRequest = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "respond_contentRequest");
-
+    const spyRespond_contentRequest = jest.spyOn(KogitoChannelBus.prototype, "notify_contentChanged");
     render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
-
     editorRef.current?.setContent("content");
 
     expect(spyRespond_contentRequest).toBeCalledWith({ content: "content" });
   });
 
   test("EmbeddedEditor::requestContent", () => {
-    const spyRequest_contentResponse = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "request_contentResponse");
-
+    const spyRequest_contentResponse = jest.spyOn(KogitoChannelBus.prototype, "request_contentResponse");
     render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
-
     editorRef.current?.requestContent();
 
     expect(spyRequest_contentResponse).toBeCalled();
   });
 
   test("EmbeddedEditor::requestPreview", () => {
-    const spyRequest_previewResponse = jest.spyOn(EnvelopeBusOuterMessageHandler.prototype, "request_previewResponse");
-
+    const spyRequest_previewResponse = jest.spyOn(KogitoChannelBus.prototype, "request_previewResponse");
     render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
-
     editorRef.current?.requestPreview();
 
     expect(spyRequest_previewResponse).toBeCalled();
   });
 
-  test("EmbeddedEditor::onContentResponse", async () => {
-    const onContentResponse = jest.fn((c: EditorContent) => null);
-
-    render(
-      <EmbeddedEditor
-        ref={editorRef}
-        file={file}
-        router={router}
-        channelType={channelType}
-        onContentResponse={onContentResponse}
-      />
-    );
-
-    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_CONTENT });
-
-    expect(onContentResponse).toBeCalled();
-
-    expect(document.body).toMatchSnapshot();
-  });
-
   test("EmbeddedEditor::onSetContentError", async () => {
-    const onSetContentError = jest.fn((errorMessage: string) => null);
+    const onSetContentError = jest.fn();
 
-    render(
+    const { container } = render(
       <EmbeddedEditor
         ref={editorRef}
         file={file}
@@ -129,49 +88,39 @@ describe("EmbeddedEditor::ONLINE", () => {
       />
     );
 
-    await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_SET_CONTENT_ERROR });
+    await incomingMessage({
+      busId: busId,
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
+      type: "receive_setContentError",
+      data: []
+    });
 
     expect(onSetContentError).toBeCalled();
-
-    expect(document.body).toMatchSnapshot();
-  });
-
-  test("EmbeddedEditor::onDirtyIndicatorChange", async () => {
-    const onDirtyIndicatorChange = jest.fn((isDirty: boolean) => null);
-
-    render(
-      <EmbeddedEditor
-        ref={editorRef}
-        file={file}
-        router={router}
-        channelType={channelType}
-        onDirtyIndicatorChange={onDirtyIndicatorChange}
-      />
-    );
-
-    await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_DIRTY_INDICATOR_CHANGE });
-
-    expect(onDirtyIndicatorChange).toBeCalled();
-
-    expect(document.body).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
   });
 
   test("EmbeddedEditor::onReady", async () => {
-    const onReady = jest.fn(() => null);
+    const onReady = jest.fn();
 
-    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} onReady={onReady} />);
+    const { container } = render(
+      <EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} onReady={onReady} />
+    );
 
-    await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_READY });
+    await incomingMessage({
+      busId: busId,
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
+      type: "receive_ready",
+      data: []
+    });
 
     expect(onReady).toBeCalled();
-
-    expect(document.body).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
   });
 
   test("EmbeddedEditor::onResourceContentRequest", async () => {
-    const onResourceContentRequest = jest.fn((request: ResourceContentRequest) => Promise.resolve(undefined));
+    const onResourceContentRequest = jest.fn(() => Promise.resolve({} as any));
 
-    render(
+    const { container } = render(
       <EmbeddedEditor
         ref={editorRef}
         file={file}
@@ -181,19 +130,22 @@ describe("EmbeddedEditor::ONLINE", () => {
       />
     );
 
-    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_CONTENT, data: { path: "" } });
+    await incomingMessage({
+      busId: busId,
+      requestId: "1",
+      purpose: EnvelopeBusMessagePurpose.REQUEST,
+      type: "receive_resourceContentRequest",
+      data: [{ path: "" }]
+    });
 
     expect(onResourceContentRequest).toBeCalled();
-
-    expect(document.body).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
   });
 
   test("EmbeddedEditor::onResourceListRequest", async () => {
-    const onResourceListRequest = jest.fn((request: ResourceListRequest) =>
-      Promise.resolve({ pattern: "", paths: [] })
-    );
+    const onResourceListRequest = jest.fn(() => Promise.resolve({} as any));
 
-    render(
+    const { container } = render(
       <EmbeddedEditor
         ref={editorRef}
         file={file}
@@ -203,44 +155,34 @@ describe("EmbeddedEditor::ONLINE", () => {
       />
     );
 
-    await incomingMessage({ type: EnvelopeBusMessageType.REQUEST_RESOURCE_LIST, data: { pattern: "", paths: [] } });
+    await incomingMessage({
+      busId: busId,
+      requestId: "1",
+      purpose: EnvelopeBusMessagePurpose.REQUEST,
+      type: "receive_resourceListRequest",
+      data: [{ pattern: "", paths: [] }]
+    });
 
     expect(onResourceListRequest).toBeCalled();
-
-    expect(document.body).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
   });
 
   test("EmbeddedEditor::onNewEdit", async () => {
-    const onNewEdit = jest.fn((edit: KogitoEdit) => null);
+    const onNewEdit = jest.fn();
 
-    render(
+    const { container } = render(
       <EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} onNewEdit={onNewEdit} />
     );
 
-    await incomingMessage({ type: EnvelopeBusMessageType.NOTIFY_EDITOR_NEW_EDIT, data: new KogitoEdit("1") });
+    await incomingMessage({
+      busId: busId,
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
+      type: "receive_newEdit",
+      data: [new KogitoEdit("1")]
+    });
+
     expect(editorRef.current?.getStateControl().getCommandStack()).toEqual(["1"]);
     expect(onNewEdit).toBeCalled();
-
-    expect(document.body).toMatchSnapshot();
-  });
-
-  test("EmbeddedEditor::onPreviewResponse", async () => {
-    const onPreviewResponse = jest.fn((previewSvg: string) => null);
-
-    render(
-      <EmbeddedEditor
-        ref={editorRef}
-        file={file}
-        router={router}
-        channelType={channelType}
-        onPreviewResponse={onPreviewResponse}
-      />
-    );
-
-    await incomingMessage({ type: EnvelopeBusMessageType.RETURN_PREVIEW });
-
-    expect(onPreviewResponse).toBeCalled();
-
-    expect(document.body).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
   });
 });

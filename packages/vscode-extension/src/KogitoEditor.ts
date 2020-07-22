@@ -15,24 +15,20 @@
  */
 
 import * as vscode from "vscode";
+import { Uri } from "vscode";
 import * as fs from "fs";
 import * as __path from "path";
-import { EnvelopeBusOuterMessageHandler } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoChannelBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEditorJobRegistry, JobType } from "./KogitoEditorJobRegistry";
 import {
-  EditorContent,
   KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
-  Router,
   ResourceListRequest,
-  StateControlCommand
+  Router
 } from "@kogito-tooling/core-api";
 
 export class KogitoEditor {
-  private static readonly DIRTY_INDICATOR = " *";
-
   private readonly uri: vscode.Uri;
   private readonly relativePath: string;
   private readonly webviewLocation: string;
@@ -40,17 +36,12 @@ export class KogitoEditor {
   private readonly router: Router;
   private readonly panel: vscode.WebviewPanel;
   private readonly editorStore: KogitoEditorStore;
-  private readonly jobRegistry: KogitoEditorJobRegistry;
-  private readonly envelopeBusOuterMessageHandler: EnvelopeBusOuterMessageHandler;
+  private readonly kogitoChannelBus: KogitoChannelBus;
   private readonly resourceContentService: ResourceContentService;
   private readonly signalEdit: (edit: KogitoEdit) => void;
 
   private readonly encoder = new TextEncoder();
   private readonly decoder = new TextDecoder("utf-8");
-
-  get busId(): string {
-    return this.envelopeBusOuterMessageHandler.busId;
-  }
 
   public constructor(
     relativePath: string,
@@ -61,7 +52,6 @@ export class KogitoEditor {
     router: Router,
     webviewLocation: string,
     editorStore: KogitoEditorStore,
-    jobRegistry: KogitoEditorJobRegistry,
     resourceContentService: ResourceContentService,
     signalEdit: (edit: KogitoEdit) => void
   ) {
@@ -72,66 +62,29 @@ export class KogitoEditor {
     this.router = router;
     this.webviewLocation = webviewLocation;
     this.editorStore = editorStore;
-    this.jobRegistry = jobRegistry;
     this.resourceContentService = resourceContentService;
     this.signalEdit = signalEdit;
-    this.envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
+    this.kogitoChannelBus = new KogitoChannelBus(
       {
-        postMessage: msg => {
-          this.panel.webview.postMessage(msg);
-        }
+        postMessage: message => this.panel.webview.postMessage(message)
       },
-      (self: EnvelopeBusOuterMessageHandler) => ({
-        pollInit: () => {
-          self.request_initResponse("vscode");
-        },
-        receive_languageRequest: () => {
-          const pathFileExtension = this.uri.fsPath.split(".").pop()!;
-          self.respond_languageRequest(this.router.getLanguageData(pathFileExtension));
-        },
-        receive_contentResponse: (content: EditorContent) => {
-          const fileJob = this.jobRegistry.resolve(self.busId);
-          if (!fileJob || fileJob.cancellation.isCancellationRequested) {
-            return;
-          }
-          vscode.workspace.fs.writeFile(fileJob.target, this.encoder.encode(content.content)).then(() => {
-            if (fileJob.type === JobType.SAVE) {
-              vscode.window.setStatusBarMessage("Saved successfully!", 3000);
-            }
-            this.jobRegistry.execute(self.busId);
-          });
-        },
-        receive_contentRequest: () => {
-          vscode.workspace.fs.readFile(initialBackup ?? this.uri).then(contentArray => {
-            initialBackup = undefined;
-            self.respond_contentRequest({
-              content: this.decoder.decode(contentArray),
-              path: this.relativePath
-            });
-          });
-        },
+      {
         receive_setContentError: (errorMessage: string) => {
           vscode.window.showErrorMessage(errorMessage);
-        },
-        receive_dirtyIndicatorChange: (isDirty: boolean) => {
-          this.updateDirtyIndicator(isDirty);
-        },
-        receive_resourceContentRequest: (request: ResourceContentRequest) => {
-          this.resourceContentService
-            .get(request.path, request.opts)
-            .then(content => self.respond_resourceContent(content!));
-        },
-        receive_resourceListRequest: (request: ResourceListRequest) => {
-          this.resourceContentService.list(request.pattern, request.opts).then(list => self.respond_resourceList(list));
         },
         receive_ready(): void {
           /**/
         },
-        notify_editorUndo: () => {
-          this.notify_editorUndo();
+        receive_stateControlCommandUpdate: _ => {
+          /*
+           * VS Code has his own state control API.
+           */
         },
-        notify_editorRedo: () => {
-          this.notify_editorRedo();
+        receive_guidedTourRegisterTutorial: _ => {
+          /* empty */
+        },
+        receive_guidedTourUserInteraction: _ => {
+          /* empty */
         },
         receive_newEdit: (edit: KogitoEdit) => {
           this.notify_newEdit(edit);
@@ -139,83 +92,71 @@ export class KogitoEditor {
         receive_openFile: (path: string) => {
           this.notify_openFile(path);
         },
-        receive_previewRequest: preview => {
-          if (preview) {
-            const parsedPath = __path.parse(this.uri.fsPath);
-            fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, preview);
-          }
+        //requests
+        receive_languageRequest: async () => {
+          const pathFileExtension = this.uri.fsPath.split(".").pop()!;
+          return this.router.getLanguageData(pathFileExtension);
         },
-        receive_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
-          /*
-           * VS Code has his own state control API.
-           */
+        receive_contentRequest: async () => {
+          return vscode.workspace.fs.readFile(initialBackup ?? this.uri).then(contentArray => {
+            initialBackup = undefined;
+            return { content: this.decoder.decode(contentArray), path: this.relativePath };
+          });
         },
-        receive_guidedTourElementPositionResponse: _ => {
-          /* empty */
+        receive_resourceContentRequest: (request: ResourceContentRequest) => {
+          return this.resourceContentService.get(request.path, request.opts);
         },
-        receive_guidedTourRegisterTutorial: _ => {
-          /* empty */
-        },
-        receive_guidedTourUserInteraction: _ => {
-          /* empty */
+        receive_resourceListRequest: (request: ResourceListRequest) => {
+          return this.resourceContentService.list(request.pattern, request.opts);
         }
-      })
+      }
     );
   }
 
-  private updateDirtyIndicator(isDirty: boolean) {
-    const titleWithoutDirtyIndicator = this.panel.title.endsWith(KogitoEditor.DIRTY_INDICATOR)
-      ? this.panel.title.slice(0, -KogitoEditor.DIRTY_INDICATOR.length)
-      : this.panel.title;
-
-    this.panel.title = isDirty
-      ? `${titleWithoutDirtyIndicator}${KogitoEditor.DIRTY_INDICATOR}`
-      : titleWithoutDirtyIndicator;
+  public asWebviewUri(absolutePath: Uri) {
+    return this.panel.webview.asWebviewUri(absolutePath);
   }
 
   public async requestSave(destination: vscode.Uri, cancellation: vscode.CancellationToken): Promise<void> {
-    return this.requestSaveOnPath(destination, JobType.SAVE, cancellation);
+    return this.kogitoChannelBus.request_contentResponse().then(content => {
+      if (cancellation.isCancellationRequested) {
+        return;
+      }
+      return vscode.workspace.fs.writeFile(destination, this.encoder.encode(content.content)).then(() => {
+        vscode.window.setStatusBarMessage("Saved successfully!", 3000);
+      });
+    });
   }
 
   public async requestBackup(destination: vscode.Uri, cancellation: vscode.CancellationToken): Promise<void> {
-    return this.requestSaveOnPath(destination, JobType.BACKUP, cancellation);
+    return this.kogitoChannelBus.request_contentResponse().then(content => {
+      if (cancellation.isCancellationRequested) {
+        return;
+      }
+      return vscode.workspace.fs.writeFile(destination, this.encoder.encode(content.content)).then(() => {
+        console.info("Backup saved.");
+      });
+    });
   }
 
   public async deleteBackup(destination: vscode.Uri): Promise<void> {
     await vscode.workspace.fs.delete(destination);
   }
 
-  private async requestSaveOnPath(
-    destination: vscode.Uri,
-    type: JobType,
-    cancellation: vscode.CancellationToken
-  ): Promise<void> {
-    this.envelopeBusOuterMessageHandler.request_contentResponse();
-
-    return new Promise<void>(resolve =>
-      this.jobRegistry.register(this.busId, {
-        type: type,
-        target: destination,
-        consumer: resolve,
-        cancellation: cancellation
-      })
-    );
-  }
-
   public async notify_editorRevert(): Promise<void> {
     const content = this.decoder.decode(await vscode.workspace.fs.readFile(this.uri));
-    this.envelopeBusOuterMessageHandler.respond_contentRequest({
+    this.kogitoChannelBus.notify_contentChanged({
       content: content,
       path: this.relativePath
     });
   }
 
   public async notify_editorUndo(): Promise<void> {
-    this.envelopeBusOuterMessageHandler.notify_editorUndo();
+    this.kogitoChannelBus.notify_editorUndo();
   }
 
   public async notify_editorRedo(): Promise<void> {
-    this.envelopeBusOuterMessageHandler.notify_editorRedo();
+    this.kogitoChannelBus.notify_editorRedo();
   }
 
   public notify_newEdit(edit: KogitoEdit) {
@@ -233,19 +174,24 @@ export class KogitoEditor {
   }
 
   public requestPreview() {
-    this.envelopeBusOuterMessageHandler.request_previewResponse();
+    this.kogitoChannelBus.request_previewResponse().then(previewSvg => {
+      if (previewSvg) {
+        const parsedPath = __path.parse(this.uri.fsPath);
+        fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, previewSvg);
+      }
+    });
   }
 
   public setupEnvelopeBus() {
     this.context.subscriptions.push(
       this.panel.webview.onDidReceiveMessage(
-        msg => this.envelopeBusOuterMessageHandler.receive(msg),
+        msg => this.kogitoChannelBus.receive(msg),
         this,
         this.context.subscriptions
       )
     );
 
-    this.envelopeBusOuterMessageHandler.startInitPolling();
+    this.kogitoChannelBus.startInitPolling("vscode");
   }
 
   public setupPanelActiveStatusChange() {
@@ -267,7 +213,7 @@ export class KogitoEditor {
   public setupPanelOnDidDispose() {
     this.panel.onDidDispose(
       () => {
-        this.envelopeBusOuterMessageHandler.stopInitPolling();
+        this.kogitoChannelBus.stopInitPolling();
         this.editorStore.close(this);
       },
       this,

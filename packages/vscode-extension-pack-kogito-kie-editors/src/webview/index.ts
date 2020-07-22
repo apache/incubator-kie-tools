@@ -24,7 +24,7 @@ declare global {
 
 MicroEditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
-  busApi: acquireVsCodeApi(),
+  bus: acquireVsCodeApi(),
   editorFactory: new GwtEditorWrapperFactory(),
   editorContext: { channel: ChannelType.VSCODE, operatingSystem: getOperatingSystem() }
 });

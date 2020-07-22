@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorContent, ChannelType } from "@kogito-tooling/core-api";
+import { ChannelType } from "@kogito-tooling/core-api";
 import { EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
 import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
 import * as React from "react";
@@ -31,19 +31,7 @@ interface Props {
   onFileNameChanged: (fileName: string) => void;
 }
 
-enum ActionType {
-  NONE,
-  SAVE,
-  DOWNLOAD,
-  COPY,
-  PREVIEW,
-  EXPORT_GIST
-}
-
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
-
-// FIXME: This action should be moved inside the React hooks lifecycle.
-let action = ActionType.NONE;
 
 export function EditorPage(props: Props) {
   const context = useContext(GlobalContext);
@@ -73,30 +61,75 @@ export function EditorPage(props: Props) {
   }, []);
 
   const requestSave = useCallback(() => {
-    action = ActionType.SAVE;
-    editorRef.current?.requestContent();
+    editorRef.current?.requestContent().then(content => {
+      window.dispatchEvent(
+        new CustomEvent("saveOnlineEditor", {
+          detail: {
+            fileName: fileNameWithExtension,
+            fileContent: content.content,
+            senderTabId: context.senderTabId!
+          }
+        })
+      );
+    });
   }, []);
 
   const requestDownload = useCallback(() => {
     editorRef.current?.getStateControl().setSavedCommand();
     setShowUnsavedAlert(false);
-    action = ActionType.DOWNLOAD;
-    editorRef.current?.requestContent();
+    editorRef.current?.requestContent().then(content => {
+      if (downloadRef.current) {
+        const fileBlob = new Blob([content.content], { type: "text/plain" });
+        downloadRef.current.href = URL.createObjectURL(fileBlob);
+        downloadRef.current.click();
+      }
+    });
   }, []);
 
   const requestPreview = useCallback(() => {
-    action = ActionType.PREVIEW;
-    editorRef.current?.requestPreview();
+    editorRef.current?.requestPreview().then(previewSvg => {
+      if (downloadPreviewRef.current) {
+        const fileBlob = new Blob([previewSvg], { type: "image/svg+xml" });
+        downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
+        downloadPreviewRef.current.click();
+      }
+    });
   }, []);
 
   const requestExportGist = useCallback(() => {
-    action = ActionType.EXPORT_GIST;
-    editorRef.current?.requestContent();
+    editorRef.current?.requestContent().then(content => {
+      if (!context.githubService.isAuthenticated()) {
+        setGithubTokenModalVisible(true);
+        return;
+      }
+
+      context.githubService
+        .createGist({
+          filename: fileNameWithExtension,
+          content: content.content,
+          description: content.path ?? fileNameWithExtension,
+          isPublic: true
+        })
+        .then(gistUrl => {
+          setGithubTokenModalVisible(false);
+          const fileExtension = extractFileExtension(new URL(gistUrl).pathname);
+          // FIXME: KOGITO-1202
+          window.location.href = `?file=${gistUrl}#/editor/${fileExtension}`;
+        })
+        .catch(() => setGithubTokenModalVisible(true));
+    });
   }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
-    action = ActionType.COPY;
-    editorRef.current?.requestContent();
+    editorRef.current?.requestContent().then(content => {
+      if (copyContentTextArea.current) {
+        copyContentTextArea.current.value = content.content;
+        copyContentTextArea.current.select();
+        if (document.execCommand("copy")) {
+          setCopySuccessAlertVisible(true);
+        }
+      }
+    });
   }, []);
 
   const enterFullscreen = useCallback(() => {
@@ -129,64 +162,6 @@ export function EditorPage(props: Props) {
     closeGithubTokenModal();
     requestExportGist();
   }, [closeGithubTokenModal, requestExportGist]);
-
-  const onContentResponse = useCallback(
-    (content: EditorContent) => {
-      if (action === ActionType.SAVE) {
-        window.dispatchEvent(
-          new CustomEvent("saveOnlineEditor", {
-            detail: {
-              fileName: fileNameWithExtension,
-              fileContent: content.content,
-              senderTabId: context.senderTabId!
-            }
-          })
-        );
-      } else if (action === ActionType.DOWNLOAD && downloadRef.current) {
-        const fileBlob = new Blob([content.content], { type: "text/plain" });
-        downloadRef.current.href = URL.createObjectURL(fileBlob);
-        downloadRef.current.click();
-      } else if (action === ActionType.COPY && copyContentTextArea.current) {
-        copyContentTextArea.current.value = content.content;
-        copyContentTextArea.current.select();
-        if (document.execCommand("copy")) {
-          setCopySuccessAlertVisible(true);
-        }
-      } else if (action === ActionType.EXPORT_GIST) {
-        if (!context.githubService.isAuthenticated()) {
-          setGithubTokenModalVisible(true);
-          return;
-        }
-
-        context.githubService
-          .createGist({
-            filename: fileNameWithExtension,
-            content: content.content,
-            description: content.path ?? fileNameWithExtension,
-            isPublic: true
-          })
-          .then(gistUrl => {
-            setGithubTokenModalVisible(false);
-            const fileExtension = extractFileExtension(new URL(gistUrl).pathname);
-            // FIXME: KOGITO-1202
-            window.location.href = `?file=${gistUrl}#/editor/${fileExtension}`;
-          })
-          .catch(() => setGithubTokenModalVisible(true));
-      }
-    },
-    [fileNameWithExtension]
-  );
-
-  const onPreviewResponse = useCallback(
-    preview => {
-      if (action === ActionType.PREVIEW && downloadPreviewRef.current) {
-        const fileBlob = new Blob([preview], { type: "image/svg+xml" });
-        downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
-        downloadPreviewRef.current.click();
-      }
-    },
-    [fileNameWithExtension]
-  );
 
   const onReady = useCallback(() => setIsEditorReady(true), []);
 
@@ -302,8 +277,6 @@ export function EditorPage(props: Props) {
           router={context.router}
           onReady={onReady}
           channelType={ChannelType.ONLINE}
-          onContentResponse={onContentResponse}
-          onPreviewResponse={onPreviewResponse}
         />
       </PageSection>
       <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
