@@ -16,32 +16,33 @@
 
 import { DeepOptional, TranslationBundle } from "./types";
 
-interface ObjectType {
-  [x: string]: any;
-}
-const isObject = (obj?: ObjectType) => obj && typeof obj === "object";
-
-function createDeepOptionalTranslationBundleEmptyObject<Bundle>(obj?: DeepOptional<TranslationBundle<Bundle>>) {
-  return Object.assign({} as DeepOptional<TranslationBundle<Bundle>>, obj);
+function createObjectCopy<T>(obj?: T) {
+  return Object.assign({} as T, obj);
 }
 
-export function deepMerge<Bundle extends ObjectType>(
+function deepMerge<Bundle>(
   target: DeepOptional<TranslationBundle<Bundle>>,
-  source?: DeepOptional<TranslationBundle<Bundle>>
+  source: DeepOptional<TranslationBundle<Bundle>>
 ) {
-  const targetCopy = createDeepOptionalTranslationBundleEmptyObject(target);
-  const sourceCopy = createDeepOptionalTranslationBundleEmptyObject(source);
+  Object.keys(source).forEach((key: Extract<keyof Bundle, string>) => {
+    const targetValue = target[key];
+    const sourceValue = source[key]!;
 
-  Object.keys(sourceCopy).forEach((key: keyof Bundle) => {
-    const targetValue = targetCopy[key];
-    const sourceValue = sourceCopy[key];
-
-    if (isObject(sourceValue)) {
-      targetCopy[key] = deepMerge(createDeepOptionalTranslationBundleEmptyObject(targetValue), sourceValue);
+    if (typeof sourceValue === ("string" || "function") || typeof targetValue === ("string" || "function")) {
+      target[key] = sourceValue;
     } else {
-      targetCopy[key] = sourceValue;
+      target[key] = deepMerge(createObjectCopy(targetValue as any), sourceValue);
     }
   });
+  return target;
+}
 
-  return targetCopy;
+export function mergeSelectedDictionaryWithDefault<Bundle>(
+  targetDictionary: DeepOptional<TranslationBundle<Bundle>>,
+  selectedDictionary?: DeepOptional<TranslationBundle<Bundle>>
+) {
+  const targetCopy = createObjectCopy(targetDictionary);
+  const sourceCopy = createObjectCopy(selectedDictionary);
+
+  return deepMerge(targetCopy, sourceCopy);
 }

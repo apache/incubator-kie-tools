@@ -15,7 +15,7 @@
  */
 
 // Interpolation function
-type TranslationBundleInterpolation = (...args: Array<string | number>) => string;
+export type TranslationBundleInterpolation = (...args: Array<string | number>) => string;
 
 // The Bundle type
 export type TranslationBundle<Bundle> = {

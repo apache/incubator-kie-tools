@@ -14,10 +14,25 @@
  * limitations under the License.
  */
 
+import { DeepOptional, TranslationBundle } from "./types";
 
-export * from "./i18nComponent"
-export * from "./i18nContext";
-export * from "./hook"
-export * from "./types";
-export * from "./utils";
-export * from "./Dictionary"
+interface LocaleDictionary<T> { [x: string]: DeepOptional<TranslationBundle<T>> }
+
+export class Dictionary<T> {
+  private dictionary: Map<string, DeepOptional<TranslationBundle<T>>>;
+
+  constructor() {
+    this.dictionary = new Map<string, DeepOptional<TranslationBundle<T>>>();
+  }
+
+  public set(...dictionaries: Array<LocaleDictionary<T>>) {
+    dictionaries.forEach(dictionary => {
+      const key = Object.keys(dictionary)[0]
+      this.dictionary.set(key, dictionary[key])
+    })
+  }
+
+  public get(key: string) {
+    return this.dictionary.get(key)
+  }
+}

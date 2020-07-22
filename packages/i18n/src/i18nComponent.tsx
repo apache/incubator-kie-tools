@@ -17,18 +17,21 @@
 import * as React from "react";
 import { FunctionComponent, useMemo, useState } from "react";
 import { I18nContext } from "./i18nContext";
-import { DeepOptional, TranslationBundle } from "./types";
-import { deepMerge } from "./utils";
+import { mergeSelectedDictionaryWithDefault } from "./utils";
+import { Dictionary } from "./Dictionary";
 
 export const I18nContextComponent: FunctionComponent<{
   defaultLocale: string;
-  dictionaries: Map<string, DeepOptional<TranslationBundle<any>>>;
+  dictionaries: Dictionary<any>;
 }> = props => {
   const [locale, setLocale] = useState(props.defaultLocale);
   const dictionary = useMemo(() => {
     const selectedDictionary = props.dictionaries.get(locale) ?? props.dictionaries.get(locale.split("-").shift()!);
 
-    return deepMerge(props.dictionaries.get(props.defaultLocale)!, selectedDictionary);
+    return mergeSelectedDictionaryWithDefault(
+      props.dictionaries.get(props.defaultLocale)!,
+      selectedDictionary
+    );
   }, [locale]);
 
   return <I18nContext.Provider value={{ locale, setLocale, dictionary }}>{props.children}</I18nContext.Provider>;
