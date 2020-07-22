@@ -16,11 +16,8 @@
 
 import { EditorEnvelopeController } from "../EditorEnvelopeController";
 import { SpecialDomElements } from "../SpecialDomElements";
-import { mount } from "enzyme";
-import {
-  EnvelopeBusMessage,
-  EnvelopeBusMessagePurpose,
-} from "@kogito-tooling/microeditor-envelope-protocol";
+import { cleanup, fireEvent, getByTestId, render } from "@testing-library/react";
+import { EnvelopeBusMessage, EnvelopeBusMessagePurpose } from "@kogito-tooling/microeditor-envelope-protocol";
 import { ChannelType, LanguageData, OperatingSystem } from "@kogito-tooling/core-api";
 import { DummyEditor } from "./DummyEditor";
 import { ResourceContentServiceCoordinator } from "../api/resourceContent";
@@ -28,88 +25,58 @@ import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortc
 
 let loadingScreenContainer: HTMLElement;
 let envelopeContainer: HTMLElement;
-
-beforeEach(() => {
-  loadingScreenContainer = document.body.appendChild(document.createElement("div"));
-  loadingScreenContainer.setAttribute("id", "loading-screen");
-
-  envelopeContainer = document.body.appendChild(document.createElement("div"));
-  envelopeContainer.setAttribute("id", "envelopeContainer");
-});
-
-afterEach(() => loadingScreenContainer.remove());
-
-const delay = (ms: number) => {
-  return Promise.resolve().then(() => new Promise(res => setTimeout(res, ms)));
-};
-
-const languageData = {
-  editorId: "test-editor-id",
-  gwtModuleName: "none",
-  resources: []
-};
-
 let sentMessages: Array<EnvelopeBusMessage<any, any>>;
 let controller: EditorEnvelopeController;
-let mockComponent: ReturnType<typeof mount>;
+let mockComponent: ReturnType<typeof render>;
 let dummyEditor: DummyEditor;
 
-beforeEach(() => {
-  sentMessages = [];
-
-  dummyEditor = new DummyEditor();
-
-  controller = new EditorEnvelopeController(
-    {
-      postMessage: message => {
-        sentMessages.push(message);
-      }
-    },
-    {
-      createEditor(_: LanguageData) {
-        return Promise.resolve(dummyEditor);
-      }
-    },
-    new SpecialDomElements(),
-    {
-      render: (element, container, callback) => {
-        mockComponent = mount(element);
-        callback();
-      }
-    },
-    new ResourceContentServiceCoordinator(),
-    new DefaultKeyboardShortcutsService({
-      editorContext: { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS }
-    })
-  );
-});
-
-afterEach(() => {
-  controller.stop();
-});
-
-async function startController() {
-  const context = { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS };
-  await controller.start({
-    container: envelopeContainer,
-    context: context
-  });
-  return mockComponent!;
-}
-
-async function incomingMessage(message: EnvelopeBusMessage<any, any>) {
-  window.postMessage(message, window.location.origin);
-  await delay(0); //waits til next event loop iteration
-}
+const languageData = { editorId: "test-editor-id", gwtModuleName: "none", resources: [] };
 
 describe("EditorEnvelopeController", () => {
+  beforeEach(() => {
+    loadingScreenContainer = document.body.appendChild(document.createElement("div"));
+    loadingScreenContainer.setAttribute("id", "loading-screen");
+
+    envelopeContainer = document.body.appendChild(document.createElement("div"));
+    envelopeContainer.setAttribute("id", "envelopeContainer");
+
+    sentMessages = [];
+    dummyEditor = new DummyEditor();
+    controller = new EditorEnvelopeController(
+      {
+        postMessage: message => sentMessages.push(message)
+      },
+      {
+        createEditor: (_: LanguageData) => Promise.resolve(dummyEditor)
+      },
+      new SpecialDomElements(),
+      {
+        render: (element, container, callback) => {
+          mockComponent = render(element, { container: envelopeContainer });
+          callback();
+        }
+      },
+      new ResourceContentServiceCoordinator(),
+      new DefaultKeyboardShortcutsService({
+        editorContext: { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS }
+      })
+    );
+  });
+
+  afterEach(() => {
+    controller.stop();
+    loadingScreenContainer.remove();
+    envelopeContainer.remove();
+    cleanup();
+  });
+
   test("opens", async () => {
-    const render = await startController();
-    expect(render).toMatchSnapshot();
+    const { container } = await startController();
+    expect(document.body).toMatchSnapshot();
   });
 
   test("receives init request", async () => {
-    const render = await startController();
+    const { container } = await startController();
     await incomingMessage({
       requestId: "KogitoChannelBus_0",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
@@ -126,7 +93,8 @@ describe("EditorEnvelopeController", () => {
         data: []
       }
     ]);
-    expect(render.update()).toMatchSnapshot();
+
+    expect(document.body).toMatchSnapshot();
   });
 
   test("receives language response", async () => {
@@ -156,10 +124,12 @@ describe("EditorEnvelopeController", () => {
         data: []
       }
     ]);
+
+    expect(document.body).toMatchSnapshot();
   });
 
   test("after received content", async () => {
-    const render = await startController();
+    const { container } = await startController();
 
     await incomingMessage({
       requestId: "KogitoChannelBus_0",
@@ -175,7 +145,6 @@ describe("EditorEnvelopeController", () => {
       data: languageData
     });
 
-    await delay(0);
     sentMessages = [];
     await incomingMessage({
       requestId: "KogitoEnvelopeBus_1",
@@ -183,6 +152,8 @@ describe("EditorEnvelopeController", () => {
       type: "receive_contentRequest",
       data: { content: "test content" }
     });
+
+    fireEvent.transitionEnd(getByTestId(document.body, "loading-screen-div"));
 
     expect(sentMessages).toEqual([
       {
@@ -199,7 +170,8 @@ describe("EditorEnvelopeController", () => {
         data: undefined
       }
     ]);
-    expect(render.update()).toMatchSnapshot();
+
+    expect(document.body).toMatchSnapshot();
   });
 
   test("test notify undo/redo", async () => {
@@ -239,3 +211,18 @@ describe("EditorEnvelopeController", () => {
     expect(dummyEditor.redo).toBeCalledTimes(1);
   });
 });
+
+function delay(ms: number) {
+  return Promise.resolve().then(() => new Promise(res => setTimeout(res, ms)));
+}
+
+async function startController() {
+  const context = { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS };
+  await controller.start({ container: envelopeContainer, context: context });
+  return mockComponent!;
+}
+
+async function incomingMessage(message: EnvelopeBusMessage<any, any>) {
+  window.postMessage(message, window.location.origin);
+  await delay(0); //waits til next event loop iteration
+}

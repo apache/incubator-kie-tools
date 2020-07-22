@@ -15,24 +15,19 @@
  */
 
 import * as React from "react";
-import { shallow } from "enzyme";
+import { cleanup, fireEvent, getByTestId, render } from "@testing-library/react";
 import { EditorEnvelopeView } from "../EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
 import { KogitoEnvelopeBus } from "../KogitoEnvelopeBus";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
 
-let loadingScreenContainer: HTMLElement;
-beforeEach(() => (loadingScreenContainer = document.body.appendChild(document.createElement("div"))));
-afterEach(() => loadingScreenContainer.remove());
-
-function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shallow>] {
+function renderEditorEnvelopeView(): EditorEnvelopeView {
   let view: EditorEnvelopeView;
   const context = { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS };
-  const sentMessages: any[] = [];
   const kogitoEnvelopeBus = new KogitoEnvelopeBus(
     {
-      postMessage: (message, targetOrigin) => sentMessages.push([message, targetOrigin])
+      postMessage: jest.fn()
     },
     {
       receive_initRequest: jest.fn(),
@@ -46,7 +41,7 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
     }
   );
 
-  const render = shallow(
+  render(
     <EditorEnvelopeView
       keyboardShortcutsService={new DefaultKeyboardShortcutsService({ editorContext: context })}
       context={context}
@@ -56,25 +51,54 @@ function renderEditorEnvelopeView(): [EditorEnvelopeView, ReturnType<typeof shal
     />
   );
 
-  return [view!, render];
+  return view!;
 }
+let loadingScreenContainer: HTMLElement;
 
 describe("EditorEnvelopeView", () => {
-  test("first open", () => {
-    const [_, render] = renderEditorEnvelopeView();
-    expect(render).toMatchSnapshot();
+  beforeEach(() => {
+    loadingScreenContainer = document.body.appendChild(document.createElement("div"));
+  });
+
+  afterEach(() => {
+    cleanup();
+    loadingScreenContainer.remove();
+  });
+
+  test("first open", async () => {
+    const _ = renderEditorEnvelopeView();
+    expect(document.body).toMatchSnapshot();
   });
 
   test("after loading stops", async () => {
-    const [view, render] = renderEditorEnvelopeView();
+    const view = renderEditorEnvelopeView();
+
     await view.setLoadingFinished();
-    expect(render).toMatchSnapshot();
+    fireEvent.transitionEnd(getByTestId(document.body, "loading-screen-div"));
+
+    expect(document.body).toMatchSnapshot();
   });
 
   test("after loading stops and editor is set", async () => {
-    const [view, render] = renderEditorEnvelopeView();
+    const view = renderEditorEnvelopeView();
+
     await view.setLoadingFinished();
+    fireEvent.transitionEnd(getByTestId(document.body, "loading-screen-div"));
+
     await view.setEditor(new DummyEditor());
-    expect(render).toMatchSnapshot();
+
+    expect(document.body).toMatchSnapshot();
+  });
+
+  test("after set content", async () => {
+    const view = renderEditorEnvelopeView();
+
+    await view.setLoadingFinished();
+    fireEvent.transitionEnd(getByTestId(document.body, "loading-screen-div"));
+
+    await view.setEditor(new DummyEditor());
+    await view.getEditor()!.setContent("/some/path.txt", "some-test-content");
+
+    expect(document.body).toMatchSnapshot();
   });
 });
