@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { TranslationBundle } from "../types";
+import { TranslationBundle } from "@kogito-tooling/i18n";
 
 export interface TermsBundle extends TranslationBundle<TermsBundle> {
   cancel: string;
