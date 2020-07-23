@@ -1039,10 +1039,11 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                 class="pf-c-page__header-nav"
               >
                 <div
+                  class="kogito--editor__toolbar-title"
                   data-testid="toolbar-title"
                 >
                   <h3
-                    class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
+                    class="pf-c-title pf-m-xl"
                   >
                     a.dmn
                   </h3>
