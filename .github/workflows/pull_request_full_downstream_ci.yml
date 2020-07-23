@@ -26,8 +26,8 @@ jobs:
           if [ -z "${{ github.event.pull_request }}" ]; then
             user=$(node -e "console.log('${{ github.event.comment.body }}'.match(/Build: (.+)\/(.+)$/)[1])"); 
             ref=$(node -e "console.log('${{ github.event.comment.body }}'.match(/Build: (.+)\/(.+)$/)[2])");
-            category="issues";
-            id="${{ github.event.issue.number }}";
+            category="comment";
+            id="${{ github.event.comment.id }}";
           else 
             user=${{ github.event.pull_request.user.login }}
             ref=${{ github.head_ref }}
@@ -47,6 +47,7 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             [KOGITO-TOOLING-BUILD] @${{ github.actor }} Build triggered for ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}. Check progress at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            The Online Editor for this job will be available at https://kiegroup.github.io/kogito-online-ci/${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}
           reactions: rocket
        
       - name: Checkout droolsjbpm-build-bootstrap
