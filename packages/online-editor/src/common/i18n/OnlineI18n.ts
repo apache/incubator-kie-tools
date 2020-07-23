@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-import { DeepOptional, TranslationBundle } from "./types";
+import { TranslationBundle } from "@kogito-tooling/i18n";
+import { TermsBundle } from "@kogito-tooling/i18n-terms";
 
-interface LocaleDictionary<T> { [x: string]: DeepOptional<TranslationBundle<T>> }
-
-export class Dictionary<T> {
-  private dictionary: Map<string, DeepOptional<TranslationBundle<T>>>;
-
-  constructor() {
-    this.dictionary = new Map<string, DeepOptional<TranslationBundle<T>>>();
-  }
-
-  public set(...dictionaries: Array<LocaleDictionary<T>>) {
-    dictionaries.forEach(dictionary => {
-      const key = Object.keys(dictionary)[0]
-      this.dictionary.set(key, dictionary[key])
-    })
-  }
-
-  public get(key: string) {
-    return this.dictionary.get(key)
-  }
+interface OnlineBundle extends TranslationBundle<OnlineBundle> {
+  downloadHubModal: {
+    beforeDownload: {
+      title: string;
+      vscodeDescription: string;
+      githubChromeDescription: string;
+      desktopDescription: string;
+      businessModelerDescription: string;
+      operationSystem: string;
+    };
+    afterDownload: {
+      title: string;
+    };
+  };
 }
+
+export interface OnlineI18n extends TranslationBundle<OnlineBundle & TermsBundle> {}

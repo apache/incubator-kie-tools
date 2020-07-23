@@ -14,12 +14,4 @@
  * limitations under the License.
  */
 
-import { TermsBundle } from "../TermsBundle";
-
-export const en_US: TermsBundle = {
-  cancel: "Cancel",
-  close: "Close",
-  download: "Download",
-  exit: "Exit",
-  save: "Save"
-};
+import "@testing-library/jest-dom";

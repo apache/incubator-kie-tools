@@ -16,10 +16,10 @@
 
 import { TermsBundle } from "../TermsBundle";
 
-export const pt_BR: TermsBundle = {
-  cancel: "Cancelar",
-  close: "Fechar",
+export const en: TermsBundle = {
+  cancel: "Cancel",
+  close: "Close",
   download: "Download",
-  exit: "Sair",
-  save: "Salvar"
+  exit: "Exit",
+  save: "Save"
 };

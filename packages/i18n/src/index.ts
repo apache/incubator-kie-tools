@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-
-export * from "./i18nComponent"
+export * from "./i18nProvider";
 export * from "./i18nContext";
-export * from "./hook"
+export * from "./hook";
 export * from "./types";
-export * from "./utils";
-export * from "./Dictionary"

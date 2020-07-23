@@ -26,4 +26,3 @@ export type TranslationBundle<Bundle> = {
 export type DeepOptional<TBundle> = {
   [K in keyof TBundle]?: DeepOptional<TBundle[K]>;
 };
-
