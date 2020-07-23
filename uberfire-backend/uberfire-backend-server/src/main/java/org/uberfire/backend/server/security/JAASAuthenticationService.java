@@ -108,7 +108,7 @@ public class JAASAuthenticationService extends GroupAdapterAuthorizationSource i
                                                                      loginContext.getSubject(),
                                                                      new String[]{rolePrincipleName});
         Collection<Role> roles = getRoles(principals);
-        Collection<org.jboss.errai.security.shared.api.Group> groups = getGroups(principals);
+        Collection<org.jboss.errai.security.shared.api.Group> groups = getGroups(principals, username);
         UserImpl user = new UserImpl(username,
                                      roles,
                                      groups);

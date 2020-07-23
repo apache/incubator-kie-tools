@@ -183,7 +183,7 @@ public class GroupAdapterAuthorizationSource {
      * For a given collection of principal names, return the Role instances for the ones
      * that are considered roles, so the ones that exist on the RoleRegistry.
      */
-    protected List<Group> getGroups(List<String> principals) {
+    protected List<Group> getGroups(List<String> principals, String user) {
 
         if (null != principals && !principals.isEmpty()) {
 
@@ -195,7 +195,7 @@ public class GroupAdapterAuthorizationSource {
 
                 for (String role : principals) {
 
-                    if (null == RoleRegistry.get().getRegisteredRole(role)) {
+                    if ( role != user && null == RoleRegistry.get().getRegisteredRole(role)) {
 
                         result.add(new GroupImpl(role));
                     }

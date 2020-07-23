@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -38,10 +39,19 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.server.security.RoleRegistry;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.uberfire.ext.security.server.ServletSecurityAuthenticationService.USER_SESSION_ATTR_NAME;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -171,6 +181,35 @@ public class ServletSecurityAuthenticationServiceTest {
         assertTrue(user.getGroups().contains(new GroupImpl("group1")));
         assertTrue(user.getGroups().contains(new GroupImpl("g1")));
         assertTrue(user.getGroups().contains(new GroupImpl("g2")));
+    }
+
+    @Test
+    public void testLoginWithUsernameInPrincipal() throws Exception {
+        RoleRegistry.get().registerRole("admin");
+        RoleRegistry.get().registerRole("role1");
+        Set<Principal> principals = mockPrincipals("admin",
+                                                   "role1",
+                                                   "group1",
+                                                   USERNAME,
+                                                   null);
+        Subject subject = new Subject();
+        subject.getPrincipals().addAll(principals);
+        doReturn(subject).when(tested).getSubjectFromPolicyContext();
+
+        User user = tested.login(USERNAME,
+                                 PASSWORD);
+
+        assertNotNull(user);
+        assertEquals(USERNAME,
+                     user.getIdentifier());
+        assertEquals(2,
+                     user.getRoles().size());
+        assertTrue(user.getRoles().contains(new RoleImpl("admin")));
+        assertTrue(user.getRoles().contains(new RoleImpl("role1")));
+        assertEquals(1,
+                     user.getGroups().size());
+        assertTrue(user.getGroups().contains(new GroupImpl("group1")));
+        assertFalse(user.getGroups().contains(new GroupImpl("user1")));
     }
 
     @Test

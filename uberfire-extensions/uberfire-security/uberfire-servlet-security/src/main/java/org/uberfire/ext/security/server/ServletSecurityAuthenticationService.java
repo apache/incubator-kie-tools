@@ -137,7 +137,7 @@ public class ServletSecurityAuthenticationService extends GroupAdapterAuthorizat
                 if (null != roles && !roles.isEmpty()) {
                     userRoles.addAll(roles);
                 }
-                Collection<org.jboss.errai.security.shared.api.Group> userGroups = getGroups(principals);
+                Collection<org.jboss.errai.security.shared.api.Group> userGroups = getGroups(principals, name);
                 // Create the user instance.
                 user = new UserImpl(name,
                                     userRoles,
