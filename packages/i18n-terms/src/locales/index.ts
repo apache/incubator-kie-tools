@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import { Dictionary } from "@kogito-tooling/i18n";
-import { en_US } from "./en_US";
-import { pt_BR } from "./pt_BR";
-import { TermsBundle } from "../TermsBundle";
+import { en } from "./en";
 
-const dictionary = new Dictionary<TermsBundle>();
-dictionary.set({ en_US }, { pt_BR });
+export const dictionary = new Map([["en", en]]);
+
+export * from "./en";

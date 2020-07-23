@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/i18n",
+  "name": "@kogito-tooling/i18n-terms",
   "version": "0.6.1",
   "description": "",
   "license": "Apache-2.0",
@@ -25,6 +25,9 @@
       "@babel/react"
     ]
   },
+  "dependencies": {
+    "@kogito-tooling/i18n": "0.6.1"
+},
   "jest-junit": {
     "outputDirectory": "./target"
   }
