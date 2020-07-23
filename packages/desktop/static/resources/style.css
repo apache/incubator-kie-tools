@@ -31,11 +31,16 @@
   .kogito--editor__toolbar {
     --pf-c-page__header--MinHeight: unset;
   }
+
+  .kogito--editor__toolbar .pf-c-page__header-nav {
+    margin-right: 14em;
+  }
 }
 
 .kogito--editor__toolbar .pf-c-page__header-nav {
   align-self: center;
   justify-content: center;
+  height: 100%
 }
 
 .kogito--alert-container {
@@ -128,13 +133,12 @@
   background-color: var(--pf-global--BackgroundColor--light-300);
 }
 
-@media (min-width: 992px) {
-  .kogito--editor__toolbar .pf-c-page__header-nav {
-    margin-right: 14em;
-  }
+.kogito--editor__toolbar-title {
+  border: var(--pf-global--BorderWidth--md) solid var(--pf-c-page__header-nav--BackgroundColor);
+  padding: var(--pf-global--spacer--xs);
 }
 
-.kogito--editor__toolbar-title {
+.kogito--editor__toolbar-title h3 {
   display: inline;
 }
 

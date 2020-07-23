@@ -185,6 +185,7 @@
 .kogito--editor__toolbar .pf-c-page__header-nav {
   align-self: center;
   justify-content: center;
+  height: 100%
 }
 
 .kogito--editor__toolbar-title {

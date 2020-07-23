@@ -46,9 +46,9 @@ export function EditorToolbar(props: Props) {
   const tooltipContent = <div>{context.file?.filePath!}</div>;
 
   const fileNameTitle = (
-    <div data-testid="toolbar-title">
+    <div data-testid="toolbar-title" className={"kogito--editor__toolbar-title"}>
       <Tooltip content={tooltipContent} position={TooltipPosition.bottom} maxWidth={"50em"}>
-        <Title headingLevel={"h3"} size={"xl"} className={"kogito--editor__toolbar-title"}>
+        <Title headingLevel={"h3"} size={"xl"}>
           {removeDirectories(context.file!.filePath)}
         </Title>
       </Tooltip>
