@@ -893,7 +893,9 @@ public class AbstractKogitoDMNServiceTest {
         FactModelTree inputDataNameFact = factModelTuple.getVisibleFacts().get("inputDataName");
         assertNotNull(inputDataNameFact);
         assertTrue(inputDataNameFact.getSimpleProperties().size() == 1);
-        assertTrue(inputDataNameFact.getSimpleProperties().values().contains("number"));
+        assertEquals("number", inputDataNameFact.getSimpleProperties().get(VALUE).getTypeName());
+        assertEquals("number", inputDataNameFact.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
+        assertFalse(inputDataNameFact.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
     }
 
     @Test
@@ -907,7 +909,9 @@ public class AbstractKogitoDMNServiceTest {
         FactModelTree decisionDataNameFact = factModelTuple.getVisibleFacts().get("inputDecisionName");
         assertNotNull(decisionDataNameFact);
         assertTrue(decisionDataNameFact.getSimpleProperties().size() == 1);
-        assertTrue(decisionDataNameFact.getSimpleProperties().values().contains("string"));
+        assertEquals("string", decisionDataNameFact.getSimpleProperties().get(VALUE).getTypeName());
+        assertEquals("string", decisionDataNameFact.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
+        assertFalse(decisionDataNameFact.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
     }
 
     @Test
@@ -924,11 +928,15 @@ public class AbstractKogitoDMNServiceTest {
         FactModelTree inputDataNameFact = factModelTuple.getVisibleFacts().get("inputDataName");
         assertNotNull(inputDataNameFact);
         assertTrue(inputDataNameFact.getSimpleProperties().size() == 1);
-        assertTrue(inputDataNameFact.getSimpleProperties().values().contains("number"));
+        assertEquals("number", inputDataNameFact.getSimpleProperties().get(VALUE).getTypeName());
+        assertEquals("number", inputDataNameFact.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
+        assertFalse(inputDataNameFact.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
         FactModelTree decisionDataNameFact = factModelTuple.getVisibleFacts().get("inputDecisionName");
         assertNotNull(decisionDataNameFact);
         assertTrue(decisionDataNameFact.getSimpleProperties().size() == 1);
-        assertTrue(decisionDataNameFact.getSimpleProperties().values().contains("string"));
+        assertEquals("string", decisionDataNameFact.getSimpleProperties().get(VALUE).getTypeName());
+        assertEquals("string", decisionDataNameFact.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
+        assertFalse(decisionDataNameFact.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
     }
 
     @Test
@@ -940,8 +948,9 @@ public class AbstractKogitoDMNServiceTest {
         assertEquals("testPath", retrieved.getFactName());
         assertEquals(1, retrieved.getSimpleProperties().size());
         assertTrue(retrieved.getSimpleProperties().containsKey(VALUE));
-        assertEquals(simpleString.getName(), retrieved.getSimpleProperties().get(VALUE));
-        assertTrue(retrieved.getExpandableProperties().isEmpty());
+        assertEquals(simpleString.getName(), retrieved.getSimpleProperties().get(VALUE).getTypeName());
+        assertFalse(retrieved.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
+        assertEquals(simpleString.getName(), retrieved.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
         assertTrue(retrieved.getGenericTypesMap().isEmpty());
     }
 
@@ -955,8 +964,9 @@ public class AbstractKogitoDMNServiceTest {
         assertEquals("testPath", retrieved.getFactName());
         assertEquals(1, retrieved.getSimpleProperties().size());
         assertTrue(retrieved.getSimpleProperties().containsKey(VALUE));
-        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE));
-        assertTrue(retrieved.getExpandableProperties().isEmpty());
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getTypeName());
+        assertFalse(retrieved.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());        assertTrue(retrieved.getExpandableProperties().isEmpty());
         assertEquals(1, retrieved.getGenericTypesMap().size());
         assertTrue(retrieved.getGenericTypesMap().containsKey(VALUE));
         Assert.assertNotNull(retrieved.getGenericTypesMap().get(VALUE));
@@ -973,9 +983,13 @@ public class AbstractKogitoDMNServiceTest {
         assertEquals("testPath", retrieved.getFactName());
         assertEquals(2, retrieved.getSimpleProperties().size());
         assertTrue(retrieved.getSimpleProperties().containsKey("friends"));
-        assertEquals("java.util.List", retrieved.getSimpleProperties().get("friends"));
-        assertTrue(retrieved.getSimpleProperties().containsKey(TYPE_NAME));
-        assertEquals(TYPE_NAME, retrieved.getSimpleProperties().get(TYPE_NAME));
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get("friends").getTypeName());
+        assertFalse(retrieved.getSimpleProperties().get("friends").getBaseTypeName().isPresent());
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get("friends").getPropertyTypeNameToVisualize());
+        assertTrue(retrieved.getSimpleProperties().containsKey("name"));
+        assertEquals(TYPE_NAME, retrieved.getSimpleProperties().get("name").getTypeName());
+        assertFalse(retrieved.getSimpleProperties().get("name").getBaseTypeName().isPresent());
+        assertEquals(TYPE_NAME, retrieved.getSimpleProperties().get("name").getPropertyTypeNameToVisualize());
         //
         assertEquals(1, retrieved.getGenericTypesMap().size());
         assertTrue(retrieved.getGenericTypesMap().containsKey("friends"));
@@ -998,8 +1012,9 @@ public class AbstractKogitoDMNServiceTest {
         assertEquals("testPath", retrieved.getFactName());
         assertEquals(1, retrieved.getSimpleProperties().size());
         assertTrue(retrieved.getSimpleProperties().containsKey(VALUE));
-        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE));
-        assertTrue(retrieved.getExpandableProperties().isEmpty());
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getTypeName());
+        assertFalse(retrieved.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());        assertTrue(retrieved.getExpandableProperties().isEmpty());
         assertEquals(1, retrieved.getGenericTypesMap().size());
         assertTrue(retrieved.getGenericTypesMap().containsKey(VALUE));
         Assert.assertNotNull(retrieved.getGenericTypesMap().get(VALUE));
@@ -1063,5 +1078,3 @@ public class AbstractKogitoDMNServiceTest {
         return new ClientDMNType(NAMESPACE, TYPE_NAME, null, true, true, compositePersonField, null);
     }
 }
-
-

@@ -154,7 +154,7 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
      * will always be a <code>java.lang.String</code>
      */
     public FactModelTree getFactModelTree(String factName, Map<String, String> superTypeMap, ModelField[] modelFields) {
-        Map<String, String> simpleProperties = new HashMap<>();
+        Map<String, FactModelTree.PropertyTypeName> simpleProperties = new HashMap<>();
         Map<String, List<String>> genericTypesMap = new HashMap<>();
         String factPackageName = packageName;
         String fullFactClassName = getFQCNByFactName(factName);
@@ -162,14 +162,14 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
             factPackageName = fullFactClassName.substring(0, fullFactClassName.lastIndexOf('.'));
         }
         if (ScenarioSimulationSharedUtils.isEnumCanonicalName(superTypeMap.get(factName))) {
-            simpleProperties.put(ConstantsHolder.VALUE, fullFactClassName);
+            simpleProperties.put(ConstantsHolder.VALUE, new FactModelTree.PropertyTypeName(fullFactClassName));
             return getSimpleClassFactModelTree(factName, fullFactClassName);
         }
 
         for (ModelField modelField : modelFields) {
             if (!modelField.getName().equals("this")) {
                 String className = defineClassNameField(modelField.getClassName(), superTypeMap);
-                simpleProperties.put(modelField.getName(), className);
+                simpleProperties.put(modelField.getName(), new FactModelTree.PropertyTypeName(className));
                 if (ScenarioSimulationSharedUtils.isCollection(className)) {
                     populateGenericTypeMap(genericTypesMap, factName, modelField.getName(), ScenarioSimulationSharedUtils.isList(className));
                 }
@@ -257,9 +257,9 @@ public abstract class AbstractDMODataManagementStrategy extends AbstractDataMana
     public void populateFactModelTree(FactModelTree toPopulate, final SortedMap<String, FactModelTree> factTypeFieldsMap) {
         List<String> toRemove = new ArrayList<>();
         toPopulate.getSimpleProperties().forEach((key, value) -> {
-            if (factTypeFieldsMap.containsKey(value)) {
+            if (factTypeFieldsMap.containsKey(value.getTypeName())) {
                 toRemove.add(key);
-                toPopulate.addExpandableProperty(key, factTypeFieldsMap.get(value).getFactName());
+                toPopulate.addExpandableProperty(key, factTypeFieldsMap.get(value.getTypeName()).getFactName());
             }
         });
         toRemove.forEach(toPopulate::removeSimpleProperty);

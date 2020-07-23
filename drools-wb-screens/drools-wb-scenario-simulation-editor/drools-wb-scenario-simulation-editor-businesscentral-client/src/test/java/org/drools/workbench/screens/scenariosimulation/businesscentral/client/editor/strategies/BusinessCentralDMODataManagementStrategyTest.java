@@ -36,7 +36,6 @@ import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.Fact
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.ArgumentCaptor;
@@ -50,7 +49,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.kie.soup.project.datamodel.oracle.ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -226,33 +224,10 @@ public class BusinessCentralDMODataManagementStrategyTest extends AbstractScenar
     }
 
     @Test
-    public void getFactModelTree() {
-        Map<String, String> simpleProperties = getSimplePropertiesInner();
-        final ModelField[] modelFields = getModelFieldsInner(simpleProperties);
-        final FactModelTree retrieved = businessCentralDmoDataManagementStrategySpy.getFactModelTree(TestProperties.FACT_NAME, Collections.emptyMap(), modelFields);
-        assertNotNull(retrieved);
-        assertEquals(TestProperties.FACT_NAME, retrieved.getFactName());
-        assertEquals(TestProperties.FULL_PACKAGE, retrieved.getFullPackage());
-    }
-
-    @Test
-    public void getFactModelTreeEnumClass() {
-        final ModelField[] modelFields = {};
-        Map<String, String> superTypesMap = new HashMap<>();
-        superTypesMap.put(TestProperties.FACT_NAME, Enum.class.getCanonicalName());
-        final FactModelTree retrieved = businessCentralDmoDataManagementStrategySpy.getFactModelTree(TestProperties.FACT_NAME,superTypesMap, modelFields);
-        assertNotNull(retrieved);
-        assertEquals(TestProperties.FACT_NAME, retrieved.getFactName());
-        assertEquals(TestProperties.FULL_PACKAGE, retrieved.getFullPackage());
-        assertTrue(retrieved.getSimpleProperties().containsKey(TestProperties.LOWER_CASE_VALUE));
-        assertEquals(TestProperties.FULL_CLASS_NAME, retrieved.getSimpleProperties().get(TestProperties.LOWER_CASE_VALUE));
-    }
-
-    @Test
     public void getInstanceMap() {
         FactModelTree toPopulate = getFactModelTreeInner(randomAlphabetic(3));
-        final Map<String, String> simpleProperties = toPopulate.getSimpleProperties();
-        final Collection<String> values = simpleProperties.values();
+        final Map<String, FactModelTree.PropertyTypeName> simpleProperties = toPopulate.getSimpleProperties();
+        final Collection<FactModelTree.PropertyTypeName> values = simpleProperties.values();
         SortedMap<String, FactModelTree> factTypeFieldsMap = getFactTypeFieldsMapInner(values);
         SortedMap<String, FactModelTree> retrieved = businessCentralDmoDataManagementStrategySpy.getInstanceMap(factTypeFieldsMap);
         assertNotNull(retrieved);
@@ -370,37 +345,21 @@ public class BusinessCentralDMODataManagementStrategyTest extends AbstractScenar
         assertEquals(fullFactType, retrieved.get(retrieved.size() - 1));
     }
 
-    private ModelField[] getModelFieldsInner(Map<String, String> simpleProperties) {
-        List<ModelField> toReturn = new ArrayList<>();
-        simpleProperties.forEach((key, value) -> toReturn.add(getModelFieldInner(key, value, "String")));
-        return toReturn.toArray(new ModelField[toReturn.size()]);
-    }
-
-    private ModelField getModelFieldInner(final String name,
-                                          final String clazz,
-                                          final String type) {
-        return new ModelField(name,
-                              clazz,
-                              REGULAR_CLASS,
-                              ModelField.FIELD_ORIGIN.DECLARED,
-                              FieldAccessorsAndMutators.BOTH, type);
-    }
-
     private FactModelTree getFactModelTreeInner(String factName) {
         return new FactModelTree(factName, AbstractScenarioSimulationEditorTest.SCENARIO_PACKAGE, getSimplePropertiesInner(), new HashMap<>());
     }
 
-    private SortedMap<String, FactModelTree> getFactTypeFieldsMapInner(Collection<String> keys) {
+    private SortedMap<String, FactModelTree> getFactTypeFieldsMapInner(Collection<FactModelTree.PropertyTypeName> keys) {
         return new TreeMap<>(keys.stream()
-                                     .collect(Collectors.toMap(key -> key,
-                                                               key -> (FactModelTree) getFactModelTreeInner(key))));
+                                     .collect(Collectors.toMap(key -> key.getTypeName(),
+                                                               key -> (FactModelTree) getFactModelTreeInner(key.getTypeName()))));
     }
 
-    private Map<String, String> getSimplePropertiesInner() {
+    private Map<String, FactModelTree.PropertyTypeName> getSimplePropertiesInner() {
         String[] keys = getRandomStringArray();
         return Arrays.stream(keys)
                 .collect(Collectors.toMap(key -> key,
-                                          key -> key += "_VALUE"));
+                                          key -> new FactModelTree.PropertyTypeName(key += "_VALUE")));
     }
 
     private String[] getRandomStringArray() {

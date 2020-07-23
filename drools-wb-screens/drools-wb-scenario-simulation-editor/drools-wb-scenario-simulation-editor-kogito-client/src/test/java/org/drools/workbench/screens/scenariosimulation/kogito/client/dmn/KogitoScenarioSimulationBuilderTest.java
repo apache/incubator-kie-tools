@@ -147,7 +147,7 @@ public class KogitoScenarioSimulationBuilderTest {
         factModelTree.addExpandableProperty("recursiveProperty", "recursive");
         String propertyType = String.class.getCanonicalName();
         String propertyName = "simpleProperty";
-        factModelTree.addSimpleProperty(propertyName, propertyType);
+        factModelTree.addSimpleProperty(propertyName, new FactModelTree.PropertyTypeName(propertyType));
 
         hiddenFacts.put("recursive", factModelTree);
 
@@ -187,10 +187,10 @@ public class KogitoScenarioSimulationBuilderTest {
         FactModelTree nested2 = new FactModelTree("tNested2", "", new HashMap<>(), Collections.emptyMap());
         String propertyType = String.class.getCanonicalName();
         String propertyName = "stingProperty";
-        nested1.addSimpleProperty(propertyName, propertyType);
+        nested1.addSimpleProperty(propertyName, new FactModelTree.PropertyTypeName(propertyType));
         String propertyType2 = Boolean.class.getCanonicalName();
         String propertyName2 = "booleanProperty";
-        nested2.addSimpleProperty(propertyName2, propertyType2);
+        nested2.addSimpleProperty(propertyName2, new FactModelTree.PropertyTypeName(propertyType2));
 
         hiddenFacts.put("tNested", nested1);
         hiddenFacts.put("tNested2", nested2);

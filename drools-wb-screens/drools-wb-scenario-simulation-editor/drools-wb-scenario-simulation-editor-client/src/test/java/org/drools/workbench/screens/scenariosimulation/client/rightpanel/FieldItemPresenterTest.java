@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.CLASS_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_NAME;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
@@ -58,9 +59,9 @@ public class FieldItemPresenterTest extends AbstractTestToolsTest {
 
     @Test
     public void getLIElement() {
-        fieldItemPresenter.getLIElement("", FACT_NAME, FACT_NAME, FACT_MODEL_TREE.getFactName());
+        fieldItemPresenter.getLIElement("", FACT_NAME, FACT_NAME, FACT_MODEL_TREE.getFactName(), CLASS_NAME);
         verify(viewsProviderMock, times(1)).getFieldItemView();
-        verify(mockFieldItemView, times(1)).setFieldData(eq(""), eq(FACT_NAME), eq(FACT_NAME), eq(FACT_MODEL_TREE.getFactName()));
+        verify(mockFieldItemView, times(1)).setFieldData(eq(""), eq(FACT_NAME), eq(FACT_NAME), eq(FACT_MODEL_TREE.getFactName()), eq(CLASS_NAME));
         verify(mockFieldItemView, times(1)).setPresenter(eq(fieldItemPresenter));
     }
 

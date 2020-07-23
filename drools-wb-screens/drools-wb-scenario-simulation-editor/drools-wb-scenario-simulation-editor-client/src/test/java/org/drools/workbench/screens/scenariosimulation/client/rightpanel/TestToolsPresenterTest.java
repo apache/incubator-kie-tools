@@ -91,13 +91,13 @@ public class TestToolsPresenterTest extends AbstractTestToolsTest {
         final String firstKey = dataObjectFactTreeMap.firstKey();
         final FactModelTree factModelTree = dataObjectFactTreeMap.get(firstKey);
         final String firstPropertyKey = (String) new ArrayList(factModelTree.getSimpleProperties().keySet()).get(0);
-        final String firstPropertyClass = factModelTree.getSimpleProperties().get(firstPropertyKey);
+        final FactModelTree.PropertyTypeName firstPropertyClass = factModelTree.getSimpleProperties().get(firstPropertyKey);
 
         when(selectedListGroupItemViewMock.getActualClassName()).thenReturn(firstKey);
 
         when(selectedFieldItemViewMock.getFullPath()).thenReturn(firstKey);
         when(selectedFieldItemViewMock.getFieldName()).thenReturn(firstPropertyKey);
-        when(selectedFieldItemViewMock.getClassName()).thenReturn(firstPropertyClass);
+        when(selectedFieldItemViewMock.getClassName()).thenReturn(firstPropertyClass.getTypeName());
 
         when(listGroupItemPresenterMock.getDivElement(FACT_NAME, FACT_MODEL_TREE)).thenReturn(divItemContainerMock);
         this.testToolsPresenterSpy = spy(new TestToolsPresenter(testToolsViewMock, listGroupItemPresenterMock) {

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.scenariosimulation.api.model.FactMappingType;
+import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 
@@ -133,10 +134,10 @@ public class TestProperties {
 
     public static final String STRING_CLASS_NAME = String.class.getCanonicalName();
     public static final String NUMBER_CLASS_NAME = Number.class.getCanonicalName();
-    public static final Map<String, String> EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE = new HashMap<>();
-    public static final Map<String, String> EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_1 = new HashMap<>();
-    public static final Map<String, String> EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_2 = new HashMap<>();
-    public static final Map<String, String> EXPECTED_MAP_FOR_NOT_SIMPLE_TYPE_3 = new HashMap<>();
+    public static final Map<String, FactModelTree.PropertyTypeName> EXPECTED_MAP_FOR_SIMPLE_TYPE = new HashMap<>();
+    public static final Map<String, FactModelTree.PropertyTypeName> EXPECTED_MAP_FOR_SIMPLE_TYPE_2 = new HashMap<>();
+    public static final Map<String, String> EXPECTED_MAP_FOR_EXPANDABLE_TYPE = new HashMap<>();
+    public static final Map<String, String> EXPECTED_MAP_FOR_EXPANDABLE_TYPE_2 = new HashMap<>();
 
     public static final Double GRID_WIDTH = 100.0;
     public static final Double HEADER_HEIGHT = 10.0;

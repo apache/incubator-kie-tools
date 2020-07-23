@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
@@ -162,7 +163,9 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
             toReturn = new HashMap<>();
             toReturn.put(VALUE, typeName);
         } else {
-            toReturn = scenarioSimulationContext.getDataObjectFieldsMap().get(typeName).getSimpleProperties();
+            toReturn = scenarioSimulationContext.getDataObjectFieldsMap().get(typeName).getSimpleProperties()
+                    .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey,
+                                                                  e -> e.getValue().getTypeName()));
         }
         return toReturn;
     }

@@ -75,12 +75,12 @@ abstract class AbstractTestToolsTest {
                     FactModelTree value = new FactModelTree(key, FACT_PACKAGE, getMockSimpleProperties(), new HashMap<>());
                     toReturn.put(key, value);
                     if (id == 1) {
-                        value.addSimpleProperty(getRandomString(), getRandomFactModelTree(toReturn, 0));
+                        value.addSimpleProperty(getRandomString(), getRandomType());
                     }
                     if (id == 2) {
-                        value.addSimpleProperty(getRandomString(), getRandomFactModelTree(toReturn, 1));
+                        value.addSimpleProperty(getRandomString(), getRandomType());
                         // Recursion
-                        value.addSimpleProperty(getRandomString(), value.getFactName());
+                        value.addSimpleProperty(getRandomString(), getRandomType());
                     }
                 });
         return toReturn;
@@ -89,18 +89,18 @@ abstract class AbstractTestToolsTest {
     protected SortedMap<String, FactModelTree> getSimpleJavaTypeFieldsMap() {
         SortedMap<String, FactModelTree> toReturn = new TreeMap<>();
         for (String key : DataManagementStrategy.SIMPLE_CLASSES_MAP.keySet()) {
-            Map<String, String> simpleProperties = new HashMap<>();
-            String fullName = DataManagementStrategy.SIMPLE_CLASSES_MAP.get(key).getCanonicalName();
+            Map<String, FactModelTree.PropertyTypeName> simpleProperties = new HashMap<>();
+            FactModelTree.PropertyTypeName fullName = new FactModelTree.PropertyTypeName(DataManagementStrategy.SIMPLE_CLASSES_MAP.get(key).getCanonicalName());
             simpleProperties.put(LOWER_CASE_VALUE, fullName);
-            String packageName = fullName.substring(0, fullName.lastIndexOf("."));
+            String packageName = fullName.getTypeName().substring(0, fullName.getTypeName().lastIndexOf("."));
             FactModelTree value = new FactModelTree(key, packageName, simpleProperties, new HashMap<>());
             toReturn.put(key, value);
         }
         return toReturn;
     }
 
-    protected Map<String, String> getMockSimpleProperties() {
-        Map<String, String> toReturn = new HashMap<>();
+    protected Map<String, FactModelTree.PropertyTypeName> getMockSimpleProperties() {
+        Map<String, FactModelTree.PropertyTypeName> toReturn = new HashMap<>();
         IntStream
                 .range(0, +3)
                 .forEach(id -> toReturn.put(getRandomString(), getRandomType()));
@@ -119,19 +119,19 @@ abstract class AbstractTestToolsTest {
         return builder.toString();
     }
 
-    protected String getRandomType() {
+    protected FactModelTree.PropertyTypeName getRandomType() {
         int type = new Random().nextInt(4);
         switch (type) {
             case 0:
-                return "lava.lang.String";
+                return new FactModelTree.PropertyTypeName("lava.lang.String");
             case 1:
-                return "byte";
+                return new FactModelTree.PropertyTypeName("byte");
             case 2:
-                return "java.lang.Integer";
+                return new FactModelTree.PropertyTypeName("java.lang.Integer");
             case 3:
-                return "java.lang.Boolean";
+                return new FactModelTree.PropertyTypeName("java.lang.Boolean");
             default:
-                return "int";
+                return new FactModelTree.PropertyTypeName("int");
         }
     }
 }

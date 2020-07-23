@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -38,11 +39,10 @@ public class FactModelTree {
     private String factName;  // The name of the asset
     private String fullPackage;  // The package of the asset
     private boolean isSimple = false;
-
     /**
-     * Map of the properties: key = property name, value = property' simple type
+     * Map of the simple properties: key = property name, value = property' type name
      */
-    private Map<String, String> simpleProperties;
+    private Map<String, PropertyTypeName> simpleProperties;
     /**
      * Map of the collection' properties generic-type: key = property name (ex "books"), value = list of property' generic types (ex "com.Book")
      */
@@ -64,7 +64,7 @@ public class FactModelTree {
      * @param simpleProperties
      * @param genericTypesMap the <b>generic type</b> info, in the format {collection_class_name}#{generic_type}: ex "java.util.List#com.Book"
      */
-    public FactModelTree(String factName, String fullPackage, Map<String, String> simpleProperties, Map<String, List<String>> genericTypesMap) {
+    public FactModelTree(String factName, String fullPackage, Map<String, PropertyTypeName> simpleProperties, Map<String, List<String>> genericTypesMap) {
         this(factName, fullPackage, simpleProperties, genericTypesMap, Type.UNDEFINED);
     }
 
@@ -76,7 +76,7 @@ public class FactModelTree {
      * @param genericTypesMap the <b>generic type</b> info, in the format {collection_class_name}#{generic_type}: ex "java.util.List#com.Book"
      * @param type
      */
-    public FactModelTree(String factName, String fullPackage, Map<String, String> simpleProperties, Map<String, List<String>> genericTypesMap, Type type) {
+    public FactModelTree(String factName, String fullPackage, Map<String, PropertyTypeName> simpleProperties, Map<String, List<String>> genericTypesMap, Type type) {
         this.factName = factName;
         this.fullPackage = fullPackage;
         this.simpleProperties = simpleProperties;
@@ -92,7 +92,7 @@ public class FactModelTree {
         return fullPackage;
     }
 
-    public Map<String, String> getSimpleProperties() {
+    public Map<String, PropertyTypeName> getSimpleProperties() {
         return simpleProperties;
     }
 
@@ -104,8 +104,8 @@ public class FactModelTree {
         return genericTypesMap;
     }
 
-    public void addSimpleProperty(String propertyName, String propertyType) {
-        simpleProperties.put(propertyName, propertyType);
+    public void addSimpleProperty(String propertyName, PropertyTypeName propertyTypeName) {
+        simpleProperties.put(propertyName, propertyTypeName);
     }
 
     public void addExpandableProperty(String propertyName, String propertyType) {
@@ -138,7 +138,7 @@ public class FactModelTree {
     }
 
     public FactModelTree cloneFactModelTree() {
-        Map<String, String> clonedSimpleProperties = new HashMap<>(simpleProperties);
+        Map<String, PropertyTypeName> clonedSimpleProperties = new HashMap<>(simpleProperties);
         Map<String, List<String>> clonedGenericTypesMap =
                 genericTypesMap.entrySet()
                         .stream()
@@ -164,5 +164,59 @@ public class FactModelTree {
                 ", simpleProperties=" + simpleProperties +
                 ", expandableProperties=" + expandableProperties +
                 '}';
+    }
+
+    /**
+     * Nested DTO which holds a Property name. This is required in case of DMN Type scenario, where, if a DMNType
+     * contains a baseType, it takes the type name from its baseType.
+     * This is to manage DMN Simple Types and Anonymous inner types (please refer to DMN documentation for further info)
+     * For all other cases, typeName is the name to use and show.
+     * - typeName: It is the real type name;
+     * - baseTypeName: Optional, it represents the baseType of a DMNType. If is present, this should be shown in UI but
+     *                 ignored on all other steps.
+     */
+    public static class PropertyTypeName {
+
+        private String typeName;
+        private Optional<String> baseTypeName;
+
+        public PropertyTypeName() {
+            typeName = null;
+            baseTypeName = Optional.empty();
+        }
+
+        public PropertyTypeName(String typeName) {
+            this.typeName = typeName;
+            this.baseTypeName = Optional.empty();
+        }
+
+        public PropertyTypeName(String typeName, String baseTypeName) {
+            this.typeName = typeName;
+            this.baseTypeName = Optional.ofNullable(baseTypeName);
+        }
+
+        public String getTypeName() {
+            return typeName;
+        }
+
+        public Optional<String> getBaseTypeName() {
+            return baseTypeName;
+        }
+
+        public void setTypeName(String typeName) {
+            this.typeName = typeName;
+        }
+
+        public void setBaseTypeName(String baseTypeName) {
+            this.baseTypeName = Optional.ofNullable(baseTypeName);
+        }
+
+        /**
+         * This method returns the correct <b>type</b> name of the property to be visualized in UI.
+         * @return
+         */
+        public String getPropertyTypeNameToVisualize() {
+            return baseTypeName.orElse(typeName);
+        }
     }
 }

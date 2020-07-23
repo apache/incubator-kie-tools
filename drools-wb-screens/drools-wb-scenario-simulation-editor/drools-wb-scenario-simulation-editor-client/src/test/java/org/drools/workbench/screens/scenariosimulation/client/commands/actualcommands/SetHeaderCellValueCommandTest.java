@@ -108,12 +108,12 @@ public class SetHeaderCellValueCommandTest extends AbstractScenarioGridCommandTe
 
     @Test
     public void recursivelyFindIsPropertyType() {
-        Map<String, String> bookSimpleProperties = new HashMap<>();
-        bookSimpleProperties.put("name", "String");
+        Map<String, FactModelTree.PropertyTypeName> bookSimpleProperties = new HashMap<>();
+        bookSimpleProperties.put("name", new FactModelTree.PropertyTypeName("String"));
         Map<String, String> bookExpandableProperties = new HashMap<>();
         bookExpandableProperties.put("author", "Author");
-        Map<String, String> authorSimpleProperties = new HashMap<>();
-        authorSimpleProperties.put("books", "List");
+        Map<String, FactModelTree.PropertyTypeName> authorSimpleProperties = new HashMap<>();
+        authorSimpleProperties.put("books", new FactModelTree.PropertyTypeName("List"));
         Map<String, String> authorExpandableProperties = new HashMap<>();
         FactModelTree bookFactModelTreeMock = getMockedFactModelTree(bookSimpleProperties, bookExpandableProperties);
         FactModelTree authorFactModelTreeMock = getMockedFactModelTree(authorSimpleProperties, authorExpandableProperties);
@@ -125,7 +125,7 @@ public class SetHeaderCellValueCommandTest extends AbstractScenarioGridCommandTe
         assertTrue(((SetHeaderCellValueCommand) commandSpy).recursivelyFindIsPropertyType(scenarioSimulationContextLocal, bookFactModelTreeMock, Arrays.asList("author", "books")));
     }
 
-    private FactModelTree getMockedFactModelTree(Map<String, String> simpleProperties, Map<String, String> expandableProperties) {
+    private FactModelTree getMockedFactModelTree(Map<String, FactModelTree.PropertyTypeName> simpleProperties, Map<String, String> expandableProperties) {
         FactModelTree toReturn = mock(FactModelTree.class);
         when(toReturn.getSimpleProperties()).thenReturn(simpleProperties);
         when(toReturn.getExpandableProperties()).thenReturn(expandableProperties);
@@ -166,7 +166,7 @@ public class SetHeaderCellValueCommandTest extends AbstractScenarioGridCommandTe
         FactModelTree factModelTreeMock = mock(FactModelTree.class);
         doReturn(simplePropertyPresent).when((SetHeaderCellValueCommand) commandSpy).recursivelyFindIsPropertyType(eq(scenarioSimulationContextLocal), eq(factModelTreeMock), eq(MULTIPART_VALUE_ELEMENTS));
         if (factModelPresent) {
-            Map<String, String> simplePropertiesMock = mock(SortedMap.class);
+            Map<String, FactModelTree.PropertyTypeName> simplePropertiesMock = mock(SortedMap.class);
             when(factModelTreeMock.getSimpleProperties()).thenReturn(simplePropertiesMock);
             Map<String, String> expandablePropertiesMock = mock(SortedMap.class);
             when(factModelTreeMock.getExpandableProperties()).thenReturn(expandablePropertiesMock);

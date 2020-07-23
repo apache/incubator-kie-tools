@@ -43,6 +43,7 @@ import org.mockito.Captor;
 import org.uberfire.backend.vfs.ObservablePath;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
@@ -97,13 +98,15 @@ public class AbstractDataManagementStrategyTest extends AbstractScenarioSimulati
             String fullName = expectedClazz.getCanonicalName();
             String packageName = fullName.substring(0, fullName.lastIndexOf("."));
             assertEquals(packageName, retrieved.getFullPackage());
-            Map<String, String> simpleProperties = retrieved.getSimpleProperties();
+            Map<String, FactModelTree.PropertyTypeName> simpleProperties = retrieved.getSimpleProperties();
             assertNotNull(simpleProperties);
             assertEquals(1, simpleProperties.size());
             assertTrue(simpleProperties.containsKey(TestProperties.LOWER_CASE_VALUE));
-            String simplePropertyValue = simpleProperties.get(TestProperties.LOWER_CASE_VALUE);
+            FactModelTree.PropertyTypeName simplePropertyValue = simpleProperties.get(TestProperties.LOWER_CASE_VALUE);
             assertNotNull(simplePropertyValue);
-            assertEquals(fullName, simplePropertyValue);
+            assertEquals(fullName, simplePropertyValue.getTypeName());
+            assertEquals(fullName, simplePropertyValue.getPropertyTypeNameToVisualize());
+            assertFalse(simplePropertyValue.getBaseTypeName().isPresent());
         }
     }
 

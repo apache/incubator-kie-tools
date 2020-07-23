@@ -123,7 +123,7 @@ public class DMNSimulationSettingsCreationStrategyTest extends AbstractDMNTest {
     }
 
     @Test
-    public void createSettings() throws Exception {
+    public void createSettings() {
         final String dmnFilePath = "test";
         final Path pathMock = mock(Path.class);
         final Settings retrieved = dmnSimulationCreationStrategy.createSettings(pathMock, dmnFilePath);
@@ -157,7 +157,7 @@ public class DMNSimulationSettingsCreationStrategyTest extends AbstractDMNTest {
         factModelTree.addExpandableProperty("recursiveProperty", "recursive");
         String propertyType = String.class.getCanonicalName();
         String propertyName = "simpleProperty";
-        factModelTree.addSimpleProperty(propertyName, propertyType);
+        factModelTree.addSimpleProperty(propertyName, new FactModelTree.PropertyTypeName(propertyType));
 
         hiddenFacts.put("recursive", factModelTree);
 
@@ -197,10 +197,10 @@ public class DMNSimulationSettingsCreationStrategyTest extends AbstractDMNTest {
         FactModelTree nested2 = new FactModelTree("tNested2", "", new HashMap<>(), Collections.emptyMap());
         String propertyType = String.class.getCanonicalName();
         String propertyName = "stingProperty";
-        nested1.addSimpleProperty(propertyName, propertyType);
+        nested1.addSimpleProperty(propertyName, new FactModelTree.PropertyTypeName(propertyType));
         String propertyType2 = Boolean.class.getCanonicalName();
         String propertyName2 = "booleanProperty";
-        nested2.addSimpleProperty(propertyName2, propertyType2);
+        nested2.addSimpleProperty(propertyName2, new FactModelTree.PropertyTypeName(propertyType2));
 
         hiddenFacts.put("tNested", nested1);
         hiddenFacts.put("tNested2", nested2);
@@ -323,9 +323,9 @@ public class DMNSimulationSettingsCreationStrategyTest extends AbstractDMNTest {
     }
 
     private FactModelTree createFactModelTree(String name, String path, DMNType type, SortedMap<String, FactModelTree> hiddenFacts, FactModelTree.Type fmType) {
-        Map<String, String> simpleFields = new HashMap<>();
+        Map<String, FactModelTree.PropertyTypeName> simpleFields = new HashMap<>();
         if (!type.isComposite()) {
-            simpleFields.put(VALUE, type.getName());
+            simpleFields.put(VALUE, new FactModelTree.PropertyTypeName(type.getName()));
             FactModelTree simpleFactModelTree = new FactModelTree(name, "", simpleFields, new HashMap<>(), fmType);
             simpleFactModelTree.setSimple(true);
             return simpleFactModelTree;
@@ -333,7 +333,10 @@ public class DMNSimulationSettingsCreationStrategyTest extends AbstractDMNTest {
         FactModelTree factModelTree = new FactModelTree(name, "", simpleFields, new HashMap<>(), fmType);
         for (Map.Entry<String, DMNType> entry : type.getFields().entrySet()) {
             if (!entry.getValue().isComposite()) {
-                simpleFields.put(entry.getKey(), entry.getValue().getName());
+                FactModelTree.PropertyTypeName propertyTypeName = entry.getValue().getBaseType() != null ?
+                        new FactModelTree.PropertyTypeName(entry.getValue().getName(), entry.getValue().getBaseType().getName()) :
+                        new FactModelTree.PropertyTypeName(entry.getValue().getName());
+                simpleFields.put(entry.getKey(), propertyTypeName);
             } else {
                 String expandableId = path + "." + entry.getKey();
                 factModelTree.addExpandableProperty(entry.getKey(), expandableId);

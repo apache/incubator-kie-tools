@@ -504,9 +504,9 @@ public abstract class AbstractKogitoDMNService implements KogitoDMNService {
                                                          final String factName,
                                                          final String propertyClass,
                                                          final FactModelTree.Type fmType) {
-        Map<String, String> simpleProperties = new HashMap<>();
+        Map<String, FactModelTree.PropertyTypeName> simpleProperties = new HashMap<>();
         FactModelTree simpleFactModelTree = new FactModelTree(factName, "", simpleProperties, genericTypeInfoMap, fmType);
-        simpleFactModelTree.addSimpleProperty(VALUE, propertyClass);
+        simpleFactModelTree.addSimpleProperty(VALUE, new FactModelTree.PropertyTypeName(propertyClass));
         simpleFactModelTree.setSimple(true);
         return simpleFactModelTree;
     }
@@ -534,13 +534,13 @@ public abstract class AbstractKogitoDMNService implements KogitoDMNService {
         if (!type.isComposite() && !isToBeManagedAsComposite(type)) {
             throw new IllegalStateException(WRONG_DMN_MESSAGE);
         }
-        Map<String, String> simpleFields = new HashMap<>();
+        Map<String, FactModelTree.PropertyTypeName> simpleFields = new HashMap<>();
         FactModelTree toReturn = new FactModelTree(name, "", simpleFields, genericTypeInfoMap, fmType);
         for (Map.Entry<String, ClientDMNType> entry : type.getFields().entrySet()) {
             String expandablePropertyName = fullPropertyPath + "." + entry.getKey();
             if (isToBeManagedAsCollection(entry.getValue())) {  // if it is a collection, generate the generic and add as hidden fact a simple or composite fact model tree
                 FactModelTree fact = createFactModelTreeForCollection(new HashMap<>(), entry.getKey(), entry.getValue(), hiddenFacts, FactModelTree.Type.UNDEFINED, alreadyVisited);
-                simpleFields.put(entry.getKey(), List.class.getCanonicalName());
+                simpleFields.put(entry.getKey(), new FactModelTree.PropertyTypeName(List.class.getCanonicalName()));
                 genericTypeInfoMap.put(entry.getKey(), fact.getGenericTypeInfo(VALUE));
             } else {
                 String typeName = entry.getValue().getName();
@@ -552,7 +552,7 @@ public abstract class AbstractKogitoDMNService implements KogitoDMNService {
                     }
                     toReturn.addExpandableProperty(entry.getKey(), typeName);
                 } else {  // a simple type is just name -> type
-                    simpleFields.put(entry.getKey(), typeName);
+                    simpleFields.put(entry.getKey(), new FactModelTree.PropertyTypeName(typeName));
                 }
             }
         }

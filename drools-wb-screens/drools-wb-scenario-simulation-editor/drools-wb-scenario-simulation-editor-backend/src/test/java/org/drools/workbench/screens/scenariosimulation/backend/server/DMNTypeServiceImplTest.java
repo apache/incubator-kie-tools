@@ -36,6 +36,7 @@ import org.uberfire.backend.vfs.Path;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -100,7 +101,9 @@ public class DMNTypeServiceImplTest extends AbstractDMNTest {
         assertEquals("testPath", retrieved.getFactName());
         assertEquals(1, retrieved.getSimpleProperties().size());
         assertTrue(retrieved.getSimpleProperties().containsKey(VALUE));
-        assertEquals(simpleString.getName(), retrieved.getSimpleProperties().get(VALUE));
+        assertEquals(simpleString.getName(), retrieved.getSimpleProperties().get(VALUE).getTypeName());
+        assertFalse(retrieved.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
+        assertEquals(simpleString.getName(), retrieved.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
         assertTrue(retrieved.getExpandableProperties().isEmpty());
         assertTrue(retrieved.getGenericTypesMap().isEmpty());
     }
@@ -115,13 +118,36 @@ public class DMNTypeServiceImplTest extends AbstractDMNTest {
         assertEquals("testPath", retrieved.getFactName());
         assertEquals(1, retrieved.getSimpleProperties().size());
         assertTrue(retrieved.getSimpleProperties().containsKey(VALUE));
-        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE));
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getTypeName());
+        assertFalse(retrieved.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
         assertTrue(retrieved.getExpandableProperties().isEmpty());
         assertEquals(1, retrieved.getGenericTypesMap().size());
         assertTrue(retrieved.getGenericTypesMap().containsKey(VALUE));
         assertNotNull(retrieved.getGenericTypesMap().get(VALUE));
         assertEquals(1, retrieved.getGenericTypesMap().get(VALUE).size());
         assertEquals(simpleCollectionString.getName(), retrieved.getGenericTypesMap().get(VALUE).get(0));
+    }
+
+    @Test
+    public void createTopLevelFactModelTreeCompositeNoCollectionBaseType() throws WrongDMNTypeException {
+        // Single property retrieve
+        DMNType composite = getSingleCompositeWithBaseTypeField();
+        FactModelTree retrieved = dmnTypeServiceImpl.createTopLevelFactModelTree("testPath", composite, new TreeMap<>(), FactModelTree.Type.INPUT);
+        assertNotNull(retrieved);
+        assertEquals("testPath", retrieved.getFactName());
+        assertEquals(2, retrieved.getSimpleProperties().size());
+        assertTrue(retrieved.getSimpleProperties().containsKey("name"));
+        assertEquals(SIMPLE_TYPE_NAME, retrieved.getSimpleProperties().get("name").getTypeName());
+        assertFalse(retrieved.getSimpleProperties().get("name").getBaseTypeName().isPresent());
+        assertEquals(SIMPLE_TYPE_NAME, retrieved.getSimpleProperties().get("name").getPropertyTypeNameToVisualize());
+        //
+        assertTrue(retrieved.getSimpleProperties().containsKey("gender"));
+        assertEquals("simpleType", retrieved.getSimpleProperties().get("gender").getTypeName());
+        assertEquals(SIMPLE_TYPE_NAME, retrieved.getSimpleProperties().get("gender").getBaseTypeName().get());
+        assertEquals(SIMPLE_TYPE_NAME, retrieved.getSimpleProperties().get("gender").getPropertyTypeNameToVisualize());
+        assertTrue(retrieved.getExpandableProperties().isEmpty());
+        assertTrue(retrieved.getGenericTypesMap().isEmpty());
     }
 
     @Test
@@ -133,9 +159,13 @@ public class DMNTypeServiceImplTest extends AbstractDMNTest {
         assertEquals("testPath", retrieved.getFactName());
         assertEquals(2, retrieved.getSimpleProperties().size());
         assertTrue(retrieved.getSimpleProperties().containsKey("friends"));
-        assertEquals("java.util.List", retrieved.getSimpleProperties().get("friends"));
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get("friends").getTypeName());
+        assertFalse(retrieved.getSimpleProperties().get("friends").getBaseTypeName().isPresent());
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get("friends").getPropertyTypeNameToVisualize());
         assertTrue(retrieved.getSimpleProperties().containsKey("name"));
-        assertEquals(SIMPLE_TYPE_NAME, retrieved.getSimpleProperties().get("name"));
+        assertEquals(SIMPLE_TYPE_NAME, retrieved.getSimpleProperties().get("name").getTypeName());
+        assertFalse(retrieved.getSimpleProperties().get("name").getBaseTypeName().isPresent());
+        assertEquals(SIMPLE_TYPE_NAME, retrieved.getSimpleProperties().get("name").getPropertyTypeNameToVisualize());
         //
         assertEquals(1, retrieved.getGenericTypesMap().size());
         assertTrue(retrieved.getGenericTypesMap().containsKey("friends"));
@@ -158,7 +188,9 @@ public class DMNTypeServiceImplTest extends AbstractDMNTest {
         assertEquals("testPath", retrieved.getFactName());
         assertEquals(1, retrieved.getSimpleProperties().size());
         assertTrue(retrieved.getSimpleProperties().containsKey(VALUE));
-        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE));
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getTypeName());
+        assertFalse(retrieved.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
+        assertEquals("java.util.List", retrieved.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
         assertTrue(retrieved.getExpandableProperties().isEmpty());
         assertEquals(1, retrieved.getGenericTypesMap().size());
         assertTrue(retrieved.getGenericTypesMap().containsKey(VALUE));
@@ -321,6 +353,12 @@ public class DMNTypeServiceImplTest extends AbstractDMNTest {
      */
     private void verifySimpleDMNType(FactModelTree mappedFactModelTree, DMNType originalType) {
         assertTrue(mappedFactModelTree.getSimpleProperties().containsKey(VALUE)); // otherwise a simple one
-        assertEquals(originalType.getName(), mappedFactModelTree.getSimpleProperties().get(VALUE));
+        assertEquals(originalType.getName(), mappedFactModelTree.getSimpleProperties().get(VALUE).getTypeName());
+        assertEquals(originalType.getName(), mappedFactModelTree.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
+        if (originalType.getBaseType() != null) {
+            assertTrue(mappedFactModelTree.getSimpleProperties().get(VALUE).getBaseTypeName().isPresent());
+            assertEquals(originalType.getBaseType().getName(), mappedFactModelTree.getSimpleProperties().get(VALUE).getBaseTypeName().get());
+            assertEquals(originalType.getBaseType().getName(), mappedFactModelTree.getSimpleProperties().get(VALUE).getPropertyTypeNameToVisualize());
+        }
     }
 }

@@ -18,11 +18,13 @@ package org.drools.workbench.screens.scenariosimulation.client.editor.strategies
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.scenariosimulation.client.TestProperties;
@@ -36,11 +38,20 @@ import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.Fact
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
+import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
 
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FACT_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_CLASS_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.FULL_PACKAGE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.soup.project.datamodel.oracle.ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
@@ -53,9 +64,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(GwtMockitoTestRunner.class)
 public class AbstractDMODataManagementStrategyTest extends AbstractScenarioSimulationEditorTest {
 
-
     private final static String PARAMETRIC_FIELD_TYPE = "ParametricFieldType";
-    private final static String FQCN_BY_FACTNAME = "FQCNByFactName";
     private AbstractDMODataManagementStrategy abstractDMODataManagementStrategySpy;
     private AbstractDMODataManagementStrategy.ResultHolder factModelTreeHolderlocal;
 
@@ -87,7 +96,7 @@ public class AbstractDMODataManagementStrategyTest extends AbstractScenarioSimul
 
             @Override
             protected String getFQCNByFactName(String factName) {
-                return FQCN_BY_FACTNAME;
+                return FULL_CLASS_NAME;
             }
 
             @Override
@@ -203,6 +212,66 @@ public class AbstractDMODataManagementStrategyTest extends AbstractScenarioSimul
         Map<String, String> superTypesMap = new HashMap<>();
         superTypesMap.put(TestProperties.CLASS_NAME, Enum.class.getCanonicalName());
         String retrieved = abstractDMODataManagementStrategySpy.defineClassNameField(TestProperties.CLASS_NAME, superTypesMap);
-        assertEquals(FQCN_BY_FACTNAME, retrieved);
+        assertEquals(FULL_CLASS_NAME, retrieved);
+    }
+
+    @Test
+    public void getFactModelTree() {
+        Map<String, FactModelTree.PropertyTypeName> simpleProperties = getSimplePropertiesInner();
+        final ModelField[] modelFields = getModelFieldsInner(simpleProperties);
+        final FactModelTree retrieved = abstractDMODataManagementStrategySpy.getFactModelTree(FACT_NAME, Collections.emptyMap(), modelFields);
+        assertNotNull(retrieved);
+        assertEquals(FACT_NAME, retrieved.getFactName());
+        assertEquals(FULL_PACKAGE, retrieved.getFullPackage());
+        assertFalse(retrieved.getSimpleProperties().isEmpty());
+        retrieved.getSimpleProperties().entrySet().forEach(
+                entry -> {
+                    assertFalse(entry.getValue().getBaseTypeName().isPresent());
+                    assertEquals(entry.getValue().getTypeName(), entry.getValue().getPropertyTypeNameToVisualize());
+                }
+        );
+    }
+
+    @Test
+    public void getFactModelTreeEnumClass() {
+        final ModelField[] modelFields = {};
+        Map<String, String> superTypesMap = new HashMap<>();
+        superTypesMap.put(FACT_NAME, Enum.class.getCanonicalName());
+        final FactModelTree retrieved = abstractDMODataManagementStrategySpy.getFactModelTree(FACT_NAME, superTypesMap, modelFields);
+        assertNotNull(retrieved);
+        assertEquals(FACT_NAME, retrieved.getFactName());
+        assertEquals(FULL_PACKAGE, retrieved.getFullPackage());
+        assertTrue(retrieved.getSimpleProperties().containsKey(TestProperties.LOWER_CASE_VALUE));
+        assertEquals(FULL_CLASS_NAME, retrieved.getSimpleProperties().get(TestProperties.LOWER_CASE_VALUE).getTypeName());
+        assertEquals(FULL_CLASS_NAME, retrieved.getSimpleProperties().get(TestProperties.LOWER_CASE_VALUE).getPropertyTypeNameToVisualize());
+        assertFalse(retrieved.getSimpleProperties().get(TestProperties.LOWER_CASE_VALUE).getBaseTypeName().isPresent());
+        assertEquals(FULL_CLASS_NAME, retrieved.getSimpleProperties().get(TestProperties.LOWER_CASE_VALUE).getPropertyTypeNameToVisualize());
+    }
+
+    private ModelField[] getModelFieldsInner(Map<String, FactModelTree.PropertyTypeName> simpleProperties) {
+        List<ModelField> toReturn = new ArrayList<>();
+        simpleProperties.forEach((key, value) -> toReturn.add(getModelFieldInner(key, value.getTypeName(), "String")));
+        return toReturn.toArray(new ModelField[toReturn.size()]);
+    }
+
+    private ModelField getModelFieldInner(final String name,
+                                          final String clazz,
+                                          final String type) {
+        return new ModelField(name,
+                clazz,
+                REGULAR_CLASS,
+                ModelField.FIELD_ORIGIN.DECLARED,
+                FieldAccessorsAndMutators.BOTH, type);
+    }
+
+    private Map<String, FactModelTree.PropertyTypeName> getSimplePropertiesInner() {
+        String[] keys = getRandomStringArray();
+        return Arrays.stream(keys)
+                .collect(Collectors.toMap(key -> key,
+                        key -> new FactModelTree.PropertyTypeName(key += "_VALUE")));
+    }
+
+    private String[] getRandomStringArray() {
+        return new String[]{randomAlphabetic(3), randomAlphabetic(4), randomAlphabetic(5)};
     }
 }
