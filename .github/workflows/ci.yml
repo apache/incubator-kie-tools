@@ -59,20 +59,6 @@ jobs:
         env:
           DISPLAY: ":99.0"
 
-      - name: Archive it test screenshots
-        if: always()
-        uses: actions/upload-artifact@v1
-        with:
-          name: chrome-extension-it-tests-screenshots-${{ matrix.os }}
-          path: packages/chrome-extension-pack-kogito-kie-editors/screenshots
-      
-      - name: Archive it test logs
-        if: always()
-        uses: actions/upload-artifact@v1
-        with:
-          name: chrome-extension-it-tests-logs-${{ matrix.os }}
-          path: packages/chrome-extension-pack-kogito-kie-editors/logs
-
       - name: Upload DMN editor (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1
