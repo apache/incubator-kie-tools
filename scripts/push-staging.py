@@ -18,6 +18,7 @@ import common
 # All Kogito images
 IMAGES = ["kogito-quarkus-ubi8", "kogito-quarkus-jvm-ubi8", "kogito-quarkus-ubi8-s2i",
           "kogito-springboot-ubi8", "kogito-springboot-ubi8-s2i", "kogito-data-index",
+          "kogito-explainability",
           "kogito-jobs-service", "kogito-management-console"]
 
 IMAGES_NEXT_RC_TAG = []

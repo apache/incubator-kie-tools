@@ -4,7 +4,7 @@
 BUILD_ENGINE="docker"
 
 # All Kogito images
-IMAGES="kogito-quarkus-ubi8 kogito-quarkus-jvm-ubi8 kogito-quarkus-ubi8-s2i kogito-springboot-ubi8 kogito-springboot-ubi8-s2i kogito-data-index kogito-jobs-service kogito-management-console"
+IMAGES="kogito-quarkus-ubi8 kogito-quarkus-jvm-ubi8 kogito-quarkus-ubi8-s2i kogito-springboot-ubi8 kogito-springboot-ubi8-s2i kogito-data-index kogito-explainability kogito-jobs-service kogito-management-console"
 
 registry=${REGISTRY:-{1}}
 version=${2:-latest}

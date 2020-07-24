@@ -27,6 +27,7 @@ Modules = {
     #service-name: module-name(directory in which module's module.yaml file is present)
     #Note: Service name should be same as given in the repository
     "data-index-service": "kogito-data-index",
+    "explainability-service": "kogito-explainability",
     "jobs-service": "kogito-jobs-service",
     "management-console": "kogito-management-console"
 }

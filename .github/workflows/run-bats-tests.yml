@@ -22,6 +22,11 @@ jobs:
         run: |
           $HOME/bin/bats modules/kogito-data-index/tests/bats
 
+      - name: run kogito-explainability tests
+        working-directory: ${{ github.workspace }}
+        run: |
+          $HOME/bin/bats modules/kogito-explainability/tests/bats
+
       - name: run kogito-graalvm-scripts tests
         working-directory: ${{ github.workspace }}
         run: |

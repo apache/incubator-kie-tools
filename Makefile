@@ -7,7 +7,7 @@ CEKIT_CMD := cekit -v ${cekit_option}
 # Build all images
 .PHONY: build
 # start to build the images
-build: clone-repos kogito-quarkus-ubi8 kogito-quarkus-jvm-ubi8 kogito-quarkus-ubi8-s2i kogito-springboot-ubi8 kogito-springboot-ubi8-s2i kogito-data-index kogito-jobs-service kogito-management-console
+build: clone-repos kogito-quarkus-ubi8 kogito-quarkus-jvm-ubi8 kogito-quarkus-ubi8-s2i kogito-springboot-ubi8 kogito-springboot-ubi8-s2i kogito-data-index kogito-explainability kogito-jobs-service kogito-management-console
 
 clone-repos:
 # if the NO_TEST env defined, proceed with the tests, as first step prepare the repo to be used
@@ -93,6 +93,19 @@ ifneq ($(findstring rc,$(IMAGE_VERSION)), rc)
 	${BUILD_ENGINE} tag quay.io/kiegroup/kogito-data-index:${IMAGE_VERSION} quay.io/kiegroup/kogito-data-index:${SHORTENED_LATEST_VERSION}
 endif
 
+# build the quay.io/kiegroup/kogito-explainability image
+kogito-explainability:
+ifneq ($(ignore_build),true)
+	${CEKIT_CMD} build --overrides-file kogito-explainability-overrides.yaml ${BUILD_ENGINE}
+endif
+# if ignore_test is set tu true, ignore the tests
+ifneq ($(ignore_test),true)
+	${CEKIT_CMD} test --overrides-file kogito-explainability-overrides.yaml behave
+endif
+ifneq ($(findstring rc,$(IMAGE_VERSION)), rc)
+	${BUILD_ENGINE} tag quay.io/kiegroup/kogito-explainability:${IMAGE_VERSION} quay.io/kiegroup/kogito-explainability:${SHORTENED_LATEST_VERSION}
+endif
+
 # build the quay.io/kiegroup/kogito-jobs-service image
 kogito-jobs-service:
 ifneq ($(ignore_build),true)
@@ -136,6 +149,8 @@ _push:
 	docker push quay.io/kiegroup/kogito-springboot-ubi8-s2i:latest
 	docker push quay.io/kiegroup/kogito-data-index:${IMAGE_VERSION}
 	docker push quay.io/kiegroup/kogito-data-index:latest
+	docker push quay.io/kiegroup/kogito-explainability:${IMAGE_VERSION}
+	docker push quay.io/kiegroup/kogito-explainability:latest
 	docker push quay.io/kiegroup/kogito-jobs-service:${IMAGE_VERSION}
 	docker push quay.io/kiegroup/kogito-jobs-service:latest
 	docker push quay.io/kiegroup/kogito-management-console:${IMAGE_VERSION}
@@ -148,6 +163,7 @@ ifneq ($(findstring rc,$(IMAGE_VERSION)), rc)
 	docker push quay.io/kiegroup/kogito-springboot-ubi8:${SHORTENED_LATEST_VERSION}
 	docker push quay.io/kiegroup/kogito-springboot-ubi8-s2i:${SHORTENED_LATEST_VERSION}
 	docker push quay.io/kiegroup/kogito-data-index:${SHORTENED_LATEST_VERSION}
+	docker push quay.io/kiegroup/kogito-explainability:${SHORTENED_LATEST_VERSION}
 	docker push quay.io/kiegroup/kogito-jobs-service:${SHORTENED_LATEST_VERSION}
 	docker push quay.io/kiegroup/kogito-management-console:${SHORTENED_LATEST_VERSION}
 endif

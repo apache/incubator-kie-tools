@@ -10,6 +10,7 @@ IMAGES = ["kogito-quarkus-ubi8",
             "kogito-springboot-ubi8",
             "kogito-springboot-ubi8-s2i",
             "kogito-data-index",
+            "kogito-explainability",
             "kogito-jobs-service",
             "kogito-management-console"]
 
@@ -48,6 +49,7 @@ pipeline{
                 sh """
                     ./cekit-image-validator-runner image.yaml
                     ./cekit-image-validator-runner kogito-data-index-overrides.yaml
+                    ./cekit-image-validator-runner kogito-explainability-overrides.yaml
                     ./cekit-image-validator-runner kogito-jobs-service-overrides.yaml
                     ./cekit-image-validator-runner kogito-management-console-overrides.yaml
                     ./cekit-image-validator-runner kogito-quarkus-jvm-overrides.yaml

@@ -9,6 +9,7 @@ IMAGES = [
             "kogito-springboot-ubi8",
             "kogito-springboot-ubi8-s2i",
             "kogito-data-index",
+            "kogito-explainability",
             "kogito-jobs-service",
             "kogito-management-console"
          ]
@@ -84,6 +85,7 @@ pipeline {
 
                     // Debug purpose in case of issue
                     sh "cat modules/kogito-data-index/module.yaml"
+                    sh "cat modules/kogito-explainability/module.yaml"
                     sh "cat modules/kogito-jobs-service/module.yaml"
                     sh "cat modules/kogito-management-console/module.yaml"
                 }
@@ -118,6 +120,7 @@ pipeline {
                 sh """
                     ./cekit-image-validator-runner image.yaml
                     ./cekit-image-validator-runner kogito-data-index-overrides.yaml
+                    ./cekit-image-validator-runner kogito-explainability-overrides.yaml
                     ./cekit-image-validator-runner kogito-jobs-service-overrides.yaml
                     ./cekit-image-validator-runner kogito-management-console-overrides.yaml
                     ./cekit-image-validator-runner kogito-quarkus-jvm-overrides.yaml
