@@ -41,6 +41,9 @@ public class CoreIndexer implements Indexer {
 
     @Override
     public KObject toKObject(Path path) {
+        if (!ioService.exists(path)) {
+            return null;
+        }
         //Default indexing
         for (Class<? extends FileAttributeView> view : views) {
             ioService.getFileAttributeView(path, view);

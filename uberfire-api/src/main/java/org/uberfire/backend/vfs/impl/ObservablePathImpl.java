@@ -246,8 +246,8 @@ public class ObservablePathImpl implements ObservablePath,
                             executeDeleteCommands();
                             break;
                         case RENAME:
-                            executeRenameCommands();
                             path = ((ResourceRenamed) change).getDestinationPath();
+                            executeRenameCommands();
                             break;
                         case UPDATE:
                             executeUpdateCommands();
