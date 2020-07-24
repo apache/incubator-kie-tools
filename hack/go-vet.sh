@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+source ./hack/export-version.sh
 
 ./hack/go-mod.sh
 # enforce GOROOT
@@ -30,3 +31,10 @@ openapi-gen --logtostderr=true -o "" -i github.com/kiegroup/kogito-cloud-operato
 ./hack/generate-manifests.sh
 
 go vet ./...
+
+# Copy crds and csv to version folder
+OLM_FOLDER="deploy/olm-catalog/kogito-operator"
+olm_versioned_folder="${OLM_FOLDER}/${OP_VERSION}"
+mkdir -p ${olm_versioned_folder}
+cp ${OLM_FOLDER}/manifests/* ${olm_versioned_folder}/
+mv ${olm_versioned_folder}/kogito-operator.clusterserviceversion.yaml ${olm_versioned_folder}/kogito-operator.v${OP_VERSION}.clusterserviceversion.yaml 

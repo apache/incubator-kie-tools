@@ -14,7 +14,6 @@
 # limitations under the License.
 
 
+CONTAINER_IMAGE=$(grep -m 1 'image: ' ./deploy/operator.yaml) && CONTAINER_IMAGE=$(echo ${CONTAINER_IMAGE#*:} | tr -d '"')
 
-source ./hack/export-version.sh
-
-operator-sdk generate csv --csv-version "$OP_VERSION" --verbose --update-crds --operator-name kogito-operator
+echo "Container image is ${CONTAINER_IMAGE}"
