@@ -19,9 +19,9 @@ import { useMemo, useState } from "react";
 import { I18nContext } from "./i18nContext";
 import { DeepOptional, TranslationBundle, TranslationBundleInterpolation } from "./types";
 
-export const I18nProvider = <T extends TranslationBundle<T>>(props: {
-  defaults: { locale: string; dictionary: T };
-  dictionaries: Map<string, DeepOptional<T>>;
+export const I18nProvider = <Bundle extends TranslationBundle<Bundle>>(props: {
+  defaults: { locale: string; dictionary: Bundle };
+  dictionaries: Map<string, DeepOptional<Bundle>>;
   children: React.ReactNode;
 }) => {
   const [locale, setLocale] = useState(props.defaults.locale);
@@ -45,7 +45,10 @@ function deepMerge<Bundle>(target: TranslationBundle<Bundle>, source: DeepOption
     if (typeof sourceValue === "string" || typeof sourceValue === "function") {
       target[key] = sourceValue as string | TranslationBundleInterpolation;
     } else {
-      target[key] = deepMerge(target[key] as TranslationBundle<any>, sourceValue as TranslationBundle<any>);
+      target[key] = deepMerge(
+        createObjectCopy(target[key] as TranslationBundle<any>),
+        sourceValue as TranslationBundle<any>
+      );
     }
   });
   return target;
