@@ -1,0 +1,42 @@
+schema_version: 1
+
+name: "quay.io/kiegroup/kogito-trusty"
+description: "Runtime image for Kogito Trusty Service"
+
+labels:
+- name: "io.k8s.description"
+  value: "Runtime image for Kogito Trusty Service"
+- name: "io.k8s.display-name"
+  value: "Kogito Trusty Service"
+- name: "io.openshift.tags"
+  value: "kogito,trusty"
+- name: "io.openshift.expose-services"
+  value: "8080:http"
+
+envs:
+  - name: "SCRIPT_DEBUG"
+    example: "true"
+    description: "If set to true, ensures that the bash scripts are executed with the -x option, printing the commands and their arguments as they are executed. Also debug JVM initialization."
+  - name: "HTTP_PORT"
+    example: "9090"
+    description: "Defines which port the Trusty Container Image will listen on."
+
+ports:
+- value: 8080
+
+modules:
+  install:
+  - name: org.kie.kogito.image.dependencies
+  - name: org.kie.kogito.system.user
+  - name: org.kie.kogito.logging
+  - name: org.kie.kogito.openjdk
+    version: "11-headless"
+  - name: org.kie.kogito.launch.scripts
+  - name: org.kie.kogito.trusty
+
+run:
+  workdir: "/home/kogito"
+  user: 1001
+  cmd:
+    - "/home/kogito/kogito-app-launch.sh"
+

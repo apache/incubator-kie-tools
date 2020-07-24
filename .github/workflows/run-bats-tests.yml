@@ -22,6 +22,11 @@ jobs:
         run: |
           $HOME/bin/bats modules/kogito-data-index/tests/bats
 
+      - name: run kogito-trusty tests
+        working-directory: ${{ github.workspace }}
+        run: |
+          $HOME/bin/bats modules/kogito-trusty/tests/bats
+
       - name: run kogito-explainability tests
         working-directory: ${{ github.workspace }}
         run: |

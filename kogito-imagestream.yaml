@@ -135,6 +135,27 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
+      name: kogito-trusty
+      annotations:
+        openshift.io/display-name: Runtime image for the Kogito Trusty Service
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '0.12.0-rc1'
+          annotations:
+            description: Runtime image for the Kogito Trusty Service
+            iconClass: icon-jbpm
+            tags: kogito,trusty
+            supports: persistence backed by Infinispan server
+            version: '0.12.0-rc1'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-trusty:0.12.0-rc1
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
       name: kogito-jobs-service
       annotations:
         openshift.io/display-name: Runtime image for the Kogito Jobs Service
