@@ -16,33 +16,9 @@
 
 import * as React from "react";
 import { I18nProvider, immutableDeepMerge } from "../i18nProvider";
-import { DeepOptional, TranslationBundle, TranslationBundleInterpolation } from "../types";
+import { DeepOptional } from "../types";
 import { render } from "@testing-library/react";
-import { useTranslation } from "../hook";
-
-interface DummyBundle extends TranslationBundle<DummyBundle> {
-  greeting: (name: string) => string;
-  welcome: string;
-  modal: {
-    title: string;
-    text: string;
-  };
-}
-
-const interpolationFunction: TranslationBundleInterpolation = (name: string) => `Hi ${name}!`;
-const dummyDefault: DummyBundle = {
-  greeting: interpolationFunction,
-  welcome: "Welcome",
-  modal: {
-    title: "My title",
-    text: "My text"
-  }
-};
-
-function DummyComponent() {
-  const { i18n } = useTranslation<DummyBundle>();
-  return <p data-testid="dummy-component">{JSON.stringify(i18n)}</p>;
-}
+import { DummyBundle, DummyComponent, dummyDefault, interpolationFunction } from "./utils";
 
 describe("I18nProvider", () => {
   describe("I18nProvider::component", () => {
