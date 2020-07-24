@@ -231,6 +231,7 @@ jobs:
           path: kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
 
       - name: Upload Chrome Extension
+        if: github.event_name == 'issue_comment'
         uses: actions/upload-artifact@v1
         with:
           name: chrome-extension-fdb
