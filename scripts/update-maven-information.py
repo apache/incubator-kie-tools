@@ -17,7 +17,6 @@ import requests
 import subprocess as sp
 import os
 import argparse
-from ruamel.yaml import YAML
 
 DEFAULT_REPO_URL = "https://repository.jboss.org/nexus/content/groups/public/"
 DEFAULT_VERSION = "8.0.0-SNAPSHOT"

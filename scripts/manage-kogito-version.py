@@ -25,18 +25,17 @@ BEHAVE_TESTS = {"kogito-quarkus-ubi8-s2i.feature", "kogito-springboot-ubi8-s2i.f
 
 
 
-def update_behave_tests(tests_branch):
+def update_behave_tests(target_version, tests_branch):
     """
-    will update the behave tests accordingly.
-    If master, the app 8.0.0-SNAPSHOT otherwise use the same value for branch and version
+    Will update the behave tests accordingly.
+    :param target_version:
     :param tests_branch:
     """
     base_dir = 'tests/features'
-    # if 'master' in target_branch:
-    #     artifact_version = '8.0.0-SNAPSHOT'
 
     # this pattern will look for any occurrences of using master or using x.x.x
     pattern_branch = re.compile(r'(using master)|(using \s*([\d.]+.x))|(using \s*([\d.]+))')
+    pattern_version_env = re.compile('\|[\s]*KOGITO_VERSION[\s]*\|[\s]*(([\d.]+.x)|([\d.]+)[\s]*|([\d.]+-SNAPSHOT))[\s]*\|')
     # kogito examples does not have the version on built examples anymore, let's comment it out for now.
     # quarkus_native_pattern_app_version = re.compile(r'(8.0.0-SNAPSHOT-runner\s)|((\s*([\d.]+)-runner\s)|(\s*([\d.]+)-SNAPSHOT-runner\s))')
     # quarkus_pattern_app_version = re.compile(r'(8.0.0-SNAPSHOT-runner.jar)|((\s*([\d.]+)-runner.jar)|(\s*([\d.]+)-SNAPSHOT-runner.jar))')
@@ -45,6 +44,7 @@ def update_behave_tests(tests_branch):
         print("Updating feature {0}".format(feature))
         with open(os.path.join(base_dir, feature)) as fe:
             updated_value = pattern_branch.sub('using ' + tests_branch, fe.read())
+            updated_value = pattern_version_env.sub('| KOGITO_VERSION | ' + target_version + ' | ', updated_value)
             # kogito examples does not have the version on built examples anymore, let's comment it out for now.
             # updated_value = quarkus_native_pattern_app_version.sub(tests_version + '-runner ', updated_value)
             # updated_value = quarkus_pattern_app_version.sub(tests_version + '-runner.jar', updated_value)
@@ -64,6 +64,14 @@ def update_test_apps_clone_repo(target_branch):
     else:
         os.system('sed -i \'s/^git checkout.*/git checkout -b ' + target_branch + ' ' + target_branch + '/\' ' + file)
 
+def update_python_scripts(target_version):
+    '''
+    Updates the clone-repo.sh script for adding the given repository URL to the Maven settings.
+    :param target_version: Maven Repository URL to set
+    '''
+    file = 'scripts/update-maven-information.py'
+    print('Updating file {}'.format(file))
+    os.system('sed -i \'s|^DEFAULT_VERSION = .*|DEFAULT_VERSION = \"{}\"|\' '.format(target_version) + file)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Kogito Version Manager')
@@ -77,8 +85,8 @@ if __name__ == "__main__":
     if args.bump_to:
         # validate if the provided version is valid.
         # e.g. 1.10.0 or 1.0.0-rc1
-        pattern = '\d.\d{1,2}.(\d$|\d-rc\d+$)'
-        regex = re.compile(r'\d.\d{1,2}.(\d$|\d-rc\d+$)')
+        pattern = '\d+.\d+.(\d+$|\d+-rc\d+$|\d+-snapshot$)'
+        regex = re.compile(r'\d+.\d+.(\d+$|\d+-rc\d+|\d+-snapshot$)')
         valid = regex.match(args.bump_to)
         tests_branch = ""
         if valid:
@@ -98,8 +106,9 @@ if __name__ == "__main__":
             common.update_image_stream(args.bump_to)
             common.update_modules_version(args.bump_to)
             common.update_kogito_version_env_in_modules(args.bump_to)
-            update_behave_tests(tests_branch)
+            update_behave_tests(args.bump_to, tests_branch)
             update_test_apps_clone_repo(tests_branch)
+            update_python_scripts(args.bump_to)
         else:
             print("Provided version {0} does not match the expected regex - {1}".format(args.bump_to, pattern))
     else:

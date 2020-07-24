@@ -171,7 +171,7 @@ $ s2i build https://github.com/kiegroup/kogito-examples.git \
 [INFO] ------------------------------------------------------------------------
 ---> Build finished, installing application from path /tmp/src
 ---> Installing jar file
-'target/rules-quarkus-helloworld-8.0.0-SNAPSHOT-runner.jar' -> '/home/kogito/bin/rules-quarkus-helloworld-8.0.0-SNAPSHOT-runner.jar'
+'target/rules-quarkus-helloworld-runner.jar' -> '/home/kogito/bin/rules-quarkus-helloworld-runner.jar'
 ---> Copying application libraries
 ---> [s2i-core] Copy image metadata file...
 '/tmp/src/target/image_metadata.json' -> '/tmp/.s2i/image_metadata.json'
@@ -423,7 +423,7 @@ Once you have checked out the example on your local machine follow the steps bel
 # build the example using uberjar reference
 $ mvn clean package -Dquarkus.package.uber-jar
 # inspect and run the generated uberjar, for instructions on how to use this example see its README file.
-$ java -jar target/jbpm-quarkus-example-8.0.0-SNAPSHOT-runner.jar 
+$ java -jar target/jbpm-quarkus-example-runner.jar 
 
 # performing a source to image build to copy the artifacts to the runtime image
 $ s2i build target/ quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest process-quarkus-example
@@ -493,7 +493,7 @@ s2i build target/ quay.io/kiegroup/kogito-quarkus-ubi8:latest binary-test-exampl
 -----> Cleaning up unneeded jar files
 ...
 ---> Installing application binaries
-'./process-quarkus-example-8.0.0-SNAPSHOT-runner' -> '/home/kogito/bin/process-quarkus-example-8.0.0-SNAPSHOT-runner'
+'./process-quarkus-example-runner' -> '/home/kogito/bin/process-quarkus-example-runner'
 ...
 
 # run the output image
