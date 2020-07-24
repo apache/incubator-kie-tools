@@ -12,6 +12,7 @@ jobs:
         node: [12.16.3]
         yarn: [1.19.1]
 
+  steps:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
