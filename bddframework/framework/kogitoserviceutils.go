@@ -16,32 +16,34 @@ package framework
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
+	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
+	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// KogitoServiceHolder Helper structure holding informations which are not available in KogitoService
-type KogitoServiceHolder struct {
-	v1alpha1.KogitoService
-	Infinispan struct {
-		Username string
-		Password string
-	}
+// InstallService install the Kogito Service component
+func InstallService(serviceHolder *bddtypes.KogitoServiceHolder, installerType InstallerType, cliDeploymentName string) error {
+	return installOrDeployService(serviceHolder, installerType, "install", cliDeploymentName)
 }
 
-// InstallService the Kogito Service component
-func InstallService(serviceHolder *KogitoServiceHolder, installerType InstallerType, cliName string) error {
+// DeployService deploy the Kogito Service component
+func DeployService(serviceHolder *bddtypes.KogitoServiceHolder, installerType InstallerType) error {
+	return installOrDeployService(serviceHolder, installerType, "deploy", serviceHolder.GetName())
+}
+
+// InstallOrDeployService the Kogito Service component
+func installOrDeployService(serviceHolder *bddtypes.KogitoServiceHolder, installerType InstallerType, cliDeployCommand, cliDeploymentName string) error {
 	GetLogger(serviceHolder.GetNamespace()).Infof("%s install %s with %d replicas", serviceHolder.GetName(), installerType, *serviceHolder.GetSpec().GetReplicas())
 	var err error
 	switch installerType {
 	case CLIInstallerType:
-		err = cliInstall(serviceHolder, cliName)
+		err = cliInstall(serviceHolder, cliDeployCommand, cliDeploymentName)
 	case CRInstallerType:
 		err = crInstall(serviceHolder)
 	default:
@@ -139,70 +141,19 @@ func isRuntimeImageInformationSet() bool {
 		len(config.GetServicesImageVersion()) > 0
 }
 
-func crInstall(serviceHolder *KogitoServiceHolder) error {
+func crInstall(serviceHolder *bddtypes.KogitoServiceHolder) error {
 	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(serviceHolder.KogitoService); err != nil {
 		return fmt.Errorf("Error creating service: %v", err)
 	}
 	return nil
 }
 
-func cliInstall(serviceHolder *KogitoServiceHolder, cliName string) error {
-	cmd := []string{"install", cliName}
-
-	image := framework.ConvertImageToImageTag(*serviceHolder.GetSpec().GetImage())
-	if len(image) > 0 {
-		cmd = append(cmd, "--image", image)
-	}
-
-	cmd = append(cmd, "--replicas", strconv.Itoa(int(*serviceHolder.GetSpec().GetReplicas())))
-
-	if infinispanAware, ok := serviceHolder.GetSpec().(v1alpha1.InfinispanAware); ok {
-		infinispanProperties := infinispanAware.GetInfinispanProperties()
-		if authRealm := infinispanProperties.AuthRealm; len(authRealm) > 0 {
-			cmd = append(cmd, "--infinispan-authrealm", authRealm)
-		}
-		if saslMechanism := infinispanProperties.SaslMechanism; len(saslMechanism) > 0 {
-			cmd = append(cmd, "--infinispan-sasl", string(saslMechanism))
-		}
-		if uri := infinispanProperties.URI; len(uri) > 0 {
-			cmd = append(cmd, "--infinispan-url", uri)
-		}
-		if infinispanProperties.UseKogitoInfra {
-			cmd = append(cmd, "--enable-persistence")
-		}
-
-		if username := serviceHolder.Infinispan.Username; len(username) > 0 {
-			cmd = append(cmd, "--infinispan-user", username)
-		}
-		if password := serviceHolder.Infinispan.Password; len(password) > 0 {
-			cmd = append(cmd, "--infinispan-password", password)
-		}
-	}
-
-	if kafkaAware, ok := serviceHolder.GetSpec().(v1alpha1.KafkaAware); ok {
-		kafkaProperties := kafkaAware.GetKafkaProperties()
-		if externalURI := kafkaProperties.ExternalURI; len(externalURI) > 0 {
-			cmd = append(cmd, "--kafka-url", externalURI)
-		}
-		if instance := kafkaProperties.Instance; len(instance) > 0 {
-			cmd = append(cmd, "--kafka-instance", instance)
-		}
-		if kafkaProperties.UseKogitoInfra {
-			cmd = append(cmd, "--enable-events")
-		}
-	}
-
-	if httpPort := serviceHolder.GetSpec().GetHTTPPort(); httpPort > 0 {
-		cmd = append(cmd, "--http-port", strconv.Itoa(int(httpPort)))
-	}
+func cliInstall(serviceHolder *bddtypes.KogitoServiceHolder, cliDeployCommand, cliDeploymentName string) error {
+	cmd := []string{cliDeployCommand, cliDeploymentName}
+	cmd = append(cmd, mappers.GetServiceCLIFlags(serviceHolder)...)
 
 	_, err := ExecuteCliCommandInNamespace(serviceHolder.GetNamespace(), cmd...)
 	return err
-}
-
-//IsInfinispanUsernameSpecified Returns true if Infinispan username is specified
-func (serviceHolder *KogitoServiceHolder) IsInfinispanUsernameSpecified() bool {
-	return len(serviceHolder.Infinispan.Username) > 0
 }
 
 // OnKogitoServiceDeployed is called when a service deployed.

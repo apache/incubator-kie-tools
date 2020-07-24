@@ -36,8 +36,8 @@ type KogitoAppHolder struct {
 	}
 }
 
-// DeployService deploy a Kogito service
-func DeployService(namespace string, installerType InstallerType, kogitoApp *v1alpha1.KogitoApp) error {
+// DeployKogitoAppService deploy a Kogito service
+func DeployKogitoAppService(namespace string, installerType InstallerType, kogitoApp *v1alpha1.KogitoApp) error {
 	GetLogger(namespace).Infof("%s deploy %s example %s with name %s, native %v, persistence %v, events %v and labels %v", installerType, kogitoApp.Spec.Runtime, kogitoApp.Spec.Build.GitSource.ContextDir, kogitoApp.Name, kogitoApp.Spec.Build.Native, kogitoApp.Spec.EnablePersistence, kogitoApp.Spec.EnableEvents, kogitoApp.Spec.Service.Labels)
 
 	switch installerType {

@@ -17,6 +17,8 @@ package steps
 import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
+	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
 
 // RegisterCliSteps register all CLI steps existing
@@ -27,18 +29,18 @@ func registerKogitoManagementConsoleSteps(s *godog.ScenarioContext, data *Data) 
 }
 
 func (data *Data) installKogitoManagementConsoleWithReplicas(replicas int) error {
-	managementConsole := &framework.KogitoServiceHolder{
+	managementConsole := &bddtypes.KogitoServiceHolder{
 		KogitoService: framework.GetKogitoManagementConsoleResourceStub(data.Namespace, replicas),
 	}
 	return framework.InstallKogitoManagementConsole(framework.GetDefaultInstallerType(), managementConsole)
 }
 
 func (data *Data) installKogitoManagementConsoleWithReplicasWithConfiguration(replicas int, table *godog.Table) error {
-	managementConsole := &framework.KogitoServiceHolder{
+	managementConsole := &bddtypes.KogitoServiceHolder{
 		KogitoService: framework.GetKogitoManagementConsoleResourceStub(data.Namespace, replicas),
 	}
 
-	if err := configureKogitoServiceFromTable(table, managementConsole); err != nil {
+	if err := mappers.MapKogitoServiceTable(table, managementConsole); err != nil {
 		return err
 	}
 

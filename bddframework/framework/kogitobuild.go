@@ -22,24 +22,48 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/resource"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
+	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
+	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // DeployKogitoBuild deploy a KogitoBuild
-func DeployKogitoBuild(namespace string, installerType InstallerType, kogitoBuild *v1alpha1.KogitoBuild) error {
-	GetLogger(namespace).Infof("%s deploy %s example %s with name %s and native %v", installerType, kogitoBuild.Spec.Runtime, kogitoBuild.Spec.GitSource.ContextDir, kogitoBuild.Name, kogitoBuild.Spec.Native)
+func DeployKogitoBuild(namespace string, installerType InstallerType, buildHolder *bddtypes.KogitoBuildHolder) error {
+	GetLogger(namespace).Infof("%s deploy %s example %s with name %s and native %v", installerType, buildHolder.KogitoBuild.Spec.Runtime, buildHolder.KogitoBuild.Spec.GitSource.ContextDir, buildHolder.KogitoBuild.Name, buildHolder.KogitoBuild.Spec.Native)
 
-	if installerType == CRInstallerType {
-		return crDeployKogitoBuild(namespace, kogitoBuild)
+	switch installerType {
+	case CLIInstallerType:
+		return cliDeployKogitoBuild(buildHolder)
+	case CRInstallerType:
+		return crDeployKogitoBuild(buildHolder)
+	default:
+		panic(fmt.Errorf("Unknown installer type %s", installerType))
 	}
-	panic(fmt.Errorf("Unknown installer type %s", installerType))
 }
 
-func crDeployKogitoBuild(namespace string, kogitoBuild *v1alpha1.KogitoBuild) error {
-	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(kogitoBuild); err != nil {
-		return fmt.Errorf("Error creating example service %s: %v", kogitoBuild.Name, err)
+func crDeployKogitoBuild(buildHolder *bddtypes.KogitoBuildHolder) error {
+	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(buildHolder.KogitoBuild); err != nil {
+		return fmt.Errorf("Error creating example build %s: %v", buildHolder.KogitoBuild.Name, err)
+	}
+	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(buildHolder.KogitoService); err != nil {
+		return fmt.Errorf("Error creating example service %s: %v", buildHolder.KogitoService.GetName(), err)
 	}
 	return nil
+}
+
+func cliDeployKogitoBuild(buildHolder *bddtypes.KogitoBuildHolder) error {
+	cmd := []string{"deploy", buildHolder.KogitoBuild.GetName()}
+
+	// If GIT URI is defined then it needs to be appended as second parameter
+	if gitURI := buildHolder.KogitoBuild.Spec.GitSource.URI; len(gitURI) > 0 {
+		cmd = append(cmd, gitURI)
+	}
+
+	cmd = append(cmd, mappers.GetBuildCLIFlags(buildHolder.KogitoBuild)...)
+	cmd = append(cmd, mappers.GetServiceCLIFlags(buildHolder.KogitoServiceHolder)...)
+
+	_, err := ExecuteCliCommandInNamespace(buildHolder.KogitoBuild.GetNamespace(), cmd...)
+	return err
 }
 
 // GetKogitoBuildStub Get basic KogitoBuild stub with all needed fields initialized

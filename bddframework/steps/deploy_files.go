@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cucumber/godog"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
@@ -44,11 +45,13 @@ func (data *Data) deployFolderFromExampleService(runtimeType, serviceName string
 func deploySourceFilesFromPath(namespace, runtimeType, serviceName, path string) error {
 	framework.GetLogger(namespace).Infof("Deploy %s example %s with source files in path %s", runtimeType, serviceName, path)
 
-	kogitoAppHolder, err := getKogitoAppHolder(namespace, runtimeType, serviceName, &godog.Table{})
+	buildHolder, err := getKogitoBuildConfiguredStub(namespace, runtimeType, serviceName, nil)
 	if err != nil {
 		return err
 	}
-	kogitoAppHolder.Spec.Build.GitSource.URI = path
 
-	return framework.DeployService(namespace, framework.CLIInstallerType, kogitoAppHolder.KogitoApp)
+	buildHolder.KogitoBuild.Spec.Type = v1alpha1.LocalSourceBuildType
+	buildHolder.KogitoBuild.Spec.GitSource.URI = path
+
+	return framework.DeployKogitoBuild(namespace, framework.CLIInstallerType, buildHolder)
 }

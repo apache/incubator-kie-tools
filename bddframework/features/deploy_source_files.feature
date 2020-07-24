@@ -6,7 +6,7 @@ Feature: Deploy source files (dmn, drl, bpmn, bpmn2, ...) with CLI
     And Kogito Operator is deployed
 
   @smoke
-  Scenario: Deploy .dmn source files with CLI
+  Scenario: Deploy .dmn source files with CLI using runtime <runtime>
     Given Clone Kogito examples into local directory
     
     When Deploy <runtime> file "Traffic Violation.dmn" from example service "dmn-<runtime>-example"

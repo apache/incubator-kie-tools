@@ -18,6 +18,8 @@ import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/resource"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
+	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
 
 /*
@@ -66,8 +68,7 @@ func (data *Data) deployExampleServiceFromImageWithConfiguration(runtimeType, ko
 		return err
 	}
 
-	// Only working using CR installer. CLI support will come in KOGITO-2064.
-	return framework.DeployRuntimeService(data.Namespace, framework.CRInstallerType, kogitoRuntime)
+	return framework.DeployRuntimeService(data.Namespace, framework.GetDefaultInstallerType(), kogitoRuntime)
 }
 
 // Deployment steps
@@ -93,12 +94,12 @@ func (data *Data) scaleKogitoRuntimeToPodsWithinMinutes(name string, nbPods, tim
 // Misc methods
 
 // getKogitoRuntimeExamplesStub Get basic KogitoRuntime stub with GIT properties initialized to common Kogito examples
-func getKogitoRuntimeExamplesStub(namespace, runtimeType, name, imageTag string, table *godog.Table) (*framework.KogitoServiceHolder, error) {
-	kogitoRuntime := &framework.KogitoServiceHolder{
+func getKogitoRuntimeExamplesStub(namespace, runtimeType, name, imageTag string, table *godog.Table) (*bddtypes.KogitoServiceHolder, error) {
+	kogitoRuntime := &bddtypes.KogitoServiceHolder{
 		KogitoService: framework.GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag),
 	}
 
-	if err := configureKogitoServiceFromTable(table, kogitoRuntime); err != nil {
+	if err := mappers.MapKogitoServiceTable(table, kogitoRuntime); err != nil {
 		return nil, err
 	}
 

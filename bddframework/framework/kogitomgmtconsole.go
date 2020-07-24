@@ -18,10 +18,11 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
+	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
 
 // InstallKogitoManagementConsole install the Kogito Management Console component
-func InstallKogitoManagementConsole(installerType InstallerType, managementConsole *KogitoServiceHolder) error {
+func InstallKogitoManagementConsole(installerType InstallerType, managementConsole *bddtypes.KogitoServiceHolder) error {
 	return InstallService(managementConsole, installerType, "mgmt-console")
 }
 

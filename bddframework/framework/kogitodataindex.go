@@ -18,10 +18,11 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
+	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
 
 // InstallKogitoDataIndexService install the Kogito Data Index service
-func InstallKogitoDataIndexService(namespace string, installerType InstallerType, dataIndex *KogitoServiceHolder) error {
+func InstallKogitoDataIndexService(namespace string, installerType InstallerType, dataIndex *bddtypes.KogitoServiceHolder) error {
 	// Persistence is already configured internally by the Data Index service, so we don't need to add any additional persistence step here.
 	return InstallService(dataIndex, installerType, "data-index")
 }

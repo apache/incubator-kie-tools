@@ -18,6 +18,8 @@ import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
+	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
 
 /*
@@ -43,15 +45,15 @@ func registerKogitoJobsServiceSteps(ctx *godog.ScenarioContext, data *Data) {
 
 func (data *Data) installKogitoJobsServiceWithReplicas(replicas int) error {
 	jobsService := framework.GetKogitoJobsServiceResourceStub(data.Namespace, replicas)
-	return framework.InstallKogitoJobsService(framework.GetDefaultInstallerType(), &framework.KogitoServiceHolder{KogitoService: jobsService})
+	return framework.InstallKogitoJobsService(framework.GetDefaultInstallerType(), &bddtypes.KogitoServiceHolder{KogitoService: jobsService})
 }
 
 func (data *Data) installKogitoJobsServiceWithReplicasWithConfiguration(replicas int, table *godog.Table) error {
-	jobsService := &framework.KogitoServiceHolder{
+	jobsService := &bddtypes.KogitoServiceHolder{
 		KogitoService: framework.GetKogitoJobsServiceResourceStub(data.Namespace, replicas),
 	}
 
-	if err := configureKogitoServiceFromTable(table, jobsService); err != nil {
+	if err := mappers.MapKogitoServiceTable(table, jobsService); err != nil {
 		return err
 	}
 

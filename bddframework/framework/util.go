@@ -32,11 +32,6 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 )
 
-const (
-	enabledKey  = "enabled"
-	disabledKey = "disabled"
-)
-
 // GenerateNamespaceName generates a namespace name, taking configuration into account (local or not)
 func GenerateNamespaceName(prefix string) string {
 	rand.Seed(time.Now().UnixNano())
@@ -204,18 +199,6 @@ func CreateFile(folder, fileName, fileContent string) error {
 // DeleteFile deletes a file
 func DeleteFile(folder, fileName string) error {
 	return os.Remove(folder + "/" + fileName)
-}
-
-// MustParseEnabledDisabled parse a boolean string value
-func MustParseEnabledDisabled(value string) bool {
-	switch value {
-	case enabledKey:
-		return true
-	case disabledKey:
-		return false
-	default:
-		panic(fmt.Errorf("Unknown value for enabled/disabled: %s", value))
-	}
 }
 
 // GetBuildImage returns a build image with defaults set

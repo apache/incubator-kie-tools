@@ -24,32 +24,12 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
+	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
 
 // DeployRuntimeService deploy a Kogito service
-func DeployRuntimeService(namespace string, installerType InstallerType, serviceHolder *KogitoServiceHolder) error {
-	GetLogger(namespace).Infof("%s deploy %s example %s with persistence %v, events %v and labels %v", installerType, serviceHolder.GetSpec().GetRuntime(), serviceHolder.GetName(), serviceHolder.GetSpec().(v1alpha1.InfinispanAware).GetInfinispanProperties().UseKogitoInfra, serviceHolder.GetSpec().(v1alpha1.KafkaAware).GetKafkaProperties().UseKogitoInfra, serviceHolder.GetSpec().GetServiceLabels())
-
-	var err error
-	switch installerType {
-	case CRInstallerType:
-		err = crDeployRuntimeService(namespace, serviceHolder)
-	default:
-		panic(fmt.Errorf("Unknown installer type %s", installerType))
-	}
-
-	if err == nil {
-		err = OnKogitoServiceDeployed(namespace, serviceHolder)
-	}
-
-	return err
-}
-
-func crDeployRuntimeService(namespace string, serviceHolder *KogitoServiceHolder) error {
-	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(serviceHolder.KogitoService); err != nil {
-		return fmt.Errorf("Error creating example service %s: %v", serviceHolder.GetName(), err)
-	}
-	return nil
+func DeployRuntimeService(namespace string, installerType InstallerType, serviceHolder *bddtypes.KogitoServiceHolder) error {
+	return DeployService(serviceHolder, installerType)
 }
 
 // SetKogitoRuntimeReplicas sets the number of replicas for a Kogito application
@@ -69,6 +49,7 @@ func SetKogitoRuntimeReplicas(namespace, name string, nbPods int) error {
 // GetKogitoRuntimeStub Get basic KogitoRuntime stub with all needed fields initialized
 func GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag string) *v1alpha1.KogitoRuntime {
 	image := framework.ConvertImageTagToImage(imageTag)
+	replicas := int32(1)
 	kogitoRuntime := &v1alpha1.KogitoRuntime{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -85,6 +66,7 @@ func GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag string) *v1alph
 				Image: image,
 				// Use insecure registry flag in tests
 				InsecureImageRegistry: true,
+				Replicas:              &replicas,
 			},
 		},
 	}

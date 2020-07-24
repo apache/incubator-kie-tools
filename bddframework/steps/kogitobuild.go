@@ -15,133 +15,74 @@
 package steps
 
 import (
-	"fmt"
 	"path/filepath"
 
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
+	"github.com/kiegroup/kogito-cloud-operator/test/types"
+	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
 
 /*
-	DataTable for KogitoRuntime:
+	DataTable for KogitoBuild:
 	| config | native | enabled/disabled |
 */
-
-const (
-	// DataTable first column
-	kogitoBuildConfigKey = "config"
-
-	// DataTable second column
-	kogitoBuildNativeKey = "native"
-)
 
 func registerKogitoBuildSteps(ctx *godog.ScenarioContext, data *Data) {
 	// Deploy steps
 	ctx.Step(`^Build (quarkus|springboot) example service "([^"]*)" with configuration:$`, data.buildExampleServiceWithConfiguration)
 	ctx.Step(`^Build binary (quarkus|springboot) service "([^"]*)" with configuration:$`, data.buildBinaryServiceWithConfiguration)
-	ctx.Step(`^Build (quarkus|springboot) example service "([^"]*)" from local file with configuration:$`, data.buildExampleServiceFromLocalFileWithConfiguration)
 }
 
 // Build service steps
 
 func (data *Data) buildExampleServiceWithConfiguration(runtimeType, contextDir string, table *godog.Table) error {
-	kogitoBuild, err := getKogitoBuildConfiguredStub(data.Namespace, runtimeType, filepath.Base(contextDir), table)
+	buildHolder, err := getKogitoBuildConfiguredStub(data.Namespace, runtimeType, filepath.Base(contextDir), table)
 	if err != nil {
 		return err
 	}
 
-	kogitoBuild.Spec.Type = v1alpha1.RemoteSourceBuildType
-	kogitoBuild.Spec.GitSource.URI = config.GetExamplesRepositoryURI()
-	kogitoBuild.Spec.GitSource.ContextDir = contextDir
+	buildHolder.KogitoBuild.Spec.Type = v1alpha1.RemoteSourceBuildType
+	buildHolder.KogitoBuild.Spec.GitSource.URI = config.GetExamplesRepositoryURI()
+	buildHolder.KogitoBuild.Spec.GitSource.ContextDir = contextDir
 	if ref := config.GetExamplesRepositoryRef(); len(ref) > 0 {
-		kogitoBuild.Spec.GitSource.Reference = ref
+		buildHolder.KogitoBuild.Spec.GitSource.Reference = ref
 	}
 
-	// Only working using CR installer. CLI support will come in KOGITO-1998?
-	return framework.DeployKogitoBuild(data.Namespace, framework.CRInstallerType, kogitoBuild)
+	return framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
 }
 
 func (data *Data) buildBinaryServiceWithConfiguration(runtimeType, serviceName string, table *godog.Table) error {
-	kogitoBuild, err := getKogitoBuildConfiguredStub(data.Namespace, runtimeType, serviceName, table)
+	buildHolder, err := getKogitoBuildConfiguredStub(data.Namespace, runtimeType, serviceName, table)
 	if err != nil {
 		return err
 	}
 
-	kogitoBuild.Spec.Type = v1alpha1.BinaryBuildType
+	buildHolder.KogitoBuild.Spec.Type = v1alpha1.BinaryBuildType
 
-	// Only working using CR installer. CLI support will come in KOGITO-1998?
-	return framework.DeployKogitoBuild(data.Namespace, framework.CRInstallerType, kogitoBuild)
-}
-
-func (data *Data) buildExampleServiceFromLocalFileWithConfiguration(runtimeType, serviceName string, table *godog.Table) error {
-	kogitoBuild, err := getKogitoBuildConfiguredStub(data.Namespace, runtimeType, serviceName, table)
-	if err != nil {
-		return err
-	}
-
-	kogitoBuild.Spec.Type = v1alpha1.LocalSourceBuildType
-
-	// Only working using CR installer. CLI support will come in KOGITO-1998?
-	return framework.DeployKogitoBuild(data.Namespace, framework.CRInstallerType, kogitoBuild)
+	return framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
 }
 
 // Misc methods
 
-// getKogitoBuildConfiguredStub Get basic KogitoBuild stub initialized from table
-func getKogitoBuildConfiguredStub(namespace, runtimeType, serviceName string, table *godog.Table) (*v1alpha1.KogitoBuild, error) {
+// getKogitoBuildConfiguredStub Get KogitoBuildHolder initialized from table if provided
+func getKogitoBuildConfiguredStub(namespace, runtimeType, serviceName string, table *godog.Table) (buildHolder *types.KogitoBuildHolder, err error) {
 	kogitoBuild := framework.GetKogitoBuildStub(namespace, runtimeType, serviceName)
+	kogitoRuntime := framework.GetKogitoRuntimeStub(namespace, runtimeType, serviceName, "")
 
-	if err := configureKogitoBuildFromTable(table, kogitoBuild); err != nil {
-		return nil, err
+	buildHolder = &bddtypes.KogitoBuildHolder{
+		KogitoServiceHolder: &bddtypes.KogitoServiceHolder{KogitoService: kogitoRuntime},
+		KogitoBuild:         kogitoBuild,
+	}
+
+	if table != nil {
+		err = mappers.MapKogitoBuildTable(table, buildHolder)
 	}
 
 	framework.SetupKogitoBuildImageStreams(kogitoBuild)
 
-	return kogitoBuild, nil
-}
-
-// Table parsing
-
-func configureKogitoBuildFromTable(table *godog.Table, kogitoBuild *v1alpha1.KogitoBuild) (err error) {
-	if len(table.Rows) == 0 { // Using default configuration
-		return nil
-	}
-
-	if len(table.Rows[0].Cells) != 3 {
-		return fmt.Errorf("expected table to have exactly three columns")
-	}
-
-	for _, row := range table.Rows {
-		firstColumn := getFirstColumn(row)
-
-		switch firstColumn {
-		case kogitoBuildConfigKey:
-			err = parseKogitoBuildConfigRow(row, kogitoBuild)
-
-		default:
-			err = fmt.Errorf("Unrecognized configuration option: %s", firstColumn)
-		}
-
-		if err != nil {
-			return
-		}
-	}
-
-	return
-}
-
-func parseKogitoBuildConfigRow(row *TableRow, kogitoBuild *v1alpha1.KogitoBuild) error {
-	secondColumn := getSecondColumn(row)
-
-	switch secondColumn {
-	case kogitoBuildNativeKey:
-		kogitoBuild.Spec.Native = framework.MustParseEnabledDisabled(getThirdColumn(row))
-
-	default:
-		return fmt.Errorf("Unrecognized config configuration option: %s", secondColumn)
-	}
-
-	return nil
+	return buildHolder, err
 }

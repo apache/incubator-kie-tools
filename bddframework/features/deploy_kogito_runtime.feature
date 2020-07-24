@@ -1,4 +1,4 @@
-# Disabled until we can integrate it as part of the pipeline, see KOGITO-2278
+# Can be enabled once https://github.com/kiegroup/kogito-cloud-operator/pull/457 is merged
 @disabled
 Feature: Deploy Kogito Runtime
 

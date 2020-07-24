@@ -21,12 +21,13 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
+	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 )
 
 // InstallKogitoJobsService install the Kogito Jobs Service component
-func InstallKogitoJobsService(installerType InstallerType, jobsService *KogitoServiceHolder) error {
+func InstallKogitoJobsService(installerType InstallerType, jobsService *bddtypes.KogitoServiceHolder) error {
 	return InstallService(jobsService, installerType, "jobs-service")
 }
 
