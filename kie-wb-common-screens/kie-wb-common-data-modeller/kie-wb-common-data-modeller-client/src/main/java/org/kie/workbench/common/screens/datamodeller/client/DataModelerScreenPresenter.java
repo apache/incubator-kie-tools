@@ -545,20 +545,20 @@ public class DataModelerScreenPresenter
         if (hasPackageNameChanged(newTypeInfo)) {
             view.showYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
                                       Constants.INSTANCE.modelEditor_confirm_file_package_refactoring(newTypeInfo.getPackageName()),
-                                      () -> getSaveFileCommand(newTypeInfo),
+                                      getSaveFileCommand(newTypeInfo),
                                       Constants.INSTANCE.modelEditor_action_yes_refactor_directory(),
                                       ButtonType.PRIMARY,
-                                      () -> getSaveFileCommand(null),
+                                      getSaveFileCommand(null),
                                       Constants.INSTANCE.modelEditor_action_no_dont_refactor_directory(),
                                       ButtonType.DANGER);
 
         } else if (hasFileNameChanged(newTypeInfo, currentFileName)) {
             view.showYesNoCancelPopup(CommonConstants.INSTANCE.Information(),
                                       Constants.INSTANCE.modelEditor_confirm_file_name_refactoring(newTypeInfo.getName()),
-                                      () -> getSaveFileCommand(newTypeInfo),
+                                      getSaveFileCommand(newTypeInfo),
                                       Constants.INSTANCE.modelEditor_action_yes_refactor_file_name(),
                                       ButtonType.PRIMARY,
-                                      () -> getSaveFileCommand(null),
+                                      getSaveFileCommand(null),
                                       Constants.INSTANCE.modelEditor_action_no_dont_refactor_file_name(),
                                       ButtonType.DANGER);
         } else {

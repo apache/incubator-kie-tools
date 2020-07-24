@@ -88,6 +88,11 @@ public class JavaFileIndexer extends AbstractFileIndexer {
 
     @Override
     public IndexBuilder fillIndexBuilder(final Path path) throws Exception {
+        if (!ioService.exists(path)) {
+            logger.error("Unable to index {} : file does not exist.", path.toUri());
+            return null;
+        }
+
         // create indexbuilder
         final KieModule module = getModule(path);
 

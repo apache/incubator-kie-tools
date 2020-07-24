@@ -25,6 +25,7 @@ import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
@@ -33,6 +34,7 @@ import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.widgets.metadata.client.validation.JavaAssetUpdateValidator;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
@@ -46,6 +48,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyListOf;
 import static org.mockito.Mockito.anyString;
@@ -379,6 +382,57 @@ public class DataModelerScreenPresenterTest
                never()).showCopyValidationMessages(any(Command.class),
                                                    any(Command.class),
                                                    anyListOf(ValidationMessage.class));
+    }
+
+    @Test
+    public void onSaveWithPackageChangeTest() {
+        when(validationService.validateForSave(any(Path.class),
+                                               any(DataObject.class))).thenReturn(Collections.emptyList());
+
+        presenter.context = mock(DataModelerContext.class);
+
+        when(presenter.context.getDataObject()).thenReturn(testObject1);
+        when(presenter.context.isEditorChanged()).thenReturn(true);
+        when(presenter.context.getEditorModelContent()).thenReturn(mock(EditorModelContent.class));
+        when(presenter.context.getEditorModelContent().getOriginalPackageName()).thenReturn("org.test.original");
+
+        presenter.save();
+
+        verify(view).showYesNoCancelPopup(anyString(),
+                                          anyString(),
+                                          any(Command.class),
+                                          anyString(),
+                                          eq(ButtonType.PRIMARY),
+                                          any(Command.class),
+                                          anyString(),
+                                          eq(ButtonType.DANGER));
+    }
+
+    @Test
+    public void onSaveWithRenameTest() {
+        presenter.context = mock(DataModelerContext.class);
+
+        when(validationService.validateForSave(any(Path.class),
+                                               any(DataObject.class))).thenReturn(Collections.emptyList());
+
+        when(presenter.context.getDataObject()).thenReturn(testObject1);
+        when(presenter.context.isEditorChanged()).thenReturn(true);
+        when(presenter.context.getEditorModelContent()).thenReturn(mock(EditorModelContent.class));
+        when(presenter.context.getEditorModelContent().getOriginalPackageName()).thenReturn(testObject1.getPackageName());
+        final ObservablePath mockPath = mock(ObservablePath.class);
+        when(versionRecordManager.getPathToLatest()).thenReturn(mockPath);
+        when(mockPath.getFileName()).thenReturn("testCurrentFile.java");
+
+        presenter.save();
+
+        verify(view).showYesNoCancelPopup(anyString(),
+                                          anyString(),
+                                          any(Command.class),
+                                          anyString(),
+                                          eq(ButtonType.PRIMARY),
+                                          any(Command.class),
+                                          anyString(),
+                                          eq(ButtonType.DANGER));
     }
 
     @Test
