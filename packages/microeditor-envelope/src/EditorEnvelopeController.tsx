@@ -16,12 +16,9 @@
 
 import * as React from "react";
 import * as Core from "@kogito-tooling/core-api";
-import { EditorContent, EditorContext, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
+import { EditorContent, EditorContext } from "@kogito-tooling/core-api";
 import { EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
-import {
-  ChannelKeyboardEvent,
-  DefaultKeyboardShortcutsService,
-} from "@kogito-tooling/keyboard-shortcuts";
+import { ChannelKeyboardEvent, DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 import { EditorFactory } from "./EditorFactory";
@@ -30,6 +27,7 @@ import { Renderer } from "./Renderer";
 import { ResourceContentServiceCoordinator } from "./api/resourceContent";
 import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandler";
 import { Association } from "@kogito-tooling/microeditor-envelope-protocol";
+import { I18nService } from "./api/i18n";
 
 export class EditorEnvelopeController {
   public readonly kogitoEnvelopeBus: KogitoEnvelopeBus;
@@ -43,7 +41,8 @@ export class EditorEnvelopeController {
     private readonly specialDomElements: SpecialDomElements,
     private readonly renderer: Renderer,
     private readonly resourceContentEditorCoordinator: ResourceContentServiceCoordinator,
-    private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService
+    private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService,
+    private readonly i18nService: I18nService
   ) {
     this.kogitoEnvelopeBus = new KogitoEnvelopeBus(bus, {
       receive_initRequest: async (association: Association) => {
@@ -96,6 +95,9 @@ export class EditorEnvelopeController {
       },
       receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent) {
         window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));
+      },
+      receive_changeLocale: (locale: string) => {
+        this.i18nService.executeI18nCallback(locale);
       }
     });
   }

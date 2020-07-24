@@ -269,6 +269,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
       return {
         getStateControl: () => stateControl,
+        notifyChangeLocale: (locale: string) => kogitoChannelBus.notify_changeLocale(locale),
         notifyRedo: () => kogitoChannelBus.notify_editorRedo(),
         notifyUndo: () => kogitoChannelBus.notify_editorUndo(),
         requestContent: () => kogitoChannelBus.request_contentResponse(),

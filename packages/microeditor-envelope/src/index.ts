@@ -26,6 +26,7 @@ import { Renderer } from "./Renderer";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { WorkspaceService, WorkspaceServiceApi } from "./api/workspaceService";
 import { GuidedTourApi, GuidedTourServiceCoordinator } from "./api/tour";
+import { I18nService, I18nServiceApi } from "./api/i18n";
 
 export * from "./api/resourceContent";
 export { EditorEnvelopeController } from "./EditorEnvelopeController";
@@ -41,6 +42,7 @@ declare global {
       resourceContentEditorService?: ResourceContentApi;
       keyboardShortcuts: KeyboardShortcutsApi;
       workspaceService: WorkspaceServiceApi;
+      i18n: I18nServiceApi;
     };
   }
 }
@@ -72,13 +74,15 @@ export function init(args: {
   const guidedTourService = new GuidedTourServiceCoordinator();
   const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: args.editorContext });
   const workspaceService = new WorkspaceService();
+  const i18nService = new I18nService();
   const editorEnvelopeController = new EditorEnvelopeController(
     args.bus,
     args.editorFactory,
     specialDomElements,
     renderer,
     resourceContentEditorCoordinator,
-    keyboardShortcutsService
+    keyboardShortcutsService,
+    i18nService
   );
 
   return editorEnvelopeController.start({ container: args.container, context: args.editorContext }).then(messageBus => {
@@ -87,7 +91,8 @@ export function init(args: {
       resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
       editorContext: args.editorContext,
       keyboardShortcuts: keyboardShortcutsService.exposeApi(),
-      workspaceService: workspaceService.exposeApi(messageBus)
+      workspaceService: workspaceService.exposeApi(messageBus),
+      i18n: i18nService.exposeApi()
     };
   });
 }

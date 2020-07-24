@@ -32,4 +32,5 @@ export interface KogitoEnvelopeApi {
   receive_previewRequest(): Promise<string>;
   receive_guidedTourElementPositionRequest(selector: string): Promise<Rect>;
   receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent): void;
+  receive_changeLocale(locale: string): void;
 }
