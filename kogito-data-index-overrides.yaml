@@ -20,9 +20,6 @@ envs:
   - name: "HTTP_PORT"
     example: "9090"
     description: "Defines which port the Data Index Container Image will listen on."
-  - name: "QUARKUS_INFINISPAN_CLIENT_SERVER_LIST"
-    example: "localhost:11222"
-    description: "Defines the Infinispan Server address, multiple values comma separated. If empty defaults to localhost:11222"
 
 ports:
 - value: 8080
@@ -35,7 +32,6 @@ modules:
   - name: org.kie.kogito.openjdk
     version: "11-headless"
   - name: org.kie.kogito.launch.scripts
-  - name: org.kie.kogito.infinispan.properties
   - name: org.kie.kogito.dataindex
 
 run:

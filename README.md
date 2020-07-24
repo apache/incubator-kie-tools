@@ -945,7 +945,6 @@ Below you can find all modules used to build the Kogito Images
 - [kogito-graalvm-installer](modules/kogito-graalvm-installer): Installs the GraalVM on the target Image.
 - [kogito-graalvm-scripts](modules/kogito-graalvm-scripts): Configures the GraalVM on the target image and provides custom configuration script. 
 - [kogito-image-dependencies](modules/kogito-image-dependencies): Installs rpm packages on the target image. Contains common dependencies for Kogito Images.
-- [kogito-infinispan-properties](modules/kogito-infinispan-properties): Provides Infinispan custom script to configure Infinispan properties during image startup.
 - [kogito-jobs-service](modules/kogito-jobs-service): Installs and Configure the jobs-service jar inside the image
 - [kogito-jq](modules/kogito-jq): Provides jq binary.
 - [kogito-kubernetes-client](modules/kogito-kubernetes-client): Provides a simple wrapper to interact with Kubernetes API.

@@ -19,53 +19,28 @@ Feature: Kogito-data-index feature.
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.infinispan-client.use-auth=false -Dquarkus.http.port=8080 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-data-index-runner.jar
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=8080 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-data-index-runner.jar
 
   Scenario: Verify if the debug is correctly enabled and test custom http port
     When container is started with env
       | variable      | value |
       | SCRIPT_DEBUG  | true  |
       | HTTP_PORT     | 9090  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.infinispan-client.use-auth=false -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-data-index-runner.jar
-
-  Scenario: Verify data-index default configuration
-    When container is started with env
-      | variable     | value |
-      | SCRIPT_DEBUG | true  |
-    Then container log should contain quarkus.infinispan-client.use-auth = false
-
-  Scenario: verify if auth is correctly set
-    When container is started with env
-      | variable            | value       |
-      | SCRIPT_DEBUG        | true        |
-      | INFINISPAN_USEAUTH  | true        |
-      | INFINISPAN_USERNAME | IamNotExist |
-      | INFINISPAN_PASSWORD | hard2guess  |
-    Then container log should contain quarkus.infinispan-client.use-auth = true
-    And container log should contain quarkus.infinispan-client.auth-password = hard2guess
-    And container log should contain quarkus.infinispan-client.auth-username = IamNotExist
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-data-index-runner.jar
 
   Scenario: verify if all parameters are correctly set
     When container is started with env
-      | variable                 | value       |
-      | SCRIPT_DEBUG             | true        |
-      | INFINISPAN_USEAUTH       | true        |
-      | INFINISPAN_USERNAME      | IamNotExist |
-      | INFINISPAN_PASSWORD      | hard2guess  |
-      | INFINISPAN_AUTHREALM     | SecretRealm |
-      | INFINISPAN_SASLMECHANISM | COOLGSSAPI  |
-    Then container log should contain quarkus.infinispan-client.use-auth = true
-    And container log should contain quarkus.infinispan-client.auth-password = hard2guess
-    And container log should contain quarkus.infinispan-client.auth-username = IamNotExist
-    And container log should contain quarkus.infinispan-client.auth-realm = SecretRealm
-    And container log should contain quarkus.infinispan-client.sasl-mechanism = COOLGSSAPI
-
-  Scenario: verify if image is started
-    When container is started with env
-      | variable                        | value                  |
-      | INFINISPAN_CREDENTIAL_SECRET    | infinispan-credentials |
-      | INFINISPAN_AUTHREALM            | default                |
-      | INFINISPAN_USEAUTH              | true                   |
-      | INFINISPAN_SASLMECHANISM        | PLAIN                  |
-     Then container log should not contain Error: Could not find or load main class [ERROR]
-
+      | variable                                  | value             |
+      | SCRIPT_DEBUG                              | true              |
+      | QUARKUS_INFINISPAN_CLIENT_SERVER_LIST     | 172.18.0.1:11222  |
+      | QUARKUS_INFINISPAN_CLIENT_USE_AUTH        | true              |
+      | QUARKUS_INFINISPAN_CLIENT_AUTH_USERNAME   | IamNotExist       |
+      | QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD   | hard2guess        |
+      | QUARKUS_INFINISPAN_CLIENT_AUTH_REALM      | SecretRealm       |
+      | QUARKUS_INFINISPAN_CLIENT_SASL_MECHANISM  | COOLGSSAPI        |
+    Then container log should contain QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=172.18.0.1:11222
+    Then container log should contain QUARKUS_INFINISPAN_CLIENT_USE_AUTH=true
+    And container log should contain QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD=hard2guess
+    And container log should contain QUARKUS_INFINISPAN_CLIENT_AUTH_USERNAME=IamNotExist
+    And container log should contain QUARKUS_INFINISPAN_CLIENT_AUTH_REALM=SecretReal
+    And container log should contain QUARKUS_INFINISPAN_CLIENT_SASL_MECHANISM=COOLGSSAPI

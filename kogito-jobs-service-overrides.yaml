@@ -20,9 +20,6 @@ envs:
 - name: "ENABLE_PERSISTENCE"
   example: "true"
   description: "By default the Jobs services runs on memory only, if persistence is needed then set it to true. (Sets the property kogito.jobs-service.persistence to infinispan)."
-- name: "INFINISPAN_CLIENT_SERVER_LIST"
-  example: "localhost:11222,localhost:11223"
-  description: "Required when persisted is enabled. (Sets the property quarkus.infinispan-client.server-list)."
 - name: "MAX_INTERVAL_LIMIT_RETRY"
   example: "60000"
   description: "Maximum interval in milliseconds when retrying to execute jobs, in case of failures, defaults to 60000ms. (Sets the property kogito.jobs-service.maxIntervalLimitToRetryMillis)."
@@ -50,7 +47,6 @@ modules:
   - name: org.kie.kogito.openjdk
     version: "11-headless"
   - name: org.kie.kogito.launch.scripts
-  - name: org.kie.kogito.infinispan.properties
   - name: org.kie.kogito.jobs.service
 
 run:

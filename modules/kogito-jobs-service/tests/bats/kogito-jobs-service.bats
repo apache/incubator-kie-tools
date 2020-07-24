@@ -3,25 +3,14 @@
 export KOGITO_HOME=/tmp/kogito
 export HOME=$KOGITO_HOME
 mkdir -p ${KOGITO_HOME}/launch
-cp $BATS_TEST_DIRNAME/../../../kogito-infinispan-properties/added/kogito-infinispan-properties.sh ${KOGITO_HOME}/launch/
 cp $BATS_TEST_DIRNAME/../../../kogito-logging/added/logging.sh ${KOGITO_HOME}/launch/
 
 # imports
 load $BATS_TEST_DIRNAME/../../added/launch/kogito-jobs-service.sh
-load ${KOGITO_HOME}/launch/kogito-infinispan-properties.sh
 
 
 teardown() {
     rm -rf ${KOGITO_HOME}
-}
-
-@test "test enable persistence without set infinispan server list" {
-    export ENABLE_PERSISTENCE="true"
-    run configure_jobs_service
-    expected="INFINISPAN_CLIENT_SERVER_LIST env not found, please set it."
-    echo "Result is ${output} and expected is ${expected}"
-    [ "$status" -eq 1 ]
-    [ "${output}" = "${expected}" ]
 }
 
 @test "check if the backoffRetryMillis is correctly set" {
@@ -51,11 +40,10 @@ teardown() {
 
 @test "check if the persistence is correctly configured with auth" {
     export ENABLE_PERSISTENCE="true"
-    export INFINISPAN_CLIENT_SERVER_LIST="localhost:11222"
     configure_jobs_service
 
     result="${KOGITO_JOBS_PROPS}"
-    expected=" -Dkogito.jobs-service.persistence=infinispan -Dquarkus.infinispan-client.server-list=localhost:11222"
+    expected=" -Dkogito.jobs-service.persistence=infinispan"
 
     echo "Result is ${result} and expected is ${expected}"
     [ "${result}" = "${expected}" ]
