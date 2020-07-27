@@ -28,7 +28,7 @@ mkdir -p "${OUTPUT}"
 rm -rf ~/operators/
 git clone https://github.com/operator-framework/community-operators.git ~/operators/
 cp -r ~/operators/community-operators/strimzi-kafka-operator "${OUTPUT}"
-cp -r ~/operators/community-operators/keycloak "${OUTPUT}"
+cp -r ~/operators/community-operators/keycloak-operator "${OUTPUT}"
 cp -r ~/operators/community-operators/infinispan/ "${OUTPUT}"
 cp -r ~/operators/community-operators/kogito-operator/ "${OUTPUT}"
 rm -rf ~/operators/
