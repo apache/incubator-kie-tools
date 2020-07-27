@@ -27,6 +27,10 @@ import (
 func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 	cmd := []string{}
 
+	for _, envVar := range serviceHolder.GetSpec().GetEnvs() {
+		cmd = append(cmd, "--env", fmt.Sprintf("%s=%s", envVar.Name, envVar.Value))
+	}
+
 	image := framework.ConvertImageToImageTag(*serviceHolder.GetSpec().GetImage())
 	if len(image) > 0 {
 		cmd = append(cmd, "--image", image)
