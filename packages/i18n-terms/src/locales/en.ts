@@ -14,12 +14,28 @@
  * limitations under the License.
  */
 
-import { TermsBundle } from "../TermsBundle";
+import { TermsI18n } from "../TermsI18n";
+import { names } from "../names";
 
-export const en: TermsBundle = {
-  cancel: "Cancel",
-  close: "Close",
-  download: "Download",
-  exit: "Exit",
-  save: "Save"
+export const en: TermsI18n = {
+  names,
+  terms: {
+    cancel: "Cancel",
+    close: "Close",
+    download: "Download",
+    exit: "Exit",
+    save: "Save",
+    os: {
+      initials: "OS",
+      full: "Operation System"
+    },
+    fullScreen: "Full Screen",
+    edited: "Edited",
+    reset: "Reset",
+    continue: "Continue",
+    token: "Token",
+    note: "Note",
+    poweredBy: "Powered by",
+    or: "or"
+  }
 };

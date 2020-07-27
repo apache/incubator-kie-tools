@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./TermsI18n";
-export * from "./locales";
+import { en } from "./en";
+export { en };
+export const dictionaries = new Map([["en", en]]);

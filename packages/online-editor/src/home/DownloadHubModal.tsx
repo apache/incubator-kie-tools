@@ -28,6 +28,8 @@ import {
 import { Redirect } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { OperatingSystem, getOperatingSystem } from "../common/utils";
+import { useTranslation } from "@kogito-tooling/i18n";
+import { OnlineI18n } from "../common/i18n";
 
 enum ModalState {
   SELECT_OS,
@@ -35,14 +37,9 @@ enum ModalState {
   CLOSE
 }
 
-const availableOperatingSystems = new Map<OperatingSystem, string>([
-  [OperatingSystem.LINUX, "Linux"],
-  [OperatingSystem.MACOS, "macOS"],
-  [OperatingSystem.WINDOWS, "Windows"]
-]);
-
 export function DownloadHubModal(props: {}) {
   const context = useContext(GlobalContext);
+  const { i18n } = useTranslation<OnlineI18n>();
 
   const [modalState, setModalState] = useState(ModalState.SELECT_OS);
   const [operationalSystem, setOperationalSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
@@ -66,6 +63,16 @@ export function DownloadHubModal(props: {}) {
     setSelectIsExpanded(false);
   }, []);
 
+  const availableOperatingSystems = useMemo(
+    () =>
+      new Map<OperatingSystem, string>([
+        [OperatingSystem.LINUX, i18n.names.linux],
+        [OperatingSystem.MACOS, i18n.names.macos],
+        [OperatingSystem.WINDOWS, i18n.names.windows]
+      ]),
+    []
+  );
+
   const downloadHub = useMemo(() => {
     switch (operationalSystem) {
       case OperatingSystem.MACOS:
@@ -83,7 +90,7 @@ export function DownloadHubModal(props: {}) {
       {modalState === ModalState.CLOSE && <Redirect push={true} to={context.routes.home.url({})} />}
       {modalState === ModalState.SELECT_OS && (
         <Modal
-          title="The Business Modeler Hub Preview allows you to access:"
+          title={i18n.downloadHubModal.beforeDownload.title + ":"}
           isOpen={true}
           isLarge={true}
           onClose={onClose}
@@ -94,11 +101,11 @@ export function DownloadHubModal(props: {}) {
                 <div>
                   <a key="download" href={downloadHub} download={true}>
                     <Button variant="primary" onClick={onDownload}>
-                      Download
+                      {i18n.terms.download}
                     </Button>
                   </a>
                   <Button key="cancel" variant="link" onClick={onClose}>
-                    Cancel
+                    {i18n.terms.cancel}
                   </Button>
                 </div>
               }
@@ -106,28 +113,28 @@ export function DownloadHubModal(props: {}) {
           }
         >
           <p>
-            <strong>VS Code </strong>
-            <small>
-              Installs VS Code extension and gives you a convenient way to launch VS Code ready to work with Kogito.
-            </small>
+            <strong>{i18n.names.vscode} </strong>
+            <small>{i18n.downloadHubModal.beforeDownload.vscodeDescription}</small>
           </p>
           <br />
           <p>
-            <strong>GitHub Chrome Extension </strong>
-            <small>Provides detailed instructions on how to install Kogito GitHub Extension for Chrome.</small>
+            <strong>
+              {i18n.names.github} {i18n.names.chromeExtension}{" "}
+            </strong>
+            <small>{i18n.downloadHubModal.beforeDownload.githubChromeExtensionDescription}</small>
           </p>
           <br />
           <p>
-            <strong>Desktop App </strong>
-            <small>Installs the Business Modeler desktop app for use locally and offline.</small>
+            <strong>{i18n.downloadHubModal.beforeDownload.desktop.title}</strong>
+            <small>{i18n.downloadHubModal.beforeDownload.desktop.description}</small>
           </p>
           <br />
           <p>
-            <strong>Business Modeler Preview </strong>
-            <small>Provides a quick link to access the website in the same hub.</small>
+            <strong>{i18n.names.businessModelerPreview} </strong>
+            <small>{i18n.downloadHubModal.beforeDownload.businessModelerDescription}</small>
           </p>
           <br />
-          <p>Operation System:</p>
+          <p>{i18n.terms.os.full}:</p>
           <div>
             <Select
               variant={SelectVariant.single}
@@ -152,7 +159,7 @@ export function DownloadHubModal(props: {}) {
       )}
       {modalState === ModalState.DOWNLOADED && (
         <Modal
-          title="Thank you for downloading Business Modeler Hub Preview!"
+          title={i18n.downloadHubModal.afterDownload.title + "!"}
           isOpen={true}
           isLarge={true}
           onClose={onClose}
@@ -162,7 +169,7 @@ export function DownloadHubModal(props: {}) {
               children={
                 <div>
                   <Button key="close" variant="link" onClick={onClose}>
-                    Close
+                    {i18n.terms.close}
                   </Button>
                 </div>
               }
@@ -171,9 +178,9 @@ export function DownloadHubModal(props: {}) {
         >
           <p>
             <small>
-              If the download does not begin automatically,{" "}
+              {i18n.downloadHubModal.afterDownload.message}{" "}
               <a href={downloadHub} download={true}>
-                click here
+                {i18n.downloadHubModal.afterDownload.link}
               </a>
             </small>
           </p>

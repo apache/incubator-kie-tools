@@ -14,5 +14,31 @@
  * limitations under the License.
  */
 
-export * from "./TermsI18n";
-export * from "./locales";
+// tslint:disable-next-line:interface-over-type-literal
+export type NamesBundle = {
+  vscode: string;
+  businessModelerPreview: string;
+  chromeExtension: string;
+  github: string;
+  macos: string;
+  linux: string;
+  windows: string;
+  svg: string;
+  oauth: string;
+  bpmn: string;
+  dmn: string;
+};
+
+export const names: NamesBundle = {
+  vscode: "VS Code",
+  businessModelerPreview: "Business Modeler Preview",
+  chromeExtension: "Chrome Extension",
+  github: "GitHub",
+  macos: "macOS",
+  linux: "Linux",
+  windows: "Windows",
+  svg: "SVG",
+  oauth: "OAuth",
+  bpmn: "BPMN",
+  dmn: "DMN"
+};

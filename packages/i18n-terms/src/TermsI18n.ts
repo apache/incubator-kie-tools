@@ -15,11 +15,30 @@
  */
 
 import { TranslationBundle } from "@kogito-tooling/i18n";
+import { NamesBundle } from "./names";
 
-export interface TermsBundle extends TranslationBundle<TermsBundle> {
+// tslint:disable-next-line:interface-over-type-literal
+export type TermsBundle = {
   cancel: string;
   close: string;
   download: string;
   exit: string;
   save: string;
+  os: {
+    initials: string;
+    full: string;
+  };
+  fullScreen: string;
+  edited: string;
+  reset: string;
+  continue: string;
+  token: string;
+  note: string;
+  poweredBy: string;
+  or: string;
+};
+
+export interface TermsI18n extends TranslationBundle<TermsI18n> {
+  terms: TermsBundle;
+  names: NamesBundle;
 }
