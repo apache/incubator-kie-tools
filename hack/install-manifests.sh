@@ -13,6 +13,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source ./hack/install-manifests.sh
+EXIT=0
+FILE_FOUND=0
 
-kubectl apply -f deploy/operator.yaml -n "${NAMESPACE}";
+if [ -z "${NAMESPACE}" ]; then
+  NAMESPACE="kogito"
+fi
+
+shopt -s nullglob
+for file in deploy/{crds/*_crd.yaml,role*.yaml,service_account.yaml}; do
+  FILE_FOUND=1
+  if ! kubectl apply -f "$file" -n "${NAMESPACE}"; then
+    EXIT=1
+    break # Don't try other files if one fails
+  fi
+done
+shopt -u nullglob
+
+if [[ FILE_FOUND -eq 0 ]]; then
+  echo "No deployment files found" >&2
+  EXIT=3
+fi
+
+exit ${EXIT}
