@@ -486,9 +486,9 @@ public class ScenarioSimulationEditorPresenter {
                                                                                  context.getAbstractScesimModelByGridWidget(gridWidget)));
     }
 
-    public RemoteCallback<Object> getExportCallBack() {
+    public RemoteCallback<String> getExportCallBack() {
         return rawResult -> {
-            TextContent textContent = TextContent.create((String) rawResult);
+            TextContent textContent = TextContent.create(rawResult);
             textFileExport.export(textContent,
                                   path.getFileName() + CSV.getExtension());
         };

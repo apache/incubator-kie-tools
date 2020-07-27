@@ -145,8 +145,6 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     @Mock
     private Metadata metaDataMock;
     @Mock
-    private AuditLog auditLog;
-    @Mock
     private AssetUpdateValidator assetUpdateValidatorMock;
     @Mock
     private ProjectController projectControllerMock;
@@ -171,7 +169,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
     @Mock
     private SimulationRunMetadata simulationRunMetadataMock;
     @Mock
-    private RemoteCallback<Object> exportCallBackMock;
+    private RemoteCallback<String> exportCallBackMock;
     @Mock
     private CoverageReportPresenter coverageReportPresenterMock;
     @Mock
@@ -303,7 +301,7 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
 
     @Test
     public void onExportToCSV() {
-        RemoteCallback<Object> remoteCallback = mock(RemoteCallback.class);
+        RemoteCallback<String> remoteCallback = mock(RemoteCallback.class);
         ScenarioSimulationHasBusyIndicatorDefaultErrorCallback errorCallback = mock(ScenarioSimulationHasBusyIndicatorDefaultErrorCallback.class);
         scenarioSimulationEditorBusinessClientWrapper.onExportToCsv(remoteCallback, errorCallback, simulationMock);
         verify(importExportCaller, times(1)).call(eq(remoteCallback), eq(errorCallback));
@@ -312,11 +310,11 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
 
     @Test
     public void onDownloadReportToCSV() {
-        RemoteCallback<Object> remoteCallback = mock(RemoteCallback.class);
+        RemoteCallback<String> remoteCallback = mock(RemoteCallback.class);
         ScenarioSimulationHasBusyIndicatorDefaultErrorCallback errorCallback = mock(ScenarioSimulationHasBusyIndicatorDefaultErrorCallback.class);
-        scenarioSimulationEditorBusinessClientWrapper.onDownloadReportToCsv(remoteCallback, errorCallback, auditLog);
+        scenarioSimulationEditorBusinessClientWrapper.onDownloadReportToCsv(remoteCallback, errorCallback, simulationRunMetadataMock, RULE);
         verify(runnerReportServiceCaller, times(1)).call(eq(remoteCallback), eq(errorCallback));
-        verify(runnerReportServiceMock, times(1)).getReport(eq(auditLog));
+        verify(runnerReportServiceMock, times(1)).getReport(eq(simulationRunMetadataMock), eq(RULE));
     }
 
     @Test
@@ -629,8 +627,9 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         verify(presenterSpy, times(1)).setDownloadReportCommand(commandArgumentCaptor.capture());
         commandArgumentCaptor.getValue().execute();
         verify(scenarioSimulationEditorBusinessClientWrapper, times(1)).onDownloadReportToCsv(eq(exportCallBackMock),
-                                                                                                                   isA(ScenarioSimulationHasBusyIndicatorDefaultErrorCallback.class),
-                                                                                                                   eq(auditLogMock));
+                                                                                              isA(ScenarioSimulationHasBusyIndicatorDefaultErrorCallback.class),
+                                                                                              eq(simulationRunMetadataMock),
+                                                                                              eq(DMN));
         //
         reset(presenterSpy, simulationRunMetadataMock, scenarioSimulationEditorBusinessClientWrapper);
         scenarioSimulationEditorBusinessClientWrapper.lastRunResult = null;
@@ -652,7 +651,8 @@ public class ScenarioSimulationEditorBusinessCentralWrapperTest extends Abstract
         verify(presenterSpy, times(1)).setDownloadReportCommand(commandArgumentCaptor.capture());
         commandArgumentCaptor.getValue().execute();
         verify(scenarioSimulationEditorBusinessClientWrapper, times(1)).onDownloadReportToCsv(eq(exportCallBackMock),
-                                                                                             isA(ScenarioSimulationHasBusyIndicatorDefaultErrorCallback.class),
-                                                                                             eq(auditLogMock));
+                                                                                              isA(ScenarioSimulationHasBusyIndicatorDefaultErrorCallback.class),
+                                                                                              eq(simulationRunMetadataMock),
+                                                                                              eq(RULE));
     }
 }

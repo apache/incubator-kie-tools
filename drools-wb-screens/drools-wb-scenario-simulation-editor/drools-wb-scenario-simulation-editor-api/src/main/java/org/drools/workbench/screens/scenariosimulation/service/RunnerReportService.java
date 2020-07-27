@@ -15,7 +15,8 @@
  */
 package org.drools.workbench.screens.scenariosimulation.service;
 
-import org.drools.scenariosimulation.api.model.AuditLog;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.jboss.errai.bus.server.annotations.Remote;
 
 /**
@@ -25,11 +26,12 @@ import org.jboss.errai.bus.server.annotations.Remote;
 public interface RunnerReportService {
 
     /**
-     * This method returns the report of the given <code>AuditLog</code>>
+     * This method returns the report of the given <code>SimulationRunMetadata</code>
      *
-     * @param auditLog
+     * @param scenarioRunMetadata
+     * @param modelType
      * @return
      */
-    Object getReport(AuditLog auditLog);
+    String getReport(SimulationRunMetadata scenarioRunMetadata, ScenarioSimulationModel.Type modelType);
 
 }

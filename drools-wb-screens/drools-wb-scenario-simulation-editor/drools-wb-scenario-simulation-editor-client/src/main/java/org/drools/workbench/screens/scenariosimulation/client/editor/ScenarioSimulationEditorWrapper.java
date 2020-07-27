@@ -20,12 +20,13 @@ import java.util.List;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.scenariosimulation.api.model.AbstractScesimData;
 import org.drools.scenariosimulation.api.model.AbstractScesimModel;
-import org.drools.scenariosimulation.api.model.AuditLog;
 import org.drools.scenariosimulation.api.model.Background;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScenarioWithIndex;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
+import org.drools.scenariosimulation.api.model.SimulationRunMetadata;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.AbstractScenarioSimulationDocksHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ScenarioSimulationHasBusyIndicatorDefaultErrorCallback;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.CheatSheetPresenter;
@@ -47,9 +48,9 @@ public interface ScenarioSimulationEditorWrapper {
 
     void onImport(String fileContents, RemoteCallback<AbstractScesimModel> importCallBack, ErrorCallback<Object> importErrorCallback, AbstractScesimModel<? extends AbstractScesimData> scesimModel);
 
-    void onExportToCsv(RemoteCallback<Object> exportCallBack, ScenarioSimulationHasBusyIndicatorDefaultErrorCallback scenarioSimulationHasBusyIndicatorDefaultErrorCallback, AbstractScesimModel<? extends AbstractScesimData> scesimModel);
+    void onExportToCsv(RemoteCallback<String> exportCallBack, ScenarioSimulationHasBusyIndicatorDefaultErrorCallback scenarioSimulationHasBusyIndicatorDefaultErrorCallback, AbstractScesimModel<? extends AbstractScesimData> scesimModel);
 
-    void onDownloadReportToCsv(RemoteCallback<Object> exportCallBack, ScenarioSimulationHasBusyIndicatorDefaultErrorCallback scenarioSimulationHasBusyIndicatorDefaultErrorCallback, AuditLog auditLog);
+    void onDownloadReportToCsv(RemoteCallback<String> exportCallBack, ScenarioSimulationHasBusyIndicatorDefaultErrorCallback scenarioSimulationHasBusyIndicatorDefaultErrorCallback, SimulationRunMetadata simulationRunMetadata, ScenarioSimulationModel.Type modelType);
 
     void validate(Simulation simulation, Settings settings, RemoteCallback<?> callback);
 
