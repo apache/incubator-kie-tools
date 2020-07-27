@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 import { Editor, Element } from "@kogito-tooling/core-api";
-import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
+import {
+    KogitoChannelApi,
+    MessageBusClient
+} from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
 import { PMMLEditor } from "./PMMLEditor";
 
 export class PMMLEditorInterface extends Editor {
-    private readonly messageBus: EnvelopeBusInnerMessageHandler;
 
     private self: PMMLEditor;
 
-    constructor(messageBus: EnvelopeBusInnerMessageHandler) {
+    constructor(private readonly messageBusClient: MessageBusClient<KogitoChannelApi>) {
         super("readonly-react-editor");
         this.af_isReact = true;
-        this.messageBus = messageBus;
     }
 
     public setContent(path: string, content: string): Promise<void> {
@@ -42,7 +43,7 @@ export class PMMLEditorInterface extends Editor {
     }
 
     public af_componentRoot(): Element {
-        return <PMMLEditor exposing={s => (this.self = s)} messageBus={this.messageBus} />;
+        return <PMMLEditor exposing={s => (this.self = s)} messageBusClient={this.messageBusClient} />;
     }
 
     public async undo(): Promise<void> {

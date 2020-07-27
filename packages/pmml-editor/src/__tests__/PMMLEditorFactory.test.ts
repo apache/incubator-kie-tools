@@ -15,51 +15,67 @@
  */
 
 import * as AppFormer from "@kogito-tooling/core-api";
-import { EditorContent, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
-import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts";
-import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
+import {
+  KogitoEdit,
+  LanguageData,
+  ResourceContentRequest,
+  ResourceListRequest,
+  ResourcesList,
+  StateControlCommand
+} from "@kogito-tooling/core-api";
+import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
+import {
+  EnvelopeBus,
+  EnvelopeBusMessage,
+  KogitoChannelApi,
+  KogitoChannelBus
+} from "@kogito-tooling/microeditor-envelope-protocol";
 import { FACTORY_TYPE, PMMLEditorFactory } from "../editor/PMMLEditorFactory";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
 
-const handler: EnvelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(
-  {
-    postMessage: (_1, _2) => {
-      /*NOP*/
-    }
+const languageData: LanguageData = { type: "unused" };
+
+const bus: EnvelopeBus = {
+  postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any) {
+    /*NOP*/
+  }
+};
+const api: KogitoChannelApi = {
+  receive_setContentError(_: string) {
+    /*NOP*/
   },
-  self => ({
-    receive_contentResponse: (_: EditorContent) => {
-      /*NOP*/
-    },
-    receive_languageResponse: (_: LanguageData) => {
-      /*NOP*/
-    },
-    receive_contentRequest: () => {
-      /*NOP*/
-    },
-    receive_resourceContentResponse: (_: ResourceContent) => {
-      /*NOP*/
-    },
-    receive_resourceContentList: (_: ResourcesList) => {
-      /*NOP*/
-    },
-    receive_editorRedo(): void {
-      /*NOP*/
-    },
-    receive_editorUndo(): void {
-      /*NOP*/
-    },
-    receive_previewRequest: () => {
-      /*NOP*/
-    },
-    receive_guidedTourElementPositionRequest: (_: string) => {
-      /*NOP*/
-    },
-    receive_channelKeyboardEvent: (_: ChannelKeyboardEvent) => {
-      /*NOP*/
-    }
-  })
-);
+  receive_ready() {
+    /*NOP*/
+  },
+  receive_openFile(_: string) {
+    /*NOP*/
+  },
+  receive_guidedTourUserInteraction(_: UserInteraction) {
+    /*NOP*/
+  },
+  receive_guidedTourRegisterTutorial(_: Tutorial) {
+    /*NOP*/
+  },
+  receive_newEdit(_: KogitoEdit) {
+    /*NOP*/
+  },
+  receive_stateControlCommandUpdate(_: StateControlCommand) {
+    /*NOP*/
+  },
+  receive_languageRequest() {
+    return Promise.resolve(languageData);
+  },
+  receive_contentRequest() {
+    return Promise.resolve({ content: "" });
+  },
+  receive_resourceContentRequest(_: ResourceContentRequest) {
+    return Promise.resolve(undefined);
+  },
+  receive_resourceListRequest(_: ResourceListRequest) {
+    return Promise.resolve(new ResourcesList("", []));
+  }
+};
+const messageBus: KogitoChannelBus = new KogitoChannelBus(bus, api);
 
 describe("PMMLEditorFactory", () => {
   test("Unsupported LanguageData type", () => {
@@ -77,7 +93,7 @@ describe("PMMLEditorFactory", () => {
 
     jest.spyOn(factory, "createEditor");
 
-    const created: Promise<AppFormer.Editor> = factory.createEditor({ type: FACTORY_TYPE }, handler);
+    const created: Promise<AppFormer.Editor> = factory.createEditor({ type: FACTORY_TYPE }, messageBus.client);
     expect(created).resolves.toBeInstanceOf(PMMLEditorInterface);
   });
 });

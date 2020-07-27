@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
+import {
+    KogitoChannelApi,
+    MessageBusClient
+} from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
 
 export interface Props {
     exposing: (s: PMMLEditor) => void;
-    messageBus: EnvelopeBusInnerMessageHandler;
+    messageBusClient: MessageBusClient<KogitoChannelApi>;
 }
 
 export interface State {
@@ -39,7 +42,7 @@ export class PMMLEditor extends React.Component<Props, State> {
     }
 
     public componentDidMount(): void {
-        this.props.messageBus.notify_ready();
+        this.props.messageBusClient.notify("receive_ready");
     }
 
     public setContent(path: string, content: string): Promise<void> {

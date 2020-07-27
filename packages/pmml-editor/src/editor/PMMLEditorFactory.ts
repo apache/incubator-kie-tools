@@ -16,7 +16,7 @@
 import * as AppFormer from "@kogito-tooling/core-api";
 import { LanguageData } from "@kogito-tooling/core-api";
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
-import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
+import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
 import { PMMLEditorInterface } from "./PMMLEditorInterface";
 
 export const FACTORY_TYPE = "pmml";
@@ -28,8 +28,8 @@ export class PMMLEditorFactory implements MicroEditorEnvelope.EditorFactory<Lang
 
   public createEditor(
     languageData: LanguageData,
-    messageBus: EnvelopeBusInnerMessageHandler
+    messageBusClient: MessageBusClient<KogitoChannelApi>
   ): Promise<AppFormer.Editor> {
-    return Promise.resolve(new PMMLEditorInterface(messageBus));
+    return Promise.resolve(new PMMLEditorInterface(messageBusClient));
   }
 }

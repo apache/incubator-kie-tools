@@ -16,11 +16,13 @@
 
 import * as Core from "@kogito-tooling/core-api";
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
+import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
+import { GwtAppFormerApi } from "./GwtAppFormerApi";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { GwtStateControlApi, GwtStateControlService } from "./gwtStateControl";
-import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
-import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { XmlFormatter } from "./XmlFormatter";
 
 declare global {
   interface Window {

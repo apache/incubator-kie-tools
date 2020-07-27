@@ -48,7 +48,7 @@ describe("EditorEnvelopeController", () => {
       },
       {
 
-        supports: (languageData: LanguageData) => true,
+        supports: (_: LanguageData) => true,
 
         createEditor: (_: LanguageData) => Promise.resolve(dummyEditor)
       },

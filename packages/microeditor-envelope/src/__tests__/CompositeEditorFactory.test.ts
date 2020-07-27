@@ -15,55 +15,70 @@
  */
 
 import * as Core from "@kogito-tooling/core-api";
-import { EditorContent, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
-import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts";
+import {
+  KogitoEdit,
+  LanguageData,
+  ResourceContentRequest,
+  ResourceListRequest,
+  ResourcesList,
+  StateControlCommand
+} from "@kogito-tooling/core-api";
+import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
+import {
+  EnvelopeBus,
+  EnvelopeBusMessage,
+  KogitoChannelApi,
+  KogitoChannelBus,
+  MessageBusClient
+} from "@kogito-tooling/microeditor-envelope-protocol";
 import { CompositeEditorFactory } from "../CompositeEditorFactory";
 import { EditorFactory } from "../EditorFactory";
-import { EnvelopeBusInnerMessageHandler } from "../EnvelopeBusInnerMessageHandler";
 import { DummyEditor } from "./DummyEditor";
 
 const dummyEditor: Core.Editor = new DummyEditor();
 const languageData: LanguageData = { type: "unused" };
 
-const handler: EnvelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(
-  {
-    postMessage: (_1, _2) => {
-      /*NOP*/
-    }
+const bus: EnvelopeBus = {
+  postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any) {
+    /*NOP*/
+  }
+};
+const api: KogitoChannelApi = {
+  receive_setContentError(_: string) {
+    /*NOP*/
   },
-  self => ({
-    receive_contentResponse: (_: EditorContent) => {
-      /*NOP*/
-    },
-    receive_languageResponse: (_: LanguageData) => {
-      /*NOP*/
-    },
-    receive_contentRequest: () => {
-      /*NOP*/
-    },
-    receive_resourceContentResponse: (_: ResourceContent) => {
-      /*NOP*/
-    },
-    receive_resourceContentList: (_: ResourcesList) => {
-      /*NOP*/
-    },
-    receive_editorRedo(): void {
-      /*NOP*/
-    },
-    receive_editorUndo(): void {
-      /*NOP*/
-    },
-    receive_previewRequest: () => {
-      /*NOP*/
-    },
-    receive_guidedTourElementPositionRequest: (_: string) => {
-      /*NOP*/
-    },
-    receive_channelKeyboardEvent: (_: ChannelKeyboardEvent) => {
-      /*NOP*/
-    }
-  })
-);
+  receive_ready() {
+    /*NOP*/
+  },
+  receive_openFile(_: string) {
+    /*NOP*/
+  },
+  receive_guidedTourUserInteraction(_: UserInteraction) {
+    /*NOP*/
+  },
+  receive_guidedTourRegisterTutorial(_: Tutorial) {
+    /*NOP*/
+  },
+  receive_newEdit(_: KogitoEdit) {
+    /*NOP*/
+  },
+  receive_stateControlCommandUpdate(_: StateControlCommand) {
+    /*NOP*/
+  },
+  receive_languageRequest() {
+    return Promise.resolve(languageData);
+  },
+  receive_contentRequest() {
+    return Promise.resolve({ content: "" });
+  },
+  receive_resourceContentRequest(_: ResourceContentRequest) {
+    return Promise.resolve(undefined);
+  },
+  receive_resourceListRequest(_: ResourceListRequest) {
+    return Promise.resolve(new ResourcesList("", []));
+  }
+};
+const messageBus: KogitoChannelBus = new KogitoChannelBus(bus, api);
 
 describe("CompositeEditorFactory", () => {
   test("Unsupported type", () => {
@@ -103,7 +118,7 @@ describe("CompositeEditorFactory", () => {
     jest.spyOn(factory2, "createEditor");
 
     const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
-    expect(compositeFactory.createEditor(languageData, handler)).resolves.toBe(dummyEditor);
+    expect(compositeFactory.createEditor(languageData, messageBus.client)).resolves.toBe(dummyEditor);
     expect(factory2.createEditor).toBeCalledTimes(1);
   });
 
@@ -115,13 +130,13 @@ describe("CompositeEditorFactory", () => {
     factories.push(factory2);
 
     const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
-    expect(() => compositeFactory.createEditor(languageData, handler)).toThrowError(Error);
+    expect(() => compositeFactory.createEditor(languageData, messageBus.client)).toThrowError(Error);
   });
 
   function makeEditorFactory(supported: boolean): EditorFactory<LanguageData> {
     const factory: EditorFactory<LanguageData> = {
       supports: data => supported,
-      createEditor: (_1: LanguageData, _2: EnvelopeBusInnerMessageHandler) => Promise.resolve(dummyEditor)
+      createEditor: (_1: LanguageData, _2: MessageBusClient<KogitoChannelApi>) => Promise.resolve(dummyEditor)
     };
     return factory;
   }

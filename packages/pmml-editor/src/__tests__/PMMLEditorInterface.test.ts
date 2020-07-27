@@ -14,72 +14,90 @@
  * limitations under the License.
  */
 
-import { EditorContent, LanguageData, ResourceContent, ResourcesList } from "@kogito-tooling/core-api";
-import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts";
-import { EnvelopeBusInnerMessageHandler } from "@kogito-tooling/microeditor-envelope";
-import { mount } from "enzyme";
+import {
+  KogitoEdit,
+  LanguageData,
+  ResourceContentRequest,
+  ResourceListRequest,
+  ResourcesList,
+  StateControlCommand
+} from "@kogito-tooling/core-api";
+import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
+import {
+  EnvelopeBus,
+  EnvelopeBusMessage,
+  EnvelopeBusMessagePurpose,
+  KogitoChannelApi,
+  KogitoChannelBus
+} from "@kogito-tooling/microeditor-envelope-protocol";
+import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor } from "../editor/PMMLEditor";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
 
-const handler: EnvelopeBusInnerMessageHandler = new EnvelopeBusInnerMessageHandler(
-  {
-    postMessage: (_1, _2) => {
-      /*NOP*/
-    }
+const languageData: LanguageData = { type: "unused" };
+
+const bus: EnvelopeBus = {
+  postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any) {
+    /*NOP*/
+  }
+};
+const api: KogitoChannelApi = {
+  receive_setContentError(_: string) {
+    /*NOP*/
   },
-  self => ({
-    receive_contentResponse: (_: EditorContent) => {
-      /*NOP*/
-    },
-    receive_languageResponse: (_: LanguageData) => {
-      /*NOP*/
-    },
-    receive_contentRequest: () => {
-      /*NOP*/
-    },
-    receive_resourceContentResponse: (_: ResourceContent) => {
-      /*NOP*/
-    },
-    receive_resourceContentList: (_: ResourcesList) => {
-      /*NOP*/
-    },
-    receive_editorRedo(): void {
-      /*NOP*/
-    },
-    receive_editorUndo(): void {
-      /*NOP*/
-    },
-    receive_previewRequest: () => {
-      /*NOP*/
-    },
-    receive_guidedTourElementPositionRequest: (_: string) => {
-      /*NOP*/
-    },
-    receive_channelKeyboardEvent: (_: ChannelKeyboardEvent) => {
-      /*NOP*/
-    }
-  })
-);
+  receive_ready() {
+    /*NOP*/
+  },
+  receive_openFile(_: string) {
+    /*NOP*/
+  },
+  receive_guidedTourUserInteraction(_: UserInteraction) {
+    /*NOP*/
+  },
+  receive_guidedTourRegisterTutorial(_: Tutorial) {
+    /*NOP*/
+  },
+  receive_newEdit(_: KogitoEdit) {
+    /*NOP*/
+  },
+  receive_stateControlCommandUpdate(_: StateControlCommand) {
+    /*NOP*/
+  },
+  receive_languageRequest() {
+    return Promise.resolve(languageData);
+  },
+  receive_contentRequest() {
+    return Promise.resolve({ content: "" });
+  },
+  receive_resourceContentRequest(_: ResourceContentRequest) {
+    return Promise.resolve(undefined);
+  },
+  receive_resourceListRequest(_: ResourceListRequest) {
+    return Promise.resolve(new ResourcesList("", []));
+  }
+};
+const messageBus: KogitoChannelBus = new KogitoChannelBus(bus, api);
 
-//Mock that the bus has been setup correctly
-handler.targetOrigin = "origin";
-
-const editorInterface: PMMLEditorInterface = new PMMLEditorInterface(handler);
+const editorInterface: PMMLEditorInterface = new PMMLEditorInterface(messageBus.client);
 let editor: PMMLEditor;
 
 beforeEach(() => {
-  spyOn(handler, "notify_ready");
+  spyOn(bus, "postMessage");
 
   const component: ReactElement = editorInterface.af_componentRoot() as ReactElement;
-  mount(component);
+  render(component);
 
   editor = (editorInterface as any).self as PMMLEditor;
 });
 
 describe("PMMLEditorInterface", () => {
   test("Mount", () => {
-    expect(handler.notify_ready).toBeCalledTimes(1);
+    expect(bus.postMessage).toBeCalledWith({
+      type: "receive_ready",
+      data: [],
+      purpose: EnvelopeBusMessagePurpose.NOTIFICATION
+    });
   });
 
   test("getContent", async () => {
