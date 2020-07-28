@@ -37,6 +37,9 @@ public interface StunnerCommonImageResources extends ClientBundleWithLookup {
     @Source("images/form.png")
     ImageResource form();
 
+    @Source("images/drd.png")
+    ImageResource drd();
+
     // Sprite - png 16x16px, 5px, vertical
     @Source("images/common-icons-sprite.png")
     ImageResource commonIconsSprite();

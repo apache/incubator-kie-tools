@@ -95,10 +95,13 @@ public class DMNCommonActionsToolboxFactoryTest {
     @Mock
     private ManagedInstance<DeleteNodeToolboxAction> deleteNodeActions;
 
+    @Mock
+    private ManagedInstance<DMNEditDRDToolboxAction> editDRDToolboxActions;
+
     private DMNCommonActionsToolboxFactory tested;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         when(element.getUUID()).thenReturn(E_UUID);
         when(element.asNode()).thenReturn(element);
         editDecisionToolboxAction = new ManagedInstanceStub<>(editDecisionToolboxActionInstance);
@@ -106,6 +109,7 @@ public class DMNCommonActionsToolboxFactoryTest {
         view = new ManagedInstanceStub<>(viewInstance);
         this.tested = spy(new DMNCommonActionsToolboxFactory(editDecisionToolboxAction,
                                                              editBusinessKnowledgeModelToolboxAction,
+                                                             editDRDToolboxActions,
                                                              view,
                                                              commandManager,
                                                              commandFactory,
@@ -128,7 +132,7 @@ public class DMNCommonActionsToolboxFactoryTest {
         final ActionsToolbox actionsToolbox = (ActionsToolbox) toolbox;
         assertEquals(E_UUID,
                      actionsToolbox.getElementUUID());
-        assertEquals(1,
+        assertEquals(2,
                      actionsToolbox.size());
         assertEquals(deleteNodeAction,
                      actionsToolbox.iterator().next());
@@ -154,14 +158,14 @@ public class DMNCommonActionsToolboxFactoryTest {
         final ActionsToolbox actionsToolbox = (ActionsToolbox) toolbox;
         assertEquals("decisionNode1",
                      actionsToolbox.getElementUUID());
-        assertEquals(2,
+        assertEquals(3,
                      actionsToolbox.size());
         final Iterator<ToolboxAction> actionsIt = actionsToolbox.iterator();
         assertEquals(deleteNodeAction,
                      actionsIt.next());
         assertEquals(editDecisionToolboxActionInstance,
                      actionsIt.next());
-        assertFalse(actionsIt.hasNext());
+        assertTrue(actionsIt.hasNext());
         verify(viewInstance,
                times(1)).init(eq(actionsToolbox));
     }
@@ -184,14 +188,14 @@ public class DMNCommonActionsToolboxFactoryTest {
         final ActionsToolbox actionsToolbox = (ActionsToolbox) toolbox;
         assertEquals("bkmNode1",
                      actionsToolbox.getElementUUID());
-        assertEquals(2,
+        assertEquals(3,
                      actionsToolbox.size());
         final Iterator<ToolboxAction> actionsIt = actionsToolbox.iterator();
         assertEquals(deleteNodeAction,
                      actionsIt.next());
         assertEquals(editBusinessKnowledgeModelToolboxActionInstance,
                      actionsIt.next());
-        assertFalse(actionsIt.hasNext());
+        assertTrue(actionsIt.hasNext());
         verify(viewInstance,
                times(1)).init(eq(actionsToolbox));
     }

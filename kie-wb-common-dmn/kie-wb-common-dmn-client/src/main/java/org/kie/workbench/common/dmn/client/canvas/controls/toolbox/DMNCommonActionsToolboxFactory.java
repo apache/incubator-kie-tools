@@ -49,11 +49,13 @@ public class DMNCommonActionsToolboxFactory
 
     private final ManagedInstance<DMNEditDecisionToolboxAction> editDecisionToolboxActions;
     private final ManagedInstance<DMNEditBusinessKnowledgeModelToolboxAction> editBusinessKnowledgeModelToolboxActions;
+    private final ManagedInstance<DMNEditDRDToolboxAction> editDRDToolboxActions;
     private final ManagedInstance<ActionsToolboxView> views;
 
     @Inject
     public DMNCommonActionsToolboxFactory(final @Any ManagedInstance<DMNEditDecisionToolboxAction> editDecisionToolboxActions,
                                           final @Any ManagedInstance<DMNEditBusinessKnowledgeModelToolboxAction> editBusinessKnowledgeModelToolboxActions,
+                                          final @Any ManagedInstance<DMNEditDRDToolboxAction> editDRDToolboxActions,
                                           final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views,
                                           final CanvasCommandManager<AbstractCanvasHandler> commandManager,
                                           final @DMNEditor DefaultCanvasCommandFactory commandFactory,
@@ -62,6 +64,7 @@ public class DMNCommonActionsToolboxFactory
 
         this.editDecisionToolboxActions = editDecisionToolboxActions;
         this.editBusinessKnowledgeModelToolboxActions = editBusinessKnowledgeModelToolboxActions;
+        this.editDRDToolboxActions = editDRDToolboxActions;
         this.views = views;
     }
 
@@ -86,6 +89,7 @@ public class DMNCommonActionsToolboxFactory
         } else if (isBusinessKnowledgeModel(element)) {
             actions.add(editBusinessKnowledgeModelToolboxActions.get());
         }
+        actions.add(editDRDToolboxActions.get());
         return actions;
     }
 
@@ -99,6 +103,7 @@ public class DMNCommonActionsToolboxFactory
     public void destroy() {
         editDecisionToolboxActions.destroyAll();
         editBusinessKnowledgeModelToolboxActions.destroyAll();
+        editDRDToolboxActions.destroyAll();
         views.destroyAll();
     }
 
