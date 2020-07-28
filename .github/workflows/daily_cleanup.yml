@@ -1,0 +1,46 @@
+name: Daily cleanup
+
+on:
+  schedule:
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: github.repository == 'kiegroup/kogito-tooling'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Clone kogito-online-ci
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+          path: kogito-online-ci
+          repository: kiegroup/kogito-online-ci
+          ref: gh-pages
+
+      - name: Remove builds older than 30 days
+        id: remove_build_artifacts
+        run: |
+          cd kogito-online-ci
+          for buildDir in comment/*/
+          do
+            buildDate=$(git log -1 --pretty="format:%ct" --date="iso-strict" -- $buildDir)
+            limitDate=$(date -d "-30 days" +%s)
+            if [ $buildDate -lt $limitDate ]; then
+              echo "Should remove: $buildDir"
+              rm -rf $buildDir
+            else
+              echo "Should NOT remove: $buildDir"
+            fi
+          done
+          git config --global user.email "kietooling@gmail.com"
+          git config --global user.name "Kogito Tooling Bot (kiegroup)"
+          git add . && git commit -m "Kogito Tooling Daily Cleanup - ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}" || echo "No changes."
+          git push origin gh-pages
+          cd -
+        shell: bash
