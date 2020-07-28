@@ -21,7 +21,7 @@ import { DeepOptional, Dictionary } from "./types";
 export interface I18nContextType {
   locale: string;
   setLocale: React.Dispatch<string>;
-  dictionary: DeepOptional<Dictionary<any>>;
+  dictionary: Dictionary<any>;
 }
 
 export const I18nContext = React.createContext<I18nContextType>({} as any);

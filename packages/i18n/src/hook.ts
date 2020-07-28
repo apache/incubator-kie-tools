@@ -18,7 +18,7 @@ import { useContext } from "react";
 import { I18nContext } from "./I18nContext";
 import { Dictionary } from "./types";
 
-export const useDictionary = <D extends Dictionary<D>>() => {
+export const useDictionary = <D extends Dictionary<D>>(defaults: D) => {
   const { locale, setLocale, dictionary } = useContext(I18nContext);
   return { locale, setLocale, i18n: dictionary as D };
 };

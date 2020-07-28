@@ -26,8 +26,7 @@ import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
-import { useDictionary } from "@kogito-tooling/i18n";
-import { OnlineI18n } from "../common/i18n";
+import { useOnlineI18n } from "../common/i18n";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -48,7 +47,7 @@ export function EditorPage(props: Props) {
   const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
   const isDirty = useDirtyState(editorRef);
-  const { i18n } = useDictionary<OnlineI18n>();
+  const { i18n } = useOnlineI18n();
 
   const close = useCallback(() => {
     if (!isDirty) {

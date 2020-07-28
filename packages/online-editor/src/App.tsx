@@ -33,7 +33,7 @@ import { HomePage } from "./home/HomePage";
 import { NoMatchPage } from "./NoMatchPage";
 import "../static/resources/style.css";
 import { I18nProvider } from "@kogito-tooling/i18n";
-import { dictionaries, en } from "./common/i18n/locales";
+import { onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n/locales";
 
 interface Props {
   file: File;
@@ -75,7 +75,7 @@ export function App(props: Props) {
   );
 
   return (
-    <I18nProvider defaults={{ locale: "en", dictionary: en }} dictionaries={dictionaries}>
+    <I18nProvider defaults={onlineI18nDefaults} dictionaries={onlineI18nDictionaries}>
       <GlobalContext.Provider
         value={{
           file,

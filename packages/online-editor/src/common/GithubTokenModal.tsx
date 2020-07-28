@@ -31,8 +31,7 @@ import {
 import { ExternalLinkAltIcon, CheckIcon } from "@patternfly/react-icons";
 
 import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_URL, GITHUB_TOKENS_HOW_TO_URL } from "./GithubService";
-import { useDictionary } from "@kogito-tooling/i18n";
-import { OnlineI18n } from "./i18n";
+import { useOnlineI18n } from "./i18n";
 
 interface Props {
   isOpen: boolean;
@@ -42,7 +41,7 @@ interface Props {
 
 export function GithubTokenModal(props: Props) {
   const context = useContext(GlobalContext);
-  const { i18n } = useDictionary<OnlineI18n>();
+  const { i18n } = useOnlineI18n();
 
   const [potentialToken, setPotentialToken] = useState(context.githubService.resolveToken());
   const [authenticated, setAuthenticated] = useState(context.githubService.isAuthenticated());

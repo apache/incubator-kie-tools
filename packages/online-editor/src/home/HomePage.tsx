@@ -49,8 +49,7 @@ import { Link } from "react-router-dom";
 import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 import { GlobalContext } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
-import { useDictionary } from "@kogito-tooling/i18n";
-import { OnlineI18n } from "../common/i18n";
+import { useOnlineI18n } from "../common/i18n";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -87,7 +86,7 @@ interface InputFileUrlStateType {
 export function HomePage(props: Props) {
   const context = useContext(GlobalContext);
   const history = useHistory();
-  const { i18n } = useDictionary<OnlineI18n>();
+  const { i18n } = useOnlineI18n();
 
   const uploadInputRef = useRef<HTMLInputElement>(null);
 
@@ -479,7 +478,7 @@ export function HomePage(props: Props) {
         <ToolbarGroup>
           <ToolbarItem className="pf-u-display-none pf-u-display-flex-on-lg">
             <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
-              {i18n.homePage.dropdown.onlineForum}
+              {i18n.homePage.dropdown.getHub}
               {/*<Button variant="plain">Get Business Modeler Hub Preview</Button>*/}
             </Link>
           </ToolbarItem>

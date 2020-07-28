@@ -33,8 +33,7 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
-import { useDictionary } from "@kogito-tooling/i18n";
-import { OnlineI18n } from "../common/i18n";
+import { useOnlineI18n } from "../common/i18n";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -56,7 +55,7 @@ export function EditorToolbar(props: Props) {
   const [name, setName] = useState(context.file.fileName);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
-  const { i18n } = useDictionary<OnlineI18n>();
+  const { i18n } = useOnlineI18n();
 
   const logoProps = useMemo(() => {
     return { onClick: props.onClose };

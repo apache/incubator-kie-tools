@@ -28,8 +28,7 @@ import {
 import { Redirect } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { OperatingSystem, getOperatingSystem } from "../common/utils";
-import { useDictionary } from "@kogito-tooling/i18n";
-import { OnlineI18n } from "../common/i18n";
+import { useOnlineI18n } from "../common/i18n";
 
 enum ModalState {
   SELECT_OS,
@@ -39,7 +38,7 @@ enum ModalState {
 
 export function DownloadHubModal(props: {}) {
   const context = useContext(GlobalContext);
-  const { i18n } = useDictionary<OnlineI18n>();
+  const { i18n } = useOnlineI18n();
 
   const [modalState, setModalState] = useState(ModalState.SELECT_OS);
   const [operationalSystem, setOperationalSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
@@ -123,7 +122,7 @@ export function DownloadHubModal(props: {}) {
           </p>
           <br />
           <p>
-            <strong>{i18n.downloadHubModal.beforeDownload.desktop.title}</strong>
+            <strong>{i18n.downloadHubModal.beforeDownload.desktop.title} </strong>
             <small>{i18n.downloadHubModal.beforeDownload.desktop.description}</small>
           </p>
           <br />

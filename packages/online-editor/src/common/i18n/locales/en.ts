@@ -71,7 +71,7 @@ export const en: OnlineI18n = {
     body: {
       disclaimer: `By authenticating with your ${en_common.names.oauth} Token we are able to create ${en_common.names.gist}s so you can share your diagrams with your colleagues. The token you provide is locally stored as browser cookies and it is never shared with anyone.`,
       learnMore: `Learn more about ${en_common.names.github} tokens`,
-      note: `You should provide a token with the '${en_common.names.github}' permission.`
+      note: `You should provide a token with the '${en_common.names.gist}' permission.`
     }
   },
   homePage: {

@@ -15,5 +15,12 @@
  */
 
 import { en } from "./en";
-export { en };
-export const dictionaries = new Map([["en", en]]);
+import { useDictionary } from "@kogito-tooling/i18n";
+
+export const onlineI18nDefaults = { locale: "en", dictionary: en };
+
+export function useOnlineI18n() {
+  return useDictionary(onlineI18nDefaults.dictionary);
+}
+
+export const onlineI18nDictionaries = new Map([["en", en]]);
