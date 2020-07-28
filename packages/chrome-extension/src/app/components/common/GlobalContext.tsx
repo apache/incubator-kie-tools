@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
 import { Logger } from "../../../Logger";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";

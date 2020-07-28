@@ -16,7 +16,7 @@
 
 import { GuidedTourEventBus } from "../../core";
 import { act } from "react-dom/test-utils";
-import { Rect, UserInteraction } from "@kogito-tooling/microeditor-envelope-protocol";
+import { Rect, UserInteraction } from "@kogito-tooling/editor-envelope-protocol";
 
 describe("GuidedTourEventBus", () => {
   beforeEach(() => {

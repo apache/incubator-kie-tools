@@ -15,7 +15,7 @@
  */
 
 import { KogitoGuidedTour } from "..";
-import { Tutorial, UserInteraction } from "@kogito-tooling/microeditor-envelope-protocol";
+import { Tutorial, UserInteraction } from "@kogito-tooling/editor-envelope-protocol";
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";

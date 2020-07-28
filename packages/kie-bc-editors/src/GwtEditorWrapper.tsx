@@ -20,7 +20,8 @@ import { Editor } from "@kogito-tooling/editor-api";
 import { editors } from "./GwtEditorMapping";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
-import { KogitoEditorChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoEditorChannelApi } from "@kogito-tooling/editor-envelope-protocol";
+import { MessageBusClient } from "@kogito-tooling/envelope-bus";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 

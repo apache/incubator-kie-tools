@@ -15,7 +15,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCustomEditor:kieKogitoWebviewEditors"
+    "onCustomEditor:kieKogitoWebviewEditors",
+    "onWebviewPanel:myPage"
   ],
   "publisher": "kie-group",
   "main": "./dist/extension/extension.js",
@@ -34,9 +35,56 @@
     "commands": [
       {
         "command": "extension.kogito.getPreviewSvg",
-        "title": "Get Editor Preview SVG"
+        "title": "Save Preview SVG",
+        "icon": {
+          "light": "./static/img-icon.png",
+          "dark": "./static/img-icon.png"
+        }
+      },
+      {
+        "command": "extension.kogito.pages.myPage",
+        "title": "OPEN MY PAGE",
+        "icon": {
+          "light": "./static/page-icon.png",
+          "dark": "./static/page-icon.png"
+        }
       }
     ],
+    "menus": {
+      "commandPalette": [
+        {
+          "when": "resourceLangId =~ /bpmn|bpmn2|dmn|scesim/",
+          "command": "extension.kogito.getPreviewSvg"
+        },
+        {
+          "command": "extension.kogito.pages.myPage"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "resourceLangId =~ /bpmn|bpmn2|dmn|scesim/",
+          "command": "extension.kogito.getPreviewSvg",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId =~ /bpmn|bpmn2|dmn|scesim/",
+          "command": "extension.kogito.pages.myPage",
+          "group": "navigation"
+        }
+      ],
+      "editor/title": [
+        {
+          "when": "resourceLangId =~ /bpmn|bpmn2|dmn|scesim/",
+          "command": "extension.kogito.getPreviewSvg",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceLangId =~ /bpmn|bpmn2|dmn|scesim/",
+          "command": "extension.kogito.pages.myPage",
+          "group": "navigation"
+        }
+      ]
+    },
     "languages": [
       {
         "id": "bpmn",
@@ -90,8 +138,8 @@
   "dependencies": {
     "@kogito-tooling/kie-bc-editors": "0.6.1",
     "@kogito-tooling/kie-bc-editors-unpacked": "0.6.1",
-    "@kogito-tooling/microeditor-envelope": "0.6.1",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.6.1",
+    "@kogito-tooling/editor-envelope": "0.6.1",
+    "@kogito-tooling/editor-envelope-protocol": "0.6.1",
     "@kogito-tooling/patternfly-base": "0.6.1",
     "@kogito-tooling/vscode-extension": "0.6.1"
   }

@@ -18,15 +18,15 @@ import {
   Channel,
   ChannelType,
   EditorEnvelopeLocator,
-  EnvelopeBusMessagePurpose,
   KogitoEdit,
   KogitoEditorChannel
-} from "@kogito-tooling/microeditor-envelope-protocol";
+} from "@kogito-tooling/editor-envelope-protocol";
 import * as React from "react";
 import { File } from "../../common";
 import { EmbeddedEditor, EmbeddedEditorRef } from "../../embedded";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 import { render } from "@testing-library/react";
+import { EnvelopeBusMessagePurpose } from "@kogito-tooling/envelope-bus";
 
 describe("EmbeddedEditor::ONLINE", () => {
   const file: File = {

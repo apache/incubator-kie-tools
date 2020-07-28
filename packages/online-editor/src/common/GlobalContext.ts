@@ -18,7 +18,7 @@ import { File } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { GithubService } from "./GithubService";
 import { Routes } from "./Routes";
-import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
 
 export interface GlobalContextType {
   file: File;

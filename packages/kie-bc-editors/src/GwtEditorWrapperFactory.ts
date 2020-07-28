@@ -27,7 +27,7 @@ import {
   ResourceListOptions,
   Tutorial,
   UserInteraction
-} from "@kogito-tooling/microeditor-envelope-protocol";
+} from "@kogito-tooling/editor-envelope-protocol";
 import { GuidedTourApi } from "./api/GuidedTourApi";
 import { ResourceContentApi } from "./api/ResourceContentApi";
 import { KeyboardShortcutsApi } from "./api/KeyboardShorcutsApi";

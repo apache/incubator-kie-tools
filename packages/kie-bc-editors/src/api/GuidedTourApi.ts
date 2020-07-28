@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { UserInteraction, Tutorial } from "@kogito-tooling/microeditor-envelope-protocol";
+import { UserInteraction, Tutorial } from "@kogito-tooling/editor-envelope-protocol";
 
 /**
  * PUBLIC ENVELOPE API

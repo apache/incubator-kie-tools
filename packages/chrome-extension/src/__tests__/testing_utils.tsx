@@ -20,7 +20,7 @@ import { ResourceContentServiceFactory } from "../app/components/common/ChromeRe
 import { GitHubContext, GitHubContextType } from "../app/components/common/GitHubContext";
 import { Logger } from "../Logger";
 import { Dependencies } from "../app/Dependencies";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/editor-envelope-protocol";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const txtEnvelopeMapping: EnvelopeMapping = {

@@ -22,7 +22,7 @@ import {
   ResourceListOptions,
   ResourcesList,
   SearchType
-} from "@kogito-tooling/microeditor-envelope-protocol";
+} from "@kogito-tooling/editor-envelope-protocol";
 
 import * as vscode from "vscode";
 import * as nodePath from "path";

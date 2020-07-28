@@ -15,8 +15,8 @@
  */
 
 import { GwtStateControlCommand } from "./GwtStateControlCommand";
-import { KogitoEdit } from "@kogito-tooling/microeditor-envelope-protocol";
-import { KogitoEditorChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoEdit, KogitoEditorChannelApi } from "@kogito-tooling/editor-envelope-protocol";
+import { MessageBusClient } from "@kogito-tooling/envelope-bus";
 
 /**
  * PUBLIC GWT EDITORS API

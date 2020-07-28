@@ -53,10 +53,25 @@ module.exports = [
     },
     plugins: [
       new CopyWebpackPlugin([
+        { from: "./static", to: "static" },
         { from: "../kie-bc-editors-unpacked/bpmn", to: "webview/editors/bpmn" },
         { from: "../kie-bc-editors-unpacked/dmn", to: "webview/editors/dmn" },
         { from: "../kie-bc-editors-unpacked/scesim", to: "webview/editors/scesim" }
       ])
     ]
+  }),
+  merge(common, {
+    output: {
+      library: "AppFormer.VsCodePackMyPage",
+      libraryTarget: "umd",
+      umdNamedDefine: true
+    },
+    externals: {
+      vscode: "commonjs vscode"
+    },
+    target: "web",
+    entry: {
+      "webview/myPage": "./src/webview/myPage.tsx"
+    }
   })
 ];

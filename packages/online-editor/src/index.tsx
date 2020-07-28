@@ -26,7 +26,7 @@ import {
 } from "./common/utils";
 import { GithubService } from "./common/GithubService";
 import { Alert, AlertActionLink, AlertVariant } from "@patternfly/react-core";
-import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
 
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { ChannelType, getOperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelType, getOperatingSystem } from "@kogito-tooling/editor-envelope-protocol";
 import { GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
-import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
-import { CompositeEditorFactory } from "@kogito-tooling/microeditor-envelope";
-import { EnvelopeBusMessage } from "@kogito-tooling/microeditor-envelope-protocol";
+import * as MicroEditorEnvelope from "@kogito-tooling/editor-envelope";
+import { CompositeEditorFactory } from "@kogito-tooling/editor-envelope";
+import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus";
 
 MicroEditorEnvelope.init({
   container: document.getElementById("envelope-app")!,

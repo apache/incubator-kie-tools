@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ChannelType } from "@kogito-tooling/microeditor-envelope-protocol";
-import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
+import { ChannelType } from "@kogito-tooling/editor-envelope-protocol";
+import * as MicroEditorEnvelope from "@kogito-tooling/editor-envelope";
 
 let channelType: ChannelType = ChannelType.DESKTOP;
 
-jest.mock("@kogito-tooling/microeditor-envelope");
+jest.mock("@kogito-tooling/editor-envelope");
 const mockMicroEditorEnvelope = MicroEditorEnvelope as jest.Mocked<typeof MicroEditorEnvelope>;
 
 Object.defineProperty(global, "frameElement", {

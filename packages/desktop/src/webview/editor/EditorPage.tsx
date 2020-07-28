@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelType } from "@kogito-tooling/editor-envelope-protocol";
 import { EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
 import {
   Alert,

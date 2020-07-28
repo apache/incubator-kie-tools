@@ -18,7 +18,8 @@ import * as React from "react";
 import { fireEvent } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import { useSyncedKeyboardEvents } from "../Hooks";
-import { KogitoEditorEnvelopeApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoEditorEnvelopeApi } from "@kogito-tooling/editor-envelope-protocol";
+import { MessageBusClient } from "@kogito-tooling/envelope-bus";
 
 let messageBusClient: MessageBusClient<KogitoEditorEnvelopeApi>;
 

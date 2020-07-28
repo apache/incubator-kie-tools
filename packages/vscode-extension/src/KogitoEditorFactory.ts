@@ -20,7 +20,7 @@ import {
   EditorEnvelopeLocator,
   EnvelopeMapping,
   ResourceContentService
-} from "@kogito-tooling/microeditor-envelope-protocol";
+} from "@kogito-tooling/editor-envelope-protocol";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 import * as vscode from "vscode";

@@ -16,7 +16,7 @@
 
 import { useLayoutEffect } from "react";
 
-import { Rect, UserInteraction } from "@kogito-tooling/microeditor-envelope-protocol";
+import { Rect, UserInteraction } from "@kogito-tooling/editor-envelope-protocol";
 import { EventLabel } from "../../core";
 
 export const useStartTutorialListener = (onStartTutorial: (tutorialLabel: string) => void) => {

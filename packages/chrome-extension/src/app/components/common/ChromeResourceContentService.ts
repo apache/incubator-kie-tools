@@ -21,7 +21,7 @@ import {
   ResourceContentOptions,
   ResourceListOptions,
   ContentType
-} from "@kogito-tooling/microeditor-envelope-protocol";
+} from "@kogito-tooling/editor-envelope-protocol";
 import { fetchFile } from "../../github/api";
 import * as minimatch from "minimatch";
 import { RepoInfo } from "./RepoInfo";

@@ -16,7 +16,7 @@
 
 import * as __path from "path";
 import { VsCodeNodeResourceContentService } from "../VsCodeNodeResourceContentService";
-import { ContentType } from "@kogito-tooling/microeditor-envelope-protocol";
+import { ContentType } from "@kogito-tooling/editor-envelope-protocol";
 
 const testWorkspace = __path.resolve(__dirname, "test-workspace") + __path.sep;
 

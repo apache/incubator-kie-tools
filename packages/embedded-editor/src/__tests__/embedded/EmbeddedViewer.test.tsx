@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-import {
-  Channel,
-  ChannelType,
-  EditorEnvelopeLocator,
-  EnvelopeBusMessagePurpose
-} from "@kogito-tooling/microeditor-envelope-protocol";
+import { Channel, ChannelType, EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
 import * as React from "react";
 import { File } from "../../common";
 import { EmbeddedViewer } from "../../embedded";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 import { render } from "@testing-library/react";
+import { EnvelopeBusMessagePurpose } from "@kogito-tooling/envelope-bus";
 
 describe("EmbeddedViewer::ONLINE", () => {
   const file: File = {

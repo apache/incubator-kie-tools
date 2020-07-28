@@ -15,7 +15,7 @@
  */
 
 import * as Octokit from "@octokit/rest";
-import { ContentType } from "@kogito-tooling/microeditor-envelope-protocol";
+import { ContentType } from "@kogito-tooling/editor-envelope-protocol";
 
 export function fetchFile(
   octokit: Octokit,

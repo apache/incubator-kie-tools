@@ -10,8 +10,8 @@
   "dependencies": {
     "@kogito-tooling/chrome-extension": "0.6.1",
     "@kogito-tooling/kie-bc-editors": "0.6.1",
-    "@kogito-tooling/microeditor-envelope": "0.6.1",
-    "@kogito-tooling/microeditor-envelope-protocol": "0.6.1",
+    "@kogito-tooling/editor-envelope": "0.6.1",
+    "@kogito-tooling/editor-envelope-protocol": "0.6.1",
     "@kogito-tooling/patternfly-base": "0.6.1"
   },
   "scripts": {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/editor-envelope-protocol";
 
 /**
  * PUBLIC ENVELOPE API

@@ -21,7 +21,7 @@ import * as os from "os";
 import * as child from "child_process";
 import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
-import { OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
+import { OperatingSystem } from "@kogito-tooling/editor-envelope-protocol";
 import IpcMainEvent = Electron.IpcMainEvent;
 
 app.on("ready", () => {

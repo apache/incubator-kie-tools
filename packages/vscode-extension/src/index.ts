@@ -15,12 +15,14 @@
  */
 
 import * as vscode from "vscode";
+import { Uri, ViewColumn } from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoWebviewProvider } from "./KogitoWebviewProvider";
-import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
 import * as __path from "path";
 import * as fs from "fs";
+import { KogitoPageChannel, KogitoPageChannelApi, PageEnvelopeLocator } from "@kogito-tooling/page-envelope-protocol";
 
 /**
  * Starts a Kogito extension.
@@ -36,6 +38,7 @@ export function startExtension(args: {
   viewType: string;
   getPreviewCommandId: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
+  pageEnvelopeLocator: PageEnvelopeLocator;
 }) {
   const editorStore = new KogitoEditorStore();
   const editorFactory = new KogitoEditorFactory(args.context, editorStore, args.editorEnvelopeLocator);
@@ -54,5 +57,93 @@ export function startExtension(args: {
         }
       });
     })
+  );
+
+  [...args.pageEnvelopeLocator.mapping.entries()].forEach(([pageId, pageMapping]) => {
+    args.context.subscriptions.push(
+      vscode.commands.registerCommand(`${args.extensionName}.pages.${pageId}`, () => {
+        openPage(
+          editorStore,
+          args.context,
+          pageId,
+          pageMapping.title,
+          ViewColumn.Beside,
+          pageMapping.envelopePath,
+          args.pageEnvelopeLocator.targetOrigin,
+          pageMapping.backendUrl
+        );
+      })
+    );
+  });
+}
+
+function openPage(
+  editorStore: KogitoEditorStore,
+  context: vscode.ExtensionContext,
+
+  viewType: string,
+  title: string,
+  showOptions: ViewColumn.Beside,
+  envelopePath: string,
+  envelopeTargetOrigin: string,
+  backendUrl: string
+) {
+  const filePath = editorStore.activeEditor?.document.uri.fsPath;
+
+  const webviewPanel = vscode.window.createWebviewPanel(viewType, title, showOptions, {
+    retainContextWhenHidden: true,
+    enableCommandUris: true,
+    enableScripts: true,
+    localResourceRoots: [vscode.Uri.file(context.extensionPath)]
+  });
+
+  const scriptSrc = webviewPanel.webview.asWebviewUri(Uri.file(context.asAbsolutePath(envelopePath))).toString();
+
+  webviewPanel.webview.html = `<!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <style>
+            html, body, div#page-app {
+                margin: 0;
+                border: 0;
+                padding: 0;
+            }
+          </style>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        </head>
+        <body>
+        <div id="page-app" />
+        <script src="${scriptSrc}"></script>
+        </body>
+        </html>`;
+
+  const kogitoPageChannel = new KogitoPageChannel({
+    postMessage: message => webviewPanel.webview.postMessage(message)
+  });
+
+  kogitoPageChannel.startInitPolling(envelopeTargetOrigin, {
+    filePath: filePath,
+    backendUrl: backendUrl
+  });
+
+  const api: KogitoPageChannelApi = {
+    async getOpenDiagrams() {
+      return await Promise.all(
+        [...editorStore.openEditors].map(async editor => ({
+          path: editor.document.relativePath,
+          img: await editor.getPreview()
+        }))
+      );
+    }
+  };
+
+  context.subscriptions.push(
+    webviewPanel.webview.onDidReceiveMessage(
+      msg => kogitoPageChannel.receive(msg, api),
+      webviewPanel.webview,
+      context.subscriptions
+    )
   );
 }

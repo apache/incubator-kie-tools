@@ -15,8 +15,8 @@
  */
 
 import { GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
-import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
-import { ChannelType, getOperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
+import * as MicroEditorEnvelope from "@kogito-tooling/editor-envelope";
+import { ChannelType, getOperatingSystem } from "@kogito-tooling/editor-envelope-protocol";
 
 declare global {
   export const acquireVsCodeApi: any;

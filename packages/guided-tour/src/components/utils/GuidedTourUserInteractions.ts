@@ -17,7 +17,7 @@
 import { useContext, useEffect, useMemo } from "react";
 
 import { getCurrentStep } from ".";
-import { BlockMode, DemoMode } from "@kogito-tooling/microeditor-envelope-protocol";
+import { BlockMode, DemoMode } from "@kogito-tooling/editor-envelope-protocol";
 import { CurrentTutorialContext } from "../../contexts";
 
 export const useUserInteractions = () => {

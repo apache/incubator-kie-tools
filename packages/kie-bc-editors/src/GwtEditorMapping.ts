@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorInitArgs } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorInitArgs } from "@kogito-tooling/editor-envelope-protocol";
 import { GwtLanguageData } from "./GwtLanguageData";
 
 export const editors = {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelKeyboardEvent, EditorContext, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelKeyboardEvent, EditorContext, OperatingSystem } from "@kogito-tooling/editor-envelope-protocol";
 import { KeyboardShortcutRegisterOpts } from "./KeyboardShortcutRegisterOpts";
 
 export interface KeyBinding {

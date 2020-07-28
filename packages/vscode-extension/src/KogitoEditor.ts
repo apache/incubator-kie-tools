@@ -20,7 +20,7 @@ import {
   EnvelopeMapping,
   KogitoEditorChannel,
   KogitoEditorChannelApi
-} from "@kogito-tooling/microeditor-envelope-protocol";
+} from "@kogito-tooling/editor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { EditorApi } from "@kogito-tooling/editor-api";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";

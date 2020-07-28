@@ -16,7 +16,7 @@
 
 import { createContext } from "react";
 
-import { UserInteraction, Tutorial, Rect } from "@kogito-tooling/microeditor-envelope-protocol";
+import { UserInteraction, Tutorial, Rect } from "@kogito-tooling/editor-envelope-protocol";
 
 export interface CurrentTutorialContextType {
   currentTutorial?: Tutorial;

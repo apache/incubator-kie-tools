@@ -21,7 +21,7 @@ import { HashRouter } from "react-router-dom";
 import { GithubService } from "../common/GithubService";
 import { GlobalContext, GlobalContextType } from "../common/GlobalContext";
 import { Routes } from "../common/Routes";
-import { EnvelopeMapping } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EnvelopeMapping } from "@kogito-tooling/editor-envelope-protocol";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const envelopeMapping: EnvelopeMapping = {

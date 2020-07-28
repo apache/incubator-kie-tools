@@ -20,7 +20,7 @@ import { render, renderedComponent, setupContainer, teardownContainer, triggerCl
 
 import { Dialog } from "../../components";
 import { KogitoGuidedTour } from "../..";
-import { AutoMode, DEFAULT_RECT, DemoMode, Rect, Tutorial } from "@kogito-tooling/microeditor-envelope-protocol";
+import { AutoMode, DEFAULT_RECT, DemoMode, Rect, Tutorial } from "@kogito-tooling/editor-envelope-protocol";
 
 jest.useFakeTimers();
 

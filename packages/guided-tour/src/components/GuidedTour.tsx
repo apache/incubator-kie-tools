@@ -18,7 +18,7 @@ import * as React from "react";
 import { useState } from "react";
 
 import { Dialog, HighlightLayer } from ".";
-import { UserInteraction, Tutorial, Rect } from "@kogito-tooling/microeditor-envelope-protocol";
+import { UserInteraction, Tutorial, Rect } from "@kogito-tooling/editor-envelope-protocol";
 import { CurrentTutorialContext } from "../contexts";
 
 export const GuidedTour = () => {

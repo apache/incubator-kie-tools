@@ -20,7 +20,7 @@ import { render, renderedComponent, setupContainer, teardownContainer, triggerCl
 
 import { NavigationControls } from "../../components";
 import { KogitoGuidedTour } from "../..";
-import { DemoMode } from "@kogito-tooling/microeditor-envelope-protocol";
+import { DemoMode } from "@kogito-tooling/editor-envelope-protocol";
 
 describe("NavigationControls", () => {
   beforeEach(setupContainer);

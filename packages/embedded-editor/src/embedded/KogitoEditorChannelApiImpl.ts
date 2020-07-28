@@ -26,7 +26,7 @@ import {
   StateControlCommand,
   Tutorial,
   UserInteraction
-} from "@kogito-tooling/microeditor-envelope-protocol";
+} from "@kogito-tooling/editor-envelope-protocol";
 import { File } from "../common";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {

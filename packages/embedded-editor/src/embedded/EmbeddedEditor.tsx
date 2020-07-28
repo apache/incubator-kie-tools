@@ -20,7 +20,7 @@ import {
   KogitoEditorChannel,
   KogitoEditorChannelApi,
   useConnectedKogitoEditorChannel
-} from "@kogito-tooling/microeditor-envelope-protocol";
+} from "@kogito-tooling/editor-envelope-protocol";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts-channel";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 import * as CSS from "csstype";

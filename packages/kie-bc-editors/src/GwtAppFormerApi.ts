@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Rect } from "@kogito-tooling/microeditor-envelope-protocol";
+import { Rect } from "@kogito-tooling/editor-envelope-protocol";
 
 declare global {
   //Exposed API of AppFormerGwt

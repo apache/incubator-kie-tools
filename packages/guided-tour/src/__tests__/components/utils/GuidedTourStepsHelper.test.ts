@@ -16,7 +16,7 @@
 
 import { getCurrentStep, getSteps } from "../../../components/utils";
 import { KogitoGuidedTour } from "../../..";
-import { DemoMode, Mode, Step, SubTutorialMode } from "@kogito-tooling/microeditor-envelope-protocol";
+import { DemoMode, Mode, Step, SubTutorialMode } from "@kogito-tooling/editor-envelope-protocol";
 
 describe("GuidedTourStepsHelper", () => {
   const currentStep = 3;

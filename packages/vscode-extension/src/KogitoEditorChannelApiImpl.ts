@@ -23,7 +23,7 @@ import {
   StateControlCommand,
   Tutorial,
   UserInteraction
-} from "@kogito-tooling/microeditor-envelope-protocol";
+} from "@kogito-tooling/editor-envelope-protocol";
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as __path from "path";
