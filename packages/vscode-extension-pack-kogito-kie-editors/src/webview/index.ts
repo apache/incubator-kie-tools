@@ -15,14 +15,14 @@
  */
 
 import { GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
-import * as MicroEditorEnvelope from "@kogito-tooling/editor-envelope";
+import * as EditorEnvelope from "@kogito-tooling/editor-envelope";
 import { ChannelType, getOperatingSystem } from "@kogito-tooling/editor-envelope-protocol";
 
 declare global {
   export const acquireVsCodeApi: any;
 }
 
-MicroEditorEnvelope.init({
+EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
   editorFactory: new GwtEditorWrapperFactory(),

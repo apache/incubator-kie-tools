@@ -42,8 +42,8 @@
         }
       },
       {
-        "command": "extension.kogito.pages.myPage",
-        "title": "OPEN MY PAGE",
+        "command": "kie-group.vscode-extension-pack-kogito-kie-editors.pages.myPage",
+        "title": "Open MyPage",
         "icon": {
           "light": "./static/page-icon.png",
           "dark": "./static/page-icon.png"
@@ -57,19 +57,7 @@
           "command": "extension.kogito.getPreviewSvg"
         },
         {
-          "command": "extension.kogito.pages.myPage"
-        }
-      ],
-      "editor/context": [
-        {
-          "when": "resourceLangId =~ /bpmn|bpmn2|dmn|scesim/",
-          "command": "extension.kogito.getPreviewSvg",
-          "group": "navigation"
-        },
-        {
-          "when": "resourceLangId =~ /bpmn|bpmn2|dmn|scesim/",
-          "command": "extension.kogito.pages.myPage",
-          "group": "navigation"
+          "command": "kie-group.vscode-extension-pack-kogito-kie-editors.pages.myPage"
         }
       ],
       "editor/title": [
@@ -80,7 +68,7 @@
         },
         {
           "when": "resourceLangId =~ /bpmn|bpmn2|dmn|scesim/",
-          "command": "extension.kogito.pages.myPage",
+          "command": "kie-group.vscode-extension-pack-kogito-kie-editors.pages.myPage",
           "group": "navigation"
         }
       ]

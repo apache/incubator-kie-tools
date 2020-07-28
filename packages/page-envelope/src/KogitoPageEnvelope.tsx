@@ -19,7 +19,12 @@ import { Envelope, EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-to
 import * as React from "react";
 import { useImperativeHandle, useState } from "react";
 import * as ReactDOM from "react-dom";
-import { KogitoPageChannelApi, KogitoPageEnvelopeApi, PageInitArgs, Association } from "@kogito-tooling/page-envelope-protocol";
+import {
+  Association,
+  KogitoPageChannelApi,
+  KogitoPageEnvelopeApi,
+  PageInitArgs
+} from "@kogito-tooling/page-envelope-protocol";
 
 // tslint:disable-next-line:no-empty-interface
 export interface KogitoPageContext {}
