@@ -16,12 +16,12 @@
 
 import * as React from "react";
 import { useMemo, useState } from "react";
-import { I18nContext } from "./i18nContext";
-import { DeepOptional, TranslationBundle, TranslationBundleInterpolation } from "./types";
+import { I18nContext } from "./I18nContext";
+import { DeepOptional, Dictionary, DictionaryInterpolation } from "./types";
 
-export const I18nProvider = <Bundle extends TranslationBundle<Bundle>>(props: {
-  defaults: { locale: string; dictionary: Bundle };
-  dictionaries: Map<string, DeepOptional<Bundle>>;
+export const I18nProvider = <D extends Dictionary<D>>(props: {
+  defaults: { locale: string; dictionary: D };
+  dictionaries: Map<string, DeepOptional<D>>;
   children: React.ReactNode;
 }) => {
   const [locale, setLocale] = useState(props.defaults.locale);
@@ -35,28 +35,28 @@ export const I18nProvider = <Bundle extends TranslationBundle<Bundle>>(props: {
   return <I18nContext.Provider value={{ locale, setLocale, dictionary }}>{props.children}</I18nContext.Provider>;
 };
 
-function deepMerge<Bundle>(target: TranslationBundle<Bundle>, source: DeepOptional<TranslationBundle<Bundle>>) {
-  Object.keys(source).forEach((key: Extract<keyof Bundle, string>) => {
+function deepMerge<D>(target: Dictionary<D>, source: DeepOptional<Dictionary<D>>) {
+  Object.keys(source).forEach((key: Extract<keyof D, string>) => {
     const sourceValue = source[key];
 
     if (!sourceValue) {
       return;
     }
     if (typeof sourceValue === "string" || typeof sourceValue === "function") {
-      target[key] = sourceValue as string | TranslationBundleInterpolation;
+      target[key] = sourceValue as string | DictionaryInterpolation;
     } else {
       target[key] = deepMerge(
-        createObjectCopy(target[key] as TranslationBundle<any>),
-        sourceValue as TranslationBundle<any>
+        createObjectCopy(target[key] as Dictionary<any>),
+        sourceValue as Dictionary<any>
       );
     }
   });
   return target;
 }
 
-export function immutableDeepMerge<Bundle>(
-  target: TranslationBundle<Bundle>,
-  source: DeepOptional<TranslationBundle<Bundle>>
+export function immutableDeepMerge<D>(
+  target: Dictionary<D>,
+  source: DeepOptional<Dictionary<D>>
 ) {
   const targetCopy = createObjectCopy(target);
   return deepMerge(targetCopy, source);

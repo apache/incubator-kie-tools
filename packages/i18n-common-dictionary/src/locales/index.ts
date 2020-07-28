@@ -14,5 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./TermsI18n";
-export * from "./locales";
+export { en } from "./en";

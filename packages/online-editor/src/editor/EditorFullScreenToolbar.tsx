@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { Button } from "@patternfly/react-core";
-import { useTranslation } from "@kogito-tooling/i18n";
+import { useDictionary } from "@kogito-tooling/i18n";
 import { OnlineI18n } from "../common/i18n";
 
 interface Props {
@@ -24,7 +24,7 @@ interface Props {
 }
 
 export function FullScreenToolbar(props: Props) {
-  const { i18n } = useTranslation<OnlineI18n>();
+  const { i18n } = useDictionary<OnlineI18n>();
   return (
     <div className="kogito--full-screen__toolbar">
       <Button className="kogito--full-screen__toolbar-button" variant="primary" onClick={props.onExitFullScreen}>

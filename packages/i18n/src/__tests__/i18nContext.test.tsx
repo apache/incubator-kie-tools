@@ -15,10 +15,10 @@
  */
 
 import * as React from "react";
-import { I18nProvider, immutableDeepMerge } from "../i18nProvider";
+import { I18nProvider, immutableDeepMerge } from "../I18nProvider";
 import { DeepOptional } from "../types";
 import { render } from "@testing-library/react";
-import { DummyBundle, DummyComponent, dummyDefault, interpolationFunction } from "./utils";
+import { DummyDictionary, DummyComponent, dummyDefault, interpolationFunction } from "./utils";
 
 describe("I18nProvider", () => {
   describe("I18nProvider::component", () => {
@@ -47,7 +47,7 @@ describe("I18nProvider", () => {
     });
 
     it("should use the `en` dictionary due to the `en-US` doesn't exist and it is the location prefix", () => {
-      const dummyOptional: DeepOptional<DummyBundle> = {
+      const dummyOptional: DeepOptional<DummyDictionary> = {
         welcome: "Welcome!!!"
       };
 
@@ -70,7 +70,7 @@ describe("I18nProvider", () => {
 
   describe("I18nProvider::mergeSelectedDictionaryWithDefault", () => {
     it("should override the welcome property on dummyDefault and create a new object", () => {
-      const dummyOptional: DeepOptional<DummyBundle> = {
+      const dummyOptional: DeepOptional<DummyDictionary> = {
         welcome: "Bienvenido"
       };
 
@@ -98,7 +98,7 @@ describe("I18nProvider", () => {
     });
 
     it("shouldn't override the welcome property on dummyDefault", () => {
-      const dummyOptional: DeepOptional<DummyBundle> = {
+      const dummyOptional: DeepOptional<DummyDictionary> = {
         welcome: undefined
       };
 
@@ -127,7 +127,7 @@ describe("I18nProvider", () => {
 
     it("should override the interpolation function", () => {
       const dummyInterpolationFunction = (name: string, lastLogin: number) => `Hi ${name}. Last login: ${lastLogin}`;
-      const dummyOptional: DeepOptional<DummyBundle> = {
+      const dummyOptional: DeepOptional<DummyDictionary> = {
         greeting: dummyInterpolationFunction
       };
 
@@ -155,7 +155,7 @@ describe("I18nProvider", () => {
     });
 
     it("should override the nested properties that were specified", () => {
-      const dummyOptional: DeepOptional<DummyBundle> = {
+      const dummyOptional: DeepOptional<DummyDictionary> = {
         welcome: "Bienvenido",
         modal: {
           title: "Mi título"
@@ -189,7 +189,7 @@ describe("I18nProvider", () => {
     });
 
     it("shouldn't override the nested object with a undefined value", () => {
-      const dummyOptional: DeepOptional<DummyBundle> = {
+      const dummyOptional: DeepOptional<DummyDictionary> = {
         modal: {
           title: undefined
         }

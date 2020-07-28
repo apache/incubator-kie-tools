@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-import { TranslationBundle } from "@kogito-tooling/i18n";
-import { NamesBundle } from "./names";
+import { CommonI18n } from "../CommonI18n";
+import { names } from "../names";
+import { functions } from "../functions";
 
-// tslint:disable-next-line:interface-over-type-literal
-export type TermsBundle = {
-  cancel: string;
-  close: string;
-  download: string;
-  exit: string;
-  save: string;
-  os: {
-    initials: string;
-    full: string;
-  };
-  fullScreen: string;
-  edited: string;
-  reset: string;
-  continue: string;
-  token: string;
-  note: string;
-  poweredBy: string;
-  or: string;
+export const en: CommonI18n = {
+  functions,
+  names,
+  terms: {
+    cancel: "Cancel",
+    close: "Close",
+    continue: "Continue",
+    download: "Download",
+    edited: "Edited",
+    exit: "Exit",
+    fullScreen: "Full Screen",
+    note: "Note",
+    or: "or",
+    os: {
+      initials: "OS",
+      full: "Operation System"
+    },
+    poweredBy: "Powered by",
+    reset: "Reset",
+    save: "Save",
+    token: "Token"
+  }
 };
-
-export interface TermsI18n extends TranslationBundle<TermsI18n> {
-  terms: TermsBundle;
-  names: NamesBundle;
-}

@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-export * from "./I18nProvider";
-export * from "./I18nContext";
-export * from "./hook";
-export * from "./types";
+// tslint:disable-next-line:interface-over-type-literal
+export type Functions = {
+  capitalize: (text: string) => string;
+};
+
+export const functions: Functions = {
+  capitalize: ([first, ...rest]) => first.toUpperCase() + rest.join("").toLowerCase()
+};

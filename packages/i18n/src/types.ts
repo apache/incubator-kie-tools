@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-// Interpolation function
-export type TranslationBundleInterpolation = (...args: Array<string | number>) => string;
+export type DictionaryInterpolation = (...args: Array<string | number>) => string;
 
-// The Bundle type
-export type TranslationBundle<Bundle> = {
-  [K in keyof Bundle]: string | TranslationBundleInterpolation | TranslationBundle<any>;
+export type Dictionary<D> = {
+  [K in keyof D]: string | DictionaryInterpolation | Dictionary<any>;
 };
 
 // Locales that isn't the default should implement this interface
-export type DeepOptional<TBundle> = {
-  [K in keyof TBundle]?: DeepOptional<TBundle[K]>;
+export type DeepOptional<D> = {
+  [K in keyof D]?: DeepOptional<D[K]>;
 };

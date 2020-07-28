@@ -15,30 +15,50 @@
  */
 
 // tslint:disable-next-line:interface-over-type-literal
-export type NamesBundle = {
-  vscode: string;
-  businessModelerPreview: string;
-  chromeExtension: string;
-  github: string;
-  macos: string;
-  linux: string;
-  windows: string;
-  svg: string;
-  oauth: string;
+export type NamesDictionary = {
+  app: string;
   bpmn: string;
+  businessModeler: {
+    name: string;
+    desktop: string;
+    hub: string;
+  };
+  chrome: string;
+  desktop: string;
   dmn: string;
+  dropbox: string;
+  gist: string;
+  github: string;
+  kogito: string;
+  linux: string;
+  macos: string;
+  oauth: string;
+  svg: string;
+  url: string;
+  vscode: string;
+  windows: string;
 };
 
-export const names: NamesBundle = {
-  vscode: "VS Code",
-  businessModelerPreview: "Business Modeler Preview",
-  chromeExtension: "Chrome Extension",
-  github: "GitHub",
-  macos: "macOS",
-  linux: "Linux",
-  windows: "Windows",
-  svg: "SVG",
-  oauth: "OAuth",
+export const names: NamesDictionary = {
+  app: "App",
   bpmn: "BPMN",
-  dmn: "DMN"
+  businessModeler: {
+    name: "Business Modeler",
+    desktop: "Business Modeler Desktop Preview",
+    hub: "Business Modeler Hub Preview"
+  },
+  chrome: "Chrome",
+  desktop: "Desktop",
+  dmn: "DMN",
+  dropbox: "Dropbox",
+  gist: "gist",
+  github: "GitHub",
+  kogito: "Kogito",
+  linux: "Linux",
+  macos: "macOS",
+  oauth: "OAuth",
+  svg: "SVG",
+  url: "URL",
+  vscode: "VS Code",
+  windows: "Windows"
 };

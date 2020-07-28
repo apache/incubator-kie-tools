@@ -26,8 +26,8 @@ import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
-import {useTranslation} from "@kogito-tooling/i18n";
-import {OnlineI18n} from "../common/i18n";
+import { useDictionary } from "@kogito-tooling/i18n";
+import { OnlineI18n } from "../common/i18n";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -48,7 +48,7 @@ export function EditorPage(props: Props) {
   const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
   const isDirty = useDirtyState(editorRef);
-  const { i18n } = useTranslation<OnlineI18n>()
+  const { i18n } = useDictionary<OnlineI18n>();
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -254,13 +254,13 @@ export function EditorPage(props: Props) {
             >
               <div>
                 <p>
-                  {i18n.editorPage.alerts.unsaved.message}{" "}
+                  {`${i18n.editorPage.alerts.unsaved.message} `}
                   <a data-testid="unsaved-alert-save-button" onClick={requestDownload}>
                     {i18n.terms.save}
                   </a>
                 </p>
                 <a data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
-                  {" "}{i18n.editorPage.alerts.unsaved.closeWithoutSaving}
+                  {` ${i18n.editorPage.alerts.unsaved.closeWithoutSaving}`}
                 </a>
               </div>
             </Alert>

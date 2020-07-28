@@ -33,8 +33,8 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
-import {useTranslation} from "@kogito-tooling/i18n";
-import {OnlineI18n} from "../common/i18n";
+import { useDictionary } from "@kogito-tooling/i18n";
+import { OnlineI18n } from "../common/i18n";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -56,7 +56,7 @@ export function EditorToolbar(props: Props) {
   const [name, setName] = useState(context.file.fileName);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
-  const { i18n } = useTranslation<OnlineI18n>()
+  const { i18n } = useDictionary<OnlineI18n>();
 
   const logoProps = useMemo(() => {
     return { onClick: props.onClose };
@@ -148,7 +148,7 @@ export function EditorToolbar(props: Props) {
           </Title>
           {props.isEdited && (
             <span className={"kogito--editor__toolbar-edited"} data-testid="is-dirty-indicator">
-              {" - "}{i18n.terms.edited}
+              {` - ${i18n.terms.edited}`}
             </span>
           )}
         </div>

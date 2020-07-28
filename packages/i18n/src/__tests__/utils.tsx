@@ -16,10 +16,10 @@
 
 /* istanbul ignore file */
 import * as React from "react";
-import { TranslationBundle, TranslationBundleInterpolation } from "../types";
-import { useTranslation } from "../hook";
+import { Dictionary, DictionaryInterpolation } from "../types";
+import { useDictionary } from "../hook";
 
-export interface DummyBundle extends TranslationBundle<DummyBundle> {
+export interface DummyDictionary extends Dictionary<DummyDictionary> {
   greeting: (name: string) => string;
   welcome: string;
   modal: {
@@ -28,8 +28,8 @@ export interface DummyBundle extends TranslationBundle<DummyBundle> {
   };
 }
 
-export const interpolationFunction: TranslationBundleInterpolation = (name: string) => `Hi ${name}!`;
-export const dummyDefault: DummyBundle = {
+export const interpolationFunction: DictionaryInterpolation = (name: string) => `Hi ${name}!`;
+export const dummyDefault: DummyDictionary = {
   greeting: interpolationFunction,
   welcome: "Welcome",
   modal: {
@@ -39,6 +39,6 @@ export const dummyDefault: DummyBundle = {
 };
 
 export function DummyComponent() {
-  const { i18n } = useTranslation<DummyBundle>();
+  const { i18n } = useDictionary<DummyDictionary>();
   return <p data-testid="dummy-component">{JSON.stringify(i18n)}</p>;
 }

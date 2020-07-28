@@ -15,25 +15,29 @@
  */
 
 import { OnlineI18n } from "..";
-import { en as en_terms } from "@kogito-tooling/i18n-terms";
+import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
 
 export const en: OnlineI18n = {
-  ...en_terms,
+  ...en_common,
   downloadHubModal: {
     beforeDownload: {
-      title: "The Business Modeler Hub Preview allows you to access",
-      vscodeDescription:
-        "Installs VS Code extension and gives you a convenient way to launch VS Code ready to work with Kogito.",
-      githubChromeExtensionDescription:
-        "Provides detailed instructions on how to install Kogito GitHub Extension for Chrome.",
-      desktop: {
-        title: "Desktop App",
-        description: "Installs the Business Modeler desktop app for use locally and offline."
+      title: `The ${en_common.names.businessModeler.hub} allows you to access`,
+      vscodeDescription: `Installs ${en_common.names.vscode} extension and gives you a convenient way to launch ${en_common.names.vscode} ready to work with ${en_common.names.kogito}.`,
+      githubChromeExtension: {
+        title: `${en_common.names.github}  ${en_common.names.chrome} Extension`,
+        description: `Provides detailed instructions on how to install ${en_common.names.kogito} ${en_common.names.github} Extension for ${en_common.names.chrome}.`
       },
-      businessModelerDescription: "Provides a quick link to access the website in the same hub."
+      desktop: {
+        title: `${en_common.names.desktop} ${en_common.names.app}`,
+        description: `Installs the ${en_common.names.businessModeler.desktop} ${en_common.names.app} for use locally and offline.`
+      },
+      businessModeler: {
+        title: `${en_common.names.businessModeler.name} Preview`,
+        description: "Provides a quick link to access the website in the same hub."
+      }
     },
     afterDownload: {
-      title: "Thank you for downloading Business Modeler Hub Preview",
+      title: `Thank you for downloading ${en_common.names.businessModeler.hub}`,
       message: "If the download does not begin automatically,",
       link: "click here"
     }
@@ -50,60 +54,61 @@ export const en: OnlineI18n = {
     }
   },
   editorToolbar: {
-    sendChangesToGitHub: "Send changes to GitHub",
+    sendChangesToGitHub: `Send changes to ${en_common.names.github}`,
     copySource: "Copy Source",
-    gistIt: "Gist it",
+    gistIt: `${en_common.functions.capitalize(en_common.names.gist)} it`,
     fileActions: "File actions"
   },
   githubTokenModal: {
-    header: "Authentication required for exporting to GitHub gist.",
+    header: {
+      title: `${en_common.names.github} ${en_common.names.oauth} ${en_common.terms.token}`,
+      subtitle: `Authentication required for exporting to ${en_common.names.github} ${en_common.names.gist}.`
+    },
     footer: {
       createNewToken: "Create a new token",
       placeHolder: "Paste your token here"
     },
     body: {
-      disclaimer:
-        "By authenticating with your OAuth Token we are able to create gists so you can share your diagrams with your colleagues. The token you provide is locally stored as browser cookies and it is never shared with anyone.",
-      learnMore: "Learn more about GitHub tokens",
-      note: "You should provide a token with the 'gist' permission."
+      disclaimer: `By authenticating with your ${en_common.names.oauth} Token we are able to create ${en_common.names.gist}s so you can share your diagrams with your colleagues. The token you provide is locally stored as browser cookies and it is never shared with anyone.`,
+      learnMore: `Learn more about ${en_common.names.github} tokens`,
+      note: `You should provide a token with the '${en_common.names.github}' permission.`
     }
   },
   homePage: {
     uploadFile: {
       dndZone: {
         invalidFile: "File extension is not supported",
-        waitingFile: "Drop a BPMN or DMN file here"
+        waitingFile: `Drop a ${en_common.names.bpmn} or ${en_common.names.dmn} file here`
       },
       fileInput: "File extension is not supported"
     },
     openUrl: {
-      validating: "Validating URL",
-      invalidGistExtension: "File type on the provided gist is not supported.",
-      invalidExtension: "File type on the provided URL is not supported.",
-      invalidGist: "Enter a valid Gist URL.",
-      invalidUrl: 'This URL is not valid (don\'t forget "https://"!).',
-      notFoundUrl: "This URL does not exist.",
-      corsNotAvailable: "This URL cannot be opened because it doesn't allow other websites to access it.",
+      validating: `Validating ${en_common.names.url}`,
+      invalidGistExtension: `File type on the provided ${en_common.names.gist} is not supported.`,
+      invalidExtension: `File type on the provided ${en_common.names.url} is not supported.`,
+      invalidGist: `Enter a valid ${en_common.names.gist} ${en_common.names.url}.`,
+      invalidUrl: `This ${en_common.names.url} is not valid (don't forget "https://"!).`,
+      notFoundUrl: `This ${en_common.names.url} does not exist.`,
+      corsNotAvailable: `This ${en_common.names.url} cannot be opened because it doesn't allow other websites to access it.`,
       openFromSource: "Open from source",
-      description: "Paste a URL to a source code link (GitHub, Dropbox, etc.)"
+      description: `Paste a ${en_common.names.url} to a source code link (${en_common.names.github}, ${en_common.names.dropbox}, etc.)`
     },
     dropdown: {
-      getHub: "Get Business Modeler Hub Preview",
+      getHub: `Get ${en_common.names.businessModeler.hub}`,
       onlineForum: "Online forum"
     },
     header: {
-      title: "Asset Editor for Kogito and Process Automation",
-      welcomeText:
-        "Welcome to Business Modeler! These simple BPMN and DMN editors are here to allow you to collaborate quickly\n and to help introduce you to the new tools and capabilities of Process Automation. Feel free to get in touch\n in the forum or review the documentation for more information."
+      title: `Asset Editor for ${en_common.names.kogito} and Process Automation`,
+      welcomeText: `Welcome to ${en_common.names.businessModeler.name}! These simple ${en_common.names.bpmn} and ${en_common.names.dmn} editors are here to allow you to collaborate quickly\n and to help introduce you to the new tools and capabilities of Process Automation. Feel free to get in touch\n in the forum or review the documentation for more information.`
     },
     bpmnCard: {
-      title: "Workflow (.BPMN)",
-      explanation: "BPMN files are used to generate business processes.",
+      title: `Workflow (.${en_common.names.bpmn})`,
+      explanation: `${en_common.names.bpmn} files are used to generate business processes.`,
       createNew: "Create new workflow"
     },
     dmnCard: {
-      title: "Decision model (.DMN)",
-      explanation: "DMN files are used to generate decision models",
+      title: `Decision model (.${en_common.names.dmn})`,
+      explanation: `${en_common.names.dmn} files are used to generate decision models`,
       createNew: "Create new decision model"
     },
     trySample: "Try Sample",

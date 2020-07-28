@@ -15,19 +15,19 @@
  */
 
 import * as React from "react";
-import { useTranslation } from "../hook";
-import { DummyBundle, dummyDefault } from "./utils";
+import { useDictionary } from "../hook";
+import { DummyDictionary, dummyDefault } from "./utils";
 import { renderHook } from "@testing-library/react-hooks";
-import { I18nProvider, immutableDeepMerge } from "../i18nProvider";
+import { I18nProvider, immutableDeepMerge } from "../I18nProvider";
 import { DeepOptional } from "../types";
 import { act } from "react-test-renderer";
 
 const renderHookWithI18nProvider = (wrapperProps: {
   locale: string;
-  dictionary: DummyBundle;
-  dictionaries: Map<string, DeepOptional<DummyBundle>>;
+  dictionary: DummyDictionary;
+  dictionaries: Map<string, DeepOptional<DummyDictionary>>;
 }) => {
-  const { result } = renderHook(() => useTranslation<DummyBundle>(), {
+  const { result } = renderHook(() => useDictionary<DummyDictionary>(), {
     wrapper: props => (
       <I18nProvider
         defaults={{ locale: wrapperProps.locale, dictionary: wrapperProps.dictionary }}
@@ -40,7 +40,7 @@ const renderHookWithI18nProvider = (wrapperProps: {
   return { result };
 };
 
-describe("useTranslation", () => {
+describe("useDictionary", () => {
   it("should be returned the default dictionary and the actual locale", () => {
     const dictionaries = new Map([["en-US", dummyDefault]]);
 
@@ -50,7 +50,7 @@ describe("useTranslation", () => {
   });
 
   it("should change the dictionary with the setLocale function", () => {
-    const dummyOptional: DeepOptional<DummyBundle> = {
+    const dummyOptional: DeepOptional<DummyDictionary> = {
       welcome: "Bem vindo!"
     };
 

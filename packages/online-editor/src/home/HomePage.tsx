@@ -49,7 +49,7 @@ import { Link } from "react-router-dom";
 import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 import { GlobalContext } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
-import { useTranslation } from "@kogito-tooling/i18n";
+import { useDictionary } from "@kogito-tooling/i18n";
 import { OnlineI18n } from "../common/i18n";
 
 interface Props {
@@ -87,7 +87,7 @@ interface InputFileUrlStateType {
 export function HomePage(props: Props) {
   const context = useContext(GlobalContext);
   const history = useHistory();
-  const { i18n } = useTranslation<OnlineI18n>();
+  const { i18n } = useDictionary<OnlineI18n>();
 
   const uploadInputRef = useRef<HTMLInputElement>(null);
 

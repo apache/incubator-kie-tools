@@ -15,10 +15,10 @@
  */
 
 import { useContext } from "react";
-import { I18nContext } from "./i18nContext";
-import { TranslationBundle } from "./types";
+import { I18nContext } from "./I18nContext";
+import { Dictionary } from "./types";
 
-export const useTranslation = <Bundle extends TranslationBundle<Bundle>>() => {
+export const useDictionary = <D extends Dictionary<D>>() => {
   const { locale, setLocale, dictionary } = useContext(I18nContext);
-  return { locale, setLocale, i18n: dictionary as Bundle };
+  return { locale, setLocale, i18n: dictionary as D };
 };

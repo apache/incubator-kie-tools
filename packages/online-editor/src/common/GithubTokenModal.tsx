@@ -31,7 +31,7 @@ import {
 import { ExternalLinkAltIcon, CheckIcon } from "@patternfly/react-icons";
 
 import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_URL, GITHUB_TOKENS_HOW_TO_URL } from "./GithubService";
-import { useTranslation } from "@kogito-tooling/i18n";
+import { useDictionary } from "@kogito-tooling/i18n";
 import { OnlineI18n } from "./i18n";
 
 interface Props {
@@ -42,7 +42,7 @@ interface Props {
 
 export function GithubTokenModal(props: Props) {
   const context = useContext(GlobalContext);
-  const { i18n } = useTranslation<OnlineI18n>();
+  const { i18n } = useDictionary<OnlineI18n>();
 
   const [potentialToken, setPotentialToken] = useState(context.githubService.resolveToken());
   const [authenticated, setAuthenticated] = useState(context.githubService.isAuthenticated());
@@ -72,9 +72,9 @@ export function GithubTokenModal(props: Props) {
       header={
         <>
           <Title headingLevel={TitleLevel.h1} size={BaseSizes["2xl"]}>
-            {i18n.names.github} {i18n.names.oauth} {i18n.terms.token}
+            {i18n.githubTokenModal.header.title}
           </Title>
-          <p className="pf-u-pt-sm">{i18n.githubTokenModal.header}</p>
+          <p className="pf-u-pt-sm">{i18n.githubTokenModal.header.subtitle}</p>
         </>
       }
       footer={
