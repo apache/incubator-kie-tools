@@ -1,1 +1,0 @@
-#Drools Workbench

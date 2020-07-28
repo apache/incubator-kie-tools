@@ -30,8 +30,6 @@
   <name>UberFire Showcase</name>
 
   <modules>
-    <module>uberfire-client-webapp</module>
     <module>uberfire-webapp</module>
-    <module>showcase-distribution-wars</module>
   </modules>
 </project>
