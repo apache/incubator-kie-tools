@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-const nodeExternals = require("webpack-node-externals");
-const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
+const nodeExternals = require("webpack-node-externals");
+const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
 
 module.exports = merge(common, {
   entry: {

@@ -14,38 +14,17 @@
  * limitations under the License.
  */
 
-const path = require("path");
+const { merge } = require("webpack-merge");
+const common = require("../../webpack.common.config");
 const nodeExternals = require("webpack-node-externals");
 
-module.exports = async (env, argv) => {
-  return {
-    mode: "development",
-    devtool: "inline-source-map",
-    entry: {
-      index: "./src/index.tsx"
-    },
-    output: {
-      path: path.resolve(__dirname, "./dist"),
-      filename: "[name].js",
-      libraryTarget: "umd",
-      globalObject: "this"
-    },
-    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/,
-          include: path.resolve(__dirname, "src"),
-          use: [
-            {
-              loader: "ts-loader",
-              options: {
-                configFile: path.resolve("./tsconfig.json")
-              }
-            }
-          ]
-        }
-      ]
-    }
-  };
-};
+module.exports = merge(common, {
+  entry: {
+    index: "./src/index.ts"
+  },
+  output: {
+    libraryTarget: "umd",
+    globalObject: "this"
+  },
+  externals: [nodeExternals({ modulesDir: "../../node_modules" })]
+});
