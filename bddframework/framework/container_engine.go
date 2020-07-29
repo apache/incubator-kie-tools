@@ -33,6 +33,7 @@ type ContainerEngine interface {
 
 type containerEngineStruct struct {
 	engine           string
+	buildCommand     string
 	namespace        string
 	supportTLSVerify bool
 	err              error
@@ -41,16 +42,19 @@ type containerEngineStruct struct {
 var dockerContainerEngine = containerEngineStruct{
 	engine:           "docker",
 	supportTLSVerify: false,
+	buildCommand:     "build",
 }
 
 var podmanContainerEngine = containerEngineStruct{
 	engine:           "podman",
 	supportTLSVerify: true,
+	buildCommand:     "build",
 }
 
 var buildahContainerEngine = containerEngineStruct{
 	engine:           "buildah",
 	supportTLSVerify: true,
+	buildCommand:     "build-using-dockerfile",
 }
 
 var containerEngines = map[string]containerEngineStruct{
@@ -68,11 +72,13 @@ func GetContainerEngine(namespace string) ContainerEngine {
 }
 
 func (containerEngine *containerEngineStruct) PullImage(imageTag string) ContainerEngine {
-	pullImageArgs := []string{"pull", imageTag}
+	pullImageArgs := []string{"pull"}
 
 	if containerEngine.supportTLSVerify {
 		pullImageArgs = append(pullImageArgs, "--tls-verify=false")
 	}
+
+	pullImageArgs = append(pullImageArgs, imageTag)
 
 	if containerEngine.err == nil {
 		_, containerEngine.err = CreateCommand(containerEngine.engine, pullImageArgs...).WithLoggerContext(containerEngine.namespace).Execute()
@@ -81,11 +87,13 @@ func (containerEngine *containerEngineStruct) PullImage(imageTag string) Contain
 }
 
 func (containerEngine *containerEngineStruct) PushImage(imageTag string) ContainerEngine {
-	pushImageArgs := []string{"push", imageTag}
+	pushImageArgs := []string{"push"}
 
 	if containerEngine.supportTLSVerify {
 		pushImageArgs = append(pushImageArgs, "--tls-verify=false")
 	}
+
+	pushImageArgs = append(pushImageArgs, imageTag)
 
 	if containerEngine.err == nil {
 		_, containerEngine.err = CreateCommand(containerEngine.engine, pushImageArgs...).WithLoggerContext(containerEngine.namespace).Execute()
@@ -95,7 +103,7 @@ func (containerEngine *containerEngineStruct) PushImage(imageTag string) Contain
 
 func (containerEngine *containerEngineStruct) BuildImage(projectLocation, imageTag string) ContainerEngine {
 	if containerEngine.err == nil {
-		_, containerEngine.err = CreateCommand(containerEngine.engine, "build", "--tag", imageTag, ".").InDirectory(projectLocation).WithLoggerContext(containerEngine.namespace).Execute()
+		_, containerEngine.err = CreateCommand(containerEngine.engine, containerEngine.buildCommand, "--tag", imageTag, ".").InDirectory(projectLocation).WithLoggerContext(containerEngine.namespace).Execute()
 	}
 	return containerEngine
 }
