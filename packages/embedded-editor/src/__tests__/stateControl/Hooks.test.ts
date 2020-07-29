@@ -33,8 +33,8 @@ describe("useDirtyState", () => {
       redo: jest.fn(),
       getContent: jest.fn(),
       getPreview: jest.fn(),
-      getElementPosition: jest.fn(),
       setContent: jest.fn(),
+      getElementPosition: jest.fn(),
     };
     editorRef = {
       current: embeddedEditorRef
