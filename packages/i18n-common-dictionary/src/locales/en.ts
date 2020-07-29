@@ -20,15 +20,20 @@ import { names } from "../names";
 export const en: CommonI18n = {
   names,
   terms: {
+    available: "Available",
     cancel: "Cancel",
     close: "Close",
     continue: "Continue",
+    done: "Done",
     download: "Download",
     edited: "Edited",
     exit: "Exit",
     files: "Files",
     forum: "Forum",
     fullScreen: "Full Screen",
+    install: "Install",
+    launch: "Launch",
+    loading: "Loading",
     note: "Note",
     os: {
       initials: "OS",
@@ -37,6 +42,7 @@ export const en: CommonI18n = {
     poweredBy: "Powered by",
     reset: "Reset",
     save: "Save",
-    token: "Token"
+    token: "Token",
+    uninstall: "Uninstall"
   }
 };

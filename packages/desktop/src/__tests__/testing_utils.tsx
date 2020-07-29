@@ -17,6 +17,8 @@
 import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { GlobalContext, GlobalContextType } from "../webview/common/GlobalContext";
+import { I18nProvider } from "@kogito-tooling/i18n";
+import { desktopI18nDefaults, desktopI18nDictionaries } from "../webview/common/i18n/locales";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const usedCtx = {
@@ -27,9 +29,11 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
   return {
     ctx: usedCtx,
     wrapper: (
-      <GlobalContext.Provider key={""} value={usedCtx}>
-        {children}
-      </GlobalContext.Provider>
+      <I18nProvider defaults={desktopI18nDefaults} dictionaries={desktopI18nDictionaries}>
+        <GlobalContext.Provider key={""} value={usedCtx}>
+          {children}
+        </GlobalContext.Provider>
+      </I18nProvider>
     )
   };
 }

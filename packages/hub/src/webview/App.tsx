@@ -52,6 +52,8 @@ import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
 import { OperatingSystem } from "@kogito-tooling/core-api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
+import { I18nProvider } from "@kogito-tooling/i18n";
+import { hubI18nDefaults, hubI18nDictionaries, useHubI18n } from "../common/i18n/locales";
 
 enum ExtensionStatus {
   UNKNOWN,
@@ -78,6 +80,7 @@ export function App() {
   //
   // ALERTS
   const [alerts, setAlerts] = useState(new Array<AlertProps & { time: number }>());
+  const { i18n } = useHubI18n();
 
   const removeAlert = useCallback(
     (time: number) => {
@@ -152,13 +155,13 @@ export function App() {
   const vscode_message = useMemo(() => {
     switch (vscode_status) {
       case ExtensionStatus.INSTALLED:
-        return "Installed";
+        return i18n.vscode.installed;
       case ExtensionStatus.UNINSTALLING:
-        return "Uninstalling..";
+        return `${i18n.vscode.uninstalling}..`;
       case ExtensionStatus.NOT_INSTALLED:
-        return "Available";
+        return i18n.terms.available;
       case ExtensionStatus.UNKNOWN:
-        return "Loading..";
+        return `${i18n.terms.loading}..`;
       default:
         return "";
     }
@@ -230,10 +233,10 @@ export function App() {
           width: "90%",
           title: (
             <>
-              <p>Error while launching Business Modeler Preview Desktop. This is a known issue on macOS.</p>
+              <p>{i18n.alert.launching.title}</p>
               <br />
-              <p>Try again after executing the command below on a Terminal window.</p>
-              <p>You have to be at the same directory as 'Business Modeler Hub Preview.app'.</p>
+              <p>{i18n.alert.launching.try}</p>
+              <p>{i18n.alert.launching.directory}</p>
               <ClipboardCopy isReadOnly={true}>{`chmod -R u+x "Business Modeler Hub Preview.app" `}</ClipboardCopy>
             </>
           )
@@ -244,186 +247,183 @@ export function App() {
   );
 
   return (
-    <Page
-      header={
-        <PageHeader logo={<Brand src={"images/BusinessModelerHub_Logo.svg"} alt="Business Modeler Hub Preview" />} />
-      }
-      className={"kogito--editor-landing"}
-    >
-      <PageSection isFilled={true}>
-        <div className={"kogito--alert-container"}>
-          {alerts.map(alert => (
-            <React.Fragment key={alert.time}>
-              <Alert
-                style={{ marginBottom: "10px", width: alert.width ?? "500px" }}
-                variant={alert.variant}
-                title={alert.title}
-                action={<AlertActionCloseButton onClose={() => removeAlert(alert.time)} />}
-              />
-            </React.Fragment>
-          ))}
-        </div>
-        <Gallery gutter="lg" className={"kogito-desktop__file-gallery"}>
-          <Card className={"kogito--desktop__files-card"}>
-            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <img style={{ height: "52px" }} src={"images/vscode-logo.svg"} />
-              <Dropdown
-                position="right"
-                onSelect={vscode_toggleKebab}
-                toggle={<KebabToggle onToggle={vscode_toggleKebab} />}
-                isOpen={vscode_kebabOpen}
-                isPlain={true}
-                dropdownItems={[
-                  <DropdownItem key="update" component="button" isDisabled={true}>
-                    No updates available
-                  </DropdownItem>,
-                  <DropdownItem
-                    key="uninstall"
-                    component="button"
-                    onClick={vscode_requestUninstall}
-                    isDisabled={vscode_status !== ExtensionStatus.INSTALLED}
-                  >
-                    Uninstall
-                  </DropdownItem>
-                ]}
-              />
-            </CardHead>
-            <CardBody>
-              <Title size={"xl"}>Kogito Bundle VS Code extension</Title>
-              <br />
-              <TextContent>
-                <Text>Launches VS Code ready to use with Kogito BPMN, DMN and Test Scenario Editors</Text>
-              </TextContent>
-            </CardBody>
-            <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
-              {vscode_status === ExtensionStatus.NOT_INSTALLED && (
-                <Button variant={"secondary"} onClick={vscode_install}>
-                  Install
+    <I18nProvider defaults={hubI18nDefaults} dictionaries={hubI18nDictionaries}>
+      <Page
+        header={
+          <PageHeader logo={<Brand src={"images/BusinessModelerHub_Logo.svg"} alt="Business Modeler Hub Preview" />} />
+        }
+        className={"kogito--editor-landing"}
+      >
+        <PageSection isFilled={true}>
+          <div className={"kogito--alert-container"}>
+            {alerts.map(alert => (
+              <React.Fragment key={alert.time}>
+                <Alert
+                  style={{ marginBottom: "10px", width: alert.width ?? "500px" }}
+                  variant={alert.variant}
+                  title={alert.title}
+                  action={<AlertActionCloseButton onClose={() => removeAlert(alert.time)} />}
+                />
+              </React.Fragment>
+            ))}
+          </div>
+          <Gallery gutter="lg" className={"kogito-desktop__file-gallery"}>
+            <Card className={"kogito--desktop__files-card"}>
+              <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+                <img style={{ height: "52px" }} src={"images/vscode-logo.svg"} />
+                <Dropdown
+                  position="right"
+                  onSelect={vscode_toggleKebab}
+                  toggle={<KebabToggle onToggle={vscode_toggleKebab} />}
+                  isOpen={vscode_kebabOpen}
+                  isPlain={true}
+                  dropdownItems={[
+                    <DropdownItem key="update" component="button" isDisabled={true}>
+                      {i18n.noUpdates}
+                    </DropdownItem>,
+                    <DropdownItem
+                      key="uninstall"
+                      component="button"
+                      onClick={vscode_requestUninstall}
+                      isDisabled={vscode_status !== ExtensionStatus.INSTALLED}
+                    >
+                      {i18n.terms.uninstall}
+                    </DropdownItem>
+                  ]}
+                />
+              </CardHead>
+              <CardBody>
+                <Title size={"xl"}>{i18n.vscode.title}</Title>
+                <br />
+                <TextContent>
+                  <Text>{i18n.vscode.description}</Text>
+                </TextContent>
+              </CardBody>
+              <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
+                {vscode_status === ExtensionStatus.NOT_INSTALLED && (
+                  <Button variant={"secondary"} onClick={vscode_install}>
+                    {i18n.terms.install}
+                  </Button>
+                )}
+                {vscode_status === ExtensionStatus.INSTALLED && (
+                  <Button variant={"secondary"} onClick={vscode_launch}>
+                    {i18n.terms.launch}
+                  </Button>
+                )}
+                <Text style={{ display: "flex", alignItems: "center" }}>{vscode_message}</Text>
+              </CardFooter>
+            </Card>
+            {/*CHROME*/}
+            <Card className={"kogito--desktop__files-card"}>
+              <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+                <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
+              </CardHead>
+              <CardBody>
+                <Title size={"xl"}>{i18n.chromeExtension.title}</Title>
+                <br />
+                <TextContent>
+                  <Text>{i18n.chromeExtension.description}</Text>
+                </TextContent>
+              </CardBody>
+              <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
+                <Button variant={"secondary"} onClick={chrome_toggleModal}>
+                  {i18n.terms.install}
                 </Button>
-              )}
-              {vscode_status === ExtensionStatus.INSTALLED && (
-                <Button variant={"secondary"} onClick={vscode_launch}>
-                  Launch
+                <Text style={{ display: "flex", alignItems: "center" }} />
+              </CardFooter>
+            </Card>
+            <Modal
+              width={"70%"}
+              title={i18n.chromeExtension.modal.title}
+              isOpen={chrome_modalOpen}
+              onClose={chrome_toggleModal}
+              actions={[
+                <Button key="cancel" variant="link" onClick={chrome_toggleModal}>
+                  {i18n.terms.done}
                 </Button>
-              )}
-              <Text style={{ display: "flex", alignItems: "center" }}>{vscode_message}</Text>
-            </CardFooter>
-          </Card>
-          {/*CHROME*/}
-          <Card className={"kogito--desktop__files-card"}>
-            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
-            </CardHead>
-            <CardBody>
-              <Title size={"xl"}>BPMN, DMN and Test Scenario Editors for GitHub</Title>
-              <br />
+              ]}
+            >
               <TextContent>
-                <Text>Install the BPMN, DMN and Test Scenario Editors for GitHub on Chrome browser</Text>
+                <Text component={TextVariants.p}>{i18n.chromeExtension.modal.chromeRequirement}</Text>
+                <Text component={TextVariants.p}>
+                  `${i18n.chromeExtension.modal.chromeDownload} `
+                  <Button variant={"link"} isInline={true} onClick={chrome_openDownloadGoogleChrome}>
+                    {i18n.chromeExtension.modal.here}
+                  </Button>
+                  .
+                </Text>
+                <Text component={TextVariants.p}>{i18n.chromeExtension.modal.alreadyHaveChrome}:</Text>
+                <TextList component={TextListVariants.ol}>
+                  <TextListItem>
+                    `${i18n.chromeExtension.modal.firstStep.firstPart} `
+                    <Button variant={"link"} isInline={true} onClick={chrome_openKogitoToolingReleasesPage}>
+                      {i18n.names.chromeStore}
+                    </Button>{" "}
+                    {i18n.chromeExtension.modal.firstStep.secondPart}
+                  </TextListItem>
+                  <TextListItem>{i18n.chromeExtension.modal.secondStep}</TextListItem>
+                  <TextListItem>{i18n.chromeExtension.modal.thirdStep}</TextListItem>
+                  <TextListItem>
+                    `${i18n.chromeExtension.modal.done.firstPart} `
+                    <Button variant={"link"} isInline={true} onClick={chrome_openGitHub}>
+                      {i18n.names.github}
+                    </Button>{" "}
+                    `${i18n.chromeExtension.modal.done.secondPart} `
+                  </TextListItem>
+                </TextList>
               </TextContent>
-            </CardBody>
-            <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
-              <Button variant={"secondary"} onClick={chrome_toggleModal}>
-                Install
-              </Button>
-              <Text style={{ display: "flex", alignItems: "center" }} />
-            </CardFooter>
-          </Card>
-          <Modal
-            width={"70%"}
-            title="Install BPMN, DMN and Test Scenario Editor for GitHub on Chrome browser"
-            isOpen={chrome_modalOpen}
-            onClose={chrome_toggleModal}
-            actions={[
-              <Button key="cancel" variant="link" onClick={chrome_toggleModal}>
-                Done
-              </Button>
-            ]}
-          >
-            <TextContent>
-              <Text component={TextVariants.p}>
-                To be able to install and use the BPMN, DMN and Test Scenario Editor for GitHub it's necessary to have
-                the Chrome browser installed on your computer.
-              </Text>
-              <Text component={TextVariants.p}>
-                In case you don't have it, you can download it{" "}
-                <Button variant={"link"} isInline={true} onClick={chrome_openDownloadGoogleChrome}>
-                  here
+            </Modal>
+            {/*DESKTOP*/}
+            <Card className={"kogito--desktop__files-card"}>
+              <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+                <img style={{ height: "52px" }} src={"images/desktop-logo.svg"} />
+                <Dropdown
+                  position="right"
+                  onSelect={desktop_toggleKebab}
+                  toggle={<KebabToggle onToggle={desktop_toggleKebab} />}
+                  isOpen={desktop_kebabOpen}
+                  isPlain={true}
+                  dropdownItems={[
+                    <DropdownItem key="action" component="button" isDisabled={true}>
+                      {i18n.noUpdates}
+                    </DropdownItem>
+                  ]}
+                />
+              </CardHead>
+              <CardBody>
+                <Title size={"xl"}>{i18n.desktop.title}</Title>
+                <br />
+                <TextContent>
+                  <Text>{i18n.desktop.description}</Text>
+                </TextContent>
+              </CardBody>
+              <CardFooter>
+                <Button variant={"secondary"} onClick={desktop_launch}>
+                  {i18n.terms.launch}
                 </Button>
-                .
-              </Text>
-              <Text component={TextVariants.p}>
-                If you already have the Chrome browser or have just downloaded it, follow this steps:
-              </Text>
-              <TextList component={TextListVariants.ol}>
-                <TextListItem>
-                  Open the BPMN, DMN and Test Scenario Editor for GitHub on the{" "}
-                  <Button variant={"link"} isInline={true} onClick={chrome_openKogitoToolingReleasesPage}>
-                    Chrome Store
-                  </Button>{" "}
-                  using your Chrome browser
-                </TextListItem>
-                <TextListItem>Click on "Add to Chrome".</TextListItem>
-                <TextListItem>Read the permissions and in case you agree, click on “Add Extension”</TextListItem>
-                <TextListItem>
-                  Done! You can go to{" "}
-                  <Button variant={"link"} isInline={true} onClick={chrome_openGitHub}>
-                    GitHub
-                  </Button>{" "}
-                  now and start using it.
-                </TextListItem>
-              </TextList>
-            </TextContent>
-          </Modal>
-          {/*DESKTOP*/}
-          <Card className={"kogito--desktop__files-card"}>
-            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <img style={{ height: "52px" }} src={"images/desktop-logo.svg"} />
-              <Dropdown
-                position="right"
-                onSelect={desktop_toggleKebab}
-                toggle={<KebabToggle onToggle={desktop_toggleKebab} />}
-                isOpen={desktop_kebabOpen}
-                isPlain={true}
-                dropdownItems={[
-                  <DropdownItem key="action" component="button" isDisabled={true}>
-                    No updates available
-                  </DropdownItem>
-                ]}
-              />
-            </CardHead>
-            <CardBody>
-              <Title size={"xl"}>Business Modeler Desktop Preview</Title>
-              <br />
-              <TextContent>
-                <Text>Launches the desktop version of Business Modeler Preview</Text>
-              </TextContent>
-            </CardBody>
-            <CardFooter>
-              <Button variant={"secondary"} onClick={desktop_launch}>
-                Launch
-              </Button>
-            </CardFooter>
-          </Card>
-          {/**/}
-          <Card className={"kogito--desktop__files-card"}>
-            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-              <img style={{ height: "52px" }} src={"images/online-logo.svg"} />
-            </CardHead>
-            <CardBody>
-              <Title size={"xl"}>Business Modeler Preview</Title>
-              <br />
-              <TextContent>
-                <Text>Navigates to the Online Modeler Preview site</Text>
-              </TextContent>
-            </CardBody>
-            <CardFooter>
-              <Button variant={"secondary"} onClick={online_open}>
-                Launch
-              </Button>
-            </CardFooter>
-          </Card>
-        </Gallery>
-      </PageSection>
-    </Page>
+              </CardFooter>
+            </Card>
+            {/**/}
+            <Card className={"kogito--desktop__files-card"}>
+              <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+                <img style={{ height: "52px" }} src={"images/online-logo.svg"} />
+              </CardHead>
+              <CardBody>
+                <Title size={"xl"}>{i18n.online.title}</Title>
+                <br />
+                <TextContent>
+                  <Text>{i18n.online.description}</Text>
+                </TextContent>
+              </CardBody>
+              <CardFooter>
+                <Button variant={"secondary"} onClick={online_open}>
+                  {i18n.terms.launch}
+                </Button>
+              </CardFooter>
+            </Card>
+          </Gallery>
+        </PageSection>
+      </Page>
+    </I18nProvider>
   );
 }

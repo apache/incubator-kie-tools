@@ -22,8 +22,11 @@ export type NamesDictionary = {
     name: string;
     desktop: string;
     hub: string;
+    online: string;
   };
   chrome: string;
+  chromeExtensionName: string;
+  chromeStore: string;
   desktop: string;
   dmn: string;
   dropbox: string;
@@ -34,6 +37,7 @@ export type NamesDictionary = {
   oauth: string;
   redHat: string;
   svg: string;
+  testScenario: string;
   url: string;
   vscode: string;
   windows: string;
@@ -45,9 +49,12 @@ export const names: NamesDictionary = {
   businessModeler: {
     name: "Business Modeler",
     desktop: "Business Modeler Desktop Preview",
-    hub: "Business Modeler Hub Preview"
+    hub: "Business Modeler Hub Preview",
+    online: "Business Modeler Preview"
   },
   chrome: "Chrome",
+  chromeExtensionName: "BPMN, DMN and Test Scenario Editor for GitHub",
+  chromeStore: "Chrome Store",
   desktop: "Desktop",
   dmn: "DMN",
   dropbox: "Dropbox",
@@ -58,6 +65,7 @@ export const names: NamesDictionary = {
   oauth: "OAuth",
   redHat: "Red Hat",
   svg: "SVG",
+  testScenario: "Test Scenario",
   url: "URL",
   vscode: "VS Code",
   windows: "Windows"

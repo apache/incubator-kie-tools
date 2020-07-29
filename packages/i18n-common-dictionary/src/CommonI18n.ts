@@ -19,15 +19,20 @@ import { NamesDictionary } from "./names";
 
 // tslint:disable-next-line:interface-over-type-literal
 export type CommonDictionary = {
+  available: string;
   cancel: string;
   close: string;
   continue: string;
+  done: string;
   download: string;
   edited: string;
   exit: string;
   files: string;
   forum: string;
   fullScreen: string;
+  install: string;
+  launch: string;
+  loading: string;
   note: string;
   os: {
     initials: string;
@@ -37,6 +42,7 @@ export type CommonDictionary = {
   reset: string;
   save: string;
   token: string;
+  uninstall: string;
 };
 
 export interface CommonI18n extends Dictionary<CommonI18n> {
