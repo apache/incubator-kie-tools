@@ -1,11 +1,8 @@
-# Can be enabled once https://github.com/kiegroup/kogito-cloud-operator/pull/457 is merged
-@disabled
 Feature: Deploy Kogito Runtime
 
   Background:
     Given Namespace is created
 
-  @smoke
   Scenario Outline: Deploy <example-service> with Maven profile <profile> using Kogito Runtime
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
@@ -17,11 +14,13 @@ Feature: Deploy Kogito Runtime
     Then Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
     And Service "<example-service>" with process name "orders" is available within 2 minutes
 
+    @smoke
     @springboot
     Examples:
       | runtime    | example-service            | profile |
       | springboot | process-springboot-example | default |
 
+    @smoke
     @quarkus
     Examples:
       | runtime    | example-service         | profile |
