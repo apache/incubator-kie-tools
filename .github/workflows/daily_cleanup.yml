@@ -26,6 +26,8 @@ jobs:
       - name: Remove builds older than 30 days
         id: remove_build_artifacts
         run: |
+          git config --global user.email "kietooling@gmail.com"
+          git config --global user.name "Kogito Tooling Bot (kiegroup)"
           cd kogito-online-ci
           for buildDir in comment/*/
           do
@@ -34,13 +36,11 @@ jobs:
             if [ $buildDate -lt $limitDate ]; then
               echo "Should remove: $buildDir"
               rm -rf $buildDir
+              git add . && git commit -m "Kogito Tooling Daily Cleanup - removing build $buildDir" || echo "No changes."
             else
               echo "Should NOT remove: $buildDir"
             fi
           done
-          git config --global user.email "kietooling@gmail.com"
-          git config --global user.name "Kogito Tooling Bot (kiegroup)"
-          git add . && git commit -m "Kogito Tooling Daily Cleanup - ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}" || echo "No changes."
           git push origin gh-pages
           cd -
         shell: bash
