@@ -23,7 +23,7 @@ import {
 } from "@kogito-tooling/core-api";
 import * as React from "react";
 import { useCallback } from "react";
-import { File } from "../common/File";
+import { File } from "../common";
 import { EmbeddedEditor } from "./EmbeddedEditor";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 
@@ -43,6 +43,10 @@ interface Props {
    * Channel in which the editor has been embedded.
    */
   channelType: ChannelType;
+  /**
+   * Channel locale.
+   */
+  locale: string;
   /**
    * Optional callback for when the editor is requesting external content.
    */
@@ -87,6 +91,7 @@ export const EmbeddedViewer = (props: Props) => {
       file={props.file}
       router={props.router}
       channelType={props.channelType}
+      locale={props.locale}
       onSetContentError={noop}
       onReady={noop}
       onResourceContentRequest={onResourceContentRequest}

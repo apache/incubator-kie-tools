@@ -108,6 +108,9 @@ export class KogitoEditor {
         },
         receive_resourceListRequest: (request: ResourceListRequest) => {
           return this.resourceContentService.list(request.pattern, request.opts);
+        },
+        receive_getLocale() {
+          return Promise.resolve(vscode.env.language);
         }
       }
     );

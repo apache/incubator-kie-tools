@@ -84,8 +84,8 @@ export class KogitoChannelBus {
     this.client.notify("receive_contentChanged", content);
   }
 
-  public notify_changeLocale(locale: string) {
-    this.client.notify("receive_changeLocale", locale)
+  public notify_localeChange(locale: string) {
+    this.client.notify("receive_localeChange", locale)
   }
 
   public request_contentResponse() {

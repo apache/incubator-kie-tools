@@ -20,6 +20,7 @@ import { useCallback, useState } from "react";
 import { FilesPage } from "./FilesPage";
 import { LearnMorePage } from "./LearnMorePage";
 import { File } from "../../common/File";
+import {useDesktopI18n} from "../common/i18n/locales";
 
 interface Props {
   openFile: (file: File) => void;
@@ -33,6 +34,7 @@ enum NavItems {
 
 export function HomePage(props: Props) {
   const [activeNavItem, setActiveNavItem] = useState<NavItems>(NavItems.FILES);
+  const { i18n } = useDesktopI18n()
 
   const onNavSelect = useCallback(selectedItem => {
     setActiveNavItem(selectedItem.itemId);
@@ -44,10 +46,10 @@ export function HomePage(props: Props) {
     <Nav onSelect={onNavSelect} className={"pf-m-dark"}>
       <NavList>
         <NavItem itemId={NavItems.FILES} isActive={activeNavItem === NavItems.FILES}>
-          Files
+          {i18n.terms.files}
         </NavItem>
         <NavItem itemId={NavItems.LEARN_MORE} isActive={activeNavItem === NavItems.LEARN_MORE}>
-          Learn more
+          {i18n.homePage.learnMore}
         </NavItem>
       </NavList>
     </Nav>

@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-import { I18nServiceApi } from "./I18nServiceApi";
-import {KogitoEnvelopeBus} from "../../KogitoEnvelopeBus";
+import { en } from "./en";
+import { useDictionary } from "@kogito-tooling/i18n";
 
-export class I18nService {
-  private callback: (locale: string) => void;
+export const desktopI18nDefaults = { locale: "en", dictionary: en };
 
-  public exposeApi(kogitoEnvelopeBus: KogitoEnvelopeBus): I18nServiceApi {
-    return {
-      onLocaleChange(callback: (locale: string) => void): void {
-        this.callback = callback;
-      },
-      getLocale() {
-        return kogitoEnvelopeBus.request_getLocale()
-      }
-    };
-  }
-
-  public executeI18nCallback(locale: string) {
-    this.callback?.(locale);
-  }
+export function useDesktopI18n() {
+  return useDictionary(desktopI18nDefaults.dictionary);
 }
+
+export const desktopI18nDictionaries = new Map([["en", en]]);

@@ -56,22 +56,22 @@ export const en: OnlineI18n = {
   editorToolbar: {
     sendChangesToGitHub: `Send changes to ${en_common.names.github}`,
     copySource: "Copy Source",
-    gistIt: `${en_common.functions.capitalize(en_common.names.gist)} it`,
+    gistIt: "Gist it",
     fileActions: "File actions"
   },
   githubTokenModal: {
     header: {
       title: `${en_common.names.github} ${en_common.names.oauth} ${en_common.terms.token}`,
-      subtitle: `Authentication required for exporting to ${en_common.names.github} ${en_common.names.gist}.`
+      subtitle: `Authentication required for exporting to ${en_common.names.github} gist.`
     },
     footer: {
       createNewToken: "Create a new token",
       placeHolder: "Paste your token here"
     },
     body: {
-      disclaimer: `By authenticating with your ${en_common.names.oauth} Token we are able to create ${en_common.names.gist}s so you can share your diagrams with your colleagues. The token you provide is locally stored as browser cookies and it is never shared with anyone.`,
+      disclaimer: `By authenticating with your ${en_common.names.oauth} Token we are able to create gists so you can share your diagrams with your colleagues. The token you provide is locally stored as browser cookies and it is never shared with anyone.`,
       learnMore: `Learn more about ${en_common.names.github} tokens`,
-      note: `You should provide a token with the '${en_common.names.gist}' permission.`
+      note: `You should provide a token with the 'gist' permission.`
     }
   },
   homePage: {
@@ -80,13 +80,14 @@ export const en: OnlineI18n = {
         invalidFile: "File extension is not supported",
         waitingFile: `Drop a ${en_common.names.bpmn} or ${en_common.names.dmn} file here`
       },
+      or: "or",
       fileInput: "File extension is not supported"
     },
     openUrl: {
       validating: `Validating ${en_common.names.url}`,
-      invalidGistExtension: `File type on the provided ${en_common.names.gist} is not supported.`,
+      invalidGistExtension: "File type on the provided gist is not supported.",
       invalidExtension: `File type on the provided ${en_common.names.url} is not supported.`,
-      invalidGist: `Enter a valid ${en_common.names.gist} ${en_common.names.url}.`,
+      invalidGist: `Enter a valid gist ${en_common.names.url}.`,
       invalidUrl: `This ${en_common.names.url} is not valid (don't forget "https://"!).`,
       notFoundUrl: `This ${en_common.names.url} does not exist.`,
       corsNotAvailable: `This ${en_common.names.url} cannot be opened because it doesn't allow other websites to access it.`,

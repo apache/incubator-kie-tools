@@ -96,7 +96,7 @@ export class EditorEnvelopeController {
       receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent) {
         window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));
       },
-      receive_changeLocale: (locale: string) => {
+      receive_localeChange: (locale: string) => {
         this.i18nService.executeI18nCallback(locale);
       }
     });

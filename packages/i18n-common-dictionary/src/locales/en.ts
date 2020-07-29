@@ -16,10 +16,8 @@
 
 import { CommonI18n } from "../CommonI18n";
 import { names } from "../names";
-import { functions } from "../functions";
 
 export const en: CommonI18n = {
-  functions,
   names,
   terms: {
     cancel: "Cancel",
@@ -28,9 +26,10 @@ export const en: CommonI18n = {
     download: "Download",
     edited: "Edited",
     exit: "Exit",
+    files: "Files",
+    forum: "Forum",
     fullScreen: "Full Screen",
     note: "Note",
-    or: "or",
     os: {
       initials: "OS",
       full: "Operation System"

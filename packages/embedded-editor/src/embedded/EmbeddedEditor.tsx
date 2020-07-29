@@ -49,8 +49,11 @@ export interface Props {
   /**
    * Channel in which the editor has been embedded.
    */
-
   channelType: ChannelType;
+  /**
+   * Channel locale.
+   */
+  locale: string;
   /**
    * Optional callback for when setting the editors content resulted in an error.
    */
@@ -97,6 +100,10 @@ export type EmbeddedEditorRef = {
    * Get an instance of the StateControl
    */
   getStateControl(): StateControl;
+  /**
+   * Notify the editor the locale change.
+   */
+  notifyLocaleChange(locale: string): void;
   /**
    * Notify the editor to redo the last command and update the state control.
    */
@@ -223,6 +230,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         },
         receive_resourceListRequest(request: ResourceListRequest) {
           return onResourceListRequest(request);
+        },
+        receive_getLocale() {
+          return Promise.resolve(props.locale);
         }
       }
     );
@@ -269,7 +279,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
       return {
         getStateControl: () => stateControl,
-        notifyChangeLocale: (locale: string) => kogitoChannelBus.notify_changeLocale(locale),
+        notifyLocaleChange: (locale: string) => kogitoChannelBus.notify_localeChange(locale),
         notifyRedo: () => kogitoChannelBus.notify_editorRedo(),
         notifyUndo: () => kogitoChannelBus.notify_editorUndo(),
         requestContent: () => kogitoChannelBus.request_contentResponse(),

@@ -79,6 +79,7 @@ interface OnlineDictionary extends Dictionary<OnlineDictionary> {
         invalidFile: string;
         waitingFile: string;
       };
+      or: string;
       fileInput: string;
     };
     openUrl: {

@@ -92,7 +92,7 @@ export function init(args: {
       editorContext: args.editorContext,
       keyboardShortcuts: keyboardShortcutsService.exposeApi(),
       workspaceService: workspaceService.exposeApi(messageBus),
-      i18n: i18nService.exposeApi()
+      i18n: i18nService.exposeApi(messageBus)
     };
   });
 }

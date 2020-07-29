@@ -134,6 +134,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           onResourceContentRequest={onResourceContentRequest}
           onResourceListRequest={onResourceContentList}
           envelopeUri={router.getRelativePathTo(editorIndexPath)}
+          locale={"en"}
         />
       </div>
     </>

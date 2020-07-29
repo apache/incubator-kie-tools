@@ -109,6 +109,10 @@ export class KogitoEnvelopeBus {
     return this.client.request("receive_resourceListRequest", { pattern: pattern, opts: opts });
   }
 
+  public request_getLocale() {
+    return this.client.request("receive_getLocale")
+  }
+
   public receive(message: EnvelopeBusMessage<any, KogitoEnvelopeMessageTypes>) {
     this.manager.server.receive(message);
   }

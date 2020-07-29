@@ -27,12 +27,12 @@ export type NamesDictionary = {
   desktop: string;
   dmn: string;
   dropbox: string;
-  gist: string;
   github: string;
   kogito: string;
   linux: string;
   macos: string;
   oauth: string;
+  redHat: string;
   svg: string;
   url: string;
   vscode: string;
@@ -51,12 +51,12 @@ export const names: NamesDictionary = {
   desktop: "Desktop",
   dmn: "DMN",
   dropbox: "Dropbox",
-  gist: "gist",
   github: "GitHub",
   kogito: "Kogito",
   linux: "Linux",
   macos: "macOS",
   oauth: "OAuth",
+  redHat: "Red Hat",
   svg: "SVG",
   url: "URL",
   vscode: "VS Code",

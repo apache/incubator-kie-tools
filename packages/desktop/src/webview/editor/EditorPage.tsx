@@ -25,6 +25,7 @@ import { File, FileSaveActions } from "../../common/File";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
 import IpcRendererEvent = Electron.IpcRendererEvent;
+import {desktopI18nDefaults, useDesktopI18n} from "../common/i18n/locales";
 
 interface Props {
   editorType: string;
@@ -44,6 +45,7 @@ export function EditorPage(props: Props) {
   const [savePreviewSuccessAlertVisible, setSavePreviewSuccessAlertVisible] = useState(false);
   const isDirty = useDirtyState(editorRef);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
+  const { i18n } = useDesktopI18n();
 
   const onClose = useCallback(() => {
     if (!isDirty) {
@@ -234,7 +236,7 @@ export function EditorPage(props: Props) {
               <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
                 <Alert
                   variant="warning"
-                  title="Unsaved changes will be lost."
+                  title={i18n.editorPage.alerts.unsaved.title}
                   action={
                     <AlertActionCloseButton
                       data-testid="unsaved-alert-close-button"
@@ -244,14 +246,13 @@ export function EditorPage(props: Props) {
                 >
                   <div>
                     <p>
-                      Click Save to download your progress before closing.{" "}
+                      {`${i18n.editorPage.alerts.unsaved.message} `}
                       <a data-testid="unsaved-alert-save-button" onClick={requestSaveFile}>
                         Save
                       </a>
                     </p>
                     <a data-testid="unsaved-alert-close-without-save-button" onClick={onCloseWithoutSave}>
-                      {" "}
-                      Close without saving
+                      {` ${i18n.editorPage.alerts.unsaved.closeWithoutSaving}`}
                     </a>
                   </div>
                 </Alert>
@@ -261,7 +262,7 @@ export function EditorPage(props: Props) {
               <div className={"kogito--alert-container"}>
                 <Alert
                   variant="success"
-                  title="Content copied to clipboard"
+                  title={i18n.editorPage.alerts.copy}
                   action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
                 />
               </div>
@@ -270,16 +271,16 @@ export function EditorPage(props: Props) {
               <div className={"kogito--alert-container"}>
                 <Alert
                   variant="success"
-                  title={"File saved successfully!"}
+                  title={`${i18n.editorPage.alerts.saved}!`}
                   action={<AlertActionCloseButton onClose={closeSaveFileSuccessAlert} />}
                 />
               </div>
             )}
             {savePreviewSuccessAlertVisible && (
-              <div className={"kogito--alert-container"}>
+              <div className={`kogito--alert-container`}>
                 <Alert
                   variant="success"
-                  title={"Preview saved successfully!"}
+                  title={`${i18n.editorPage.alerts.previewSaved}!`}
                   action={<AlertActionCloseButton onClose={closeSavePreviewSuccessAlert} />}
                 />
               </div>
@@ -290,6 +291,7 @@ export function EditorPage(props: Props) {
               router={context.router}
               channelType={ChannelType.DESKTOP}
               onReady={requestThumbnailPreview}
+              locale={desktopI18nDefaults.locale}
             />
           </StackItem>
         </Stack>

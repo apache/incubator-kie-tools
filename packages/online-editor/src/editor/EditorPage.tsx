@@ -26,7 +26,7 @@ import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
-import { useOnlineI18n } from "../common/i18n";
+import { onlineI18nDefaults, useOnlineI18n } from "../common/i18n";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -279,6 +279,7 @@ export function EditorPage(props: Props) {
           router={context.router}
           onReady={onReady}
           channelType={ChannelType.ONLINE}
+          locale={onlineI18nDefaults.locale}
         />
       </PageSection>
       <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />

@@ -16,7 +16,6 @@
 
 import { Dictionary } from "@kogito-tooling/i18n";
 import { NamesDictionary } from "./names";
-import { Functions } from "./functions";
 
 // tslint:disable-next-line:interface-over-type-literal
 export type CommonDictionary = {
@@ -26,9 +25,10 @@ export type CommonDictionary = {
   download: string;
   edited: string;
   exit: string;
+  files: string;
+  forum: string;
   fullScreen: string;
   note: string;
-  or: string;
   os: {
     initials: string;
     full: string;
@@ -40,7 +40,6 @@ export type CommonDictionary = {
 };
 
 export interface CommonI18n extends Dictionary<CommonI18n> {
-  functions: Functions;
   names: NamesDictionary;
   terms: CommonDictionary;
 }

@@ -599,7 +599,7 @@ export function HomePage(props: Props) {
                 <Bullseye>{messageForUploadFileFromDndState}</Bullseye>
               </div>
             </CardBody>
-            <CardBody>{i18n.terms.or}</CardBody>
+            <CardBody>{i18n.homePage.uploadFile.or}</CardBody>
             <CardFooter className="kogito--editor-landing__upload-input">
               <Button variant="secondary" className="kogito--editor-landing__upload-btn">
                 {i18n.homePage.chooseLocalFile}

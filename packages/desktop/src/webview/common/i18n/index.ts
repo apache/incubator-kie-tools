@@ -14,11 +14,5 @@
  * limitations under the License.
  */
 
-// tslint:disable-next-line:interface-over-type-literal
-export type Functions = {
-  capitalize: (text: string) => string;
-};
-
-export const functions: Functions = {
-  capitalize: ([first, ...rest]) => first.toUpperCase() + rest.join("").toLowerCase()
-};
+export * from "./DesktopI18n";
+export * from "./locales"
