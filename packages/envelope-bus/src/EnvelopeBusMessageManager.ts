@@ -17,13 +17,30 @@
 import { EnvelopeBusMessage, EnvelopeBusMessagePurpose } from "./EnvelopeBusMessage";
 
 /* tslint:disable:ban-types */
-export type FunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? K : never }[keyof T];
+
+type NotificationCallback<
+  ApiToConsume extends ApiDefinition<ApiToConsume>,
+  M extends NotificationPropertyNames<ApiToConsume>
+> = (...args: ArgsType<ApiToConsume[M]>) => void;
+
+export type NotificationPropertyNames<T extends ApiDefinition<T>> = {
+  [K in keyof T]: ReturnType<T[K]> extends void ? K : never;
+}[keyof T];
+
+export type RequestPropertyNames<T extends ApiDefinition<T>> = {
+  [K in keyof T]: ReturnType<T[K]> extends Promise<any> ? K : never;
+}[keyof T];
+
+export type FunctionPropertyNames<T extends ApiDefinition<T>> = NotificationPropertyNames<T> | RequestPropertyNames<T>;
+
 export type ApiDefinition<T> = { [P in keyof T]: (...a: any) => Promise<any> | void };
 export type ArgsType<T> = T extends (...args: infer A) => any ? A : never;
 
 export interface MessageBusClient<Api extends ApiDefinition<Api>> {
-  request<M extends FunctionPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): ReturnType<Api[M]>;
-  notify<M extends FunctionPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): void;
+  request<M extends RequestPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): ReturnType<Api[M]>;
+  notify<M extends NotificationPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): void;
+  subscribe<M extends NotificationPropertyNames<Api>>(method: M, callback: (...args: ArgsType<Api[M]>) => void): void;
+  unsubscribe<M extends NotificationPropertyNames<Api>>(method: M, callback: (...args: ArgsType<Api[M]>) => void): void;
 }
 
 export interface MessageBusServer<
@@ -31,10 +48,7 @@ export interface MessageBusServer<
   ApiToConsume extends ApiDefinition<ApiToConsume>
 > {
   receive(
-    message: EnvelopeBusMessage<
-      unknown,
-      FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>
-    >,
+    message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
     api: ApiToProvide
   ): void;
 }
@@ -45,20 +59,25 @@ export class EnvelopeBusMessageManager<
 > {
   private readonly callbacks = new Map<string, { resolve: (arg: unknown) => void; reject: (arg: unknown) => void }>();
 
+  private readonly remoteSubscriptions: Array<NotificationPropertyNames<ApiToProvide>> = [];
+
+  private readonly localSubscriptions = new Map<NotificationPropertyNames<ApiToConsume>, Function[]>();
+
+  private requestIdCounter: number;
+
   public get client(): MessageBusClient<ApiToConsume> {
     return {
       request: (m, ...a) => this.request(m, ...a),
-      notify: (m, ...a) => this.notify(m, ...a)
+      notify: (m, ...a) => this.notify(m, ...a),
+      subscribe: (m, a) => this.subscribe(m, a),
+      unsubscribe: (m, a) => this.unsubscribe(m, a)
     };
   }
-
   public get server(): MessageBusServer<ApiToProvide, ApiToConsume> {
     return {
       receive: (m, api) => this.receive(m, api)
     };
   }
-
-  private requestIdCounter: number;
 
   constructor(
     private readonly send: (
@@ -70,7 +89,38 @@ export class EnvelopeBusMessageManager<
     this.requestIdCounter = 0;
   }
 
-  private request<M extends FunctionPropertyNames<ApiToConsume>>(method: M, ...args: ArgsType<ApiToConsume[M]>) {
+  private subscribe<M extends NotificationPropertyNames<ApiToConsume>>(
+    method: M,
+    callback: (...args: ArgsType<ApiToConsume[M]>) => void
+  ) {
+    const activeSubscriptions = this.localSubscriptions.get(method) ?? [];
+    this.localSubscriptions.set(method, [...activeSubscriptions, callback]);
+    this.send({
+      type: method,
+      purpose: EnvelopeBusMessagePurpose.SUBSCRIPTION,
+      data: []
+    });
+    return callback;
+  }
+
+  private unsubscribe<M extends NotificationPropertyNames<ApiToConsume>>(
+    method: M,
+    callback: NotificationCallback<ApiToConsume, M>
+  ) {
+    const values = this.localSubscriptions.get(method);
+    if (!values) {
+      return;
+    }
+
+    const index = values.indexOf(callback);
+    if (index < 0) {
+      return;
+    }
+
+    values.splice(index, 1);
+  }
+
+  private request<M extends RequestPropertyNames<ApiToConsume>>(method: M, ...args: ArgsType<ApiToConsume[M]>) {
     const requestId = this.getNextRequestId();
 
     this.send({
@@ -87,7 +137,7 @@ export class EnvelopeBusMessageManager<
     //TODO: Setup timeout to avoid memory leaks
   }
 
-  private notify<M extends FunctionPropertyNames<ApiToConsume>>(method: M, ...args: ArgsType<ApiToConsume[M]>): void {
+  private notify<M extends NotificationPropertyNames<ApiToConsume>>(method: M, ...args: ArgsType<ApiToConsume[M]>) {
     this.send({
       type: method,
       data: args,
@@ -139,7 +189,6 @@ export class EnvelopeBusMessageManager<
       callback.reject(response.error);
     }
   }
-
   private receive(
     // We can receive messages from both the APIs we provide and consume.
     message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>>,
@@ -147,13 +196,13 @@ export class EnvelopeBusMessageManager<
   ) {
     if (message.purpose === EnvelopeBusMessagePurpose.RESPONSE) {
       // We can only receive responses for the API we consume.
-      this.callback(message as EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume>>);
+      this.callback(message as EnvelopeBusMessage<unknown, RequestPropertyNames<ApiToConsume>>);
       return;
     }
 
     if (message.purpose === EnvelopeBusMessagePurpose.REQUEST) {
       // We can only receive requests for the API we provide.
-      const request = message as EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide>>;
+      const request = message as EnvelopeBusMessage<unknown, RequestPropertyNames<ApiToProvide>>;
 
       const response = api[request.type].apply(api, request.data);
       if (!(response instanceof Promise)) {
@@ -165,9 +214,43 @@ export class EnvelopeBusMessageManager<
     }
 
     if (message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
-      // We can only receive notifications from the API we provide.
-      const method = message.type as FunctionPropertyNames<ApiToProvide>;
+      // We can only receive notifications for methods of the API we provide.
+      const method = message.type as NotificationPropertyNames<ApiToProvide>;
       api[method]?.apply(api, message.data);
+
+      if (this.remoteSubscriptions.indexOf(method) >= 0) {
+        this.send({
+          type: method,
+          purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
+          data: message.data
+        });
+      }
+
+      // We can only receive notifications from subscriptions of the API we consume.
+      const localSubscriptionMethod = message.type as NotificationPropertyNames<ApiToConsume>;
+      (this.localSubscriptions.get(localSubscriptionMethod) ?? []).forEach(callback => {
+        callback(message.data);
+      });
+
+      return;
+    }
+
+    if (message.purpose === EnvelopeBusMessagePurpose.SUBSCRIPTION) {
+      // We can only receive subscriptions for methods of the API we provide.
+      const method = message.type as NotificationPropertyNames<ApiToProvide>;
+      if (this.remoteSubscriptions.indexOf(method) < 0) {
+        this.remoteSubscriptions.push(method);
+      }
+      return;
+    }
+
+    if (message.purpose === EnvelopeBusMessagePurpose.UNSUBSCRIPTION) {
+      // We can only receive unsubscriptions for methods of the API we provide.
+      const method = message.type as NotificationPropertyNames<ApiToProvide>;
+      const index = this.remoteSubscriptions.indexOf(method);
+      if (index >= 0) {
+        this.remoteSubscriptions.splice(index, 1);
+      }
       return;
     }
   }

@@ -82,6 +82,10 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       });
     });
 
+    envelopeContext.channelApi.subscribe("receive_newEdit", edit => {
+      console.info(`Received new edit: ${edit.id}`);
+    });
+
     return Promise.all(languageData.resources.map(resource => this.loadResource(resource))).then(() => {
       return gwtFinishedLoading;
     });

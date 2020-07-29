@@ -13,7 +13,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/envelope": "0.6.1"
+    "@kogito-tooling/envelope": "0.6.1",
+    "@kogito-tooling/page-envelope-protocol": "0.6.1"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

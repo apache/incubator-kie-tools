@@ -26,7 +26,9 @@ let messageBusClient: MessageBusClient<KogitoEditorEnvelopeApi>;
 beforeEach(() => {
   messageBusClient = {
     notify: jest.fn(),
-    request: jest.fn()
+    request: jest.fn(),
+    subscribe: jest.fn(),
+    unsubscribe: jest.fn()
   };
 });
 

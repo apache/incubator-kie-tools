@@ -19,6 +19,7 @@ import {
   EnvelopeBus,
   EnvelopeBusMessage,
   EnvelopeBusMessageManager,
+  EnvelopeBusMessagePurpose,
   FunctionPropertyNames
 } from "@kogito-tooling/envelope-bus";
 
@@ -70,6 +71,10 @@ export class EnvelopeBusController<
     message: EnvelopeBusMessage<any, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
     api: ApiToProvide
   ) {
-    this.manager.server.receive(message, api);
+    if (!message.busId) {
+      this.manager.server.receive(message, api);
+    } else if (message.busId && message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
+      this.manager.server.receive(message, {} as any);
+    }
   }
 }

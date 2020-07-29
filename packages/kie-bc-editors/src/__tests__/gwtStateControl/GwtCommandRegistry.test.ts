@@ -40,7 +40,7 @@ const COMMAND4 = new Command("4");
 
 describe("DefaultKogitoCommandRegistry", () => {
   beforeEach(() => {
-    messageBusClient = { notify: jest.fn(), request: jest.fn() };
+    messageBusClient = { notify: jest.fn(), request: jest.fn(), subscribe: jest.fn(), unsubscribe: jest.fn() };
     registry = new DefaultKogitoCommandRegistry<Command>(messageBusClient);
   });
 

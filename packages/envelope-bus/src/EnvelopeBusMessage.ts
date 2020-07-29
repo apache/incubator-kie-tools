@@ -26,5 +26,7 @@ export interface EnvelopeBusMessage<D, T> {
 export enum EnvelopeBusMessagePurpose {
   REQUEST = "request",
   RESPONSE = "response",
+  SUBSCRIPTION = "subscription",
+  UNSUBSCRIPTION = "unsubscription",
   NOTIFICATION = "notification"
 }

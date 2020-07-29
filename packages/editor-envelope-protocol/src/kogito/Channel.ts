@@ -19,6 +19,7 @@ import {
   EnvelopeBus,
   EnvelopeBusMessage,
   EnvelopeBusMessageManager,
+  EnvelopeBusMessagePurpose,
   FunctionPropertyNames
 } from "@kogito-tooling/envelope-bus";
 
@@ -46,19 +47,20 @@ export class Channel<
     message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
     api: ApiToProvide
   ) {
-    if (message.busId !== this.busId) {
-      return;
+    if (message.busId === this.busId) {
+      this.manager.server.receive(message, api);
+    } else if (message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
+      this.manager.server.receive(message, {} as any);
     }
-
-    this.manager.server.receive(message, api);
   }
 
   public generateRandomId() {
-    return (
-      "_" +
-      Math.random()
-        .toString(36)
-        .substr(2, 9)
-    );
+    const randomPart = Math.random()
+      .toString(36)
+      .substr(2, 9);
+
+    const milliseconds = new Date().getMilliseconds();
+
+    return `_${randomPart}_${milliseconds}`;
   }
 }
