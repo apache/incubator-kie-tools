@@ -24,6 +24,7 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -80,6 +81,10 @@ func GetKogitoBuildStub(namespace, runtimeType, name string) *v1alpha1.KogitoBui
 			Runtime:        v1alpha1.RuntimeType(runtimeType),
 			MavenMirrorURL: config.GetMavenMirrorURL(),
 		},
+	}
+
+	if len(config.GetCustomMavenRepoURL()) > 0 {
+		kogitoBuild.Spec.Envs = framework.EnvOverride(kogitoBuild.Spec.Envs, corev1.EnvVar{Name: "MAVEN_REPO_URL", Value: config.GetCustomMavenRepoURL()})
 	}
 
 	return kogitoBuild
