@@ -84,11 +84,9 @@ func (mvnCmd *mavenCommandStruct) Profiles(profiles ...string) MavenCommand {
 func (mvnCmd *mavenCommandStruct) Execute(targets ...string) (string, error) {
 	var args []string
 
-	// Setup custom maven repository if defined
-	if len(config.GetCustomMavenRepoURL()) > 0 {
-		if err := mvnCmd.setMavenRepoURL(config.GetCustomMavenRepoURL()); err != nil {
-			return "", err
-		}
+	// Setup settings.xml
+	if err := mvnCmd.setSettingsXML(); err != nil {
+		return "", err
 	}
 
 	if mvnCmd.skipTests {
@@ -117,9 +115,26 @@ func (mvnCmd *mavenCommandStruct) Execute(targets ...string) (string, error) {
 	return cmd.Execute()
 }
 
-func (mvnCmd *mavenCommandStruct) setMavenRepoURL(repoURL string) error {
+// setSettingsXML Creates settings.xml with content based on test configuration
+func (mvnCmd *mavenCommandStruct) setSettingsXML() error {
+	settingsContent := settingsMainContent
+
+	// Setup custom Maven repository if defined
+	if customMavenRepoURL := config.GetCustomMavenRepoURL(); len(customMavenRepoURL) > 0 {
+		repository := fmt.Sprintf(repositoryDescription, customMavenRepoURL)
+		pluginRepository := fmt.Sprintf(pluginRepositoryDescription, customMavenRepoURL)
+		profilesContent := fmt.Sprintf(profilesXMLDescription, repository, pluginRepository)
+		settingsContent = strings.ReplaceAll(settingsContent, "<!-- ### profiles ### -->", profilesContent)
+	}
+
+	// Setup Maven mirror if defined
+	if mavenMirrorURL := config.GetMavenMirrorURL(); len(mavenMirrorURL) > 0 {
+		mavenMirrorContent := fmt.Sprintf(mavenMirrorXMLDescription, mavenMirrorURL)
+		settingsContent = strings.ReplaceAll(settingsContent, "<!-- ### mirror settings ### -->", mavenMirrorContent)
+	}
+
 	// Create settings.xml in directory
-	if err := ioutil.WriteFile(fmt.Sprintf("%s/settings.xml", mvnCmd.directory), []byte(fmt.Sprintf(settingsFile, repoURL, repoURL)), 0644); err != nil {
+	if err := ioutil.WriteFile(fmt.Sprintf("%s/settings.xml", mvnCmd.directory), []byte(settingsContent), 0644); err != nil {
 		return err
 	}
 
@@ -144,11 +159,7 @@ const (
 	<updatePolicy>always</updatePolicy>
 </snapshots>`
 
-	settingsMainContent = `
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-https://maven.apache.org/xsd/settings-1.0.0.xsd">
+	profilesXMLDescription = `
 	<profiles>
 		<profile>
 			<id>default</id>
@@ -162,12 +173,30 @@ https://maven.apache.org/xsd/settings-1.0.0.xsd">
 	</profiles>
 	<activeProfiles>
 		<activeProfile>default</activeProfile>
-	</activeProfiles>
+	</activeProfiles>`
+
+	mavenMirrorXMLDescription = `
+	<mirrors>
+		<mirror>
+			<id>mirror-central</id>
+			<mirrorOf>external:*</mirrorOf>
+			<url>%s</url>
+		</mirror>
+	</mirrors>`
+
+	settingsMainContent = `
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+https://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+<!-- ### mirror settings ### -->
+
+<!-- ### profiles ### -->
 </settings>`
 )
 
 var (
 	repositoryDescription       = fmt.Sprintf(`<repository>%s</repository><!-- ### configured repositories ### -->`, repositoryXMLDescription)
 	pluginRepositoryDescription = fmt.Sprintf(`<pluginRepository>%s</pluginRepository><!-- ### configured plugin repositories ### -->`, repositoryXMLDescription)
-	settingsFile                = fmt.Sprintf(settingsMainContent, repositoryDescription, pluginRepositoryDescription)
 )
