@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannel } from "./KogitoEditorChannel";
+import { KogitoEditorChannelEnvelopeServer } from "./KogitoEditorChannelEnvelopeServer";
 import { useEffect } from "react";
 import { EditorInitArgs } from "./KogitoEditorEnvelopeApi";
 import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
 
-export function useConnectedKogitoEditorChannel(
-    channel: KogitoEditorChannel,
+export function useConnectedEditorEnvelopeServer(
+    channel: KogitoEditorChannelEnvelopeServer,
     api: KogitoEditorChannelApi,
     targetOrigin: string,
     editorInitArgs: EditorInitArgs

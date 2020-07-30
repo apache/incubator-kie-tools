@@ -18,9 +18,9 @@ import { EditorContent } from "./api";
 import { EnvelopeBus, EnvelopeBusMessage, FunctionPropertyNames } from "@kogito-tooling/envelope-bus";
 import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
 import { EditorInitArgs, KogitoEditorEnvelopeApi } from "./KogitoEditorEnvelopeApi";
-import { Channel } from "./Channel";
+import { ChannelEnvelopeServer } from "./ChannelEnvelopeServer";
 
-export class KogitoEditorChannel {
+export class KogitoEditorChannelEnvelopeServer {
   public static INIT_POLLING_TIMEOUT_IN_MS = 10000;
   public static INIT_POLLING_INTERVAL_IN_MS = 100;
 
@@ -28,16 +28,16 @@ export class KogitoEditorChannel {
   public initPollingTimeout?: ReturnType<typeof setTimeout>;
 
   public get client() {
-    return this.channel.client;
+    return this.envelopeServer.client;
   }
 
   public get busId() {
-    return this.channel.busId;
+    return this.envelopeServer.busId;
   }
 
   public constructor(
     bus: EnvelopeBus,
-    private readonly channel = new Channel<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(bus)
+    private readonly envelopeServer = new ChannelEnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(bus)
   ) {}
 
   public startInitPolling(origin: string, initArgs: EditorInitArgs) {
@@ -45,12 +45,12 @@ export class KogitoEditorChannel {
       this.request_initResponse(origin, initArgs).then(() => {
         this.stopInitPolling();
       });
-    }, KogitoEditorChannel.INIT_POLLING_INTERVAL_IN_MS);
+    }, KogitoEditorChannelEnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
 
     this.initPollingTimeout = setTimeout(() => {
       this.stopInitPolling();
       console.info("Init polling timed out. Looks like the microeditor-envelope is not responding accordingly.");
-    }, KogitoEditorChannel.INIT_POLLING_TIMEOUT_IN_MS);
+    }, KogitoEditorChannelEnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS);
   }
 
   public stopInitPolling() {
@@ -67,7 +67,7 @@ export class KogitoEditorChannel {
     >,
     api: KogitoEditorChannelApi
   ) {
-    this.channel.receive(message, api);
+    this.envelopeServer.receive(message, api);
   }
 
   public notify_editorUndo() {
@@ -91,7 +91,7 @@ export class KogitoEditorChannel {
   }
 
   public request_initResponse(origin: string, initArgs: EditorInitArgs) {
-    return this.client.request("receive_initRequest", { origin: origin, busId: this.channel.busId }, initArgs);
+    return this.client.request("receive_initRequest", { origin: origin, busId: this.envelopeServer.busId }, initArgs);
   }
 
   public request_guidedTourElementPositionResponse(selector: string) {

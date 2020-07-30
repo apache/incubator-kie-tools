@@ -22,7 +22,11 @@ import { KogitoWebviewProvider } from "./KogitoWebviewProvider";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
 import * as __path from "path";
 import * as fs from "fs";
-import { KogitoPageChannel, KogitoPageChannelApi, PageEnvelopeLocator } from "@kogito-tooling/page-envelope-protocol";
+import {
+  KogitoPageChannelApi,
+  KogitoPageChannelEnvelopeServer,
+  PageEnvelopeLocator
+} from "@kogito-tooling/page-envelope-protocol";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 
 /**
@@ -134,7 +138,7 @@ function openPage(
         </body>
         </html>`;
 
-  const kogitoPageChannel = new KogitoPageChannel({
+  const envelopeServer = new KogitoPageChannelEnvelopeServer({
     postMessage: message => webviewPanel.webview.postMessage(message)
   });
 
@@ -153,7 +157,7 @@ function openPage(
   };
 
   const broadcastSubscription = messageBroadcaster.subscribe(msg => {
-    kogitoPageChannel.receive(msg, api);
+    envelopeServer.receive(msg, api);
   });
 
   context.subscriptions.push(
@@ -166,14 +170,14 @@ function openPage(
 
   webviewPanel.onDidDispose(
     () => {
-      kogitoPageChannel.stopInitPolling();
+      envelopeServer.stopInitPolling();
       messageBroadcaster.unsubscribe(broadcastSubscription);
     },
     webviewPanel.webview,
     context.subscriptions
   );
 
-  kogitoPageChannel.startInitPolling(envelopeTargetOrigin, {
+  envelopeServer.startInitPolling(envelopeTargetOrigin, {
     filePath: filePath,
     backendUrl: backendUrl
   });

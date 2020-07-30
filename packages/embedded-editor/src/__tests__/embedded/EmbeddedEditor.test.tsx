@@ -15,11 +15,11 @@
  */
 
 import {
-  Channel,
+  ChannelEnvelopeServer,
   ChannelType,
   EditorEnvelopeLocator,
   KogitoEdit,
-  KogitoEditorChannel
+  KogitoEditorChannelEnvelopeServer
 } from "@kogito-tooling/editor-envelope-protocol";
 import * as React from "react";
 import { File } from "../../common";
@@ -46,7 +46,7 @@ describe("EmbeddedEditor::ONLINE", () => {
   const busId = "test-bus-id";
 
   beforeEach(() => {
-    jest.spyOn(Channel.prototype, "generateRandomId").mockReturnValue(busId);
+    jest.spyOn(ChannelEnvelopeServer.prototype, "generateRandomId").mockReturnValue(busId);
     jest.clearAllMocks();
   });
 
@@ -68,7 +68,7 @@ describe("EmbeddedEditor::ONLINE", () => {
   });
 
   test("EmbeddedEditor::setContent", () => {
-    const spyRespond_contentRequest = jest.spyOn(KogitoEditorChannel.prototype, "notify_contentChanged");
+    const spyRespond_contentRequest = jest.spyOn(KogitoEditorChannelEnvelopeServer.prototype, "notify_contentChanged");
     render(
       <EmbeddedEditor
         ref={editorRef}
@@ -83,7 +83,7 @@ describe("EmbeddedEditor::ONLINE", () => {
   });
 
   test("EmbeddedEditor::requestContent", () => {
-    const spyRequest_contentResponse = jest.spyOn(KogitoEditorChannel.prototype, "request_contentResponse");
+    const spyRequest_contentResponse = jest.spyOn(KogitoEditorChannelEnvelopeServer.prototype, "request_contentResponse");
     render(
       <EmbeddedEditor
         ref={editorRef}
@@ -98,7 +98,7 @@ describe("EmbeddedEditor::ONLINE", () => {
   });
 
   test("EmbeddedEditor::requestPreview", () => {
-    const spyRequest_previewResponse = jest.spyOn(KogitoEditorChannel.prototype, "request_previewResponse");
+    const spyRequest_previewResponse = jest.spyOn(KogitoEditorChannelEnvelopeServer.prototype, "request_previewResponse");
     render(
       <EmbeddedEditor
         ref={editorRef}

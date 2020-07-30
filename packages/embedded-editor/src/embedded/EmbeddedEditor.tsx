@@ -17,9 +17,9 @@
 import {
   ChannelType,
   EditorEnvelopeLocator,
-  KogitoEditorChannel,
+  KogitoEditorChannelEnvelopeServer,
   KogitoEditorChannelApi,
-  useConnectedKogitoEditorChannel
+  useConnectedEditorEnvelopeServer
 } from "@kogito-tooling/editor-envelope-protocol";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts-channel";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
@@ -82,8 +82,8 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     return new KogitoEditorChannelApiImpl(stateControl, props.file, props);
   }, [stateControl, props.file, props]);
 
-  const kogitoEditorChannel = useMemo(() => {
-    return new KogitoEditorChannel({
+  const envelopeServer = useMemo(() => {
+    return new KogitoEditorChannelEnvelopeServer({
       postMessage: message => {
         if (iframeRef.current && iframeRef.current.contentWindow) {
           iframeRef.current.contentWindow.postMessage(message, "*");
@@ -92,8 +92,8 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     });
   }, []);
 
-  useConnectedKogitoEditorChannel(
-    kogitoEditorChannel,
+  useConnectedEditorEnvelopeServer(
+    envelopeServer,
     kogitoEditorChannelApiImpl,
     props.editorEnvelopeLocator.targetOrigin,
     { fileExtension: props.file.fileExtension, resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "" }
@@ -101,15 +101,15 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
   useEffect(() => {
     KogitoGuidedTour.getInstance().registerPositionProvider((selector: string) =>
-      kogitoEditorChannel.request_guidedTourElementPositionResponse(selector).then(position => {
+      envelopeServer.request_guidedTourElementPositionResponse(selector).then(position => {
         const parentRect = iframeRef.current?.getBoundingClientRect();
         KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
       })
     );
-  }, [kogitoEditorChannel]);
+  }, [envelopeServer]);
 
   // Forward keyboard events to envelope
-  useSyncedKeyboardEvents(kogitoEditorChannel.client);
+  useSyncedKeyboardEvents(envelopeServer.client);
 
   //Forward reference methods
   useImperativeHandle(
@@ -121,15 +121,15 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
       return {
         getStateControl: () => stateControl,
-        getElementPosition: selector => kogitoEditorChannel.request_guidedTourElementPositionResponse(selector),
-        redo: () => Promise.resolve(kogitoEditorChannel.notify_editorRedo()),
-        undo: () => Promise.resolve(kogitoEditorChannel.notify_editorUndo()),
-        getContent: () => kogitoEditorChannel.request_contentResponse().then(c => c.content),
-        getPreview: () => kogitoEditorChannel.request_previewResponse(),
-        setContent: async content => kogitoEditorChannel.notify_contentChanged({ content: content })
+        getElementPosition: selector => envelopeServer.request_guidedTourElementPositionResponse(selector),
+        redo: () => Promise.resolve(envelopeServer.notify_editorRedo()),
+        undo: () => Promise.resolve(envelopeServer.notify_editorUndo()),
+        getContent: () => envelopeServer.request_contentResponse().then(c => c.content),
+        getPreview: () => envelopeServer.request_previewResponse(),
+        setContent: async content => envelopeServer.notify_contentChanged({ content: content })
       };
     },
-    [kogitoEditorChannel]
+    [envelopeServer]
   );
 
   return (

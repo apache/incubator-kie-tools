@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./KogitoEditorChannelEnvelopeServer";
-export * from "./KogitoEditorChannelApi";
-export * from "./KogitoEditorEnvelopeApi";
-export * from "./api";
-export * from "./Hooks";
-export * from "./ChannelEnvelopeServer";
-export * from "./KogitoCommonChannelApi";
+export interface KogitoChannelCommonApi {
+  receive_ready(): void;
+}

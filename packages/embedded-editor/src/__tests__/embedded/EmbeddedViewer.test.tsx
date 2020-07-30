@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Channel, ChannelType, EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { ChannelEnvelopeServer, ChannelType, EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
 import * as React from "react";
 import { File } from "../../common";
 import { EmbeddedViewer } from "../../embedded";
@@ -39,7 +39,7 @@ describe("EmbeddedViewer::ONLINE", () => {
   const busId = "test-bus-id";
 
   beforeAll(() => {
-    jest.spyOn(Channel.prototype, "generateRandomId").mockReturnValue(busId);
+    jest.spyOn(ChannelEnvelopeServer.prototype, "generateRandomId").mockReturnValue(busId);
   });
 
   test("EmbeddedViewer::defaults", () => {

@@ -25,10 +25,10 @@ import {
   Tutorial,
   UserInteraction
 } from "./api";
+import { KogitoChannelCommonApi } from "./KogitoCommonChannelApi";
 
-export interface KogitoEditorChannelApi {
+export interface KogitoEditorChannelApi extends KogitoChannelCommonApi {
   receive_setContentError(errorMessage: string): void;
-  receive_ready(): void;
   receive_openFile(path: string): void;
   receive_guidedTourUserInteraction(userInteraction: UserInteraction): void;
   receive_guidedTourRegisterTutorial(tutorial: Tutorial): void;

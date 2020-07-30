@@ -15,11 +15,11 @@
  */
 
 import { EnvelopeBusMessage, EnvelopeBusMessagePurpose, FunctionPropertyNames } from "@kogito-tooling/envelope-bus";
-import { KogitoEditorChannel, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "../..";
+import { KogitoEditorChannelEnvelopeServer, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "../..";
 import { ContentType, ResourceContent, StateControlCommand } from "../../kogito/api";
 
 let sentMessages: Array<EnvelopeBusMessage<unknown, any>>;
-let channelBus: KogitoEditorChannel;
+let envelopeServer: KogitoEditorChannelEnvelopeServer;
 let api: KogitoEditorChannelApi;
 
 beforeEach(() => {
@@ -37,7 +37,7 @@ beforeEach(() => {
     receive_resourceListRequest: jest.fn()
   };
 
-  channelBus = new KogitoEditorChannel({ postMessage: (msg: any) => sentMessages.push(msg) });
+  envelopeServer = new KogitoEditorChannelEnvelopeServer({ postMessage: (msg: any) => sentMessages.push(msg) });
 });
 
 const delay = (ms: number) => {
@@ -46,55 +46,55 @@ const delay = (ms: number) => {
 
 describe("new instance", () => {
   test("does nothing", () => {
-    expect(channelBus.initPolling).toBeFalsy();
-    expect(channelBus.initPollingTimeout).toBeFalsy();
+    expect(envelopeServer.initPolling).toBeFalsy();
+    expect(envelopeServer.initPollingTimeout).toBeFalsy();
     expect(sentMessages.length).toEqual(0);
   });
 });
 
 describe("startInitPolling", () => {
   test("polls for init response", async () => {
-    jest.spyOn(channelBus, "stopInitPolling");
+    jest.spyOn(envelopeServer, "stopInitPolling");
 
-    channelBus.startInitPolling("tests", { fileExtension: "txt", resourcesPathPrefix: "" });
-    expect(channelBus.initPolling).toBeTruthy();
-    expect(channelBus.initPollingTimeout).toBeTruthy();
+    envelopeServer.startInitPolling("tests", { fileExtension: "txt", resourcesPathPrefix: "" });
+    expect(envelopeServer.initPolling).toBeTruthy();
+    expect(envelopeServer.initPollingTimeout).toBeTruthy();
 
     await delay(100); //waits for setInterval to kick in
 
     await incomingMessage({
-      busId: channelBus.busId,
+      busId: envelopeServer.busId,
       requestId: "KogitoEditorChannel_0",
       type: "receive_initRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: undefined
     });
 
-    expect(channelBus.stopInitPolling).toHaveBeenCalled();
-    expect(channelBus.initPolling).toBeFalsy();
-    expect(channelBus.initPollingTimeout).toBeFalsy();
+    expect(envelopeServer.stopInitPolling).toHaveBeenCalled();
+    expect(envelopeServer.initPolling).toBeFalsy();
+    expect(envelopeServer.initPollingTimeout).toBeFalsy();
   });
 
   test("stops polling after timeout", async () => {
-    jest.spyOn(channelBus, "stopInitPolling");
-    KogitoEditorChannel.INIT_POLLING_TIMEOUT_IN_MS = 200;
+    jest.spyOn(envelopeServer, "stopInitPolling");
+    KogitoEditorChannelEnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS = 200;
 
-    channelBus.startInitPolling("tests", { fileExtension: "txt", resourcesPathPrefix: "" });
-    expect(channelBus.initPolling).toBeTruthy();
-    expect(channelBus.initPollingTimeout).toBeTruthy();
+    envelopeServer.startInitPolling("tests", { fileExtension: "txt", resourcesPathPrefix: "" });
+    expect(envelopeServer.initPolling).toBeTruthy();
+    expect(envelopeServer.initPollingTimeout).toBeTruthy();
 
     //more than the timeout
     await delay(300);
 
-    expect(channelBus.stopInitPolling).toHaveBeenCalled();
-    expect(channelBus.initPolling).toBeFalsy();
-    expect(channelBus.initPollingTimeout).toBeFalsy();
+    expect(envelopeServer.stopInitPolling).toHaveBeenCalled();
+    expect(envelopeServer.initPolling).toBeFalsy();
+    expect(envelopeServer.initPollingTimeout).toBeFalsy();
   });
 });
 
 describe("receive", () => {
   test("any message with different busId", () => {
-    channelBus.receive(
+    envelopeServer.receive(
       {
         busId: "unknown-id",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
@@ -104,7 +104,7 @@ describe("receive", () => {
       },
       api
     );
-    channelBus.receive(
+    envelopeServer.receive(
       {
         busId: "unknown-id",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
@@ -118,9 +118,9 @@ describe("receive", () => {
 
   test("setContentError notification", async () => {
     jest.spyOn(api, "receive_setContentError");
-    channelBus.receive(
+    envelopeServer.receive(
       {
-        busId: channelBus.busId,
+        busId: envelopeServer.busId,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_setContentError",
         data: ["this is the error"]
@@ -132,9 +132,9 @@ describe("receive", () => {
 
   test("ready notification", async () => {
     jest.spyOn(api, "receive_ready");
-    channelBus.receive(
+    envelopeServer.receive(
       {
-        busId: channelBus.busId,
+        busId: envelopeServer.busId,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_ready",
         data: []
@@ -146,9 +146,9 @@ describe("receive", () => {
 
   test("newEdit notification", async () => {
     jest.spyOn(api, "receive_newEdit");
-    channelBus.receive(
+    envelopeServer.receive(
       {
-        busId: channelBus.busId,
+        busId: envelopeServer.busId,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_newEdit",
         data: [{ id: "edit-id" }]
@@ -159,9 +159,9 @@ describe("receive", () => {
   });
   test("openFile notification", async () => {
     jest.spyOn(api, "receive_openFile");
-    channelBus.receive(
+    envelopeServer.receive(
       {
-        busId: channelBus.busId,
+        busId: envelopeServer.busId,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_openFile",
         data: ["a/path"]
@@ -172,9 +172,9 @@ describe("receive", () => {
   });
   test("stateControlCommandUpdate notification", async () => {
     jest.spyOn(api, "receive_stateControlCommandUpdate");
-    channelBus.receive(
+    envelopeServer.receive(
       {
-        busId: channelBus.busId,
+        busId: envelopeServer.busId,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_stateControlCommandUpdate",
         data: [StateControlCommand.REDO]
@@ -186,9 +186,9 @@ describe("receive", () => {
 
   test("guidedTourRegisterTutorial notification", async () => {
     jest.spyOn(api, "receive_guidedTourRegisterTutorial");
-    channelBus.receive(
+    envelopeServer.receive(
       {
-        busId: channelBus.busId,
+        busId: envelopeServer.busId,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_guidedTourRegisterTutorial",
         data: []
@@ -200,9 +200,9 @@ describe("receive", () => {
 
   test("guidedTourUserInteraction notification", async () => {
     jest.spyOn(api, "receive_guidedTourUserInteraction");
-    channelBus.receive(
+    envelopeServer.receive(
       {
-        busId: channelBus.busId,
+        busId: envelopeServer.busId,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_guidedTourUserInteraction",
         data: []
@@ -218,7 +218,7 @@ describe("receive", () => {
     jest.spyOn(api, "receive_contentRequest").mockReturnValueOnce(Promise.resolve(content));
 
     await incomingMessage({
-      busId: channelBus.busId,
+      busId: envelopeServer.busId,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_contentRequest",
@@ -243,7 +243,7 @@ describe("receive", () => {
     jest.spyOn(api, "receive_resourceContentRequest").mockReturnValueOnce(Promise.resolve(resourceContent));
 
     await incomingMessage({
-      busId: channelBus.busId,
+      busId: envelopeServer.busId,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceContentRequest",
@@ -268,7 +268,7 @@ describe("receive", () => {
     jest.spyOn(api, "receive_resourceListRequest").mockReturnValueOnce(Promise.resolve(resourceList));
 
     await incomingMessage({
-      busId: channelBus.busId,
+      busId: envelopeServer.busId,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceListRequest",
@@ -289,21 +289,21 @@ describe("receive", () => {
 
 describe("send", () => {
   test("request init", async () => {
-    const init = channelBus.request_initResponse("test-origin", { fileExtension: "txt", resourcesPathPrefix: "" });
+    const init = envelopeServer.request_initResponse("test-origin", { fileExtension: "txt", resourcesPathPrefix: "" });
     expect(sentMessages).toEqual([
       {
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "KogitoEditorChannel_0",
         type: "receive_initRequest",
         data: [
-          { busId: channelBus.busId, origin: "test-origin" },
+          { busId: envelopeServer.busId, origin: "test-origin" },
           { fileExtension: "txt", resourcesPathPrefix: "" }
         ]
       }
     ]);
 
     await incomingMessage({
-      busId: channelBus.busId,
+      busId: envelopeServer.busId,
       requestId: "KogitoEditorChannel_0",
       type: "receive_initRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
@@ -314,9 +314,9 @@ describe("send", () => {
   });
 
   test("request contentResponse", async () => {
-    const content = channelBus.request_contentResponse();
+    const content = envelopeServer.request_contentResponse();
     await incomingMessage({
-      busId: channelBus.busId,
+      busId: envelopeServer.busId,
       requestId: "KogitoEditorChannel_0",
       type: "receive_contentRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
@@ -327,9 +327,9 @@ describe("send", () => {
   });
 
   test("request preview", async () => {
-    const preview = channelBus.request_previewResponse();
+    const preview = envelopeServer.request_previewResponse();
     await incomingMessage({
-      busId: channelBus.busId,
+      busId: envelopeServer.busId,
       requestId: "KogitoEditorChannel_0",
       type: "receive_previewRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
@@ -340,9 +340,9 @@ describe("send", () => {
   });
 
   test("request guidedTourElementPositionResponse", async () => {
-    const position = channelBus.request_guidedTourElementPositionResponse("my-selector");
+    const position = envelopeServer.request_guidedTourElementPositionResponse("my-selector");
     await incomingMessage({
-      busId: channelBus.busId,
+      busId: envelopeServer.busId,
       requestId: "KogitoEditorChannel_0",
       type: "receive_guidedTourElementPositionRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
@@ -353,7 +353,7 @@ describe("send", () => {
   });
 
   test("notify contentChanged", () => {
-    channelBus.notify_contentChanged({ content: "new-content" });
+    envelopeServer.notify_contentChanged({ content: "new-content" });
     expect(sentMessages).toEqual([
       {
         type: "receive_contentChanged",
@@ -364,7 +364,7 @@ describe("send", () => {
   });
 
   test("notify editorUndo", () => {
-    channelBus.notify_editorUndo();
+    envelopeServer.notify_editorUndo();
     expect(sentMessages).toEqual([
       {
         type: "receive_editorUndo",
@@ -375,7 +375,7 @@ describe("send", () => {
   });
 
   test("notify editorRedo", () => {
-    channelBus.notify_editorRedo();
+    envelopeServer.notify_editorRedo();
     expect(sentMessages).toEqual([
       {
         type: "receive_editorRedo",
@@ -392,6 +392,6 @@ async function incomingMessage(
     FunctionPropertyNames<KogitoEditorChannelApi> | FunctionPropertyNames<KogitoEditorEnvelopeApi>
   >
 ) {
-  channelBus.receive(message, api);
+  envelopeServer.receive(message, api);
   await delay(0); // waits for next event loop iteration
 }

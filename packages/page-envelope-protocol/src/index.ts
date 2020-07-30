@@ -15,6 +15,7 @@
  */
 
 import { ApiDefinition } from "@kogito-tooling/envelope-bus";
+import { KogitoChannelCommonApi } from "@kogito-tooling/editor-envelope-protocol";
 
 export interface Association {
   origin: string;
@@ -37,9 +38,8 @@ export interface SvgDiagram {
   img: string;
 }
 
-export interface KogitoPageChannelApi extends ApiDefinition<KogitoPageChannelApi> {
+export interface KogitoPageChannelApi extends KogitoChannelCommonApi {
   getOpenDiagrams(): Promise<SvgDiagram[]>;
-  receive_ready(): void;
 }
 
 //
@@ -55,4 +55,4 @@ export interface PageMapping {
   backendUrl: string;
 }
 
-export * from "./KogitoPageChannel";
+export * from "./KogitoPageChannelEnvelopeServer";

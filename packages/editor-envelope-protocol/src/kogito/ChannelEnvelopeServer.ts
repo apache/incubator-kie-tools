@@ -23,7 +23,7 @@ import {
   FunctionPropertyNames
 } from "@kogito-tooling/envelope-bus";
 
-export class Channel<
+export class ChannelEnvelopeServer<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>
 > {
