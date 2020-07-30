@@ -14,8 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./I18nProvider";
-export * from "./I18nContext";
-export * from "./hook";
-export * from "./types";
-export * from "./utils";
+export * from "./GuidedTourI18n";
+export * from "./locales"

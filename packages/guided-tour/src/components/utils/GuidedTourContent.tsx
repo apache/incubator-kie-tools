@@ -33,6 +33,8 @@ import { TimesCircleIcon, BookIcon } from "@patternfly/react-icons";
 import { NavigationControls } from "..";
 import { CurrentTutorialContext } from "../../contexts";
 import { Step } from "../..";
+import { useGuidedTourI18n } from "../../i18n/locales";
+import { GuidedTourI18n } from "../../i18n";
 
 function renderContent(
   content: React.ReactNode | ((props: object) => React.ReactNode) | string,
@@ -69,6 +71,7 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
   const { isHighlightLayerEnabled, setIsHighlightLayerEnabled } = useContext(CurrentTutorialContext);
   const negativeReinforcementMessage = step?.negativeReinforcementMessage ?? "";
   const showSuggestion = useCallback(() => setIsHighlightLayerEnabled(false), []);
+  const { i18n } = useGuidedTourI18n();
 
   if (!isHighlightLayerEnabled) {
     return () => (
@@ -77,14 +80,14 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
         <EmptyState variant={EmptyStateVariant.small}>
           <EmptyStateIcon icon={BookIcon} />
           <Title headingLevel="h4" size="lg">
-            Great!
+            {i18n.great}!
           </Title>
           <EmptyStateBody>
             <Text className="pf-c-content">{negativeReinforcementMessage}</Text>
           </EmptyStateBody>
           <EmptyStateSecondaryActions>
             <Button onClick={onCloseAction} variant="link">
-              Dismiss
+              {i18n.terms.dismiss}
             </Button>
           </EmptyStateSecondaryActions>
         </EmptyState>
@@ -97,23 +100,19 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
         <EmptyState variant={EmptyStateVariant.small}>
           <EmptyStateIcon icon={BookIcon} />
           <Title headingLevel="h4" size="lg">
-            Do you want to stop the tour?
+            {i18n.stop}
           </Title>
           <EmptyStateBody>
-            <Text className="pf-c-content">
-              Seems like you didn't follow the suggested action. Do you want to stop the tour?
-            </Text>
+            <Text className="pf-c-content">{i18n.notFollowing}</Text>
             <br />
-            <Text className="pf-c-content">
-              Click on <b>Dismiss</b> to stop it or <b>Continue</b> to resume your tour :-)
-            </Text>
+            <Text className="pf-c-content">{i18n.options} :-)</Text>
           </EmptyStateBody>
           <Button data-kgt-continue="true" onClick={showSuggestion}>
-            Continue
+            {i18n.terms.continue}
           </Button>
           <EmptyStateSecondaryActions>
             <Button onClick={onCloseAction} variant="link">
-              Dismiss
+              {i18n.terms.dismiss}
             </Button>
           </EmptyStateSecondaryActions>
         </EmptyState>
@@ -122,16 +121,16 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
   }
 };
 
-export const EmptyDialog = (onCloseAction: () => void) => {
+export const EmptyDialog = (onCloseAction: () => void, i18n: GuidedTourI18n) => {
   return () => (
     <>
       <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={TimesCircleIcon} />
         <Title headingLevel="h4" size="lg">
-          Oops!
+          {i18n.ops}!
         </Title>
-        <EmptyStateBody>Something went wrong and the content could not be loaded.</EmptyStateBody>
-        <Button onClick={onCloseAction}>Dismiss</Button>
+        <EmptyStateBody>{i18n.somethingWrong}.</EmptyStateBody>
+        <Button onClick={onCloseAction}>{i18n.terms.dismiss}</Button>
       </EmptyState>
     </>
   );

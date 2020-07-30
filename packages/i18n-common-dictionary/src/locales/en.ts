@@ -24,6 +24,7 @@ export const en: CommonI18n = {
     cancel: "Cancel",
     close: "Close",
     continue: "Continue",
+    dismiss: "Dismiss",
     done: "Done",
     download: "Download",
     edited: "Edited",

@@ -16,6 +16,7 @@
 
 import { OnlineI18n } from "..";
 import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
+import { b } from "@kogito-tooling/i18n"
 
 export const en: OnlineI18n = {
   ...en_common,
@@ -115,5 +116,28 @@ export const en: OnlineI18n = {
     trySample: "Try Sample",
     editExistingFile: "Edit existing file",
     chooseLocalFile: "Choose a local file"
+  },
+  guidedTour: {
+    init: {
+      title: "Welcome to this 5 minutes tour",
+      learnMore: `Learn more about the DMN online editor by taking this brief and interactive tour.`,
+      letsGo: "Let's go"
+    },
+    end: {
+      title: "Congratulations",
+      motivational: `Now you know how each part of the ${en_common.names.dmn} editor works, and you're empowered to go ahead and explore`,
+      nextSteps: {
+        title: "As next steps, you can try to",
+        firstStep: `Connect the ${b("Age")} input with the ${b("Can drive?")} decision`,
+        secondStep: `Define the decision logic into the ${b("Can drive?")} node, to return ${b("true")} when ${b("Age")} is
+              greater ${b("21")}, otherwise ${b("false")}`,
+        thirdStep: "Execute the model."
+      },
+      findUsefulInfo: "You can find useful information at the",
+      learnDMN: `Learn ${en_common.names.dmn} in 15 minutes`,
+      courseOr: "course or at the",
+      kogitoDoc: `${en_common.names.kogito} documentation`,
+      finish: "Finish the Tour"
+    }
   }
 };

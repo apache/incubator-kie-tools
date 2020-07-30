@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-export * from "./I18nProvider";
-export * from "./I18nContext";
-export * from "./hook";
-export * from "./types";
-export * from "./utils";
+import { en } from "./en";
+import { useDictionary } from "@kogito-tooling/i18n";
+
+export const guidedTourI18nDefaults = { locale: "en", dictionary: en };
+
+export function useGuidedTourI18n() {
+  return useDictionary(guidedTourI18nDefaults.dictionary);
+}
+
+export const guidedTourI18nDictionaries = new Map([["en", en]]);

@@ -34,11 +34,13 @@ import { CurrentTutorialContext } from "../contexts";
 import { DEFAULT_RECT, AutoMode, DemoMode } from "../api";
 
 import "./Dialog.sass";
+import { useGuidedTourI18n } from "../i18n/locales";
 
-export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => {
+export function Dialog(props: { isEnabled: boolean; tutorialLabel: string }) {
   // Local state
   const [isEnabled, setIsEnabled] = useState(props.isEnabled);
   const [currentTutorialLabel, setCurrentTutorialLabel] = useState(props.tutorialLabel);
+  const { i18n } = useGuidedTourI18n();
 
   // Global state
   const {
@@ -69,7 +71,7 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
 
   // Post processing
   const dialogStyle = calculatePositionStyle(dialogPosition, dialogRefElement);
-  const emptyTemplate = useMemo(EmptyDialog(closeDialog), []);
+  const emptyTemplate = useMemo(EmptyDialog(closeDialog, i18n), []);
   const regularTemplate = useMemo(StepDialog(dialogContent, closeDialog), [
     currentStep,
     currentTutorial,
@@ -137,4 +139,4 @@ export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => 
       {getDialogTemplate()}
     </div>
   );
-};
+}

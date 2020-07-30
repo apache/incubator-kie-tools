@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./I18nProvider";
-export * from "./I18nContext";
-export * from "./hook";
-export * from "./types";
-export * from "./utils";
+export function b(text: string): string {
+  return `&lt;p&gt;&lt;strong&gt;${text}:&lt;/strong&gt;&lt;/p&gt;`;
+}

@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-export * from "./I18nProvider";
-export * from "./I18nContext";
-export * from "./hook";
-export * from "./types";
-export * from "./utils";
+import { GuidedTourI18n } from "..";
+import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
+import { b } from "@kogito-tooling/i18n"
+
+export const en: GuidedTourI18n = {
+  ...en_common,
+  great: "Great",
+  stop: "Do you want to stop the tour?",
+  notFollowing: "Seems like you didn't follow the suggested action. Do you want to stop the tour?",
+  options: `Click on ${b("Dismiss")} to stop it or ${b("continue")} to resume your tour`,
+  ops: "Oops",
+  somethingWrong: "Something went wrong and the content could not be loaded.",
+};

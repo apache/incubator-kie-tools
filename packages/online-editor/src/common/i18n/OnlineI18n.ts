@@ -115,6 +115,28 @@ interface OnlineDictionary extends Dictionary<OnlineDictionary> {
     editExistingFile: string;
     chooseLocalFile: string;
   };
+  guidedTour: {
+    init: {
+      title: string;
+      learnMore: string;
+      letsGo: string;
+    };
+    end: {
+      title: string;
+      motivational: string;
+      nextSteps: {
+        title: string;
+        firstStep: string;
+        secondStep: string;
+        thirdStep: string;
+      };
+      findUsefulInfo: string;
+      learnDMN: string;
+      courseOr: string;
+      kogitoDoc: string;
+      finish: string;
+    };
+  };
 }
 
 export interface OnlineI18n extends OnlineDictionary, CommonI18n {}

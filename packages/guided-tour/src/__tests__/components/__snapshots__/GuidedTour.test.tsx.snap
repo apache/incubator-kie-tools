@@ -36,12 +36,14 @@ exports[`GuidedTour renders 1`] = `
       <h4
         class="pf-c-title pf-m-lg"
       >
-        Oops!
+        Oops
+        !
       </h4>
       <div
         class="pf-c-empty-state__body"
       >
         Something went wrong and the content could not be loaded.
+        .
       </div>
       <button
         class="pf-c-button pf-m-primary"

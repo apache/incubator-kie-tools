@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-export * from "./I18nProvider";
-export * from "./I18nContext";
-export * from "./hook";
-export * from "./types";
-export * from "./utils";
+import { Dictionary } from "@kogito-tooling/i18n";
+import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
+
+interface GuidedTourDictionary extends Dictionary<GuidedTourDictionary> {
+  great: string;
+  stop: string;
+  notFollowing: string;
+  options: string;
+  ops: string;
+  somethingWrong: string;
+}
+
+export interface GuidedTourI18n extends GuidedTourDictionary, CommonI18n {}

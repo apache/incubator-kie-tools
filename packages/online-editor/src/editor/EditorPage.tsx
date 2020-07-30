@@ -210,7 +210,7 @@ export function EditorPage(props: Props) {
     })();
   });
 
-  useDmnTour(isEditorReady, context.file);
+  useDmnTour(isEditorReady, context.file, i18n);
 
   return (
     <Page

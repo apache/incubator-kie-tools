@@ -16,10 +16,11 @@
 
 import * as React from "react";
 import { useState } from "react";
-
 import { Dialog, HighlightLayer } from ".";
 import { UserInteraction, Tutorial, Rect } from "../api";
 import { CurrentTutorialContext } from "../contexts";
+import { I18nProvider } from "@kogito-tooling/i18n";
+import { guidedTourI18nDefaults, guidedTourI18nDictionaries } from "../i18n/locales";
 
 export const GuidedTour = () => {
   const [currentTutorial, setCurrentTutorial] = useState<Tutorial>();
@@ -31,26 +32,28 @@ export const GuidedTour = () => {
   const [completedStep, setCompletedStep] = useState(0);
 
   return (
-    <CurrentTutorialContext.Provider
-      value={{
-        currentTutorial,
-        currentStep,
-        completedStep,
-        currentRefElementPosition,
-        isNegativeReinforcementStateEnabled,
-        isHighlightLayerEnabled,
-        latestUserInteraction,
-        setCurrentStep,
-        setCompletedStep,
-        setCurrentTutorial,
-        setCurrentRefElementPosition,
-        setIsNegativeReinforcementStateEnabled,
-        setIsHighlightLayerEnabled,
-        setLatestUserInteraction
-      }}
-    >
-      <HighlightLayer />
-      <Dialog isEnabled={false} tutorialLabel="" />
-    </CurrentTutorialContext.Provider>
+    <I18nProvider defaults={guidedTourI18nDefaults} dictionaries={guidedTourI18nDictionaries}>
+      <CurrentTutorialContext.Provider
+        value={{
+          currentTutorial,
+          currentStep,
+          completedStep,
+          currentRefElementPosition,
+          isNegativeReinforcementStateEnabled,
+          isHighlightLayerEnabled,
+          latestUserInteraction,
+          setCurrentStep,
+          setCompletedStep,
+          setCurrentTutorial,
+          setCurrentRefElementPosition,
+          setIsNegativeReinforcementStateEnabled,
+          setIsHighlightLayerEnabled,
+          setLatestUserInteraction
+        }}
+      >
+        <HighlightLayer />
+        <Dialog isEnabled={false} tutorialLabel="" />
+      </CurrentTutorialContext.Provider>
+    </I18nProvider>
   );
 };

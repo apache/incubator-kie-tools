@@ -48,7 +48,8 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
       <h4
         class="pf-c-title pf-m-lg"
       >
-        Great!
+        Great
+        !
       </h4>
       <div
         class="pf-c-empty-state__body"
@@ -143,15 +144,8 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
           class="pf-c-content"
           data-pf-content="true"
         >
-          Click on 
-          <b>
-            Dismiss
-          </b>
-           to stop it or 
-          <b>
-            Continue
-          </b>
-           to resume your tour :-)
+          Click on &lt;p&gt;&lt;strong&gt;Dismiss:&lt;/strong&gt;&lt;/p&gt; to stop it or &lt;p&gt;&lt;strong&gt;continue:&lt;/strong&gt;&lt;/p&gt; to resume your tour
+           :-)
         </p>
       </div>
       <button
@@ -207,12 +201,14 @@ exports[`Dialog when the step cannot be loaded renders empty state 1`] = `
       <h4
         class="pf-c-title pf-m-lg"
       >
-        Oops!
+        Oops
+        !
       </h4>
       <div
         class="pf-c-empty-state__body"
       >
         Something went wrong and the content could not be loaded.
+        .
       </div>
       <button
         class="pf-c-button pf-m-primary"
@@ -228,7 +224,7 @@ exports[`Dialog when the step cannot be loaded renders empty state 1`] = `
 exports[`Dialog when the step loads closes when users click on the close button 1`] = `
 <div>
   <div
-    class="pf-c-modal-box kgt-dialog kgt-dialog--enabled"
+    class="pf-c-modal-box kgt-dialog kgt-dialog--disabled"
     style="transform: translate(-50%, -50%);"
   >
     <button

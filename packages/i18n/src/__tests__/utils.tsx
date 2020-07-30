@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/* istanbul ignore file */
 import * as React from "react";
 import { Dictionary, DictionaryInterpolation } from "../types";
 import { useDictionary } from "../hook";
@@ -39,6 +38,6 @@ export const dummyDefault: DummyDictionary = {
 };
 
 export function DummyComponent() {
-  const { i18n } = useDictionary<DummyDictionary>();
+  const { i18n } = useDictionary(dummyDefault);
   return <p data-testid="dummy-component">{JSON.stringify(i18n)}</p>;
 }

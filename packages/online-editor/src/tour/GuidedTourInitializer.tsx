@@ -22,8 +22,9 @@ import { BookOpenIcon, TrophyIcon } from "@patternfly/react-icons";
 
 import { File, EditorType } from "@kogito-tooling/embedded-editor";
 import { KogitoGuidedTour, DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/guided-tour";
+import { OnlineI18n } from "../common/i18n";
 
-export function useDmnTour(isEditorReady: boolean, file: File) {
+export function useDmnTour(isEditorReady: boolean, file: File, i18n: OnlineI18n) {
   useEffect(() => {
     const guidedTour = KogitoGuidedTour.getInstance();
     guidedTour.setup();
@@ -33,7 +34,7 @@ export function useDmnTour(isEditorReady: boolean, file: File) {
   useEffect(() => {
     if (isEditorReady && file.editorType === EditorType.DMN) {
       const guidedTour = KogitoGuidedTour.getInstance();
-      const tutorial = getOnlineEditorTutorial();
+      const tutorial = getOnlineEditorTutorial(i18n);
 
       guidedTour.registerTutorial(tutorial);
       guidedTour.start(tutorial.label);
@@ -41,7 +42,7 @@ export function useDmnTour(isEditorReady: boolean, file: File) {
   }, [isEditorReady, file]);
 }
 
-function getOnlineEditorTutorial() {
+function getOnlineEditorTutorial(i18n: OnlineI18n) {
   return new Tutorial("DMN Online Editor Tutorial", [
     {
       position: "center",
@@ -50,15 +51,15 @@ function getOnlineEditorTutorial() {
         <div className="pf-c-content kgt-slide--with-accent">
           <BookOpenIcon size="xl" className="kgt-icon--with-accent" />
           <Title headingLevel="h3" size="xl">
-            Welcome to this 5 minutes tour
+            {i18n.guidedTour.init.title}
           </Title>
-          <Text>Learn more about the DMN online editor by taking this brief and interactive tour.</Text>
+          <Text>{i18n.guidedTour.init.learnMore}</Text>
           <Button onClick={props.nextStep} variant="primary">
-            Let's go
+            {i18n.guidedTour.init.letsGo}
           </Button>
           <Text>{"  "}</Text>
           <Button onClick={props.dismiss} variant="link">
-            Dismiss
+            {i18n.terms.dismiss}
           </Button>
         </div>
       )
@@ -72,38 +73,33 @@ function getOnlineEditorTutorial() {
       content: (props: any) => (
         <div className="pf-c-content kgt-slide--with-accent">
           <Title headingLevel="h3" size="xl">
-            Congratulations
+            {i18n.guidedTour.end.title}
           </Title>
           <TrophyIcon size="xl" className="kgt-icon--with-accent" />
-          <Text>Now you know how each part of the DMN editor works, and you're empowered to go ahead and explore!</Text>
+          <Text>{i18n.guidedTour.end.motivational}!</Text>
           <Divider />
-          <Text className="pf-c-content--align-left">As next steps, you can try to:</Text>
+          <Text className="pf-c-content--align-left">{i18n.guidedTour.end.nextSteps.title}:</Text>
           <List className="pf-c-content--align-left">
-            <ListItem>
-              Connect the <b>Age</b> input with the <b>Can drive?</b> decision;
-            </ListItem>
-            <ListItem>
-              Define the decision logic into the <b>Can drive?</b> node, to return <b>true</b> when <b>Age</b> is
-              greater <b>21</b>, otherwise <b>false</b>;
-            </ListItem>
-            <ListItem>Execute the model.</ListItem>
+            <ListItem>{i18n.guidedTour.end.nextSteps.firstStep};</ListItem>
+            <ListItem>{i18n.guidedTour.end.nextSteps.secondStep};</ListItem>
+            <ListItem>{i18n.guidedTour.end.nextSteps.thirdStep}.</ListItem>
           </List>
           <Text className="pf-c-content--align-left">
-            You can find useful information at the{" "}
+            {`${i18n.guidedTour.end.findUsefulInfo} `}
             <a target="_blank" href="http://learn-dmn-in-15-minutes.com">
-              Learn DMN in 15 minutes
+              {i18n.guidedTour.end.learnDMN}
             </a>{" "}
-            course or at the{" "}
+            {`${i18n.guidedTour.end.courseOr} `}
             <a
               target="_blank"
               href="https://docs.jboss.org/kogito/release/latest/html_single/#_using_dmn_models_in_kogito_services"
             >
-              Kogito documentation
+              {i18n.guidedTour.end.kogitoDoc}
             </a>{" "}
             :-)
           </Text>
           <Button onClick={props.dismiss} variant="primary">
-            Finish the Tour
+            {i18n.guidedTour.end.finish}
           </Button>
         </div>
       )

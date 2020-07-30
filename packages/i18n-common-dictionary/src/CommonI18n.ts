@@ -23,6 +23,7 @@ export type CommonDictionary = {
   cancel: string;
   close: string;
   continue: string;
+  dismiss: string;
   done: string;
   download: string;
   edited: string;
