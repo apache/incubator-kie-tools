@@ -19,7 +19,7 @@ import { Uri, ViewColumn } from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoWebviewProvider } from "./KogitoWebviewProvider";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorEnvelopeLocator, WorkspaceApi } from "@kogito-tooling/editor-envelope-protocol";
 import * as __path from "path";
 import * as fs from "fs";
 import {
@@ -28,6 +28,8 @@ import {
   PageEnvelopeLocator
 } from "@kogito-tooling/page-envelope-protocol";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
+import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
+import { KogitoPageChannelApiImpl } from "./KogitoPageChannelApiImpl";
 
 /**
  * Starts a Kogito extension.
@@ -45,13 +47,15 @@ export function startExtension(args: {
   editorEnvelopeLocator: EditorEnvelopeLocator;
   pageEnvelopeLocator: PageEnvelopeLocator;
 }) {
+  const workspaceApi = new VsCodeWorkspaceApi();
   const editorStore = new KogitoEditorStore();
   const messageBroadcaster = new EnvelopeBusMessageBroadcaster();
   const editorFactory = new KogitoEditorFactory(
     args.context,
     editorStore,
     args.editorEnvelopeLocator,
-    messageBroadcaster
+    messageBroadcaster,
+    workspaceApi
   );
   const webviewProvider = new KogitoWebviewProvider(args.viewType, editorFactory, editorStore, args.context);
 
@@ -82,6 +86,7 @@ export function startExtension(args: {
           editorStore,
           args.context,
           messageBroadcaster,
+          workspaceApi,
 
           pageId,
           pageMapping.title,
@@ -99,6 +104,7 @@ function openPage(
   editorStore: KogitoEditorStore,
   context: vscode.ExtensionContext,
   messageBroadcaster: EnvelopeBusMessageBroadcaster,
+  workspaceApi: WorkspaceApi,
 
   viewType: string,
   title: string,
@@ -142,19 +148,7 @@ function openPage(
     postMessage: message => webviewPanel.webview.postMessage(message)
   });
 
-  const api: KogitoPageChannelApi = {
-    async getOpenDiagrams() {
-      return await Promise.all(
-        [...editorStore.openEditors].map(async editor => ({
-          path: editor.document.relativePath,
-          img: await editor.getPreview()
-        }))
-      );
-    },
-    receive_ready() {
-      console.info("Channel knows that a new editor opened.");
-    }
-  };
+  const api: KogitoPageChannelApi = new KogitoPageChannelApiImpl(workspaceApi, editorStore);
 
   const broadcastSubscription = messageBroadcaster.subscribe(msg => {
     envelopeServer.receive(msg, api);

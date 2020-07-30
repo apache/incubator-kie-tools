@@ -22,40 +22,37 @@ import {
   ResourceListRequest,
   StateControlCommand,
   Tutorial,
-  UserInteraction
+  UserInteraction,
+  WorkspaceApi
 } from "@kogito-tooling/editor-envelope-protocol";
 import * as vscode from "vscode";
-import * as fs from "fs";
 import * as __path from "path";
 import { KogitoEditor } from "./KogitoEditor";
-import { KogitoEditableDocument } from "./KogitoEditableDocument";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   private readonly decoder = new TextDecoder("utf-8");
 
   constructor(
-    private readonly document: KogitoEditableDocument,
     private readonly editor: KogitoEditor,
     private readonly resourceContentService: ResourceContentService,
-    private initialBackup = document.initialBackup
+    private readonly workspaceApi: WorkspaceApi,
+    private initialBackup = editor.document.initialBackup
   ) {}
 
   public receive_newEdit(edit: KogitoEdit) {
-    this.document.notifyEdit(this.editor, edit);
+    this.editor.document.notifyEdit(this.editor, edit);
   }
 
   public receive_openFile(path: string) {
-    const resolvedPath = __path.isAbsolute(path) ? path : __path.join(__path.dirname(this.document.uri.fsPath), path);
-    if (!fs.existsSync(resolvedPath)) {
-      throw new Error(`Cannot open file at: ${resolvedPath}.`);
-    }
-    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(resolvedPath));
+    this.workspaceApi.receive_openFile(
+      __path.isAbsolute(path) ? path : __path.join(__path.dirname(this.editor.document.uri.fsPath), path)
+    );
   }
 
   public async receive_contentRequest() {
-    return vscode.workspace.fs.readFile(this.initialBackup ?? this.document.uri).then(contentArray => {
+    return vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri).then(contentArray => {
       this.initialBackup = undefined;
-      return { content: this.decoder.decode(contentArray), path: this.document.relativePath };
+      return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
     });
   }
 

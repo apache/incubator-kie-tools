@@ -19,7 +19,8 @@ import { KogitoEditor } from "./KogitoEditor";
 import {
   EditorEnvelopeLocator,
   EnvelopeMapping,
-  ResourceContentService
+  ResourceContentService,
+  WorkspaceApi
 } from "@kogito-tooling/editor-envelope-protocol";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
@@ -35,7 +36,8 @@ export class KogitoEditorFactory {
     private readonly context: vscode.ExtensionContext,
     private readonly editorStore: KogitoEditorStore,
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator,
-    private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster
+    private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
+    private readonly workspaceApi: WorkspaceApi
   ) {}
 
   public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditableDocument) {
@@ -63,7 +65,7 @@ export class KogitoEditorFactory {
       this.messageBroadcaster
     );
 
-    const editorChannelApi = new KogitoEditorChannelApiImpl(document, editor, resourceContentService);
+    const editorChannelApi = new KogitoEditorChannelApiImpl(editor, resourceContentService, this.workspaceApi);
 
     this.editorStore.addAsActive(editor);
     editor.startListening(editorChannelApi);
