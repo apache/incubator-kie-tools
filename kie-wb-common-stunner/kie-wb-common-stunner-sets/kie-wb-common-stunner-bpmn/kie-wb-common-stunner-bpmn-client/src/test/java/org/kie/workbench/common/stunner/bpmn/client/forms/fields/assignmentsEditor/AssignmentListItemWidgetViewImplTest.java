@@ -232,7 +232,7 @@ public class AssignmentListItemWidgetViewImplTest {
 
     @Test
     public void testSetListBoxModelValueDataType() {
-        assertNull(view.getModel().getDataType());
+        assertEquals("Object", view.getModel().getDataType());
         view.setListBoxModelValue(dataType, "abc");
 
         assertEquals("abc", view.getModel().getDataType());
@@ -248,7 +248,7 @@ public class AssignmentListItemWidgetViewImplTest {
 
         assertEquals("abc", view.getModel().getProcessVar());
         assertNull(view.getModel().getExpression());
-        assertNull(view.getModel().getDataType());
+        assertEquals("Object", view.getModel().getDataType());
         assertEquals("abc", view.getModelValue(processVar));
     }
 

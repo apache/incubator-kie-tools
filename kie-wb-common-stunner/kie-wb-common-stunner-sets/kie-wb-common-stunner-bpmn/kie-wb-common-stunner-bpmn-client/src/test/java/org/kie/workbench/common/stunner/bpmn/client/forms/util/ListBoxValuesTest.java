@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,9 +29,15 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEdit
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentData;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ListBoxValuesTest {
+
+    final String EMPTY_STRING = "";
+    final String CUSTOM_VALUE = "Custom Value";
+    final String EDIT_CUSTOM_VALUE = "Edit Custom Value ...";
 
     /**
      * General test for adding custom values to ProcessVar ListBoxValues
@@ -76,14 +84,13 @@ public class ListBoxValuesTest {
                 "performance"
         };
         String[] expectedAcceptableValuesWithCustomValues = {
-                "",
+                "Constant ...",
                 "\"jkl\"",
                 "Edit \"jkl\" ...",
                 "123",
                 "\"employee\"",
                 "\"def\"",
                 "\"abc\"",
-                "Constant ...",
                 "** Variable Definitions **",
                 "employee",
                 "reason",
@@ -154,12 +161,11 @@ public class ListBoxValuesTest {
                 "TestTypesLine [org.kie.test]"
         };
         String[] expectedAcceptableValuesWithCustomValues = {
-                "",
+                "Custom ...",
                 "com.test.HisType",
                 "Edit com.test.HisType ...",
                 "com.test.YourType",
                 "com.test.MyType",
-                "Custom ...",
                 "Integer",
                 "Boolean",
                 "Float",
@@ -327,6 +333,18 @@ public class ListBoxValuesTest {
         value = processVarValues.getValueForDisplayValue(displayValue);
         Assert.assertEquals(displayValue,
                             value);
+
+        final String keyFirst = "1st";
+        final String valueFirst = "First";
+        final String keySecond = "Second";
+        final String valueSecond = "Second";
+        ListBoxValues test2 = new ListBoxValues("Constant ...",
+                                                "Edit ",
+                                                null);
+        test2.mapDisplayValuesToValues.put(keyFirst, valueFirst);
+        test2.mapDisplayValuesToValues.put(keySecond, valueSecond);
+        assertEquals(keyFirst, test2.addDisplayValue(valueFirst));
+        assertEquals(keySecond, test2.addDisplayValue(valueSecond));
     }
 
     @Test
@@ -349,7 +367,7 @@ public class ListBoxValuesTest {
         // Copy custom values as well as non-custom
         ListBoxValues copy1 = new ListBoxValues(listBoxValues,
                                                 true);
-        assertTrue(copy1.getAcceptableValuesWithCustomValues().size() == 8);
+        assertTrue(copy1.getAcceptableValuesWithCustomValues().size() == 7);
         assertTrue(copy1.getAcceptableValuesWithoutCustomValues().size() == 4);
         assertTrue(copy1.getAcceptableValuesWithCustomValues().contains("\"abc\""));
         assertTrue(copy1.getAcceptableValuesWithCustomValues().contains("\"def\""));
@@ -357,7 +375,7 @@ public class ListBoxValuesTest {
         // Don't copy custom values as well as non-custom
         ListBoxValues copy2 = new ListBoxValues(listBoxValues,
                                                 false);
-        assertTrue(copy2.getAcceptableValuesWithCustomValues().size() == 6);
+        assertTrue(copy2.getAcceptableValuesWithCustomValues().size() == 5);
         assertTrue(copy2.getAcceptableValuesWithoutCustomValues().size() == 4);
         Assert.assertFalse(copy2.getAcceptableValuesWithCustomValues().contains("\"abc\""));
         Assert.assertFalse(copy2.getAcceptableValuesWithCustomValues().contains("\"def\""));
@@ -380,7 +398,7 @@ public class ListBoxValuesTest {
                                                  null);
         Map<String, String> testEmpty = new HashMap<>();
         values.addValues(testEmpty);
-        assertEquals(2, values.getAcceptableValuesWithCustomValues().size());
+        assertEquals(1, values.getAcceptableValuesWithCustomValues().size());
         assertTrue(values.getAcceptableValuesWithoutCustomValues().isEmpty());
         assertTrue(values.mapDisplayValuesToValues.isEmpty());
     }
@@ -399,7 +417,7 @@ public class ListBoxValuesTest {
         testMap.put(valueName2, displayName2);
         values.addValues(testMap);
 
-        assertEquals(4, values.getAcceptableValuesWithCustomValues().size());
+        assertEquals(3, values.getAcceptableValuesWithCustomValues().size());
         assertEquals(2, values.getAcceptableValuesWithoutCustomValues().size());
         assertEquals(2, values.mapDisplayValuesToValues.size());
         assertEquals(displayName1, values.getDisplayNameForValue(valueName1));
@@ -419,5 +437,166 @@ public class ListBoxValuesTest {
 
         String nonMappedValue = "nonMappedValue";
         assertEquals(nonMappedValue, values.getDisplayNameForValue(nonMappedValue));
+    }
+
+    @Test
+    public void testAddValues() {
+        List<String> processVarStartValuesList = Arrays.asList(
+                "** Variable Definitions **",
+                "employee",
+                "reason",
+                "performance"
+        );
+
+        Map<String, String> processVarStartValuesMap = new TreeMap<>();
+        processVarStartValuesMap.put("def", "** Variable Definitions **");
+        processVarStartValuesMap.put("emp", "employee");
+        processVarStartValuesMap.put("rea", "reason");
+        processVarStartValuesMap.put("per", "performance");
+
+        ListBoxValues test1 = new ListBoxValues("CustomPrompt",
+                                                "Edit",
+                                                null,
+                                                ActivityDataIOEditorViewImpl.EXPRESSION_MAX_DISPLAY_LENGTH,
+                                                false);
+        test1.addValues(processVarStartValuesList);
+
+        Assert.assertFalse(test1.acceptableValuesWithCustomValues.contains(""));
+
+        ListBoxValues test2 = new ListBoxValues("CustomPrompt",
+                                                "Edit",
+                                                null,
+                                                ActivityDataIOEditorViewImpl.EXPRESSION_MAX_DISPLAY_LENGTH,
+                                                true);
+        test2.addValues(processVarStartValuesList);
+
+        Assert.assertTrue(test2.acceptableValuesWithCustomValues.contains(""));
+
+        ListBoxValues test3 = new ListBoxValues("CustomPrompt",
+                                                "Edit",
+                                                null,
+                                                true);
+        test3.addValues(processVarStartValuesList);
+
+        Assert.assertTrue(test3.acceptableValuesWithCustomValues.contains(""));
+
+        ListBoxValues test4 = new ListBoxValues("CustomPrompt",
+                                                "Edit",
+                                                null,
+                                                true);
+        List<String> emptyList = null;
+        test4.addValues(emptyList);
+
+        ListBoxValues test5 = new ListBoxValues("CustomPrompt",
+                                                "Edit",
+                                                null,
+                                                true);
+        test5.addValues(processVarStartValuesMap);
+        Assert.assertTrue(test5.acceptableValuesWithCustomValues.contains(""));
+
+        ListBoxValues test6 = new ListBoxValues("CustomPrompt",
+                                                "Edit",
+                                                null,
+                                                false);
+        test6.addValues(processVarStartValuesMap);
+        Assert.assertFalse(test6.acceptableValuesWithCustomValues.contains(""));
+    }
+
+    @Test
+    public void testAddCustomValues() {
+        ListBoxValues processVarValues = new ListBoxValues("Constant ...",
+                                                           "Edit ",
+                                                           null);
+
+//        assertNull(processVarValues.addCustomValue(null, null));
+//        assertEquals(EMPTY_STRING, processVarValues.addCustomValue(EMPTY_STRING, null));
+
+        processVarValues.customValues.add(CUSTOM_VALUE);
+        assertEquals(CUSTOM_VALUE, processVarValues.addCustomValue(CUSTOM_VALUE, null));
+    }
+
+    @Test
+    public void testUpdate() {
+        final String first = "1st";
+        final String second = "2nd";
+
+        ListBoxValues test1 = new ListBoxValues("Constant ...",
+                                                "Edit ",
+                                                null);
+        test1.customValues.add(CUSTOM_VALUE);
+
+        List<String> result1 = test1.update(CUSTOM_VALUE);
+        assertEquals(1, result1.size());
+        assertEquals(EDIT_CUSTOM_VALUE, result1.get(0));
+
+        ListBoxValues test2 = new ListBoxValues("Constant ...",
+                                                "Edit ",
+                                                null);
+        test2.customValues.add(CUSTOM_VALUE);
+
+        test2.customValues.add(CUSTOM_VALUE);
+        test2.acceptableValuesWithCustomValues.add(first);
+        test2.acceptableValuesWithCustomValues.add(second);
+
+        List<String> result2 = test2.update(CUSTOM_VALUE);
+        assertEquals(3, result2.size());
+        assertEquals(first, result2.get(0));
+        assertEquals(second, result2.get(1));
+        assertEquals(EDIT_CUSTOM_VALUE, result2.get(2));
+    }
+
+    @Test
+    public void testIsCustomValue() {
+        ListBoxValues processVarValues = new ListBoxValues("Constant ...",
+                                                           "Edit ",
+                                                           null);
+
+        processVarValues.addCustomValue(CUSTOM_VALUE, null);
+
+        assertFalse(processVarValues.isCustomValue(null));
+        assertFalse(processVarValues.isCustomValue(EMPTY_STRING));
+        assertTrue(processVarValues.isCustomValue(CUSTOM_VALUE));
+    }
+
+    @Test
+    public void testGetEditValuePrompt() {
+        ListBoxValues processVarValues = new ListBoxValues("Constant ...",
+                                                           "Edit ",
+                                                           null);
+        assertNull(processVarValues.getEditValuePrompt(CUSTOM_VALUE));
+
+        processVarValues.addCustomValue(CUSTOM_VALUE, null);
+        assertEquals(CUSTOM_VALUE, processVarValues.getEditValuePrompt(CUSTOM_VALUE));
+    }
+
+    @Test
+    public void testCreateDisplayValues() {
+        List<String> acceptableValues = new ArrayList<>();
+        acceptableValues.add(CUSTOM_VALUE);
+        acceptableValues.add(null);
+
+        ListBoxValues processVarValues = new ListBoxValues("Constant ...",
+                                                           "Edit ",
+                                                           null);
+        List<String> result = processVarValues.createDisplayValues(acceptableValues);
+        assertEquals(1, result.size());
+        assertEquals(CUSTOM_VALUE, result.get(0));
+    }
+
+    @Test
+    public void testToString() {
+        ListBoxValues processVarValues = new ListBoxValues("Constant ...",
+                                                           "Edit ",
+                                                           null);
+        processVarValues.acceptableValuesWithoutCustomValues.add(CUSTOM_VALUE);
+        processVarValues.acceptableValuesWithCustomValues.add(CUSTOM_VALUE);
+        String expected = "acceptableValuesWithoutCustomValues:\n" +
+                "\tCustom Value,\n" +
+                "\n" +
+                "acceptableValuesWithCustomValues:\n" +
+                "\tCustom Value,\n";
+
+        String result = processVarValues.toString();
+        assertEquals(expected, result);
     }
 }

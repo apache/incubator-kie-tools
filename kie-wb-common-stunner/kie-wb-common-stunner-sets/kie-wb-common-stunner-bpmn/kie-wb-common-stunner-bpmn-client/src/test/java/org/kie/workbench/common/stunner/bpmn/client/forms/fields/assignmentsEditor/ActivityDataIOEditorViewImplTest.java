@@ -135,10 +135,9 @@ public class ActivityDataIOEditorViewImplTest {
         view.setPossibleInputAssignmentsDataTypes(dataTypes);
         verify(inputAssignmentsWidget).setDataTypes(valuesCaptor.capture());
         List<String> typesWithCustomValue = valuesCaptor.getValue().getAcceptableValuesWithCustomValues();
-        assertEquals(3,
+        assertEquals(2,
                      typesWithCustomValue.size());
-        assertTrue(typesWithCustomValue.containsAll(Arrays.asList("",
-                                                                  "Custom ...",
+        assertTrue(typesWithCustomValue.containsAll(Arrays.asList("Custom ...",
                                                                   "String")));
     }
 
@@ -148,10 +147,9 @@ public class ActivityDataIOEditorViewImplTest {
         view.setPossibleOutputAssignmentsDataTypes(dataTypes);
         verify(outputAssignmentsWidget).setDataTypes(valuesCaptor.capture());
         List<String> typesWithCustomValue = valuesCaptor.getValue().getAcceptableValuesWithCustomValues();
-        assertEquals(3,
+        assertEquals(2,
                      typesWithCustomValue.size());
-        assertTrue(typesWithCustomValue.containsAll(Arrays.asList("",
-                                                                  "Custom ...",
+        assertTrue(typesWithCustomValue.containsAll(Arrays.asList("Custom ...",
                                                                   "String")));
     }
 
@@ -161,10 +159,9 @@ public class ActivityDataIOEditorViewImplTest {
         view.setInputAssignmentsProcessVariables(variables);
         verify(inputAssignmentsWidget).setProcessVariables(valuesCaptor.capture());
         List<String> variablesWithCustomValue = valuesCaptor.getValue().getAcceptableValuesWithCustomValues();
-        assertEquals(3,
+        assertEquals(2,
                      variablesWithCustomValue.size());
-        assertTrue(variablesWithCustomValue.containsAll(Arrays.asList("",
-                                                                      "Expression ...",
+        assertTrue(variablesWithCustomValue.containsAll(Arrays.asList("Expression ...",
                                                                       "variable")));
     }
 
@@ -174,10 +171,9 @@ public class ActivityDataIOEditorViewImplTest {
         view.setOutputAssignmentsProcessVariables(variables);
         verify(outputAssignmentsWidget).setProcessVariables(valuesCaptor.capture());
         List<String> variablesWithCustomValue = valuesCaptor.getValue().getAcceptableValuesWithCustomValues();
-        assertEquals(3,
+        assertEquals(2,
                      variablesWithCustomValue.size());
-        assertTrue(variablesWithCustomValue.containsAll(Arrays.asList("",
-                                                                      "Expression ...",
+        assertTrue(variablesWithCustomValue.containsAll(Arrays.asList("Expression ...",
                                                                       "variable")));
     }
 

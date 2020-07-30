@@ -100,6 +100,7 @@ public class DefaultImportListItemWidgetViewTest {
         map.put("Boolean", "Boolean");
         when(parent.getDataTypes()).thenReturn(map);
         when(parent.getDataType("Boolean")).thenReturn("Boolean");
+        when(parent.getDataType("randomValue")).thenReturn("randomValue");
 
         doCallRealMethod().when(tested).init();
         doCallRealMethod().when(tested).initListItem();
@@ -174,7 +175,7 @@ public class DefaultImportListItemWidgetViewTest {
         defaultImport.setClassName("Boolean");
         tested.initListItem();
 
-        verify(defaultClassNames, times(2)).setValue("");
+        verify(defaultClassNames, times(2)).setValue(null);
         verify(defaultClassNames, times(1)).setValue("Boolean");
         verify(defaultClassNames, times(1)).setValue("randomValue");
         verify(classNamesComboBox, times(4)).setShowCustomValues(true);

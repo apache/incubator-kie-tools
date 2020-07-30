@@ -208,7 +208,7 @@ public class AssignmentListItemWidgetTest {
         verify(constant,
                never()).setVisible(anyBoolean());
         verify(widget).getCustomDataType();
-        verify(widget).getDataType();
+        verify(widget, times(2)).getDataType();
         verify(widget).getExpression();
         verify(widget).getProcessVar();
     }
@@ -220,7 +220,7 @@ public class AssignmentListItemWidgetTest {
         verify(deleteButton).setIcon(IconType.TRASH);
         verify(constant).setVisible(false);
         verify(widget).getCustomDataType();
-        verify(widget).getDataType();
+        verify(widget, times(2)).getDataType();
         verify(widget).getExpression();
         verify(widget).getProcessVar();
     }

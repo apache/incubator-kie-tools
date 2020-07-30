@@ -407,4 +407,11 @@ public class VariablesEditorFieldRendererTest {
         verify(variablesEditorWidgetView,
                times(1)).setReadOnly(false);
     }
+
+    @Test
+    public void testCreateVariableRow() {
+        VariableRow variableRow = VariablesEditorFieldRenderer.createVariableRow();
+        assertEquals(Variable.VariableType.PROCESS, variableRow.getVariableType());
+        assertEquals("Object", variableRow.getDataTypeDisplayName());
+    }
 }

@@ -25,36 +25,41 @@ import org.jboss.errai.databinding.client.api.Bindable;
 @Bindable
 public class VariableRow {
 
-    private long id;
+    long id;
 
-    private String name;
+    String name;
 
-    private Variable.VariableType variableType = Variable.VariableType.PROCESS;
+    Variable.VariableType variableType = Variable.VariableType.PROCESS;
 
-    private String dataTypeDisplayName;
+    String dataTypeDisplayName;
 
-    private String customDataType;
+    String customDataType;
 
-    private List<String> tags;
+    List<String> tags;
 
     // Field which is incremented for each row.
     // Required to implement equals function which needs a unique field
-    private static long lastId = 0;
+    static long lastId = 0;
 
     public VariableRow() {
         this(Variable.VariableType.PROCESS, null, null, null, new ArrayList<>());
-        this.id = lastId++;
     }
 
     public VariableRow(final Variable.VariableType variableType,
                        final String name,
                        final String dataTypeDisplayName,
                        final String customDataType) {
-        this.id = lastId++;
-        this.variableType = variableType;
-        this.name = name;
-        this.dataTypeDisplayName = dataTypeDisplayName;
-        this.customDataType = customDataType;
+        this(variableType, name, dataTypeDisplayName, customDataType, new ArrayList<>());
+    }
+
+    public VariableRow(final Variable variable,
+                       final Map<String, String> mapDataTypeNamesToDisplayNames) {
+        this(variable.getVariableType(), variable.getName(), null, variable.getCustomDataType(), variable.getTags());
+        if (variable.getDataType() != null && mapDataTypeNamesToDisplayNames.containsKey(variable.getDataType())) {
+            this.dataTypeDisplayName = mapDataTypeNamesToDisplayNames.get(variable.getDataType());
+        } else {
+            this.dataTypeDisplayName = variable.getDataType();
+        }
     }
 
     public VariableRow(final Variable.VariableType variableType,
@@ -68,20 +73,6 @@ public class VariableRow {
         this.dataTypeDisplayName = dataTypeDisplayName;
         this.customDataType = customDataType;
         this.tags = tags;
-    }
-
-    public VariableRow(final Variable variable,
-                       final Map<String, String> mapDataTypeNamesToDisplayNames) {
-        this.id = lastId++;
-        this.variableType = variable.getVariableType();
-        this.name = variable.getName();
-        if (variable.getDataType() != null && mapDataTypeNamesToDisplayNames.containsKey(variable.getDataType())) {
-            this.dataTypeDisplayName = mapDataTypeNamesToDisplayNames.get(variable.getDataType());
-        } else {
-            this.dataTypeDisplayName = variable.getDataType();
-        }
-        this.customDataType = variable.getCustomDataType();
-        this.tags = variable.getTags();
     }
 
     public List<String> getTags() {
@@ -149,7 +140,7 @@ public class VariableRow {
 
     @Override
     public int hashCode() {
-        return ~~(int) (id ^ (id >>> 32));
+        return (int) (id ^ (id >>> 32));
     }
 
     @Override

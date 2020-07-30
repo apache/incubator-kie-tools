@@ -62,7 +62,6 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     ListBoxValues dataTypeListBoxValues;
 
     private VariablesEditorWidgetView view;
-    private Variable.VariableType variableType = Variable.VariableType.PROCESS;
     private List<String> dataTypes = new ArrayList<>();
     private Graph graph;
     private Path path;
@@ -127,9 +126,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         if (as.isEmpty()) {
             view.setTableDisplayStyle();
         }
-        VariableRow newVariable = new VariableRow();
-        newVariable.setVariableType(variableType);
-        as.add(newVariable);
+        as.add(createVariableRow());
         VariableListItemWidgetView widget = view.getVariableWidget(view.getVariableRowsCount() - 1);
 
         widget.setDataTypes(dataTypeListBoxValues);
@@ -303,8 +300,14 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         }
     }
 
-    public static Set<String> getDefaultTagsSet() {
-        return  defaultTagsSet;
+    static VariableRow createVariableRow() {
+        VariableRow newVariable = new VariableRow();
+        newVariable.setVariableType(Variable.VariableType.PROCESS);
+        newVariable.setDataTypeDisplayName("Object");
+        return newVariable;
     }
 
+    public static Set<String> getDefaultTagsSet() {
+        return defaultTagsSet;
+    }
 }

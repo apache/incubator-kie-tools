@@ -40,7 +40,12 @@ public class AssignmentRow {
     private static long lastId = 0;
 
     public AssignmentRow() {
-        this(null, null, null, null, null, null);
+        this(null,
+             null,
+             Object.class.getSimpleName(),
+             null,
+             null,
+             null);
     }
 
     public AssignmentRow(final String name,

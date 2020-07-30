@@ -41,6 +41,7 @@ public class ListBoxValues {
     protected String editPrefix;
     public static final String EDIT_SUFFIX = " ...";
     protected int maxDisplayLength;
+    boolean allowEmpty;
 
     protected static final int DEFAULT_MAX_DISPLAY_LENGTH = -1;
 
@@ -49,33 +50,43 @@ public class ListBoxValues {
         String getNonCustomValueForUserString(final String userValue);
     }
 
-    ValueTester valueTester = null;
+    ValueTester valueTester;
+
+    public ListBoxValues(final String customPrompt,
+                         final String editPrefix,
+                         final ValueTester valueTester,
+                         final int maxDisplayLength,
+                         final boolean allowEmpty) {
+        this.customPrompt = customPrompt;
+        this.editPrefix = editPrefix;
+        this.valueTester = valueTester;
+        this.maxDisplayLength = maxDisplayLength;
+        this.allowEmpty = allowEmpty;
+    }
 
     public ListBoxValues(final String customPrompt,
                          final String editPrefix,
                          final ValueTester valueTester,
                          final int maxDisplayLength) {
-        this.customPrompt = customPrompt;
-        this.editPrefix = editPrefix;
-        this.valueTester = valueTester;
-        this.maxDisplayLength = maxDisplayLength;
+        this(customPrompt, editPrefix, valueTester, maxDisplayLength, false);
+    }
+
+    public ListBoxValues(final String customPrompt,
+                         final String editPrefix,
+                         final ValueTester valueTester,
+                         final boolean allowEmpty) {
+        this(customPrompt, editPrefix, valueTester, DEFAULT_MAX_DISPLAY_LENGTH, allowEmpty);
     }
 
     public ListBoxValues(final String customPrompt,
                          final String editPrefix,
                          final ValueTester valueTester) {
-        this.customPrompt = customPrompt;
-        this.editPrefix = editPrefix;
-        this.valueTester = valueTester;
-        this.maxDisplayLength = DEFAULT_MAX_DISPLAY_LENGTH;
+        this(customPrompt, editPrefix, valueTester, DEFAULT_MAX_DISPLAY_LENGTH, false);
     }
 
     public ListBoxValues(final ListBoxValues copy,
                          final boolean copyCustomValues) {
-        this.customPrompt = copy.customPrompt;
-        this.editPrefix = copy.editPrefix;
-        this.valueTester = copy.valueTester;
-        this.maxDisplayLength = copy.maxDisplayLength;
+        this(copy.customPrompt, copy.editPrefix, copy.valueTester, copy.maxDisplayLength, copy.allowEmpty);
         this.addValues(copy.acceptableValuesWithoutCustomValues);
         if (copyCustomValues) {
             for (String copyCustomValue : copy.customValues) {
@@ -94,7 +105,9 @@ public class ListBoxValues {
         if (acceptableValues != null) {
             List<String> displayValues = createDisplayValues(acceptableValues);
             acceptableValuesWithoutCustomValues.addAll(displayValues);
-            acceptableValuesWithCustomValues.add("");
+            if (allowEmpty) {
+                acceptableValuesWithCustomValues.add("");
+            }
             acceptableValuesWithCustomValues.add(customPrompt);
             acceptableValuesWithCustomValues.addAll(displayValues);
         }
@@ -108,7 +121,9 @@ public class ListBoxValues {
         List<String> keys = new ArrayList<>(acceptableValues.keySet());
         java.util.Collections.sort(keys);
 
-        acceptableValuesWithCustomValues.add("");
+        if (allowEmpty) {
+            acceptableValuesWithCustomValues.add("");
+        }
         acceptableValuesWithCustomValues.add(customPrompt);
         for (String groupName : keys) {
             String displayName = acceptableValues.get(groupName);
@@ -223,6 +238,7 @@ public class ListBoxValues {
      * <p/>
      * The first display value for values which are the same is of the form "\"abcdeabcde...\"" and subsequent display values
      * are of the form "\"abcdeabcde...(01)\""
+     *
      * @param value the value
      * @return the displayValue for value
      */
@@ -278,6 +294,7 @@ public class ListBoxValues {
 
     /**
      * Returns real unquoted value for a DisplayValue
+     *
      * @param key
      * @return
      */
