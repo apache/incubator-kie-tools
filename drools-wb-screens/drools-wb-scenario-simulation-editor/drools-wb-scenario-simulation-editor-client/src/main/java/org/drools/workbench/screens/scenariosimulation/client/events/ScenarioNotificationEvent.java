@@ -27,11 +27,19 @@ public class ScenarioNotificationEvent extends GwtEvent<ScenarioNotificationEven
     public static final Type<ScenarioNotificationEventHandler> TYPE = new Type<>();
 
     private final String message;
+    private final boolean autoHide;
     private final org.uberfire.workbench.events.NotificationEvent.NotificationType notificationType;
 
     public ScenarioNotificationEvent(String message, NotificationEvent.NotificationType type) {
         this.message = message;
         this.notificationType = type;
+        this.autoHide = true;
+    }
+
+    public ScenarioNotificationEvent(String message, NotificationEvent.NotificationType type, boolean autoHide) {
+        this.message = message;
+        this.notificationType = type;
+        this.autoHide = autoHide;
     }
 
     @Override
@@ -41,6 +49,10 @@ public class ScenarioNotificationEvent extends GwtEvent<ScenarioNotificationEven
 
     public String getMessage() {
         return message;
+    }
+
+    public boolean isAutoHide() {
+        return autoHide;
     }
 
     public NotificationEvent.NotificationType getNotificationType() {

@@ -723,10 +723,15 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         verify(eventBusMock, times(1)).fireEvent(scenarioNotificationEventArgumentCaptor.capture());
         assertEquals("message", scenarioNotificationEventArgumentCaptor.getValue().getMessage());
         assertEquals(NotificationEvent.NotificationType.ERROR, scenarioNotificationEventArgumentCaptor.getValue().getNotificationType());
+        assertTrue(scenarioNotificationEventArgumentCaptor.getValue().isAutoHide());
     }
 
-    /*
-    private SettingsPresenter getSettingsPresenterSpy() {
-        return spy(new SettingsPresenter(mock(SettingsScenarioSimulationDropdown.class), MockProducer.getSettingsViewMock()));
-    }*/
+    @Test
+    public void sendNotificationAutoHide() {
+        presenterSpy.sendNotification("message", NotificationEvent.NotificationType.ERROR, false);
+        verify(eventBusMock, times(1)).fireEvent(scenarioNotificationEventArgumentCaptor.capture());
+        assertEquals("message", scenarioNotificationEventArgumentCaptor.getValue().getMessage());
+        assertEquals(NotificationEvent.NotificationType.ERROR, scenarioNotificationEventArgumentCaptor.getValue().getNotificationType());
+        assertFalse(scenarioNotificationEventArgumentCaptor.getValue().isAutoHide());
+    }
 }

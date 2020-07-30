@@ -341,7 +341,7 @@ public class ScenarioSimulationEventHandler implements AppendColumnEventHandler,
 
     @Override
     public void onEvent(ScenarioNotificationEvent event) {
-        notificationEvent.fire(new NotificationEvent(event.getMessage(), event.getNotificationType()));
+        notificationEvent.fire(new NotificationEvent(event.getMessage(), event.getNotificationType()).setAutoHide(event.isAutoHide()));
     }
 
     @Override

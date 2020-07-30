@@ -374,6 +374,10 @@ public class ScenarioSimulationEditorPresenter {
         eventBus.fireEvent(new ScenarioNotificationEvent(text, type));
     }
 
+    public void sendNotification(String text, NotificationEvent.NotificationType type, boolean autoHide) {
+        eventBus.fireEvent(new ScenarioNotificationEvent(text, type, autoHide));
+    }
+
     protected void registerTestToolsCallback() {
         placeManager.registerOnOpenCallback(new DefaultPlaceRequest(TestToolsPresenter.IDENTIFIER), populateTestToolsCommand);
     }
