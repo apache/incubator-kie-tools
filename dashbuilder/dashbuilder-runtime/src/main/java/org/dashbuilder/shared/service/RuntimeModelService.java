@@ -18,6 +18,7 @@ package org.dashbuilder.shared.service;
 
 import java.util.Optional;
 
+import org.dashbuilder.shared.model.RuntimeServiceResponse;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.jboss.errai.bus.server.annotations.Remote;
 
@@ -27,6 +28,16 @@ import org.jboss.errai.bus.server.annotations.Remote;
  */
 @Remote
 public interface RuntimeModelService {
+
+    /**
+     * Loads information about this installation.
+     * 
+     * @param runtimeModelId
+     * A runtime model id to be loaded. Can be null or an empty String.
+     * @return
+     * 
+     */
+    public RuntimeServiceResponse info(String runtimeModelId);
 
     /**
      * 

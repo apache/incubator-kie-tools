@@ -20,44 +20,37 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.dashbuilder.client.RuntimeCommunication;
-import org.dashbuilder.client.navbar.AppNavBar;
-import org.dashbuilder.client.screens.RuntimeScreen;
+import org.dashbuilder.client.resources.i18n.AppConstants;
+import org.dashbuilder.client.screens.EmptyScreen;
+import org.dashbuilder.client.widgets.UploadWidget;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.workbench.model.menu.Menus;
 
-@Dependent
 @Templated
-public class RuntimeScreenView implements RuntimeScreen.View {
+@Dependent
+public class EmptyScreenView implements EmptyScreen.View {
+
+    AppConstants i18n = AppConstants.INSTANCE;
 
     @Inject
     @DataField
-    HTMLDivElement runtimePage;
+    HTMLDivElement emptyImport;
 
     @Inject
-    AppNavBar appNavBar;
+    @DataField
+    HTMLDivElement uploadContainer;
 
     @Inject
-    RuntimeCommunication runtimeCommunication;
-
-    @Inject
-    BusyIndicatorView loading;
+    UploadWidget uploadWidget;
 
     @Override
     public HTMLElement getElement() {
-        return runtimePage;
+        return emptyImport;
     }
 
     @Override
-    public void init(RuntimeScreen presenter) {
-        // empty
-    }
-
-    @Override
-    public void addMenus(Menus menus) {
-        appNavBar.setupMenus(menus);
+    public void init(EmptyScreen presenter) {
+        uploadContainer.appendChild(uploadWidget.getElement());
     }
 
 }

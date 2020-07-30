@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.dashbuilder.client.perspective;
+package org.dashbuilder.client.perspective.generator;
 
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;

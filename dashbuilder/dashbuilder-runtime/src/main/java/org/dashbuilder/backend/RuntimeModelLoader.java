@@ -16,6 +16,10 @@
 
 package org.dashbuilder.backend;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,6 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.services.cdi.Startup;
 
+import static org.dashbuilder.backend.RuntimeOptions.DASHBOARD_EXTENSION;
+
+/**
+ * Responsible for runtime model files loading.
+ *
+ */
 @Startup
 @ApplicationScoped
 public class RuntimeModelLoader {
@@ -40,6 +50,7 @@ public class RuntimeModelLoader {
 
     @PostConstruct
     private void doInitialImport() {
+        createBaseDir();
         runtimeOptions.importFileLocation().ifPresent(importFile -> {
             logger.info("Importing file {}", importFile);
             runtimeModelRegistry.registerFile(importFile);
@@ -48,7 +59,33 @@ public class RuntimeModelLoader {
 
         if (runtimeOptions.isMultipleImport() && !runtimeOptions.importFileLocation().isPresent()) {
             runtimeModelRegistry.setMode(DashbuilderRuntimeMode.MULTIPLE_IMPORT);
+            loadAvailableModels();
         }
+    }
+
+    /**
+     * Create, if do not exist, the base directory for runtime models
+     */
+    protected void createBaseDir() {
+        java.nio.file.Path baseDirPath = Paths.get(runtimeOptions.getImportsBaseDir());
+        baseDirPath.toFile().mkdirs();
+    }
+
+    protected void loadAvailableModels() {
+        logger.info("Registering existing models");
+        try (Stream<java.nio.file.Path> walk = Files.walk(Paths.get(runtimeOptions.getImportsBaseDir()), 1)) {
+            walk.filter(p -> p.toFile().isFile() && p.toString().toLowerCase().endsWith(DASHBOARD_EXTENSION))
+                .map(Object::toString)
+                .forEach(p -> {
+                    logger.info("Registering {}", p);
+                    runtimeModelRegistry.registerFile(p);
+                    logger.info("Sucessfully Registered {}", p);
+                });
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error registering existing models.", e);
+        }
+
     }
 
 }

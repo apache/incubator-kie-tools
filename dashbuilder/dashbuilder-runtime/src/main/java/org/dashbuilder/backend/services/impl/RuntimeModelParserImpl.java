@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -31,13 +32,20 @@ import javax.inject.Inject;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.dashbuilder.backend.RuntimeOptions;
 import org.dashbuilder.backend.navigation.RuntimeNavigationBuilder;
+import org.dashbuilder.dataset.DataSetLookup;
+import org.dashbuilder.displayer.DisplayerSettings;
+import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
 import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.shared.event.NewDataSetContentEvent;
 import org.dashbuilder.shared.model.DataSetContent;
 import org.dashbuilder.shared.model.DataSetContentType;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.service.RuntimeModelParser;
+import org.dashbuilder.shared.service.RuntimeModelRegistry;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
 import static org.dashbuilder.shared.model.ImportDefinitions.DATASET_DEF_PREFIX;
@@ -57,23 +65,32 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
     @Inject
     RuntimeNavigationBuilder runtimeNavigationBuilder;
 
+    @Inject
+    RuntimeOptions options;
+
+    @Inject
+    RuntimeModelRegistry registry;
+
     Gson gson;
+
+    private DisplayerSettingsJSONMarshaller displayerSettingsMarshaller;
 
     @PostConstruct
     void init() {
         gson = new GsonBuilder().create();
+        displayerSettingsMarshaller = DisplayerSettingsJSONMarshaller.get();
     }
 
     @Override
-    public RuntimeModel parse(InputStream is) {
+    public RuntimeModel parse(String modelId, InputStream is) {
         try {
-            return retrieveRuntimeModel(is);
+            return retrieveRuntimeModel(modelId, is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    protected RuntimeModel retrieveRuntimeModel(final InputStream is) throws IOException {
+    protected RuntimeModel retrieveRuntimeModel(String modelId, InputStream is) throws IOException {
         List<DataSetContent> datasetContents = new ArrayList<>();
         List<LayoutTemplate> layoutTemplates = new ArrayList<>();
         Optional<String> navTreeOp = Optional.empty();
@@ -97,8 +114,13 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
             }
         }
 
+        if (options.isMultipleImport() && options.isDatasetPartition()) {
+            datasetContents.forEach(ds -> ds.setId(transformId(modelId, ds.getId())));
+            layoutTemplates.forEach(lt -> setLayoutTemplateRuntimeModelId(modelId, lt));
+        }
+
         if (!datasetContents.isEmpty()) {
-            newDataSetContentEvent.fire(new NewDataSetContentEvent(datasetContents));
+            newDataSetContentEvent.fire(new NewDataSetContentEvent(modelId, datasetContents));
         }
         NavTree navTree = runtimeNavigationBuilder.build(navTreeOp, layoutTemplates);
 
@@ -133,6 +155,32 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
             throw new RuntimeException(e);
         }
 
+    }
+
+    private void setLayoutTemplateRuntimeModelId(String modelId, LayoutTemplate lt) {
+        allComponentsStream(lt.getRows())
+                                         .filter(lc -> lc.getProperties().get("json") != null)
+                                         .forEach(lc -> {
+                                             String json = lc.getProperties().get("json");
+                                             DisplayerSettings settings = displayerSettingsMarshaller.fromJsonString(json);
+                                             DataSetLookup dataSetLookup = settings.getDataSetLookup();
+                                             if (dataSetLookup != null) {
+                                                 String newId = transformId(modelId, dataSetLookup.getDataSetUUID());
+                                                 dataSetLookup.setDataSetUUID(newId);
+                                                 lc.getProperties().put("json", displayerSettingsMarshaller.toJsonString(settings));
+                                             }
+                                         });
+    }
+
+    private Stream<LayoutComponent> allComponentsStream(List<LayoutRow> row) {
+        return row.stream()
+                  .flatMap(r -> r.getLayoutColumns().stream())
+                  .flatMap(cl -> Stream.concat(cl.getLayoutComponents().stream(),
+                                               allComponentsStream(cl.getRows())));
+    }
+
+    protected String transformId(String modelId, String id) {
+        return id + "| RuntimeModel=" + modelId;
     }
 
 }

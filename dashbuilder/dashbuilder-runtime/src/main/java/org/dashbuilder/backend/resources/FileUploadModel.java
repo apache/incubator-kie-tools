@@ -27,9 +27,19 @@ import org.jboss.resteasy.annotations.providers.multipart.PartType;
 public class FileUploadModel {
 
     private byte[] fileData;
+    private String fileName;
 
     public byte[] getFileData() {
         return fileData;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    @FormParam("inputFileName")
+    public void setFileName(final String fileName) {
+        this.fileName = fileName;
     }
 
     @FormParam("selectedFile")

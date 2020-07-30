@@ -28,11 +28,14 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 
+import org.dashbuilder.backend.RuntimeOptions;
 import org.dashbuilder.backend.navigation.RuntimeNavigationBuilder;
+import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
 import org.dashbuilder.navigation.impl.NavTreeBuilder;
 import org.dashbuilder.shared.event.NewDataSetContentEvent;
 import org.dashbuilder.shared.model.DataSetContent;
 import org.dashbuilder.shared.model.RuntimeModel;
+import org.dashbuilder.shared.service.RuntimeModelRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -58,6 +61,12 @@ public class RuntimeModelParserImplTest {
 
     @Mock
     RuntimeNavigationBuilder navigationBuilder;
+    
+    @Mock
+    RuntimeOptions runtimeOptions;
+    
+    @Mock
+    RuntimeModelRegistry runtimeModelRegistry;
 
     @InjectMocks
     RuntimeModelParserImpl parser;
@@ -66,7 +75,7 @@ public class RuntimeModelParserImplTest {
     public void testEmptyImport() throws IOException {
         when(navigationBuilder.build(any(), any())).thenReturn(new NavTreeBuilder().build());
         InputStream emptyImport = this.getClass().getResourceAsStream("/empty.zip");
-        RuntimeModel runtimeModel = parser.retrieveRuntimeModel(emptyImport);
+        RuntimeModel runtimeModel = parser.retrieveRuntimeModel("", emptyImport);
 
         verify(newDataSetContentEventSource, times(0)).fire(any());
         assertTrue(runtimeModel.getLayoutTemplates().isEmpty());
@@ -78,7 +87,7 @@ public class RuntimeModelParserImplTest {
     public void testValidImport() throws IOException {
         parser.init();
         InputStream validImport = this.getClass().getResourceAsStream("/valid_import.zip");
-        RuntimeModel runtimeModel = parser.parse(validImport);
+        RuntimeModel runtimeModel = parser.parse("", validImport);
 
         @SuppressWarnings("rawtypes")
         ArgumentCaptor<Optional> navigationContent = ArgumentCaptor.forClass(Optional.class);
@@ -111,6 +120,36 @@ public class RuntimeModelParserImplTest {
 
         assertEquals(getFileContent("/ds.dset"), dsContent);
         assertEquals(getFileContent("/ds.csv"), csvContent);
+    }
+    
+    @Test
+    public void testTransformedUuid() {
+        when(runtimeOptions.isMultipleImport()).thenReturn(true);
+        when(runtimeOptions.isDatasetPartition()).thenReturn(true);
+        final String runtimeModelId = "123";
+        final String transformedId = parser.transformId(runtimeModelId, "e26a81a1-5636-493c-96e0-51bc32322b17");
+        
+        parser.init();
+        InputStream validImport = this.getClass().getResourceAsStream("/valid_import.zip");
+        RuntimeModel runtimeModel = parser.parse(runtimeModelId, validImport);
+
+        List<LayoutTemplate> layoutTemplates = runtimeModel.getLayoutTemplates();
+        
+        // check if ID in the layout template component was transformed
+        LayoutTemplate layoutTemplate = layoutTemplates.get(0);
+        String json = layoutTemplate.getRows().get(1).getLayoutColumns().get(0).getLayoutComponents().get(0).getProperties().get("json");
+        String loadedUUID = DisplayerSettingsJSONMarshaller.get().fromJsonString(json).getDataSetLookup().getDataSetUUID();
+        assertEquals(transformedId, loadedUUID);
+        
+        // check if dataset ID was changed
+        ArgumentCaptor<NewDataSetContentEvent> datasetContents = ArgumentCaptor.forClass(NewDataSetContentEvent.class);
+        verify(newDataSetContentEventSource).fire(datasetContents.capture());
+        NewDataSetContentEvent newDataSetContentEvent = datasetContents.getValue();
+        List<DataSetContent> datasets = newDataSetContentEvent.getContent();
+
+        assertEquals(transformedId, datasets.get(0).getId());
+        assertEquals(transformedId, datasets.get(1).getId());
+        
     }
 
     private String getFileContent(String resource) throws IOException {

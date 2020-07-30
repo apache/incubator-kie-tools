@@ -19,18 +19,15 @@ package org.dashbuilder.client.navbar;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import elemental2.dom.DomGlobal;
 import org.dashbuilder.client.resources.i18n.AppConstants;
+import org.dashbuilder.client.screens.RouterScreen;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuFactory.CustomMenuBuilder;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 @ApplicationScoped
-public class LogoutMenuBuilder implements MenuFactory.CustomMenuBuilder {
+public class DashboardListMenuBuilder implements MenuFactory.CustomMenuBuilder {
 
     private static final AppConstants i18n = AppConstants.INSTANCE;
 
@@ -38,7 +35,7 @@ public class LogoutMenuBuilder implements MenuFactory.CustomMenuBuilder {
     MenuBuilderHelper menuBuilderHelper;
 
     @Inject
-    private Caller<AuthenticationService> authService;
+    private RouterScreen router;
 
     @Override
     public void push(CustomMenuBuilder element) {
@@ -47,17 +44,13 @@ public class LogoutMenuBuilder implements MenuFactory.CustomMenuBuilder {
 
     @Override
     public MenuItem build() {
-        return menuBuilderHelper.buildMenuItem(i18n.logoutMenuTooltip(),
-                                               IconType.SIGN_OUT,
-                                               this::logout);
+        return menuBuilderHelper.buildMenuItem(i18n.dashboardListTooltip(),
+                                               IconType.LIST,
+                                               this::goToList);
     }
 
-    private void logout() {
-        authService.call(r -> {
-            final String location = GWT.getModuleBaseURL()
-                                       .replaceFirst("/" + GWT.getModuleName() + "/", "/logout.jsp");
-            DomGlobal.window.location.assign(location);
-        }).logout();
+    private void goToList() {
+        router.listDashboards();
     }
 
 }

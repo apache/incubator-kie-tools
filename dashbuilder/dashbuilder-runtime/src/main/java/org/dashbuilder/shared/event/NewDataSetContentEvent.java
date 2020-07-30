@@ -20,16 +20,27 @@ import java.util.List;
 
 import org.dashbuilder.shared.model.DataSetContent;
 
+/**
+ * Fired when new datasets are found in a Runtime model.
+ *
+ */
 public class NewDataSetContentEvent {
 
-    List<DataSetContent> content;
+    private String runtimeModelId;
+    
+    private List<DataSetContent> content;
 
-    public NewDataSetContentEvent(List<DataSetContent> content) {
+    public NewDataSetContentEvent(String runtimeModelId, List<DataSetContent> content) {
+        this.runtimeModelId = runtimeModelId;
         this.content = content;
     }
 
     public List<DataSetContent> getContent() {
         return content;
+    }
+
+    public String getRuntimeModelId() {
+        return runtimeModelId;
     }
 
 }

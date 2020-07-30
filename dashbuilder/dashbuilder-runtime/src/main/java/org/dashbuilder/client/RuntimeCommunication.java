@@ -32,8 +32,17 @@ public class RuntimeCommunication {
     @Inject
     Event<NotificationEvent> wbNotification;
 
-    public void showError(String message, Object exception) {
-        DomGlobal.console.log(exception);
+    public void showError(final String message, final Object details) {
+        DomGlobal.console.log(details);
         wbNotification.fire(new NotificationEvent(message, NotificationEvent.NotificationType.ERROR));
     }
+
+    public void showWarning(final String message) {
+        wbNotification.fire(new NotificationEvent(message, NotificationEvent.NotificationType.WARNING));
+    }
+
+    public void showSuccess(final String message) {
+        wbNotification.fire(new NotificationEvent(message, NotificationEvent.NotificationType.SUCCESS));
+    }
+
 }

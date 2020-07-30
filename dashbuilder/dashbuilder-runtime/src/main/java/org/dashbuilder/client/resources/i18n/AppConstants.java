@@ -41,4 +41,18 @@ public interface AppConstants extends Messages {
 
     String notFoundDashboard(String perspectiveName);
 
+    String routerScreenTitle();
+
+    String dashboardsListScreenTitle();
+
+    String dashboardListTooltip();
+
+    String listDashboardsScreenTitle();
+
+    String routerPerspective();
+    
+    String dashboardAlreadyImport(String newModelId, String exitingModel);
+
+    String importSuccess(String fileName);
+    
 }

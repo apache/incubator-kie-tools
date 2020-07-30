@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.dashbuilder.client.perspective;
+package org.dashbuilder.client.perspective.generator;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;

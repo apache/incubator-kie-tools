@@ -16,6 +16,8 @@
 
 package org.dashbuilder.backend.remote.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -24,6 +26,7 @@ import javax.inject.Inject;
 import org.dashbuilder.backend.RuntimeOptions;
 import org.dashbuilder.backend.navigation.RuntimeNavigationBuilder;
 import org.dashbuilder.shared.model.RuntimeModel;
+import org.dashbuilder.shared.model.RuntimeServiceResponse;
 import org.dashbuilder.shared.service.RuntimeModelRegistry;
 import org.dashbuilder.shared.service.RuntimeModelService;
 import org.dashbuilder.shared.services.ExternalImportService;
@@ -38,7 +41,7 @@ public class RuntimeModelServiceImpl implements RuntimeModelService {
     Logger logger = LoggerFactory.getLogger(RuntimeModelServiceImpl.class);
 
     @Inject
-    RuntimeModelRegistry importModelRegistry;
+    RuntimeModelRegistry registry;
 
     @Inject
     RuntimeNavigationBuilder runtimeNavigationBuilder;
@@ -50,25 +53,48 @@ public class RuntimeModelServiceImpl implements RuntimeModelService {
     ExternalImportService externalImportService;
 
     @Override
+    public RuntimeServiceResponse info(String runtimeModelId) {
+        List<String> availableModels = new ArrayList<>(registry.availableModels());
+        return new RuntimeServiceResponse(registry.getMode(),
+                                          getRuntimeModel(runtimeModelId),
+                                          availableModels);
+    }
+
+    @Override
     public Optional<RuntimeModel> getRuntimeModel(String exportId) {
-        if (exportId == null) {
-            return importModelRegistry.single();
+        if (!registry.acceptingNewImports()) {
+            return registry.single();
         }
 
-        Optional<RuntimeModel> runtimeModelOp = importModelRegistry.get(exportId);
+        if (exportId == null || exportId.trim().isEmpty()) {
+            return Optional.empty();
+        }
+
+        return loadImportById(exportId);
+
+    }
+
+    /**
+     * Attempts to load a model which could be a local file, an already loaded model or an external file.
+     * @param id
+     * The model id or path
+     * @return
+     * An optional containing the loaded model or empty.
+     */
+    private Optional<RuntimeModel> loadImportById(String id) {
+        Optional<RuntimeModel> runtimeModelOp = registry.get(id);
         if (runtimeModelOp.isPresent()) {
             return runtimeModelOp;
         }
 
-        Optional<String> modelPath = runtimeOptions.modelPath(exportId);
+        Optional<String> modelPath = runtimeOptions.modelPath(id);
         if (modelPath.isPresent()) {
-            return importModelRegistry.registerFile(modelPath.get());
+            return registry.registerFile(modelPath.get());
         }
 
         if (runtimeOptions.isAllowExternal()) {
-            return externalImportService.registerExternalImport(exportId);
+            return externalImportService.registerExternalImport(id);
         }
-
         return Optional.empty();
     }
 

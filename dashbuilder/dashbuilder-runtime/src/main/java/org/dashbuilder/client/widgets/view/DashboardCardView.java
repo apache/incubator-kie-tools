@@ -13,51 +13,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dashbuilder.client.screens.view;
+
+package org.dashbuilder.client.widgets.view;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
+import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.dashbuilder.client.RuntimeCommunication;
-import org.dashbuilder.client.navbar.AppNavBar;
-import org.dashbuilder.client.screens.RuntimeScreen;
+import elemental2.dom.HTMLHeadingElement;
+import org.dashbuilder.client.widgets.DashboardCard;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
 @Templated
-public class RuntimeScreenView implements RuntimeScreen.View {
+public class DashboardCardView implements DashboardCard.View {
 
     @Inject
     @DataField
-    HTMLDivElement runtimePage;
+    HTMLDivElement dashboardCardRoot;
 
     @Inject
-    AppNavBar appNavBar;
+    @DataField
+    @Named("h2")
+    HTMLHeadingElement cardTitle;
 
-    @Inject
-    RuntimeCommunication runtimeCommunication;
+    private String dashboardId;
 
-    @Inject
-    BusyIndicatorView loading;
+    private DashboardCard presenter;
 
     @Override
     public HTMLElement getElement() {
-        return runtimePage;
+        return dashboardCardRoot;
     }
 
     @Override
-    public void init(RuntimeScreen presenter) {
-        // empty
+    public void init(DashboardCard presenter) {
+        this.presenter = presenter;
     }
 
     @Override
-    public void addMenus(Menus menus) {
-        appNavBar.setupMenus(menus);
+    public void setDashboardId(String dashboardId) {
+        this.dashboardId = dashboardId;
+        cardTitle.textContent = dashboardId;
+    }
+    
+    @EventHandler("dashboardCardRoot")
+    public void onCardSelected(ClickEvent e) {
+        presenter.onCardSelected(dashboardId);
     }
 
 }

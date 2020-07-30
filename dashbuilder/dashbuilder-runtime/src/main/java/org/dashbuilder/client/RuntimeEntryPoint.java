@@ -50,7 +50,7 @@ public class RuntimeEntryPoint {
     Workbench workbench;
 
     @Inject
-    ClientRuntimeModelLoader modelLoader;
+    RuntimeClientLoader modelLoader;
 
     @Inject
     PlaceManager placeManager;
@@ -83,9 +83,9 @@ public class RuntimeEntryPoint {
                                                   .noneMatch(lt -> lt.getName().equals(perspective));
         if (perspectiveNotFound) {
             notFound();
-        } else {
-            this.hideLoading();
-        }
+        } 
+        
+        this.hideLoading();
     }
 
     public void notFound() {
@@ -95,13 +95,11 @@ public class RuntimeEntryPoint {
         DomGlobal.window.history.pushState(null,
                                            "Dashbuilder Runtime | Not Found",
                                            newUrl);
-        this.hideLoading();
     }
 
     public void error(Object e, Throwable t) {
         runtimeCommunication.showError(i18n.errorLoadingDashboards(), t);
         this.hideLoading();
-
     }
 
     private void hideLoading() {

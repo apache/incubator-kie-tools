@@ -36,6 +36,11 @@ public class DataSetContent {
         this.contentType = contentType;
     }
 
+    
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }

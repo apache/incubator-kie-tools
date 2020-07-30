@@ -13,22 +13,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<div class="blank-slate-pf " id="emptyImport">
-    <div class="blank-slate-pf-icon">
-        <span class="pficon pficon pficon-add-circle-o"></span>
+<div class="col-xs-12 col-sm-4 col-md-3 col-lg-2" id="dashboardCardRoot">
+    <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
+        <div class="card-pf-body">
+            <div class="card-pf-top-element">
+                <span class="fa fa-cubes card-pf-icon-circle"></span>
+            </div>
+            <h2 class="card-pf-title text-center" id="cardTitle"></h2>
+        </div>
     </div>
-    <h1 data-i18n-key="title"></h1>
-    <p data-i18n-key="subTitle"></p>
-    <div class="blank-slate-pf-main-action">
-        <button class="btn btn-primary btn-lg" id="btnImport"
-            data-i18n-key="importButton"></button>
-    </div>
-
-
-    <form id="uploadForm" action="/rest/upload" method="post"
-        enctype="multipart/form-data" style="display: none">
-        <input id="inputFile" accept=".zip" type="file"
-            name="selectedFile" />
-    </form>
-
 </div>

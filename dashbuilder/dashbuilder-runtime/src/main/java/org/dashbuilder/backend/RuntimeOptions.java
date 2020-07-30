@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.commons.data.Pair;
 
 /**
- * Holds Runtime System properties
+ * Holds Runtime System properties and information.
  *
  */
 @ApplicationScoped
@@ -35,19 +35,44 @@ public class RuntimeOptions {
 
     Logger logger = LoggerFactory.getLogger(RuntimeOptions.class);
 
-    private static final String IMPORTS_BASE_DIR_PROP = "org.dashbuilder.import.base.dir";
+    public static final String DASHBOARD_EXTENSION = ".zip";
 
+    private static final String DEFAULT_MODEL_DIR = "/tmp/dashbuilder/models";
+
+    private static final int DEFAULT_UPLOAD_SIZE_KB = 96 * 1024;
+
+    /**
+     * Base Directory where dashboards ZIPs are stored
+     */
+    private static final String IMPORTS_BASE_DIR_PROP = "dashbuilder.import.base.dir";
+
+    /**
+     * Set a static dashboard to run with runtime. When this property is set no new imports are allowed.
+     */
     private static final String IMPORT_FILE_LOCATION_PROP = "dashbuilder.runtime.import";
 
+    /**
+     * Limits the size of uploaded dashboards (in kb).
+     */
     private static final String UPLOAD_SIZE_PROP = "dashbuilder.runtime.upload.size";
 
+    /**
+     * When true will allow download of external (remote) files into runtime.
+     */
     private static final String ALLOW_EXTERNAL_FILE_REGISTER_PROP = "dashbuilder.runtime.allowExternal";
 
-    private static final String DASHBUILDER_RUNTIME_MULTIPLE_IMPORT = "dashbuilder.runtime.multiple";
+    /**
+     * If set to true Runtime will always allow use of new imports (multi tenancy)
+     */
+    private static final String DASHBUILDER_RUNTIME_MULTIPLE_IMPORT_PROP = "dashbuilder.runtime.multi";
 
-    private static final int DEFAULT_UPLOAD_SIZE = 96 * 1024;
+    /**
+     * If true datasets IDs will partitioned by the Runtime Model ID.
+     */
+    private static final String DATASET_PARTITION_PROP = "dashbuilder.dataset.partition";
 
     private boolean multipleImport;
+    private boolean datasetPartition;
     private boolean allowExternal;
     private String importFileLocation;
     private String importsBaseDir;
@@ -55,15 +80,17 @@ public class RuntimeOptions {
 
     @PostConstruct
     public void init() {
-        String multipleImportStr = System.getProperty(DASHBUILDER_RUNTIME_MULTIPLE_IMPORT, Boolean.FALSE.toString());
+        String multipleImportStr = System.getProperty(DASHBUILDER_RUNTIME_MULTIPLE_IMPORT_PROP, Boolean.FALSE.toString());
         String allowExternalStr = System.getProperty(ALLOW_EXTERNAL_FILE_REGISTER_PROP, Boolean.FALSE.toString());
+        String datasetPartitionStr = System.getProperty(DATASET_PARTITION_PROP, Boolean.TRUE.toString());
 
         importFileLocation = System.getProperty(IMPORT_FILE_LOCATION_PROP);
-        importsBaseDir = System.getProperty(IMPORTS_BASE_DIR_PROP, "/tmp/dashbuilder");
+        importsBaseDir = System.getProperty(IMPORTS_BASE_DIR_PROP, DEFAULT_MODEL_DIR);
         multipleImport = Boolean.parseBoolean(multipleImportStr);
         allowExternal = Boolean.parseBoolean(allowExternalStr);
+        datasetPartition = Boolean.parseBoolean(datasetPartitionStr);
 
-        uploadSize = DEFAULT_UPLOAD_SIZE;
+        uploadSize = DEFAULT_UPLOAD_SIZE_KB;
 
         String uploadSizeStr = System.getProperty(UPLOAD_SIZE_PROP);
         if (uploadSizeStr != null) {
@@ -90,14 +117,22 @@ public class RuntimeOptions {
     }
 
     /**
-     * Generates a new valid file path
-     * 
+     * Generates a new valid file path.
+     * @param fileName
+     * The fileName
      * @return
      */
-    public Pair<String, String> newFilePath() {
-        String fileId = System.currentTimeMillis() + "";
-        String filePath = buildFilePath(fileId);
-        return Pair.newPair(fileId, filePath);
+    public Pair<String, String> newFilePath(final String fileName) {
+        String newFileName = fileName;
+        if (fileName == null || fileName.trim().isEmpty()) {
+            newFileName = System.currentTimeMillis() + "";
+        } else if (fileName.endsWith(DASHBOARD_EXTENSION)) {
+            int lastIndex = fileName.length() - DASHBOARD_EXTENSION.length();
+            newFileName = fileName.substring(0, lastIndex);
+        }
+
+        String filePath = buildFilePath(newFileName);
+        return Pair.newPair(newFileName, filePath);
     }
 
     public boolean isMultipleImport() {
@@ -120,8 +155,12 @@ public class RuntimeOptions {
         return allowExternal;
     }
 
+    public boolean isDatasetPartition() {
+        return datasetPartition;
+    }
+
     public String buildFilePath(String fileId) {
-        return String.join("/", getImportsBaseDir(), fileId).concat(".zip");
+        return String.join("/", getImportsBaseDir(), fileId).concat(DASHBOARD_EXTENSION);
     }
 
 }

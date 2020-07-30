@@ -16,19 +16,25 @@
 
 package org.dashbuilder.backend.resources;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.stream.Stream;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.io.IOUtils;
 import org.dashbuilder.backend.RuntimeOptions;
 import org.dashbuilder.shared.service.RuntimeModelRegistry;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
@@ -36,8 +42,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.data.Pair;
 
+import static org.dashbuilder.backend.RuntimeOptions.DASHBOARD_EXTENSION;
+
 /**
- * Resource to receive new imports
+ * Resource to receive new imports.
  *
  */
 @Path("/upload")
@@ -52,35 +60,23 @@ public class UploadResourceImpl {
     @Inject
     RuntimeModelRegistry runtimeModelRegistry;
 
-    @PostConstruct
-    public void createBaseDir() {
-        java.nio.file.Path baseDirPath = Paths.get(runtimeOptions.getImportsBaseDir());
-        if (!baseDirPath.toFile().exists()) {
-            try {
-                Files.createDirectory(baseDirPath);
-            } catch (IOException e) {
-                logger.debug("Error creating base directory for imports: {}", baseDirPath, e);
-                throw new RuntimeException("Base directory for imports could not be created: " + baseDirPath, e);
-            }
-        }
-    }
-
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFile(@MultipartForm FileUploadModel form) throws IOException {
-        int uploadSize = form.getFileData().length;
+        byte[] inputBytes = form.getFileData();
 
-        if (uploadSize > runtimeOptions.getUploadSize()) {
-            logger.error("Stopping upload of size {}. Max size is {}", uploadSize, runtimeOptions.getUploadSize());
-            return Response.status(Response.Status.BAD_REQUEST).entity("Upload is too big.").build();
+        checkInputSize(inputBytes);
+
+        Optional<String> dashboardOp = checkForExistingFile(inputBytes);
+        if (dashboardOp.isPresent()) {
+            String dashboardName = dashboardOp.get();
+            logger.info("Found existing file with same contents: {}", dashboardName);
+            return Response.status(Status.CONFLICT).entity(dashboardName).build();
         }
 
-        logger.info("Uploading file with size {} bytes", form.getFileData().length);
-
-        Pair<String, String> newImportInfo = runtimeOptions.newFilePath();
+        Pair<String, String> newImportInfo = runtimeOptions.newFilePath(form.getFileName());
         java.nio.file.Path path = Paths.get(newImportInfo.getK2());
-
-        Files.write(path, form.getFileData());
+        Files.write(path, inputBytes);
 
         try {
             runtimeModelRegistry.registerFile(newImportInfo.getK2());
@@ -93,6 +89,55 @@ public class UploadResourceImpl {
         }
 
         return Response.ok(newImportInfo.getK1()).build();
+    }
+
+    /**
+     * Reads the uploaded model bytes controlling the size and throwing exception when the size exceeds the allowed size.
+     * @param fileData
+     * @return
+     */
+    private void checkInputSize(byte[] bytes) {
+        if (bytes.length > runtimeOptions.getUploadSize()) {
+            logger.debug("Total size {} is greater than the allowed size {}",
+                         bytes.length,
+                         runtimeOptions.getUploadSize());
+            throw new WebApplicationException("Upload size is greater than the allowed size: " + runtimeOptions.getUploadSize(),
+                                              Response.Status.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * 
+     * If a file exists with a given size then probably it is a repeated.
+     * 
+     * @param uploadSize
+     * @return
+     * @throws IOException 
+     */
+    private Optional<String> checkForExistingFile(byte[] uploadedFile) throws IOException {
+        try (Stream<java.nio.file.Path> walk = Files.walk(Paths.get(runtimeOptions.getImportsBaseDir()), 1)) {
+            return walk
+                       .filter(p -> p.toFile().isFile() &&
+                                    p.toString().toLowerCase().endsWith(DASHBOARD_EXTENSION) &&
+                                    isContentEquals(uploadedFile, p))
+                       .map(p -> p.getFileName().toString().replace(DASHBOARD_EXTENSION, ""))
+                       .findFirst();
+
+        } catch (Exception e) {
+            logger.info("Error checking for duplicated file contents.");
+            logger.debug("Error checking for duplicated file contents.", e);
+            return Optional.empty();
+        }
+
+    }
+
+    private boolean isContentEquals(byte[] uploadedFile, java.nio.file.Path p) {
+        try (InputStream fis = Files.newInputStream(p)) {
+            return IOUtils.contentEquals(fis, new ByteArrayInputStream(uploadedFile));
+        } catch (IOException e) {
+            logger.debug("Error checking file {}. Skipping from verification.", p, e);
+        }
+        return false;
     }
 
 }

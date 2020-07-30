@@ -13,60 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.dashbuilder.client.screens;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.dashbuilder.client.navbar.NavBarHelper;
 import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.dashbuilder.navigation.NavTree;
-import org.dashbuilder.shared.model.RuntimeModel;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElemental;
-import org.uberfire.workbench.model.menu.Menus;
 
 /**
- * The Main application screen that contains dashboards from a RuntimeModel. 
+ * Screen displayed when there's no dashboards available.
  *
  */
 @ApplicationScoped
-@WorkbenchScreen(identifier = RuntimeScreen.ID)
-public class RuntimeScreen {
+@WorkbenchScreen(identifier = EmptyScreen.ID)
+public class EmptyScreen {
 
-    public static final String ID = "RuntimeScreen";
+    public static final String ID = "EmptyScreen";
 
-    private static AppConstants i18n = AppConstants.INSTANCE;
-
-    public interface View extends UberElemental<RuntimeScreen> {
-
-        void addMenus(Menus menus);
-
-    }
+    private static final AppConstants i18n = AppConstants.INSTANCE;
 
     @Inject
     View view;
+    
+    public interface View extends UberElemental<EmptyScreen> {
+        
+    }
 
-    @Inject
-    NavBarHelper menusHelper;
+    @PostConstruct
+    public void init() {
+        view.init(this);
+    }
 
     @WorkbenchPartTitle
-    public String getScreenTitle() {
-        return i18n.runtimeScreenTitle();
+    public String title() {
+        return i18n.uploadDashboardsTitle();
     }
 
     @WorkbenchPartView
-    public View workbenchPart() {
-        return this.view;
-    }
-
-    public void loadDashboards(RuntimeModel runtimeModel) {
-        NavTree navTree = runtimeModel.getNavTree();
-        Menus menus = menusHelper.buildMenusFromNavTree(navTree).build();
-        view.addMenus(menus);
+    protected View getPart() {
+        return view;
     }
 
 }

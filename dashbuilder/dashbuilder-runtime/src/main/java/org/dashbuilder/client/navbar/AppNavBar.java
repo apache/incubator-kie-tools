@@ -36,10 +36,15 @@ public class AppNavBar implements Header {
     HTMLDivElement header;
 
     @Inject
-    private WorkbenchMegaMenuPresenter menuBarPresenter;
+    WorkbenchMegaMenuPresenter menuBarPresenter;
 
     @Inject
     LogoutMenuBuilder logoutMenu;
+    
+    @Inject
+    DashboardListMenuBuilder dashboardsListMenu;
+    
+    private boolean isDashboardListEnabled = false;
 
     @AfterInitialization
     public void setup() {
@@ -61,10 +66,18 @@ public class AppNavBar implements Header {
         return 20;
     }
     
+    public void setDashboardListEnabled(boolean isDashboardListEnabled) {
+        this.isDashboardListEnabled = isDashboardListEnabled;
+    }
+
     private void setupMenus() {
         menuBarPresenter.clear();
         menuBarPresenter.clearContextMenu();
+        if (isDashboardListEnabled) {
+            menuBarPresenter.addMenus(MenuFactory.newTopLevelCustomMenu(dashboardsListMenu).endMenu().build());
+        }
         menuBarPresenter.addMenus(MenuFactory.newTopLevelCustomMenu(logoutMenu).endMenu().build());
+        
         header.innerHTML = "";
         header.appendChild(Js.cast(menuBarPresenter.getView().getElement()));
     }

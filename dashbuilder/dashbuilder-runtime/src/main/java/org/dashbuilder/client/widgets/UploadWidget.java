@@ -13,48 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dashbuilder.client.screens;
+
+package org.dashbuilder.client.widgets;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.FormData;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLFormElement;
 import elemental2.dom.RequestInit;
 import elemental2.dom.Response;
-import org.dashbuilder.client.ClientRuntimeModelLoader;
 import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
+import org.dashbuilder.client.screens.RouterScreen;
+import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElemental;
 
 /**
- * A screen that prompts users to upload a dashboard.
+ * Allow users to upload new dashboards
  *
  */
 @Dependent
-@WorkbenchScreen(identifier = UploadDashboardsScreen.ID)
-public class UploadDashboardsScreen {
+public class UploadWidget implements IsElement {
 
-    public static final String ID = "UploadDashboardsScreen";
-
-    private static final AppConstants i18n = AppConstants.INSTANCE;
+    static final AppConstants i18n = AppConstants.INSTANCE;
 
     @Inject
     View view;
 
     @Inject
-    PlaceManager placeManager;
+    RouterScreen routerScreen;
 
     @Inject
-    RuntimeScreen runtimeScreen;
+    PlaceManager placeManager;
 
-    public interface View extends UberElemental<UploadDashboardsScreen> {
+    public interface View extends UberElemental<UploadWidget> {
 
         void loading();
 
@@ -64,34 +60,35 @@ public class UploadDashboardsScreen {
 
         void errorDuringUpload(Object error);
 
+        void dashboardAlreadyImportedError(String importName, String modelId);
+
+        void importSuccess(String importName);
+
     }
 
     @PostConstruct
     public void init() {
-        view.init(this);
+        this.view.init(this);
     }
 
-    @WorkbenchPartTitle
-    public String title() {
-        return i18n.uploadDashboardsTitle();
+    @Override
+    public HTMLElement getElement() {
+        return this.view.getElement();
     }
 
-    @WorkbenchPartView
-    protected View getPart() {
-        return view;
-    }
-
-    public void submit(final HTMLFormElement uploadForm) {
+    public void submit(String fileName, final HTMLFormElement uploadForm) {
         RequestInit request = RequestInit.create();
         request.setMethod("POST");
         request.setBody(new FormData(uploadForm));
         view.loading();
         DomGlobal.window.fetch("./rest/upload", request)
-                        .then((Response response) -> response.text().then(id -> {
+                        .then((Response response) -> response.text().then(newImportName -> {
                             view.stopLoading();
                             if (response.status == 200) {
-                                updateImportId(id);
-                                openModel(id);
+                                openImport(newImportName);
+                            } 
+                            else if(response.status == 409) {
+                                importAlreadyExists(fileName, newImportName);
                             } else {
                                 view.badResponseUploading(response);
                             }
@@ -103,19 +100,24 @@ public class UploadDashboardsScreen {
                         });
     }
 
-    private void updateImportId(final String modelId) {
-        String newUrl = GWT.getHostPageBaseURL() + "?" +
-                        ClientRuntimeModelLoader.IMPORT_ID_PARAM + "=" +
-                        modelId;
-        DomGlobal.window.history.replaceState(null,
-                                              "Dashbuilder Runtime |" + modelId,
-                                              newUrl);
-
+    private void openImport(final String newImportName) {
+        view.importSuccess(newImportName);
+        routerScreen.afterDashboardUpload(newImportName);
+    }
+    
+    private void importAlreadyExists(final String fileName, final String modelId) {
+        view.dashboardAlreadyImportedError(fileName, modelId);
+        routerScreen.afterDashboardUpload(modelId);
     }
 
-    protected void openModel(final String modelId) {
-        runtimeScreen.openRuntimeModel(modelId);
-        placeManager.goTo(RuntimeScreen.ID);
+    public String retrieveFileName(String value) {
+        int pos = 0;
+        if (value.contains("\\")) {
+            pos = value.lastIndexOf('\\');
+        } else if (value.contains("/")) {
+            pos = value.lastIndexOf('/');
+        }
+        return value.substring(pos + 1);
     }
 
 }

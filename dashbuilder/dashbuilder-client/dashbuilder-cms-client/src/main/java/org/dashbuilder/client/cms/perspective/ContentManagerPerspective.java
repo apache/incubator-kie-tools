@@ -15,15 +15,14 @@
  */
 package org.dashbuilder.client.cms.perspective;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerConstants;
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerI18n;
-import org.dashbuilder.client.cms.screen.explorer.PerspectivesExplorerScreen;
 import org.dashbuilder.client.cms.screen.explorer.NavigationExplorerScreen;
+import org.dashbuilder.client.cms.screen.explorer.PerspectivesExplorerScreen;
 import org.dashbuilder.client.cms.screen.home.ContentManagerHomeScreen;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
@@ -39,7 +38,7 @@ import org.uberfire.ext.layout.editor.client.LayoutEditorPropertiesScreen;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutEditorPropertiesPresenter;
 import org.uberfire.ext.plugin.client.perspective.editor.PerspectiveEditorPresenter;
 import org.uberfire.ext.plugin.client.perspective.editor.events.PerspectiveEditorFocusEvent;
-import org.uberfire.lifecycle.*;
+import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;

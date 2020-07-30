@@ -16,46 +16,67 @@
 
 package org.dashbuilder.client.screens;
 
+import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.dashbuilder.client.navbar.NavBarHelper;
 import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.dashbuilder.navigation.NavTree;
-import org.dashbuilder.shared.model.RuntimeModel;
+import org.dashbuilder.client.widgets.DashboardCard;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElemental;
-import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.lifecycle.OnClose;
 
 /**
- * The Main application screen that contains dashboards from a RuntimeModel. 
+ * Screen that shows a list of dashboards available in a MULTI dashboards installation. 
  *
  */
 @ApplicationScoped
-@WorkbenchScreen(identifier = RuntimeScreen.ID)
-public class RuntimeScreen {
+@WorkbenchScreen(identifier = DashboardsListScreen.ID)
+public class DashboardsListScreen {
 
-    public static final String ID = "RuntimeScreen";
+    public static final String ID = "ListDashboardsScreen";
 
     private static AppConstants i18n = AppConstants.INSTANCE;
 
-    public interface View extends UberElemental<RuntimeScreen> {
+    public interface View extends UberElemental<DashboardsListScreen> {
 
-        void addMenus(Menus menus);
+        void addCard(DashboardCard card);
 
+        void clear();
     }
 
     @Inject
     View view;
 
     @Inject
-    NavBarHelper menusHelper;
+    ManagedInstance<DashboardCard> dashboardCardInstance;
+
+    @PostConstruct
+    public void init() {
+        view.init(this);
+    }
+
+    public void loadList(List<String> dashboardsNames) {
+        clear();
+        dashboardsNames.stream()
+                       .map(this::createDashboardCard)
+                       .forEach(view::addCard);
+    }
+
+    private DashboardCard createDashboardCard(String id) {
+        DashboardCard card = dashboardCardInstance.get();
+        card.setDashboardId(id);
+        return card;
+    }
 
     @WorkbenchPartTitle
     public String getScreenTitle() {
-        return i18n.runtimeScreenTitle();
+        return i18n.dashboardsListScreenTitle();
     }
 
     @WorkbenchPartView
@@ -63,10 +84,10 @@ public class RuntimeScreen {
         return this.view;
     }
 
-    public void loadDashboards(RuntimeModel runtimeModel) {
-        NavTree navTree = runtimeModel.getNavTree();
-        Menus menus = menusHelper.buildMenusFromNavTree(navTree).build();
-        view.addMenus(menus);
+    @OnClose
+    public void clear() {
+        dashboardCardInstance.destroyAll();
+        view.clear();
     }
 
 }

@@ -27,6 +27,10 @@ import javax.enterprise.context.ApplicationScoped;
 import org.dashbuilder.dataprovider.csv.CSVFileStorage;
 import org.dashbuilder.dataset.def.CSVDataSetDef;
 
+/**
+ * In Memory CSV storage.
+ *
+ */
 @ApplicationScoped
 public class RuntimeCSVFileStorage implements CSVFileStorage {
 
@@ -64,7 +68,11 @@ public class RuntimeCSVFileStorage implements CSVFileStorage {
 
     @Override
     public void deleteCSVFile(CSVDataSetDef def) {
-        // Ignored
+        csvStorage.remove(def.getUUID());
+    }
+    
+    public void deleteCSVFile(String uuid) {
+        csvStorage.remove(uuid);
     }
 
 }

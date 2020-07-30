@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import org.dashbuilder.shared.model.DashboardInfo;
 import org.dashbuilder.shared.model.DashbuilderRuntimeInfo;
-import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.service.RuntimeModelRegistry;
 import org.junit.Before;

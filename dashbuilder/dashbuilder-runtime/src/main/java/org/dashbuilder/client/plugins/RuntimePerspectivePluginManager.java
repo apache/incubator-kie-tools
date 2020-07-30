@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
@@ -34,7 +33,6 @@ import org.dashbuilder.navigation.layout.LayoutRecursionIssue;
 import org.dashbuilder.navigation.layout.LayoutTemplateContext;
 import org.dashbuilder.navigation.layout.LayoutTemplateInfo;
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
-import org.dashbuilder.shared.event.RuntimeModelEvent;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -43,6 +41,10 @@ import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.mvp.ParameterizedCommand;
 
+/**
+ * A specific Runtime perspective plugin manager. This is used by Navigation Components to load a custom perspective.
+ *
+ */
 @Alternative
 @ApplicationScoped
 public class RuntimePerspectivePluginManager implements PerspectivePluginManager {
@@ -119,8 +121,8 @@ public class RuntimePerspectivePluginManager implements PerspectivePluginManager
         return null;
     }
 
-    public void onRuntimeModelLoaded(@Observes RuntimeModelEvent runtimeModelEvent) {
-        templates = runtimeModelEvent.getRuntimeModel().getLayoutTemplates();
+    public void setTemplates(List<LayoutTemplate> templates) {
+        this.templates = templates;
     }
 
     private boolean searchLayoutTemplate(String name) {

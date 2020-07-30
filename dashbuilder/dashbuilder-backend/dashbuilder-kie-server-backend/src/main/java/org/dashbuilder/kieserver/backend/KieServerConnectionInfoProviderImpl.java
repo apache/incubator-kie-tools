@@ -45,9 +45,9 @@ public class KieServerConnectionInfoProviderImpl implements KieServerConnectionI
                                                "You should provide user/password or token authentication";
 
     private static final String SERVER_TEMPLATE_SEPARATOR = ",";
-    static final String SERVER_TEMPLATE_LIST_PROPERTY = "org.dashbuilder.kieserver.serverTemplates";
-    static final String SERVER_TEMPLATE_PROP_PREFFIX = "org.dashbuilder.kieserver.serverTemplate";
-    static final String DATASET_PROP_PREFFIX = "org.dashbuilder.kieserver.dataset";
+    static final String SERVER_TEMPLATE_LIST_PROPERTY = "dashbuilder.kieserver.serverTemplates";
+    static final String SERVER_TEMPLATE_PROP_PREFFIX = "dashbuilder.kieserver.serverTemplate";
+    static final String DATASET_PROP_PREFFIX = "dashbuilder.kieserver.dataset";
 
     private static final String SERVER_TEMPLATE_PROPERTY_TEMPLATE = SERVER_TEMPLATE_PROP_PREFFIX + ".%s.%s";
     private static final String REMOTE_DATASET_PROPERTY_TEMPLATE = DATASET_PROP_PREFFIX + ".%s.%s";

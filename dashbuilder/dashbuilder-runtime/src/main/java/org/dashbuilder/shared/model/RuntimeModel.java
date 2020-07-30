@@ -24,7 +24,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
 /**
- * Representation of assets needed to build Runtime Dahbuilder client.
+ * Representation of assets and information needed to build Runtime Dashbuilder client.
  *
  */
 @Portable

@@ -20,44 +20,52 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.dashbuilder.client.RuntimeCommunication;
-import org.dashbuilder.client.navbar.AppNavBar;
-import org.dashbuilder.client.screens.RuntimeScreen;
+import org.dashbuilder.client.resources.i18n.AppConstants;
+import org.dashbuilder.client.screens.DashboardsListScreen;
+import org.dashbuilder.client.widgets.DashboardCard;
+import org.dashbuilder.client.widgets.UploadWidget;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.workbench.model.menu.Menus;
 
-@Dependent
 @Templated
-public class RuntimeScreenView implements RuntimeScreen.View {
+@Dependent
+public class DashboardsListScreenView implements DashboardsListScreen.View {
+
+    AppConstants i18n = AppConstants.INSTANCE;
 
     @Inject
     @DataField
-    HTMLDivElement runtimePage;
+    HTMLDivElement dashboardsListRoot;
 
     @Inject
-    AppNavBar appNavBar;
+    @DataField
+    HTMLDivElement uploadWidgetContainer;
 
     @Inject
-    RuntimeCommunication runtimeCommunication;
+    @DataField
+    HTMLDivElement dashboardsList;
 
     @Inject
-    BusyIndicatorView loading;
+    UploadWidget uploadWidget;
 
     @Override
     public HTMLElement getElement() {
-        return runtimePage;
+        return dashboardsListRoot;
     }
 
     @Override
-    public void init(RuntimeScreen presenter) {
-        // empty
+    public void init(DashboardsListScreen presenter) {
+        uploadWidgetContainer.appendChild(uploadWidget.getElement());
     }
 
     @Override
-    public void addMenus(Menus menus) {
-        appNavBar.setupMenus(menus);
+    public void addCard(DashboardCard card) {
+        dashboardsList.appendChild(card.getElement());
+    }
+
+    @Override
+    public void clear() {
+        dashboardsList.innerHTML = "";
     }
 
 }
