@@ -82,6 +82,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public receive_ready(): void {
+    console.info("The channel knows that an editor opened.");
     this.overrides.receive_ready?.();
   }
 

@@ -58,14 +58,23 @@ export class KogitoEditableDocument implements CustomDocument {
   }
 
   public async save(destination: Uri, cancellation: CancellationToken): Promise<void> {
-    const editor = this.editorStore.get(this.uri);
-    const content = await editor!.getContent();
-    if (cancellation.isCancellationRequested) {
-      return;
-    }
+    try {
+      const editor = this.editorStore.get(this.uri);
+      if (!editor) {
+        console.error(`Cannot save because there's no open Editor for ${this.uri.fsPath}`);
+        return;
+      }
 
-    await vscode.workspace.fs.writeFile(destination, this.encoder.encode(content));
-    vscode.window.setStatusBarMessage("Saved successfully!", 3000);
+      const content = await editor.getContent();
+      if (cancellation.isCancellationRequested) {
+        return;
+      }
+
+      await vscode.workspace.fs.writeFile(destination, this.encoder.encode(content));
+      vscode.window.setStatusBarMessage("Saved successfully!", 3000);
+    } catch (e) {
+      console.error("Error saving.", e);
+    }
   }
 
   public async backup(destination: Uri, cancellation: CancellationToken): Promise<CustomDocumentBackup> {
@@ -92,7 +101,10 @@ export class KogitoEditableDocument implements CustomDocument {
 
   public async revert(cancellation: CancellationToken): Promise<void> {
     const input = await vscode.workspace.fs.readFile(this.uri);
-    this.editorStore.withActive(editor => editor.setContent(this.relativePath, this.decoder.decode(input)));
+    const editor = this.editorStore.get(this.uri);
+    if (editor) {
+      return editor.setContent(this.relativePath, this.decoder.decode(input));
+    }
   }
 
   public notifyEdit(editor: KogitoEditor, edit: KogitoEdit) {

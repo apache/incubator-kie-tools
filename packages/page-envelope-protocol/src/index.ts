@@ -39,6 +39,7 @@ export interface SvgDiagram {
 
 export interface KogitoPageChannelApi extends ApiDefinition<KogitoPageChannelApi> {
   getOpenDiagrams(): Promise<SvgDiagram[]>;
+  receive_ready(): void;
 }
 
 //

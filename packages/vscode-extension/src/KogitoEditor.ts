@@ -24,8 +24,12 @@ import {
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { EditorApi } from "@kogito-tooling/editor-api";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
+import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus";
+import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 
 export class KogitoEditor implements EditorApi {
+  private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;
+
   public constructor(
     public readonly document: KogitoEditableDocument,
     private readonly panel: vscode.WebviewPanel,
@@ -33,8 +37,12 @@ export class KogitoEditor implements EditorApi {
     private readonly editorStore: KogitoEditorStore,
     private readonly envelopeMapping: EnvelopeMapping,
     private readonly envelopeLocator: EditorEnvelopeLocator,
+    private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
     private readonly kogitoEditorChannel = new KogitoEditorChannel({
-      postMessage: message => this.panel.webview.postMessage(message)
+      postMessage: msg => {
+        console.info(`Posting: ${msg.type} -> busId: ${msg.busId} (posted by: ${this.document.uri.fsPath})`)
+        this.panel.webview.postMessage(msg)
+      }
     })
   ) {}
 
@@ -70,9 +78,16 @@ export class KogitoEditor implements EditorApi {
   }
 
   public startListening(editorChannelApi: KogitoEditorChannelApi) {
+    this.broadcastSubscription = this.messageBroadcaster.subscribe(msg => {
+      this.kogitoEditorChannel.receive(msg, editorChannelApi);
+    });
+
     this.context.subscriptions.push(
       this.panel.webview.onDidReceiveMessage(
-        msg => this.kogitoEditorChannel.receive(msg, editorChannelApi),
+        msg => {
+          console.info(`Received: ${msg.type} -> busId: ${msg.busId} (received by id: ${this.kogitoEditorChannel.busId})`)
+          this.messageBroadcaster.broadcast(msg);
+        },
         this,
         this.context.subscriptions
       )
@@ -100,6 +115,7 @@ export class KogitoEditor implements EditorApi {
       () => {
         this.kogitoEditorChannel.stopInitPolling();
         this.editorStore.close(this);
+        this.messageBroadcaster.unsubscribe(this.broadcastSubscription);
       },
       this,
       this.context.subscriptions

@@ -28,12 +28,14 @@ import { Uri, Webview } from "vscode";
 import * as nodePath from "path";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
+import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 
 export class KogitoEditorFactory {
   constructor(
     private readonly context: vscode.ExtensionContext,
     private readonly editorStore: KogitoEditorStore,
-    private readonly editorEnvelopeLocator: EditorEnvelopeLocator
+    private readonly editorEnvelopeLocator: EditorEnvelopeLocator,
+    private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster
   ) {}
 
   public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditableDocument) {
@@ -57,7 +59,8 @@ export class KogitoEditorFactory {
       this.context,
       this.editorStore,
       envelopeMapping,
-      editorEnvelopeLocator
+      editorEnvelopeLocator,
+      this.messageBroadcaster
     );
 
     const editorChannelApi = new KogitoEditorChannelApiImpl(document, editor, resourceContentService);

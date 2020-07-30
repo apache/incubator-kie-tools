@@ -47,7 +47,16 @@ export const MyPage = React.forwardRef<MyPageRef, Props>((props, forwardedRef) =
   useImperativeHandle(forwardedRef, () => ({ setText }), []);
 
   useEffect(() => {
-    props.channelApi.request("getOpenDiagrams").then(svgs => setDiagramSvgs(svgs));
+    const requestOpenDiagrams = async () => {
+      const svgs = await props.channelApi.request("getOpenDiagrams");
+      setDiagramSvgs(svgs);
+    };
+
+    props.channelApi.subscribe("receive_ready", () => {
+      requestOpenDiagrams();
+    })
+
+    requestOpenDiagrams();
   }, []);
 
   return (
