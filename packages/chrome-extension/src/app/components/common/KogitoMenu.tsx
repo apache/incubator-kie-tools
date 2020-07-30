@@ -19,12 +19,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useGitHubApi } from "./GitHubContext";
 import * as Octokit from "@octokit/rest";
 import { useGlobals } from "./GlobalContext";
+import { useChromeExtensionI18n } from "../../i18n/locales";
 
 const GITHUB_OAUTH_TOKEN_SIZE = 40;
 
 export function KogitoMenu() {
   const gitHubApi = useGitHubApi();
   const isAuthenticated = !!gitHubApi.token;
+  const { locale, i18n } = useChromeExtensionI18n();
+  console.log(locale, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -94,7 +97,7 @@ export function KogitoMenu() {
                 className="Header-link mr-0 mr-lg-3 py-2 py-lg-0"
                 href="https://github.com/settings/tokens"
               >
-                Create token
+                {i18n.common.menu.createToken}
               </a>
               <div style={{ position: "relative" }}>
                 <a
@@ -106,27 +109,16 @@ export function KogitoMenu() {
                 </a>
                 {isInfoPopOverOpen && (
                   <div className={"info-popover"}>
-                    <h3>Tokens are only stored locally as cookies.</h3>
-                    <p>We never store or share your token with anyone.</p>
+                    <h3>{i18n.common.menu.tokenInfo.title}</h3>
+                    <p>{i18n.common.menu.tokenInfo.disclaimer}</p>
                     <hr />
-                    <p>
-                      We use your GitHub OAuth Token to provide a better experience while using custom editors. The
-                      official GitHub API has a throttling mechanism with a fairly low threshold for unauthenticated
-                      requests.
-                    </p>
-                    <p>
-                      By authenticating with your OAuth Token we are able to avoid delays when fetching recently updated
-                      files and also provide features that need to read from your repositories, like Work Item
-                      Definitions on BPMN diagrams.
-                    </p>
+                    <p>{i18n.common.menu.tokenInfo.explanation}</p>
+                    <p>{i18n.common.menu.tokenInfo.whichPermissionUserGive}</p>
                     <p>
                       <b>
-                        <u>NOTE:</u>
-                        &nbsp;
+                        <u>{i18n.terms.note.toUpperCase()}:</u>&nbsp;
                       </b>
-                      <b>For public repositories, no special permissions are required</b>. In fact, you can generate a
-                      Token without ticking any checkbox. For private repositories, however, you should provide a Token
-                      with the <b>'repo'</b> permission.
+                      {i18n.common.menu.tokenInfo.permission}
                     </p>
                   </div>
                 )}
@@ -136,7 +128,7 @@ export function KogitoMenu() {
           <label style={{ position: "relative" }}>
             <input
               className={"kogito-github-token-input form-control input-sm " + (isAuthenticated ? "authenticated" : "")}
-              placeholder={"Paste your token here..."}
+              placeholder={i18n.common.menu.placeYourToken}
               maxLength={GITHUB_OAUTH_TOKEN_SIZE}
               autoFocus={true}
               ref={inputRef}
@@ -151,7 +143,7 @@ export function KogitoMenu() {
             {!!potentialToken && <b className={"icon cross"} />}
           </label>
           <button className={"btn btn-sm"} onClick={onReset}>
-            Reset
+            {i18n.terms.reset}
           </button>
         </>
       )}

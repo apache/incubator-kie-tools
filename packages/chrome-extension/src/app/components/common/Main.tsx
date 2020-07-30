@@ -25,6 +25,8 @@ import { Dependencies } from "../../Dependencies";
 import { kogitoMenuContainer } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
+import { I18nProvider } from "@kogito-tooling/i18n";
+import { chromeExtensionI18nDictionaries, chromeExtensionI8nDefaults } from "../../i18n/locales";
 
 export interface Globals {
   id: string;
@@ -55,23 +57,25 @@ function KogitoMenuPortal(props: { id: string }) {
 
 export const Main: React.FunctionComponent<Globals> = props => {
   return (
-    <GlobalContext.Provider
-      value={{
-        id: props.id,
-        logger: props.logger,
-        dependencies: props.dependencies,
-        router: props.router,
-        githubAuthTokenCookieName: props.githubAuthTokenCookieName,
-        extensionIconUrl: props.extensionIconUrl,
-        editorIndexPath: props.editorIndexPath,
-        resourceContentServiceFactory: props.resourceContentServiceFactory,
-        externalEditorManager: props.externalEditorManager
-      }}
-    >
-      <GitHubContextProvider>
-        <KogitoMenuPortal id={props.id} />
-        {props.children}
-      </GitHubContextProvider>
-    </GlobalContext.Provider>
+    <I18nProvider defaults={chromeExtensionI8nDefaults} dictionaries={chromeExtensionI18nDictionaries}>
+      <GlobalContext.Provider
+        value={{
+          id: props.id,
+          logger: props.logger,
+          dependencies: props.dependencies,
+          router: props.router,
+          githubAuthTokenCookieName: props.githubAuthTokenCookieName,
+          extensionIconUrl: props.extensionIconUrl,
+          editorIndexPath: props.editorIndexPath,
+          resourceContentServiceFactory: props.resourceContentServiceFactory,
+          externalEditorManager: props.externalEditorManager
+        }}
+      >
+        <GitHubContextProvider>
+          <KogitoMenuPortal id={props.id} />
+          {props.children}
+        </GitHubContextProvider>
+      </GlobalContext.Provider>
+    </I18nProvider>
   );
 };

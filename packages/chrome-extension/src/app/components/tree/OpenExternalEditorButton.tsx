@@ -16,10 +16,13 @@
 
 import * as React from "react";
 import { ArrowIcon } from "@patternfly/react-icons";
+import { useChromeExtensionI18n } from "../../i18n/locales";
 
 export function OpenExternalEditorButton(props: { id: string; href: string }) {
+  const { i18n } = useChromeExtensionI18n();
+
   return (
-    <a id={props.id} className="float-right" href={props.href} target="blank" title="Open in Online Editor">
+    <a id={props.id} className="float-right" href={props.href} target="blank" title={i18n.tree.openInOnlineEditor}>
       <ArrowIcon />
     </a>
   );

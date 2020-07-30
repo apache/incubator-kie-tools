@@ -14,6 +14,5 @@
  * limitations under the License.
  */
 
-export function b(text: string): string {
-  return `&lt;strong&gt;${text}&lt;/strong&gt;`;
-}
+export * from "./ChromeExtensionI18n";
+export * from "./locales"

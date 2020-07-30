@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
-export function b(text: string): string {
-  return `&lt;strong&gt;${text}&lt;/strong&gt;`;
+import { en } from "./en";
+import { useDictionary } from "@kogito-tooling/i18n";
+
+export const chromeExtensionI8nDefaults = { locale: navigator.language, dictionary: en };
+
+export function useChromeExtensionI18n() {
+  return useDictionary(chromeExtensionI8nDefaults.dictionary);
 }
+
+export const chromeExtensionI18nDictionaries = new Map([["en", en]]);

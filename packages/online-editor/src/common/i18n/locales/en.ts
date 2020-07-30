@@ -16,7 +16,7 @@
 
 import { OnlineI18n } from "..";
 import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
-import { b } from "@kogito-tooling/i18n"
+import { b } from "@kogito-tooling/i18n";
 
 export const en: OnlineI18n = {
   ...en_common,
@@ -72,7 +72,7 @@ export const en: OnlineI18n = {
     body: {
       disclaimer: `By authenticating with your ${en_common.names.oauth} Token we are able to create gists so you can share your diagrams with your colleagues. The token you provide is locally stored as browser cookies and it is never shared with anyone.`,
       learnMore: `Learn more about ${en_common.names.github} tokens`,
-      note: `You should provide a token with the 'gist' permission.`
+      note: `You should provide a token with the ${b("'gist'")} permission.`
     }
   },
   homePage: {
@@ -129,7 +129,9 @@ export const en: OnlineI18n = {
       nextSteps: {
         title: "As next steps, you can try to",
         firstStep: `Connect the ${b("Age")} input with the ${b("Can drive?")} decision`,
-        secondStep: `Define the decision logic into the ${b("Can drive?")} node, to return ${b("true")} when ${b("Age")} is
+        secondStep: `Define the decision logic into the ${b("Can drive?")} node, to return ${b("true")} when ${b(
+          "Age"
+        )} is
               greater ${b("21")}, otherwise ${b("false")}`,
         thirdStep: "Execute the model."
       },
