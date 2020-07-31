@@ -22,15 +22,16 @@ import {
   EnvelopeBusMessagePurpose,
   KogitoChannelApi,
   KogitoChannelBus,
-  LanguageData, OperatingSystem,
+  LanguageData,
+  OperatingSystem,
   ResourcesList
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor } from "../editor/PMMLEditor";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
-import {EnvelopeContextType} from "@kogito-tooling/editor-api";
-import {DefaultKeyboardShortcutsService} from "@kogito-tooling/keyboard-shortcuts";
+import { EnvelopeContextType } from "@kogito-tooling/editor-api";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 
 const languageData: LanguageData = { type: "unused" };
 

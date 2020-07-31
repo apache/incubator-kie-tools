@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { KogitoChannelApi, LanguageData, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { LanguageData } from "@kogito-tooling/microeditor-envelope-protocol";
 import { PMMLEditorInterface } from "./PMMLEditorInterface";
 import { Editor, EditorFactory, EnvelopeContextType } from "@kogito-tooling/editor-api";
 
@@ -24,10 +24,7 @@ export class PMMLEditorFactory implements EditorFactory<LanguageData> {
     return languageData.type === FACTORY_TYPE;
   }
 
-  public createEditor(
-    languageData: LanguageData,
-    envelopeContext: EnvelopeContextType
-  ): Promise<Editor> {
+  public createEditor(languageData: LanguageData, envelopeContext: EnvelopeContextType): Promise<Editor> {
     return Promise.resolve(new PMMLEditorInterface(envelopeContext));
   }
 }

@@ -22,7 +22,8 @@ import {
   KogitoChannelApi,
   KogitoChannelBus,
   KogitoEdit,
-  LanguageData, OperatingSystem,
+  LanguageData,
+  OperatingSystem,
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
@@ -32,8 +33,8 @@ import {
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import { FACTORY_TYPE, PMMLEditorFactory } from "../editor/PMMLEditorFactory";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
-import {Editor, EnvelopeContextType} from "@kogito-tooling/editor-api";
-import {DefaultKeyboardShortcutsService} from "@kogito-tooling/keyboard-shortcuts";
+import { Editor, EnvelopeContextType } from "@kogito-tooling/editor-api";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 
 const languageData: LanguageData = { type: "unused" };
 
