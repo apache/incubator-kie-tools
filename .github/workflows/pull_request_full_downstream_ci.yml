@@ -214,7 +214,7 @@ jobs:
           [ "0" == "$(git diff yarn.lock | wc -l)" ]
         shell: bash
 
-      - name: "Build kogito-tooling"
+      - name: Build kogito-tooling
         env:
           ROUTER_targetOrigin: "https://kiegroup.github.io"
           ROUTER_relativePath: "kogito-online-ci/${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/"
