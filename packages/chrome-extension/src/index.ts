@@ -21,7 +21,7 @@ import { renderPrEditorsApp } from "./app/components/pr/prEditors";
 import { mainContainer, runAfterUriChange } from "./app/utils";
 import { Dependencies } from "./app/Dependencies";
 import * as ReactDOM from "react-dom";
-import { Router } from "@kogito-tooling/core-api";
+import { Router } from "@kogito-tooling/microeditor-envelope-protocol";
 import "../resources/style.css";
 import { Logger } from "./Logger";
 import { Globals } from "./app/components/common/Main";

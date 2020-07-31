@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { Editor, LanguageData } from "@kogito-tooling/core-api";
-import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
-import { EditorFactory } from "./EditorFactory";
+import { LanguageData } from "@kogito-tooling/microeditor-envelope-protocol";
+import { Editor, EditorFactory, EnvelopeContextType } from "@kogito-tooling/editor-api";
 
 /**
  * Composite Factory of Editors to be created inside the envelope. This implementation delegates potential construction
@@ -31,13 +30,10 @@ export class CompositeEditorFactory implements EditorFactory<LanguageData> {
     return true;
   }
 
-  public createEditor(
-    languageData: LanguageData,
-    messageBusClient: MessageBusClient<KogitoChannelApi>
-  ): Promise<Editor> {
+  public createEditor(languageData: LanguageData, envelopeContext: EnvelopeContextType): Promise<Editor> {
     const candidates = this.factories.filter(f => f.supports(languageData));
     this.assertSingleEditorFactory(candidates, languageData);
-    return candidates[0].createEditor(languageData, messageBusClient);
+    return candidates[0].createEditor(languageData, envelopeContext);
   }
 
   private assertSingleEditorFactory(candidates: Array<EditorFactory<LanguageData>>, languageData: LanguageData): void {

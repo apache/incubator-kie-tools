@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Router, Routes } from "@kogito-tooling/core-api";
+import { Router, Routes } from "@kogito-tooling/microeditor-envelope-protocol";
 
 /**
  * Default router to be used for construction of an `KogitoChannelBus` by `EmbeddedEditor`.

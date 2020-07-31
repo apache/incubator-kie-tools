@@ -13,44 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Editor, Element } from "@kogito-tooling/core-api";
-import {
-    KogitoChannelApi,
-    MessageBusClient
-} from "@kogito-tooling/microeditor-envelope-protocol";
+import { Editor, EnvelopeContextType } from "@kogito-tooling/editor-api";
+import { DEFAULT_RECT } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
 import { PMMLEditor } from "./PMMLEditor";
 
 export class PMMLEditorInterface extends Editor {
+  private self: PMMLEditor;
 
-    private self: PMMLEditor;
+  constructor(private readonly envelopeContext: EnvelopeContextType) {
+    super("readonly-react-editor");
+    this.af_isReact = true;
+  }
 
-    constructor(private readonly messageBusClient: MessageBusClient<KogitoChannelApi>) {
-        super("readonly-react-editor");
-        this.af_isReact = true;
-    }
+  public async getElementPosition() {
+    return DEFAULT_RECT;
+  }
 
-    public setContent(path: string, content: string): Promise<void> {
-        return this.self.setContent(path, content);
-    }
+  public setContent(path: string, content: string): Promise<void> {
+    return this.self.setContent(path, content);
+  }
 
-    public getContent(): Promise<string> {
-        return this.self.getContent();
-    }
+  public getContent(): Promise<string> {
+    return this.self.getContent();
+  }
 
-    public getPreview(): Promise<string | undefined> {
-        return Promise.resolve(undefined);
-    }
+  public getPreview(): Promise<string | undefined> {
+    return Promise.resolve(undefined);
+  }
 
-    public af_componentRoot(): Element {
-        return <PMMLEditor exposing={s => (this.self = s)} messageBusClient={this.messageBusClient} />;
-    }
+  public af_componentRoot() {
+    return <PMMLEditor exposing={s => (this.self = s)} messageBusClient={this.envelopeContext.channelApi} />;
+  }
 
-    public async undo(): Promise<void> {
-        //Place holder until StateControl is added for React based components.
-    }
+  public async undo(): Promise<void> {
+    //Place holder until StateControl is added for React based components.
+  }
 
-    public async redo(): Promise<void> {
-        //Place holder until StateControl is added for React based components.
-    }
+  public async redo(): Promise<void> {
+    //Place holder until StateControl is added for React based components.
+  }
 }

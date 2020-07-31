@@ -18,7 +18,7 @@ import * as vscode from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoWebviewProvider } from "./KogitoWebviewProvider";
-import { Routes } from "@kogito-tooling/core-api";
+import { Routes } from "@kogito-tooling/microeditor-envelope-protocol";
 
 /**
  * Starts a Kogito extension.

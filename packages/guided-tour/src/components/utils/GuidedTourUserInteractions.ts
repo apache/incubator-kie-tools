@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { useEffect, useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 
 import { getCurrentStep } from ".";
-import { BlockMode, DemoMode } from "../../api";
+import { BlockMode, DemoMode } from "@kogito-tooling/microeditor-envelope-protocol";
 import { CurrentTutorialContext } from "../../contexts";
 
 export const useUserInteractions = () => {

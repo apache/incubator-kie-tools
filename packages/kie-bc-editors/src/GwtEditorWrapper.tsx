@@ -15,8 +15,8 @@
  */
 
 import * as React from "react";
-import * as Core from "@kogito-tooling/core-api";
-import { GwtEditor } from "./GwtEditor";
+import { getGuidedTourElementPosition, GwtEditor } from "./GwtAppFormerApi";
+import { Editor } from "@kogito-tooling/editor-api";
 import { editors } from "./GwtEditorRoutes";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
@@ -24,7 +24,7 @@ import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
-export class GwtEditorWrapper extends Core.Editor {
+export class GwtEditorWrapper extends Editor {
   public readonly af_componentTitle: string;
   public readonly editorId: string;
 
@@ -74,6 +74,10 @@ export class GwtEditorWrapper extends Core.Editor {
 
   public getContent() {
     return this.gwtEditor.getContent().then(content => this.xmlFormatter.format(content));
+  }
+
+  public getElementPosition(selector: string) {
+    return Promise.resolve(getGuidedTourElementPosition(selector));
   }
 
   public setContent(path: string, content: string) {

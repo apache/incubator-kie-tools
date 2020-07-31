@@ -16,7 +16,7 @@
 
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditor } from "./KogitoEditor";
-import { KogitoEdit, ResourceContentService, Routes } from "@kogito-tooling/core-api";
+import { KogitoEdit, ResourceContentService, Routes } from "@kogito-tooling/microeditor-envelope-protocol";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 

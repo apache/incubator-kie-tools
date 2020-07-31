@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as AppFormer from "@kogito-tooling/core-api";
-import { LanguageData } from "@kogito-tooling/core-api";
-import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
-import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { LanguageData } from "@kogito-tooling/microeditor-envelope-protocol";
 import { PMMLEditorInterface } from "./PMMLEditorInterface";
+import { Editor, EditorFactory, EnvelopeContextType } from "@kogito-tooling/editor-api";
 
 export const FACTORY_TYPE = "pmml";
 
-export class PMMLEditorFactory implements MicroEditorEnvelope.EditorFactory<LanguageData> {
+export class PMMLEditorFactory implements EditorFactory<LanguageData> {
   public supports(languageData: LanguageData) {
     return languageData.type === FACTORY_TYPE;
   }
 
-  public createEditor(
-    languageData: LanguageData,
-    messageBusClient: MessageBusClient<KogitoChannelApi>
-  ): Promise<AppFormer.Editor> {
-    return Promise.resolve(new PMMLEditorInterface(messageBusClient));
+  public createEditor(languageData: LanguageData, envelopeContext: EnvelopeContextType): Promise<Editor> {
+    return Promise.resolve(new PMMLEditorInterface(envelopeContext));
   }
 }

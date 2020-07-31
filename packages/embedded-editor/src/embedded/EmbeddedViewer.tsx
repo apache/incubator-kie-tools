@@ -20,7 +20,7 @@ import {
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList
-} from "@kogito-tooling/core-api";
+} from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
 import { useCallback } from "react";
 import { File } from "../common/File";

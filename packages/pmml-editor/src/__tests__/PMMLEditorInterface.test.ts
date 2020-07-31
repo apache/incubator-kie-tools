@@ -15,25 +15,23 @@
  */
 
 import {
-  KogitoEdit,
-  LanguageData,
-  ResourceContentRequest,
-  ResourceListRequest,
-  ResourcesList,
-  StateControlCommand
-} from "@kogito-tooling/core-api";
-import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
-import {
+  ChannelType,
+  EditorContext,
   EnvelopeBus,
   EnvelopeBusMessage,
   EnvelopeBusMessagePurpose,
   KogitoChannelApi,
-  KogitoChannelBus
+  KogitoChannelBus,
+  LanguageData,
+  OperatingSystem,
+  ResourcesList
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor } from "../editor/PMMLEditor";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
+import { EnvelopeContextType } from "@kogito-tooling/editor-api";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 
 const languageData: LanguageData = { type: "unused" };
 
@@ -52,16 +50,16 @@ const api: KogitoChannelApi = {
   receive_openFile(_: string) {
     /*NOP*/
   },
-  receive_guidedTourUserInteraction(_: UserInteraction) {
+  receive_guidedTourUserInteraction() {
     /*NOP*/
   },
-  receive_guidedTourRegisterTutorial(_: Tutorial) {
+  receive_guidedTourRegisterTutorial() {
     /*NOP*/
   },
-  receive_newEdit(_: KogitoEdit) {
+  receive_newEdit() {
     /*NOP*/
   },
-  receive_stateControlCommandUpdate(_: StateControlCommand) {
+  receive_stateControlCommandUpdate() {
     /*NOP*/
   },
   receive_languageRequest() {
@@ -70,16 +68,26 @@ const api: KogitoChannelApi = {
   receive_contentRequest() {
     return Promise.resolve({ content: "" });
   },
-  receive_resourceContentRequest(_: ResourceContentRequest) {
+  receive_resourceContentRequest() {
     return Promise.resolve(undefined);
   },
-  receive_resourceListRequest(_: ResourceListRequest) {
+  receive_resourceListRequest() {
     return Promise.resolve(new ResourcesList("", []));
   }
 };
 const messageBus: KogitoChannelBus = new KogitoChannelBus(bus, api);
 
-const editorInterface: PMMLEditorInterface = new PMMLEditorInterface(messageBus.client);
+const editorContext: EditorContext = { channel: ChannelType.EMBEDDED, operatingSystem: OperatingSystem.LINUX };
+const envelopeContext: EnvelopeContextType = {
+  channelApi: messageBus.client,
+  context: editorContext,
+  services: {
+    guidedTour: { isEnabled: () => false },
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({ editorContext: editorContext })
+  }
+};
+
+const editorInterface: PMMLEditorInterface = new PMMLEditorInterface(envelopeContext);
 let editor: PMMLEditor;
 
 beforeEach(() => {

@@ -17,16 +17,19 @@
 import {
   ChannelType,
   EditorContent,
+  KogitoChannelBus,
   KogitoEdit,
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
-  StateControlCommand
-} from "@kogito-tooling/core-api";
-import { KogitoChannelBus } from "@kogito-tooling/microeditor-envelope-protocol";
-import { useSyncedKeyboardEvents } from "@kogito-tooling/microeditor-envelope-protocol";
-import { KogitoGuidedTour, UserInteraction, Tutorial, Rect } from "@kogito-tooling/guided-tour";
+  StateControlCommand,
+  Tutorial,
+  useConnectedKogitoChannelBus,
+  UserInteraction
+} from "@kogito-tooling/microeditor-envelope-protocol";
+import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts-channel";
+import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 import * as CSS from "csstype";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
@@ -238,6 +241,9 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   // Forward keyboard events to envelope
   useSyncedKeyboardEvents(kogitoChannelBus.client);
 
+  //Attach/detach bus when component attaches/detaches from DOM
+  useConnectedKogitoChannelBus(window.location.origin, kogitoChannelBus);
+
   useEffect(() => {
     KogitoGuidedTour.getInstance().registerPositionProvider((selector: string) =>
       kogitoChannelBus.request_guidedTourElementPositionResponse(selector).then(position => {
@@ -245,18 +251,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
       })
     );
-  }, [kogitoChannelBus]);
-
-  //Attach/detach bus when component attaches/detaches from DOM
-  useEffect(() => {
-    const listener = (msg: MessageEvent) => kogitoChannelBus.receive(msg.data);
-    window.addEventListener("message", listener, false);
-    kogitoChannelBus.startInitPolling(window.location.origin);
-
-    return () => {
-      kogitoChannelBus.stopInitPolling();
-      window.removeEventListener("message", listener);
-    };
   }, [kogitoChannelBus]);
 
   //Forward reference methods
@@ -273,10 +267,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
         notifyUndo: () => kogitoChannelBus.notify_editorUndo(),
         requestContent: () => kogitoChannelBus.request_contentResponse(),
         requestPreview: () => kogitoChannelBus.request_previewResponse(),
-        setContent: (content: string) => {
-          kogitoChannelBus.notify_contentChanged({ content: content });
-          return Promise.resolve();
-        }
+        setContent: async (content: string) => kogitoChannelBus.notify_contentChanged({ content: content })
       };
     },
     [kogitoChannelBus]

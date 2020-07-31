@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./GwtEditor";
 export * from "./GwtEditorWrapper";
 export * from "./GwtEditorWrapperFactory";
 export * from "./GwtLanguageData";

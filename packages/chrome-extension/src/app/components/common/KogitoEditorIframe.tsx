@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/core-api";
+import { ChannelType, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorType, EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";

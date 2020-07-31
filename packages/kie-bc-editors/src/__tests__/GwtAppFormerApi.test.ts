@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-import { GwtAppFormerApi } from "../GwtAppFormerApi";
+import { GwtAppFormerApi, GwtEditor } from "../GwtAppFormerApi";
 import { DummyEditor } from "./DummyEditor";
-import { GwtEditor } from "../GwtEditor";
-import * as Core from "@kogito-tooling/core-api";
+import { Editor } from "@kogito-tooling/editor-api";
 
 class DummyGwtEditor {
-  private wrappedEditor: Core.Editor;
+  private wrappedEditor: Editor;
 
-  constructor(wrappedEditor: Core.Editor) {
+  constructor(wrappedEditor: Editor) {
     this.wrappedEditor = wrappedEditor;
   }
-  public get(): Core.Editor {
+  public get(): Editor {
     return this.wrappedEditor;
   }
 }

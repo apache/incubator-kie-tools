@@ -50,7 +50,7 @@ import {
 } from "@patternfly/react-core";
 import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
-import { OperatingSystem } from "@kogito-tooling/core-api";
+import { OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 
 enum ExtensionStatus {

@@ -32,7 +32,7 @@ import { TimesCircleIcon, BookIcon } from "@patternfly/react-icons";
 
 import { NavigationControls } from "..";
 import { CurrentTutorialContext } from "../../contexts";
-import { Step } from "../..";
+import { Step } from "@kogito-tooling/microeditor-envelope-protocol";
 
 function renderContent(
   content: React.ReactNode | ((props: object) => React.ReactNode) | string,

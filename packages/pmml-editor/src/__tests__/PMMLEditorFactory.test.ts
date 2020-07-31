@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-import * as AppFormer from "@kogito-tooling/core-api";
 import {
-  KogitoEdit,
-  LanguageData,
-  ResourceContentRequest,
-  ResourceListRequest,
-  ResourcesList,
-  StateControlCommand
-} from "@kogito-tooling/core-api";
-import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour";
-import {
+  ChannelType,
+  EditorContext,
   EnvelopeBus,
   EnvelopeBusMessage,
   KogitoChannelApi,
-  KogitoChannelBus
+  KogitoChannelBus,
+  KogitoEdit,
+  LanguageData,
+  OperatingSystem,
+  ResourceContentRequest,
+  ResourceListRequest,
+  ResourcesList,
+  StateControlCommand,
+  Tutorial,
+  UserInteraction
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import { FACTORY_TYPE, PMMLEditorFactory } from "../editor/PMMLEditorFactory";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
+import { Editor, EnvelopeContextType } from "@kogito-tooling/editor-api";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 
 const languageData: LanguageData = { type: "unused" };
 
@@ -76,6 +79,15 @@ const api: KogitoChannelApi = {
   }
 };
 const messageBus: KogitoChannelBus = new KogitoChannelBus(bus, api);
+const editorContext: EditorContext = { channel: ChannelType.EMBEDDED, operatingSystem: OperatingSystem.LINUX };
+const envelopeContext: EnvelopeContextType = {
+  channelApi: messageBus.client,
+  context: editorContext,
+  services: {
+    guidedTour: { isEnabled: () => false },
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({ editorContext: editorContext })
+  }
+};
 
 describe("PMMLEditorFactory", () => {
   test("Unsupported LanguageData type", () => {
@@ -93,7 +105,7 @@ describe("PMMLEditorFactory", () => {
 
     jest.spyOn(factory, "createEditor");
 
-    const created: Promise<AppFormer.Editor> = factory.createEditor({ type: FACTORY_TYPE }, messageBus.client);
+    const created: Promise<Editor> = factory.createEditor({ type: FACTORY_TYPE }, envelopeContext);
     expect(created).resolves.toBeInstanceOf(PMMLEditorInterface);
   });
 });

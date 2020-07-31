@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kogito-tooling/core-api";
+import { ChannelType } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
 import { EditorType, File } from "../../common";
 import { EmbeddedEditorRouter, EmbeddedViewer } from "../../embedded";

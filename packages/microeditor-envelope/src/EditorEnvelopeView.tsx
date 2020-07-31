@@ -16,25 +16,26 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import * as Core from "@kogito-tooling/core-api";
-import { ChannelType, StateControlCommand } from "@kogito-tooling/core-api";
+import { Editor } from "@kogito-tooling/editor-api";
 import { LoadingScreen } from "./LoadingScreen";
-import { DefaultKeyboardShortcutsService, KeyBindingsHelpOverlay } from "@kogito-tooling/keyboard-shortcuts";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import "@patternfly/patternfly/base/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/patternfly/patternfly.scss";
 import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
+import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
+import { EditorContext, ChannelType, StateControlCommand } from "@kogito-tooling/microeditor-envelope-protocol";
 
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
   loadingScreenContainer: HTMLElement;
   keyboardShortcutsService: DefaultKeyboardShortcutsService;
-  context: Core.EditorContext;
+  context: EditorContext;
   messageBus: KogitoEnvelopeBus;
 }
 
 interface State {
-  editor?: Core.Editor;
+  editor?: Editor;
   loading: boolean;
 }
 
@@ -52,7 +53,7 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
     return this.state.editor;
   }
 
-  public setEditor(editor: Core.Editor) {
+  public setEditor(editor: Editor) {
     return new Promise(res => this.setState({ editor: editor }, res));
   }
 
@@ -62,10 +63,6 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
 
   public setLoading() {
     return this.setState({ loading: true });
-  }
-
-  private LoadingScreenPortal() {
-    return ReactDOM.createPortal(<LoadingScreen visible={this.state.loading} />, this.props.loadingScreenContainer!);
   }
 
   public componentDidMount() {
@@ -88,7 +85,7 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
       "Edit | Redo last edit",
       async () => {
         this.getEditor()!.redo();
-        this.props.messageBus.notify_stateControlCommandUpdate(StateControlCommand.REDO);
+        this.props.messageBus.client.notify("receive_stateControlCommandUpdate", StateControlCommand.REDO);
       }
     );
   }
@@ -99,7 +96,7 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
       "Edit | Undo last edit",
       async () => {
         this.getEditor()!.undo();
-        this.props.messageBus.notify_stateControlCommandUpdate(StateControlCommand.UNDO);
+        this.props.messageBus.client.notify("receive_stateControlCommandUpdate", StateControlCommand.UNDO);
       }
     );
   }
@@ -107,13 +104,8 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
   public render() {
     return (
       <>
-        {!this.state.loading && (
-          <KeyBindingsHelpOverlay
-            keyboardShortcutsService={this.props.keyboardShortcutsService}
-            context={this.props.context}
-          />
-        )}
-        {this.LoadingScreenPortal()}
+        {!this.state.loading && <KeyBindingsHelpOverlay />}
+        {ReactDOM.createPortal(<LoadingScreen visible={this.state.loading} />, this.props.loadingScreenContainer!)}
         {this.state.editor && this.state.editor.af_isReact && this.state.editor.af_componentRoot()}
       </>
     );

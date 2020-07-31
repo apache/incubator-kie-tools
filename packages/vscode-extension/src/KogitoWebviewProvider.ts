@@ -30,7 +30,7 @@ import {
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
-import { KogitoEdit } from "@kogito-tooling/core-api";
+import { KogitoEdit } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export class KogitoWebviewProvider implements CustomEditorProvider<KogitoEditableDocument> {
   private readonly viewType: string;

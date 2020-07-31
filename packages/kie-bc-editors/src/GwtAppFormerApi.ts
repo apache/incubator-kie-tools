@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GwtEditor } from "./GwtEditor";
+import { Rect } from "@kogito-tooling/microeditor-envelope-protocol";
 
 declare global {
   //Exposed API of AppFormerGwt
@@ -23,11 +23,28 @@ declare global {
     appFormerGwtFinishedLoading: () => any;
     erraiBusApplicationRoot: string;
     erraiBusRemoteCommunicationEnabled: boolean;
+    JsInterop__Envelope__GuidedTour__GuidedTourCustomSelectorPositionProvider: GuidedTourCustomSelectorPositionProvider;
   }
 }
 
-export class GwtAppFormerApi {
+export const getGuidedTourElementPosition = (selector: string) => {
+  return window.JsInterop__Envelope__GuidedTour__GuidedTourCustomSelectorPositionProvider.getInstance().getPosition(
+    selector
+  );
+};
 
+interface GuidedTourCustomSelectorPositionProvider {
+  getPosition(querySelector: string): Rect;
+  getInstance(): GuidedTourCustomSelectorPositionProvider;
+}
+
+export interface GwtEditor {
+  getContent(): Promise<string>;
+  setContent(path: string, content: string): Promise<void>;
+  getPreview(): Promise<string | undefined>;
+}
+
+export class GwtAppFormerApi {
   public onFinishedLoading(callback: () => Promise<any>) {
     window.appFormerGwtFinishedLoading = callback;
   }
