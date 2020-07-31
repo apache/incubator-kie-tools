@@ -1,0 +1,173 @@
+name: Publish daily dev version
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: github.repository == 'kiegroup/kogito-tooling'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [12.16.3]
+        yarn: [1.19.1]
+
+    steps:
+      - name: Clone kogito-tooling
+        uses: actions/checkout@v2
+        with:
+          path: kogito-tooling
+
+      - name: Setup kogito-tooling
+        run: |
+          cd kogito-tooling
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+      # This bash script will set an output version for this step. It can be used with steps.version.outputs.version
+      - name: Output version
+        id: version
+        run: |
+          cd kogito-tooling
+          echo ::set-output name=version::$(node -e "console.log(require('./lerna.json').version);")
+        shell: bash
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Setup Yarn
+        run: npm install -g yarn@${{ matrix.yarn }}
+
+      - name: Start Xvfb (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
+      - name: Download dependencies
+        run: |
+          cd kogito-tooling
+          yarn run init
+
+      - name: Build kogito-tooling
+        env:
+          ROUTER_targetOrigin: "https://kiegroup.github.io"
+          ROUTER_relativePath: "kogito-online/dev/editors/"
+          DOWNLOAD_HUB_linuxUrl: "https://kiegroup.github.io/kogito-online-ci/hub_download_unsupported.html"
+          DOWNLOAD_HUB_macOsUrl: "https://kiegroup.github.io/kogito-online-ci/hub_download_unsupported.html"
+          DOWNLOAD_HUB_windowsUrl: "https://kiegroup.github.io/kogito-online-ci/hub_download_unsupported.html"
+          DISPLAY: ":99.0"
+        run: |
+          cd kogito-tooling
+          yarn run build:prod
+
+       - name: Upload DMN editor (Ubuntu only)
+         if: matrix.os == 'ubuntu-latest'
+         uses: actions/upload-artifact@v1
+         with:
+           name: dmn-editor
+           path: kogito-tooling/packages/kie-bc-editors-unpacked/dmn
+
+       - name: Upload BPMN editor (Ubuntu only)
+         if: matrix.os == 'ubuntu-latest'
+         uses: actions/upload-artifact@v1
+         with:
+           name: bpmn-editor
+           path: kogito-tooling/packages/kie-bc-editors-unpacked/bpmn
+
+       - name: Upload SceSim editor (Ubuntu only)
+         if: matrix.os == 'ubuntu-latest'
+         uses: actions/upload-artifact@v1
+         with:
+           name: scesim-editor
+           path: kogito-tooling/packages/kie-bc-editors-unpacked/scesim
+
+      - name: Upload VSCode Extension (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: vscode-extension
+          path: kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
+
+      - name: Upload Chrome Extension (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: chrome-extension
+          path: kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.zip
+
+      - name: Upload Desktop App - Ubuntu (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: desktop-app-linux
+          path: kogito-tooling/packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
+
+
+      - name: Upload Desktop App - macOS (macOS only)
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: desktop-app-macos
+          path: kogito-tooling/packages/desktop/out/Business Modeler Preview-darwin-x64.zip
+
+
+      - name: Upload Desktop App - Windows (Windows only)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: desktop-app-windows
+          path: kogito-tooling/packages/desktop/out/Business Modeler Preview-win32-x64
+
+      - name: Upload Hub App - Ubuntu (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: hub-app-linux
+          path: kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
+
+      - name: Upload Hub App - macOS (macOS only)
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: hub-app-macos
+          path: kogito-tooling/packages/hub/out/Business Modeler Hub Preview-darwin-x64.zip
+
+      - name: Upload Hub App - Windows (Windows only)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: hub-app-windows
+          path: kogito-tooling/packages/hub/out/Business Modeler Hub Preview-win32-x64
+
+      - name: Checkout kogito-online (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+          path: kogito-online
+          repository: kiegroup/kogito-online
+          ref: gh-pages
+
+      - name: Update kogito-online resources (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        run: |          
+          cd kogito-online
+          rm -rf dev
+          mkdir -p dev/editors
+          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/bpmn dev/editors/
+          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/dmn dev/editors/
+          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/scesim dev/editors/
+          cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope dev/editors/
+          cp -r ../kogito-tooling/packages/online-editor/dist/* dev/
+          rm -rf dev/gwt-editors
+          ln -s dev/editors dev/gwt-editors
+          git config --global user.email "kietooling@gmail.com"
+          git config --global user.name "Kogito Tooling Bot (kiegroup)"
+          today=$(date -I)
+          git add . && git commit -m "Kogito Tooling Daily Dev Build resources - $today" || echo "No changes."
+          git push origin gh-pages
+          cd -
