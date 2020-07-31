@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ChannelType } from "@kogito-tooling/core-api";
+import { ChannelType } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 
 let channelType: ChannelType = ChannelType.DESKTOP;
@@ -21,54 +21,49 @@ let channelType: ChannelType = ChannelType.DESKTOP;
 jest.mock("@kogito-tooling/microeditor-envelope");
 const mockMicroEditorEnvelope = MicroEditorEnvelope as jest.Mocked<typeof MicroEditorEnvelope>;
 
-Object.defineProperty(global, "frameElement",
-    {
-        get: jest.fn().mockImplementation(() => {
-            return {
-                attributes: {
-                    getNamedItem: (key: string) => {
-                        return { value: key === "data-envelope-channel" ? channelType : undefined };
-                    }
-                }
-            };
-        })
-    });
+Object.defineProperty(global, "frameElement", {
+  get: jest.fn().mockImplementation(() => {
+    return {
+      attributes: {
+        getNamedItem: (key: string) => {
+          return { value: key === "data-envelope-channel" ? channelType : undefined };
+        }
+      }
+    };
+  })
+});
 
-//Lazy load module as it executes once loaded and, if import'ed, it's before the mocks are setup. 
+//Lazy load module as it executes once loaded and, if import'ed, it's before the mocks are setup.
 import module = require("../../envelope/envelope");
 
-describe("MicroEditorEnvelope.init",
-    () => {
-        test("initialisation",
-            () => {
-                expect(mockMicroEditorEnvelope.init.mock.calls.length).toEqual(1);
-                expect(mockMicroEditorEnvelope.init.mock.calls[0][0].editorContext.channel).toBe(ChannelType.DESKTOP);
-            });
-    });
+describe("MicroEditorEnvelope.init", () => {
+  test("initialisation", () => {
+    expect(mockMicroEditorEnvelope.init.mock.calls.length).toEqual(1);
+    expect(mockMicroEditorEnvelope.init.mock.calls[0][0].editorContext.channel).toBe(ChannelType.DESKTOP);
+    expect(mockMicroEditorEnvelope.init.mock.calls[0][0].editorFactory).toBeInstanceOf(
+      MicroEditorEnvelope.CompositeEditorFactory
+    );
+  });
+});
 
-describe("ChannelType",
-    () => {
-        test("ChannelType::DESKTOP",
-            () => {
-                channelType = ChannelType.DESKTOP;
-                expect(module.getChannelType()).toEqual(ChannelType.DESKTOP);
-            });
+describe("ChannelType", () => {
+  test("ChannelType::DESKTOP", () => {
+    channelType = ChannelType.DESKTOP;
+    expect(module.getChannelType()).toEqual(ChannelType.DESKTOP);
+  });
 
-        test("ChannelType::GITHUB",
-            () => {
-                channelType = ChannelType.GITHUB;
-                expect(module.getChannelType()).toEqual(ChannelType.GITHUB);
-            });
+  test("ChannelType::GITHUB", () => {
+    channelType = ChannelType.GITHUB;
+    expect(module.getChannelType()).toEqual(ChannelType.GITHUB);
+  });
 
-        test("ChannelType::ONLINE",
-            () => {
-                channelType = ChannelType.ONLINE;
-                expect(module.getChannelType()).toEqual(ChannelType.ONLINE);
-            });
+  test("ChannelType::ONLINE", () => {
+    channelType = ChannelType.ONLINE;
+    expect(module.getChannelType()).toEqual(ChannelType.ONLINE);
+  });
 
-        test("ChannelType::VSCODE",
-            () => {
-                channelType = ChannelType.VSCODE;
-                expect(module.getChannelType()).toEqual(ChannelType.VSCODE);
-            });
-    });
+  test("ChannelType::VSCODE", () => {
+    channelType = ChannelType.VSCODE;
+    expect(module.getChannelType()).toEqual(ChannelType.VSCODE);
+  });
+});

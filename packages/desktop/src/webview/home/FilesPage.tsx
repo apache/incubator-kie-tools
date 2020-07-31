@@ -38,7 +38,7 @@ import {
   TextVariants,
   Title,
   Toolbar,
-  ToolbarGroup,
+  ToolbarContent,
   ToolbarItem,
   Tooltip
 } from "@patternfly/react-core";
@@ -284,43 +284,41 @@ export function FilesPage(props: Props) {
 
   return (
     <>
+      {importFileErrorDetails.type === ImportFileErrorType.RESPONSE && (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            variant={AlertVariant.danger}
+            title={i18n.filesPage.alerts.errorFetchingFile}
+            actionClose={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
+          >
+            <br />
+            <b>{`${i18n.filesPage.errorDetails}: `}</b>
+            {importFileErrorDetails.statusCode}
+            {importFileErrorDetails.statusCode && importFileErrorDetails.description && " - "}
+            {importFileErrorDetails.description}
+          </Alert>
+        </div>
+      )}
+      {importFileErrorDetails.type === ImportFileErrorType.FETCH && (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            variant={AlertVariant.danger}
+            title={i18n.filesPage.alerts.unexpectedErrorFetchingFile}
+            actionClose={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
+          >
+            <br />
+            <b><I18nHtml>{`${i18n.filesPage.errorDetails}: `}</I18nHtml></b>
+            {importFileErrorDetails.description}
+          </Alert>
+        </div>
+      )}
       <PageSection>
-        {importFileErrorDetails.type === ImportFileErrorType.RESPONSE && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              variant={AlertVariant.danger}
-              title={i18n.filesPage.alerts.errorFetchingFile}
-              action={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
-            >
-              <br />
-              <b>Error details: </b>
-              {importFileErrorDetails.statusCode}
-              {importFileErrorDetails.statusCode && importFileErrorDetails.description && " - "}
-              {importFileErrorDetails.description}
-            </Alert>
-          </div>
-        )}
-        {importFileErrorDetails.type === ImportFileErrorType.FETCH && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              variant={AlertVariant.danger}
-              title={i18n.filesPage.alerts.unexpectedErrorFetchingFile}
-              action={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
-            >
-              <br />
-              <b>
-                <I18nHtml>{`${i18n.filesPage.errorDetails}:`}</I18nHtml>
-              </b>
-              {importFileErrorDetails.description}
-            </Alert>
-          </div>
-        )}
-        <TextContent>
-          <Title size={"2xl"} headingLevel={"h2"}>
-            <I18nHtml>{i18n.filesPage.files.title}</I18nHtml>
-          </Title>
-        </TextContent>
-        <Gallery gutter="md" className="kogito--desktop__actions-gallery">
+        <div className={"kogito--desktop__actions-title"}>
+          <TextContent>
+            <Title headingLevel={"h1"}><I18nHtml>{i18n.filesPage.files.title}</I18nHtml></Title>
+          </TextContent>
+        </div>
+        <Gallery hasGutter={true} className="kogito--desktop__actions-gallery">
           <Card
             className={"kogito--desktop__actions-card"}
             component={"article"}
@@ -420,14 +418,14 @@ export function FilesPage(props: Props) {
                   <FormGroup
                     label="URL"
                     fieldId="url-text-input"
-                    isValid={isInputUrlValid}
+                    validated={isInputUrlValid ? "default" : "error"}
                     helperText=""
                     helperTextInvalid={messageForStateInputUrl}
                   >
                     <TextInput
                       isRequired={true}
                       onBlur={onInputFileUrlBlur}
-                      isValid={isInputUrlValid}
+                      validated={isInputUrlValid ? "default" : "error"}
                       value={url}
                       onChange={inputFileChanged}
                       type="url"
@@ -453,48 +451,47 @@ export function FilesPage(props: Props) {
           <I18nHtml>{i18n.filesPage.recent.title}</I18nHtml>
         </Title>
         <Toolbar>
-          {
-            <>
-              <ToolbarGroup>
-                {
-                  <Select
-                    onSelect={onSelectTypeFilter}
-                    onToggle={onToggleTypeFilter}
-                    isExpanded={typeFilterSelect.isExpanded}
-                    selections={typeFilterSelect.value}
-                    width={"7em"}
-                  >
-                    {typeFilterOptions.map((option, index) => (
-                      <SelectOption key={index} value={option.value} />
-                    ))}
-                  </Select>
-                }
-              </ToolbarGroup>
-              <ToolbarGroup>
-                <InputGroup>
-                  <TextInput
-                    name={"searchInput"}
-                    id={"searchInput"}
-                    type={"search"}
-                    aria-label={"search input example"}
-                    placeholder={"Search"}
-                    onChange={onChangeSearchFilter}
-                  />
-                </InputGroup>
-              </ToolbarGroup>
-              <ToolbarItem>
-                <Button
-                  data-testid="orderAlphabeticallyButton"
-                  variant="plain"
-                  aria-label="sort file view"
-                  className={sortAlphaFilter ? "kogito--filter-btn-pressed" : "kogito--filter-btn"}
-                  onClick={() => setSortAlphaFilter(!sortAlphaFilter)}
+          <ToolbarContent>
+            <ToolbarItem>
+              {
+                <Select
+                  onSelect={onSelectTypeFilter}
+                  onToggle={onToggleTypeFilter}
+                  isOpen={typeFilterSelect.isExpanded}
+                  selections={typeFilterSelect.value}
+                  width={"7em"}
                 >
-                  <SortAlphaDownIcon />
-                </Button>
-              </ToolbarItem>
-              {/* TODO: Implement grid view */}
-              {/*<ToolbarGroup className="pf-u-ml-auto">
+                  {typeFilterOptions.map((option, index) => (
+                    <SelectOption key={index} value={option.value} />
+                  ))}
+                </Select>
+              }
+            </ToolbarItem>
+            <ToolbarItem>
+              <InputGroup>
+                <TextInput
+                  name={"searchInput"}
+                  id={"searchInput"}
+                  type={"search"}
+                  aria-label={"search input example"}
+                  placeholder={"Search"}
+                  onChange={onChangeSearchFilter}
+                />
+              </InputGroup>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Button
+                data-testid="orderAlphabeticallyButton"
+                variant="plain"
+                aria-label="sort file view"
+                className={sortAlphaFilter ? "kogito--filter-btn-pressed" : "kogito--filter-btn"}
+                onClick={() => setSortAlphaFilter(!sortAlphaFilter)}
+              >
+                <SortAlphaDownIcon />
+              </Button>
+            </ToolbarItem>
+            {/* TODO: Implement grid view */}
+            {/*<ToolbarGroup className="pf-u-ml-auto">
                 <ToolbarItem>
                   <Button variant="plain" aria-label="tiled file view">
                     <ThIcon />
@@ -506,8 +503,7 @@ export function FilesPage(props: Props) {
                   </Button>
                 </ToolbarItem>
               </ToolbarGroup>*/}
-            </>
-          }
+          </ToolbarContent>
         </Toolbar>
       </PageSection>
       <PageSection isFilled={true}>
@@ -518,7 +514,7 @@ export function FilesPage(props: Props) {
         )}
 
         {filteredLastOpenedFiles.length > 0 && (
-          <Gallery gutter="lg" className="kogito-desktop__file-gallery">
+          <Gallery hasGutter={true} className="kogito-desktop__file-gallery">
             {filteredLastOpenedFiles.map(file => (
               <Tooltip content={<div>{file.filePath}</div>} key={file.filePath}>
                 <Card
@@ -537,7 +533,7 @@ export function FilesPage(props: Props) {
                     </Bullseye>
                   </CardBody>
                   <CardFooter>
-                    <Title headingLevel="h3" size="xs" className="kogito--desktop__filename">
+                    <Title headingLevel="h3" size="md" className="kogito--desktop__filename">
                       {removeDirectories(file.filePath)}
                     </Title>
                   </CardFooter>

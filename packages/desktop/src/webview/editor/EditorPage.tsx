@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kogito-tooling/core-api";
+import { ChannelType } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorType, EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
-import "@patternfly/patternfly/patternfly.css";
-import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
+import {
+  Alert,
+  AlertActionCloseButton,
+  AlertActionLink,
+  Page,
+  PageSection,
+  Stack,
+  StackItem
+} from "@patternfly/react-core";
 import * as electron from "electron";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -25,7 +32,7 @@ import { File, FileSaveActions } from "../../common/File";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import {desktopI18nDefaults, useDesktopI18n} from "../common/i18n/locales";
+import { desktopI18nDefaults, useDesktopI18n } from "../common/i18n/locales";
 
 interface Props {
   editorType: string;
@@ -226,7 +233,7 @@ export function EditorPage(props: Props) {
 
   return (
     <Page className={"kogito--editor-page"}>
-      <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
+      <PageSection variant="dark" padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
         <Stack>
           <StackItem>
             <EditorToolbar onClose={onClose} onSave={onSave} isEdited={isDirty} />
@@ -237,24 +244,27 @@ export function EditorPage(props: Props) {
                 <Alert
                   variant="warning"
                   title={i18n.editorPage.alerts.unsaved.title}
-                  action={
+                  actionClose={
                     <AlertActionCloseButton
                       data-testid="unsaved-alert-close-button"
                       onClose={() => setShowUnsavedAlert(false)}
                     />
                   }
+                  actionLinks={
+                    <React.Fragment>
+                      <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestSaveFile}>
+                        {i18n.terms.save}
+                      </AlertActionLink>
+                      <AlertActionLink
+                        data-testid="unsaved-alert-close-without-save-button"
+                        onClick={onCloseWithoutSave}
+                      >
+                        {i18n.editorPage.alerts.unsaved.closeWithoutSaving}
+                      </AlertActionLink>
+                    </React.Fragment>
+                  }
                 >
-                  <div>
-                    <p>
-                      {`${i18n.editorPage.alerts.unsaved.message} `}
-                      <a data-testid="unsaved-alert-save-button" onClick={requestSaveFile}>
-                        Save
-                      </a>
-                    </p>
-                    <a data-testid="unsaved-alert-close-without-save-button" onClick={onCloseWithoutSave}>
-                      {` ${i18n.editorPage.alerts.unsaved.closeWithoutSaving}`}
-                    </a>
-                  </div>
+                  <p>{i18n.editorPage.alerts.unsaved.message}</p>
                 </Alert>
               </div>
             )}
@@ -263,7 +273,7 @@ export function EditorPage(props: Props) {
                 <Alert
                   variant="success"
                   title={i18n.editorPage.alerts.copy}
-                  action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
+                  actionClose={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
                 />
               </div>
             )}
@@ -271,17 +281,17 @@ export function EditorPage(props: Props) {
               <div className={"kogito--alert-container"}>
                 <Alert
                   variant="success"
-                  title={`${i18n.editorPage.alerts.saved}!`}
-                  action={<AlertActionCloseButton onClose={closeSaveFileSuccessAlert} />}
+                  title={i18n.editorPage.alerts.saved}
+                  actionClose={<AlertActionCloseButton onClose={closeSaveFileSuccessAlert} />}
                 />
               </div>
             )}
             {savePreviewSuccessAlertVisible && (
-              <div className={`kogito--alert-container`}>
+              <div className={"kogito--alert-container"}>
                 <Alert
                   variant="success"
-                  title={`${i18n.editorPage.alerts.previewSaved}!`}
-                  action={<AlertActionCloseButton onClose={closeSavePreviewSuccessAlert} />}
+                  title={i18n.editorPage.alerts.previewSaved}
+                  actionClose={<AlertActionCloseButton onClose={closeSavePreviewSuccessAlert} />}
                 />
               </div>
             )}

@@ -16,9 +16,9 @@
 
 import { EditorType, EmbeddedEditorRouter, File } from "@kogito-tooling/embedded-editor";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
-import "@patternfly/patternfly/patternfly-addons.css";
-import "@patternfly/patternfly/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly.css";
+import "@patternfly/patternfly/base/patternfly-variables.css";
+import "@patternfly/patternfly/patternfly-addons.scss";
+import "@patternfly/patternfly/patternfly.scss";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { Route, Switch } from "react-router";

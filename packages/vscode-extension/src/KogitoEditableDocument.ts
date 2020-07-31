@@ -23,7 +23,7 @@ import {
   Uri
 } from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEdit } from "@kogito-tooling/core-api";
+import { KogitoEdit } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export class KogitoEditableDocument implements CustomDocument {
   private readonly _onDidDispose = new EventEmitter<void>();

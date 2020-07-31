@@ -160,10 +160,30 @@ jobs:
           name: scesim-editor-fdb
           path: drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime/
 
-      - uses: actions/checkout@v2
+      - name: Checkout kogito-tooling
+        uses: actions/checkout@v2
         with:
+          fetch-depth: 0
           path: kogito-tooling
-      - run: cd kogito-tooling && git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+
+      - name: Setup kogito-tooling
+        run: |
+          cd kogito-tooling
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          git status
+
+      - name: Merge kogito-tooling changes
+        if: github.event_name == 'issue_comment'
+        run: |
+          cd kogito-tooling
+          git config --global user.email "kietooling@gmail.com"
+          git config --global user.name "Kogito Tooling Bot"
+          git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kogito-tooling.git
+          git fetch --all || true
+          if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
+            echo $MERGE_WARNING_MESSAGE
+            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+          fi
 
       # This bash script will set an output version for this step. It can be used with steps.version.outputs.version
       - name: Output version
@@ -194,7 +214,7 @@ jobs:
           [ "0" == "$(git diff yarn.lock | wc -l)" ]
         shell: bash
 
-      - name: "Build kogito-tooling"
+      - name: Build kogito-tooling
         env:
           ROUTER_targetOrigin: "https://kiegroup.github.io"
           ROUTER_relativePath: "kogito-online-ci/${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/"
@@ -211,6 +231,7 @@ jobs:
           path: kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
 
       - name: Upload Chrome Extension
+        if: github.event_name == 'issue_comment'
         uses: actions/upload-artifact@v1
         with:
           name: chrome-extension-fdb
@@ -229,6 +250,7 @@ jobs:
           path: kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
 
       - name: Checkout kogito-online-ci
+        if: github.event_name == 'issue_comment'
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
@@ -238,6 +260,7 @@ jobs:
 
       # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online-ci'.
       - name: Update kogito-online-ci resources
+        if: github.event_name == 'issue_comment'
         run: |          
           cd kogito-online-ci
           rm -rf ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}

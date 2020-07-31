@@ -13,9 +13,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.6.1",
-    "@kogito-tooling/kie-bc-editors-unpacked": "0.6.1",
-    "@kogito-tooling/microeditor-envelope": "0.6.1"
+    "@kogito-tooling/editor-api": "0.6.1",
+    "@kogito-tooling/kie-bc-editors-unpacked": "0.6.1"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

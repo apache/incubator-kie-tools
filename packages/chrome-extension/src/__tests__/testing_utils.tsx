@@ -21,11 +21,14 @@ import { GitHubContext, GitHubContextType } from "../app/components/common/GitHu
 import { DefaultChromeRouter } from "../DefaultChromeRouter";
 import { Logger } from "../Logger";
 import { Dependencies } from "../app/Dependencies";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
+import {
+  ChromeExtensionI18nContext,
+  chromeExtensionI18nDictionaries,
+  chromeExtensionI8nDefaults
+} from "../app/i18n/locales";
 
-export function usingTestingGlobalContext(
-  children: React.ReactElement,
-  ctx?: Partial<GlobalContextType>
-) {
+export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const usedCtx = {
     id: "test-extension123",
     githubAuthTokenCookieName: "test-github-pat-name",
@@ -46,9 +49,15 @@ export function usingTestingGlobalContext(
   return {
     ctx: usedCtx,
     wrapper: (
-      <GlobalContext.Provider key={""} value={usedCtx}>
-        {children}
-      </GlobalContext.Provider>
+      <I18nDictionariesProvider
+        defaults={chromeExtensionI8nDefaults}
+        dictionaries={chromeExtensionI18nDictionaries}
+        ctx={ChromeExtensionI18nContext}
+      >
+        <GlobalContext.Provider key={""} value={usedCtx}>
+          {children}
+        </GlobalContext.Provider>
+      </I18nDictionariesProvider>
     )
   };
 }
@@ -66,6 +75,14 @@ export function usingTestingGitHubContext(
   };
   return {
     ctx: usedCtx,
-    wrapper: <GitHubContext.Provider value={usedCtx}>{children}</GitHubContext.Provider>
+    wrapper: (
+      <I18nDictionariesProvider
+        defaults={chromeExtensionI8nDefaults}
+        dictionaries={chromeExtensionI18nDictionaries}
+        ctx={ChromeExtensionI18nContext}
+      >
+        <GitHubContext.Provider value={usedCtx}>{children}</GitHubContext.Provider>
+      </I18nDictionariesProvider>
+    )
   };
 }

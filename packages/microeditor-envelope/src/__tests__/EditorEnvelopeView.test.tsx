@@ -20,7 +20,8 @@ import { EditorEnvelopeView } from "../EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
 import { KogitoEnvelopeBus } from "../KogitoEnvelopeBus";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
-import { ChannelType, OperatingSystem } from "@kogito-tooling/core-api";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
+import { usingEnvelopeApi } from "./envelopeApiUtils";
 
 function renderEditorEnvelopeView(): EditorEnvelopeView {
   let view: EditorEnvelopeView;
@@ -37,18 +38,21 @@ function renderEditorEnvelopeView(): EditorEnvelopeView {
       receive_editorRedo: jest.fn(),
       receive_previewRequest: jest.fn(),
       receive_guidedTourElementPositionRequest: jest.fn(),
-      receive_channelKeyboardEvent: jest.fn()
+      receive_channelKeyboardEvent: jest.fn(),
+      receive_localeChange: jest.fn()
     }
   );
 
   render(
-    <EditorEnvelopeView
-      keyboardShortcutsService={new DefaultKeyboardShortcutsService({ editorContext: context })}
-      context={context}
-      exposing={self => (view = self)}
-      loadingScreenContainer={loadingScreenContainer}
-      messageBus={kogitoEnvelopeBus}
-    />
+    usingEnvelopeApi(
+      <EditorEnvelopeView
+        keyboardShortcutsService={new DefaultKeyboardShortcutsService({ editorContext: context })}
+        context={context}
+        exposing={self => (view = self)}
+        loadingScreenContainer={loadingScreenContainer}
+        messageBus={kogitoEnvelopeBus}
+      />
+    ).wrapper
   );
 
   return view!;

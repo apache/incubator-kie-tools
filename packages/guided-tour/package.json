@@ -8,11 +8,14 @@
   "source": "src/index.tsx",
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
-    "test": "jest --verbose",
+    "test": "jest --silent --verbose",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:prod": "yarn run build --mode production --devtool none",
     "start": "rm -rf dist && webpack --watch"
+  },
+  "dependencies": {
+    "@kogito-tooling/microeditor-envelope-protocol": "0.6.1"
   },
   "peerDependencies": {
     "react": "16.12.0",

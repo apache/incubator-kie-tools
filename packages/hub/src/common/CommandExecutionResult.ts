@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { OperatingSystem } from "@kogito-tooling/core-api";
+import { OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export interface CommandExecutionResult {
   success: boolean;

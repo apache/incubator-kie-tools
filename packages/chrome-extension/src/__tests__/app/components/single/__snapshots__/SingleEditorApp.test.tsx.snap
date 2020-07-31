@@ -12,7 +12,11 @@ exports[`SingleEditorApp go fullscreen 1`] = `
         data-testid="exit-fullscreen-button"
         href="#"
       >
-        Exit full screen
+        <p
+          style="display: inline;"
+        >
+          Exit Full Screen
+        </p>
       </a>
     </div>
     <div
@@ -51,14 +55,21 @@ exports[`SingleEditorApp go fullscreen and back 1`] = `
         data-testid="see-as-source-button"
         disabled=""
       >
-        See as source
+        <p
+          style="display: inline;"
+        >
+          See as source
+        </p>
       </button>
       <button
         class="btn btn-sm kogito-button"
         data-testid="open-ext-editor-button"
       >
-        Open in 
-        Test Online Editor
+        <p
+          style="display: inline;"
+        >
+          Open in Test Online Editor
+        </p>
       </button>
       <div
         class="position-relative"
@@ -67,15 +78,22 @@ exports[`SingleEditorApp go fullscreen and back 1`] = `
           class="btn btn-sm kogito-button"
           data-testid="copy-link-button"
         >
-          Copy link to 
-          Test Online Editor
+          <p
+            style="display: inline;"
+          >
+            Copy link to Test Online Editor
+          </p>
         </button>
       </div>
       <button
         class="btn btn-sm kogito-button"
         data-testid="go-fullscreen-button"
       >
-        Full screen
+        <p
+          style="display: inline;"
+        >
+          Full Screen
+        </p>
       </button>
       <textarea
         style="opacity: 0; width: 0px; height: 0px;"
@@ -119,14 +137,21 @@ exports[`SingleEditorApp not readonly 1`] = `
         data-testid="see-as-source-button"
         disabled=""
       >
-        See as source
+        <p
+          style="display: inline;"
+        >
+          See as source
+        </p>
       </button>
       <button
         class="btn btn-sm kogito-button"
         data-testid="open-ext-editor-button"
       >
-        Open in 
-        Test Online Editor
+        <p
+          style="display: inline;"
+        >
+          Open in Test Online Editor
+        </p>
       </button>
       <div
         class="position-relative"
@@ -135,15 +160,22 @@ exports[`SingleEditorApp not readonly 1`] = `
           class="btn btn-sm kogito-button"
           data-testid="copy-link-button"
         >
-          Copy link to 
-          Test Online Editor
+          <p
+            style="display: inline;"
+          >
+            Copy link to Test Online Editor
+          </p>
         </button>
       </div>
       <button
         class="btn btn-sm kogito-button"
         data-testid="go-fullscreen-button"
       >
-        Full screen
+        <p
+          style="display: inline;"
+        >
+          Full Screen
+        </p>
       </button>
       <textarea
         style="opacity: 0; width: 0px; height: 0px;"
@@ -152,7 +184,11 @@ exports[`SingleEditorApp not readonly 1`] = `
       </textarea>
     </div>
     <h4>
-      🔸️ This is a readonly visualization
+      <p
+        style="display: inline;"
+      >
+        🔸️ This is a readonly visualization
+      </p>
     </h4>
   </div>
   <div>
@@ -190,14 +226,21 @@ exports[`SingleEditorApp open external editor 1`] = `
         data-testid="see-as-source-button"
         disabled=""
       >
-        See as source
+        <p
+          style="display: inline;"
+        >
+          See as source
+        </p>
       </button>
       <button
         class="btn btn-sm kogito-button"
         data-testid="open-ext-editor-button"
       >
-        Open in 
-        Test Online Editor
+        <p
+          style="display: inline;"
+        >
+          Open in Test Online Editor
+        </p>
       </button>
       <div
         class="position-relative"
@@ -206,15 +249,22 @@ exports[`SingleEditorApp open external editor 1`] = `
           class="btn btn-sm kogito-button"
           data-testid="copy-link-button"
         >
-          Copy link to 
-          Test Online Editor
+          <p
+            style="display: inline;"
+          >
+            Copy link to Test Online Editor
+          </p>
         </button>
       </div>
       <button
         class="btn btn-sm kogito-button"
         data-testid="go-fullscreen-button"
       >
-        Full screen
+        <p
+          style="display: inline;"
+        >
+          Full Screen
+        </p>
       </button>
       <textarea
         style="opacity: 0; width: 0px; height: 0px;"
@@ -258,14 +308,21 @@ exports[`SingleEditorApp open external editor and wait for come back 1`] = `
         data-testid="see-as-source-button"
         disabled=""
       >
-        See as source
+        <p
+          style="display: inline;"
+        >
+          See as source
+        </p>
       </button>
       <button
         class="btn btn-sm kogito-button"
         data-testid="open-ext-editor-button"
       >
-        Open in 
-        Test Online Editor
+        <p
+          style="display: inline;"
+        >
+          Open in Test Online Editor
+        </p>
       </button>
       <div
         class="position-relative"
@@ -274,15 +331,22 @@ exports[`SingleEditorApp open external editor and wait for come back 1`] = `
           class="btn btn-sm kogito-button"
           data-testid="copy-link-button"
         >
-          Copy link to 
-          Test Online Editor
+          <p
+            style="display: inline;"
+          >
+            Copy link to Test Online Editor
+          </p>
         </button>
       </div>
       <button
         class="btn btn-sm kogito-button"
         data-testid="go-fullscreen-button"
       >
-        Full screen
+        <p
+          style="display: inline;"
+        >
+          Full Screen
+        </p>
       </button>
       <textarea
         style="opacity: 0; width: 0px; height: 0px;"
@@ -326,14 +390,21 @@ exports[`SingleEditorApp readonly 1`] = `
         data-testid="see-as-source-button"
         disabled=""
       >
-        See as source
+        <p
+          style="display: inline;"
+        >
+          See as source
+        </p>
       </button>
       <button
         class="btn btn-sm kogito-button"
         data-testid="open-ext-editor-button"
       >
-        Open in 
-        Test Online Editor
+        <p
+          style="display: inline;"
+        >
+          Open in Test Online Editor
+        </p>
       </button>
       <div
         class="position-relative"
@@ -342,15 +413,22 @@ exports[`SingleEditorApp readonly 1`] = `
           class="btn btn-sm kogito-button"
           data-testid="copy-link-button"
         >
-          Copy link to 
-          Test Online Editor
+          <p
+            style="display: inline;"
+          >
+            Copy link to Test Online Editor
+          </p>
         </button>
       </div>
       <button
         class="btn btn-sm kogito-button"
         data-testid="go-fullscreen-button"
       >
-        Full screen
+        <p
+          style="display: inline;"
+        >
+          Full Screen
+        </p>
       </button>
       <textarea
         style="opacity: 0; width: 0px; height: 0px;"

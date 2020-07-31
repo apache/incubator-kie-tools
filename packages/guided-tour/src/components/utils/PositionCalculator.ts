@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DEFAULT_RECT, Rect } from "../../api";
+import { DEFAULT_RECT, Rect } from "@kogito-tooling/microeditor-envelope-protocol";
 
 const DEFAULT_STYLE = {
   left: "",

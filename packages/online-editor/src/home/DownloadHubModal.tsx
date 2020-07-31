@@ -18,12 +18,12 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import {
   Modal,
+  ModalVariant,
   Button,
   Select,
   SelectOption,
   SelectDirection,
-  SelectVariant,
-  ModalBoxFooter
+  SelectVariant
 } from "@patternfly/react-core";
 import { Redirect } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
@@ -92,25 +92,18 @@ export function DownloadHubModal(props: {}) {
         <Modal
           title={`${i18n.downloadHubModal.beforeDownload.title}:`}
           isOpen={true}
-          isLarge={true}
+          variant={ModalVariant.large}
           onClose={onClose}
-          footer={
-            <ModalBoxFooter
-              className="kogito--editor-hub-download_modal-footer"
-              children={
-                <div>
-                  <a key="download" href={downloadHub} download={true}>
-                    <Button variant="primary" onClick={onDownload}>
-                      <I18nHtml>{i18n.terms.download}</I18nHtml>
-                    </Button>
-                  </a>
-                  <Button key="cancel" variant="link" onClick={onClose}>
-                    <I18nHtml>{i18n.terms.cancel}</I18nHtml>
-                  </Button>
-                </div>
-              }
-            />
-          }
+          actions={[
+            <a key="download" href={downloadHub} download={true}>
+              <Button variant="primary" onClick={onDownload}>
+                <I18nHtml>{i18n.terms.download}</I18nHtml>
+              </Button>
+            </a>,
+            <Button key="cancel" variant="link" onClick={onClose}>
+              <I18nHtml>{i18n.terms.cancel}</I18nHtml>
+            </Button>
+          ]}
         >
           <p>
             <strong>{i18n.names.vscode} </strong>
@@ -133,17 +126,16 @@ export function DownloadHubModal(props: {}) {
           </p>
           <br />
           <p>{i18n.terms.os.full}:</p>
-          <div>
+          <div style={{ width: "140px" }}>
             <Select
               variant={SelectVariant.single}
-              aria-label="Select Input"
+              aria-label="Select OS"
               onToggle={onSelectOsToggle}
               onSelect={onSelectOperatingSystem}
               selections={operationalSystem}
-              isExpanded={isSelectExpanded}
-              ariaLabelledBy={"select-os"}
+              isOpen={isSelectExpanded}
+              aria-labelledby={"select-os"}
               isDisabled={false}
-              width={"135px"}
               direction={SelectDirection.up}
             >
               {Array.from(availableOperatingSystems.entries()).map(([key, label]) => (
@@ -159,20 +151,13 @@ export function DownloadHubModal(props: {}) {
         <Modal
           title={i18n.downloadHubModal.afterDownload.title}
           isOpen={true}
-          isLarge={true}
+          variant={ModalVariant.large}
           onClose={onClose}
-          footer={
-            <ModalBoxFooter
-              className="kogito--editor-hub-download_modal-footer"
-              children={
-                <div>
-                  <Button key="close" variant="link" onClick={onClose}>
-                    <I18nHtml>{i18n.terms.close}</I18nHtml>
-                  </Button>
-                </div>
-              }
-            />
-          }
+          actions={[
+            <Button key="close" variant="link" onClick={onClose}>
+              <I18nHtml>{i18n.terms.close}</I18nHtml>
+            </Button>
+          ]}
         >
           <p>
             <small>

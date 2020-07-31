@@ -23,7 +23,7 @@ import { GithubService } from "../common/GithubService";
 import { GlobalContext, GlobalContextType } from "../common/GlobalContext";
 import { Routes } from "../common/Routes";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
-import { onlineI18nDefaults, onlineI18nDictionaries } from "../common/i18n/locales";
+import { onlineI18nDefaults, onlineI18nDictionaries, OnlineI18nContext } from "../common/i18n/locales";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const usedCtx = {
@@ -45,7 +45,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
   return {
     ctx: usedCtx,
     wrapper: (
-      <I18nDictionariesProvider defaults={onlineI18nDefaults} dictionaries={onlineI18nDictionaries}>
+      <I18nDictionariesProvider defaults={onlineI18nDefaults} dictionaries={onlineI18nDictionaries} ctx={OnlineI18nContext}>
         <GlobalContext.Provider key={""} value={usedCtx}>
           <HashRouter>
             <Switch>

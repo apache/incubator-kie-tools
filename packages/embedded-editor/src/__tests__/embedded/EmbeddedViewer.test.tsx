@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kogito-tooling/core-api";
+import { ChannelType } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
 import { EditorType, File } from "../../common";
 import { EmbeddedEditorRouter, EmbeddedViewer } from "../../embedded";
@@ -39,7 +39,9 @@ describe("EmbeddedViewer::ONLINE", () => {
   });
 
   test("EmbeddedViewer::defaults", () => {
-    const { getByTestId, container } = render(<EmbeddedViewer file={file} router={router} channelType={channelType} />);
+    const { getByTestId, container } = render(
+      <EmbeddedViewer file={file} router={router} channelType={channelType} locale={"en"} />
+    );
 
     expect(getByTestId("kogito-iframe")).toBeVisible();
     expect(getByTestId("kogito-iframe")).toHaveAttribute("data-envelope-channel", ChannelType.ONLINE);
@@ -57,6 +59,7 @@ describe("EmbeddedViewer::ONLINE", () => {
         router={router}
         channelType={channelType}
         onResourceContentRequest={onResourceContentRequest}
+        locale={"en"}
       />
     );
 
@@ -81,6 +84,7 @@ describe("EmbeddedViewer::ONLINE", () => {
         router={router}
         channelType={channelType}
         onResourceListRequest={onResourceListRequest}
+        locale={"en"}
       />
     );
 

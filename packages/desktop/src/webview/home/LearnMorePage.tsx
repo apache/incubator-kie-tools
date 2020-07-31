@@ -50,21 +50,18 @@ export function LearnMorePage() {
 
   return (
     <PageSection>
-      <Grid sm={12} lg={6} gutter="lg">
-        <Card className={"''"}>
-          <CardHeader className={"''"}>
-            <Title size={"lg"} className={"''"} headingLevel={"h2"}>
+      <Grid sm={12} lg={6} hasGutter={true}>
+        <Card>
+          <CardHeader>
+            <Title size={"lg"} headingLevel={"h2"}>
               <I18nHtml>{i18n.learnMorePage.bpmn.title}</I18nHtml>
             </Title>
           </CardHeader>
-          <CardBody className={"''"}>
+          <CardBody>
             <TextContent>
               <Text component={TextVariants.p}>{i18n.learnMorePage.bpmn.explanation}</Text>
               <Text component={TextVariants.p}>
                 <Button
-                  className={"''"}
-                  component={"a"}
-                  isBlock={false}
                   isInline={true}
                   type={"button"}
                   variant={"link"}
@@ -75,26 +72,23 @@ export function LearnMorePage() {
               </Text>
             </TextContent>
           </CardBody>
-          <CardFooter className={"''"} component={"div"}>
+          <CardFooter component={"div"}>
             <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "bpmn" })}>
               <I18nHtml>{i18n.learnMorePage.bpmn.create}</I18nHtml>
             </Button>
           </CardFooter>
         </Card>
-        <Card className={"''"}>
-          <CardHeader className={"''"}>
-            <Title size={"lg"} className={"''"} headingLevel={"h2"}>
+        <Card>
+          <CardHeader>
+            <Title size={"lg"} headingLevel={"h2"}>
               <I18nHtml>{i18n.learnMorePage.dmn.title}</I18nHtml>
             </Title>
           </CardHeader>
-          <CardBody className={"''"}>
+          <CardBody>
             <TextContent>
               <Text component={TextVariants.p}>{i18n.learnMorePage.dmn.explanation}</Text>
               <Text component={TextVariants.p}>
                 <Button
-                  className={"''"}
-                  component={"a"}
-                  isBlock={false}
                   isInline={true}
                   type={"button"}
                   variant={"link"}
@@ -106,9 +100,6 @@ export function LearnMorePage() {
               </Text>
               <Text component={TextVariants.p}>
                 <Button
-                  className={"''"}
-                  component={"a"}
-                  isBlock={false}
                   isInline={true}
                   type={"button"}
                   variant={"link"}
@@ -119,29 +110,26 @@ export function LearnMorePage() {
               </Text>
             </TextContent>
           </CardBody>
-          <CardFooter className={"''"} component={"div"}>
+          <CardFooter component={"div"}>
             <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "dmn" })}>
               <I18nHtml>{i18n.learnMorePage.dmn.create}</I18nHtml>
             </Button>
           </CardFooter>
         </Card>
-        <Card className={"''"} span={12} style={{ gridColumn: "span 12" }}>
-          <CardHeader className={"''"}>
-            <Title size={"lg"} className={"''"} headingLevel={"h2"}>
+        <Card span={12} style={{ gridColumn: "span 12" }}>
+          <CardHeader>
+            <Title size={"lg"} headingLevel={"h2"}>
               <I18nHtml>{i18n.learnMorePage.about}</I18nHtml>
             </Title>
           </CardHeader>
-          <CardBody className={"''"}>
-            <Split gutter="lg">
+          <CardBody>
+            <Split hasGutter={true}>
               <SplitItem isFilled={true}>
-                <I18nHtml>{i18n.learnMorePage.editorsExplanation}</I18nHtml>
+                <I18nHtml>`${i18n.learnMorePage.editorsExplanation} `</I18nHtml>
                 <Button
-                  className={"pf-u-ml-xs"}
-                  component={"a"}
-                  isBlock={false}
-                  isInline={true}
                   type={"button"}
                   variant={"link"}
+                  isInline={true}
                   onClick={event => externalLink(event, "https://groups.google.com/forum/#!forum/kogito-development")}
                 >
                   <I18nHtml>{i18n.terms.forum.toLowerCase()}</I18nHtml>
@@ -152,10 +140,6 @@ export function LearnMorePage() {
                 <Stack>
                   <StackItem>
                     <Button
-                      className={"''"}
-                      component={"a"}
-                      isBlock={false}
-                      isInline={false}
                       type={"button"}
                       variant={"link"}
                       onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
@@ -166,10 +150,6 @@ export function LearnMorePage() {
                   </StackItem>
                   <StackItem>
                     <Button
-                      className={"''"}
-                      component={"a"}
-                      isBlock={false}
-                      isInline={false}
                       type={"button"}
                       variant={"link"}
                       onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
@@ -180,10 +160,6 @@ export function LearnMorePage() {
                   </StackItem>
                   <StackItem>
                     <Button
-                      className={"''"}
-                      component={"a"}
-                      isBlock={false}
-                      isInline={false}
                       type={"button"}
                       variant={"link"}
                       onClick={event => externalLink(event, "https://www.redhat.com/en/about/open-source")}
@@ -194,10 +170,6 @@ export function LearnMorePage() {
                   </StackItem>
                   <StackItem>
                     <Button
-                      className={"''"}
-                      component={"a"}
-                      isBlock={false}
-                      isInline={false}
                       type={"button"}
                       variant={"link"}
                       onClick={event => externalLink(event, "http://kogito.kie.org")}

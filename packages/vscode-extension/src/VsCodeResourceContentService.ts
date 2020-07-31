@@ -22,11 +22,11 @@ import {
   ResourceListOptions,
   ResourcesList,
   SearchType
-} from "@kogito-tooling/core-api";
+} from "@kogito-tooling/microeditor-envelope-protocol";
 
 import * as vscode from "vscode";
 import * as nodePath from "path";
-import { WorkspaceFolder } from "vscode";
+import { RelativePattern, WorkspaceFolder } from "vscode";
 
 /**
  * Implementation of a ResourceContentService using the vscode apis to list/get assets.
@@ -39,9 +39,10 @@ export class VsCodeResourceContentService implements ResourceContentService {
   }
 
   public async list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
-    const expr = opts?.type === SearchType.ASSET_FOLDER ? this.currentAssetFolder + pattern : pattern;
-
-    const files = await vscode.workspace.findFiles(expr);
+    const workspaceFolderPath = vscode.workspace!.workspaceFolders![0].uri.fsPath + nodePath.sep;
+    const basePath = opts?.type === SearchType.ASSET_FOLDER ? workspaceFolderPath + this.currentAssetFolder : workspaceFolderPath;
+    const relativePattern = new RelativePattern(basePath, pattern);
+    const files = await vscode.workspace.findFiles(relativePattern);
     const paths = files.map(f => vscode.workspace.asRelativePath(f.path));
     return new ResourcesList(pattern, paths);
   }

@@ -21,7 +21,7 @@ import {
   KogitoChannelBus,
   KogitoEnvelopeMessageTypes
 } from "../..";
-import { ContentType, ResourceContent, StateControlCommand } from "@kogito-tooling/core-api";
+import { ContentType, ResourceContent, StateControlCommand } from "../../kogito/api";
 
 let sentMessages: Array<EnvelopeBusMessage<unknown, any>>;
 let channelBus: KogitoChannelBus;
@@ -40,7 +40,8 @@ beforeEach(() => {
     receive_languageRequest: jest.fn(),
     receive_contentRequest: jest.fn(),
     receive_resourceContentRequest: jest.fn(),
-    receive_resourceListRequest: jest.fn()
+    receive_resourceListRequest: jest.fn(),
+    receive_getLocale: jest.fn()
   };
 
   channelBus = new KogitoChannelBus({ postMessage: msg => sentMessages.push(msg) }, api);

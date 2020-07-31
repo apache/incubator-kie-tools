@@ -30,8 +30,8 @@ export const en: DesktopI18n = {
         message: "Click Save to download your progress before closing.",
         closeWithoutSaving: "Close without saving"
       },
-      saved: "File saved successfully",
-      previewSaved: "Preview saved successfully"
+      saved: "File saved successfully!",
+      previewSaved: "Preview saved successfully!"
     }
   },
   filesPage: {

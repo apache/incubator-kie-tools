@@ -57,7 +57,7 @@ export const en: OnlineI18n = {
     sendChangesToGitHub: `Send changes to ${en_common.names.github}`,
     copySource: "Copy Source",
     downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
-    gistIt: "Gist it",
+    gistIt: "Gist it!",
     fileActions: "File actions"
   },
   githubTokenModal: {
@@ -125,12 +125,12 @@ export const en: OnlineI18n = {
     },
     end: {
       title: "Congratulations",
-      motivational: `Now you know how each part of the ${en_common.names.dmn} editor works, and you're empowered to go ahead and explore`,
+      motivational: `Now you know how each part of the ${en_common.names.dmn} editor works, and you're empowered to go ahead and explore!`,
       nextSteps: {
         title: "As next steps, you can try to",
-        firstStep: `Connect the ${"Age".bold()} input with the ${"Can drive?".bold()} decision`,
+        firstStep: `Connect the ${"Age".bold()} input with the ${"Can drive?".bold()} decision;`,
         secondStep: `Define the decision logic into the ${"Can drive?".bold()} node, to return ${"true".bold()} when ${"Age".bold()} is
-              greater ${"21".bold()}, otherwise ${"false".bold()}`,
+              greater ${"21".bold()}, otherwise ${"false".bold()};`,
         thirdStep: "Execute the model."
       },
       findUsefulInfo: "You can find useful information at the",

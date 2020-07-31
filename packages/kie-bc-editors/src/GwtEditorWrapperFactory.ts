@@ -14,48 +14,67 @@
  * limitations under the License.
  */
 
+import {
+  I18nService,
+  ResourceContentOptions,
+  ResourceListOptions,
+  Tutorial,
+  UserInteraction
+} from "@kogito-tooling/microeditor-envelope-protocol";
+import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
 import { GwtAppFormerApi } from "./GwtAppFormerApi";
-import * as Core from "@kogito-tooling/core-api";
-import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
+import { Editor, EditorFactory, EnvelopeContextType } from "@kogito-tooling/editor-api";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { XmlFormatter } from "./XmlFormatter";
-import { GwtStateControlApi, GwtStateControlService } from "./gwtStateControl";
-import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
-import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { GwtStateControlService } from "./gwtStateControl";
+import { GuidedTourApi } from "./api/GuidedTourApi";
+import { ResourceContentApi } from "./api/ResourceContentApi";
+import { KeyboardShortcutsApi } from "./api/KeyboardShorcutsApi";
+import { WorkspaceServiceApi } from "./api/WorkspaceServiceApi";
+import { StateControlApi } from "./api/StateControlApi";
+import { EditorContextApi } from "./api/EditorContextApi";
+import { I18nServiceApi } from "./api/I18nServiceApi";
 
 declare global {
   interface Window {
     gwt: {
-      stateControl: GwtStateControlApi;
+      stateControl: StateControlApi;
+    };
+    envelope: {
+      guidedTourService: GuidedTourApi;
+      editorContext: EditorContextApi;
+      resourceContentEditorService?: ResourceContentApi;
+      keyboardShortcuts: KeyboardShortcutsApi;
+      workspaceService: WorkspaceServiceApi;
+      i18nService: I18nServiceApi;
     };
   }
 }
 
-export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactory<GwtLanguageData> {
+export const FACTORY_TYPE = "gwt";
+
+export class GwtEditorWrapperFactory implements EditorFactory<GwtLanguageData> {
+
   constructor(
     private readonly xmlFormatter: XmlFormatter = new DefaultXmlFormatter(),
     private readonly gwtAppFormerApi = new GwtAppFormerApi(),
-    private readonly gwtStateControlService = new GwtStateControlService()
+    private readonly gwtStateControlService = new GwtStateControlService(),
+    private readonly i18nService = new I18nService()
   ) {}
 
-  public createEditor(languageData: GwtLanguageData, messageBusClient: MessageBusClient<KogitoChannelApi>) {
-    this.gwtAppFormerApi.setClientSideOnly(true);
-    window.gwt = {
-      stateControl: this.gwtStateControlService.exposeApi(messageBusClient)
-    };
+  public supports(languageData: GwtLanguageData) {
+    return languageData.type === FACTORY_TYPE;
+  }
 
-    const gwtFinishedLoading = new Promise<Core.Editor>(res => {
+  public createEditor(languageData: GwtLanguageData, envelopeContext: EnvelopeContextType) {
+    this.gwtAppFormerApi.setClientSideOnly(true);
+
+    this.exposeEnvelopeContext(envelopeContext);
+
+    const gwtFinishedLoading = new Promise<Editor>(res => {
       this.gwtAppFormerApi.onFinishedLoading(() => {
-        res(
-          new GwtEditorWrapper(
-            languageData.editorId,
-            this.gwtAppFormerApi.getEditor(languageData.editorId),
-            messageBusClient,
-            this.xmlFormatter,
-            this.gwtStateControlService
-          )
-        );
+        res(this.newGwtEditorWrapper(languageData, envelopeContext));
         return Promise.resolve();
       });
     });
@@ -63,6 +82,63 @@ export class GwtEditorWrapperFactory implements MicroEditorEnvelope.EditorFactor
     return Promise.all(languageData.resources.map(resource => this.loadResource(resource))).then(() => {
       return gwtFinishedLoading;
     });
+  }
+
+  private newGwtEditorWrapper(languageData: GwtLanguageData, envelopeContext: EnvelopeContextType) {
+    return new GwtEditorWrapper(
+      languageData.editorId,
+      this.gwtAppFormerApi.getEditor(languageData.editorId),
+      envelopeContext.channelApi,
+      this.xmlFormatter,
+      this.gwtStateControlService
+    );
+  }
+
+  private exposeEnvelopeContext(envelopeContext: EnvelopeContextType) {
+    window.gwt = {
+      stateControl: this.gwtStateControlService.exposeApi(envelopeContext.channelApi)
+    };
+
+    window.envelope = {
+      editorContext: envelopeContext.context,
+      keyboardShortcuts: envelopeContext.services.keyboardShortcuts,
+      guidedTourService: {
+        refresh(userInteraction: UserInteraction): void {
+          envelopeContext.channelApi.notify("receive_guidedTourUserInteraction", userInteraction);
+        },
+        registerTutorial(tutorial: Tutorial): void {
+          envelopeContext.channelApi.notify("receive_guidedTourRegisterTutorial", tutorial);
+        },
+        isEnabled(): boolean {
+          return envelopeContext.services.guidedTour.isEnabled();
+        }
+      },
+      resourceContentEditorService: {
+        get(path: string, opts?: ResourceContentOptions) {
+          return envelopeContext.channelApi
+            .request("receive_resourceContentRequest", { path, opts })
+            .then(r => r?.content);
+        },
+        list(pattern: string, opts?: ResourceListOptions) {
+          return envelopeContext.channelApi
+            .request("receive_resourceListRequest", { pattern, opts })
+            .then(r => r.paths.sort());
+        }
+      },
+      workspaceService: {
+        openFile(path: string): void {
+          envelopeContext.channelApi.notify("receive_openFile", path);
+        }
+      },
+      i18nService: {
+        getLocale: () => {
+          return envelopeContext.channelApi.request("receive_getLocale");
+        },
+        onLocaleChange: (callback: (locale: string) => void) => {
+          this.i18nService.setCallback(callback);
+        },
+      }
+    };
   }
 
   private loadResource(resource: Resource) {

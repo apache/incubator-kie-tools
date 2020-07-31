@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { Router } from "@kogito-tooling/core-api";
+import { Router } from "@kogito-tooling/microeditor-envelope-protocol";
 import { GlobalContext, useGlobals } from "./GlobalContext";
 import { Logger } from "../../../Logger";
 import { GitHubContextProvider, useGitHubApi } from "./GitHubContext";

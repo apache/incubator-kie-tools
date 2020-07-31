@@ -18,7 +18,8 @@ import * as React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import { usingCurrentTutorialContext } from "../test_context";
 import { Dialog } from "../../components";
-import { KogitoGuidedTour, Tutorial, DemoMode, AutoMode } from "../..";
+import { KogitoGuidedTour } from "../..";
+import { AutoMode, DemoMode, Tutorial } from "@kogito-tooling/microeditor-envelope-protocol";
 
 jest.useFakeTimers();
 

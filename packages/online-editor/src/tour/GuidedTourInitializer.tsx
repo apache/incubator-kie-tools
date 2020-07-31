@@ -17,11 +17,12 @@
 import * as React from "react";
 import { useEffect } from "react";
 
-import { Title, Text, Button, List, ListItem, Divider } from "@patternfly/react-core";
+import { Button, Divider, List, ListItem, Text, Title } from "@patternfly/react-core";
 import { BookOpenIcon, TrophyIcon } from "@patternfly/react-icons";
 
-import { File, EditorType } from "@kogito-tooling/embedded-editor";
-import { KogitoGuidedTour, DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/guided-tour";
+import { EditorType, File } from "@kogito-tooling/embedded-editor";
+import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
+import { DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/microeditor-envelope-protocol";
 import { OnlineI18n, useOnlineI18n } from "../common/i18n";
 import { I18nHtml } from "@kogito-tooling/i18n";
 
@@ -79,13 +80,13 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
             <I18nHtml>{i18n.guidedTour.end.title}</I18nHtml>
           </Title>
           <TrophyIcon size="xl" className="kgt-icon--with-accent" />
-          <Text>{i18n.guidedTour.end.motivational}!</Text>
+          <Text><I18nHtml>{i18n.guidedTour.end.motivational}</I18nHtml></Text>
           <Divider />
           <Text className="pf-c-content--align-left">{i18n.guidedTour.end.nextSteps.title}:</Text>
           <List className="pf-c-content--align-left">
-            <ListItem>{i18n.guidedTour.end.nextSteps.firstStep};</ListItem>
-            <ListItem>{i18n.guidedTour.end.nextSteps.secondStep};</ListItem>
-            <ListItem>{i18n.guidedTour.end.nextSteps.thirdStep}.</ListItem>
+            <ListItem><I18nHtml>{i18n.guidedTour.end.nextSteps.firstStep}</I18nHtml></ListItem>
+            <ListItem><I18nHtml>{i18n.guidedTour.end.nextSteps.secondStep}</I18nHtml></ListItem>
+            <ListItem><I18nHtml>{i18n.guidedTour.end.nextSteps.thirdStep}</I18nHtml></ListItem>
           </List>
           <Text className="pf-c-content--align-left">
             <I18nHtml>{`${i18n.guidedTour.end.findUsefulInfo} `}</I18nHtml>

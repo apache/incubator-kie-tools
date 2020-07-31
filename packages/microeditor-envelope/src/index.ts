@@ -14,38 +14,14 @@
  * limitations under the License.
  */
 
-import { EditorContext } from "@kogito-tooling/core-api";
-import { DefaultKeyboardShortcutsService, KeyboardShortcutsApi } from "@kogito-tooling/keyboard-shortcuts";
-import { EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorContext, EnvelopeBus, I18nService } from "@kogito-tooling/microeditor-envelope-protocol";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { ReactElement } from "react";
 import * as ReactDOM from "react-dom";
-import { ResourceContentApi, ResourceContentServiceCoordinator } from "./api/resourceContent";
 import { EditorEnvelopeController } from "./EditorEnvelopeController";
-import { EditorFactory } from "./EditorFactory";
+import { EditorFactory } from "@kogito-tooling/editor-api";
 import { Renderer } from "./Renderer";
 import { SpecialDomElements } from "./SpecialDomElements";
-import { WorkspaceService, WorkspaceServiceApi } from "./api/workspaceService";
-import { GuidedTourApi, GuidedTourServiceCoordinator } from "./api/tour";
-import { I18nService, I18nServiceApi } from "./api/i18n";
-
-export * from "./api/resourceContent";
-export { EditorEnvelopeController } from "./EditorEnvelopeController";
-export * from "./EditorFactory";
-export * from "./KogitoEnvelopeBus";
-export { SpecialDomElements } from "./SpecialDomElements";
-
-declare global {
-  interface Window {
-    envelope: {
-      guidedTourService: GuidedTourApi;
-      editorContext: EditorContext;
-      resourceContentEditorService?: ResourceContentApi;
-      keyboardShortcuts: KeyboardShortcutsApi;
-      workspaceService: WorkspaceServiceApi;
-      i18n: I18nServiceApi;
-    };
-  }
-}
 
 class ReactDomRenderer implements Renderer {
   public render(element: ReactElement, container: HTMLElement, callback: () => void) {
@@ -70,29 +46,19 @@ export function init(args: {
 }) {
   const specialDomElements = new SpecialDomElements();
   const renderer = new ReactDomRenderer();
-  const resourceContentEditorCoordinator = new ResourceContentServiceCoordinator();
-  const guidedTourService = new GuidedTourServiceCoordinator();
   const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: args.editorContext });
-  const workspaceService = new WorkspaceService();
   const i18nService = new I18nService();
   const editorEnvelopeController = new EditorEnvelopeController(
     args.bus,
     args.editorFactory,
     specialDomElements,
     renderer,
-    resourceContentEditorCoordinator,
+    args.editorContext,
     keyboardShortcutsService,
     i18nService
   );
 
-  return editorEnvelopeController.start({ container: args.container, context: args.editorContext }).then(messageBus => {
-    window.envelope = {
-      guidedTourService: guidedTourService.exposeApi(messageBus),
-      resourceContentEditorService: resourceContentEditorCoordinator.exposeApi(messageBus),
-      editorContext: args.editorContext,
-      keyboardShortcuts: keyboardShortcutsService.exposeApi(),
-      workspaceService: workspaceService.exposeApi(messageBus),
-      i18n: i18nService.exposeApi(messageBus)
-    };
-  });
+  return editorEnvelopeController.start({ container: args.container });
 }
+
+export * from "./CompositeEditorFactory";

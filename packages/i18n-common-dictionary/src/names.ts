@@ -24,7 +24,7 @@ export const names = {
     online: "Business Modeler Preview"
   },
   chrome: "Chrome",
-  chromeExtensionName: "BPMN, DMN and Test Scenario Editor for GitHub",
+  chromeExtensionName: "BPMN, DMN & Test Scenario Editor for GitHub",
   chromeStore: "Chrome Store",
   desktop: "Desktop",
   dmn: "DMN",

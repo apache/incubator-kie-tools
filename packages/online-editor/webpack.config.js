@@ -16,7 +16,7 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
@@ -95,7 +95,7 @@ module.exports = async (env, argv) => {
             ]
           }
         },
-        ...pfWebpackUtils.patternflyLoaders
+        ...pfWebpackOptions.patternflyRules
       ]
     },
     devServer: {

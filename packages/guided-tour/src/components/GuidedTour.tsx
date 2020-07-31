@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { Dialog, HighlightLayer } from ".";
-import { UserInteraction, Tutorial, Rect } from "../api";
+import { UserInteraction, Tutorial, Rect } from "@kogito-tooling/microeditor-envelope-protocol";
 import { CurrentTutorialContext } from "../contexts";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
 import { GuidedTourI18nContext, guidedTourI18nDefaults, guidedTourI18nDictionaries } from "../i18n/locales";

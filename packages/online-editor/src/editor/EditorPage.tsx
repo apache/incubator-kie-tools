@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kogito-tooling/core-api";
+import { ChannelType } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
-import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
@@ -230,13 +230,13 @@ export function EditorPage(props: Props) {
         />
       }
     >
-      <PageSection isFilled={true} noPadding={true} noPaddingMobile={true} style={{ flexBasis: "100%" }}>
+      <PageSection isFilled={true} padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
         {!fullscreen && copySuccessAlertVisible && (
           <div className={"kogito--alert-container"}>
             <Alert
               variant="success"
               title={i18n.editorPage.alerts.copy}
-              action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
+              actionClose={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
             />
           </div>
         )}
@@ -245,24 +245,24 @@ export function EditorPage(props: Props) {
             <Alert
               variant="warning"
               title={i18n.editorPage.alerts.unsaved.title}
-              action={
+              actionClose={
                 <AlertActionCloseButton
                   data-testid="unsaved-alert-close-button"
                   onClose={() => setShowUnsavedAlert(false)}
                 />
               }
+              actionLinks={
+                <React.Fragment>
+                  <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestDownload}>
+                    {i18n.terms.save}
+                  </AlertActionLink>
+                  <AlertActionLink data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
+                    {i18n.editorPage.alerts.unsaved.closeWithoutSaving}
+                  </AlertActionLink>
+                </React.Fragment>
+              }
             >
-              <div>
-                <p>
-                  <I18nHtml>{`${i18n.editorPage.alerts.unsaved.message} `}</I18nHtml>
-                  <a data-testid="unsaved-alert-save-button" onClick={requestDownload}>
-                    <I18nHtml>{i18n.terms.save}</I18nHtml>
-                  </a>
-                </p>
-                <a data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
-                  <I18nHtml>{` ${i18n.editorPage.alerts.unsaved.closeWithoutSaving}`}</I18nHtml>
-                </a>
-              </div>
+              <p>{i18n.editorPage.alerts.unsaved.message}</p>
             </Alert>
           </div>
         )}

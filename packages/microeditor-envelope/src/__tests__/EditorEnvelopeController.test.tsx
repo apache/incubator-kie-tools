@@ -17,10 +17,15 @@
 import { EditorEnvelopeController } from "../EditorEnvelopeController";
 import { SpecialDomElements } from "../SpecialDomElements";
 import { cleanup, fireEvent, getByTestId, render } from "@testing-library/react";
-import { EnvelopeBusMessage, EnvelopeBusMessagePurpose } from "@kogito-tooling/microeditor-envelope-protocol";
-import { ChannelType, LanguageData, OperatingSystem } from "@kogito-tooling/core-api";
+import {
+  ChannelType,
+  EnvelopeBusMessage,
+  EnvelopeBusMessagePurpose,
+  I18nService,
+  LanguageData,
+  OperatingSystem
+} from "@kogito-tooling/microeditor-envelope-protocol";
 import { DummyEditor } from "./DummyEditor";
-import { ResourceContentServiceCoordinator } from "../api/resourceContent";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 
 let loadingScreenContainer: HTMLElement;
@@ -30,23 +35,26 @@ let controller: EditorEnvelopeController;
 let mockComponent: ReturnType<typeof render>;
 let dummyEditor: DummyEditor;
 
+const editorContext = { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS };
 const languageData = { editorId: "test-editor-id", gwtModuleName: "none", resources: [] };
 
 describe("EditorEnvelopeController", () => {
   beforeEach(() => {
     loadingScreenContainer = document.body.appendChild(document.createElement("div"));
+
     loadingScreenContainer.setAttribute("id", "loading-screen");
-
     envelopeContainer = document.body.appendChild(document.createElement("div"));
-    envelopeContainer.setAttribute("id", "envelopeContainer");
 
+    envelopeContainer.setAttribute("id", "envelopeContainer");
     sentMessages = [];
     dummyEditor = new DummyEditor();
+
     controller = new EditorEnvelopeController(
       {
         postMessage: message => sentMessages.push(message)
       },
       {
+        supports: (_: LanguageData) => true,
         createEditor: (_: LanguageData) => Promise.resolve(dummyEditor)
       },
       new SpecialDomElements(),
@@ -56,10 +64,9 @@ describe("EditorEnvelopeController", () => {
           callback();
         }
       },
-      new ResourceContentServiceCoordinator(),
-      new DefaultKeyboardShortcutsService({
-        editorContext: { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS }
-      })
+      editorContext,
+      new DefaultKeyboardShortcutsService({ editorContext: editorContext }),
+      new I18nService()
     );
   });
 
@@ -217,8 +224,7 @@ function delay(ms: number) {
 }
 
 async function startController() {
-  const context = { channel: ChannelType.VSCODE, operatingSystem: OperatingSystem.WINDOWS };
-  await controller.start({ container: envelopeContainer, context: context });
+  await controller.start({ container: envelopeContainer });
   return mockComponent!;
 }
 

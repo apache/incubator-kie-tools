@@ -16,9 +16,9 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import "@patternfly/patternfly/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly-addons.css";
-import "@patternfly/patternfly/patternfly.css";
+import "@patternfly/patternfly/base/patternfly-variables.css";
+import "@patternfly/patternfly/patternfly-addons.scss";
+import "@patternfly/patternfly/patternfly.scss";
 import "../../static/resources/style.css";
 import * as electron from "electron";
 import {
@@ -30,7 +30,7 @@ import {
   Card,
   CardBody,
   CardFooter,
-  CardHead,
+  CardHeader,
   ClipboardCopy,
   Dropdown,
   DropdownItem,
@@ -50,7 +50,7 @@ import {
 } from "@patternfly/react-core";
 import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
-import { OperatingSystem } from "@kogito-tooling/core-api";
+import { OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 import { I18nHtml } from "@kogito-tooling/i18n";
 import { useHubI18n } from "../common/i18n/locales";
@@ -261,14 +261,14 @@ export function App() {
                 style={{ marginBottom: "10px", width: alert.width ?? "500px" }}
                 variant={alert.variant}
                 title={alert.title}
-                action={<AlertActionCloseButton onClose={() => removeAlert(alert.time)} />}
+                actionClose={<AlertActionCloseButton onClose={() => removeAlert(alert.time)} />}
               />
             </React.Fragment>
           ))}
         </div>
-        <Gallery gutter="lg" className={"kogito-desktop__file-gallery"}>
-          <Card className={"kogito--desktop__files-card"}>
-            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+        <Gallery hasGutter={true} className={"kogito-desktop__file-gallery"}>
+          <Card>
+            <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/vscode-logo.svg"} />
               <Dropdown
                 position="right"
@@ -290,9 +290,9 @@ export function App() {
                   </DropdownItem>
                 ]}
               />
-            </CardHead>
+            </CardHeader>
             <CardBody>
-              <Title size={"xl"}>{i18n.vscode.title}</Title>
+              <Title headingLevel={"h1"} size={"xl"}>{i18n.vscode.title}</Title>
               <br />
               <TextContent>
                 <Text>{i18n.vscode.description}</Text>
@@ -313,12 +313,12 @@ export function App() {
             </CardFooter>
           </Card>
           {/*CHROME*/}
-          <Card className={"kogito--desktop__files-card"}>
-            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+          <Card>
+            <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
-            </CardHead>
+            </CardHeader>
             <CardBody>
-              <Title size={"xl"}>{i18n.chromeExtension.title}</Title>
+              <Title headingLevel={"h1"} size={"xl"}>{i18n.chromeExtension.title}</Title>
               <br />
               <TextContent>
                 <Text>{i18n.chromeExtension.description}</Text>
@@ -343,38 +343,38 @@ export function App() {
             ]}
           >
             <TextContent>
-              <Text component={TextVariants.p}>{i18n.chromeExtension.modal.chromeRequirement}</Text>
+              <Text component={TextVariants.p}><I18nHtml>{i18n.chromeExtension.modal.chromeRequirement}</I18nHtml></Text>
               <Text component={TextVariants.p}>
-                `${i18n.chromeExtension.modal.chromeDownload} `
+                <I18nHtml>`${i18n.chromeExtension.modal.chromeDownload} `</I18nHtml>
                 <Button variant={"link"} isInline={true} onClick={chrome_openDownloadGoogleChrome}>
                   <I18nHtml>{i18n.chromeExtension.modal.here}</I18nHtml>
                 </Button>
                 .
               </Text>
-              <Text component={TextVariants.p}>{i18n.chromeExtension.modal.alreadyHaveChrome}:</Text>
+              <Text component={TextVariants.p}><I18nHtml>{i18n.chromeExtension.modal.alreadyHaveChrome}:</I18nHtml></Text>
               <TextList component={TextListVariants.ol}>
                 <TextListItem>
-                  `${i18n.chromeExtension.modal.firstStep.firstPart} `
+                  <I18nHtml>`${i18n.chromeExtension.modal.firstStep.firstPart} `</I18nHtml>
                   <Button variant={"link"} isInline={true} onClick={chrome_openKogitoToolingReleasesPage}>
                     <I18nHtml>{i18n.names.chromeStore}</I18nHtml>
                   </Button>{" "}
                   <I18nHtml>{i18n.chromeExtension.modal.firstStep.secondPart}</I18nHtml>
                 </TextListItem>
-                <TextListItem>{i18n.chromeExtension.modal.secondStep}</TextListItem>
-                <TextListItem>{i18n.chromeExtension.modal.thirdStep}</TextListItem>
+                <TextListItem><I18nHtml>{i18n.chromeExtension.modal.secondStep}</I18nHtml></TextListItem>
+                <TextListItem><I18nHtml>{i18n.chromeExtension.modal.thirdStep}</I18nHtml></TextListItem>
                 <TextListItem>
-                  `${i18n.chromeExtension.modal.done.firstPart} `
+                  <I18nHtml>`${i18n.chromeExtension.modal.done.firstPart} `</I18nHtml>
                   <Button variant={"link"} isInline={true} onClick={chrome_openGitHub}>
                     <I18nHtml>{i18n.names.github}</I18nHtml>
                   </Button>{" "}
-                  `${i18n.chromeExtension.modal.done.secondPart} `
+                  <I18nHtml>`${i18n.chromeExtension.modal.done.secondPart} `</I18nHtml>
                 </TextListItem>
               </TextList>
             </TextContent>
           </Modal>
           {/*DESKTOP*/}
-          <Card className={"kogito--desktop__files-card"}>
-            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+          <Card>
+            <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/desktop-logo.svg"} />
               <Dropdown
                 position="right"
@@ -388,12 +388,12 @@ export function App() {
                   </DropdownItem>
                 ]}
               />
-            </CardHead>
+            </CardHeader>
             <CardBody>
-              <Title size={"xl"}>{i18n.desktop.title}</Title>
+              <Title headingLevel={"h1"} size={"xl"}><I18nHtml>{i18n.desktop.title}</I18nHtml></Title>
               <br />
               <TextContent>
-                <Text>{i18n.desktop.description}</Text>
+                <Text><I18nHtml>{i18n.desktop.description}</I18nHtml></Text>
               </TextContent>
             </CardBody>
             <CardFooter>
@@ -403,15 +403,15 @@ export function App() {
             </CardFooter>
           </Card>
           {/**/}
-          <Card className={"kogito--desktop__files-card"}>
-            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+          <Card>
+            <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/online-logo.svg"} />
-            </CardHead>
+            </CardHeader>
             <CardBody>
-              <Title size={"xl"}>{i18n.online.title}</Title>
+              <Title headingLevel={"h1"} size={"xl"}><I18nHtml>{i18n.online.title}</I18nHtml></Title>
               <br />
               <TextContent>
-                <Text>{i18n.online.description}</Text>
+                <Text><I18nHtml>{i18n.online.description}</I18nHtml></Text>
               </TextContent>
             </CardBody>
             <CardFooter>

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { KogitoGuidedTour, Step, Tutorial, SubTutorialMode, DemoMode } from "../..";
+import { KogitoGuidedTour } from "../..";
+import { DemoMode, Step, SubTutorialMode, Tutorial } from "@kogito-tooling/microeditor-envelope-protocol";
 
 const concat = <T>(array1: T[], array2: T[]) => array1.concat(array2);
 const flatMap = <T>(f: (array: T) => T[], array: T[]) => array.map(f).reduce(concat, []);

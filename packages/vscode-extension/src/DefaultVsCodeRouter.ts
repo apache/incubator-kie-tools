@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Router, Routes } from "@kogito-tooling/core-api";
+import { Router, Routes } from "@kogito-tooling/microeditor-envelope-protocol";
 import { ExtensionContext, Uri, Webview } from "vscode";
 
 export class DefaultVsCodeRouter extends Router {

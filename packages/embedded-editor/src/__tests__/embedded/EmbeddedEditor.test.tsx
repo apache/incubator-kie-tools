@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType, KogitoEdit } from "@kogito-tooling/core-api";
+import { ChannelType, KogitoEdit } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EnvelopeBusMessagePurpose, KogitoChannelBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
 import { EditorType, File } from "../../common";
@@ -41,7 +41,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
   test("EmbeddedEditor::defaults", () => {
     const { getByTestId, container } = render(
-      <EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />
+      <EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} locale={"en"} />
     );
 
     expect(getByTestId("kogito-iframe")).toBeVisible();
@@ -53,7 +53,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
   test("EmbeddedEditor::setContent", () => {
     const spyRespond_contentRequest = jest.spyOn(KogitoChannelBus.prototype, "notify_contentChanged");
-    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
+    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} locale={"en"} />);
     editorRef.current?.setContent("content");
 
     expect(spyRespond_contentRequest).toBeCalledWith({ content: "content" });
@@ -61,7 +61,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
   test("EmbeddedEditor::requestContent", () => {
     const spyRequest_contentResponse = jest.spyOn(KogitoChannelBus.prototype, "request_contentResponse");
-    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
+    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} locale={"en"} />);
     editorRef.current?.requestContent();
 
     expect(spyRequest_contentResponse).toBeCalled();
@@ -69,7 +69,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
   test("EmbeddedEditor::requestPreview", () => {
     const spyRequest_previewResponse = jest.spyOn(KogitoChannelBus.prototype, "request_previewResponse");
-    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
+    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} locale={"en"} />);
     editorRef.current?.requestPreview();
 
     expect(spyRequest_previewResponse).toBeCalled();
@@ -85,6 +85,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onSetContentError={onSetContentError}
+        locale={"en"}
       />
     );
 
@@ -103,7 +104,14 @@ describe("EmbeddedEditor::ONLINE", () => {
     const onReady = jest.fn();
 
     const { container } = render(
-      <EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} onReady={onReady} />
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        router={router}
+        channelType={channelType}
+        onReady={onReady}
+        locale={"en"}
+      />
     );
 
     await incomingMessage({
@@ -127,6 +135,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onResourceContentRequest={onResourceContentRequest}
+        locale={"en"}
       />
     );
 
@@ -152,6 +161,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         router={router}
         channelType={channelType}
         onResourceListRequest={onResourceListRequest}
+        locale={"en"}
       />
     );
 
@@ -171,7 +181,14 @@ describe("EmbeddedEditor::ONLINE", () => {
     const onNewEdit = jest.fn();
 
     const { container } = render(
-      <EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} onNewEdit={onNewEdit} />
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        router={router}
+        channelType={channelType}
+        onNewEdit={onNewEdit}
+        locale={"en"}
+      />
     );
 
     await incomingMessage({

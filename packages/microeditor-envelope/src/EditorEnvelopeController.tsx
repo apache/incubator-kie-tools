@@ -15,24 +15,27 @@
  */
 
 import * as React from "react";
-import * as Core from "@kogito-tooling/core-api";
-import { EditorContent, EditorContext } from "@kogito-tooling/core-api";
-import { EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
-import { ChannelKeyboardEvent, DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import {
+  Association,
+  ChannelKeyboardEvent,
+  DEFAULT_RECT,
+  EditorContent,
+  EditorContext,
+  EnvelopeBus,
+  I18nService
+} from "@kogito-tooling/microeditor-envelope-protocol";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
-import { EditorFactory } from "./EditorFactory";
+import { Editor, EditorFactory, EnvelopeContext, EnvelopeContextType } from "@kogito-tooling/editor-api";
 import { SpecialDomElements } from "./SpecialDomElements";
 import { Renderer } from "./Renderer";
-import { ResourceContentServiceCoordinator } from "./api/resourceContent";
-import { getGuidedTourElementPosition } from "./handlers/GuidedTourRequestHandler";
-import { Association } from "@kogito-tooling/microeditor-envelope-protocol";
-import { I18nService } from "./api/i18n";
+import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 
 export class EditorEnvelopeController {
   public readonly kogitoEnvelopeBus: KogitoEnvelopeBus;
+  public readonly envelopeContext: EnvelopeContextType;
   public capturedInitRequestYet = false;
-
   private editorEnvelopeView?: EditorEnvelopeView;
 
   constructor(
@@ -40,7 +43,7 @@ export class EditorEnvelopeController {
     private readonly editorFactory: EditorFactory<any>,
     private readonly specialDomElements: SpecialDomElements,
     private readonly renderer: Renderer,
-    private readonly resourceContentEditorCoordinator: ResourceContentServiceCoordinator,
+    private readonly editorContext: EditorContext,
     private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService,
     private readonly i18nService: I18nService
   ) {
@@ -54,19 +57,19 @@ export class EditorEnvelopeController {
 
         this.capturedInitRequestYet = true;
 
-        const language = await this.kogitoEnvelopeBus.request_languageResponse();
-        const editor = await editorFactory.createEditor(language, this.kogitoEnvelopeBus.client);
+        const language = await this.kogitoEnvelopeBus.client.request("receive_languageRequest");
+        const editor = await editorFactory.createEditor(language, this.envelopeContext);
 
         await this.open(editor);
         this.editorEnvelopeView!.setLoading();
 
-        const editorContent = await this.kogitoEnvelopeBus.request_contentResponse();
+        const editorContent = await this.kogitoEnvelopeBus.client.request("receive_contentRequest");
 
         await editor
           .setContent(editorContent.path ?? "", editorContent.content)
           .finally(() => this.editorEnvelopeView!.setLoadingFinished());
 
-        this.kogitoEnvelopeBus.notify_ready();
+        this.kogitoEnvelopeBus.client.notify("receive_ready");
       },
       receive_contentChanged: (editorContent: EditorContent) => {
         this.editorEnvelopeView!.setLoading();
@@ -91,7 +94,9 @@ export class EditorEnvelopeController {
           .then(previewSvg => previewSvg ?? "");
       },
       receive_guidedTourElementPositionRequest: async (selector: string) => {
-        return getGuidedTourElementPosition(selector);
+        return this.getEditor()!
+          .getElementPosition(selector)
+          .then(rect => rect ?? DEFAULT_RECT);
       },
       receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent) {
         window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));
@@ -100,13 +105,25 @@ export class EditorEnvelopeController {
         this.i18nService.executeI18nCallback(locale);
       }
     });
+
+    this.envelopeContext = {
+      channelApi: this.kogitoEnvelopeBus.client,
+      context: editorContext,
+      services: {
+        keyboardShortcuts: keyboardShortcutsService,
+        guidedTour: {
+          isEnabled: () => KogitoGuidedTour.getInstance().isEnabled()
+        },
+        i18nService: i18nService,
+      }
+    };
   }
 
   //TODO: Create messages to control the lifecycle of enveloped components?
   //TODO: No-op when same Editor class?
   //TODO: Can I open an editor if there's already an open one?
   //TODO: What about close and shutdown methods?
-  private open(editor: Core.Editor) {
+  private open(editor: Editor) {
     return this.editorEnvelopeView!.setEditor(editor).then(() => {
       editor.af_onStartup();
       editor.af_onOpen();
@@ -117,23 +134,25 @@ export class EditorEnvelopeController {
     return this.editorEnvelopeView!.getEditor();
   }
 
-  private render(args: { container: HTMLElement; context: EditorContext }) {
+  private render(args: { container: HTMLElement }) {
     return new Promise<void>(res =>
       this.renderer.render(
-        <EditorEnvelopeView
-          exposing={self => (this.editorEnvelopeView = self)}
-          loadingScreenContainer={this.specialDomElements.loadingScreenContainer}
-          keyboardShortcutsService={this.keyboardShortcutsService}
-          context={args.context}
-          messageBus={this.kogitoEnvelopeBus}
-        />,
+        <EnvelopeContext.Provider value={this.envelopeContext}>
+          <EditorEnvelopeView
+            exposing={self => (this.editorEnvelopeView = self)}
+            loadingScreenContainer={this.specialDomElements.loadingScreenContainer}
+            keyboardShortcutsService={this.keyboardShortcutsService}
+            context={this.editorContext}
+            messageBus={this.kogitoEnvelopeBus}
+          />
+        </EnvelopeContext.Provider>,
         args.container,
         res
       )
     );
   }
 
-  public start(args: { container: HTMLElement; context: EditorContext }) {
+  public start(args: { container: HTMLElement }) {
     return this.render(args).then(() => {
       this.kogitoEnvelopeBus.startListening();
       return this.kogitoEnvelopeBus;

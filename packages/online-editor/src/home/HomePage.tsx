@@ -37,9 +37,9 @@ import {
   TextInput,
   TextVariants,
   Title,
-  Toolbar,
-  ToolbarGroup,
-  ToolbarItem
+  PageHeaderTools,
+  PageHeaderToolsGroup,
+  PageHeaderToolsItem
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 import * as React from "react";
@@ -453,16 +453,11 @@ export function HomePage(props: Props) {
 
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
-      <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
-        <I18nHtml>{i18n.homePage.dropdown.getHub}</I18nHtml>
-      </Link>
+      <Link to={context.routes.downloadHub.url({})}><I18nHtml>{i18n.homePage.dropdown.getHub}</I18nHtml></Link>
     </DropdownItem>
   ];
 
   const userDropdownItems = [
-    /*<DropdownItem key="">
-      <Link to ={'/'}>Documentation</Link>
-    </DropdownItem>,*/
     <DropdownItem key="">
       <a href={"https://groups.google.com/forum/#!forum/kogito-development"} target={"_blank"}>
         <I18nHtml>{i18n.homePage.dropdown.onlineForum}</I18nHtml>
@@ -475,55 +470,52 @@ export function HomePage(props: Props) {
   const [isLinkDropdownOpen, setIsLinkDropdownOpen] = useState(false);
 
   const headerToolbar = (
-    <>
-      <Toolbar>
-        <ToolbarGroup>
-          <ToolbarItem className="pf-u-display-none pf-u-display-flex-on-lg">
-            <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
-              <I18nHtml>{i18n.homePage.dropdown.getHub}</I18nHtml>
-              {/*<Button variant="plain">Get Business Modeler Hub Preview</Button>*/}
-            </Link>
-          </ToolbarItem>
-          <ToolbarItem className="pf-u-display-none-on-lg">
-            <Dropdown
-              isPlain={true}
-              position="right"
-              isOpen={isLinkDropdownOpen}
-              toggle={
-                <DropdownToggle
-                  iconComponent={null}
-                  onToggle={setIsLinkDropdownOpen}
-                  aria-label="External links to extensions"
-                >
-                  <ExternalLinkAltIcon />
-                </DropdownToggle>
-              }
-              dropdownItems={linkDropdownItems}
-            />
-          </ToolbarItem>
-          <ToolbarItem>
-            <Dropdown
-              isPlain={true}
-              position="right"
-              isOpen={isUserDropdownOpen}
-              toggle={
-                <DropdownToggle iconComponent={null} onToggle={setIsUserDropdownOpen} aria-label="Links">
-                  <OutlinedQuestionCircleIcon />
-                </DropdownToggle>
-              }
-              dropdownItems={userDropdownItems}
-            />
-          </ToolbarItem>
-        </ToolbarGroup>
-      </Toolbar>
-    </>
+    <PageHeaderTools>
+      <PageHeaderToolsGroup>
+        <PageHeaderToolsItem className="pf-u-display-none pf-u-display-flex-on-lg">
+          <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
+            <I18nHtml>{i18n.homePage.dropdown.getHub}</I18nHtml>
+          </Link>
+        </PageHeaderToolsItem>
+        <PageHeaderToolsItem className="pf-u-display-none-on-lg">
+          <Dropdown
+            isPlain={true}
+            position="right"
+            isOpen={isLinkDropdownOpen}
+            toggle={
+              <DropdownToggle
+                toggleIndicator={null}
+                onToggle={setIsLinkDropdownOpen}
+                aria-label="External links to hub"
+              >
+                <ExternalLinkAltIcon />
+              </DropdownToggle>
+            }
+            dropdownItems={linkDropdownItems}
+          />
+        </PageHeaderToolsItem>
+        <PageHeaderToolsItem>
+          <Dropdown
+            isPlain={true}
+            position="right"
+            isOpen={isUserDropdownOpen}
+            toggle={
+              <DropdownToggle toggleIndicator={null} onToggle={setIsUserDropdownOpen} aria-label="Links">
+                <OutlinedQuestionCircleIcon />
+              </DropdownToggle>
+            }
+            dropdownItems={userDropdownItems}
+          />
+        </PageHeaderToolsItem>
+      </PageHeaderToolsGroup>
+    </PageHeaderTools>
   );
 
   const Header = (
     <PageHeader
       logo={<Brand src={"images/BusinessModeler_Logo_38x389.svg"} alt="Logo" />}
       logoProps={logoProps}
-      toolbar={headerToolbar}
+      headerTools={headerToolbar}
     />
   );
 
@@ -536,7 +528,7 @@ export function HomePage(props: Props) {
           </Title>
           <Text>{i18n.homePage.header.welcomeText}</Text>
           <Text component={TextVariants.small} className="pf-u-text-align-right">
-            <I18nHtml>{`${i18n.terms.poweredBy} `}</I18nHtml>
+            <I18nHtml>`${i18n.terms.poweredBy} `</I18nHtml>
             <Brand
               src={"images/kogito_logo_white.png"}
               alt="Kogito Logo"
@@ -546,7 +538,7 @@ export function HomePage(props: Props) {
         </TextContent>
       </PageSection>
       <PageSection className="pf-u-px-2xl-on-lg">
-        <Gallery gutter="lg" className="kogito--editor-landing__gallery">
+        <Gallery hasGutter={true} className="kogito--editor-landing__gallery">
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
@@ -641,14 +633,14 @@ export function HomePage(props: Props) {
                   label="URL"
                   fieldId="url-text-input"
                   data-testid="url-form-input"
-                  isValid={isUrlInputTextValid}
+                  validated={isUrlInputTextValid ? "default" : "error"}
                   helperText={helperMessageForInputFileFromUrlState}
                   helperTextInvalid={helperInvalidMessageForInputFileFromUrlState}
                 >
                   <TextInput
                     isRequired={true}
                     onBlur={onInputFileFromUrlBlur}
-                    isValid={isUrlInputTextValid}
+                    validated={isUrlInputTextValid ? "default" : "error"}
                     autoComplete={"off"}
                     value={inputFileUrl}
                     onChange={inputFileFromUrlChanged}

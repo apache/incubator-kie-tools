@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./GwtStateControl";
+export * from "./GwtStateControlService";
 export * from "./GwtStateControlCommand";
 export * from "./KogitoCommandRegistry";

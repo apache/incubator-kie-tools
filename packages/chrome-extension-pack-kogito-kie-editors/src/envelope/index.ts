@@ -17,7 +17,7 @@
 import * as MicroEditorEnvelope from "@kogito-tooling/microeditor-envelope";
 import {  GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import { EnvelopeBusMessage } from "@kogito-tooling/microeditor-envelope-protocol";
-import { ChannelType, getOperatingSystem } from "@kogito-tooling/core-api";
+import { ChannelType, getOperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 
 MicroEditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
