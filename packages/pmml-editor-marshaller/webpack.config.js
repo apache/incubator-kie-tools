@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-module.exports = {
-  reporters: ["default"],
-  moduleDirectories: ["node_modules", "src"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
-  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
-  transform: {
-    "^.+\\.jsx?$": "babel-jest",
-    "^.+\\.tsx?$": "ts-jest"
+const { merge } = require("webpack-merge");
+const common = require("../../webpack.common.config");
+const nodeExternals = require("webpack-node-externals");
+
+module.exports = merge(common, {
+  entry: {
+    index: "./src/index.ts"
   },
-  moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js"
-  }
-};
+  output: {
+    libraryTarget: "umd",
+    globalObject: "this"
+  },
+  externals: [nodeExternals({ modulesDir: "../../node_modules" })]
+});

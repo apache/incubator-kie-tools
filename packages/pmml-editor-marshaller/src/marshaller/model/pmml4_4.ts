@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 2.24.612 on 2020-06-22 12:42:58.
+// Generated using typescript-generator version 2.24.612 on 2020-06-26 13:44:41.
 
 export class PMMLObject {
 

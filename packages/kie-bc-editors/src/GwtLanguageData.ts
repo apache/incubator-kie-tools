@@ -17,7 +17,6 @@
 import { LanguageData } from "@kogito-tooling/core-api";
 
 export interface GwtLanguageData extends LanguageData {
-  type: string;
   editorId: string;
   gwtModuleName: string;
   resources: Resource[];

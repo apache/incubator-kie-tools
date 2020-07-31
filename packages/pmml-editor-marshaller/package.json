@@ -1,5 +1,5 @@
 {
-  "name": "@kogito-tooling/pmml-editor",
+  "name": "@kogito-tooling/pmml-editor-marshaller",
   "version": "0.6.1",
   "description": "",
   "license": "Apache-2.0",
@@ -13,26 +13,19 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/core-api": "0.6.1",
-    "@kogito-tooling/microeditor-envelope": "0.6.1",
-    "@kogito-tooling/patternfly-base": "0.6.1",
-    "@kogito-tooling/pmml-editor-marshaller": "0.6.1",
-    "@types/react-router": "5.1.1",
-    "@types/react-router-dom": "5.1.1",
-    "react-router": "5.1.1",
-    "react-router-dom": "5.1.1"
+    "jsonata": "^1.8.3",
+    "xml-js": "^1.6.11"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
-    "test": "jest --silent --verbose",
+    "test": "jest",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:prod": "yarn run build --mode production --devtool none"
   },
   "babel": {
     "presets": [
-      "@babel/env",
-      "@babel/react"
+      "@babel/env"
     ]
   }
 }
