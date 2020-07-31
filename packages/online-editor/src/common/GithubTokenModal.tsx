@@ -20,13 +20,13 @@ import { GlobalContext } from "./GlobalContext";
 
 import {
   Modal,
+  ModalVariant,
   Button,
   BaseSizes,
   Title,
-  TitleLevel,
   InputGroup,
   TextInput,
-  InputGroupText
+  InputGroupText,
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, CheckIcon } from "@patternfly/react-icons";
 
@@ -67,13 +67,13 @@ export function GithubTokenModal(props: Props) {
 
   return (
     <Modal
-      isSmall={true}
+      variant={ModalVariant.small}
       isOpen={props.isOpen}
       onClose={props.onClose}
       title=""
       header={
         <>
-          <Title headingLevel={TitleLevel.h1} size={BaseSizes['2xl']}>
+          <Title headingLevel="h1" size={BaseSizes['2xl']}>
             GitHub OAuth Token
           </Title>
           <p className="pf-u-pt-sm">Authentication required for exporting to GitHub gist.</p>
@@ -94,7 +94,7 @@ export function GithubTokenModal(props: Props) {
               placeholder="Paste your token here"
               maxLength={GITHUB_OAUTH_TOKEN_SIZE}
               isDisabled={authenticated}
-              isValid={!!authenticated}
+              validated={!!authenticated ? "error" : "default"}
               value={tokenToDisplay}
               onPaste={onPasteHandler}
               autoFocus={true}

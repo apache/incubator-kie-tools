@@ -15,7 +15,7 @@
  */
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
@@ -49,7 +49,7 @@ module.exports = [
       "webview/index": "./src/webview/index.ts"
     },
     module: {
-      rules: [...pfWebpackUtils.patternflyLoaders]
+      rules: [...pfWebpackOptions.patternflyRules]
     },
     plugins: [
       new CopyWebpackPlugin([

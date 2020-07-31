@@ -17,7 +17,15 @@
 import * as React from "react";
 import { useContext, useMemo } from "react";
 import { GlobalContext } from "../common/GlobalContext";
-import { PageHeader, Brand, Toolbar, ToolbarGroup, ToolbarItem, Button, Title } from "@patternfly/react-core";
+import {
+  PageHeader,
+  Brand,
+  PageHeaderTools,
+  PageHeaderToolsGroup,
+  PageHeaderToolsItem,
+  Button,
+  Title
+} from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
 import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";
 import { removeDirectories } from "../../common/utils";
@@ -38,9 +46,9 @@ export function EditorToolbar(props: Props) {
   const tooltipContent = <div>{context.file?.filePath!}</div>;
 
   const fileNameTitle = (
-    <div data-testid="toolbar-title">
+    <div data-testid="toolbar-title" className={"kogito--editor__toolbar-title"}>
       <Tooltip content={tooltipContent} position={TooltipPosition.bottom} maxWidth={"50em"}>
-        <Title headingLevel={"h3"} size={"xl"} className={"kogito--editor__toolbar-title"}>
+        <Title headingLevel={"h3"} size={"xl"}>
           {removeDirectories(context.file!.filePath)}
         </Title>
       </Tooltip>
@@ -53,21 +61,20 @@ export function EditorToolbar(props: Props) {
   );
 
   const headerToolbar = (
-    // TODO: The toolbar should be switched out for DataToolbar and possibly the Overflow menu
-    <Toolbar>
-      <ToolbarGroup className={"kogito--right"}>
-        <ToolbarItem>
+    <PageHeaderTools>
+      <PageHeaderToolsGroup>
+        <PageHeaderToolsItem>
           <Button
             data-testid="save-button"
-            variant={"secondary"}
+            variant={"tertiary"}
             onClick={props.onSave}
             className={"pf-u-display-flex-on-lg"}
             aria-label={"Save file"}
           >
             Save
           </Button>
-        </ToolbarItem>
-        <ToolbarItem>
+        </PageHeaderToolsItem>
+        <PageHeaderToolsItem>
           <Button
             variant={"plain"}
             onClick={props.onClose}
@@ -76,9 +83,9 @@ export function EditorToolbar(props: Props) {
           >
             <CloseIcon />
           </Button>
-        </ToolbarItem>
-      </ToolbarGroup>
-    </Toolbar>
+        </PageHeaderToolsItem>
+      </PageHeaderToolsGroup>
+    </PageHeaderTools>
   );
 
   return (
@@ -86,7 +93,7 @@ export function EditorToolbar(props: Props) {
       logo={
         <Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} onClick={props.onClose} />
       }
-      toolbar={headerToolbar}
+      headerTools={headerToolbar}
       topNav={fileNameTitle}
       className={"kogito--editor__toolbar"}
     />

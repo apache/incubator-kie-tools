@@ -15,7 +15,33 @@
  */
 
 import { EditorType } from "@kogito-tooling/embedded-editor";
-import { Alert, AlertActionCloseButton, AlertVariant, Bullseye, Button, Card, CardBody, CardFooter, CardHeader, Form, FormGroup, Gallery, InputGroup, PageSection, Select, SelectOption, Text, TextContent, TextInput, TextVariants, Title, Toolbar, ToolbarGroup, ToolbarItem, Tooltip } from "@patternfly/react-core";
+import {
+  Alert,
+  AlertActionCloseButton,
+  AlertVariant,
+  Bullseye,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Form,
+  FormGroup,
+  Gallery,
+  InputGroup,
+  PageSection,
+  Select,
+  SelectOption,
+  Text,
+  TextContent,
+  TextInput,
+  TextVariants,
+  Title,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem,
+  Tooltip
+} from "@patternfly/react-core";
 import { SortAlphaDownIcon } from "@patternfly/react-icons";
 import * as electron from "electron";
 import * as React from "react";
@@ -24,7 +50,6 @@ import { File, UNSAVED_FILE_NAME } from "../../common/File";
 import { RecentOpenedFile } from "../../common/RecentOpenedFile";
 import { extractFileExtension, removeDirectories } from "../../common/utils";
 import { GlobalContext } from "../common/GlobalContext";
-import IpcRendererEvent = Electron.IpcRendererEvent;
 
 interface Props {
   openFile: (file: File) => void;
@@ -53,7 +78,11 @@ enum FileTypeFilter {
   DMN = "DMN"
 }
 
-const typeFilterOptions = [{ value: FileTypeFilter.ALL }, { value: FileTypeFilter.BPMN }, { value: FileTypeFilter.DMN }];
+const typeFilterOptions = [
+  { value: FileTypeFilter.ALL },
+  { value: FileTypeFilter.BPMN },
+  { value: FileTypeFilter.DMN }
+];
 
 export function FilesPage(props: Props) {
   const context = useContext(GlobalContext);
@@ -251,41 +280,41 @@ export function FilesPage(props: Props) {
 
   return (
     <>
+      {importFileErrorDetails.type === ImportFileErrorType.RESPONSE && (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            variant={AlertVariant.danger}
+            title="An error happened while fetching your file"
+            actionClose={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
+          >
+            <br />
+            <b>Error details: </b>
+            {importFileErrorDetails.statusCode}
+            {importFileErrorDetails.statusCode && importFileErrorDetails.description && " - "}
+            {importFileErrorDetails.description}
+          </Alert>
+        </div>
+      )}
+      {importFileErrorDetails.type === ImportFileErrorType.FETCH && (
+        <div className={"kogito--alert-container"}>
+          <Alert
+            variant={AlertVariant.danger}
+            title="An unexpected error happened while trying to fetch your file"
+            actionClose={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
+          >
+            <br />
+            <b>Error details: </b>
+            {importFileErrorDetails.description}
+          </Alert>
+        </div>
+      )}
       <PageSection>
-        {importFileErrorDetails.type === ImportFileErrorType.RESPONSE && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              variant={AlertVariant.danger}
-              title="An error happened while fetching your file"
-              action={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
-            >
-              <br />
-              <b>Error details: </b>
-              {importFileErrorDetails.statusCode}
-              {importFileErrorDetails.statusCode && importFileErrorDetails.description && " - "}
-              {importFileErrorDetails.description}
-            </Alert>
-          </div>
-        )}
-        {importFileErrorDetails.type === ImportFileErrorType.FETCH && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              variant={AlertVariant.danger}
-              title="An unexpected error happened while trying to fetch your file"
-              action={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
-            >
-              <br />
-              <b>Error details: </b>
-              {importFileErrorDetails.description}
-            </Alert>
-          </div>
-        )}
-        <TextContent>
-          <Title size={"2xl"} headingLevel={"h2"}>
-            {"Create new file"}
-          </Title>
-        </TextContent>
-        <Gallery gutter="md" className="kogito--desktop__actions-gallery">
+        <div className={"kogito--desktop__actions-title"}>
+          <TextContent>
+            <Title headingLevel={"h1"}>Create new file</Title>
+          </TextContent>
+        </div>
+        <Gallery hasGutter={true} className="kogito--desktop__actions-gallery">
           <Card
             className={"kogito--desktop__actions-card"}
             component={"article"}
@@ -383,14 +412,14 @@ export function FilesPage(props: Props) {
                   <FormGroup
                     label="URL"
                     fieldId="url-text-input"
-                    isValid={isInputUrlValid}
+                    validated={isInputUrlValid ? "default" : "error"}
                     helperText=""
                     helperTextInvalid={messageForStateInputUrl}
                   >
                     <TextInput
                       isRequired={true}
                       onBlur={onInputFileUrlBlur}
-                      isValid={isInputUrlValid}
+                      validated={isInputUrlValid ? "default" : "error"}
                       value={url}
                       onChange={inputFileChanged}
                       type="url"
@@ -416,48 +445,47 @@ export function FilesPage(props: Props) {
           Recent Files
         </Title>
         <Toolbar>
-          {
-            <>
-              <ToolbarGroup>
-                {
-                  <Select
-                    onSelect={onSelectTypeFilter}
-                    onToggle={onToggleTypeFilter}
-                    isExpanded={typeFilterSelect.isExpanded}
-                    selections={typeFilterSelect.value}
-                    width={"7em"}
-                  >
-                    {typeFilterOptions.map((option, index) => (
-                      <SelectOption key={index} value={option.value} />
-                    ))}
-                  </Select>
-                }
-              </ToolbarGroup>
-              <ToolbarGroup>
-                <InputGroup>
-                  <TextInput
-                    name={"searchInput"}
-                    id={"searchInput"}
-                    type={"search"}
-                    aria-label={"search input example"}
-                    placeholder={"Search"}
-                    onChange={onChangeSearchFilter}
-                  />
-                </InputGroup>
-              </ToolbarGroup>
-              <ToolbarItem>
-                <Button
-                  data-testid="orderAlphabeticallyButton"
-                  variant="plain"
-                  aria-label="sort file view"
-                  className={sortAlphaFilter ? "kogito--filter-btn-pressed" : "kogito--filter-btn"}
-                  onClick={() => setSortAlphaFilter(!sortAlphaFilter)}
+          <ToolbarContent>
+            <ToolbarItem>
+              {
+                <Select
+                  onSelect={onSelectTypeFilter}
+                  onToggle={onToggleTypeFilter}
+                  isOpen={typeFilterSelect.isExpanded}
+                  selections={typeFilterSelect.value}
+                  width={"7em"}
                 >
-                  <SortAlphaDownIcon />
-                </Button>
-              </ToolbarItem>
-              {/* TODO: Implement grid view */}
-              {/*<ToolbarGroup className="pf-u-ml-auto">
+                  {typeFilterOptions.map((option, index) => (
+                    <SelectOption key={index} value={option.value} />
+                  ))}
+                </Select>
+              }
+            </ToolbarItem>
+            <ToolbarItem>
+              <InputGroup>
+                <TextInput
+                  name={"searchInput"}
+                  id={"searchInput"}
+                  type={"search"}
+                  aria-label={"search input example"}
+                  placeholder={"Search"}
+                  onChange={onChangeSearchFilter}
+                />
+              </InputGroup>
+            </ToolbarItem>
+            <ToolbarItem>
+              <Button
+                data-testid="orderAlphabeticallyButton"
+                variant="plain"
+                aria-label="sort file view"
+                className={sortAlphaFilter ? "kogito--filter-btn-pressed" : "kogito--filter-btn"}
+                onClick={() => setSortAlphaFilter(!sortAlphaFilter)}
+              >
+                <SortAlphaDownIcon />
+              </Button>
+            </ToolbarItem>
+            {/* TODO: Implement grid view */}
+            {/*<ToolbarGroup className="pf-u-ml-auto">
                 <ToolbarItem>
                   <Button variant="plain" aria-label="tiled file view">
                     <ThIcon />
@@ -469,15 +497,14 @@ export function FilesPage(props: Props) {
                   </Button>
                 </ToolbarItem>
               </ToolbarGroup>*/}
-            </>
-          }
+          </ToolbarContent>
         </Toolbar>
       </PageSection>
       <PageSection isFilled={true}>
         {filteredLastOpenedFiles.length === 0 && <Bullseye>No files were opened yet.</Bullseye>}
 
         {filteredLastOpenedFiles.length > 0 && (
-          <Gallery gutter="lg" className="kogito-desktop__file-gallery">
+          <Gallery hasGutter={true} className="kogito-desktop__file-gallery">
             {filteredLastOpenedFiles.map(file => (
               <Tooltip content={<div>{file.filePath}</div>} key={file.filePath}>
                 <Card
@@ -496,7 +523,7 @@ export function FilesPage(props: Props) {
                     </Bullseye>
                   </CardBody>
                   <CardFooter>
-                    <Title headingLevel="h3" size="xs" className="kogito--desktop__filename">
+                    <Title headingLevel="h3" size="md" className="kogito--desktop__filename">
                       {removeDirectories(file.filePath)}
                     </Title>
                   </CardFooter>

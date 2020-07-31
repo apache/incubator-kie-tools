@@ -20,9 +20,9 @@ import * as Core from "@kogito-tooling/core-api";
 import { ChannelType, StateControlCommand } from "@kogito-tooling/core-api";
 import { LoadingScreen } from "./LoadingScreen";
 import { DefaultKeyboardShortcutsService, KeyBindingsHelpOverlay } from "@kogito-tooling/keyboard-shortcuts";
-import "@patternfly/patternfly/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly-addons.css";
-import "@patternfly/patternfly/patternfly.css";
+import "@patternfly/patternfly/base/patternfly-variables.css";
+import "@patternfly/patternfly/patternfly-addons.scss";
+import "@patternfly/patternfly/patternfly.scss";
 import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 
 interface Props {

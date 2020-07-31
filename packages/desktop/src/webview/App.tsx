@@ -16,13 +16,13 @@
 
 import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
-import "@patternfly/patternfly/patternfly-addons.css";
-import "@patternfly/patternfly/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly.css";
 import { Alert, AlertActionCloseButton, AlertVariant } from "@patternfly/react-core";
 import * as electron from "electron";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import "@patternfly/patternfly/base/patternfly-variables.css";
+import "@patternfly/patternfly/patternfly-addons.scss";
+import "@patternfly/patternfly/patternfly.scss";
 import "../../static/resources/style.css";
 import { File } from "../common/File";
 import { GlobalContext } from "./common/GlobalContext";
@@ -167,7 +167,7 @@ export function App(props: Props) {
           <Alert
             variant={AlertVariant.danger}
             title="This file extension is not supported."
-            action={<AlertActionCloseButton onClose={closeInvalidFileTypeErrorAlert} />}
+            actionClose={<AlertActionCloseButton onClose={closeInvalidFileTypeErrorAlert} />}
           />
         </div>
       )}
