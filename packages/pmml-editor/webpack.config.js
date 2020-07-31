@@ -14,36 +14,17 @@
  * limitations under the License.
  */
 
-const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
-const nodeExternals = require("webpack-node-externals");
-const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
+const nodeExternals = require("webpack-node-externals");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
 module.exports = merge(common, {
   entry: {
-    index: "./src/index.tsx"
+    index: "./src/index.ts"
   },
   externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-  plugins: [
-    new CopyPlugin([
-      { from: "./static/resources", to: "./resources" },
-      { from: "./static/images", to: "./images" },
-      { from: "./static/index.html", to: "./index.html" },
-      { from: "./static/favicon.ico", to: "./favicon.ico" }
-    ])
-  ],
   module: {
     rules: [...pfWebpackOptions.patternflyRules]
-  },
-  devServer: {
-    historyApiFallback: {
-      disableDotRule: true
-    },
-    disableHostCheck: true,
-    watchContentBase: true,
-    contentBase: [path.join(__dirname, "./dist"), path.join(__dirname, "./static")],
-    port: 9001
   }
 });

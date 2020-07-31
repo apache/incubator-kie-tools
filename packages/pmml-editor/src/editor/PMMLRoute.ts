@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { LanguageData, Router, Routes as CoreRoutes } from "@kogito-tooling/core-api";
+import { FACTORY_TYPE } from "./PMMLEditorFactory";
 
-module.exports = {
-  reporters: ["default"],
-  moduleDirectories: ["node_modules", "src"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
-  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
-  transform: {
-    "^.+\\.jsx?$": "babel-jest",
-    "^.+\\.tsx?$": "ts-jest"
-  },
-  moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js"
+export class PMMLRoute implements CoreRoutes {
+  private languageData: Map<string, LanguageData> = new Map<string, LanguageData>();
+
+  constructor() {
+    this.languageData.set(FACTORY_TYPE, { type: FACTORY_TYPE });
   }
-};
+
+  public getRoutes(router: Router) {
+    return this.languageData;
+  }
+}

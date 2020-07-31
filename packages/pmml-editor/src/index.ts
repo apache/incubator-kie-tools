@@ -15,15 +15,8 @@
  */
 
 import "@patternfly/patternfly/patternfly.css";
-import { Alert } from "@patternfly/react-core";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
 
-ReactDOM.render(
-  <Alert
-    title="Congratulations"
-    variant="info"
-    children={<p>PMML Editor will live here!</p>}
-  />,
-  document.getElementById("app")!
-);
+export * from "./editor/PMMLEditor";
+export * from "./editor/PMMLEditorFactory";
+export * from "./editor/PMMLEditorInterface";
+export * from "./editor/PMMLRoute";

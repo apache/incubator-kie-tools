@@ -32,6 +32,7 @@ export { EditorEnvelopeController } from "./EditorEnvelopeController";
 export * from "./EditorFactory";
 export * from "./KogitoEnvelopeBus";
 export { SpecialDomElements } from "./SpecialDomElements";
+export { CompositeEditorFactory } from "./CompositeEditorFactory";
 
 declare global {
   interface Window {
