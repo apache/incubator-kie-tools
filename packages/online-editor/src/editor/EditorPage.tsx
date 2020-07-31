@@ -16,7 +16,7 @@
 
 import { ChannelType } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
-import { Alert, AlertActionCloseButton, Page, PageSection } from "@patternfly/react-core";
+import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
@@ -227,13 +227,13 @@ export function EditorPage(props: Props) {
         />
       }
     >
-      <PageSection isFilled={true} noPadding={true} noPaddingMobile={true} style={{ flexBasis: "100%" }}>
+      <PageSection isFilled={true} padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
         {!fullscreen && copySuccessAlertVisible && (
           <div className={"kogito--alert-container"}>
             <Alert
               variant="success"
               title="Content copied to clipboard"
-              action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
+              actionClose={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
             />
           </div>
         )}
@@ -242,24 +242,24 @@ export function EditorPage(props: Props) {
             <Alert
               variant="warning"
               title="Unsaved changes will be lost."
-              action={
+              actionClose={
                 <AlertActionCloseButton
                   data-testid="unsaved-alert-close-button"
                   onClose={() => setShowUnsavedAlert(false)}
                 />
               }
-            >
-              <div>
-                <p>
-                  Click Save to download your progress before closing.{" "}
-                  <a data-testid="unsaved-alert-save-button" onClick={requestDownload}>
+              actionLinks={
+                <React.Fragment>
+                  <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestDownload}>
                     Save
-                  </a>
-                </p>
-                <a data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
-                  {" Close without saving"}
-                </a>
-              </div>
+                  </AlertActionLink>
+                  <AlertActionLink data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
+                    Close without saving
+                  </AlertActionLink>
+                </React.Fragment>
+              }
+            >
+              <p>Click Save to download your progress before closing. </p>
             </Alert>
           </div>
         )}

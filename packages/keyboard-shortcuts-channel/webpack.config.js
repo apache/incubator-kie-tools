@@ -15,7 +15,6 @@
  */
 
 const nodeExternals = require("webpack-node-externals");
-const pfWebpackUtils = require("../patternfly-base/webpackUtils");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
@@ -26,8 +25,5 @@ module.exports = merge(common, {
   output: {
     libraryTarget: "commonjs2"
   },
-  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-  module: {
-    rules: [...pfWebpackUtils.patternflyLoaders]
-  }
+  externals: [nodeExternals({ modulesDir: "../../node_modules" })]
 });

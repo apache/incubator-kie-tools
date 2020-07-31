@@ -15,7 +15,7 @@
  */
 
 const CopyPlugin = require("copy-webpack-plugin");
-const envelope = require("../patternfly-base/webpackUtils");
+const pfWebpackOptions = require("../patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
@@ -30,6 +30,6 @@ module.exports = merge(common, {
   externals: ["react", "react-dom", /^@patternfly\/.+$/],
   plugins: [new CopyPlugin([{ from: "./static/css", to: "./css" }])],
   module: {
-    rules: [...envelope.patternflyLoaders]
+    rules: [...pfWebpackOptions.patternflyRules]
   }
 });

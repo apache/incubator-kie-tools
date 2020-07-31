@@ -16,7 +16,7 @@
 
 const nodeExternals = require("webpack-node-externals");
 const CopyPlugin = require("copy-webpack-plugin");
-const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
@@ -29,7 +29,7 @@ module.exports = [
       libraryTarget: "umd",
       globalObject: "this"
     },
-    module: { rules: [...pfWebpackUtils.patternflyLoaders] },
+    module: { rules: [...pfWebpackOptions.patternflyRules] },
     externals: [nodeExternals({ modulesDir: "../../node_modules" })],
     plugins: [new CopyPlugin([{ from: "./static/envelope", to: "./envelope" }])]
   }),
@@ -37,6 +37,6 @@ module.exports = [
     entry: {
       "envelope/envelope": "./src/envelope/envelope.ts"
     },
-    module: { rules: [...pfWebpackUtils.patternflyLoaders] },
+    module: { rules: [...pfWebpackOptions.patternflyRules] },
   })
 ];

@@ -18,12 +18,12 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import {
   Modal,
+  ModalVariant,
   Button,
   Select,
   SelectOption,
   SelectDirection,
-  SelectVariant,
-  ModalBoxFooter
+  SelectVariant
 } from "@patternfly/react-core";
 import { Redirect } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
@@ -85,25 +85,18 @@ export function DownloadHubModal(props: {}) {
         <Modal
           title="The Business Modeler Hub Preview allows you to access:"
           isOpen={true}
-          isLarge={true}
+          variant={ModalVariant.large}
           onClose={onClose}
-          footer={
-            <ModalBoxFooter
-              className="kogito--editor-hub-download_modal-footer"
-              children={
-                <div>
-                  <a key="download" href={downloadHub} download={true}>
-                    <Button variant="primary" onClick={onDownload}>
-                      Download
-                    </Button>
-                  </a>
-                  <Button key="cancel" variant="link" onClick={onClose}>
-                    Cancel
-                  </Button>
-                </div>
-              }
-            />
-          }
+          actions={[
+            <a key="download" href={downloadHub} download={true}>
+              <Button variant="primary" onClick={onDownload}>
+                Download
+              </Button>
+            </a>,
+            <Button key="cancel" variant="link" onClick={onClose}>
+              Cancel
+            </Button>
+          ]}
         >
           <p>
             <strong>VS Code </strong>
@@ -128,17 +121,16 @@ export function DownloadHubModal(props: {}) {
           </p>
           <br />
           <p>Operation System:</p>
-          <div>
+          <div style={{ width: "140px" }}>
             <Select
               variant={SelectVariant.single}
-              aria-label="Select Input"
+              aria-label="Select OS"
               onToggle={onSelectOsToggle}
               onSelect={onSelectOperatingSystem}
               selections={operationalSystem}
-              isExpanded={isSelectExpanded}
-              ariaLabelledBy={"select-os"}
+              isOpen={isSelectExpanded}
+              aria-labelledby={"select-os"}
               isDisabled={false}
-              width={"135px"}
               direction={SelectDirection.up}
             >
               {Array.from(availableOperatingSystems.entries()).map(([key, label]) => (
@@ -154,20 +146,13 @@ export function DownloadHubModal(props: {}) {
         <Modal
           title="Thank you for downloading Business Modeler Hub Preview!"
           isOpen={true}
-          isLarge={true}
+          variant={ModalVariant.large}
           onClose={onClose}
-          footer={
-            <ModalBoxFooter
-              className="kogito--editor-hub-download_modal-footer"
-              children={
-                <div>
-                  <Button key="close" variant="link" onClick={onClose}>
-                    Close
-                  </Button>
-                </div>
-              }
-            />
-          }
+          actions={[
+            <Button key="close" variant="link" onClick={onClose}>
+              Close
+            </Button>
+          ]}
         >
           <p>
             <small>

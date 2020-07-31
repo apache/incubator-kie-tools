@@ -16,22 +16,21 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import * as Core from "@kogito-tooling/microeditor-envelope-protocol";
-import { ChannelType, StateControlCommand } from "@kogito-tooling/microeditor-envelope-protocol";
 import { Editor } from "@kogito-tooling/editor-api";
 import { LoadingScreen } from "./LoadingScreen";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
-import "@patternfly/patternfly/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly-addons.css";
-import "@patternfly/patternfly/patternfly.css";
+import "@patternfly/patternfly/base/patternfly-variables.css";
+import "@patternfly/patternfly/patternfly-addons.scss";
+import "@patternfly/patternfly/patternfly.scss";
 import { KogitoEnvelopeBus } from "./KogitoEnvelopeBus";
 import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
+import { EditorContext, ChannelType, StateControlCommand } from "@kogito-tooling/microeditor-envelope-protocol";
 
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
   loadingScreenContainer: HTMLElement;
   keyboardShortcutsService: DefaultKeyboardShortcutsService;
-  context: Core.EditorContext;
+  context: EditorContext;
   messageBus: KogitoEnvelopeBus;
 }
 

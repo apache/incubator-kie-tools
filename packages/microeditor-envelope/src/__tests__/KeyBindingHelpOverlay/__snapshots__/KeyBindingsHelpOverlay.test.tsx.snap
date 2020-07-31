@@ -35,16 +35,24 @@ exports[`KeyBindingsHelpOverlay minimal setup 1`] = `
         class="pf-l-bullseye"
       >
         <div
-          aria-describedby="pf-modal-0"
-          aria-label="Keyboard shortcuts"
+          aria-describedby="pf-modal-part-2"
+          aria-labelledby="pf-modal-part-1"
           aria-modal="true"
           class="pf-c-modal-box"
+          data-ouia-component-id="0"
+          data-ouia-component-type="PF4/ModalContent"
+          data-ouia-safe="true"
+          id="pf-modal-part-0"
           role="dialog"
           style="width: 60%;"
         >
           <button
+            aria-disabled="false"
             aria-label="Close"
             class="pf-c-button pf-m-plain"
+            data-ouia-component-id="1"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
             type="button"
           >
             <svg
@@ -62,17 +70,20 @@ exports[`KeyBindingsHelpOverlay minimal setup 1`] = `
               />
             </svg>
           </button>
-          <h1
-            class="pf-c-title pf-m-2xl"
+          <header
+            class="pf-c-modal-box__header"
           >
-             
-            Keyboard shortcuts
-             
-          </h1>
+            <h1
+              class="pf-c-modal-box__title pf-c-modal-box__title"
+              id="pf-modal-part-1"
+            >
+              Keyboard shortcuts
+            </h1>
+          </header>
           <div
             class="pf-c-modal-box__body"
             data-testid="keyboard-shortcuts-help-overlay"
-            id="pf-modal-0"
+            id="pf-modal-part-2"
           >
             <div
               class="pf-c-content"

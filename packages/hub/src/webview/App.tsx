@@ -16,9 +16,9 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import "@patternfly/patternfly/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly-addons.css";
-import "@patternfly/patternfly/patternfly.css";
+import "@patternfly/patternfly/base/patternfly-variables.css";
+import "@patternfly/patternfly/patternfly-addons.scss";
+import "@patternfly/patternfly/patternfly.scss";
 import "../../static/resources/style.css";
 import * as electron from "electron";
 import {
@@ -30,7 +30,7 @@ import {
   Card,
   CardBody,
   CardFooter,
-  CardHead,
+  CardHeader,
   ClipboardCopy,
   Dropdown,
   DropdownItem,
@@ -258,14 +258,14 @@ export function App() {
                 style={{ marginBottom: "10px", width: alert.width ?? "500px" }}
                 variant={alert.variant}
                 title={alert.title}
-                action={<AlertActionCloseButton onClose={() => removeAlert(alert.time)} />}
+                actionClose={<AlertActionCloseButton onClose={() => removeAlert(alert.time)} />}
               />
             </React.Fragment>
           ))}
         </div>
-        <Gallery gutter="lg" className={"kogito-desktop__file-gallery"}>
-          <Card className={"kogito--desktop__files-card"}>
-            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+        <Gallery hasGutter={true} className={"kogito-desktop__file-gallery"}>
+          <Card>
+            <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/vscode-logo.svg"} />
               <Dropdown
                 position="right"
@@ -287,9 +287,9 @@ export function App() {
                   </DropdownItem>
                 ]}
               />
-            </CardHead>
+            </CardHeader>
             <CardBody>
-              <Title size={"xl"}>Kogito Bundle VS Code extension</Title>
+              <Title headingLevel={"h1"} size={"xl"}>Kogito Bundle VS Code extension</Title>
               <br />
               <TextContent>
                 <Text>Launches VS Code ready to use with Kogito BPMN, DMN and Test Scenario Editors</Text>
@@ -310,15 +310,15 @@ export function App() {
             </CardFooter>
           </Card>
           {/*CHROME*/}
-          <Card className={"kogito--desktop__files-card"}>
-            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+          <Card>
+            <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
-            </CardHead>
+            </CardHeader>
             <CardBody>
-              <Title size={"xl"}>BPMN, DMN and Test Scenario Editors for GitHub</Title>
+              <Title headingLevel={"h1"} size={"xl"}>BPMN, DMN & Test Scenario Editors for GitHub</Title>
               <br />
               <TextContent>
-                <Text>Install the BPMN, DMN and Test Scenario Editors for GitHub on Chrome browser</Text>
+                <Text>Install the BPMN, DMN & Test Scenario Editors for GitHub on Chrome browser</Text>
               </TextContent>
             </CardBody>
             <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
@@ -330,7 +330,7 @@ export function App() {
           </Card>
           <Modal
             width={"70%"}
-            title="Install BPMN, DMN and Test Scenario Editor for GitHub on Chrome browser"
+            title="Install BPMN, DMN & Test Scenario Editor for GitHub"
             isOpen={chrome_modalOpen}
             onClose={chrome_toggleModal}
             actions={[
@@ -375,8 +375,8 @@ export function App() {
             </TextContent>
           </Modal>
           {/*DESKTOP*/}
-          <Card className={"kogito--desktop__files-card"}>
-            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+          <Card>
+            <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/desktop-logo.svg"} />
               <Dropdown
                 position="right"
@@ -390,9 +390,9 @@ export function App() {
                   </DropdownItem>
                 ]}
               />
-            </CardHead>
+            </CardHeader>
             <CardBody>
-              <Title size={"xl"}>Business Modeler Desktop Preview</Title>
+              <Title headingLevel={"h1"} size={"xl"}>Business Modeler Desktop Preview</Title>
               <br />
               <TextContent>
                 <Text>Launches the desktop version of Business Modeler Preview</Text>
@@ -405,12 +405,12 @@ export function App() {
             </CardFooter>
           </Card>
           {/**/}
-          <Card className={"kogito--desktop__files-card"}>
-            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+          <Card>
+            <CardHeader style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
               <img style={{ height: "52px" }} src={"images/online-logo.svg"} />
-            </CardHead>
+            </CardHeader>
             <CardBody>
-              <Title size={"xl"}>Business Modeler Preview</Title>
+              <Title headingLevel={"h1"} size={"xl"}>Business Modeler Preview</Title>
               <br />
               <TextContent>
                 <Text>Navigates to the Online Modeler Preview site</Text>

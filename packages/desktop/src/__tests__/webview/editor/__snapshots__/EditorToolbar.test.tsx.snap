@@ -2,10 +2,11 @@
 
 exports[`EditorToolbar isDirty indicator should show the isDirty indicator when the isEdited is true 1`] = `
 <div
+  class="kogito--editor__toolbar-title"
   data-testid="toolbar-title"
 >
   <h3
-    class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
+    class="pf-c-title pf-m-xl"
   >
     test.dmn
   </h3>
@@ -20,10 +21,11 @@ exports[`EditorToolbar isDirty indicator should show the isDirty indicator when 
 
 exports[`EditorToolbar isDirty indicator shouldn't show the isDirty indicator when the isEdited is false 1`] = `
 <div
+  class="kogito--editor__toolbar-title"
   data-testid="toolbar-title"
 >
   <h3
-    class="pf-c-title pf-m-xl kogito--editor__toolbar-title"
+    class="pf-c-title pf-m-xl"
   >
     test.dmn
   </h3>

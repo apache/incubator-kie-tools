@@ -16,8 +16,15 @@
 
 import { ChannelType } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorType, EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
-import "@patternfly/patternfly/patternfly.css";
-import { Alert, AlertActionCloseButton, Page, PageSection, Stack, StackItem } from "@patternfly/react-core";
+import {
+  Alert,
+  AlertActionCloseButton,
+  AlertActionLink,
+  Page,
+  PageSection,
+  Stack,
+  StackItem
+} from "@patternfly/react-core";
 import * as electron from "electron";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -224,7 +231,7 @@ export function EditorPage(props: Props) {
 
   return (
     <Page className={"kogito--editor-page"}>
-      <PageSection variant="dark" noPadding={true} style={{ flexBasis: "100%" }}>
+      <PageSection variant="dark" padding={{ default: "noPadding" }} style={{ flexBasis: "100%" }}>
         <Stack>
           <StackItem>
             <EditorToolbar onClose={onClose} onSave={onSave} isEdited={isDirty} />
@@ -235,25 +242,27 @@ export function EditorPage(props: Props) {
                 <Alert
                   variant="warning"
                   title="Unsaved changes will be lost."
-                  action={
+                  actionClose={
                     <AlertActionCloseButton
                       data-testid="unsaved-alert-close-button"
                       onClose={() => setShowUnsavedAlert(false)}
                     />
                   }
-                >
-                  <div>
-                    <p>
-                      Click Save to download your progress before closing.{" "}
-                      <a data-testid="unsaved-alert-save-button" onClick={requestSaveFile}>
+                  actionLinks={
+                    <React.Fragment>
+                      <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestSaveFile}>
                         Save
-                      </a>
-                    </p>
-                    <a data-testid="unsaved-alert-close-without-save-button" onClick={onCloseWithoutSave}>
-                      {" "}
-                      Close without saving
-                    </a>
-                  </div>
+                      </AlertActionLink>
+                      <AlertActionLink
+                        data-testid="unsaved-alert-close-without-save-button"
+                        onClick={onCloseWithoutSave}
+                      >
+                        Close without saving
+                      </AlertActionLink>
+                    </React.Fragment>
+                  }
+                >
+                  <p>Click Save to download your progress before closing. </p>
                 </Alert>
               </div>
             )}
@@ -262,7 +271,7 @@ export function EditorPage(props: Props) {
                 <Alert
                   variant="success"
                   title="Content copied to clipboard"
-                  action={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
+                  actionClose={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
                 />
               </div>
             )}
@@ -271,7 +280,7 @@ export function EditorPage(props: Props) {
                 <Alert
                   variant="success"
                   title={"File saved successfully!"}
-                  action={<AlertActionCloseButton onClose={closeSaveFileSuccessAlert} />}
+                  actionClose={<AlertActionCloseButton onClose={closeSaveFileSuccessAlert} />}
                 />
               </div>
             )}
@@ -280,7 +289,7 @@ export function EditorPage(props: Props) {
                 <Alert
                   variant="success"
                   title={"Preview saved successfully!"}
-                  action={<AlertActionCloseButton onClose={closeSavePreviewSuccessAlert} />}
+                  actionClose={<AlertActionCloseButton onClose={closeSavePreviewSuccessAlert} />}
                 />
               </div>
             )}

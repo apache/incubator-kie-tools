@@ -32,14 +32,11 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { Button } from "@patternfly/react-core/dist/js/components/Button/Button";
-import { useCallback, useContext } from "react";
-import { GlobalContext } from "../common/GlobalContext";
+import { useCallback } from "react";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons";
 import * as electron from "electron";
 
 export function LearnMorePage() {
-  const context = useContext(GlobalContext);
-
   const externalLink = useCallback((event: React.MouseEvent<HTMLElement>, link: string) => {
     event.preventDefault();
     electron.shell.openExternal(link).catch(e => {
@@ -49,21 +46,18 @@ export function LearnMorePage() {
 
   return (
     <PageSection>
-      <Grid sm={12} lg={6} gutter="lg">
-        <Card className={"''"}>
-          <CardHeader className={"''"}>
-            <Title size={"lg"} className={"''"} headingLevel={"h2"}>
+      <Grid sm={12} lg={6} hasGutter={true}>
+        <Card>
+          <CardHeader>
+            <Title size={"lg"} headingLevel={"h2"}>
               Why BPMN?
             </Title>
           </CardHeader>
-          <CardBody className={"''"}>
+          <CardBody>
             <TextContent>
               <Text component={TextVariants.p}>BPMN files are used to generate business processes.</Text>
               <Text component={TextVariants.p}>
                 <Button
-                  className={"''"}
-                  component={"a"}
-                  isBlock={false}
                   isInline={true}
                   type={"button"}
                   variant={"link"}
@@ -74,26 +68,23 @@ export function LearnMorePage() {
               </Text>
             </TextContent>
           </CardBody>
-          <CardFooter className={"''"} component={"div"}>
+          <CardFooter component={"div"}>
             <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "bpmn" })}>
               Create BPMN
             </Button>
           </CardFooter>
         </Card>
-        <Card className={"''"}>
-          <CardHeader className={"''"}>
-            <Title size={"lg"} className={"''"} headingLevel={"h2"}>
+        <Card>
+          <CardHeader>
+            <Title size={"lg"} headingLevel={"h2"}>
               Why DMN?
             </Title>
           </CardHeader>
-          <CardBody className={"''"}>
+          <CardBody>
             <TextContent>
               <Text component={TextVariants.p}>DMN files are used to generate decision models.</Text>
               <Text component={TextVariants.p}>
                 <Button
-                  className={"''"}
-                  component={"a"}
-                  isBlock={false}
                   isInline={true}
                   type={"button"}
                   variant={"link"}
@@ -104,9 +95,6 @@ export function LearnMorePage() {
               </Text>
               <Text component={TextVariants.p}>
                 <Button
-                  className={"''"}
-                  component={"a"}
-                  isBlock={false}
                   isInline={true}
                   type={"button"}
                   variant={"link"}
@@ -117,30 +105,27 @@ export function LearnMorePage() {
               </Text>
             </TextContent>
           </CardBody>
-          <CardFooter className={"''"} component={"div"}>
+          <CardFooter component={"div"}>
             <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "dmn" })}>
               Create DMN
             </Button>
           </CardFooter>
         </Card>
-        <Card className={"''"} span={12} style={{ gridColumn: "span 12" }}>
-          <CardHeader className={"''"}>
-            <Title size={"lg"} className={"''"} headingLevel={"h2"}>
+        <Card span={12} style={{ gridColumn: "span 12" }}>
+          <CardHeader>
+            <Title size={"lg"} headingLevel={"h2"}>
               About Business Modeler Preview
             </Title>
           </CardHeader>
-          <CardBody className={"''"}>
-            <Split gutter="lg">
+          <CardBody>
+            <Split hasGutter={true}>
               <SplitItem isFilled={true}>
                 These simple BPMN and DMN editors are here to allow you to collaborate quickly and to help introduce you
-                to the new tools and capabilities of Process Automation. Feel free to get in touch in the
+                to the new tools and capabilities of Process Automation. Feel free to get in touch in the{" "}
                 <Button
-                  className={"pf-u-ml-xs"}
-                  component={"a"}
-                  isBlock={false}
-                  isInline={true}
                   type={"button"}
                   variant={"link"}
+                  isInline={true}
                   onClick={event => externalLink(event, "https://groups.google.com/forum/#!forum/kogito-development")}
                 >
                   forum
@@ -151,10 +136,6 @@ export function LearnMorePage() {
                 <Stack>
                   <StackItem>
                     <Button
-                      className={"''"}
-                      component={"a"}
-                      isBlock={false}
-                      isInline={false}
                       type={"button"}
                       variant={"link"}
                       onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
@@ -164,10 +145,6 @@ export function LearnMorePage() {
                   </StackItem>
                   <StackItem>
                     <Button
-                      className={"''"}
-                      component={"a"}
-                      isBlock={false}
-                      isInline={false}
                       type={"button"}
                       variant={"link"}
                       onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
@@ -177,10 +154,6 @@ export function LearnMorePage() {
                   </StackItem>
                   <StackItem>
                     <Button
-                      className={"''"}
-                      component={"a"}
-                      isBlock={false}
-                      isInline={false}
                       type={"button"}
                       variant={"link"}
                       onClick={event => externalLink(event, "https://www.redhat.com/en/about/open-source")}
@@ -190,10 +163,6 @@ export function LearnMorePage() {
                   </StackItem>
                   <StackItem>
                     <Button
-                      className={"''"}
-                      component={"a"}
-                      isBlock={false}
-                      isInline={false}
                       type={"button"}
                       variant={"link"}
                       onClick={event => externalLink(event, "http://kogito.kie.org")}

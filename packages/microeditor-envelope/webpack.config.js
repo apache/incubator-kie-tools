@@ -15,7 +15,7 @@
  */
 
 const nodeExternals = require("webpack-node-externals");
-const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
@@ -28,6 +28,6 @@ module.exports = merge(common, {
   },
   externals: [nodeExternals({ modulesDir: "../../node_modules" })],
   module: {
-    rules: [...pfWebpackUtils.patternflyLoaders]
+    rules: [...pfWebpackOptions.patternflyRules]
   }
 });
