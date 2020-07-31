@@ -17,7 +17,6 @@
 import { LanguageData } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export interface GwtLanguageData extends LanguageData {
-  type: string;
   editorId: string;
   gwtModuleName: string;
   resources: Resource[];

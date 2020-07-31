@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import { GwtAppFormerApi } from "./GwtAppFormerApi";
-import { GwtEditorWrapper } from "./GwtEditorWrapper";
-import { Editor, EditorFactory, EnvelopeContextType } from "@kogito-tooling/editor-api";
-import { GwtLanguageData, Resource } from "./GwtLanguageData";
-import { XmlFormatter } from "./XmlFormatter";
-import { GwtStateControlService } from "./gwtStateControl";
-import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
 import {
   ResourceContentOptions,
   ResourceListOptions,
   Tutorial,
   UserInteraction
 } from "@kogito-tooling/microeditor-envelope-protocol";
+import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
+import { GwtAppFormerApi } from "./GwtAppFormerApi";
+import { GwtEditorWrapper } from "./GwtEditorWrapper";
+import { Editor, EditorFactory, EnvelopeContextType } from "@kogito-tooling/editor-api";
+import { GwtLanguageData, Resource } from "./GwtLanguageData";
+import { XmlFormatter } from "./XmlFormatter";
+import { GwtStateControlService } from "./gwtStateControl";
 import { GuidedTourApi } from "./api/GuidedTourApi";
 import { ResourceContentApi } from "./api/ResourceContentApi";
 import { KeyboardShortcutsApi } from "./api/KeyboardShorcutsApi";
@@ -39,11 +39,6 @@ declare global {
     gwt: {
       stateControl: StateControlApi;
     };
-  }
-}
-
-declare global {
-  interface Window {
     envelope: {
       guidedTourService: GuidedTourApi;
       editorContext: EditorContextApi;
@@ -54,12 +49,18 @@ declare global {
   }
 }
 
+export const FACTORY_TYPE = "gwt";
+
 export class GwtEditorWrapperFactory implements EditorFactory<GwtLanguageData> {
   constructor(
     private readonly xmlFormatter: XmlFormatter = new DefaultXmlFormatter(),
     private readonly gwtAppFormerApi = new GwtAppFormerApi(),
     private readonly gwtStateControlService = new GwtStateControlService()
   ) {}
+
+  public supports(languageData: GwtLanguageData) {
+    return languageData.type === FACTORY_TYPE;
+  }
 
   public createEditor(languageData: GwtLanguageData, envelopeContext: EnvelopeContextType) {
     this.gwtAppFormerApi.setClientSideOnly(true);

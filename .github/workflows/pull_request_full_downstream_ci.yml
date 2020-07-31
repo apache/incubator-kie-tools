@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    if: github.event_name == 'pull_request' || (github.event.issue.number == 221 && startsWith(github.event.comment.body, 'Build:'))
+    if: github.event_name == 'pull_request' || (github.repository == 'kiegroup/kogito-tooling' && github.event.issue.number == 221 && startsWith(github.event.comment.body, 'Build:'))
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -24,15 +24,21 @@ jobs:
         id: buildInfo
         run: |
           if [ -z "${{ github.event.pull_request }}" ]; then
-            x=$(node -e "console.log('${{ github.event.comment.body }}'.match(/Build: (.+)\/(.+)$/)[1])"); 
-            y=$(node -e "console.log('${{ github.event.comment.body }}'.match(/Build: (.+)\/(.+)$/)[2])");
+            user=$(node -e "console.log('${{ github.event.comment.body }}'.match(/Build: (.+)\/(.+)$/)[1])"); 
+            ref=$(node -e "console.log('${{ github.event.comment.body }}'.match(/Build: (.+)\/(.+)$/)[2])");
+            category="comment";
+            id="${{ github.event.comment.id }}";
           else 
-            x=${{ github.event.pull_request.user.login }}
-            y=${{ github.head_ref }}
+            user=${{ github.event.pull_request.user.login }}
+            ref=${{ github.head_ref }}
+            category="pull";
+            id="${{ github.event.pull_request.number }}";
           fi
           
-          echo ::set-output name=user::$x
-          echo ::set-output name=ref::$y
+          echo ::set-output name=user::$user
+          echo ::set-output name=ref::$ref
+          echo ::set-output name=category::$category
+          echo ::set-output name=id::$id
           
       - name: Create comment
         if: github.event_name == 'issue_comment'
@@ -41,9 +47,10 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             [KOGITO-TOOLING-BUILD] @${{ github.actor }} Build triggered for ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}. Check progress at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            The Online Editor for this job will be available at https://kiegroup.github.io/kogito-online-ci/${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}
           reactions: rocket
-          
-      - name: Clone droolsjbpm-build-bootstrap
+       
+      - name: Checkout droolsjbpm-build-bootstrap
         uses: actions/checkout@v2
         with:
           repository: kiegroup/droolsjbpm-build-bootstrap
@@ -59,9 +66,9 @@ jobs:
             echo $MERGE_WARNING_MESSAGE
             git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
           fi
-          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2
+          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2 -B
 
-      - name: Clone kie-soup
+      - name: Checkout kie-soup
         uses: actions/checkout@v2
         with:
           repository: kiegroup/kie-soup
@@ -77,9 +84,9 @@ jobs:
             echo $MERGE_WARNING_MESSAGE
             git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
           fi
-          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2
+          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2 -B
 
-      - name: Clone appformer
+      - name: Checkout appformer
         uses: actions/checkout@v2
         with:
           repository: kiegroup/appformer
@@ -95,9 +102,9 @@ jobs:
             echo $MERGE_WARNING_MESSAGE
             git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
           fi
-          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2
+          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2 -B
 
-      - name: Clone kie-wb-common
+      - name: Checkout kie-wb-common
         uses: actions/checkout@v2
         with:
           repository: kiegroup/kie-wb-common
@@ -113,9 +120,9 @@ jobs:
             echo $MERGE_WARNING_MESSAGE
             git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
           fi
-          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2
-          mvn clean install -DskipTests -Denforcer.skip -pl kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime
-          mvn clean install -DskipTests -Denforcer.skip -pl kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime
+          mvn clean install -DskipTests -Dgwt.compiler.skip -Denforcer.skip -T 2 -B
+          mvn clean install -DskipTests -Denforcer.skip -pl kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime -B
+          mvn clean install -DskipTests -Denforcer.skip -pl kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime -B
 
       - name: Upload DMN editor
         uses: actions/upload-artifact@v1
@@ -129,7 +136,7 @@ jobs:
           name: bpmn-editor-fdb
           path: kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime
 
-      - name: Clone drools-wb
+      - name: Checkout drools-wb
         uses: actions/checkout@v2
         with:
           repository: kiegroup/drools-wb
@@ -145,22 +152,44 @@ jobs:
             echo $MERGE_WARNING_MESSAGE
             git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
           fi
-          mvn clean install -DskipTests -Denforcer.skip -pl drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime -am -T 2
+          mvn clean install -DskipTests -Denforcer.skip -pl drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime -am -T 2 -B
 
-      - name: Upload Test Scenario editor
+      - name: Upload SceSim editor
         uses: actions/upload-artifact@v1
         with:
           name: scesim-editor-fdb
           path: drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime/
 
-      - uses: actions/checkout@v2
-      - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: Checkout kogito-tooling
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          path: kogito-tooling
+
+      - name: Setup kogito-tooling
+        run: |
+          cd kogito-tooling
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          git status
+
+      - name: Merge kogito-tooling changes
+        if: github.event_name == 'issue_comment'
+        run: |
+          cd kogito-tooling
+          git config --global user.email "kietooling@gmail.com"
+          git config --global user.name "Kogito Tooling Bot"
+          git remote add ${{ steps.buildInfo.outputs.user }} https://github.com/${{ steps.buildInfo.outputs.user }}/kogito-tooling.git
+          git fetch --all || true
+          if [ -n "$(git show-ref refs/remotes/${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }})" ]; then
+            echo $MERGE_WARNING_MESSAGE
+            git merge ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}
+          fi
 
       # This bash script will set an output version for this step. It can be used with steps.version.outputs.version
       - name: Output version
         id: version
         run: |
-          echo ::set-output name=version::$(node -e "console.log(require('./lerna.json').version);")
+          cd kogito-tooling && echo ::set-output name=version::$(node -e "console.log(require('./lerna.json').version);")
         shell: bash
 
       - name: Setup Node
@@ -175,35 +204,75 @@ jobs:
         run: /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 
       - name: Download dependencies
-        run: yarn run init
+        run: cd kogito-tooling && yarn run init
 
       - name: Check yarn.lock md5
         id: check-yarn-lock-md5
         run: |
+          cd kogito-tooling
           git diff yarn.lock;
           [ "0" == "$(git diff yarn.lock | wc -l)" ]
         shell: bash
 
-      - name: "Build :: prod and pack"
-        run: yarn run build:prod
+      - name: "Build kogito-tooling"
         env:
+          ROUTER_targetOrigin: "https://kiegroup.github.io"
+          ROUTER_relativePath: "kogito-online-ci/${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/"
+          DOWNLOAD_HUB_linuxUrl: "https://kiegroup.github.io/kogito-online-ci/hub_download_unsupported.html"
+          DOWNLOAD_HUB_macOsUrl: "https://kiegroup.github.io/kogito-online-ci/hub_download_unsupported.html"
+          DOWNLOAD_HUB_windowsUrl: "https://kiegroup.github.io/kogito-online-ci/hub_download_unsupported.html"
           DISPLAY: ":99.0"
+        run: cd kogito-tooling && yarn run build:prod && cd .. && pwd && ls
 
       - name: Upload VSCode Extension
         uses: actions/upload-artifact@v1
         with:
           name: vscode-extension-fdb
-          path: packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
+          path: kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
+
+      - name: Upload Chrome Extension
+        if: github.event_name == 'issue_comment'
+        uses: actions/upload-artifact@v1
+        with:
+          name: chrome-extension-fdb
+          path: kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.zip
 
       - name: Upload Desktop App
         uses: actions/upload-artifact@v1
         with:
           name: desktop-app-linux-fdb
-          path: "packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz"
+          path: kogito-tooling/packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
 
       - name: Upload Hub App
         uses: actions/upload-artifact@v1
         with:
           name: hub-app-linux-fdb
-          path: "packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz"
+          path: kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
+
+      - name: Checkout kogito-online-ci
+        if: github.event_name == 'issue_comment'
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
+          path: kogito-online-ci
+          repository: kiegroup/kogito-online-ci
+          ref: gh-pages
+
+      # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online-ci'.
+      - name: Update kogito-online-ci resources
+        if: github.event_name == 'issue_comment'
+        run: |          
+          cd kogito-online-ci
+          rm -rf ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}
+          mkdir -p ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors
+          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/bpmn ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/
+          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/dmn ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/
+          cp -r ../kogito-tooling/packages/kie-bc-editors-unpacked/scesim ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/
+          cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors/
+          cp -r ../kogito-tooling/packages/online-editor/dist/* ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/
+          git config --global user.email "kietooling@gmail.com"
+          git config --global user.name "Kogito Tooling Bot (kiegroup)"
+          git add . && git commit -m "Kogito Tooling FDB - ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}" || echo "No changes."
+          git push origin gh-pages
+          cd -
 

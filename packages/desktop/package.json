@@ -12,7 +12,7 @@
   "dependencies": {
     "@kogito-tooling/embedded-editor": "0.6.1",
     "@kogito-tooling/patternfly-base": "0.6.1",
-    "electron": "7.1.9",
+    "electron": "7.2.4",
     "react-router": "5.1.1",
     "react-router-dom": "5.1.1"
   },

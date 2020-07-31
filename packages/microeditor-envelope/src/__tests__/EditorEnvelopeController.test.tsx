@@ -49,8 +49,14 @@ describe("EditorEnvelopeController", () => {
     dummyEditor = new DummyEditor();
 
     controller = new EditorEnvelopeController(
-      { postMessage: message => sentMessages.push(message) },
-      { createEditor: (_: LanguageData) => Promise.resolve(dummyEditor) },
+      {
+        postMessage: message => sentMessages.push(message)
+      },
+      {
+        supports: (_: LanguageData) => true,
+
+        createEditor: (_: LanguageData) => Promise.resolve(dummyEditor)
+      },
       new SpecialDomElements(),
       {
         render: (element, container, callback) => {

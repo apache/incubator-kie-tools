@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GwtEditorWrapperFactory } from "../GwtEditorWrapperFactory";
+import { FACTORY_TYPE, GwtEditorWrapperFactory } from "../GwtEditorWrapperFactory";
 import { GwtLanguageData, Resource } from "../GwtLanguageData";
 
 const cssResource: Resource = {
@@ -44,7 +44,7 @@ const jsResource: Resource = {
 };
 
 const testLanguageData: GwtLanguageData = {
-  type: "dummy",
+  type: FACTORY_TYPE,
   editorId: "editorID",
   gwtModuleName: "moduleName",
   resources: [cssResource, jsResource]
@@ -101,5 +101,19 @@ describe("GwtEditorWrapperFactory", () => {
     Array.from(scripts).forEach((s, i) => {
       expect(s.src).toContain(jsResource.paths[i]);
     });
+  });
+
+  test("Supported LanguageData type", () => {
+    expect(gwtEditorWrapperFactory.supports(testLanguageData)).toBeTruthy();
+  });
+
+  test("Unsupported LanguageData type", () => {
+    const unsupportedLanguageData: GwtLanguageData = {
+      type: "unsupported",
+      editorId: "editorID",
+      gwtModuleName: "moduleName",
+      resources: []
+    };
+    expect(gwtEditorWrapperFactory.supports(unsupportedLanguageData)).toBeFalsy();
   });
 });

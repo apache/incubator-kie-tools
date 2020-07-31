@@ -23,6 +23,12 @@ import { EnvelopeContextType } from "./EnvelopeContext";
  */
 export interface EditorFactory<T extends LanguageData> {
   /**
+   * Returns true if the factory supports a language.
+   * @param languageData The custom LanguageData
+   */
+  supports(languageData: T): boolean;
+
+  /**
    * Returns an Editor based on a LanguageData.
    * Receives a messageBus to be used by the Editor to communicate with the outside of the envelope.
    */

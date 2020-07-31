@@ -15,6 +15,7 @@
  */
 
 import { Router, Routes } from "@kogito-tooling/microeditor-envelope-protocol";
+import { FACTORY_TYPE } from "./GwtEditorWrapperFactory";
 import { GwtLanguageData } from "./GwtLanguageData";
 
 export const editors = {
@@ -45,7 +46,7 @@ export class GwtEditorRoutes implements Routes {
 
   public getRoutes(router: Router) {
     const bpmnLanguageData: GwtLanguageData = {
-      type: "gwt",
+      type: FACTORY_TYPE,
       editorId: editors.bpmn.id,
       gwtModuleName: editors.bpmn.name,
       resources: [
@@ -65,7 +66,7 @@ export class GwtEditorRoutes implements Routes {
       ]
     };
     const dmnLanguageData: GwtLanguageData = {
-      type: "gwt",
+      type: FACTORY_TYPE,
       editorId: editors.dmn.id,
       gwtModuleName: editors.dmn.name,
       resources: [
@@ -92,7 +93,7 @@ export class GwtEditorRoutes implements Routes {
       ]
     };
     const scesimLanguageData: GwtLanguageData = {
-      type: "gwt",
+      type: FACTORY_TYPE,
       editorId: editors.scesim.id,
       gwtModuleName: editors.scesim.name,
       resources: [
