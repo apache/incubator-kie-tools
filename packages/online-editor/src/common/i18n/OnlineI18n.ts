@@ -55,6 +55,7 @@ interface OnlineDictionary extends Dictionary<OnlineDictionary> {
   editorToolbar: {
     sendChangesToGitHub: string;
     copySource: string;
+    downloadSVG: string;
     gistIt: string;
     fileActions: string;
   };

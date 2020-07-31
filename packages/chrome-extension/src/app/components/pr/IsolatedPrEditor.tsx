@@ -39,6 +39,7 @@ import { fetchFile } from "../../github/api";
 import { useGitHubApi } from "../common/GitHubContext";
 import { useGlobals } from "../common/GlobalContext";
 import { useChromeExtensionI18n } from "../../i18n/locales";
+import { I18nHtml } from "@kogito-tooling/i18n";
 
 export interface PrInfo {
   repo: string;
@@ -149,7 +150,7 @@ export function IsolatedPrEditor(props: {
       {shouldAddLinkToOriginalFile &&
         ReactDOM.createPortal(
           <a className={"pl-5 dropdown-item btn-link"} href={viewOriginalFileHref(props.prInfo, originalFilePath)}>
-            {i18n.pr.isolated.viewOriginal}
+            <I18nHtml>{i18n.pr.isolated.viewOriginal}</I18nHtml>
           </a>,
           viewOriginalFileLinkContainer(
             globals.id,
@@ -161,7 +162,7 @@ export function IsolatedPrEditor(props: {
       {globals.externalEditorManager &&
         ReactDOM.createPortal(
           <a className={"pl-5 dropdown-item btn-link"} onClick={openExternalEditor}>
-            {i18n.openIn(globals.externalEditorManager.name)}
+            <I18nHtml>{i18n.openIn(globals.externalEditorManager.name)}</I18nHtml>
           </a>,
           openWithExternalEditorLinkContainer(
             props.prFileContainer,

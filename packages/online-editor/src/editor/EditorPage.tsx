@@ -27,6 +27,7 @@ import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
 import { onlineI18nDefaults, useOnlineI18n } from "../common/i18n";
+import { I18nHtml } from "@kogito-tooling/i18n";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -255,7 +256,7 @@ export function EditorPage(props: Props) {
                 <p>
                   {`${i18n.editorPage.alerts.unsaved.message} `}
                   <a data-testid="unsaved-alert-save-button" onClick={requestDownload}>
-                    {i18n.terms.save}
+                    <I18nHtml>{i18n.terms.save}</I18nHtml>
                   </a>
                 </p>
                 <a data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>

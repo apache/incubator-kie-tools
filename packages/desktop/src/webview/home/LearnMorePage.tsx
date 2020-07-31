@@ -32,11 +32,11 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { Button } from "@patternfly/react-core/dist/js/components/Button/Button";
-import { useCallback, useContext } from "react";
-import { GlobalContext } from "../common/GlobalContext";
+import { useCallback } from "react";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons";
 import * as electron from "electron";
 import { useDesktopI18n } from "../common/i18n/locales";
+import { I18nHtml } from "@kogito-tooling/i18n";
 
 export function LearnMorePage() {
   const { i18n } = useDesktopI18n();
@@ -54,7 +54,7 @@ export function LearnMorePage() {
         <Card className={"''"}>
           <CardHeader className={"''"}>
             <Title size={"lg"} className={"''"} headingLevel={"h2"}>
-              {i18n.learnMorePage.bpmn.title}
+              <I18nHtml>{i18n.learnMorePage.bpmn.title}</I18nHtml>
             </Title>
           </CardHeader>
           <CardBody className={"''"}>
@@ -70,21 +70,21 @@ export function LearnMorePage() {
                   variant={"link"}
                   onClick={event => externalLink(event, "https://www.omg.org/bpmn/")}
                 >
-                  {i18n.learnMorePage.readMore} <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                  <I18nHtml>{i18n.learnMorePage.readMore}</I18nHtml> <ExternalLinkAltIcon className="pf-u-ml-xs" />
                 </Button>
               </Text>
             </TextContent>
           </CardBody>
           <CardFooter className={"''"} component={"div"}>
             <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "bpmn" })}>
-              {i18n.learnMorePage.bpmn.create}
+              <I18nHtml>{i18n.learnMorePage.bpmn.create}</I18nHtml>
             </Button>
           </CardFooter>
         </Card>
         <Card className={"''"}>
           <CardHeader className={"''"}>
             <Title size={"lg"} className={"''"} headingLevel={"h2"}>
-              {i18n.learnMorePage.dmn.title}
+              <I18nHtml>{i18n.learnMorePage.dmn.title}</I18nHtml>
             </Title>
           </CardHeader>
           <CardBody className={"''"}>
@@ -100,7 +100,8 @@ export function LearnMorePage() {
                   variant={"link"}
                   onClick={event => externalLink(event, "https://www.omg.org/dmn/")}
                 >
-                  {i18n.learnMorePage.readMore} <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                  <I18nHtml>{i18n.learnMorePage.readMore}</I18nHtml>
+                  <ExternalLinkAltIcon className="pf-u-ml-xs" />
                 </Button>
               </Text>
               <Text component={TextVariants.p}>
@@ -113,27 +114,27 @@ export function LearnMorePage() {
                   variant={"link"}
                   onClick={event => externalLink(event, "http://learn-dmn-in-15-minutes.com/")}
                 >
-                  {i18n.learnMorePage.dmn.learn} <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                  <I18nHtml>{i18n.learnMorePage.dmn.learn}</I18nHtml> <ExternalLinkAltIcon className="pf-u-ml-xs" />
                 </Button>
               </Text>
             </TextContent>
           </CardBody>
           <CardFooter className={"''"} component={"div"}>
             <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "dmn" })}>
-              {i18n.learnMorePage.dmn.create}
+              <I18nHtml>{i18n.learnMorePage.dmn.create}</I18nHtml>
             </Button>
           </CardFooter>
         </Card>
         <Card className={"''"} span={12} style={{ gridColumn: "span 12" }}>
           <CardHeader className={"''"}>
             <Title size={"lg"} className={"''"} headingLevel={"h2"}>
-              {i18n.learnMorePage.about}
+              <I18nHtml>{i18n.learnMorePage.about}</I18nHtml>
             </Title>
           </CardHeader>
           <CardBody className={"''"}>
             <Split gutter="lg">
               <SplitItem isFilled={true}>
-                {i18n.learnMorePage.editorsExplanation}
+                <I18nHtml>{i18n.learnMorePage.editorsExplanation}</I18nHtml>
                 <Button
                   className={"pf-u-ml-xs"}
                   component={"a"}
@@ -143,7 +144,7 @@ export function LearnMorePage() {
                   variant={"link"}
                   onClick={event => externalLink(event, "https://groups.google.com/forum/#!forum/kogito-development")}
                 >
-                  {i18n.terms.forum.toLowerCase()}
+                  <I18nHtml>{i18n.terms.forum.toLowerCase()}</I18nHtml>
                 </Button>
                 .
               </SplitItem>
@@ -159,7 +160,8 @@ export function LearnMorePage() {
                       variant={"link"}
                       onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
                     >
-                      {i18n.learnMorePage.getChromeExtension} <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                      <I18nHtml>{i18n.learnMorePage.getChromeExtension}</I18nHtml>
+                      <ExternalLinkAltIcon className="pf-u-ml-xs" />
                     </Button>
                   </StackItem>
                   <StackItem>
@@ -172,7 +174,8 @@ export function LearnMorePage() {
                       variant={"link"}
                       onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
                     >
-                      {i18n.learnMorePage.getVsCodeExtension} <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                      <I18nHtml>{i18n.learnMorePage.getVsCodeExtension}</I18nHtml>
+                      <ExternalLinkAltIcon className="pf-u-ml-xs" />
                     </Button>
                   </StackItem>
                   <StackItem>
@@ -185,7 +188,8 @@ export function LearnMorePage() {
                       variant={"link"}
                       onClick={event => externalLink(event, "https://www.redhat.com/en/about/open-source")}
                     >
-                      {i18n.learnMorePage.redHatOpenSource} <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                      <I18nHtml>{i18n.learnMorePage.redHatOpenSource}</I18nHtml>
+                      <ExternalLinkAltIcon className="pf-u-ml-xs" />
                     </Button>
                   </StackItem>
                   <StackItem>
@@ -198,7 +202,8 @@ export function LearnMorePage() {
                       variant={"link"}
                       onClick={event => externalLink(event, "http://kogito.kie.org")}
                     >
-                      {i18n.learnMorePage.kogitoWebsite} <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                      <I18nHtml>{i18n.learnMorePage.kogitoWebsite}</I18nHtml>
+                      <ExternalLinkAltIcon className="pf-u-ml-xs" />
                     </Button>
                   </StackItem>
                 </Stack>

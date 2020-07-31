@@ -20,6 +20,7 @@ import { useGitHubApi } from "./GitHubContext";
 import * as Octokit from "@octokit/rest";
 import { useGlobals } from "./GlobalContext";
 import { useChromeExtensionI18n } from "../../i18n/locales";
+import { I18nHtml } from "@kogito-tooling/i18n";
 
 const GITHUB_OAUTH_TOKEN_SIZE = 40;
 
@@ -27,7 +28,7 @@ export function KogitoMenu() {
   const gitHubApi = useGitHubApi();
   const isAuthenticated = !!gitHubApi.token;
   const { locale, i18n } = useChromeExtensionI18n();
-  console.log(locale, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+  console.log(locale, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -97,7 +98,7 @@ export function KogitoMenu() {
                 className="Header-link mr-0 mr-lg-3 py-2 py-lg-0"
                 href="https://github.com/settings/tokens"
               >
-                {i18n.common.menu.createToken}
+                <I18nHtml>{i18n.common.menu.createToken}</I18nHtml>
               </a>
               <div style={{ position: "relative" }}>
                 <a
@@ -118,7 +119,7 @@ export function KogitoMenu() {
                       <b>
                         <u>{i18n.terms.note.toUpperCase()}:</u>&nbsp;
                       </b>
-                      {i18n.common.menu.tokenInfo.permission}
+                      <I18nHtml>{i18n.common.menu.tokenInfo.permission}</I18nHtml>
                     </p>
                   </div>
                 )}
@@ -143,7 +144,7 @@ export function KogitoMenu() {
             {!!potentialToken && <b className={"icon cross"} />}
           </label>
           <button className={"btn btn-sm"} onClick={onReset}>
-            {i18n.terms.reset}
+            <I18nHtml>{i18n.terms.reset}</I18nHtml>
           </button>
         </>
       )}

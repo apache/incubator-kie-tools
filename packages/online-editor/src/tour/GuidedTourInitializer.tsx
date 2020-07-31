@@ -23,6 +23,7 @@ import { BookOpenIcon, TrophyIcon } from "@patternfly/react-icons";
 import { File, EditorType } from "@kogito-tooling/embedded-editor";
 import { KogitoGuidedTour, DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/guided-tour";
 import { OnlineI18n } from "../common/i18n";
+import { I18nHtml } from "@kogito-tooling/i18n";
 
 export function useDmnTour(isEditorReady: boolean, file: File, i18n: OnlineI18n) {
   useEffect(() => {
@@ -51,15 +52,15 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
         <div className="pf-c-content kgt-slide--with-accent">
           <BookOpenIcon size="xl" className="kgt-icon--with-accent" />
           <Title headingLevel="h3" size="xl">
-            {i18n.guidedTour.init.title}
+            <I18nHtml>{i18n.guidedTour.init.title}</I18nHtml>
           </Title>
           <Text>{i18n.guidedTour.init.learnMore}</Text>
           <Button onClick={props.nextStep} variant="primary">
-            {i18n.guidedTour.init.letsGo}
+            <I18nHtml>{i18n.guidedTour.init.letsGo}</I18nHtml>
           </Button>
           <Text>{"  "}</Text>
           <Button onClick={props.dismiss} variant="link">
-            {i18n.terms.dismiss}
+            <I18nHtml>{i18n.terms.dismiss}</I18nHtml>
           </Button>
         </div>
       )
@@ -73,7 +74,7 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
       content: (props: any) => (
         <div className="pf-c-content kgt-slide--with-accent">
           <Title headingLevel="h3" size="xl">
-            {i18n.guidedTour.end.title}
+            <I18nHtml>{i18n.guidedTour.end.title}</I18nHtml>
           </Title>
           <TrophyIcon size="xl" className="kgt-icon--with-accent" />
           <Text>{i18n.guidedTour.end.motivational}!</Text>
@@ -85,21 +86,21 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
             <ListItem>{i18n.guidedTour.end.nextSteps.thirdStep}.</ListItem>
           </List>
           <Text className="pf-c-content--align-left">
-            {`${i18n.guidedTour.end.findUsefulInfo} `}
+            <I18nHtml>{`${i18n.guidedTour.end.findUsefulInfo} `}</I18nHtml>
             <a target="_blank" href="http://learn-dmn-in-15-minutes.com">
-              {i18n.guidedTour.end.learnDMN}
+              <I18nHtml>{i18n.guidedTour.end.learnDMN}</I18nHtml>
             </a>{" "}
-            {`${i18n.guidedTour.end.courseOr} `}
+            <I18nHtml>{`${i18n.guidedTour.end.courseOr} `}</I18nHtml>
             <a
               target="_blank"
               href="https://docs.jboss.org/kogito/release/latest/html_single/#_using_dmn_models_in_kogito_services"
             >
-              {i18n.guidedTour.end.kogitoDoc}
+              <I18nHtml>{i18n.guidedTour.end.kogitoDoc}</I18nHtml>
             </a>{" "}
             :-)
           </Text>
           <Button onClick={props.dismiss} variant="primary">
-            {i18n.guidedTour.end.finish}
+            <I18nHtml>{i18n.guidedTour.end.finish}</I18nHtml>
           </Button>
         </div>
       )

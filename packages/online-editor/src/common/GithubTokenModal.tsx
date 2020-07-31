@@ -17,7 +17,6 @@
 import * as React from "react";
 import { useCallback, useContext, useState, useMemo } from "react";
 import { GlobalContext } from "./GlobalContext";
-
 import {
   Modal,
   Button,
@@ -29,9 +28,9 @@ import {
   InputGroupText
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, CheckIcon } from "@patternfly/react-icons";
-
 import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_URL, GITHUB_TOKENS_HOW_TO_URL } from "./GithubService";
 import { useOnlineI18n } from "./i18n";
+import { I18nHtml } from "@kogito-tooling/i18n";
 
 interface Props {
   isOpen: boolean;
@@ -71,7 +70,7 @@ export function GithubTokenModal(props: Props) {
       header={
         <>
           <Title headingLevel={TitleLevel.h1} size={BaseSizes["2xl"]}>
-            {i18n.githubTokenModal.header.title}
+            <I18nHtml>{i18n.githubTokenModal.header.title}</I18nHtml>
           </Title>
           <p className="pf-u-pt-sm">{i18n.githubTokenModal.header.subtitle}</p>
         </>
@@ -80,7 +79,7 @@ export function GithubTokenModal(props: Props) {
         <div className="pf-u-w-100">
           <h3>
             <a href={GITHUB_TOKENS_URL} target={"_blank"}>
-              {i18n.githubTokenModal.footer.createNewToken}
+              <I18nHtml>{i18n.githubTokenModal.footer.createNewToken}</I18nHtml>
               <ExternalLinkAltIcon className="pf-u-mx-sm" />
             </a>
           </h3>
@@ -105,10 +104,10 @@ export function GithubTokenModal(props: Props) {
           </InputGroup>
           <div className="pf-u-mt-md pf-u-mb-0 pf-u-float-right">
             <Button variant="danger" onClick={onResetHandler}>
-              {i18n.terms.reset}
+              <I18nHtml>{i18n.terms.reset}</I18nHtml>
             </Button>
             <Button className="pf-u-ml-sm" variant="primary" isDisabled={!authenticated} onClick={props.onContinue}>
-              {i18n.terms.continue}
+              <I18nHtml>{i18n.terms.continue}</I18nHtml>
             </Button>
           </div>
         </div>
@@ -118,7 +117,7 @@ export function GithubTokenModal(props: Props) {
         <p>
           <span className="pf-u-mr-sm">{i18n.githubTokenModal.body.disclaimer}</span>
           <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"}>
-            {i18n.githubTokenModal.body.learnMore}
+            <I18nHtml>{i18n.githubTokenModal.body.learnMore}</I18nHtml>
             <ExternalLinkAltIcon className="pf-u-mx-sm" />
           </a>
         </p>
@@ -127,7 +126,7 @@ export function GithubTokenModal(props: Props) {
           <b>
             <u>{i18n.terms.note.toUpperCase()}:</u>&nbsp;
           </b>
-          {i18n.githubTokenModal.body.note}
+          <I18nHtml>{i18n.githubTokenModal.body.note}</I18nHtml>
         </p>
       </>
     </Modal>

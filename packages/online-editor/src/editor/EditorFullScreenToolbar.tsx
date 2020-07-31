@@ -17,6 +17,7 @@
 import * as React from "react";
 import { Button } from "@patternfly/react-core";
 import { useOnlineI18n } from "../common/i18n";
+import { I18nHtml } from "@kogito-tooling/i18n";
 
 interface Props {
   onExitFullScreen: () => void;
@@ -27,7 +28,7 @@ export function FullScreenToolbar(props: Props) {
   return (
     <div className="kogito--full-screen__toolbar">
       <Button className="kogito--full-screen__toolbar-button" variant="primary" onClick={props.onExitFullScreen}>
-        {i18n.editorFullScreenToolbar}
+        <I18nHtml>{i18n.editorFullScreenToolbar}</I18nHtml>
       </Button>
     </div>
   );

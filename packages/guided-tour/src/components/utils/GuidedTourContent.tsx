@@ -35,6 +35,7 @@ import { CurrentTutorialContext } from "../../contexts";
 import { Step } from "../..";
 import { useGuidedTourI18n } from "../../i18n/locales";
 import { GuidedTourI18n } from "../../i18n";
+import { I18nHtml } from "@kogito-tooling/i18n";
 
 function renderContent(
   content: React.ReactNode | ((props: object) => React.ReactNode) | string,
@@ -80,14 +81,14 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
         <EmptyState variant={EmptyStateVariant.small}>
           <EmptyStateIcon icon={BookIcon} />
           <Title headingLevel="h4" size="lg">
-            {i18n.great}!
+            <I18nHtml>{`${i18n.great}!`}</I18nHtml>
           </Title>
           <EmptyStateBody>
             <Text className="pf-c-content">{negativeReinforcementMessage}</Text>
           </EmptyStateBody>
           <EmptyStateSecondaryActions>
             <Button onClick={onCloseAction} variant="link">
-              {i18n.terms.dismiss}
+              <I18nHtml>{i18n.terms.dismiss}</I18nHtml>
             </Button>
           </EmptyStateSecondaryActions>
         </EmptyState>
@@ -100,7 +101,7 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
         <EmptyState variant={EmptyStateVariant.small}>
           <EmptyStateIcon icon={BookIcon} />
           <Title headingLevel="h4" size="lg">
-            {i18n.stop}
+            <I18nHtml>{i18n.stop}</I18nHtml>
           </Title>
           <EmptyStateBody>
             <Text className="pf-c-content">{i18n.notFollowing}</Text>
@@ -108,11 +109,11 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
             <Text className="pf-c-content">{i18n.options} :-)</Text>
           </EmptyStateBody>
           <Button data-kgt-continue="true" onClick={showSuggestion}>
-            {i18n.terms.continue}
+            <I18nHtml>{i18n.terms.continue}</I18nHtml>
           </Button>
           <EmptyStateSecondaryActions>
             <Button onClick={onCloseAction} variant="link">
-              {i18n.terms.dismiss}
+              <I18nHtml>{i18n.terms.dismiss}</I18nHtml>
             </Button>
           </EmptyStateSecondaryActions>
         </EmptyState>
@@ -127,7 +128,7 @@ export const EmptyDialog = (onCloseAction: () => void, i18n: GuidedTourI18n) => 
       <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={TimesCircleIcon} />
         <Title headingLevel="h4" size="lg">
-          {i18n.ops}!
+          <I18nHtml>{`${i18n.ops}!`}</I18nHtml>
         </Title>
         <EmptyStateBody>{i18n.somethingWrong}.</EmptyStateBody>
         <Button onClick={onCloseAction}>{i18n.terms.dismiss}</Button>

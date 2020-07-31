@@ -29,6 +29,7 @@ import { Redirect } from "react-router";
 import { GlobalContext } from "../common/GlobalContext";
 import { OperatingSystem, getOperatingSystem } from "../common/utils";
 import { useOnlineI18n } from "../common/i18n";
+import { I18nHtml } from "@kogito-tooling/i18n";
 
 enum ModalState {
   SELECT_OS,
@@ -100,11 +101,11 @@ export function DownloadHubModal(props: {}) {
                 <div>
                   <a key="download" href={downloadHub} download={true}>
                     <Button variant="primary" onClick={onDownload}>
-                      {i18n.terms.download}
+                      <I18nHtml>{i18n.terms.download}</I18nHtml>
                     </Button>
                   </a>
                   <Button key="cancel" variant="link" onClick={onClose}>
-                    {i18n.terms.cancel}
+                    <I18nHtml>{i18n.terms.cancel}</I18nHtml>
                   </Button>
                 </div>
               }
@@ -166,7 +167,7 @@ export function DownloadHubModal(props: {}) {
               children={
                 <div>
                   <Button key="close" variant="link" onClick={onClose}>
-                    {i18n.terms.close}
+                    <I18nHtml>{i18n.terms.close}</I18nHtml>
                   </Button>
                 </div>
               }
@@ -175,9 +176,9 @@ export function DownloadHubModal(props: {}) {
         >
           <p>
             <small>
-              {i18n.downloadHubModal.afterDownload.message}{" "}
+              <I18nHtml>{`${i18n.downloadHubModal.afterDownload.message} `}</I18nHtml>
               <a href={downloadHub} download={true}>
-                {i18n.downloadHubModal.afterDownload.link}
+                <I18nHtml>{i18n.downloadHubModal.afterDownload.link}</I18nHtml>
               </a>
             </small>
           </p>

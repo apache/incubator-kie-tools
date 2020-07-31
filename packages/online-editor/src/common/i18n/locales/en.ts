@@ -16,7 +16,6 @@
 
 import { OnlineI18n } from "..";
 import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
-import { b } from "@kogito-tooling/i18n";
 
 export const en: OnlineI18n = {
   ...en_common,
@@ -57,6 +56,7 @@ export const en: OnlineI18n = {
   editorToolbar: {
     sendChangesToGitHub: `Send changes to ${en_common.names.github}`,
     copySource: "Copy Source",
+    downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
     gistIt: "Gist it",
     fileActions: "File actions"
   },
@@ -72,7 +72,7 @@ export const en: OnlineI18n = {
     body: {
       disclaimer: `By authenticating with your ${en_common.names.oauth} Token we are able to create gists so you can share your diagrams with your colleagues. The token you provide is locally stored as browser cookies and it is never shared with anyone.`,
       learnMore: `Learn more about ${en_common.names.github} tokens`,
-      note: `You should provide a token with the ${b("'gist'")} permission.`
+      note: `You should provide a token with the ${"'gist'".bold()} permission.`
     }
   },
   homePage: {
@@ -128,11 +128,9 @@ export const en: OnlineI18n = {
       motivational: `Now you know how each part of the ${en_common.names.dmn} editor works, and you're empowered to go ahead and explore`,
       nextSteps: {
         title: "As next steps, you can try to",
-        firstStep: `Connect the ${b("Age")} input with the ${b("Can drive?")} decision`,
-        secondStep: `Define the decision logic into the ${b("Can drive?")} node, to return ${b("true")} when ${b(
-          "Age"
-        )} is
-              greater ${b("21")}, otherwise ${b("false")}`,
+        firstStep: `Connect the ${"Age".bold()} input with the ${"Can drive?".bold()} decision`,
+        secondStep: `Define the decision logic into the ${"Can drive?".bold()} node, to return ${"true".bold()} when ${"Age".bold()} is
+              greater ${"21".bold()}, otherwise ${"false".bold()}`,
         thirdStep: "Execute the model."
       },
       findUsefulInfo: "You can find useful information at the",
