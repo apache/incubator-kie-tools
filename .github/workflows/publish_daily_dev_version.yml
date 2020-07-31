@@ -2,7 +2,7 @@ name: Publish daily dev version
 
 on:
   schedule:
-    - cron: "0 9 * * *"
+    - cron: "0 9 * * *" # 9am UTC everyday, editors snapshots should be available by then
   workflow_dispatch:
 
 jobs:
