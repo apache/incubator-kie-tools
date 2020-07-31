@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { LanguageData, Router } from "@kogito-tooling/core-api";
+import { LanguageData, Router } from "@kogito-tooling/microeditor-envelope-protocol";
 import { FACTORY_TYPE } from "../editor/PMMLEditorFactory";
 import { PMMLRoute } from "../editor/PMMLRoute";
 

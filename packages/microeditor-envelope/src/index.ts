@@ -58,3 +58,5 @@ export function init(args: {
 
   return editorEnvelopeController.start({ container: args.container });
 }
+
+export * from "./CompositeEditorFactory";

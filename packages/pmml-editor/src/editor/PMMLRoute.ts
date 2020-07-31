@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LanguageData, Router, Routes as CoreRoutes } from "@kogito-tooling/core-api";
+import { LanguageData, Router, Routes as CoreRoutes } from "@kogito-tooling/microeditor-envelope-protocol";
 import { FACTORY_TYPE } from "./PMMLEditorFactory";
 
 export class PMMLRoute implements CoreRoutes {

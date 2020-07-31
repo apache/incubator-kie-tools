@@ -54,7 +54,6 @@ describe("EditorEnvelopeController", () => {
       },
       {
         supports: (_: LanguageData) => true,
-
         createEditor: (_: LanguageData) => Promise.resolve(dummyEditor)
       },
       new SpecialDomElements(),
