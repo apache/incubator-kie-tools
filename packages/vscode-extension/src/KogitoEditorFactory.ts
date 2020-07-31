@@ -16,14 +16,13 @@
 
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditor } from "./KogitoEditor";
-import { KogitoEdit, ResourceContentService } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoEdit, ResourceContentService, Routes } from "@kogito-tooling/microeditor-envelope-protocol";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 
 import * as vscode from "vscode";
 import * as nodePath from "path";
 import { DefaultVsCodeRouter } from "./DefaultVsCodeRouter";
-import { Routes } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export class KogitoEditorFactory {
   private readonly context: vscode.ExtensionContext;

@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
@@ -16,11 +15,11 @@
  */
 
 export interface ChannelKeyboardEvent {
-    altKey: boolean;
-    ctrlKey: boolean;
-    shiftKey: boolean;
-    metaKey: boolean;
-    code: string;
-    type: string;
-    channelOriginalTargetTagName?: string;
+  altKey: boolean;
+  ctrlKey: boolean;
+  shiftKey: boolean;
+  metaKey: boolean;
+  code: string;
+  type: string;
+  channelOriginalTargetTagName?: string;
 }
