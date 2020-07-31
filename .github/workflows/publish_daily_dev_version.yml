@@ -64,26 +64,26 @@ jobs:
           cd kogito-tooling
           yarn run build:prod
 
-       - name: Upload DMN editor (Ubuntu only)
-         if: matrix.os == 'ubuntu-latest'
-         uses: actions/upload-artifact@v1
-         with:
-           name: dmn-editor
-           path: kogito-tooling/packages/kie-bc-editors-unpacked/dmn
+      - name: Upload DMN editor (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: dmn-editor
+          path: kogito-tooling/packages/kie-bc-editors-unpacked/dmn
 
-       - name: Upload BPMN editor (Ubuntu only)
-         if: matrix.os == 'ubuntu-latest'
-         uses: actions/upload-artifact@v1
-         with:
-           name: bpmn-editor
-           path: kogito-tooling/packages/kie-bc-editors-unpacked/bpmn
+      - name: Upload BPMN editor (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: bpmn-editor
+          path: kogito-tooling/packages/kie-bc-editors-unpacked/bpmn
 
-       - name: Upload SceSim editor (Ubuntu only)
-         if: matrix.os == 'ubuntu-latest'
-         uses: actions/upload-artifact@v1
-         with:
-           name: scesim-editor
-           path: kogito-tooling/packages/kie-bc-editors-unpacked/scesim
+      - name: Upload SceSim editor (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: scesim-editor
+          path: kogito-tooling/packages/kie-bc-editors-unpacked/scesim
 
       - name: Upload VSCode Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
@@ -106,14 +106,12 @@ jobs:
           name: desktop-app-linux
           path: kogito-tooling/packages/desktop/out/Business Modeler Preview-linux-x64.tar.gz
 
-
       - name: Upload Desktop App - macOS (macOS only)
         if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v1
         with:
           name: desktop-app-macos
           path: kogito-tooling/packages/desktop/out/Business Modeler Preview-darwin-x64.zip
-
 
       - name: Upload Desktop App - Windows (Windows only)
         if: matrix.os == 'windows-latest'
