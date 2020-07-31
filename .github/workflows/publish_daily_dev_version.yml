@@ -56,9 +56,9 @@ jobs:
         env:
           ROUTER_targetOrigin: "https://kiegroup.github.io"
           ROUTER_relativePath: "kogito-online/dev/editors/"
-          DOWNLOAD_HUB_linuxUrl: "https://kiegroup.github.io/kogito-online-ci/hub_download_unsupported.html"
-          DOWNLOAD_HUB_macOsUrl: "https://kiegroup.github.io/kogito-online-ci/hub_download_unsupported.html"
-          DOWNLOAD_HUB_windowsUrl: "https://kiegroup.github.io/kogito-online-ci/hub_download_unsupported.html"
+          DOWNLOAD_HUB_linuxUrl: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
+          DOWNLOAD_HUB_macOsUrl: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
+          DOWNLOAD_HUB_windowsUrl: "https://kiegroup.github.io/kogito-online/dev/hub_download_unsupported.txt"
           DISPLAY: ":99.0"
         run: |
           cd kogito-tooling
@@ -163,6 +163,7 @@ jobs:
           cp -r ../kogito-tooling/packages/online-editor/dist/* dev/
           rm -rf dev/gwt-editors
           ln -s dev/editors dev/gwt-editors
+          echo "Hub download unsupported in this distribution. If you want it, you can access the latest \"Publish daily dev version\" job in https://github.com/kiegroup/kogito-tooling/actions and download it in the Artifacts dropdown." > dev/hub_download_unsupported.txt
           git config --global user.email "kietooling@gmail.com"
           git config --global user.name "Kogito Tooling Bot (kiegroup)"
           today=$(date -I)
