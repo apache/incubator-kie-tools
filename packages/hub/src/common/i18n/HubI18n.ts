@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { Dictionary } from "@kogito-tooling/i18n";
+import { ReferenceDictionary } from "@kogito-tooling/i18n";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
-interface HubDictionary extends Dictionary<HubDictionary> {
+interface HubDictionary extends ReferenceDictionary<HubDictionary> {
   alert: {
     launching: {
       title: string;

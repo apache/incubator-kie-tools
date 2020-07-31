@@ -14,36 +14,7 @@
  * limitations under the License.
  */
 
-// tslint:disable-next-line:interface-over-type-literal
-export type NamesDictionary = {
-  app: string;
-  bpmn: string;
-  businessModeler: {
-    name: string;
-    desktop: string;
-    hub: string;
-    online: string;
-  };
-  chrome: string;
-  chromeExtensionName: string;
-  chromeStore: string;
-  desktop: string;
-  dmn: string;
-  dropbox: string;
-  github: string;
-  kogito: string;
-  linux: string;
-  macos: string;
-  oauth: string;
-  redHat: string;
-  svg: string;
-  testScenario: string;
-  url: string;
-  vscode: string;
-  windows: string;
-};
-
-export const names: NamesDictionary = {
+export const names = {
   app: "App",
   bpmn: "BPMN",
   businessModeler: {

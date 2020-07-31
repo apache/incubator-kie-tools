@@ -104,9 +104,13 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
             <I18nHtml>{i18n.stop}</I18nHtml>
           </Title>
           <EmptyStateBody>
-            <Text className="pf-c-content">{i18n.notFollowing}</Text>
+            <Text className="pf-c-content">
+              <I18nHtml>{i18n.notFollowing}</I18nHtml>
+            </Text>
             <br />
-            <Text className="pf-c-content">{i18n.options} :-)</Text>
+            <Text className="pf-c-content">
+              <I18nHtml>{i18n.options} :-)</I18nHtml>
+            </Text>
           </EmptyStateBody>
           <Button data-kgt-continue="true" onClick={showSuggestion}>
             <I18nHtml>{i18n.terms.continue}</I18nHtml>
@@ -122,16 +126,21 @@ export const NegativeReinforcementDialog = (step: Step | undefined, onCloseActio
   }
 };
 
-export const EmptyDialog = (onCloseAction: () => void, i18n: GuidedTourI18n) => {
+export const EmptyDialog = (onCloseAction: () => void) => {
+  const { i18n } = useGuidedTourI18n();
   return () => (
     <>
       <EmptyState variant={EmptyStateVariant.small}>
         <EmptyStateIcon icon={TimesCircleIcon} />
         <Title headingLevel="h4" size="lg">
-          <I18nHtml>{`${i18n.ops}!`}</I18nHtml>
+          <I18nHtml>{i18n.oops}</I18nHtml>
         </Title>
-        <EmptyStateBody>{i18n.somethingWrong}.</EmptyStateBody>
-        <Button onClick={onCloseAction}>{i18n.terms.dismiss}</Button>
+        <EmptyStateBody>
+          <I18nHtml>{i18n.somethingWrong}</I18nHtml>
+        </EmptyStateBody>
+        <Button onClick={onCloseAction}>
+          <I18nHtml>{i18n.terms.dismiss}</I18nHtml>
+        </Button>
       </EmptyState>
     </>
   );

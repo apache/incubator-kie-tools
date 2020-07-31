@@ -16,26 +16,27 @@
 
 import * as React from "react";
 import { useMemo, useState } from "react";
-import { I18nContext } from "./I18nContext";
-import { DeepOptional, Dictionary, DictionaryInterpolation } from "./types";
+import { TranslatedDictionary, ReferenceDictionary, DictionaryInterpolation } from "./Dictionary";
+import { I18nContextType } from "./I18nContext";
 
-export const I18nProvider = <D extends Dictionary<D>>(props: {
+export const I18nDictionariesProvider = <D extends ReferenceDictionary<D>>(props: {
   defaults: { locale: string; dictionary: D };
-  dictionaries: Map<string, DeepOptional<D>>;
+  dictionaries: Map<string, TranslatedDictionary<D>>;
+  ctx: React.Context<I18nContextType<D>>;
   children: React.ReactNode;
 }) => {
   const [locale, setLocale] = useState(props.defaults.locale);
-  const dictionary = useMemo(() => {
+  const i18n = useMemo(() => {
     const selectedDictionary =
       props.dictionaries.get(locale) ?? props.dictionaries.get(locale.split("-").shift()!) ?? {};
 
     return immutableDeepMerge(props.defaults.dictionary, selectedDictionary);
-  }, [locale]);
+  }, [locale]) as D;
 
-  return <I18nContext.Provider value={{ locale, setLocale, dictionary }}>{props.children}</I18nContext.Provider>;
+  return <props.ctx.Provider value={{ locale, setLocale, i18n }}>{props.children}</props.ctx.Provider>;
 };
 
-function deepMerge<D>(target: Dictionary<D>, source: DeepOptional<Dictionary<D>>) {
+function deepMerge<D>(target: ReferenceDictionary<D>, source: TranslatedDictionary<ReferenceDictionary<D>>) {
   Object.keys(source).forEach((key: Extract<keyof D, string>) => {
     const sourceValue = source[key];
 
@@ -46,17 +47,17 @@ function deepMerge<D>(target: Dictionary<D>, source: DeepOptional<Dictionary<D>>
       target[key] = sourceValue as string | DictionaryInterpolation;
     } else {
       target[key] = deepMerge(
-        createObjectCopy(target[key] as Dictionary<any>),
-        sourceValue as Dictionary<any>
+        createObjectCopy(target[key] as ReferenceDictionary<any>),
+        sourceValue as ReferenceDictionary<any>
       );
     }
   });
   return target;
 }
 
-export function immutableDeepMerge<D>(
-  target: Dictionary<D>,
-  source: DeepOptional<Dictionary<D>>
+export function immutableDeepMerge<D extends ReferenceDictionary<D>>(
+  target: ReferenceDictionary<D>,
+  source: TranslatedDictionary<ReferenceDictionary<D>>
 ) {
   const targetCopy = createObjectCopy(target);
   return deepMerge(targetCopy, source);

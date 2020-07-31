@@ -29,8 +29,8 @@ import { GlobalContext } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import { I18nProvider } from "@kogito-tooling/i18n";
-import { desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n/locales";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
+import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n/locales";
 
 interface Props {
   file?: File;
@@ -158,24 +158,32 @@ export function App(props: Props) {
   }, [dragAndDropFileEvent]);
 
   return (
-    <I18nProvider defaults={desktopI18nDefaults} dictionaries={desktopI18nDictionaries}>
-      <GlobalContext.Provider
-        value={{
-          file: file,
-          router: desktopRouter
-        }}
-      >
-        {invalidFileTypeErrorVisible && (
-          <div className={"kogito--alert-container"}>
-            <Alert
-              variant={AlertVariant.danger}
-              title="This file extension is not supported."
-              action={<AlertActionCloseButton onClose={closeInvalidFileTypeErrorAlert} />}
-            />
-          </div>
+    <I18nDictionariesProvider
+      defaults={desktopI18nDefaults}
+      dictionaries={desktopI18nDictionaries}
+      ctx={DesktopI18nContext}
+    >
+      <DesktopI18nContext.Consumer>
+        {({ i18n }) => (
+          <GlobalContext.Provider
+            value={{
+              file: file,
+              router: desktopRouter
+            }}
+          >
+            {invalidFileTypeErrorVisible && (
+              <div className={"kogito--alert-container"}>
+                <Alert
+                  variant={AlertVariant.danger}
+                  title={`${i18n.app.title}`}
+                  action={<AlertActionCloseButton onClose={closeInvalidFileTypeErrorAlert} />}
+                />
+              </div>
+            )}
+            <Router />
+          </GlobalContext.Provider>
         )}
-        <Router />
-      </GlobalContext.Provider>
-    </I18nProvider>
+      </DesktopI18nContext.Consumer>
+    </I18nDictionariesProvider>
   );
 }

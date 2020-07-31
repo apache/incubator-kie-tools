@@ -27,9 +27,7 @@ const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export function KogitoMenu() {
   const gitHubApi = useGitHubApi();
   const isAuthenticated = !!gitHubApi.token;
-  const { locale, i18n } = useChromeExtensionI18n();
-  console.log(locale, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
+  const { i18n } = useChromeExtensionI18n();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isWholeMenuOpen, setWholeMenuOpen] = useState(!isAuthenticated);

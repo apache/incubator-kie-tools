@@ -15,12 +15,15 @@
  */
 
 import { en } from "./en";
-import { useDictionary } from "@kogito-tooling/i18n";
+import { I18nContextType } from "@kogito-tooling/i18n";
+import { DesktopI18n } from "../DesktopI18n";
+import * as React from "react";
+import { useContext } from "react";
 
 export const desktopI18nDefaults = { locale: "en", dictionary: en };
+export const desktopI18nDictionaries = new Map([["en", en]]);
+export const DesktopI18nContext = React.createContext<I18nContextType<DesktopI18n>>({} as any);
 
 export function useDesktopI18n() {
-  return useDictionary(desktopI18nDefaults.dictionary);
+  return useContext(DesktopI18nContext);
 }
-
-export const desktopI18nDictionaries = new Map([["en", en]]);

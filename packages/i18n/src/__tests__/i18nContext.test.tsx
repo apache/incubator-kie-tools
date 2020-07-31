@@ -15,20 +15,24 @@
  */
 
 import * as React from "react";
-import { I18nProvider, immutableDeepMerge } from "../I18nProvider";
-import { DeepOptional } from "../types";
+import { I18nDictionariesProvider, immutableDeepMerge } from "../I18nDictionariesProvider";
+import { TranslatedDictionary } from "../Dictionary";
 import { render } from "@testing-library/react";
-import { DummyDictionary, DummyComponent, dummyDefault, interpolationFunction } from "./utils";
+import { DummyContext, DummyDictionary, DummyComponent, dummyDefault, interpolationFunction } from "./utils";
 
-describe("I18nProvider", () => {
-  describe("I18nProvider::component", () => {
+describe("I18nDictionariesProvider", () => {
+  describe("I18nDictionariesProvider::component", () => {
     it("should have the same dictionary as the dummy", () => {
       const dictionaries = new Map([["en", dummyDefault]]);
 
       const { getByTestId } = render(
-        <I18nProvider defaults={{ locale: "en", dictionary: dummyDefault }} dictionaries={dictionaries}>
+        <I18nDictionariesProvider
+          defaults={{ locale: "en", dictionary: dummyDefault }}
+          dictionaries={dictionaries}
+          ctx={DummyContext}
+        >
           <DummyComponent />
-        </I18nProvider>
+        </I18nDictionariesProvider>
       );
 
       expect(getByTestId("dummy-component")).toHaveTextContent(JSON.stringify(dummyDefault));
@@ -38,16 +42,20 @@ describe("I18nProvider", () => {
       const dictionaries = new Map([["en-US", dummyDefault]]);
 
       const { getByTestId } = render(
-        <I18nProvider defaults={{ locale: "en", dictionary: dummyDefault }} dictionaries={dictionaries}>
+        <I18nDictionariesProvider
+          defaults={{ locale: "en", dictionary: dummyDefault }}
+          dictionaries={dictionaries}
+          ctx={DummyContext}
+        >
           <DummyComponent />
-        </I18nProvider>
+        </I18nDictionariesProvider>
       );
 
       expect(getByTestId("dummy-component")).toHaveTextContent(JSON.stringify(dummyDefault));
     });
 
     it("should use the `en` dictionary due to the `en-US` doesn't exist and it is the location prefix", () => {
-      const dummyOptional: DeepOptional<DummyDictionary> = {
+      const dummyOptional: TranslatedDictionary<DummyDictionary> = {
         welcome: "Welcome!!!"
       };
 
@@ -57,9 +65,13 @@ describe("I18nProvider", () => {
       ]);
 
       const { getByTestId } = render(
-        <I18nProvider defaults={{ locale: "en-US", dictionary: dummyDefault }} dictionaries={dictionaries}>
+        <I18nDictionariesProvider
+          defaults={{ locale: "en-US", dictionary: dummyDefault }}
+          dictionaries={dictionaries}
+          ctx={DummyContext}
+        >
           <DummyComponent />
-        </I18nProvider>
+        </I18nDictionariesProvider>
       );
 
       expect(getByTestId("dummy-component")).toHaveTextContent(
@@ -68,9 +80,9 @@ describe("I18nProvider", () => {
     });
   });
 
-  describe("I18nProvider::mergeSelectedDictionaryWithDefault", () => {
+  describe("I18nDictionariesProvider::mergeSelectedDictionaryWithDefault", () => {
     it("should override the welcome property on dummyDefault and create a new object", () => {
-      const dummyOptional: DeepOptional<DummyDictionary> = {
+      const dummyOptional: TranslatedDictionary<DummyDictionary> = {
         welcome: "Bienvenido"
       };
 
@@ -98,7 +110,7 @@ describe("I18nProvider", () => {
     });
 
     it("shouldn't override the welcome property on dummyDefault", () => {
-      const dummyOptional: DeepOptional<DummyDictionary> = {
+      const dummyOptional: TranslatedDictionary<DummyDictionary> = {
         welcome: undefined
       };
 
@@ -127,7 +139,7 @@ describe("I18nProvider", () => {
 
     it("should override the interpolation function", () => {
       const dummyInterpolationFunction = (name: string, lastLogin: number) => `Hi ${name}. Last login: ${lastLogin}`;
-      const dummyOptional: DeepOptional<DummyDictionary> = {
+      const dummyOptional: TranslatedDictionary<DummyDictionary> = {
         greeting: dummyInterpolationFunction
       };
 
@@ -155,7 +167,7 @@ describe("I18nProvider", () => {
     });
 
     it("should override the nested properties that were specified", () => {
-      const dummyOptional: DeepOptional<DummyDictionary> = {
+      const dummyOptional: TranslatedDictionary<DummyDictionary> = {
         welcome: "Bienvenido",
         modal: {
           title: "Mi título"
@@ -189,7 +201,7 @@ describe("I18nProvider", () => {
     });
 
     it("shouldn't override the nested object with a undefined value", () => {
-      const dummyOptional: DeepOptional<DummyDictionary> = {
+      const dummyOptional: TranslatedDictionary<DummyDictionary> = {
         modal: {
           title: undefined
         }

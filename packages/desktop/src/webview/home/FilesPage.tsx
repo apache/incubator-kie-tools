@@ -123,7 +123,7 @@ export function FilesPage(props: Props) {
       default:
         return "";
     }
-  }, [inputFileUrlState]);
+  }, [inputFileUrlState, i18n]);
 
   const closeImportFileErrorAlert = useCallback(
     () => setImportFileErrorDetails({ type: ImportFileErrorType.NONE }),

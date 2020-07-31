@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-import { Dictionary } from "@kogito-tooling/i18n";
+import { ReferenceDictionary } from "@kogito-tooling/i18n";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
-interface DesktopDictionary extends Dictionary<DesktopDictionary> {
+interface DesktopDictionary extends ReferenceDictionary<DesktopDictionary> {
+  app: {
+    title: string;
+  }
   editorPage: {
     alerts: {
       copy: string;

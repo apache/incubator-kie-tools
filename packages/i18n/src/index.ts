@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-export * from "./I18nProvider";
+export * from "./I18nDictionariesProvider";
 export * from "./I18nContext";
 export * from "./I18nHtml";
-export * from "./hook";
-export * from "./types";
+export * from "./Dictionary";

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { CurrentTutorialContext, CurrentTutorialContextType } from "../contexts";
 import { DEFAULT_RECT, Rect, Tutorial } from "../api";
-import { I18nProvider } from "@kogito-tooling/i18n";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
 import { guidedTourI18nDefaults, guidedTourI18nDictionaries } from "../i18n/locales";
 
 export function usingCurrentTutorialContext(children: React.ReactElement, ctx?: Partial<CurrentTutorialContextType>) {
@@ -26,11 +26,11 @@ export function usingCurrentTutorialContext(children: React.ReactElement, ctx?: 
   return {
     ctx: currentTutorialContext,
     wrapper: (
-      <I18nProvider defaults={guidedTourI18nDefaults} dictionaries={guidedTourI18nDictionaries}>
+      <I18nDictionariesProvider defaults={guidedTourI18nDefaults} dictionaries={guidedTourI18nDictionaries}>
         <CurrentTutorialContext.Provider key={""} value={currentTutorialContext}>
           {children}
         </CurrentTutorialContext.Provider>
-      </I18nProvider>
+      </I18nDictionariesProvider>
     )
   };
 };

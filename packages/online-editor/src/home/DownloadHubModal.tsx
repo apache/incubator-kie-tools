@@ -157,7 +157,7 @@ export function DownloadHubModal(props: {}) {
       )}
       {modalState === ModalState.DOWNLOADED && (
         <Modal
-          title={i18n.downloadHubModal.afterDownload.title + "!"}
+          title={i18n.downloadHubModal.afterDownload.title}
           isOpen={true}
           isLarge={true}
           onClose={onClose}

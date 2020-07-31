@@ -47,10 +47,10 @@ export function HomePage(props: Props) {
     <Nav onSelect={onNavSelect} className={"pf-m-dark"}>
       <NavList>
         <NavItem itemId={NavItems.FILES} isActive={activeNavItem === NavItems.FILES}>
-          <I18nHtml>{i18n.terms.files}</I18nHtml>
+          {i18n.terms.files}
         </NavItem>
         <NavItem itemId={NavItems.LEARN_MORE} isActive={activeNavItem === NavItems.LEARN_MORE}>
-          <I18nHtml>{i18n.homePage.learnMore}</I18nHtml>
+          {i18n.homePage.learnMore}
         </NavItem>
       </NavList>
     </Nav>

@@ -37,7 +37,7 @@ export const en: OnlineI18n = {
       }
     },
     afterDownload: {
-      title: `Thank you for downloading ${en_common.names.businessModeler.hub}`,
+      title: `Thank you for downloading ${en_common.names.businessModeler.hub}!`,
       message: "If the download does not begin automatically,",
       link: "click here"
     }

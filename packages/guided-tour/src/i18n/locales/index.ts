@@ -15,12 +15,15 @@
  */
 
 import { en } from "./en";
-import { useDictionary } from "@kogito-tooling/i18n";
+import { I18nContextType } from "@kogito-tooling/i18n";
+import { GuidedTourI18n } from "../GuidedTourI18n";
+import * as React from "react";
+import { useContext } from "react";
 
 export const guidedTourI18nDefaults = { locale: "en", dictionary: en };
+export const guidedTourI18nDictionaries = new Map([["en", en]]);
+export const GuidedTourI18nContext = React.createContext<I18nContextType<GuidedTourI18n>>({} as any);
 
 export function useGuidedTourI18n() {
-  return useDictionary(guidedTourI18nDefaults.dictionary);
+  return useContext(GuidedTourI18nContext);
 }
-
-export const guidedTourI18nDictionaries = new Map([["en", en]]);

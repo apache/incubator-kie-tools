@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { Dictionary } from "@kogito-tooling/i18n";
+import { ReferenceDictionary } from "@kogito-tooling/i18n";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
-interface GuidedTourDictionary extends Dictionary<GuidedTourDictionary> {
+interface GuidedTourDictionary extends ReferenceDictionary<GuidedTourDictionary> {
   great: string;
   stop: string;
   notFollowing: string;
   options: string;
-  ops: string;
+  oops: string;
   somethingWrong: string;
 }
 

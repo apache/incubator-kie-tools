@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { Dictionary } from "@kogito-tooling/i18n";
+import { ReferenceDictionary } from "@kogito-tooling/i18n";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
-interface ChromeExtensionDictionary extends Dictionary<ChromeExtensionDictionary> {
+interface ChromeExtensionDictionary extends ReferenceDictionary<ChromeExtensionDictionary> {
   openIn: (text: string) => string;
   seeAsDiagram: string;
   tree: {
     openInOnlineEditor: string;
-  }
+  };
   single: {
     exitFullScreen: string;
     editorToolbar: {

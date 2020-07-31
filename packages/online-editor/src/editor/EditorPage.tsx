@@ -211,7 +211,7 @@ export function EditorPage(props: Props) {
     })();
   });
 
-  useDmnTour(isEditorReady, context.file, i18n);
+  useDmnTour(isEditorReady, context.file);
 
   return (
     <Page
@@ -254,13 +254,13 @@ export function EditorPage(props: Props) {
             >
               <div>
                 <p>
-                  {`${i18n.editorPage.alerts.unsaved.message} `}
+                  <I18nHtml>{`${i18n.editorPage.alerts.unsaved.message} `}</I18nHtml>
                   <a data-testid="unsaved-alert-save-button" onClick={requestDownload}>
                     <I18nHtml>{i18n.terms.save}</I18nHtml>
                   </a>
                 </p>
                 <a data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
-                  {` ${i18n.editorPage.alerts.unsaved.closeWithoutSaving}`}
+                  <I18nHtml>{` ${i18n.editorPage.alerts.unsaved.closeWithoutSaving}`}</I18nHtml>
                 </a>
               </div>
             </Alert>

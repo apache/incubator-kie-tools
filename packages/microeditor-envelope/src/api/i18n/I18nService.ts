@@ -15,7 +15,7 @@
  */
 
 import { I18nServiceApi } from "./I18nServiceApi";
-import {KogitoEnvelopeBus} from "../../KogitoEnvelopeBus";
+import { KogitoEnvelopeBus } from "../../KogitoEnvelopeBus";
 
 export class I18nService {
   private callback: (locale: string) => void;
@@ -26,7 +26,7 @@ export class I18nService {
         this.callback = callback;
       },
       getLocale() {
-        return kogitoEnvelopeBus.request_getLocale()
+        return kogitoEnvelopeBus.request_getLocale();
       }
     };
   }

@@ -22,10 +22,12 @@ import { BookOpenIcon, TrophyIcon } from "@patternfly/react-icons";
 
 import { File, EditorType } from "@kogito-tooling/embedded-editor";
 import { KogitoGuidedTour, DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/guided-tour";
-import { OnlineI18n } from "../common/i18n";
+import { OnlineI18n, useOnlineI18n } from "../common/i18n";
 import { I18nHtml } from "@kogito-tooling/i18n";
 
-export function useDmnTour(isEditorReady: boolean, file: File, i18n: OnlineI18n) {
+export function useDmnTour(isEditorReady: boolean, file: File) {
+  const { i18n } = useOnlineI18n();
+
   useEffect(() => {
     const guidedTour = KogitoGuidedTour.getInstance();
     guidedTour.setup();

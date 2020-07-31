@@ -15,13 +15,11 @@
  */
 
 import * as React from "react";
-import { DeepOptional, Dictionary } from "./types";
+import { ReferenceDictionary } from "./Dictionary";
 
 // tslint:disable-next-line:interface-name
-export interface I18nContextType {
+export interface I18nContextType<D extends ReferenceDictionary<D>> {
   locale: string;
   setLocale: React.Dispatch<string>;
-  dictionary: Dictionary<any>;
+  i18n: D;
 }
-
-export const I18nContext = React.createContext<I18nContextType>({} as any);

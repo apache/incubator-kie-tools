@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Dictionary } from "@kogito-tooling/i18n";
-import { NamesDictionary } from "./names";
+import { ReferenceDictionary } from "@kogito-tooling/i18n";
+import { names } from "./names";
 
 // tslint:disable-next-line:interface-over-type-literal
 export type CommonDictionary = {
@@ -46,7 +46,7 @@ export type CommonDictionary = {
   uninstall: string;
 };
 
-export interface CommonI18n extends Dictionary<CommonI18n> {
-  names: NamesDictionary;
+export interface CommonI18n extends ReferenceDictionary<CommonI18n> {
+  names: typeof names;
   terms: CommonDictionary;
 }

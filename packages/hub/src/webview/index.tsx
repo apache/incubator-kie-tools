@@ -18,9 +18,17 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as electron from "electron";
 import { App } from "./App";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
+import { HubI18nContext, hubI18nDefaults, hubI18nDictionaries } from "../common/i18n";
 
 document.addEventListener("DOMContentLoaded", () => {
-  ReactDOM.render(<App />, document.getElementById("app")!, () => {
-    electron.ipcRenderer.send("mainWindowLoaded");
-  });
+  ReactDOM.render(
+    <I18nDictionariesProvider defaults={hubI18nDefaults} dictionaries={hubI18nDictionaries} ctx={HubI18nContext}>
+      <App />
+    </I18nDictionariesProvider>,
+    document.getElementById("app")!,
+    () => {
+      electron.ipcRenderer.send("mainWindowLoaded");
+    }
+  );
 });

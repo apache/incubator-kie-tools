@@ -165,7 +165,7 @@ export function HomePage(props: Props) {
       default:
         return i18n.homePage.uploadFile.dndZone.waitingFile;
     }
-  }, [uploadFileDndState]);
+  }, [uploadFileDndState, i18n]);
 
   const uploadDndClassName = useMemo(() => {
     switch (uploadFileDndState) {
@@ -220,7 +220,7 @@ export function HomePage(props: Props) {
       default:
         return "";
     }
-  }, [uploadFileInputState]);
+  }, [uploadFileInputState, i18n]);
 
   const uploadInputClassName = useMemo(() => {
     switch (uploadFileInputState) {
@@ -417,7 +417,7 @@ export function HomePage(props: Props) {
       default:
         return "";
     }
-  }, [inputFileUrlState]);
+  }, [inputFileUrlState, i18n]);
 
   const helperInvalidMessageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState.urlValidation) {
@@ -436,7 +436,7 @@ export function HomePage(props: Props) {
       default:
         return "";
     }
-  }, [inputFileUrlState]);
+  }, [inputFileUrlState, i18n]);
 
   const externalFileFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {

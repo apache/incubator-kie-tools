@@ -15,10 +15,11 @@
  */
 
 import * as React from "react";
-import { Dictionary, DictionaryInterpolation } from "../types";
-import { useDictionary } from "../hook";
+import { ReferenceDictionary, DictionaryInterpolation } from "../Dictionary";
+import { useContext } from "react";
+import { I18nContextType } from "../I18nContext";
 
-export interface DummyDictionary extends Dictionary<DummyDictionary> {
+export interface DummyDictionary extends ReferenceDictionary<DummyDictionary> {
   greeting: (name: string) => string;
   welcome: string;
   modal: {
@@ -37,7 +38,8 @@ export const dummyDefault: DummyDictionary = {
   }
 };
 
+export const DummyContext = React.createContext<I18nContextType<DummyDictionary>>({} as any);
 export function DummyComponent() {
-  const { i18n } = useDictionary(dummyDefault);
+  const { i18n } = useContext(DummyContext);
   return <p data-testid="dummy-component">{JSON.stringify(i18n)}</p>;
 }

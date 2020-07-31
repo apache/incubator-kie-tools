@@ -23,6 +23,6 @@ export const en: GuidedTourI18n = {
   stop: "Do you want to stop the tour?",
   notFollowing: "Seems like you didn't follow the suggested action. Do you want to stop the tour?",
   options: `Click on ${"Dismiss".bold()} to stop it or ${"continue".bold()} to resume your tour`,
-  ops: "Oops",
+  oops: "Oops!",
   somethingWrong: "Something went wrong and the content could not be loaded.",
 };

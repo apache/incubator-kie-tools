@@ -19,6 +19,9 @@ import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
 
 export const en: DesktopI18n = {
   ...en_common,
+  app: {
+    title: "This file extension is not supported."
+  },
   editorPage: {
     alerts: {
       copy: "Content copied to clipboard",
@@ -54,11 +57,11 @@ export const en: DesktopI18n = {
       invalidUrl: `Enter a valid ${en_common.names.url}`,
       notFoundUrl: `File ${en_common.names.url} is not valid`,
       openFromSource: "Open from source",
-      description: `Paste a ${en_common.names.url} to a source code link (${en_common.names.github}, ${en_common.names.dropbox}, etc.)`,
+      description: `Paste a ${en_common.names.url} to a source code link (${en_common.names.github}, ${en_common.names.dropbox}, etc.)`
     },
     recent: {
       title: `Recent ${en_common.terms.files}`,
-      noFilesYet: "No files were opened yet.",
+      noFilesYet: "No files were opened yet."
     }
   },
   homePage: {

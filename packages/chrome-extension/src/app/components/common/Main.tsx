@@ -25,8 +25,12 @@ import { Dependencies } from "../../Dependencies";
 import { kogitoMenuContainer } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
-import { I18nProvider } from "@kogito-tooling/i18n";
-import { chromeExtensionI18nDictionaries, chromeExtensionI8nDefaults } from "../../i18n/locales";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
+import {
+  chromeExtensionI18nDictionaries,
+  chromeExtensionI8nDefaults,
+  ChromeExtensionI18nContext
+} from "../../i18n/locales";
 
 export interface Globals {
   id: string;
@@ -57,7 +61,11 @@ function KogitoMenuPortal(props: { id: string }) {
 
 export const Main: React.FunctionComponent<Globals> = props => {
   return (
-    <I18nProvider defaults={chromeExtensionI8nDefaults} dictionaries={chromeExtensionI18nDictionaries}>
+    <I18nDictionariesProvider
+      defaults={chromeExtensionI8nDefaults}
+      dictionaries={chromeExtensionI18nDictionaries}
+      ctx={ChromeExtensionI18nContext}
+    >
       <GlobalContext.Provider
         value={{
           id: props.id,
@@ -76,6 +84,6 @@ export const Main: React.FunctionComponent<Globals> = props => {
           {props.children}
         </GitHubContextProvider>
       </GlobalContext.Provider>
-    </I18nProvider>
+    </I18nDictionariesProvider>
   );
 };

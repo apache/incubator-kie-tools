@@ -52,8 +52,8 @@ import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
 import { OperatingSystem } from "@kogito-tooling/core-api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import { I18nHtml, I18nProvider } from "@kogito-tooling/i18n";
-import { hubI18nDefaults, hubI18nDictionaries, useHubI18n } from "../common/i18n/locales";
+import { I18nHtml } from "@kogito-tooling/i18n";
+import { useHubI18n } from "../common/i18n/locales";
 
 enum ExtensionStatus {
   UNKNOWN,
@@ -165,7 +165,7 @@ export function App() {
       default:
         return "";
     }
-  }, [vscode_status]);
+  }, [vscode_status, i18n]);
 
   useEffect(() => {
     electron.ipcRenderer.send("vscode__list_extensions", {});
@@ -243,187 +243,185 @@ export function App() {
         });
       }
     },
-    []
+    [i18n]
   );
 
   return (
-    <I18nProvider defaults={hubI18nDefaults} dictionaries={hubI18nDictionaries}>
-      <Page
-        header={
-          <PageHeader logo={<Brand src={"images/BusinessModelerHub_Logo.svg"} alt="Business Modeler Hub Preview" />} />
-        }
-        className={"kogito--editor-landing"}
-      >
-        <PageSection isFilled={true}>
-          <div className={"kogito--alert-container"}>
-            {alerts.map(alert => (
-              <React.Fragment key={alert.time}>
-                <Alert
-                  style={{ marginBottom: "10px", width: alert.width ?? "500px" }}
-                  variant={alert.variant}
-                  title={alert.title}
-                  action={<AlertActionCloseButton onClose={() => removeAlert(alert.time)} />}
-                />
-              </React.Fragment>
-            ))}
-          </div>
-          <Gallery gutter="lg" className={"kogito-desktop__file-gallery"}>
-            <Card className={"kogito--desktop__files-card"}>
-              <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-                <img style={{ height: "52px" }} src={"images/vscode-logo.svg"} />
-                <Dropdown
-                  position="right"
-                  onSelect={vscode_toggleKebab}
-                  toggle={<KebabToggle onToggle={vscode_toggleKebab} />}
-                  isOpen={vscode_kebabOpen}
-                  isPlain={true}
-                  dropdownItems={[
-                    <DropdownItem key="update" component="button" isDisabled={true}>
-                      <I18nHtml>{i18n.noUpdates}</I18nHtml>
-                    </DropdownItem>,
-                    <DropdownItem
-                      key="uninstall"
-                      component="button"
-                      onClick={vscode_requestUninstall}
-                      isDisabled={vscode_status !== ExtensionStatus.INSTALLED}
-                    >
-                      <I18nHtml>{i18n.terms.uninstall}</I18nHtml>
-                    </DropdownItem>
-                  ]}
-                />
-              </CardHead>
-              <CardBody>
-                <Title size={"xl"}>{i18n.vscode.title}</Title>
-                <br />
-                <TextContent>
-                  <Text>{i18n.vscode.description}</Text>
-                </TextContent>
-              </CardBody>
-              <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
-                {vscode_status === ExtensionStatus.NOT_INSTALLED && (
-                  <Button variant={"secondary"} onClick={vscode_install}>
-                    <I18nHtml>{i18n.terms.install}</I18nHtml>
-                  </Button>
-                )}
-                {vscode_status === ExtensionStatus.INSTALLED && (
-                  <Button variant={"secondary"} onClick={vscode_launch}>
-                    <I18nHtml>{i18n.terms.launch}</I18nHtml>
-                  </Button>
-                )}
-                <Text style={{ display: "flex", alignItems: "center" }}>{vscode_message}</Text>
-              </CardFooter>
-            </Card>
-            {/*CHROME*/}
-            <Card className={"kogito--desktop__files-card"}>
-              <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-                <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
-              </CardHead>
-              <CardBody>
-                <Title size={"xl"}>{i18n.chromeExtension.title}</Title>
-                <br />
-                <TextContent>
-                  <Text>{i18n.chromeExtension.description}</Text>
-                </TextContent>
-              </CardBody>
-              <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
-                <Button variant={"secondary"} onClick={chrome_toggleModal}>
+    <Page
+      header={
+        <PageHeader logo={<Brand src={"images/BusinessModelerHub_Logo.svg"} alt="Business Modeler Hub Preview" />} />
+      }
+      className={"kogito--editor-landing"}
+    >
+      <PageSection isFilled={true}>
+        <div className={"kogito--alert-container"}>
+          {alerts.map(alert => (
+            <React.Fragment key={alert.time}>
+              <Alert
+                style={{ marginBottom: "10px", width: alert.width ?? "500px" }}
+                variant={alert.variant}
+                title={alert.title}
+                action={<AlertActionCloseButton onClose={() => removeAlert(alert.time)} />}
+              />
+            </React.Fragment>
+          ))}
+        </div>
+        <Gallery gutter="lg" className={"kogito-desktop__file-gallery"}>
+          <Card className={"kogito--desktop__files-card"}>
+            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+              <img style={{ height: "52px" }} src={"images/vscode-logo.svg"} />
+              <Dropdown
+                position="right"
+                onSelect={vscode_toggleKebab}
+                toggle={<KebabToggle onToggle={vscode_toggleKebab} />}
+                isOpen={vscode_kebabOpen}
+                isPlain={true}
+                dropdownItems={[
+                  <DropdownItem key="update" component="button" isDisabled={true}>
+                    <I18nHtml>{i18n.noUpdates}</I18nHtml>
+                  </DropdownItem>,
+                  <DropdownItem
+                    key="uninstall"
+                    component="button"
+                    onClick={vscode_requestUninstall}
+                    isDisabled={vscode_status !== ExtensionStatus.INSTALLED}
+                  >
+                    <I18nHtml>{i18n.terms.uninstall}</I18nHtml>
+                  </DropdownItem>
+                ]}
+              />
+            </CardHead>
+            <CardBody>
+              <Title size={"xl"}>{i18n.vscode.title}</Title>
+              <br />
+              <TextContent>
+                <Text>{i18n.vscode.description}</Text>
+              </TextContent>
+            </CardBody>
+            <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
+              {vscode_status === ExtensionStatus.NOT_INSTALLED && (
+                <Button variant={"secondary"} onClick={vscode_install}>
                   <I18nHtml>{i18n.terms.install}</I18nHtml>
                 </Button>
-                <Text style={{ display: "flex", alignItems: "center" }} />
-              </CardFooter>
-            </Card>
-            <Modal
-              width={"70%"}
-              title={i18n.chromeExtension.modal.title}
-              isOpen={chrome_modalOpen}
-              onClose={chrome_toggleModal}
-              actions={[
-                <Button key="cancel" variant="link" onClick={chrome_toggleModal}>
-                  <I18nHtml>{i18n.terms.done}</I18nHtml>
+              )}
+              {vscode_status === ExtensionStatus.INSTALLED && (
+                <Button variant={"secondary"} onClick={vscode_launch}>
+                  <I18nHtml>{i18n.terms.launch}</I18nHtml>
                 </Button>
-              ]}
-            >
+              )}
+              <Text style={{ display: "flex", alignItems: "center" }}>{vscode_message}</Text>
+            </CardFooter>
+          </Card>
+          {/*CHROME*/}
+          <Card className={"kogito--desktop__files-card"}>
+            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+              <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
+            </CardHead>
+            <CardBody>
+              <Title size={"xl"}>{i18n.chromeExtension.title}</Title>
+              <br />
               <TextContent>
-                <Text component={TextVariants.p}>{i18n.chromeExtension.modal.chromeRequirement}</Text>
-                <Text component={TextVariants.p}>
-                  `${i18n.chromeExtension.modal.chromeDownload} `
-                  <Button variant={"link"} isInline={true} onClick={chrome_openDownloadGoogleChrome}>
-                    <I18nHtml>{i18n.chromeExtension.modal.here}</I18nHtml>
-                  </Button>
-                  .
-                </Text>
-                <Text component={TextVariants.p}>{i18n.chromeExtension.modal.alreadyHaveChrome}:</Text>
-                <TextList component={TextListVariants.ol}>
-                  <TextListItem>
-                    `${i18n.chromeExtension.modal.firstStep.firstPart} `
-                    <Button variant={"link"} isInline={true} onClick={chrome_openKogitoToolingReleasesPage}>
-                      <I18nHtml>{i18n.names.chromeStore}</I18nHtml>
-                    </Button>{" "}
-                    <I18nHtml>{i18n.chromeExtension.modal.firstStep.secondPart}</I18nHtml>
-                  </TextListItem>
-                  <TextListItem>{i18n.chromeExtension.modal.secondStep}</TextListItem>
-                  <TextListItem>{i18n.chromeExtension.modal.thirdStep}</TextListItem>
-                  <TextListItem>
-                    `${i18n.chromeExtension.modal.done.firstPart} `
-                    <Button variant={"link"} isInline={true} onClick={chrome_openGitHub}>
-                      <I18nHtml>{i18n.names.github}</I18nHtml>
-                    </Button>{" "}
-                    `${i18n.chromeExtension.modal.done.secondPart} `
-                  </TextListItem>
-                </TextList>
+                <Text>{i18n.chromeExtension.description}</Text>
               </TextContent>
-            </Modal>
-            {/*DESKTOP*/}
-            <Card className={"kogito--desktop__files-card"}>
-              <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-                <img style={{ height: "52px" }} src={"images/desktop-logo.svg"} />
-                <Dropdown
-                  position="right"
-                  onSelect={desktop_toggleKebab}
-                  toggle={<KebabToggle onToggle={desktop_toggleKebab} />}
-                  isOpen={desktop_kebabOpen}
-                  isPlain={true}
-                  dropdownItems={[
-                    <DropdownItem key="action" component="button" isDisabled={true}>
-                      <I18nHtml>{i18n.noUpdates}</I18nHtml>
-                    </DropdownItem>
-                  ]}
-                />
-              </CardHead>
-              <CardBody>
-                <Title size={"xl"}>{i18n.desktop.title}</Title>
-                <br />
-                <TextContent>
-                  <Text>{i18n.desktop.description}</Text>
-                </TextContent>
-              </CardBody>
-              <CardFooter>
-                <Button variant={"secondary"} onClick={desktop_launch}>
-                  <I18nHtml>{i18n.terms.launch}</I18nHtml>
+            </CardBody>
+            <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
+              <Button variant={"secondary"} onClick={chrome_toggleModal}>
+                <I18nHtml>{i18n.terms.install}</I18nHtml>
+              </Button>
+              <Text style={{ display: "flex", alignItems: "center" }} />
+            </CardFooter>
+          </Card>
+          <Modal
+            width={"70%"}
+            title={i18n.chromeExtension.modal.title}
+            isOpen={chrome_modalOpen}
+            onClose={chrome_toggleModal}
+            actions={[
+              <Button key="cancel" variant="link" onClick={chrome_toggleModal}>
+                <I18nHtml>{i18n.terms.done}</I18nHtml>
+              </Button>
+            ]}
+          >
+            <TextContent>
+              <Text component={TextVariants.p}>{i18n.chromeExtension.modal.chromeRequirement}</Text>
+              <Text component={TextVariants.p}>
+                `${i18n.chromeExtension.modal.chromeDownload} `
+                <Button variant={"link"} isInline={true} onClick={chrome_openDownloadGoogleChrome}>
+                  <I18nHtml>{i18n.chromeExtension.modal.here}</I18nHtml>
                 </Button>
-              </CardFooter>
-            </Card>
-            {/**/}
-            <Card className={"kogito--desktop__files-card"}>
-              <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-                <img style={{ height: "52px" }} src={"images/online-logo.svg"} />
-              </CardHead>
-              <CardBody>
-                <Title size={"xl"}>{i18n.online.title}</Title>
-                <br />
-                <TextContent>
-                  <Text>{i18n.online.description}</Text>
-                </TextContent>
-              </CardBody>
-              <CardFooter>
-                <Button variant={"secondary"} onClick={online_open}>
-                  <I18nHtml>{i18n.terms.launch}</I18nHtml>
-                </Button>
-              </CardFooter>
-            </Card>
-          </Gallery>
-        </PageSection>
-      </Page>
-    </I18nProvider>
+                .
+              </Text>
+              <Text component={TextVariants.p}>{i18n.chromeExtension.modal.alreadyHaveChrome}:</Text>
+              <TextList component={TextListVariants.ol}>
+                <TextListItem>
+                  `${i18n.chromeExtension.modal.firstStep.firstPart} `
+                  <Button variant={"link"} isInline={true} onClick={chrome_openKogitoToolingReleasesPage}>
+                    <I18nHtml>{i18n.names.chromeStore}</I18nHtml>
+                  </Button>{" "}
+                  <I18nHtml>{i18n.chromeExtension.modal.firstStep.secondPart}</I18nHtml>
+                </TextListItem>
+                <TextListItem>{i18n.chromeExtension.modal.secondStep}</TextListItem>
+                <TextListItem>{i18n.chromeExtension.modal.thirdStep}</TextListItem>
+                <TextListItem>
+                  `${i18n.chromeExtension.modal.done.firstPart} `
+                  <Button variant={"link"} isInline={true} onClick={chrome_openGitHub}>
+                    <I18nHtml>{i18n.names.github}</I18nHtml>
+                  </Button>{" "}
+                  `${i18n.chromeExtension.modal.done.secondPart} `
+                </TextListItem>
+              </TextList>
+            </TextContent>
+          </Modal>
+          {/*DESKTOP*/}
+          <Card className={"kogito--desktop__files-card"}>
+            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+              <img style={{ height: "52px" }} src={"images/desktop-logo.svg"} />
+              <Dropdown
+                position="right"
+                onSelect={desktop_toggleKebab}
+                toggle={<KebabToggle onToggle={desktop_toggleKebab} />}
+                isOpen={desktop_kebabOpen}
+                isPlain={true}
+                dropdownItems={[
+                  <DropdownItem key="action" component="button" isDisabled={true}>
+                    <I18nHtml>{i18n.noUpdates}</I18nHtml>
+                  </DropdownItem>
+                ]}
+              />
+            </CardHead>
+            <CardBody>
+              <Title size={"xl"}>{i18n.desktop.title}</Title>
+              <br />
+              <TextContent>
+                <Text>{i18n.desktop.description}</Text>
+              </TextContent>
+            </CardBody>
+            <CardFooter>
+              <Button variant={"secondary"} onClick={desktop_launch}>
+                <I18nHtml>{i18n.terms.launch}</I18nHtml>
+              </Button>
+            </CardFooter>
+          </Card>
+          {/**/}
+          <Card className={"kogito--desktop__files-card"}>
+            <CardHead style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+              <img style={{ height: "52px" }} src={"images/online-logo.svg"} />
+            </CardHead>
+            <CardBody>
+              <Title size={"xl"}>{i18n.online.title}</Title>
+              <br />
+              <TextContent>
+                <Text>{i18n.online.description}</Text>
+              </TextContent>
+            </CardBody>
+            <CardFooter>
+              <Button variant={"secondary"} onClick={online_open}>
+                <I18nHtml>{i18n.terms.launch}</I18nHtml>
+              </Button>
+            </CardFooter>
+          </Card>
+        </Gallery>
+      </PageSection>
+    </Page>
   );
 }

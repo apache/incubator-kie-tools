@@ -19,8 +19,8 @@ import { useState } from "react";
 import { Dialog, HighlightLayer } from ".";
 import { UserInteraction, Tutorial, Rect } from "../api";
 import { CurrentTutorialContext } from "../contexts";
-import { I18nProvider } from "@kogito-tooling/i18n";
-import { guidedTourI18nDefaults, guidedTourI18nDictionaries } from "../i18n/locales";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
+import { GuidedTourI18nContext, guidedTourI18nDefaults, guidedTourI18nDictionaries } from "../i18n/locales";
 
 export const GuidedTour = () => {
   const [currentTutorial, setCurrentTutorial] = useState<Tutorial>();
@@ -32,7 +32,11 @@ export const GuidedTour = () => {
   const [completedStep, setCompletedStep] = useState(0);
 
   return (
-    <I18nProvider defaults={guidedTourI18nDefaults} dictionaries={guidedTourI18nDictionaries}>
+    <I18nDictionariesProvider
+      defaults={guidedTourI18nDefaults}
+      dictionaries={guidedTourI18nDictionaries}
+      ctx={GuidedTourI18nContext}
+    >
       <CurrentTutorialContext.Provider
         value={{
           currentTutorial,
@@ -54,6 +58,6 @@ export const GuidedTour = () => {
         <HighlightLayer />
         <Dialog isEnabled={false} tutorialLabel="" />
       </CurrentTutorialContext.Provider>
-    </I18nProvider>
+    </I18nDictionariesProvider>
   );
 };

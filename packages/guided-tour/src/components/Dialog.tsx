@@ -40,7 +40,6 @@ export function Dialog(props: { isEnabled: boolean; tutorialLabel: string }) {
   // Local state
   const [isEnabled, setIsEnabled] = useState(props.isEnabled);
   const [currentTutorialLabel, setCurrentTutorialLabel] = useState(props.tutorialLabel);
-  const { i18n } = useGuidedTourI18n();
 
   // Global state
   const {
@@ -71,7 +70,7 @@ export function Dialog(props: { isEnabled: boolean; tutorialLabel: string }) {
 
   // Post processing
   const dialogStyle = calculatePositionStyle(dialogPosition, dialogRefElement);
-  const emptyTemplate = useMemo(EmptyDialog(closeDialog, i18n), []);
+  const emptyTemplate = useMemo(EmptyDialog(closeDialog), []);
   const regularTemplate = useMemo(StepDialog(dialogContent, closeDialog), [
     currentStep,
     currentTutorial,

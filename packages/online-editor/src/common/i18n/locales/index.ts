@@ -15,12 +15,15 @@
  */
 
 import { en } from "./en";
-import { useDictionary } from "@kogito-tooling/i18n";
+import { I18nContextType } from "@kogito-tooling/i18n";
+import { OnlineI18n } from "..";
+import * as React from "react";
+import { useContext } from "react";
 
 export const onlineI18nDefaults = { locale: "en", dictionary: en };
+export const onlineI18nDictionaries = new Map([["en", en]]);
+export const OnlineI18nContext = React.createContext<I18nContextType<OnlineI18n>>({} as any);
 
 export function useOnlineI18n() {
-  return useDictionary(onlineI18nDefaults.dictionary);
+  return useContext(OnlineI18nContext);
 }
-
-export const onlineI18nDictionaries = new Map([["en", en]]);
