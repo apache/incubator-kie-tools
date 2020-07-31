@@ -162,7 +162,7 @@ jobs:
           cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope dev/editors/
           cp -r ../kogito-tooling/packages/online-editor/dist/* dev/
           rm -rf dev/gwt-editors
-          ln -s dev/editors dev/gwt-editors
+          ln -s editors dev/gwt-editors
           echo "Hub download unsupported in this distribution. If you want it, you can access the latest \"Publish daily dev version\" job in https://github.com/kiegroup/kogito-tooling/actions and download it in the Artifacts dropdown." > dev/hub_download_unsupported.txt
           git config --global user.email "kietooling@gmail.com"
           git config --global user.name "Kogito Tooling Bot (kiegroup)"
