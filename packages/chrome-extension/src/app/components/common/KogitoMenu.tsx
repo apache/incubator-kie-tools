@@ -108,14 +108,14 @@ export function KogitoMenu() {
                 </a>
                 {isInfoPopOverOpen && (
                   <div className={"info-popover"}>
-                    <h3>{i18n.common.menu.tokenInfo.title}</h3>
-                    <p>{i18n.common.menu.tokenInfo.disclaimer}</p>
+                    <h3><I18nHtml>{i18n.common.menu.tokenInfo.title}</I18nHtml></h3>
+                    <p><I18nHtml>{i18n.common.menu.tokenInfo.disclaimer}</I18nHtml></p>
                     <hr />
-                    <p>{i18n.common.menu.tokenInfo.explanation}</p>
-                    <p>{i18n.common.menu.tokenInfo.whichPermissionUserGive}</p>
+                    <p><I18nHtml>{i18n.common.menu.tokenInfo.explanation}</I18nHtml></p>
+                    <p><I18nHtml>{i18n.common.menu.tokenInfo.whichPermissionUserGive}</I18nHtml></p>
                     <p>
                       <b>
-                        <u>{i18n.terms.note.toUpperCase()}:</u>&nbsp;
+                        <u><I18nHtml>{i18n.terms.note.toUpperCase()}:</I18nHtml></u>&nbsp;
                       </b>
                       <I18nHtml>{i18n.common.menu.tokenInfo.permission}</I18nHtml>
                     </p>

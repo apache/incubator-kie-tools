@@ -36,7 +36,7 @@ import { DEFAULT_RECT, AutoMode, DemoMode } from "@kogito-tooling/microeditor-en
 import "./Dialog.sass";
 import { useGuidedTourI18n } from "../i18n/locales";
 
-export function Dialog(props: { isEnabled: boolean; tutorialLabel: string }) {
+export const Dialog = (props: { isEnabled: boolean; tutorialLabel: string }) => {
   // Local state
   const [isEnabled, setIsEnabled] = useState(props.isEnabled);
   const [currentTutorialLabel, setCurrentTutorialLabel] = useState(props.tutorialLabel);
@@ -138,4 +138,4 @@ export function Dialog(props: { isEnabled: boolean; tutorialLabel: string }) {
       {getDialogTemplate()}
     </div>
   );
-}
+};

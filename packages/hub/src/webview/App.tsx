@@ -233,10 +233,10 @@ export function App() {
           width: "90%",
           title: (
             <>
-              <p>{i18n.alert.launching.title}</p>
+              <p><I18nHtml>{i18n.alert.launching.title}</I18nHtml></p>
               <br />
-              <p>{i18n.alert.launching.try}</p>
-              <p>{i18n.alert.launching.directory}</p>
+              <p><I18nHtml>{i18n.alert.launching.try}</I18nHtml></p>
+              <p><I18nHtml>{i18n.alert.launching.directory}</I18nHtml></p>
               <ClipboardCopy isReadOnly={true}>{`chmod -R u+x "Business Modeler Hub Preview.app" `}</ClipboardCopy>
             </>
           )
