@@ -21,11 +21,10 @@ import {
   EnvelopeBusMessage,
   OperatingSystem
 } from "@kogito-tooling/microeditor-envelope-protocol";
-import {FACTORY_TYPE, PMMLEditorFactory} from "../editor/PMMLEditorFactory";
-import {PMMLEditorInterface} from "../editor/PMMLEditorInterface";
-import {Editor, KogitoEditorEnvelopeContextType} from "@kogito-tooling/editor-api";
-import {DefaultKeyboardShortcutsService} from "@kogito-tooling/keyboard-shortcuts";
-
+import { FACTORY_TYPE, PMMLEditorFactory } from "../editor/PMMLEditorFactory";
+import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
+import { Editor, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 
 const bus: EnvelopeBus = {
   postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any) {
@@ -37,7 +36,6 @@ const messageBusClient = {
   notify: jest.fn(),
   request: jest.fn()
 };
-
 
 const editorContext: EditorContext = { channel: ChannelType.EMBEDDED, operatingSystem: OperatingSystem.LINUX };
 const envelopeContext: KogitoEditorEnvelopeContextType = {
@@ -65,7 +63,10 @@ describe("PMMLEditorFactory", () => {
 
     jest.spyOn(factory, "createEditor");
 
-    const created: Promise<Editor> = factory.createEditor(envelopeContext, {fileExtension: FACTORY_TYPE, resourcesPathPrefix: ""});
+    const created: Promise<Editor> = factory.createEditor(envelopeContext, {
+      fileExtension: FACTORY_TYPE,
+      resourcesPathPrefix: ""
+    });
     expect(created).resolves.toBeInstanceOf(PMMLEditorInterface);
   });
 });
