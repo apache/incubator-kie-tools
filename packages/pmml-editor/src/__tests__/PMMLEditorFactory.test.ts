@@ -14,23 +14,11 @@
  * limitations under the License.
  */
 
-import {
-  ChannelType,
-  EditorContext,
-  EnvelopeBus,
-  EnvelopeBusMessage,
-  OperatingSystem
-} from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelType, EditorContext, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 import { FACTORY_TYPE, PMMLEditorFactory } from "../editor/PMMLEditorFactory";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
 import { Editor, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
-
-const bus: EnvelopeBus = {
-  postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any) {
-    /*NOP*/
-  }
-};
 
 const messageBusClient = {
   notify: jest.fn(),
