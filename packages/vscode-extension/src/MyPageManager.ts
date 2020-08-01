@@ -19,7 +19,7 @@ import * as vscode from "vscode";
 import { Uri, ViewColumn } from "vscode";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { WorkspaceApi } from "@kogito-tooling/editor-envelope-protocol";
-import { KogitoPageChannelApiImpl } from "./KogitoPageChannelApiImpl";
+import { MyPageChannelApiImpl } from "./MyPageChannelApiImpl";
 import {MyPageChannelEnvelopeServer, MyPageEnvelopeLocator} from "@kogito-tooling/my-page/dist/channel";
 import {MyPageChannelApi} from "@kogito-tooling/my-page/dist/api";
 
@@ -83,7 +83,7 @@ export class MyPageManager {
       postMessage: message => webviewPanel.webview.postMessage(message)
     });
 
-    const api: MyPageChannelApi = new KogitoPageChannelApiImpl(this.workspaceApi, this.editorStore);
+    const api: MyPageChannelApi = new MyPageChannelApiImpl(this.workspaceApi, this.editorStore);
 
     const broadcastSubscription = this.messageBroadcaster.subscribe(msg => {
       envelopeServer.receive(msg, api);

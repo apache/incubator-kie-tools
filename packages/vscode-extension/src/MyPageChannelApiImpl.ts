@@ -21,8 +21,9 @@ import {
   WorkspaceApi
 } from "@kogito-tooling/editor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
+import { MyPageChannelApi } from "@kogito-tooling/my-page/dist/api";
 
-export class KogitoPageChannelApiImpl {
+export class MyPageChannelApiImpl implements MyPageChannelApi {
   constructor(private readonly workspaceApi: WorkspaceApi, private readonly editorStore: KogitoEditorStore) {}
 
   public receive_newEdit(edit: KogitoEdit) {
