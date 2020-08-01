@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType, EditorContext, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelType, EditorContext, OperatingSystem } from "@kogito-tooling/editor-envelope-protocol";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor } from "../editor/PMMLEditor";
@@ -24,7 +24,9 @@ import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortc
 
 const messageBusClient = {
   notify: jest.fn(),
-  request: jest.fn()
+  request: jest.fn(),
+  subscribe: jest.fn(),
+  unsubscribe: jest.fn()
 };
 
 const editorContext: EditorContext = { channel: ChannelType.EMBEDDED, operatingSystem: OperatingSystem.LINUX };

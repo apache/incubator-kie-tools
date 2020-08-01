@@ -20,19 +20,19 @@ import { EditorInitArgs } from "./KogitoEditorEnvelopeApi";
 import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
 
 export function useConnectedEditorEnvelopeServer(
-    channel: KogitoEditorChannelEnvelopeServer,
+    envelopeServer: KogitoEditorChannelEnvelopeServer,
     api: KogitoEditorChannelApi,
     targetOrigin: string,
-    editorInitArgs: EditorInitArgs
+    initArgs: EditorInitArgs
 ) {
   useEffect(() => {
-    const listener = (msg: MessageEvent) => channel.receive(msg.data, api);
+    const listener = (msg: MessageEvent) => envelopeServer.receive(msg.data, api);
     window.addEventListener("message", listener, false);
-    channel.startInitPolling(targetOrigin, editorInitArgs);
+    envelopeServer.startInitPolling(targetOrigin, initArgs);
 
     return () => {
-      channel.stopInitPolling();
+      envelopeServer.stopInitPolling();
       window.removeEventListener("message", listener);
     };
-  }, [channel, targetOrigin, editorInitArgs, api]);
+  }, [envelopeServer, targetOrigin, initArgs, api]);
 }

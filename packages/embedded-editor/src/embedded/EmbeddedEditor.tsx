@@ -17,8 +17,8 @@
 import {
   ChannelType,
   EditorEnvelopeLocator,
-  KogitoEditorChannelEnvelopeServer,
   KogitoEditorChannelApi,
+  KogitoEditorChannelEnvelopeServer,
   useConnectedEditorEnvelopeServer
 } from "@kogito-tooling/editor-envelope-protocol";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts-channel";
@@ -85,9 +85,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   const envelopeServer = useMemo(() => {
     return new KogitoEditorChannelEnvelopeServer({
       postMessage: message => {
-        if (iframeRef.current && iframeRef.current.contentWindow) {
-          iframeRef.current.contentWindow.postMessage(message, "*");
-        }
+        iframeRef.current?.contentWindow?.postMessage(message, "*");
       }
     });
   }, []);

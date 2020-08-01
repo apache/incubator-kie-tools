@@ -14,45 +14,13 @@
  * limitations under the License.
  */
 
-import { ApiDefinition } from "@kogito-tooling/envelope-bus";
 import { KogitoChannelCommonApi } from "@kogito-tooling/editor-envelope-protocol";
 
-export interface Association {
-  origin: string;
-  busId: string;
+export interface MyPageChannelApi extends KogitoChannelCommonApi {
+  getOpenDiagrams(): Promise<SvgDiagram[]>;
 }
-
-export interface PageInitArgs {
-  filePath?: string;
-  backendUrl: string;
-}
-
-export interface KogitoPageEnvelopeApi extends ApiDefinition<KogitoPageEnvelopeApi> {
-  init(association: Association, pageInitArgs: PageInitArgs): Promise<void>;
-}
-
-//
 
 export interface SvgDiagram {
   path: string;
   img: string;
 }
-
-export interface KogitoPageChannelApi extends KogitoChannelCommonApi {
-  getOpenDiagrams(): Promise<SvgDiagram[]>;
-}
-
-//
-
-export interface PageEnvelopeLocator {
-  targetOrigin: string;
-  mapping: Map<string, PageMapping>;
-}
-
-export interface PageMapping {
-  title: string;
-  envelopePath: string;
-  backendUrl: string;
-}
-
-export * from "./KogitoPageChannelEnvelopeServer";

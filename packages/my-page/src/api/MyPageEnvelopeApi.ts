@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-import { KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "./api";
-
-export interface WorkspaceApi {
-  receive_openFile(path: string): void;
-  receive_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined>;
-  receive_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;
+export interface MyPageEnvelopeApi {
+  myPage__init(association: Association, pageInitArgs: MyPageInitArgs): Promise<void>;
+  myPage__setText(text: string): void;
 }
 
-export interface KogitoChannelCommonApi extends WorkspaceApi {
-  receive_ready(): void;
-  receive_newEdit(edit: KogitoEdit): void;
+export interface Association {
+  origin: string;
+  busId: string;
+}
+
+export interface MyPageInitArgs {
+  filePath?: string;
+  backendUrl: string;
 }

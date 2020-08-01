@@ -15,21 +15,15 @@
  */
 
 import * as vscode from "vscode";
-import { Uri, ViewColumn } from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
-import { KogitoWebviewProvider } from "./KogitoWebviewProvider";
-import { EditorEnvelopeLocator, WorkspaceApi } from "@kogito-tooling/editor-envelope-protocol";
-import * as __path from "path";
-import * as fs from "fs";
-import {
-  KogitoPageChannelApi,
-  KogitoPageChannelEnvelopeServer,
-  PageEnvelopeLocator
-} from "@kogito-tooling/page-envelope-protocol";
+import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { MyPageEnvelopeLocator } from "@kogito-tooling/my-page/dist/channel";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
-import { KogitoPageChannelApiImpl } from "./KogitoPageChannelApiImpl";
+import { generateSvg } from "./generateSvg";
+import { MyPageManager } from "./MyPageManager";
 
 /**
  * Starts a Kogito extension.
@@ -45,7 +39,7 @@ export function startExtension(args: {
   viewType: string;
   getPreviewCommandId: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
-  pageEnvelopeLocator: PageEnvelopeLocator;
+  pageEnvelopeLocator: MyPageEnvelopeLocator;
 }) {
   const workspaceApi = new VsCodeWorkspaceApi();
   const editorStore = new KogitoEditorStore();
@@ -57,122 +51,34 @@ export function startExtension(args: {
     messageBroadcaster,
     workspaceApi
   );
-  const webviewProvider = new KogitoWebviewProvider(args.viewType, editorFactory, editorStore, args.context);
 
-  args.context.subscriptions.push(webviewProvider.register());
+  const pageManager = new MyPageManager(
+    args.context,
+    args.extensionName,
+    args.pageEnvelopeLocator,
+    editorStore,
+    messageBroadcaster,
+    workspaceApi
+  );
+
+  const editorWebviewProvider = new KogitoEditorWebviewProvider(
+    args.context,
+    args.viewType,
+    editorStore,
+    editorFactory
+  );
+
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(args.getPreviewCommandId, async () => {
-      const editor = editorStore.activeEditor;
-      if (!editor) {
-        console.info(`Unable to create SVG because there's no Editor open.`);
-        return;
-      }
-
-      const previewSvg = await editor.getPreview();
-      if (!previewSvg) {
-        console.info(`Unable to create SVG for '${editor.document.uri.fsPath}'`);
-        return;
-      }
-
-      const parsedPath = __path.parse(editor.document.uri.fsPath);
-      fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, previewSvg);
+    vscode.window.registerCustomEditorProvider(args.viewType, editorWebviewProvider, {
+      webviewOptions: { retainContextWhenHidden: true }
     })
   );
 
-  [...args.pageEnvelopeLocator.mapping.entries()].forEach(([pageId, pageMapping]) => {
-    args.context.subscriptions.push(
-      vscode.commands.registerCommand(`${args.extensionName}.pages.${pageId}`, () => {
-        openPage(
-          editorStore,
-          args.context,
-          messageBroadcaster,
-          workspaceApi,
-
-          pageId,
-          pageMapping.title,
-          ViewColumn.Beside,
-          pageMapping.envelopePath,
-          args.pageEnvelopeLocator.targetOrigin,
-          pageMapping.backendUrl
-        );
-      })
-    );
-  });
-}
-
-function openPage(
-  editorStore: KogitoEditorStore,
-  context: vscode.ExtensionContext,
-  messageBroadcaster: EnvelopeBusMessageBroadcaster,
-  workspaceApi: WorkspaceApi,
-
-  viewType: string,
-  title: string,
-  showOptions: ViewColumn.Beside,
-  envelopePath: string,
-  envelopeTargetOrigin: string,
-  backendUrl: string
-) {
-  const filePath = editorStore.activeEditor?.document.uri.fsPath;
-
-  const webviewPanel = vscode.window.createWebviewPanel(viewType, title, showOptions, {
-    retainContextWhenHidden: true,
-    enableCommandUris: true,
-    enableScripts: true,
-    localResourceRoots: [vscode.Uri.file(context.extensionPath)]
-  });
-
-  const scriptSrc = webviewPanel.webview.asWebviewUri(Uri.file(context.asAbsolutePath(envelopePath))).toString();
-
-  webviewPanel.webview.html = `<!DOCTYPE html>
-        <html lang="en">
-        <head>
-          <style>
-            html, body, div#page-app {
-                margin: 0;
-                border: 0;
-                padding: 0;
-            }
-          </style>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        </head>
-        <body>
-        <div id="page-app" />
-        <script src="${scriptSrc}"></script>
-        </body>
-        </html>`;
-
-  const envelopeServer = new KogitoPageChannelEnvelopeServer({
-    postMessage: message => webviewPanel.webview.postMessage(message)
-  });
-
-  const api: KogitoPageChannelApi = new KogitoPageChannelApiImpl(workspaceApi, editorStore);
-
-  const broadcastSubscription = messageBroadcaster.subscribe(msg => {
-    envelopeServer.receive(msg, api);
-  });
-
-  context.subscriptions.push(
-    webviewPanel.webview.onDidReceiveMessage(
-      msg => messageBroadcaster.broadcast(msg),
-      webviewPanel.webview,
-      context.subscriptions
-    )
+  args.context.subscriptions.push(
+    vscode.commands.registerCommand(args.getPreviewCommandId, () => generateSvg(editorStore, workspaceApi))
   );
 
-  webviewPanel.onDidDispose(
-    () => {
-      envelopeServer.stopInitPolling();
-      messageBroadcaster.unsubscribe(broadcastSubscription);
-    },
-    webviewPanel.webview,
-    context.subscriptions
-  );
-
-  envelopeServer.startInitPolling(envelopeTargetOrigin, {
-    filePath: filePath,
-    backendUrl: backendUrl
+  pageManager.pages.forEach(({ command, id }) => {
+    args.context.subscriptions.push(vscode.commands.registerCommand(command, () => pageManager.open(id)));
   });
 }

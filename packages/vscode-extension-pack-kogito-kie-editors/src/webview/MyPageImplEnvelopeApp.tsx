@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-import { KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "./api";
+import * as React from "react";
+import * as MyPageEnvelope from "@kogito-tooling/my-page/dist/envelope";
+import { MyPageImplFactory } from "@kogito-tooling/my-page/dist/impl";
 
-export interface WorkspaceApi {
-  receive_openFile(path: string): void;
-  receive_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined>;
-  receive_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;
-}
-
-export interface KogitoChannelCommonApi extends WorkspaceApi {
-  receive_ready(): void;
-  receive_newEdit(edit: KogitoEdit): void;
-}
+MyPageEnvelope.init({
+  container: document.getElementById("page-app")!,
+  bus: acquireVsCodeApi(),
+  myPageFactory: new MyPageImplFactory()
+});

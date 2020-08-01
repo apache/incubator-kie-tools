@@ -14,4 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./KogitoPageEnvelope";
+export * from "./MyPageChannelApi";
+export * from "./MyPageEnvelopeApi";
+export * from "./MyPageApi";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Editor, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
-import { DEFAULT_RECT } from "@kogito-tooling/microeditor-envelope-protocol";
+import { DEFAULT_RECT } from "@kogito-tooling/editor-envelope-protocol";
 import * as React from "react";
 import { PMMLEditor } from "./PMMLEditor";
 

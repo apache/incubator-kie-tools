@@ -15,7 +15,7 @@
  */
 
 import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
-import { EditorInitArgs } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorInitArgs } from "@kogito-tooling/editor-envelope-protocol";
 
 /**
  * Composite Factory of Editors to be created inside the envelope. This implementation delegates potential construction

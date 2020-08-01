@@ -1,10 +1,8 @@
 {
-  "name": "@kogito-tooling/page-envelope",
+  "name": "@kogito-tooling/my-page",
   "version": "0.6.1",
   "description": "",
   "license": "Apache-2.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -14,7 +12,7 @@
   },
   "dependencies": {
     "@kogito-tooling/envelope": "0.6.1",
-    "@kogito-tooling/page-envelope-protocol": "0.6.1"
+    "@kogito-tooling/editor-envelope-protocol": "0.6.1"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

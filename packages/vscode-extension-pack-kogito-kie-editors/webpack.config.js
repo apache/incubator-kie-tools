@@ -46,7 +46,7 @@ module.exports = [
     },
     target: "web",
     entry: {
-      "webview/index": "./src/webview/index.ts"
+      "webview/GwtEditorsEnvelopeApp": "./src/webview/GwtEditorsEnvelopeApp.ts"
     },
     module: {
       rules: [...pfWebpackOptions.patternflyRules]
@@ -71,7 +71,7 @@ module.exports = [
     },
     target: "web",
     entry: {
-      "webview/myPage": "./src/webview/myPage.tsx"
+      "webview/MyPageImplEnvelopeApp": "./src/webview/MyPageImplEnvelopeApp.tsx"
     }
   })
 ];

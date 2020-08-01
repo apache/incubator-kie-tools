@@ -20,6 +20,10 @@ import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
 import { EditorInitArgs, KogitoEditorEnvelopeApi } from "./KogitoEditorEnvelopeApi";
 import { ChannelEnvelopeServer } from "./ChannelEnvelopeServer";
 
+type KogitoEditorMessageBusType =
+  | FunctionPropertyNames<KogitoEditorChannelApi>
+  | FunctionPropertyNames<KogitoEditorEnvelopeApi>;
+
 export class KogitoEditorChannelEnvelopeServer {
   public static INIT_POLLING_TIMEOUT_IN_MS = 10000;
   public static INIT_POLLING_INTERVAL_IN_MS = 100;
@@ -49,7 +53,7 @@ export class KogitoEditorChannelEnvelopeServer {
 
     this.initPollingTimeout = setTimeout(() => {
       this.stopInitPolling();
-      console.info("Init polling timed out. Looks like the microeditor-envelope is not responding accordingly.");
+      console.info("Init polling timed out. Looks like the Editor Envelope is not responding accordingly.");
     }, KogitoEditorChannelEnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS);
   }
 
@@ -60,13 +64,7 @@ export class KogitoEditorChannelEnvelopeServer {
     this.initPollingTimeout = undefined;
   }
 
-  public receive(
-    message: EnvelopeBusMessage<
-      unknown,
-      FunctionPropertyNames<KogitoEditorChannelApi> | FunctionPropertyNames<KogitoEditorEnvelopeApi>
-    >,
-    api: KogitoEditorChannelApi
-  ) {
+  public receive(message: EnvelopeBusMessage<unknown, KogitoEditorMessageBusType>, api: KogitoEditorChannelApi) {
     this.envelopeServer.receive(message, api);
   }
 

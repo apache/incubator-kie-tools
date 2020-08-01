@@ -18,10 +18,8 @@ import {
   ChannelType,
   EditorContext,
   EditorInitArgs,
-  EnvelopeBus,
-  EnvelopeBusMessage,
   OperatingSystem
-} from "@kogito-tooling/microeditor-envelope-protocol";
+} from "@kogito-tooling/editor-envelope-protocol";
 import { CompositeEditorFactory } from "../CompositeEditorFactory";
 import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
 import { DummyEditor } from "./editor/DummyEditor";
@@ -29,15 +27,11 @@ import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortc
 
 const dummyEditor: Editor = new DummyEditor();
 
-const bus: EnvelopeBus = {
-  postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any) {
-    /*NOP*/
-  }
-};
-
 const messageBusClient = {
   notify: jest.fn(),
-  request: jest.fn()
+  request: jest.fn(),
+  subscribe: jest.fn(),
+  unsubscribe: jest.fn()
 };
 
 const editorContext: EditorContext = { channel: ChannelType.EMBEDDED, operatingSystem: OperatingSystem.LINUX };

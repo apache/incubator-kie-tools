@@ -16,11 +16,6 @@
 
 import {
   EditorContent,
-  KogitoEdit,
-  ResourceContent,
-  ResourceContentRequest,
-  ResourceListRequest,
-  ResourcesList,
   StateControlCommand,
   Tutorial,
   UserInteraction
@@ -29,12 +24,8 @@ import { KogitoChannelCommonApi } from "./KogitoCommonChannelApi";
 
 export interface KogitoEditorChannelApi extends KogitoChannelCommonApi {
   receive_setContentError(errorMessage: string): void;
-  receive_openFile(path: string): void;
   receive_guidedTourUserInteraction(userInteraction: UserInteraction): void;
   receive_guidedTourRegisterTutorial(tutorial: Tutorial): void;
-  receive_newEdit(edit: KogitoEdit): void;
   receive_stateControlCommandUpdate(command: StateControlCommand): void;
   receive_contentRequest(): Promise<EditorContent>;
-  receive_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined>;
-  receive_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;
 }

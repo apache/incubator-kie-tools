@@ -16,9 +16,11 @@
 
 import { ChannelEnvelopeServer } from "@kogito-tooling/editor-envelope-protocol";
 import { EnvelopeBus, EnvelopeBusMessage, FunctionPropertyNames } from "@kogito-tooling/envelope-bus";
-import { KogitoPageChannelApi, KogitoPageEnvelopeApi, PageInitArgs } from "./index";
+import { MyPageChannelApi, MyPageEnvelopeApi, MyPageInitArgs } from "../api";
 
-export class KogitoPageChannelEnvelopeServer {
+type MyPageMessageBusType = FunctionPropertyNames<MyPageEnvelopeApi> | FunctionPropertyNames<MyPageChannelApi>;
+
+export class MyPageChannelEnvelopeServer {
   public static INIT_POLLING_TIMEOUT_IN_MS = 10000;
   public static INIT_POLLING_INTERVAL_IN_MS = 100;
 
@@ -35,19 +37,19 @@ export class KogitoPageChannelEnvelopeServer {
 
   public constructor(
     bus: EnvelopeBus,
-    private readonly envelopeServer = new ChannelEnvelopeServer<KogitoPageChannelApi, KogitoPageEnvelopeApi>(bus)
+    private readonly envelopeServer = new ChannelEnvelopeServer<MyPageChannelApi, MyPageEnvelopeApi>(bus)
   ) {}
 
-  public startInitPolling(origin: string, initArgs: PageInitArgs) {
+  public startInitPolling(origin: string, initArgs: MyPageInitArgs) {
     this.initPolling = setInterval(async () => {
-      await this.client.request("init", { origin, busId: this.envelopeServer.busId }, initArgs);
+      await this.client.request("myPage__init", { origin, busId: this.envelopeServer.busId }, initArgs);
       this.stopInitPolling();
-    }, KogitoPageChannelEnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
+    }, MyPageChannelEnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
 
     this.initPollingTimeout = setTimeout(() => {
       this.stopInitPolling();
-      console.info("Init polling timed out. Looks like the micropage-envelope is not responding accordingly.");
-    }, KogitoPageChannelEnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS);
+      console.info("Init polling timed out. Looks like MyPage Envelope is not responding accordingly.");
+    }, MyPageChannelEnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS);
   }
 
   public stopInitPolling() {
@@ -57,13 +59,7 @@ export class KogitoPageChannelEnvelopeServer {
     this.initPollingTimeout = undefined;
   }
 
-  public receive(
-    message: EnvelopeBusMessage<
-      unknown,
-      FunctionPropertyNames<KogitoPageEnvelopeApi> | FunctionPropertyNames<KogitoPageChannelApi>
-    >,
-    api: KogitoPageChannelApi
-  ) {
+  public receive(message: EnvelopeBusMessage<unknown, MyPageMessageBusType>, api: MyPageChannelApi) {
     this.envelopeServer.receive(message, api);
   }
 }

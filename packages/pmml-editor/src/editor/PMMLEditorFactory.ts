@@ -15,7 +15,7 @@
  */
 import { PMMLEditorInterface } from "./PMMLEditorInterface";
 import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
-import { EditorInitArgs } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorInitArgs } from "@kogito-tooling/editor-envelope-protocol";
 
 export const FACTORY_TYPE = "pmml";
 
