@@ -18,7 +18,7 @@ import { ChannelType, EditorContext, OperatingSystem } from "@kogito-tooling/edi
 import { FACTORY_TYPE, PMMLEditorFactory } from "../editor/PMMLEditorFactory";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
 import { Editor, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 
 const messageBusClient = {
   notify: jest.fn(),
@@ -33,7 +33,7 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
-    keyboardShortcuts: new DefaultKeyboardShortcutsService({ editorContext: editorContext })
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem })
   }
 };
 

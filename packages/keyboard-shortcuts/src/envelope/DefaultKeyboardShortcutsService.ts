@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelKeyboardEvent, EditorContext, OperatingSystem } from "@kogito-tooling/editor-envelope-protocol";
+import { ChannelKeyboardEvent, OperatingSystem } from "../api";
 import { KeyboardShortcutRegisterOpts } from "./KeyboardShortcutRegisterOpts";
 
 export interface KeyBinding {
@@ -86,7 +86,7 @@ export class DefaultKeyboardShortcutsService {
 
   private readonly keyBindings = new Map<number, KeyBinding>();
 
-  constructor(private readonly args: { editorContext: EditorContext }) {}
+  constructor(private readonly args: { os?: OperatingSystem }) {}
 
   public registerKeyDownThenUp(
     combination: string,
@@ -207,7 +207,7 @@ export class DefaultKeyboardShortcutsService {
       .map(k => k.toLowerCase())
       .map(k => KEY_CODES.get(k) ?? k);
 
-    if (this.args.editorContext.operatingSystem === OperatingSystem.MACOS) {
+    if (this.args.os === OperatingSystem.MACOS) {
       return new Set(keys.map(k => (k === ModKeys.CTRL ? ModKeys.META : k)));
     } else {
       return new Set(keys);

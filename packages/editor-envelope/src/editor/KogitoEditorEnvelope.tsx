@@ -24,7 +24,7 @@ import {
   KogitoEditorEnvelopeContext,
   KogitoEditorEnvelopeContextType
 } from "@kogito-tooling/editor-api";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import * as ReactDOM from "react-dom";
@@ -43,7 +43,7 @@ export class KogitoEditorEnvelope {
     },
     private readonly kogitoEditorEnvelopeApiFactory = new KogitoEditorEnvelopeApiFactory(args.editorFactory),
     private readonly keyboardShortcutsService = new DefaultKeyboardShortcutsService({
-      editorContext: args.editorContext
+      os: args.editorContext.operatingSystem
     }),
     private readonly envelope: Envelope<
       KogitoEditorEnvelopeApi,

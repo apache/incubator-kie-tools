@@ -20,7 +20,7 @@ import { ReactElement } from "react";
 import { PMMLEditor } from "../editor/PMMLEditor";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
 import { KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 
 const messageBusClient = {
   notify: jest.fn(),
@@ -35,7 +35,7 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
-    keyboardShortcuts: new DefaultKeyboardShortcutsService({ editorContext: editorContext })
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem })
   }
 };
 

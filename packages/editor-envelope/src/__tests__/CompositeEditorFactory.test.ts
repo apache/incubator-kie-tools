@@ -23,7 +23,7 @@ import {
 import { CompositeEditorFactory } from "../CompositeEditorFactory";
 import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
 import { DummyEditor } from "./editor/DummyEditor";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 
 const dummyEditor: Editor = new DummyEditor();
 
@@ -40,7 +40,7 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
-    keyboardShortcuts: new DefaultKeyboardShortcutsService({ editorContext: editorContext })
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem })
   }
 };
 

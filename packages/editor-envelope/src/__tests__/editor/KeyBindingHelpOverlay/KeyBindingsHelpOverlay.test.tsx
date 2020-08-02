@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { KeyBindingsHelpOverlay } from "../../../editor/KeyBindingsHelpOverlay";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/editor-envelope-protocol";
 import { fireEvent, render } from "@testing-library/react";
 import { DEFAULT_TESTING_ENVELOPE_CONTEXT, usingEnvelopeContext } from "../../utils";
@@ -24,7 +24,7 @@ import { DEFAULT_TESTING_ENVELOPE_CONTEXT, usingEnvelopeContext } from "../../ut
 describe("KeyBindingsHelpOverlay", () => {
   test("minimal setup", async () => {
     const context = { operatingSystem: OperatingSystem.WINDOWS, channel: ChannelType.DESKTOP };
-    const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: context });
+    const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ os: context.operatingSystem });
     keyboardShortcutsService.registerKeyPress("ctrl+c", "Copy", () => Promise.resolve(), {});
 
     const component = render(

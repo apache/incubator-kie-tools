@@ -17,7 +17,7 @@
     "@kogito-tooling/kie-bc-editors": "0.6.1",
     "@kogito-tooling/editor-api": "0.6.1",
     "@kogito-tooling/editor-envelope": "0.6.1",
-    "@kogito-tooling/keyboard-shortcuts-channel": "0.6.1",
+    "@kogito-tooling/keyboard-shortcuts": "0.6.1",
     "@kogito-tooling/editor-envelope-protocol": "0.6.1",
     "@kogito-tooling/patternfly-base": "0.6.1"
   },

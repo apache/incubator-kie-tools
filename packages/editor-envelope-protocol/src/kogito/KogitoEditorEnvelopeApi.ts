@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { ChannelKeyboardEvent, EditorContent, Rect } from "./api";
+import {  EditorContent, Rect } from "./api";
+import { KeyboardShortcutsEnvelopeApi } from "@kogito-tooling/keyboard-shortcuts/dist/api";
 
 export interface Association {
   origin: string;
@@ -26,7 +27,7 @@ export interface EditorInitArgs {
   fileExtension: string;
 }
 
-export interface KogitoEditorEnvelopeApi {
+export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi {
   receive_contentChanged(content: EditorContent): void;
   receive_editorUndo(): void;
   receive_editorRedo(): void;
@@ -34,5 +35,4 @@ export interface KogitoEditorEnvelopeApi {
   receive_contentRequest(): Promise<EditorContent>;
   receive_previewRequest(): Promise<string>;
   receive_guidedTourElementPositionRequest(selector: string): Promise<Rect>;
-  receive_channelKeyboardEvent(channelKeyboardEvent: ChannelKeyboardEvent): void;
 }

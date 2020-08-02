@@ -15,7 +15,7 @@
  */
 
 import { KogitoEditorEnvelopeContext, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import * as React from "react";
 
 export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType = {

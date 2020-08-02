@@ -16,7 +16,6 @@
 
 import {
   Association,
-  ChannelKeyboardEvent,
   ChannelType,
   DEFAULT_RECT,
   EditorContent,
@@ -28,6 +27,7 @@ import {
 import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
 import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
+import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts/dist/api";
 
 export class KogitoEditorEnvelopeApiFactory
   implements

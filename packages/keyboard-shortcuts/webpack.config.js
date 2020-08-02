@@ -15,13 +15,14 @@
  */
 
 const nodeExternals = require("webpack-node-externals");
-const pfWebpackOptions = require("../patternfly-base/patternflyWebpackOptions")
+const pfWebpackOptions = require("../patternfly-base/patternflyWebpackOptions");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
 module.exports = merge(common, {
   entry: {
-    index: "./src/index.ts"
+    "envelope/index": "./src/envelope/index.ts",
+    "channel/index": "./src/channel/index.ts"
   },
   output: {
     libraryTarget: "commonjs2"
