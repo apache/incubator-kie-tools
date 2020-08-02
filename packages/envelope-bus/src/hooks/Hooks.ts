@@ -14,8 +14,25 @@
  * limitations under the License.
  */
 
-import { ApiDefinition, MessageBusClient, NotificationPropertyNames, SubscriptionCallback } from "../api";
 import { useEffect } from "react";
+import { ApiDefinition, MessageBusClient, NotificationPropertyNames, SubscriptionCallback } from "../api";
+import { ChannelEnvelopeServer } from "../channel";
+
+export function useConnectedEnvelopeServer<Api extends ApiDefinition<Api>>(
+  envelopeServer: ChannelEnvelopeServer<Api, any>,
+  api: Api
+) {
+  useEffect(() => {
+    const listener = (msg: MessageEvent) => envelopeServer.receive(msg.data, api);
+    window.addEventListener("message", listener, false);
+    envelopeServer.startInitPolling();
+
+    return () => {
+      envelopeServer.stopInitPolling();
+      window.removeEventListener("message", listener);
+    };
+  }, [envelopeServer, api]);
+}
 
 export function useSubscription<Api extends ApiDefinition<Api>, M extends NotificationPropertyNames<Api>>(
   bus: MessageBusClient<Api>,

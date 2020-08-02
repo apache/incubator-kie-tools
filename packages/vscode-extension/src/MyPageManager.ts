@@ -20,8 +20,8 @@ import { Uri, ViewColumn } from "vscode";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { WorkspaceApi } from "@kogito-tooling/channel-common-api";
 import { MyPageChannelApiImpl } from "./MyPageChannelApiImpl";
-import {MyPageChannelEnvelopeServer, MyPageEnvelopeLocator} from "@kogito-tooling/my-page/dist/channel";
-import {MyPageChannelApi} from "@kogito-tooling/my-page/dist/api";
+import { MyPageChannelEnvelopeServer, MyPageEnvelopeLocator } from "@kogito-tooling/my-page/dist/channel";
+import { MyPageChannelApi } from "@kogito-tooling/my-page/dist/api";
 
 export class MyPageManager {
   constructor(
@@ -79,9 +79,11 @@ export class MyPageManager {
         </body>
         </html>`;
 
-    const envelopeServer = new MyPageChannelEnvelopeServer({
-      postMessage: message => webviewPanel.webview.postMessage(message)
-    });
+    const envelopeServer = new MyPageChannelEnvelopeServer(
+      { postMessage: message => webviewPanel.webview.postMessage(message) },
+      this.myPageEnvelopeLocator.targetOrigin,
+      { filePath: filePath, backendUrl: pageMapping.backendUrl }
+    );
 
     const api: MyPageChannelApi = new MyPageChannelApiImpl(this.workspaceApi, this.editorStore);
 
@@ -106,9 +108,6 @@ export class MyPageManager {
       this.context.subscriptions
     );
 
-    envelopeServer.startInitPolling(this.myPageEnvelopeLocator.targetOrigin, {
-      filePath: filePath,
-      backendUrl: pageMapping.backendUrl
-    });
+    envelopeServer.startInitPolling();
   }
 }

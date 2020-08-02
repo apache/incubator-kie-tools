@@ -14,52 +14,16 @@
  * limitations under the License.
  */
 
-import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
-import { EnvelopeBus, EnvelopeBusMessage, FunctionPropertyNames } from "@kogito-tooling/envelope-bus/dist/api";
+import { EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
 import { MyPageChannelApi, MyPageEnvelopeApi, MyPageInitArgs } from "../api";
+import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 
-type MyPageMessageBusType = FunctionPropertyNames<MyPageEnvelopeApi> | FunctionPropertyNames<MyPageChannelApi>;
-
-export class MyPageChannelEnvelopeServer {
-  public static INIT_POLLING_TIMEOUT_IN_MS = 10000;
-  public static INIT_POLLING_INTERVAL_IN_MS = 100;
-
-  public initPolling?: ReturnType<typeof setInterval>;
-  public initPollingTimeout?: ReturnType<typeof setTimeout>;
-
-  public get client() {
-    return this.envelopeServer.client;
+export class MyPageChannelEnvelopeServer extends ChannelEnvelopeServer<MyPageChannelApi, MyPageEnvelopeApi> {
+  public constructor(bus: EnvelopeBus, private readonly origin: string, private readonly initArgs: MyPageInitArgs) {
+    super(bus);
   }
 
-  public get busId() {
-    return this.envelopeServer.busId;
-  }
-
-  public constructor(
-    bus: EnvelopeBus,
-    private readonly envelopeServer = new ChannelEnvelopeServer<MyPageChannelApi, MyPageEnvelopeApi>(bus)
-  ) {}
-
-  public startInitPolling(origin: string, initArgs: MyPageInitArgs) {
-    this.initPolling = setInterval(async () => {
-      await this.client.request("myPage__init", { origin, busId: this.envelopeServer.busId }, initArgs);
-      this.stopInitPolling();
-    }, MyPageChannelEnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
-
-    this.initPollingTimeout = setTimeout(() => {
-      this.stopInitPolling();
-      console.info("Init polling timed out. Looks like MyPage Envelope is not responding accordingly.");
-    }, MyPageChannelEnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS);
-  }
-
-  public stopInitPolling() {
-    clearInterval(this.initPolling!);
-    this.initPolling = undefined;
-    clearTimeout(this.initPollingTimeout!);
-    this.initPollingTimeout = undefined;
-  }
-
-  public receive(message: EnvelopeBusMessage<unknown, MyPageMessageBusType>, api: MyPageChannelApi) {
-    this.envelopeServer.receive(message, api);
+  public pollInit() {
+    return this.client.request("myPage__init", { origin: this.origin, busId: this.busId }, this.initArgs);
   }
 }

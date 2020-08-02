@@ -18,8 +18,8 @@ import * as vscode from "vscode";
 import {
   EditorEnvelopeLocator,
   EnvelopeMapping,
-  KogitoEditorChannelEnvelopeServer,
-  KogitoEditorChannelApi
+  KogitoEditorChannelApi,
+  KogitoEditorChannelEnvelopeServer
 } from "@kogito-tooling/editor-envelope-protocol";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { EditorApi } from "@kogito-tooling/editor-api";
@@ -38,12 +38,19 @@ export class KogitoEditor implements EditorApi {
     private readonly envelopeMapping: EnvelopeMapping,
     private readonly envelopeLocator: EditorEnvelopeLocator,
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
-    private readonly envelopeServer = new KogitoEditorChannelEnvelopeServer({
-      postMessage: msg => {
-        console.info(`Posting: ${msg.type} -> busId: ${msg.busId} (posted by: ${this.document.uri.fsPath})`)
-        this.panel.webview.postMessage(msg)
+    private readonly envelopeServer = new KogitoEditorChannelEnvelopeServer(
+      {
+        postMessage: msg => {
+          console.info(`Posting: ${msg.type} -> busId: ${msg.busId} (posted by: ${this.document.uri.fsPath})`);
+          this.panel.webview.postMessage(msg);
+        }
+      },
+      envelopeLocator.targetOrigin,
+      {
+        fileExtension: document.fileExtension,
+        resourcesPathPrefix: envelopeMapping.resourcesPathPrefix
       }
-    })
+    )
   ) {}
 
   public getElementPosition(selector: string) {
@@ -71,10 +78,7 @@ export class KogitoEditor implements EditorApi {
   }
 
   public startInitPolling() {
-    this.envelopeServer.startInitPolling(this.envelopeLocator.targetOrigin, {
-      fileExtension: this.document.fileExtension,
-      resourcesPathPrefix: this.envelopeMapping.resourcesPathPrefix
-    });
+    this.envelopeServer.startInitPolling();
   }
 
   public startListening(editorChannelApi: KogitoEditorChannelApi) {
@@ -85,7 +89,7 @@ export class KogitoEditor implements EditorApi {
     this.context.subscriptions.push(
       this.panel.webview.onDidReceiveMessage(
         msg => {
-          console.info(`Received: ${msg.type} -> busId: ${msg.busId} (received by id: ${this.envelopeServer.busId})`)
+          console.info(`Received: ${msg.type} -> busId: ${msg.busId} (received by id: ${this.envelopeServer.busId})`);
           this.messageBroadcaster.broadcast(msg);
         },
         this,

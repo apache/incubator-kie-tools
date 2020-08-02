@@ -17,8 +17,7 @@
 import {
   EditorEnvelopeLocator,
   KogitoEditorChannelApi,
-  KogitoEditorChannelEnvelopeServer,
-  useConnectedEditorEnvelopeServer
+  KogitoEditorChannelEnvelopeServer
 } from "@kogito-tooling/editor-envelope-protocol";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts/dist/channel";
@@ -30,6 +29,7 @@ import { File } from "../common";
 import { StateControl } from "../stateControl";
 import { EditorApi } from "@kogito-tooling/editor-api";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
+import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -83,19 +83,18 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   }, [stateControl, props.file, props]);
 
   const envelopeServer = useMemo(() => {
-    return new KogitoEditorChannelEnvelopeServer({
-      postMessage: message => {
-        iframeRef.current?.contentWindow?.postMessage(message, "*");
-      }
-    });
+    return new KogitoEditorChannelEnvelopeServer(
+      {
+        postMessage: message => {
+          iframeRef.current?.contentWindow?.postMessage(message, "*");
+        }
+      },
+      props.editorEnvelopeLocator.targetOrigin,
+      { fileExtension: props.file.fileExtension, resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "" }
+    );
   }, []);
 
-  useConnectedEditorEnvelopeServer(
-    envelopeServer,
-    kogitoEditorChannelApiImpl,
-    props.editorEnvelopeLocator.targetOrigin,
-    { fileExtension: props.file.fileExtension, resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "" }
-  );
+  useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
 
   useEffect(() => {
     KogitoGuidedTour.getInstance().registerPositionProvider((selector: string) =>

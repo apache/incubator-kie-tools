@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-import { Mode, DemoMode } from ".";
+import { EditorContent, StateControlCommand, Tutorial, UserInteraction } from "./api";
+import { KogitoChannelCommonApi } from "@kogito-tooling/channel-common-api";
 
-export class Step {
-  constructor(
-    public mode: Mode,
-    public content?:
-      | React.ReactNode
-      | ((props: { dismiss?: () => void; nextStep?: () => void; prevStep?: () => void }) => React.ReactNode)
-      | string,
-    public selector?: string,
-    public highlightEnabled?: boolean,
-    public navigatorEnabled?: boolean,
-    public position?: "right" | "bottom" | "center" | "left",
-    public negativeReinforcementMessage?: string
-  ) {}
+export interface KogitoEditorChannelApi extends KogitoChannelCommonApi {
+  receive_setContentError(errorMessage: string): void;
+  receive_guidedTourUserInteraction(userInteraction: UserInteraction): void;
+  receive_guidedTourRegisterTutorial(tutorial: Tutorial): void;
+  receive_stateControlCommandUpdate(command: StateControlCommand): void;
+  receive_contentRequest(): Promise<EditorContent>;
 }
-
-export const NONE: Step = {
-  mode: new DemoMode()
-};

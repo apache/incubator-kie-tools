@@ -20,7 +20,7 @@ const common = require("../../webpack.common.config");
 
 module.exports = merge(common, {
   entry: {
-    "react/index": "./src/react/index.ts",
+    "hooks/index": "./src/hooks/index.ts",
     "channel/index": "./src/channel/index.ts",
     "envelope/index": "./src/envelope/index.ts",
     "api/index": "./src/api/index.ts"

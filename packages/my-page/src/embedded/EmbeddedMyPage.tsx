@@ -15,11 +15,12 @@
  */
 
 import * as React from "react";
-import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { useImperativeHandle, useMemo, useRef } from "react";
 import { MyPageChannelEnvelopeServer, MyPageMapping } from "../channel";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
-import { MyPageApi, MyPageChannelApi, MyPageInitArgs } from "../api";
+import { MyPageApi, MyPageChannelApi } from "../api";
+import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
 
 interface Props {
   mapping: MyPageMapping;
@@ -31,11 +32,18 @@ interface Props {
 const EmbeddedMyPage: React.RefForwardingComponent<MyPageApi, Props> = (props, forwardedRef) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const envelopeServer = new MyPageChannelEnvelopeServer({
-    postMessage<D, T>(message: EnvelopeBusMessage<D, T>) {
-      iframeRef.current?.contentWindow?.postMessage(message, "*");
+  const envelopeServer = new MyPageChannelEnvelopeServer(
+    {
+      postMessage<D, T>(message: EnvelopeBusMessage<D, T>) {
+        iframeRef.current?.contentWindow?.postMessage(message, "*");
+      }
+    },
+    props.targetOrigin,
+    {
+      backendUrl: "https://localhost:8000",
+      filePath: undefined
     }
-  });
+  );
 
   const myPageApi: MyPageApi = useMemo(
     () => ({
@@ -46,30 +54,9 @@ const EmbeddedMyPage: React.RefForwardingComponent<MyPageApi, Props> = (props, f
 
   useImperativeHandle(forwardedRef, () => myPageApi, [myPageApi]);
 
-  useConnectedMyPageEnvelopeServer(envelopeServer, props.api, props.targetOrigin, {
-    backendUrl: "https://localhost:8000",
-    filePath: undefined
-  });
+  useConnectedEnvelopeServer(envelopeServer, props.api);
 
   return (
     <iframe ref={iframeRef} src={props.mapping.envelopePath} title="MyPage" data-envelope-channel={props.channelType} />
   );
 };
-
-export function useConnectedMyPageEnvelopeServer(
-  envelopeServer: MyPageChannelEnvelopeServer,
-  api: MyPageChannelApi,
-  targetOrigin: string,
-  initArgs: MyPageInitArgs
-) {
-  useEffect(() => {
-    const listener = (msg: MessageEvent) => envelopeServer.receive(msg.data, api);
-    window.addEventListener("message", listener, false);
-    envelopeServer.startInitPolling(targetOrigin, initArgs);
-
-    return () => {
-      envelopeServer.stopInitPolling();
-      window.removeEventListener("message", listener);
-    };
-  }, [envelopeServer, targetOrigin, initArgs, api]);
-}

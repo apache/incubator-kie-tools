@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {  EditorContent, Rect } from "./api";
+import { EditorContent, Rect } from "./api";
 import { KeyboardShortcutsEnvelopeApi } from "@kogito-tooling/keyboard-shortcuts/dist/api";
 
 export interface Association {

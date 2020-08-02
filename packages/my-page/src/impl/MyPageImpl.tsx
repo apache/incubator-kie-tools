@@ -18,7 +18,7 @@ import { MyPageApi, MyPageChannelApi, MyPageInitArgs, SvgDiagram } from "../api"
 import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
-import { useSubscription } from "@kogito-tooling/envelope-bus/dist/react";
+import { useSubscription } from "@kogito-tooling/envelope-bus/dist/hooks";
 
 interface Props {
   initArgs: MyPageInitArgs;

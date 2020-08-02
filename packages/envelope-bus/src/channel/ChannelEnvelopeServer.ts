@@ -23,24 +23,50 @@ import {
 } from "../api";
 import { EnvelopeBusMessageManager } from "../common";
 
-export class ChannelEnvelopeServer<
+export abstract class ChannelEnvelopeServer<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>
 > {
+  public static INIT_POLLING_TIMEOUT_IN_MS = 10000;
+  public static INIT_POLLING_INTERVAL_IN_MS = 100;
+
+  public initPolling?: ReturnType<typeof setInterval>;
+  public initPollingTimeout?: ReturnType<typeof setTimeout>;
+
+  public readonly busId: string;
+
   public get client() {
     return this.manager.client;
   }
-
-  public readonly busId: string;
 
   constructor(
     bus: EnvelopeBus,
     private readonly manager = new EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>(
       message => bus.postMessage(message),
-      "KogitoEditorChannel"
+      "ChannelEnvelopeServer"
     )
   ) {
     this.busId = this.generateRandomId();
+  }
+
+  public abstract pollInit(): Promise<any>;
+
+  public startInitPolling() {
+    this.initPolling = setInterval(() => {
+      this.pollInit().then(() => this.stopInitPolling());
+    }, ChannelEnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
+
+    this.initPollingTimeout = setTimeout(() => {
+      this.stopInitPolling();
+      console.info("Init polling timed out. Looks like the Envelope is not responding accordingly.");
+    }, ChannelEnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS);
+  }
+
+  public stopInitPolling() {
+    clearInterval(this.initPolling!);
+    this.initPolling = undefined;
+    clearTimeout(this.initPollingTimeout!);
+    this.initPollingTimeout = undefined;
   }
 
   public receive(

@@ -19,9 +19,14 @@ import {
   EnvelopeBusMessagePurpose,
   FunctionPropertyNames
 } from "@kogito-tooling/envelope-bus/dist/api";
-import { KogitoEditorChannelApi, KogitoEditorChannelEnvelopeServer, KogitoEditorEnvelopeApi } from "../..";
-import { StateControlCommand } from "../../kogito/api";
-import { ContentType, ResourceContent } from "@kogito-tooling/channel-common-api";
+import {
+  KogitoEditorChannelApi,
+  KogitoEditorChannelEnvelopeServer,
+  KogitoEditorEnvelopeApi,
+  StateControlCommand
+} from "../..";
+import {ContentType, ResourceContent} from "@kogito-tooling/channel-common-api";
+import {ChannelEnvelopeServer} from "@kogito-tooling/envelope-bus/dist/channel";
 
 let sentMessages: Array<EnvelopeBusMessage<unknown, any>>;
 let envelopeServer: KogitoEditorChannelEnvelopeServer;
@@ -42,7 +47,11 @@ beforeEach(() => {
     receive_resourceListRequest: jest.fn()
   };
 
-  envelopeServer = new KogitoEditorChannelEnvelopeServer({ postMessage: (msg: any) => sentMessages.push(msg) });
+  envelopeServer = new KogitoEditorChannelEnvelopeServer(
+    { postMessage: (msg: any) => sentMessages.push(msg) },
+    "tests",
+    { fileExtension: "txt", resourcesPathPrefix: "" }
+  );
 });
 
 const delay = (ms: number) => {
@@ -61,7 +70,7 @@ describe("startInitPolling", () => {
   test("polls for init response", async () => {
     jest.spyOn(envelopeServer, "stopInitPolling");
 
-    envelopeServer.startInitPolling("tests", { fileExtension: "txt", resourcesPathPrefix: "" });
+    envelopeServer.startInitPolling();
     expect(envelopeServer.initPolling).toBeTruthy();
     expect(envelopeServer.initPollingTimeout).toBeTruthy();
 
@@ -69,7 +78,7 @@ describe("startInitPolling", () => {
 
     await incomingMessage({
       busId: envelopeServer.busId,
-      requestId: "KogitoEditorChannel_0",
+      requestId: "ChannelEnvelopeServer_0",
       type: "receive_initRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: undefined
@@ -82,9 +91,9 @@ describe("startInitPolling", () => {
 
   test("stops polling after timeout", async () => {
     jest.spyOn(envelopeServer, "stopInitPolling");
-    KogitoEditorChannelEnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS = 200;
+    ChannelEnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS = 200;
 
-    envelopeServer.startInitPolling("tests", { fileExtension: "txt", resourcesPathPrefix: "" });
+    envelopeServer.startInitPolling();
     expect(envelopeServer.initPolling).toBeTruthy();
     expect(envelopeServer.initPollingTimeout).toBeTruthy();
 
@@ -298,7 +307,7 @@ describe("send", () => {
     expect(sentMessages).toEqual([
       {
         purpose: EnvelopeBusMessagePurpose.REQUEST,
-        requestId: "KogitoEditorChannel_0",
+        requestId: "ChannelEnvelopeServer_0",
         type: "receive_initRequest",
         data: [
           { busId: envelopeServer.busId, origin: "test-origin" },
@@ -309,7 +318,7 @@ describe("send", () => {
 
     await incomingMessage({
       busId: envelopeServer.busId,
-      requestId: "KogitoEditorChannel_0",
+      requestId: "ChannelEnvelopeServer_0",
       type: "receive_initRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: undefined
@@ -322,7 +331,7 @@ describe("send", () => {
     const content = envelopeServer.request_contentResponse();
     await incomingMessage({
       busId: envelopeServer.busId,
-      requestId: "KogitoEditorChannel_0",
+      requestId: "ChannelEnvelopeServer_0",
       type: "receive_contentRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: { content: "the content", path: "the/path/" }
@@ -335,7 +344,7 @@ describe("send", () => {
     const preview = envelopeServer.request_previewResponse();
     await incomingMessage({
       busId: envelopeServer.busId,
-      requestId: "KogitoEditorChannel_0",
+      requestId: "ChannelEnvelopeServer_0",
       type: "receive_previewRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: "the-svg-string"
@@ -348,7 +357,7 @@ describe("send", () => {
     const position = envelopeServer.request_guidedTourElementPositionResponse("my-selector");
     await incomingMessage({
       busId: envelopeServer.busId,
-      requestId: "KogitoEditorChannel_0",
+      requestId: "ChannelEnvelopeServer_0",
       type: "receive_guidedTourElementPositionRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: {}

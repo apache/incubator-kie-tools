@@ -14,4 +14,7 @@
  * limitations under the License.
  */
 
-export * from "./kogito";
+export * from "./KogitoEditorChannelEnvelopeServer";
+export * from "./KogitoEditorChannelApi";
+export * from "./KogitoEditorEnvelopeApi";
+export * from "./api";
