@@ -14,44 +14,18 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessage, EnvelopeBusMessagePurpose } from "./EnvelopeBusMessage";
-
-/* tslint:disable:ban-types */
-
-type NotificationCallback<
-  ApiToConsume extends ApiDefinition<ApiToConsume>,
-  M extends NotificationPropertyNames<ApiToConsume>
-> = (...args: ArgsType<ApiToConsume[M]>) => void;
-
-export type NotificationPropertyNames<T extends ApiDefinition<T>> = {
-  [K in keyof T]: ReturnType<T[K]> extends void ? K : never;
-}[keyof T];
-
-export type RequestPropertyNames<T extends ApiDefinition<T>> = {
-  [K in keyof T]: ReturnType<T[K]> extends Promise<any> ? K : never;
-}[keyof T];
-
-export type FunctionPropertyNames<T extends ApiDefinition<T>> = NotificationPropertyNames<T> | RequestPropertyNames<T>;
-
-export type ApiDefinition<T> = { [P in keyof T]: (...a: any) => Promise<any> | void };
-export type ArgsType<T> = T extends (...args: infer A) => any ? A : never;
-
-export interface MessageBusClient<Api extends ApiDefinition<Api>> {
-  request<M extends RequestPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): ReturnType<Api[M]>;
-  notify<M extends NotificationPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): void;
-  subscribe<M extends NotificationPropertyNames<Api>>(method: M, callback: (...args: ArgsType<Api[M]>) => void): void;
-  unsubscribe<M extends NotificationPropertyNames<Api>>(method: M, callback: (...args: ArgsType<Api[M]>) => void): void;
-}
-
-export interface MessageBusServer<
-  ApiToProvide extends ApiDefinition<ApiToProvide>,
-  ApiToConsume extends ApiDefinition<ApiToConsume>
-> {
-  receive(
-    message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
-    api: ApiToProvide
-  ): void;
-}
+import {
+  ApiDefinition,
+  ArgsType,
+  EnvelopeBusMessage,
+  EnvelopeBusMessagePurpose,
+  FunctionPropertyNames,
+  MessageBusClient,
+  MessageBusServer,
+  NotificationCallback,
+  NotificationPropertyNames,
+  RequestPropertyNames
+} from "../api";
 
 export class EnvelopeBusMessageManager<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
@@ -61,6 +35,7 @@ export class EnvelopeBusMessageManager<
 
   private readonly remoteSubscriptions: Array<NotificationPropertyNames<ApiToProvide>> = [];
 
+  // tslint:disable-next-line:ban-types
   private readonly localSubscriptions = new Map<NotificationPropertyNames<ApiToConsume>, Function[]>();
 
   private requestIdCounter: number;

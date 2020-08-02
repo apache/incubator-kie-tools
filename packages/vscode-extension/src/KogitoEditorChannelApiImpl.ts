@@ -15,16 +15,18 @@
  */
 
 import {
-  KogitoEdit,
   KogitoEditorChannelApi,
+  StateControlCommand,
+  Tutorial,
+  UserInteraction
+} from "@kogito-tooling/editor-envelope-protocol";
+import {
+  KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
-  StateControlCommand,
-  Tutorial,
-  UserInteraction,
   WorkspaceApi
-} from "@kogito-tooling/editor-envelope-protocol";
+} from "@kogito-tooling/channel-common-api";
 import * as vscode from "vscode";
 import * as __path from "path";
 import { KogitoEditor } from "./KogitoEditor";

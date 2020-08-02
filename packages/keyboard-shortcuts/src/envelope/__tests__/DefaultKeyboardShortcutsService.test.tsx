@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { DefaultKeyboardShortcutsService } from "../DefaultKeyboardShortcutsService";
-import { OperatingSystem } from "../../api";
+import { OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { fireEvent, render } from "@testing-library/react";
 
 describe("DefaultKeyboardShortcutsService", () => {

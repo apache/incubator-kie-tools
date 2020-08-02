@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ApiDefinition } from "@kogito-tooling/envelope-bus";
-import { EnvelopeBusController } from "./EnvelopeBusController";
+import { ApiDefinition } from "@kogito-tooling/envelope-bus/dist/api";
+import { EnvelopeBusController } from "@kogito-tooling/envelope-bus/dist/envelope";
 
 export interface EnvelopeApiFactoryArgs<
   ApiToProvide extends ApiDefinition<ApiToProvide>,

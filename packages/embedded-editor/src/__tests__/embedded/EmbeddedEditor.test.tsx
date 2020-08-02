@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-import {
-  ChannelEnvelopeServer,
-  ChannelType,
-  EditorEnvelopeLocator,
-  KogitoEdit,
-  KogitoEditorChannelEnvelopeServer
-} from "@kogito-tooling/editor-envelope-protocol";
+import { EditorEnvelopeLocator, KogitoEditorChannelEnvelopeServer } from "@kogito-tooling/editor-envelope-protocol";
+import { ChannelType, KogitoEdit } from "@kogito-tooling/channel-common-api";
+import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import * as React from "react";
 import { File } from "../../common";
 import { EmbeddedEditor, EmbeddedEditorRef } from "../../embedded";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 import { render } from "@testing-library/react";
-import { EnvelopeBusMessagePurpose } from "@kogito-tooling/envelope-bus";
+import { EnvelopeBusMessagePurpose } from "@kogito-tooling/envelope-bus/dist/api";
 
 describe("EmbeddedEditor::ONLINE", () => {
   const file: File = {
@@ -83,7 +79,10 @@ describe("EmbeddedEditor::ONLINE", () => {
   });
 
   test("EmbeddedEditor::requestContent", () => {
-    const spyRequest_contentResponse = jest.spyOn(KogitoEditorChannelEnvelopeServer.prototype, "request_contentResponse");
+    const spyRequest_contentResponse = jest.spyOn(
+      KogitoEditorChannelEnvelopeServer.prototype,
+      "request_contentResponse"
+    );
     render(
       <EmbeddedEditor
         ref={editorRef}
@@ -98,7 +97,10 @@ describe("EmbeddedEditor::ONLINE", () => {
   });
 
   test("EmbeddedEditor::requestPreview", () => {
-    const spyRequest_previewResponse = jest.spyOn(KogitoEditorChannelEnvelopeServer.prototype, "request_previewResponse");
+    const spyRequest_previewResponse = jest.spyOn(
+      KogitoEditorChannelEnvelopeServer.prototype,
+      "request_previewResponse"
+    );
     render(
       <EmbeddedEditor
         ref={editorRef}

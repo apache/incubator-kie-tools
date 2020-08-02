@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { ChannelType, EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { ChannelType } from "@kogito-tooling/channel-common-api";
 import * as React from "react";
 import { File } from "../common";
 import { EmbeddedEditor, Props as EmbeddedEditorProps } from "./EmbeddedEditor";

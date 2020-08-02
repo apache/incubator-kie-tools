@@ -20,7 +20,7 @@ import {
   Tutorial,
   UserInteraction
 } from "./api";
-import { KogitoChannelCommonApi } from "./KogitoCommonChannelApi";
+import { KogitoChannelCommonApi } from "@kogito-tooling/channel-common-api";
 
 export interface KogitoEditorChannelApi extends KogitoChannelCommonApi {
   receive_setContentError(errorMessage: string): void;

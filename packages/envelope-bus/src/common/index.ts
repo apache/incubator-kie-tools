@@ -14,19 +14,4 @@
  * limitations under the License.
  */
 
-export interface EnvelopeBusMessage<D, T> {
-  data: D;
-  type: T;
-  busId?: string; // Used for messages going from the envelope to the channel
-  requestId?: string; // Used when purpose is REQUEST or RESPONSE
-  purpose: EnvelopeBusMessagePurpose;
-  error?: any; //Used on RESPONSES when an exception happens when processing a request
-}
-
-export enum EnvelopeBusMessagePurpose {
-  REQUEST = "request",
-  RESPONSE = "response",
-  SUBSCRIPTION = "subscription",
-  UNSUBSCRIPTION = "unsubscription",
-  NOTIFICATION = "notification"
-}
+export * from "./EnvelopeBusMessageManager";

@@ -15,12 +15,12 @@
  */
 
 import {
-  ChannelType,
   EditorEnvelopeLocator,
   KogitoEditorChannelApi,
   KogitoEditorChannelEnvelopeServer,
   useConnectedEditorEnvelopeServer
 } from "@kogito-tooling/editor-envelope-protocol";
+import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts/dist/channel";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 import * as CSS from "csstype";

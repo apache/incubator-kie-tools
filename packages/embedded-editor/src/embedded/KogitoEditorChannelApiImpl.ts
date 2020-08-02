@@ -17,16 +17,18 @@
 import { StateControl } from "../stateControl";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 import {
-  KogitoEdit,
   KogitoEditorChannelApi,
-  ResourceContent,
-  ResourceContentRequest,
-  ResourceListRequest,
-  ResourcesList,
   StateControlCommand,
   Tutorial,
   UserInteraction
 } from "@kogito-tooling/editor-envelope-protocol";
+import {
+  KogitoEdit,
+  ResourceContent,
+  ResourceContentRequest,
+  ResourceListRequest,
+  ResourcesList
+} from "@kogito-tooling/channel-common-api";
 import { File } from "../common";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {

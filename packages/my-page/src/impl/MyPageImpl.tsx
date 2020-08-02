@@ -15,9 +15,10 @@
  */
 
 import { MyPageApi, MyPageChannelApi, MyPageInitArgs, SvgDiagram } from "../api";
-import { MessageBusClient } from "@kogito-tooling/envelope-bus";
+import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { useSubscription } from "@kogito-tooling/envelope-bus/dist/react";
 
 interface Props {
   initArgs: MyPageInitArgs;
@@ -38,20 +39,16 @@ export const MyPageImpl = React.forwardRef<MyPageApi, Props>((props, forwardedRe
 
   useImperativeHandle(forwardedRef, () => myPageApi, [myPageApi]);
 
+  const requestOpenDiagrams = async () => {
+    const svgs = await props.channelApi.request("getOpenDiagrams");
+    setDiagramSvgs(svgs);
+  };
+
+  useSubscription(props.channelApi, "receive_ready", () => requestOpenDiagrams());
+
+  useSubscription(props.channelApi, "receive_newEdit", () => requestOpenDiagrams());
+
   useEffect(() => {
-    const requestOpenDiagrams = async () => {
-      const svgs = await props.channelApi.request("getOpenDiagrams");
-      setDiagramSvgs(svgs);
-    };
-
-    props.channelApi.subscribe("receive_ready", () => {
-      requestOpenDiagrams();
-    });
-
-    props.channelApi.subscribe("receive_newEdit", () => {
-      requestOpenDiagrams();
-    });
-
     props.channelApi.request("receive_resourceListRequest", { pattern: "**" }).then(f => {
       setFiles(f.paths);
     });

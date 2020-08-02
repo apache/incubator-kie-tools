@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kogito-tooling/editor-envelope-protocol";
+import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/embedded-editor";
 import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
 import * as React from "react";

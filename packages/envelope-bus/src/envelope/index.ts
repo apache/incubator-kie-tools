@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./EnvelopeBusMessage";
-export * from "./EnvelopeBus";
-export * from "./EnvelopeBusMessageManager";
+export * from "./EnvelopeBusController"

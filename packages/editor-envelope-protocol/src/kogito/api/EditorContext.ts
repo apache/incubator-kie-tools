@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "./ChannelType";
-import { OperatingSystem } from "./OperatingSystem";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
 
 export interface EditorContext {
   channel: ChannelType;

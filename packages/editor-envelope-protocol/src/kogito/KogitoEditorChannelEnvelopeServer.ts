@@ -15,10 +15,10 @@
  */
 
 import { EditorContent } from "./api";
-import { EnvelopeBus, EnvelopeBusMessage, FunctionPropertyNames } from "@kogito-tooling/envelope-bus";
+import { EnvelopeBus, EnvelopeBusMessage, FunctionPropertyNames } from "@kogito-tooling/envelope-bus/dist/api";
 import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
 import { EditorInitArgs, KogitoEditorEnvelopeApi } from "./KogitoEditorEnvelopeApi";
-import { ChannelEnvelopeServer } from "./ChannelEnvelopeServer";
+import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 
 type KogitoEditorMessageBusType =
   | FunctionPropertyNames<KogitoEditorChannelApi>

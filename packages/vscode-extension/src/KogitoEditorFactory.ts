@@ -16,12 +16,8 @@
 
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditor } from "./KogitoEditor";
-import {
-  EditorEnvelopeLocator,
-  EnvelopeMapping,
-  ResourceContentService,
-  WorkspaceApi
-} from "@kogito-tooling/editor-envelope-protocol";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/editor-envelope-protocol";
+import { ResourceContentService, WorkspaceApi } from "@kogito-tooling/channel-common-api";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 import * as vscode from "vscode";

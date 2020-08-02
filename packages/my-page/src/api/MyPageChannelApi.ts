@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoChannelCommonApi } from "@kogito-tooling/editor-envelope-protocol";
+import { KogitoChannelCommonApi } from "@kogito-tooling/channel-common-api";
 
 export interface MyPageChannelApi extends KogitoChannelCommonApi {
   getOpenDiagrams(): Promise<SvgDiagram[]>;

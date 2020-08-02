@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus";
+import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 
 export class EnvelopeBusMessageBroadcaster {
   private readonly subscriptions: Array<(msg: EnvelopeBusMessage<unknown, any>) => void> = [];

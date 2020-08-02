@@ -17,7 +17,7 @@
 import * as React from "react";
 import { KeyBindingsHelpOverlay } from "../../../editor/KeyBindingsHelpOverlay";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
-import { ChannelType, OperatingSystem } from "@kogito-tooling/editor-envelope-protocol";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { fireEvent, render } from "@testing-library/react";
 import { DEFAULT_TESTING_ENVELOPE_CONTEXT, usingEnvelopeContext } from "../../utils";
 

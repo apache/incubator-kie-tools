@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ChannelType } from "@kogito-tooling/editor-envelope-protocol";
+import { ChannelType } from "@kogito-tooling/channel-common-api";
 import * as MicroEditorEnvelope from "@kogito-tooling/editor-envelope";
 
 let channelType: ChannelType = ChannelType.DESKTOP;

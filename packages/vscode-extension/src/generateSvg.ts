@@ -18,7 +18,7 @@ import { KogitoEditorStore } from "./KogitoEditorStore";
 import * as __path from "path";
 import * as fs from "fs";
 import * as vscode from "vscode";
-import { WorkspaceApi } from "@kogito-tooling/editor-envelope-protocol";
+import { WorkspaceApi } from "@kogito-tooling/channel-common-api";
 
 export async function generateSvg(editorStore1: KogitoEditorStore, workspaceApi: WorkspaceApi) {
     const editor = editorStore1.activeEditor;

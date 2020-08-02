@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "./api";
+import { ResourceContentRequest } from "./ResourceContentRequest";
+import { ResourceContent } from "./ResourceContent";
+import { ResourceListRequest } from "./ResourceListRequest";
+import { ResourcesList } from "./ResourcesList";
+import { KogitoEdit } from "./KogitoEdit";
 
 export interface WorkspaceApi {
   receive_openFile(path: string): void;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeBus } from "@kogito-tooling/envelope-bus";
+import { EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
 import { Envelope } from "@kogito-tooling/envelope";
 import * as React from "react";
 import * as ReactDOM from "react-dom";

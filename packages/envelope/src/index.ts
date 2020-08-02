@@ -16,4 +16,3 @@
 
 export * from "./Envelope";
 export * from "./EnvelopeApiFactory";
-export * from "./EnvelopeBusController";

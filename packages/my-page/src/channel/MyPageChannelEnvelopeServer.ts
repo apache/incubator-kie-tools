@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ChannelEnvelopeServer } from "@kogito-tooling/editor-envelope-protocol";
-import { EnvelopeBus, EnvelopeBusMessage, FunctionPropertyNames } from "@kogito-tooling/envelope-bus";
+import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
+import { EnvelopeBus, EnvelopeBusMessage, FunctionPropertyNames } from "@kogito-tooling/envelope-bus/dist/api";
 import { MyPageChannelApi, MyPageEnvelopeApi, MyPageInitArgs } from "../api";
 
 type MyPageMessageBusType = FunctionPropertyNames<MyPageEnvelopeApi> | FunctionPropertyNames<MyPageChannelApi>;

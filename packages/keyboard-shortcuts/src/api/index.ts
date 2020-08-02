@@ -14,6 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./ChannelKeyboardEvent"
-export * from "./OperatingSystem"
-export * from "./KeyboardShortcutsEnvelopeApi"
+export * from "./ChannelKeyboardEvent";
+export * from "./KeyboardShortcutsEnvelopeApi";

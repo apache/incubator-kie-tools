@@ -31,7 +31,7 @@ import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { Envelope } from "@kogito-tooling/envelope";
 import { KogitoEditorEnvelopeApiFactory } from "./KogitoEditorEnvelopeApiImpl";
-import { EnvelopeBus } from "@kogito-tooling/envelope-bus";
+import { EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
 
 export class KogitoEditorEnvelope {
   constructor(

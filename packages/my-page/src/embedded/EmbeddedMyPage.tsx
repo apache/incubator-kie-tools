@@ -17,8 +17,8 @@
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { MyPageChannelEnvelopeServer, MyPageMapping } from "../channel";
-import { ChannelType } from "@kogito-tooling/editor-envelope-protocol";
-import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus";
+import { ChannelType } from "@kogito-tooling/channel-common-api";
+import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 import { MyPageApi, MyPageChannelApi, MyPageInitArgs } from "../api";
 
 interface Props {

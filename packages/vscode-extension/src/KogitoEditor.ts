@@ -24,7 +24,7 @@ import {
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { EditorApi } from "@kogito-tooling/editor-api";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
-import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus";
+import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 
 export class KogitoEditor implements EditorApi {

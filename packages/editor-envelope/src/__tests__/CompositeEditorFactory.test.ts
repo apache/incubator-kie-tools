@@ -15,11 +15,10 @@
  */
 
 import {
-  ChannelType,
   EditorContext,
   EditorInitArgs,
-  OperatingSystem
 } from "@kogito-tooling/editor-envelope-protocol";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { CompositeEditorFactory } from "../CompositeEditorFactory";
 import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
 import { DummyEditor } from "./editor/DummyEditor";

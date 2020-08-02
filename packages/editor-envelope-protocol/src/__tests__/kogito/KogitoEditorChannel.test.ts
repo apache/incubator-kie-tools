@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessage, EnvelopeBusMessagePurpose, FunctionPropertyNames } from "@kogito-tooling/envelope-bus";
-import { KogitoEditorChannelEnvelopeServer, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "../..";
-import { ContentType, ResourceContent, StateControlCommand } from "../../kogito/api";
+import {
+  EnvelopeBusMessage,
+  EnvelopeBusMessagePurpose,
+  FunctionPropertyNames
+} from "@kogito-tooling/envelope-bus/dist/api";
+import { KogitoEditorChannelApi, KogitoEditorChannelEnvelopeServer, KogitoEditorEnvelopeApi } from "../..";
+import { StateControlCommand } from "../../kogito/api";
+import { ContentType, ResourceContent } from "@kogito-tooling/channel-common-api";
 
 let sentMessages: Array<EnvelopeBusMessage<unknown, any>>;
 let envelopeServer: KogitoEditorChannelEnvelopeServer;

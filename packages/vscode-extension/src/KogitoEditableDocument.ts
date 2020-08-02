@@ -24,7 +24,7 @@ import {
   Uri
 } from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEdit } from "@kogito-tooling/editor-envelope-protocol";
+import { KogitoEdit } from "@kogito-tooling/channel-common-api";
 import { KogitoEditor } from "./KogitoEditor";
 
 export class KogitoEditableDocument implements CustomDocument {

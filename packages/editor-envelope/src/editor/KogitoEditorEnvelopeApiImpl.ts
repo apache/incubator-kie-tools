@@ -16,7 +16,6 @@
 
 import {
   Association,
-  ChannelType,
   DEFAULT_RECT,
   EditorContent,
   EditorInitArgs,
@@ -24,6 +23,7 @@ import {
   KogitoEditorEnvelopeApi,
   StateControlCommand
 } from "@kogito-tooling/editor-envelope-protocol";
+import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
 import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
@@ -31,7 +31,12 @@ import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts/dist/ap
 
 export class KogitoEditorEnvelopeApiFactory
   implements
-    EnvelopeApiFactory<KogitoEditorEnvelopeApi, KogitoEditorChannelApi, EditorEnvelopeView, KogitoEditorEnvelopeContextType> {
+    EnvelopeApiFactory<
+      KogitoEditorEnvelopeApi,
+      KogitoEditorChannelApi,
+      EditorEnvelopeView,
+      KogitoEditorEnvelopeContextType
+    > {
   constructor(private readonly editorFactory: EditorFactory) {}
 
   public create(

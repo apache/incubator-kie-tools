@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { KogitoEditorChannelApi } from "@kogito-tooling/editor-envelope-protocol";
-import { MessageBusClient } from "@kogito-tooling/envelope-bus"
+import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api"
 import * as React from "react";
 
 export interface Props {

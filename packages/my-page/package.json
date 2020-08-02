@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@kogito-tooling/envelope": "0.6.1",
-    "@kogito-tooling/editor-envelope-protocol": "0.6.1"
+    "@kogito-tooling/channel-common-api": "0.6.1"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

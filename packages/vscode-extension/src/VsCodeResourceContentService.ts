@@ -22,7 +22,7 @@ import {
   ResourceListOptions,
   ResourcesList,
   SearchType
-} from "@kogito-tooling/editor-envelope-protocol";
+} from "@kogito-tooling/channel-common-api";
 
 import * as vscode from "vscode";
 import * as nodePath from "path";

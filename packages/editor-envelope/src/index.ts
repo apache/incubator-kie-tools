@@ -17,7 +17,7 @@
 import { EditorContext } from "@kogito-tooling/editor-envelope-protocol";
 import { EditorFactory } from "@kogito-tooling/editor-api";
 import { KogitoEditorEnvelope } from "./editor/KogitoEditorEnvelope";
-import { EnvelopeBus } from "@kogito-tooling/envelope-bus";
+import { EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
 
 /**
  * Starts the Editor envelope at a given container. Uses `bus` to send messages out of the Envelope and creates Editors based on the editorFactory provided.

@@ -15,7 +15,7 @@
  */
 
 import { MyPageChannelApi, MyPageInitArgs } from "../api";
-import { MessageBusClient } from "@kogito-tooling/envelope-bus";
+import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
 import { MyPage } from "./MyPage";
 
 export interface MyPageFactory {

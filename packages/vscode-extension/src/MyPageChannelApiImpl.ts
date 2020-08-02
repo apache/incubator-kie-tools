@@ -19,7 +19,7 @@ import {
   ResourceContentRequest,
   ResourceListRequest,
   WorkspaceApi
-} from "@kogito-tooling/editor-envelope-protocol";
+} from "@kogito-tooling/channel-common-api";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { MyPageChannelApi } from "@kogito-tooling/my-page/dist/api";
 

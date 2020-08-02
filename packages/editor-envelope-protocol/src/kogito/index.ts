@@ -19,5 +19,3 @@ export * from "./KogitoEditorChannelApi";
 export * from "./KogitoEditorEnvelopeApi";
 export * from "./api";
 export * from "./Hooks";
-export * from "./ChannelEnvelopeServer";
-export * from "./KogitoCommonChannelApi";

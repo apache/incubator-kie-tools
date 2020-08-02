@@ -18,10 +18,10 @@ import {
   ApiDefinition,
   EnvelopeBus,
   EnvelopeBusMessage,
-  EnvelopeBusMessageManager,
   EnvelopeBusMessagePurpose,
   FunctionPropertyNames
-} from "@kogito-tooling/envelope-bus";
+} from "../api";
+import { EnvelopeBusMessageManager } from "../common";
 
 export class ChannelEnvelopeServer<
   ApiToProvide extends ApiDefinition<ApiToProvide>,

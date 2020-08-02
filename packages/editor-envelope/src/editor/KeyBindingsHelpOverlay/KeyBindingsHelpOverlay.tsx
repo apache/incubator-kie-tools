@@ -27,7 +27,8 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { KeyboardIcon } from "@patternfly/react-icons";
-import { EditorContext, OperatingSystem } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorContext } from "@kogito-tooling/editor-envelope-protocol";
+import { OperatingSystem } from "@kogito-tooling/channel-common-api";
 import "./styles.scss";
 import { useKogitoEditorEnvelopeContext } from "@kogito-tooling/editor-api";
 

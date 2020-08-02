@@ -18,7 +18,7 @@ import * as React from "react";
 import { useContext } from "react";
 import { EditorContext, KogitoEditorChannelApi } from "@kogito-tooling/editor-envelope-protocol";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
-import { MessageBusClient } from "@kogito-tooling/envelope-bus";
+import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
 
 export interface KogitoEditorEnvelopeContextType {
   channelApi: MessageBusClient<KogitoEditorChannelApi>;

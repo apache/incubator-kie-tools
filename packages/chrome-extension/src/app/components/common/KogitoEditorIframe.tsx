@@ -18,7 +18,7 @@ import {
   ChannelType,
   ResourceContentRequest,
   ResourceListRequest
-} from "@kogito-tooling/editor-envelope-protocol";
+} from "@kogito-tooling/channel-common-api";
 import { EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";

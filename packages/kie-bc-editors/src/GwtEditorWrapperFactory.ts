@@ -21,13 +21,8 @@ import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
 import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
-import {
-  EditorInitArgs,
-  ResourceContentOptions,
-  ResourceListOptions,
-  Tutorial,
-  UserInteraction
-} from "@kogito-tooling/editor-envelope-protocol";
+import { EditorInitArgs, Tutorial, UserInteraction } from "@kogito-tooling/editor-envelope-protocol";
+import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/channel-common-api";
 import { GuidedTourApi } from "./api/GuidedTourApi";
 import { ResourceContentApi } from "./api/ResourceContentApi";
 import { KeyboardShortcutsApi } from "./api/KeyboardShorcutsApi";

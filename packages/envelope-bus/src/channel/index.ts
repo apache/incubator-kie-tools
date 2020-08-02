@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
@@ -15,8 +14,4 @@
  * limitations under the License.
  */
 
-export enum OperatingSystem {
-    MACOS = "MACOS",
-    WINDOWS = "WINDOWS",
-    LINUX = "LINUX"
-}
+export * from "./ChannelEnvelopeServer"

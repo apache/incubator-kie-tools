@@ -18,7 +18,7 @@ import { KogitoEditorStore } from "./KogitoEditorStore";
 import * as vscode from "vscode";
 import { Uri, ViewColumn } from "vscode";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
-import { WorkspaceApi } from "@kogito-tooling/editor-envelope-protocol";
+import { WorkspaceApi } from "@kogito-tooling/channel-common-api";
 import { MyPageChannelApiImpl } from "./MyPageChannelApiImpl";
 import {MyPageChannelEnvelopeServer, MyPageEnvelopeLocator} from "@kogito-tooling/my-page/dist/channel";
 import {MyPageChannelApi} from "@kogito-tooling/my-page/dist/api";

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus";
+import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 
 /**
  * Delay the event by the given number of miliseconds.

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import { ChannelType, EditorContext, OperatingSystem } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorContext } from "@kogito-tooling/editor-envelope-protocol";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor } from "../editor/PMMLEditor";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
 import { KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
 
 const messageBusClient = {
   notify: jest.fn(),

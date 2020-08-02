@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusController } from "@kogito-tooling/envelope";
+import { EnvelopeBusController } from "@kogito-tooling/envelope-bus/dist/envelope";
 import {
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
   StateControlCommand
 } from "@kogito-tooling/editor-envelope-protocol";
-import { EnvelopeBusMessage, EnvelopeBusMessagePurpose } from "@kogito-tooling/envelope-bus";
+import { EnvelopeBusMessage, EnvelopeBusMessagePurpose } from "@kogito-tooling/envelope-bus/dist/api";
 
 let api: KogitoEditorEnvelopeApi;
 let envelopeBus: EnvelopeBusController<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
