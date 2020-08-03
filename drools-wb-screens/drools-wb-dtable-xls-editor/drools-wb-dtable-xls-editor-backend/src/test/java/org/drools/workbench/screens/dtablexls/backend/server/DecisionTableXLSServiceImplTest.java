@@ -39,6 +39,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -55,6 +56,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -114,150 +116,181 @@ public class DecisionTableXLSServiceImplTest {
 
     @Before
     public void setup() throws IOException {
-        when( authenticationService.getUser() ).thenReturn( user );
-        when( user.getIdentifier() ).thenReturn( "user" );
+        when(authenticationService.getUser()).thenReturn(user);
+        when(user.getIdentifier()).thenReturn("user");
 
-        when( path.toURI() ).thenReturn( "file://p0/src/main/resources/dtable.xls" );
-        when( inputstream.read( anyObject() ) ).thenReturn( -1 );
-        when( ioService.newOutputStream( any( org.uberfire.java.nio.file.Path.class ),
-                                         commentedOptionArgumentCaptor.capture() ) ).thenReturn( outputStream );
+        when(path.toURI()).thenReturn("file://p0/src/main/resources/dtable.xls");
+        when(inputstream.read(anyObject())).thenReturn(-1);
     }
 
     @Test
     public void testSessionInfoOnCreate() {
-        this.service = getServiceWithValidationOverride( ( tempFile ) -> {
-            //Do nothing; tests do not use a *real* XLS file
-        } );
 
-        service.create( path,
-                        inputstream,
-                        sessionId,
-                        comment );
+        when(ioService.write(any(org.uberfire.java.nio.file.Path.class),
+                             any(byte[].class),
+                             commentedOptionArgumentCaptor.capture())).thenReturn(null);
+        this.service = getServiceWithValidationOverride((tempFile) -> {
+            //Do nothing; tests do not use a *real* XLS file
+        });
+
+        service.create(path,
+                       inputstream,
+                       sessionId,
+                       comment);
         assertCommentedOption();
     }
 
     @Test
     public void testSessionInfoOnSave() {
-        this.service = getServiceWithValidationOverride( ( tempFile ) -> {
+        when(ioService.newOutputStream(any(org.uberfire.java.nio.file.Path.class),
+                                       commentedOptionArgumentCaptor.capture())).thenReturn(outputStream);
+        this.service = getServiceWithValidationOverride((tempFile) -> {
             //Do nothing; tests do not use a *real* XLS file
-        } );
+        });
 
-        service.save( path,
-                      inputstream,
-                      sessionId,
-                      comment );
+        service.save(path,
+                     inputstream,
+                     sessionId,
+                     comment);
+
+        final InOrder inOrder = inOrder(ioService);
+
+        inOrder.verify(ioService).startBatch(any());
+        inOrder.verify(ioService).newOutputStream(any(), any());
+        inOrder.verify(ioService).endBatch();
+
         assertCommentedOption();
     }
 
     @Test
     public void inputStreamShouldNotBeReused() throws IOException {
-        this.service = getServiceWithValidationOverride( ( tempFile ) -> {
+
+        when(ioService.write(any(org.uberfire.java.nio.file.Path.class),
+                             any(byte[].class),
+                             commentedOptionArgumentCaptor.capture())).thenReturn(null);
+
+        this.service = getServiceWithValidationOverride((tempFile) -> {
             //Do nothing; tests do not use a *real* XLS file
-        } );
+        });
 
-        mockStatic( IOUtils.class );
+        mockStatic(IOUtils.class);
 
-        service.create( path,
-                        inputstream,
-                        sessionId,
-                        comment );
+        service.create(path,
+                       inputstream,
+                       sessionId,
+                       comment);
 
-        verifyStatic( times( 1 ) );
-        IOUtils.copy( eq( inputstream ),
-                      any( OutputStream.class ) );
+        final InOrder inOrder = inOrder(ioService);
+
+        inOrder.verify(ioService).startBatch(any());
+        inOrder.verify(ioService).write(any(org.uberfire.java.nio.file.Path.class),
+                                        any(byte[].class),
+                                        any(CommentedOption.class));
+        inOrder.verify(ioService).endBatch();
+
+        verifyStatic(times(1));
+        IOUtils.copy(eq(inputstream),
+                     any(OutputStream.class));
     }
 
     private void assertCommentedOption() {
-        this.service = getServiceWithValidationOverride( ( tempFile ) -> {
+        this.service = getServiceWithValidationOverride((tempFile) -> {
             //Do nothing; tests do not use a *real* XLS file
-        } );
+        });
 
         final CommentedOption commentedOption = commentedOptionArgumentCaptor.getValue();
-        assertNotNull( commentedOption );
-        assertEquals( "user",
-                      commentedOption.getName() );
-        assertEquals( "123",
-                      commentedOption.getSessionId() );
+        assertNotNull(commentedOption);
+        assertEquals("user",
+                     commentedOption.getName());
+        assertEquals("123",
+                     commentedOption.getSessionId());
     }
 
     @Test
     public void testInvalidTableNotCreated() throws IOException {
-        testInvalidTable( ( s ) -> s.create( path, inputstream, sessionId, comment ) );
+
+        when(ioService.write(any(org.uberfire.java.nio.file.Path.class),
+                             any(byte[].class),
+                             commentedOptionArgumentCaptor.capture())).thenReturn(null);
+        testInvalidTable((s) -> s.create(path, inputstream, sessionId, comment));
     }
 
     @Test
     public void testInvalidTableNotSaved() throws IOException {
-        testInvalidTable( ( s ) -> s.save( path, inputstream, sessionId, comment ) );
+
+        when(ioService.newOutputStream(any(org.uberfire.java.nio.file.Path.class),
+                                       commentedOptionArgumentCaptor.capture())).thenReturn(outputStream);
+        testInvalidTable((s) -> s.save(path, inputstream, sessionId, comment));
     }
 
-    private void testInvalidTable( Consumer<DecisionTableXLSServiceImpl> serviceConsumer ) throws IOException {
-        this.service = getServiceWithValidationOverride( ( tempFile ) -> {
+    private void testInvalidTable(Consumer<DecisionTableXLSServiceImpl> serviceConsumer) throws IOException {
+        this.service = getServiceWithValidationOverride((tempFile) -> {
             // mock an invalid file
-            Throwable t = new Throwable( "testing invalid xls dt creation" );
-            throw new DecisionTableParseException( "DecisionTableParseException: " + t.getMessage(), t );
-        } );
+            Throwable t = new Throwable("testing invalid xls dt creation");
+            throw new DecisionTableParseException("DecisionTableParseException: " + t.getMessage(), t);
+        });
 
-        mockStatic( IOUtils.class );
-        when( IOUtils.copy( any( InputStream.class ), any( OutputStream.class ) ) ).thenReturn( 0 );
+        mockStatic(IOUtils.class);
+        when(IOUtils.copy(any(InputStream.class), any(OutputStream.class))).thenReturn(0);
         try {
-            serviceConsumer.accept( service );
-        } catch ( RuntimeException e ) {
+            serviceConsumer.accept(service);
+        } catch (RuntimeException e) {
             // this is expected correct behavior
         }
-        verify( ioService, never() ).newOutputStream( any( org.uberfire.java.nio.file.Path.class ), any( CommentedOption.class ) );
-        verifyStatic( never() );
+        verify(ioService, never()).newOutputStream(any(org.uberfire.java.nio.file.Path.class), any(CommentedOption.class));
+        verifyStatic(never());
     }
 
     @Test(expected = DecisionTableParseException.class)
     public void testValidateNonexistentFile() {
-        this.service = getServiceWithValidationOverride( null );
+        this.service = getServiceWithValidationOverride(null);
 
-        service.validate( new File( "" ) );
+        service.validate(new File(""));
     }
 
     @Test(expected = DecisionTableParseException.class)
     public void testValidateEmptyFile() throws IOException {
-        this.service = getServiceWithValidationOverride( null );
+        this.service = getServiceWithValidationOverride(null);
 
-        service.validate( File.createTempFile( "emptyxls", null ) );
+        service.validate(File.createTempFile("emptyxls", null));
     }
 
     @Test(expected = DecisionTableParseException.class)
     public void testValidateFileWithInvalidContent() throws IOException {
-        this.service = getServiceWithValidationOverride( null );
+        this.service = getServiceWithValidationOverride(null);
 
-        File tempFile = File.createTempFile( "emptyxls", null );
-        try ( FileOutputStream tempFOS = new FileOutputStream( tempFile ) ) {
-            IOUtils.write( "birdplane!", tempFOS );
+        File tempFile = File.createTempFile("emptyxls", null);
+        try (FileOutputStream tempFOS = new FileOutputStream(tempFile)) {
+            IOUtils.write("birdplane!", tempFOS);
             tempFOS.flush();
-            service.validate( tempFile );
+            service.validate(tempFile);
         }
     }
 
     @Test
     public void testValidateFileWithValidContent() throws IOException, URISyntaxException {
-        this.service = getServiceWithValidationOverride( null );
+        this.service = getServiceWithValidationOverride(null);
 
-        File tempFile = new File( this.getClass().getResource( "dummy.xls" ).toURI() );
-        service.validate( tempFile );
+        File tempFile = new File(this.getClass().getResource("dummy.xls").toURI());
+        service.validate(tempFile);
     }
 
-    private DecisionTableXLSServiceImpl getServiceWithValidationOverride( Consumer<File> validationOverride ) {
-        return new DecisionTableXLSServiceImpl( ioService,
-                                                copyService,
-                                                deleteService,
-                                                renameService,
-                                                resourceOpenedEvent,
-                                                conversionService,
-                                                genericValidator,
-                                                commentedOptionFactory,
-                                                authenticationService ) {
+    private DecisionTableXLSServiceImpl getServiceWithValidationOverride(Consumer<File> validationOverride) {
+        return new DecisionTableXLSServiceImpl(ioService,
+                                               copyService,
+                                               deleteService,
+                                               renameService,
+                                               resourceOpenedEvent,
+                                               conversionService,
+                                               genericValidator,
+                                               commentedOptionFactory,
+                                               authenticationService) {
             @Override
-            void validate( final File tempFile ) {
-                if ( validationOverride != null ) {
-                    validationOverride.accept( tempFile );
+            void validate(final File tempFile) {
+                if (validationOverride != null) {
+                    validationOverride.accept(tempFile);
                 } else {
-                    super.validate( tempFile );
+                    super.validate(tempFile);
                 }
             }
         };
