@@ -26,7 +26,7 @@ export interface WorkspaceApi {
   receive_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;
 }
 
-export interface KogitoChannelCommonApi extends WorkspaceApi {
+export interface KogitoToolingChannelCommonApi extends WorkspaceApi {
   receive_ready(): void;
   receive_newEdit(edit: KogitoEdit): void;
 }

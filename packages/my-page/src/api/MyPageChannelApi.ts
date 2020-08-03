@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { KogitoChannelCommonApi } from "@kogito-tooling/channel-common-api";
+import { KogitoToolingChannelCommonApi } from "@kogito-tooling/channel-common-api";
 
-export interface MyPageChannelApi extends KogitoChannelCommonApi {
+export interface MyPageChannelApi extends KogitoToolingChannelCommonApi {
   getOpenDiagrams(): Promise<SvgDiagram[]>;
 }
 
