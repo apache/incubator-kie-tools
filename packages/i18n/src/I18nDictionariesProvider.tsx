@@ -25,7 +25,7 @@ export interface I18nDictionariesProviderProps<D extends ReferenceDictionary<D>>
     dictionary: D;
     locale: string;
   };
-  dictionaries: Map<string, D>;
+  dictionaries: Map<string, TranslatedDictionary<D>>;
   ctx: React.Context<I18nContextType<D>>;
   children: React.ReactNode;
 }

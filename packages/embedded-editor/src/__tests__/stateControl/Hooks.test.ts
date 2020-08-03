@@ -33,8 +33,7 @@ describe("useDirtyState", () => {
       notifyRedo: jest.fn(),
       requestContent: jest.fn(),
       requestPreview: jest.fn(),
-      setContent: jest.fn(),
-      notifyLocaleChange: jest.fn()
+      setContent: jest.fn()
     };
     editorRef = {
       current: embeddedEditorRef
