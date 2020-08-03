@@ -53,8 +53,4 @@ export class KogitoEditorChannelEnvelopeServer extends ChannelEnvelopeServer<
   public request_initResponse(origin: string, initArgs: EditorInitArgs) {
     return this.client.request("receive_initRequest", { origin: origin, busId: this.busId }, initArgs);
   }
-
-  public request_guidedTourElementPositionResponse(selector: string) {
-    return this.client.request("receive_guidedTourElementPositionRequest", selector);
-  }
 }

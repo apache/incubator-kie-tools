@@ -80,11 +80,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
   const envelopeServer = useMemo(() => {
     return new KogitoEditorChannelEnvelopeServer(
-      {
-        postMessage: message => {
-          iframeRef.current?.contentWindow?.postMessage(message, "*");
-        }
-      },
+      { postMessage: message => iframeRef.current?.contentWindow?.postMessage(message, "*") },
       props.editorEnvelopeLocator.targetOrigin,
       { fileExtension: props.file.fileExtension, resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "" }
     );
@@ -92,10 +88,10 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
   useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
 
-  // ...
+  // Register position provider for Guided Tour
   useGuidedTourPositionProvider(envelopeServer.client, iframeRef);
 
-  // Forward keyboard events to envelope
+  // Forward keyboard events to the EditorEnvelope
   useSyncedKeyboardEvents(envelopeServer.client);
 
   //Forward reference methods
@@ -108,7 +104,8 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
       return {
         getStateControl: () => stateControl,
-        getElementPosition: selector => envelopeServer.request_guidedTourElementPositionResponse(selector),
+        getElementPosition: selector =>
+          envelopeServer.client.request("receive_guidedTourElementPositionRequest", selector),
         redo: () => Promise.resolve(envelopeServer.notify_editorRedo()),
         undo: () => Promise.resolve(envelopeServer.notify_editorUndo()),
         getContent: () => envelopeServer.request_contentResponse().then(c => c.content),

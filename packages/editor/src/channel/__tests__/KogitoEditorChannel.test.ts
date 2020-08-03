@@ -350,7 +350,7 @@ describe("send", () => {
   });
 
   test("request guidedTourElementPositionResponse", async () => {
-    const position = envelopeServer.request_guidedTourElementPositionResponse("my-selector");
+    const position = envelopeServer.client.request("receive_guidedTourElementPositionRequest", "my-selector");
     await incomingMessage({
       busId: envelopeServer.busId,
       requestId: "ChannelEnvelopeServer_0",

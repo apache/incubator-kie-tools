@@ -20,15 +20,15 @@ import { GuidedTourEnvelopeApi } from "../api";
 import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
 
 export function useGuidedTourPositionProvider(
-  envelopeServer: MessageBusClient<GuidedTourEnvelopeApi>,
+  messageBusClient: MessageBusClient<GuidedTourEnvelopeApi>,
   iframeRef: React.RefObject<HTMLIFrameElement>
 ) {
   useEffect(() => {
     KogitoGuidedTour.getInstance().registerPositionProvider((selector: string) =>
-      envelopeServer.request("receive_guidedTourElementPositionRequest", selector).then(position => {
+      messageBusClient.request("receive_guidedTourElementPositionRequest", selector).then(position => {
         const parentRect = iframeRef.current?.getBoundingClientRect();
         KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
       })
     );
-  }, [envelopeServer]);
+  }, [messageBusClient]);
 }

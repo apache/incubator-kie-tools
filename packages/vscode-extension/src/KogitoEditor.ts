@@ -54,7 +54,7 @@ export class KogitoEditor implements EditorApi {
   ) {}
 
   public getElementPosition(selector: string) {
-    return this.envelopeServer.request_guidedTourElementPositionResponse(selector);
+    return this.envelopeServer.client.request("receive_guidedTourElementPositionRequest", selector);
   }
 
   public getContent() {
