@@ -131,10 +131,10 @@ export class GwtEditorWrapperFactory implements EditorFactory<GwtLanguageData> {
       },
       pmmlMarshallerService: {
         marshall(xmlContent: string) {
-          return XML2PMML.apply(xmlContent);
+          return XML2PMML(xmlContent);
         },
         unmarshall(pmml: PMML) {
-          return PMML2XML.apply(pmml);
+          return PMML2XML(pmml);
         }
       }
     };
