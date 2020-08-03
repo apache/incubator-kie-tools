@@ -17,10 +17,10 @@
 import { EditorApi, EditorEnvelopeLocator, KogitoEditorChannelApi } from "../../api";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts/dist/channel";
-import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/channel";
+import { useGuidedTourPositionProvider } from "@kogito-tooling/guided-tour/dist/channel";
 import * as CSS from "csstype";
 import * as React from "react";
-import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { useImperativeHandle, useMemo, useRef } from "react";
 import { File } from "../common";
 import { StateControl } from "../stateControl";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
@@ -92,14 +92,8 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
   useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
 
-  useEffect(() => {
-    KogitoGuidedTour.getInstance().registerPositionProvider((selector: string) =>
-      envelopeServer.request_guidedTourElementPositionResponse(selector).then(position => {
-        const parentRect = iframeRef.current?.getBoundingClientRect();
-        KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
-      })
-    );
-  }, [envelopeServer]);
+  // ...
+  useGuidedTourPositionProvider(envelopeServer.client, iframeRef);
 
   // Forward keyboard events to envelope
   useSyncedKeyboardEvents(envelopeServer.client);
