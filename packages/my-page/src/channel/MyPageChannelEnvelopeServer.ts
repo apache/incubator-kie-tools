@@ -19,8 +19,8 @@ import { MyPageChannelApi, MyPageEnvelopeApi, MyPageInitArgs } from "../api";
 import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 
 export class MyPageChannelEnvelopeServer extends ChannelEnvelopeServer<MyPageChannelApi, MyPageEnvelopeApi> {
-  public constructor(bus: EnvelopeBus, private readonly origin: string, private readonly initArgs: MyPageInitArgs) {
-    super(bus);
+  public constructor(bus: EnvelopeBus, origin: string, private readonly initArgs: MyPageInitArgs) {
+    super(bus, origin);
   }
 
   public pollInit() {

@@ -41,6 +41,7 @@ export abstract class ChannelEnvelopeServer<
 
   constructor(
     bus: EnvelopeBus,
+    public readonly origin: string,
     private readonly manager = new EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>(
       message => bus.postMessage(message),
       "ChannelEnvelopeServer"
