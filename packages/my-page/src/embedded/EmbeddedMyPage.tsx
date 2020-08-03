@@ -22,6 +22,7 @@ import { ApiDefinition, EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/
 import { MyPageApi, MyPageChannelApi, MyPageEnvelopeApi } from "../api";
 import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
 import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
+import {EmbeddedEnvelope} from "@kogito-tooling/envelope/dist/embedded";
 
 interface Props {
   mapping: MyPageMapping;
@@ -47,7 +48,7 @@ const EmbeddedMyPage: React.RefForwardingComponent<MyPageApi, Props> = (props, f
   }, []);
 
   return (
-    <EmbeddedX
+    <EmbeddedEnvelope
       forwardedRef={forwardedRef}
       api={props.api}
       envelopePath={props.mapping.envelopePath}
@@ -57,40 +58,3 @@ const EmbeddedMyPage: React.RefForwardingComponent<MyPageApi, Props> = (props, f
     />
   );
 };
-
-interface XProps<
-  ApiToProvide extends ApiDefinition<ApiToProvide>,
-  ApiToConsume extends ApiDefinition<ApiToConsume>,
-  T
-> {
-  refDelegate: (envelopeServer: ChannelEnvelopeServer<ApiToProvide, ApiToConsume>) => T;
-  forwardedRef: React.Ref<T>;
-  api: ApiToProvide;
-  envelopePath: string;
-  origin: string;
-  pollInit: (envelopeServer: ChannelEnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>;
-}
-
-function EmbeddedX<
-  ApiToProvide extends ApiDefinition<ApiToProvide>,
-  ApiToConsume extends ApiDefinition<ApiToConsume>,
-  Ref
->(props: XProps<ApiToProvide, ApiToConsume, Ref>, forwardedRef: React.Ref<Ref>) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  const bus = {
-    postMessage<D, T>(message: EnvelopeBusMessage<D, T>) {
-      iframeRef.current?.contentWindow?.postMessage(message, "*");
-    }
-  };
-
-  const envelopeServer = new ChannelEnvelopeServer<ApiToProvide, ApiToConsume>(bus, props.origin, self =>
-    props.pollInit(self)
-  );
-
-  useImperativeHandle(forwardedRef, () => props.refDelegate(envelopeServer), [props.refDelegate]);
-
-  useConnectedEnvelopeServer<ApiToProvide>(envelopeServer, props.api);
-
-  return <iframe ref={iframeRef} src={props.envelopePath} title="X" />;
-}
