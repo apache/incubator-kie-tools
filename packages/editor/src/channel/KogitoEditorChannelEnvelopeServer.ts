@@ -23,11 +23,7 @@ export class KogitoEditorChannelEnvelopeServer extends ChannelEnvelopeServer<
   KogitoEditorEnvelopeApi
 > {
   constructor(bus: EnvelopeBus, origin: string, private readonly initArgs: EditorInitArgs) {
-    super(bus, origin);
-  }
-
-  public pollInit(): Promise<any> {
-    return this.request_initResponse(this.origin, this.initArgs);
+    super(bus, origin, self => this.request_initResponse(this.origin, this.initArgs));
   }
 
   public notify_editorUndo() {

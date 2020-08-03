@@ -20,8 +20,9 @@ import { Uri, ViewColumn } from "vscode";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { WorkspaceApi } from "@kogito-tooling/channel-common-api";
 import { MyPageChannelApiImpl } from "./MyPageChannelApiImpl";
-import { MyPageChannelEnvelopeServer, MyPageEnvelopeLocator } from "@kogito-tooling/my-page/dist/channel";
-import { MyPageChannelApi } from "@kogito-tooling/my-page/dist/api";
+import { MyPageEnvelopeLocator } from "@kogito-tooling/my-page/dist/channel";
+import { MyPageChannelApi, MyPageEnvelopeApi } from "@kogito-tooling/my-page/dist/api";
+import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 
 export class MyPageManager {
   constructor(
@@ -79,10 +80,15 @@ export class MyPageManager {
         </body>
         </html>`;
 
-    const envelopeServer = new MyPageChannelEnvelopeServer(
+    const envelopeServer: ChannelEnvelopeServer<MyPageChannelApi, MyPageEnvelopeApi> = new ChannelEnvelopeServer(
       { postMessage: message => webviewPanel.webview.postMessage(message) },
       this.myPageEnvelopeLocator.targetOrigin,
-      { filePath: filePath, backendUrl: pageMapping.backendUrl }
+      () =>
+        envelopeServer.client.request(
+          "myPage__init",
+          { origin: envelopeServer.origin, busId: envelopeServer.busId },
+          { filePath: filePath, backendUrl: pageMapping.backendUrl }
+        )
     );
 
     const api: MyPageChannelApi = new MyPageChannelApiImpl(this.workspaceApi, this.editorStore);

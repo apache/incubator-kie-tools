@@ -40,10 +40,7 @@ export class KogitoEditor implements EditorApi {
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
     private readonly envelopeServer = new KogitoEditorChannelEnvelopeServer(
       {
-        postMessage: msg => {
-          console.info(`Posting: ${msg.type} -> busId: ${msg.busId} (posted by: ${this.document.uri.fsPath})`);
-          this.panel.webview.postMessage(msg);
-        }
+        postMessage: msg => this.panel.webview.postMessage(msg)
       },
       envelopeLocator.targetOrigin,
       {
@@ -88,10 +85,7 @@ export class KogitoEditor implements EditorApi {
 
     this.context.subscriptions.push(
       this.panel.webview.onDidReceiveMessage(
-        msg => {
-          console.info(`Received: ${msg.type} -> busId: ${msg.busId} (received by id: ${this.envelopeServer.busId})`);
-          this.messageBroadcaster.broadcast(msg);
-        },
+        msg => this.messageBroadcaster.broadcast(msg),
         this,
         this.context.subscriptions
       )

@@ -23,7 +23,7 @@ import {
 } from "../api";
 import { EnvelopeBusMessageManager } from "../common";
 
-export abstract class ChannelEnvelopeServer<
+export class ChannelEnvelopeServer<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>
 > {
@@ -42,6 +42,7 @@ export abstract class ChannelEnvelopeServer<
   constructor(
     bus: EnvelopeBus,
     public readonly origin: string,
+    public readonly pollInit: (self: ChannelEnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>,
     private readonly manager = new EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>(
       message => bus.postMessage(message),
       "ChannelEnvelopeServer"
@@ -50,11 +51,9 @@ export abstract class ChannelEnvelopeServer<
     this.busId = this.generateRandomId();
   }
 
-  public abstract pollInit(): Promise<any>;
-
   public startInitPolling() {
     this.initPolling = setInterval(() => {
-      this.pollInit().then(() => this.stopInitPolling());
+      this.pollInit(this).then(() => this.stopInitPolling());
     }, ChannelEnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
 
     this.initPollingTimeout = setTimeout(() => {

@@ -13,6 +13,7 @@
     "start": "rm -rf dist && webpack --watch"
   },
   "dependencies": {
+    "@kogito-tooling/envelope-bus": "0.6.1"
   },
   "peerDependencies": {
     "react": "16.12.0",

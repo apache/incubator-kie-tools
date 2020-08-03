@@ -15,12 +15,13 @@
  */
 
 import * as React from "react";
-import { useImperativeHandle, useMemo, useRef } from "react";
-import { MyPageChannelEnvelopeServer, MyPageMapping } from "../channel";
+import { useCallback, useImperativeHandle, useRef } from "react";
+import { MyPageMapping } from "../channel";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
-import { MyPageApi, MyPageChannelApi } from "../api";
+import { ApiDefinition, EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
+import { MyPageApi, MyPageChannelApi, MyPageEnvelopeApi } from "../api";
 import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
+import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 
 interface Props {
   mapping: MyPageMapping;
@@ -30,33 +31,66 @@ interface Props {
 }
 
 const EmbeddedMyPage: React.RefForwardingComponent<MyPageApi, Props> = (props, forwardedRef) => {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  const envelopeServer = new MyPageChannelEnvelopeServer(
-    {
-      postMessage<D, T>(message: EnvelopeBusMessage<D, T>) {
-        iframeRef.current?.contentWindow?.postMessage(message, "*");
-      }
-    },
-    props.targetOrigin,
-    {
-      backendUrl: "https://localhost:8000",
-      filePath: undefined
-    }
-  );
-
-  const myPageApi: MyPageApi = useMemo(
-    () => ({
+  const myPageApi = useCallback(
+    (envelopeServer: ChannelEnvelopeServer<MyPageChannelApi, MyPageEnvelopeApi>) => ({
       setText: (text: string) => envelopeServer.client.notify("myPage__setText", text)
     }),
     []
   );
 
-  useImperativeHandle(forwardedRef, () => myPageApi, [myPageApi]);
-
-  useConnectedEnvelopeServer(envelopeServer, props.api);
+  const pollInit = useCallback((envelopeServer: ChannelEnvelopeServer<MyPageChannelApi, MyPageEnvelopeApi>) => {
+    return envelopeServer.client.request(
+      "myPage__init",
+      { origin: envelopeServer.origin, busId: envelopeServer.busId },
+      { filePath: undefined, backendUrl: "https://localhost:8000" }
+    );
+  }, []);
 
   return (
-    <iframe ref={iframeRef} src={props.mapping.envelopePath} title="MyPage" data-envelope-channel={props.channelType} />
+    <EmbeddedX
+      forwardedRef={forwardedRef}
+      api={props.api}
+      envelopePath={props.mapping.envelopePath}
+      origin={props.targetOrigin}
+      refDelegate={myPageApi}
+      pollInit={pollInit}
+    />
   );
 };
+
+interface XProps<
+  ApiToProvide extends ApiDefinition<ApiToProvide>,
+  ApiToConsume extends ApiDefinition<ApiToConsume>,
+  T
+> {
+  refDelegate: (envelopeServer: ChannelEnvelopeServer<ApiToProvide, ApiToConsume>) => T;
+  forwardedRef: React.Ref<T>;
+  api: ApiToProvide;
+  envelopePath: string;
+  origin: string;
+  pollInit: (envelopeServer: ChannelEnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>;
+}
+
+function EmbeddedX<
+  ApiToProvide extends ApiDefinition<ApiToProvide>,
+  ApiToConsume extends ApiDefinition<ApiToConsume>,
+  Ref
+>(props: XProps<ApiToProvide, ApiToConsume, Ref>, forwardedRef: React.Ref<Ref>) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const bus = {
+    postMessage<D, T>(message: EnvelopeBusMessage<D, T>) {
+      iframeRef.current?.contentWindow?.postMessage(message, "*");
+    }
+  };
+
+  const envelopeServer = new ChannelEnvelopeServer<ApiToProvide, ApiToConsume>(bus, props.origin, self =>
+    props.pollInit(self)
+  );
+
+  useImperativeHandle(forwardedRef, () => props.refDelegate(envelopeServer), [props.refDelegate]);
+
+  useConnectedEnvelopeServer<ApiToProvide>(envelopeServer, props.api);
+
+  return <iframe ref={iframeRef} src={props.envelopePath} title="X" />;
+}
