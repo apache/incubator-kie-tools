@@ -33,6 +33,9 @@ import { KeyboardShortcutsApi } from "./api/KeyboardShorcutsApi";
 import { WorkspaceServiceApi } from "./api/WorkspaceServiceApi";
 import { StateControlApi } from "./api/StateControlApi";
 import { EditorContextApi } from "./api/EditorContextApi";
+import { PMMLMarshallerApi } from "./api/PMMLMarshallerApi";
+import { PMML } from "@kogito-tooling/pmml-editor-marshaller/dist/marshaller/model/pmml4_4";
+import { PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
 
 declare global {
   interface Window {
@@ -45,6 +48,7 @@ declare global {
       resourceContentEditorService?: ResourceContentApi;
       keyboardShortcuts: KeyboardShortcutsApi;
       workspaceService: WorkspaceServiceApi;
+      pmmlMarshallerService: PMMLMarshallerApi;
     };
   }
 }
@@ -123,6 +127,14 @@ export class GwtEditorWrapperFactory implements EditorFactory<GwtLanguageData> {
       workspaceService: {
         openFile(path: string): void {
           envelopeContext.channelApi.notify("receive_openFile", path);
+        }
+      },
+      pmmlMarshallerService: {
+        marshall(xmlContent: string) {
+          return XML2PMML.apply(xmlContent);
+        },
+        unmarshall(pmml: PMML) {
+          return PMML2XML.apply(pmml);
         }
       }
     };
