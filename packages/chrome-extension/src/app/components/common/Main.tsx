@@ -24,7 +24,7 @@ import { Dependencies } from "../../Dependencies";
 import { kogitoMenuContainer } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 
 export interface Globals {
   id: string;

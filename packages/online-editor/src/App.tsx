@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { File } from "@kogito-tooling/embedded-editor";
+import { File } from "@kogito-tooling/editor/dist/embedded";
 import "@patternfly/patternfly/base/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/patternfly/patternfly.scss";
@@ -31,7 +31,7 @@ import { DownloadHubModal } from "./home/DownloadHubModal";
 import { HomePage } from "./home/HomePage";
 import { NoMatchPage } from "./NoMatchPage";
 import "../static/resources/style.css";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 
 interface Props {
   file: File;

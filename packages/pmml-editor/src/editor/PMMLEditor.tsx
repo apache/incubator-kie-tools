@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { KogitoEditorChannelApi } from "@kogito-tooling/editor-envelope-protocol";
+import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
 import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api"
 import * as React from "react";
 

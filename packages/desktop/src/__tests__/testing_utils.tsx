@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { GlobalContext, GlobalContextType } from "../webview/common/GlobalContext";
-import { EnvelopeMapping } from "@kogito-tooling/editor-envelope-protocol";
+import { EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
 

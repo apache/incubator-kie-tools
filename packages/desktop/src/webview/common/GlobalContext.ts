@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { File } from "../../common/File";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 
 export interface GlobalContextType {
   file?: File;

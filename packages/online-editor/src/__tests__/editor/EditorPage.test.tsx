@@ -22,13 +22,13 @@ import { usingTestingGlobalContext } from "../testing_utils";
 const onFileNameChanged = jest.fn((file: string) => null);
 
 function mockFunctions() {
-  const original = require.requireActual("@kogito-tooling/embedded-editor");
+  const original = require.requireActual("@kogito-tooling/editor/dist/embedded");
   return {
     ...original,
     useDirtyState: jest.fn(() => true).mockImplementationOnce(() => false)
   };
 }
-jest.mock("@kogito-tooling/embedded-editor", () => mockFunctions());
+jest.mock("@kogito-tooling/editor/dist/embedded", () => mockFunctions());
 
 describe("EditorPage", () => {
   describe("Unsaved Alert", () => {

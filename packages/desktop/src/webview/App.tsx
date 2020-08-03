@@ -26,7 +26,7 @@ import { File } from "../common/File";
 import { GlobalContext } from "./common/GlobalContext";
 import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
 
 interface Props {

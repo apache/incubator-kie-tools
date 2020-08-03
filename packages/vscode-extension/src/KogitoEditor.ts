@@ -16,16 +16,16 @@
 
 import * as vscode from "vscode";
 import {
+  EditorApi,
   EditorEnvelopeLocator,
   EnvelopeMapping,
-  KogitoEditorChannelApi,
-  KogitoEditorChannelEnvelopeServer
-} from "@kogito-tooling/editor-envelope-protocol";
+  KogitoEditorChannelApi
+} from "@kogito-tooling/editor/dist/api";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { EditorApi } from "@kogito-tooling/editor-api";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
+import { KogitoEditorChannelEnvelopeServer } from "@kogito-tooling/editor/dist/channel";
 
 export class KogitoEditor implements EditorApi {
   private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;

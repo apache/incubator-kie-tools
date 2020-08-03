@@ -17,13 +17,24 @@
 const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
+const CopyPlugin = require("copy-webpack-plugin");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
-module.exports = merge(common, {
-  entry: {
-    index: "./src/index.ts"
-  },
-  output: {
-    libraryTarget: "commonjs2"
-  },
-  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-});
+module.exports = [
+  merge(common, {
+    entry: {
+      index: "./src/index.ts"
+    },
+    output: {
+      libraryTarget: "commonjs2"
+    },
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })]
+  }),
+  merge(common, {
+    entry: {
+      "envelope-dist/envelope": "./src/envelope/envelope.ts"
+    },
+    plugins: [new CopyPlugin([{ from: "./static/envelope", to: "./envelope-dist" }])],
+    module: { rules: [...pfWebpackOptions.patternflyRules] }
+  })
+];

@@ -16,12 +16,16 @@
 
 import { GwtAppFormerApi } from "./GwtAppFormerApi";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
-import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
+import {
+  Editor,
+  EditorFactory,
+  EditorInitArgs,
+  KogitoEditorEnvelopeContextType
+} from "@kogito-tooling/editor/dist/api";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
 import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
-import { EditorInitArgs } from "@kogito-tooling/editor-envelope-protocol";
 import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
 import { ResourceContentOptions, ResourceListOptions } from "@kogito-tooling/channel-common-api";
 import { GuidedTourApi } from "./api/GuidedTourApi";

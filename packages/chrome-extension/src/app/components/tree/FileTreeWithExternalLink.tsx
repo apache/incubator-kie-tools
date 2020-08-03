@@ -21,7 +21,7 @@ import { extractOpenFileExtension } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { OpenExternalEditorButton } from "./OpenExternalEditorButton";
 import { useGlobals } from "../common/GlobalContext";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 
 export function FileTreeWithExternalLink() {
   const { externalEditorManager, envelopeLocator, dependencies, logger } = useGlobals();

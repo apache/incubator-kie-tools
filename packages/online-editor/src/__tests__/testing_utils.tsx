@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { EMPTY_FILE_DMN } from "@kogito-tooling/embedded-editor";
+import { EMPTY_FILE_DMN } from "@kogito-tooling/editor/dist/embedded";
 import * as React from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
 import { GithubService } from "../common/GithubService";
 import { GlobalContext, GlobalContextType } from "../common/GlobalContext";
 import { Routes } from "../common/Routes";
-import { EnvelopeMapping } from "@kogito-tooling/editor-envelope-protocol";
+import { EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const envelopeMapping: EnvelopeMapping = {

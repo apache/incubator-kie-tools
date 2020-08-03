@@ -124,10 +124,8 @@
     "outputDirectory": "./target"
   },
   "dependencies": {
+    "@kogito-tooling/editor": "0.6.1",
     "@kogito-tooling/kie-bc-editors": "0.6.1",
-    "@kogito-tooling/kie-bc-editors-unpacked": "0.6.1",
-    "@kogito-tooling/editor-envelope": "0.6.1",
-    "@kogito-tooling/editor-envelope-protocol": "0.6.1",
     "@kogito-tooling/patternfly-base": "0.6.1",
     "@kogito-tooling/vscode-extension": "0.6.1"
   }

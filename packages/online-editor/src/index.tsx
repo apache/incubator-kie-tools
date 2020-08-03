@@ -17,7 +17,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { App } from "./App";
-import { newFile } from "@kogito-tooling/embedded-editor";
+import { newFile } from "@kogito-tooling/editor/dist/embedded";
 import {
   extractEditorFileExtensionFromUrl,
   extractFileExtension,
@@ -26,7 +26,7 @@ import {
 } from "./common/utils";
 import { GithubService } from "./common/GithubService";
 import { Alert, AlertActionLink, AlertVariant } from "@patternfly/react-core";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();

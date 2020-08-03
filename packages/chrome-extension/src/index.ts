@@ -21,7 +21,7 @@ import { renderPrEditorsApp } from "./app/components/pr/prEditors";
 import { mainContainer, runAfterUriChange } from "./app/utils";
 import { Dependencies } from "./app/Dependencies";
 import * as ReactDOM from "react-dom";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import "../resources/style.css";
 import { Logger } from "./Logger";
 import { Globals } from "./app/components/common/Main";

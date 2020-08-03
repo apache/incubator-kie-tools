@@ -18,7 +18,7 @@ import * as React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import { HomePage } from "../../home/HomePage";
 import { usingTestingGlobalContext } from "../testing_utils";
-import { File as UploadFile } from "@kogito-tooling/embedded-editor";
+import { File as UploadFile } from "@kogito-tooling/editor/dist/embedded";
 import { GithubService } from "../../common/GithubService";
 
 const mockHistoryPush = jest.fn();

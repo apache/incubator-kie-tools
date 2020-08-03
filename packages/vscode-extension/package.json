@@ -27,8 +27,7 @@
   },
   "dependencies": {
     "@kogito-tooling/keyboard-shortcuts": "0.6.1",
-    "@kogito-tooling/editor-envelope": "0.6.1",
-    "@kogito-tooling/my-page": "0.6.1",
-    "@kogito-tooling/editor-envelope-protocol": "0.6.1"
+    "@kogito-tooling/editor": "0.6.1",
+    "@kogito-tooling/my-page": "0.6.1"
   }
 }

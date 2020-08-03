@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { EditorContext } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorContext } from "@kogito-tooling/editor/dist/api";
 import { FACTORY_TYPE, PMMLEditorFactory } from "../editor/PMMLEditorFactory";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
-import { Editor, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
+import { Editor, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
 

@@ -68,7 +68,7 @@ module.exports = async (env, argv) => {
         { from: "./static/samples", to: "./samples" },
         { from: "./static/index.html", to: "./index.html" },
         { from: "./static/favicon.ico", to: "./favicon.ico" },
-        { from: "../../node_modules/@kogito-tooling/embedded-editor/dist/envelope", to: "./envelope" },
+        { from: "../../node_modules/@kogito-tooling/kie-bc-editors/dist/envelope-dist", to: "./envelope" },
         { from: "../kie-bc-editors-unpacked/dmn", to: "./gwt-editors/dmn" },
         { from: "../kie-bc-editors-unpacked/bpmn", to: "./gwt-editors/bpmn" }
       ])

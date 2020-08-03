@@ -15,7 +15,7 @@
  */
 
 import { DefaultKogitoCommandRegistry } from "../../gwtStateControl";
-import { KogitoEditorChannelApi } from "@kogito-tooling/editor-envelope-protocol";
+import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
 import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
 
 class Command {

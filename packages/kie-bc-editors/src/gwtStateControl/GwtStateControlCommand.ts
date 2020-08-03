@@ -20,7 +20,6 @@
  * the registry.
  */
 export class GwtStateControlCommand<T> {
-
   private readonly id: string;
   private readonly executable: T;
 

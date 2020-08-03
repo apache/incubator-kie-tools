@@ -14,11 +14,9 @@
     "@kogito-tooling/patternfly-base": "0.6.1",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
-    "chrome-extension-pack-kogito-kie-editors": "0.6.1",
     "electron": "7.2.4",
     "react-router": "5.1.1",
-    "react-router-dom": "5.1.1",
-    "vscode-extension-pack-kogito-kie-editors": "0.6.1"
+    "react-router-dom": "5.1.1"
   },
   "scripts": {
     "start": "electron dist",

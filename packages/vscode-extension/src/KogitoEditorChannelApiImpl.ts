@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor-envelope-protocol";
+import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor/dist/api";
 import {
   KogitoEdit,
   ResourceContentRequest,

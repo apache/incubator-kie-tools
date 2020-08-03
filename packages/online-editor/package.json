@@ -10,8 +10,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/guided-tour": "0.6.1",
-    "@kogito-tooling/embedded-editor": "0.6.1",
+    "@kogito-tooling/editor": "0.6.1",
+    "@kogito-tooling/kie-bc-editors": "0.6.1",
     "@kogito-tooling/patternfly-base": "0.6.1",
     "@octokit/rest": "16.35.0",
     "@types/react-router": "5.1.1",

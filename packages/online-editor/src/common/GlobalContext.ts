@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { File } from "@kogito-tooling/embedded-editor";
+import { File } from "@kogito-tooling/editor/dist/embedded";
 import * as React from "react";
 import { GithubService } from "./GithubService";
 import { Routes } from "./Routes";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 
 export interface GlobalContextType {
   file: File;

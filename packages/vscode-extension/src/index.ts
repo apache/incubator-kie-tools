@@ -18,7 +18,7 @@ import * as vscode from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
-import { EditorEnvelopeLocator } from "@kogito-tooling/editor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { MyPageEnvelopeLocator } from "@kogito-tooling/my-page/dist/channel";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
