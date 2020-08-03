@@ -14,11 +14,7 @@ exports[`EditorToolbar isDirty indicator should show the isDirty indicator when 
     class="kogito--editor__toolbar-edited"
     data-testid="is-dirty-indicator"
   >
-    <p
-      style="display: inline;"
-    >
-       - Edited
-    </p>
+     - Edited
   </span>
 </div>
 `;

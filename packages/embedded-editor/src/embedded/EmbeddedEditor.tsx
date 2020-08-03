@@ -33,7 +33,7 @@ import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 import * as CSS from "csstype";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
-import { File } from "../common";
+import { File, useEffectAfterFirstRender } from "../common";
 import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 import { StateControl } from "../stateControl";
 
@@ -103,10 +103,6 @@ export type EmbeddedEditorRef = {
    * Get an instance of the StateControl
    */
   getStateControl(): StateControl;
-  /**
-   * Notify the editor the locale change.
-   */
-  notifyLocaleChange(locale: string): void;
   /**
    * Notify the editor to redo the last command and update the state control.
    */
@@ -248,6 +244,10 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     handleStateControlCommand
   ]);
 
+  useEffectAfterFirstRender(() => {
+    kogitoChannelBus.notify_localeChange(props.locale);
+  }, [props.locale]);
+
   // Forward keyboard events to envelope
   useSyncedKeyboardEvents(kogitoChannelBus.client);
 
@@ -273,7 +273,6 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
       return {
         getStateControl: () => stateControl,
-        notifyLocaleChange: (locale: string) => kogitoChannelBus.notify_localeChange(locale),
         notifyRedo: () => kogitoChannelBus.notify_editorRedo(),
         notifyUndo: () => kogitoChannelBus.notify_editorUndo(),
         requestContent: () => kogitoChannelBus.request_contentResponse(),

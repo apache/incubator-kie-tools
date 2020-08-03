@@ -55,15 +55,15 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
         <div className="pf-c-content kgt-slide--with-accent">
           <BookOpenIcon size="xl" className="kgt-icon--with-accent" />
           <Title headingLevel="h3" size="xl">
-            <I18nHtml>{i18n.guidedTour.init.title}</I18nHtml>
+            {i18n.guidedTour.init.title}
           </Title>
           <Text>{i18n.guidedTour.init.learnMore}</Text>
           <Button onClick={props.nextStep} variant="primary">
-            <I18nHtml>{i18n.guidedTour.init.letsGo}</I18nHtml>
+            {i18n.guidedTour.init.letsGo}
           </Button>
           <Text>{"  "}</Text>
           <Button onClick={props.dismiss} variant="link">
-            <I18nHtml>{i18n.terms.dismiss}</I18nHtml>
+            {i18n.terms.dismiss}
           </Button>
         </div>
       )
@@ -77,33 +77,37 @@ function getOnlineEditorTutorial(i18n: OnlineI18n) {
       content: (props: any) => (
         <div className="pf-c-content kgt-slide--with-accent">
           <Title headingLevel="h3" size="xl">
-            <I18nHtml>{i18n.guidedTour.end.title}</I18nHtml>
+            {i18n.guidedTour.end.title}
           </Title>
           <TrophyIcon size="xl" className="kgt-icon--with-accent" />
-          <Text><I18nHtml>{i18n.guidedTour.end.motivational}</I18nHtml></Text>
+          <Text>{i18n.guidedTour.end.motivational}</Text>
           <Divider />
           <Text className="pf-c-content--align-left">{i18n.guidedTour.end.nextSteps.title}:</Text>
           <List className="pf-c-content--align-left">
-            <ListItem><I18nHtml>{i18n.guidedTour.end.nextSteps.firstStep}</I18nHtml></ListItem>
-            <ListItem><I18nHtml>{i18n.guidedTour.end.nextSteps.secondStep}</I18nHtml></ListItem>
-            <ListItem><I18nHtml>{i18n.guidedTour.end.nextSteps.thirdStep}</I18nHtml></ListItem>
+            <ListItem>
+              <I18nHtml>{i18n.guidedTour.end.nextSteps.firstStep}</I18nHtml>
+            </ListItem>
+            <ListItem>
+              <I18nHtml>{i18n.guidedTour.end.nextSteps.secondStep}</I18nHtml>
+            </ListItem>
+            <ListItem>{i18n.guidedTour.end.nextSteps.thirdStep}</ListItem>
           </List>
           <Text className="pf-c-content--align-left">
-            <I18nHtml>{`${i18n.guidedTour.end.findUsefulInfo} `}</I18nHtml>
+            {`${i18n.guidedTour.end.findUsefulInfo} `}
             <a target="_blank" href="http://learn-dmn-in-15-minutes.com">
-              <I18nHtml>{i18n.guidedTour.end.learnDMN}</I18nHtml>
+              {i18n.guidedTour.end.learnDMN}
             </a>{" "}
-            <I18nHtml>{`${i18n.guidedTour.end.courseOr} `}</I18nHtml>
+            {`${i18n.guidedTour.end.courseOr} `}
             <a
               target="_blank"
               href="https://docs.jboss.org/kogito/release/latest/html_single/#_using_dmn_models_in_kogito_services"
             >
-              <I18nHtml>{i18n.guidedTour.end.kogitoDoc}</I18nHtml>
+              {i18n.guidedTour.end.kogitoDoc}
             </a>{" "}
             :-)
           </Text>
           <Button onClick={props.dismiss} variant="primary">
-            <I18nHtml>{i18n.guidedTour.end.finish}</I18nHtml>
+            {i18n.guidedTour.end.finish}
           </Button>
         </div>
       )

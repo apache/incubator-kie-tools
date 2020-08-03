@@ -17,7 +17,7 @@
 import * as React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import { HomePage } from "../../home/HomePage";
-import { usingTestingGlobalContext } from "../testing_utils";
+import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
 import { File as UploadFile } from "@kogito-tooling/embedded-editor";
 import { GithubService } from "../../common/GithubService";
 
@@ -46,7 +46,9 @@ describe("HomePage", () => {
     describe("invalid", () => {
       test("should show an invalid url error", () => {
         const { getByText, getByTestId } = render(
-          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+          usingTestingOnlineI18nContext(
+            usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+          ).wrapper
         );
 
         const invalidUrls = [".", "something", "something.com"];
@@ -59,7 +61,9 @@ describe("HomePage", () => {
 
       test("should show an invalid extension error", async () => {
         const { getByText, getByTestId } = render(
-          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+          usingTestingOnlineI18nContext(
+            usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+          ).wrapper
         );
 
         const urlsInvalidFileExtension = [
@@ -79,7 +83,9 @@ describe("HomePage", () => {
         jest.spyOn(githubService, "checkFileExistence").mockImplementation((url: string) => Promise.resolve(false));
 
         const { findByText, getByTestId } = render(
-          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+          usingTestingOnlineI18nContext(
+            usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+          ).wrapper
         );
 
         const urlsNotFound = [
@@ -99,7 +105,9 @@ describe("HomePage", () => {
         window.fetch = jest.fn().mockImplementation(() => Promise.resolve({ ok: false }));
 
         const { findByText, getByTestId } = render(
-          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+          usingTestingOnlineI18nContext(
+            usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+          ).wrapper
         );
 
         const urlsNotFound = [
@@ -121,7 +129,9 @@ describe("HomePage", () => {
         window.fetch = jest.fn().mockImplementation(() => Promise.reject());
 
         const { findByText, getByTestId } = render(
-          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+          usingTestingOnlineI18nContext(
+            usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+          ).wrapper
         );
 
         const urlsNotFound = ["https://google.com/teste.dmn", "https://dropbox.com/teste.bpmn"];
@@ -138,12 +148,12 @@ describe("HomePage", () => {
 
       test("should show an invalid gist error", async () => {
         const githubService = new GithubService();
-        jest
-          .spyOn(githubService, "getGistRawUrlFromId")
-          .mockImplementation((url: string) => Promise.reject());
+        jest.spyOn(githubService, "getGistRawUrlFromId").mockImplementation((url: string) => Promise.reject());
 
         const { findByText, getByTestId } = render(
-          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+          usingTestingOnlineI18nContext(
+            usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+          ).wrapper
         );
 
         fireEvent.change(getByTestId("url-text-input"), { target: { value: "https://gist.github.com/test/aaaa" } });
@@ -157,7 +167,9 @@ describe("HomePage", () => {
           .mockImplementation((url: string) => Promise.resolve("https://gist.githubusercontent.com/test.png"));
 
         const { findByText, getByTestId } = render(
-          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+          usingTestingOnlineI18nContext(
+            usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+          ).wrapper
         );
 
         fireEvent.change(getByTestId("url-text-input"), { target: { value: "https://gist.github.com/test/aaaa" } });
@@ -173,7 +185,9 @@ describe("HomePage", () => {
           .mockImplementation((url: string) => Promise.resolve("https://gist.githubusercontent.com/test.dmn"));
 
         const { getByTestId } = render(
-          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+          usingTestingOnlineI18nContext(
+            usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+          ).wrapper
         );
 
         fireEvent.change(getByTestId("url-text-input"), { target: { value: "https://gist.github.com/test/aaaa" } });
@@ -185,7 +199,9 @@ describe("HomePage", () => {
         jest.spyOn(githubService, "checkFileExistence").mockImplementation((url: string) => Promise.resolve(true));
 
         const { getByTestId } = render(
-          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+          usingTestingOnlineI18nContext(
+            usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />, { githubService }).wrapper
+          ).wrapper
         );
 
         fireEvent.change(getByTestId("url-text-input"), { target: { value: "https://github.com/test/test/test.dmn" } });
@@ -197,7 +213,9 @@ describe("HomePage", () => {
         window.fetch = jest.fn().mockImplementation(() => Promise.resolve({ ok: true }));
 
         const { getByTestId } = render(
-          usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+          usingTestingOnlineI18nContext(
+            usingTestingGlobalContext(<HomePage onFileOpened={(file: UploadFile) => true} />).wrapper
+          ).wrapper
         );
 
         fireEvent.change(getByTestId("url-text-input"), {

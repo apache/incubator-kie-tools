@@ -50,7 +50,6 @@ import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 import { GlobalContext } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { useOnlineI18n } from "../common/i18n";
-import { I18nHtml } from "@kogito-tooling/i18n";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -453,14 +452,14 @@ export function HomePage(props: Props) {
 
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
-      <Link to={context.routes.downloadHub.url({})}><I18nHtml>{i18n.homePage.dropdown.getHub}</I18nHtml></Link>
+      <Link to={context.routes.downloadHub.url({})}>{i18n.homePage.dropdown.getHub}</Link>
     </DropdownItem>
   ];
 
   const userDropdownItems = [
     <DropdownItem key="">
       <a href={"https://groups.google.com/forum/#!forum/kogito-development"} target={"_blank"}>
-        <I18nHtml>{i18n.homePage.dropdown.onlineForum}</I18nHtml>
+        {i18n.homePage.dropdown.onlineForum}
         <ExternalLinkAltIcon className="pf-u-mx-sm" />
       </a>
     </DropdownItem>
@@ -474,7 +473,7 @@ export function HomePage(props: Props) {
       <PageHeaderToolsGroup>
         <PageHeaderToolsItem className="pf-u-display-none pf-u-display-flex-on-lg">
           <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
-            <I18nHtml>{i18n.homePage.dropdown.getHub}</I18nHtml>
+            {i18n.homePage.dropdown.getHub}
           </Link>
         </PageHeaderToolsItem>
         <PageHeaderToolsItem className="pf-u-display-none-on-lg">
@@ -524,11 +523,11 @@ export function HomePage(props: Props) {
       <PageSection variant="dark" className="kogito--editor-landing__title-section pf-u-p-2xl-on-lg">
         <TextContent>
           <Title size="3xl" headingLevel="h1">
-            <I18nHtml>{i18n.homePage.header.title}</I18nHtml>
+            {i18n.homePage.header.title}
           </Title>
           <Text>{i18n.homePage.header.welcomeText}</Text>
           <Text component={TextVariants.small} className="pf-u-text-align-right">
-            <I18nHtml>`${i18n.terms.poweredBy} `</I18nHtml>
+            `${i18n.terms.poweredBy} `
             <Brand
               src={"images/kogito_logo_white.png"}
               alt="Kogito Logo"
@@ -542,47 +541,43 @@ export function HomePage(props: Props) {
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
-                <I18nHtml>{i18n.homePage.bpmnCard.title}</I18nHtml>
+                {i18n.homePage.bpmnCard.title}
               </Title>
             </CardHeader>
-            <CardBody isFilled={false}>
-              <I18nHtml>{i18n.homePage.bpmnCard.explanation}</I18nHtml>
-            </CardBody>
+            <CardBody isFilled={false}>{i18n.homePage.bpmnCard.explanation}</CardBody>
             <CardBody isFilled={true}>
               <Button variant="link" isInline={true} onClick={tryBpmnSample}>
-                <I18nHtml>{i18n.homePage.trySample}</I18nHtml>
+                {i18n.homePage.trySample}
               </Button>
             </CardBody>
             <CardFooter>
               <Button variant="secondary" onClick={createEmptyBpmnFile}>
-                <I18nHtml>{i18n.homePage.bpmnCard.createNew}</I18nHtml>
+                {i18n.homePage.bpmnCard.createNew}
               </Button>
             </CardFooter>
           </Card>
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
-                <I18nHtml>{i18n.homePage.dmnCard.title}</I18nHtml>
+                {i18n.homePage.dmnCard.title}
               </Title>
             </CardHeader>
-            <CardBody isFilled={false}>
-              <I18nHtml>{i18n.homePage.dmnCard.explanation}</I18nHtml>
-            </CardBody>
+            <CardBody isFilled={false}>{i18n.homePage.dmnCard.explanation}</CardBody>
             <CardBody isFilled={true}>
               <Button variant="link" isInline={true} onClick={tryDmnSample}>
-                <I18nHtml>{i18n.homePage.trySample}</I18nHtml>
+                {i18n.homePage.trySample}
               </Button>
             </CardBody>
             <CardFooter>
               <Button variant="secondary" onClick={createEmptyDmnFile}>
-                <I18nHtml>{i18n.homePage.dmnCard.createNew}</I18nHtml>
+                {i18n.homePage.dmnCard.createNew}
               </Button>
             </CardFooter>
           </Card>
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
-                <I18nHtml>{i18n.homePage.editExistingFile}</I18nHtml>
+                {i18n.homePage.editExistingFile}
               </Title>
             </CardHeader>
             <CardBody isFilled={true} className="kogito--editor-landing__upload-box">
@@ -597,12 +592,10 @@ export function HomePage(props: Props) {
                 <Bullseye>{messageForUploadFileFromDndState}</Bullseye>
               </div>
             </CardBody>
-            <CardBody>
-              <I18nHtml>{i18n.homePage.uploadFile.or}</I18nHtml>
-            </CardBody>
+            <CardBody>{i18n.homePage.uploadFile.or}</CardBody>
             <CardFooter className="kogito--editor-landing__upload-input">
               <Button variant="secondary" className="kogito--editor-landing__upload-btn">
-                <I18nHtml>{i18n.homePage.chooseLocalFile}</I18nHtml>
+                {i18n.homePage.chooseLocalFile}
                 {/* Transparent file input overlays the button */}
                 <input
                   accept={".dmn, .bpmn, .bpmn2"}
@@ -621,12 +614,10 @@ export function HomePage(props: Props) {
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
-                <I18nHtml>{i18n.homePage.openUrl.openFromSource}</I18nHtml>
+                {i18n.homePage.openUrl.openFromSource}
               </Title>
             </CardHeader>
-            <CardBody isFilled={false}>
-              <I18nHtml>{i18n.homePage.openUrl.description}</I18nHtml>
-            </CardBody>
+            <CardBody isFilled={false}>{i18n.homePage.openUrl.description}</CardBody>
             <CardBody isFilled={true}>
               <Form onSubmit={externalFileFormSubmit} disabled={!isUrlInputTextValid} spellCheck={false}>
                 <FormGroup
@@ -660,7 +651,7 @@ export function HomePage(props: Props) {
                 isDisabled={!urlCanBeOpen}
                 data-testid="open-url-button"
               >
-                <I18nHtml>{i18n.homePage.openUrl.openFromSource}</I18nHtml>
+                {i18n.homePage.openUrl.openFromSource}
               </Button>
             </CardFooter>
           </Card>

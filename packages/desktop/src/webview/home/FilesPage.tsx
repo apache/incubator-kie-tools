@@ -50,9 +50,7 @@ import { File, UNSAVED_FILE_NAME } from "../../common/File";
 import { RecentOpenedFile } from "../../common/RecentOpenedFile";
 import { extractFileExtension, removeDirectories } from "../../common/utils";
 import { GlobalContext } from "../common/GlobalContext";
-import IpcRendererEvent = Electron.IpcRendererEvent;
 import { useDesktopI18n } from "../common/i18n/locales";
-import { I18nHtml } from "@kogito-tooling/i18n/src";
 
 interface Props {
   openFile: (file: File) => void;
@@ -307,7 +305,7 @@ export function FilesPage(props: Props) {
             actionClose={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
           >
             <br />
-            <b><I18nHtml>{`${i18n.filesPage.errorDetails}: `}</I18nHtml></b>
+            <b>{`${i18n.filesPage.errorDetails}: `}</b>
             {importFileErrorDetails.description}
           </Alert>
         </div>
@@ -315,7 +313,7 @@ export function FilesPage(props: Props) {
       <PageSection>
         <div className={"kogito--desktop__actions-title"}>
           <TextContent>
-            <Title headingLevel={"h1"}><I18nHtml>{i18n.filesPage.files.title}</I18nHtml></Title>
+            <Title headingLevel={"h1"}>{i18n.filesPage.files.title}</Title>
           </TextContent>
         </div>
         <Gallery hasGutter={true} className="kogito--desktop__actions-gallery">
@@ -329,7 +327,7 @@ export function FilesPage(props: Props) {
             <CardHeader>
               {
                 <Title size={"xl"} headingLevel={"h3"} className="pf-u-mb-md">
-                  <I18nHtml>{i18n.filesPage.files.bpmn.blank}</I18nHtml>
+                  {i18n.filesPage.files.bpmn.blank}
                 </Title>
               }
             </CardHeader>
@@ -347,7 +345,7 @@ export function FilesPage(props: Props) {
             <CardHeader>
               {
                 <Title size={"xl"} headingLevel={"h3"} className="pf-u-mb-md">
-                  <I18nHtml>{i18n.filesPage.files.dmn.blank}</I18nHtml>
+                  {i18n.filesPage.files.dmn.blank}
                 </Title>
               }
             </CardHeader>
@@ -365,7 +363,7 @@ export function FilesPage(props: Props) {
             <CardHeader>
               {
                 <Title size={"xl"} headingLevel={"h3"} className="pf-u-mb-md">
-                  <I18nHtml>{i18n.filesPage.files.bpmn.sample}</I18nHtml>
+                  {i18n.filesPage.files.bpmn.sample}
                 </Title>
               }
             </CardHeader>
@@ -389,7 +387,7 @@ export function FilesPage(props: Props) {
             <CardHeader>
               {
                 <Title size={"xl"} headingLevel={"h3"} className="pf-u-mb-md">
-                  <I18nHtml>{i18n.filesPage.files.dmn.sample}</I18nHtml>
+                  {i18n.filesPage.files.dmn.sample}
                 </Title>
               }
             </CardHeader>
@@ -406,14 +404,12 @@ export function FilesPage(props: Props) {
           <Card className="kogito--desktop__actions-card--wide">
             <CardHeader>
               <Title size={"xl"} headingLevel={"h3"}>
-                <I18nHtml>{i18n.filesPage.openUrl.openFromSource}</I18nHtml>
+                {i18n.filesPage.openUrl.openFromSource}
               </Title>
             </CardHeader>
             <CardBody>
               <TextContent>
-                <Text component={TextVariants.p}>
-                  <I18nHtml>{i18n.filesPage.openUrl.description}</I18nHtml>
-                </Text>
+                <Text component={TextVariants.p}>{i18n.filesPage.openUrl.description}</Text>
                 <Form onSubmit={importFileByUrlFormSubmit} disabled={!isInputUrlValid}>
                   <FormGroup
                     label="URL"
@@ -440,7 +436,7 @@ export function FilesPage(props: Props) {
             </CardBody>
             <CardFooter>
               <Button variant="secondary" onClick={importFileByUrl}>
-                <I18nHtml>{i18n.filesPage.openUrl.openFromSource}</I18nHtml>
+                {i18n.filesPage.openUrl.openFromSource}
               </Button>
             </CardFooter>
           </Card>
@@ -448,7 +444,7 @@ export function FilesPage(props: Props) {
       </PageSection>
       <PageSection variant="light">
         <Title size={"2xl"} headingLevel={"h3"}>
-          <I18nHtml>{i18n.filesPage.recent.title}</I18nHtml>
+          {i18n.filesPage.recent.title}
         </Title>
         <Toolbar>
           <ToolbarContent>
@@ -507,11 +503,7 @@ export function FilesPage(props: Props) {
         </Toolbar>
       </PageSection>
       <PageSection isFilled={true}>
-        {filteredLastOpenedFiles.length === 0 && (
-          <Bullseye>
-            <I18nHtml>{i18n.filesPage.recent.noFilesYet}</I18nHtml>
-          </Bullseye>
-        )}
+        {filteredLastOpenedFiles.length === 0 && <Bullseye>{i18n.filesPage.recent.noFilesYet}</Bullseye>}
 
         {filteredLastOpenedFiles.length > 0 && (
           <Gallery hasGutter={true} className="kogito-desktop__file-gallery">

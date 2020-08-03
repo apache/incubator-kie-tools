@@ -20,7 +20,6 @@ import { useGitHubApi } from "./GitHubContext";
 import * as Octokit from "@octokit/rest";
 import { useGlobals } from "./GlobalContext";
 import { useChromeExtensionI18n } from "../../i18n/locales";
-import { I18nHtml } from "@kogito-tooling/i18n";
 
 const GITHUB_OAUTH_TOKEN_SIZE = 40;
 
@@ -96,7 +95,7 @@ export function KogitoMenu() {
                 className="Header-link mr-0 mr-lg-3 py-2 py-lg-0"
                 href="https://github.com/settings/tokens"
               >
-                <I18nHtml>{i18n.common.menu.createToken}</I18nHtml>
+                {i18n.common.menu.createToken}
               </a>
               <div style={{ position: "relative" }}>
                 <a
@@ -108,16 +107,16 @@ export function KogitoMenu() {
                 </a>
                 {isInfoPopOverOpen && (
                   <div className={"info-popover"}>
-                    <h3><I18nHtml>{i18n.common.menu.tokenInfo.title}</I18nHtml></h3>
-                    <p><I18nHtml>{i18n.common.menu.tokenInfo.disclaimer}</I18nHtml></p>
+                    <h3>{i18n.common.menu.tokenInfo.title}</h3>
+                    <p>{i18n.common.menu.tokenInfo.disclaimer}</p>
                     <hr />
-                    <p><I18nHtml>{i18n.common.menu.tokenInfo.explanation}</I18nHtml></p>
-                    <p><I18nHtml>{i18n.common.menu.tokenInfo.whichPermissionUserGive}</I18nHtml></p>
+                    <p>{i18n.common.menu.tokenInfo.explanation}</p>
+                    <p>{i18n.common.menu.tokenInfo.whichPermissionUserGive}</p>
                     <p>
                       <b>
-                        <u><I18nHtml>{i18n.terms.note.toUpperCase()}:</I18nHtml></u>&nbsp;
+                        <u>{i18n.terms.note.toUpperCase()}:</u>&nbsp;
                       </b>
-                      <I18nHtml>{i18n.common.menu.tokenInfo.permission}</I18nHtml>
+                      {i18n.common.menu.tokenInfo.permission}
                     </p>
                   </div>
                 )}
@@ -142,7 +141,7 @@ export function KogitoMenu() {
             {!!potentialToken && <b className={"icon cross"} />}
           </label>
           <button className={"btn btn-sm"} onClick={onReset}>
-            <I18nHtml>{i18n.terms.reset}</I18nHtml>
+            {i18n.terms.reset}
           </button>
         </>
       )}

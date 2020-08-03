@@ -18,7 +18,6 @@ import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useGlobals } from "../common/GlobalContext";
 import { useChromeExtensionI18n } from "../../i18n/locales";
-import { I18nHtml } from "@kogito-tooling/i18n";
 
 export const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
@@ -92,12 +91,12 @@ export function SingleEditorToolbar(props: {
             className={"btn btn-sm kogito-button"}
             onClick={seeAsSource}
           >
-            <I18nHtml>{i18n.single.editorToolbar.seeAsSource}</I18nHtml>
+            {i18n.single.editorToolbar.seeAsSource}
           </button>
         )}
         {props.textMode && (
           <button data-testid={"see-as-diagram-button"} className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
-            <I18nHtml>{i18n.seeAsDiagram}</I18nHtml>
+            {i18n.seeAsDiagram}
           </button>
         )}
         {globals.externalEditorManager && (
@@ -106,7 +105,7 @@ export function SingleEditorToolbar(props: {
             className={"btn btn-sm kogito-button"}
             onClick={openInExternalEditor}
           >
-            <I18nHtml>{i18n.openIn(globals.externalEditorManager.name)}</I18nHtml>
+            {i18n.openIn(globals.externalEditorManager.name)}
           </button>
         )}
         {globals.externalEditorManager && props.linkToExternalEditor && (
@@ -116,7 +115,7 @@ export function SingleEditorToolbar(props: {
               className={"btn btn-sm kogito-button"}
               onClick={copyLinkToExternalEditor}
             >
-              <I18nHtml>{i18n.single.editorToolbar.copyLinkTo(globals.externalEditorManager.name)}</I18nHtml>
+              {i18n.single.editorToolbar.copyLinkTo(globals.externalEditorManager.name)}
             </button>
             {copyLinkSuccessAlertVisible && (
               <div
@@ -134,7 +133,7 @@ export function SingleEditorToolbar(props: {
         )}
         {!props.textMode && (
           <button data-testid={"go-fullscreen-button"} className={"btn btn-sm kogito-button"} onClick={goFullScreen}>
-            <I18nHtml>{i18n.terms.fullScreen}</I18nHtml>
+            {i18n.terms.fullScreen}
           </button>
         )}
         <textarea
@@ -146,9 +145,7 @@ export function SingleEditorToolbar(props: {
       {props.readonly && !props.textMode && (
         <>
           {/* TODO: Add "info" icon with hint explaining how to edit the file */}
-          <h4>
-            <I18nHtml>{i18n.single.editorToolbar.readOnly}</I18nHtml>
-          </h4>
+          <h4>{i18n.single.editorToolbar.readOnly}</h4>
         </>
       )}
     </>

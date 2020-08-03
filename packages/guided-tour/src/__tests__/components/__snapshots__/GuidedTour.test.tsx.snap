@@ -39,20 +39,12 @@ exports[`GuidedTour renders 1`] = `
         <h4
           class="pf-c-title pf-m-lg"
         >
-          <p
-            style="display: inline;"
-          >
-            Oops!
-          </p>
+          Oops!
         </h4>
         <div
           class="pf-c-empty-state__body"
         >
-          <p
-            style="display: inline;"
-          >
-            Something went wrong and the content could not be loaded.
-          </p>
+          Something went wrong and the content could not be loaded.
         </div>
         <button
           aria-disabled="false"
@@ -62,11 +54,7 @@ exports[`GuidedTour renders 1`] = `
           data-ouia-safe="true"
           type="button"
         >
-          <p
-            style="display: inline;"
-          >
-            Dismiss
-          </p>
+          Dismiss
         </button>
       </div>
     </div>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { Button } from "@patternfly/react-core";
-import { useOnlineI18n } from "../common/i18n";
+import { DependencyList, EffectCallback, useEffect, useRef } from "react";
 
-interface Props {
-  onExitFullScreen: () => void;
-}
-
-export function FullScreenToolbar(props: Props) {
-  const { i18n } = useOnlineI18n();
-  return (
-    <div className="kogito--full-screen__toolbar">
-      <Button className="kogito--full-screen__toolbar-button" variant="primary" onClick={props.onExitFullScreen}>
-        {i18n.editorFullScreenToolbar}
-      </Button>
-    </div>
-  );
+export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>, deps: DependencyList) {
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (!firstRender.current) {
+      func();
+    } else {
+      firstRender.current = false;
+    }
+  }, deps);
 }

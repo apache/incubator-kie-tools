@@ -10,21 +10,13 @@ exports[`SingleEditorToolbar button actions 1`] = `
       data-testid="see-as-source-button"
       disabled=""
     >
-      <p
-        style="display: inline;"
-      >
-        See as source
-      </p>
+      See as source
     </button>
     <button
       class="btn btn-sm kogito-button"
       data-testid="open-ext-editor-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Open in Test Online Editor
-      </p>
+      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -33,11 +25,7 @@ exports[`SingleEditorToolbar button actions 1`] = `
         class="btn btn-sm kogito-button"
         data-testid="copy-link-button"
       >
-        <p
-          style="display: inline;"
-        >
-          Copy link to Test Online Editor
-        </p>
+        Copy link to Test Online Editor
       </button>
       <div
         class="position-absolute"
@@ -57,11 +45,7 @@ exports[`SingleEditorToolbar button actions 1`] = `
       class="btn btn-sm kogito-button"
       data-testid="go-fullscreen-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Full Screen
-      </p>
+      Full Screen
     </button>
     <textarea
       style="opacity: 0; width: 0px; height: 0px;"
@@ -82,21 +66,13 @@ exports[`SingleEditorToolbar copied to clipboard message 1`] = `
       data-testid="see-as-source-button"
       disabled=""
     >
-      <p
-        style="display: inline;"
-      >
-        See as source
-      </p>
+      See as source
     </button>
     <button
       class="btn btn-sm kogito-button"
       data-testid="open-ext-editor-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Open in Test Online Editor
-      </p>
+      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -105,22 +81,14 @@ exports[`SingleEditorToolbar copied to clipboard message 1`] = `
         class="btn btn-sm kogito-button"
         data-testid="copy-link-button"
       >
-        <p
-          style="display: inline;"
-        >
-          Copy link to Test Online Editor
-        </p>
+        Copy link to Test Online Editor
       </button>
     </div>
     <button
       class="btn btn-sm kogito-button"
       data-testid="go-fullscreen-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Full Screen
-      </p>
+      Full Screen
     </button>
     <textarea
       style="opacity: 0; width: 0px; height: 0px;"
@@ -141,21 +109,13 @@ exports[`SingleEditorToolbar readonly false | textMode false | textModeEnabled f
       data-testid="see-as-source-button"
       disabled=""
     >
-      <p
-        style="display: inline;"
-      >
-        See as source
-      </p>
+      See as source
     </button>
     <button
       class="btn btn-sm kogito-button"
       data-testid="open-ext-editor-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Open in Test Online Editor
-      </p>
+      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -164,22 +124,14 @@ exports[`SingleEditorToolbar readonly false | textMode false | textModeEnabled f
         class="btn btn-sm kogito-button"
         data-testid="copy-link-button"
       >
-        <p
-          style="display: inline;"
-        >
-          Copy link to Test Online Editor
-        </p>
+        Copy link to Test Online Editor
       </button>
     </div>
     <button
       class="btn btn-sm kogito-button"
       data-testid="go-fullscreen-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Full Screen
-      </p>
+      Full Screen
     </button>
     <textarea
       style="opacity: 0; width: 0px; height: 0px;"
@@ -199,21 +151,13 @@ exports[`SingleEditorToolbar readonly false | textMode false | textModeEnabled t
       class="btn btn-sm kogito-button"
       data-testid="see-as-source-button"
     >
-      <p
-        style="display: inline;"
-      >
-        See as source
-      </p>
+      See as source
     </button>
     <button
       class="btn btn-sm kogito-button"
       data-testid="open-ext-editor-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Open in Test Online Editor
-      </p>
+      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -222,22 +166,14 @@ exports[`SingleEditorToolbar readonly false | textMode false | textModeEnabled t
         class="btn btn-sm kogito-button"
         data-testid="copy-link-button"
       >
-        <p
-          style="display: inline;"
-        >
-          Copy link to Test Online Editor
-        </p>
+        Copy link to Test Online Editor
       </button>
     </div>
     <button
       class="btn btn-sm kogito-button"
       data-testid="go-fullscreen-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Full Screen
-      </p>
+      Full Screen
     </button>
     <textarea
       style="opacity: 0; width: 0px; height: 0px;"
@@ -246,11 +182,7 @@ exports[`SingleEditorToolbar readonly false | textMode false | textModeEnabled t
     </textarea>
   </div>
   <h4>
-    <p
-      style="display: inline;"
-    >
-      🔸️ This is a readonly visualization
-    </p>
+    🔸️ This is a readonly visualization
   </h4>
 </DocumentFragment>
 `;
@@ -264,21 +196,13 @@ exports[`SingleEditorToolbar readonly false | textMode true | textModeEnabled fa
       class="btn btn-sm kogito-button"
       data-testid="see-as-diagram-button"
     >
-      <p
-        style="display: inline;"
-      >
-        See as diagram
-      </p>
+      See as diagram
     </button>
     <button
       class="btn btn-sm kogito-button"
       data-testid="open-ext-editor-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Open in Test Online Editor
-      </p>
+      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -287,11 +211,7 @@ exports[`SingleEditorToolbar readonly false | textMode true | textModeEnabled fa
         class="btn btn-sm kogito-button"
         data-testid="copy-link-button"
       >
-        <p
-          style="display: inline;"
-        >
-          Copy link to Test Online Editor
-        </p>
+        Copy link to Test Online Editor
       </button>
     </div>
     <textarea
@@ -312,21 +232,13 @@ exports[`SingleEditorToolbar readonly false | textMode true | textModeEnabled tr
       class="btn btn-sm kogito-button"
       data-testid="see-as-diagram-button"
     >
-      <p
-        style="display: inline;"
-      >
-        See as diagram
-      </p>
+      See as diagram
     </button>
     <button
       class="btn btn-sm kogito-button"
       data-testid="open-ext-editor-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Open in Test Online Editor
-      </p>
+      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -335,11 +247,7 @@ exports[`SingleEditorToolbar readonly false | textMode true | textModeEnabled tr
         class="btn btn-sm kogito-button"
         data-testid="copy-link-button"
       >
-        <p
-          style="display: inline;"
-        >
-          Copy link to Test Online Editor
-        </p>
+        Copy link to Test Online Editor
       </button>
     </div>
     <textarea
@@ -361,21 +269,13 @@ exports[`SingleEditorToolbar readonly true | textMode false | textModeEnabled fa
       data-testid="see-as-source-button"
       disabled=""
     >
-      <p
-        style="display: inline;"
-      >
-        See as source
-      </p>
+      See as source
     </button>
     <button
       class="btn btn-sm kogito-button"
       data-testid="open-ext-editor-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Open in Test Online Editor
-      </p>
+      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -384,22 +284,14 @@ exports[`SingleEditorToolbar readonly true | textMode false | textModeEnabled fa
         class="btn btn-sm kogito-button"
         data-testid="copy-link-button"
       >
-        <p
-          style="display: inline;"
-        >
-          Copy link to Test Online Editor
-        </p>
+        Copy link to Test Online Editor
       </button>
     </div>
     <button
       class="btn btn-sm kogito-button"
       data-testid="go-fullscreen-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Full Screen
-      </p>
+      Full Screen
     </button>
     <textarea
       style="opacity: 0; width: 0px; height: 0px;"
@@ -408,11 +300,7 @@ exports[`SingleEditorToolbar readonly true | textMode false | textModeEnabled fa
     </textarea>
   </div>
   <h4>
-    <p
-      style="display: inline;"
-    >
-      🔸️ This is a readonly visualization
-    </p>
+    🔸️ This is a readonly visualization
   </h4>
 </DocumentFragment>
 `;
@@ -426,21 +314,13 @@ exports[`SingleEditorToolbar readonly true | textMode true | textModeEnabled fal
       class="btn btn-sm kogito-button"
       data-testid="see-as-diagram-button"
     >
-      <p
-        style="display: inline;"
-      >
-        See as diagram
-      </p>
+      See as diagram
     </button>
     <button
       class="btn btn-sm kogito-button"
       data-testid="open-ext-editor-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Open in Test Online Editor
-      </p>
+      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -449,11 +329,7 @@ exports[`SingleEditorToolbar readonly true | textMode true | textModeEnabled fal
         class="btn btn-sm kogito-button"
         data-testid="copy-link-button"
       >
-        <p
-          style="display: inline;"
-        >
-          Copy link to Test Online Editor
-        </p>
+        Copy link to Test Online Editor
       </button>
     </div>
     <textarea
@@ -474,21 +350,13 @@ exports[`SingleEditorToolbar see as diagram 1`] = `
       class="btn btn-sm kogito-button"
       data-testid="see-as-diagram-button"
     >
-      <p
-        style="display: inline;"
-      >
-        See as diagram
-      </p>
+      See as diagram
     </button>
     <button
       class="btn btn-sm kogito-button"
       data-testid="open-ext-editor-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Open in Test Online Editor
-      </p>
+      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -497,11 +365,7 @@ exports[`SingleEditorToolbar see as diagram 1`] = `
         class="btn btn-sm kogito-button"
         data-testid="copy-link-button"
       >
-        <p
-          style="display: inline;"
-        >
-          Copy link to Test Online Editor
-        </p>
+        Copy link to Test Online Editor
       </button>
     </div>
     <textarea
@@ -522,21 +386,13 @@ exports[`SingleEditorToolbar see as source 1`] = `
       class="btn btn-sm kogito-button"
       data-testid="see-as-source-button"
     >
-      <p
-        style="display: inline;"
-      >
-        See as source
-      </p>
+      See as source
     </button>
     <button
       class="btn btn-sm kogito-button"
       data-testid="open-ext-editor-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Open in Test Online Editor
-      </p>
+      Open in Test Online Editor
     </button>
     <div
       class="position-relative"
@@ -545,22 +401,14 @@ exports[`SingleEditorToolbar see as source 1`] = `
         class="btn btn-sm kogito-button"
         data-testid="copy-link-button"
       >
-        <p
-          style="display: inline;"
-        >
-          Copy link to Test Online Editor
-        </p>
+        Copy link to Test Online Editor
       </button>
     </div>
     <button
       class="btn btn-sm kogito-button"
       data-testid="go-fullscreen-button"
     >
-      <p
-        style="display: inline;"
-      >
-        Full Screen
-      </p>
+      Full Screen
     </button>
     <textarea
       style="opacity: 0; width: 0px; height: 0px;"

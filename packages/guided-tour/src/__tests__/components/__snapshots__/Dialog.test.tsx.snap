@@ -55,11 +55,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
         <h4
           class="pf-c-title pf-m-lg"
         >
-          <p
-            style="display: inline;"
-          >
-            Great!
-          </p>
+          Great!
         </h4>
         <div
           class="pf-c-empty-state__body"
@@ -82,11 +78,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
             data-ouia-safe="true"
             type="button"
           >
-            <p
-              style="display: inline;"
-            >
-              Dismiss
-            </p>
+            Dismiss
           </button>
         </div>
       </div>
@@ -150,11 +142,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
         <h4
           class="pf-c-title pf-m-lg"
         >
-          <p
-            style="display: inline;"
-          >
-            Do you want to stop the tour?
-          </p>
+          Do you want to stop the tour?
         </h4>
         <div
           class="pf-c-empty-state__body"
@@ -163,11 +151,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
             class="pf-c-content"
             data-pf-content="true"
           >
-            <p
-              style="display: inline;"
-            >
-              Seems like you didn't follow the suggested action. Do you want to stop the tour?
-            </p>
+            Seems like you didn't follow the suggested action. Do you want to stop the tour?
           </p>
           <br />
           <p
@@ -198,11 +182,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
           data-ouia-safe="true"
           type="button"
         >
-          <p
-            style="display: inline;"
-          >
-            Continue
-          </p>
+          Continue
         </button>
         <div
           class="pf-c-empty-state__secondary"
@@ -215,11 +195,7 @@ exports[`Dialog when negative reinforcement appears renders negative reinforceme
             data-ouia-safe="true"
             type="button"
           >
-            <p
-              style="display: inline;"
-            >
-              Dismiss
-            </p>
+            Dismiss
           </button>
         </div>
       </div>
@@ -258,20 +234,12 @@ exports[`Dialog when the step cannot be loaded renders empty state 1`] = `
         <h4
           class="pf-c-title pf-m-lg"
         >
-          <p
-            style="display: inline;"
-          >
-            Oops!
-          </p>
+          Oops!
         </h4>
         <div
           class="pf-c-empty-state__body"
         >
-          <p
-            style="display: inline;"
-          >
-            Something went wrong and the content could not be loaded.
-          </p>
+          Something went wrong and the content could not be loaded.
         </div>
         <button
           aria-disabled="false"
@@ -281,11 +249,7 @@ exports[`Dialog when the step cannot be loaded renders empty state 1`] = `
           data-ouia-safe="true"
           type="button"
         >
-          <p
-            style="display: inline;"
-          >
-            Dismiss
-          </p>
+          Dismiss
         </button>
       </div>
     </div>

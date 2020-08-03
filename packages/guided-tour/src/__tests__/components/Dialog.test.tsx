@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import { usingCurrentTutorialContext } from "../test_context";
+import { usingCurrentTutorialContext, usingTestingGuidedTourI18nContext } from "../test_context";
 import { Dialog } from "../../components";
 import { KogitoGuidedTour } from "../..";
 import { AutoMode, DemoMode, Tutorial } from "@kogito-tooling/microeditor-envelope-protocol";
@@ -37,68 +37,76 @@ describe("Dialog", () => {
   describe("when the step loads", () => {
     it("renders react-based content", () => {
       const { container } = render(
-        usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-          currentTutorial: registeredTutorial({
-            label: tutorialLabel,
-            steps: [
-              {
-                mode: new DemoMode(),
-                content: <div>Something as JSX</div>
-              }
-            ]
-          })
-        }).wrapper
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            currentTutorial: registeredTutorial({
+              label: tutorialLabel,
+              steps: [
+                {
+                  mode: new DemoMode(),
+                  content: <div>Something as JSX</div>
+                }
+              ]
+            })
+          }).wrapper
+        ).wrapper
       );
       expect(container).toMatchSnapshot();
     });
 
     it("renders function-based content", () => {
       const { container } = render(
-        usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-          currentTutorial: registeredTutorial({
-            label: tutorialLabel,
-            steps: [
-              {
-                mode: new DemoMode(),
-                content: () => <div>Something as JSX-function</div>
-              }
-            ]
-          })
-        }).wrapper
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            currentTutorial: registeredTutorial({
+              label: tutorialLabel,
+              steps: [
+                {
+                  mode: new DemoMode(),
+                  content: () => <div>Something as JSX-function</div>
+                }
+              ]
+            })
+          }).wrapper
+        ).wrapper
       );
       expect(container).toMatchSnapshot();
     });
 
     it("renders string-based content", () => {
       const { container } = render(
-        usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-          currentTutorial: registeredTutorial({
-            label: tutorialLabel,
-            steps: [
-              {
-                mode: new DemoMode(),
-                content: "<div>Something as string</div>"
-              }
-            ]
-          })
-        }).wrapper
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            currentTutorial: registeredTutorial({
+              label: tutorialLabel,
+              steps: [
+                {
+                  mode: new DemoMode(),
+                  content: "<div>Something as string</div>"
+                }
+              ]
+            })
+          }).wrapper
+        ).wrapper
       );
       expect(container).toMatchSnapshot();
     });
 
     it("renders a step on auto mode", () => {
       const { container } = render(
-        usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-          currentTutorial: registeredTutorial({
-            label: tutorialLabel,
-            steps: [
-              {
-                mode: new AutoMode(1000),
-                content: "<div>Something as string</div>"
-              }
-            ]
-          })
-        }).wrapper
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            currentTutorial: registeredTutorial({
+              label: tutorialLabel,
+              steps: [
+                {
+                  mode: new AutoMode(1000),
+                  content: "<div>Something as string</div>"
+                }
+              ]
+            })
+          }).wrapper
+        ).wrapper
       );
       expect(container).toMatchSnapshot();
       expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
@@ -106,17 +114,19 @@ describe("Dialog", () => {
 
     it("closes when users click on the close button", () => {
       const { container } = render(
-        usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-          currentTutorial: registeredTutorial({
-            label: tutorialLabel,
-            steps: [
-              {
-                mode: new DemoMode(),
-                content: <div>Something</div>
-              }
-            ]
-          })
-        }).wrapper
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            currentTutorial: registeredTutorial({
+              label: tutorialLabel,
+              steps: [
+                {
+                  mode: new DemoMode(),
+                  content: <div>Something</div>
+                }
+              ]
+            })
+          }).wrapper
+        ).wrapper
       );
 
       fireEvent.click(document.querySelector("[data-kgt-close]")!, { bubbles: true });
@@ -127,13 +137,15 @@ describe("Dialog", () => {
   describe("when the step cannot be loaded", () => {
     it("renders empty state", () => {
       const { container } = render(
-        usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-          currentStep: 1,
-          currentTutorial: registeredTutorial({
-            label: tutorialLabel,
-            steps: []
-          })
-        }).wrapper
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            currentStep: 1,
+            currentTutorial: registeredTutorial({
+              label: tutorialLabel,
+              steps: []
+            })
+          }).wrapper
+        ).wrapper
       );
       expect(container).toMatchSnapshot();
     });
@@ -155,29 +167,36 @@ describe("Dialog", () => {
 
     it("renders negative reinforcement message", () => {
       const { container } = render(
-        usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-          ...negativeReinforcementCtx,
-          isHighlightLayerEnabled: true
-        }).wrapper
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            ...negativeReinforcementCtx,
+            isHighlightLayerEnabled: true
+          }).wrapper
+        ).wrapper
       );
       expect(container).toMatchSnapshot();
     });
 
     it("renders negative reinforcement clue", () => {
       const { container } = render(
-        usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-          ...negativeReinforcementCtx,
-          isHighlightLayerEnabled: false
-        }).wrapper
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            ...negativeReinforcementCtx,
+            isHighlightLayerEnabled: false
+          }).wrapper
+        ).wrapper
       );
       expect(container).toMatchSnapshot();
     });
 
     it("sets 'isHighlightLayerEnabled' as 'false' when users press the 'Continue' button", () => {
-      const { ctx, wrapper } = usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
-        ...negativeReinforcementCtx,
-        isHighlightLayerEnabled: true
-      });
+      const { ctx, wrapper } = usingCurrentTutorialContext(
+        usingTestingGuidedTourI18nContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />).wrapper,
+        {
+          ...negativeReinforcementCtx,
+          isHighlightLayerEnabled: true
+        }
+      );
 
       render(wrapper);
       fireEvent.click(document.querySelector("[data-kgt-continue]")!, { bubbles: true });

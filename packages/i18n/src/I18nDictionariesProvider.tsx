@@ -19,12 +19,18 @@ import { useMemo, useState } from "react";
 import { TranslatedDictionary, ReferenceDictionary, DictionaryInterpolation } from "./Dictionary";
 import { I18nContextType } from "./I18nContext";
 
-export const I18nDictionariesProvider = <D extends ReferenceDictionary<D>>(props: {
-  defaults: { locale: string; dictionary: D };
-  dictionaries: Map<string, TranslatedDictionary<D>>;
+// tslint:disable-next-line:interface-name
+export interface I18nDictionariesProviderProps<D extends ReferenceDictionary<D>> {
+  defaults: {
+    dictionary: D;
+    locale: string;
+  };
+  dictionaries: Map<string, D>;
   ctx: React.Context<I18nContextType<D>>;
   children: React.ReactNode;
-}) => {
+}
+
+export const I18nDictionariesProvider = <D extends ReferenceDictionary<D>>(props: I18nDictionariesProviderProps<D>) => {
   const [locale, setLocale] = useState(props.defaults.locale);
   const i18n = useMemo(() => {
     const selectedDictionary =

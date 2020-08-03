@@ -18,7 +18,7 @@ import * as React from "react";
 import * as electron from "electron";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { FilesPage } from "../../../webview/home/FilesPage";
-import { usingTestingGlobalContext } from "../../testing_utils";
+import { usingTestingDesktopI18nContext, usingTestingGlobalContext } from "../../testing_utils";
 import { act } from "react-dom/test-utils";
 
 beforeEach(() => {
@@ -31,7 +31,9 @@ describe("FilesPage", () => {
     const openFileByPath = jest.fn();
 
     const component = render(
-      usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+      usingTestingDesktopI18nContext(
+        usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+      ).wrapper
     );
 
     expect(component.asFragment()).toMatchSnapshot();
@@ -42,7 +44,9 @@ describe("FilesPage", () => {
     const openFileByPath = jest.fn();
 
     const component = render(
-      usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+      usingTestingDesktopI18nContext(
+        usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+      ).wrapper
     );
 
     act(() =>
@@ -62,7 +66,9 @@ describe("FilesPage", () => {
     const openFileByPath = jest.fn();
 
     const component = render(
-      usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+      usingTestingDesktopI18nContext(
+        usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+      ).wrapper
     );
 
     act(() =>
@@ -85,7 +91,9 @@ describe("FilesPage", () => {
     const openFileByPath = jest.fn();
 
     const component = render(
-      usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+      usingTestingDesktopI18nContext(
+        usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+      ).wrapper
     );
 
     act(() =>
@@ -109,7 +117,9 @@ describe("FilesPage", () => {
     const openFileByPath = jest.fn();
 
     const component = render(
-      usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+      usingTestingDesktopI18nContext(
+        usingTestingGlobalContext(<FilesPage openFile={openFile} openFileByPath={openFileByPath} />).wrapper
+      ).wrapper
     );
 
     act(() =>

@@ -21,12 +21,13 @@ import { GitHubContext, GitHubContextType } from "../app/components/common/GitHu
 import { DefaultChromeRouter } from "../DefaultChromeRouter";
 import { Logger } from "../Logger";
 import { Dependencies } from "../app/Dependencies";
-import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n";
 import {
   ChromeExtensionI18nContext,
   chromeExtensionI18nDictionaries,
   chromeExtensionI8nDefaults
 } from "../app/i18n/locales";
+import { ChromeExtensionI18n } from "../app/i18n";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const usedCtx = {
@@ -49,15 +50,9 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
   return {
     ctx: usedCtx,
     wrapper: (
-      <I18nDictionariesProvider
-        defaults={chromeExtensionI8nDefaults}
-        dictionaries={chromeExtensionI18nDictionaries}
-        ctx={ChromeExtensionI18nContext}
-      >
-        <GlobalContext.Provider key={""} value={usedCtx}>
-          {children}
-        </GlobalContext.Provider>
-      </I18nDictionariesProvider>
+      <GlobalContext.Provider key={""} value={usedCtx}>
+        {children}
+      </GlobalContext.Provider>
     )
   };
 }
@@ -75,13 +70,26 @@ export function usingTestingGitHubContext(
   };
   return {
     ctx: usedCtx,
+    wrapper: <GitHubContext.Provider value={usedCtx}>{children}</GitHubContext.Provider>
+  };
+}
+
+export function usingTestingChromeExtensionI18nContext(
+  children: React.ReactElement,
+  ctx?: Partial<I18nDictionariesProviderProps<ChromeExtensionI18n>>
+) {
+  const usedCtx: I18nDictionariesProviderProps<ChromeExtensionI18n> = {
+    defaults: chromeExtensionI8nDefaults,
+    dictionaries: chromeExtensionI18nDictionaries,
+    ctx: ChromeExtensionI18nContext,
+    children,
+    ...ctx
+  };
+  return {
+    ctx: usedCtx,
     wrapper: (
-      <I18nDictionariesProvider
-        defaults={chromeExtensionI8nDefaults}
-        dictionaries={chromeExtensionI18nDictionaries}
-        ctx={ChromeExtensionI18nContext}
-      >
-        <GitHubContext.Provider value={usedCtx}>{children}</GitHubContext.Provider>
+      <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
+        {usedCtx.children}
       </I18nDictionariesProvider>
     )
   };

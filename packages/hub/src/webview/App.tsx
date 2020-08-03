@@ -52,7 +52,6 @@ import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
 import { OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import { I18nHtml } from "@kogito-tooling/i18n";
 import { useHubI18n } from "../common/i18n/locales";
 
 enum ExtensionStatus {
@@ -233,10 +232,10 @@ export function App() {
           width: "90%",
           title: (
             <>
-              <p><I18nHtml>{i18n.alert.launching.title}</I18nHtml></p>
+              <p>{i18n.alert.launching.title}</p>
               <br />
-              <p><I18nHtml>{i18n.alert.launching.try}</I18nHtml></p>
-              <p><I18nHtml>{i18n.alert.launching.directory}</I18nHtml></p>
+              <p>{i18n.alert.launching.try}</p>
+              <p>{i18n.alert.launching.directory}</p>
               <ClipboardCopy isReadOnly={true}>{`chmod -R u+x "Business Modeler Hub Preview.app" `}</ClipboardCopy>
             </>
           )
@@ -278,7 +277,7 @@ export function App() {
                 isPlain={true}
                 dropdownItems={[
                   <DropdownItem key="update" component="button" isDisabled={true}>
-                    <I18nHtml>{i18n.noUpdates}</I18nHtml>
+                    {i18n.noUpdates}
                   </DropdownItem>,
                   <DropdownItem
                     key="uninstall"
@@ -286,7 +285,7 @@ export function App() {
                     onClick={vscode_requestUninstall}
                     isDisabled={vscode_status !== ExtensionStatus.INSTALLED}
                   >
-                    <I18nHtml>{i18n.terms.uninstall}</I18nHtml>
+                    {i18n.terms.uninstall}
                   </DropdownItem>
                 ]}
               />
@@ -301,12 +300,12 @@ export function App() {
             <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
               {vscode_status === ExtensionStatus.NOT_INSTALLED && (
                 <Button variant={"secondary"} onClick={vscode_install}>
-                  <I18nHtml>{i18n.terms.install}</I18nHtml>
+                  {i18n.terms.install}
                 </Button>
               )}
               {vscode_status === ExtensionStatus.INSTALLED && (
                 <Button variant={"secondary"} onClick={vscode_launch}>
-                  <I18nHtml>{i18n.terms.launch}</I18nHtml>
+                  {i18n.terms.launch}
                 </Button>
               )}
               <Text style={{ display: "flex", alignItems: "center" }}>{vscode_message}</Text>
@@ -326,7 +325,7 @@ export function App() {
             </CardBody>
             <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
               <Button variant={"secondary"} onClick={chrome_toggleModal}>
-                <I18nHtml>{i18n.terms.install}</I18nHtml>
+                {i18n.terms.install}
               </Button>
               <Text style={{ display: "flex", alignItems: "center" }} />
             </CardFooter>
@@ -338,36 +337,36 @@ export function App() {
             onClose={chrome_toggleModal}
             actions={[
               <Button key="cancel" variant="link" onClick={chrome_toggleModal}>
-                <I18nHtml>{i18n.terms.done}</I18nHtml>
+                {i18n.terms.done}
               </Button>
             ]}
           >
             <TextContent>
-              <Text component={TextVariants.p}><I18nHtml>{i18n.chromeExtension.modal.chromeRequirement}</I18nHtml></Text>
+              <Text component={TextVariants.p}>{i18n.chromeExtension.modal.chromeRequirement}</Text>
               <Text component={TextVariants.p}>
-                <I18nHtml>`${i18n.chromeExtension.modal.chromeDownload} `</I18nHtml>
+                `${i18n.chromeExtension.modal.chromeDownload} `
                 <Button variant={"link"} isInline={true} onClick={chrome_openDownloadGoogleChrome}>
-                  <I18nHtml>{i18n.chromeExtension.modal.here}</I18nHtml>
+                  {i18n.chromeExtension.modal.here}
                 </Button>
                 .
               </Text>
-              <Text component={TextVariants.p}><I18nHtml>{i18n.chromeExtension.modal.alreadyHaveChrome}:</I18nHtml></Text>
+              <Text component={TextVariants.p}>{i18n.chromeExtension.modal.alreadyHaveChrome}:</Text>
               <TextList component={TextListVariants.ol}>
                 <TextListItem>
-                  <I18nHtml>`${i18n.chromeExtension.modal.firstStep.firstPart} `</I18nHtml>
+                  `${i18n.chromeExtension.modal.firstStep.firstPart} `
                   <Button variant={"link"} isInline={true} onClick={chrome_openKogitoToolingReleasesPage}>
-                    <I18nHtml>{i18n.names.chromeStore}</I18nHtml>
+                    {i18n.names.chromeStore}
                   </Button>{" "}
-                  <I18nHtml>{i18n.chromeExtension.modal.firstStep.secondPart}</I18nHtml>
+                  {i18n.chromeExtension.modal.firstStep.secondPart}
                 </TextListItem>
-                <TextListItem><I18nHtml>{i18n.chromeExtension.modal.secondStep}</I18nHtml></TextListItem>
-                <TextListItem><I18nHtml>{i18n.chromeExtension.modal.thirdStep}</I18nHtml></TextListItem>
+                <TextListItem>{i18n.chromeExtension.modal.secondStep}</TextListItem>
+                <TextListItem>{i18n.chromeExtension.modal.thirdStep}</TextListItem>
                 <TextListItem>
-                  <I18nHtml>`${i18n.chromeExtension.modal.done.firstPart} `</I18nHtml>
+                  `${i18n.chromeExtension.modal.done.firstPart} `
                   <Button variant={"link"} isInline={true} onClick={chrome_openGitHub}>
-                    <I18nHtml>{i18n.names.github}</I18nHtml>
+                    {i18n.names.github}
                   </Button>{" "}
-                  <I18nHtml>`${i18n.chromeExtension.modal.done.secondPart} `</I18nHtml>
+                  `${i18n.chromeExtension.modal.done.secondPart} `
                 </TextListItem>
               </TextList>
             </TextContent>
@@ -384,21 +383,21 @@ export function App() {
                 isPlain={true}
                 dropdownItems={[
                   <DropdownItem key="action" component="button" isDisabled={true}>
-                    <I18nHtml>{i18n.noUpdates}</I18nHtml>
+                    {i18n.noUpdates}
                   </DropdownItem>
                 ]}
               />
             </CardHeader>
             <CardBody>
-              <Title headingLevel={"h1"} size={"xl"}><I18nHtml>{i18n.desktop.title}</I18nHtml></Title>
+              <Title headingLevel={"h1"} size={"xl"}>{i18n.desktop.title}</Title>
               <br />
               <TextContent>
-                <Text><I18nHtml>{i18n.desktop.description}</I18nHtml></Text>
+                <Text>{i18n.desktop.description}</Text>
               </TextContent>
             </CardBody>
             <CardFooter>
               <Button variant={"secondary"} onClick={desktop_launch}>
-                <I18nHtml>{i18n.terms.launch}</I18nHtml>
+                {i18n.terms.launch}
               </Button>
             </CardFooter>
           </Card>
@@ -408,15 +407,15 @@ export function App() {
               <img style={{ height: "52px" }} src={"images/online-logo.svg"} />
             </CardHeader>
             <CardBody>
-              <Title headingLevel={"h1"} size={"xl"}><I18nHtml>{i18n.online.title}</I18nHtml></Title>
+              <Title headingLevel={"h1"} size={"xl"}>{i18n.online.title}</Title>
               <br />
               <TextContent>
-                <Text><I18nHtml>{i18n.online.description}</I18nHtml></Text>
+                <Text>{i18n.online.description}</Text>
               </TextContent>
             </CardBody>
             <CardFooter>
               <Button variant={"secondary"} onClick={online_open}>
-                <I18nHtml>{i18n.terms.launch}</I18nHtml>
+                {i18n.terms.launch}
               </Button>
             </CardFooter>
           </Card>

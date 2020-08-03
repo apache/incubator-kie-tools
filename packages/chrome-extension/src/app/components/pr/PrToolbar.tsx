@@ -17,7 +17,6 @@
 import * as React from "react";
 import { FileStatusOnPr } from "./FileStatusOnPr";
 import { useChromeExtensionI18n } from "../../i18n/locales";
-import { I18nHtml } from "@kogito-tooling/i18n";
 
 export function PrToolbar(props: {
   onSeeAsDiagram: () => void;
@@ -49,13 +48,13 @@ export function PrToolbar(props: {
     <>
       {!props.textMode && (
         <button disabled={props.textMode} className={"btn btn-sm kogito-button"} onClick={closeDiagram}>
-          <I18nHtml>{i18n.pr.toolbar.closeDiagram}</I18nHtml>
+          {i18n.pr.toolbar.closeDiagram}
         </button>
       )}
 
       {props.textMode && (
         <button className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
-          <I18nHtml>{i18n.seeAsDiagram}</I18nHtml>
+          {i18n.seeAsDiagram}
         </button>
       )}
 
@@ -67,7 +66,7 @@ export function PrToolbar(props: {
             type={"button"}
             onClick={toggleOriginal}
           >
-            <I18nHtml>{i18n.pr.toolbar.original}</I18nHtml>
+            {i18n.pr.toolbar.original}
           </button>
           <button
             disabled={!props.originalDiagram}
@@ -75,7 +74,7 @@ export function PrToolbar(props: {
             type={"button"}
             onClick={toggleOriginal}
           >
-            <I18nHtml>{i18n.pr.toolbar.changes}</I18nHtml>
+            {i18n.pr.toolbar.changes}
           </button>
         </div>
       )}

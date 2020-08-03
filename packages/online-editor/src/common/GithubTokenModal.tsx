@@ -25,7 +25,7 @@ import {
   Title,
   InputGroup,
   TextInput,
-  InputGroupText,
+  InputGroupText
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, CheckIcon } from "@patternfly/react-icons";
 import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_URL, GITHUB_TOKENS_HOW_TO_URL } from "./GithubService";
@@ -69,8 +69,8 @@ export function GithubTokenModal(props: Props) {
       title=""
       header={
         <>
-          <Title headingLevel="h1" size={BaseSizes['2xl']}>
-            <I18nHtml>{i18n.githubTokenModal.header.title}</I18nHtml>
+          <Title headingLevel="h1" size={BaseSizes["2xl"]}>
+            {i18n.githubTokenModal.header.title}
           </Title>
           <p className="pf-u-pt-sm">{i18n.githubTokenModal.header.subtitle}</p>
         </>
@@ -79,7 +79,7 @@ export function GithubTokenModal(props: Props) {
         <div className="pf-u-w-100">
           <h3>
             <a href={GITHUB_TOKENS_URL} target={"_blank"}>
-              <I18nHtml>{i18n.githubTokenModal.footer.createNewToken}</I18nHtml>
+              {i18n.githubTokenModal.footer.createNewToken}
               <ExternalLinkAltIcon className="pf-u-mx-sm" />
             </a>
           </h3>
@@ -104,10 +104,10 @@ export function GithubTokenModal(props: Props) {
           </InputGroup>
           <div className="pf-u-mt-md pf-u-mb-0 pf-u-float-right">
             <Button variant="danger" onClick={onResetHandler}>
-              <I18nHtml>{i18n.terms.reset}</I18nHtml>
+              {i18n.terms.reset}
             </Button>
             <Button className="pf-u-ml-sm" variant="primary" isDisabled={!authenticated} onClick={props.onContinue}>
-              <I18nHtml>{i18n.terms.continue}</I18nHtml>
+              {i18n.terms.continue}
             </Button>
           </div>
         </div>
@@ -117,7 +117,7 @@ export function GithubTokenModal(props: Props) {
         <p>
           <span className="pf-u-mr-sm">{i18n.githubTokenModal.body.disclaimer}</span>
           <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"}>
-            <I18nHtml>{i18n.githubTokenModal.body.learnMore}</I18nHtml>
+            {i18n.githubTokenModal.body.learnMore}
             <ExternalLinkAltIcon className="pf-u-mx-sm" />
           </a>
         </p>

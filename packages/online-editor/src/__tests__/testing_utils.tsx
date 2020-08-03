@@ -22,8 +22,9 @@ import { HashRouter } from "react-router-dom";
 import { GithubService } from "../common/GithubService";
 import { GlobalContext, GlobalContextType } from "../common/GlobalContext";
 import { Routes } from "../common/Routes";
-import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n";
 import { onlineI18nDefaults, onlineI18nDictionaries, OnlineI18nContext } from "../common/i18n/locales";
+import { OnlineI18n } from "../common/i18n";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const usedCtx = {
@@ -45,16 +46,35 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
   return {
     ctx: usedCtx,
     wrapper: (
-      <I18nDictionariesProvider defaults={onlineI18nDefaults} dictionaries={onlineI18nDictionaries} ctx={OnlineI18nContext}>
-        <GlobalContext.Provider key={""} value={usedCtx}>
-          <HashRouter>
-            <Switch>
-              <Route exact={true} path={usedCtx.routes.home.url({})}>
-                {children}
-              </Route>
-            </Switch>
-          </HashRouter>
-        </GlobalContext.Provider>
+      <GlobalContext.Provider key={""} value={usedCtx}>
+        <HashRouter>
+          <Switch>
+            <Route exact={true} path={usedCtx.routes.home.url({})}>
+              {children}
+            </Route>
+          </Switch>
+        </HashRouter>
+      </GlobalContext.Provider>
+    )
+  };
+}
+
+export function usingTestingOnlineI18nContext(
+  children: React.ReactElement,
+  ctx?: Partial<I18nDictionariesProviderProps<OnlineI18n>>
+) {
+  const usedCtx: I18nDictionariesProviderProps<OnlineI18n> = {
+    defaults: onlineI18nDefaults,
+    dictionaries: onlineI18nDictionaries,
+    ctx: OnlineI18nContext,
+    children,
+    ...ctx
+  };
+  return {
+    ctx: usedCtx,
+    wrapper: (
+      <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
+        {usedCtx.children}
       </I18nDictionariesProvider>
     )
   };

@@ -17,8 +17,9 @@
 import { EmbeddedEditorRouter } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { GlobalContext, GlobalContextType } from "../webview/common/GlobalContext";
-import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n";
 import { desktopI18nDefaults, desktopI18nDictionaries, DesktopI18nContext } from "../webview/common/i18n/locales";
+import { DesktopI18n } from "../webview/common/i18n";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const usedCtx = {
@@ -29,10 +30,29 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
   return {
     ctx: usedCtx,
     wrapper: (
-      <I18nDictionariesProvider defaults={desktopI18nDefaults} dictionaries={desktopI18nDictionaries} ctx={DesktopI18nContext}>
-        <GlobalContext.Provider key={""} value={usedCtx}>
-          {children}
-        </GlobalContext.Provider>
+      <GlobalContext.Provider key={""} value={usedCtx}>
+        {children}
+      </GlobalContext.Provider>
+    )
+  };
+}
+
+export function usingTestingDesktopI18nContext(
+  children: React.ReactElement,
+  ctx?: Partial<I18nDictionariesProviderProps<DesktopI18n>>
+) {
+  const usedCtx: I18nDictionariesProviderProps<DesktopI18n> = {
+    defaults: desktopI18nDefaults,
+    dictionaries: desktopI18nDictionaries,
+    ctx: DesktopI18nContext,
+    children,
+    ...ctx
+  };
+  return {
+    ctx: usedCtx,
+    wrapper: (
+      <I18nDictionariesProvider defaults={usedCtx.defaults} dictionaries={usedCtx.dictionaries} ctx={usedCtx.ctx}>
+        {usedCtx.children}
       </I18nDictionariesProvider>
     )
   };

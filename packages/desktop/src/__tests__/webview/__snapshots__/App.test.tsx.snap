@@ -177,11 +177,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
             <h1
               class="pf-c-title pf-m-2xl"
             >
-              <p
-                style="display: inline;"
-              >
-                Create new file
-              </p>
+              Create new file
             </h1>
           </div>
         </div>
@@ -197,11 +193,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
               <h3
                 class="pf-c-title pf-m-xl pf-u-mb-md"
               >
-                <p
-                  style="display: inline;"
-                >
-                  Blank Workflow (.BPMN)
-                </p>
+                Blank Workflow (.BPMN)
               </h3>
             </div>
             <div
@@ -223,11 +215,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
               <h3
                 class="pf-c-title pf-m-xl pf-u-mb-md"
               >
-                <p
-                  style="display: inline;"
-                >
-                  Blank Decision Model (.DMN)
-                </p>
+                Blank Decision Model (.DMN)
               </h3>
             </div>
             <div
@@ -249,11 +237,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
               <h3
                 class="pf-c-title pf-m-xl pf-u-mb-md"
               >
-                <p
-                  style="display: inline;"
-                >
-                  Sample Workflow (.BPMN)
-                </p>
+                Sample Workflow (.BPMN)
               </h3>
             </div>
             <div
@@ -275,11 +259,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
               <h3
                 class="pf-c-title pf-m-xl pf-u-mb-md"
               >
-                <p
-                  style="display: inline;"
-                >
-                  Sample Decision Model (.DMN)
-                </p>
+                Sample Decision Model (.DMN)
               </h3>
             </div>
             <div
@@ -301,11 +281,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
               <h3
                 class="pf-c-title pf-m-xl"
               >
-                <p
-                  style="display: inline;"
-                >
-                  Open from source
-                </p>
+                Open from source
               </h3>
             </div>
             <div
@@ -317,13 +293,9 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
                 <p
                   class=""
                   data-pf-content="true"
-                />
-                <p
-                  style="display: inline;"
                 >
                   Paste a URL to a source code link (GitHub, Dropbox, etc.)
                 </p>
-                <p />
                 <form
                   class="pf-c-form"
                   novalidate=""
@@ -376,11 +348,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
                 data-ouia-safe="true"
                 type="button"
               >
-                <p
-                  style="display: inline;"
-                >
-                  Open from source
-                </p>
+                Open from source
               </button>
             </div>
           </article>
@@ -392,11 +360,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
         <h3
           class="pf-c-title pf-m-2xl"
         >
-          <p
-            style="display: inline;"
-          >
-            Recent Files
-          </p>
+          Recent Files
         </h3>
         <div
           class="pf-c-toolbar"
@@ -528,11 +492,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
         <div
           class="pf-l-bullseye"
         >
-          <p
-            style="display: inline;"
-          >
-            No files were opened yet.
-          </p>
+          No files were opened yet.
         </div>
       </section>
     </main>
@@ -717,11 +677,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
             <h1
               class="pf-c-title pf-m-2xl"
             >
-              <p
-                style="display: inline;"
-              >
-                Create new file
-              </p>
+              Create new file
             </h1>
           </div>
         </div>
@@ -737,11 +693,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
               <h3
                 class="pf-c-title pf-m-xl pf-u-mb-md"
               >
-                <p
-                  style="display: inline;"
-                >
-                  Blank Workflow (.BPMN)
-                </p>
+                Blank Workflow (.BPMN)
               </h3>
             </div>
             <div
@@ -763,11 +715,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
               <h3
                 class="pf-c-title pf-m-xl pf-u-mb-md"
               >
-                <p
-                  style="display: inline;"
-                >
-                  Blank Decision Model (.DMN)
-                </p>
+                Blank Decision Model (.DMN)
               </h3>
             </div>
             <div
@@ -789,11 +737,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
               <h3
                 class="pf-c-title pf-m-xl pf-u-mb-md"
               >
-                <p
-                  style="display: inline;"
-                >
-                  Sample Workflow (.BPMN)
-                </p>
+                Sample Workflow (.BPMN)
               </h3>
             </div>
             <div
@@ -815,11 +759,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
               <h3
                 class="pf-c-title pf-m-xl pf-u-mb-md"
               >
-                <p
-                  style="display: inline;"
-                >
-                  Sample Decision Model (.DMN)
-                </p>
+                Sample Decision Model (.DMN)
               </h3>
             </div>
             <div
@@ -841,11 +781,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
               <h3
                 class="pf-c-title pf-m-xl"
               >
-                <p
-                  style="display: inline;"
-                >
-                  Open from source
-                </p>
+                Open from source
               </h3>
             </div>
             <div
@@ -857,13 +793,9 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                 <p
                   class=""
                   data-pf-content="true"
-                />
-                <p
-                  style="display: inline;"
                 >
                   Paste a URL to a source code link (GitHub, Dropbox, etc.)
                 </p>
-                <p />
                 <form
                   class="pf-c-form"
                   novalidate=""
@@ -916,11 +848,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                 data-ouia-safe="true"
                 type="button"
               >
-                <p
-                  style="display: inline;"
-                >
-                  Open from source
-                </p>
+                Open from source
               </button>
             </div>
           </article>
@@ -932,11 +860,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
         <h3
           class="pf-c-title pf-m-2xl"
         >
-          <p
-            style="display: inline;"
-          >
-            Recent Files
-          </p>
+          Recent Files
         </h3>
         <div
           class="pf-c-toolbar"
@@ -1068,11 +992,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
         <div
           class="pf-l-bullseye"
         >
-          <p
-            style="display: inline;"
-          >
-            No files were opened yet.
-          </p>
+          No files were opened yet.
         </div>
       </section>
     </main>
@@ -1148,11 +1068,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                       data-testid="save-button"
                       type="button"
                     >
-                      <p
-                        style="display: inline;"
-                      >
-                        Save
-                      </p>
+                      Save
                     </button>
                   </div>
                   <div
