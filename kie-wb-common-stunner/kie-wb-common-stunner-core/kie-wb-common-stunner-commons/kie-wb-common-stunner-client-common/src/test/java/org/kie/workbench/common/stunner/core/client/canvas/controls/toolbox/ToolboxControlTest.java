@@ -135,7 +135,7 @@ public class ToolboxControlTest {
         tested.onCanvasSelectionEvent(event);
         // Verify if it has been selected and called show on every selection event.
         verify(delegated,
-               times(2)).show(eq(uuid));
+               times(1)).show(eq(uuid));
         verify(delegated,
                never()).destroy();
     }

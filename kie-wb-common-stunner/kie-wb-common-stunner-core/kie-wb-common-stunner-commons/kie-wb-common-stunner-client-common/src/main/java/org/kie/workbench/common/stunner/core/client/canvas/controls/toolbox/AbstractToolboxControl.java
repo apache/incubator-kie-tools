@@ -115,7 +115,12 @@ public abstract class AbstractToolboxControl
         if (checkEventContext(event)) {
             if (1 == event.getIdentifiers().size()) {
                 final String uuid = event.getIdentifiers().iterator().next();
-                show(uuid);
+
+                // Call show method without evaluating if it is a new single selection or same element
+                // selection after multiple selection causes DOM element leaks in DMN editor
+                if (!uuid.equals(toolboxShowPredicate.id) || toolboxShowPredicate.count > 1) {
+                    show(uuid);
+                }
             } else {
                 showMultiple(event.getIdentifiers());
             }
