@@ -33,6 +33,7 @@ import { SCORE_CARD } from "./json2ui/Scorecard";
 import { SEQUENCE_MODEL } from "./json2ui/SequenceModel";
 import { SUPPORT_VECTOR_MACHINE_MODEL } from "./json2ui/SupportVectorMachineModel";
 import { TEXT_MODEL } from "./json2ui/TextModel";
+import { TIME_SERIES_MODEL } from "./json2ui/TimeSeriesModel";
 import { TREE_MODEL } from "./json2ui/TreeModel";
 
 export const JSON2UI_TRANSFORMATION: string = `(
@@ -75,7 +76,10 @@ export const JSON2UI_TRANSFORMATION: string = `(
                                         ${SUPPORT_VECTOR_MACHINE_MODEL},
                                         $append(
                                           ${TEXT_MODEL},
-                                          ${TREE_MODEL}
+                                          $append(
+                                            ${TIME_SERIES_MODEL},
+                                            ${TREE_MODEL}
+                                          )
                                         )
                                       )
                                     )

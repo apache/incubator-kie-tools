@@ -39,4 +39,5 @@ export * from "./SequenceModel";
 export * from "./SupportVectorMachineModel";
 export * from "./Targets";
 export * from "./TextModel";
+export * from "./TimeSeriesModel";
 export * from "./TreeModel";

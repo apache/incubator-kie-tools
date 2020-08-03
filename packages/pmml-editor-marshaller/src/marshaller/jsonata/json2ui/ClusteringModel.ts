@@ -27,7 +27,7 @@ import { OUTPUT } from "./Output";
 export const CLUSTERING_MODEL: string = `
 elements.elements[(name = "ClusteringModel")] ~> $map(function($v, $i) {
   $merge([
-    $bayesianNetworkModelFactory(),
+    $clusteringModelFactory(),
     $v.attributes,
     {
       "_type": $v.name

@@ -35,6 +35,8 @@ import { scorecardFactory } from "./jsonata/json2ui/Scorecard";
 import { sequenceModelFactory } from "./jsonata/json2ui/SequenceModel";
 import { supportVectorMachineModelFactory } from "./jsonata/json2ui/SupportVectorMachineModel";
 import { textModelFactory } from "./jsonata/json2ui/TextModel";
+import { timeSeriesModelFactory } from "./jsonata/json2ui/TimeSeriesModel";
+import { treeModelFactory } from "./jsonata/json2ui/TreeModel";
 import { UI2JSON_TRANSFORMATION as ui2json } from "./jsonata/UI2JSON";
 import { CompoundPredicate, False, FieldName, PMML, SimplePredicate, True } from "./model/pmml4_4";
 
@@ -61,7 +63,8 @@ export function XML2PMML(xml: string): PMML {
   expression.registerFunction("sequenceModelFactory", sequenceModelFactory);
   expression.registerFunction("supportVectorMachineModelFactory", supportVectorMachineModelFactory);
   expression.registerFunction("textModelFactory", textModelFactory);
-  expression.registerFunction("treeModelFactory", textModelFactory);
+  expression.registerFunction("timeSeriesModelFactory", timeSeriesModelFactory);
+  expression.registerFunction("treeModelFactory", treeModelFactory);
 
   expression.registerFunction("json2uiSimplePredicateFactory", json2uiSimplePredicateFactory);
   expression.registerFunction("json2uiCompoundPredicateFactory", json2uiCompoundPredicateFactory);
