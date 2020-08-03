@@ -31,7 +31,7 @@ import {
 } from "./utils";
 import { KogitoGuidedTour } from "..";
 import { CurrentTutorialContext } from "../contexts";
-import { DEFAULT_RECT, AutoMode, DemoMode } from "@kogito-tooling/editor-envelope-protocol";
+import { DEFAULT_RECT, AutoMode, DemoMode } from "../api";
 
 import "./Dialog.sass";
 

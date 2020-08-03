@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { Editor } from "@kogito-tooling/editor-api";
-import { DEFAULT_RECT } from "@kogito-tooling/editor-envelope-protocol";
+import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
 
 export class DummyEditor implements Editor {
   private ref: DummyEditorComponent;

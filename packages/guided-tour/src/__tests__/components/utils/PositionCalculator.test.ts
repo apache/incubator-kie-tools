@@ -15,7 +15,7 @@
  */
 
 import { calculatePositionStyle } from "../../../components/utils";
-import { Rect } from "@kogito-tooling/editor-envelope-protocol";
+import { Rect } from "../../../api";
 
 describe("PositionCalculator", () => {
   describe("calculatePositionStyle", () => {

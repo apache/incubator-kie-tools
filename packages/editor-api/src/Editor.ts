@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Rect } from "@kogito-tooling/editor-envelope-protocol";
+import { Rect } from "@kogito-tooling/guided-tour/dist/api";
 
 /**
  * Editor component API. Implement this class to create an Editor.

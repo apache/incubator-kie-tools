@@ -18,10 +18,10 @@ import * as React from "react";
 import { fireEvent } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import { useSyncedKeyboardEvents } from "../Hooks";
-import { KogitoEditorEnvelopeApi } from "@kogito-tooling/editor-envelope-protocol";
 import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
+import { KeyboardShortcutsEnvelopeApi } from "../../api";
 
-let messageBusClient: MessageBusClient<KogitoEditorEnvelopeApi>;
+let messageBusClient: MessageBusClient<KeyboardShortcutsEnvelopeApi>;
 
 beforeEach(() => {
   messageBusClient = {

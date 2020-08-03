@@ -3,8 +3,6 @@
   "version": "0.6.1",
   "description": "Guided Tour component",
   "license": "Apache-2.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "source": "src/index.tsx",
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
@@ -15,7 +13,6 @@
     "start": "rm -rf dist && webpack --watch"
   },
   "dependencies": {
-    "@kogito-tooling/editor-envelope-protocol": "0.6.1"
   },
   "peerDependencies": {
     "react": "16.12.0",

@@ -21,7 +21,9 @@ const common = require("../../webpack.common.config");
 
 module.exports = merge(common, {
   entry: {
-    index: "./src/index.tsx"
+    "api/index": "./src/api/index.ts",
+    "channel/index": "./src/channel/index.ts",
+    "envelope/index": "./src/envelope/index.ts"
   },
   target: "node",
   output: {

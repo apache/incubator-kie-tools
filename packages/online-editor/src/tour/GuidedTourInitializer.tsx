@@ -21,8 +21,8 @@ import { Button, Divider, List, ListItem, Text, Title } from "@patternfly/react-
 import { BookOpenIcon, TrophyIcon } from "@patternfly/react-icons";
 
 import { File } from "@kogito-tooling/embedded-editor";
-import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
-import { DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/editor-envelope-protocol";
+import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/channel";
+import { DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/guided-tour/dist/api";
 
 export function useDmnTour(isEditorReady: boolean, file: File) {
   useEffect(() => {

@@ -15,13 +15,9 @@
  */
 
 import { StateControl } from "../stateControl";
-import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
-import {
-  KogitoEditorChannelApi,
-  StateControlCommand,
-  Tutorial,
-  UserInteraction
-} from "@kogito-tooling/editor-envelope-protocol";
+import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/channel";
+import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
+import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor-envelope-protocol";
 import {
   KogitoEdit,
   ResourceContent,

@@ -18,7 +18,7 @@ import { act } from "react-dom/test-utils";
 
 import { useSelectorHandler } from "../../../components/utils";
 import { KogitoGuidedTour } from "../../..";
-import { DEFAULT_RECT, Rect } from "@kogito-tooling/editor-envelope-protocol";
+import { DEFAULT_RECT, Rect } from "../../../api";
 
 describe("useSelectorHandler", () => {
   beforeEach(() => {

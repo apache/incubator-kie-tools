@@ -15,6 +15,7 @@
  */
 
 import { unmountComponentAtNode, render as reactRender } from "react-dom";
+import * as React from "react";
 
 let contextMock = {};
 let componentContainer: HTMLElement | null = null;

@@ -25,7 +25,7 @@ import {
   KogitoEditorEnvelopeContextType
 } from "@kogito-tooling/editor-api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
-import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
+import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/envelope";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import * as ReactDOM from "react-dom";
 import * as React from "react";

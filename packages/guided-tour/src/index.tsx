@@ -17,7 +17,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { Rect, Tutorial, UserInteraction } from "@kogito-tooling/editor-envelope-protocol";
+import { Rect, Tutorial, UserInteraction } from "./api";
 import { GuidedTour } from "./components";
 import { GuidedTourCookie, GuidedTourDomUtils, GuidedTourEventBus } from "./core";
 

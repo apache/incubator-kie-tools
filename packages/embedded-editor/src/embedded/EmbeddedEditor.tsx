@@ -21,7 +21,7 @@ import {
 } from "@kogito-tooling/editor-envelope-protocol";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts/dist/channel";
-import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
+import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/channel";
 import * as CSS from "csstype";
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";

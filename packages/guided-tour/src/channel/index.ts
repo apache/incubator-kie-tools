@@ -14,8 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./Mode";
-export * from "./Rect";
-export * from "./Step";
-export * from "./Tutorial";
-export * from "./UserInteraction";
+export * from "../index"

@@ -15,7 +15,7 @@
  */
 
 import { KogitoGuidedTour } from "../..";
-import { DemoMode, Step, SubTutorialMode, Tutorial } from "@kogito-tooling/editor-envelope-protocol";
+import { DemoMode, Step, SubTutorialMode, Tutorial } from "../../api";
 
 const concat = <T>(array1: T[], array2: T[]) => array1.concat(array2);
 const flatMap = <T>(f: (array: T) => T[], array: T[]) => array.map(f).reduce(concat, []);

@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import { EditorContent, StateControlCommand } from "./api";
-import { KogitoChannelCommonApi } from "@kogito-tooling/channel-common-api";
-import { GuidedTourChannelApi } from "@kogito-tooling/guided-tour/dist/api";
+import { UserInteraction } from "./UserInteraction";
+import { Tutorial } from "./Tutorial";
 
-export interface KogitoEditorChannelApi extends KogitoChannelCommonApi, GuidedTourChannelApi {
-  receive_setContentError(errorMessage: string): void;
-  receive_stateControlCommandUpdate(command: StateControlCommand): void;
-  receive_contentRequest(): Promise<EditorContent>;
+export interface GuidedTourChannelApi {
+  receive_guidedTourUserInteraction(userInteraction: UserInteraction): void;
+  receive_guidedTourRegisterTutorial(tutorial: Tutorial): void;
 }

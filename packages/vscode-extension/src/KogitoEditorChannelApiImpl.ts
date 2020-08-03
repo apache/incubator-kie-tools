@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  KogitoEditorChannelApi,
-  StateControlCommand,
-  Tutorial,
-  UserInteraction
-} from "@kogito-tooling/editor-envelope-protocol";
+import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor-envelope-protocol";
 import {
   KogitoEdit,
   ResourceContentRequest,
@@ -30,6 +25,7 @@ import {
 import * as vscode from "vscode";
 import * as __path from "path";
 import { KogitoEditor } from "./KogitoEditor";
+import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   private readonly decoder = new TextDecoder("utf-8");

@@ -18,4 +18,3 @@ export * from "./EditorContext";
 export * from "./StateControlCommand";
 export * from "./EditorContent";
 export * from "./EditorEnvelopeLocator";
-export * from "./guidedTour";

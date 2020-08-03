@@ -16,7 +16,6 @@
 
 import {
   Association,
-  DEFAULT_RECT,
   EditorContent,
   EditorInitArgs,
   KogitoEditorChannelApi,
@@ -28,6 +27,7 @@ import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-
 import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts/dist/api";
+import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
 
 export class KogitoEditorEnvelopeApiFactory
   implements
