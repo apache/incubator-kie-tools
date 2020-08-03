@@ -1,6 +1,6 @@
 # Kogito Tooling i18n
 
-This library provides a type-safe i18n implementation for a react project
+This package provides a type-safe i18n library for React components
 
 ## Install
 
@@ -19,6 +19,7 @@ i18n
 ├── MyDictionary.ts
 └── locales
     ├── en.ts
+    ├── pt_BR.ts
     └── index.ts
 ```
 
@@ -29,7 +30,7 @@ i18n
 
 interface MyDictionary extends ReferenceDictionary<MyDictionary> {
   myWord: string;
-  myFuncion: (user: string) => string;
+  myCurrentLocale: (locale: string) => string;
   myNestedObject: {
     myNestedWord: string;
   };
@@ -43,10 +44,21 @@ interface MyDictionary extends ReferenceDictionary<MyDictionary> {
 
 const en: MyDictionary = {
   myWord: "My word",
-  myFuncion: (user: string) => `Hi ${user}`,
+  myCurrentLocale: (locale: string) => `My current locale is: ${locale}`,
   myNestedObject: {
     myNestedWord: `My ${"Nested".bold()} word`
   }
+};
+```
+
+- Create a dictionary that use the `TranslatedDictionary<MyDictionary>` type:
+
+```tsx
+"./i18n/locales/pt_BR.ts";
+
+const pt_BR: TranslatedDictionary<MyDictionary> = {
+  myWord: "Minha palavra",
+  myCurrentLocale: (locale: string) => `O meu local atual é: ${locale}`,
 };
 ```
 
@@ -56,7 +68,13 @@ const en: MyDictionary = {
 "./i18n/locales/index.ts";
 
 export const myAppI18nDefaults = { locale: "en", dictionary: en };
-export const myAppI18nDictionaries = new Map([["en", en]]);
+
+// It's reccomended that the key follows the BCP-47 standard to be compatible with the browser locale
+export const myAppI18nDictionaries = new Map([
+  ["en", en],
+  ["pt-BR", pt_BR]
+]);
+
 export const MyAppI18nContext = React.createContext<I18nContextType<MyDictionary>>({} as any);
 
 export function useMyAppI18n() {
@@ -77,18 +95,26 @@ function App() {
 
 // Using the custom hook created on ./i18n/locales/index.ts
 function MyCustomComponent() {
-  const { i18n } = useMyAppI18n();
+  const { locale, setLocale, i18n } = useMyAppI18n();
+
   return (
     <div>
-      // Render a string with HTML tags
+      {/* `myNestedWord` will always fallback on the 'en' dictionary because the pt-BR doesn't provide it. */}
       <I18nHtml>{i18n.myNestedObject.myNestedWord} :)</I18nHtml>
-      <p>{i18n.nestedObject}</p>
+
+      {/* `myWord` will change accordling to the selected locale*/}
+      <p>{i18n.myWord}</p>
+      <a onClick={() => setLocale("pt-BR")}>pt-BR</a>
+      <br />
+      <a onClick={() => setLocale("en")}>en</a>
+
+      <p>{i18n.myCurrentLocale(locale)}</p>
     </div>
   );
 }
 ```
 
-*Remember: If you wish it's possible to use the Context directly with `MyAppI18nContext.Provider`!*
+_Remember: If you wish it's possible to use the Context directly with `MyAppI18nContext.Provider`!_
 
 ## Important Types
 
@@ -96,9 +122,9 @@ function MyCustomComponent() {
   The type of the default dictionary
 
 - `TranslatedDictionary<D>`
-  The type of any other dictionary that isn't the default. 
-  
-  *It's a `DeepOptional<ReferenceDictionary<D>>`.*
+  The type of any other dictionary that isn't the default.
+
+  _It's a `DeepOptional<ReferenceDictionary<D>>`._
 
 - `I18nContextType<D>`
   The context type, provides an object with the following properties:
@@ -116,6 +142,6 @@ interface I18nContextType<D> {
 - `<I18nDictionariesProvider>`
   Provides the `I18nContextType<D>`
 
-- `<I18nHtml>` Render a string with HTML tags 
+- `<I18nHtml>` Render a string with HTML tags
 
-*Be aware: the `<I18nHtml>` component use the `dangerouslySetInnerHTML` props, which can lead to HTML injection.*
+_Be aware: the `<I18nHtml>` component use the `dangerouslySetInnerHTML` props, which can lead to HTML injection._
