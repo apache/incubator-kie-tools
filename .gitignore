@@ -2,6 +2,9 @@
 /local
 target/
 
+# bats
+bats/*
+
 # Eclipse, Netbeans and IntelliJ files
 /.*
 !.gitignore

@@ -202,3 +202,7 @@ _push-staging:
 push-local-registry:
 	/bin/sh scripts/push-local-registry.sh ${REGISTRY} ${SHORTENED_LATEST_VERSION} ${NS}
 
+# run bat tests locally
+.PHONY: bats
+bats:
+	./scripts/run-bats.sh

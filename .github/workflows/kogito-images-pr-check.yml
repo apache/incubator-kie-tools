@@ -1,0 +1,40 @@
+name: Images PR check
+
+on: pull_request
+jobs:
+  bats_test:
+    name: Bats Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install xmllint
+        run: |
+          sudo apt-get update
+          sudo apt-get install libxml2-utils --fix-missing
+      - name: Cache bats binaries
+        uses: actions/cache@v1
+        with:
+          path: $GITHUB_WORKSPACE/bats/
+          key: ${{ runner.os }}-bats-binaries
+          restore-keys: |
+            ${{ runner.os }}-bats-binaries
+      - name: run bats
+        run: |
+          ./scripts/run-bats.sh
+          
+  validate_kogito_imagestream:
+    name: Validate Kogito imagestreams
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download openshift-validator-tool
+        run: |
+          wget https://github.com/jboss-container-images/jboss-kie-modules/raw/master/tools/openshift-template-validator/openshift-template-validator-linux-amd64
+      - name: Add execution permission to openshift-validator-tool
+        run: |
+          chmod +x openshift-template-validator-linux-amd64
+          mv openshift-template-validator-linux-amd64 ${HOME} 	
+      - name: validate imagestream
+        run: |
+          ${HOME}/openshift-template-validator-linux-amd64 validate -f kogito-imagestream.yaml
