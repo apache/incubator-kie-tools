@@ -62,7 +62,7 @@ pipeline{
         }
         stage('Update Artifacts'){
             steps{
-                sh "python3 scripts/update-maven-information.py"
+                sh "python3 scripts/update-maven-artifacts.py"
             }
         }
         stage('Prepare offline kogito-examples'){

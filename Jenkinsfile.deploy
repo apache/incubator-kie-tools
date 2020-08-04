@@ -78,7 +78,7 @@ pipeline {
             steps {
                 script {
                     // Update artifacts
-                    updateArtifactCmd = "python3 scripts/update-maven-information.py"
+                    updateArtifactCmd = "python3 scripts/update-maven-artifacts.py"
                     if(params.MAVEN_ARTIFACT_REPOSITORY != ''){
                         updateArtifactCmd += " --repo-url ${params.MAVEN_ARTIFACT_REPOSITORY}"
                     }
@@ -102,7 +102,7 @@ pipeline {
             steps {
                 script {
                     // Update repo in tests
-                    sh "python3 scripts/update-tests-maven-repo.py --repo-url ${params.MAVEN_ARTIFACT_REPOSITORY}"
+                    sh "python3 scripts/update-tests.py --repo-url ${params.MAVEN_ARTIFACT_REPOSITORY}"
 
                     // Debug purpose in case of issue
                     sh "cat tests/test-apps/clone-repo.sh"

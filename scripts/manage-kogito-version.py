@@ -19,64 +19,11 @@ import common
 import re
 import os
 
-# behave tests that needs to be update
-BEHAVE_TESTS = {"kogito-quarkus-ubi8-s2i.feature", "kogito-springboot-ubi8-s2i.feature",
-                "kogito-quarkus-jvm-ubi8.feature", "kogito-springboot-ubi8.feature"}
-
-
-
-def update_behave_tests(target_version, tests_branch):
-    """
-    Will update the behave tests accordingly.
-    :param target_version:
-    :param tests_branch:
-    """
-    base_dir = 'tests/features'
-
-    # this pattern will look for any occurrences of using master or using x.x.x
-    pattern_branch = re.compile(r'(using master)|(using \s*([\d.]+.x))|(using \s*([\d.]+))')
-    pattern_version_env = re.compile('\|[\s]*KOGITO_VERSION[\s]*\|[\s]*(([\d.]+.x)|([\d.]+)[\s]*|([\d.]+-SNAPSHOT))[\s]*\|')
-    # kogito examples does not have the version on built examples anymore, let's comment it out for now.
-    # quarkus_native_pattern_app_version = re.compile(r'(8.0.0-SNAPSHOT-runner\s)|((\s*([\d.]+)-runner\s)|(\s*([\d.]+)-SNAPSHOT-runner\s))')
-    # quarkus_pattern_app_version = re.compile(r'(8.0.0-SNAPSHOT-runner.jar)|((\s*([\d.]+)-runner.jar)|(\s*([\d.]+)-SNAPSHOT-runner.jar))')
-    # spring_pattern_app_version = re.compile(r'(8.0.0-SNAPSHOT.jar)|((\s*([\d.]+).jar)|(\s*([\d.]+)-SNAPSHOT.jar))')
-    for feature in BEHAVE_TESTS:
-        print("Updating feature {0}".format(feature))
-        with open(os.path.join(base_dir, feature)) as fe:
-            updated_value = pattern_branch.sub('using ' + tests_branch, fe.read())
-            updated_value = pattern_version_env.sub('| KOGITO_VERSION | ' + target_version + ' | ', updated_value)
-            # kogito examples does not have the version on built examples anymore, let's comment it out for now.
-            # updated_value = quarkus_native_pattern_app_version.sub(tests_version + '-runner ', updated_value)
-            # updated_value = quarkus_pattern_app_version.sub(tests_version + '-runner.jar', updated_value)
-            # updated_value = spring_pattern_app_version.sub(tests_version + '.jar', updated_value)
-
-        with open(os.path.join(base_dir, feature), 'w') as fe:
-            fe.write(updated_value)
-
-
-def update_test_apps_clone_repo(target_branch):
-    file = 'tests/test-apps/clone-repo.sh'
-    print('Updating file {}'.format(file))
-    if target_branch == 'master':
-        os.system('sed -i \'s/^git checkout.*/git checkout master/\' ' + file)
-    elif 'x' in target_branch:
-        os.system('sed -i \'s/^git checkout.*/git checkout -b ' + target_branch + '/\' ' + file)
-    else:
-        os.system('sed -i \'s/^git checkout.*/git checkout -b ' + target_branch + ' ' + target_branch + '/\' ' + file)
-
-def update_python_scripts(target_version):
-    '''
-    Updates the clone-repo.sh script for adding the given repository URL to the Maven settings.
-    :param target_version: Maven Repository URL to set
-    '''
-    file = 'scripts/update-maven-information.py'
-    print('Updating file {}'.format(file))
-    os.system('sed -i \'s|^DEFAULT_VERSION = .*|DEFAULT_VERSION = \"{}\"|\' '.format(target_version) + file)
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Kogito Version Manager')
     parser.add_argument('--bump-to', dest='bump_to', help='bump everything to the next version')
-    parser.add_argument('--apps-branch', dest='apps_branch',
+    parser.add_argument('--artifacts-version', dest='artifacts_version', help='update the artifacts version in modules/tests. Default is equal to bump-to')
+    parser.add_argument('--examples-ref', dest='examples_ref',
                         help='Update Behave tests to use the desired branch for kogito-examples')
     parser.add_argument('--confirm', default=False, action='store_true', help='To confirm automatically the setup')
 
@@ -88,27 +35,36 @@ if __name__ == "__main__":
         pattern = '\d+.\d+.(\d+$|\d+-rc\d+$|\d+-snapshot$)'
         regex = re.compile(r'\d+.\d+.(\d+$|\d+-rc\d+|\d+-snapshot$)')
         valid = regex.match(args.bump_to)
-        tests_branch = ""
+        examples_ref = ""
         if valid:
-            tests_branch = args.bump_to
-            if args.apps_branch is not None:
-                tests_branch = args.apps_branch
+            examples_ref = args.bump_to
+            if args.examples_ref is not None:
+                examples_ref = args.examples_ref
             if 'rc' in args.bump_to:
-                tests_branch = 'master'
+                examples_ref = 'master'
+            
+            artifacts_version = args.bump_to
+            if args.artifacts_version:
+                artifacts_version = args.artifacts_version
 
-            print("Version will be updated to {0}".format(args.bump_to))
-            print("Version on behave tests examples will be updated to version {0} and branch {1}".format(args.bump_to,
-                                                                                                          tests_branch))
+            print("Images version will be updated to {0}".format(args.bump_to))
+            print("Artifacts version will be updated to {0}".format(artifacts_version))
+            print("Examples ref will be updated to {}".format(examples_ref))
+
             if not args.confirm:
                 input("Is the information correct? If so press any key to continue...")
 
+            # modules
             common.update_image_version(args.bump_to)
             common.update_image_stream(args.bump_to)
             common.update_modules_version(args.bump_to)
-            common.update_kogito_version_env_in_modules(args.bump_to)
-            update_behave_tests(args.bump_to, tests_branch)
-            update_test_apps_clone_repo(tests_branch)
-            update_python_scripts(args.bump_to)
+            common.update_artifacts_version_env_in_modules(artifacts_version)
+            common.update_artifacts_version_in_python_scripts(artifacts_version)
+
+            # tests default values
+            common.update_examples_ref_in_behave_tests(examples_ref)
+            common.update_examples_ref_in_clone_repo(examples_ref)
+            common.update_artifacts_version_in_behave_tests(artifacts_version)
         else:
             print("Provided version {0} does not match the expected regex - {1}".format(args.bump_to, pattern))
     else:

@@ -140,7 +140,7 @@ if __name__ == "__main__":
     common.update_image_version(version)
     common.update_image_stream(version)
     common.update_modules_version(version)
-    common.update_kogito_version_env_in_modules(version)
+    common.update_artifacts_version_env_in_modules(version)
 
     find_next_tag()
     tag_and_push_images()
