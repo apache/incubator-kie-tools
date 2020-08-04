@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 import { ChannelType } from "@kogito-tooling/channel-common-api";
-import * as MicroEditorEnvelope from "@kogito-tooling/editor/dist/envelope";
+import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
 
 let channelType: ChannelType = ChannelType.DESKTOP;
 
 jest.mock("@kogito-tooling/editor/dist/envelope");
-const mockMicroEditorEnvelope = MicroEditorEnvelope as jest.Mocked<typeof MicroEditorEnvelope>;
+const mockEditorEnvelope = EditorEnvelope as jest.Mocked<typeof EditorEnvelope>;
 
 Object.defineProperty(global, "frameElement", {
   get: jest.fn().mockImplementation(() => {
@@ -36,12 +36,12 @@ Object.defineProperty(global, "frameElement", {
 //Lazy load module as it executes once loaded and, if import'ed, it's before the mocks are setup.
 import module = require("../../envelope/envelope");
 
-describe("MicroEditorEnvelope.init", () => {
+describe("EditorEnvelope.init", () => {
   test("initialisation", () => {
-    expect(mockMicroEditorEnvelope.init.mock.calls.length).toEqual(1);
-    expect(mockMicroEditorEnvelope.init.mock.calls[0][0].editorContext.channel).toBe(ChannelType.DESKTOP);
-    expect(mockMicroEditorEnvelope.init.mock.calls[0][0].editorFactory).toBeInstanceOf(
-      MicroEditorEnvelope.CompositeEditorFactory
+    expect(mockEditorEnvelope.init.mock.calls.length).toEqual(1);
+    expect(mockEditorEnvelope.init.mock.calls[0][0].editorContext.channel).toBe(ChannelType.DESKTOP);
+    expect(mockEditorEnvelope.init.mock.calls[0][0].editorFactory).toBeInstanceOf(
+      EditorEnvelope.CompositeEditorFactory
     );
   });
 });

@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-import { ResourceContentRequest, ResourceListRequest, WorkspaceApi } from "@kogito-tooling/channel-common-api";
+import {
+  ResourceContent,
+  ResourceContentRequest,
+  ResourceListRequest,
+  ResourcesList,
+  WorkspaceApi
+} from "@kogito-tooling/channel-common-api";
 import * as fs from "fs";
 import * as vscode from "vscode";
 
@@ -26,11 +32,11 @@ export class VsCodeWorkspaceApi implements WorkspaceApi {
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(path));
   }
 
-  public async receive_resourceContentRequest(request: ResourceContentRequest) {
+  public async receive_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent> {
     throw new Error("This is not implemented yet.");
   }
 
-  public async receive_resourceListRequest(request: ResourceListRequest) {
+  public async receive_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList> {
     throw new Error("This is not implemented yet.");
   }
 }

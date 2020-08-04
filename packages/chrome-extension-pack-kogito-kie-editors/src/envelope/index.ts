@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import * as MicroEditorEnvelope from "@kogito-tooling/editor/dist/envelope";
+import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
 import {  GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
 
-MicroEditorEnvelope.init({
+EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: {
     postMessage<D, Type>(message: EnvelopeBusMessage<D, Type>, targetOrigin?: string, _?: any) {
