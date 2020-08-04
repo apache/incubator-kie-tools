@@ -16,9 +16,9 @@
 
 import { EditorContent, EditorInitArgs, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "../api";
 import { EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
-import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
+import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 
-export class KogitoEditorChannelEnvelopeServer extends ChannelEnvelopeServer<
+export class KogitoEditorEnvelopeServer extends EnvelopeServer<
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi
 > {

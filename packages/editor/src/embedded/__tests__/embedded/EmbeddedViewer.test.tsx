@@ -16,7 +16,7 @@
 
 import { EditorEnvelopeLocator } from "../../../api";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel"
+import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel"
 import * as React from "react";
 import { File } from "../../common";
 import { EmbeddedViewer } from "../../embedded";
@@ -41,7 +41,7 @@ describe("EmbeddedViewer::ONLINE", () => {
   const busId = "test-bus-id";
 
   beforeAll(() => {
-    jest.spyOn(ChannelEnvelopeServer.prototype, "generateRandomId").mockReturnValue(busId);
+    jest.spyOn(EnvelopeServer.prototype, "generateRandomId").mockReturnValue(busId);
   });
 
   test("EmbeddedViewer::defaults", () => {

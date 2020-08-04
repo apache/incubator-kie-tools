@@ -23,7 +23,7 @@ import {
 } from "../api";
 import { EnvelopeBusMessageManager } from "../common";
 
-export class ChannelEnvelopeServer<
+export class EnvelopeServer<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>
 > {
@@ -42,10 +42,10 @@ export class ChannelEnvelopeServer<
   constructor(
     bus: EnvelopeBus,
     public readonly origin: string,
-    public readonly pollInit: (self: ChannelEnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>,
+    public readonly pollInit: (self: EnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>,
     private readonly manager = new EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>(
       message => bus.postMessage(message),
-      "ChannelEnvelopeServer"
+      "EnvelopeServer"
     )
   ) {
     this.busId = this.generateRandomId();
@@ -54,12 +54,12 @@ export class ChannelEnvelopeServer<
   public startInitPolling() {
     this.initPolling = setInterval(() => {
       this.pollInit(this).then(() => this.stopInitPolling());
-    }, ChannelEnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
+    }, EnvelopeServer.INIT_POLLING_INTERVAL_IN_MS);
 
     this.initPollingTimeout = setTimeout(() => {
       this.stopInitPolling();
       console.info("Init polling timed out. Looks like the Envelope is not responding accordingly.");
-    }, ChannelEnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS);
+    }, EnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS);
   }
 
   public stopInitPolling() {

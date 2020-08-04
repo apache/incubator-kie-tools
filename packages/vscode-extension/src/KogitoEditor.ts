@@ -25,7 +25,7 @@ import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
-import { KogitoEditorChannelEnvelopeServer } from "@kogito-tooling/editor/dist/channel";
+import { KogitoEditorEnvelopeServer } from "@kogito-tooling/editor/dist/channel";
 
 export class KogitoEditor implements EditorApi {
   private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;
@@ -38,7 +38,7 @@ export class KogitoEditor implements EditorApi {
     private readonly envelopeMapping: EnvelopeMapping,
     private readonly envelopeLocator: EditorEnvelopeLocator,
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
-    private readonly envelopeServer = new KogitoEditorChannelEnvelopeServer(
+    private readonly envelopeServer = new KogitoEditorEnvelopeServer(
       {
         postMessage: msg => this.panel.webview.postMessage(msg)
       },

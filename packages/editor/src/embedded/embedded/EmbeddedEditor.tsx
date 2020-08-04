@@ -25,7 +25,7 @@ import { File } from "../common";
 import { StateControl } from "../stateControl";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
-import { KogitoEditorChannelEnvelopeServer } from "../../channel";
+import { KogitoEditorEnvelopeServer } from "../../channel";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -79,7 +79,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   }, [stateControl, props.file, props]);
 
   const envelopeServer = useMemo(() => {
-    return new KogitoEditorChannelEnvelopeServer(
+    return new KogitoEditorEnvelopeServer(
       { postMessage: message => iframeRef.current?.contentWindow?.postMessage(message, "*") },
       props.editorEnvelopeLocator.targetOrigin,
       { fileExtension: props.file.fileExtension, resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "" }

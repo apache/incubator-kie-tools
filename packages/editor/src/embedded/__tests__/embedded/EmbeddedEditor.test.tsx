@@ -16,14 +16,14 @@
 
 import { EditorEnvelopeLocator } from "../../../api";
 import { ChannelType, KogitoEdit } from "@kogito-tooling/channel-common-api";
-import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
+import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import * as React from "react";
 import { File } from "../../common";
 import { EmbeddedEditor, EmbeddedEditorRef } from "../../embedded";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 import { render } from "@testing-library/react";
 import { EnvelopeBusMessagePurpose } from "@kogito-tooling/envelope-bus/dist/api";
-import { KogitoEditorChannelEnvelopeServer } from "../../../channel";
+import { KogitoEditorEnvelopeServer } from "../../../channel";
 
 describe("EmbeddedEditor::ONLINE", () => {
   const file: File = {
@@ -43,7 +43,7 @@ describe("EmbeddedEditor::ONLINE", () => {
   const busId = "test-bus-id";
 
   beforeEach(() => {
-    jest.spyOn(ChannelEnvelopeServer.prototype, "generateRandomId").mockReturnValue(busId);
+    jest.spyOn(EnvelopeServer.prototype, "generateRandomId").mockReturnValue(busId);
     jest.clearAllMocks();
   });
 
@@ -65,7 +65,7 @@ describe("EmbeddedEditor::ONLINE", () => {
   });
 
   test("EmbeddedEditor::setContent", () => {
-    const spyRespond_contentRequest = jest.spyOn(KogitoEditorChannelEnvelopeServer.prototype, "notify_contentChanged");
+    const spyRespond_contentRequest = jest.spyOn(KogitoEditorEnvelopeServer.prototype, "notify_contentChanged");
     render(
       <EmbeddedEditor
         ref={editorRef}
@@ -81,7 +81,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
   test("EmbeddedEditor::requestContent", () => {
     const spyRequest_contentResponse = jest.spyOn(
-      KogitoEditorChannelEnvelopeServer.prototype,
+      KogitoEditorEnvelopeServer.prototype,
       "request_contentResponse"
     );
     render(
@@ -99,7 +99,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
   test("EmbeddedEditor::requestPreview", () => {
     const spyRequest_previewResponse = jest.spyOn(
-      KogitoEditorChannelEnvelopeServer.prototype,
+      KogitoEditorEnvelopeServer.prototype,
       "request_previewResponse"
     );
     render(

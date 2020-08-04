@@ -21,11 +21,11 @@ import {
 } from "@kogito-tooling/envelope-bus/dist/api";
 import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi, StateControlCommand } from "../../api";
 import { ContentType, ResourceContent } from "@kogito-tooling/channel-common-api";
-import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
-import { KogitoEditorChannelEnvelopeServer } from "../../channel";
+import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
+import { KogitoEditorEnvelopeServer } from "../../channel";
 
 let sentMessages: Array<EnvelopeBusMessage<unknown, any>>;
-let envelopeServer: KogitoEditorChannelEnvelopeServer;
+let envelopeServer: KogitoEditorEnvelopeServer;
 let api: KogitoEditorChannelApi;
 
 beforeEach(() => {
@@ -43,7 +43,7 @@ beforeEach(() => {
     receive_resourceListRequest: jest.fn()
   };
 
-  envelopeServer = new KogitoEditorChannelEnvelopeServer(
+  envelopeServer = new KogitoEditorEnvelopeServer(
     { postMessage: (msg: any) => sentMessages.push(msg) },
     "tests",
     { fileExtension: "txt", resourcesPathPrefix: "" }
@@ -74,7 +74,7 @@ describe("startInitPolling", () => {
 
     await incomingMessage({
       busId: envelopeServer.busId,
-      requestId: "ChannelEnvelopeServer_0",
+      requestId: "EnvelopeServer_0",
       type: "receive_initRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: undefined
@@ -87,7 +87,7 @@ describe("startInitPolling", () => {
 
   test("stops polling after timeout", async () => {
     jest.spyOn(envelopeServer, "stopInitPolling");
-    ChannelEnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS = 200;
+    EnvelopeServer.INIT_POLLING_TIMEOUT_IN_MS = 200;
 
     envelopeServer.startInitPolling();
     expect(envelopeServer.initPolling).toBeTruthy();
@@ -303,7 +303,7 @@ describe("send", () => {
     expect(sentMessages).toEqual([
       {
         purpose: EnvelopeBusMessagePurpose.REQUEST,
-        requestId: "ChannelEnvelopeServer_0",
+        requestId: "EnvelopeServer_0",
         type: "receive_initRequest",
         data: [
           { busId: envelopeServer.busId, origin: "test-origin" },
@@ -314,7 +314,7 @@ describe("send", () => {
 
     await incomingMessage({
       busId: envelopeServer.busId,
-      requestId: "ChannelEnvelopeServer_0",
+      requestId: "EnvelopeServer_0",
       type: "receive_initRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: undefined
@@ -327,7 +327,7 @@ describe("send", () => {
     const content = envelopeServer.request_contentResponse();
     await incomingMessage({
       busId: envelopeServer.busId,
-      requestId: "ChannelEnvelopeServer_0",
+      requestId: "EnvelopeServer_0",
       type: "receive_contentRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: { content: "the content", path: "the/path/" }
@@ -340,7 +340,7 @@ describe("send", () => {
     const preview = envelopeServer.request_previewResponse();
     await incomingMessage({
       busId: envelopeServer.busId,
-      requestId: "ChannelEnvelopeServer_0",
+      requestId: "EnvelopeServer_0",
       type: "receive_previewRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: "the-svg-string"
@@ -353,7 +353,7 @@ describe("send", () => {
     const position = envelopeServer.client.request("receive_guidedTourElementPositionRequest", "my-selector");
     await incomingMessage({
       busId: envelopeServer.busId,
-      requestId: "ChannelEnvelopeServer_0",
+      requestId: "EnvelopeServer_0",
       type: "receive_guidedTourElementPositionRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
       data: {}

@@ -16,10 +16,10 @@
 
 import { useEffect } from "react";
 import { ApiDefinition, MessageBusClient, NotificationPropertyNames, SubscriptionCallback } from "../api";
-import { ChannelEnvelopeServer } from "../channel";
+import { EnvelopeServer } from "../channel";
 
 export function useConnectedEnvelopeServer<Api extends ApiDefinition<Api>>(
-  envelopeServer: ChannelEnvelopeServer<Api, any>,
+  envelopeServer: EnvelopeServer<Api, any>,
   api: Api
 ) {
   useEffect(() => {

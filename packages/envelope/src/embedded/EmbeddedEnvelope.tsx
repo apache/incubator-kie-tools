@@ -15,7 +15,7 @@
  */
 
 import { ApiDefinition, EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
-import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
+import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef } from "react";
 import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
@@ -25,12 +25,12 @@ export interface Props<
   ApiToConsume extends ApiDefinition<ApiToConsume>,
   T
 > {
-  refDelegate: (envelopeServer: ChannelEnvelopeServer<ApiToProvide, ApiToConsume>) => T;
+  refDelegate: (envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>) => T;
   forwardedRef: React.Ref<T>;
   api: ApiToProvide;
   envelopePath: string;
   origin: string;
-  pollInit: (envelopeServer: ChannelEnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>;
+  pollInit: (envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>;
 }
 
 export function EmbeddedEnvelope<
@@ -50,7 +50,7 @@ export function EmbeddedEnvelope<
   );
 
   const envelopeServer = useMemo(
-    () => new ChannelEnvelopeServer<ApiToProvide, ApiToConsume>(bus, props.origin, self => props.pollInit(self)),
+    () => new EnvelopeServer<ApiToProvide, ApiToConsume>(bus, props.origin, self => props.pollInit(self)),
     [bus, props.origin, props.pollInit]
   );
 
