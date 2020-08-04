@@ -117,7 +117,7 @@ func executePostRequestsWithOptionalReportingUsingThreadsOnServiceWithPathAndBod
 		return err
 	}
 
-	requestInfo := framework.NewPOSTHTTPRequestInfo(uri, path, body.GetMediaType(), "")
+	requestInfo := framework.NewPOSTHTTPRequestInfo(uri, path, body.GetMediaType(), bodyContent)
 
 	startTime := time.Now()
 	results, err := framework.ExecuteHTTPRequestsInThreads(data.Namespace, requestCount, threadCount, requestInfo)
