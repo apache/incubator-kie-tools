@@ -25,7 +25,9 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 )
 
 // DeployKogitoBuild deploy a KogitoBuild
@@ -88,6 +90,17 @@ func GetKogitoBuildStub(namespace, runtimeType, name string) *v1alpha1.KogitoBui
 	}
 
 	return kogitoBuild
+}
+
+// GetKogitoBuild returns the KogitoBuild type
+func GetKogitoBuild(namespace, buildName string) (*v1alpha1.KogitoBuild, error) {
+	build := &v1alpha1.KogitoBuild{}
+	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: buildName, Namespace: namespace}, build); err != nil && !errors.IsNotFound(err) {
+		return nil, fmt.Errorf("Error while trying to look for KogitoBuild %s: %v ", buildName, err)
+	} else if errors.IsNotFound(err) || !exists {
+		return nil, nil
+	}
+	return build, nil
 }
 
 // SetupKogitoBuildImageStreams sets the correct images for the KogitoBuild

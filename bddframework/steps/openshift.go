@@ -28,6 +28,7 @@ func registerOpenShiftSteps(ctx *godog.ScenarioContext, data *Data) {
 	// BuildConfig steps
 	ctx.Step(`^BuildConfig "([^"]*)" is created after (\d+) minutes$`, data.buildConfigIsCreatedAfterMinutes)
 	ctx.Step(`^BuildConfig "([^"]*)" is created with build resources within (\d+) minutes:$`, data.buildConfigHasResourcesWithinMinutes)
+	ctx.Step(`^BuildConfig "([^"]*)" is created with webhooks within (\d+) minutes$`, data.buildConfigHasWebhooksWithinMinutes)
 }
 
 // Build steps
@@ -59,4 +60,14 @@ func (data *Data) buildConfigHasResourcesWithinMinutes(buildConfigName string, t
 	}
 
 	return framework.WaitForBuildConfigToHaveResources(data.Namespace, buildConfigName, *requirements, timeoutInMin)
+}
+
+func (data *Data) buildConfigHasWebhooksWithinMinutes(buildConfigName string, timeoutInMin int) error {
+	kogitoBuild, err := framework.GetKogitoBuild(data.Namespace, buildConfigName)
+
+	if err != nil {
+		return err
+	}
+
+	return framework.WaitForBuildConfigCreatedWithWebhooks(data.Namespace, buildConfigName, kogitoBuild.Spec.WebHooks, timeoutInMin)
 }

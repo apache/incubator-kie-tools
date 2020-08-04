@@ -128,5 +128,12 @@ func GetBuildCLIFlags(kogitoBuild *v1alpha1.KogitoBuild) []string {
 		cmd = append(cmd, "--image-runtime", image)
 	}
 
+	// webhooks
+	if len(kogitoBuild.Spec.WebHooks) > 0 {
+		for _, webhook := range kogitoBuild.Spec.WebHooks {
+			cmd = append(cmd, "--web-hook", fmt.Sprintf("%s=%s", webhook.Type, webhook.Secret))
+		}
+	}
+
 	return cmd
 }

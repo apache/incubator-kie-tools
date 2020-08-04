@@ -26,6 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/openshift"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
@@ -64,6 +65,39 @@ func WaitForBuildConfigCreated(namespace, buildConfigName string, timeoutInMin i
 			}
 			return true, nil
 		})
+}
+
+// WaitForBuildConfigCreatedWithWebhooks waits for a build config to be created with webhooks
+func WaitForBuildConfigCreatedWithWebhooks(namespace, buildConfigName string, expectedWebhooks []v1alpha1.WebhookSecret, timeoutInMin int) error {
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("BuildConfig %s created with webhooks", buildConfigName), timeoutInMin,
+		func() (bool, error) {
+			if bc, err := getBuildConfig(namespace, buildConfigName); err != nil {
+				return checkWebhooksInBuildConfig(namespace, bc.Spec.Triggers, expectedWebhooks), err
+			} else if bc == nil {
+				return false, nil
+			}
+			return true, nil
+		})
+}
+
+func checkWebhooksInBuildConfig(namespace string, actual []buildv1.BuildTriggerPolicy, expected []v1alpha1.WebhookSecret) bool {
+	for _, expectedWebhook := range expected {
+		for _, actualTrigger := range actual {
+			var typedTrigger *buildv1.WebHookTrigger
+			switch expectedWebhook.Type {
+			case v1alpha1.GitHubWebhook:
+				typedTrigger = actualTrigger.GitHubWebHook
+			case v1alpha1.GenericWebhook:
+				typedTrigger = actualTrigger.GenericWebHook
+			}
+
+			if typedTrigger == nil || typedTrigger.SecretReference.Name != expectedWebhook.Secret {
+				return false
+			}
+		}
+	}
+
+	return true
 }
 
 func getBuildConfig(namespace, buildConfigName string) (*buildv1.BuildConfig, error) {

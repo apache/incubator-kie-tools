@@ -26,10 +26,13 @@ import (
 
 const (
 	// DataTable first column
-	kogitoBuildConfigKey = "config"
+	kogitoBuildConfigKey  = "config"
+	kogitoBuildWebhookKey = "webhook"
 
 	// DataTable second column
 	kogitoBuildNativeKey = "native"
+	kogitoBuildTypeKey   = "type"
+	kogitoBuildSecretKey = "secret"
 )
 
 // MapKogitoBuildTable maps Cucumber table to KogitoBuildHolder
@@ -61,6 +64,9 @@ func mapKogitoBuildTableRow(row *messages.PickleStepArgument_PickleTable_PickleT
 	case kogitoBuildConfigKey:
 		return mapKogitoBuildConfigTableRow(row, kogitoBuild)
 
+	case kogitoBuildWebhookKey:
+		return mapKogitoBuildWebhookTableRow(row, kogitoBuild)
+
 	default:
 		return false, fmt.Errorf("Unrecognized configuration option: %s", firstColumn)
 	}
@@ -75,6 +81,26 @@ func mapKogitoBuildConfigTableRow(row *messages.PickleStepArgument_PickleTable_P
 
 	default:
 		return false, fmt.Errorf("Unrecognized config configuration option: %s", secondColumn)
+	}
+
+	return true, nil
+}
+
+func mapKogitoBuildWebhookTableRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoBuild *v1alpha1.KogitoBuild) (mappingFound bool, err error) {
+	secondColumn := getSecondColumn(row)
+
+	if len(kogitoBuild.Spec.WebHooks) == 0 {
+		kogitoBuild.Spec.WebHooks = []v1alpha1.WebhookSecret{{}}
+	}
+
+	switch secondColumn {
+	case kogitoBuildTypeKey:
+		kogitoBuild.Spec.WebHooks[0].Type = v1alpha1.WebhookType(getThirdColumn(row))
+	case kogitoBuildSecretKey:
+		kogitoBuild.Spec.WebHooks[0].Secret = getThirdColumn(row)
+
+	default:
+		return false, fmt.Errorf("Unrecognized webhook configuration option: %s", secondColumn)
 	}
 
 	return true, nil
