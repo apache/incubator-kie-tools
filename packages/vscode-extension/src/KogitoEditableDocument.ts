@@ -92,7 +92,7 @@ export class KogitoEditableDocument implements CustomDocument {
 
   public async revert(cancellation: CancellationToken): Promise<void> {
     const input = await vscode.workspace.fs.readFile(this.uri);
-    return this.editorStore.withActive(editor => editor.setContent(this.relativePath, this.decoder.decode(input)));
+    this.editorStore.withActive(editor => editor.setContent(this.relativePath, this.decoder.decode(input)));
   }
 
   public notifyEdit(editor: KogitoEditor, edit: KogitoEdit) {
