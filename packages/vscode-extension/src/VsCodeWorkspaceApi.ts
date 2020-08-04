@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  ContentType,
-  ResourceContentRequest,
-  ResourceListRequest,
-  WorkspaceApi
-} from "@kogito-tooling/channel-common-api";
+import { ResourceContentRequest, ResourceListRequest, WorkspaceApi } from "@kogito-tooling/channel-common-api";
 import * as fs from "fs";
 import * as vscode from "vscode";
 
@@ -32,15 +27,10 @@ export class VsCodeWorkspaceApi implements WorkspaceApi {
   }
 
   public async receive_resourceContentRequest(request: ResourceContentRequest) {
-    //FIXME: Make it work for binary content too.
-    const uInt8Array = await vscode.workspace.fs.readFile(vscode.Uri.parse(request.path));
-    const content: string = Buffer.from(uInt8Array).toString("base64");
-    return { content: content, path: request.path, type: ContentType.TEXT };
+    throw new Error("This is not implemented yet.");
   }
 
   public async receive_resourceListRequest(request: ResourceListRequest) {
-    const uris = await vscode.workspace.findFiles(request.pattern);
-    const paths = uris.map(uri => uri.fsPath.toString());
-    return { paths: paths, pattern: request.pattern };
+    throw new Error("This is not implemented yet.");
   }
 }
