@@ -50,7 +50,7 @@ export class KogitoEditableDocument implements CustomDocument {
   }
 
   get relativePath() {
-    return vscode.workspace.asRelativePath(this.uri.fsPath);
+    return vscode.workspace.asRelativePath(this.uri);
   }
 
   get fileExtension() {
