@@ -36,22 +36,29 @@ public abstract class AbstractKieContainerService {
 
     protected KieContainer getKieContainer(Path path) {
         final KieModule kieModule = moduleService.resolveModule(path);
+        return assertKieContainerIsValid(buildInfoService.getBuildInfo(kieModule).getKieContainer());
+    }
 
-        BuildInfo buildInfo = buildInfoService.getBuildInfo(kieModule);
+    protected KieContainer getKieContainerClone(Path path) {
+        final KieModule kieModule = moduleService.resolveModule(path);
+        final BuildInfo buildInfo = buildInfoService.getBuildInfo(kieModule);
+
         if (buildInfo instanceof BuildInfoImpl) {
             // The kie builder needs to be cloned so that the original does not get altered.
             final Builder clone = ((BuildInfoImpl) buildInfo).getBuilder().clone();
             clone.build();
 
-            final KieContainer kieContainer = clone.getKieContainer();
-            if (kieContainer == null) {
-                throw new IllegalArgumentException("Retrieving KieContainer has failed. Fix all compilation errors within the " +
-                                                           "project and build the project again.");
-            }
-            return kieContainer;
+            return assertKieContainerIsValid(clone.getKieContainer());
         }
 
         throw new IllegalStateException("Failed to clone Builder.");
+    }
 
+    private KieContainer assertKieContainerIsValid(final KieContainer kieContainer) {
+        if (kieContainer == null) {
+            throw new IllegalArgumentException("Retrieving KieContainer has failed. Fix all compilation errors within the " +
+                                                       "project and build the project again.");
+        }
+        return kieContainer;
     }
 }

@@ -84,7 +84,7 @@ public class ScenarioRunnerServiceImpl extends AbstractKieContainerService
                                        final List<ScenarioWithIndex> scenarios,
                                        final Settings settings,
                                        final Background background) {
-        final KieContainer kieContainer = getKieContainer(path);
+        final KieContainer kieContainer = getKieContainerClone(path);
         final ScenarioRunnerDTO scenarioRunnerDTO = new ScenarioRunnerDTO(simulationDescriptor, scenarios, null, settings, background);
         final AbstractScenarioRunner scenarioRunner = getOrCreateRunnerSupplier(settings.getType())
                 .create(kieContainer, scenarioRunnerDTO);

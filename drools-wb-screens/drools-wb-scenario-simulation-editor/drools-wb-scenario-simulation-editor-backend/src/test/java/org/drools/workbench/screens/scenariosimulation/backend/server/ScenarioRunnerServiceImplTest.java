@@ -196,7 +196,7 @@ public class ScenarioRunnerServiceImplTest {
     @Test
     public void manageFailureToLoadABuilder() {
         when(buildInfoServiceMock.getBuildInfo(any())).thenReturn(null);
-        assertThatThrownBy(() -> scenarioRunnerService.getKieContainer(mock(Path.class)))
+        assertThatThrownBy(() -> scenarioRunnerService.getKieContainerClone(mock(Path.class)))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("Failed to clone Builder.");
     }
@@ -204,7 +204,7 @@ public class ScenarioRunnerServiceImplTest {
     @Test
     public void kieContainerTest() {
         when(builder.getKieContainer()).thenReturn(null);
-        assertThatThrownBy(() -> scenarioRunnerService.getKieContainer(mock(Path.class)))
+        assertThatThrownBy(() -> scenarioRunnerService.getKieContainerClone(mock(Path.class)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Retrieving KieContainer has failed. Fix all compilation errors within the " +
                                     "project and build the project again.");
