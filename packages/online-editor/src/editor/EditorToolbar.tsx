@@ -60,7 +60,7 @@ export function EditorToolbar(props: Props) {
   }, [props.onClose]);
 
   const fileExtension = useMemo(() => {
-    return context.routes.editor.args(location.pathname).type;
+    return context.file.fileExtension;
   }, [location]);
 
   const saveNewName = useCallback(() => {
