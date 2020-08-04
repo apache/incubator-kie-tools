@@ -20,6 +20,18 @@ jobs:
       MERGE_WARNING_MESSAGE: "ATTENTION: A merge attempt is being made to get your changes. If a conflict happens, please do a rebase/merge manually in your branch to get the latest kiegroup/master commits."
 
     steps:
+      - name: Check user membership to kiegroup
+        if: github.event_name == 'issue_comment'
+        uses: octokit/request-action@v2.x
+        id: checkUserMembership
+        with:
+          route: GET /orgs/kiegroup/members/:username
+          username: ${{ github.actor }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          [ "204" == "${{ steps.checkUserMembership.outputs.status }}" ]
+
       - name: Output Build info
         id: buildInfo
         run: |
