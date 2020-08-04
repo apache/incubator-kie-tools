@@ -52,7 +52,7 @@ export function EditorPage(props: Props) {
   const [savePreviewSuccessAlertVisible, setSavePreviewSuccessAlertVisible] = useState(false);
   const isDirty = useDirtyState(editorRef);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
-  const { i18n } = useDesktopI18n();
+  const { locale, i18n } = useDesktopI18n();
 
   const onClose = useCallback(() => {
     if (!isDirty) {
@@ -301,7 +301,7 @@ export function EditorPage(props: Props) {
               router={context.router}
               channelType={ChannelType.DESKTOP}
               onReady={requestThumbnailPreview}
-              locale={desktopI18nDefaults.locale}
+              locale={locale}
             />
           </StackItem>
         </Stack>

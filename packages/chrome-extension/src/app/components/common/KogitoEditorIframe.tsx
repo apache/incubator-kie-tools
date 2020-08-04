@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { ChannelType, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/microeditor-envelope-protocol";
+import {
+  ChannelType,
+  ResourceContentRequest,
+  ResourceListRequest
+} from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorType, EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
@@ -23,6 +27,7 @@ import { useGitHubApi } from "../common/GitHubContext";
 import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
+import { useChromeExtensionI18n } from "../../i18n/locales";
 
 const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
 const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
@@ -42,6 +47,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   const editorRef = useRef<EmbeddedEditorRef>(null);
   const { router, editorIndexPath, resourceContentServiceFactory } = useGlobals();
   const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
+  const { locale } = useChromeExtensionI18n();
 
   //Lookup ResourceContentService
   const resourceContentService = useMemo(() => {
@@ -134,7 +140,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           onResourceContentRequest={onResourceContentRequest}
           onResourceListRequest={onResourceContentList}
           envelopeUri={router.getRelativePathTo(editorIndexPath)}
-          locale={navigator.language}
+          locale={locale}
         />
       </div>
     </>

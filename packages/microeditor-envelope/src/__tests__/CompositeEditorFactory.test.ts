@@ -93,7 +93,7 @@ const envelopeContext: EnvelopeContextType = {
   services: {
     guidedTour: { isEnabled: () => false },
     keyboardShortcuts: new DefaultKeyboardShortcutsService({ editorContext: editorContext }),
-    i18nService: new I18nService()
+    i18n: new I18nService()
   }
 };
 

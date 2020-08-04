@@ -134,8 +134,8 @@ export class GwtEditorWrapperFactory implements EditorFactory<GwtLanguageData> {
         getLocale: () => {
           return envelopeContext.channelApi.request("receive_getLocale");
         },
-        onLocaleChange: (callback: (locale: string) => void) => {
-          this.i18nService.setCallback(callback);
+        onLocaleChange: (onLocaleChange: (locale: string) => void) => {
+          envelopeContext.services.i18n.setOnLocaleChange(onLocaleChange);
         },
       }
     };

@@ -102,7 +102,7 @@ export class EditorEnvelopeController {
         window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));
       },
       receive_localeChange: (locale: string) => {
-        this.i18nService.executeI18nCallback(locale);
+        this.i18nService.executeOnLocaleChange(locale);
       }
     });
 
@@ -114,7 +114,7 @@ export class EditorEnvelopeController {
         guidedTour: {
           isEnabled: () => KogitoGuidedTour.getInstance().isEnabled()
         },
-        i18nService: i18nService,
+        i18n: i18nService,
       }
     };
   }

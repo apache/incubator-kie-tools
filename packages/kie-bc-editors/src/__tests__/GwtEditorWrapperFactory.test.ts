@@ -83,7 +83,7 @@ describe("GwtEditorWrapperFactory", () => {
       services: {
         keyboardShortcuts: {} as any,
         guidedTour: {} as any,
-        i18nService: {} as any
+        i18n: {} as any
       }
     });
 

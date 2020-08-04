@@ -48,7 +48,7 @@ export function EditorPage(props: Props) {
   const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
   const isDirty = useDirtyState(editorRef);
-  const { i18n } = useOnlineI18n();
+  const { locale, i18n } = useOnlineI18n();
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -280,7 +280,7 @@ export function EditorPage(props: Props) {
           router={context.router}
           onReady={onReady}
           channelType={ChannelType.ONLINE}
-          locale={onlineI18nDefaults.locale}
+          locale={locale}
         />
       </PageSection>
       <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />

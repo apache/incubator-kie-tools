@@ -27,7 +27,7 @@ export const DEFAULT_TESTING_ENVELOPE_CONTEXT: EnvelopeContextType = {
     guidedTour: {
       isEnabled: () => false
     },
-    i18nService: new I18nService()
+    i18n: new I18nService()
   }
 };
 

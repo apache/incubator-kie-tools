@@ -1,6 +1,6 @@
 # Kogito Tooling i18n
 
-This package provides a type-safe i18n library for React components
+This package provides a type-safe i18n library for React components.
 
 ## Install
 
@@ -51,7 +51,10 @@ const en: MyDictionary = {
 };
 ```
 
-- Create a dictionary that use the `TranslatedDictionary<MyDictionary>` type:
+- Create a dictionary that use the `TranslatedDictionary<MyDictionary>` type.
+
+*The `TranslatedDictionary<D>` has the same keys of the `MyDictionary`, but they're optionals.
+The `TransletedDictionary` values override the default values on the `MyDictionary`, which prevents any missing translation.*
 
 ```tsx
 "./i18n/locales/pt_BR.ts";
@@ -62,7 +65,7 @@ const pt_BR: TranslatedDictionary<MyDictionary> = {
 };
 ```
 
-- Create some auxiliaries constants, and a custom hook that will be useful on nested custom components
+- Create the values that will be used by the I18nDictionariesProvider, and a custom hook that will be useful on nested custom components
 
 ```tsx
 "./i18n/locales/index.ts";
@@ -105,8 +108,7 @@ function MyCustomComponent() {
       {/* `myWord` will change accordling to the selected locale*/}
       <p>{i18n.myWord}</p>
       <a onClick={() => setLocale("pt-BR")}>pt-BR</a>
-      <br />
-      <a onClick={() => setLocale("en")}>en</a>
+      <a onClick={() => setLocale("en")}> en</a>
 
       <p>{i18n.myCurrentLocale(locale)}</p>
     </div>
@@ -124,13 +126,11 @@ _Remember: If you wish it's possible to use the Context directly with `MyAppI18n
 - `TranslatedDictionary<D>`
   The type of any other dictionary that isn't the default.
 
-  _It's a `DeepOptional<ReferenceDictionary<D>>`._
-
 - `I18nContextType<D>`
-  The context type, provides an object with the following properties:
+  The context type use by `<I18nDictionaryProvider>`, provides an object with the following properties:
 
 ```ts
-interface I18nContextType<D> {
+interface I18nContextType<D extends ReferenceDictionary<D>> {
   locale: string; // current locale
   setLocale: React.Dispatch<string>; // a function to set the desired locale
   i18n: D; // Dictionary
@@ -140,8 +140,8 @@ interface I18nContextType<D> {
 ## Components
 
 - `<I18nDictionariesProvider>`
-  Provides the `I18nContextType<D>`
+  Provides your implementation of `I18nContextType`
 
-- `<I18nHtml>` Render a string with HTML tags
+- `<I18nHtml>` Renders a string with HTML tags
 
-_Be aware: the `<I18nHtml>` component use the `dangerouslySetInnerHTML` props, which can lead to HTML injection._
+_Be aware: the `<I18nHtml>` component uses the `dangerouslySetInnerHTML` prop._

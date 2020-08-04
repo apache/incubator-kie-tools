@@ -15,13 +15,13 @@
  */
 
 export class I18nService {
-  private callback: (locale: string) => void;
+  private onLocaleChange: (locale: string) => void;
 
-  public executeI18nCallback(locale: string) {
-    this.callback?.(locale);
+  public executeOnLocaleChange(locale: string) {
+    this.onLocaleChange?.(locale);
   }
 
-  public setCallback(callback: (locale: string) => void) {
-    this.callback = callback;
+  public setOnLocaleChange(onLocaleChange: (locale: string) => void) {
+    this.onLocaleChange = onLocaleChange;
   }
 }

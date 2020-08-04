@@ -32,7 +32,7 @@ export interface EnvelopeContextType {
     guidedTour: {
       isEnabled: () => boolean;
     };
-    i18nService: I18nService;
+    i18n: I18nService;
   };
 }
 
