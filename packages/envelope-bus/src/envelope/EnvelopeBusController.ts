@@ -28,7 +28,7 @@ export class EnvelopeBusController<
   ApiToConsume extends ApiDefinition<ApiToConsume>
 > {
   public targetOrigin?: string;
-  public associatedBusId?: string;
+  public associatedEnvelopeServerId?: string;
   public eventListener?: any;
   public readonly manager: EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>;
 
@@ -40,9 +40,9 @@ export class EnvelopeBusController<
     this.manager = new EnvelopeBusMessageManager(message => this.send(message), "KogitoEnvelopeBus");
   }
 
-  public associate(origin: string, busId: string) {
+  public associate(origin: string, envelopeServerId: string) {
     this.targetOrigin = origin;
-    this.associatedBusId = busId;
+    this.associatedEnvelopeServerId = envelopeServerId;
   }
 
   public startListening(api: ApiToProvide) {
@@ -61,19 +61,19 @@ export class EnvelopeBusController<
   public send<T>(
     message: EnvelopeBusMessage<T, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>
   ) {
-    if (!this.targetOrigin) {
-      throw new Error("Tried to send message without targetOrigin set");
+    if (!this.targetOrigin || !this.associatedEnvelopeServerId) {
+      throw new Error("Tried to send message without associated Envelope Server set");
     }
-    this.bus.postMessage({ ...message, busId: this.associatedBusId }, this.targetOrigin);
+    this.bus.postMessage({ ...message, envelopeServerId: this.associatedEnvelopeServerId }, this.targetOrigin);
   }
 
   public receive(
     message: EnvelopeBusMessage<any, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
     api: ApiToProvide
   ) {
-    if (!message.busId) {
+    if (!message.envelopeServerId) {
       this.manager.server.receive(message, api);
-    } else if (message.busId && message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
+    } else if (message.envelopeServerId && message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
       this.manager.server.receive(message, {} as any);
     }
   }

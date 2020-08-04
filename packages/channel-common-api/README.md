@@ -1,2 +1,2 @@
-Envelope Bus
+Kogito Tooling Channel Common API
 --

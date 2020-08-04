@@ -47,6 +47,6 @@ export class KogitoEditorEnvelopeServer extends EnvelopeServer<
   }
 
   public request_initResponse(origin: string, initArgs: EditorInitArgs) {
-    return this.client.request("receive_initRequest", { origin: origin, busId: this.busId }, initArgs);
+    return this.client.request("receive_initRequest", { origin: origin, envelopeServerId: this.id }, initArgs);
   }
 }

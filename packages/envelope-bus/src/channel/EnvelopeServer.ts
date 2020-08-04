@@ -33,7 +33,7 @@ export class EnvelopeServer<
   public initPolling?: ReturnType<typeof setInterval>;
   public initPollingTimeout?: ReturnType<typeof setTimeout>;
 
-  public readonly busId: string;
+  public readonly id: string;
 
   public get client() {
     return this.manager.client;
@@ -48,7 +48,7 @@ export class EnvelopeServer<
       "EnvelopeServer"
     )
   ) {
-    this.busId = this.generateRandomId();
+    this.id = this.generateRandomId();
   }
 
   public startInitPolling() {
@@ -73,7 +73,7 @@ export class EnvelopeServer<
     message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
     api: ApiToProvide
   ) {
-    if (message.busId === this.busId) {
+    if (message.envelopeServerId === this.id) {
       this.manager.server.receive(message, api);
     } else if (message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
       this.manager.server.receive(message, {} as any);

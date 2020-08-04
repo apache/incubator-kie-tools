@@ -38,10 +38,10 @@ describe("EmbeddedViewer::ONLINE", () => {
   };
 
   const channelType = ChannelType.ONLINE;
-  const busId = "test-bus-id";
+  const envelopeServerId = "test-bus-id";
 
   beforeAll(() => {
-    jest.spyOn(EnvelopeServer.prototype, "generateRandomId").mockReturnValue(busId);
+    jest.spyOn(EnvelopeServer.prototype, "generateRandomId").mockReturnValue(envelopeServerId);
   });
 
   test("EmbeddedViewer::defaults", () => {
@@ -69,7 +69,7 @@ describe("EmbeddedViewer::ONLINE", () => {
     );
 
     await incomingMessage({
-      busId: busId,
+      envelopeServerId: envelopeServerId,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceContentRequest",
@@ -93,7 +93,7 @@ describe("EmbeddedViewer::ONLINE", () => {
     );
 
     await incomingMessage({
-      busId: busId,
+      envelopeServerId: envelopeServerId,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceListRequest",

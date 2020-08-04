@@ -19,14 +19,14 @@ import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 export class EnvelopeBusMessageBroadcaster {
   private readonly subscriptions: Array<(msg: EnvelopeBusMessage<unknown, any>) => void> = [];
 
-  public broadcast(msg: EnvelopeBusMessage<unknown, any>) {
-    // Messages directly from the Channel to the Envelope do not have a busId and should be ignored.
-    // That means that messages that are broadcast-able come from other Envelopes to other Channels, so they have a busId.
-    if (!msg.busId) {
+  public broadcast(message: EnvelopeBusMessage<unknown, any>) {
+    // Messages directly from the Channel to the Envelope do not have an envelopeServerId and should be ignored.
+    // That means that messages that are broadcast-able come from other Envelopes to other Channels, so they have an envelopeServerId.
+    if (!message.envelopeServerId) {
       return;
     }
 
-    this.subscriptions.forEach(callback => callback(msg));
+    this.subscriptions.forEach(callback => callback(message));
   }
 
   public subscribe(callback: (msg: EnvelopeBusMessage<unknown, any>) => void) {

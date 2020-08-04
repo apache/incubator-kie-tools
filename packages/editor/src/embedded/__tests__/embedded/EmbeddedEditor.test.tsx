@@ -40,10 +40,10 @@ describe("EmbeddedEditor::ONLINE", () => {
 
   const channelType = ChannelType.ONLINE;
   const editorRef = React.createRef<EmbeddedEditorRef>();
-  const busId = "test-bus-id";
+  const envelopeServerId = "test-bus-id";
 
   beforeEach(() => {
-    jest.spyOn(EnvelopeServer.prototype, "generateRandomId").mockReturnValue(busId);
+    jest.spyOn(EnvelopeServer.prototype, "generateRandomId").mockReturnValue(envelopeServerId);
     jest.clearAllMocks();
   });
 
@@ -129,7 +129,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      busId: busId,
+      envelopeServerId: envelopeServerId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "receive_setContentError",
       data: []
@@ -153,7 +153,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      busId: busId,
+      envelopeServerId: envelopeServerId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "receive_ready",
       data: []
@@ -177,7 +177,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      busId: busId,
+      envelopeServerId: envelopeServerId,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceContentRequest",
@@ -202,7 +202,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      busId: busId,
+      envelopeServerId: envelopeServerId,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceListRequest",
@@ -227,7 +227,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      busId: busId,
+      envelopeServerId: envelopeServerId,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "receive_newEdit",
       data: [new KogitoEdit("1")]

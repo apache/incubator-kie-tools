@@ -76,7 +76,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
   }
 
   public receive_initRequest = async (association: Association, initArgs: EditorInitArgs) => {
-    this.args.envelopeBusController.associate(association.origin, association.busId);
+    this.args.envelopeBusController.associate(association.origin, association.envelopeServerId);
 
     if (this.hasCapturedInitRequestYet()) {
       return;

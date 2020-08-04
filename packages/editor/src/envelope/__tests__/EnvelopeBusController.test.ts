@@ -25,7 +25,7 @@ let sentMessages: Array<[EnvelopeBusMessage<any, any>, string]>;
 beforeEach(() => {
   sentMessages = [];
   api = {
-    receive_initRequest: async a => envelopeBus.associate(a.origin, a.busId),
+    receive_initRequest: async a => envelopeBus.associate(a.origin, a.envelopeServerId),
     receive_contentRequest: jest.fn(),
     receive_previewRequest: jest.fn(),
     receive_guidedTourElementPositionRequest: jest.fn(),
@@ -110,7 +110,7 @@ describe("receive", () => {
       requestId: "any",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_initRequest",
-      data: [{ origin: "org", busId: "the-bus-id" }]
+      data: [{ origin: "org", envelopeServerId: "the-bus-id" }]
     });
     sentMessages = [];
   });
@@ -152,7 +152,7 @@ describe("receive", () => {
 
   test("init request", async () => {
     jest.spyOn(api, "receive_initRequest");
-    const association = { origin: "org", busId: "the-bus-id" };
+    const association = { origin: "org", envelopeServerId: "the-bus-id" };
 
     await incomingMessage({
       requestId: "requestId",
@@ -165,7 +165,7 @@ describe("receive", () => {
     expect(sentMessages).toEqual([
       [
         {
-          busId: "the-bus-id",
+          envelopeServerId: "the-bus-id",
           requestId: "requestId",
           purpose: EnvelopeBusMessagePurpose.RESPONSE,
           type: "receive_initRequest",
@@ -191,7 +191,7 @@ describe("receive", () => {
     expect(sentMessages).toEqual([
       [
         {
-          busId: "the-bus-id",
+          envelopeServerId: "the-bus-id",
           requestId: "3",
           purpose: EnvelopeBusMessagePurpose.RESPONSE,
           type: "receive_previewRequest",
@@ -217,7 +217,7 @@ describe("receive", () => {
     expect(sentMessages).toEqual([
       [
         {
-          busId: "the-bus-id",
+          envelopeServerId: "the-bus-id",
           requestId: "3",
           purpose: EnvelopeBusMessagePurpose.RESPONSE,
           type: "receive_contentRequest",
@@ -243,7 +243,7 @@ describe("receive", () => {
     expect(sentMessages).toEqual([
       [
         {
-          busId: "the-bus-id",
+          envelopeServerId: "the-bus-id",
           requestId: "3",
           purpose: EnvelopeBusMessagePurpose.RESPONSE,
           type: "receive_guidedTourElementPositionRequest",
@@ -275,7 +275,7 @@ describe("send", () => {
       requestId: "2",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_initRequest",
-      data: [{ origin: "tgt-orgn", busId: "the-bus-id" }]
+      data: [{ origin: "tgt-orgn", envelopeServerId: "the-bus-id" }]
     });
     sentMessages = [];
   });
@@ -286,7 +286,7 @@ describe("send", () => {
     expect(sentMessages).toEqual([
       [
         {
-          busId: "the-bus-id",
+          envelopeServerId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
           type: "receive_stateControlCommandUpdate",
           data: [command]
@@ -301,7 +301,7 @@ describe("send", () => {
     expect(sentMessages).toEqual([
       [
         {
-          busId: "the-bus-id",
+          envelopeServerId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
           type: "receive_ready",
           data: []
@@ -317,7 +317,7 @@ describe("send", () => {
     expect(sentMessages).toEqual([
       [
         {
-          busId: "the-bus-id",
+          envelopeServerId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
           type: "receive_openFile",
           data: [path]
@@ -333,7 +333,7 @@ describe("send", () => {
     expect(sentMessages).toEqual([
       [
         {
-          busId: "the-bus-id",
+          envelopeServerId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
           type: "receive_newEdit",
           data: [kogitoEdit]
@@ -349,7 +349,7 @@ describe("send", () => {
     expect(sentMessages).toEqual([
       [
         {
-          busId: "the-bus-id",
+          envelopeServerId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
           type: "receive_setContentError",
           data: [error]
@@ -365,7 +365,7 @@ describe("send", () => {
     expect(sentMessages).toEqual([
       [
         {
-          busId: "the-bus-id",
+          envelopeServerId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
           type: "receive_guidedTourRegisterTutorial",
           data: [tutorial]
@@ -381,7 +381,7 @@ describe("send", () => {
     expect(sentMessages).toEqual([
       [
         {
-          busId: "the-bus-id",
+          envelopeServerId: "the-bus-id",
           purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
           type: "receive_guidedTourUserInteraction",
           data: [userInteraction]

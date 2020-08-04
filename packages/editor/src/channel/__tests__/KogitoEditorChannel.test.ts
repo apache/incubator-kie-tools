@@ -73,7 +73,7 @@ describe("startInitPolling", () => {
     await delay(100); //waits for setInterval to kick in
 
     await incomingMessage({
-      busId: envelopeServer.busId,
+      envelopeServerId: envelopeServer.id,
       requestId: "EnvelopeServer_0",
       type: "receive_initRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
@@ -103,10 +103,10 @@ describe("startInitPolling", () => {
 });
 
 describe("receive", () => {
-  test("any message with different busId", () => {
+  test("any message with different envelopeServerId", () => {
     envelopeServer.receive(
       {
-        busId: "unknown-id",
+        envelopeServerId: "unknown-id",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "any",
         type: "receive_resourceListRequest",
@@ -116,7 +116,7 @@ describe("receive", () => {
     );
     envelopeServer.receive(
       {
-        busId: "unknown-id",
+        envelopeServerId: "unknown-id",
         purpose: EnvelopeBusMessagePurpose.REQUEST,
         requestId: "any",
         type: "receive_contentRequest",
@@ -130,7 +130,7 @@ describe("receive", () => {
     jest.spyOn(api, "receive_setContentError");
     envelopeServer.receive(
       {
-        busId: envelopeServer.busId,
+        envelopeServerId: envelopeServer.id,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_setContentError",
         data: ["this is the error"]
@@ -144,7 +144,7 @@ describe("receive", () => {
     jest.spyOn(api, "receive_ready");
     envelopeServer.receive(
       {
-        busId: envelopeServer.busId,
+        envelopeServerId: envelopeServer.id,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_ready",
         data: []
@@ -158,7 +158,7 @@ describe("receive", () => {
     jest.spyOn(api, "receive_newEdit");
     envelopeServer.receive(
       {
-        busId: envelopeServer.busId,
+        envelopeServerId: envelopeServer.id,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_newEdit",
         data: [{ id: "edit-id" }]
@@ -171,7 +171,7 @@ describe("receive", () => {
     jest.spyOn(api, "receive_openFile");
     envelopeServer.receive(
       {
-        busId: envelopeServer.busId,
+        envelopeServerId: envelopeServer.id,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_openFile",
         data: ["a/path"]
@@ -184,7 +184,7 @@ describe("receive", () => {
     jest.spyOn(api, "receive_stateControlCommandUpdate");
     envelopeServer.receive(
       {
-        busId: envelopeServer.busId,
+        envelopeServerId: envelopeServer.id,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_stateControlCommandUpdate",
         data: [StateControlCommand.REDO]
@@ -198,7 +198,7 @@ describe("receive", () => {
     jest.spyOn(api, "receive_guidedTourRegisterTutorial");
     envelopeServer.receive(
       {
-        busId: envelopeServer.busId,
+        envelopeServerId: envelopeServer.id,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_guidedTourRegisterTutorial",
         data: []
@@ -212,7 +212,7 @@ describe("receive", () => {
     jest.spyOn(api, "receive_guidedTourUserInteraction");
     envelopeServer.receive(
       {
-        busId: envelopeServer.busId,
+        envelopeServerId: envelopeServer.id,
         purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
         type: "receive_guidedTourUserInteraction",
         data: []
@@ -228,7 +228,7 @@ describe("receive", () => {
     jest.spyOn(api, "receive_contentRequest").mockReturnValueOnce(Promise.resolve(content));
 
     await incomingMessage({
-      busId: envelopeServer.busId,
+      envelopeServerId: envelopeServer.id,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_contentRequest",
@@ -253,7 +253,7 @@ describe("receive", () => {
     jest.spyOn(api, "receive_resourceContentRequest").mockReturnValueOnce(Promise.resolve(resourceContent));
 
     await incomingMessage({
-      busId: envelopeServer.busId,
+      envelopeServerId: envelopeServer.id,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceContentRequest",
@@ -278,7 +278,7 @@ describe("receive", () => {
     jest.spyOn(api, "receive_resourceListRequest").mockReturnValueOnce(Promise.resolve(resourceList));
 
     await incomingMessage({
-      busId: envelopeServer.busId,
+      envelopeServerId: envelopeServer.id,
       requestId: "requestId",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceListRequest",
@@ -306,14 +306,14 @@ describe("send", () => {
         requestId: "EnvelopeServer_0",
         type: "receive_initRequest",
         data: [
-          { busId: envelopeServer.busId, origin: "test-origin" },
+          { envelopeServerId: envelopeServer.id, origin: "test-origin" },
           { fileExtension: "txt", resourcesPathPrefix: "" }
         ]
       }
     ]);
 
     await incomingMessage({
-      busId: envelopeServer.busId,
+      envelopeServerId: envelopeServer.id,
       requestId: "EnvelopeServer_0",
       type: "receive_initRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
@@ -326,7 +326,7 @@ describe("send", () => {
   test("request contentResponse", async () => {
     const content = envelopeServer.request_contentResponse();
     await incomingMessage({
-      busId: envelopeServer.busId,
+      envelopeServerId: envelopeServer.id,
       requestId: "EnvelopeServer_0",
       type: "receive_contentRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
@@ -339,7 +339,7 @@ describe("send", () => {
   test("request preview", async () => {
     const preview = envelopeServer.request_previewResponse();
     await incomingMessage({
-      busId: envelopeServer.busId,
+      envelopeServerId: envelopeServer.id,
       requestId: "EnvelopeServer_0",
       type: "receive_previewRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,
@@ -352,7 +352,7 @@ describe("send", () => {
   test("request guidedTourElementPositionResponse", async () => {
     const position = envelopeServer.client.request("receive_guidedTourElementPositionRequest", "my-selector");
     await incomingMessage({
-      busId: envelopeServer.busId,
+      envelopeServerId: envelopeServer.id,
       requestId: "EnvelopeServer_0",
       type: "receive_guidedTourElementPositionRequest",
       purpose: EnvelopeBusMessagePurpose.RESPONSE,

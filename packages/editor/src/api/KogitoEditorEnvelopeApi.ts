@@ -20,7 +20,7 @@ import { GuidedTourEnvelopeApi } from "@kogito-tooling/guided-tour/dist/api";
 
 export interface Association {
   origin: string;
-  busId: string;
+  envelopeServerId: string;
 }
 
 export interface EditorInitArgs {
