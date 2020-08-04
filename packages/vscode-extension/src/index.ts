@@ -19,11 +19,9 @@ import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
-import { MyPageEnvelopeLocator } from "@kogito-tooling/my-page/dist/channel";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
 import { generateSvg } from "./generateSvg";
-import { MyPageManager } from "./MyPageManager";
 
 /**
  * Starts a Kogito extension.
@@ -39,7 +37,6 @@ export function startExtension(args: {
   viewType: string;
   getPreviewCommandId: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
-  pageEnvelopeLocator: MyPageEnvelopeLocator;
 }) {
   const workspaceApi = new VsCodeWorkspaceApi();
   const editorStore = new KogitoEditorStore();
@@ -48,15 +45,6 @@ export function startExtension(args: {
     args.context,
     editorStore,
     args.editorEnvelopeLocator,
-    messageBroadcaster,
-    workspaceApi
-  );
-
-  const pageManager = new MyPageManager(
-    args.context,
-    args.extensionName,
-    args.pageEnvelopeLocator,
-    editorStore,
     messageBroadcaster,
     workspaceApi
   );
@@ -77,8 +65,4 @@ export function startExtension(args: {
   args.context.subscriptions.push(
     vscode.commands.registerCommand(args.getPreviewCommandId, () => generateSvg(editorStore, workspaceApi))
   );
-
-  pageManager.pages.forEach(({ command, id }) => {
-    args.context.subscriptions.push(vscode.commands.registerCommand(command, () => pageManager.open(id)));
-  });
 }

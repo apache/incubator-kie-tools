@@ -35,19 +35,6 @@ export function activate(context: vscode.ExtensionContext) {
         ["dmn", { resourcesPathPrefix: "dist/webview/editors/dmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }],
         ["scesim", { resourcesPathPrefix: "dist/webview/editors/scesim", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }]
       ])
-    },
-    pageEnvelopeLocator: {
-      targetOrigin: envelopeTargetOrigin,
-      mapping: new Map([
-        [
-          "myPage",
-          {
-            title: "My Page",
-            envelopePath: "dist/webview/MyPageImplEnvelopeApp.js",
-            backendUrl: "http://localhost:9000/my-page-backend/"
-          }
-        ]
-      ])
     }
   });
 

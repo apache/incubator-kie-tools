@@ -59,19 +59,5 @@ module.exports = [
         { from: "../kie-bc-editors-unpacked/scesim", to: "webview/editors/scesim" }
       ])
     ]
-  }),
-  merge(common, {
-    output: {
-      library: "AppFormer.VsCodePackMyPage",
-      libraryTarget: "umd",
-      umdNamedDefine: true
-    },
-    externals: {
-      vscode: "commonjs vscode"
-    },
-    target: "web",
-    entry: {
-      "webview/MyPageImplEnvelopeApp": "./src/webview/MyPageImplEnvelopeApp.tsx"
-    }
   })
 ];
