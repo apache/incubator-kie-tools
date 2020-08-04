@@ -36,24 +36,23 @@ export type SubscriptionCallback<Api extends ApiDefinition<Api>, M extends Notif
   ...args: ArgsType<Api[M]>
 ) => void;
 
-
 export interface MessageBusClient<Api extends ApiDefinition<Api>> {
   request<M extends RequestPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): ReturnType<Api[M]>;
   notify<M extends NotificationPropertyNames<Api>>(method: M, ...args: ArgsType<Api[M]>): void;
   unsubscribe<M extends NotificationPropertyNames<Api>>(method: M, callback: SubscriptionCallback<Api, M>): void;
   subscribe<M extends NotificationPropertyNames<Api>>(
-      method: M,
-      callback: SubscriptionCallback<Api, M>
+    method: M,
+    callback: SubscriptionCallback<Api, M>
   ): SubscriptionCallback<Api, M>;
 }
 
 export interface MessageBusServer<
-    ApiToProvide extends ApiDefinition<ApiToProvide>,
-    ApiToConsume extends ApiDefinition<ApiToConsume>
-    > {
+  ApiToProvide extends ApiDefinition<ApiToProvide>,
+  ApiToConsume extends ApiDefinition<ApiToConsume>
+> {
   receive(
-      message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
-      api: ApiToProvide
+    message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
+    api: ApiToProvide
   ): void;
 }
 
