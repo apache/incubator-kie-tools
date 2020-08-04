@@ -15,14 +15,12 @@
  */
 
 import * as React from "react";
-import { useCallback, useImperativeHandle, useRef } from "react";
+import { useCallback } from "react";
 import { MyPageMapping } from "../channel";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { ApiDefinition, EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 import { MyPageApi, MyPageChannelApi, MyPageEnvelopeApi } from "../api";
-import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
 import { ChannelEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
-import {EmbeddedEnvelope} from "@kogito-tooling/envelope/dist/embedded";
+import { EmbeddedEnvelope } from "@kogito-tooling/envelope/dist/embedded";
 
 interface Props {
   mapping: MyPageMapping;
