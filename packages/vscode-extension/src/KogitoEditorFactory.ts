@@ -37,10 +37,6 @@ export class KogitoEditorFactory {
   ) {}
 
   public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditableDocument) {
-    if (document.uri.fsPath.length <= 0) {
-      throw new Error("parameter 'path' cannot be empty");
-    }
-
     webviewPanel.webview.options = {
       enableCommandUris: true,
       enableScripts: true,
