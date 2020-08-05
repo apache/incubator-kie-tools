@@ -52,7 +52,7 @@ func (data *Data) kogitoOperatorIsDeployed() error {
 }
 
 func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) error {
-	// Install kogito operator
+	// First install and wait for kogito operator
 	if exists, err := framework.IsKogitoOperatorRunning(data.Namespace); err != nil {
 		return fmt.Errorf("Error while trying to retrieve the operator: %v ", err)
 	} else if !exists {
@@ -61,31 +61,29 @@ func (data *Data) kogitoOperatorIsDeployedWithDependencies(dependencies string) 
 		}
 	}
 
+	// Dependent operators
 	operatorSource := framework.CommunityCatalog
 	if !framework.IsOpenshift() {
 		operatorSource = framework.OperatorHubCatalog
 	}
 
-	// Install operator dependencies
-	var installedOperators []string
+	// Install and wait for operator dependencies
+	// Do it one by one due to racing condition in OLM (https://github.com/operator-framework/operator-lifecycle-manager/issues/1704)
 	for _, dependentOperator := range framework.KogitoOperatorDependencies {
 		if strings.Contains(dependencies, dependentOperator) {
 			if err := framework.InstallKogitoOperatorDependency(data.Namespace, dependentOperator, operatorSource); err != nil {
 				return err
 			}
-			installedOperators = append(installedOperators, dependentOperator)
+			if err := framework.WaitForKogitoOperatorDependencyRunning(data.Namespace, dependentOperator, operatorSource); err != nil {
+				return err
+			}
 		}
 	}
 
-	// Wait for kogito operator to be running
+	// Wait for Kogito operator running
+	// This is put at the end because there should not be any racing condition as install is done via yaml and not OLM
 	if err := framework.WaitForKogitoOperatorRunning(data.Namespace); err != nil {
 		return fmt.Errorf("Error while checking operator running: %v", err)
-	}
-	// Wait for dependent operators to be running
-	for _, installedOperator := range installedOperators {
-		if err := framework.WaitForKogitoOperatorDependencyRunning(data.Namespace, installedOperator, operatorSource); err != nil {
-			return err
-		}
 	}
 
 	return nil
