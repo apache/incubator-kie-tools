@@ -28,7 +28,7 @@ jobs:
           route: GET /orgs/kiegroup/members/:username
           username: ${{ github.actor }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
 
       - name: Check user membership to kiegroup
         if: github.event_name == 'issue_comment'
