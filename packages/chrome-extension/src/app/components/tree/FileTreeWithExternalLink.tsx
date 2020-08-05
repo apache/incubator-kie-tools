@@ -21,15 +21,15 @@ import { extractOpenFileExtension } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { OpenExternalEditorButton } from "./OpenExternalEditorButton";
 import { useGlobals } from "../common/GlobalContext";
-import { Router } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export function FileTreeWithExternalLink() {
-  const { externalEditorManager, router, dependencies, logger } = useGlobals();
+  const { externalEditorManager, envelopeLocator, dependencies, logger } = useGlobals();
 
   const [links, setLinksToFiles] = useState<HTMLAnchorElement[]>([]);
 
   useEffect(() => {
-    const newLinks = filterLinksForSupportedFileExtensions(dependencies.treeView.linksToFiles(), router);
+    const newLinks = filterLinksForSupportedFileExtensions(dependencies.treeView.linksToFiles(), envelopeLocator);
     if (newLinks.length === 0) {
       return;
     }
@@ -43,7 +43,7 @@ export function FileTreeWithExternalLink() {
         return;
       }
 
-      const newLinks = filterLinksForSupportedFileExtensions(dependencies.treeView.linksToFiles(), router);
+      const newLinks = filterLinksForSupportedFileExtensions(dependencies.treeView.linksToFiles(), envelopeLocator);
       if (newLinks.length === 0) {
         return;
       }
@@ -78,10 +78,10 @@ export function FileTreeWithExternalLink() {
   );
 }
 
-function filterLinksForSupportedFileExtensions(links: HTMLAnchorElement[], router: Router): HTMLAnchorElement[] {
+function filterLinksForSupportedFileExtensions(links: HTMLAnchorElement[], envelopeLocator: EditorEnvelopeLocator) {
   return links.filter(fileLink => {
     const fileExtension = extractOpenFileExtension(fileLink.href);
-    const isSupportedLanguage = fileExtension && router.getLanguageData(fileExtension);
+    const isSupportedLanguage = fileExtension && envelopeLocator.mapping.has(fileExtension);
     return isSupportedLanguage && !document.getElementById(externalLinkId(fileLink));
   });
 }

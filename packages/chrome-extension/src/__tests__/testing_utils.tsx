@@ -18,9 +18,9 @@ import * as React from "react";
 import { GlobalContext, GlobalContextType } from "../app/components/common/GlobalContext";
 import { ResourceContentServiceFactory } from "../app/components/common/ChromeResourceContentService";
 import { GitHubContext, GitHubContextType } from "../app/components/common/GitHubContext";
-import { DefaultChromeRouter } from "../DefaultChromeRouter";
 import { Logger } from "../Logger";
 import { Dependencies } from "../app/Dependencies";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/microeditor-envelope-protocol";
 import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n";
 import {
   ChromeExtensionI18nContext,
@@ -30,14 +30,23 @@ import {
 import { ChromeExtensionI18n } from "../app/i18n";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
+  const txtEnvelopeMapping: EnvelopeMapping = {
+    envelopePath: "chrome-testing://https://my-url.com/",
+    resourcesPathPrefix: "envelope"
+  };
+
+  const editorEnvelopeLocator: EditorEnvelopeLocator = {
+    targetOrigin: "localhost:8888",
+    mapping: new Map([["txt", txtEnvelopeMapping]])
+  };
+
   const usedCtx = {
     id: "test-extension123",
+    envelopeLocator: editorEnvelopeLocator,
     githubAuthTokenCookieName: "test-github-pat-name",
-    router: new DefaultChromeRouter(),
     logger: new Logger("test-extension"),
     dependencies: new Dependencies(),
     extensionIconUrl: "/extension/icon.jpg",
-    editorIndexPath: "https://my-url.com/",
     resourceContentServiceFactory: new ResourceContentServiceFactory(),
     externalEditorManager: {
       name: "Test Online Editor",

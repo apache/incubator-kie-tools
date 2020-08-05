@@ -14,33 +14,41 @@
  * limitations under the License.
  */
 
-import { ChannelType } from "@kogito-tooling/microeditor-envelope-protocol";
+import {
+  Channel,
+  ChannelType,
+  EditorEnvelopeLocator,
+  EnvelopeBusMessagePurpose
+} from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
-import { EditorType, File } from "../../common";
-import { EmbeddedEditorRouter, EmbeddedViewer } from "../../embedded";
+import { File } from "../../common";
+import { EmbeddedViewer } from "../../embedded";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 import { render } from "@testing-library/react";
-import { EnvelopeBusMessagePurpose, KogitoChannelBus } from "@kogito-tooling/microeditor-envelope-protocol";
 
 describe("EmbeddedViewer::ONLINE", () => {
   const file: File = {
     fileName: "test",
-    editorType: EditorType.DMN,
+    fileExtension: "dmn",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false
   };
 
-  const router = new EmbeddedEditorRouter();
+  const editorEnvelopeLocator: EditorEnvelopeLocator = {
+    targetOrigin: "localhost:8888",
+    mapping: new Map([["dmn", { envelopePath: "envelope/envelope.html", resourcesPathPrefix: "envelope" }]])
+  };
+
   const channelType = ChannelType.ONLINE;
   const busId = "test-bus-id";
 
   beforeAll(() => {
-    jest.spyOn(KogitoChannelBus.prototype, "generateRandomId").mockReturnValue(busId);
+    jest.spyOn(Channel.prototype, "generateRandomId").mockReturnValue(busId);
   });
 
   test("EmbeddedViewer::defaults", () => {
     const { getByTestId, container } = render(
-      <EmbeddedViewer file={file} router={router} channelType={channelType} locale={"en"} />
+      <EmbeddedViewer file={file} editorEnvelopeLocator={editorEnvelopeLocator} channelType={channelType} locale={"en"}/>
     );
 
     expect(getByTestId("kogito-iframe")).toBeVisible();
@@ -56,9 +64,9 @@ describe("EmbeddedViewer::ONLINE", () => {
     const { container } = render(
       <EmbeddedViewer
         file={file}
-        router={router}
+        editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
-        onResourceContentRequest={onResourceContentRequest}
+        receive_resourceContentRequest={onResourceContentRequest}
         locale={"en"}
       />
     );
@@ -81,9 +89,9 @@ describe("EmbeddedViewer::ONLINE", () => {
     const { container } = render(
       <EmbeddedViewer
         file={file}
-        router={router}
+        editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
-        onResourceListRequest={onResourceListRequest}
+        receive_resourceListRequest={onResourceListRequest}
         locale={"en"}
       />
     );

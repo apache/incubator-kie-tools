@@ -13,29 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EditorType } from "../../common/EditorTypes";
 import { EMPTY_FILE_DMN, EMPTY_FILE_BPMN, EMPTY_FILE_SCESIM, File, newFile } from "../../common/File";
 
 describe("File::Empty defaults", () => {
-  test("DMN", async () => {
+  test("dmn", async () => {
     expect(EMPTY_FILE_DMN.fileName).toEqual("new-file");
-    expect(EMPTY_FILE_DMN.editorType).toEqual(EditorType.DMN);
+    expect(EMPTY_FILE_DMN.fileExtension).toEqual("dmn");
     expect(EMPTY_FILE_DMN.isReadOnly).toBeFalsy();
 
     await EMPTY_FILE_DMN.getFileContents().then(data => expect(data).toBe(""));
   });
 
-  test("BPMN", async () => {
+  test("bpmn", async () => {
     expect(EMPTY_FILE_BPMN.fileName).toEqual("new-file");
-    expect(EMPTY_FILE_BPMN.editorType).toEqual(EditorType.BPMN);
+    expect(EMPTY_FILE_BPMN.fileExtension).toEqual("bpmn");
     expect(EMPTY_FILE_BPMN.isReadOnly).toBeFalsy();
 
     await EMPTY_FILE_BPMN.getFileContents().then(data => expect(data).toBe(""));
   });
 
-  test("SCESIM", async () => {
+  test("scesim", async () => {
     expect(EMPTY_FILE_SCESIM.fileName).toEqual("new-file");
-    expect(EMPTY_FILE_SCESIM.editorType).toEqual(EditorType.SCESIM);
+    expect(EMPTY_FILE_SCESIM.fileExtension).toEqual("scesim");
     expect(EMPTY_FILE_SCESIM.isReadOnly).toBeFalsy();
 
     await EMPTY_FILE_SCESIM.getFileContents().then(data => expect(data).toBe(""));
@@ -44,9 +43,9 @@ describe("File::Empty defaults", () => {
 
 describe("File::newFile", () => {
   test("constructor", async () => {
-    const file: File = newFile(EditorType.DMN);
+    const file: File = newFile("dmn");
     expect(file.fileName).toEqual("new-file");
-    expect(file.editorType).toEqual(EditorType.DMN);
+    expect(file.fileExtension).toEqual("dmn");
     expect(file.isReadOnly).toBeFalsy();
 
     await file.getFileContents().then(data => expect(data).toBe(""));
@@ -56,14 +55,14 @@ describe("File::newFile", () => {
 describe("File", () => {
   test("With content", async () => {
     const file: File = {
-      editorType: EditorType.DMN,
+      fileExtension: "dmn",
       fileName: "new-file",
       isReadOnly: true,
       getFileContents: () => Promise.resolve("content")
     };
 
     expect(file.fileName).toEqual("new-file");
-    expect(file.editorType).toEqual(EditorType.DMN);
+    expect(file.fileExtension).toEqual("dmn");
     expect(file.isReadOnly).toBeTruthy();
 
     await file.getFileContents().then(data => expect(data).toBe("content"));

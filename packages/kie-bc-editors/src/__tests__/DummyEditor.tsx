@@ -18,14 +18,11 @@ import * as React from "react";
 import { Editor } from "@kogito-tooling/editor-api";
 import { DEFAULT_RECT } from "@kogito-tooling/microeditor-envelope-protocol";
 
-export class DummyEditor extends Editor {
+export class DummyEditor implements Editor {
   private ref: DummyEditorComponent;
-
-  constructor() {
-    super("dummy-editor");
-    this.af_componentTitle = "Dummy Editor";
-    this.af_isReact = true;
-  }
+  public readonly af_componentTitle = "Dummy Editor";
+  public readonly af_componentId = "dummy-editor";
+  public readonly af_isReact = true;
 
   public af_componentRoot() {
     return <DummyEditorComponent exposing={self => (this.ref = self)} />;

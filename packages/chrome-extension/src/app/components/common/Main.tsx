@@ -15,7 +15,6 @@
  */
 
 import * as React from "react";
-import { Router } from "@kogito-tooling/microeditor-envelope-protocol";
 import { GlobalContext, useGlobals } from "./GlobalContext";
 import { Logger } from "../../../Logger";
 import { GitHubContextProvider, useGitHubApi } from "./GitHubContext";
@@ -25,6 +24,7 @@ import { Dependencies } from "../../Dependencies";
 import { kogitoMenuContainer } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
+import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
 import {
   chromeExtensionI18nDictionaries,
@@ -34,12 +34,11 @@ import {
 
 export interface Globals {
   id: string;
-  router: Router;
+  editorEnvelopeLocator: EditorEnvelopeLocator;
   logger: Logger;
   dependencies: Dependencies;
   githubAuthTokenCookieName: string;
   extensionIconUrl: string;
-  editorIndexPath: string;
   resourceContentServiceFactory: ResourceContentServiceFactory;
   externalEditorManager?: ExternalEditorManager;
 }
@@ -71,10 +70,9 @@ export const Main: React.FunctionComponent<Globals> = props => {
           id: props.id,
           logger: props.logger,
           dependencies: props.dependencies,
-          router: props.router,
+          envelopeLocator: props.editorEnvelopeLocator,
           githubAuthTokenCookieName: props.githubAuthTokenCookieName,
           extensionIconUrl: props.extensionIconUrl,
-          editorIndexPath: props.editorIndexPath,
           resourceContentServiceFactory: props.resourceContentServiceFactory,
           externalEditorManager: props.externalEditorManager
         }}

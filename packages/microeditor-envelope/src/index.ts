@@ -14,51 +14,24 @@
  * limitations under the License.
  */
 
-import { EditorContext, EnvelopeBus, I18nService } from "@kogito-tooling/microeditor-envelope-protocol";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
-import { ReactElement } from "react";
-import * as ReactDOM from "react-dom";
-import { EditorEnvelopeController } from "./EditorEnvelopeController";
+import { EditorContext, EnvelopeBus } from "@kogito-tooling/microeditor-envelope-protocol";
 import { EditorFactory } from "@kogito-tooling/editor-api";
-import { Renderer } from "./Renderer";
-import { SpecialDomElements } from "./SpecialDomElements";
-
-class ReactDomRenderer implements Renderer {
-  public render(element: ReactElement, container: HTMLElement, callback: () => void) {
-    setTimeout(() => {
-      ReactDOM.render(element, container, callback);
-    }, 0);
-  }
-}
+import { KogitoEditorEnvelope } from "./editor/KogitoEditorEnvelope";
 
 /**
- * Starts the envelope at a container. Uses bus to send messages out of the envelope and creates editors based on the editorFactory provided.
+ * Starts the Editor envelope at a given container. Uses `bus` to send messages out of the Envelope and creates Editors based on the editorFactory provided.
  * @param args.container The DOM element where the envelope should be rendered.
  * @param args.bus The implementation of EnvelopeBus to send messages out of the envelope.
- * @param args.editorFactory The factory of Editors using a LanguageData implementation.
+ * @param args.editorFactory The factory of Editors provided by this EditorEnvelope.
  * @param args.editorContext The context for Editors with information about the running channel.
  */
 export function init(args: {
   container: HTMLElement;
   bus: EnvelopeBus;
-  editorFactory: EditorFactory<any>;
+  editorFactory: EditorFactory;
   editorContext: EditorContext;
 }) {
-  const specialDomElements = new SpecialDomElements();
-  const renderer = new ReactDomRenderer();
-  const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ editorContext: args.editorContext });
-  const i18nService = new I18nService();
-  const editorEnvelopeController = new EditorEnvelopeController(
-    args.bus,
-    args.editorFactory,
-    specialDomElements,
-    renderer,
-    args.editorContext,
-    keyboardShortcutsService,
-    i18nService
-  );
-
-  return editorEnvelopeController.start({ container: args.container });
+  return new KogitoEditorEnvelope(args).start();
 }
 
 export * from "./CompositeEditorFactory";

@@ -17,30 +17,32 @@
 import * as React from "react";
 import { getGuidedTourElementPosition, GwtEditor } from "./GwtAppFormerApi";
 import { Editor } from "@kogito-tooling/editor-api";
-import { editors } from "./GwtEditorRoutes";
+import { editors } from "./GwtEditorMapping";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
-import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoEditorChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
-export class GwtEditorWrapper extends Editor {
+export class GwtEditorWrapper implements Editor {
+  public readonly af_isReact = true;
+  public readonly af_componentId = "gwt-editor-wrapper";
+
   public readonly af_componentTitle: string;
   public readonly editorId: string;
 
   private readonly gwtEditor: GwtEditor;
   private readonly xmlFormatter: XmlFormatter;
-  private readonly messageBusClient: MessageBusClient<KogitoChannelApi>;
+  private readonly messageBusClient: MessageBusClient<KogitoEditorChannelApi>;
   private readonly stateControlService: GwtStateControlService;
 
   constructor(
     editorId: string,
     gwtEditor: GwtEditor,
-    messageBus: MessageBusClient<KogitoChannelApi>,
+    messageBus: MessageBusClient<KogitoEditorChannelApi>,
     xmlFormatter: XmlFormatter,
     stateControlService: GwtStateControlService
   ) {
-    super("gwt-editor-wrapper");
     this.af_componentTitle = editorId;
     this.stateControlService = stateControlService;
     this.af_isReact = true;

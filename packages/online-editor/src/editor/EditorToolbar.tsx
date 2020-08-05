@@ -61,7 +61,7 @@ export function EditorToolbar(props: Props) {
     return { onClick: props.onClose };
   }, [props.onClose]);
 
-  const editorType = useMemo(() => {
+  const fileExtension = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
   }, [location]);
 
@@ -151,7 +151,7 @@ export function EditorToolbar(props: Props) {
       {!editingName && (
         <div data-testid="toolbar-title" className="kogito--editor__toolbar-title">
           <Title headingLevel={"h3"} size={"xl"} onClick={editName} title={"Rename"} aria-label={"File name"}>
-            {context.file.fileName + "." + editorType}
+            {context.file.fileName + "." + fileExtension}
           </Title>
           {props.isEdited && (
             <span className={"kogito--editor__toolbar-edited"} data-testid="is-dirty-indicator">
@@ -163,7 +163,7 @@ export function EditorToolbar(props: Props) {
       {editingName && (
         <div className={"kogito--editor__toolbar-name-container"}>
           <Title headingLevel={"h3"} size={"xl"}>
-            {name + "." + editorType}
+            {name + "." + fileExtension}
           </Title>
           <TextInput
             autoFocus={true}
@@ -303,7 +303,7 @@ export function EditorToolbar(props: Props) {
 
   return !props.isPageFullscreen ? (
     <PageHeader
-      logo={<Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} />}
+      logo={<Brand src={`images/${fileExtension}_kogito_logo.svg`} alt={`${fileExtension} kogito logo`} />}
       logoProps={logoProps}
       headerTools={headerToolbar}
       topNav={filenameInput}

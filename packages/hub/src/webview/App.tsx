@@ -291,7 +291,9 @@ export function App() {
               />
             </CardHeader>
             <CardBody>
-              <Title headingLevel={"h1"} size={"xl"}>{i18n.vscode.title}</Title>
+              <Title headingLevel={"h1"} size={"xl"}>
+                {i18n.vscode.title}
+              </Title>
               <br />
               <TextContent>
                 <Text>{i18n.vscode.description}</Text>
@@ -317,7 +319,9 @@ export function App() {
               <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
             </CardHeader>
             <CardBody>
-              <Title headingLevel={"h1"} size={"xl"}>{i18n.chromeExtension.title}</Title>
+              <Title headingLevel={"h1"} size={"xl"}>
+                {i18n.chromeExtension.title}
+              </Title>
               <br />
               <TextContent>
                 <Text>{i18n.chromeExtension.description}</Text>
@@ -344,7 +348,7 @@ export function App() {
             <TextContent>
               <Text component={TextVariants.p}>{i18n.chromeExtension.modal.chromeRequirement}</Text>
               <Text component={TextVariants.p}>
-                `${i18n.chromeExtension.modal.chromeDownload} `
+                {`${i18n.chromeExtension.modal.chromeDownload} `}
                 <Button variant={"link"} isInline={true} onClick={chrome_openDownloadGoogleChrome}>
                   {i18n.chromeExtension.modal.here}
                 </Button>
@@ -353,7 +357,7 @@ export function App() {
               <Text component={TextVariants.p}>{i18n.chromeExtension.modal.alreadyHaveChrome}:</Text>
               <TextList component={TextListVariants.ol}>
                 <TextListItem>
-                  `${i18n.chromeExtension.modal.firstStep.firstPart} `
+                  {`${i18n.chromeExtension.modal.firstStep.firstPart} `}
                   <Button variant={"link"} isInline={true} onClick={chrome_openKogitoToolingReleasesPage}>
                     {i18n.names.chromeStore}
                   </Button>{" "}
@@ -362,11 +366,11 @@ export function App() {
                 <TextListItem>{i18n.chromeExtension.modal.secondStep}</TextListItem>
                 <TextListItem>{i18n.chromeExtension.modal.thirdStep}</TextListItem>
                 <TextListItem>
-                  `${i18n.chromeExtension.modal.done.firstPart} `
+                  {`${i18n.chromeExtension.modal.done.firstPart} `}
                   <Button variant={"link"} isInline={true} onClick={chrome_openGitHub}>
                     {i18n.names.github}
                   </Button>{" "}
-                  `${i18n.chromeExtension.modal.done.secondPart} `
+                  {`${i18n.chromeExtension.modal.done.secondPart} `}
                 </TextListItem>
               </TextList>
             </TextContent>
@@ -389,7 +393,9 @@ export function App() {
               />
             </CardHeader>
             <CardBody>
-              <Title headingLevel={"h1"} size={"xl"}>{i18n.desktop.title}</Title>
+              <Title headingLevel={"h1"} size={"xl"}>
+                {i18n.desktop.title}
+              </Title>
               <br />
               <TextContent>
                 <Text>{i18n.desktop.description}</Text>
@@ -407,7 +413,9 @@ export function App() {
               <img style={{ height: "52px" }} src={"images/online-logo.svg"} />
             </CardHeader>
             <CardBody>
-              <Title headingLevel={"h1"} size={"xl"}>{i18n.online.title}</Title>
+              <Title headingLevel={"h1"} size={"xl"}>
+                {i18n.online.title}
+              </Title>
               <br />
               <TextContent>
                 <Text>{i18n.online.description}</Text>

@@ -14,76 +14,22 @@
  * limitations under the License.
  */
 
-import {
-  ChannelType,
-  EditorContext,
-  EnvelopeBus,
-  EnvelopeBusMessage,
-  EnvelopeBusMessagePurpose,
-  KogitoChannelApi,
-  KogitoChannelBus,
-  LanguageData,
-  OperatingSystem,
-  ResourcesList,
-  I18nService
-} from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelType, EditorContext, I18nService, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor } from "../editor/PMMLEditor";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
-import { EnvelopeContextType } from "@kogito-tooling/editor-api";
+import { KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 
-const languageData: LanguageData = { type: "unused" };
-
-const bus: EnvelopeBus = {
-  postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any) {
-    /*NOP*/
-  }
+const messageBusClient = {
+  notify: jest.fn(),
+  request: jest.fn()
 };
-const api: KogitoChannelApi = {
-  receive_setContentError(_: string) {
-    /*NOP*/
-  },
-  receive_ready() {
-    /*NOP*/
-  },
-  receive_openFile(_: string) {
-    /*NOP*/
-  },
-  receive_guidedTourUserInteraction() {
-    /*NOP*/
-  },
-  receive_guidedTourRegisterTutorial() {
-    /*NOP*/
-  },
-  receive_newEdit() {
-    /*NOP*/
-  },
-  receive_stateControlCommandUpdate() {
-    /*NOP*/
-  },
-  receive_languageRequest() {
-    return Promise.resolve(languageData);
-  },
-  receive_contentRequest() {
-    return Promise.resolve({ content: "" });
-  },
-  receive_resourceContentRequest() {
-    return Promise.resolve(undefined);
-  },
-  receive_resourceListRequest() {
-    return Promise.resolve(new ResourcesList("", []));
-  },
-  receive_getLocale() {
-    return Promise.resolve("");
-  }
-};
-const messageBus: KogitoChannelBus = new KogitoChannelBus(bus, api);
 
 const editorContext: EditorContext = { channel: ChannelType.EMBEDDED, operatingSystem: OperatingSystem.LINUX };
-const envelopeContext: EnvelopeContextType = {
-  channelApi: messageBus.client,
+const envelopeContext: KogitoEditorEnvelopeContextType = {
+  channelApi: messageBusClient,
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
@@ -96,8 +42,6 @@ const editorInterface: PMMLEditorInterface = new PMMLEditorInterface(envelopeCon
 let editor: PMMLEditor;
 
 beforeEach(() => {
-  spyOn(bus, "postMessage");
-
   const component: ReactElement = editorInterface.af_componentRoot() as ReactElement;
   render(component);
 
@@ -106,11 +50,7 @@ beforeEach(() => {
 
 describe("PMMLEditorInterface", () => {
   test("Mount", () => {
-    expect(bus.postMessage).toBeCalledWith({
-      type: "receive_ready",
-      data: [],
-      purpose: EnvelopeBusMessagePurpose.NOTIFICATION
-    });
+    expect(messageBusClient.notify).toBeCalledWith("receive_ready");
   });
 
   test("getContent", async () => {

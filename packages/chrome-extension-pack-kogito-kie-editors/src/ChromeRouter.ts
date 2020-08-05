@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-import { Router, Routes } from "@kogito-tooling/microeditor-envelope-protocol";
-
-export class ChromeRouter extends Router {
-  constructor(...routesArray: Routes[]) {
-    super(...routesArray);
-  }
-
-  public getRelativePathTo(uri: string): string {
-    return `${this.getTargetOrigin()}/$_{WEBPACK_REPLACE__relativePath}${uri}`;
-  }
-
-  public getLanguageData(fileExtension: string) {
-    return this.getLanguageDataByFileExtension().get(fileExtension);
+export class ChromeRouter {
+  public getResourcesPathPrefix(): string {
+    const relativePath = "$_{WEBPACK_REPLACE__relativePath}";
+    if (relativePath) {
+      return `${this.getTargetOrigin()}/${relativePath}`;
+    } else {
+      return this.getTargetOrigin();
+    }
   }
 
   public getTargetOrigin() {

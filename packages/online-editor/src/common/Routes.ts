@@ -50,10 +50,10 @@ export class EditorRoute implements Route<EditorRouteArgs> {
   }
 
   public args(url: string) {
-    return { type: this.getEditorType(url)! };
+    return { type: this.getFileExtension(url)! };
   }
 
-  private getEditorType(url: string) {
+  private getFileExtension(url: string) {
     return url.split("/").pop()?.match(/[\w\d]+/)?.pop();
   }
 }

@@ -21,7 +21,7 @@ import { renderPrEditorsApp } from "./app/components/pr/prEditors";
 import { mainContainer, runAfterUriChange } from "./app/utils";
 import { Dependencies } from "./app/Dependencies";
 import * as ReactDOM from "react-dom";
-import { Router } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
 import "../resources/style.css";
 import { Logger } from "./Logger";
 import { Globals } from "./app/components/common/Main";
@@ -33,18 +33,16 @@ import { addExternalEditorLinks } from "./app/components/tree/externalEditorLink
  * Starts a Kogito extension.
  *
  *  @param args.name The extension name. Used to differentiate logs from other extensions.
- *  @param args.editorIndexPath The relative path to search for an "index.html" file for the editor iframe.
  *  @param args.extensionIconUrl The relative path to search for an image that will be the icon used for your extension.
  *  @param args.githubAuthTokenCookieName The name of the cookie that will hold a GitHub PAT for your extension.
- *  @param args.router The Router to be used to find resources for each language.
+ *  @param args.editorEnvelopeLocator The file extension mapping to the provided Editors.
  *  @param args.externalEditorManager The implementation of ExternalEditorManager for your extension.
  */
 export function startExtension(args: {
   name: string;
-  editorIndexPath: string;
   extensionIconUrl: string;
   githubAuthTokenCookieName: string;
-  router: Router;
+  editorEnvelopeLocator: EditorEnvelopeLocator;
   externalEditorManager?: ExternalEditorManager;
 }) {
   const logger = new Logger(args.name);
@@ -57,9 +55,8 @@ export function startExtension(args: {
       logger: logger,
       dependencies: dependencies,
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
-      editorIndexPath: args.editorIndexPath,
       extensionIconUrl: args.extensionIconUrl,
-      router: args.router,
+      editorEnvelopeLocator: args.editorEnvelopeLocator,
       resourceContentServiceFactory: resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager
     });
@@ -87,10 +84,9 @@ function init(args: Globals) {
       id: args.id,
       logger: args.logger,
       dependencies: args.dependencies,
-      router: args.router,
+      editorEnvelopeLocator: args.editorEnvelopeLocator,
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       extensionIconUrl: args.extensionIconUrl,
-      editorIndexPath: args.editorIndexPath,
       externalEditorManager: args.externalEditorManager,
       resourceContentServiceFactory: args.resourceContentServiceFactory,
       fileInfo: fileInfo
@@ -100,10 +96,9 @@ function init(args: Globals) {
       id: args.id,
       logger: args.logger,
       dependencies: args.dependencies,
-      router: args.router,
+      editorEnvelopeLocator: args.editorEnvelopeLocator,
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       extensionIconUrl: args.extensionIconUrl,
-      editorIndexPath: args.editorIndexPath,
       fileInfo: fileInfo,
       resourceContentServiceFactory: args.resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager
@@ -114,9 +109,8 @@ function init(args: Globals) {
       id: args.id,
       logger: args.logger,
       dependencies: args.dependencies,
-      router: args.router,
+      editorEnvelopeLocator: args.editorEnvelopeLocator,
       extensionIconUrl: args.extensionIconUrl,
-      editorIndexPath: args.editorIndexPath,
       resourceContentServiceFactory: args.resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager,
       contentPath: fileInfo.path
@@ -126,9 +120,8 @@ function init(args: Globals) {
       githubAuthTokenCookieName: args.githubAuthTokenCookieName,
       id: args.id,
       logger: args.logger,
-      router: args.router,
+      editorEnvelopeLocator: args.editorEnvelopeLocator,
       extensionIconUrl: args.extensionIconUrl,
-      editorIndexPath: args.editorIndexPath,
       resourceContentServiceFactory: args.resourceContentServiceFactory,
       externalEditorManager: args.externalEditorManager,
       dependencies: args.dependencies
@@ -188,5 +181,4 @@ export function discoverCurrentGitHubPageType() {
   return GitHubPageType.ANY;
 }
 
-export * from "./DefaultChromeRouter";
 export * from "./ExternalEditorManager";

@@ -41,7 +41,7 @@ export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
   const { i18n } = useDesktopI18n();
 
-  const editorType = useMemo(() => {
+  const fileExtension = useMemo(() => {
     return context.file!.fileType;
   }, [location]);
 
@@ -93,7 +93,7 @@ export function EditorToolbar(props: Props) {
   return (
     <PageHeader
       logo={
-        <Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} onClick={props.onClose} />
+        <Brand src={`images/${fileExtension}_kogito_logo.svg`} alt={`${fileExtension} kogito logo`} onClick={props.onClose} />
       }
       headerTools={headerToolbar}
       topNav={fileNameTitle}

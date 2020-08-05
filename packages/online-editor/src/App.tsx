@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorType, EmbeddedEditorRouter, File } from "@kogito-tooling/embedded-editor";
-import { GwtEditorRoutes } from "@kogito-tooling/kie-bc-editors";
+import { File } from "@kogito-tooling/embedded-editor";
 import "@patternfly/patternfly/base/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/patternfly/patternfly.scss";
@@ -32,6 +31,7 @@ import { DownloadHubModal } from "./home/DownloadHubModal";
 import { HomePage } from "./home/HomePage";
 import { NoMatchPage } from "./NoMatchPage";
 import "../static/resources/style.css";
+import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
 import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n/locales";
 
@@ -41,22 +41,12 @@ interface Props {
   external: boolean;
   senderTabId?: string;
   githubService: GithubService;
+  editorEnvelopeLocator: EditorEnvelopeLocator;
 }
 
 export function App(props: Props) {
   const [file, setFile] = useState(props.file);
   const routes = useMemo(() => new Routes(), []);
-  const router: EmbeddedEditorRouter = useMemo(
-    () =>
-      new EmbeddedEditorRouter(
-        new GwtEditorRoutes({
-          dmnPath: "gwt-editors/dmn",
-          bpmnPath: "gwt-editors/bpmn",
-          scesimPath: "gwt-editors/scesim"
-        })
-      ),
-    []
-  );
 
   const onFileOpened = useCallback(fileOpened => {
     setFile(fileOpened);
@@ -66,7 +56,7 @@ export function App(props: Props) {
     (fileName: string) => {
       setFile({
         isReadOnly: false,
-        editorType: extractFileExtension(fileName) as EditorType,
+        fileExtension: extractFileExtension(fileName)!,
         fileName: fileName,
         getFileContents: file.getFileContents
       });
@@ -84,7 +74,7 @@ export function App(props: Props) {
         value={{
           file,
           routes,
-          router,
+          editorEnvelopeLocator: props.editorEnvelopeLocator,
           readonly: props.readonly,
           external: props.external,
           senderTabId: props.senderTabId,

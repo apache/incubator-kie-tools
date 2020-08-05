@@ -124,7 +124,7 @@ export function LearnMorePage() {
           <CardBody>
             <Split hasGutter={true}>
               <SplitItem isFilled={true}>
-                `${i18n.learnMorePage.editorsExplanation} `
+                {`${i18n.learnMorePage.editorsExplanation} `}
                 <Button
                   type={"button"}
                   variant={"link"}

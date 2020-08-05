@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-import { FACTORY_TYPE, GwtEditorWrapperFactory } from "../GwtEditorWrapperFactory";
+import { GwtEditorWrapperFactory } from "../GwtEditorWrapperFactory";
 import { GwtLanguageData, Resource } from "../GwtLanguageData";
+import { GwtStateControlService } from "../gwtStateControl";
+import { GwtEditorMapping } from "../GwtEditorMapping";
 
 const cssResource: Resource = {
   type: "css",
@@ -43,20 +45,13 @@ const jsResource: Resource = {
   ]
 };
 
-const testLanguageData: GwtLanguageData = {
-  type: FACTORY_TYPE,
-  editorId: "editorID",
-  gwtModuleName: "moduleName",
-  resources: [cssResource, jsResource]
-};
+const xmlFormatter = { format: (c: string) => c };
 
-const gwtEditorWrapperFactory: GwtEditorWrapperFactory = new GwtEditorWrapperFactory({ format: (c: string) => c }, {
-  onFinishedLoading: (callback: () => Promise<any>) => {
-    window.appFormerGwtFinishedLoading = callback;
-  },
+const gwtAppFormerApi = {
+  onFinishedLoading: (callback: () => Promise<any>) => (window.appFormerGwtFinishedLoading = callback),
   getEditor: jest.fn(),
   setClientSideOnly: jest.fn()
-} as any);
+};
 
 function waitForNScriptsToLoad(remaining: number) {
   if (remaining <= 0) {
@@ -74,18 +69,35 @@ function waitForNScriptsToLoad(remaining: number) {
 
 describe("GwtEditorWrapperFactory", () => {
   test("create editor", async () => {
-    const editorCreation = gwtEditorWrapperFactory.createEditor(testLanguageData, {
-      channelApi: {
-        notify: jest.fn(),
-        request: jest.fn()
+    const testLanguageData: GwtLanguageData = {
+      type: "gwt",
+      editorId: "editorID",
+      gwtModuleName: "moduleName",
+      resources: [cssResource, jsResource]
+    };
+
+    const gwtEditorWrapperFactory: GwtEditorWrapperFactory = new GwtEditorWrapperFactory(
+      xmlFormatter,
+      gwtAppFormerApi,
+      new GwtStateControlService(),
+      { getLanguageData: () => testLanguageData }
+    );
+
+    const editorCreation = gwtEditorWrapperFactory.createEditor(
+      {
+        channelApi: {
+          notify: jest.fn(),
+          request: jest.fn()
+        },
+        context: {} as any,
+        services: {
+          keyboardShortcuts: {} as any,
+          guidedTour: {} as any,
+          i18n: {} as any
+        }
       },
-      context: {} as any,
-      services: {
-        keyboardShortcuts: {} as any,
-        guidedTour: {} as any,
-        i18n: {} as any
-      }
-    });
+      { resourcesPathPrefix: "", fileExtension: "txt" }
+    );
 
     await waitForNScriptsToLoad(jsResource.paths.length);
     await window.appFormerGwtFinishedLoading();
@@ -104,17 +116,17 @@ describe("GwtEditorWrapperFactory", () => {
     });
   });
 
-  test("Supported LanguageData type", () => {
-    expect(gwtEditorWrapperFactory.supports(testLanguageData)).toBeTruthy();
-  });
-
-  test("Unsupported LanguageData type", () => {
-    const unsupportedLanguageData: GwtLanguageData = {
-      type: "unsupported",
-      editorId: "editorID",
-      gwtModuleName: "moduleName",
-      resources: []
-    };
-    expect(gwtEditorWrapperFactory.supports(unsupportedLanguageData)).toBeFalsy();
+  test("Supported/Unsupported LanguageData type", () => {
+    const gwtEditorWrapperFactory: GwtEditorWrapperFactory = new GwtEditorWrapperFactory(
+      xmlFormatter,
+      gwtAppFormerApi,
+      new GwtStateControlService(),
+      new GwtEditorMapping()
+    );
+    expect(gwtEditorWrapperFactory.supports("dmn")).toBeTruthy();
+    expect(gwtEditorWrapperFactory.supports("bpmn")).toBeTruthy();
+    expect(gwtEditorWrapperFactory.supports("bpmn2")).toBeTruthy();
+    expect(gwtEditorWrapperFactory.supports("scesim")).toBeTruthy();
+    expect(gwtEditorWrapperFactory.supports("unsup")).toBeFalsy();
   });
 });

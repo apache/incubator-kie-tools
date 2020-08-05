@@ -16,115 +16,43 @@
 
 import {
   ChannelType,
-  EditorContent,
-  KogitoChannelBus,
-  KogitoEdit,
-  ResourceContent,
-  ResourceContentRequest,
-  ResourceListRequest,
-  ResourcesList,
-  StateControlCommand,
-  Tutorial,
-  useConnectedKogitoChannelBus,
-  UserInteraction
+  EditorEnvelopeLocator,
+  KogitoEditorChannel,
+  KogitoEditorChannelApi,
+  useConnectedKogitoEditorChannel
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts-channel";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 import * as CSS from "csstype";
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { File, useEffectAfterFirstRender } from "../common";
-import { EmbeddedEditorRouter } from "./EmbeddedEditorRouter";
 import { StateControl } from "../stateControl";
+import { EditorApi } from "@kogito-tooling/editor-api";
+import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 
-/**
- * Properties supported by the `EmbeddedEditor`.
- */
-export interface Props {
-  /**
-   * File to show in the editor.
-   */
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+type ChannelApiMethodsAlreadyImplementedByEmbeddedEditor =
+  | "receive_guidedTourUserInteraction"
+  | "receive_guidedTourRegisterTutorial"
+  | "receive_contentRequest";
+
+type EmbeddedEditorChannelApiOverrides = Partial<
+  Omit<KogitoEditorChannelApi, ChannelApiMethodsAlreadyImplementedByEmbeddedEditor>
+>;
+
+export type Props = EmbeddedEditorChannelApiOverrides & {
   file: File;
-  /**
-   * Router to map editor URLs to installations.
-   */
-  router: EmbeddedEditorRouter;
-  /**
-   * Channel in which the editor has been embedded.
-   */
+  editorEnvelopeLocator: EditorEnvelopeLocator;
   channelType: ChannelType;
-  /**
-   * Channel locale.
-   */
   locale: string;
-  /**
-   * Optional callback for when setting the editors content resulted in an error.
-   */
-  onSetContentError?: (errorMessage: string) => void;
-  /**
-   * Optional callback for when the editor has initialised and is considered ready.
-   */
-  onReady?: () => void;
-  /**
-   * Optional callback for when the editor is requesting external content.
-   */
-  onResourceContentRequest?: (request: ResourceContentRequest) => Promise<ResourceContent | undefined>;
-  /**
-   * Optional callback for when the editor is requesting a list of external content.
-   */
-  onResourceListRequest?: (request: ResourceListRequest) => Promise<ResourcesList>;
-  /**
-   * Optional callback for when the editor signals an _undo_ operation.
-   */
-  onEditorUndo?: () => void;
-  /**
-   * Optional callback for when the editor signals an _redo_ operation.
-   */
-  onEditorRedo?: () => void;
-  /**
-   * Optional callback for when the editor signals an open file operation.
-   */
-  onOpenFile?: (path: string) => void;
-  /**
-   * Optional callback for when the editor signals a new edit.
-   */
-  onNewEdit?: (edit: KogitoEdit) => void;
-  /**
-   * Optional relative URL for the `envelope.html` used as the inner bus `IFRAME`. Defaults to `envelope/envelope.html`
-   */
-  envelopeUri?: string;
-}
+};
 
 /**
  * Forward reference for the `EmbeddedEditor` to support consumers to call upon embedded operations.
  */
-export type EmbeddedEditorRef = {
-  /**
-   * Get an instance of the StateControl
-   */
-  getStateControl(): StateControl;
-  /**
-   * Notify the editor to redo the last command and update the state control.
-   */
-  notifyRedo(): void;
-  /**
-   * Notify the editor to undo the last command and update the state control.
-   */
-  notifyUndo(): void;
-  /**
-   * Request the editor returns its current content.
-   */
-  requestContent(): Promise<EditorContent>;
-  /**
-   * Request the editor returns a preview of its current content.
-   */
-  requestPreview(): Promise<string>;
-  /**
-   * Request to set the content of the editor; this will overwrite the content supplied by the `File.getFileContents()` passed in construction.
-   * @param content
-   */
-  setContent(content: string): void;
-} | null;
+export type EmbeddedEditorRef = (EditorApi & { getStateControl(): StateControl }) | null;
 
 const containerStyles: CSS.Properties = {
   display: "flex",
@@ -142,126 +70,51 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   props: Props,
   forwardedRef
 ) => {
-  const iframeRef: React.RefObject<HTMLIFrameElement> = useRef<HTMLIFrameElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const stateControl = useMemo(() => new StateControl(), []);
 
-  //Property functions default handling
-  const onResourceContentRequest = useCallback(
-    (request: ResourceContentRequest) => {
-      if (props.onResourceContentRequest) {
-        return props.onResourceContentRequest(request);
-      }
-      return Promise.resolve(new ResourceContent(request.path, undefined));
-    },
-    [props.onResourceContentRequest]
-  );
-
-  const onResourceListRequest = useCallback(
-    (request: ResourceListRequest) => {
-      if (props.onResourceListRequest) {
-        return props.onResourceListRequest(request);
-      }
-      return Promise.resolve(new ResourcesList(request.pattern, []));
-    },
-    [props.onResourceListRequest]
-  );
-
-  const handleStateControlCommand = useCallback((stateControlCommand: StateControlCommand) => {
-    switch (stateControlCommand) {
-      case StateControlCommand.REDO:
-        stateControl.redo();
-        props.onEditorRedo?.();
-        break;
-      case StateControlCommand.UNDO:
-        stateControl.undo();
-        props.onEditorUndo?.();
-        break;
-      default:
-        console.info(`Unknown message type received: ${stateControlCommand}`);
-        break;
-    }
-  }, []);
-
-  const envelopeUri = useMemo(() => props.envelopeUri ?? "envelope/envelope.html", [props.envelopeUri]);
-
-  //Setup envelope bus communication
-  const kogitoChannelBus = useMemo(() => {
-    return new KogitoChannelBus(
-      {
-        postMessage: message => {
-          if (iframeRef.current && iframeRef.current.contentWindow) {
-            iframeRef.current.contentWindow.postMessage(message, "*");
-          }
-        }
-      },
-      {
-        receive_setContentError(errorMessage: string) {
-          props.onSetContentError?.(errorMessage);
-        },
-        receive_ready() {
-          props.onReady?.();
-        },
-        receive_openFile: (path: string) => {
-          props.onOpenFile?.(path);
-        },
-        receive_newEdit(edit: KogitoEdit) {
-          stateControl.updateCommandStack(edit.id);
-          props.onNewEdit?.(edit);
-        },
-        receive_stateControlCommandUpdate(stateControlCommand: StateControlCommand) {
-          handleStateControlCommand(stateControlCommand);
-        },
-        receive_guidedTourUserInteraction(userInteraction: UserInteraction) {
-          KogitoGuidedTour.getInstance().onUserInteraction(userInteraction);
-        },
-        receive_guidedTourRegisterTutorial(tutorial: Tutorial) {
-          KogitoGuidedTour.getInstance().registerTutorial(tutorial);
-        },
-        //requests
-        receive_languageRequest() {
-          return Promise.resolve(props.router.getLanguageData(props.file.editorType));
-        },
-        receive_contentRequest() {
-          return props.file.getFileContents().then(c => ({ content: c ?? "", path: props.file.fileName }));
-        },
-        receive_resourceContentRequest(request: ResourceContentRequest) {
-          return onResourceContentRequest(request);
-        },
-        receive_resourceListRequest(request: ResourceListRequest) {
-          return onResourceListRequest(request);
-        },
-        receive_getLocale() {
-          return Promise.resolve(props.locale);
-        }
-      }
-    );
-  }, [
-    props.router,
-    props.file.editorType,
-    props.file.fileName,
-    props.onResourceContentRequest,
-    props.onResourceListRequest,
-    handleStateControlCommand
+  const envelopeMapping = useMemo(() => props.editorEnvelopeLocator.mapping.get(props.file.fileExtension), [
+    props.editorEnvelopeLocator,
+    props.file
   ]);
 
+  //Setup envelope bus communication
+  const kogitoEditorChannelApiImpl = useMemo(() => {
+    return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, props);
+  }, [stateControl, props.file, props]);
+
+  const kogitoEditorChannel = useMemo(() => {
+    return new KogitoEditorChannel({
+      postMessage: message => {
+        if (iframeRef.current && iframeRef.current.contentWindow) {
+          iframeRef.current.contentWindow.postMessage(message, "*");
+        }
+      }
+    });
+  }, []);
+
   useEffectAfterFirstRender(() => {
-    kogitoChannelBus.notify_localeChange(props.locale);
+    kogitoEditorChannel.notify_localeChange(props.locale);
   }, [props.locale]);
 
-  // Forward keyboard events to envelope
-  useSyncedKeyboardEvents(kogitoChannelBus.client);
-
-  //Attach/detach bus when component attaches/detaches from DOM
-  useConnectedKogitoChannelBus(window.location.origin, kogitoChannelBus);
+  useConnectedKogitoEditorChannel(
+    kogitoEditorChannel,
+    kogitoEditorChannelApiImpl,
+    props.editorEnvelopeLocator.targetOrigin,
+    { fileExtension: props.file.fileExtension, resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "" }
+  );
 
   useEffect(() => {
     KogitoGuidedTour.getInstance().registerPositionProvider((selector: string) =>
-      kogitoChannelBus.request_guidedTourElementPositionResponse(selector).then(position => {
+      kogitoEditorChannel.request_guidedTourElementPositionResponse(selector).then(position => {
         const parentRect = iframeRef.current?.getBoundingClientRect();
         KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
       })
     );
-  }, [kogitoChannelBus]);
+  }, [kogitoEditorChannel]);
+
+  // Forward keyboard events to envelope
+  useSyncedKeyboardEvents(kogitoEditorChannel.client);
 
   //Forward reference methods
   useImperativeHandle(
@@ -273,26 +126,36 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
       return {
         getStateControl: () => stateControl,
-        notifyRedo: () => kogitoChannelBus.notify_editorRedo(),
-        notifyUndo: () => kogitoChannelBus.notify_editorUndo(),
-        requestContent: () => kogitoChannelBus.request_contentResponse(),
-        requestPreview: () => kogitoChannelBus.request_previewResponse(),
-        setContent: async (content: string) => kogitoChannelBus.notify_contentChanged({ content: content })
+        getElementPosition: selector => kogitoEditorChannel.request_guidedTourElementPositionResponse(selector),
+        redo: () => Promise.resolve(kogitoEditorChannel.notify_editorRedo()),
+        undo: () => Promise.resolve(kogitoEditorChannel.notify_editorUndo()),
+        getContent: () => kogitoEditorChannel.request_contentResponse().then(c => c.content),
+        getPreview: () => kogitoEditorChannel.request_previewResponse(),
+        setContent: async content => kogitoEditorChannel.notify_contentChanged({ content: content })
       };
     },
-    [kogitoChannelBus]
+    [kogitoEditorChannel]
   );
 
   return (
-    <iframe
-      ref={iframeRef}
-      id={"kogito-iframe"}
-      data-testid={"kogito-iframe"}
-      src={envelopeUri}
-      title="Kogito editor"
-      style={containerStyles}
-      data-envelope-channel={props.channelType}
-    />
+    <>
+      {!envelopeMapping && (
+        <>
+          <span>{`No Editor available for '${props.file.fileExtension}' extension`}</span>
+        </>
+      )}
+      {envelopeMapping && (
+        <iframe
+          ref={iframeRef}
+          id={"kogito-iframe"}
+          data-testid={"kogito-iframe"}
+          src={envelopeMapping.envelopePath}
+          title="Kogito editor"
+          style={containerStyles}
+          data-envelope-channel={props.channelType}
+        />
+      )}
+    </>
   );
 };
 

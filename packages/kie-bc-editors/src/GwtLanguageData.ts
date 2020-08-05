@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { LanguageData } from "@kogito-tooling/microeditor-envelope-protocol";
-
-export interface GwtLanguageData extends LanguageData {
+export interface GwtLanguageData {
+  type: string;
   editorId: string;
   gwtModuleName: string;
   resources: Resource[];

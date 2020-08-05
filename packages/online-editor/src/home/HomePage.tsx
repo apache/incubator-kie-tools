@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorType, File as UploadFile, newFile } from "@kogito-tooling/embedded-editor";
+import { File as UploadFile, newFile } from "@kogito-tooling/embedded-editor";
 import {
   Brand,
   Bullseye,
@@ -114,9 +114,10 @@ export function HomePage(props: Props) {
 
   const openFile = useCallback(
     (file: File) => {
+      const fileExtension = extractFileExtension(file.name)!;
       props.onFileOpened({
         isReadOnly: false,
-        editorType: extractFileExtension(file.name) as EditorType,
+        fileExtension: fileExtension,
         fileName: removeFileExtension(file.name),
         getFileContents: () =>
           new Promise<string | undefined>(resolve => {
@@ -125,14 +126,14 @@ export function HomePage(props: Props) {
             reader.readAsText(file);
           })
       });
-      history.replace(context.routes.editor.url({ type: extractFileExtension(file.name)! }));
+      history.replace(context.routes.editor.url({ type: fileExtension }));
     },
     [context, history]
   );
 
   const onFileUploadFromDnd = useCallback((file: File) => {
     const fileExtension = extractFileExtension(file.name);
-    if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
+    if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
       setUploadFileDndState(UploadFileDndState.INVALID_EXTENSION);
     } else {
       openFile(file);
@@ -179,7 +180,7 @@ export function HomePage(props: Props) {
 
   const onFileUploadFromInput = useCallback((file: File) => {
     const fileExtension = extractFileExtension(file.name);
-    if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
+    if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
       setUploadFileInputState(UploadFileInputState.INVALID_EXTENSION);
     } else {
       openFile(file);
@@ -231,42 +232,42 @@ export function HomePage(props: Props) {
   }, [uploadFileInputState]);
 
   const createEmptyFile = useCallback(
-    (editorType: EditorType) => {
-      props.onFileOpened(newFile(editorType));
-      history.replace(context.routes.editor.url({ type: editorType }));
+    (fileExtension: string) => {
+      props.onFileOpened(newFile(fileExtension));
+      history.replace(context.routes.editor.url({ type: fileExtension }));
     },
     [context, history]
   );
 
   const createEmptyBpmnFile = useCallback(() => {
-    createEmptyFile(EditorType.BPMN);
+    createEmptyFile("bpmn");
   }, [createEmptyFile]);
 
   const createEmptyDmnFile = useCallback(() => {
-    createEmptyFile(EditorType.DMN);
+    createEmptyFile("dmn");
   }, [createEmptyFile]);
 
   const trySample = useCallback(
-    (editorType: EditorType) => {
+    (fileExtension: string) => {
       const fileName = "sample";
-      const filePath = `samples/${fileName}.${editorType}`;
+      const filePath = `samples/${fileName}.${fileExtension}`;
       props.onFileOpened({
         isReadOnly: false,
-        editorType: editorType,
+        fileExtension: fileExtension,
         fileName: fileName,
         getFileContents: () => fetch(filePath).then(response => response.text())
       });
-      history.replace(context.routes.editor.url({ type: editorType }));
+      history.replace(context.routes.editor.url({ type: fileExtension }));
     },
     [context, history]
   );
 
   const tryBpmnSample = useCallback(() => {
-    trySample(EditorType.BPMN);
+    trySample("bpmn");
   }, [trySample]);
 
   const tryDmnSample = useCallback(() => {
-    trySample(EditorType.DMN);
+    trySample("dmn");
   }, [trySample]);
 
   const validateUrl = useCallback(async () => {
@@ -309,7 +310,7 @@ export function HomePage(props: Props) {
       }
 
       const gistExtension = extractFileExtension(new URL(rawUrl).pathname);
-      if (gistExtension && context.router.getLanguageData(gistExtension)) {
+      if (gistExtension && context.editorEnvelopeLocator.mapping.has(gistExtension)) {
         setInputFileUrlState({
           urlValidation: InputFileUrlState.VALID,
           urlToOpen: rawUrl
@@ -325,7 +326,7 @@ export function HomePage(props: Props) {
     }
 
     const fileExtension = extractFileExtension(url.pathname);
-    if (!fileExtension || !context.router.getLanguageData(fileExtension)) {
+    if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
       setInputFileUrlState({
         urlValidation: InputFileUrlState.INVALID_EXTENSION,
         urlToOpen: undefined
@@ -527,7 +528,7 @@ export function HomePage(props: Props) {
           </Title>
           <Text>{i18n.homePage.header.welcomeText}</Text>
           <Text component={TextVariants.small} className="pf-u-text-align-right">
-            `${i18n.terms.poweredBy} `
+            {`${i18n.terms.poweredBy} `}
             <Brand
               src={"images/kogito_logo_white.png"}
               alt="Kogito Logo"
