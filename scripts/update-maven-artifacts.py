@@ -75,7 +75,8 @@ def getRunnerURL(service):
     finalVersion = service["version"]
     if isSnapshotVersion(finalVersion):
         finalVersion=getSnapshotVersion(service)
-    url = service["repo_url"] + "{}-{}-runner.jar".format(service["name"], finalVersion)
+    url = service["repo_url"] + "{0}-{1}-runner.jar".format(service["name"], finalVersion)
+    checkUrl(url)
     return url
 
 def getMD5(service):
@@ -86,8 +87,18 @@ def getMD5(service):
     '''
     runnerURL=getRunnerURL(service)
     runnerMD5URL=runnerURL+".md5"
+    checkUrl(runnerMD5URL)
     runnerMD5=sp.getoutput("curl -s  {}".format(runnerMD5URL))
     return runnerMD5
+
+def checkUrl(url):
+    '''
+    Check url returns 2xx code. 
+    :param url
+    '''
+    resultCode=int(sp.getoutput('curl -I -s -o /dev/null -w "%{0}" {1}'.format('{http_code}', url)))
+    if resultCode < 200 or resultCode >= 300:
+        raise ValueError('Got http code {0} for url {1}'.format(resultCode, url))
 
 def update_artifacts(service,modulePath):
     '''

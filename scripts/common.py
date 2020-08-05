@@ -258,7 +258,7 @@ def update_examples_ref_in_clone_repo(examples_ref):
     pattern = re.compile(r'(git checkout.*)')
     replacement = "git checkout master"
     if examples_ref != 'master':
-        replacement = "git checkout -b {} {}".format(examples_ref, examples_ref)
+        replacement = "git checkout -b {0} origin/{1}".format(examples_ref, examples_ref)
     update_in_file(CLONE_REPO_SCRIPT, pattern, replacement)
 
 def update_examples_uri_in_clone_repo(examples_uri):
