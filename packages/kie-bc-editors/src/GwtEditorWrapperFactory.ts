@@ -82,10 +82,6 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       });
     });
 
-    envelopeContext.channelApi.subscribe("receive_ready", () => {
-      console.info(initArgs.fileExtension + `: A new editor was open.`);
-    });
-
     return Promise.all(languageData.resources.map(resource => this.loadResource(resource))).then(() => {
       return gwtFinishedLoading;
     });
