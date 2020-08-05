@@ -29,7 +29,7 @@ jobs:
           git config --global user.email "kietooling@gmail.com"
           git config --global user.name "Kogito Tooling Bot (kiegroup)"
           cd kogito-online-ci
-          for buildDir in comment/*/
+          for buildDir in */*/;
           do
             buildDate=$(git log -1 --pretty="format:%ct" --date="iso-strict" -- $buildDir)
             limitDate=$(date -d "-30 days" +%s)
