@@ -20,7 +20,17 @@ import { PMML } from "@kogito-tooling/pmml-editor-marshaller/dist/marshaller/mod
  * PUBLIC ENVELOPE API
  */
 export interface PMMLMarshallerApi {
+
+    /**
+     * It performs the marshall of a xmlContent retrieved from a PMML file
+     * * @param xmlContent
+     */
     marshall(xmlContent: string): PMML;
+
+    /**
+     * It performs the unmarshall of a PMML object.
+     * * @param pmml
+     */
     unmarshall(pmml: PMML): string;
 }
 
