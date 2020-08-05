@@ -15,7 +15,7 @@
  */
 
 import { DefaultKogitoCommandRegistry } from "../../gwtStateControl";
-import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoEditorChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
 
 class Command {
   private id: string;
@@ -29,7 +29,7 @@ class Command {
   }
 }
 
-let messageBusClient: MessageBusClient<KogitoChannelApi>;
+let messageBusClient: MessageBusClient<KogitoEditorChannelApi>;
 let registry: DefaultKogitoCommandRegistry<Command>;
 
 const COMMAND1 = new Command("1");

@@ -15,182 +15,68 @@
  */
 
 import * as vscode from "vscode";
-import { Uri } from "vscode";
-import * as fs from "fs";
-import * as __path from "path";
-import { KogitoChannelBus, Router } from "@kogito-tooling/microeditor-envelope-protocol";
-import { KogitoEditorStore } from "./KogitoEditorStore";
 import {
-  KogitoEdit,
-  ResourceContentRequest,
-  ResourceContentService,
-  ResourceListRequest,
+  EditorEnvelopeLocator,
+  EnvelopeMapping,
+  KogitoEditorChannel,
+  KogitoEditorChannelApi
 } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoEditorStore } from "./KogitoEditorStore";
+import { EditorApi } from "@kogito-tooling/editor-api";
+import { KogitoEditableDocument } from "./KogitoEditableDocument";
 
-export class KogitoEditor {
-  private readonly uri: vscode.Uri;
-  private readonly relativePath: string;
-  private readonly webviewLocation: string;
-  private readonly context: vscode.ExtensionContext;
-  private readonly router: Router;
-  private readonly panel: vscode.WebviewPanel;
-  private readonly editorStore: KogitoEditorStore;
-  private readonly kogitoChannelBus: KogitoChannelBus;
-  private readonly resourceContentService: ResourceContentService;
-  private readonly signalEdit: (edit: KogitoEdit) => void;
-
-  private readonly encoder = new TextEncoder();
-  private readonly decoder = new TextDecoder("utf-8");
-
+export class KogitoEditor implements EditorApi {
   public constructor(
-    relativePath: string,
-    uri: vscode.Uri,
-    initialBackup: vscode.Uri | undefined,
-    panel: vscode.WebviewPanel,
-    context: vscode.ExtensionContext,
-    router: Router,
-    webviewLocation: string,
-    editorStore: KogitoEditorStore,
-    resourceContentService: ResourceContentService,
-    signalEdit: (edit: KogitoEdit) => void
-  ) {
-    this.relativePath = relativePath;
-    this.uri = uri;
-    this.panel = panel;
-    this.context = context;
-    this.router = router;
-    this.webviewLocation = webviewLocation;
-    this.editorStore = editorStore;
-    this.resourceContentService = resourceContentService;
-    this.signalEdit = signalEdit;
-    this.kogitoChannelBus = new KogitoChannelBus(
-      {
-        postMessage: message => this.panel.webview.postMessage(message)
-      },
-      {
-        receive_setContentError: (errorMessage: string) => {
-          vscode.window.showErrorMessage(errorMessage);
-        },
-        receive_ready(): void {
-          /**/
-        },
-        receive_stateControlCommandUpdate: _ => {
-          /*
-           * VS Code has his own state control API.
-           */
-        },
-        receive_guidedTourRegisterTutorial: _ => {
-          /* empty */
-        },
-        receive_guidedTourUserInteraction: _ => {
-          /* empty */
-        },
-        receive_newEdit: (edit: KogitoEdit) => {
-          this.notify_newEdit(edit);
-        },
-        receive_openFile: (path: string) => {
-          this.notify_openFile(path);
-        },
-        //requests
-        receive_languageRequest: async () => {
-          const pathFileExtension = this.uri.fsPath.split(".").pop()!;
-          return this.router.getLanguageData(pathFileExtension);
-        },
-        receive_contentRequest: async () => {
-          return vscode.workspace.fs.readFile(initialBackup ?? this.uri).then(contentArray => {
-            initialBackup = undefined;
-            return { content: this.decoder.decode(contentArray), path: this.relativePath };
-          });
-        },
-        receive_resourceContentRequest: (request: ResourceContentRequest) => {
-          return this.resourceContentService.get(request.path, request.opts);
-        },
-        receive_resourceListRequest: (request: ResourceListRequest) => {
-          return this.resourceContentService.list(request.pattern, request.opts);
-        }
-      }
-    );
+    public readonly document: KogitoEditableDocument,
+    private readonly panel: vscode.WebviewPanel,
+    private readonly context: vscode.ExtensionContext,
+    private readonly editorStore: KogitoEditorStore,
+    private readonly envelopeMapping: EnvelopeMapping,
+    private readonly envelopeLocator: EditorEnvelopeLocator,
+    private readonly kogitoEditorChannel = new KogitoEditorChannel({
+      postMessage: message => this.panel.webview.postMessage(message)
+    })
+  ) {}
+
+  public getElementPosition(selector: string) {
+    return this.kogitoEditorChannel.request_guidedTourElementPositionResponse(selector);
   }
 
-  public asWebviewUri(absolutePath: Uri) {
-    return this.panel.webview.asWebviewUri(absolutePath);
+  public getContent() {
+    return this.kogitoEditorChannel.request_contentResponse().then(c => c.content);
   }
 
-  public async requestSave(destination: vscode.Uri, cancellation: vscode.CancellationToken): Promise<void> {
-    return this.kogitoChannelBus.request_contentResponse().then(content => {
-      if (cancellation.isCancellationRequested) {
-        return;
-      }
-      return vscode.workspace.fs.writeFile(destination, this.encoder.encode(content.content)).then(() => {
-        vscode.window.setStatusBarMessage("Saved successfully!", 3000);
-      });
+  public async setContent(path: string, content: string) {
+    this.kogitoEditorChannel.notify_contentChanged({ path: path, content: content });
+  }
+
+  public async undo() {
+    this.kogitoEditorChannel.notify_editorUndo();
+  }
+
+  public async redo() {
+    this.kogitoEditorChannel.notify_editorRedo();
+  }
+
+  public getPreview() {
+    return this.kogitoEditorChannel.request_previewResponse();
+  }
+
+  public startInitPolling() {
+    this.kogitoEditorChannel.startInitPolling(this.envelopeLocator.targetOrigin, {
+      fileExtension: this.document.fileExtension,
+      resourcesPathPrefix: this.envelopeMapping.resourcesPathPrefix
     });
   }
 
-  public async requestBackup(destination: vscode.Uri, cancellation: vscode.CancellationToken): Promise<void> {
-    return this.kogitoChannelBus.request_contentResponse().then(content => {
-      if (cancellation.isCancellationRequested) {
-        return;
-      }
-      return vscode.workspace.fs.writeFile(destination, this.encoder.encode(content.content)).then(() => {
-        console.info("Backup saved.");
-      });
-    });
-  }
-
-  public async deleteBackup(destination: vscode.Uri): Promise<void> {
-    await vscode.workspace.fs.delete(destination);
-  }
-
-  public async notify_editorRevert(): Promise<void> {
-    const content = this.decoder.decode(await vscode.workspace.fs.readFile(this.uri));
-    this.kogitoChannelBus.notify_contentChanged({
-      content: content,
-      path: this.relativePath
-    });
-  }
-
-  public async notify_editorUndo(): Promise<void> {
-    this.kogitoChannelBus.notify_editorUndo();
-  }
-
-  public async notify_editorRedo(): Promise<void> {
-    this.kogitoChannelBus.notify_editorRedo();
-  }
-
-  public notify_newEdit(edit: KogitoEdit) {
-    this.signalEdit(edit);
-  }
-
-  public notify_openFile(filePath: string) {
-    const resolvedPath = __path.isAbsolute(filePath)
-      ? filePath
-      : __path.join(__path.dirname(this.uri.fsPath), filePath);
-    if (!fs.existsSync(resolvedPath)) {
-      throw new Error(`Cannot open file at: ${resolvedPath}.`);
-    }
-    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(resolvedPath));
-  }
-
-  public requestPreview() {
-    this.kogitoChannelBus.request_previewResponse().then(previewSvg => {
-      if (previewSvg) {
-        const parsedPath = __path.parse(this.uri.fsPath);
-        fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, previewSvg);
-      }
-    });
-  }
-
-  public setupEnvelopeBus() {
+  public startListening(editorChannelApi: KogitoEditorChannelApi) {
     this.context.subscriptions.push(
       this.panel.webview.onDidReceiveMessage(
-        msg => this.kogitoChannelBus.receive(msg),
+        msg => this.kogitoEditorChannel.receive(msg, editorChannelApi),
         this,
         this.context.subscriptions
       )
     );
-
-    this.kogitoChannelBus.startInitPolling("vscode");
   }
 
   public setupPanelActiveStatusChange() {
@@ -212,7 +98,7 @@ export class KogitoEditor {
   public setupPanelOnDidDispose() {
     this.panel.onDidDispose(
       () => {
-        this.kogitoChannelBus.stopInitPolling();
+        this.kogitoEditorChannel.stopInitPolling();
         this.editorStore.close(this);
       },
       this,
@@ -220,24 +106,12 @@ export class KogitoEditor {
     );
   }
 
-  private getWebviewIndexJsPath() {
-    return this.router.getRelativePathTo(this.webviewLocation);
-  }
-
   public hasUri(uri: vscode.Uri) {
-    return this.uri === uri;
+    return this.document.uri === uri;
   }
 
   public isActive() {
     return this.panel.active;
-  }
-
-  public viewColumn() {
-    return this.panel.viewColumn;
-  }
-
-  public focus() {
-    this.panel.reveal(this.viewColumn(), true);
   }
 
   public setupWebviewContent() {
@@ -267,9 +141,8 @@ export class KogitoEditor {
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         </head>
         <body>
-        <div id="loading-screen" style="z-index:100;position:relative"></div>
         <div id="envelope-app"></div>
-        <script src="${this.getWebviewIndexJsPath()}"></script>
+        <script src="${this.envelopeMapping.envelopePath}"></script>
         </body>
         </html>
     `;

@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Editor, EnvelopeContextType } from "@kogito-tooling/editor-api";
+import { Editor, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
 import { DEFAULT_RECT } from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
 import { PMMLEditor } from "./PMMLEditor";
 
-export class PMMLEditorInterface extends Editor {
+export class PMMLEditorInterface implements Editor {
   private self: PMMLEditor;
+  public af_isReact = true;
+  public af_componentId: "pmml-editor";
+  public af_componentTitle: "PMML Editor";
 
-  constructor(private readonly envelopeContext: EnvelopeContextType) {
-    super("readonly-react-editor");
-    this.af_isReact = true;
-  }
+  constructor(private readonly envelopeContext: KogitoEditorEnvelopeContextType) {}
 
   public async getElementPosition() {
     return DEFAULT_RECT;

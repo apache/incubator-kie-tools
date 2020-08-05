@@ -14,34 +14,50 @@
  * limitations under the License.
  */
 
-import { ChannelType, KogitoEdit } from "@kogito-tooling/microeditor-envelope-protocol";
-import { EnvelopeBusMessagePurpose, KogitoChannelBus } from "@kogito-tooling/microeditor-envelope-protocol";
+import {
+  Channel,
+  ChannelType,
+  EditorEnvelopeLocator,
+  EnvelopeBusMessagePurpose,
+  KogitoEdit,
+  KogitoEditorChannel
+} from "@kogito-tooling/microeditor-envelope-protocol";
 import * as React from "react";
-import { EditorType, File } from "../../common";
-import { EmbeddedEditor, EmbeddedEditorRef, EmbeddedEditorRouter } from "../../embedded";
+import { File } from "../../common";
+import { EmbeddedEditor, EmbeddedEditorRef } from "../../embedded";
 import { incomingMessage } from "./EmbeddedEditorTestUtils";
 import { render } from "@testing-library/react";
 
 describe("EmbeddedEditor::ONLINE", () => {
   const file: File = {
     fileName: "test",
-    editorType: EditorType.DMN,
+    fileExtension: "dmn",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false
   };
-  const router = new EmbeddedEditorRouter();
+
+  const editorEnvelopeLocator: EditorEnvelopeLocator = {
+    targetOrigin: "localhost:8888",
+    mapping: new Map([["dmn", { envelopePath: "envelope/envelope.html", resourcesPathPrefix: "envelope" }]])
+  };
+
   const channelType = ChannelType.ONLINE;
   const editorRef = React.createRef<EmbeddedEditorRef>();
   const busId = "test-bus-id";
 
   beforeEach(() => {
-    jest.spyOn(KogitoChannelBus.prototype, "generateRandomId").mockReturnValue(busId);
+    jest.spyOn(Channel.prototype, "generateRandomId").mockReturnValue(busId);
     jest.clearAllMocks();
   });
 
   test("EmbeddedEditor::defaults", () => {
     const { getByTestId, container } = render(
-      <EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        editorEnvelopeLocator={editorEnvelopeLocator}
+        channelType={channelType}
+      />
     );
 
     expect(getByTestId("kogito-iframe")).toBeVisible();
@@ -52,25 +68,46 @@ describe("EmbeddedEditor::ONLINE", () => {
   });
 
   test("EmbeddedEditor::setContent", () => {
-    const spyRespond_contentRequest = jest.spyOn(KogitoChannelBus.prototype, "notify_contentChanged");
-    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
-    editorRef.current?.setContent("content");
+    const spyRespond_contentRequest = jest.spyOn(KogitoEditorChannel.prototype, "notify_contentChanged");
+    render(
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        editorEnvelopeLocator={editorEnvelopeLocator}
+        channelType={channelType}
+      />
+    );
+    editorRef.current?.setContent("content", "");
 
     expect(spyRespond_contentRequest).toBeCalledWith({ content: "content" });
   });
 
   test("EmbeddedEditor::requestContent", () => {
-    const spyRequest_contentResponse = jest.spyOn(KogitoChannelBus.prototype, "request_contentResponse");
-    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
-    editorRef.current?.requestContent();
+    const spyRequest_contentResponse = jest.spyOn(KogitoEditorChannel.prototype, "request_contentResponse");
+    render(
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        editorEnvelopeLocator={editorEnvelopeLocator}
+        channelType={channelType}
+      />
+    );
+    editorRef.current?.getContent();
 
     expect(spyRequest_contentResponse).toBeCalled();
   });
 
   test("EmbeddedEditor::requestPreview", () => {
-    const spyRequest_previewResponse = jest.spyOn(KogitoChannelBus.prototype, "request_previewResponse");
-    render(<EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} />);
-    editorRef.current?.requestPreview();
+    const spyRequest_previewResponse = jest.spyOn(KogitoEditorChannel.prototype, "request_previewResponse");
+    render(
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        editorEnvelopeLocator={editorEnvelopeLocator}
+        channelType={channelType}
+      />
+    );
+    editorRef.current?.getPreview();
 
     expect(spyRequest_previewResponse).toBeCalled();
   });
@@ -82,9 +119,9 @@ describe("EmbeddedEditor::ONLINE", () => {
       <EmbeddedEditor
         ref={editorRef}
         file={file}
-        router={router}
+        editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
-        onSetContentError={onSetContentError}
+        receive_setContentError={onSetContentError}
       />
     );
 
@@ -103,7 +140,13 @@ describe("EmbeddedEditor::ONLINE", () => {
     const onReady = jest.fn();
 
     const { container } = render(
-      <EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} onReady={onReady} />
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        editorEnvelopeLocator={editorEnvelopeLocator}
+        channelType={channelType}
+        receive_ready={onReady}
+      />
     );
 
     await incomingMessage({
@@ -124,9 +167,9 @@ describe("EmbeddedEditor::ONLINE", () => {
       <EmbeddedEditor
         ref={editorRef}
         file={file}
-        router={router}
+        editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
-        onResourceContentRequest={onResourceContentRequest}
+        receive_resourceContentRequest={onResourceContentRequest}
       />
     );
 
@@ -149,9 +192,9 @@ describe("EmbeddedEditor::ONLINE", () => {
       <EmbeddedEditor
         ref={editorRef}
         file={file}
-        router={router}
+        editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
-        onResourceListRequest={onResourceListRequest}
+        receive_resourceListRequest={onResourceListRequest}
       />
     );
 
@@ -171,7 +214,13 @@ describe("EmbeddedEditor::ONLINE", () => {
     const onNewEdit = jest.fn();
 
     const { container } = render(
-      <EmbeddedEditor ref={editorRef} file={file} router={router} channelType={channelType} onNewEdit={onNewEdit} />
+      <EmbeddedEditor
+        ref={editorRef}
+        file={file}
+        editorEnvelopeLocator={editorEnvelopeLocator}
+        channelType={channelType}
+        receive_newEdit={onNewEdit}
+      />
     );
 
     await incomingMessage({

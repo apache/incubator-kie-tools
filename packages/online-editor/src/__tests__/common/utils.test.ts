@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import { EditorType } from "@kogito-tooling/embedded-editor";
-import { extractEditorTypeFromUrl } from "../../common/utils";
+import { extractEditorFileExtensionFromUrl } from "../../common/utils";
 
-describe("utils::extractEditorTypeFromUrl", () => {
+const supportedFileExtensions = ["bpmn", "dmn", "bpmn2", "myext"];
+
+describe("utils::extractEditorFileExtensionFromUrl", () => {
   const originalLocation = window.location;
   const baseUrl = "https://kiegroup.github.io/kogito-online";
 
@@ -30,38 +31,43 @@ describe("utils::extractEditorTypeFromUrl", () => {
     window.location = originalLocation;
   });
 
-  test("should be EditorType.BPMN when #/editor/bpmn", () => {
+  test("should be 'bpmn' when #/editor/bpmn", () => {
     setWindowLocationHref("#/editor/bpmn");
-    expect(extractEditorTypeFromUrl()).toEqual(EditorType.BPMN);
+    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toEqual("bpmn");
   });
 
-  test("should be EditorType.DMN when #/editor/dmn", () => {
+  test("should be 'dmn' when #/editor/dmn", () => {
     setWindowLocationHref("#/editor/dmn");
-    expect(extractEditorTypeFromUrl()).toEqual(EditorType.DMN);
+    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toEqual("dmn");
   });
 
-  test("should be EditorType.BPMN when #/editor/bpmn?key=value", () => {
-    setWindowLocationHref("#/editor/bpmn?key=value");
-    expect(extractEditorTypeFromUrl()).toEqual(EditorType.BPMN);
+  test("should be 'bpmn2' when #/editor/bpmn2?key=value", () => {
+    setWindowLocationHref("#/editor/bpmn2?key=value");
+    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toEqual("bpmn2");
+  });
+
+  test("should be 'bpmn2' when #/editor/myext?key=value", () => {
+    setWindowLocationHref("#/editor/myext?key=value");
+    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toEqual("myext");
   });
 
   test("should be undefined when #/editor/invalid", () => {
     setWindowLocationHref("#/editor/invalid");
-    expect(extractEditorTypeFromUrl()).toBeUndefined();
+    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toBeUndefined();
   });
 
   test("should be undefined when #/editor", () => {
     setWindowLocationHref("#/editor");
-    expect(extractEditorTypeFromUrl()).toBeUndefined();
+    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toBeUndefined();
   });
 
   test("should be undefined when #/editor?key=value", () => {
     setWindowLocationHref("#/editor?key=value");
-    expect(extractEditorTypeFromUrl()).toBeUndefined();
+    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toBeUndefined();
   });
 
   test("should be undefined when empty", () => {
     setWindowLocationHref("");
-    expect(extractEditorTypeFromUrl()).toBeUndefined();
+    expect(extractEditorFileExtensionFromUrl(supportedFileExtensions)).toBeUndefined();
   });
 });

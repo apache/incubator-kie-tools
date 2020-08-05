@@ -19,7 +19,7 @@ import { fireEvent, render } from "@testing-library/react";
 import { EditorPage } from "../../../webview/editor/EditorPage";
 import { usingTestingGlobalContext } from "../../testing_utils";
 
-const editorType = "";
+const fileExtension = "";
 const onClose = jest.fn(() => null);
 
 function mockFunctions() {
@@ -35,7 +35,7 @@ describe("EditorPage", () => {
   describe("Unsaved Alert", () => {
     test("should not appear by default with isDirty equal to false", () => {
       const { queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType} />).wrapper
+        usingTestingGlobalContext(<EditorPage onClose={onClose} fileExtension={fileExtension} />).wrapper
       );
 
       expect(queryByTestId("unsaved-alert")).toBeNull();
@@ -43,7 +43,7 @@ describe("EditorPage", () => {
 
     test("should not appear by default with isDirty equal to true", () => {
       const { queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType} />).wrapper
+        usingTestingGlobalContext(<EditorPage onClose={onClose} fileExtension={fileExtension} />).wrapper
       );
 
       expect(queryByTestId("unsaved-alert")).toBeNull();
@@ -51,7 +51,7 @@ describe("EditorPage", () => {
 
     test("should appear when tries to close after an edit with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType} />).wrapper
+        usingTestingGlobalContext(<EditorPage onClose={onClose} fileExtension={fileExtension} />).wrapper
       );
 
       fireEvent.click(getByTestId("close-editor-button"));
@@ -61,7 +61,7 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on save with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType} />).wrapper
+        usingTestingGlobalContext(<EditorPage onClose={onClose} fileExtension={fileExtension} />).wrapper
       );
 
       fireEvent.click(getByTestId("close-editor-button"));
@@ -72,7 +72,7 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on close with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType} />).wrapper
+        usingTestingGlobalContext(<EditorPage onClose={onClose} fileExtension={fileExtension} />).wrapper
       );
 
       fireEvent.click(getByTestId("close-editor-button"));
@@ -83,7 +83,7 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on close without save with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onClose={onClose} editorType={editorType} />).wrapper
+        usingTestingGlobalContext(<EditorPage onClose={onClose} fileExtension={fileExtension} />).wrapper
       );
 
       fireEvent.click(getByTestId("close-editor-button"));
