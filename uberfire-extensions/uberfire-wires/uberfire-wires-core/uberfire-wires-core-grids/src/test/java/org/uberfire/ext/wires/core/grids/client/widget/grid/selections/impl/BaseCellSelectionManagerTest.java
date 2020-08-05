@@ -407,6 +407,25 @@ public class BaseCellSelectionManagerTest {
     }
 
     @Test
+    public void adjustSelectionLeftOutOfBound() {
+        cellSelectionManager.selectCell(0,
+                                        0,
+                                        false,
+                                        false);
+        cellSelectionManager.adjustSelection(SelectionExtension.LEFT,
+                                             false);
+
+        final List<GridData.SelectedCell> selectedCells = gridWidgetData.getSelectedCells();
+        assertEquals(1,
+                     selectedCells.size());
+        assertTrue(selectedCells.contains(new GridData.SelectedCell(0,
+                                                                    0)));
+        assertEquals(new GridData.SelectedCell(0,
+                                               0),
+                     gridWidgetData.getSelectedCellsOrigin());
+    }
+
+    @Test
     public void adjustSelectionLeftWithShiftKey() {
         cellSelectionManager.selectCell(0,
                                         1,
@@ -453,6 +472,25 @@ public class BaseCellSelectionManagerTest {
 
         cellSelectionManager.selectCell(0,
                                         0,
+                                        false,
+                                        false);
+        cellSelectionManager.adjustSelection(SelectionExtension.RIGHT,
+                                             false);
+
+        final List<GridData.SelectedCell> selectedCells = gridWidgetData.getSelectedCells();
+        assertEquals(1,
+                     selectedCells.size());
+        assertTrue(selectedCells.contains(new GridData.SelectedCell(0,
+                                                                    2)));
+        assertEquals(new GridData.SelectedCell(0,
+                                               2),
+                     gridWidgetData.getSelectedCellsOrigin());
+    }
+
+    @Test
+    public void adjustSelectionRightOutOfBound() {
+        cellSelectionManager.selectCell(0,
+                                        2,
                                         false,
                                         false);
         cellSelectionManager.adjustSelection(SelectionExtension.RIGHT,
