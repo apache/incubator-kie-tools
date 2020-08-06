@@ -32,6 +32,7 @@ import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { Envelope } from "../envelope/Envelope";
 import { KogitoEditorEnvelopeApiFactory } from "./KogitoEditorEnvelopeApiImpl";
+import { PMMLEditorMarshallerService } from "@kogito-tooling/pmml-editor-marshaller";
 
 export class KogitoEditorEnvelope {
   constructor(
@@ -45,6 +46,7 @@ export class KogitoEditorEnvelope {
     private readonly keyboardShortcutsService = new DefaultKeyboardShortcutsService({
       editorContext: args.editorContext
     }),
+    private readonly pmmlEditorMarshallerService = new PMMLEditorMarshallerService(),
     private readonly envelope: Envelope<
       KogitoEditorEnvelopeApi,
       KogitoEditorChannelApi,
@@ -56,7 +58,8 @@ export class KogitoEditorEnvelope {
       context: args.editorContext,
       services: {
         keyboardShortcuts: keyboardShortcutsService,
-        guidedTour: { isEnabled: () => KogitoGuidedTour.getInstance().isEnabled() }
+        guidedTour: { isEnabled: () => KogitoGuidedTour.getInstance().isEnabled() },
+        pmmlEditorMarshaller: pmmlEditorMarshallerService
       }
     }
   ) {}

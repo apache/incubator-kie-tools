@@ -23,7 +23,6 @@ import { GwtStateControlService } from "./gwtStateControl";
 import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
 import {
   EditorInitArgs,
-  PMMLModelData,
   ResourceContentOptions,
   ResourceListOptions,
   Tutorial,
@@ -108,6 +107,7 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     window.envelope = {
       editorContext: envelopeContext.context,
       keyboardShortcuts: envelopeContext.services.keyboardShortcuts,
+      pmmlEditorMarshallerService: envelopeContext.services.pmmlEditorMarshaller,
       guidedTourService: {
         refresh(userInteraction: UserInteraction): void {
           envelopeContext.channelApi.notify("receive_guidedTourUserInteraction", userInteraction);
@@ -134,11 +134,6 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       workspaceService: {
         openFile(path: string): void {
           envelopeContext.channelApi.notify("receive_openFile", path);
-        }
-      },
-      pmmlEditorMarshallerService: {
-        getPMMLModelData(xmlContent: string): PMMLModelData[] {
-          return [];
         }
       }
     };
