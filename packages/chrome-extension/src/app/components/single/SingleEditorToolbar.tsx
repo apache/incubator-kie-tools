@@ -17,6 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useGlobals } from "../common/GlobalContext";
+import { useChromeExtensionI18n } from "../../i18n/locales";
 
 export const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
@@ -34,6 +35,7 @@ export function SingleEditorToolbar(props: {
   const [copyLinkSuccessAlertVisible, setCopyLinkSuccessAlertVisible] = useState(false);
   const linkToExternalEditorTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const copyLinkSuccessAlertRef = useRef<HTMLDivElement>(null);
+  const { i18n } = useChromeExtensionI18n();
 
   const goFullScreen = useCallback((e: any) => {
     e.preventDefault();
@@ -89,12 +91,12 @@ export function SingleEditorToolbar(props: {
             className={"btn btn-sm kogito-button"}
             onClick={seeAsSource}
           >
-            See as source
+            {i18n.single.editorToolbar.seeAsSource}
           </button>
         )}
         {props.textMode && (
           <button data-testid={"see-as-diagram-button"} className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
-            See as diagram
+            {i18n.seeAsDiagram}
           </button>
         )}
         {globals.externalEditorManager && (
@@ -103,7 +105,7 @@ export function SingleEditorToolbar(props: {
             className={"btn btn-sm kogito-button"}
             onClick={openInExternalEditor}
           >
-            Open in {globals.externalEditorManager.name}
+            {i18n.openIn(globals.externalEditorManager.name)}
           </button>
         )}
         {globals.externalEditorManager && props.linkToExternalEditor && (
@@ -113,7 +115,7 @@ export function SingleEditorToolbar(props: {
               className={"btn btn-sm kogito-button"}
               onClick={copyLinkToExternalEditor}
             >
-              Copy link to {globals.externalEditorManager.name}
+              {i18n.single.editorToolbar.copyLinkTo(globals.externalEditorManager.name)}
             </button>
             {copyLinkSuccessAlertVisible && (
               <div
@@ -123,7 +125,7 @@ export function SingleEditorToolbar(props: {
                 style={{ marginTop: "34px", right: "0" }}
               >
                 <div className={"dropdown-menu dropdown-menu-sw kogito-github-action-alert"}>
-                  <span>Link copied to clipboard</span>
+                  <span>{i18n.single.editorToolbar.linkCopied}</span>
                 </div>
               </div>
             )}
@@ -131,7 +133,7 @@ export function SingleEditorToolbar(props: {
         )}
         {!props.textMode && (
           <button data-testid={"go-fullscreen-button"} className={"btn btn-sm kogito-button"} onClick={goFullScreen}>
-            Full screen
+            {i18n.terms.fullScreen}
           </button>
         )}
         <textarea
@@ -143,7 +145,7 @@ export function SingleEditorToolbar(props: {
       {props.readonly && !props.textMode && (
         <>
           {/* TODO: Add "info" icon with hint explaining how to edit the file */}
-          <h4>🔸️ This is a readonly visualization</h4>
+          <h4>{i18n.single.editorToolbar.readOnly}</h4>
         </>
       )}
     </>

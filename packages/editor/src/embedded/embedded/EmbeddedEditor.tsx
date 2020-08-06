@@ -21,7 +21,7 @@ import { useGuidedTourPositionProvider } from "@kogito-tooling/guided-tour/dist/
 import * as CSS from "csstype";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef } from "react";
-import { File } from "../common";
+import { File, useEffectAfterFirstRender } from "../common";
 import { StateControl } from "../stateControl";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
@@ -42,6 +42,7 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
   file: File;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   channelType: ChannelType;
+  locale: string;
 };
 
 /**
@@ -75,7 +76,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
   //Setup envelope bus communication
   const kogitoEditorChannelApiImpl = useMemo(() => {
-    return new KogitoEditorChannelApiImpl(stateControl, props.file, props);
+    return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, props);
   }, [stateControl, props.file, props]);
 
   const envelopeServer = useMemo(() => {
@@ -87,6 +88,10 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   }, []);
 
   useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
+
+  useEffectAfterFirstRender(() => {
+    envelopeServer.client.notify("receive_localeChange", props.locale);
+  }, [props.locale]);
 
   // Register position provider for Guided Tour
   useGuidedTourPositionProvider(envelopeServer.client, iframeRef);

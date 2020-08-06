@@ -35,4 +35,5 @@ export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, G
   receive_initRequest(association: Association, editorInit: EditorInitArgs): Promise<void>;
   receive_contentRequest(): Promise<EditorContent>;
   receive_previewRequest(): Promise<string>;
+  receive_localeChange(locale: string): void;
 }

@@ -12,7 +12,7 @@ exports[`SingleEditorApp go fullscreen 1`] = `
         data-testid="exit-fullscreen-button"
         href="#"
       >
-        Exit full screen
+        Exit Full Screen
       </a>
     </div>
     <div
@@ -57,8 +57,7 @@ exports[`SingleEditorApp go fullscreen and back 1`] = `
         class="btn btn-sm kogito-button"
         data-testid="open-ext-editor-button"
       >
-        Open in 
-        Test Online Editor
+        Open in Test Online Editor
       </button>
       <div
         class="position-relative"
@@ -67,15 +66,14 @@ exports[`SingleEditorApp go fullscreen and back 1`] = `
           class="btn btn-sm kogito-button"
           data-testid="copy-link-button"
         >
-          Copy link to 
-          Test Online Editor
+          Copy link to Test Online Editor
         </button>
       </div>
       <button
         class="btn btn-sm kogito-button"
         data-testid="go-fullscreen-button"
       >
-        Full screen
+        Full Screen
       </button>
       <textarea
         style="opacity: 0; width: 0px; height: 0px;"
@@ -125,8 +123,7 @@ exports[`SingleEditorApp not readonly 1`] = `
         class="btn btn-sm kogito-button"
         data-testid="open-ext-editor-button"
       >
-        Open in 
-        Test Online Editor
+        Open in Test Online Editor
       </button>
       <div
         class="position-relative"
@@ -135,15 +132,14 @@ exports[`SingleEditorApp not readonly 1`] = `
           class="btn btn-sm kogito-button"
           data-testid="copy-link-button"
         >
-          Copy link to 
-          Test Online Editor
+          Copy link to Test Online Editor
         </button>
       </div>
       <button
         class="btn btn-sm kogito-button"
         data-testid="go-fullscreen-button"
       >
-        Full screen
+        Full Screen
       </button>
       <textarea
         style="opacity: 0; width: 0px; height: 0px;"
@@ -196,8 +192,7 @@ exports[`SingleEditorApp open external editor 1`] = `
         class="btn btn-sm kogito-button"
         data-testid="open-ext-editor-button"
       >
-        Open in 
-        Test Online Editor
+        Open in Test Online Editor
       </button>
       <div
         class="position-relative"
@@ -206,15 +201,14 @@ exports[`SingleEditorApp open external editor 1`] = `
           class="btn btn-sm kogito-button"
           data-testid="copy-link-button"
         >
-          Copy link to 
-          Test Online Editor
+          Copy link to Test Online Editor
         </button>
       </div>
       <button
         class="btn btn-sm kogito-button"
         data-testid="go-fullscreen-button"
       >
-        Full screen
+        Full Screen
       </button>
       <textarea
         style="opacity: 0; width: 0px; height: 0px;"
@@ -264,8 +258,7 @@ exports[`SingleEditorApp open external editor and wait for come back 1`] = `
         class="btn btn-sm kogito-button"
         data-testid="open-ext-editor-button"
       >
-        Open in 
-        Test Online Editor
+        Open in Test Online Editor
       </button>
       <div
         class="position-relative"
@@ -274,15 +267,14 @@ exports[`SingleEditorApp open external editor and wait for come back 1`] = `
           class="btn btn-sm kogito-button"
           data-testid="copy-link-button"
         >
-          Copy link to 
-          Test Online Editor
+          Copy link to Test Online Editor
         </button>
       </div>
       <button
         class="btn btn-sm kogito-button"
         data-testid="go-fullscreen-button"
       >
-        Full screen
+        Full Screen
       </button>
       <textarea
         style="opacity: 0; width: 0px; height: 0px;"
@@ -332,8 +324,7 @@ exports[`SingleEditorApp readonly 1`] = `
         class="btn btn-sm kogito-button"
         data-testid="open-ext-editor-button"
       >
-        Open in 
-        Test Online Editor
+        Open in Test Online Editor
       </button>
       <div
         class="position-relative"
@@ -342,15 +333,14 @@ exports[`SingleEditorApp readonly 1`] = `
           class="btn btn-sm kogito-button"
           data-testid="copy-link-button"
         >
-          Copy link to 
-          Test Online Editor
+          Copy link to Test Online Editor
         </button>
       </div>
       <button
         class="btn btn-sm kogito-button"
         data-testid="go-fullscreen-button"
       >
-        Full screen
+        Full Screen
       </button>
       <textarea
         style="opacity: 0; width: 0px; height: 0px;"

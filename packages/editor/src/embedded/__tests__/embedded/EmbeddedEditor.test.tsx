@@ -54,6 +54,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
+        locale={"en"}
       />
     );
 
@@ -72,6 +73,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
+        locale={"en"}
       />
     );
     editorRef.current?.setContent("content", "");
@@ -90,6 +92,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
+        locale={"en"}
       />
     );
     editorRef.current?.getContent();
@@ -108,6 +111,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         file={file}
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
+        locale={"en"}
       />
     );
     editorRef.current?.getPreview();
@@ -125,6 +129,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
         receive_setContentError={onSetContentError}
+        locale={"en"}
       />
     );
 
@@ -149,6 +154,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
         receive_ready={onReady}
+        locale={"en"}
       />
     );
 
@@ -173,6 +179,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
         receive_resourceContentRequest={onResourceContentRequest}
+        locale={"en"}
       />
     );
 
@@ -198,6 +205,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
         receive_resourceListRequest={onResourceListRequest}
+        locale={"en"}
       />
     );
 
@@ -223,6 +231,7 @@ describe("EmbeddedEditor::ONLINE", () => {
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
         receive_newEdit={onNewEdit}
+        locale={"en"}
       />
     );
 

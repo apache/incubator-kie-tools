@@ -32,7 +32,8 @@ beforeEach(() => {
     receive_editorUndo: jest.fn(),
     receive_editorRedo: jest.fn(),
     receive_contentChanged: jest.fn(),
-    receive_channelKeyboardEvent: jest.fn()
+    receive_channelKeyboardEvent: jest.fn(),
+    receive_localeChange: jest.fn()
   };
 
   envelopeBus = new EnvelopeBusController<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>({

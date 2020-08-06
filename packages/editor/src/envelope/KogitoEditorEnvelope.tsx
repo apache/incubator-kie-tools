@@ -30,6 +30,7 @@ import * as React from "react";
 import { Envelope } from "@kogito-tooling/envelope";
 import { KogitoEditorEnvelopeApiFactory } from "./KogitoEditorEnvelopeApiImpl";
 import { EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
+import { I18nService } from "../api/I18nService";
 
 export class KogitoEditorEnvelope {
   constructor(
@@ -43,6 +44,7 @@ export class KogitoEditorEnvelope {
     private readonly keyboardShortcutsService = new DefaultKeyboardShortcutsService({
       os: args.editorContext.operatingSystem
     }),
+    private readonly i18nService = new I18nService(),
     private readonly envelope: Envelope<
       KogitoEditorEnvelopeApi,
       KogitoEditorChannelApi,
@@ -54,7 +56,8 @@ export class KogitoEditorEnvelope {
       context: args.editorContext,
       services: {
         keyboardShortcuts: keyboardShortcutsService,
-        guidedTour: { isEnabled: () => KogitoGuidedTour.getInstance().isEnabled() }
+        guidedTour: { isEnabled: () => KogitoGuidedTour.getInstance().isEnabled() },
+        i18n: i18nService
       }
     }
   ) {}

@@ -16,10 +16,11 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { EditorContext } from "./EditorContext";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
 import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
+import { EditorContext } from "./EditorContext";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
+import { I18nService } from "./I18nService";
 
 export interface KogitoEditorEnvelopeContextType {
   channelApi: MessageBusClient<KogitoEditorChannelApi>;
@@ -27,6 +28,7 @@ export interface KogitoEditorEnvelopeContextType {
   services: {
     keyboardShortcuts: DefaultKeyboardShortcutsService;
     guidedTour: { isEnabled: () => boolean };
+    i18n: I18nService;
   };
 }
 

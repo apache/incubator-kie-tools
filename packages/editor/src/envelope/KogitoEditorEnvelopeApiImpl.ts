@@ -137,6 +137,10 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));
   };
 
+  public receive_localeChange(locale: string) {
+    return this.args.envelopeContext.services.i18n.executeOnLocaleChange(locale);
+  }
+
   private registerDefaultShortcuts() {
     this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
       "shift+ctrl+z",

@@ -37,6 +37,7 @@ export type Props = EmbeddedViewerChannelApiOverrides & {
   file: File;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   channelType: ChannelType;
+  locale: string;
 };
 
 export const EmbeddedViewer = (props: Props) => <EmbeddedEditor {...props} />;

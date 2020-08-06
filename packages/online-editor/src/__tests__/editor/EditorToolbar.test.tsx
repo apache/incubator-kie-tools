@@ -17,8 +17,8 @@
 import * as React from "react";
 import { render } from "@testing-library/react";
 import { EditorToolbar } from "../../editor/EditorToolbar";
-import { usingTestingGlobalContext } from "../testing_utils";
 import { StateControl } from "@kogito-tooling/editor/dist/embedded";
+import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
 const onFileNameChanged = jest.fn((file: string) => null);
 const enterFullscreen = jest.fn(() => null);
 const requestSave = jest.fn(() => null);
@@ -44,19 +44,21 @@ describe("EditorToolbar", () => {
       const isEdited = true;
 
       const { queryByTestId, getByTestId } = render(
-        usingTestingGlobalContext(
-          <EditorToolbar
-            onFullScreen={enterFullscreen}
-            onSave={requestSave}
-            onDownload={requestDownload}
-            onClose={close}
-            onFileNameChanged={onFileNameChanged}
-            onCopyContentToClipboard={requestCopyContentToClipboard}
-            isPageFullscreen={fullscreen}
-            onPreview={requestPreview}
-            onExportGist={requestExportGist}
-            isEdited={isEdited}
-          />
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(
+            <EditorToolbar
+              onFullScreen={enterFullscreen}
+              onSave={requestSave}
+              onDownload={requestDownload}
+              onClose={close}
+              onFileNameChanged={onFileNameChanged}
+              onCopyContentToClipboard={requestCopyContentToClipboard}
+              isPageFullscreen={fullscreen}
+              onPreview={requestPreview}
+              onExportGist={requestExportGist}
+              isEdited={isEdited}
+            />
+          ).wrapper
         ).wrapper
       );
 
@@ -68,19 +70,21 @@ describe("EditorToolbar", () => {
       const isEdited = false;
 
       const { queryByTestId, getByTestId } = render(
-        usingTestingGlobalContext(
-          <EditorToolbar
-            onFullScreen={enterFullscreen}
-            onSave={requestSave}
-            onDownload={requestDownload}
-            onClose={close}
-            onFileNameChanged={onFileNameChanged}
-            onCopyContentToClipboard={requestCopyContentToClipboard}
-            isPageFullscreen={fullscreen}
-            onPreview={requestPreview}
-            onExportGist={requestExportGist}
-            isEdited={isEdited}
-          />
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(
+            <EditorToolbar
+              onFullScreen={enterFullscreen}
+              onSave={requestSave}
+              onDownload={requestDownload}
+              onClose={close}
+              onFileNameChanged={onFileNameChanged}
+              onCopyContentToClipboard={requestCopyContentToClipboard}
+              isPageFullscreen={fullscreen}
+              onPreview={requestPreview}
+              onExportGist={requestExportGist}
+              isEdited={isEdited}
+            />
+          ).wrapper
         ).wrapper
       );
 

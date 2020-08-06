@@ -31,6 +31,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   constructor(
     private readonly stateControl: StateControl,
     private readonly file: File,
+    private readonly locale: string,
     private readonly overrides: Partial<KogitoEditorChannelApi>
   ) {}
 
@@ -85,5 +86,9 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
 
   public receive_setContentError(errorMessage: string): void {
     this.overrides.receive_setContentError?.(errorMessage);
+  }
+
+  public receive_getLocale(): Promise<string> {
+    return Promise.resolve(this.locale)
   }
 }

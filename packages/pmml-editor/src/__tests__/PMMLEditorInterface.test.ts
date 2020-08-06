@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import { EditorContext } from "@kogito-tooling/editor/dist/api";
+import { EditorContext, I18nService, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor } from "../editor/PMMLEditor";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
-import { KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
 
@@ -36,7 +35,8 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
-    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem })
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem }),
+    i18n: new I18nService()
   }
 };
 

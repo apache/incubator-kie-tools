@@ -1,0 +1,33 @@
+{
+  "name": "@kogito-tooling/i18n-common-dictionary",
+  "version": "0.6.1",
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "scripts": {
+    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
+    "build:fast": "rm -rf dist && webpack",
+    "build": "yarn run lint && yarn run build:fast",
+    "build:prod": "yarn run build --mode production --devtool none --passWithNoTests"
+  },
+  "babel": {
+    "presets": [
+      "@babel/env",
+      "@babel/react"
+    ]
+  },
+  "dependencies": {
+    "@kogito-tooling/i18n": "0.6.1"
+},
+  "jest-junit": {
+    "outputDirectory": "./target"
+  }
+}

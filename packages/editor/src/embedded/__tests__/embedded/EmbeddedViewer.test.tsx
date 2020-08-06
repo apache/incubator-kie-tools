@@ -46,7 +46,7 @@ describe("EmbeddedViewer::ONLINE", () => {
 
   test("EmbeddedViewer::defaults", () => {
     const { getByTestId, container } = render(
-      <EmbeddedViewer file={file} editorEnvelopeLocator={editorEnvelopeLocator} channelType={channelType} />
+      <EmbeddedViewer file={file} editorEnvelopeLocator={editorEnvelopeLocator} channelType={channelType} locale={"en"}/>
     );
 
     expect(getByTestId("kogito-iframe")).toBeVisible();
@@ -65,6 +65,7 @@ describe("EmbeddedViewer::ONLINE", () => {
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
         receive_resourceContentRequest={onResourceContentRequest}
+        locale={"en"}
       />
     );
 
@@ -89,6 +90,7 @@ describe("EmbeddedViewer::ONLINE", () => {
         editorEnvelopeLocator={editorEnvelopeLocator}
         channelType={channelType}
         receive_resourceListRequest={onResourceListRequest}
+        locale={"en"}
       />
     );
 

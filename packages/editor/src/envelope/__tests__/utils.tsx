@@ -17,6 +17,7 @@
 import { KogitoEditorEnvelopeContext, KogitoEditorEnvelopeContextType } from "../../api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import * as React from "react";
+import { I18nService } from "../../api";
 
 export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType = {
   channelApi: {} as any,
@@ -25,7 +26,8 @@ export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType =
     keyboardShortcuts: new DefaultKeyboardShortcutsService({} as any),
     guidedTour: {
       isEnabled: () => false
-    }
+    },
+    i18n: new I18nService()
   }
 };
 

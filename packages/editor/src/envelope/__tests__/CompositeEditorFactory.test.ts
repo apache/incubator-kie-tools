@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-import {
-  EditorContext,
-  EditorInitArgs,
-} from "../../api";
-import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { CompositeEditorFactory } from "../CompositeEditorFactory";
-import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "../../api";
+import {
+  Editor,
+  EditorContext,
+  EditorFactory,
+  EditorInitArgs,
+  I18nService,
+  KogitoEditorEnvelopeContextType
+} from "../../api";
 import { DummyEditor } from "./DummyEditor";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
 
 const dummyEditor: Editor = new DummyEditor();
 
@@ -39,7 +42,8 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
-    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem })
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem }),
+    i18n: new I18nService()
   }
 };
 
@@ -100,7 +104,7 @@ describe("CompositeEditorFactory", () => {
   function makeEditorFactory(supported: boolean): EditorFactory {
     return {
       supports: () => supported,
-      createEditor: (_1: KogitoEditorEnvelopeContextType, _2: EditorInitArgs) => Promise.resolve(dummyEditor),
+      createEditor: (_1: KogitoEditorEnvelopeContextType, _2: EditorInitArgs) => Promise.resolve(dummyEditor)
     };
   }
 });

@@ -28,6 +28,8 @@ import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
+import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n/locales";
 
 interface Props {
   file?: File;
@@ -52,7 +54,7 @@ export function App(props: Props) {
       mapping: new Map([
         ["bpmn", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
         ["bpmn2", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
-        ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/envelope.html" }],
+        ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/envelope.html" }]
       ])
     }),
     []
@@ -155,22 +157,32 @@ export function App(props: Props) {
   }, [dragAndDropFileEvent]);
 
   return (
-    <GlobalContext.Provider
-      value={{
-        file: file,
-        editorEnvelopeLocator: editorEnvelopeLocator
-      }}
+    <I18nDictionariesProvider
+      defaults={desktopI18nDefaults}
+      dictionaries={desktopI18nDictionaries}
+      ctx={DesktopI18nContext}
     >
-      {invalidFileTypeErrorVisible && (
-        <div className={"kogito--alert-container"}>
-          <Alert
-            variant={AlertVariant.danger}
-            title="This file extension is not supported."
-            actionClose={<AlertActionCloseButton onClose={closeInvalidFileTypeErrorAlert} />}
-          />
-        </div>
-      )}
-      <Router />
-    </GlobalContext.Provider>
+      <DesktopI18nContext.Consumer>
+        {({ i18n }) => (
+          <GlobalContext.Provider
+            value={{
+              file: file,
+              editorEnvelopeLocator: editorEnvelopeLocator
+            }}
+          >
+            {invalidFileTypeErrorVisible && (
+              <div className={"kogito--alert-container"}>
+                <Alert
+                  variant={AlertVariant.danger}
+                  title="This file extension is not supported."
+                  actionClose={<AlertActionCloseButton onClose={closeInvalidFileTypeErrorAlert} />}
+                />
+              </div>
+            )}
+            <Router />
+          </GlobalContext.Provider>
+        )}
+      </DesktopI18nContext.Consumer>
+    </I18nDictionariesProvider>
   );
 }

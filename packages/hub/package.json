@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@kogito-tooling/desktop": "0.6.1",
+    "@kogito-tooling/i18n": "0.6.1",
+    "@kogito-tooling/i18n-common-dictionary": "0.6.1",
     "@kogito-tooling/patternfly-base": "0.6.1",
     "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",

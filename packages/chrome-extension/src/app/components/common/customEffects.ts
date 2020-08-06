@@ -18,7 +18,6 @@ import { DependencyList, EffectCallback, useEffect, useLayoutEffect, useRef } fr
 
 export function useEffectAfterFirstRender(func: () => ReturnType<EffectCallback>, deps: DependencyList) {
   const firstRender = useRef(true);
-
   useEffect(() => {
     if (!firstRender.current) {
       func();

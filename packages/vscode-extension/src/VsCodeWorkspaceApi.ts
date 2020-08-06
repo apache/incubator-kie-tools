@@ -39,4 +39,8 @@ export class VsCodeWorkspaceApi implements WorkspaceApi {
   public async receive_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList> {
     throw new Error("This is not implemented yet.");
   }
+
+  public async receive_getLocale() {
+    return vscode.env.language;
+  }
 }

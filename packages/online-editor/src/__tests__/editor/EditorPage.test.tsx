@@ -17,7 +17,7 @@
 import * as React from "react";
 import { fireEvent, render } from "@testing-library/react";
 import { EditorPage } from "../../editor/EditorPage";
-import { usingTestingGlobalContext } from "../testing_utils";
+import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
 
 const onFileNameChanged = jest.fn((file: string) => null);
 
@@ -34,7 +34,9 @@ describe("EditorPage", () => {
   describe("Unsaved Alert", () => {
     test("should not appear by default with isDirty equal to false", () => {
       const { queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+        ).wrapper
       );
 
       expect(queryByTestId("unsaved-alert")).toBeNull();
@@ -42,7 +44,9 @@ describe("EditorPage", () => {
 
     test("should not appear by default with isDirty equal to true", () => {
       const { queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+        ).wrapper
       );
 
       expect(queryByTestId("unsaved-alert")).toBeNull();
@@ -50,7 +54,9 @@ describe("EditorPage", () => {
 
     test("should appear when tries to close with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+        ).wrapper
       );
 
       fireEvent.click(getByTestId("close-editor-button"));
@@ -60,7 +66,9 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on save with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+        ).wrapper
       );
 
       fireEvent.click(getByTestId("close-editor-button"));
@@ -71,7 +79,9 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on close with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+        ).wrapper
       );
 
       fireEvent.click(getByTestId("close-editor-button"));
@@ -82,7 +92,9 @@ describe("EditorPage", () => {
 
     test("should appear and then close after click on close without save with isDirty equal to true", () => {
       const { getByTestId, queryByTestId } = render(
-        usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
+        ).wrapper
       );
 
       fireEvent.click(getByTestId("close-editor-button"));

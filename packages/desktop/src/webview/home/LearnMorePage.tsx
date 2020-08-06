@@ -35,8 +35,11 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button/Button"
 import { useCallback } from "react";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons";
 import * as electron from "electron";
+import { useDesktopI18n } from "../common/i18n/locales";
 
 export function LearnMorePage() {
+  const { i18n } = useDesktopI18n();
+
   const externalLink = useCallback((event: React.MouseEvent<HTMLElement>, link: string) => {
     event.preventDefault();
     electron.shell.openExternal(link).catch(e => {
@@ -50,12 +53,12 @@ export function LearnMorePage() {
         <Card>
           <CardHeader>
             <Title size={"lg"} headingLevel={"h2"}>
-              Why BPMN?
+              {i18n.learnMorePage.bpmn.title}
             </Title>
           </CardHeader>
           <CardBody>
             <TextContent>
-              <Text component={TextVariants.p}>BPMN files are used to generate business processes.</Text>
+              <Text component={TextVariants.p}>{i18n.learnMorePage.bpmn.explanation}</Text>
               <Text component={TextVariants.p}>
                 <Button
                   isInline={true}
@@ -63,26 +66,26 @@ export function LearnMorePage() {
                   variant={"link"}
                   onClick={event => externalLink(event, "https://www.omg.org/bpmn/")}
                 >
-                  Read more <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                  {i18n.learnMorePage.readMore} <ExternalLinkAltIcon className="pf-u-ml-xs" />
                 </Button>
               </Text>
             </TextContent>
           </CardBody>
           <CardFooter component={"div"}>
             <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "bpmn" })}>
-              Create BPMN
+              {i18n.learnMorePage.bpmn.create}
             </Button>
           </CardFooter>
         </Card>
         <Card>
           <CardHeader>
             <Title size={"lg"} headingLevel={"h2"}>
-              Why DMN?
+              {i18n.learnMorePage.dmn.title}
             </Title>
           </CardHeader>
           <CardBody>
             <TextContent>
-              <Text component={TextVariants.p}>DMN files are used to generate decision models.</Text>
+              <Text component={TextVariants.p}>{i18n.learnMorePage.dmn.explanation}</Text>
               <Text component={TextVariants.p}>
                 <Button
                   isInline={true}
@@ -90,7 +93,8 @@ export function LearnMorePage() {
                   variant={"link"}
                   onClick={event => externalLink(event, "https://www.omg.org/dmn/")}
                 >
-                  Read more <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                  {i18n.learnMorePage.readMore}
+                  <ExternalLinkAltIcon className="pf-u-ml-xs" />
                 </Button>
               </Text>
               <Text component={TextVariants.p}>
@@ -100,35 +104,34 @@ export function LearnMorePage() {
                   variant={"link"}
                   onClick={event => externalLink(event, "http://learn-dmn-in-15-minutes.com/")}
                 >
-                  Learn DMN in 15 minutes <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                  {i18n.learnMorePage.dmn.learn} <ExternalLinkAltIcon className="pf-u-ml-xs" />
                 </Button>
               </Text>
             </TextContent>
           </CardBody>
           <CardFooter component={"div"}>
             <Button variant="secondary" onClick={() => electron.ipcRenderer.send("createNewFile", { type: "dmn" })}>
-              Create DMN
+              {i18n.learnMorePage.dmn.create}
             </Button>
           </CardFooter>
         </Card>
         <Card span={12} style={{ gridColumn: "span 12" }}>
           <CardHeader>
             <Title size={"lg"} headingLevel={"h2"}>
-              About Business Modeler Preview
+              {i18n.learnMorePage.about}
             </Title>
           </CardHeader>
           <CardBody>
             <Split hasGutter={true}>
               <SplitItem isFilled={true}>
-                These simple BPMN and DMN editors are here to allow you to collaborate quickly and to help introduce you
-                to the new tools and capabilities of Process Automation. Feel free to get in touch in the{" "}
+                {`${i18n.learnMorePage.editorsExplanation} `}
                 <Button
                   type={"button"}
                   variant={"link"}
                   isInline={true}
                   onClick={event => externalLink(event, "https://groups.google.com/forum/#!forum/kogito-development")}
                 >
-                  forum
+                  {i18n.terms.forum.toLowerCase()}
                 </Button>
                 .
               </SplitItem>
@@ -140,7 +143,8 @@ export function LearnMorePage() {
                       variant={"link"}
                       onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
                     >
-                      Get GitHub Chrome extension <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                      {i18n.learnMorePage.getChromeExtension}
+                      <ExternalLinkAltIcon className="pf-u-ml-xs" />
                     </Button>
                   </StackItem>
                   <StackItem>
@@ -149,7 +153,8 @@ export function LearnMorePage() {
                       variant={"link"}
                       onClick={event => externalLink(event, "https://github.com/kiegroup/kogito-tooling/releases")}
                     >
-                      Get VSCode extension <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                      {i18n.learnMorePage.getVsCodeExtension}
+                      <ExternalLinkAltIcon className="pf-u-ml-xs" />
                     </Button>
                   </StackItem>
                   <StackItem>
@@ -158,7 +163,8 @@ export function LearnMorePage() {
                       variant={"link"}
                       onClick={event => externalLink(event, "https://www.redhat.com/en/about/open-source")}
                     >
-                      Red Hat and open source <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                      {i18n.learnMorePage.redHatOpenSource}
+                      <ExternalLinkAltIcon className="pf-u-ml-xs" />
                     </Button>
                   </StackItem>
                   <StackItem>
@@ -167,7 +173,8 @@ export function LearnMorePage() {
                       variant={"link"}
                       onClick={event => externalLink(event, "http://kogito.kie.org")}
                     >
-                      Kogito website <ExternalLinkAltIcon className="pf-u-ml-xs" />
+                      {i18n.learnMorePage.kogitoWebsite}
+                      <ExternalLinkAltIcon className="pf-u-ml-xs" />
                     </Button>
                   </StackItem>
                 </Stack>

@@ -26,6 +26,8 @@ import { extractFileExtension, removeFileExtension } from "../common/utils";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
+import { onlineI18nDefaults, useOnlineI18n } from "../common/i18n";
+import { I18nHtml } from "@kogito-tooling/i18n";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -46,6 +48,7 @@ export function EditorPage(props: Props) {
   const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
   const isDirty = useDirtyState(editorRef);
+  const { locale, i18n } = useOnlineI18n();
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -231,7 +234,7 @@ export function EditorPage(props: Props) {
           <div className={"kogito--alert-container"}>
             <Alert
               variant="success"
-              title="Content copied to clipboard"
+              title={i18n.editorPage.alerts.copy}
               actionClose={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
             />
           </div>
@@ -240,7 +243,7 @@ export function EditorPage(props: Props) {
           <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
             <Alert
               variant="warning"
-              title="Unsaved changes will be lost."
+              title={i18n.editorPage.alerts.unsaved.title}
               actionClose={
                 <AlertActionCloseButton
                   data-testid="unsaved-alert-close-button"
@@ -250,15 +253,15 @@ export function EditorPage(props: Props) {
               actionLinks={
                 <React.Fragment>
                   <AlertActionLink data-testid="unsaved-alert-save-button" onClick={requestDownload}>
-                    Save
+                    {i18n.terms.save}
                   </AlertActionLink>
                   <AlertActionLink data-testid="unsaved-alert-close-without-save-button" onClick={closeWithoutSaving}>
-                    Close without saving
+                    {i18n.editorPage.alerts.unsaved.closeWithoutSaving}
                   </AlertActionLink>
                 </React.Fragment>
               }
             >
-              <p>Click Save to download your progress before closing. </p>
+              <p>{i18n.editorPage.alerts.unsaved.message}</p>
             </Alert>
           </div>
         )}
@@ -276,6 +279,7 @@ export function EditorPage(props: Props) {
           editorEnvelopeLocator={context.editorEnvelopeLocator}
           receive_ready={onReady}
           channelType={ChannelType.ONLINE}
+          locale={locale}
         />
       </PageSection>
       <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />

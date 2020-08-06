@@ -17,8 +17,8 @@
 import * as React from "react";
 import { render } from "@testing-library/react";
 import { EditorToolbar } from "../../../webview/editor/EditorToolbar";
-import { usingTestingGlobalContext } from "../../testing_utils";
 import { StateControl } from "@kogito-tooling/editor/dist/embedded";
+import { usingTestingDesktopI18nContext, usingTestingGlobalContext } from "../../testing_utils";
 
 const onClose = jest.fn(() => null);
 
@@ -37,7 +37,9 @@ describe("EditorToolbar", () => {
     test("should show the isDirty indicator when the isEdited is true", () => {
       const isEdited = true;
       const { queryByTestId, getByTestId } = render(
-        usingTestingGlobalContext(<EditorToolbar onClose={onClose} onSave={onSave} isEdited={isEdited} />).wrapper
+        usingTestingDesktopI18nContext(
+          usingTestingGlobalContext(<EditorToolbar onClose={onClose} onSave={onSave} isEdited={isEdited} />).wrapper
+        ).wrapper
       );
 
       expect(queryByTestId("is-dirty-indicator")).toBeVisible();
@@ -47,7 +49,9 @@ describe("EditorToolbar", () => {
     test("shouldn't show the isDirty indicator when the isEdited is false", () => {
       const isEdited = false;
       const { queryByTestId, getByTestId } = render(
-        usingTestingGlobalContext(<EditorToolbar onClose={onClose} onSave={onSave} isEdited={isEdited} />).wrapper
+        usingTestingDesktopI18nContext(
+          usingTestingGlobalContext(<EditorToolbar onClose={onClose} onSave={onSave} isEdited={isEdited} />).wrapper
+        ).wrapper
       );
 
       expect(queryByTestId("is-dirty-indicator")).toBeNull();
