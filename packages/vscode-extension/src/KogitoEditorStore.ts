@@ -42,23 +42,9 @@ export class KogitoEditorStore {
     this.activeEditor = undefined;
   }
 
-  public withActive(consumer: (activeEditor: KogitoEditor) => void) {
+  public withActive(consumer: (activeEditor: KogitoEditor) => any) {
     if (this.activeEditor) {
       consumer(this.activeEditor);
-    }
-  }
-
-  public async withActiveAsync(consumer: (activeEditor: KogitoEditor) => Promise<void>): Promise<void> {
-    if (this.activeEditor) {
-      return consumer(this.activeEditor);
-    }
-  }
-
-  public async withUriAsync(uri: Uri, consumer: (editor: KogitoEditor) => Promise<void>): Promise<void> {
-    const editor = this.get(uri);
-
-    if (editor) {
-      return consumer(editor);
     }
   }
 

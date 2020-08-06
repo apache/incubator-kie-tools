@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-import { LanguageData } from "@kogito-tooling/microeditor-envelope-protocol";
-import { Editor, EditorFactory, EnvelopeContextType } from "@kogito-tooling/editor-api";
+import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
+import { EditorInitArgs } from "@kogito-tooling/microeditor-envelope-protocol";
 
 /**
  * Composite Factory of Editors to be created inside the envelope. This implementation delegates potential construction
  * to specific concrete factories. The first concrete factory to return a promise to create an editor is selected.
  */
-export class CompositeEditorFactory implements EditorFactory<LanguageData> {
-  constructor(private readonly factories: Array<EditorFactory<LanguageData>>) {}
+export class CompositeEditorFactory implements EditorFactory {
+  constructor(private readonly factories: EditorFactory[]) {}
 
-  public supports(languageData: LanguageData) {
-    const candidates = this.factories.filter(f => f.supports(languageData));
-    this.assertSingleEditorFactory(candidates, languageData);
+  public supports(fileExtension: string) {
+    const candidates = this.factories.filter(f => f.supports(fileExtension));
+    this.assertSingleEditorFactory(candidates, fileExtension);
     return true;
   }
 
-  public createEditor(languageData: LanguageData, envelopeContext: EnvelopeContextType): Promise<Editor> {
-    const candidates = this.factories.filter(f => f.supports(languageData));
-    this.assertSingleEditorFactory(candidates, languageData);
-    return candidates[0].createEditor(languageData, envelopeContext);
+  public createEditor(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs): Promise<Editor> {
+    const candidates = this.factories.filter(f => f.supports(initArgs.fileExtension));
+    this.assertSingleEditorFactory(candidates, initArgs.fileExtension);
+    return candidates[0].createEditor(envelopeContext, initArgs);
   }
 
-  private assertSingleEditorFactory(candidates: Array<EditorFactory<LanguageData>>, languageData: LanguageData): void {
+  private assertSingleEditorFactory(candidates: EditorFactory[], fileExtension: string): void {
     if (candidates.length === 0) {
-      throw new Error(`An EditorFactory for '${languageData.type}' could not be found.`);
+      throw new Error(`An EditorFactory for '${fileExtension}' could not be found.`);
     } else if (candidates.length > 1) {
-      throw new Error(`Multiple EditorFactories matched '${languageData.type}' when only one should be found.`);
+      throw new Error(`Multiple EditorFactories matched '${fileExtension}' when only one should be found.`);
     }
   }
 }

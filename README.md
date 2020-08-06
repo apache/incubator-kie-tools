@@ -106,9 +106,17 @@ Develop
 Contribute
 --------------------
 - When opening PRs, please make sure to provide a detailed description of the issue along with the JIRA, if there's one.
-- Also, since we depend on BPMN, DMN and Test Scenario editors and our CI build is *not* integrated with the editors, when you need an updated version of the editors to be used, **please provide a VSIX bundle so people can at least test your changes easily on VSCode. Also, it's a good pratice to put a note on your PR saying that the editors have changed too**.
+- If you are a member of [kiegroup](https://github.com/kiegroup) and want to test a change you made in our tooling, you 
+can go to our [Run FDB issue](https://github.com/kiegroup/kogito-tooling/issues/221) and make a comment following the 
+format `Build: {github-username}/{branch-name}`. This will trigger a job that will fetch the forks (1) of `{github-username}`, 
+merge `{branch-name}` into master, and build them.
+In a few seconds you should see a new comment on the same issue, saying that a new build was triggered for you. The 
+GitHub Actions bot will also provide a link so you can follow the build logs and download artifacts, and another link to 
+access an Online Editor instance (2) containing your changes, once it's finished running. 
 
+(1) This process considers the following repositories: `droolsjbpm-build-bootstrap`, `kie-soup`, `appformer`, `kie-wb-common`, `drools-wb` and `kogito-tooling`.
 
+(2) The Online Editor instance will be accessible for 30 days.   
 
 Contributing to Kogito
 --------------------

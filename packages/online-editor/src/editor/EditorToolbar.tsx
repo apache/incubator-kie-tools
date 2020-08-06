@@ -59,12 +59,12 @@ export function EditorToolbar(props: Props) {
     return { onClick: props.onClose };
   }, [props.onClose]);
 
-  const editorType = useMemo(() => {
+  const fileExtension = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
   }, [location]);
 
   const saveNewName = useCallback(() => {
-    props.onFileNameChanged(`${name}.${editorType}`);
+    props.onFileNameChanged(`${name}.${fileExtension}`);
   }, [props.onFileNameChanged, name]);
 
   const cancelNewName = useCallback(() => {
@@ -283,7 +283,7 @@ export function EditorToolbar(props: Props) {
 
   return !props.isPageFullscreen ? (
     <PageHeader
-      logo={<Brand src={`images/${editorType}_kogito_logo.svg`} alt={`${editorType} kogito logo`} />}
+      logo={<Brand src={`images/${fileExtension}_kogito_logo.svg`} alt={`${fileExtension} kogito logo`} />}
       logoProps={logoProps}
       headerTools={headerToolbar}
       topNav={filenameInput}

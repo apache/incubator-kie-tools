@@ -35,12 +35,11 @@ export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
   ReactDOM.render(
     <Main
       id={args.id}
-      router={args.router}
+      editorEnvelopeLocator={args.editorEnvelopeLocator}
       dependencies={args.dependencies}
       logger={args.logger}
       githubAuthTokenCookieName={args.githubAuthTokenCookieName}
       extensionIconUrl={args.extensionIconUrl}
-      editorIndexPath={args.editorIndexPath}
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >

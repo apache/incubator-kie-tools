@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { Router } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
 import { Logger } from "../../../Logger";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
@@ -24,11 +24,10 @@ import { Dependencies } from "../../Dependencies";
 export interface GlobalContextType {
   id: string;
   githubAuthTokenCookieName: string;
-  router: Router;
+  envelopeLocator: EditorEnvelopeLocator,
   logger: Logger;
   dependencies: Dependencies;
   extensionIconUrl: string;
-  editorIndexPath: string;
   resourceContentServiceFactory: ResourceContentServiceFactory;
   externalEditorManager?: ExternalEditorManager;
 }

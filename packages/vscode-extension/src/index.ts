@@ -18,7 +18,9 @@ import * as vscode from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoWebviewProvider } from "./KogitoWebviewProvider";
-import { Routes } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
+import * as __path from "path";
+import * as fs from "fs";
 
 /**
  * Starts a Kogito extension.
@@ -30,22 +32,27 @@ import { Routes } from "@kogito-tooling/microeditor-envelope-protocol";
  */
 export function startExtension(args: {
   extensionName: string;
-  webviewLocation: string;
   context: vscode.ExtensionContext;
-  routes: Routes;
   viewType: string;
   getPreviewCommandId: string;
+  editorEnvelopeLocator: EditorEnvelopeLocator;
 }) {
   const editorStore = new KogitoEditorStore();
-  const editorFactory = new KogitoEditorFactory(args.context, args.routes, args.webviewLocation, editorStore);
+  const editorFactory = new KogitoEditorFactory(args.context, editorStore, args.editorEnvelopeLocator);
   const webviewProvider = new KogitoWebviewProvider(args.viewType, editorFactory, editorStore, args.context);
 
   args.context.subscriptions.push(webviewProvider.register());
   args.context.subscriptions.push(
     vscode.commands.registerCommand(args.getPreviewCommandId, () => {
-      editorStore.withActive(e => e.requestPreview());
+      editorStore.withActive(async editor => {
+        const previewSvg = await editor.getPreview();
+        if (previewSvg) {
+          const parsedPath = __path.parse(editor.document.uri.fsPath);
+          fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, previewSvg);
+        } else {
+          console.info(`Unable to create SVG for '${editor.document.uri.fsPath}'`);
+        }
+      });
     })
   );
 }
-
-export * from "./DefaultVsCodeRouter";

@@ -231,6 +231,8 @@ jobs:
           cp -r ../kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/dist/envelope $KOGITO_ONLINE_CHROME_EXT_DIR/
           rm -rf $KOGITO_ONLINE_EDITOR_STAGING_DIR
           cp -r ../kogito-tooling/packages/online-editor/dist $KOGITO_ONLINE_EDITOR_STAGING_DIR
+          rm -rf $KOGITO_ONLINE_EDITOR_STAGING_DIR/gwt-editors
+          ln -s ../$KOGITO_ONLINE_CHROME_EXT_DIR $KOGITO_ONLINE_EDITOR_STAGING_DIR/gwt-editors
           git config --global user.email "kietooling@gmail.com"
           git config --global user.name "Kogito Tooling Bot (kiegroup)"
           git add . && git commit -m "${{ steps.release_json.outputs.tag }} resources" || echo "No changes."

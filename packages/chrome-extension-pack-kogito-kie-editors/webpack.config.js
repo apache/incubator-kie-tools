@@ -48,8 +48,8 @@ function getRouterArgs(argv) {
     relativePath = relativePath || "";
   }
 
-  console.info("Router :: target origin: " + targetOrigin);
-  console.info("Router :: relative path: " + relativePath);
+  console.info("EditorEnvelopeLocator :: target origin: " + targetOrigin);
+  console.info("EditorEnvelopeLocator :: relative path: " + relativePath);
 
   return [targetOrigin, relativePath];
 }
