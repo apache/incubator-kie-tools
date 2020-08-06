@@ -17,74 +17,32 @@
 import {
   ChannelType,
   EditorContext,
+  EditorInitArgs,
   EnvelopeBus,
   EnvelopeBusMessage,
-  KogitoChannelApi,
-  KogitoChannelBus,
-  KogitoEdit,
-  LanguageData,
-  OperatingSystem,
-  ResourceContentRequest,
-  ResourceListRequest,
-  ResourcesList,
-  StateControlCommand,
-  Tutorial,
-  UserInteraction
+  OperatingSystem
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import { CompositeEditorFactory } from "../CompositeEditorFactory";
-import { Editor, EditorFactory, EnvelopeContextType } from "@kogito-tooling/editor-api";
-import { DummyEditor } from "./DummyEditor";
+import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
+import { DummyEditor } from "./editor/DummyEditor";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 
 const dummyEditor: Editor = new DummyEditor();
-const languageData: LanguageData = { type: "unused" };
 
 const bus: EnvelopeBus = {
   postMessage<D, T>(message: EnvelopeBusMessage<D, T>, targetOrigin?: string, _?: any) {
     /*NOP*/
   }
 };
-const api: KogitoChannelApi = {
-  receive_setContentError(_: string) {
-    /*NOP*/
-  },
-  receive_ready() {
-    /*NOP*/
-  },
-  receive_openFile(_: string) {
-    /*NOP*/
-  },
-  receive_guidedTourUserInteraction(_: UserInteraction) {
-    /*NOP*/
-  },
-  receive_guidedTourRegisterTutorial(_: Tutorial) {
-    /*NOP*/
-  },
-  receive_newEdit(_: KogitoEdit) {
-    /*NOP*/
-  },
-  receive_stateControlCommandUpdate(_: StateControlCommand) {
-    /*NOP*/
-  },
-  receive_languageRequest() {
-    return Promise.resolve(languageData);
-  },
-  receive_contentRequest() {
-    return Promise.resolve({ content: "" });
-  },
-  receive_resourceContentRequest(_: ResourceContentRequest) {
-    return Promise.resolve(undefined);
-  },
-  receive_resourceListRequest(_: ResourceListRequest) {
-    return Promise.resolve(new ResourcesList("", []));
-  }
+
+const messageBusClient = {
+  notify: jest.fn(),
+  request: jest.fn()
 };
 
-const messageBus: KogitoChannelBus = new KogitoChannelBus(bus, api);
-
 const editorContext: EditorContext = { channel: ChannelType.EMBEDDED, operatingSystem: OperatingSystem.LINUX };
-const envelopeContext: EnvelopeContextType = {
-  channelApi: messageBus.client,
+const envelopeContext: KogitoEditorEnvelopeContextType = {
+  channelApi: messageBusClient,
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
@@ -94,61 +52,62 @@ const envelopeContext: EnvelopeContextType = {
 
 describe("CompositeEditorFactory", () => {
   test("Unsupported type", () => {
-    const factories: Array<EditorFactory<LanguageData>> = [];
+    const factories: EditorFactory[] = [];
     factories.push(makeEditorFactory(false));
     factories.push(makeEditorFactory(false));
 
     const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
-    expect(() => compositeFactory.supports(languageData)).toThrowError(Error);
+    expect(() => compositeFactory.supports("any")).toThrowError(Error);
   });
 
   test("Supported type", () => {
-    const factories: Array<EditorFactory<LanguageData>> = [];
+    const factories: EditorFactory[] = [];
     factories.push(makeEditorFactory(false));
     factories.push(makeEditorFactory(true));
 
     const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
-    expect(compositeFactory.supports(languageData)).toBeTruthy();
+    expect(compositeFactory.supports("one")).toBeTruthy();
   });
 
   test("Supported type::MultipleMatchingFactories", () => {
-    const factories: Array<EditorFactory<LanguageData>> = [];
+    const factories: EditorFactory[] = [];
     factories.push(makeEditorFactory(true));
     factories.push(makeEditorFactory(true));
 
     const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
-    expect(() => compositeFactory.supports(languageData)).toThrowError(Error);
+    expect(() => compositeFactory.supports("mutliple")).toThrowError(Error);
   });
 
   test("Supported type::CreateEditor", () => {
-    const factories: Array<EditorFactory<LanguageData>> = [];
-    const factory1: EditorFactory<LanguageData> = makeEditorFactory(false);
-    const factory2: EditorFactory<LanguageData> = makeEditorFactory(true);
+    const factories: EditorFactory[] = [];
+    const factory1: EditorFactory = makeEditorFactory(false);
+    const factory2: EditorFactory = makeEditorFactory(true);
     factories.push(factory1);
     factories.push(factory2);
 
     jest.spyOn(factory2, "createEditor");
 
     const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
-    expect(compositeFactory.createEditor(languageData, envelopeContext)).resolves.toBe(dummyEditor);
+    const initArgs = { fileExtension: "txt", resourcesPathPrefix: "" };
+    expect(compositeFactory.createEditor(envelopeContext, initArgs)).resolves.toBe(dummyEditor);
     expect(factory2.createEditor).toBeCalledTimes(1);
   });
 
   test("Supported type::CreateEditor::MultipleMatchingFactories", () => {
-    const factories: Array<EditorFactory<LanguageData>> = [];
-    const factory1: EditorFactory<LanguageData> = makeEditorFactory(true);
-    const factory2: EditorFactory<LanguageData> = makeEditorFactory(true);
+    const factories: EditorFactory[] = [];
+    const factory1: EditorFactory = makeEditorFactory(true);
+    const factory2: EditorFactory = makeEditorFactory(true);
     factories.push(factory1);
     factories.push(factory2);
-
     const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
-    expect(() => compositeFactory.createEditor(languageData, envelopeContext)).toThrowError(Error);
+    const initArgs = { fileExtension: "txt", resourcesPathPrefix: "" };
+    expect(() => compositeFactory.createEditor(envelopeContext, initArgs)).toThrowError(Error);
   });
 
-  function makeEditorFactory(supported: boolean): EditorFactory<LanguageData> {
+  function makeEditorFactory(supported: boolean): EditorFactory {
     return {
       supports: () => supported,
-      createEditor: (_1: LanguageData, _2: EnvelopeContextType) => Promise.resolve(dummyEditor)
+      createEditor: (_1: KogitoEditorEnvelopeContextType, _2: EditorInitArgs) => Promise.resolve(dummyEditor),
     };
   }
 });

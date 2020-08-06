@@ -17,13 +17,27 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { App } from "./App";
-import { EditorType, newFile } from "@kogito-tooling/embedded-editor";
-import { removeDirectories, removeFileExtension, extractFileExtension, extractEditorTypeFromUrl } from "./common/utils";
+import { newFile } from "@kogito-tooling/embedded-editor";
+import {
+  extractEditorFileExtensionFromUrl,
+  extractFileExtension,
+  removeDirectories,
+  removeFileExtension
+} from "./common/utils";
 import { GithubService } from "./common/GithubService";
-import { Alert, AlertVariant, AlertActionLink } from "@patternfly/react-core";
+import { Alert, AlertActionLink, AlertVariant } from "@patternfly/react-core";
+import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
 
 const urlParams = new URLSearchParams(window.location.search);
 const githubService = new GithubService();
+const editorEnvelopeLocator: EditorEnvelopeLocator = {
+  targetOrigin: window.location.origin,
+  mapping: new Map([
+    ["bpmn", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
+    ["bpmn2", { resourcesPathPrefix: "../gwt-editors/bpmn", envelopePath: "envelope/envelope.html" }],
+    ["dmn", { resourcesPathPrefix: "../gwt-editors/dmn", envelopePath: "envelope/envelope.html" }]
+  ])
+};
 
 if (urlParams.has("ext")) {
   waitForEventWithFileData();
@@ -36,10 +50,11 @@ if (urlParams.has("ext")) {
 function openDefaultOnlineEditor() {
   ReactDOM.render(
     <App
-      file={newFile(extractEditorTypeFromUrl() ?? EditorType.DMN)}
+      file={newFile(extractEditorFileExtensionFromUrl([...editorEnvelopeLocator.mapping.keys()]) ?? "dmn")}
       readonly={false}
       external={false}
       githubService={githubService}
+      editorEnvelopeLocator={editorEnvelopeLocator}
     />,
     document.getElementById("app")!
   );
@@ -49,9 +64,9 @@ function waitForEventWithFileData() {
   window.addEventListener("loadOnlineEditor", (e: CustomEvent) => {
     const file = {
       isReadOnly: false,
-      editorType: extractFileExtension(e.detail.fileName) as EditorType,
+      fileExtension: extractFileExtension(e.detail.fileName)!,
       fileName: removeFileExtension(e.detail.fileName),
-      getFileContents: () => Promise.resolve(e.detail.fileContent),
+      getFileContents: () => Promise.resolve(e.detail.fileContent)
     };
     ReactDOM.render(
       <App
@@ -60,6 +75,7 @@ function waitForEventWithFileData() {
         external={true}
         senderTabId={e.detail.senderTabId}
         githubService={githubService}
+        editorEnvelopeLocator={editorEnvelopeLocator}
       />,
       document.getElementById("app")!
     );
@@ -95,7 +111,7 @@ function openFileByUrl() {
 function openFile(filePath: string, getFileContent: Promise<string>) {
   const file = {
     isReadOnly: false,
-    editorType: extractFileExtension(removeDirectories(filePath) ?? "") as EditorType,
+    fileExtension: extractFileExtension(removeDirectories(filePath) ?? "")!,
     fileName: removeFileExtension(removeDirectories(filePath) ?? ""),
     getFileContents: () => getFileContent
   };
@@ -105,6 +121,7 @@ function openFile(filePath: string, getFileContent: Promise<string>) {
       readonly={false}
       external={false}
       githubService={githubService}
+      editorEnvelopeLocator={editorEnvelopeLocator}
     />,
     document.getElementById("app")!
   );

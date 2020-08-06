@@ -20,7 +20,7 @@ import { useEffect } from "react";
 import { Button, Divider, List, ListItem, Text, Title } from "@patternfly/react-core";
 import { BookOpenIcon, TrophyIcon } from "@patternfly/react-icons";
 
-import { EditorType, File } from "@kogito-tooling/embedded-editor";
+import { File } from "@kogito-tooling/embedded-editor";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 import { DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/microeditor-envelope-protocol";
 
@@ -32,7 +32,7 @@ export function useDmnTour(isEditorReady: boolean, file: File) {
   }, []);
 
   useEffect(() => {
-    if (isEditorReady && file.editorType === EditorType.DMN) {
+    if (isEditorReady && file.fileExtension === "dmn") {
       const guidedTour = KogitoGuidedTour.getInstance();
       const tutorial = getOnlineEditorTutorial();
 

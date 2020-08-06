@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LanguageData } from "@kogito-tooling/microeditor-envelope-protocol";
 import { PMMLEditorInterface } from "./PMMLEditorInterface";
-import { Editor, EditorFactory, EnvelopeContextType } from "@kogito-tooling/editor-api";
+import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
+import { EditorInitArgs } from "@kogito-tooling/microeditor-envelope-protocol";
 
 export const FACTORY_TYPE = "pmml";
 
-export class PMMLEditorFactory implements EditorFactory<LanguageData> {
-  public supports(languageData: LanguageData) {
-    return languageData.type === FACTORY_TYPE;
+export class PMMLEditorFactory implements EditorFactory {
+  public supports(fileExtension: string) {
+    return fileExtension === FACTORY_TYPE;
   }
 
-  public createEditor(languageData: LanguageData, envelopeContext: EnvelopeContextType): Promise<Editor> {
+  public createEditor(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs): Promise<Editor> {
     return Promise.resolve(new PMMLEditorInterface(envelopeContext));
   }
 }

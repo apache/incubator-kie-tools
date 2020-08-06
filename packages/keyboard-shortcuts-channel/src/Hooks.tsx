@@ -17,7 +17,7 @@
 import { useEffect } from "react";
 import {
   ChannelKeyboardEvent,
-  KogitoEnvelopeApi,
+  KogitoEditorEnvelopeApi,
   MessageBusClient
 } from "@kogito-tooling/microeditor-envelope-protocol";
 
@@ -34,7 +34,7 @@ function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKeyboardE
 }
 
 export function useSyncedKeyboardEvents(
-  messageBusClient: MessageBusClient<KogitoEnvelopeApi>,
+  messageBusClient: MessageBusClient<KogitoEditorEnvelopeApi>,
   element: HTMLElement | Window = window
 ) {
   useEffect(() => {

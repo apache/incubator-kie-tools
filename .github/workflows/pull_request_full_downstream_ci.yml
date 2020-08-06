@@ -3,12 +3,12 @@ name: CI - Full Downstream
 on:
   issue_comment:
     types: [created]
-  pull_request:
+  pull_request_target:
     branches: "**"
 
 jobs:
   build:
-    if: github.event_name == 'pull_request' || (github.repository == 'kiegroup/kogito-tooling' && github.event.issue.number == 221 && startsWith(github.event.comment.body, 'Build:'))
+    if: github.repository == 'kiegroup/kogito-tooling' && (github.event_name != 'issue_comment' || startsWith(github.event.comment.body, 'Build:'))
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -21,17 +21,15 @@ jobs:
 
     steps:
       - name: Fetch user membership to kiegroup
-        if: github.event_name == 'issue_comment'
         uses: octokit/request-action@v2.x
         id: checkUserMembership
         with:
           route: GET /orgs/kiegroup/members/:username
           username: ${{ github.actor }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
 
       - name: Check user membership to kiegroup
-        if: github.event_name == 'issue_comment'
         run: |
           [ "204" == "${{ steps.checkUserMembership.outputs.status }}" ]
 
@@ -62,7 +60,7 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             [KOGITO-TOOLING-BUILD] @${{ github.actor }} Build triggered for ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}. Check progress at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            The Online Editor for this job will be available at https://kiegroup.github.io/kogito-online-ci/${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}
+            The Online Editor for this job will be available at https://kiegroup.github.io/kogito-online-ci/${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }} once the job is done.
           reactions: rocket
        
       - name: Checkout droolsjbpm-build-bootstrap
@@ -188,7 +186,6 @@ jobs:
           git status
 
       - name: Merge kogito-tooling changes
-        if: github.event_name == 'issue_comment'
         run: |
           cd kogito-tooling
           git config --global user.email "kietooling@gmail.com"
@@ -246,7 +243,6 @@ jobs:
           path: kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
 
       - name: Upload Chrome Extension
-        if: github.event_name == 'issue_comment'
         uses: actions/upload-artifact@v1
         with:
           name: chrome-extension-fdb
@@ -265,7 +261,6 @@ jobs:
           path: kogito-tooling/packages/hub/out/Business Modeler Hub Preview-linux-x64.tar.gz
 
       - name: Checkout kogito-online-ci
-        if: github.event_name == 'issue_comment'
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.KOGITO_TOOLING_BOT_TOKEN }}
@@ -275,7 +270,6 @@ jobs:
 
       # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online-ci'.
       - name: Update kogito-online-ci resources
-        if: github.event_name == 'issue_comment'
         run: |          
           cd kogito-online-ci
           rm -rf ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}

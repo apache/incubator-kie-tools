@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { EditorType } from "@kogito-tooling/embedded-editor";
 import {
   Alert,
   AlertActionCloseButton,
@@ -196,7 +195,7 @@ export function FilesPage(props: Props) {
     const fileType = extractFileExtension(urlObject.pathname);
     if (!fileType) {
       setInputFileUrlState(InputFileUrlState.NO_FILE_URL);
-    } else if (!context.router.getLanguageData(fileType)) {
+    } else if (!context.editorEnvelopeLocator.mapping.has(fileType)) {
       setInputFileUrlState(InputFileUrlState.INVALID_EXTENSION);
     } else {
       setInputFileUrlState(InputFileUrlState.VALID);
@@ -320,7 +319,7 @@ export function FilesPage(props: Props) {
             component={"article"}
             isHoverable={false}
             isCompact={true}
-            onClick={() => electron.ipcRenderer.send("createNewFile", { type: EditorType.BPMN })}
+            onClick={() => electron.ipcRenderer.send("createNewFile", { type: "bpmn" })}
           >
             <CardHeader>
               {
@@ -338,7 +337,7 @@ export function FilesPage(props: Props) {
             component={"article"}
             isHoverable={false}
             isCompact={true}
-            onClick={() => electron.ipcRenderer.send("createNewFile", { type: EditorType.DMN })}
+            onClick={() => electron.ipcRenderer.send("createNewFile", { type: "dmn" })}
           >
             <CardHeader>
               {
@@ -356,7 +355,7 @@ export function FilesPage(props: Props) {
             component={"article"}
             isHoverable={false}
             isCompact={true}
-            onClick={() => electron.ipcRenderer.send("openSample", { type: EditorType.BPMN })}
+            onClick={() => electron.ipcRenderer.send("openSample", { type: "bpmn" })}
           >
             <CardHeader>
               {
@@ -380,7 +379,7 @@ export function FilesPage(props: Props) {
             component={"article"}
             isHoverable={false}
             isCompact={true}
-            onClick={() => electron.ipcRenderer.send("openSample", { type: EditorType.DMN })}
+            onClick={() => electron.ipcRenderer.send("openSample", { type: "dmn" })}
           >
             <CardHeader>
               {

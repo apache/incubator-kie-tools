@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { EditorType } from "@kogito-tooling/embedded-editor";
-
 export function extractFileExtension(fileName: string) {
   return fileName.match(/[\.]/)
     ? fileName
@@ -26,15 +24,15 @@ export function extractFileExtension(fileName: string) {
     : undefined;
 }
 
-export function extractEditorTypeFromUrl(): EditorType | undefined {
+export function extractEditorFileExtensionFromUrl(supportedFileExtensions: string[]): string | undefined {
   const typeFromUrl = window.location.href
     .split("?")[0]
     .split("#")
     ?.pop()
     ?.split("/")
-    ?.pop()
-    ?.toUpperCase() as string;
-  return typeFromUrl in EditorType ? (EditorType as any)[typeFromUrl] : undefined;
+    ?.pop();
+
+  return supportedFileExtensions.indexOf(typeFromUrl!) !== -1 ? typeFromUrl : undefined;
 }
 
 export function removeFileExtension(fileName: string) {

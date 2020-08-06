@@ -15,7 +15,7 @@
  */
 
 import { DefaultKogitoCommandRegistry } from "./KogitoCommandRegistry";
-import { KogitoChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoEditorChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
 import { StateControlApi } from "../api/StateControlApi";
 
 export class GwtStateControlService {
@@ -34,7 +34,7 @@ export class GwtStateControlService {
     }
   }
 
-  public exposeApi(messageBus: MessageBusClient<KogitoChannelApi>): StateControlApi {
+  public exposeApi(messageBus: MessageBusClient<KogitoEditorChannelApi>): StateControlApi {
     const stateControl = this;
 
     return {

@@ -15,44 +15,31 @@
  */
 
 import * as vscode from "vscode";
-import * as fs from "fs";
 import {
   CancellationToken,
-  Uri,
-  WebviewPanel,
-  CustomDocumentOpenContext,
-  CustomDocumentEditEvent,
   CustomDocumentBackupContext,
-  CustomDocumentBackup,
+  CustomDocumentEditEvent,
+  CustomDocumentOpenContext,
   CustomEditorProvider,
-  EventEmitter
+  EventEmitter,
+  Uri,
+  WebviewPanel
 } from "vscode";
-import { KogitoEditorFactory } from "./KogitoEditorFactory";
-import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEditableDocument } from "./KogitoEditableDocument";
-import { KogitoEdit } from "@kogito-tooling/microeditor-envelope-protocol";
+import * as fs from "fs";
+import {KogitoEditorFactory} from "./KogitoEditorFactory";
+import {KogitoEditorStore} from "./KogitoEditorStore";
+import {KogitoEditableDocument} from "./KogitoEditableDocument";
 
 export class KogitoWebviewProvider implements CustomEditorProvider<KogitoEditableDocument> {
-  private readonly viewType: string;
-
   private readonly _onDidChangeCustomDocument = new EventEmitter<CustomDocumentEditEvent<KogitoEditableDocument>>();
   public readonly onDidChangeCustomDocument = this._onDidChangeCustomDocument.event;
 
-  private readonly editorFactory: KogitoEditorFactory;
-  private readonly editorStore: KogitoEditorStore;
-  private readonly context: vscode.ExtensionContext;
-
   public constructor(
-    viewType: string,
-    editorFactory: KogitoEditorFactory,
-    editorStore: KogitoEditorStore,
-    context: vscode.ExtensionContext
-  ) {
-    this.viewType = viewType;
-    this.editorFactory = editorFactory;
-    this.editorStore = editorStore;
-    this.context = context;
-  }
+    private readonly viewType: string,
+    private readonly editorFactory: KogitoEditorFactory,
+    private readonly editorStore: KogitoEditorStore,
+    private readonly context: vscode.ExtensionContext
+  ) {}
 
   public register() {
     return vscode.window.registerCustomEditorProvider(this.viewType, this, {
@@ -66,36 +53,30 @@ export class KogitoWebviewProvider implements CustomEditorProvider<KogitoEditabl
     document: KogitoEditableDocument,
     webviewPanel: WebviewPanel,
     cancellation: CancellationToken
-  ): Promise<void> {
-    this.editorFactory.configureNew(document.uri, document.initialBackup, webviewPanel, (edit: KogitoEdit) =>
-      document.notifyEdit(edit)
-    );
+  ) {
+    this.editorFactory.configureNew(webviewPanel, document);
   }
 
-  public async openCustomDocument(
-    uri: Uri,
-    openContext: CustomDocumentOpenContext,
-    cancellation: CancellationToken
-  ): Promise<KogitoEditableDocument> {
+  public async openCustomDocument(uri: Uri, openContext: CustomDocumentOpenContext, cancellation: CancellationToken) {
     this.createStorageFolder();
     const document = new KogitoEditableDocument(uri, this.resolveBackup(openContext.backupId), this.editorStore);
     this.setupListeners(document);
     return document;
   }
 
-  public async saveCustomDocument(document: KogitoEditableDocument, cancellation: CancellationToken): Promise<void> {
+  public async saveCustomDocument(document: KogitoEditableDocument, cancellation: CancellationToken) {
     return document.save(document.uri, cancellation);
   }
 
   public async saveCustomDocumentAs(
     document: KogitoEditableDocument,
-    destination: Uri,
+    dest: Uri,
     cancellation: CancellationToken
-  ): Promise<void> {
-    return document.save(destination, cancellation);
+  ) {
+    return document.save(dest, cancellation);
   }
 
-  public async revertCustomDocument(document: KogitoEditableDocument, cancellation: CancellationToken): Promise<void> {
+  public async revertCustomDocument(document: KogitoEditableDocument, cancellation: CancellationToken) {
     return document.revert(cancellation);
   }
 
@@ -103,7 +84,7 @@ export class KogitoWebviewProvider implements CustomEditorProvider<KogitoEditabl
     document: KogitoEditableDocument,
     context: CustomDocumentBackupContext,
     cancellation: CancellationToken
-  ): Promise<CustomDocumentBackup> {
+  ) {
     return document.backup(context.destination, cancellation);
   }
 
@@ -116,20 +97,8 @@ export class KogitoWebviewProvider implements CustomEditorProvider<KogitoEditabl
   }
 
   private setupListeners(document: KogitoEditableDocument) {
-    const listeners: vscode.Disposable[] = [];
-
-    listeners.push(
-      document.onDidChange(e => {
-        this._onDidChangeCustomDocument.fire({
-          document,
-          ...e
-        });
-      })
-    );
-
-    document.onDidDispose(() => {
-      listeners.forEach(listener => listener.dispose());
-    });
+    const listeners = [document.onDidChange(e => this._onDidChangeCustomDocument.fire({ document, ...e }))];
+    document.onDidDispose(() => listeners.forEach(listener => listener.dispose()));
   }
 
   private resolveBackup(backupId: string | undefined): Uri | undefined {

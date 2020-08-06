@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EditorType } from "./EditorTypes";
 
 /**
  * Definition of a File supported by the embedded-editor.
  */
 export interface File {
   fileName: string;
-  editorType: EditorType;
+  fileExtension: string;
   getFileContents: () => Promise<string | undefined>;
   isReadOnly: boolean;
 }
@@ -30,7 +29,7 @@ export interface File {
  */
 export const EMPTY_FILE_DMN = {
   fileName: "new-file",
-  editorType: EditorType.DMN,
+  fileExtension: "dmn",
   getFileContents: () => Promise.resolve(""),
   isReadOnly: false
 };
@@ -40,7 +39,7 @@ export const EMPTY_FILE_DMN = {
  */
 export const EMPTY_FILE_BPMN = {
   fileName: "new-file",
-  editorType: EditorType.BPMN,
+  fileExtension: "bpmn",
   getFileContents: () => Promise.resolve(""),
   isReadOnly: false
 };
@@ -50,19 +49,19 @@ export const EMPTY_FILE_BPMN = {
  */
 export const EMPTY_FILE_SCESIM = {
   fileName: "new-file",
-  editorType: EditorType.SCESIM,
+  fileExtension: "scesim",
   getFileContents: () => Promise.resolve(""),
   isReadOnly: false
 };
 
 /**
- * Helper method to create new, empty files, for different EditorTypes.
- * @param editorType The type of editor for which the new file represents.
+ * Helper method to create new, empty files, for different file extensions.
+ * @param fileExtension The extension of the file.
  */
-export function newFile(editorType: EditorType): File {
+export function newFile(fileExtension: string): File {
   return {
     fileName: "new-file",
-    editorType: editorType,
+    fileExtension: fileExtension,
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false
   };

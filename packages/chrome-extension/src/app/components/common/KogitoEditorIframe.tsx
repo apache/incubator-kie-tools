@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-import { ChannelType, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/microeditor-envelope-protocol";
-import { EditorType, EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
+import {
+  ChannelType,
+  ResourceContentRequest,
+  ResourceListRequest
+} from "@kogito-tooling/microeditor-envelope-protocol";
+import { EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { runScriptOnPage } from "../../utils";
@@ -40,7 +44,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
 ) => {
   const githubApi = useGitHubApi();
   const editorRef = useRef<EmbeddedEditorRef>(null);
-  const { router, editorIndexPath, resourceContentServiceFactory } = useGlobals();
+  const { envelopeLocator, resourceContentServiceFactory } = useGlobals();
   const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
 
   //Lookup ResourceContentService
@@ -62,7 +66,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   const file = useMemo(() => {
     return {
       fileName: props.contentPath,
-      editorType: props.openFileExtension as EditorType,
+      fileExtension: props.openFileExtension,
       getFileContents: props.getFileContents,
       isReadOnly: props.readonly
     };
@@ -70,7 +74,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
 
   useEffect(() => {
     if (textMode) {
-      editorRef.current?.requestContent();
+      editorRef.current?.getContent();
       return;
     }
 
@@ -81,17 +85,17 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     let task: number;
     Promise.resolve()
       .then(() => props.getFileContents())
-      .then(c => editorRef.current?.setContent(c ?? ""))
+      .then(c => editorRef.current?.setContent(c ?? "", props.contentPath))
       .then(() => {
         task = window.setInterval(
           () =>
-            editorRef.current?.requestContent().then(editorContent => {
+            editorRef.current?.getContent().then(c => {
               if (props.readonly) {
                 return;
               }
 
               //keep line breaks
-              const content = editorContent.content.split("\n").join("\\n");
+              const content = c.split("\n").join("\\n");
 
               runScriptOnPage(
                 `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}").CodeMirror.setValue('${content}')`
@@ -114,7 +118,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
 
       return {
         setContent: (content: string) => {
-          editorRef.current?.setContent(content);
+          editorRef.current?.setContent(content, props.contentPath);
           return Promise.resolve();
         }
       };
@@ -128,12 +132,11 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
         <EmbeddedEditor
           ref={editorRef}
           file={file}
-          router={router}
           channelType={ChannelType.GITHUB}
-          onReady={onEditorReady}
-          onResourceContentRequest={onResourceContentRequest}
-          onResourceListRequest={onResourceContentList}
-          envelopeUri={router.getRelativePathTo(editorIndexPath)}
+          receive_ready={onEditorReady}
+          receive_resourceContentRequest={onResourceContentRequest}
+          receive_resourceListRequest={onResourceContentList}
+          editorEnvelopeLocator={envelopeLocator}
         />
       </div>
     </>
