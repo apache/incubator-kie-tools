@@ -18,7 +18,13 @@ package org.uberfire.ext.metadata.io;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 import org.junit.Before;
@@ -43,7 +49,11 @@ import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 
-import static org.mockito.Matchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -52,7 +62,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.junit.Assert.*;
 import static org.uberfire.java.nio.file.StandardWatchEventKind.ENTRY_MODIFY;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -60,21 +69,25 @@ public class IOServiceIndexedTest {
 
     IOServiceIndexedImpl ioService;
 
-    @Mock MetaIndexEngine indexEngine;
-    @Mock ExecutorService executorService;
-    @Mock IndexersFactory indexersFactory;
-    @Mock IndexerDispatcherFactory dispatcherFactory;
+    @Mock
+    MetaIndexEngine indexEngine;
+    @Mock
+    ExecutorService executorService;
+    @Mock
+    IndexersFactory indexersFactory;
+    @Mock
+    IndexerDispatcherFactory dispatcherFactory;
 
     FileSystemProvider mockProvider;
 
     @Before
     public void setup() throws URISyntaxException {
         TestFileSystemProvider testProvider = FileSystemProviders.installedProviders()
-                                                                 .stream()
-                                                                 .filter(provider -> provider instanceof TestFileSystemProvider)
-                                                                 .map(provider -> (TestFileSystemProvider) provider)
-                                                                 .findAny()
-                                                                 .orElseThrow(() -> new RuntimeException("Failed to setup mock provider for test."));
+                .stream()
+                .filter(provider -> provider instanceof TestFileSystemProvider)
+                .map(provider -> (TestFileSystemProvider) provider)
+                .findAny()
+                .orElseThrow(() -> new RuntimeException("Failed to setup mock provider for test."));
         testProvider.resetMock();
         mockProvider = testProvider.getMock();
 
@@ -235,7 +248,7 @@ public class IOServiceIndexedTest {
         verify(dispatcher, times(0)).offer(
                 refEq(new IndexableIOEvent.DeletedFileEvent(oldPath)));
     }
-    
+
     @Test
     public void queueCreationAndModificationEventShouldUndotAndDispatchTest() throws Exception {
         WatchContext context = mock(WatchContext.class);
@@ -348,5 +361,22 @@ public class IOServiceIndexedTest {
         doReturn(fsRootDirectories).when(fileSystem).getRootDirectories();
 
         return fileSystem;
+    }
+
+    @Test
+    public void deleteIfExists() throws URISyntaxException {
+
+        final FileSystem fileSystem = getFileSystem();
+        String fsName = "fsName";
+        FSPath fsPath = mock(FSPath.class);
+        when(fsPath.getFileSystem()).thenReturn(fileSystem);
+        when(fileSystem.getName()).thenReturn("fsName");
+        doReturn(true).when(ioService).delIfExists(any());
+
+        ioService.deleteIfExists(fsPath);
+
+        InOrder inOrder = Mockito.inOrder(ioService, indexEngine, fileSystem);
+        inOrder.verify(ioService).cleanupDeletedFS(eq(fsName), any());
+        inOrder.verify(indexEngine).delete(any(KCluster.class));
     }
 }

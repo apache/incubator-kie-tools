@@ -86,7 +86,7 @@ public class InfinispanIndexProvider implements IndexProvider {
 
     @Override
     public void delete(String index) {
-
+        this.infinispanContext.deleteCache(index);
     }
 
     @Override

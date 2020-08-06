@@ -454,7 +454,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     }
 
     void queueDeleteEvent(final WatchContext context,
-                                  final IndexerDispatcher dispatcher) throws DisposedException {
+                          final IndexerDispatcher dispatcher) throws DisposedException {
         final Path oldPath = context.getOldPath();
         // ignore delete events for dot files, because dot files are not indexed
         if (!isIgnored(oldPath)) {
@@ -463,19 +463,19 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     }
 
     void queueRenameEvent(final WatchContext context,
-                                  final IndexerDispatcher dispatcher) throws DisposedException {
+                          final IndexerDispatcher dispatcher) throws DisposedException {
         final Path sourcePath = context.getOldPath();
         final Path destinationPath = context.getPath();
 
         if (!isIgnored(destinationPath)) {
             dispatcher.offer(new RenamedFileEvent(sourcePath,
-                    destinationPath));
+                                                  destinationPath));
         }
     }
 
     void queueCreationAndModificationEvent(final Set<Path> eventRealPaths,
-                                                   final WatchContext context,
-                                                   final IndexerDispatcher dispatcher) throws DisposedException {
+                                           final WatchContext context,
+                                           final IndexerDispatcher dispatcher) throws DisposedException {
         // If the path to be indexed is a "dot path" but does not have an associated
         // "real path" index the "real path" instead. This ensures when only a
         // "dot path" is updated the FileAttributeView(s) are re-indexed.
@@ -512,7 +512,9 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     }
 
     boolean isIgnored(Path path) {
-        if (path == null || path.getFileName() == null) return true;
+        if (path == null || path.getFileName() == null) {
+            return true;
+        }
         return path.getFileName().toString().startsWith(".");
     }
 
@@ -524,30 +526,38 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         fs.getRootDirectories().forEach(rootPath -> indexEngine.delete(KObjectUtil.toKCluster(rootPath)));
     }
 
-    private void cleanupDeletedFS(String fsName,
-                                  Iterable<Path> rootDirectories) {
+    protected void cleanupDeletedFS(String fsName,
+                                    Path rootDirectory) {
         WatchService ws = watchServicesByFS.remove(fsName);
         if (ws != null && !ws.isClose()) {
             ws.close();
         }
-        rootDirectories.forEach(rootPath -> indexEngine.delete(KObjectUtil.toKCluster(rootPath)));
+        indexEngine.delete(KObjectUtil.toKCluster(rootDirectory));
     }
 
     @Override
     public boolean deleteIfExists(Path path,
-                                  DeleteOption... options) throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
+                                  DeleteOption... options) throws IllegalArgumentException, IOException, SecurityException {
 
         Iterable<Path> rootDirectories = path.getFileSystem().getRootDirectories();
+        Path root = null;
+        if (rootDirectories.iterator().hasNext()) {
+            root = rootDirectories.iterator().next();
+        }
         String fsName = path.getFileSystem().getName();
 
-        final boolean result = super.deleteIfExists(path,
-                                                    options);
-        if (result && path instanceof FSPath) {
-            FileSystem fileSystem = path.getFileSystem();
+        final boolean result = this.delIfExists(path,
+                                                options);
+        if (result && path instanceof FSPath && root != null) {
             cleanupDeletedFS(fsName,
-                             rootDirectories);
+                             root);
         }
         return result;
+    }
+
+    protected boolean delIfExists(Path path,
+                                  DeleteOption... options) throws IllegalArgumentException, IOException, SecurityException {
+        return super.deleteIfExists(path, options);
     }
 
     public MetaIndexEngine getIndexEngine() {

@@ -396,6 +396,11 @@ public class InfinispanContext implements Disposable {
         }
     }
 
+    public void deleteCache(String index){
+        String cacheName = AttributesUtil.toProtobufFormat(index).toLowerCase();
+        this.cacheManager.administration().removeCache(cacheName);
+    }
+
     public void observeInitialization(Runnable runnable) {
         this.initializationObserver = Optional.of(runnable);
     }
