@@ -24,16 +24,16 @@ import (
 
 /*
 	DataTable for Jobs Service:
-	| infinispan       | useKogitoInfra | enabled/disabled          |
-	| infinispan       | username       | developer                 |
-	| infinispan       | password       | mypass                    |
-	| infinispan       | uri            | external-infinispan:11222 |
-	| kafka            | useKogitoInfra | enabled/disabled          |
-	| kafka            | externalURI    | kafka-bootstrap:9092      |
-	| kafka            | instance       | external-kafka            |
-	| runtime-request  | cpu/memory     | value                     |
-	| runtime-limit    | cpu/memory     | value                     |
-	| runtime-env      | varName        | varValue                  |
+	| config           | enableEvents      | enabled/disabled          |
+	| config           | enablePersistence | enabled/disabled          |
+	| infinispan       | username          | developer                 |
+	| infinispan       | password          | mypass                    |
+	| infinispan       | uri               | external-infinispan:11222 |
+	| kafka            | externalURI       | kafka-bootstrap:9092      |
+	| kafka            | instance          | external-kafka            |
+	| runtime-request  | cpu/memory        | value                     |
+	| runtime-limit    | cpu/memory        | value                     |
+	| runtime-env      | varName           | varValue                  |
 */
 
 func registerKogitoJobsServiceSteps(ctx *godog.ScenarioContext, data *Data) {

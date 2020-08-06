@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/cucumber/messages-go/v10"
+	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/types"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
@@ -38,18 +38,18 @@ const (
 	kogitoServiceDeploymentLabelKey = "deployment-label"
 
 	// DataTable second column
-	kogitoServiceInfinispanUseKogitoInfraKey = "useKogitoInfra"
-	kogitoServiceInfinispanUsernameKey       = "username"
-	kogitoServiceInfinispanPasswordKey       = "password"
-	kogitoServiceInfinispanURIKey            = "uri"
-	kogitoServiceKafkaUseKogitoInfraKey      = "useKogitoInfra"
-	kogitoServiceKafkaExternalURIKey         = "externalURI"
-	kogitoServiceKafkaInstanceKey            = "instance"
-	kogitoServiceHTTPPortKey                 = "httpPort"
+	kogitoServiceInfinispanUsernameKey          = "username"
+	kogitoServiceInfinispanPasswordKey          = "password"
+	kogitoServiceInfinispanURIKey               = "uri"
+	kogitoServiceKafkaExternalURIKey            = "externalURI"
+	kogitoServiceKafkaInstanceKey               = "instance"
+	kogitoServiceHTTPPortKey                    = "httpPort"
+	kogitoServiceInfinispanEnablePersistenceKey = "enablePersistence"
+	kogitoServiceInfinispanEnableEventsKey      = "enableEvents"
 )
 
-// MapKogitoServiceTable maps Cucumber table row to KogitoServiceHolder
-func MapKogitoServiceTable(table *messages.PickleStepArgument_PickleTable, serviceHolder *types.KogitoServiceHolder) error {
+// MapKogitoServiceTable maps Cucumber table to KogitoServiceHolder
+func MapKogitoServiceTable(table *godog.Table, serviceHolder *types.KogitoServiceHolder) error {
 	for _, row := range table.Rows {
 		// Try to map configuration row to KogitoServiceHolder
 		_, err := mapKogitoServiceTableRow(row, serviceHolder)
@@ -62,7 +62,7 @@ func MapKogitoServiceTable(table *messages.PickleStepArgument_PickleTable, servi
 }
 
 // mapKogitoServiceTableRow maps Cucumber table row to KogitoServiceHolder
-func mapKogitoServiceTableRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoService *bddtypes.KogitoServiceHolder) (mappingFound bool, err error) {
+func mapKogitoServiceTableRow(row *TableRow, kogitoService *bddtypes.KogitoServiceHolder) (mappingFound bool, err error) {
 	if len(row.Cells) != 3 {
 		return false, fmt.Errorf("expected table to have exactly three columns")
 	}
@@ -77,10 +77,10 @@ func mapKogitoServiceTableRow(row *messages.PickleStepArgument_PickleTable_Pickl
 		return mapKogitoServiceKafkaTableRow(row, kogitoService)
 
 	case kogitoServiceServiceLabelKey:
-		kogitoService.KogitoService.GetSpec().GetServiceLabels()[getSecondColumn(row)] = getThirdColumn(row)
+		kogitoService.KogitoService.GetSpec().AddServiceLabel(getSecondColumn(row), getThirdColumn(row))
 
 	case kogitoServiceDeploymentLabelKey:
-		kogitoService.KogitoService.GetSpec().GetDeploymentLabels()[getSecondColumn(row)] = getThirdColumn(row)
+		kogitoService.KogitoService.GetSpec().AddDeploymentLabel(getSecondColumn(row), getThirdColumn(row))
 
 	case kogitoServiceRuntimeEnvKey:
 		kogitoService.KogitoService.GetSpec().AddEnvironmentVariable(getSecondColumn(row), getThirdColumn(row))
@@ -101,14 +101,11 @@ func mapKogitoServiceTableRow(row *messages.PickleStepArgument_PickleTable_Pickl
 	return true, nil
 }
 
-func mapKogitoServiceInfinispanTableRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoService *bddtypes.KogitoServiceHolder) (mappingFound bool, err error) {
+func mapKogitoServiceInfinispanTableRow(row *TableRow, kogitoService *bddtypes.KogitoServiceHolder) (mappingFound bool, err error) {
 	secondColumn := getSecondColumn(row)
 
 	if infinispanAware, ok := kogitoService.KogitoService.GetSpec().(v1alpha1.InfinispanAware); ok {
 		switch secondColumn {
-		case kogitoServiceInfinispanUseKogitoInfraKey:
-			infinispanAware.GetInfinispanProperties().UseKogitoInfra = MustParseEnabledDisabled(getThirdColumn(row))
-
 		case kogitoServiceInfinispanUsernameKey:
 			kogitoService.Infinispan.Username = getThirdColumn(row)
 
@@ -127,14 +124,11 @@ func mapKogitoServiceInfinispanTableRow(row *messages.PickleStepArgument_PickleT
 	return true, nil
 }
 
-func mapKogitoServiceKafkaTableRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoService *bddtypes.KogitoServiceHolder) (mappingFound bool, err error) {
+func mapKogitoServiceKafkaTableRow(row *TableRow, kogitoService *bddtypes.KogitoServiceHolder) (mappingFound bool, err error) {
 	secondColumn := getSecondColumn(row)
 
 	if kafkaAware, ok := kogitoService.KogitoService.GetSpec().(v1alpha1.KafkaAware); ok {
 		switch secondColumn {
-		case kogitoServiceKafkaUseKogitoInfraKey:
-			kafkaAware.GetKafkaProperties().UseKogitoInfra = MustParseEnabledDisabled(getThirdColumn(row))
-
 		case kogitoServiceKafkaExternalURIKey:
 			kafkaAware.GetKafkaProperties().ExternalURI = getThirdColumn(row)
 
@@ -150,7 +144,7 @@ func mapKogitoServiceKafkaTableRow(row *messages.PickleStepArgument_PickleTable_
 	return true, nil
 }
 
-func mapKogitoServiceConfigTableRow(row *messages.PickleStepArgument_PickleTable_PickleTableRow, kogitoService *bddtypes.KogitoServiceHolder) (mappingFound bool, err error) {
+func mapKogitoServiceConfigTableRow(row *TableRow, kogitoService *bddtypes.KogitoServiceHolder) (mappingFound bool, err error) {
 	secondColumn := getSecondColumn(row)
 
 	switch secondColumn {
@@ -161,6 +155,12 @@ func mapKogitoServiceConfigTableRow(row *messages.PickleStepArgument_PickleTable
 		}
 
 		kogitoService.KogitoService.GetSpec().SetHTTPPort(int32(httpPort))
+
+	case kogitoServiceInfinispanEnablePersistenceKey:
+		kogitoService.EnablePersistence = MustParseEnabledDisabled(getThirdColumn(row))
+
+	case kogitoServiceInfinispanEnableEventsKey:
+		kogitoService.EnableEvents = MustParseEnabledDisabled(getThirdColumn(row))
 
 	default:
 		return false, fmt.Errorf("Unrecognized config configuration option: %s", secondColumn)

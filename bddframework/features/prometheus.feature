@@ -9,11 +9,13 @@ Feature: Service Deployment: Prometheus
 
   Scenario: Deploy hr service and verify that it successfully connects to Prometheus
     Given Prometheus instance is deployed, monitoring services with label name "app" and value "hr"
-    And Deploy quarkus example service "onboarding-example/hr" with configuration:
-      | config | native | disabled |
-    And Kogito application "hr" has 1 pods running within 10 minutes
+    And Clone Kogito examples into local directory
+    And Local example service "onboarding-example/hr" is built by Maven using profile "default" and deployed to runtime registry
+    And Deploy quarkus example service "hr" from runtime registry with configuration:
+      | config | enablePersistence | disabled |
+    And Kogito Runtime "hr" has 1 pods running within 10 minutes
 
-    When HTTP POST request on service "hr" is successful within 2 minutes with path "id" and body:
+    When Start "id" process on service "hr" within 2 minutes with body:
       """
       {
         "employee" : {

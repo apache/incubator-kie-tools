@@ -49,13 +49,17 @@ func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistr
 		}
 
 		// Create Dockerfile
-		dockerfileContent := framework.GetKogitoApplicationDockerfileProvider(projectLocation).GetDockerfileContent()
+		dockerfileContent, err := framework.GetKogitoApplicationDockerfileProvider(projectLocation).GetDockerfileContent()
+		if err != nil {
+			return err
+		}
+
 		if err := framework.CreateFile(projectLocation, "Dockerfile", dockerfileContent); err != nil {
 			return err
 		}
 
 		// Build and push image
-		err := framework.GetContainerEngine(data.Namespace).BuildImage(projectLocation, imageTag).PushImage(imageTag).GetError()
+		err = framework.GetContainerEngine(data.Namespace).BuildImage(projectLocation, imageTag).PushImage(imageTag).GetError()
 		if err != nil {
 			return err
 		}

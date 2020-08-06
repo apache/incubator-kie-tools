@@ -6,20 +6,17 @@ Feature: Deploy the service by configuring the resource requests and limits
     Given Namespace is created
     And Kogito Operator is deployed
 
-  Scenario Outline: Setting runtime resource resource requests cpu <runtime-cpu-request>, mem <runtime-memory-request> and limits cpu <runtime-cpu-limit>, mem <runtime-memory-limit >
+  Scenario Outline: Setting runtime resource requests cpu <runtime-cpu-request>, mem <runtime-memory-request> and limits cpu <runtime-cpu-limit>, mem <runtime-memory-limit>
     Given Clone Kogito examples into local directory
-    And Local example service "ruleunit-quarkus-example" is built by Maven
+    And Local example service "ruleunit-quarkus-example" is built by Maven using profile "default" and deployed to runtime registry
 
-    When Create quarkus service "ruleunit-quarkus-example" with configuration:
+    When Deploy quarkus example service "ruleunit-quarkus-example" from runtime registry with configuration:
       | runtime-request | cpu    | <runtime-cpu-request>    |
       | runtime-request | memory | <runtime-memory-request> |
       | runtime-limit   | cpu    | <runtime-cpu-limit>      |
       | runtime-limit   | memory | <runtime-memory-limit>   |
-    And BuildConfig "ruleunit-quarkus-example-binary" is created after 1 minutes
-    And Start build with name "ruleunit-quarkus-example-binary" from local example service path "ruleunit-quarkus-example/target"
 
-    Then Kogito application "ruleunit-quarkus-example" has 1 pods running within 10 minutes
-    And Kogito application "ruleunit-quarkus-example" has pods with runtime resources within 2 minutes:
+    Then Deployment "ruleunit-quarkus-example" has 1 pods with runtime resources within 2 minutes:
       | runtime-request | cpu    | <runtime-cpu-request>    |
       | runtime-request | memory | <runtime-memory-request> |
       | runtime-limit   | cpu    | <runtime-cpu-limit>      |
@@ -30,8 +27,8 @@ Feature: Deploy the service by configuring the resource requests and limits
       | 500m                | 1Gi                    | 1000m             | 2Gi                  |
 
 
-  Scenario Outline: Setting build resource requests cpu <build-cpu-request>, mem <build-memory-request> and limits cpu <build-cpu-limit>, mem <build-memory-limit >
-    When Deploy quarkus example service "ruleunit-quarkus-example" with configuration:
+  Scenario Outline: Setting build resource requests cpu <build-cpu-request>, mem <build-memory-request> and limits cpu <build-cpu-limit>, mem <build-memory-limit>
+    When Build quarkus example service "ruleunit-quarkus-example" with configuration:
       | build-request | cpu    | <build-cpu-request>    |
       | build-request | memory | <build-memory-request> |
       | build-limit   | cpu    | <build-cpu-limit>      |

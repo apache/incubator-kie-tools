@@ -25,6 +25,8 @@ type KogitoServiceHolder struct {
 		Username string
 		Password string
 	}
+	EnablePersistence bool
+	EnableEvents      bool
 }
 
 // KogitoBuildHolder Helper structure holding informations for Kogito build

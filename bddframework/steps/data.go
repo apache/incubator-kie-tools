@@ -45,7 +45,6 @@ func (data *Data) RegisterAllSteps(ctx *godog.ScenarioContext) {
 	registerImageRegistrySteps(ctx, data)
 	registerInfinispanSteps(ctx, data)
 	registerKafkaSteps(ctx, data)
-	registerKogitoAppSteps(ctx, data)
 	registerKogitoBuildSteps(ctx, data)
 	registerKogitoRuntimeSteps(ctx, data)
 	registerKogitoDataIndexServiceSteps(ctx, data)

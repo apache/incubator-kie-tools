@@ -27,8 +27,22 @@ import (
 func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 	cmd := []string{}
 
+	// Flags ordered alphabetically
+
+	if serviceHolder.EnableEvents {
+		cmd = append(cmd, "--enable-events")
+	}
+
+	if serviceHolder.EnablePersistence {
+		cmd = append(cmd, "--enable-persistence")
+	}
+
 	for _, envVar := range serviceHolder.GetSpec().GetEnvs() {
 		cmd = append(cmd, "--env", fmt.Sprintf("%s=%s", envVar.Name, envVar.Value))
+	}
+
+	if httpPort := serviceHolder.GetSpec().GetHTTPPort(); httpPort > 0 {
+		cmd = append(cmd, "--http-port", strconv.Itoa(int(httpPort)))
 	}
 
 	image := framework.ConvertImageToImageTag(*serviceHolder.GetSpec().GetImage())
@@ -36,7 +50,19 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 		cmd = append(cmd, "--image", image)
 	}
 
+	for resourceName, quantity := range serviceHolder.GetSpec().GetResources().Limits {
+		cmd = append(cmd, "--limits", fmt.Sprintf("%s=%s", resourceName, quantity.String()))
+	}
+
 	cmd = append(cmd, "--replicas", strconv.Itoa(int(*serviceHolder.GetSpec().GetReplicas())))
+
+	for resourceName, quantity := range serviceHolder.GetSpec().GetResources().Requests {
+		cmd = append(cmd, "--requests", fmt.Sprintf("%s=%s", resourceName, quantity.String()))
+	}
+
+	for labelName, labelValue := range serviceHolder.GetSpec().GetServiceLabels() {
+		cmd = append(cmd, "--svc-labels", fmt.Sprintf("%s=%s", labelName, labelValue))
+	}
 
 	if infinispanAware, ok := serviceHolder.GetSpec().(v1alpha1.InfinispanAware); ok {
 		infinispanProperties := infinispanAware.GetInfinispanProperties()
@@ -48,9 +74,6 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 		}
 		if uri := infinispanProperties.URI; len(uri) > 0 {
 			cmd = append(cmd, "--infinispan-url", uri)
-		}
-		if infinispanProperties.UseKogitoInfra {
-			cmd = append(cmd, "--enable-persistence")
 		}
 
 		if username := serviceHolder.Infinispan.Username; len(username) > 0 {
@@ -69,13 +92,6 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 		if instance := kafkaProperties.Instance; len(instance) > 0 {
 			cmd = append(cmd, "--kafka-instance", instance)
 		}
-		if kafkaProperties.UseKogitoInfra {
-			cmd = append(cmd, "--enable-events")
-		}
-	}
-
-	if httpPort := serviceHolder.GetSpec().GetHTTPPort(); httpPort > 0 {
-		cmd = append(cmd, "--http-port", strconv.Itoa(int(httpPort)))
 	}
 
 	if kogitoRuntime, ok := serviceHolder.KogitoService.(*v1alpha1.KogitoRuntime); ok {
@@ -91,17 +107,14 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 func GetBuildCLIFlags(kogitoBuild *v1alpha1.KogitoBuild) []string {
 	cmd := []string{}
 
+	// Flags ordered alphabetically
+
 	if reference := kogitoBuild.Spec.GitSource.Reference; len(reference) > 0 {
 		cmd = append(cmd, "--branch", reference)
 	}
 
 	for _, envVar := range kogitoBuild.Spec.Envs {
 		cmd = append(cmd, "--build-env", fmt.Sprintf("%s=%s", envVar.Name, envVar.Value))
-	}
-
-	image := framework.ConvertImageToImageTag(kogitoBuild.Spec.BuildImage)
-	if len(image) > 0 {
-		cmd = append(cmd, "--image-s2i", image)
 	}
 
 	for resourceName, quantity := range kogitoBuild.Spec.Resources.Limits {
@@ -113,6 +126,16 @@ func GetBuildCLIFlags(kogitoBuild *v1alpha1.KogitoBuild) []string {
 	}
 	if contextDir := kogitoBuild.Spec.GitSource.ContextDir; len(contextDir) > 0 {
 		cmd = append(cmd, "--context-dir", contextDir)
+	}
+
+	image := framework.ConvertImageToImageTag(kogitoBuild.Spec.RuntimeImage)
+	if len(image) > 0 {
+		cmd = append(cmd, "--image-runtime", image)
+	}
+
+	image = framework.ConvertImageToImageTag(kogitoBuild.Spec.BuildImage)
+	if len(image) > 0 {
+		cmd = append(cmd, "--image-s2i", image)
 	}
 
 	if mavenMirrorURL := kogitoBuild.Spec.MavenMirrorURL; len(mavenMirrorURL) > 0 {

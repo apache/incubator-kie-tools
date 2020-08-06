@@ -9,21 +9,20 @@ Feature: Deploy Travel agency service and verify its functionality
     And Kogito Operator is deployed with Infinispan and Kafka operators
     And Install Kogito Data Index with 1 replicas
 
-  Scenario Outline: Travel application without required Visa and native <native>
-    Given Deploy quarkus example service "kogito-travel-agency/extended/travels" with configuration:
-      | config        | native      | <native>                |
-      | config        | persistence | enabled                 |
-      | config        | events      | enabled                 |
-      | build-request | cpu         | <build-request-cpu>     |
-    And Deploy quarkus example service "kogito-travel-agency/extended/visas" with configuration:
-      | config        | native      | <native>                |
-      | config        | persistence | enabled                 |
-      | config        | events      | enabled                 |
-      | build-request | cpu         | <build-request-cpu>     |
-    And Kogito application "travels" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "travels" with path "travels" is successful within 1 minutes
-    And Kogito application "visas" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "visas" with path "visaApplications" is successful within 1 minutes
+  Scenario Outline: Travel application without required Visa and build profile <profile>
+    Given Clone Kogito examples into local directory
+    And Local example service "kogito-travel-agency/extended/travels" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "kogito-travel-agency/extended/visas" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Deploy quarkus example service "travels" from runtime registry with configuration:
+      | config     | enableEvents      | enabled |
+      | config     | enablePersistence | enabled |
+    And Deploy quarkus example service "visas" from runtime registry with configuration:
+      | config     | enableEvents      | enabled |
+      | config     | enablePersistence | enabled |
+    And Kogito Runtime "travels" has 1 pods running within 10 minutes
+    And Service "travels" with process name "travels" is available within 1 minutes
+    And Kogito Runtime "visas" has 1 pods running within 10 minutes
+    And Service "visas" with process name "visaApplications" is available within 1 minutes
     When Start "travels" process on service "travels" with body:
       """json
 	{
@@ -57,29 +56,30 @@ Feature: Deploy Travel agency service and verify its functionality
     Then Service "travels" with process name "travels" is available
 
     Examples:
-      | native   | minutes | build-request-cpu | 
-      | disabled | 10      | 1                 | 
+      | profile |
+      | default |
 
     @native
     Examples:
-      | native   | minutes | build-request-cpu | 
-      | enabled  | 30      | 4                 | 
+      | profile |
+      | native  |
+
+#####
 
   Scenario Outline: Travel application with required Visa and native <native>
-    Given Deploy quarkus example service "kogito-travel-agency/extended/travels" with configuration:
-      | config        | native      | <native>                |
-      | config        | persistence | enabled                 |
-      | config        | events      | enabled                 |
-      | build-request | cpu         | <build-request-cpu>     |
-    And Deploy quarkus example service "kogito-travel-agency/extended/visas" with configuration:
-      | config        | native      | <native>                |
-      | config        | persistence | enabled                 |
-      | config        | events      | enabled                 |
-      | build-request | cpu         | <build-request-cpu>     |
-    And Kogito application "travels" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "travels" with path "travels" is successful within 1 minutes
-    And Kogito application "visas" has 1 pods running within <minutes> minutes
-    And HTTP GET request on service "visas" with path "visaApplications" is successful within 1 minutes
+    Given Clone Kogito examples into local directory
+    And Local example service "kogito-travel-agency/extended/travels" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "kogito-travel-agency/extended/visas" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Deploy quarkus example service "travels" from runtime registry with configuration:
+      | config     | enableEvents      | enabled |
+      | config     | enablePersistence | enabled |
+    And Deploy quarkus example service "visas" from runtime registry with configuration:
+      | config     | enableEvents      | enabled |
+      | config     | enablePersistence | enabled |
+    And Kogito Runtime "travels" has 1 pods running within 10 minutes
+    And Service "travels" with process name "travels" is available within 1 minutes
+    And Kogito Runtime "visas" has 1 pods running within 10 minutes
+    And Service "visas" with process name "visaApplications" is available within 1 minutes
     When Start "travels" process on service "travels" with body:
       """json
 	{
@@ -119,9 +119,9 @@ Feature: Deploy Travel agency service and verify its functionality
 		}
 	}
 	  """
-	And Service "visas" contains 1 instance of process with name "visaApplications" within 1 minutes
-	And Service "visas" contains 1 task of process with name "visaApplications" and task name "ApplicationApproval"
-	And Complete "ApplicationApproval" task on service "visas" and process with name "visaApplications" with body:
+    And Service "visas" contains 1 instance of process with name "visaApplications" within 1 minutes
+    And Service "visas" contains 1 task of process with name "visaApplications" and task name "ApplicationApproval"
+    And Complete "ApplicationApproval" task on service "visas" and process with name "visaApplications" with body:
 	  """json
 	{
 		"application" : {
@@ -144,11 +144,11 @@ Feature: Deploy Travel agency service and verify its functionality
 
     Then Service "travels" with process name "travels" is available
 
-  Examples:
-      | native   | minutes | build-request-cpu | 
-      | disabled | 10      | 1                 | 
+    Examples:
+      | profile |
+      | default |
 
     @native
     Examples:
-      | native   | minutes | build-request-cpu | 
-      | enabled  | 30      | 4                 | 
+      | profile |
+      | native  |

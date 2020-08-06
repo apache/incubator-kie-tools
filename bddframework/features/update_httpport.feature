@@ -10,6 +10,8 @@ Feature: Update the HTTP Port field in Kogito Services
       | config | httpPort | 9081 |
     Then Kogito Jobs Service has 1 pods running within 10 minutes
 
+#####
+
   @dataindex
   @infinispan
   @kafka
@@ -18,6 +20,8 @@ Feature: Update the HTTP Port field in Kogito Services
     When Install Kogito Data Index with 1 replicas with configuration:
       | config | httpPort | 9082 |
     Then Kogito Data Index has 1 pods running within 10 minutes
+
+#####
 
   @managementconsole
   @infinispan
@@ -30,13 +34,14 @@ Feature: Update the HTTP Port field in Kogito Services
       | config | httpPort | 9082 |
     Then Kogito Management Console has 1 pods running within 10 minutes
 
+#####
+
   Scenario Outline: Update HTTP Port for Kogito Runtime
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
 
     When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
-      | infinispan | useKogitoInfra | disabled |
       | config     | httpPort       | 9082     |
 
     Then Kogito Runtime "<example-service>" has 1 pods running within 10 minutes

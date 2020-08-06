@@ -28,7 +28,9 @@ import (
 
 /*
 	DataTable for KogitoBuild:
-	| config | native | enabled/disabled |
+	| config        | native     | enabled/disabled |
+	| build-request | cpu/memory | value            |
+	| build-limit   | cpu/memory | value            |
 */
 
 func registerKogitoBuildSteps(ctx *godog.ScenarioContext, data *Data) {

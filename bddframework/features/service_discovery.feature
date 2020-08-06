@@ -5,31 +5,27 @@ Feature: Discovery with onboarding
     Given Namespace is created
 
   @quarkus
-  Scenario Outline: Deploy Quarkus onboarding example with native <native>
+  Scenario Outline: Deploy Quarkus onboarding example with Maven profile <profile>
     Given Kogito Operator is deployed
-    
-    When Deploy quarkus example service "onboarding-example/hr" with configuration:
-      | config | native                    | <native> |
-      | label  | department/first          | process  |
-      | label  | id                        | process  |
-      | label  | employee-validation/first | process  |
+    And Clone Kogito examples into local directory
+    And Local example service "onboarding-example/hr" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "onboarding-example/payroll" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Local example service "onboarding-example/onboarding-quarkus" is built by Maven using profile "<profile>" and deployed to runtime registry
 
-    And Deploy quarkus example service "onboarding-example/payroll" with configuration:
-      | config | native         | <native> |
-      | label  | taxes/rate     | process  |
-      | label  | vacations/days | process  |
-      | label  | payments/date  | process  |
+    When Deploy quarkus example service "hr" from runtime registry with configuration:
+      | service-label  | department/first          | process  |
+      | service-label  | id                        | process  |
+      | service-label  | employee-validation/first | process  |
+    And Deploy quarkus example service "payroll" from runtime registry with configuration:
+      | service-label  | taxes/rate     | process  |
+      | service-label  | vacations/days | process  |
+      | service-label  | payments/date  | process  |
+    And Deploy quarkus example service "onboarding-quarkus" from runtime registry with configuration:
+      | service-label  | onboarding | process |
 
-    And Deploy quarkus example service "onboarding-example/onboarding-quarkus" with configuration:
-      | config        | native     | <native>                |
-      | label         | onboarding | process                 |
-      | build-request | cpu        | <build-request-cpu>     |
-      | build-request | memory     | <build-request-memory>  |
-      | build-limit   | cpu        | <build-limit-cpu>       |
-
-    And Kogito application "hr" has 1 pods running within <minutes> minutes
-    And Kogito application "payroll" has 1 pods running within <minutes> minutes
-    And Kogito application "onboarding-quarkus" has 1 pods running within <minutes> minutes
+    And Kogito Runtime "hr" has 1 pods running within 10 minutes
+    And Kogito Runtime "payroll" has 1 pods running within 10 minutes
+    And Kogito Runtime "onboarding-quarkus" has 1 pods running within 10 minutes
 
     Then Start "onboarding" process on service "onboarding-quarkus" within 2 minutes with body:
       """json
@@ -48,41 +44,40 @@ Feature: Discovery with onboarding
         }
       }
       """
-    
+
     Examples:
-      | native   | minutes | build-request-cpu | build-limit-cpu | build-request-memory |
-      | disabled | 10      | 1                 | 4               | 4Gi                  |
+      | profile |
+      | default |
 
     @native
     Examples:
-      | native   | minutes | build-request-cpu | build-limit-cpu | build-request-memory |
-      | enabled  | 20      | 4                 | 8               | 10Gi                 |
+      | profile |
+      | native  |
 
 #####
 
   @springboot
   Scenario: Deploy Spring Boot onboarding example
     Given Kogito Operator is deployed
+    And Clone Kogito examples into local directory
+    And Local example service "onboarding-example/hr" is built by Maven using profile "default" and deployed to runtime registry
+    And Local example service "onboarding-example/payroll" is built by Maven using profile "default" and deployed to runtime registry
+    And Local example service "onboarding-example/onboarding-springboot" is built by Maven using profile "default" and deployed to runtime registry
     
-    When Deploy quarkus example service "onboarding-example/hr" with configuration:
-      | config | native                    | disabled |
-      | label  | department/first          | process  |
-      | label  | id                        | process  |
-      | label  | employee-validation/first | process  |
+    When Deploy quarkus example service "hr" from runtime registry with configuration:
+      | service-label  | department/first          | process  |
+      | service-label  | id                        | process  |
+      | service-label  | employee-validation/first | process  |
+    And Deploy quarkus example service "payroll" from runtime registry with configuration:
+      | service-label  | taxes/rate     | process  |
+      | service-label  | vacations/days | process  |
+      | service-label  | payments/date  | process  |
+    And Deploy springboot example service "onboarding-springboot" from runtime registry with configuration:
+      | service-label  | onboarding | process  |
 
-    And Deploy quarkus example service "onboarding-example/payroll" with configuration:
-      | config | native         | disabled |
-      | label  | taxes/rate     | process  |
-      | label  | vacations/days | process  |
-      | label  | payments/date  | process  |
-
-    And Deploy springboot example service "onboarding-example/onboarding-springboot" with configuration:
-      | config | native     | disabled |
-      | label  | onboarding | process  |
-
-    And Kogito application "hr" has 1 pods running within 10 minutes
-    And Kogito application "payroll" has 1 pods running within 10 minutes
-    And Kogito application "onboarding-springboot" has 1 pods running within 10 minutes
+    And Kogito Runtime "hr" has 1 pods running within 10 minutes
+    And Kogito Runtime "payroll" has 1 pods running within 10 minutes
+    And Kogito Runtime "onboarding-springboot" has 1 pods running within 10 minutes
 
     Then Start "onboarding" process on service "onboarding-springboot" within 2 minutes with body:
       """json

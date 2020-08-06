@@ -20,20 +20,23 @@ import (
 	"github.com/cucumber/messages-go/v10"
 )
 
+// TableRow represents a row of godog.Table made to a step definition
+type TableRow = messages.PickleStepArgument_PickleTable_PickleTableRow
+
 const (
 	enabledKey  = "enabled"
 	disabledKey = "disabled"
 )
 
-func getFirstColumn(row *messages.PickleStepArgument_PickleTable_PickleTableRow) string {
+func getFirstColumn(row *TableRow) string {
 	return row.Cells[0].Value
 }
 
-func getSecondColumn(row *messages.PickleStepArgument_PickleTable_PickleTableRow) string {
+func getSecondColumn(row *TableRow) string {
 	return row.Cells[1].Value
 }
 
-func getThirdColumn(row *messages.PickleStepArgument_PickleTable_PickleTableRow) string {
+func getThirdColumn(row *TableRow) string {
 	return row.Cells[2].Value
 }
 

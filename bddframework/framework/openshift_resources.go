@@ -24,12 +24,29 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 )
 
-// WaitForPodsToHaveResources waits for pods to have the expected resources
-func WaitForPodsToHaveResources(namespace, dcName string, expected v1.ResourceRequirements, timeoutInMin int) error {
+// WaitForPodsByDeploymentConfigToHaveResources waits for pods to have the expected resources
+func WaitForPodsByDeploymentConfigToHaveResources(namespace, dcName string, expected v1.ResourceRequirements, timeoutInMin int) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("Pods for deployment config '%s' to have resources", dcName), timeoutInMin,
 		func() (bool, error) {
-			return checkResourcesInPods(namespace, dcName, expected)
+			pods, err := GetPodsByDeploymentConfig(namespace, dcName)
+			if err != nil {
+				return false, err
+			}
+
+			return checkResourcesInPods(pods.Items, expected)
 		}, CheckPodsByDeploymentConfigInError(namespace, dcName))
+}
+
+// WaitForPodsByDeploymentToHaveResources waits for pods to have the expected resources
+func WaitForPodsByDeploymentToHaveResources(namespace, dName string, expected v1.ResourceRequirements, timeoutInMin int) error {
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("Pods for deployment '%s' to have resources", dName), timeoutInMin,
+		func() (bool, error) {
+			pods, err := GetPodsByDeployment(namespace, dName)
+			if err != nil {
+				return false, err
+			}
+			return checkResourcesInPods(pods, expected)
+		}, CheckPodsByDeploymentInError(namespace, dName))
 }
 
 // WaitForBuildConfigToHaveResources waits for build config to have the expected resources
@@ -74,21 +91,18 @@ func checkResourcesInBuildConfig(namespace string, buildConfigName string, expec
 	return isResourceLimitsAndRequestsEqual(bc.Spec.CommonSpec.Resources, expected), nil
 }
 
-func checkResourcesInPods(namespace string, dcName string, expected corev1.ResourceRequirements) (bool, error) {
-	pods, err := GetPodsByDeploymentConfig(namespace, dcName)
-	if err != nil {
-		return false, err
-	} else if pods == nil {
+func checkResourcesInPods(pods []v1.Pod, expected corev1.ResourceRequirements) (bool, error) {
+	if len(pods) == 0 {
 		return false, nil
-	} else {
-		for _, pod := range pods.Items {
-			if !checkContainersResources(pod.Spec.Containers, expected) {
-				return false, nil
-			}
-		}
-
-		return true, nil
 	}
+
+	for _, pod := range pods {
+		if !checkContainersResources(pod.Spec.Containers, expected) {
+			return false, nil
+		}
+	}
+
+	return true, nil
 }
 
 func checkContainersResources(containers []v1.Container, expected corev1.ResourceRequirements) bool {

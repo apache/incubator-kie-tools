@@ -18,16 +18,21 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"strings"
 
 	kogitores "github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/resource"
 )
 
+const (
+	quarkusJVMApplicationBinarySuffix    = "-runner.jar"
+	quarkusNativeApplicationBinarySuffix = "-runner"
+	springBootApplicationBinarySuffix    = ".jar"
+)
+
 // KogitoApplicationDockerfileProvider is the API to provide Dockerfile content for image creation based on built project content
 type KogitoApplicationDockerfileProvider interface {
 	// GetDockerfileContent returns Dockerfile content for image creation
-	GetDockerfileContent() string
+	GetDockerfileContent() (string, error)
 }
 
 type kogitoApplicationDockerfileProviderStruct struct {
@@ -35,24 +40,34 @@ type kogitoApplicationDockerfileProviderStruct struct {
 	imageName               string
 	applicationBinarySuffix string
 	libFolderNeeded         bool
+	matchApplicationBinary  func(filename string) (match bool)
 }
 
 var quarkusNonNativeKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
 	imageName:               kogitores.KogitoQuarkusJVMUbi8Image,
-	applicationBinarySuffix: "-runner.jar",
+	applicationBinarySuffix: quarkusJVMApplicationBinarySuffix,
 	libFolderNeeded:         true,
+	matchApplicationBinary: func(filename string) (match bool) {
+		return strings.HasSuffix(filename, quarkusJVMApplicationBinarySuffix)
+	},
 }
 
 var quarkusNativeKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
 	imageName:               kogitores.KogitoQuarkusUbi8Image,
-	applicationBinarySuffix: "-runner",
+	applicationBinarySuffix: quarkusNativeApplicationBinarySuffix,
 	libFolderNeeded:         false,
+	matchApplicationBinary: func(filename string) (match bool) {
+		return strings.HasSuffix(filename, quarkusNativeApplicationBinarySuffix)
+	},
 }
 
 var springbootKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
 	imageName:               kogitores.KogitoSpringbootUbi8Image,
-	applicationBinarySuffix: ".jar",
+	applicationBinarySuffix: springBootApplicationBinarySuffix,
 	libFolderNeeded:         false,
+	matchApplicationBinary: func(filename string) (match bool) {
+		return strings.HasSuffix(filename, springBootApplicationBinarySuffix) && !strings.Contains(filename, "-sources.") && !strings.Contains(filename, "-tests.")
+	},
 }
 
 // GetKogitoApplicationDockerfileProvider returns KogitoApplicationDockerfileProvider based on project location
@@ -70,13 +85,16 @@ func GetKogitoApplicationDockerfileProvider(projectLocation string) KogitoApplic
 	return dockerfileProvider
 }
 
-func (dockerfileProvider *kogitoApplicationDockerfileProviderStruct) GetDockerfileContent() string {
+func (dockerfileProvider *kogitoApplicationDockerfileProviderStruct) GetDockerfileContent() (string, error) {
 	// Declare base image to build from
 	dockerfileContent := fmt.Sprintf("FROM %s\n", GetBuildImage(dockerfileProvider.imageName))
 
 	// Copy application binary into $KOGITO_HOME/bin
-	applicationName := filepath.Base(dockerfileProvider.projectLocation)
-	dockerfileContent += fmt.Sprintf("COPY target/%s%s $KOGITO_HOME/bin\n", applicationName, dockerfileProvider.applicationBinarySuffix)
+	applicationBinaryFileName, err := dockerfileProvider.getApplicationBinaryFileName()
+	if err != nil {
+		return "", err
+	}
+	dockerfileContent += fmt.Sprintf("COPY target/%s $KOGITO_HOME/bin\n", applicationBinaryFileName)
 
 	// Copy lib folder
 	if dockerfileProvider.libFolderNeeded {
@@ -89,7 +107,7 @@ func (dockerfileProvider *kogitoApplicationDockerfileProviderStruct) GetDockerfi
 		dockerfileContent += "COPY target/classes/persistence/ $KOGITO_HOME/data/protobufs"
 	}
 
-	return dockerfileContent
+	return dockerfileContent, nil
 }
 
 func fileWithSuffixExists(scannedDirectory, fileSuffix string) bool {
@@ -104,6 +122,21 @@ func fileWithSuffixExists(scannedDirectory, fileSuffix string) bool {
 		}
 	}
 	return false
+}
+
+func (dockerfileProvider *kogitoApplicationDockerfileProviderStruct) getApplicationBinaryFileName() (string, error) {
+	targetDirectory := dockerfileProvider.projectLocation + "/target"
+	files, err := ioutil.ReadDir(targetDirectory)
+	if err != nil {
+		return "", err
+	}
+
+	for _, file := range files {
+		if dockerfileProvider.matchApplicationBinary(file.Name()) {
+			return file.Name(), nil
+		}
+	}
+	return "", fmt.Errorf("Application binary not found in directory %s", targetDirectory)
 }
 
 func fileOrDirectoryExists(fileOrDirectory string) bool {

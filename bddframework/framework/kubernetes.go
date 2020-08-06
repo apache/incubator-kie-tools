@@ -84,6 +84,53 @@ func GetPodsByDeploymentConfig(namespace string, dcName string) (*corev1.PodList
 	return GetPodsWithLabels(namespace, map[string]string{"deploymentconfig": dcName})
 }
 
+// GetPodsByDeployment retrieves pods belonging to a Deployment
+func GetPodsByDeployment(namespace string, dName string) (pods []corev1.Pod, err error) {
+	pods = []corev1.Pod{}
+
+	// Get ReplicaSet related to the Deployment
+	replicaSet, err := GetActiveReplicaSetByDeployment(namespace, dName)
+	if err != nil {
+		return nil, err
+	}
+
+	// Fetch all pods in namespace
+	podList := &corev1.PodList{}
+	if err := kubernetes.ResourceC(kubeClient).ListWithNamespace(namespace, podList); err != nil {
+		return nil, err
+	}
+
+	// Find which pods belong to the ReplicaSet
+	for _, pod := range podList.Items {
+		for _, ownerReference := range pod.OwnerReferences {
+			if ownerReference.Kind == "ReplicaSet" && ownerReference.Name == replicaSet.GetName() {
+				pods = append(pods, pod)
+			}
+		}
+	}
+
+	return
+}
+
+// GetActiveReplicaSetByDeployment retrieves active ReplicaSet belonging to a Deployment
+func GetActiveReplicaSetByDeployment(namespace string, dName string) (*apps.ReplicaSet, error) {
+	replicaSets := &apps.ReplicaSetList{}
+	if err := kubernetes.ResourceC(kubeClient).ListWithNamespace(namespace, replicaSets); err != nil {
+		return nil, err
+	}
+
+	// Find ReplicaSet owned by Deployment with active Pods
+	for _, replicaSet := range replicaSets.Items {
+		for _, ownerReference := range replicaSet.OwnerReferences {
+			if ownerReference.Kind == "Deployment" && ownerReference.Name == dName && replicaSet.Spec.Size() > 0 {
+				return &replicaSet, nil
+			}
+		}
+	}
+
+	return nil, fmt.Errorf("No ReplicaSet belonging to Deployment %s found", dName)
+}
+
 // GetPodsWithLabels retrieves pods based on label name and value
 func GetPodsWithLabels(namespace string, labels map[string]string) (*corev1.PodList, error) {
 	pods := &corev1.PodList{}
@@ -128,7 +175,7 @@ func WaitForDeploymentRunning(namespace, dName string, podNb int, timeoutInMin i
 				return false, nil
 			} else {
 				GetLogger(namespace).Debugf("Deployment has %d available replicas\n", dc.Status.AvailableReplicas)
-				return dc.Status.AvailableReplicas == int32(podNb), nil
+				return dc.Status.Replicas == int32(podNb) && dc.Status.AvailableReplicas == int32(podNb), nil
 			}
 		})
 }
@@ -158,8 +205,8 @@ func loadResource(namespace, uri string, resourceRef meta.ResourceObject, before
 	return nil
 }
 
-// WaitForAllPodsToContainTextInLog waits for pods of specified deployment config to contain specified text in log
-func WaitForAllPodsToContainTextInLog(namespace, dcName, logText string, timeoutInMin int) error {
+// WaitForAllPodsByDeploymentConfigToContainTextInLog waits for pods of specified deployment config to contain specified text in log
+func WaitForAllPodsByDeploymentConfigToContainTextInLog(namespace, dcName, logText string, timeoutInMin int) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("Pods for deployment config '%s' contain text '%s'", dcName, logText), timeoutInMin,
 		func() (bool, error) {
 			pods, err := GetPodsByDeploymentConfig(namespace, dcName)
@@ -168,12 +215,26 @@ func WaitForAllPodsToContainTextInLog(namespace, dcName, logText string, timeout
 			}
 
 			// Container name is equal to deployment config name
-			return checkAllPodsContainingTextInLog(namespace, pods, dcName, logText)
+			return checkAllPodsContainingTextInLog(namespace, pods.Items, dcName, logText)
 		}, CheckPodsByDeploymentConfigInError(namespace, dcName))
 }
 
-func checkAllPodsContainingTextInLog(namespace string, pods *corev1.PodList, containerName, text string) (bool, error) {
-	for _, pod := range pods.Items {
+// WaitForAllPodsByDeploymentToContainTextInLog waits for pods of specified deployment to contain specified text in log
+func WaitForAllPodsByDeploymentToContainTextInLog(namespace, dName, logText string, timeoutInMin int) error {
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("Pods for deployment '%s' contain text '%s'", dName, logText), timeoutInMin,
+		func() (bool, error) {
+			pods, err := GetPodsByDeployment(namespace, dName)
+			if err != nil {
+				return false, err
+			}
+
+			// Container name is equal to deployment config name
+			return checkAllPodsContainingTextInLog(namespace, pods, dName, logText)
+		}, CheckPodsByDeploymentInError(namespace, dName))
+}
+
+func checkAllPodsContainingTextInLog(namespace string, pods []corev1.Pod, containerName, text string) (bool, error) {
+	for _, pod := range pods {
 		containsText, err := isPodContainingTextInLog(namespace, &pod, containerName, text)
 		if err != nil || !containsText {
 			return false, err
@@ -236,6 +297,18 @@ func CheckPodsByDeploymentConfigInError(namespace string, dcName string) func() 
 			return true, err
 
 		}
+		return checkPodsInError(pods.Items)
+	}
+}
+
+// CheckPodsByDeploymentInError returns a function that checks the pods error state.
+func CheckPodsByDeploymentInError(namespace string, dName string) func() (bool, error) {
+	return func() (bool, error) {
+		pods, err := GetPodsByDeployment(namespace, dName)
+		if err != nil {
+			return true, err
+
+		}
 		return checkPodsInError(pods)
 	}
 }
@@ -248,12 +321,12 @@ func CheckPodsWithLabelInError(namespace, labelName, labelValue string) func() (
 			return true, err
 
 		}
-		return checkPodsInError(pods)
+		return checkPodsInError(pods.Items)
 	}
 }
 
-func checkPodsInError(pods *corev1.PodList) (bool, error) {
-	for _, pod := range pods.Items {
+func checkPodsInError(pods []corev1.Pod) (bool, error) {
+	for _, pod := range pods {
 		if hasErrors, err := isPodInError(&pod); hasErrors {
 			return true, err
 		}

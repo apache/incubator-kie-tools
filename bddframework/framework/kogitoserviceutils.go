@@ -45,6 +45,8 @@ func installOrDeployService(serviceHolder *bddtypes.KogitoServiceHolder, install
 	case CLIInstallerType:
 		err = cliInstall(serviceHolder, cliDeployCommand, cliDeploymentName)
 	case CRInstallerType:
+		enableUseKogitoInfraIfInfinispanURLsNotDefined(serviceHolder)
+		enableUseKogitoInfraIfKafkaURLsNotDefined(serviceHolder)
 		err = crInstall(serviceHolder)
 	default:
 		panic(fmt.Errorf("Unknown installer type %s", installerType))
@@ -55,6 +57,24 @@ func installOrDeployService(serviceHolder *bddtypes.KogitoServiceHolder, install
 	}
 
 	return err
+}
+
+// enableUseKogitoInfraIfInfinispanURLsNotDefined sets Kogito service to use KogitoInfra in case persistence is enabled and Infinispan URL is not defined
+func enableUseKogitoInfraIfInfinispanURLsNotDefined(serviceHolder *bddtypes.KogitoServiceHolder) {
+	if infinispanAware, ok := serviceHolder.GetSpec().(v1alpha1.InfinispanAware); ok {
+		if serviceHolder.EnablePersistence && len(infinispanAware.GetInfinispanProperties().URI) == 0 {
+			infinispanAware.GetInfinispanProperties().UseKogitoInfra = true
+		}
+	}
+}
+
+// enableUseKogitoInfraIfKafkaURLsNotDefined sets Kogito service to use KogitoInfra in case events are enabled and Kafka URL is not defined
+func enableUseKogitoInfraIfKafkaURLsNotDefined(serviceHolder *bddtypes.KogitoServiceHolder) {
+	if kafkaAware, ok := serviceHolder.GetSpec().(v1alpha1.KafkaAware); ok {
+		if serviceHolder.EnableEvents && (len(kafkaAware.GetKafkaProperties().ExternalURI) == 0 || len(kafkaAware.GetKafkaProperties().Instance) == 0) {
+			kafkaAware.GetKafkaProperties().UseKogitoInfra = true
+		}
+	}
 }
 
 // WaitForService waits that the service has a certain number of replicas

@@ -15,12 +15,11 @@
 package steps
 
 import (
-	"fmt"
-
 	infinispan "github.com/infinispan/infinispan-operator/pkg/apis/infinispan/v1"
 
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
 )
 
 /*
@@ -30,10 +29,6 @@ import (
 */
 
 const (
-	// DataTable first column
-	infinispanUsernameKey = "username"
-	infinispanPasswordKey = "password"
-
 	externalInfinispanSecret       = "external-infinispan-secret"
 	kogitoExternalInfinispanSecret = "kogito-external-infinispan-secret"
 	usernameSecretKey              = "user"
@@ -87,7 +82,7 @@ func createInfinispanSecret(namespace, secretName string, table *godog.Table) er
 	credentials := make(map[string]string)
 	credentials["operator"] = "supersecretoperatorpassword" // Credentials required by Infinispan operator
 
-	if username, password, err := getInfinispanCredentialsFromTable(table); err != nil {
+	if username, password, err := mappers.MapInfinispanCredentialsFromTable(table); err != nil {
 		return err
 	} else if len(username) > 0 {
 		// User defined credentials
@@ -95,31 +90,4 @@ func createInfinispanSecret(namespace, secretName string, table *godog.Table) er
 	}
 
 	return framework.CreateInfinispanSecret(namespace, secretName, credentials)
-}
-
-// Table parsing
-
-func getInfinispanCredentialsFromTable(table *godog.Table) (username, password string, err error) {
-
-	if len(table.Rows) == 0 { // Using default configuration
-		return
-	}
-
-	if len(table.Rows[0].Cells) != 2 {
-		return "", "", fmt.Errorf("expected table to have exactly two columns")
-	}
-
-	for _, row := range table.Rows {
-		firstColumn := getFirstColumn(row)
-		switch firstColumn {
-		case infinispanUsernameKey:
-			username = getSecondColumn(row)
-		case infinispanPasswordKey:
-			password = getSecondColumn(row)
-
-		default:
-			return "", "", fmt.Errorf("Unrecognized configuration option: %s", firstColumn)
-		}
-	}
-	return
 }

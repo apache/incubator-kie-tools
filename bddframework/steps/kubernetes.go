@@ -17,7 +17,15 @@ package steps
 import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
+	v1 "k8s.io/api/core/v1"
 )
+
+/*
+	DataTable for Deployment runtime resources:
+	| runtime-request  | cpu/memory     | value  |
+	| runtime-limit    | cpu/memory     | value  |
+*/
 
 func registerKubernetesSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^Namespace is created$`, data.namespaceIsCreated)
@@ -25,6 +33,8 @@ func registerKubernetesSteps(ctx *godog.ScenarioContext, data *Data) {
 
 	ctx.Step(`^CLI create namespace$`, data.cliCreateNamespace)
 	ctx.Step(`^CLI use namespace$`, data.cliUseNamespace)
+
+	ctx.Step(`^Deployment "([^"]*)" has (\d+) pods with runtime resources within (\d+) minutes:$`, data.deploymentHasResourcesWithinMinutes)
 }
 
 func (data *Data) namespaceIsCreated() error {
@@ -60,4 +70,19 @@ func (data *Data) cliCreateNamespace() error {
 func (data *Data) cliUseNamespace() error {
 	_, err := framework.ExecuteCliCommand(data.Namespace, "use-project", data.Namespace)
 	return err
+}
+
+func (data *Data) deploymentHasResourcesWithinMinutes(dName string, podNb, timeoutInMin int, table *godog.Table) error {
+	if err := framework.WaitForDeploymentRunning(data.Namespace, dName, podNb, timeoutInMin); err != nil {
+		return err
+	}
+
+	runtime := &v1.ResourceRequirements{Limits: v1.ResourceList{}, Requests: v1.ResourceList{}}
+	err := mappers.MapRuntimeResourceRequirementsTable(table, runtime)
+
+	if err != nil {
+		return err
+	}
+
+	return framework.WaitForPodsByDeploymentToHaveResources(data.Namespace, dName, *runtime, timeoutInMin)
 }
