@@ -26,7 +26,6 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
-import org.kie.workbench.common.forms.adf.definitions.annotations.SkipFormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
@@ -67,12 +66,12 @@ public class AdHocSubprocessTaskExecutionSet
     private AdHocOrdering adHocOrdering;
 
     @Property
-    @SkipFormField
+    @FormField(afterElement = "adHocOrdering")
     @Valid
     private AdHocAutostart adHocAutostart;
 
     @Property
-    @FormField(afterElement = "adHocOrdering",
+    @FormField(afterElement = "adHocAutostart",
             settings = {@FieldParam(name = "mode", value = "ACTION_SCRIPT")}
     )
     @Valid
