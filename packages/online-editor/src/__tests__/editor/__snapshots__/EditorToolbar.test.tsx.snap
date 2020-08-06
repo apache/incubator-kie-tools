@@ -6,13 +6,14 @@ exports[`EditorToolbar is dirty indicator should show the isDirty indicator when
   data-testid="toolbar-title"
 >
   <h3
+    aria-label="File name"
     class="pf-c-title pf-m-2xl"
   >
     new-file
   </h3>
   <input
     aria-invalid="false"
-    aria-label="File name"
+    aria-label="Edit file name"
     class="pf-c-form-control kogito--editor__toolbar-title"
     type="text"
     value="new-file"
@@ -26,13 +27,14 @@ exports[`EditorToolbar is dirty indicator shouldn't show the isDirty indicator w
   data-testid="toolbar-title"
 >
   <h3
+    aria-label="File name"
     class="pf-c-title pf-m-2xl"
   >
     new-file
   </h3>
   <input
     aria-invalid="false"
-    aria-label="File name"
+    aria-label="Edit file name"
     class="pf-c-form-control kogito--editor__toolbar-title"
     type="text"
     value="new-file"
