@@ -93,6 +93,11 @@ export class EnvelopeBusMessageManager<
     }
 
     values.splice(index, 1);
+    this.send({
+      type: method,
+      purpose: EnvelopeBusMessagePurpose.UNSUBSCRIPTION,
+      data: []
+    })
   }
 
   private request<M extends RequestPropertyNames<ApiToConsume>>(method: M, ...args: ArgsType<ApiToConsume[M]>) {
@@ -204,7 +209,7 @@ export class EnvelopeBusMessageManager<
       // We can only receive notifications from subscriptions of the API we consume.
       const localSubscriptionMethod = message.type as NotificationPropertyNames<ApiToConsume>;
       (this.localSubscriptions.get(localSubscriptionMethod) ?? []).forEach(callback => {
-        callback(message.data);
+        callback(...(message.data as any[]));
       });
 
       return;
