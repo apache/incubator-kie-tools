@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.s2i.core
-version: '0.13.0-rc1'
+version: '1.0.0-snapshot'
 description: Kogito s2i core module. All s2i files shoul be placed here.
 
 labels:

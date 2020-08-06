@@ -123,5 +123,5 @@ Feature: kogito-springboot-ubi8-s2i image tests
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly when runtime is springboot
     Given s2i build /tmp/kogito-examples from dmn-example using master and runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest
       | variable | value |
-      | KOGITO_VERSION      | 8.0.0-SNAPSHOT |
+      | KOGITO_VERSION | 1.0.0-SNAPSHOT | 
     Then file /home/kogito/bin/project-1.0-SNAPSHOT.jar should exist

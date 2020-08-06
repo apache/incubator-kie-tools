@@ -250,7 +250,7 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     Given s2i build /tmp/kogito-examples from dmn-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable | value |
       | NATIVE         | false          |
-      | KOGITO_VERSION | 8.0.0-SNAPSHOT |
+      | KOGITO_VERSION | 1.0.0-SNAPSHOT | 
     Then file /home/kogito/bin/project-1.0-SNAPSHOT-runner.jar should exist
     And check that page is served
       | property        | value                                                                                            |
@@ -267,7 +267,7 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | variable | value |
       | NATIVE         | true           |
       | LIMIT_MEMORY   | 6442450944     |
-      | KOGITO_VERSION | 8.0.0-SNAPSHOT |
+      | KOGITO_VERSION | 1.0.0-SNAPSHOT | 
     Then file /home/kogito/bin/project-1.0-SNAPSHOT-runner should exist
     And check that page is served
       | property        | value                                                                                            |
@@ -283,7 +283,7 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     Given s2i build /tmp/kogito-examples from dmn-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable | value |
       | NATIVE              | false          |
-      | KOGITO_VERSION      | 8.0.0-SNAPSHOT |
+      | KOGITO_VERSION      | 1.0.0-SNAPSHOT | 
       | PROJECT_GROUP_ID    | com.mycompany  |
       | PROJECT_ARTIFACT_ID | myproject      |
       | PROJECT_VERSION     | 2.0-SNAPSHOT   |
