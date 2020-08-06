@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "jsonata": "^1.8.3",
-    "xml-js": "^1.6.11"
+    "xml-js": "^1.6.11",
+    "@kogito-tooling/microeditor-envelope-protocol": "0.6.1"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

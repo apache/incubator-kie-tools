@@ -14,9 +14,27 @@
  * limitations under the License.
  */
 
+import { PMMLModelData } from "@kogito-tooling/microeditor-envelope-protocol";
+import { XML2PMML } from "../marshaller";
+import { Scorecard } from "../marshaller/model/pmml4_4";
+
 export class PMMLEditorMarshallerService {
 
-    public getPMMLModelData(xmlContent: string) {
-        return [];
+    public getPMMLModelData(xmlContent: string) : PMMLModelData[] {
+            const pmml = XML2PMML(xmlContent);
+            const dataset: PMMLModelData[] = [];
+
+            if (pmml.models) {
+                pmml.models.forEach(model => {
+                    if (model instanceof Scorecard) {
+                        const modelName = model.modelName!;
+                        const fields = model.MiningSchema.MiningField.map(field => field.name.value!);
+                        dataset.push(new PMMLModelData(modelName, fields));
+                        return;
+                    }
+                });
+                return dataset;
+            }
+            return dataset;
     }
 }
