@@ -141,13 +141,13 @@ export function EditorToolbar(props: Props) {
   const filenameInput = (
     <>
       <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
-        <Title headingLevel={"h3"} size={"2xl"}>
+        <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
           {name}
         </Title>
         <TextInput
           value={name}
           type={"text"}
-          aria-label={"File name"}
+          aria-label={"Edit file name"}
           className={"kogito--editor__toolbar-title"}
           onChange={setName}
           onKeyUp={onNameInputKeyUp}
