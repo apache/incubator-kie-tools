@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import javax.xml.XMLConstants;
 
@@ -69,12 +68,12 @@ public final class ImportConverter {
         final LocationURI locationURI = new LocationURI(dmn.getLocationURI());
         if (Objects.equals(DMNImportTypes.DMN, determineImportType(dmn.getImportType()))) {
             final ImportDMN result = new ImportDMN(dmn.getNamespace(), locationURI, dmn.getImportType());
-            result.setDrgElementsCount(countDefinitionElement(definitions, () -> d -> d.getDrgElement().size()));
-            result.setItemDefinitionsCount(countDefinitionElement(definitions, () -> d -> d.getItemDefinition().size()));
+            result.setDrgElementsCount(countDefinitionElement(definitions, d -> d.getDrgElement().size()));
+            result.setItemDefinitionsCount(countDefinitionElement(definitions, d -> d.getItemDefinition().size()));
             return result;
         } else if (Objects.equals(DMNImportTypes.PMML, determineImportType(dmn.getImportType()))) {
             final ImportPMML result = new ImportPMML(dmn.getNamespace(), locationURI, dmn.getImportType());
-            result.setModelCount(pmmlDocument.getModels().size());
+            result.setModelCount(countDefinitionElement(pmmlDocument, document -> document.getModels().size()));
             return result;
         } else {
             return new Import(dmn.getNamespace(), locationURI, dmn.getImportType());
@@ -115,12 +114,12 @@ public final class ImportConverter {
         return result;
     }
 
-    private static Integer countDefinitionElement(final JSITDefinitions definitions,
-                                                  final Supplier<Function<JSITDefinitions, Integer>> supplier) {
+    private static <T> Integer countDefinitionElement(final T definition,
+                                                      final Function<T, Integer> countFunction) {
         final Integer none = 0;
         return Optional
-                .ofNullable(definitions)
-                .map(supplier.get())
+                .ofNullable(definition)
+                .map(countFunction)
                 .orElse(none);
     }
 }

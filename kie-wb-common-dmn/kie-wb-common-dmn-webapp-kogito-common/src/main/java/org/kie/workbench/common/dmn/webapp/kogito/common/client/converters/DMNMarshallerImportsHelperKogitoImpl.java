@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.converters;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,16 +36,17 @@ import javax.xml.namespace.QName;
 import elemental2.promise.Promise;
 import jsinterop.base.Js;
 import org.appformer.kogito.bridge.client.resource.interop.ResourceListOptions;
-import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.model.ImportedItemDefinitionPropertyConverter;
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.services.DMNClientDiagramServiceImpl;
+import org.kie.workbench.common.dmn.webapp.kogito.common.client.services.PMMLMarshallerService;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDMNElement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDRGElement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDecision;
@@ -62,10 +61,8 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.util.FileUtils;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.promise.Promises;
 
 import static org.kie.workbench.common.dmn.api.editors.types.BuiltInTypeUtils.isBuiltInType;
@@ -79,21 +76,26 @@ public class DMNMarshallerImportsHelperKogitoImpl implements DMNMarshallerImport
     private final Promises promises;
     private final DMNDiagramUtils diagramUtils;
     private final DMNIncludedNodeFactory includedModelFactory;
+    private final PMMLMarshallerService pmmlMarshallerService;
 
     private static final Logger LOGGER = Logger.getLogger(DMNMarshallerImportsHelperKogitoImpl.class.getName());
     private static final String DMN_FILES_PATTERN = "*.dmn";
+    static final String PMML_FILES_PATTERN = "*.pmml";
+    static final String MODEL_FILES_PATTERN = "*.{dmn,pmml}";
 
     @Inject
     public DMNMarshallerImportsHelperKogitoImpl(final KogitoResourceContentService contentService,
                                                 final DMNClientDiagramServiceImpl diagramService,
                                                 final Promises promises,
                                                 final DMNDiagramUtils diagramUtils,
-                                                final DMNIncludedNodeFactory includedModelFactory) {
+                                                final DMNIncludedNodeFactory includedModelFactory,
+                                                final PMMLMarshallerService pmmlMarshallerService) {
         this.contentService = contentService;
         this.diagramService = diagramService;
         this.promises = promises;
         this.diagramUtils = diagramUtils;
         this.includedModelFactory = includedModelFactory;
+        this.pmmlMarshallerService = pmmlMarshallerService;
     }
 
     @Override
@@ -132,7 +134,7 @@ public class DMNMarshallerImportsHelperKogitoImpl implements DMNMarshallerImport
     @Override
     public void loadNodesFromModels(final List<DMNIncludedModel> includedModels,
                                     final ServiceCallback<List<DMNIncludedNode>> callback) {
-        final List<DMNIncludedNode> result = new Vector<>();
+        final List<DMNIncludedNode> result = new ArrayList<>();
         if (includedModels.isEmpty()) {
             callback.onSuccess(result);
         } else {
@@ -159,7 +161,7 @@ public class DMNMarshallerImportsHelperKogitoImpl implements DMNMarshallerImport
         }
         final String path = filePath;
         return contentService.loadFile(path)
-                .then(content -> promises.create((success, fail) -> {
+                .then(content -> promises.create((success, fail) ->
                     diagramService.transform(content, new ServiceCallback<Diagram>() {
                         @Override
                         public void onSuccess(final Diagram item) {
@@ -177,44 +179,72 @@ public class DMNMarshallerImportsHelperKogitoImpl implements DMNMarshallerImport
                             LOGGER.log(Level.SEVERE, error.getMessage());
                             fail.onInvoke(error);
                         }
-                    });
-                }));
+                    })
+                ));
     }
 
     @Override
     public void loadModels(final ServiceCallback<List<IncludedModel>> callback) {
-        final List<IncludedModel> models = new Vector<>();
-        contentService.getFilteredItems(DMN_FILES_PATTERN, ResourceListOptions.assetFolder())
-                .then(items -> promises.all(Arrays.asList(items), file -> contentService.loadFile(file).then(fileContent -> {
-                    diagramService.transform(fileContent, new ServiceCallback<Diagram>() {
-                        @Override
-                        public void onSuccess(final Diagram item) {
-                            final String modelPackage = "";
-                            final Diagram<Graph, Metadata> diagram = (Diagram<Graph, Metadata>) item;
-                            final String namespace = diagramUtils.getNamespace(diagram);
-                            final String importType = DMNImportTypes.DMN.getDefaultNamespace();
-                            final int drgElementCount = diagramUtils.getDRGElements(diagram).size();
-                            final int itemDefinitionCount = diagramUtils.getDefinitions(diagram).getItemDefinition().size();
-                            final String filename = FileUtils.getFileName(file);
-                            models.add(new DMNIncludedModel(filename,
-                                                            modelPackage,
-                                                            filename,
-                                                            namespace,
-                                                            importType,
-                                                            drgElementCount,
-                                                            itemDefinitionCount));
-                        }
+        final List<IncludedModel> models = new ArrayList<>();
+        contentService.getFilteredItems(MODEL_FILES_PATTERN, ResourceListOptions.assetFolder())
+            .then(items -> promises.all(Arrays.asList(items), file -> {
+                final String fileName = FileUtils.getFileName(file);
+                if (fileName.endsWith("." + DMNImportTypes.DMN.getFileExtension())) {
+                    return contentService.loadFile(file)
+                            .then(fileContent -> promises.create((success, failed) ->
+                                diagramService.transform(fileContent, getDMNDiagramCallback(fileName, models, success, failed))));
+                }
+                if (fileName.endsWith("." + DMNImportTypes.PMML.getFileExtension())) {
+                    return contentService.loadFile(file)
+                        .then(fileContent -> pmmlMarshallerService.getDocumentMetadata(file, fileContent))
+                        .then(pmmlDocumentMetadata -> {
+                            int modelCount = pmmlDocumentMetadata.getModels() != null ? pmmlDocumentMetadata.getModels().size() : 0;
+                            models.add(new PMMLIncludedModel(fileName,
+                                                            "",
+                                                             fileName,
+                                                             DMNImportTypes.PMML.getDefaultNamespace(),
+                                                             modelCount));
+                            return promises.resolve();
+                        });
+                }
+                return promises.reject("Error: " + fileName + " is an invalid file. Only " + DMN_FILES_PATTERN +
+                                               " and " + PMML_FILES_PATTERN + " are supported");
+            }).then(v -> {
+                callback.onSuccess(models);
+                return promises.resolve();
+            }));
+    }
 
-                        @Override
-                        public void onError(final ClientRuntimeError error) {
-                            LOGGER.log(Level.SEVERE, error.getMessage());
-                        }
-                    });
-                    return promises.resolve();
-                })).then(v -> {
-                    callback.onSuccess(models);
-                    return promises.resolve();
-                }));
+    private ServiceCallback<Diagram> getDMNDiagramCallback(final String fileName,
+                                                           final List<IncludedModel> models,
+                                                           final Promise.PromiseExecutorCallbackFn.ResolveCallbackFn<Object> success,
+                                                           final Promise.PromiseExecutorCallbackFn.RejectCallbackFn failed) {
+        return new ServiceCallback<Diagram>() {
+
+            @Override
+            public void onSuccess(final Diagram diagram) {
+                final String modelPackage = "";
+                final String namespace = diagramUtils.getNamespace(diagram);
+                final String importType = DMNImportTypes.DMN.getDefaultNamespace();
+                final int drgElementCount = diagramUtils.getDRGElements(diagram).size();
+                final int itemDefinitionCount = diagramUtils.getDefinitions(diagram) != null ?
+                        diagramUtils.getDefinitions(diagram).getItemDefinition().size() : 0;
+                models.add(new DMNIncludedModel(fileName,
+                                                modelPackage,
+                                                fileName,
+                                                namespace,
+                                                importType,
+                                                drgElementCount,
+                                                itemDefinitionCount));
+                success.onInvoke(promises.resolve());
+            }
+
+            @Override
+            public void onError(final ClientRuntimeError error) {
+                LOGGER.log(Level.SEVERE, error.getMessage());
+                failed.onInvoke(promises.reject(error.getMessage()));
+            }
+        };
     }
 
     Promise<Void> loadDefinitionFromFile(final String file,
@@ -259,16 +289,59 @@ public class DMNMarshallerImportsHelperKogitoImpl implements DMNMarshallerImport
         return Optional.empty();
     }
 
-    @Override
-    public Map<JSITImport, JSITDefinitions> getImportDefinitions(final Metadata metadata,
-                                                                 final List<JSITImport> jsitImports) {
-        throw new UnsupportedOperationException("This implementation does not support sync calls. Please, use getImportDefinitionsAsync.");
+    private Optional<JSITImport> findImportByPMMLDocument(final String includedPMMLModelFile,
+                                                          final List<JSITImport> imports) {
+        for (int i = 0; i < imports.size(); i++) {
+            final JSITImport anImport = Js.uncheckedCast(imports.get(i));
+            if (Objects.equals(anImport.getLocationURI(), includedPMMLModelFile)) {
+                return Optional.of(anImport);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
-    public Map<JSITImport, PMMLDocumentMetadata> getPMMLDocuments(final Metadata metadata,
-                                                                  final List<JSITImport> imports) {
-        return Collections.emptyMap();
+    public Promise<Map<JSITImport, PMMLDocumentMetadata>> getPMMLDocumentsAsync(final Metadata metadata,
+                                                                                final List<JSITImport> imports) {
+        if (!imports.isEmpty()) {
+            return loadPMMLDefinitions().then(otherDefinitions -> {
+                final Map<JSITImport, PMMLDocumentMetadata> importDefinitions = new HashMap<>();
+
+                for (final Map.Entry<String, PMMLDocumentMetadata> entry : otherDefinitions.entrySet()) {
+                    final PMMLDocumentMetadata def = entry.getValue();
+                    findImportByPMMLDocument(def.getName(), imports).ifPresent(anImport -> {
+                        final JSITImport foundImported = Js.uncheckedCast(anImport);
+                        importDefinitions.put(foundImported, def);
+                    });
+                }
+
+                return promises.resolve(importDefinitions);
+            });
+        }
+        return promises.resolve(Collections.emptyMap());
+    }
+
+    private Promise<Map<String, PMMLDocumentMetadata>> loadPMMLDefinitions() {
+        return contentService.getFilteredItems(PMML_FILES_PATTERN, ResourceListOptions.assetFolder()).
+                then(files -> {
+                    if (files.length == 0) {
+                        return promises.resolve(Collections.emptyMap());
+                    } else {
+                        final Map<String, PMMLDocumentMetadata> definitions = new HashMap<>();
+                        return promises.all(Arrays.asList(files), file -> loadPMMLDefinitionFromFile(file, definitions)
+                                .then(v -> promises.resolve(definitions)));
+                    }
+                });
+    }
+
+    private Promise<Void> loadPMMLDefinitionFromFile(final String file,
+                                                     final Map<String, PMMLDocumentMetadata> definitions) {
+        return contentService.loadFile(file)
+                .then(fileContent -> pmmlMarshallerService.getDocumentMetadata(file, fileContent))
+                .then(pmmlDocumentMetadata -> {
+                    definitions.put(file, pmmlDocumentMetadata);
+                    return promises.resolve();
+                });
     }
 
     @Override
@@ -408,24 +481,5 @@ public class DMNMarshallerImportsHelperKogitoImpl implements DMNMarshallerImport
             callback.onSuccess(result);
             return promises.resolve(result);
         });
-    }
-
-    @Override
-    public List<JSITItemDefinition> getImportedItemDefinitionsByNamespace(final WorkspaceProject workspaceProject,
-                                                                          final String modelName,
-                                                                          final String namespace) {
-        throw new UnsupportedOperationException("This implementation does not support sync calls. Please, use getImportedItemDefinitionsByNamespaceAsync.");
-    }
-
-    @Override
-    public Path getDMNModelPath(final Metadata metadata,
-                                final String modelNamespace,
-                                final String modelName) {
-        throw new UnsupportedOperationException("Imports are not supported in the kogito-based editors.");
-    }
-
-    @Override
-    public Optional<InputStream> loadPath(final Path path) {
-        return Optional.empty();
     }
 }

@@ -199,10 +199,10 @@ public class DMNMarshallerKogitoUnmarshaller {
 
         // Get external DMN model information
         final Promise<Map<JSITImport, JSITDefinitions>> importAsync = dmnMarshallerImportsHelper.getImportDefinitionsAsync(metadata, jsiDefinitions.getImport());
-        return importAsync.then(importDefinitions -> {
+        // Get external PMML model information
+        final Promise<Map<JSITImport, PMMLDocumentMetadata>> pmmlDocumentsAsync = dmnMarshallerImportsHelper.getPMMLDocumentsAsync(metadata, jsiDefinitions.getImport());
 
-            // Get external PMML model information
-            final Map<JSITImport, PMMLDocumentMetadata> pmmlDocuments = dmnMarshallerImportsHelper.getPMMLDocuments(metadata, jsiDefinitions.getImport());
+        return importAsync.then(importDefinitions -> pmmlDocumentsAsync.then(pmmlDocuments -> {
 
             // Map external DRGElements
             final List<JSIDMNShape> dmnShapes = new ArrayList<>();
@@ -485,7 +485,7 @@ public class DMNMarshallerKogitoUnmarshaller {
             });
 
             return promises.resolve(graph);
-        });
+        }));
     }
 
     private Optional<JSIDMNDiagram> findJSIDiagram(final JSITDefinitions dmnXml) {
