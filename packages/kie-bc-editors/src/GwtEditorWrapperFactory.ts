@@ -23,6 +23,7 @@ import { GwtStateControlService } from "./gwtStateControl";
 import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
 import {
   EditorInitArgs,
+  PMMLModelData,
   ResourceContentOptions,
   ResourceListOptions,
   Tutorial,
@@ -34,9 +35,7 @@ import { KeyboardShortcutsApi } from "./api/KeyboardShorcutsApi";
 import { WorkspaceServiceApi } from "./api/WorkspaceServiceApi";
 import { StateControlApi } from "./api/StateControlApi";
 import { EditorContextApi } from "./api/EditorContextApi";
-import { PMMLMarshallerApi } from "./api/PMMLMarshallerApi";
-import { PMML } from "@kogito-tooling/pmml-editor-marshaller/dist/marshaller/model/pmml4_4";
-import { PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { PMMLEditorMarshallerApi } from "./api/PMMLEditorMarshallerApi";
 import { GwtEditorMapping } from "./GwtEditorMapping";
 
 declare global {
@@ -50,7 +49,7 @@ declare global {
       resourceContentEditorService?: ResourceContentApi;
       keyboardShortcuts: KeyboardShortcutsApi;
       workspaceService: WorkspaceServiceApi;
-      pmmlMarshallerService: PMMLMarshallerApi;
+      pmmlEditorMarshallerService: PMMLEditorMarshallerApi;
     };
   }
 }
@@ -137,12 +136,9 @@ export class GwtEditorWrapperFactory implements EditorFactory {
           envelopeContext.channelApi.notify("receive_openFile", path);
         }
       },
-      pmmlMarshallerService: {
-        marshall(xmlContent: string) {
-          return XML2PMML(xmlContent);
-        },
-        unmarshall(pmml: PMML) {
-          return PMML2XML(pmml);
+      pmmlEditorMarshallerService: {
+        getPMMLModelData(xmlContent: string): PMMLModelData[] {
+          return [];
         }
       }
     };

@@ -31,4 +31,5 @@ export * from "./ResourceContent";
 export * from "./ContentType";
 export * from "./ChannelKeyboardEvent";
 export * from "./EditorEnvelopeLocator";
+export * from "./PMMLModelData"
 export * from "./guidedTour";
