@@ -16,7 +16,7 @@
 
 import {
   EditorContext,
-  EnvelopeBus,
+  EnvelopeBus, I18nService,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi
 } from "@kogito-tooling/microeditor-envelope-protocol";
@@ -45,6 +45,7 @@ export class KogitoEditorEnvelope {
     private readonly keyboardShortcutsService = new DefaultKeyboardShortcutsService({
       editorContext: args.editorContext
     }),
+    private readonly i18nService = new I18nService(),
     private readonly envelope: Envelope<
       KogitoEditorEnvelopeApi,
       KogitoEditorChannelApi,
@@ -56,7 +57,8 @@ export class KogitoEditorEnvelope {
       context: args.editorContext,
       services: {
         keyboardShortcuts: keyboardShortcutsService,
-        guidedTour: { isEnabled: () => KogitoGuidedTour.getInstance().isEnabled() }
+        guidedTour: { isEnabled: () => KogitoGuidedTour.getInstance().isEnabled() },
+        i18n: i18nService,
       }
     }
   ) {}

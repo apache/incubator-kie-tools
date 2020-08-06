@@ -15,167 +15,144 @@
  */
 
 import * as React from "react";
-import { act } from "react-dom/test-utils";
-import { render, renderedComponent, setupContainer, teardownContainer, triggerClick, useContextMock } from "../utils";
-
+import { render, fireEvent } from "@testing-library/react";
+import { usingCurrentTutorialContext, usingTestingGuidedTourI18nContext } from "../test_context";
 import { Dialog } from "../../components";
 import { KogitoGuidedTour } from "../..";
-import { AutoMode, DEFAULT_RECT, DemoMode, Rect, Tutorial } from "@kogito-tooling/microeditor-envelope-protocol";
+import { AutoMode, DemoMode, Tutorial } from "@kogito-tooling/microeditor-envelope-protocol";
 
 jest.useFakeTimers();
 
 const tutorialLabel = "default tutorial";
-const ctx = {
-  currentStep: 0,
-  completedStep: 0,
-  currentTutorial: new Tutorial(tutorialLabel, []),
-  isHighlightLayerEnabled: false,
-  isNegativeReinforcementStateEnabled: false,
-  currentRefElementPosition: DEFAULT_RECT,
-  setCompletedStep: (index: number) => (ctx.completedStep = index),
-  setCurrentStep: (index: number) => (ctx.currentStep = index),
-  setCurrentTutorial: (tutorial: Tutorial) => (ctx.currentTutorial = tutorial),
-  setCurrentRefElementPosition: (rect: Rect) => (ctx.currentRefElementPosition = rect),
-  setIsHighlightLayerEnabled: (isEnabled: boolean) => (ctx.isHighlightLayerEnabled = isEnabled),
-  setIsNegativeReinforcementStateEnabled: (isEnabled: boolean) => (ctx.isNegativeReinforcementStateEnabled = isEnabled)
-};
-
 function registeredTutorial(tutorial: Tutorial) {
   KogitoGuidedTour.getInstance().registerTutorial(tutorial);
   return tutorial;
 }
 
-describe("Dialog", () => {
-  beforeEach(setupContainer);
-  afterEach(teardownContainer);
+beforeAll(() => {
+  jest.resetAllMocks();
+});
 
+describe("Dialog", () => {
   describe("when the step loads", () => {
     it("renders react-based content", () => {
-      act(() => {
-        useContextMock({
-          ...ctx,
-          currentTutorial: registeredTutorial({
-            label: tutorialLabel,
-            steps: [
-              {
-                mode: new DemoMode(),
-                content: <div>Something as JSX</div>
-              }
-            ]
-          })
-        });
-
-        render(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />);
-      });
-      expect(renderedComponent()).toMatchSnapshot();
+      const { container } = render(
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            currentTutorial: registeredTutorial({
+              label: tutorialLabel,
+              steps: [
+                {
+                  mode: new DemoMode(),
+                  content: <div>Something as JSX</div>
+                }
+              ]
+            })
+          }).wrapper
+        ).wrapper
+      );
+      expect(container).toMatchSnapshot();
     });
 
     it("renders function-based content", () => {
-      act(() => {
-        useContextMock({
-          ...ctx,
-          currentTutorial: registeredTutorial({
-            label: tutorialLabel,
-            steps: [
-              {
-                mode: new DemoMode(),
-                content: () => <div>Something as JSX-function</div>
-              }
-            ]
-          })
-        });
-
-        render(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />);
-      });
-      expect(renderedComponent()).toMatchSnapshot();
+      const { container } = render(
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            currentTutorial: registeredTutorial({
+              label: tutorialLabel,
+              steps: [
+                {
+                  mode: new DemoMode(),
+                  content: () => <div>Something as JSX-function</div>
+                }
+              ]
+            })
+          }).wrapper
+        ).wrapper
+      );
+      expect(container).toMatchSnapshot();
     });
 
     it("renders string-based content", () => {
-      act(() => {
-        useContextMock({
-          ...ctx,
-          currentTutorial: registeredTutorial({
-            label: tutorialLabel,
-            steps: [
-              {
-                mode: new DemoMode(),
-                content: "<div>Something as string</div>"
-              }
-            ]
-          })
-        });
-
-        render(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />);
-      });
-      expect(renderedComponent()).toMatchSnapshot();
+      const { container } = render(
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            currentTutorial: registeredTutorial({
+              label: tutorialLabel,
+              steps: [
+                {
+                  mode: new DemoMode(),
+                  content: "<div>Something as string</div>"
+                }
+              ]
+            })
+          }).wrapper
+        ).wrapper
+      );
+      expect(container).toMatchSnapshot();
     });
 
     it("renders a step on auto mode", () => {
-      act(() => {
-        useContextMock({
-          ...ctx,
-          currentTutorial: registeredTutorial({
-            label: tutorialLabel,
-            steps: [
-              {
-                mode: new AutoMode(1000),
-                content: "<div>Something as string</div>"
-              }
-            ]
-          })
-        });
-
-        render(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />);
-      });
-      expect(renderedComponent()).toMatchSnapshot();
+      const { container } = render(
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            currentTutorial: registeredTutorial({
+              label: tutorialLabel,
+              steps: [
+                {
+                  mode: new AutoMode(1000),
+                  content: "<div>Something as string</div>"
+                }
+              ]
+            })
+          }).wrapper
+        ).wrapper
+      );
+      expect(container).toMatchSnapshot();
       expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
     });
 
     it("closes when users click on the close button", () => {
-      act(() => {
-        useContextMock({
-          ...ctx,
-          currentTutorial: registeredTutorial({
-            label: tutorialLabel,
-            steps: [
-              {
-                mode: new DemoMode(),
-                content: <div>Something</div>
-              }
-            ]
-          })
-        });
+      const { container } = render(
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            currentTutorial: registeredTutorial({
+              label: tutorialLabel,
+              steps: [
+                {
+                  mode: new DemoMode(),
+                  content: <div>Something</div>
+                }
+              ]
+            })
+          }).wrapper
+        ).wrapper
+      );
 
-        render(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />);
-
-        triggerClick("[data-kgt-close]");
-      });
-      expect(renderedComponent()).toMatchSnapshot();
+      fireEvent.click(document.querySelector("[data-kgt-close]")!, { bubbles: true });
+      expect(container).toMatchSnapshot();
     });
   });
 
   describe("when the step cannot be loaded", () => {
-    const emptyStateCtx = {
-      ...ctx,
-      currentStep: 1,
-      currentTutorial: registeredTutorial({
-        label: tutorialLabel,
-        steps: []
-      })
-    };
-
     it("renders empty state", () => {
-      act(() => {
-        useContextMock(emptyStateCtx);
-        render(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />);
-      });
-      expect(renderedComponent()).toMatchSnapshot();
+      const { container } = render(
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            currentStep: 1,
+            currentTutorial: registeredTutorial({
+              label: tutorialLabel,
+              steps: []
+            })
+          }).wrapper
+        ).wrapper
+      );
+      expect(container).toMatchSnapshot();
     });
   });
 
   describe("when negative reinforcement appears", () => {
     const negativeReinforcementCtx = {
-      ...ctx,
       isNegativeReinforcementStateEnabled: true,
       currentTutorial: registeredTutorial({
         label: tutorialLabel,
@@ -189,28 +166,40 @@ describe("Dialog", () => {
     };
 
     it("renders negative reinforcement message", () => {
-      act(() => {
-        useContextMock({ ...negativeReinforcementCtx, isHighlightLayerEnabled: true });
-        render(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />);
-      });
-
-      expect(renderedComponent()).toMatchSnapshot();
+      const { container } = render(
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            ...negativeReinforcementCtx,
+            isHighlightLayerEnabled: true
+          }).wrapper
+        ).wrapper
+      );
+      expect(container).toMatchSnapshot();
     });
 
     it("renders negative reinforcement clue", () => {
-      act(() => {
-        useContextMock({ ...negativeReinforcementCtx, isHighlightLayerEnabled: false });
-        render(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />);
-      });
-      expect(renderedComponent()).toMatchSnapshot();
+      const { container } = render(
+        usingTestingGuidedTourI18nContext(
+          usingCurrentTutorialContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />, {
+            ...negativeReinforcementCtx,
+            isHighlightLayerEnabled: false
+          }).wrapper
+        ).wrapper
+      );
+      expect(container).toMatchSnapshot();
     });
 
     it("sets 'isHighlightLayerEnabled' as 'false' when users press the 'Continue' button", () => {
-      act(() => {
-        useContextMock({ ...negativeReinforcementCtx, isHighlightLayerEnabled: true });
-        render(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />);
-        triggerClick("[data-kgt-continue]");
-      });
+      const { ctx, wrapper } = usingCurrentTutorialContext(
+        usingTestingGuidedTourI18nContext(<Dialog isEnabled={true} tutorialLabel={tutorialLabel} />).wrapper,
+        {
+          ...negativeReinforcementCtx,
+          isHighlightLayerEnabled: true
+        }
+      );
+
+      render(wrapper);
+      fireEvent.click(document.querySelector("[data-kgt-continue]")!, { bubbles: true });
       expect(ctx.isHighlightLayerEnabled).toBeFalsy();
     });
   });

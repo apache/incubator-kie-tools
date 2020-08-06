@@ -33,6 +33,7 @@ import * as React from "react";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
+import { useOnlineI18n } from "../common/i18n";
 import { removeFileExtension } from "../common/utils";
 
 interface Props {
@@ -54,6 +55,7 @@ export function EditorToolbar(props: Props) {
   const [name, setName] = useState(removeFileExtension(context.file.fileName));
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
+  const { i18n } = useOnlineI18n();
 
   const logoProps = useMemo(() => {
     return { onClick: props.onClose };
@@ -91,7 +93,7 @@ export function EditorToolbar(props: Props) {
           onClick={props.onDownload}
           className={"pf-u-display-none-on-xl"}
         >
-          Save
+          {i18n.terms.save}
         </DropdownItem>,
         <DropdownItem
           key={`dropdown-${dropdownId}-fullscreen`}
@@ -99,7 +101,7 @@ export function EditorToolbar(props: Props) {
           onClick={props.onFullScreen}
           className={"pf-u-display-none-on-xl"}
         >
-          Full Screen
+          {i18n.terms.fullScreen}
         </DropdownItem>,
         <React.Fragment key={`dropdown-${dropdownId}-fragment`}>
           {context.external && !context.readonly && (
@@ -108,7 +110,7 @@ export function EditorToolbar(props: Props) {
               component={"button"}
               onClick={props.onSave}
             >
-              Send changes to GitHub
+              {i18n.editorToolbar.sendChangesToGitHub}
             </DropdownItem>
           )}
         </React.Fragment>,
@@ -117,13 +119,13 @@ export function EditorToolbar(props: Props) {
           component={"button"}
           onClick={props.onCopyContentToClipboard}
         >
-          Copy source
+          {i18n.editorToolbar.copySource}
         </DropdownItem>,
         <DropdownItem key={`dropdown-${dropdownId}-download-svg`} component="button" onClick={props.onPreview}>
-          Download SVG
+          {i18n.editorToolbar.downloadSVG}
         </DropdownItem>,
         <DropdownItem key={`dropdown-${dropdownId}-export-gist`} component="button" onClick={props.onExportGist}>
-          Gist it!
+          {i18n.editorToolbar.gistIt}
         </DropdownItem>
       ],
       [
@@ -154,7 +156,7 @@ export function EditorToolbar(props: Props) {
       </div>
       {props.isEdited && (
         <span aria-label={"File was edited"} className={"kogito--editor__toolbar-edited"} data-testid="is-dirty-indicator">
-          - Edited
+          {` - ${i18n.terms.edited}`}
         </span>
       )}
     </>
@@ -174,7 +176,7 @@ export function EditorToolbar(props: Props) {
           }}
         >
           <Button data-testid="save-button" variant={"tertiary"} onClick={props.onDownload} aria-label={"Save button"}>
-            Save
+            {i18n.terms.save}
           </Button>
         </PageHeaderToolsItem>
       </PageHeaderToolsGroup>
@@ -197,7 +199,7 @@ export function EditorToolbar(props: Props) {
                 className={"kogito--editor__toolbar-toggle-icon-button"}
                 onToggle={isOpen => setMenuOpen(isOpen)}
               >
-                File actions
+                {i18n.editorToolbar.fileActions}
               </DropdownToggle>
             }
             isOpen={isMenuOpen}

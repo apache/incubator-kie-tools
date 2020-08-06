@@ -52,6 +52,7 @@ import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
 import { OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 import IpcRendererEvent = Electron.IpcRendererEvent;
+import { useHubI18n } from "../common/i18n/locales";
 
 enum ExtensionStatus {
   UNKNOWN,
@@ -78,6 +79,7 @@ export function App() {
   //
   // ALERTS
   const [alerts, setAlerts] = useState(new Array<AlertProps & { time: number }>());
+  const { i18n } = useHubI18n();
 
   const removeAlert = useCallback(
     (time: number) => {
@@ -152,17 +154,17 @@ export function App() {
   const vscode_message = useMemo(() => {
     switch (vscode_status) {
       case ExtensionStatus.INSTALLED:
-        return "Installed";
+        return i18n.vscode.installed;
       case ExtensionStatus.UNINSTALLING:
-        return "Uninstalling..";
+        return `${i18n.vscode.uninstalling}..`;
       case ExtensionStatus.NOT_INSTALLED:
-        return "Available";
+        return i18n.terms.available;
       case ExtensionStatus.UNKNOWN:
-        return "Loading..";
+        return `${i18n.terms.loading}..`;
       default:
         return "";
     }
-  }, [vscode_status]);
+  }, [vscode_status, i18n]);
 
   useEffect(() => {
     electron.ipcRenderer.send("vscode__list_extensions", {});
@@ -230,17 +232,17 @@ export function App() {
           width: "90%",
           title: (
             <>
-              <p>Error while launching Business Modeler Preview Desktop. This is a known issue on macOS.</p>
+              <p>{i18n.alert.launching.title}</p>
               <br />
-              <p>Try again after executing the command below on a Terminal window.</p>
-              <p>You have to be at the same directory as 'Business Modeler Hub Preview.app'.</p>
+              <p>{i18n.alert.launching.try}</p>
+              <p>{i18n.alert.launching.directory}</p>
               <ClipboardCopy isReadOnly={true}>{`chmod -R u+x "Business Modeler Hub Preview.app" `}</ClipboardCopy>
             </>
           )
         });
       }
     },
-    []
+    [i18n]
   );
 
   return (
@@ -275,7 +277,7 @@ export function App() {
                 isPlain={true}
                 dropdownItems={[
                   <DropdownItem key="update" component="button" isDisabled={true}>
-                    No updates available
+                    {i18n.noUpdates}
                   </DropdownItem>,
                   <DropdownItem
                     key="uninstall"
@@ -283,27 +285,29 @@ export function App() {
                     onClick={vscode_requestUninstall}
                     isDisabled={vscode_status !== ExtensionStatus.INSTALLED}
                   >
-                    Uninstall
+                    {i18n.terms.uninstall}
                   </DropdownItem>
                 ]}
               />
             </CardHeader>
             <CardBody>
-              <Title headingLevel={"h1"} size={"xl"}>Kogito Bundle VS Code extension</Title>
+              <Title headingLevel={"h1"} size={"xl"}>
+                {i18n.vscode.title}
+              </Title>
               <br />
               <TextContent>
-                <Text>Launches VS Code ready to use with Kogito BPMN, DMN and Test Scenario Editors</Text>
+                <Text>{i18n.vscode.description}</Text>
               </TextContent>
             </CardBody>
             <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
               {vscode_status === ExtensionStatus.NOT_INSTALLED && (
                 <Button variant={"secondary"} onClick={vscode_install}>
-                  Install
+                  {i18n.terms.install}
                 </Button>
               )}
               {vscode_status === ExtensionStatus.INSTALLED && (
                 <Button variant={"secondary"} onClick={vscode_launch}>
-                  Launch
+                  {i18n.terms.launch}
                 </Button>
               )}
               <Text style={{ display: "flex", alignItems: "center" }}>{vscode_message}</Text>
@@ -315,61 +319,58 @@ export function App() {
               <img style={{ height: "52px" }} src={"images/chrome-github-logo.svg"} />
             </CardHeader>
             <CardBody>
-              <Title headingLevel={"h1"} size={"xl"}>BPMN, DMN & Test Scenario Editors for GitHub</Title>
+              <Title headingLevel={"h1"} size={"xl"}>
+                {i18n.chromeExtension.title}
+              </Title>
               <br />
               <TextContent>
-                <Text>Install the BPMN, DMN & Test Scenario Editors for GitHub on Chrome browser</Text>
+                <Text>{i18n.chromeExtension.description}</Text>
               </TextContent>
             </CardBody>
             <CardFooter style={{ display: "flex", justifyContent: "space-between" }}>
               <Button variant={"secondary"} onClick={chrome_toggleModal}>
-                Install
+                {i18n.terms.install}
               </Button>
               <Text style={{ display: "flex", alignItems: "center" }} />
             </CardFooter>
           </Card>
           <Modal
             width={"70%"}
-            title="Install BPMN, DMN & Test Scenario Editor for GitHub"
+            title={i18n.chromeExtension.modal.title}
             isOpen={chrome_modalOpen}
             onClose={chrome_toggleModal}
             actions={[
               <Button key="cancel" variant="link" onClick={chrome_toggleModal}>
-                Done
+                {i18n.terms.done}
               </Button>
             ]}
           >
             <TextContent>
+              <Text component={TextVariants.p}>{i18n.chromeExtension.modal.chromeRequirement}</Text>
               <Text component={TextVariants.p}>
-                To be able to install and use the BPMN, DMN and Test Scenario Editor for GitHub it's necessary to have
-                the Chrome browser installed on your computer.
-              </Text>
-              <Text component={TextVariants.p}>
-                In case you don't have it, you can download it{" "}
+                {`${i18n.chromeExtension.modal.chromeDownload} `}
                 <Button variant={"link"} isInline={true} onClick={chrome_openDownloadGoogleChrome}>
-                  here
+                  {i18n.chromeExtension.modal.here}
                 </Button>
                 .
               </Text>
-              <Text component={TextVariants.p}>
-                If you already have the Chrome browser or have just downloaded it, follow this steps:
-              </Text>
+              <Text component={TextVariants.p}>{i18n.chromeExtension.modal.alreadyHaveChrome}:</Text>
               <TextList component={TextListVariants.ol}>
                 <TextListItem>
-                  Open the BPMN, DMN and Test Scenario Editor for GitHub on the{" "}
+                  {`${i18n.chromeExtension.modal.firstStep.firstPart} `}
                   <Button variant={"link"} isInline={true} onClick={chrome_openKogitoToolingReleasesPage}>
-                    Chrome Store
+                    {i18n.names.chromeStore}
                   </Button>{" "}
-                  using your Chrome browser
+                  {i18n.chromeExtension.modal.firstStep.secondPart}
                 </TextListItem>
-                <TextListItem>Click on "Add to Chrome".</TextListItem>
-                <TextListItem>Read the permissions and in case you agree, click on “Add Extension”</TextListItem>
+                <TextListItem>{i18n.chromeExtension.modal.secondStep}</TextListItem>
+                <TextListItem>{i18n.chromeExtension.modal.thirdStep}</TextListItem>
                 <TextListItem>
-                  Done! You can go to{" "}
+                  {`${i18n.chromeExtension.modal.done.firstPart} `}
                   <Button variant={"link"} isInline={true} onClick={chrome_openGitHub}>
-                    GitHub
+                    {i18n.names.github}
                   </Button>{" "}
-                  now and start using it.
+                  {`${i18n.chromeExtension.modal.done.secondPart} `}
                 </TextListItem>
               </TextList>
             </TextContent>
@@ -386,21 +387,23 @@ export function App() {
                 isPlain={true}
                 dropdownItems={[
                   <DropdownItem key="action" component="button" isDisabled={true}>
-                    No updates available
+                    {i18n.noUpdates}
                   </DropdownItem>
                 ]}
               />
             </CardHeader>
             <CardBody>
-              <Title headingLevel={"h1"} size={"xl"}>Business Modeler Desktop Preview</Title>
+              <Title headingLevel={"h1"} size={"xl"}>
+                {i18n.desktop.title}
+              </Title>
               <br />
               <TextContent>
-                <Text>Launches the desktop version of Business Modeler Preview</Text>
+                <Text>{i18n.desktop.description}</Text>
               </TextContent>
             </CardBody>
             <CardFooter>
               <Button variant={"secondary"} onClick={desktop_launch}>
-                Launch
+                {i18n.terms.launch}
               </Button>
             </CardFooter>
           </Card>
@@ -410,15 +413,17 @@ export function App() {
               <img style={{ height: "52px" }} src={"images/online-logo.svg"} />
             </CardHeader>
             <CardBody>
-              <Title headingLevel={"h1"} size={"xl"}>Business Modeler Preview</Title>
+              <Title headingLevel={"h1"} size={"xl"}>
+                {i18n.online.title}
+              </Title>
               <br />
               <TextContent>
-                <Text>Navigates to the Online Modeler Preview site</Text>
+                <Text>{i18n.online.description}</Text>
               </TextContent>
             </CardBody>
             <CardFooter>
               <Button variant={"secondary"} onClick={online_open}>
-                Launch
+                {i18n.terms.launch}
               </Button>
             </CardFooter>
           </Card>

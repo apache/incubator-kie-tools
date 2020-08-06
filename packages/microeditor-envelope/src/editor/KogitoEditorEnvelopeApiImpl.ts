@@ -31,7 +31,12 @@ import { EditorEnvelopeView } from "./EditorEnvelopeView";
 
 export class KogitoEditorEnvelopeApiFactory
   implements
-    EnvelopeApiFactory<KogitoEditorEnvelopeApi, KogitoEditorChannelApi, EditorEnvelopeView, KogitoEditorEnvelopeContextType> {
+    EnvelopeApiFactory<
+      KogitoEditorEnvelopeApi,
+      KogitoEditorChannelApi,
+      EditorEnvelopeView,
+      KogitoEditorEnvelopeContextType
+    > {
   constructor(private readonly editorFactory: EditorFactory) {}
 
   public create(
@@ -129,6 +134,10 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
   public receive_channelKeyboardEvent = (channelKeyboardEvent: ChannelKeyboardEvent) => {
     window.dispatchEvent(new CustomEvent(channelKeyboardEvent.type, { detail: channelKeyboardEvent }));
   };
+
+  public receive_localeChange(locale: string) {
+    return this.args.envelopeContext.services.i18n.executeOnLocaleChange(locale);
+  }
 
   private registerDefaultShortcuts() {
     this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(

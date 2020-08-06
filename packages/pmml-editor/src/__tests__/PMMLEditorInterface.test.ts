@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType, EditorContext, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
+import { ChannelType, EditorContext, I18nService, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor } from "../editor/PMMLEditor";
@@ -33,7 +33,8 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
-    keyboardShortcuts: new DefaultKeyboardShortcutsService({ editorContext: editorContext })
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({ editorContext: editorContext }),
+    i18n: new I18nService()
   }
 };
 

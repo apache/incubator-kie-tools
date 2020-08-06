@@ -20,6 +20,7 @@ import {
   EditorInitArgs,
   EnvelopeBus,
   EnvelopeBusMessage,
+  I18nService,
   OperatingSystem
 } from "@kogito-tooling/microeditor-envelope-protocol";
 import { CompositeEditorFactory } from "../CompositeEditorFactory";
@@ -46,7 +47,8 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
-    keyboardShortcuts: new DefaultKeyboardShortcutsService({ editorContext: editorContext })
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({ editorContext: editorContext }),
+    i18n: new I18nService()
   }
 };
 
@@ -107,7 +109,7 @@ describe("CompositeEditorFactory", () => {
   function makeEditorFactory(supported: boolean): EditorFactory {
     return {
       supports: () => supported,
-      createEditor: (_1: KogitoEditorEnvelopeContextType, _2: EditorInitArgs) => Promise.resolve(dummyEditor),
+      createEditor: (_1: KogitoEditorEnvelopeContextType, _2: EditorInitArgs) => Promise.resolve(dummyEditor)
     };
   }
 });
