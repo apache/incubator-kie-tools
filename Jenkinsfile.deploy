@@ -144,24 +144,21 @@ pipeline {
                 sh "make clone-repos"
             }
         }
-        stage('Build and Test Images'){
+        stage('Build Images') {
             steps{
                 script {
-                    build_stages = [:]
-                    IMAGES.each{ image -> build_stages[image] = {
-                            initWorkspace(image)
-                            dir(getWorkspacePath(image)){
-                                try{
-                                    sh "make ${image} ignore_test=${params.SKIP_TESTS} cekit_option='--work-dir .'"
-                                }
-                                finally{
-                                    junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
-                                }
-                            
-                            }
-                        }
-                    }
-                    parallel build_stages
+                    IMAGES.each{ image -> initWorkspace(image) }
+                    launchParallelForEachImage("Build", {img -> buildImage(img)})
+                }
+            }
+        }
+        stage('Test Images') {
+            when {
+                expression { return !params.SKIP_TESTS }
+            }
+            steps {
+                script {
+                    launchParallelForEachImage("Test", {img -> testImage(img)})
                 }
             }
         }
@@ -205,6 +202,30 @@ void clean() {
 void cleanImages(){
     sh "docker rm -f \$(docker ps -a -q) || date"
     sh "docker rmi -f \$(docker images -q) || date"
+}
+
+void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
+    parallelStages = [:]
+    IMAGES.each{ image -> 
+        parallelStages["${stageNamePrefix} ${image}"] = {
+            dir(getWorkspacePath(image)){
+                executeOnImage(image)
+            }
+        }
+    }
+    parallel parallelStages
+}
+
+void buildImage(image) {
+    sh "make ${image} ignore_test=true cekit_option='--work-dir .'"
+}
+
+void testImage(image) {
+    try {
+        sh "make ${image} ignore_build=true cekit_option='--work-dir .'"
+    } finally {
+        junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
+    }
 }
 
 void tagImages() {

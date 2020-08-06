@@ -67,24 +67,18 @@ pipeline{
                 sh "make clone-repos"
             }
         }
-        stage('Build and Test Images'){
+        stage('Build Images') {
             steps{
                 script {
-                    build_stages = [:]
-                    IMAGES.each{ image -> build_stages[image] = {
-                            initWorkspace(image)
-                            dir(getWorkspacePath(image)){
-                                try{
-                                    sh "make ${image} cekit_option='--work-dir .'"
-                                }
-                                finally{
-                                    junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
-                                }
-                            
-                            }
-                        }
-                    }
-                    parallel build_stages
+                    IMAGES.each{ image -> initWorkspace(image) }
+                    launchParallelForEachImage("Build", {img -> buildImage(img)})
+                }
+            }
+        }
+        stage('Test Images') {
+            steps {
+                script {
+                    launchParallelForEachImage("Test", {img -> testImage(img)})
                 }
             }
         }
@@ -111,6 +105,29 @@ void cleanImages(){
     sh "docker rmi -f \$(docker images -q) || date"
 }
 
+void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
+    parallelStages = [:]
+    IMAGES.each{ image -> 
+        parallelStages["${stageNamePrefix} ${image}"] = {
+            dir(getWorkspacePath(image)){
+                executeOnImage(image)
+            }
+        }
+    }
+    parallel parallelStages
+}
+
+void buildImage(image) {
+    sh "make ${image} ignore_test=true cekit_option='--work-dir .'"
+}
+
+void testImage(image) {
+    try {
+        sh "make ${image} ignore_build=true cekit_option='--work-dir .'"
+    } finally {
+        junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
+    }
+}
 
 void initWorkspace(String image){
     sh "mkdir -p ${getWorkspacePath(image)}"
