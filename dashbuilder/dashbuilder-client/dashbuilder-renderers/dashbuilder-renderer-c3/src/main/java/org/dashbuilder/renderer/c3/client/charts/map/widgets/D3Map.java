@@ -74,6 +74,7 @@ public class D3Map implements IsElement {
     private HTMLDivElement mapContainer;
 
     D3 d3 = D3.Builder.get();
+    
     private String[] colorsScheme;
 
     @PostConstruct
@@ -110,7 +111,9 @@ public class D3Map implements IsElement {
         if (conf.isMarkers()) {
             addMarkers(d3Selection, pathGenerator);
         }
-        createLegend(d3Selection);
+        if (conf.isShowLegend()) {
+            createLegend(d3Selection);
+        }
         mapContainer.appendChild(mapSVG);
     }
 

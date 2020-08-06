@@ -18,6 +18,7 @@ package org.dashbuilder.renderer.c3.client.charts.map.widgets;
 import java.util.Optional;
 import java.util.function.Function;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -53,6 +54,11 @@ public class MapTooltip implements IsElement {
     HTMLElement lblTooltipValue;
     
     private D3 d3 = D3.Builder.get();
+    
+    @PostConstruct
+    public void init() {
+        lblTooltipValue.style.visibility = "hidden";
+    }
 
     @Override
     public HTMLElement getElement() {

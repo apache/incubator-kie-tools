@@ -98,7 +98,8 @@ public class D3MapDisplayer extends C3AbstractDisplayer<D3MapDisplayer.View>  {
                    .supportsAttribute(DisplayerAttributeDef.CHART_HEIGHT)
                    .supportsAttribute(DisplayerAttributeDef.CHART_BGCOLOR)
                    .supportsAttribute(DisplayerAttributeGroupDef.CHART_MARGIN_GROUP)
-                   .supportsAttribute(DisplayerAttributeGroupDef.MAP_GROUP);
+                   .supportsAttribute(DisplayerAttributeDef.CHART_SHOWLEGEND)
+                   .supportsAttribute(DisplayerAttributeGroupDef.MAP_GROUP);        
     }
 
     @Override
@@ -107,7 +108,16 @@ public class D3MapDisplayer extends C3AbstractDisplayer<D3MapDisplayer.View>  {
         String backgroundColor = displayerSettings.getChartBackgroundColor();
         String columnName = getDataColumnName();
         MapColorScheme colorScheme = displayerSettings.getMapColorScheme();
-        conf = D3MapConf.of(columnName, data, markers, regions, backgroundColor, geoService, this::format, this::selectLocation, colorScheme);
+        conf = D3MapConf.of(columnName, 
+                            data, 
+                            markers, 
+                            regions, 
+                            backgroundColor, 
+                            geoService, 
+                            this::format, 
+                            this::selectLocation, 
+                            colorScheme,
+                            isShowLegend());
         getView().createMap(conf);
     }
 
@@ -172,6 +182,10 @@ public class D3MapDisplayer extends C3AbstractDisplayer<D3MapDisplayer.View>  {
 
     public D3MapConf getConf() {
         return conf;
+    }
+    
+    public boolean isShowLegend() {
+        return displayerSettings.isChartShowLegend();
     }
 
 }

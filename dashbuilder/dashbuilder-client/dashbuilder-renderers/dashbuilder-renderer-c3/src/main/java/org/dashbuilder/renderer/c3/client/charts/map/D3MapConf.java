@@ -33,6 +33,7 @@ public class D3MapConf {
     private Function<Double, String> formatter;
     private Consumer<String> pathClickHandler;
     private MapColorScheme colorScheme;
+    private boolean showLegend;
 
     public D3MapConf(String title,
                      Map<String, Double> data,
@@ -42,7 +43,8 @@ public class D3MapConf {
                      CountriesGeoJsonService countriesGeoJsonService,
                      Function<Double, String> formatter,
                      Consumer<String> pathClickHandler,
-                     MapColorScheme colorScheme) {
+                     MapColorScheme colorScheme,
+                     boolean showLegend) {
         this.title = title;
         this.data = data;
         this.markers = markers;
@@ -52,6 +54,7 @@ public class D3MapConf {
         this.countriesGeoJsonService = countriesGeoJsonService;
         this.pathClickHandler = pathClickHandler;
         this.colorScheme = colorScheme;
+        this.showLegend = showLegend;
     }
 
     public static D3MapConf of(String title,
@@ -62,7 +65,8 @@ public class D3MapConf {
                                CountriesGeoJsonService countriesGeoJsonService,
                                Function<Double, String> formatter,
                                Consumer<String> pathClickHandler,
-                               MapColorScheme colorScheme) {
+                               MapColorScheme colorScheme,
+                               boolean showLegend) {
         return new D3MapConf(title,
                              data,
                              markers,
@@ -71,7 +75,8 @@ public class D3MapConf {
                              countriesGeoJsonService,
                              formatter,
                              pathClickHandler,
-                             colorScheme);
+                             colorScheme,
+                             showLegend);
     }
 
     public boolean isMarkers() {
@@ -108,5 +113,9 @@ public class D3MapConf {
 
     public MapColorScheme getColorScheme() {
         return colorScheme;
+    }
+
+    public boolean isShowLegend() {
+        return showLegend;
     }
 }
