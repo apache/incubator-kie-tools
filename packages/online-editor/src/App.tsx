@@ -32,6 +32,8 @@ import { HomePage } from "./home/HomePage";
 import { NoMatchPage } from "./NoMatchPage";
 import "../static/resources/style.css";
 import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
+import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n/locales";
 
 interface Props {
   file: File;
@@ -63,32 +65,38 @@ export function App(props: Props) {
   );
 
   return (
-    <GlobalContext.Provider
-      value={{
-        file,
-        routes,
-        editorEnvelopeLocator: props.editorEnvelopeLocator,
-        readonly: props.readonly,
-        external: props.external,
-        senderTabId: props.senderTabId,
-        githubService: props.githubService
-      }}
+    <I18nDictionariesProvider
+      defaults={onlineI18nDefaults}
+      dictionaries={onlineI18nDictionaries}
+      ctx={OnlineI18nContext}
     >
-      <HashRouter>
-        <Switch>
-          <Route path={routes.editor.url({ type: ":type" })}>
-            <EditorPage onFileNameChanged={onFileNameChanged} />
-          </Route>
-          <Route exact={true} path={routes.home.url({})}>
-            <HomePage onFileOpened={onFileOpened} />
-          </Route>
-          <Route exact={true} path={routes.downloadHub.url({})}>
-            <HomePage onFileOpened={onFileOpened} />
-            <DownloadHubModal />
-          </Route>
-          <Route component={NoMatchPage} />
-        </Switch>
-      </HashRouter>
-    </GlobalContext.Provider>
+      <GlobalContext.Provider
+        value={{
+          file,
+          routes,
+          editorEnvelopeLocator: props.editorEnvelopeLocator,
+          readonly: props.readonly,
+          external: props.external,
+          senderTabId: props.senderTabId,
+          githubService: props.githubService
+        }}
+      >
+        <HashRouter>
+          <Switch>
+            <Route path={routes.editor.url({ type: ":type" })}>
+              <EditorPage onFileNameChanged={onFileNameChanged} />
+            </Route>
+            <Route exact={true} path={routes.home.url({})}>
+              <HomePage onFileOpened={onFileOpened} />
+            </Route>
+            <Route exact={true} path={routes.downloadHub.url({})}>
+              <HomePage onFileOpened={onFileOpened} />
+              <DownloadHubModal />
+            </Route>
+            <Route component={NoMatchPage} />
+          </Switch>
+        </HashRouter>
+      </GlobalContext.Provider>
+    </I18nDictionariesProvider>
   );
 }

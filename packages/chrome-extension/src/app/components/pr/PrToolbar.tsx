@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import { FileStatusOnPr } from "./FileStatusOnPr";
+import { useChromeExtensionI18n } from "../../i18n/locales";
 
 export function PrToolbar(props: {
   onSeeAsDiagram: () => void;
@@ -26,6 +27,8 @@ export function PrToolbar(props: {
   originalDiagram: boolean;
   fileStatusOnPr: FileStatusOnPr;
 }) {
+  const { i18n } = useChromeExtensionI18n();
+
   const closeDiagram = (e: any) => {
     e.preventDefault();
     props.closeDiagram();
@@ -45,13 +48,13 @@ export function PrToolbar(props: {
     <>
       {!props.textMode && (
         <button disabled={props.textMode} className={"btn btn-sm kogito-button"} onClick={closeDiagram}>
-          Close diagram
+          {i18n.pr.toolbar.closeDiagram}
         </button>
       )}
 
       {props.textMode && (
         <button className={"btn btn-sm kogito-button"} onClick={seeAsDiagram}>
-          See as diagram
+          {i18n.seeAsDiagram}
         </button>
       )}
 
@@ -63,7 +66,7 @@ export function PrToolbar(props: {
             type={"button"}
             onClick={toggleOriginal}
           >
-            Original
+            {i18n.pr.toolbar.original}
           </button>
           <button
             disabled={!props.originalDiagram}
@@ -71,7 +74,7 @@ export function PrToolbar(props: {
             type={"button"}
             onClick={toggleOriginal}
           >
-            Changes
+            {i18n.pr.toolbar.changes}
           </button>
         </div>
       )}

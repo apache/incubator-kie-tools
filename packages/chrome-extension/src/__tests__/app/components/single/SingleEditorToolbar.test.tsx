@@ -17,7 +17,11 @@
 import * as React from "react";
 import { fireEvent, render, waitForElementToBeRemoved } from "@testing-library/react";
 import { SingleEditorToolbar } from "../../../../app/components/single/SingleEditorToolbar";
-import { usingTestingGlobalContext } from "../../../testing_utils";
+import {
+  usingTestingChromeExtensionI18nContext,
+  usingTestingGitHubContext,
+  usingTestingGlobalContext
+} from "../../../testing_utils";
 
 beforeEach(() => {
   document.execCommand = () => true;
@@ -29,16 +33,22 @@ describe("SingleEditorToolbar", () => {
     const onSeeAsDiagram = jest.fn();
 
     const component = render(
-      <SingleEditorToolbar
-        readonly={true}
-        textMode={true}
-        textModeEnabled={true}
-        onFullScreen={undefined as any}
-        onSeeAsSource={onSeeAsSource}
-        onSeeAsDiagram={onSeeAsDiagram}
-        onOpenInExternalEditor={undefined as any}
-        linkToExternalEditor={"test.com/editor"}
-      />
+      usingTestingChromeExtensionI18nContext(
+        usingTestingGlobalContext(
+          usingTestingGitHubContext(
+            <SingleEditorToolbar
+              readonly={true}
+              textMode={true}
+              textModeEnabled={true}
+              onFullScreen={undefined as any}
+              onSeeAsSource={onSeeAsSource}
+              onSeeAsDiagram={onSeeAsDiagram}
+              onOpenInExternalEditor={undefined as any}
+              linkToExternalEditor={"test.com/editor"}
+            />
+          ).wrapper
+        ).wrapper
+      ).wrapper
     );
 
     expect(component.asFragment()).toMatchSnapshot();
@@ -50,16 +60,22 @@ describe("SingleEditorToolbar", () => {
   test("readonly false | textMode true | textModeEnabled true", () => {
     expect(
       render(
-        <SingleEditorToolbar
-          readonly={false}
-          textMode={true}
-          textModeEnabled={true}
-          onFullScreen={undefined as any}
-          onSeeAsSource={undefined as any}
-          onSeeAsDiagram={undefined as any}
-          onOpenInExternalEditor={undefined as any}
-          linkToExternalEditor={"test.com/editor"}
-        />
+        usingTestingChromeExtensionI18nContext(
+          usingTestingGlobalContext(
+            usingTestingGitHubContext(
+              <SingleEditorToolbar
+                readonly={false}
+                textMode={true}
+                textModeEnabled={true}
+                onFullScreen={undefined as any}
+                onSeeAsSource={undefined as any}
+                onSeeAsDiagram={undefined as any}
+                onOpenInExternalEditor={undefined as any}
+                linkToExternalEditor={"test.com/editor"}
+              />
+            ).wrapper
+          ).wrapper
+        ).wrapper
       ).asFragment()
     ).toMatchSnapshot();
   });
@@ -67,16 +83,22 @@ describe("SingleEditorToolbar", () => {
   test("readonly false | textMode false | textModeEnabled true", () => {
     expect(
       render(
-        <SingleEditorToolbar
-          readonly={true}
-          textMode={false}
-          textModeEnabled={true}
-          onFullScreen={undefined as any}
-          onSeeAsSource={undefined as any}
-          onSeeAsDiagram={undefined as any}
-          onOpenInExternalEditor={undefined as any}
-          linkToExternalEditor={"test.com/editor"}
-        />
+        usingTestingChromeExtensionI18nContext(
+          usingTestingGlobalContext(
+            usingTestingGitHubContext(
+              <SingleEditorToolbar
+                readonly={true}
+                textMode={false}
+                textModeEnabled={true}
+                onFullScreen={undefined as any}
+                onSeeAsSource={undefined as any}
+                onSeeAsDiagram={undefined as any}
+                onOpenInExternalEditor={undefined as any}
+                linkToExternalEditor={"test.com/editor"}
+              />
+            ).wrapper
+          ).wrapper
+        ).wrapper
       ).asFragment()
     ).toMatchSnapshot();
   });
@@ -86,16 +108,22 @@ describe("SingleEditorToolbar", () => {
     const onSeeAsDiagram = jest.fn();
 
     const component = render(
-      <SingleEditorToolbar
-        readonly={false}
-        textMode={false}
-        textModeEnabled={true}
-        onFullScreen={undefined as any}
-        onSeeAsSource={onSeeAsSource}
-        onSeeAsDiagram={onSeeAsDiagram}
-        onOpenInExternalEditor={undefined as any}
-        linkToExternalEditor={"test.com/editor"}
-      />
+      usingTestingChromeExtensionI18nContext(
+        usingTestingGlobalContext(
+          usingTestingGitHubContext(
+            <SingleEditorToolbar
+              readonly={false}
+              textMode={false}
+              textModeEnabled={true}
+              onFullScreen={undefined as any}
+              onSeeAsSource={onSeeAsSource}
+              onSeeAsDiagram={onSeeAsDiagram}
+              onOpenInExternalEditor={undefined as any}
+              linkToExternalEditor={"test.com/editor"}
+            />
+          ).wrapper
+        ).wrapper
+      ).wrapper
     );
 
     fireEvent.click(component.getByTestId("see-as-source-button"));
@@ -107,16 +135,22 @@ describe("SingleEditorToolbar", () => {
   test("readonly true | textMode true | textModeEnabled false", () => {
     expect(
       render(
-        <SingleEditorToolbar
-          readonly={true}
-          textMode={true}
-          textModeEnabled={false}
-          onFullScreen={undefined as any}
-          onSeeAsSource={undefined as any}
-          onSeeAsDiagram={undefined as any}
-          onOpenInExternalEditor={undefined as any}
-          linkToExternalEditor={"test.com/editor"}
-        />
+        usingTestingChromeExtensionI18nContext(
+          usingTestingGlobalContext(
+            usingTestingGitHubContext(
+              <SingleEditorToolbar
+                readonly={true}
+                textMode={true}
+                textModeEnabled={false}
+                onFullScreen={undefined as any}
+                onSeeAsSource={undefined as any}
+                onSeeAsDiagram={undefined as any}
+                onOpenInExternalEditor={undefined as any}
+                linkToExternalEditor={"test.com/editor"}
+              />
+            ).wrapper
+          ).wrapper
+        ).wrapper
       ).asFragment()
     ).toMatchSnapshot();
   });
@@ -124,16 +158,22 @@ describe("SingleEditorToolbar", () => {
   test("readonly false | textMode true | textModeEnabled false", () => {
     expect(
       render(
-        <SingleEditorToolbar
-          readonly={false}
-          textMode={true}
-          textModeEnabled={false}
-          onFullScreen={undefined as any}
-          onSeeAsSource={undefined as any}
-          onSeeAsDiagram={undefined as any}
-          onOpenInExternalEditor={undefined as any}
-          linkToExternalEditor={"test.com/editor"}
-        />
+        usingTestingChromeExtensionI18nContext(
+          usingTestingGlobalContext(
+            usingTestingGitHubContext(
+              <SingleEditorToolbar
+                readonly={false}
+                textMode={true}
+                textModeEnabled={false}
+                onFullScreen={undefined as any}
+                onSeeAsSource={undefined as any}
+                onSeeAsDiagram={undefined as any}
+                onOpenInExternalEditor={undefined as any}
+                linkToExternalEditor={"test.com/editor"}
+              />
+            ).wrapper
+          ).wrapper
+        ).wrapper
       ).asFragment()
     ).toMatchSnapshot();
   });
@@ -141,16 +181,22 @@ describe("SingleEditorToolbar", () => {
   test("readonly true | textMode false | textModeEnabled false", () => {
     expect(
       render(
-        <SingleEditorToolbar
-          readonly={true}
-          textMode={false}
-          textModeEnabled={false}
-          onFullScreen={undefined as any}
-          onSeeAsSource={undefined as any}
-          onSeeAsDiagram={undefined as any}
-          onOpenInExternalEditor={undefined as any}
-          linkToExternalEditor={"test.com/editor"}
-        />
+        usingTestingChromeExtensionI18nContext(
+          usingTestingGlobalContext(
+            usingTestingGitHubContext(
+              <SingleEditorToolbar
+                readonly={true}
+                textMode={false}
+                textModeEnabled={false}
+                onFullScreen={undefined as any}
+                onSeeAsSource={undefined as any}
+                onSeeAsDiagram={undefined as any}
+                onOpenInExternalEditor={undefined as any}
+                linkToExternalEditor={"test.com/editor"}
+              />
+            ).wrapper
+          ).wrapper
+        ).wrapper
       ).asFragment()
     ).toMatchSnapshot();
   });
@@ -158,16 +204,22 @@ describe("SingleEditorToolbar", () => {
   test("readonly false | textMode false | textModeEnabled false", () => {
     expect(
       render(
-        <SingleEditorToolbar
-          readonly={false}
-          textMode={false}
-          textModeEnabled={false}
-          onFullScreen={undefined as any}
-          onSeeAsSource={undefined as any}
-          onSeeAsDiagram={undefined as any}
-          onOpenInExternalEditor={undefined as any}
-          linkToExternalEditor={"test.com/editor"}
-        />
+        usingTestingChromeExtensionI18nContext(
+          usingTestingGlobalContext(
+            usingTestingGitHubContext(
+              <SingleEditorToolbar
+                readonly={false}
+                textMode={false}
+                textModeEnabled={false}
+                onFullScreen={undefined as any}
+                onSeeAsSource={undefined as any}
+                onSeeAsDiagram={undefined as any}
+                onOpenInExternalEditor={undefined as any}
+                linkToExternalEditor={"test.com/editor"}
+              />
+            ).wrapper
+          ).wrapper
+        ).wrapper
       ).asFragment()
     ).toMatchSnapshot();
   });
@@ -179,17 +231,19 @@ describe("SingleEditorToolbar", () => {
     const onOpenInExternalEditor = jest.fn();
 
     const component = render(
-      usingTestingGlobalContext(
-        <SingleEditorToolbar
-          readonly={false}
-          textMode={false}
-          textModeEnabled={false}
-          onFullScreen={onFullScreen}
-          onSeeAsSource={onSeeAsSource}
-          onSeeAsDiagram={onSeeAsDiagram}
-          onOpenInExternalEditor={onOpenInExternalEditor}
-          linkToExternalEditor={"test.com/editor"}
-        />
+      usingTestingChromeExtensionI18nContext(
+        usingTestingGlobalContext(
+          <SingleEditorToolbar
+            readonly={false}
+            textMode={false}
+            textModeEnabled={false}
+            onFullScreen={onFullScreen}
+            onSeeAsSource={onSeeAsSource}
+            onSeeAsDiagram={onSeeAsDiagram}
+            onOpenInExternalEditor={onOpenInExternalEditor}
+            linkToExternalEditor={"test.com/editor"}
+          />
+        ).wrapper
       ).wrapper
     );
 
@@ -205,17 +259,19 @@ describe("SingleEditorToolbar", () => {
 
   test("copied to clipboard message", async () => {
     const component = render(
-      usingTestingGlobalContext(
-        <SingleEditorToolbar
-          readonly={false}
-          textMode={false}
-          textModeEnabled={false}
-          onFullScreen={undefined as any}
-          onSeeAsSource={undefined as any}
-          onSeeAsDiagram={undefined as any}
-          onOpenInExternalEditor={undefined as any}
-          linkToExternalEditor={"test.com/editor"}
-        />
+      usingTestingChromeExtensionI18nContext(
+        usingTestingGlobalContext(
+          <SingleEditorToolbar
+            readonly={false}
+            textMode={false}
+            textModeEnabled={false}
+            onFullScreen={undefined as any}
+            onSeeAsSource={undefined as any}
+            onSeeAsDiagram={undefined as any}
+            onOpenInExternalEditor={undefined as any}
+            linkToExternalEditor={"test.com/editor"}
+          />
+        ).wrapper
       ).wrapper
     );
 

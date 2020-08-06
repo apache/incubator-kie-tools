@@ -82,6 +82,10 @@ export class KogitoEditorChannel {
     this.client.notify("receive_contentChanged", content);
   }
 
+  public notify_localeChange(locale: string) {
+    this.client.notify("receive_localeChange", locale);
+  }
+
   public request_contentResponse() {
     return this.client.request("receive_contentRequest");
   }

@@ -86,4 +86,8 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   public receive_resourceListRequest(request: ResourceListRequest) {
     return this.resourceContentService.list(request.pattern, request.opts);
   }
+
+  public receive_getLocale(): Promise<string> {
+    return Promise.resolve(vscode.env.language);
+  }
 }

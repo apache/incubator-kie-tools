@@ -37,4 +37,5 @@ export interface KogitoEditorChannelApi {
   receive_contentRequest(): Promise<EditorContent>;
   receive_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined>;
   receive_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;
+  receive_getLocale(): Promise<string>;
 }

@@ -49,6 +49,7 @@ import { File, UNSAVED_FILE_NAME } from "../../common/File";
 import { RecentOpenedFile } from "../../common/RecentOpenedFile";
 import { extractFileExtension, removeDirectories } from "../../common/utils";
 import { GlobalContext } from "../common/GlobalContext";
+import { useDesktopI18n } from "../common/i18n/locales";
 
 interface Props {
   openFile: (file: File) => void;
@@ -86,6 +87,7 @@ const typeFilterOptions = [
 export function FilesPage(props: Props) {
   const context = useContext(GlobalContext);
   const [lastOpenedFiles, setLastOpenedFiles] = useState<RecentOpenedFile[]>([]);
+  const { i18n } = useDesktopI18n();
 
   const [url, setURL] = useState("");
   const [importFileErrorDetails, setImportFileErrorDetails] = useState<{
@@ -108,17 +110,17 @@ export function FilesPage(props: Props) {
   const messageForStateInputUrl = useMemo(() => {
     switch (inputFileUrlState) {
       case InputFileUrlState.INITIAL:
-        return "http://";
+        return i18n.filesPage.openUrl.initial;
       case InputFileUrlState.INVALID_EXTENSION:
-        return "File type is not supported";
+        return i18n.filesPage.openUrl.invalidExtension;
       case InputFileUrlState.INVALID_URL:
-        return "Enter a valid URL";
+        return i18n.filesPage.openUrl.invalidUrl;
       case InputFileUrlState.NO_FILE_URL:
-        return "File URL is not valid";
+        return i18n.filesPage.openUrl.notFoundUrl;
       default:
         return "";
     }
-  }, [inputFileUrlState]);
+  }, [inputFileUrlState, i18n]);
 
   const closeImportFileErrorAlert = useCallback(
     () => setImportFileErrorDetails({ type: ImportFileErrorType.NONE }),
@@ -283,11 +285,11 @@ export function FilesPage(props: Props) {
         <div className={"kogito--alert-container"}>
           <Alert
             variant={AlertVariant.danger}
-            title="An error happened while fetching your file"
+            title={i18n.filesPage.alerts.errorFetchingFile}
             actionClose={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
           >
             <br />
-            <b>Error details: </b>
+            <b>{`${i18n.filesPage.errorDetails}: `}</b>
             {importFileErrorDetails.statusCode}
             {importFileErrorDetails.statusCode && importFileErrorDetails.description && " - "}
             {importFileErrorDetails.description}
@@ -298,11 +300,11 @@ export function FilesPage(props: Props) {
         <div className={"kogito--alert-container"}>
           <Alert
             variant={AlertVariant.danger}
-            title="An unexpected error happened while trying to fetch your file"
+            title={i18n.filesPage.alerts.unexpectedErrorFetchingFile}
             actionClose={<AlertActionCloseButton onClose={closeImportFileErrorAlert} />}
           >
             <br />
-            <b>Error details: </b>
+            <b>{`${i18n.filesPage.errorDetails}: `}</b>
             {importFileErrorDetails.description}
           </Alert>
         </div>
@@ -310,7 +312,7 @@ export function FilesPage(props: Props) {
       <PageSection>
         <div className={"kogito--desktop__actions-title"}>
           <TextContent>
-            <Title headingLevel={"h1"}>Create new file</Title>
+            <Title headingLevel={"h1"}>{i18n.filesPage.files.title}</Title>
           </TextContent>
         </div>
         <Gallery hasGutter={true} className="kogito--desktop__actions-gallery">
@@ -324,7 +326,7 @@ export function FilesPage(props: Props) {
             <CardHeader>
               {
                 <Title size={"xl"} headingLevel={"h3"} className="pf-u-mb-md">
-                  {"Blank Workflow (.BPMN)"}
+                  {i18n.filesPage.files.bpmn.blank}
                 </Title>
               }
             </CardHeader>
@@ -342,7 +344,7 @@ export function FilesPage(props: Props) {
             <CardHeader>
               {
                 <Title size={"xl"} headingLevel={"h3"} className="pf-u-mb-md">
-                  {"Blank Decision Model (.DMN)"}
+                  {i18n.filesPage.files.dmn.blank}
                 </Title>
               }
             </CardHeader>
@@ -360,7 +362,7 @@ export function FilesPage(props: Props) {
             <CardHeader>
               {
                 <Title size={"xl"} headingLevel={"h3"} className="pf-u-mb-md">
-                  {"Sample Workflow (.BPMN)"}
+                  {i18n.filesPage.files.bpmn.sample}
                 </Title>
               }
             </CardHeader>
@@ -384,7 +386,7 @@ export function FilesPage(props: Props) {
             <CardHeader>
               {
                 <Title size={"xl"} headingLevel={"h3"} className="pf-u-mb-md">
-                  {"Sample Decision Model (.DMN)"}
+                  {i18n.filesPage.files.dmn.sample}
                 </Title>
               }
             </CardHeader>
@@ -401,12 +403,12 @@ export function FilesPage(props: Props) {
           <Card className="kogito--desktop__actions-card--wide">
             <CardHeader>
               <Title size={"xl"} headingLevel={"h3"}>
-                Open from source
+                {i18n.filesPage.openUrl.openFromSource}
               </Title>
             </CardHeader>
             <CardBody>
               <TextContent>
-                <Text component={TextVariants.p}>Paste a URL to a source code link (GitHub, Dropbox, etc.)</Text>
+                <Text component={TextVariants.p}>{i18n.filesPage.openUrl.description}</Text>
                 <Form onSubmit={importFileByUrlFormSubmit} disabled={!isInputUrlValid}>
                   <FormGroup
                     label="URL"
@@ -433,7 +435,7 @@ export function FilesPage(props: Props) {
             </CardBody>
             <CardFooter>
               <Button variant="secondary" onClick={importFileByUrl}>
-                Open from source
+                {i18n.filesPage.openUrl.openFromSource}
               </Button>
             </CardFooter>
           </Card>
@@ -441,7 +443,7 @@ export function FilesPage(props: Props) {
       </PageSection>
       <PageSection variant="light">
         <Title size={"2xl"} headingLevel={"h3"}>
-          Recent Files
+          {i18n.filesPage.recent.title}
         </Title>
         <Toolbar>
           <ToolbarContent>
@@ -500,7 +502,7 @@ export function FilesPage(props: Props) {
         </Toolbar>
       </PageSection>
       <PageSection isFilled={true}>
-        {filteredLastOpenedFiles.length === 0 && <Bullseye>No files were opened yet.</Bullseye>}
+        {filteredLastOpenedFiles.length === 0 && <Bullseye>{i18n.filesPage.recent.noFilesYet}</Bullseye>}
 
         {filteredLastOpenedFiles.length > 0 && (
           <Gallery hasGutter={true} className="kogito-desktop__file-gallery">

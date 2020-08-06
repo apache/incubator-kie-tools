@@ -25,6 +25,12 @@ import { kogitoMenuContainer } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
+import {
+  chromeExtensionI18nDictionaries,
+  chromeExtensionI8nDefaults,
+  ChromeExtensionI18nContext
+} from "../../i18n/locales";
 
 export interface Globals {
   id: string;
@@ -54,22 +60,28 @@ function KogitoMenuPortal(props: { id: string }) {
 
 export const Main: React.FunctionComponent<Globals> = props => {
   return (
-    <GlobalContext.Provider
-      value={{
-        id: props.id,
-        logger: props.logger,
-        dependencies: props.dependencies,
-        envelopeLocator: props.editorEnvelopeLocator,
-        githubAuthTokenCookieName: props.githubAuthTokenCookieName,
-        extensionIconUrl: props.extensionIconUrl,
-        resourceContentServiceFactory: props.resourceContentServiceFactory,
-        externalEditorManager: props.externalEditorManager
-      }}
+    <I18nDictionariesProvider
+      defaults={chromeExtensionI8nDefaults}
+      dictionaries={chromeExtensionI18nDictionaries}
+      ctx={ChromeExtensionI18nContext}
     >
-      <GitHubContextProvider>
-        <KogitoMenuPortal id={props.id} />
-        {props.children}
-      </GitHubContextProvider>
-    </GlobalContext.Provider>
+      <GlobalContext.Provider
+        value={{
+          id: props.id,
+          logger: props.logger,
+          dependencies: props.dependencies,
+          envelopeLocator: props.editorEnvelopeLocator,
+          githubAuthTokenCookieName: props.githubAuthTokenCookieName,
+          extensionIconUrl: props.extensionIconUrl,
+          resourceContentServiceFactory: props.resourceContentServiceFactory,
+          externalEditorManager: props.externalEditorManager
+        }}
+      >
+        <GitHubContextProvider>
+          <KogitoMenuPortal id={props.id} />
+          {props.children}
+        </GitHubContextProvider>
+      </GlobalContext.Provider>
+    </I18nDictionariesProvider>
   );
 };

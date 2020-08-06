@@ -27,6 +27,7 @@ import { useGitHubApi } from "../common/GitHubContext";
 import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
+import { useChromeExtensionI18n } from "../../i18n/locales";
 
 const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
 const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;
@@ -46,6 +47,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   const editorRef = useRef<EmbeddedEditorRef>(null);
   const { envelopeLocator, resourceContentServiceFactory } = useGlobals();
   const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
+  const { locale } = useChromeExtensionI18n();
 
   //Lookup ResourceContentService
   const resourceContentService = useMemo(() => {
@@ -137,6 +139,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
           receive_resourceContentRequest={onResourceContentRequest}
           receive_resourceListRequest={onResourceContentList}
           editorEnvelopeLocator={envelopeLocator}
+          locale={locale}
         />
       </div>
     </>

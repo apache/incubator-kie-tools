@@ -17,7 +17,11 @@
 import * as React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { SingleEditorApp } from "../../../../app/components/single/SingleEditorApp";
-import { usingTestingGitHubContext, usingTestingGlobalContext } from "../../../testing_utils";
+import {
+  usingTestingChromeExtensionI18nContext,
+  usingTestingGitHubContext,
+  usingTestingGlobalContext
+} from "../../../testing_utils";
 import { removeAllChildren } from "../../../../app/utils";
 
 beforeAll(() => {
@@ -48,18 +52,20 @@ function newDivOnBody() {
 describe("SingleEditorApp", () => {
   test("readonly", async () => {
     render(
-      usingTestingGlobalContext(
-        usingTestingGitHubContext(
-          <SingleEditorApp
-            openFileExtension={"txt"}
-            readonly={false}
-            getFileName={jest.fn()}
-            getFileContents={jest.fn()}
-            toolbarContainer={newDivOnBody()}
-            iframeContainer={newDivOnBody()}
-            githubTextEditorToReplace={newDivOnBody()}
-            fileInfo={testFileInfo}
-          />
+      usingTestingChromeExtensionI18nContext(
+        usingTestingGlobalContext(
+          usingTestingGitHubContext(
+            <SingleEditorApp
+              openFileExtension={"txt"}
+              readonly={false}
+              getFileName={jest.fn()}
+              getFileContents={jest.fn()}
+              toolbarContainer={newDivOnBody()}
+              iframeContainer={newDivOnBody()}
+              githubTextEditorToReplace={newDivOnBody()}
+              fileInfo={testFileInfo}
+            />
+          ).wrapper
         ).wrapper
       ).wrapper
     );
@@ -69,18 +75,20 @@ describe("SingleEditorApp", () => {
 
   test("not readonly", async () => {
     render(
-      usingTestingGlobalContext(
-        usingTestingGitHubContext(
-          <SingleEditorApp
-            openFileExtension={"txt"}
-            readonly={true}
-            getFileName={jest.fn()}
-            getFileContents={jest.fn()}
-            toolbarContainer={newDivOnBody()}
-            iframeContainer={newDivOnBody()}
-            githubTextEditorToReplace={newDivOnBody()}
-            fileInfo={testFileInfo}
-          />
+      usingTestingChromeExtensionI18nContext(
+        usingTestingGlobalContext(
+          usingTestingGitHubContext(
+            <SingleEditorApp
+              openFileExtension={"txt"}
+              readonly={true}
+              getFileName={jest.fn()}
+              getFileContents={jest.fn()}
+              toolbarContainer={newDivOnBody()}
+              iframeContainer={newDivOnBody()}
+              githubTextEditorToReplace={newDivOnBody()}
+              fileInfo={testFileInfo}
+            />
+          ).wrapper
         ).wrapper
       ).wrapper
     );
@@ -90,18 +98,20 @@ describe("SingleEditorApp", () => {
 
   test("go fullscreen", async () => {
     render(
-      usingTestingGlobalContext(
-        usingTestingGitHubContext(
-          <SingleEditorApp
-            openFileExtension={"txt"}
-            readonly={false}
-            getFileName={jest.fn()}
-            getFileContents={jest.fn()}
-            toolbarContainer={newDivOnBody()}
-            iframeContainer={newDivOnBody()}
-            githubTextEditorToReplace={newDivOnBody()}
-            fileInfo={testFileInfo}
-          />
+      usingTestingChromeExtensionI18nContext(
+        usingTestingGlobalContext(
+          usingTestingGitHubContext(
+            <SingleEditorApp
+              openFileExtension={"txt"}
+              readonly={false}
+              getFileName={jest.fn()}
+              getFileContents={jest.fn()}
+              toolbarContainer={newDivOnBody()}
+              iframeContainer={newDivOnBody()}
+              githubTextEditorToReplace={newDivOnBody()}
+              fileInfo={testFileInfo}
+            />
+          ).wrapper
         ).wrapper
       ).wrapper
     );
@@ -112,18 +122,20 @@ describe("SingleEditorApp", () => {
 
   test("go fullscreen and back", async () => {
     render(
-      usingTestingGlobalContext(
-        usingTestingGitHubContext(
-          <SingleEditorApp
-            openFileExtension={"txt"}
-            readonly={false}
-            getFileName={jest.fn()}
-            getFileContents={jest.fn()}
-            toolbarContainer={newDivOnBody()}
-            iframeContainer={newDivOnBody()}
-            githubTextEditorToReplace={newDivOnBody()}
-            fileInfo={testFileInfo}
-          />
+      usingTestingChromeExtensionI18nContext(
+        usingTestingGlobalContext(
+          usingTestingGitHubContext(
+            <SingleEditorApp
+              openFileExtension={"txt"}
+              readonly={false}
+              getFileName={jest.fn()}
+              getFileContents={jest.fn()}
+              toolbarContainer={newDivOnBody()}
+              iframeContainer={newDivOnBody()}
+              githubTextEditorToReplace={newDivOnBody()}
+              fileInfo={testFileInfo}
+            />
+          ).wrapper
         ).wrapper
       ).wrapper
     );
@@ -137,20 +149,22 @@ describe("SingleEditorApp", () => {
   test("open external editor", async () => {
     let globalContext: ReturnType<typeof usingTestingGlobalContext>;
     render(
-      (globalContext = usingTestingGlobalContext(
-        usingTestingGitHubContext(
-          <SingleEditorApp
-            openFileExtension={"txt"}
-            readonly={false}
-            getFileName={jest.fn(() => "file.txt")}
-            getFileContents={jest.fn(() => Promise.resolve("file contents"))}
-            toolbarContainer={newDivOnBody()}
-            iframeContainer={newDivOnBody()}
-            githubTextEditorToReplace={newDivOnBody()}
-            fileInfo={testFileInfo}
-          />
-        ).wrapper
-      )).wrapper
+      usingTestingChromeExtensionI18nContext(
+        (globalContext = usingTestingGlobalContext(
+          usingTestingGitHubContext(
+            <SingleEditorApp
+              openFileExtension={"txt"}
+              readonly={false}
+              getFileName={jest.fn(() => "file.txt")}
+              getFileContents={jest.fn(() => Promise.resolve("file contents"))}
+              toolbarContainer={newDivOnBody()}
+              iframeContainer={newDivOnBody()}
+              githubTextEditorToReplace={newDivOnBody()}
+              fileInfo={testFileInfo}
+            />
+          ).wrapper
+        )).wrapper
+      ).wrapper
     );
 
     fireEvent.click(screen.getByTestId("open-ext-editor-button"));
@@ -162,20 +176,22 @@ describe("SingleEditorApp", () => {
     let globalContext: ReturnType<typeof usingTestingGlobalContext>;
 
     render(
-      (globalContext = usingTestingGlobalContext(
-        usingTestingGitHubContext(
-          <SingleEditorApp
-            openFileExtension={"txt"}
-            readonly={false}
-            getFileName={jest.fn(() => "file.txt")}
-            getFileContents={jest.fn(() => Promise.resolve("file contents 1"))}
-            toolbarContainer={newDivOnBody()}
-            iframeContainer={newDivOnBody()}
-            githubTextEditorToReplace={newDivOnBody()}
-            fileInfo={testFileInfo}
-          />
-        ).wrapper
-      )).wrapper
+      usingTestingChromeExtensionI18nContext(
+        (globalContext = usingTestingGlobalContext(
+          usingTestingGitHubContext(
+            <SingleEditorApp
+              openFileExtension={"txt"}
+              readonly={false}
+              getFileName={jest.fn(() => "file.txt")}
+              getFileContents={jest.fn(() => Promise.resolve("file contents 1"))}
+              toolbarContainer={newDivOnBody()}
+              iframeContainer={newDivOnBody()}
+              githubTextEditorToReplace={newDivOnBody()}
+              fileInfo={testFileInfo}
+            />
+          ).wrapper
+        )).wrapper
+      ).wrapper
     );
 
     fireEvent.click(screen.getByTestId("open-ext-editor-button"));

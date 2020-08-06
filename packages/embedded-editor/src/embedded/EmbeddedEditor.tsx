@@ -26,7 +26,7 @@ import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
 import * as CSS from "csstype";
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
-import { File } from "../common";
+import { File, useEffectAfterFirstRender } from "../common";
 import { StateControl } from "../stateControl";
 import { EditorApi } from "@kogito-tooling/editor-api";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
@@ -46,6 +46,7 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
   file: File;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   channelType: ChannelType;
+  locale: string;
 };
 
 /**
@@ -79,7 +80,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
   //Setup envelope bus communication
   const kogitoEditorChannelApiImpl = useMemo(() => {
-    return new KogitoEditorChannelApiImpl(stateControl, props.file, props);
+    return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, props);
   }, [stateControl, props.file, props]);
 
   const kogitoEditorChannel = useMemo(() => {
@@ -91,6 +92,10 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       }
     });
   }, []);
+
+  useEffectAfterFirstRender(() => {
+    kogitoEditorChannel.notify_localeChange(props.locale);
+  }, [props.locale]);
 
   useConnectedKogitoEditorChannel(
     kogitoEditorChannel,

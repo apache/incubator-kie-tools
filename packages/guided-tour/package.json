@@ -21,6 +21,10 @@
     "react": "16.12.0",
     "react-dom": "16.12.0"
   },
+  "dependencies": {
+    "@kogito-tooling/i18n": "0.6.1",
+    "@kogito-tooling/i18n-common-dictionary": "0.6.1"
+  },
   "presets": [
     "@babel/preset-env",
     "@babel/preset-react"
