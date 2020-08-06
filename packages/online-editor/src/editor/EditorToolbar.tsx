@@ -155,7 +155,11 @@ export function EditorToolbar(props: Props) {
         />
       </div>
       {props.isEdited && (
-        <span aria-label={"File was edited"} className={"kogito--editor__toolbar-edited"} data-testid="is-dirty-indicator">
+        <span
+          aria-label={"File was edited"}
+          className={"kogito--editor__toolbar-edited"}
+          data-testid="is-dirty-indicator"
+        >
           {` - ${i18n.terms.edited}`}
         </span>
       )}

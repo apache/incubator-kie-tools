@@ -22,12 +22,11 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "r
 import { useLocation } from "react-router";
 import { GithubTokenModal } from "../common/GithubTokenModal";
 import { GlobalContext } from "../common/GlobalContext";
-import { extractFileExtension, removeFileExtension } from "../common/utils";
+import { removeFileExtension } from "../common/utils";
 import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
-import { onlineI18nDefaults, useOnlineI18n } from "../common/i18n";
-import { I18nHtml } from "@kogito-tooling/i18n";
+import { useOnlineI18n } from "../common/i18n";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -68,14 +67,14 @@ export function EditorPage(props: Props) {
       window.dispatchEvent(
         new CustomEvent("saveOnlineEditor", {
           detail: {
-            fileName: fileNameWithExtension,
+            fileName: context.file.fileName,
             fileContent: content,
             senderTabId: context.senderTabId!
           }
         })
       );
     });
-  }, []);
+  }, [context.file.fileName]);
 
   const requestDownload = useCallback(() => {
     editorRef.current?.getStateControl().setSavedCommand();
@@ -108,9 +107,9 @@ export function EditorPage(props: Props) {
 
       context.githubService
         .createGist({
-          filename: fileNameWithExtension,
+          filename: context.file.fileName,
           content: content,
-          description: fileNameWithExtension,
+          description: context.file.fileName,
           isPublic: true
         })
         .then(gistUrl => {
@@ -120,7 +119,7 @@ export function EditorPage(props: Props) {
         })
         .catch(() => setGithubTokenModalVisible(true));
     });
-  }, []);
+  }, [context.file.fileName]);
 
   const requestCopyContentToClipboard = useCallback(() => {
     editorRef.current?.getContent().then(content => {
@@ -152,10 +151,6 @@ export function EditorPage(props: Props) {
     return context.routes.editor.args(location.pathname).type;
   }, [location.pathname]);
 
-  const fileNameWithExtension = useMemo(() => {
-    return context.file.fileName + "." + fileExtension;
-  }, [context.file.fileName, fileExtension]);
-
   const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
 
   const closeGithubTokenModal = useCallback(() => setGithubTokenModalVisible(false), []);
@@ -180,13 +175,13 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     if (downloadRef.current) {
-      downloadRef.current.download = fileNameWithExtension;
+      downloadRef.current.download = context.file.fileName;
     }
     if (downloadPreviewRef.current) {
-      const fileName = removeFileExtension(fileNameWithExtension);
+      const fileName = removeFileExtension(context.file.fileName);
       downloadPreviewRef.current.download = `${fileName}-svg.svg`;
     }
-  }, [fileNameWithExtension]);
+  }, [context.file.fileName]);
 
   useEffect(() => {
     document.addEventListener("fullscreenchange", toggleFullScreen);
