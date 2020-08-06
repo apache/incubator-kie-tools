@@ -2,36 +2,40 @@
 
 exports[`EditorToolbar is dirty indicator should show the isDirty indicator when isEdited is true 1`] = `
 <div
-  class="kogito--editor__toolbar-title"
+  class="kogito--editor__toolbar-name-container"
   data-testid="toolbar-title"
 >
   <h3
-    aria-label="File name"
-    class="pf-c-title pf-m-xl"
-    title="Rename"
+    class="pf-c-title pf-m-2xl"
   >
-    new-file.undefined
+    new-file
   </h3>
-  <span
-    class="kogito--editor__toolbar-edited"
-    data-testid="is-dirty-indicator"
-  >
-     - Edited
-  </span>
+  <input
+    aria-invalid="false"
+    aria-label="File name"
+    class="pf-c-form-control kogito--editor__toolbar-title"
+    type="text"
+    value="new-file"
+  />
 </div>
 `;
 
 exports[`EditorToolbar is dirty indicator shouldn't show the isDirty indicator when isEdited is false 1`] = `
 <div
-  class="kogito--editor__toolbar-title"
+  class="kogito--editor__toolbar-name-container"
   data-testid="toolbar-title"
 >
   <h3
-    aria-label="File name"
-    class="pf-c-title pf-m-xl"
-    title="Rename"
+    class="pf-c-title pf-m-2xl"
   >
-    new-file.undefined
+    new-file
   </h3>
+  <input
+    aria-invalid="false"
+    aria-label="File name"
+    class="pf-c-form-control kogito--editor__toolbar-title"
+    type="text"
+    value="new-file"
+  />
 </div>
 `;
