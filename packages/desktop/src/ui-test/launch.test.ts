@@ -37,7 +37,7 @@ describe('Application Startup', function () {
 
   beforeEach(async () => {
       const startedApp = await helpers.startApplication({
-      args: [path.join(__dirname, '../../..')],
+      args: [path.join(__dirname, '../../')],
       port: 3000,
       startTimeout: 25000,
       waitTimeout: 10000

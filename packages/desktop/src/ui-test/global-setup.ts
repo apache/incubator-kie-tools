@@ -13,7 +13,7 @@ before(() => {
 })
 
 export const getElectronPath = (): string => {
-  let electronPath: string = path.join(__dirname, '../../..', 'node_modules', '.bin', 'electron')
+  let electronPath: string = path.join(__dirname, '../../', 'node_modules', '.bin', 'electron')
   if (process.platform === 'win32') {
     electronPath += '.cmd'
   }
