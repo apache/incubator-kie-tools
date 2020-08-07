@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-import { PMMLModelData } from "@kogito-tooling/microeditor-envelope-protocol";
+import { PMMLDocumentData, PMMLModelData } from "@kogito-tooling/microeditor-envelope-protocol";
 import { XML2PMML } from "../marshaller";
 import {BayesianNetworkModel, Scorecard} from "../marshaller/model/pmml4_4";
 
 export class PMMLEditorMarshallerService {
 
-    public getPMMLModelData(xmlContent: string) : PMMLModelData[] {
+    public getPMMLDocumentData(xmlContent: string) : PMMLDocumentData {
         const pmml = XML2PMML(xmlContent);
-        const dataset: PMMLModelData[] = [];
+
+        const models : PMMLModelData[] = [];
+        const document = new PMMLDocumentData(models);
 
         if (pmml.models) {
             pmml.models.forEach(model => {
                 if (model instanceof Scorecard || model instanceof BayesianNetworkModel) {
                     const modelName = model.modelName!;
                     const fields = model.MiningSchema.MiningField.map(field => field.name.toString());
-                    dataset.push(new PMMLModelData(modelName, fields));
+                    models.push(new PMMLModelData(modelName, fields));
                     return;
                 }
             });
         }
-        return dataset;
+        return document;
     }
 }

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-import { PMMLDocumentData } from "@kogito-tooling/microeditor-envelope-protocol";
+import { PMMLModelData } from "./PMMLModelData";
 
-/**
- * PUBLIC ENVELOPE API
- */
-export interface PMMLEditorMarshallerApi {
+export class PMMLDocumentData {
+    public readonly models: PMMLModelData[];
 
-    /**
-     * It performs the marshall of a xmlContent retrieved from a PMML file, returning Models data
-     * * @param xmlContent
-     */
-    getPMMLDocumentData(xmlContent: string): PMMLDocumentData;
-
+    constructor(models: PMMLModelData[]) {
+        this.models = models;
+    }
 }
-

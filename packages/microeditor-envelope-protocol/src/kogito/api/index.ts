@@ -32,5 +32,6 @@ export * from "./ContentType";
 export * from "./ChannelKeyboardEvent";
 export * from "./EditorEnvelopeLocator";
 export * from "./PMMLModelData"
+export * from "./PMMLDocumentData"
 export * from "./guidedTour";
 export * from "./I18nService";
