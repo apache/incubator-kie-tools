@@ -45,13 +45,13 @@
     "menus": {
       "commandPalette": [
         {
-          "when": "resourceLangId =~ /bpmn|bpmn2|dmn|scesim/",
+          "when": "resourceLangId =~ /bpmn|bpmn2|dmn/",
           "command": "extension.kogito.getPreviewSvg"
         }
       ],
       "editor/title": [
         {
-          "when": "resourceLangId =~ /bpmn|bpmn2|dmn|scesim/",
+          "when": "resourceLangId =~ /bpmn|bpmn2|dmn/",
           "command": "extension.kogito.getPreviewSvg",
           "group": "navigation"
         }
