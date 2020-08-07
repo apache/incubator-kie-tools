@@ -41,11 +41,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.views.pfly.widgets.ConfirmPopup;
 import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
+import org.uberfire.mvp.Command;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -86,6 +88,9 @@ public class NewContainerWizardTest {
     @Mock
     WizardView view;
 
+    @Mock
+    ConfirmPopup confirmPopup;
+
     NewContainerWizard newContainerWizard;
 
     @Before
@@ -102,7 +107,8 @@ public class NewContainerWizardTest {
                 notification,
                 serverTemplateSelectedEvent,
                 dependencyPathSelectedEvent,
-                m2RepoServiceCaller
+                m2RepoServiceCaller,
+                confirmPopup
         ) );
 
         final Field field = AbstractWizard.class.getDeclaredField( "view" );
@@ -210,26 +216,40 @@ public class NewContainerWizardTest {
         JarListPageRow jarListPageRow = new JarListPageRow();
         GAV gav = new GAV("test", "test", "1.0");
         containerSpec.setReleasedId(new ReleaseId(gav.getGroupId(), gav.getArtifactId(), gav.getVersion()));
-        jarListPageRow.setGav(new GAV("test1", "test1", "1.0"));
+        jarListPageRow.setGav(new GAV("test1", "test1", "2.0"));
         jarListPageRow.setPath("test_path");
 
         response.setPageRowList(Arrays.asList(jarListPageRow));
+
         when(m2RepoService.listArtifacts(any())).thenReturn(response);
         when(newContainerFormPresenter.buildContainerSpec(eq(serverTemplate.getId()), anyMap())).thenReturn(containerSpec);
         when(newContainerFormPresenter.getServerTemplate()).thenReturn(serverTemplate);
-        final String gavNotFind = "NOTFIND";
-        when(newContainerFormPresenterView.getNewContainerGAVNotExist(any())).thenReturn(gavNotFind);
-
+        final String successMessage = "SUCCESS";
+        doNothing().when(specManagementService).saveContainerSpec(anyString(), any(ContainerSpec.class));
+        when(newContainerFormPresenterView.getNewContainerWizardSaveSuccess()).thenReturn(successMessage);
         newContainerWizard.setServerTemplate(serverTemplate);
         newContainerWizard.complete();
 
         verify(processConfigPagePresenter).buildProcessConfig();
         verify(newContainerFormPresenter).buildContainerSpec(eq(serverTemplate.getId()), anyMap());
 
+        ArgumentCaptor<Command> captureCommand = ArgumentCaptor.forClass(Command.class);
+        verify(confirmPopup).show(any(), any(), any(), captureCommand.capture());
+        captureCommand.getValue().execute();
+
         final ArgumentCaptor<NotificationEvent> eventCaptor = ArgumentCaptor.forClass(NotificationEvent.class);
         verify(notification).fire(eventCaptor.capture());
         final NotificationEvent event = eventCaptor.getValue();
-        assertEquals(gavNotFind, event.getNotification());
+        assertEquals(successMessage, event.getNotification());
+        assertEquals(NotificationEvent.NotificationType.SUCCESS, event.getType());
+
+        final ArgumentCaptor<ServerTemplateSelected> serverTemplateEventCaptor = ArgumentCaptor.forClass(ServerTemplateSelected.class);
+        verify(serverTemplateSelectedEvent).fire(serverTemplateEventCaptor.capture());
+        final ServerTemplateSelected serverEvent = serverTemplateEventCaptor.getValue();
+        assertEquals(serverTemplate, serverEvent.getServerTemplateKey());
+        assertEquals(containerSpec.getId(), serverEvent.getContainerId());
+
+        verifyClear();
     }
 
     @Test

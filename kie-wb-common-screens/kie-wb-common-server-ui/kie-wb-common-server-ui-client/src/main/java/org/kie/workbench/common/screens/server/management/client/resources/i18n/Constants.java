@@ -239,4 +239,13 @@ public class Constants {
     @TranslationKey(defaultValue = "")
     public static final String NewContainer_GAVNotExist = "NewContainer.GAVNotExist";
 
+    @TranslationKey(defaultValue = "")
+    public static final String NewContainer_GAVNotExist_Save = "NewContainer.GAVNotExist.Save";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NewContainer_SaveContainerSpec = "NewContainer.SaveContainerSpec";
+
+    @TranslationKey(defaultValue = "")
+    public static final String NewContainer_Save = "NewContainer.Save";
+
 }

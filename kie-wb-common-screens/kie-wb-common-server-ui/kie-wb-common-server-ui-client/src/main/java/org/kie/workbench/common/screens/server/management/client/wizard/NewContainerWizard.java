@@ -46,6 +46,7 @@ import org.kie.workbench.common.screens.server.management.client.events.ServerTe
 import org.kie.workbench.common.screens.server.management.client.wizard.config.process.ProcessConfigPagePresenter;
 import org.kie.workbench.common.screens.server.management.client.wizard.container.NewContainerFormPresenter;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
+import org.uberfire.client.views.pfly.widgets.ConfirmPopup;
 import org.uberfire.paging.PageResponse;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -61,6 +62,7 @@ public class NewContainerWizard extends AbstractMultiPageWizard {
     private Event<DependencyPathSelectedEvent> dependencyPathSelectedEvent;
     private final Caller<M2RepoService> m2RepoService;
     protected boolean isSelected = false;
+    private final ConfirmPopup confirmPopup;
 
     @Inject
     public NewContainerWizard(final NewContainerFormPresenter newContainerFormPresenter,
@@ -69,7 +71,8 @@ public class NewContainerWizard extends AbstractMultiPageWizard {
                               final Event<NotificationEvent> notification,
                               final Event<ServerTemplateSelected> serverTemplateSelectedEvent,
                               final Event<DependencyPathSelectedEvent> dependencyPathSelectedEvent,
-                              final Caller<M2RepoService> m2RepoService) {
+                              final Caller<M2RepoService> m2RepoService,
+                              final ConfirmPopup confirmPopup) {
         this.newContainerFormPresenter = newContainerFormPresenter;
         this.processConfigPagePresenter = processConfigPagePresenter;
         this.specManagementService = specManagementService;
@@ -77,6 +80,7 @@ public class NewContainerWizard extends AbstractMultiPageWizard {
         this.serverTemplateSelectedEvent = serverTemplateSelectedEvent;
         this.dependencyPathSelectedEvent = dependencyPathSelectedEvent;
         this.m2RepoService = m2RepoService;
+        this.confirmPopup = confirmPopup;
     }
 
     @Override
@@ -141,28 +145,33 @@ public class NewContainerWizard extends AbstractMultiPageWizard {
             List<JarListPageRow> jarListPageRowList = ((PageResponse<JarListPageRow>) response).getPageRowList();
             Optional<JarListPageRow> optionalJarListPageRow = jarListPageRowList.stream().filter(jarListPageRow -> jarListPageRow.getGav().equals(gav)).findFirst();
             if (optionalJarListPageRow.isPresent()) {
-                specManagementService.call(new RemoteCallback<Void>() {
-                    @Override
-                    public void callback(final Void o) {
-                        notification.fire(new NotificationEvent(newContainerFormPresenter.getView().getNewContainerWizardSaveSuccess(), NotificationEvent.NotificationType.SUCCESS));
-                        clear();
-                        NewContainerWizard.super.complete();
-                        serverTemplateSelectedEvent.fire(new ServerTemplateSelected(serverTemplate, newContainer.getId()));
-                    }
-                }, new ErrorCallback<Object>() {
-                    @Override
-                    public boolean error(final Object o,
-                                         final Throwable throwable) {
-                        notification.fire(new NotificationEvent(newContainerFormPresenter.getView().getNewContainerWizardSaveError(), NotificationEvent.NotificationType.ERROR));
-                        NewContainerWizard.this.pageSelected(0);
-                        NewContainerWizard.this.start();
-                        return false;
-                    }
-                }).saveContainerSpec(newContainerFormPresenter.getServerTemplate().getId(), newContainer);
+                saveContainerSpec(newContainer);
             } else {
-                notification.fire(new NotificationEvent(newContainerFormPresenter.getView().getNewContainerGAVNotExist(gav.toString()), NotificationEvent.NotificationType.ERROR));
+                confirmPopup.show(newContainerFormPresenter.getView().getNewContainerSaveContainerSpec(), newContainerFormPresenter.getView().getNewContainerSave(),
+                                  newContainerFormPresenter.getView().getNewContainerGAVNotExistSave(gav.toString()), () -> saveContainerSpec(newContainer));
             }
         }).listArtifacts(request);
+    }
+
+    protected void saveContainerSpec(final ContainerSpec newContainer) {
+        specManagementService.call(new RemoteCallback<Void>() {
+            @Override
+            public void callback(final Void o) {
+                notification.fire(new NotificationEvent(newContainerFormPresenter.getView().getNewContainerWizardSaveSuccess(), NotificationEvent.NotificationType.SUCCESS));
+                clear();
+                NewContainerWizard.super.complete();
+                serverTemplateSelectedEvent.fire(new ServerTemplateSelected(serverTemplate, newContainer.getId()));
+            }
+        }, new ErrorCallback<Object>() {
+            @Override
+            public boolean error(final Object o,
+                                 final Throwable throwable) {
+                notification.fire(new NotificationEvent(newContainerFormPresenter.getView().getNewContainerWizardSaveError(), NotificationEvent.NotificationType.ERROR));
+                NewContainerWizard.this.pageSelected(0);
+                NewContainerWizard.this.start();
+                return false;
+            }
+        }).saveContainerSpec(newContainerFormPresenter.getServerTemplate().getId(), newContainer);
     }
 
     public void onDependencyPathSelectedEvent(@Observes DependencyPathSelectedEvent event){

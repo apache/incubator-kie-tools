@@ -389,5 +389,11 @@ public class NewContainerFormPresenter implements WizardPage {
         String getNewContainerWizardSaveError();
 
         String getNewContainerGAVNotExist(String gav);
+
+        String getNewContainerGAVNotExistSave(String gav);
+
+        String getNewContainerSaveContainerSpec();
+
+        String getNewContainerSave();
     }
 }
