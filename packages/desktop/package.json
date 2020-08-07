@@ -25,7 +25,7 @@
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "jest",
     "ui-test": "tsc && mocha ./out/src/ui-test",
-    "ui-test:clean": " yarn run build:fast && tsc && mocha ./src/ui-test",
+    "ui-test:clean": " yarn run build:fast && tsc && mocha ./out/src/ui-test",
     "init": "yarn -f",
     "build": "yarn run lint && yarn test && yarn run build:fast && yarn run ui-test",
     "build:fast": "rm -rf dist && webpack --mode development",
