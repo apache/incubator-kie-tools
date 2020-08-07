@@ -26,7 +26,7 @@ export interface KogitoEditorEnvelopeContextType {
   services: {
     keyboardShortcuts: DefaultKeyboardShortcutsService;
     guidedTour: { isEnabled: () => boolean };
-    pmmlEditorMarshaller: PMMLEditorMarshallerService;
+    pmmlEditorMarshallerService: PMMLEditorMarshallerService;
   };
 }
 
