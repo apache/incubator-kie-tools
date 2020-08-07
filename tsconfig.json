@@ -10,7 +10,6 @@
     "strictNullChecks": true,
     "experimentalDecorators": true,
     "downlevelIteration": true,
-    "jsx": "react",
-    "skipLibCheck": true
+    "jsx": "react"
   }
 }
