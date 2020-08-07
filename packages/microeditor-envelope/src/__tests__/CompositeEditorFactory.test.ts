@@ -27,6 +27,7 @@ import { CompositeEditorFactory } from "../CompositeEditorFactory";
 import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
 import { DummyEditor } from "./editor/DummyEditor";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import { PMMLEditorMarshallerService } from "@kogito-tooling/pmml-editor-marshaller";
 
 const dummyEditor: Editor = new DummyEditor();
 
@@ -48,7 +49,8 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   services: {
     guidedTour: { isEnabled: () => false },
     keyboardShortcuts: new DefaultKeyboardShortcutsService({ editorContext: editorContext }),
-    i18n: new I18nService()
+    i18n: new I18nService(),
+    pmmlEditorMarshallerService: new PMMLEditorMarshallerService()
   }
 };
 

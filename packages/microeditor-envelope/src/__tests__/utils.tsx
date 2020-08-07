@@ -18,6 +18,7 @@ import { KogitoEditorEnvelopeContext, KogitoEditorEnvelopeContextType } from "@k
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import * as React from "react";
 import { I18nService } from "@kogito-tooling/microeditor-envelope-protocol";
+import { PMMLEditorMarshallerService } from "@kogito-tooling/pmml-editor-marshaller";
 
 export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType = {
   channelApi: {} as any,
@@ -27,7 +28,8 @@ export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType =
     guidedTour: {
       isEnabled: () => false
     },
-    i18n: new I18nService()
+    i18n: new I18nService(),
+    pmmlEditorMarshallerService: new PMMLEditorMarshallerService()
   }
 };
 
