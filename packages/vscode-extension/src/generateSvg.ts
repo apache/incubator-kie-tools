@@ -35,7 +35,7 @@ export async function generateSvg(editorStore1: KogitoEditorStore, workspaceApi:
 
     const parsedPath = __path.parse(editor.document.uri.fsPath);
     const svgFileName = `${parsedPath.name}${parsedPath.ext}.svg`;
-    const svgAbsoluteFilePath = `${parsedPath.dir}/${svgFileName}`;
+    const svgAbsoluteFilePath = __path.join(parsedPath.dir, svgFileName);
     fs.writeFileSync(svgAbsoluteFilePath, previewSvg);
 
     vscode.window.showInformationMessage(`SVG saved at '${svgFileName}'.`, "Open SVG").then(() => {
