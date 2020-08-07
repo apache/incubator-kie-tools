@@ -39,7 +39,7 @@ public class NotificationRowTest {
     @Before
     public void setUp() {
         initMocks(this);
-        when(mockNotification.getType()).thenReturn(NotificationType.NotCompletedNotify.getType());
+        when(mockNotification.getType()).thenReturn(NotificationType.NOT_COMPLETED_NOTIFY.getType());
 
         notificationRowUnderTest = new NotificationRow(mockNotification);
     }

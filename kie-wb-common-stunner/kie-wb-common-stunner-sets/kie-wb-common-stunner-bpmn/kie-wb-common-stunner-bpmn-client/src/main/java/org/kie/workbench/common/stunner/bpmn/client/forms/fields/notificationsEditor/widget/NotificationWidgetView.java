@@ -30,6 +30,8 @@ public interface NotificationWidgetView extends IsWidget {
 
         String getToUsersLabel();
 
+        String getToEmailsLabel();
+
         String getToGroupsLabel();
 
         String getExpiresAtLabel();

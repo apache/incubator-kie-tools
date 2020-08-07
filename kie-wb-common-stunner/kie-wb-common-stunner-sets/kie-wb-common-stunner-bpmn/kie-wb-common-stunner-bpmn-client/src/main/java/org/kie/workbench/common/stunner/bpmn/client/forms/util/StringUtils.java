@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.util;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.google.gwt.regexp.shared.RegExp;
@@ -38,7 +39,6 @@ public class StringUtils {
 
     /**
      * Creates a string for a list by concatenating each object's String separated by commas
-     *
      * @param objects
      * @return
      */
@@ -48,7 +48,6 @@ public class StringUtils {
 
     /**
      * Creates a string for a list by concatenating each object's String separated by a custom delimiter
-     *
      * @param objects
      * @param delimiter
      * @return
@@ -90,7 +89,6 @@ public class StringUtils {
 
     /**
      * Decode a url parameters see {@link URL#decodeQueryString(String)}
-     *
      * @param s
      * @return
      */
@@ -138,9 +136,18 @@ public class StringUtils {
         return !isEmpty(value);
     }
 
+    @SuppressWarnings("rawtypes")
+    public static boolean isEmpty(Collection collection) {
+        return collection == null || collection.isEmpty();
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static boolean nonEmpty(Collection collection) {
+        return !isEmpty(collection);
+    }
+
     /**
      * Create display name for a datatype, e.g. for "org.test.Person", returns "Person [org.test]"
-     *
      * @param dataType
      * @return
      */

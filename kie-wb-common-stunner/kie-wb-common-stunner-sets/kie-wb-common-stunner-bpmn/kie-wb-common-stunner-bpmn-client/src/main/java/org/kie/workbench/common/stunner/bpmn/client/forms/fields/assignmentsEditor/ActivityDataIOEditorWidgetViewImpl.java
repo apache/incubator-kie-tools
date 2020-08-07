@@ -97,15 +97,15 @@ public class ActivityDataIOEditorWidgetViewImpl extends Composite implements Act
     @Override
     public void init(final Presenter presenter) {
         this.presenter = presenter;
-        addVarButton.setText(StunnerFormsClientFieldsConstants.INSTANCE.Add());
+        addVarButton.setText(StunnerFormsClientFieldsConstants.CONSTANTS.Add());
         addVarButton.setIcon(IconType.PLUS);
-        nameth.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Name());
-        datatypeth.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Data_Type());
+        nameth.setInnerText(StunnerFormsClientFieldsConstants.CONSTANTS.Name());
+        datatypeth.setInnerText(StunnerFormsClientFieldsConstants.CONSTANTS.Data_Type());
     }
 
     @Override
     public void showOnlySingleEntryAllowed() {
-        notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.Only_single_entry_allowed(),
+        notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.CONSTANTS.Only_single_entry_allowed(),
                                                 NotificationEvent.NotificationType.ERROR));
     }
 
@@ -116,37 +116,37 @@ public class ActivityDataIOEditorWidgetViewImpl extends Composite implements Act
 
     @Override
     public void setTableTitleInputSingle() {
-        tabletitle.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Data_Input_and_Assignment());
+        tabletitle.setInnerText(StunnerFormsClientFieldsConstants.CONSTANTS.Data_Input_and_Assignment());
     }
 
     @Override
     public void setTableTitleInputMultiple() {
-        tabletitle.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Data_Inputs_and_Assignments());
+        tabletitle.setInnerText(StunnerFormsClientFieldsConstants.CONSTANTS.Data_Inputs_and_Assignments());
     }
 
     @Override
     public void setTableTitleOutputSingle() {
-        tabletitle.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Data_Output_and_Assignment());
+        tabletitle.setInnerText(StunnerFormsClientFieldsConstants.CONSTANTS.Data_Output_and_Assignment());
     }
 
     @Override
     public void setTableTitleOutputMultiple() {
-        tabletitle.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Data_Outputs_and_Assignments());
+        tabletitle.setInnerText(StunnerFormsClientFieldsConstants.CONSTANTS.Data_Outputs_and_Assignments());
     }
 
     @Override
     public void setProcessVarAsSource() {
         sourceTargetHelp.setAttribute(DATA_CONTENT_ATTR,
-                                      StunnerFormsClientFieldsConstants.INSTANCE.assignment_source_help());
-        popup.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Source());
+                                      StunnerFormsClientFieldsConstants.CONSTANTS.assignment_source_help());
+        popup.setInnerText(StunnerFormsClientFieldsConstants.CONSTANTS.Source());
         sourceTargetHelpPopover.wrap(sourceTargetHelp).popover();
     }
 
     @Override
     public void setProcessVarAsTarget() {
         sourceTargetHelp.setAttribute(DATA_CONTENT_ATTR,
-                                      StunnerFormsClientFieldsConstants.INSTANCE.assignment_target_help());
-        popup.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Target());
+                                      StunnerFormsClientFieldsConstants.CONSTANTS.assignment_target_help());
+        popup.setInnerText(StunnerFormsClientFieldsConstants.CONSTANTS.Target());
         sourceTargetHelpPopover.wrap(sourceTargetHelp).popover();
     }
 

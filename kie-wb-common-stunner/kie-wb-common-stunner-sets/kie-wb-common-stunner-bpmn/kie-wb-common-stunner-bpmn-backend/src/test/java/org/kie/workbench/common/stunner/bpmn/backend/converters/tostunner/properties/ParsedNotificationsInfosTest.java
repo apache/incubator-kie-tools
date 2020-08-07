@@ -51,7 +51,7 @@ public class ParsedNotificationsInfosTest {
 
     @Test
     public void testNotificationPartial() {
-        String body = "[from:|tousers:|togroups:|replyTo:|subject:|body:]@[0h]";
+        String body = "[from:|tousers:|togroups:|toemails:|replyTo:|subject:|body:]@[0h]";
         NotificationValue actual = ParsedNotificationsInfos.of(AssociationType.NOT_COMPLETED_NOTIFY.getName(), body);
         NotificationValue expected = new NotificationValue();
         expected.setType(AssociationType.NOT_COMPLETED_NOTIFY.getName());

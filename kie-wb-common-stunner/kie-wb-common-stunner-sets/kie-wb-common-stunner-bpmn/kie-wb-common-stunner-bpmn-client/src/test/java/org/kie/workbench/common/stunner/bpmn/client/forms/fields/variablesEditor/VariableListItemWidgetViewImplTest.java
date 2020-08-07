@@ -379,7 +379,7 @@ public class VariableListItemWidgetViewImplTest {
         when(parent.isDuplicateName(VARIABLE_NEW_NAME)).thenReturn(true);
         prepareNameChange(VARIABLE_NEW_NAME, MODEL_NEW_TO_STRING);
         verify(parent).isDuplicateName(VARIABLE_NEW_NAME);
-        verify(notification).fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.DuplicatedVariableNameError(VARIABLE_NEW_NAME),
+        verify(notification).fire(new NotificationEvent(StunnerFormsClientFieldsConstants.CONSTANTS.DuplicatedVariableNameError(VARIABLE_NEW_NAME),
                                                         NotificationEvent.NotificationType.ERROR));
         verify(name).setValue(VARIABLE_NAME);
     }
@@ -402,7 +402,7 @@ public class VariableListItemWidgetViewImplTest {
         verify(parent).isDuplicateName(VARIABLE_NEW_NAME);
         verify(parent).isBoundToNodes(VARIABLE_NAME);
         verify(name).setValue(VARIABLE_NAME);
-        verify(errorPopupPresenter).showMessage(StunnerFormsClientFieldsConstants.INSTANCE.RenameDiagramVariableError());
+        verify(errorPopupPresenter).showMessage(StunnerFormsClientFieldsConstants.CONSTANTS.RenameDiagramVariableError());
     }
 
     private void prepareNameChange(String newName, String newToString) {

@@ -195,7 +195,7 @@ public class NotificationValueValidator implements ConstraintValidator<ValidNoti
             -> isRepeatableDateTimeExpression.or(isDateTimeExpression).test(maybeIso);
 
     public Map<Expiration, Predicate> validators = ImmutableMap.of(
-            Expiration.TIMEPERIOD, isValidRepeatableExpression,
+            Expiration.TIME_PERIOD, isValidRepeatableExpression,
             Expiration.DATETIME, isValidDateTimeExpression,
             Expiration.EXPRESSION, isValidRepeatableExpression);
 

@@ -26,13 +26,13 @@ public class NotificationTypeDateConverterTest {
 
     @Test
     public void toModelValueTest() {
-        Assert.assertEquals(NotificationType.NotStartedNotify, notificationTypeDateConverter.toModelValue("NotStartedNotify"));
-        Assert.assertEquals(NotificationType.NotCompletedNotify, notificationTypeDateConverter.toModelValue("NotCompletedNotify"));
+        Assert.assertEquals(NotificationType.NOT_STARTED_NOTIFY, notificationTypeDateConverter.toModelValue("NotStartedNotify"));
+        Assert.assertEquals(NotificationType.NOT_COMPLETED_NOTIFY, notificationTypeDateConverter.toModelValue("NotCompletedNotify"));
     }
 
     @Test
     public void toWidgetValueTest() {
-        Assert.assertEquals(NotificationType.NotStartedNotify.getType(), notificationTypeDateConverter.toWidgetValue(NotificationType.NotStartedNotify));
-        Assert.assertEquals(NotificationType.NotCompletedNotify.getType(), notificationTypeDateConverter.toWidgetValue(NotificationType.NotCompletedNotify));
+        Assert.assertEquals(NotificationType.NOT_STARTED_NOTIFY.getType(), notificationTypeDateConverter.toWidgetValue(NotificationType.NOT_STARTED_NOTIFY));
+        Assert.assertEquals(NotificationType.NOT_COMPLETED_NOTIFY.getType(), notificationTypeDateConverter.toWidgetValue(NotificationType.NOT_COMPLETED_NOTIFY));
     }
 }

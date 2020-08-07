@@ -62,10 +62,13 @@ public interface StunnerBPMNConstants {
     @TranslationKey(defaultValue = "Notifications")
     String NOTIFICATIONS_LABEL = "notifications.label";
 
-    @TranslationKey(defaultValue = "To users")
+    @TranslationKey(defaultValue = "To: user(s)")
     String NOTIFICATION_TO_USERS = "notification.toUsers";
 
-    @TranslationKey(defaultValue = "To groups")
+    @TranslationKey(defaultValue = "To: email(s)")
+    String NOTIFICATION_TO_EMAILS = "notification.toEmails";
+
+    @TranslationKey(defaultValue = "To: group(s)")
     String NOTIFICATION_TO_GROUPS = "notification.toGroups";
 
     @TranslationKey(defaultValue = "From")
@@ -78,13 +81,13 @@ public interface StunnerBPMNConstants {
     String NOTIFICATION_SUBJECT = "notification.subject";
 
     @TranslationKey(defaultValue = "Reply to")
-    String NOTIFICATION_REPLYTO = "notification.replyTo";
+    String NOTIFICATION_REPLY_TO = "notification.replyTo";
 
     @TranslationKey(defaultValue = "Type")
     String NOTIFICATION_TYPE = "notification.type";
 
     @TranslationKey(defaultValue = "Expires at")
-    String NOTIFICATION_EXPIRESAT = "notification.expiresAt";
+    String NOTIFICATION_EXPIRES_AT = "notification.expiresAt";
 
     @TranslationKey(defaultValue = "Delete")
     String NOTIFICATION_DELETE = "notification.delete";
@@ -93,10 +96,10 @@ public interface StunnerBPMNConstants {
     String NOTIFICATION_EXPIRATION_EXPRESSION_LABEL = "notification.expiration.expression.label";
 
     @TranslationKey(defaultValue = "Date/time")
-    String NOTIFICATION_EXPIRATION_DATETIME_LABEL = "notification.datetime";
+    String NOTIFICATION_EXPIRATION_DATETIME_LABEL = "notification.expiration.datetime.label";
 
     @TranslationKey(defaultValue = "Time period")
-    String NOTIFICATION_EXPIRATION_TIMEPERIOD_LABEL = "notification.expiration.timeperiod.label";
+    String NOTIFICATION_EXPIRATION_TIME_PERIOD_LABEL = "notification.expiration.time.period.label";
 
     @TranslationKey(defaultValue = "Edit")
     String EDIT = "combobox.edit";

@@ -505,14 +505,14 @@ public class AssignmentData {
             inputAssignments = removeDisallowedInputAssignmentRows(inputAssignments);
             if (inputAssignments == null || inputAssignments.isEmpty()) {
                 if (isSingleInputVar) {
-                    sb.append(StunnerFormsClientFieldsConstants.INSTANCE.No_Data_Input());
+                    sb.append(StunnerFormsClientFieldsConstants.CONSTANTS.No_Data_Input());
                 } else {
-                    sb.append("0 " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Inputs());
+                    sb.append("0 " + StunnerFormsClientFieldsConstants.CONSTANTS.Data_Inputs());
                 }
             } else if (inputAssignments.size() == 1) {
-                sb.append("1 " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Input());
+                sb.append("1 " + StunnerFormsClientFieldsConstants.CONSTANTS.Data_Input());
             } else if (inputAssignments.size() > 1) {
-                sb.append(inputAssignments.size() + " " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Inputs());
+                sb.append(inputAssignments.size() + " " + StunnerFormsClientFieldsConstants.CONSTANTS.Data_Inputs());
             }
         }
         if (hasOutputVars) {
@@ -522,14 +522,14 @@ public class AssignmentData {
             List<AssignmentRow> outputAssignments = getAssignmentRows(Variable.VariableType.OUTPUT);
             if (outputAssignments == null || outputAssignments.isEmpty()) {
                 if (isSingleOutputVar) {
-                    sb.append(StunnerFormsClientFieldsConstants.INSTANCE.No_Data_Output());
+                    sb.append(StunnerFormsClientFieldsConstants.CONSTANTS.No_Data_Output());
                 } else {
-                    sb.append("0 " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Outputs());
+                    sb.append("0 " + StunnerFormsClientFieldsConstants.CONSTANTS.Data_Outputs());
                 }
             } else if (outputAssignments.size() == 1) {
-                sb.append("1 " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Output());
+                sb.append("1 " + StunnerFormsClientFieldsConstants.CONSTANTS.Data_Output());
             } else if (outputAssignments.size() > 1) {
-                sb.append(outputAssignments.size() + " " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Outputs());
+                sb.append(outputAssignments.size() + " " + StunnerFormsClientFieldsConstants.CONSTANTS.Data_Outputs());
             }
         }
         variableCountsString = sb.toString();

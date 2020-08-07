@@ -146,7 +146,7 @@ public class VariablesEditorFieldRendererTest {
     public void testRemoveVariableWhenBoundToNodes() {
         prepareRemoveVariableTest(true);
         variablesEditor.removeVariable(variableRow);
-        verify(errorPopupPresenter).showMessage(StunnerFormsClientFieldsConstants.INSTANCE.DeleteDiagramVariableError());
+        verify(errorPopupPresenter).showMessage(StunnerFormsClientFieldsConstants.CONSTANTS.DeleteDiagramVariableError());
         verify(variablesEditorWidgetView).getVariableRows();
         verify(variablesEditorWidgetView, never()).doSave();
     }
@@ -155,7 +155,7 @@ public class VariablesEditorFieldRendererTest {
     public void testRemoveVariableWhenNotBoundToNodes() {
         prepareRemoveVariableTest(false);
         variablesEditor.removeVariable(variableRow);
-        verify(errorPopupPresenter, never()).showMessage(StunnerFormsClientFieldsConstants.INSTANCE.DeleteDiagramVariableError());
+        verify(errorPopupPresenter, never()).showMessage(StunnerFormsClientFieldsConstants.CONSTANTS.DeleteDiagramVariableError());
         verify(variablesEditorWidgetView, times(2)).getVariableRows();
         verify(variablesEditorWidgetView).doSave();
     }

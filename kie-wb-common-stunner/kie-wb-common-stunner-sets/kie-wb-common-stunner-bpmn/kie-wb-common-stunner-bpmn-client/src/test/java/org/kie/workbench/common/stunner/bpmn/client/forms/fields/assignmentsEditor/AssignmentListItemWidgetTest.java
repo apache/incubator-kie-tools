@@ -314,7 +314,7 @@ public class AssignmentListItemWidgetTest {
     public void testSetProcessVariablesVar() {
         ListBoxValues.ValueTester processVarTester = userValue -> null;
         ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.EXPRESSION_PROMPT,
-                                                                  StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                  StunnerFormsClientFieldsConstants.CONSTANTS.Edit() + " ",
                                                                   processVarTester,
                                                                   ActivityDataIOEditorViewImpl.EXPRESSION_MAX_DISPLAY_LENGTH);
         processVarComboBox.setListBoxValues(processVarListBoxValues);
@@ -334,7 +334,7 @@ public class AssignmentListItemWidgetTest {
     public void testSetProcessVariablesConst() {
         ListBoxValues.ValueTester processVarTester = userValue -> null;
         ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.EXPRESSION_PROMPT,
-                                                                  StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                  StunnerFormsClientFieldsConstants.CONSTANTS.Edit() + " ",
                                                                   processVarTester,
                                                                   ActivityDataIOEditorViewImpl.EXPRESSION_MAX_DISPLAY_LENGTH);
         processVarComboBox.setAddCustomValues(true);

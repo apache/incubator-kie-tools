@@ -260,18 +260,18 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
     @PostConstruct
     public void init() {
         name.setRegExp(StringUtils.ALPHA_NUM_REGEXP,
-                       StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
-                       StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name());
+                       StunnerFormsClientFieldsConstants.CONSTANTS.Removed_invalid_characters_from_name(),
+                       StunnerFormsClientFieldsConstants.CONSTANTS.Invalid_character_in_name());
 
         name.addChangeHandler(event -> {
             String value = name.getText();
             if (isDuplicateName(value)) {
-                notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.DuplicatedVariableNameError(value),
+                notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.CONSTANTS.DuplicatedVariableNameError(value),
                                                         NotificationEvent.NotificationType.ERROR));
                 name.setValue(currentName);
                 ValueChangeEvent.fire(name, currentName);
             } else if (isBoundToNodes(currentName)) {
-                errorPopupPresenter.showMessage(StunnerFormsClientFieldsConstants.INSTANCE.RenameDiagramVariableError());
+                errorPopupPresenter.showMessage(StunnerFormsClientFieldsConstants.CONSTANTS.RenameDiagramVariableError());
                 name.setValue(currentName);
                 ValueChangeEvent.fire(name, currentName);
             }
@@ -286,8 +286,8 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
                               CUSTOM_PROMPT,
                               ENTER_TYPE_PROMPT);
         customDataType.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP,
-                                 StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
-                                 StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name());
+                                 StunnerFormsClientFieldsConstants.CONSTANTS.Removed_invalid_characters_from_name(),
+                                 StunnerFormsClientFieldsConstants.CONSTANTS.Invalid_character_in_name());
         customDataType.addKeyDownHandler(this::preventSpaces);
 
         PopOver.jQuery(variableTagsSettings).popovers();

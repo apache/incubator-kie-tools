@@ -98,8 +98,8 @@ public class MultipleInstanceVariableEditorView
                 ENTER_TYPE_PROMPT);
 
         customDataType.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP,
-                StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
-                StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name());
+                                 StunnerFormsClientFieldsConstants.CONSTANTS.Removed_invalid_characters_from_name(),
+                                 StunnerFormsClientFieldsConstants.CONSTANTS.Invalid_character_in_name());
 
         ListBoxValues dataTypeListBoxValues = new ListBoxValues(VariableListItemWidgetView.CUSTOM_PROMPT, "Edit ", null);
 

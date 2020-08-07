@@ -183,7 +183,7 @@ public class ActivityDataIOEditorViewImplTest {
                                                         "nameB"));
         view.setInputAssignmentsDisallowedNames(names);
         verify(inputAssignmentsWidget).setDisallowedNames(names,
-                                                          StunnerFormsClientFieldsConstants.INSTANCE.This_input_should_be_entered_as_a_property_for_the_task());
+                                                          StunnerFormsClientFieldsConstants.CONSTANTS.This_input_should_be_entered_as_a_property_for_the_task());
     }
 
     @Test

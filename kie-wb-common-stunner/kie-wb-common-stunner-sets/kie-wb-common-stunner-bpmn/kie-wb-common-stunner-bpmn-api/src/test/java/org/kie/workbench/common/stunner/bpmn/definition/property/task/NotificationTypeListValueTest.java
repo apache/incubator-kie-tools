@@ -49,8 +49,9 @@ public class NotificationTypeListValueTest {
                                          "me",
                                          "NotStartedNotify",
                                          "me",
-                                         Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                         Arrays.asList(new String[]{"foo", "bar", "baz"})));
+                                         Arrays.asList("foo", "bar", "baz"),
+                                         Arrays.asList("foo", "bar", "baz"),
+                                         ""));
         return result;
     }
 }

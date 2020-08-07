@@ -4012,7 +4012,7 @@ public class BPMNDirectDiagramMarshallerTest {
         NotificationsInfo notificationsInfo = userTask.getExecutionSet().getNotificationsInfo();
         assertEquals(1, notificationsInfo.getValue().getValues().size());
         NotificationValue notification = notificationsInfo.getValue().getValues().get(0);
-        assertEquals("[from:director|tousers:alessio,guest,john|togroups:Developer,IT|replyTo:guest|subject:test|body:test body]@[11h]", notification.toCDATAFormat());
+        assertEquals("[from:director|tousers:alessio,guest,john|togroups:Developer,IT|toemails:|replyTo:guest|subject:test|body:test body]@[11h]", notification.toCDATAFormat());
         assertEquals("NotStartedNotify", notification.getType());
     }
 

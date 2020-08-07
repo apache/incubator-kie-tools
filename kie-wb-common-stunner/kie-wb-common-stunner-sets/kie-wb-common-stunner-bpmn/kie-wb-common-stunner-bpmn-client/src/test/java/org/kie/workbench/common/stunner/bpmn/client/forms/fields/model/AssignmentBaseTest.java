@@ -41,7 +41,7 @@ public class AssignmentBaseTest {
         final Answer answer = invocation -> invocation.getMethod().getName();
         final StunnerFormsClientFieldsConstants constants = mock(StunnerFormsClientFieldsConstants.class,
                                                                  answer);
-        setFinalStaticField(StunnerFormsClientFieldsConstants.class.getDeclaredField("INSTANCE"),
+        setFinalStaticField(StunnerFormsClientFieldsConstants.class.getDeclaredField("CONSTANTS"),
                             constants);
 
         // Prevent GWT calls in StringUtils

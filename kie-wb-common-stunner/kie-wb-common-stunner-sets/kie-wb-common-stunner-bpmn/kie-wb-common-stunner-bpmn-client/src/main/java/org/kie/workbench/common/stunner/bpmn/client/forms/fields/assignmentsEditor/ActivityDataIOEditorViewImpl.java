@@ -69,10 +69,10 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         container.setFluid(true);
         container.add(row);
         row.add(column);
-        setTitle(StunnerFormsClientFieldsConstants.INSTANCE.Data_IO());
+        setTitle(StunnerFormsClientFieldsConstants.CONSTANTS.Data_IO());
         inputAssignmentsWidget.setVariableType(Variable.VariableType.INPUT);
         inputAssignmentsWidget.setAllowDuplicateNames(false,
-                                                      StunnerFormsClientFieldsConstants.INSTANCE.A_Data_Input_with_this_name_already_exists());
+                                                      StunnerFormsClientFieldsConstants.CONSTANTS.A_Data_Input_with_this_name_already_exists());
         column.add(inputAssignmentsWidget.getWidget());
         outputAssignmentsWidget.setVariableType(Variable.VariableType.OUTPUT);
         outputAssignmentsWidget.setAllowDuplicateNames(true,
@@ -83,12 +83,12 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                                                     Style.Unit.PX);
         final Column btnColumn = new Column(ColumnSize.MD_12);
         btnRow.add(btnColumn);
-        btnOk = new Button(StunnerFormsClientFieldsConstants.INSTANCE.Ok());
+        btnOk = new Button(StunnerFormsClientFieldsConstants.CONSTANTS.Ok());
         btnOk.setType(ButtonType.PRIMARY);
         btnOk.setPull(Pull.RIGHT);
         btnOk.addClickHandler(clickEvent -> presenter.handleOkClick());
         btnColumn.add(btnOk);
-        btnCancel = new Button(StunnerFormsClientFieldsConstants.INSTANCE.Cancel());
+        btnCancel = new Button(StunnerFormsClientFieldsConstants.CONSTANTS.Cancel());
         btnCancel.setPull(Pull.RIGHT);
         btnCancel.addClickHandler(event -> presenter.handleCancelClick());
         btnColumn.add(btnCancel);
@@ -102,12 +102,12 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     @Override
     public void setCustomViewTitle(final String name) {
-        setTitle(name + " " + StunnerFormsClientFieldsConstants.INSTANCE.Data_IO());
+        setTitle(name + " " + StunnerFormsClientFieldsConstants.CONSTANTS.Data_IO());
     }
 
     @Override
     public void setDefaultViewTitle() {
-        setTitle(StunnerFormsClientFieldsConstants.INSTANCE.Data_IO());
+        setTitle(StunnerFormsClientFieldsConstants.CONSTANTS.Data_IO());
     }
 
     @Override
@@ -163,7 +163,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     @Override
     public void setPossibleInputAssignmentsDataTypes(final List<String> dataTypeDisplayNames) {
         ListBoxValues dataTypeListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.CUSTOM_PROMPT,
-                                                                StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                StunnerFormsClientFieldsConstants.CONSTANTS.Edit() + " ",
                                                                 presenter.dataTypesTester());
         dataTypeListBoxValues.addValues(dataTypeDisplayNames);
         inputAssignmentsWidget.setDataTypes(dataTypeListBoxValues);
@@ -172,7 +172,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     @Override
     public void setPossibleOutputAssignmentsDataTypes(final List<String> dataTypeDisplayNames) {
         ListBoxValues dataTypeListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.CUSTOM_PROMPT,
-                                                                StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                StunnerFormsClientFieldsConstants.CONSTANTS.Edit() + " ",
                                                                 presenter.dataTypesTester(),
                                                                 EXPRESSION_MAX_DISPLAY_LENGTH);
         dataTypeListBoxValues.addValues(dataTypeDisplayNames);
@@ -182,7 +182,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     @Override
     public void setInputAssignmentsProcessVariables(final List<String> processVariables) {
         ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.EXPRESSION_PROMPT,
-                                                                  StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                  StunnerFormsClientFieldsConstants.CONSTANTS.Edit() + " ",
                                                                   presenter.processVarTester(),
                                                                   EXPRESSION_MAX_DISPLAY_LENGTH);
         processVarListBoxValues.addValues(processVariables);
@@ -192,7 +192,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     @Override
     public void setOutputAssignmentsProcessVariables(final List<String> processVariables) {
         ListBoxValues processVarListBoxValues = new ListBoxValues(AssignmentListItemWidgetView.EXPRESSION_PROMPT,
-                                                                  StunnerFormsClientFieldsConstants.INSTANCE.Edit() + " ",
+                                                                  StunnerFormsClientFieldsConstants.CONSTANTS.Edit() + " ",
                                                                   presenter.processVarTester());
         processVarListBoxValues.addValues(processVariables);
         outputAssignmentsWidget.setProcessVariables(processVarListBoxValues);
@@ -201,7 +201,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     @Override
     public void setInputAssignmentsDisallowedNames(final Set<String> names) {
         inputAssignmentsWidget.setDisallowedNames(names,
-                                                  StunnerFormsClientFieldsConstants.INSTANCE.This_input_should_be_entered_as_a_property_for_the_task());
+                                                  StunnerFormsClientFieldsConstants.CONSTANTS.This_input_should_be_entered_as_a_property_for_the_task());
     }
 
     @Override

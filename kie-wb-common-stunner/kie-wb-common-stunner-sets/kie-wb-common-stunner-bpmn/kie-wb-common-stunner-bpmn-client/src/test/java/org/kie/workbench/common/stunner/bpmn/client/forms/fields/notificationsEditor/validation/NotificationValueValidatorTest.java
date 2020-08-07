@@ -38,7 +38,7 @@ public class NotificationValueValidatorTest {
 
     private ConstraintValidatorContext context;
 
-    private List<String> errorMessages = new ArrayList<>();
+    private final List<String> errorMessages = new ArrayList<>();
 
     @Before
     public void setUp() throws Exception {

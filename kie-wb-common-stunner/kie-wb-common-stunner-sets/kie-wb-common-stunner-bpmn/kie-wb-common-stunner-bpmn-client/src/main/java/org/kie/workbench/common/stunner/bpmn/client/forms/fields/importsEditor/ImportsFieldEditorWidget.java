@@ -102,7 +102,7 @@ public class ImportsFieldEditorWidget extends Composite implements HasValue<Impo
 
     protected String buildImportsCountString(final int defaultImportsCount, final int wsdlImportsCount) {
         if (defaultImportsCount == 0 && wsdlImportsCount == 0) {
-            return StunnerFormsClientFieldsConstants.INSTANCE.No_Imports();
+            return StunnerFormsClientFieldsConstants.CONSTANTS.No_Imports();
         } else {
             String defaultImportsCountString = buildDefaultImportsCountString(defaultImportsCount);
             String wsdlImportsCountString = buildWSDLImportsCountString(wsdlImportsCount);
@@ -112,21 +112,21 @@ public class ImportsFieldEditorWidget extends Composite implements HasValue<Impo
 
     protected String buildDefaultImportsCountString(final int defaultImportsCount) {
         if (defaultImportsCount == 0) {
-            return StunnerFormsClientFieldsConstants.INSTANCE.No_Data_Type_Import();
+            return StunnerFormsClientFieldsConstants.CONSTANTS.No_Data_Type_Import();
         } else if (defaultImportsCount == 1) {
-            return StunnerFormsClientFieldsConstants.INSTANCE.Data_Type_Import();
+            return StunnerFormsClientFieldsConstants.CONSTANTS.Data_Type_Import();
         } else {
-            return defaultImportsCount + " " + StunnerFormsClientFieldsConstants.INSTANCE.Data_Type_Imports();
+            return defaultImportsCount + " " + StunnerFormsClientFieldsConstants.CONSTANTS.Data_Type_Imports();
         }
     }
 
     protected String buildWSDLImportsCountString(final int wsdlImportsCount) {
         if (wsdlImportsCount == 0) {
-            return StunnerFormsClientFieldsConstants.INSTANCE.No_WSDL_Import();
+            return StunnerFormsClientFieldsConstants.CONSTANTS.No_WSDL_Import();
         } else if (wsdlImportsCount == 1) {
-            return StunnerFormsClientFieldsConstants.INSTANCE.WSDL_Import();
+            return StunnerFormsClientFieldsConstants.CONSTANTS.WSDL_Import();
         } else {
-            return wsdlImportsCount + " " + StunnerFormsClientFieldsConstants.INSTANCE.WSDL_Imports();
+            return wsdlImportsCount + " " + StunnerFormsClientFieldsConstants.CONSTANTS.WSDL_Imports();
         }
     }
 

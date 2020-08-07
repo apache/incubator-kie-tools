@@ -40,7 +40,7 @@ public class ExpirationTypeOracle {
     public static final String REPEATABLE_DURATION_END = REPEATABLE + "/" + DURATION + "/" + ISO_DATE_TIME + "$";
 
     private Map<Expiration, List<String>> patterns = ImmutableMap.of(
-            Expiration.TIMEPERIOD, Arrays.asList(REPEATABLE + "/" + PERIOD + "$", "^" + PERIOD + "$"),
+            Expiration.TIME_PERIOD, Arrays.asList(REPEATABLE + "/" + PERIOD + "$", "^" + PERIOD + "$"),
             Expiration.DATETIME, Arrays.asList(REPEATABLE + "/" + ISO_DATE_TIME + "/" + PERIOD + "$", "^" + ISO_DATE_TIME + "$"),
             Expiration.EXPRESSION, Arrays.asList());
 

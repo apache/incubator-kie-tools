@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.task;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationValue;
@@ -26,6 +27,8 @@ import org.kie.workbench.common.stunner.core.util.EqualsAndHashCodeTestUtils;
 import static org.junit.Assert.assertEquals;
 
 public class NotificationValueTest {
+
+    private final List<String> EMPTY_LIST = Collections.emptyList();
 
     @Test
     public void testEqualsAndHashCode() {
@@ -38,16 +41,18 @@ public class NotificationValueTest {
                                                    "me",
                                                    "NotStartedNotify",
                                                    "me",
-                                                   Collections.EMPTY_LIST,
-                                                   Collections.EMPTY_LIST),
+                                                   EMPTY_LIST,
+                                                   EMPTY_LIST,
+                                                   ""),
                              new NotificationValue("AAA",
                                                    "1h",
                                                    "Subj",
                                                    "me",
                                                    "NotStartedNotify",
                                                    "me",
-                                                   Collections.EMPTY_LIST,
-                                                   Collections.EMPTY_LIST))
+                                                   EMPTY_LIST,
+                                                   EMPTY_LIST,
+                                                   ""))
 
                 .addTrueCase(new NotificationValue("AAA",
                                                    "1h",
@@ -55,49 +60,54 @@ public class NotificationValueTest {
                                                    "me",
                                                    "NotStartedNotify",
                                                    "me",
-                                                   Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                                   Collections.EMPTY_LIST),
+                                                   Arrays.asList("foo", "bar", "baz"),
+                                                   EMPTY_LIST,
+                                                   ""),
                              new NotificationValue("AAA",
                                                    "1h",
                                                    "Subj",
                                                    "me",
                                                    "NotStartedNotify",
                                                    "me",
-                                                   Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                                   Collections.EMPTY_LIST))
+                                                   Arrays.asList("foo", "bar", "baz"),
+                                                   EMPTY_LIST,
+                                                   ""))
                 .addTrueCase(new NotificationValue("AAA",
                                                    "1h",
                                                    "Subj",
                                                    "me",
                                                    "NotStartedNotify",
                                                    "me",
-                                                   Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                                   Arrays.asList(new String[]{"foo", "bar", "baz"})),
+                                                   Arrays.asList("foo", "bar", "baz"),
+                                                   Arrays.asList("foo", "bar", "baz"),
+                                                   ""),
                              new NotificationValue("AAA",
                                                    "1h",
                                                    "Subj",
                                                    "me",
                                                    "NotStartedNotify",
                                                    "me",
-                                                   Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                                   Arrays.asList(new String[]{"foo", "bar", "baz"})))
-
+                                                   Arrays.asList("foo", "bar", "baz"),
+                                                   Arrays.asList("foo", "bar", "baz"),
+                                                   ""))
                 .addFalseCase(new NotificationValue("AAA1",
                                                     "1h1",
                                                     "Subj1",
                                                     "me1",
                                                     "NotStartedNotify1",
                                                     "me1",
-                                                    Collections.EMPTY_LIST,
-                                                    Collections.EMPTY_LIST),
+                                                    EMPTY_LIST,
+                                                    EMPTY_LIST,
+                                                    ""),
                               new NotificationValue("AAA",
                                                     "1h",
                                                     "Subj",
                                                     "me",
                                                     "NotStartedNotify",
                                                     "me",
-                                                    Collections.EMPTY_LIST,
-                                                    Collections.EMPTY_LIST))
+                                                    EMPTY_LIST,
+                                                    EMPTY_LIST,
+                                                    ""))
 
                 .addFalseCase(new NotificationValue("AAA",
                                                     "1h",
@@ -105,32 +115,36 @@ public class NotificationValueTest {
                                                     "me",
                                                     "NotStartedNotify",
                                                     "me",
-                                                    Arrays.asList(new String[]{"foo1", "bar", "baz"}),
-                                                    Collections.EMPTY_LIST),
+                                                    Arrays.asList("foo1", "bar", "baz"),
+                                                    EMPTY_LIST,
+                                                    ""),
                               new NotificationValue("AAA",
                                                     "1h",
                                                     "Subj",
                                                     "me",
                                                     "NotStartedNotify",
                                                     "me",
-                                                    Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                                    Collections.EMPTY_LIST))
+                                                    Arrays.asList("foo", "bar", "baz"),
+                                                    EMPTY_LIST,
+                                                    ""))
                 .addFalseCase(new NotificationValue("AAA",
                                                     "1h",
                                                     "Subj",
                                                     "me",
                                                     "NotStartedNotify",
                                                     "me",
-                                                    Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                                    Arrays.asList(new String[]{"foo1", "bar", "baz"})),
+                                                    Arrays.asList("foo", "bar", "baz"),
+                                                    Arrays.asList("foo1", "bar", "baz"),
+                                                    ""),
                               new NotificationValue("AAA",
                                                     "1h",
                                                     "Subj",
                                                     "me",
                                                     "NotStartedNotify",
                                                     "me",
-                                                    Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                                    Arrays.asList(new String[]{"foo", "bar", "baz"})))
+                                                    Arrays.asList("foo", "bar", "baz"),
+                                                    Arrays.asList("foo", "bar", "baz"),
+                                                    ""))
                 .test();
     }
 
@@ -142,8 +156,9 @@ public class NotificationValueTest {
                               "me",
                               "NotStartedNotify",
                               "me",
-                              Collections.EMPTY_LIST,
-                              Collections.EMPTY_LIST);
-        assertEquals("[from:me|tousers:|togroups:|replyTo:me|subject:z&#124;asd&#124;ASd&#124;&#124;asd&#124;Asd&#124;asd&#124;|body:a&#124;&#124;&#124;&#124;&#124;&#124;dssf&#124;&#124;sdf&#124;Sdf&#124;sdf&#124;Sdf&#124;SDf]@[1h]", test.toCDATAFormat());
+                              EMPTY_LIST,
+                              EMPTY_LIST,
+                              "");
+        assertEquals("[from:me|tousers:|togroups:|toemails:|replyTo:me|subject:z&#124;asd&#124;ASd&#124;&#124;asd&#124;Asd&#124;asd&#124;|body:a&#124;&#124;&#124;&#124;&#124;&#124;dssf&#124;&#124;sdf&#124;Sdf&#124;sdf&#124;Sdf&#124;SDf]@[1h]", test.toCDATAFormat());
     }
 }

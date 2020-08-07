@@ -168,16 +168,38 @@ public class StringUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("ConstantConditions")
     public void testIsEmpty() {
-        assertTrue(StringUtils.isEmpty(null));
-        assertTrue(StringUtils.isEmpty(""));
-        assertFalse(StringUtils.isEmpty("Hello"));
+        String string = null;
+        assertTrue(StringUtils.isEmpty(string));
+        string = "";
+        assertTrue(StringUtils.isEmpty(string));
+        string = "Hello";
+        assertFalse(StringUtils.isEmpty(string));
+
+        List<String> list = null;
+        assertTrue(StringUtils.isEmpty(list));
+        list = new ArrayList<>();
+        assertTrue(StringUtils.isEmpty(list));
+        list.add("hello");
+        assertFalse(StringUtils.isEmpty(list));
     }
 
     @Test
+    @SuppressWarnings("ConstantConditions")
     public void testNonEmpty() {
-        assertFalse(StringUtils.nonEmpty(null));
-        assertFalse(StringUtils.nonEmpty(""));
-        assertTrue(StringUtils.nonEmpty("Hello"));
+        String string = null;
+        assertFalse(StringUtils.nonEmpty(string));
+        string = "";
+        assertFalse(StringUtils.nonEmpty(string));
+        string = "Hello";
+        assertTrue(StringUtils.nonEmpty(string));
+
+        List<String> list = null;
+        assertFalse(StringUtils.nonEmpty(list));
+        list = new ArrayList<>();
+        assertFalse(StringUtils.nonEmpty(list));
+        list.add("hello");
+        assertTrue(StringUtils.nonEmpty(list));
     }
 }

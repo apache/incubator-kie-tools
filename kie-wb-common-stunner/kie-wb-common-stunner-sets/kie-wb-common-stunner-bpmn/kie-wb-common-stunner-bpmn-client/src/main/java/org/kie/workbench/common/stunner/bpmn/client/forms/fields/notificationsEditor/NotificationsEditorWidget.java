@@ -60,9 +60,10 @@ public class NotificationsEditorWidget extends Composite implements HasValue<Not
 
     void showNotificationsDialog() {
         notificationWidget.setValue(notificationTypeListValue.getValues()
-                                            .stream(
-                                            ).map(r -> new NotificationRow(r))
-                                            .collect(Collectors.toList()), true);
+                                            .stream()
+                                            .map(NotificationRow::new)
+                                            .collect(Collectors.toList()),
+                                    true);
 
         notificationWidget.setCallback(data -> setValue(data,
                                                         true));

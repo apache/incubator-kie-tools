@@ -117,7 +117,7 @@ public class ActivityDataIOEditorWidgetViewImplTest {
     public void testInit() {
         view.init(presenter);
         verify(button,
-               times(1)).setText(StunnerFormsClientFieldsConstants.INSTANCE.Add());
+               times(1)).setText(StunnerFormsClientFieldsConstants.CONSTANTS.Add());
         verify(button,
                times(1)).setIcon(IconType.PLUS);
     }
@@ -151,7 +151,7 @@ public class ActivityDataIOEditorWidgetViewImplTest {
     public void testOnlySingleEntryAllowed() {
         view.showOnlySingleEntryAllowed();
         verify(notification).fire(eventCaptor.capture());
-        assertEquals(StunnerFormsClientFieldsConstants.INSTANCE.Only_single_entry_allowed(),
+        assertEquals(StunnerFormsClientFieldsConstants.CONSTANTS.Only_single_entry_allowed(),
                      eventCaptor.getValue().getNotification());
     }
 

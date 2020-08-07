@@ -21,10 +21,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public enum NotificationType {
-    NotStartedNotify("Not Started", "NotStartedNotify"),
-    NotCompletedNotify("Not Completed", "NotCompletedNotify");
+    NOT_STARTED_NOTIFY("Not Started", "NotStartedNotify"),
+    NOT_COMPLETED_NOTIFY("Not Completed", "NotCompletedNotify");
 
-    private static Map<String, NotificationType> ENUM_MAP;
+    private static final Map<String, NotificationType> ENUM_MAP;
 
     static {
         Map<String, NotificationType> map = new ConcurrentHashMap<>();
@@ -34,9 +34,9 @@ public enum NotificationType {
         ENUM_MAP = Collections.unmodifiableMap(map);
     }
 
-    private String type;
+    private final String type;
 
-    private String alias;
+    private final String alias;
 
     NotificationType(String type, String alias) {
         this.type = type;

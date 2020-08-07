@@ -61,7 +61,7 @@ public class ImportsEditorViewImpl extends BaseModal implements ImportsEditorVie
         container.setFluid(true);
         container.add(row);
         row.add(column);
-        setTitle(StunnerFormsClientFieldsConstants.INSTANCE.Imports());
+        setTitle(StunnerFormsClientFieldsConstants.CONSTANTS.Imports());
 
         column.add(defaultImportsEditorWidget.getWidget());
         column.add(wsdlImportsEditorWidget.getWidget());
@@ -71,14 +71,14 @@ public class ImportsEditorViewImpl extends BaseModal implements ImportsEditorVie
         final Column btnColumn = new Column(ColumnSize.MD_12);
         btnRow.add(btnColumn);
 
-        btnOk = new Button(StunnerFormsClientFieldsConstants.INSTANCE.Ok());
+        btnOk = new Button(StunnerFormsClientFieldsConstants.CONSTANTS.Ok());
         btnOk.getElement().getStyle().setMarginLeft(5, Style.Unit.PX);
         btnOk.setType(ButtonType.PRIMARY);
         btnOk.setPull(Pull.RIGHT);
         btnOk.addClickHandler(clickEvent -> presenter.ok());
         btnColumn.add(btnOk);
 
-        btnCancel = new Button(StunnerFormsClientFieldsConstants.INSTANCE.Cancel());
+        btnCancel = new Button(StunnerFormsClientFieldsConstants.CONSTANTS.Cancel());
         btnCancel.setPull(Pull.RIGHT);
         btnCancel.addClickHandler(clickEvent -> presenter.cancel());
         btnColumn.add(btnCancel);

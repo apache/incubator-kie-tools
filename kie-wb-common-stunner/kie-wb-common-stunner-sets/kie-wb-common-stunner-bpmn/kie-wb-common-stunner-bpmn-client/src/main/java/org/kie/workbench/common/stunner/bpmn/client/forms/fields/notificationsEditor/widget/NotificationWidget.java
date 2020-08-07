@@ -40,9 +40,9 @@ import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationServic
 public class NotificationWidget implements IsWidget,
                                            NotificationWidgetView.Presenter {
 
-    private NotificationWidgetView view;
+    private final NotificationWidgetView view;
 
-    private ClientTranslationService translationService;
+    private final ClientTranslationService translationService;
 
     private List<NotificationRow> rows = new ArrayList<>();
 
@@ -72,13 +72,18 @@ public class NotificationWidget implements IsWidget,
     }
 
     @Override
+    public String getToEmailsLabel() {
+        return translationService.getValue(StunnerBPMNConstants.NOTIFICATION_TO_EMAILS);
+    }
+
+    @Override
     public String getToGroupsLabel() {
         return translationService.getValue(StunnerBPMNConstants.NOTIFICATION_TO_GROUPS);
     }
 
     @Override
     public String getExpiresAtLabel() {
-        return translationService.getValue(StunnerBPMNConstants.NOTIFICATION_EXPIRESAT);
+        return translationService.getValue(StunnerBPMNConstants.NOTIFICATION_EXPIRES_AT);
     }
 
     @Override
@@ -88,7 +93,7 @@ public class NotificationWidget implements IsWidget,
 
     @Override
     public String getReplyToLabel() {
-        return translationService.getValue(StunnerBPMNConstants.NOTIFICATION_REPLYTO);
+        return translationService.getValue(StunnerBPMNConstants.NOTIFICATION_REPLY_TO);
     }
 
     @Override
@@ -131,7 +136,7 @@ public class NotificationWidget implements IsWidget,
         if (callback != null) {
             List<NotificationValue> notifications = getValue()
                     .stream()
-                    .map(row -> row.toNotificationValue())
+                    .map(NotificationRow::toNotificationValue)
                     .collect(Collectors.toList());
             callback.getData(new NotificationTypeListValue(notifications));
         }

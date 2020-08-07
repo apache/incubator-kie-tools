@@ -64,13 +64,13 @@ public class WSDLImportsEditorWidgetView extends Composite implements ImportsEdi
     public void init(final ImportsEditorWidgetView.Presenter presenter) {
         this.presenter = presenter;
 
-        tableTitle.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.WSDL_Imports_Title());
+        tableTitle.setInnerText(StunnerFormsClientFieldsConstants.CONSTANTS.WSDL_Imports_Title());
 
-        addImportButton.setText(StunnerFormsClientFieldsConstants.INSTANCE.Add());
+        addImportButton.setText(StunnerFormsClientFieldsConstants.CONSTANTS.Add());
         addImportButton.setIcon(IconType.PLUS);
 
-        locationTableHeader.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Location());
-        namespaceTableHeader.setInnerText(StunnerFormsClientFieldsConstants.INSTANCE.Namespace());
+        locationTableHeader.setInnerText(StunnerFormsClientFieldsConstants.CONSTANTS.Location());
+        namespaceTableHeader.setInnerText(StunnerFormsClientFieldsConstants.CONSTANTS.Namespace());
     }
 
     @Override

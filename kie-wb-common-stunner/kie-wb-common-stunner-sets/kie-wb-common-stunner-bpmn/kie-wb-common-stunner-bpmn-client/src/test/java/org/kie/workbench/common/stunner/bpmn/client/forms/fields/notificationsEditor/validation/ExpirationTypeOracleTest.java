@@ -79,13 +79,13 @@ public class ExpirationTypeOracleTest {
     @Test
     public void testISO8601RepeatableValue() {
         Expiration result = oracle.guess("R/PT33M");
-        assertEquals(Expiration.TIMEPERIOD, result);
+        assertEquals(Expiration.TIME_PERIOD, result);
     }
 
     @Test
     public void testMonthRepeatableUntilStateChangesNotification() {
         Expiration result = oracle.guess("R/P33M");
-        assertEquals(Expiration.TIMEPERIOD, result);
+        assertEquals(Expiration.TIME_PERIOD, result);
     }
 
     @Test

@@ -71,13 +71,13 @@ public class MetaDataListItemWidgetViewImpl implements MetaDataListItemWidgetVie
     @PostConstruct
     public void init() {
         attribute.setRegExp(StringUtils.ALPHA_NUM_REGEXP,
-                            StunnerFormsClientFieldsConstants.INSTANCE.Removed_invalid_characters_from_name(),
-                            StunnerFormsClientFieldsConstants.INSTANCE.Invalid_character_in_name());
+                            StunnerFormsClientFieldsConstants.CONSTANTS.Removed_invalid_characters_from_name(),
+                            StunnerFormsClientFieldsConstants.CONSTANTS.Invalid_character_in_name());
 
         attribute.addChangeHandler(event -> {
             String attributeValue = attribute.getText();
             if (isDuplicateName(attributeValue)) {
-                parentWidget.showErrorMessage(StunnerFormsClientFieldsConstants.INSTANCE.DuplicatedAttributeNameError(attributeValue));
+                parentWidget.showErrorMessage(StunnerFormsClientFieldsConstants.CONSTANTS.DuplicatedAttributeNameError(attributeValue));
                 attribute.setValue(currentName);
                 ValueChangeEvent.fire(attribute, currentName);
             }

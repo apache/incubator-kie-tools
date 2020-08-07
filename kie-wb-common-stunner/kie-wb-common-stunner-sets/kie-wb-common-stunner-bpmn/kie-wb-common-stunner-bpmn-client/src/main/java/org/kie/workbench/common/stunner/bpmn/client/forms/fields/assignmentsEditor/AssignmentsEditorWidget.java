@@ -312,7 +312,7 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
                     return null;
                 })
                 .catch_(exception -> {
-                    notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.Error_retrieving_datatypes(),
+                    notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.CONSTANTS.Error_retrieving_datatypes(),
                                                             NotificationEvent.NotificationType.ERROR));
                     showDataIOEditor(simpleDataTypes);
                     return null;

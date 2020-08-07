@@ -26,10 +26,10 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 
 public interface AssignmentListItemWidgetView extends HasModel<AssignmentRow> {
 
-    String CUSTOM_PROMPT = StunnerFormsClientFieldsConstants.INSTANCE.Custom() + ListBoxValues.EDIT_SUFFIX;
-    String ENTER_TYPE_PROMPT = StunnerFormsClientFieldsConstants.INSTANCE.Enter_type() + ListBoxValues.EDIT_SUFFIX;
-    String EXPRESSION_PROMPT = StunnerFormsClientFieldsConstants.INSTANCE.Expression() + ListBoxValues.EDIT_SUFFIX;
-    String ENTER_EXPRESSION_PROMPT = StunnerFormsClientFieldsConstants.INSTANCE.Enter_expression() + ListBoxValues.EDIT_SUFFIX;
+    String CUSTOM_PROMPT = StunnerFormsClientFieldsConstants.CONSTANTS.Custom() + ListBoxValues.EDIT_SUFFIX;
+    String ENTER_TYPE_PROMPT = StunnerFormsClientFieldsConstants.CONSTANTS.Enter_type() + ListBoxValues.EDIT_SUFFIX;
+    String EXPRESSION_PROMPT = StunnerFormsClientFieldsConstants.CONSTANTS.Expression() + ListBoxValues.EDIT_SUFFIX;
+    String ENTER_EXPRESSION_PROMPT = StunnerFormsClientFieldsConstants.CONSTANTS.Enter_expression() + ListBoxValues.EDIT_SUFFIX;
 
     void init();
 

@@ -259,7 +259,7 @@ public class ReassignmentWidgetViewImpl extends Composite implements Reassignmen
             }
         };
         editColumn.setSortable(false);
-        table.addColumn(editColumn, StunnerFormsClientFieldsConstants.INSTANCE.Edit());
+        table.addColumn(editColumn, StunnerFormsClientFieldsConstants.CONSTANTS.Edit());
         table.setColumnWidth(editColumn, 50, Style.Unit.PX);
     }
 

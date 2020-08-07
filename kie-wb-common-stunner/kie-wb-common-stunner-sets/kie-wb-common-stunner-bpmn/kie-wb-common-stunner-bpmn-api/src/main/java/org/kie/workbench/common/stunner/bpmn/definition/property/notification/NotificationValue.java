@@ -19,32 +19,35 @@ package org.kie.workbench.common.stunner.bpmn.definition.property.notification;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
+import static java.lang.String.join;
+
 @Portable
 @Bindable
 public class NotificationValue {
 
-    private String body;
+    private String body = "";
 
-    private String expiresAt;
+    private String expiresAt = "";
 
-    private String from;
+    private String from = "";
 
     private List<String> groups;
 
-    private String replyTo;
+    private String replyTo = "";
 
-    private String subject;
+    private String subject = "";
 
     private List<String> users;
 
-    private String type;
+    private String emails = "";
+
+    private String type = "";
 
     public NotificationValue() {
         this.groups = new ArrayList<>();
@@ -58,7 +61,8 @@ public class NotificationValue {
                              @MapsTo("type") String type,
                              @MapsTo("from") String from,
                              @MapsTo("togroups") List<String> groups,
-                             @MapsTo("tousers") List<String> users) {
+                             @MapsTo("tousers") List<String> users,
+                             @MapsTo("emails") String emails) {
         this.body = body;
         this.expiresAt = expiresAt;
         this.subject = subject;
@@ -67,6 +71,7 @@ public class NotificationValue {
         this.from = from;
         this.groups = groups;
         this.users = users;
+        this.emails = emails;
     }
 
     public String getBody() {
@@ -117,6 +122,14 @@ public class NotificationValue {
         this.users = users;
     }
 
+    public String getEmails() {
+        return emails;
+    }
+
+    public void setEmails(String emails) {
+        this.emails = emails;
+    }
+
     public String getType() {
         return type;
     }
@@ -135,11 +148,12 @@ public class NotificationValue {
 
     public String toCDATAFormat() {
         return "[from:" + from +
-                "|tousers:" + users.stream().collect(Collectors.joining(",")) +
-                "|togroups:" + groups.stream().collect(Collectors.joining(",")) +
+                "|tousers:" + join(",", users) +
+                "|togroups:" + join(",", groups) +
+                "|toemails:" + emails +
                 "|replyTo:" + replyTo +
-                "|subject:" + (subject != null ? subject.replaceAll("\\|","&#124;") : "") +
-                "|body:" + (body != null ? body.replaceAll("\\|","&#124;") : "") +
+                "|subject:" + (subject != null ? subject.replaceAll("\\|", "&#124;") : "") +
+                "|body:" + (body != null ? body.replaceAll("\\|", "&#124;") : "") +
                 "]@[" + expiresAt + "]";
     }
 
@@ -151,6 +165,7 @@ public class NotificationValue {
                                          Objects.hashCode(type),
                                          Objects.hashCode(users),
                                          Objects.hashCode(groups),
+                                         Objects.hashCode(emails),
                                          Objects.hashCode(replyTo),
                                          Objects.hashCode(subject));
     }
@@ -165,6 +180,7 @@ public class NotificationValue {
                     Objects.equals(subject, other.subject) &&
                     Objects.equals(type, other.type) &&
                     Objects.equals(groups, other.groups) &&
+                    Objects.equals(emails, other.emails) &&
                     Objects.equals(users, other.users) &&
                     Objects.equals(replyTo, other.replyTo);
         }
@@ -180,8 +196,9 @@ public class NotificationValue {
                 ", subject='" + subject + '\'' +
                 ", body='" + body + '\'' +
                 ", expiresAt='" + expiresAt + '\'' +
-                ", users='" + users.stream().collect(Collectors.joining(", ")) + '\'' +
-                ", groups='" + groups.stream().collect(Collectors.joining(", ")) + '\'' +
+                ", users='" + String.join(", ", users) + '\'' +
+                ", groups='" + String.join(", ", groups) + '\'' +
+                ", emails='" + emails + '\'' +
                 '}';
     }
 }

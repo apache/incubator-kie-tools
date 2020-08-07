@@ -112,40 +112,40 @@ public class ImportsFieldEditorWidgetTest {
     @Test
     public void buildImportsCountString() {
         String result1 = tested.buildImportsCountString(0, 0);
-        assertEquals(StunnerFormsClientFieldsConstants.INSTANCE.No_Imports(), result1);
+        assertEquals(StunnerFormsClientFieldsConstants.CONSTANTS.No_Imports(), result1);
 
         String result2 = tested.buildImportsCountString(5, 3);
-        assertNotEquals(StunnerFormsClientFieldsConstants.INSTANCE.No_Imports(), result2);
+        assertNotEquals(StunnerFormsClientFieldsConstants.CONSTANTS.No_Imports(), result2);
 
         String result3 = tested.buildImportsCountString(5, 0);
-        assertNotEquals(StunnerFormsClientFieldsConstants.INSTANCE.No_Imports(), result3);
+        assertNotEquals(StunnerFormsClientFieldsConstants.CONSTANTS.No_Imports(), result3);
 
         String result4 = tested.buildImportsCountString(0, 3);
-        assertNotEquals(StunnerFormsClientFieldsConstants.INSTANCE.No_Imports(), result4);
+        assertNotEquals(StunnerFormsClientFieldsConstants.CONSTANTS.No_Imports(), result4);
     }
 
     @Test
     public void buildDefaultImportsCountString() {
         String result1 = tested.buildDefaultImportsCountString(0);
-        assertEquals(StunnerFormsClientFieldsConstants.INSTANCE.No_Data_Type_Import(), result1);
+        assertEquals(StunnerFormsClientFieldsConstants.CONSTANTS.No_Data_Type_Import(), result1);
 
         String result2 = tested.buildDefaultImportsCountString(1);
-        assertEquals(StunnerFormsClientFieldsConstants.INSTANCE.Data_Type_Import(), result2);
+        assertEquals(StunnerFormsClientFieldsConstants.CONSTANTS.Data_Type_Import(), result2);
 
         String result3 = tested.buildDefaultImportsCountString(15);
-        assertTrue(result3.contains(StunnerFormsClientFieldsConstants.INSTANCE.Data_Type_Imports()));
+        assertTrue(result3.contains(StunnerFormsClientFieldsConstants.CONSTANTS.Data_Type_Imports()));
     }
 
     @Test
     public void buildWSDLImportsCountString() {
         String result1 = tested.buildWSDLImportsCountString(0);
-        assertEquals(StunnerFormsClientFieldsConstants.INSTANCE.No_WSDL_Import(), result1);
+        assertEquals(StunnerFormsClientFieldsConstants.CONSTANTS.No_WSDL_Import(), result1);
 
         String result2 = tested.buildWSDLImportsCountString(1);
-        assertEquals(StunnerFormsClientFieldsConstants.INSTANCE.WSDL_Import(), result2);
+        assertEquals(StunnerFormsClientFieldsConstants.CONSTANTS.WSDL_Import(), result2);
 
         String result3 = tested.buildWSDLImportsCountString(15);
-        assertTrue(result3.contains(StunnerFormsClientFieldsConstants.INSTANCE.WSDL_Imports()));
+        assertTrue(result3.contains(StunnerFormsClientFieldsConstants.CONSTANTS.WSDL_Imports()));
     }
 
     @Test

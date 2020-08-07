@@ -257,7 +257,7 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     public void removeVariable(final VariableRow variableRow) {
 
         if (isBoundToNodes(variableRow.getName())) {
-            errorPopupPresenter.showMessage(StunnerFormsClientFieldsConstants.INSTANCE.DeleteDiagramVariableError());
+            errorPopupPresenter.showMessage(StunnerFormsClientFieldsConstants.CONSTANTS.DeleteDiagramVariableError());
         } else {
             view.getVariableRows().remove(variableRow);
             doSave();

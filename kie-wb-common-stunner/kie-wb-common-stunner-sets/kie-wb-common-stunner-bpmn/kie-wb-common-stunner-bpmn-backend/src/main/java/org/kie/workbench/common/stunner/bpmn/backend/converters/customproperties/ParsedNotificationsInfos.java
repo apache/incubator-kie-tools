@@ -25,57 +25,53 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.asso
 import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationTypeListValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.notification.NotificationValue;
 
+import static java.lang.String.join;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.nonEmpty;
+
 public class ParsedNotificationsInfos {
 
-    NotificationValue notification = new NotificationValue();
+    private ParsedNotificationsInfos() {
+    }
 
-    private ParsedNotificationsInfos(String type, String body) {
+    public static NotificationValue of(String type, String body) {
+        NotificationValue notification = new NotificationValue();
         notification.setType(type);
 
-        if (body != null && !body.isEmpty()) {
-            String temp;
-            if (body.contains("@")) {
-                String[] parts = body.split("@");
-                parsePeriod(notification, parts[1]);
-                temp = parts[0];
+        if (nonEmpty(body)) {
+            String tBody;
+            if (body.contains("]@[")) {
+                String[] parts = body.split("\\]@\\[");
+                notification.setExpiresAt(parts[1].substring(0, parts[1].length() - 1));
+                tBody = parts[0].replaceFirst("\\[", "");
             } else {
-                temp = body;
+                tBody = body;
+                tBody = removeBracket(tBody);
             }
-            temp = replaceBracket(temp);
 
-            getFrom(notification, temp);
-            getUsers(notification, temp);
-            getGroups(notification, temp);
-            getReplyTo(notification, temp);
-            getSubject(notification, temp);
-            getBody(notification, temp);
+            notification.setFrom(parseElement(tBody, "from"));
+            notification.setUsers(parseGroup(tBody, "tousers"));
+            notification.setGroups(parseGroup(tBody, "togroups"));
+            notification.setEmails(join(",", parseGroup(tBody, "toemails")));
+            notification.setReplyTo(parseElement(tBody, "replyTo"));
+            notification.setSubject(replaceVerticalBar(parseElement(tBody, "subject")));
+            notification.setBody(replaceVerticalBar(parseElement(tBody, "body")));
         }
+
+        return notification;
     }
 
-    private static void getFrom(NotificationValue notification, String body) {
-        notification.setFrom(parseElement(body, "from", 0));
+    private static String parseElement(String group, String type) {
+        return Arrays.stream(group.split("\\|"))
+                .filter(x -> x.startsWith(type))
+                .findFirst().orElse("")
+                .replace(type + ":", "");
     }
 
-    private static String parseElement(String group, String type, int position) {
+    private static List<String> parseGroup(String group, String type) {
         if (group.contains(type)) {
-            String result = group
-                    .split("\\|")[position]
-                    .replace(type + ":", "");
-            if (!result.isEmpty()) {
-                return result;
-            }
-        }
-        return null;
-    }
-
-    private static void getUsers(NotificationValue notification, String body) {
-        notification.setUsers(parseGroup(body, "tousers", 1));
-    }
-
-    private static List<String> parseGroup(String group, String type, int position) {
-        if (group.contains(type)) {
-            String result = group
-                    .split("\\|")[position]
+            String result = Arrays.stream(group.split("\\|"))
+                    .filter(x -> x.startsWith(type))
+                    .findFirst().orElse("")
                     .replace(type + ":", "");
             if (!result.isEmpty()) {
                 return Arrays.stream(result.split(",")).collect(Collectors.toList());
@@ -84,32 +80,8 @@ public class ParsedNotificationsInfos {
         return new ArrayList<>();
     }
 
-    private static void getGroups(NotificationValue notification, String body) {
-        notification.setGroups(parseGroup(body, "togroups", 2));
-    }
-
-    private static void getReplyTo(NotificationValue notification, String body) {
-        notification.setReplyTo(parseElement(body, "replyTo", 3));
-    }
-
-    private static void getSubject(NotificationValue notification, String body) {
-        notification.setSubject(replaceVerticalBar(parseElement(body, "subject", 4)));
-    }
-
-    private static void getBody(NotificationValue notification, String body) {
-        notification.setBody(replaceVerticalBar(parseElement(body, "body", 5)));
-    }
-
-    private static void parsePeriod(NotificationValue notification, String part) {
-        notification.setExpiresAt(replaceBracket(part));
-    }
-
-    private static String replaceBracket(String original) {
-        return original.replaceFirst("\\[", "").replaceFirst("\\]([^\\]]*)$",  "$1");
-    }
-
-    public static NotificationValue of(String type, String body) {
-        return new ParsedNotificationsInfos(type, body).notification;
+    private static String removeBracket(String original) {
+        return original.replaceFirst("\\[", "").replaceFirst("\\]([^\\]]*)$", "$1");
     }
 
     public static String ofCDATA(NotificationTypeListValue values, AssociationType type) {
@@ -117,14 +89,14 @@ public class ParsedNotificationsInfos {
     }
 
     private static String replaceVerticalBar(String value) {
-        return value != null ? value.replaceAll("&#124;","|") : null;
+        return value != null ? value.replaceAll("&#124;", "|") : null;
     }
 
     private static class CDATA {
 
-        private List<NotificationValue> notifications;
+        private final List<NotificationValue> notifications;
 
-        private AssociationType type;
+        private final AssociationType type;
 
         CDATA(NotificationTypeListValue value, AssociationType type) {
             this.type = type;
@@ -133,7 +105,7 @@ public class ParsedNotificationsInfos {
 
         String get() {
             return notifications.stream().filter(m -> m.getType().equals(type.getName()))
-                    .map(m -> m.toCDATAFormat())
+                    .map(NotificationValue::toCDATAFormat)
                     .collect(Collectors.joining("^"));
         }
     }

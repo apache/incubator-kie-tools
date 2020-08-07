@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.client.forms.fields.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.notificationsEditor.validation.ValidNotificationValue;
@@ -51,7 +50,9 @@ public class NotificationRow {
 
     private List<String> users = new ArrayList<>();
 
-    private NotificationType type = NotificationType.NotCompletedNotify;
+    private String emails = "";
+
+    private NotificationType type = NotificationType.NOT_COMPLETED_NOTIFY;
 
     private Expiration expiration;
 
@@ -63,8 +64,9 @@ public class NotificationRow {
         this.id = lastId++;
         this.setType(NotificationType.get(notification.getType()));
         this.setExpiresAt(notification.getExpiresAt());
-        this.setGroups(notification.getGroups().stream().collect(Collectors.toList()));
-        this.setUsers(notification.getUsers().stream().collect(Collectors.toList()));
+        this.setGroups(new ArrayList<>(notification.getGroups()));
+        this.setUsers(new ArrayList<>(notification.getUsers()));
+        this.setEmails(notification.getEmails());
         this.setBody(notification.getBody());
         this.setSubject(notification.getSubject());
         this.setFrom(notification.getFrom());
@@ -75,8 +77,9 @@ public class NotificationRow {
         NotificationValue value = new NotificationValue();
         value.setType(getType().getAlias());
         value.setExpiresAt(getExpiresAt());
-        value.setGroups(getGroups().stream().collect(Collectors.toList()));
-        value.setUsers(getUsers().stream().collect(Collectors.toList()));
+        value.setGroups(new ArrayList<>(getGroups()));
+        value.setUsers(new ArrayList<>(getUsers()));
+        value.setEmails(getEmails());
         value.setBody(getBody());
         value.setSubject(getSubject());
         value.setFrom(getFrom());
@@ -148,6 +151,14 @@ public class NotificationRow {
         this.users = users;
     }
 
+    public String getEmails() {
+        return emails;
+    }
+
+    public void setEmails(String emails) {
+        this.emails = emails;
+    }
+
     public NotificationType getType() {
         return type;
     }
@@ -192,6 +203,7 @@ public class NotificationRow {
         clone.setType(getType());
         clone.setGroups(getGroups());
         clone.setUsers(getUsers());
+        clone.setEmails(getEmails());
         clone.setFrom(getFrom());
         clone.setReplyTo(getReplyTo());
         clone.setSubject(getSubject());
@@ -208,10 +220,11 @@ public class NotificationRow {
                 ", expiresAt='" + expiresAt + '\'' +
                 ", Expiration='" + getExpiration() + '\'' +
                 ", from='" + from + '\'' +
-                ", groups=" + groups.stream().collect(Collectors.joining(",")) +
+                ", groups=" + String.join(",", groups) +
                 ", replyTo='" + replyTo + '\'' +
                 ", subject='" + subject + '\'' +
-                ", users=" + users.stream().collect(Collectors.joining(",")) +
+                ", users=" + String.join(",", users) +
+                ", emails=" + String.join(",", emails) +
                 ", type=" + type +
                 '}';
     }

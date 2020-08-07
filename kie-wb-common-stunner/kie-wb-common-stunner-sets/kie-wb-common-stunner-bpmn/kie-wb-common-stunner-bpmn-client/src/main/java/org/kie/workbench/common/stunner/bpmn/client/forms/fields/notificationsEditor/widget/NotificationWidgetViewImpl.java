@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.notificationsEditor.widget;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -50,6 +49,8 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.notificationsEd
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.tables.PopoverTextCell;
 import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
+
+import static java.lang.String.join;
 
 @Dependent
 @Templated("NotificationWidgetViewImpl.html#container")
@@ -121,6 +122,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
         initFrom();
         initUsers();
         initGroups();
+        initEmails();
         initReplyTo();
         initSubject();
         initBody();
@@ -136,7 +138,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
             @Override
             public String getValue(NotificationRow object) {
                 if (object.getUsers() != null) {
-                    return object.getUsers().stream().collect(Collectors.joining(","));
+                    return join(",", object.getUsers());
                 } else {
                     return "";
                 }
@@ -144,7 +146,24 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
         };
         toUsersColumn.setSortable(false);
         table.addColumn(toUsersColumn, presenter.getToUsersLabel());
-        table.setColumnWidth(toUsersColumn, 190, Style.Unit.PX);
+        table.setColumnWidth(toUsersColumn, 160, Style.Unit.PX);
+    }
+
+    private void initEmails() {
+        PopoverTextCell toEmails = new PopoverTextCell();
+        Column<NotificationRow, String> toEmailsColumn = new Column<NotificationRow, String>(toEmails) {
+            @Override
+            public String getValue(NotificationRow object) {
+                if (object.getEmails() != null) {
+                    return join(",", object.getEmails());
+                }
+
+                return "";
+            }
+        };
+        toEmailsColumn.setSortable(false);
+        table.addColumn(toEmailsColumn, presenter.getToEmailsLabel());
+        table.setColumnWidth(toEmailsColumn, 160, Style.Unit.PX);
     }
 
     private void initGroups() {
@@ -154,7 +173,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
             @Override
             public String getValue(NotificationRow object) {
                 if (object.getGroups() != null) {
-                    return object.getGroups().stream().collect(Collectors.joining(","));
+                    return join(",", object.getGroups());
                 } else {
                     return "";
                 }
@@ -162,7 +181,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
         };
         toGroupsColumn.setSortable(false);
         table.addColumn(toGroupsColumn, presenter.getToGroupsLabel());
-        table.setColumnWidth(toGroupsColumn, 190, Style.Unit.PX);
+        table.setColumnWidth(toGroupsColumn, 160, Style.Unit.PX);
     }
 
     private void initExpiresAt() {
@@ -196,7 +215,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
         };
         fromColumn.setSortable(false);
         table.addColumn(fromColumn, presenter.getFromLabel());
-        table.setColumnWidth(fromColumn, 80, Style.Unit.PX);
+        table.setColumnWidth(fromColumn, 70, Style.Unit.PX);
     }
 
     private void initReplyTo() {
@@ -213,7 +232,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
         };
         replyToColumn.setSortable(false);
         table.addColumn(replyToColumn, presenter.getReplyToLabel());
-        table.setColumnWidth(replyToColumn, 80, Style.Unit.PX);
+        table.setColumnWidth(replyToColumn, 70, Style.Unit.PX);
     }
 
     private void initSubject() {
@@ -230,7 +249,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
         };
         subjectColumn.setSortable(false);
         table.addColumn(subjectColumn, presenter.getSubjectLabel());
-        table.setColumnWidth(subjectColumn, 140, Style.Unit.PX);
+        table.setColumnWidth(subjectColumn, 120, Style.Unit.PX);
     }
 
     private void initBody() {
@@ -247,7 +266,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
         };
         bodyColumn.setSortable(false);
         table.addColumn(bodyColumn, presenter.getBodyLabel());
-        table.setColumnWidth(bodyColumn, 190, Style.Unit.PX);
+        table.setColumnWidth(bodyColumn, 160, Style.Unit.PX);
     }
 
     private void initType() {
@@ -264,7 +283,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
         };
         typeColumn.setSortable(false);
         table.addColumn(typeColumn, presenter.getTypeLabel());
-        table.setColumnWidth(typeColumn, 80, Style.Unit.PX);
+        table.setColumnWidth(typeColumn, 70, Style.Unit.PX);
     }
 
     private void initDelete() {
@@ -323,7 +342,7 @@ public class NotificationWidgetViewImpl extends Composite implements Notificatio
             }
         };
         editColumn.setSortable(false);
-        table.addColumn(editColumn, StunnerFormsClientFieldsConstants.INSTANCE.Edit());
+        table.addColumn(editColumn, StunnerFormsClientFieldsConstants.CONSTANTS.Edit());
         table.setColumnWidth(editColumn, 50, Style.Unit.PX);
     }
 
