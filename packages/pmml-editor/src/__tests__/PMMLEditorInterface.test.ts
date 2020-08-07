@@ -21,6 +21,7 @@ import { PMMLEditor } from "../editor/PMMLEditor";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
 import { KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import { PMMLEditorMarshallerService } from "@kogito-tooling/pmml-editor-marshaller";
 
 const messageBusClient = {
   notify: jest.fn(),
@@ -34,7 +35,8 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   services: {
     guidedTour: { isEnabled: () => false },
     keyboardShortcuts: new DefaultKeyboardShortcutsService({ editorContext: editorContext }),
-    i18n: new I18nService()
+    i18n: new I18nService(),
+    pmmlEditorMarshallerService: new PMMLEditorMarshallerService()
   }
 };
 

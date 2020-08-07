@@ -109,7 +109,7 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     window.envelope = {
       editorContext: envelopeContext.context,
       keyboardShortcuts: envelopeContext.services.keyboardShortcuts,
-      pmmlEditorMarshallerService: envelopeContext.services.pmmlEditorMarshaller,
+      pmmlEditorMarshallerService: envelopeContext.services.pmmlEditorMarshallerService,
       guidedTourService: {
         refresh(userInteraction: UserInteraction): void {
           envelopeContext.channelApi.notify("receive_guidedTourUserInteraction", userInteraction);
