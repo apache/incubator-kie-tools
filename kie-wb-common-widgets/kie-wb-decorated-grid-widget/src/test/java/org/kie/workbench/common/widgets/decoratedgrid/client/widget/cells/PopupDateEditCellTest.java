@@ -21,7 +21,6 @@ import java.util.HashMap;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwtmockito.GwtMock;
@@ -30,13 +29,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.widgets.client.util.TimeZoneUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.services.shared.preferences.ApplicationPreferences.DATE_FORMAT;
-import static org.kie.workbench.common.services.shared.preferences.ApplicationPreferences.KIE_TIMEZONE_OFFSET;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
@@ -50,7 +49,7 @@ import static org.mockito.Mockito.when;
 @RunWith(GwtMockitoTestRunner.class)
 public class PopupDateEditCellTest {
 
-    private static final String TEST_DATE_FORMAT = "MM-dd-yyyy HH:mm:ss Z";
+    private static final String TEST_DATE_FORMAT = "MM-dd-yyyy";
 
     @GwtMock
     private DatePicker datePicker;
@@ -69,7 +68,6 @@ public class PopupDateEditCellTest {
     @Before
     public void setup() {
         ApplicationPreferences.setUp(new HashMap<String, String>() {{
-            put(KIE_TIMEZONE_OFFSET, "10800000");
             put(DATE_FORMAT, TEST_DATE_FORMAT);
         }});
 
@@ -104,7 +102,7 @@ public class PopupDateEditCellTest {
 
         final Cell.Context context = mock(Cell.Context.class);
         final Element parent = mock(Element.class);
-        final Date expectedDate = makeDate("04-01-2018 00:00:00 -0300");
+        final Date expectedDate = makeDate("04-01-2018");
 
         cell.startEditing(context, parent, expectedDate);
 
@@ -118,8 +116,8 @@ public class PopupDateEditCellTest {
     @Test
     public void testCommit() {
 
-        final Date clientDate = makeDate("04-01-2018 00:00:00 -0300");
-        final Date serverDate = makeDate("04-01-2018 06:00:00 +0300");
+        final Date clientDate = makeDate("04-01-2018");
+        final Date serverDate = makeDate("04-01-2018");
 
         when(datePicker.getValue()).thenReturn(clientDate);
         doReturn(serverDate).when(cell).convertToServerTimeZone(clientDate);
@@ -133,8 +131,8 @@ public class PopupDateEditCellTest {
     @Test
     public void testCommitWhenValueUpdaterIsNull() {
 
-        final Date clientDate = makeDate("04-01-2018 00:00:00 -0300");
-        final Date serverDate = makeDate("04-01-2018 06:00:00 +0300");
+        final Date clientDate = makeDate("04-01-2018");
+        final Date serverDate = makeDate("04-01-2018");
 
         when(datePicker.getValue()).thenReturn(clientDate);
         doReturn(null).when(cell).getValueUpdater();
@@ -151,12 +149,11 @@ public class PopupDateEditCellTest {
 
         final Cell.Context context = mock(Cell.Context.class);
         final SafeHtmlBuilder safeHtmlBuilder = mock(SafeHtmlBuilder.class);
-        final Date clientDate = makeDate("05-01-2018 18:00:00 -0300");
-        final String serverDate = "05-02-2018 00:00:00 +0300";
+        final Date clientDate = makeDate("05-01-2018");
 
         cell.render(context, clientDate, safeHtmlBuilder);
 
-        verify(renderer).render(eq(serverDate));
+        verify(renderer).render(eq("05-01-2018"));
     }
 
     @Test
@@ -176,10 +173,6 @@ public class PopupDateEditCellTest {
     }
 
     private Date makeDate(final String dateString) {
-        return format().parse(dateString);
-    }
-
-    private DateTimeFormat format() {
-        return DateTimeFormat.getFormat(TEST_DATE_FORMAT);
+        return TimeZoneUtils.FORMATTER.parse(dateString);
     }
 }

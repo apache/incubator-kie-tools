@@ -25,12 +25,9 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
-import org.kie.workbench.common.widgets.client.util.TimeZoneUtils;
 import org.uberfire.ext.widgets.common.client.common.DatePicker;
 
 import static org.kie.workbench.common.widgets.client.util.TimeZoneUtils.FORMATTER;
-import static org.kie.workbench.common.widgets.client.util.TimeZoneUtils.convertFromServerTimeZone;
-import static org.kie.workbench.common.widgets.client.util.TimeZoneUtils.formatWithServerTimeZone;
 
 /**
  * A Popup Date Editor.
@@ -49,25 +46,25 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
         // See https://issues.jboss.org/browse/GUVNOR-2322
         // The DatePicker was being closed, before the ValueChangeHandler invoked, in response to the
         // containing PopupPanel being automatically hidden when another Element received events.
-        datePicker.setContainer( vPanel );
-        panel.addAutoHidePartner( datePicker.getElement() );
+        datePicker.setContainer(vPanel);
+        panel.addAutoHidePartner(datePicker.getElement());
 
         // Hide the panel and call valueUpdater.update when a date is selected
-        datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
+        datePicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
-            public void onValueChange( final ValueChangeEvent<Date> event ) {
+            public void onValueChange(final ValueChangeEvent<Date> event) {
                 Date date = datePicker.getValue();
-                setValue( lastContext,
-                          lastParent,
-                          date );
-                if ( valueUpdater != null ) {
-                    valueUpdater.update( date );
+                setValue(lastContext,
+                         lastParent,
+                         date);
+                if (valueUpdater != null) {
+                    valueUpdater.update(date);
                 }
                 panel.hide();
             }
-        } );
+        });
 
-        vPanel.add( datePicker );
+        vPanel.add(datePicker);
     }
 
     @Override
@@ -75,7 +72,7 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
                        Date value,
                        SafeHtmlBuilder sb) {
         if (value != null) {
-            sb.append(getRenderer().render(formatWithServerTimeZone(value)));
+            sb.append(getRenderer().render(FORMATTER.format(value)));
         }
     }
 
@@ -94,28 +91,28 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
     }
 
     Date convertToServerTimeZone(final Date value) {
-        return TimeZoneUtils.convertToServerTimeZone(value);
+        return value;
     }
 
     // Start editing the cell
     @Override
     @SuppressWarnings("deprecation")
-    protected void startEditing( final Context context,
-                                 final Element parent,
-                                 final Date value ) {
+    protected void startEditing(final Context context,
+                                final Element parent,
+                                final Date value) {
 
         // Default date
         Date date = value;
-        if ( value == null ) {
+        if (value == null) {
             Date d = new Date();
             int year = d.getYear();
             int month = d.getMonth();
             int dom = d.getDate();
-            date = new Date( year,
-                             month,
-                             dom );
+            date = new Date(year,
+                            month,
+                            dom);
         }
-        getDatePicker().setValue(convertFromServerTimeZone(date));
+        getDatePicker().setValue(date);
 
         panel.setPopupPositionAndShow(new PositionCallback() {
             public void setPosition(int offsetWidth,
@@ -125,8 +122,7 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
                                        parent.getAbsoluteTop()
                                                + offsetY);
             }
-        } );
-
+        });
     }
 
     String getPattern() {
