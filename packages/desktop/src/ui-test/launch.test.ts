@@ -1,6 +1,5 @@
-const helpers = require('./global-setup');
-
 import * as path from 'path';
+import * as helpers from './global-setup'
 import {Application, SpectronClient} from  'spectron';
 import { HomePage } from './utils/HomePage';
 import { EditorPage } from'./utils/EditorPage';
@@ -36,23 +35,22 @@ describe('Application Startup', function () {
 
   let app: Application
 
-  beforeEach(() => {
-      return helpers.startApplication({
-        args: [path.join(__dirname, '../../..')],
-        port: 3000,
-        startTimeout: 25000,
-        waitTimeout: 10000
-      }).then((startedApp: Application) => { 
-        app = startedApp
-      })
+  beforeEach(async () => {
+      const startedApp = await helpers.startApplication({
+      args: [path.join(__dirname, '../../..')],
+      port: 3000,
+      startTimeout: 25000,
+      waitTimeout: 10000
+    });
+    app = startedApp;
   });
 
   afterEach(() => {
     return helpers.stopApplication(app)
   });
 
-  it('opens application window',  async () => {
-    checkBasicDimensions(app);
+  it('Opens application main window',  async () => {
+    await checkBasicDimensions(app);
   })
 
   describe('Editors can be opened', () => {
@@ -66,8 +64,9 @@ describe('Application Startup', function () {
       await app.client.waitUntilWindowLoaded();
       await app.client.getWindowCount().should.eventually.equal(1);
       await waitForLoadingSpinner(app.client);
-      await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
+
       await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
+      await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
       await app.client.waitUntilWindowLoaded();
       await app.client.click(GO_TO_HOMEPAGE_BUTTON_LOCATOR)
 
@@ -79,8 +78,8 @@ describe('Application Startup', function () {
       await app.client.click(homePage.openNewDmnDiagramButtonSelector())
       await app.client.waitUntilWindowLoaded();
       await app.client.getWindowCount().should.eventually.equal(1);
-      await waitForLoadingSpinner(app.client)
-           
+      await waitForLoadingSpinner(app.client);
+
       await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE);
       await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true;
       await app.client.waitUntilWindowLoaded();
@@ -94,12 +93,12 @@ describe('Application Startup', function () {
       await app.client.click(homePage.openSampleBpmnDiagramButtonSelector())
       await app.client.waitUntilWindowLoaded();
       await app.client.getWindowCount().should.eventually.equal(1);
-      await waitForLoadingSpinner(app.client)
+      await waitForLoadingSpinner(app.client);
       
       await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
       await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
       await app.client.waitUntilWindowLoaded();
-      await app.client.click(GO_TO_HOMEPAGE_BUTTON_LOCATOR)
+      await app.client.click(GO_TO_HOMEPAGE_BUTTON_LOCATOR);
 
       await checkBasicDimensions(app);
     })
@@ -109,10 +108,10 @@ describe('Application Startup', function () {
       await app.client.click(homePage.openSampleDmnDiagramButtonSelector())
       await app.client.waitUntilWindowLoaded();
       await app.client.getWindowCount().should.eventually.equal(1);
-      await waitForLoadingSpinner(app.client)
+      await waitForLoadingSpinner(app.client);
       
-      await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE)
-      await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true
+      await app.client.getText(editorPage.diagramNameHeaderLocator()).should.eventually.be.equal(UNSAVED_FILE);
+      await app.client.isVisible(editorPage.diagramIframeLocator()).should.eventually.be.true;
       await app.client.waitUntilWindowLoaded();
       await app.client.click(GO_TO_HOMEPAGE_BUTTON_LOCATOR);
 

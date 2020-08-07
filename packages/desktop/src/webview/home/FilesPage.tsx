@@ -322,6 +322,7 @@ export function FilesPage(props: Props) {
             isHoverable={false}
             isCompact={true}
             onClick={() => electron.ipcRenderer.send("createNewFile", { type: "bpmn" })}
+            data-testid= "create-new-bpmn"
           >
             <CardHeader>
               {
@@ -340,6 +341,7 @@ export function FilesPage(props: Props) {
             isHoverable={false}
             isCompact={true}
             onClick={() => electron.ipcRenderer.send("createNewFile", { type: "dmn" })}
+            data-testid= "create-new-dmn"
           >
             <CardHeader>
               {
@@ -358,6 +360,7 @@ export function FilesPage(props: Props) {
             isHoverable={false}
             isCompact={true}
             onClick={() => electron.ipcRenderer.send("openSample", { type: "bpmn" })}
+            data-testid= "open-sample-bpmn"
           >
             <CardHeader>
               {
@@ -382,6 +385,7 @@ export function FilesPage(props: Props) {
             isHoverable={false}
             isCompact={true}
             onClick={() => electron.ipcRenderer.send("openSample", { type: "dmn" })}
+            data-testid= "open-sample-dmn"
           >
             <CardHeader>
               {
@@ -401,7 +405,7 @@ export function FilesPage(props: Props) {
             </CardBody>
           </Card>
           <Card className="kogito--desktop__actions-card--wide"
-                data-ouia-component-id= "open-file-from-source"
+                data-testid="open-file-from-source"
           >
             <CardHeader>
               <Title size={"xl"} headingLevel={"h3"}>

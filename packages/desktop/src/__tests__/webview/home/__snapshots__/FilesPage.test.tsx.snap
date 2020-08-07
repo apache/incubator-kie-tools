@@ -23,7 +23,7 @@ exports[`FilesPage empty page 1`] = `
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="create-new-bpmn"
+        data-testid="create-new-bpmn"
       >
         <div
           class="pf-c-card__header"
@@ -46,7 +46,7 @@ exports[`FilesPage empty page 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="create-new-dmn"
+        data-testid="create-new-dmn"
       >
         <div
           class="pf-c-card__header"
@@ -69,7 +69,7 @@ exports[`FilesPage empty page 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="open-sample-bpmn"
+        data-testid="open-sample-bpmn"
       >
         <div
           class="pf-c-card__header"
@@ -92,7 +92,7 @@ exports[`FilesPage empty page 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="open-sample-dmn"
+        data-testid="open-sample-dmn"
       >
         <div
           class="pf-c-card__header"
@@ -115,7 +115,7 @@ exports[`FilesPage empty page 1`] = `
       </article>
       <article
         class="pf-c-card kogito--desktop__actions-card--wide"
-        data-ouia-component-id="open-file-from-source"
+        data-testid="open-file-from-source"
       >
         <div
           class="pf-c-card__header"
@@ -363,7 +363,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="create-new-bpmn"
+        data-testid="create-new-bpmn"
       >
         <div
           class="pf-c-card__header"
@@ -386,7 +386,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="create-new-dmn"
+        data-testid="create-new-dmn"
       >
         <div
           class="pf-c-card__header"
@@ -409,7 +409,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="open-sample-bpmn"
+        data-testid="open-sample-bpmn"
       >
         <div
           class="pf-c-card__header"
@@ -432,7 +432,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="open-sample-dmn"
+        data-testid="open-sample-dmn"
       >
         <div
           class="pf-c-card__header"
@@ -455,7 +455,7 @@ exports[`FilesPage three recent files in different directories listed ordered al
       </article>
       <article
         class="pf-c-card kogito--desktop__actions-card--wide"
-        data-ouia-component-id="open-file-from-source"
+        data-testid="open-file-from-source"
       >
         <div
           class="pf-c-card__header"
@@ -777,7 +777,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="create-new-bpmn"
+        data-testid="create-new-bpmn"
       >
         <div
           class="pf-c-card__header"
@@ -800,7 +800,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="create-new-dmn"
+        data-testid="create-new-dmn"
       >
         <div
           class="pf-c-card__header"
@@ -823,7 +823,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="open-sample-bpmn"
+        data-testid="open-sample-bpmn"
       >
         <div
           class="pf-c-card__header"
@@ -846,7 +846,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="open-sample-dmn"
+        data-testid="open-sample-dmn"
       >
         <div
           class="pf-c-card__header"
@@ -869,7 +869,7 @@ exports[`FilesPage three recent files in the same directory listed ordered alpha
       </article>
       <article
         class="pf-c-card kogito--desktop__actions-card--wide"
-        data-ouia-component-id="open-file-from-source"
+        data-testid="open-file-from-source"
       >
         <div
           class="pf-c-card__header"
@@ -1216,7 +1216,7 @@ exports[`FilesPage three recent files listed 1`] = `
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="create-new-bpmn"
+        data-testid="create-new-bpmn"
       >
         <div
           class="pf-c-card__header"
@@ -1239,7 +1239,7 @@ exports[`FilesPage three recent files listed 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="create-new-dmn"
+        data-testid="create-new-dmn"
       >
         <div
           class="pf-c-card__header"
@@ -1262,7 +1262,7 @@ exports[`FilesPage three recent files listed 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="open-sample-bpmn"
+        data-testid="open-sample-bpmn"
       >
         <div
           class="pf-c-card__header"
@@ -1285,7 +1285,7 @@ exports[`FilesPage three recent files listed 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="open-sample-dmn"
+        data-testid="open-sample-dmn"
       >
         <div
           class="pf-c-card__header"
@@ -1308,7 +1308,7 @@ exports[`FilesPage three recent files listed 1`] = `
       </article>
       <article
         class="pf-c-card kogito--desktop__actions-card--wide"
-        data-ouia-component-id="open-file-from-source"
+        data-testid="open-file-from-source"
       >
         <div
           class="pf-c-card__header"
@@ -1630,7 +1630,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
     >
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="create-new-bpmn"
+        data-testid="create-new-bpmn"
       >
         <div
           class="pf-c-card__header"
@@ -1653,7 +1653,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="create-new-dmn"
+        data-testid="create-new-dmn"
       >
         <div
           class="pf-c-card__header"
@@ -1676,7 +1676,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="open-sample-bpmn"
+        data-testid="open-sample-bpmn"
       >
         <div
           class="pf-c-card__header"
@@ -1699,7 +1699,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
       </article>
       <article
         class="pf-c-card pf-m-compact kogito--desktop__actions-card"
-        data-ouia-component-id="open-sample-dmn"
+        data-testid="open-sample-dmn"
       >
         <div
           class="pf-c-card__header"
@@ -1722,7 +1722,7 @@ exports[`FilesPage three recent files listed ordered by access time 1`] = `
       </article>
       <article
         class="pf-c-card kogito--desktop__actions-card--wide"
-        data-ouia-component-id="open-file-from-source"
+        data-testid="open-file-from-source"
       >
         <div
           class="pf-c-card__header"

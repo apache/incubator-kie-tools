@@ -15,7 +15,7 @@ export class HomePage {
     return this.articleComponent('open-sample-dmn');
   }
 
-  private articleComponent = (componentId) => {
-    return `//article[@data-ouia-component-id = \'${componentId}\']`
+  private articleComponent = (componentId: string) => {
+    return `//article[@data-testid=\'${componentId}\']`
   }
 }
