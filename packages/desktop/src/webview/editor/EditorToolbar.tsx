@@ -29,6 +29,7 @@ import {
 import { CloseIcon } from "@patternfly/react-icons";
 import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";
 import { removeDirectories } from "../../common/utils";
+import { useDesktopI18n } from "../common/i18n/locales";
 
 interface Props {
   onSave: () => void;
@@ -38,6 +39,7 @@ interface Props {
 
 export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
+  const { i18n } = useDesktopI18n();
 
   const fileExtension = useMemo(() => {
     return context.file!.fileType;
@@ -54,7 +56,7 @@ export function EditorToolbar(props: Props) {
       </Tooltip>
       {props.isEdited && (
         <span className={"kogito--editor__toolbar-edited"} data-testid="is-dirty-indicator">
-          {" - Edited"}
+          {` - ${i18n.terms.edited}`}
         </span>
       )}
     </div>
@@ -71,7 +73,7 @@ export function EditorToolbar(props: Props) {
             className={"pf-u-display-flex-on-lg"}
             aria-label={"Save file"}
           >
-            Save
+            {i18n.terms.save}
           </Button>
         </PageHeaderToolsItem>
         <PageHeaderToolsItem>

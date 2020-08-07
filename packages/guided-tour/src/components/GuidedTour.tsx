@@ -16,10 +16,11 @@
 
 import * as React from "react";
 import { useState } from "react";
-
 import { Dialog, HighlightLayer } from ".";
 import { UserInteraction, Tutorial, Rect } from "@kogito-tooling/microeditor-envelope-protocol";
 import { CurrentTutorialContext } from "../contexts";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
+import { GuidedTourI18nContext, guidedTourI18nDefaults, guidedTourI18nDictionaries } from "../i18n/locales";
 
 export const GuidedTour = () => {
   const [currentTutorial, setCurrentTutorial] = useState<Tutorial>();
@@ -31,26 +32,32 @@ export const GuidedTour = () => {
   const [completedStep, setCompletedStep] = useState(0);
 
   return (
-    <CurrentTutorialContext.Provider
-      value={{
-        currentTutorial,
-        currentStep,
-        completedStep,
-        currentRefElementPosition,
-        isNegativeReinforcementStateEnabled,
-        isHighlightLayerEnabled,
-        latestUserInteraction,
-        setCurrentStep,
-        setCompletedStep,
-        setCurrentTutorial,
-        setCurrentRefElementPosition,
-        setIsNegativeReinforcementStateEnabled,
-        setIsHighlightLayerEnabled,
-        setLatestUserInteraction
-      }}
+    <I18nDictionariesProvider
+      defaults={guidedTourI18nDefaults}
+      dictionaries={guidedTourI18nDictionaries}
+      ctx={GuidedTourI18nContext}
     >
-      <HighlightLayer />
-      <Dialog isEnabled={false} tutorialLabel="" />
-    </CurrentTutorialContext.Provider>
+      <CurrentTutorialContext.Provider
+        value={{
+          currentTutorial,
+          currentStep,
+          completedStep,
+          currentRefElementPosition,
+          isNegativeReinforcementStateEnabled,
+          isHighlightLayerEnabled,
+          latestUserInteraction,
+          setCurrentStep,
+          setCompletedStep,
+          setCurrentTutorial,
+          setCurrentRefElementPosition,
+          setIsNegativeReinforcementStateEnabled,
+          setIsHighlightLayerEnabled,
+          setLatestUserInteraction
+        }}
+      >
+        <HighlightLayer />
+        <Dialog isEnabled={false} tutorialLabel="" />
+      </CurrentTutorialContext.Provider>
+    </I18nDictionariesProvider>
   );
 };

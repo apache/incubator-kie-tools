@@ -17,7 +17,6 @@
 import * as React from "react";
 import { useCallback, useContext, useState, useMemo } from "react";
 import { GlobalContext } from "./GlobalContext";
-
 import {
   Modal,
   ModalVariant,
@@ -26,15 +25,12 @@ import {
   Title,
   InputGroup,
   TextInput,
-  InputGroupText,
+  InputGroupText
 } from "@patternfly/react-core";
 import { ExternalLinkAltIcon, CheckIcon } from "@patternfly/react-icons";
-
-import {
-  GITHUB_OAUTH_TOKEN_SIZE,
-  GITHUB_TOKENS_URL,
-  GITHUB_TOKENS_HOW_TO_URL
-} from './GithubService';
+import { GITHUB_OAUTH_TOKEN_SIZE, GITHUB_TOKENS_URL, GITHUB_TOKENS_HOW_TO_URL } from "./GithubService";
+import { useOnlineI18n } from "./i18n";
+import { I18nHtml } from "@kogito-tooling/i18n";
 
 interface Props {
   isOpen: boolean;
@@ -44,6 +40,7 @@ interface Props {
 
 export function GithubTokenModal(props: Props) {
   const context = useContext(GlobalContext);
+  const { i18n } = useOnlineI18n();
 
   const [potentialToken, setPotentialToken] = useState(context.githubService.resolveToken());
   const [authenticated, setAuthenticated] = useState(context.githubService.isAuthenticated());
@@ -55,8 +52,7 @@ export function GithubTokenModal(props: Props) {
   const onPasteHandler = useCallback(e => {
     const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
     setPotentialToken(token);
-    context.githubService.authenticate(token)
-      .then(isAuthenticated => setAuthenticated(isAuthenticated))
+    context.githubService.authenticate(token).then(isAuthenticated => setAuthenticated(isAuthenticated));
   }, []);
 
   const onResetHandler = useCallback(() => {
@@ -73,17 +69,18 @@ export function GithubTokenModal(props: Props) {
       title=""
       header={
         <>
-          <Title headingLevel="h1" size={BaseSizes['2xl']}>
-            GitHub OAuth Token
+          <Title headingLevel="h1" size={BaseSizes["2xl"]}>
+            {i18n.githubTokenModal.header.title}
           </Title>
-          <p className="pf-u-pt-sm">Authentication required for exporting to GitHub gist.</p>
+          <p className="pf-u-pt-sm">{i18n.githubTokenModal.header.subtitle}</p>
         </>
       }
       footer={
         <div className="pf-u-w-100">
           <h3>
             <a href={GITHUB_TOKENS_URL} target={"_blank"}>
-              Create a new token<ExternalLinkAltIcon className="pf-u-mx-sm" />
+              {i18n.githubTokenModal.footer.createNewToken}
+              <ExternalLinkAltIcon className="pf-u-mx-sm" />
             </a>
           </h3>
           <InputGroup className="pf-u-mt-sm">
@@ -91,7 +88,7 @@ export function GithubTokenModal(props: Props) {
               id="token-input"
               name="tokenInput"
               aria-describedby="token-text-input-helper"
-              placeholder="Paste your token here"
+              placeholder={i18n.githubTokenModal.footer.placeHolder}
               maxLength={GITHUB_OAUTH_TOKEN_SIZE}
               isDisabled={authenticated}
               validated={!!authenticated ? "error" : "default"}
@@ -106,37 +103,30 @@ export function GithubTokenModal(props: Props) {
             )}
           </InputGroup>
           <div className="pf-u-mt-md pf-u-mb-0 pf-u-float-right">
-            <Button
-              variant="danger"
-              onClick={onResetHandler}>
-              Reset
+            <Button variant="danger" onClick={onResetHandler}>
+              {i18n.terms.reset}
             </Button>
-            <Button
-              className="pf-u-ml-sm"
-              variant="primary"
-              isDisabled={!authenticated}
-              onClick={props.onContinue}>
-              Continue
+            <Button className="pf-u-ml-sm" variant="primary" isDisabled={!authenticated} onClick={props.onContinue}>
+              {i18n.terms.continue}
             </Button>
           </div>
-        </div >
+        </div>
       }
     >
       <>
         <p>
-          <span className="pf-u-mr-sm">
-            By authenticating with your OAuth Token we are able to create gists
-            so you can share your diagrams with your colleagues.
-            The token you provide is locally stored as browser cookies and it is never shared with anyone.
-          </span>
+          <span className="pf-u-mr-sm">{i18n.githubTokenModal.body.disclaimer}</span>
           <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"}>
-            Learn more about GitHub tokens<ExternalLinkAltIcon className="pf-u-mx-sm" />
+            {i18n.githubTokenModal.body.learnMore}
+            <ExternalLinkAltIcon className="pf-u-mx-sm" />
           </a>
         </p>
         <br />
         <p>
-          <b><u>NOTE:</u>&nbsp;</b>
-          You should provide a token with the <b>'gist'</b> permission.
+          <b>
+            <u>{i18n.terms.note.toUpperCase()}:</u>&nbsp;
+          </b>
+          <I18nHtml>{i18n.githubTokenModal.body.note}</I18nHtml>
         </p>
       </>
     </Modal>

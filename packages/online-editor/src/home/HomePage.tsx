@@ -49,6 +49,7 @@ import { Link } from "react-router-dom";
 import { AnimatedTripleDotLabel } from "../common/AnimatedTripleDotLabel";
 import { GlobalContext } from "../common/GlobalContext";
 import { extractFileExtension, removeFileExtension } from "../common/utils";
+import { useOnlineI18n } from "../common/i18n";
 
 interface Props {
   onFileOpened: (file: UploadFile) => void;
@@ -85,6 +86,7 @@ interface InputFileUrlStateType {
 export function HomePage(props: Props) {
   const context = useContext(GlobalContext);
   const history = useHistory();
+  const { i18n } = useOnlineI18n();
 
   const uploadInputRef = useRef<HTMLInputElement>(null);
 
@@ -159,11 +161,11 @@ export function HomePage(props: Props) {
   const messageForUploadFileFromDndState = useMemo(() => {
     switch (uploadFileDndState) {
       case UploadFileDndState.INVALID_EXTENSION:
-        return "File extension is not supported";
+        return i18n.homePage.uploadFile.dndZone.invalidFile;
       default:
-        return "Drop a BPMN or DMN file here";
+        return i18n.homePage.uploadFile.dndZone.waitingFile;
     }
-  }, [uploadFileDndState]);
+  }, [uploadFileDndState, i18n]);
 
   const uploadDndClassName = useMemo(() => {
     switch (uploadFileDndState) {
@@ -214,11 +216,11 @@ export function HomePage(props: Props) {
   const messageForUploadFileFromInputState = useMemo(() => {
     switch (uploadFileInputState) {
       case UploadFileInputState.INVALID_EXTENSION:
-        return "File extension is not supported";
+        return i18n.homePage.uploadFile.fileInput;
       default:
         return "";
     }
-  }, [uploadFileInputState]);
+  }, [uploadFileInputState, i18n]);
 
   const uploadInputClassName = useMemo(() => {
     switch (uploadFileInputState) {
@@ -411,30 +413,30 @@ export function HomePage(props: Props) {
   const helperMessageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState.urlValidation) {
       case InputFileUrlState.VALIDATING:
-        return <AnimatedTripleDotLabel label={"Validating URL"} />;
+        return <AnimatedTripleDotLabel label={i18n.homePage.openUrl.validating} />;
       default:
         return "";
     }
-  }, [inputFileUrlState]);
+  }, [inputFileUrlState, i18n]);
 
   const helperInvalidMessageForInputFileFromUrlState = useMemo(() => {
     switch (inputFileUrlState.urlValidation) {
       case InputFileUrlState.INVALID_GIST_EXTENSION:
-        return "File type on the provided gist is not supported.";
+        return i18n.homePage.openUrl.invalidGistExtension;
       case InputFileUrlState.INVALID_EXTENSION:
-        return "File type on the provided URL is not supported.";
+        return i18n.homePage.openUrl.invalidExtension;
       case InputFileUrlState.INVALID_GIST:
-        return "Enter a valid Gist URL.";
+        return i18n.homePage.openUrl.invalidGist;
       case InputFileUrlState.INVALID_URL:
-        return 'This URL is not valid (don\'t forget "https://"!).';
+        return i18n.homePage.openUrl.invalidUrl;
       case InputFileUrlState.NOT_FOUND_URL:
-        return "This URL does not exist.";
+        return i18n.homePage.openUrl.notFoundUrl;
       case InputFileUrlState.CORS_NOT_AVAILABLE:
-        return "This URL cannot be opened because it doesn't allow other websites to access it.";
+        return i18n.homePage.openUrl.corsNotAvailable;
       default:
         return "";
     }
-  }, [inputFileUrlState]);
+  }, [inputFileUrlState, i18n]);
 
   const externalFileFormSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -451,14 +453,15 @@ export function HomePage(props: Props) {
 
   const linkDropdownItems = [
     <DropdownItem key="github-chrome-extension-dropdown-link">
-      <Link to={context.routes.downloadHub.url({})}>Get Business Modeler Hub Preview</Link>
+      <Link to={context.routes.downloadHub.url({})}>{i18n.homePage.dropdown.getHub}</Link>
     </DropdownItem>
   ];
 
   const userDropdownItems = [
     <DropdownItem key="">
       <a href={"https://groups.google.com/forum/#!forum/kogito-development"} target={"_blank"}>
-        Online forum <ExternalLinkAltIcon className="pf-u-mx-sm" />
+        {i18n.homePage.dropdown.onlineForum}
+        <ExternalLinkAltIcon className="pf-u-mx-sm" />
       </a>
     </DropdownItem>
   ];
@@ -471,7 +474,7 @@ export function HomePage(props: Props) {
       <PageHeaderToolsGroup>
         <PageHeaderToolsItem className="pf-u-display-none pf-u-display-flex-on-lg">
           <Link to={context.routes.downloadHub.url({})} className="kogito--editor-hub-download_link">
-            Get Business Modeler Hub Preview
+            {i18n.homePage.dropdown.getHub}
           </Link>
         </PageHeaderToolsItem>
         <PageHeaderToolsItem className="pf-u-display-none-on-lg">
@@ -521,15 +524,11 @@ export function HomePage(props: Props) {
       <PageSection variant="dark" className="kogito--editor-landing__title-section pf-u-p-2xl-on-lg">
         <TextContent>
           <Title size="3xl" headingLevel="h1">
-            Asset Editor for Kogito and Process Automation
+            {i18n.homePage.header.title}
           </Title>
-          <Text>
-            Welcome to Business Modeler! These simple BPMN and DMN editors are here to allow you to collaborate quickly
-            and to help introduce you to the new tools and capabilities of Process Automation. Feel free to get in touch
-            in the forum or review the documentation for more information.
-          </Text>
+          <Text>{i18n.homePage.header.welcomeText}</Text>
           <Text component={TextVariants.small} className="pf-u-text-align-right">
-            Powered by{" "}
+            {`${i18n.terms.poweredBy} `}
             <Brand
               src={"images/kogito_logo_white.png"}
               alt="Kogito Logo"
@@ -543,43 +542,43 @@ export function HomePage(props: Props) {
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
-                Workflow (.BPMN)
+                {i18n.homePage.bpmnCard.title}
               </Title>
             </CardHeader>
-            <CardBody isFilled={false}>BPMN files are used to generate business processes.</CardBody>
+            <CardBody isFilled={false}>{i18n.homePage.bpmnCard.explanation}</CardBody>
             <CardBody isFilled={true}>
               <Button variant="link" isInline={true} onClick={tryBpmnSample}>
-                Try Sample
+                {i18n.homePage.trySample}
               </Button>
             </CardBody>
             <CardFooter>
               <Button variant="secondary" onClick={createEmptyBpmnFile}>
-                Create new workflow
+                {i18n.homePage.bpmnCard.createNew}
               </Button>
             </CardFooter>
           </Card>
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
-                Decision model (.DMN)
+                {i18n.homePage.dmnCard.title}
               </Title>
             </CardHeader>
-            <CardBody isFilled={false}>DMN files are used to generate decision models</CardBody>
+            <CardBody isFilled={false}>{i18n.homePage.dmnCard.explanation}</CardBody>
             <CardBody isFilled={true}>
               <Button variant="link" isInline={true} onClick={tryDmnSample}>
-                Try Sample
+                {i18n.homePage.trySample}
               </Button>
             </CardBody>
             <CardFooter>
               <Button variant="secondary" onClick={createEmptyDmnFile}>
-                Create new decision model
+                {i18n.homePage.dmnCard.createNew}
               </Button>
             </CardFooter>
           </Card>
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
-                Edit existing file
+                {i18n.homePage.editExistingFile}
               </Title>
             </CardHeader>
             <CardBody isFilled={true} className="kogito--editor-landing__upload-box">
@@ -594,10 +593,10 @@ export function HomePage(props: Props) {
                 <Bullseye>{messageForUploadFileFromDndState}</Bullseye>
               </div>
             </CardBody>
-            <CardBody>or</CardBody>
+            <CardBody>{i18n.homePage.uploadFile.or}</CardBody>
             <CardFooter className="kogito--editor-landing__upload-input">
               <Button variant="secondary" className="kogito--editor-landing__upload-btn">
-                Choose a local file
+                {i18n.homePage.chooseLocalFile}
                 {/* Transparent file input overlays the button */}
                 <input
                   accept={".dmn, .bpmn, .bpmn2"}
@@ -616,10 +615,10 @@ export function HomePage(props: Props) {
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
-                Open from source
+                {i18n.homePage.openUrl.openFromSource}
               </Title>
             </CardHeader>
-            <CardBody isFilled={false}>Paste a URL to a source code link (GitHub, Dropbox, etc.)</CardBody>
+            <CardBody isFilled={false}>{i18n.homePage.openUrl.description}</CardBody>
             <CardBody isFilled={true}>
               <Form onSubmit={externalFileFormSubmit} disabled={!isUrlInputTextValid} spellCheck={false}>
                 <FormGroup
@@ -653,7 +652,7 @@ export function HomePage(props: Props) {
                 isDisabled={!urlCanBeOpen}
                 data-testid="open-url-button"
               >
-                Open from source
+                {i18n.homePage.openUrl.openFromSource}
               </Button>
             </CardFooter>
           </Card>

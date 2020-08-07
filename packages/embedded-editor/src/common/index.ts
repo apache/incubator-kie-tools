@@ -15,3 +15,4 @@
  */
 
 export { File, EMPTY_FILE_DMN, EMPTY_FILE_BPMN, newFile } from "./File";
+export * from "./customEffects";

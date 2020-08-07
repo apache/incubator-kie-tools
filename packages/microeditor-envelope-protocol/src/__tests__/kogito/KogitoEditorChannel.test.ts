@@ -40,7 +40,8 @@ beforeEach(() => {
     receive_guidedTourRegisterTutorial: jest.fn(),
     receive_contentRequest: jest.fn(),
     receive_resourceContentRequest: jest.fn(),
-    receive_resourceListRequest: jest.fn()
+    receive_resourceListRequest: jest.fn(),
+    receive_getLocale: jest.fn()
   };
 
   channelBus = new KogitoEditorChannel({ postMessage: (msg: any) => sentMessages.push(msg) });

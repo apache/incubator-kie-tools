@@ -10,7 +10,7 @@ exports[`EditorToolbar is dirty indicator should show the isDirty indicator when
     class="pf-c-title pf-m-xl"
     title="Rename"
   >
-    new-file.undefined
+    new-file.dmn
   </h3>
   <span
     class="kogito--editor__toolbar-edited"
@@ -31,7 +31,7 @@ exports[`EditorToolbar is dirty indicator shouldn't show the isDirty indicator w
     class="pf-c-title pf-m-xl"
     title="Rename"
   >
-    new-file.undefined
+    new-file.dmn
   </h3>
 </div>
 `;

@@ -92,7 +92,8 @@ describe("GwtEditorWrapperFactory", () => {
         context: {} as any,
         services: {
           keyboardShortcuts: {} as any,
-          guidedTour: {} as any
+          guidedTour: {} as any,
+          i18n: {} as any
         }
       },
       { resourcesPathPrefix: "", fileExtension: "txt" }

@@ -38,6 +38,7 @@ import * as Octokit from "@octokit/rest";
 import { fetchFile } from "../../github/api";
 import { useGitHubApi } from "../common/GitHubContext";
 import { useGlobals } from "../common/GlobalContext";
+import { useChromeExtensionI18n } from "../../i18n/locales";
 
 export interface PrInfo {
   repo: string;
@@ -57,6 +58,7 @@ export function IsolatedPrEditor(props: {
 }) {
   const githubApi = useGitHubApi();
   const globals = useGlobals();
+  const { i18n } = useChromeExtensionI18n();
 
   const [showOriginal, setShowOriginal] = useState(false);
   const [textMode, setTextMode] = useState(true);
@@ -147,7 +149,7 @@ export function IsolatedPrEditor(props: {
       {shouldAddLinkToOriginalFile &&
         ReactDOM.createPortal(
           <a className={"pl-5 dropdown-item btn-link"} href={viewOriginalFileHref(props.prInfo, originalFilePath)}>
-            View original file
+            {i18n.pr.isolated.viewOriginal}
           </a>,
           viewOriginalFileLinkContainer(
             globals.id,
@@ -159,7 +161,7 @@ export function IsolatedPrEditor(props: {
       {globals.externalEditorManager &&
         ReactDOM.createPortal(
           <a className={"pl-5 dropdown-item btn-link"} onClick={openExternalEditor}>
-            Open in {globals.externalEditorManager.name}
+            {i18n.openIn(globals.externalEditorManager.name)}
           </a>,
           openWithExternalEditorLinkContainer(
             props.prFileContainer,

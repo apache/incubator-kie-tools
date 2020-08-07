@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { EditorContext, KogitoEditorChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorContext, I18nService, KogitoEditorChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
 import { PMMLEditorMarshallerService } from "@kogito-tooling/pmml-editor-marshaller";
 
@@ -26,6 +26,7 @@ export interface KogitoEditorEnvelopeContextType {
   services: {
     keyboardShortcuts: DefaultKeyboardShortcutsService;
     guidedTour: { isEnabled: () => boolean };
+    i18n: I18nService;
     pmmlEditorMarshallerService: PMMLEditorMarshallerService;
   };
 }

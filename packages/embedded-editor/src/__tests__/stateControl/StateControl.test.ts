@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { StateControl } from "../../stateControl/StateControl";
+import { StateControl } from "../../stateControl";
 
 describe("StateControl", () => {
   let stateControl: StateControl;

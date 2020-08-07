@@ -15,19 +15,13 @@
  */
 
 import * as React from "react";
-import { act } from "react-dom/test-utils";
-import { renderedComponent, render, setupContainer, teardownContainer } from "../utils";
-
+import { render } from "@testing-library/react";
+import { usingCurrentTutorialContext } from "../test_context";
 import { GuidedTour } from "../../components";
 
 describe("GuidedTour", () => {
-  beforeEach(setupContainer);
-  afterEach(teardownContainer);
-
   it("renders", () => {
-    act(() => {
-      render(<GuidedTour />);
-    });
-    expect(renderedComponent()).toMatchSnapshot();
+    const { container } = render(usingCurrentTutorialContext(<GuidedTour />).wrapper);
+    expect(container).toMatchSnapshot();
   });
 });

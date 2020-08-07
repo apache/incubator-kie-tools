@@ -34,8 +34,9 @@ import { KeyboardShortcutsApi } from "./api/KeyboardShorcutsApi";
 import { WorkspaceServiceApi } from "./api/WorkspaceServiceApi";
 import { StateControlApi } from "./api/StateControlApi";
 import { EditorContextApi } from "./api/EditorContextApi";
-import { PMMLEditorMarshallerApi } from "./api/PMMLEditorMarshallerApi";
 import { GwtEditorMapping } from "./GwtEditorMapping";
+import { I18nServiceApi } from "./api/I18nServiceApi";
+import { PMMLEditorMarshallerApi } from "./api/PMMLEditorMarshallerApi";
 
 declare global {
   interface Window {
@@ -48,6 +49,7 @@ declare global {
       resourceContentEditorService?: ResourceContentApi;
       keyboardShortcuts: KeyboardShortcutsApi;
       workspaceService: WorkspaceServiceApi;
+      i18nService: I18nServiceApi;
       pmmlEditorMarshallerService: PMMLEditorMarshallerApi;
     };
   }
@@ -134,6 +136,14 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       workspaceService: {
         openFile(path: string): void {
           envelopeContext.channelApi.notify("receive_openFile", path);
+        }
+      },
+      i18nService: {
+        getLocale: () => {
+          return envelopeContext.channelApi.request("receive_getLocale");
+        },
+        onLocaleChange: (onLocaleChange: (locale: string) => void) => {
+          envelopeContext.services.i18n.setOnLocaleChange(onLocaleChange);
         }
       }
     };

@@ -15,12 +15,14 @@
  */
 
 import * as React from "react";
+import { useChromeExtensionI18n } from "../../i18n/locales";
 
 export function FullScreenToolbar(props: { onExitFullScreen: () => void }) {
+  const { i18n } = useChromeExtensionI18n();
   return (
     <div className={"kogito-iframe-fullscreen-toolbar"}>
       <a data-testid={"exit-fullscreen-button"} href={"#"} onClick={props.onExitFullScreen}>
-        Exit full screen
+        {i18n.single.exitFullScreen}
       </a>
     </div>
   );
