@@ -21,7 +21,7 @@ import * as vscode from "vscode";
 import { WorkspaceApi } from "@kogito-tooling/channel-common-api";
 
 export async function generateSvg(editorStore: KogitoEditorStore, workspaceApi: WorkspaceApi) {
-    const editor = editorStore1.activeEditor;
+    const editor = editorStore.activeEditor;
     if (!editor) {
         console.info(`Unable to create SVG because there's no Editor open.`);
         return;
