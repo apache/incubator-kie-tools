@@ -77,8 +77,10 @@ export function EditorToolbar(props: Props) {
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.keyCode === 13 /* Enter */) {
         saveNewName();
+        e.currentTarget.blur()
       } else if (e.keyCode === 27 /* ESC */) {
         cancelNewName();
+        e.currentTarget.blur()
       }
     },
     [saveNewName, cancelNewName]
