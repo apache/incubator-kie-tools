@@ -26,6 +26,7 @@ import * as nodePath from "path";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
+import { BackendProxy } from "@kogito-tooling/backend-api";
 
 export class KogitoEditorFactory {
   constructor(
@@ -33,7 +34,8 @@ export class KogitoEditorFactory {
     private readonly editorStore: KogitoEditorStore,
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator,
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
-    private readonly workspaceApi: WorkspaceApi
+    private readonly workspaceApi: WorkspaceApi,
+    private readonly backendProxy: BackendProxy
   ) {}
 
   public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditableDocument) {
@@ -61,7 +63,12 @@ export class KogitoEditorFactory {
       this.messageBroadcaster
     );
 
-    const editorChannelApi = new KogitoEditorChannelApiImpl(editor, resourceContentService, this.workspaceApi);
+    const editorChannelApi = new KogitoEditorChannelApiImpl(
+      editor,
+      resourceContentService,
+      this.workspaceApi,
+      this.backendProxy
+    );
 
     this.editorStore.addAsActive(editor);
     editor.startListening(editorChannelApi);

@@ -13,6 +13,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
+    "@kogito-tooling/backend-channel-api": "0.7.0",
     "@kogito-tooling/envelope": "0.7.0",
     "@kogito-tooling/envelope-bus": "0.7.0",
     "@kogito-tooling/guided-tour": "0.7.0",

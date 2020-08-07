@@ -26,6 +26,8 @@
     "outputDirectory": "./target"
   },
   "dependencies": {
+    "@kogito-tooling/backend-api": "0.7.0",
+    "@kogito-tooling/backend-channel-api": "0.7.0",
     "@kogito-tooling/editor": "0.7.0",
     "@kogito-tooling/keyboard-shortcuts": "0.7.0"
   }

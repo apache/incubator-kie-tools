@@ -41,7 +41,13 @@ export class KogitoEditor implements EditorApi {
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
     private readonly envelopeServer = new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
       {
-        postMessage: msg => this.panel.webview.postMessage(msg)
+        postMessage: msg => {
+          try {
+            this.panel.webview.postMessage(msg);
+          } catch (e) {
+            /* The webview has been disposed, thus cannot receive messages anymore. */
+          }
+        }
       },
       envelopeLocator.targetOrigin,
       self =>

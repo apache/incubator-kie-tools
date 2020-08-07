@@ -22,6 +22,12 @@ import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
 import { generateSvg } from "./generateSvg";
+import * as __path from "path";
+import { ServiceId, TestRunnerCapability } from "@kogito-tooling/backend-channel-api";
+import { VsCodeBackendProxy } from "./VsCodeBackendProxy";
+import { CapabilityResponseStatus, CapabilityResponse } from "@kogito-tooling/backend-api";
+
+let backendProxy: VsCodeBackendProxy;
 
 /**
  * Starts a Kogito extension.
@@ -31,13 +37,18 @@ import { generateSvg } from "./generateSvg";
  *  @param args.context The vscode.ExtensionContext provided on the activate method of the extension.
  *  @param args.routes The routes to be used to find resources for each language.
  */
-export function startExtension(args: {
+export async function startExtension(args: {
   extensionName: string;
   context: vscode.ExtensionContext;
   viewType: string;
   getPreviewCommandId: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
 }) {
+  backendProxy = new VsCodeBackendProxy();
+  if (!(await backendProxy.tryLoadBackendExtension())) {
+    vscode.window.showInformationMessage("Consider installing the backend extension to improve your experience.");
+  }
+
   const workspaceApi = new VsCodeWorkspaceApi();
   const editorStore = new KogitoEditorStore();
   const messageBroadcaster = new EnvelopeBusMessageBroadcaster();
@@ -46,7 +57,8 @@ export function startExtension(args: {
     editorStore,
     args.editorEnvelopeLocator,
     messageBroadcaster,
-    workspaceApi
+    workspaceApi,
+    backendProxy
   );
 
   const editorWebviewProvider = new KogitoEditorWebviewProvider(
@@ -64,5 +76,38 @@ export function startExtension(args: {
 
   args.context.subscriptions.push(
     vscode.commands.registerCommand(args.getPreviewCommandId, () => generateSvg(editorStore, workspaceApi))
+  );
+
+  sampleCodeForTestRunner(args.context);
+}
+
+/**
+ * Stops the Kogito extension.
+ */
+export function stopExtension() {
+  backendProxy?.stopServices();
+}
+
+function sampleCodeForTestRunner(context: vscode.ExtensionContext) {
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.kogito.runTest", async () => {
+      try {
+        const response = await backendProxy.withCapability(ServiceId.TEST_RUNNER, (capability: TestRunnerCapability) =>
+          capability.execute(
+            vscode.workspace.workspaceFolders![0].uri.fsPath,
+            "testscenario.KogitoScenarioJunitActivatorTest"
+          )
+        );
+
+        if (response.status === CapabilityResponseStatus.NOT_AVAILABLE) {
+          vscode.window.showInformationMessage(response.message!);
+          return;
+        }
+
+        vscode.window.showInformationMessage(response.body!);
+      } catch (e) {
+        vscode.window.showErrorMessage(e);
+      }
+    })
   );
 }

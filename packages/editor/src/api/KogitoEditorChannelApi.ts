@@ -18,8 +18,12 @@ import { KogitoToolingChannelCommonApi } from "@kogito-tooling/channel-common-ap
 import { GuidedTourChannelApi } from "@kogito-tooling/guided-tour/dist/api";
 import { StateControlCommand } from "./StateControlCommand";
 import { EditorContent } from "./EditorContent";
+import { CapabilityChannelApi } from "@kogito-tooling/backend-channel-api";
 
-export interface KogitoEditorChannelApi extends KogitoToolingChannelCommonApi, GuidedTourChannelApi {
+export interface KogitoEditorChannelApi
+  extends KogitoToolingChannelCommonApi,
+    GuidedTourChannelApi,
+    CapabilityChannelApi {
   receive_setContentError(errorMessage: string): void;
   receive_stateControlCommandUpdate(command: StateControlCommand): void;
   receive_contentRequest(): Promise<EditorContent>;

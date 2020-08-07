@@ -26,6 +26,8 @@ import * as vscode from "vscode";
 import * as __path from "path";
 import { KogitoEditor } from "./KogitoEditor";
 import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
+import { BackendProxy, CapabilityResponse } from "@kogito-tooling/backend-api";
+import { ServiceId, SampleCapability } from "@kogito-tooling/backend-channel-api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   private readonly decoder = new TextDecoder("utf-8");
@@ -34,6 +36,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     private readonly editor: KogitoEditor,
     private readonly resourceContentService: ResourceContentService,
     private readonly workspaceApi: WorkspaceApi,
+    private readonly backendProxy: BackendProxy,
     private initialBackup = editor.document.initialBackup
   ) {}
 
@@ -84,5 +87,11 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
 
   public receive_getLocale(): Promise<string> {
     return this.workspaceApi.receive_getLocale();
+  }
+
+  public receive_hello(name: string, delay: number): Promise<CapabilityResponse<string>> {
+    return this.backendProxy.withCapability(ServiceId.SAMPLE, (capability: SampleCapability) => {
+      return capability.hello(name, delay);
+    });
   }
 }

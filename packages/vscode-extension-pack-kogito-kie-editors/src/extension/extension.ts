@@ -42,6 +42,5 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-  //FIXME: For some reason, this method is not being called :(
-  console.info("Extension is deactivating");
+  KogitoVsCode.stopExtension();
 }
