@@ -28,7 +28,8 @@ Modules = {
     #Note: Service name should be same as given in the repository
     "data-index-service": "kogito-data-index",
     "trusty-service": "kogito-trusty",
-    "explainability-service": "kogito-explainability",
+    "explainability-service-rest": "kogito-explainability",
+    "explainability-service-messaging": "kogito-explainability",
     "jobs-service": "kogito-jobs-service",
     "management-console": "kogito-management-console"
 }
@@ -102,15 +103,17 @@ def checkUrl(url):
 
 def update_artifacts(service,modulePath):
     '''
-    Updates the module.yaml file of services with latest artifacts
+    Updates the module.yaml file of services with latest artifacts. When an image contains more than one jar, the correct one is selected by
+    checking if the name of the service is contained in the url of the artifact. 
     :param service: Service information (repo_url, version, name)
     :param modulePath: relative file location of the module.yaml for the kogito service
     '''
 
     with open(modulePath) as module:
         data=common.yaml_loader().load(module)
-        data['artifacts'][0]['url']=getRunnerURL(service)
-        data['artifacts'][0]['md5']=getMD5(service)
+        artifact = next(filter(lambda x: service['name'] in x['url'], data['artifacts']))
+        artifact['url']=getRunnerURL(service)
+        artifact['md5']=getMD5(service)
     with open(modulePath, 'w') as module:
         common.yaml_loader().dump(data, module)
 

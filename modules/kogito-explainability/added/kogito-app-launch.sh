@@ -19,7 +19,13 @@ CONFIGURE_SCRIPTS=(
 source ${KOGITO_HOME}/launch/configure.sh
 #############################################
 
+if [ ${EXPLAINABILITY_COMMUNICATION^^} = "REST" ] ; then 
+      EXPLAINABILITY_JAR="kogito-explainability-rest-runner.jar"
+    else
+      EXPLAINABILITY_JAR="kogito-explainability-messaging-runner.jar"
+fi
+
 exec java ${SHOW_JVM_SETTINGS} ${JAVA_OPTIONS} ${KOGITO_EXPLAINABILITY_PROPS} \
         -Djava.library.path=$KOGITO_HOME/lib \
         -Dquarkus.http.host=0.0.0.0 \
-        -jar $KOGITO_HOME/bin/kogito-explainability-runner.jar
+        -jar $KOGITO_HOME/bin/$EXPLAINABILITY_JAR

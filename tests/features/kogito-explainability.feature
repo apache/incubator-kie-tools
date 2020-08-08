@@ -11,19 +11,32 @@ Feature: Kogito-explainability feature.
     And the image should contain label io.k8s.display-name with value Kogito Explainability Service
     And the image should contain label io.openshift.tags with value kogito,explainability
 
-  Scenario: verify if the binary index is available on /home/kogito
+  Scenario: verify if the messaging binary is available on /home/kogito
     When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/kogito-explainability-runner.jar' in container and immediately check its output for /home/kogito/bin/kogito-explainability-runner.jar
+    Then run sh -c 'ls /home/kogito/bin/kogito-explainability-messaging-runner.jar' in container and immediately check its output for /home/kogito/bin/kogito-explainability-messaging-runner.jar
+
+  Scenario: verify if the rest binary is available on /home/kogito
+    When container is started with command bash
+    Then run sh -c 'ls /home/kogito/bin/kogito-explainability-rest-runner.jar' in container and immediately check its output for /home/kogito/bin/kogito-explainability-rest-runner.jar
 
   Scenario: Verify if the debug is correctly enabled and test default http port
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=8080 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-explainability-runner.jar
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=8080 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-explainability-messaging-runner.jar
 
   Scenario: Verify if the debug is correctly enabled and test custom http port
     When container is started with env
       | variable      | value |
       | SCRIPT_DEBUG  | true  |
       | HTTP_PORT     | 9090  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-explainability-runner.jar
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-explainability-messaging-runner.jar
+
+
+  Scenario: Verify if the explainability rest binary is selected by the enviroment variable EXPLAINABILITY_COMMUNICATION
+    When container is started with env
+      | variable      | value |
+      | EXPLAINABILITY_COMMUNICATION  | rest |
+      | SCRIPT_DEBUG  | true  |
+      | HTTP_PORT     | 9090  |
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-explainability-rest-runner.jar

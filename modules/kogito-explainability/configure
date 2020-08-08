@@ -5,7 +5,8 @@ SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname $0)
 ADDED_DIR=${SCRIPT_DIR}/added
 
-cp -v ${SOURCES_DIR}/kogito-explainability-runner.jar ${KOGITO_HOME}/bin/
+cp -v ${SOURCES_DIR}/kogito-explainability-rest-runner.jar ${KOGITO_HOME}/bin/
+cp -v ${SOURCES_DIR}/kogito-explainability-messaging-runner.jar ${KOGITO_HOME}/bin/
 cp -rv ${ADDED_DIR}/launch/* ${KOGITO_HOME}/launch/
 
 chown -R 1001:0 ${KOGITO_HOME}
