@@ -43,7 +43,7 @@ export class EnvelopeServer<
     bus: EnvelopeBus,
     public readonly origin: string,
     public readonly pollInit: (self: EnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>,
-    private readonly manager = new EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>(
+    public readonly manager = new EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>(
       message => bus.postMessage(message),
       "EnvelopeServer"
     )
