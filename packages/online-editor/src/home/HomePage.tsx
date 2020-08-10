@@ -121,13 +121,15 @@ export function HomePage(props: Props) {
       setUploadedFileName(fileName);
       const fileExtension = extractFileExtension(fileName);
       if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
-        setIsUploadRejected(false);
+        setIsUploadRejected(true);
       } else {
         openFile(file, fileName, fileExtension);
       }
     },
     []
   );
+
+  const onDropRejected = useCallback(() => setIsUploadRejected(true), []);
 
   const createEmptyFile = useCallback(
     (fileExtension: string) => {
@@ -493,10 +495,9 @@ export function HomePage(props: Props) {
                     filenamePlaceholder={i18n.homePage.uploadFile.placeholder}
                     filename={uploadedFileName}
                     onChange={onFileUpload}
-                    hideDefaultPreview={false}
                     dropzoneProps={{
                       accept: ".dmn, .bpmn, .bpmn2",
-                      onDropRejected: () => setIsUploadRejected(true)
+                      onDropRejected
                     }}
                     validated={isUploadRejected ? "error" : "default"}
                   />
