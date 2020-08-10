@@ -88,24 +88,6 @@ export function HomePage(props: Props) {
     urlToOpen: undefined
   });
 
-  const openFile = useCallback(
-    (file: File, fileName: string, fileExtension: string) => {
-      props.onFileOpened({
-        isReadOnly: false,
-        fileExtension: fileExtension,
-        fileName: removeFileExtension(fileName),
-        getFileContents: () =>
-          new Promise<string | undefined>(resolve => {
-            const reader = new FileReader();
-            reader.onload = (event: any) => resolve(event.target.result as string);
-            reader.readAsText(file);
-          })
-      });
-      history.replace(context.routes.editor.url({ type: fileExtension }));
-    },
-    [context, history]
-  );
-
   const onFileUpload = useCallback(
     (
       file: File,
@@ -122,11 +104,23 @@ export function HomePage(props: Props) {
       const fileExtension = extractFileExtension(fileName);
       if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
         setIsUploadRejected(true);
-      } else {
-        openFile(file, fileName, fileExtension);
+        return
       }
+
+      props.onFileOpened({
+        isReadOnly: false,
+        fileExtension,
+        fileName: removeFileExtension(fileName),
+        getFileContents: () =>
+          new Promise<string | undefined>(resolve => {
+            const reader = new FileReader();
+            reader.onload = (event: any) => resolve(event.target.result as string);
+            reader.readAsText(file);
+          })
+      });
+      history.replace(context.routes.editor.url({ type: fileExtension }));
     },
-    []
+    [context, history]
   );
 
   const onDropRejected = useCallback(() => setIsUploadRejected(true), []);
