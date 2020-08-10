@@ -65,6 +65,8 @@ public interface BPMNGlyphFactory {
     ImageStripGlyph EVENT_INTERMEDIATE_COMPENSATION = ImageStripGlyph.create(BPMNIconsStrip.class, 44);
     ImageStripGlyph EVENT_INTERMEDIATE_THROWING_COMPENSATION = ImageStripGlyph.create(BPMNIconsStrip.class, 45);
     ImageStripGlyph EVENT_END_COMPENSATION = ImageStripGlyph.create(BPMNIconsStrip.class, 46);
+    ImageStripGlyph EVENT_INTERMEDIATE_LINK = ImageStripGlyph.create(BPMNIconsStrip.class, 53);
+    ImageStripGlyph EVENT_INTERMEDIATE_THROWING_LINK = ImageStripGlyph.create(BPMNIconsStrip.class, 54);
     ImageStripGlyph ASSOCIATION = ImageStripGlyph.create(BPMNIconsStrip.class, 63);
     ImageStripGlyph TASK_GENERIC_SERVICE = ImageStripGlyph.create(BPMNIconsStrip.class, 64);
     ImageStripGlyph TEXT_ANNOTATION = ImageStripGlyph.create(BPMNIconsStrip.class, 65);

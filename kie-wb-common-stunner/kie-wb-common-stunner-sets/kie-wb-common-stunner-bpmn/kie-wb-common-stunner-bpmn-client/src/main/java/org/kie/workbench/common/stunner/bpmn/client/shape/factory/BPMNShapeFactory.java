@@ -65,6 +65,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalE
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
@@ -263,6 +265,9 @@ public class BPMNShapeFactory
                 .delegate(IntermediateSignalEventCatching.class,
                           new CatchingIntermediateEventShapeDef(),
                           () -> svgShapeFactory)
+                .delegate(IntermediateLinkEventCatching.class,
+                          new CatchingIntermediateEventShapeDef(),
+                          () -> svgShapeFactory)
                 .delegate(IntermediateErrorEventCatching.class,
                           new CatchingIntermediateEventShapeDef(),
                           () -> svgShapeFactory)
@@ -276,6 +281,9 @@ public class BPMNShapeFactory
                           new CatchingIntermediateEventShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(IntermediateSignalEventThrowing.class,
+                          new ThrowingIntermediateEventShapeDef(),
+                          () -> svgShapeFactory)
+                .delegate(IntermediateLinkEventThrowing.class,
                           new ThrowingIntermediateEventShapeDef(),
                           () -> svgShapeFactory)
                 .delegate(IntermediateMessageEventThrowing.class,

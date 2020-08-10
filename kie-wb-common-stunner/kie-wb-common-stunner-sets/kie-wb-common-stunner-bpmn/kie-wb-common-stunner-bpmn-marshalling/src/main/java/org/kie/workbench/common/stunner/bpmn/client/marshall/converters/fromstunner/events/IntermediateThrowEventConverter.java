@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util.Con
 import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageEventExecutionSet;
@@ -49,6 +50,9 @@ public class IntermediateThrowEventConverter {
         }
         if (def instanceof IntermediateSignalEventThrowing) {
             return signalEvent(cast(node));
+        }
+        if (def instanceof IntermediateLinkEventThrowing) {
+            return linkEvent(cast(node));
         }
         if (def instanceof IntermediateEscalationEventThrowing) {
             return escalationEvent(cast(node));
@@ -77,6 +81,22 @@ public class IntermediateThrowEventConverter {
         p.addSignalScope(definition.getExecutionSet().getSignalScope());
 
         p.setAbsoluteBounds(n);
+        return p;
+    }
+
+    private PropertyWriter linkEvent(Node<View<IntermediateLinkEventThrowing>, ?> n) {
+        IntermediateThrowEvent event = bpmn2.createIntermediateThrowEvent();
+        event.setId(n.getUUID());
+
+        IntermediateLinkEventThrowing definition = n.getContent().getDefinition();
+        ThrowEventPropertyWriter p = propertyWriterFactory.of(event);
+        p.setAbsoluteBounds(n);
+        p.addLink(definition.getExecutionSet().getLinkRef());
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
         return p;
     }
 

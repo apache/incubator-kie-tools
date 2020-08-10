@@ -24,6 +24,7 @@ import org.eclipse.bpmn2.ErrorEventDefinition;
 import org.eclipse.bpmn2.EscalationEventDefinition;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.IntermediateThrowEvent;
+import org.eclipse.bpmn2.LinkEventDefinition;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.MarshallingRequest.Mode;
@@ -39,6 +40,7 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunne
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.ThrowEventPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
@@ -46,6 +48,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.compensat
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.compensation.CompensationEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationRef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.link.LinkEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.link.LinkRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.ScopedSignalEventExecutionSet;
@@ -80,6 +84,7 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
             case 1:
                 return Match.<EventDefinition, BpmnNode>of()
                         .<SignalEventDefinition>when(e -> e instanceof SignalEventDefinition, e -> signalEvent(event, e))
+                        .<LinkEventDefinition>when(e -> e instanceof LinkEventDefinition, e -> linkEvent(event))
                         .<MessageEventDefinition>when(e -> e instanceof MessageEventDefinition, e -> messageEvent(event, e))
                         .<EscalationEventDefinition>when(e -> e instanceof EscalationEventDefinition, e -> escalationEvent(event, e))
                         .<CompensateEventDefinition>when(e -> e instanceof CompensateEventDefinition, e -> compensationEvent(event, e))
@@ -90,6 +95,32 @@ public class IntermediateThrowEventConverter extends AbstractConverter implement
             default:
                 throw new UnsupportedOperationException("Multiple definitions not supported for intermediate throw event");
         }
+    }
+
+    private BpmnNode linkEvent(IntermediateThrowEvent event) {
+
+        Node<View<IntermediateLinkEventThrowing>, Edge> node =
+                factoryManager.newNode(event.getId(), IntermediateLinkEventThrowing.class);
+
+        IntermediateLinkEventThrowing definition = node.getContent().getDefinition();
+        EventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(new BPMNGeneralSet(
+                new Name(p.getName()),
+                new Documentation(p.getDocumentation())
+        ));
+
+        definition.setExecutionSet(new LinkEventExecutionSet(
+                new LinkRef(p.getLinkRef())
+        ));
+
+        node.getContent().setBounds(p.getBounds());
+
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setBackgroundSet(p.getBackgroundSet());
+
+        return BpmnNode.of(node, p);
     }
 
     private BpmnNode messageEvent(

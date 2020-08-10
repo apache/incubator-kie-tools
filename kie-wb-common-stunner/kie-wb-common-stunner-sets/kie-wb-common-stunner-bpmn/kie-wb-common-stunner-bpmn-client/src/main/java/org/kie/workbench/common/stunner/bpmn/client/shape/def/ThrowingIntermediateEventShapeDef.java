@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory
 import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -38,6 +39,7 @@ public class ThrowingIntermediateEventShapeDef
     public static final SVGShapeViewResources<BaseThrowingIntermediateEvent, BPMNSVGViewFactory> VIEW_RESOURCES =
             new SVGShapeViewResources<BaseThrowingIntermediateEvent, BPMNSVGViewFactory>()
                     .put(IntermediateSignalEventThrowing.class, BPMNSVGViewFactory::intermediateSignalThrowingEvent)
+                    .put(IntermediateLinkEventThrowing.class, BPMNSVGViewFactory::intermediateLinkThrowingEvent)
                     .put(IntermediateMessageEventThrowing.class, BPMNSVGViewFactory::intermediateMessageThrowingEvent)
                     .put(IntermediateEscalationEventThrowing.class, BPMNSVGViewFactory::intermediateEscalationThrowingEvent)
                     .put(IntermediateCompensationEventThrowing.class, BPMNSVGViewFactory::intermediateCompensationThrowingEvent);
@@ -45,6 +47,7 @@ public class ThrowingIntermediateEventShapeDef
     public static final Map<Class<? extends BaseThrowingIntermediateEvent>, Glyph> GLYPHS =
             new Maps.Builder<Class<? extends BaseThrowingIntermediateEvent>, Glyph>()
                     .put(IntermediateSignalEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_SIGNAL)
+                    .put(IntermediateLinkEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_LINK)
                     .put(IntermediateMessageEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_MESSAGE)
                     .put(IntermediateEscalationEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_ESCALATION)
                     .put(IntermediateCompensationEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_COMPENSATION)

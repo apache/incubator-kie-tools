@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensation
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -32,6 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseCance
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.CancellingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.CancellingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.CancellingEscalationEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.link.LinkEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.CancellingSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.CancellingTimerEventExecutionSet;
@@ -54,6 +56,7 @@ public class IntermediateCatchEventConverter {
         return NodeMatch.fromNode(BaseCatchingIntermediateEvent.class, PropertyWriter.class)
                 .when(IntermediateMessageEventCatching.class, this::messageEvent)
                 .when(IntermediateSignalEventCatching.class, this::signalEvent)
+                .when(IntermediateLinkEventCatching.class, this::linkEvent)
                 .when(IntermediateErrorEventCatching.class, this::errorEvent)
                 .when(IntermediateTimerEvent.class, this::timerEvent)
                 .when(IntermediateConditionalEvent.class, this::conditionalEvent)
@@ -107,6 +110,23 @@ public class IntermediateCatchEventConverter {
         p.setAbsoluteBounds(n);
 
         p.addSignal(definition.getExecutionSet().getSignalRef());
+
+        return p;
+    }
+
+    private PropertyWriter linkEvent(Node<View<IntermediateLinkEventCatching>, ?> n) {
+        CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
+        p.getFlowElement().setId(n.getUUID());
+        p.setAbsoluteBounds(n);
+
+        IntermediateLinkEventCatching definition = n.getContent().getDefinition();
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
+        LinkEventExecutionSet executionSet = definition.getExecutionSet();
+        p.addLink(executionSet.getLinkRef());
 
         return p;
     }

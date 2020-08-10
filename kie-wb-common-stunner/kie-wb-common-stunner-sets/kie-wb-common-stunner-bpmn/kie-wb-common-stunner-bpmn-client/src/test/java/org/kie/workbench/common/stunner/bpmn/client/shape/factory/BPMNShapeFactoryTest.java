@@ -58,6 +58,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalE
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
@@ -284,6 +286,10 @@ public class BPMNShapeFactoryTest {
                                   any(CatchingIntermediateEventShapeDef.class),
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
+               times(1)).delegate(eq(IntermediateLinkEventCatching.class),
+                                  any(CatchingIntermediateEventShapeDef.class),
+                                  factoryArgumentCaptor.capture());
+        verify(delegateShapeFactory,
                times(1)).delegate(eq(IntermediateErrorEventCatching.class),
                                   any(CatchingIntermediateEventShapeDef.class),
                                   factoryArgumentCaptor.capture());
@@ -297,6 +303,10 @@ public class BPMNShapeFactoryTest {
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
                times(1)).delegate(eq(IntermediateSignalEventThrowing.class),
+                                  any(ThrowingIntermediateEventShapeDef.class),
+                                  factoryArgumentCaptor.capture());
+        verify(delegateShapeFactory,
+               times(1)).delegate(eq(IntermediateLinkEventThrowing.class),
                                   any(ThrowingIntermediateEventShapeDef.class),
                                   factoryArgumentCaptor.capture());
         verify(delegateShapeFactory,
@@ -350,7 +360,7 @@ public class BPMNShapeFactoryTest {
         final long basicFactoryCallCount = factoryArgumentCaptor.getAllValues().stream()
                 .filter(this::isBasicShapeFactory)
                 .count();
-        assertEquals(41,
+        assertEquals(43,
                      svgFactoryCallCount,
                      0);
         assertEquals(2,

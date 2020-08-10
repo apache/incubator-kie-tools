@@ -48,6 +48,13 @@ public class ThrowEventPropertyReaderTest extends BaseEventPropertyReaderTest {
     }
 
     @Override
+    protected void setLinkEventDefinitionOnCurrentMock(EventDefinition eventDefinition) {
+        List<EventDefinition> eventDefinitions = Collections.singletonList(eventDefinition);
+        when(throwEvent.getEventDefinitions()).thenReturn(eventDefinitions);
+        when(throwEvent.getEventDefinitionRefs()).thenReturn(Collections.EMPTY_LIST);
+    }
+
+    @Override
     protected Event getCurrentEventMock() {
         return throwEvent;
     }

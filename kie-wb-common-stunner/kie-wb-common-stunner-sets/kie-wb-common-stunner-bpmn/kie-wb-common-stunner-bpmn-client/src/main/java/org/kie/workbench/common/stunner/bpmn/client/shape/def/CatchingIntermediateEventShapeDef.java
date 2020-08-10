@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensation
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -52,6 +53,8 @@ public class CatchingIntermediateEventShapeDef
                          BPMNSVGViewFactory::intermediateTimerEvent)
                     .put(IntermediateSignalEventCatching.class,
                          BPMNSVGViewFactory::intermediateSignalCatchingEvent)
+                    .put(IntermediateLinkEventCatching.class,
+                         BPMNSVGViewFactory::intermediateLinkCatchingEvent)
                     .put(IntermediateErrorEventCatching.class,
                          BPMNSVGViewFactory::intermediateErrorCatchingEvent)
                     .put(IntermediateMessageEventCatching.class,
@@ -69,6 +72,8 @@ public class CatchingIntermediateEventShapeDef
                          BPMNGlyphFactory.EVENT_INTERMEDIATE_TIMER)
                     .put(IntermediateSignalEventCatching.class,
                          BPMNGlyphFactory.EVENT_INTERMEDIATE_SIGNAL)
+                    .put(IntermediateLinkEventCatching.class,
+                         BPMNGlyphFactory.EVENT_INTERMEDIATE_LINK)
                     .put(IntermediateErrorEventCatching.class,
                          BPMNGlyphFactory.EVENT_INTERMEDIATE_ERROR)
                     .put(IntermediateMessageEventCatching.class,

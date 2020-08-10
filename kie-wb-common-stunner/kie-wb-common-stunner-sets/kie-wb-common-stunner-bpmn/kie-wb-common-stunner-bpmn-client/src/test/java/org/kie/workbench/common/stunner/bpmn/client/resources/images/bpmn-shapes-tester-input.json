@@ -297,6 +297,19 @@
         "refs": "eventSignal"
       }
     },
+    {
+      "id": "intermediateLinkCatchingEvent",
+      "name": "Catching Intermediate Event - Link",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-link.svg",
+        "refs": "eventLink"
+      }
+    },
   {
       "id": "intermediateMessageCatchingEvent",
       "name": "Catching Intermediate Event - Message",
@@ -367,6 +380,18 @@
       "icon": {
         "path": "icons/event/",
         "file": "event-intermediate-signal-throwing.svg"
+      }
+    },
+    {
+      "id": "intermediateLinkThrowingEvent",
+      "name": "Throwing Intermediate Event - Link",
+      "shape": {
+        "path": "shapes/",
+        "file": "event-all.svg"
+      },
+      "icon": {
+        "path": "icons/event/",
+        "file": "event-intermediate-link-throwing.svg"
       }
     },
     {

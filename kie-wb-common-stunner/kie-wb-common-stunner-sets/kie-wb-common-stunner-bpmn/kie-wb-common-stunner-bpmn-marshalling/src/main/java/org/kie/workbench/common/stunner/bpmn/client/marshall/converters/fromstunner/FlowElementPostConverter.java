@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.events.EndCompensationEventPostConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.events.IntermediateCompensationEventPostConverter;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.events.IntermediateLinkEventPostConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.events.IntermediateThrowCompensationEventPostConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.processes.EventSubProcessPostConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.BasePropertyWriter;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.EndCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EventSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventThrowing;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -47,6 +49,8 @@ public class FlowElementPostConverter {
                            new EndCompensationEventPostConverter());
         postConverters.put(EventSubprocess.class,
                            new EventSubProcessPostConverter());
+        postConverters.put(IntermediateLinkEventThrowing.class,
+                           new IntermediateLinkEventPostConverter());
     }
 
     public void postConvert(ProcessPropertyWriter processWriter,

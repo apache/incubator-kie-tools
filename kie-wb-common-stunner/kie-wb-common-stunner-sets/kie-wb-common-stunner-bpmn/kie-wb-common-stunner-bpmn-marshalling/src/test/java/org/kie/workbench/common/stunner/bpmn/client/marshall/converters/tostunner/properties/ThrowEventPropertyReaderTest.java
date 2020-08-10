@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties;
 
 import org.eclipse.bpmn2.Event;
+import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.emf.common.util.ECollections;
@@ -39,6 +40,12 @@ public class ThrowEventPropertyReaderTest extends BaseEventPropertyReaderTest {
 
     @Override
     protected void setSignalEventDefinitionOnCurrentMock(SignalEventDefinition eventDefinition) {
+        when(throwEvent.getEventDefinitions()).thenReturn(ECollections.singletonEList(eventDefinition));
+        when(throwEvent.getEventDefinitionRefs()).thenReturn(ECollections.emptyEList());
+    }
+
+    @Override
+    protected void setLinkEventDefinitionOnCurrentMock(EventDefinition eventDefinition) {
         when(throwEvent.getEventDefinitions()).thenReturn(ECollections.singletonEList(eventDefinition));
         when(throwEvent.getEventDefinitionRefs()).thenReturn(ECollections.emptyEList());
     }

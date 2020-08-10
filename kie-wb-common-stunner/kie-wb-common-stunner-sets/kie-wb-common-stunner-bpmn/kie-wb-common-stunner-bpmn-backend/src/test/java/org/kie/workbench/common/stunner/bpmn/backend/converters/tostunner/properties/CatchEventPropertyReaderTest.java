@@ -48,6 +48,13 @@ public class CatchEventPropertyReaderTest extends BaseEventPropertyReaderTest {
     }
 
     @Override
+    protected void setLinkEventDefinitionOnCurrentMock(EventDefinition eventDefinition) {
+        List<EventDefinition> eventDefinitions = Collections.singletonList(eventDefinition);
+        when(catchEvent.getEventDefinitions()).thenReturn(eventDefinitions);
+        when(catchEvent.getEventDefinitionRefs()).thenReturn(Collections.EMPTY_LIST);
+    }
+
+    @Override
     protected Event getCurrentEventMock() {
         return catchEvent;
     }

@@ -28,6 +28,7 @@ import org.eclipse.bpmn2.ErrorEventDefinition;
 import org.eclipse.bpmn2.EscalationEventDefinition;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
+import org.eclipse.bpmn2.LinkEventDefinition;
 import org.eclipse.bpmn2.MessageEventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.TimerEventDefinition;
@@ -46,6 +47,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensation
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -57,6 +59,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.Can
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.ErrorRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.CancellingEscalationEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.EscalationRef;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.link.LinkEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.link.LinkRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.CancellingSignalEventExecutionSet;
@@ -95,6 +99,7 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
                 return Match.of(EventDefinition.class, Result.class)
                         .when(TimerEventDefinition.class, e -> timerEvent(event, e))
                         .when(SignalEventDefinition.class, e -> signalEvent(event, e))
+                        .when(LinkEventDefinition.class, e -> linkEvent(event, e))
                         .when(MessageEventDefinition.class, e -> messageEvent(event, e))
                         .when(ErrorEventDefinition.class, e -> errorEvent(event, e))
                         .when(ConditionalEventDefinition.class, e -> conditionalEvent(event, e))
@@ -204,6 +209,32 @@ public class IntermediateCatchEventConverter extends AbstractConverter implement
                         new SLADueDate(p.getSlaDueDate()),
                         new SignalRef(p.getSignalRef())
                 )
+        );
+
+        node.getContent().setBounds(p.getBounds());
+
+        return Result.success(BpmnNode.of(node, p));
+    }
+
+    private Result<BpmnNode> linkEvent(CatchEvent event, LinkEventDefinition e) {
+        String nodeId = event.getId();
+        Node<View<IntermediateLinkEventCatching>, Edge> node = factoryManager.newNode(nodeId, IntermediateLinkEventCatching.class);
+
+        IntermediateLinkEventCatching definition = node.getContent().getDefinition();
+        CatchEventPropertyReader p = propertyReaderFactory.of(event);
+
+        definition.setGeneral(
+                new BPMNGeneralSet(
+                        new Name(p.getName()),
+                        new Documentation(p.getDocumentation())
+                )
+        );
+        definition.setBackgroundSet(p.getBackgroundSet());
+        definition.setFontSet(p.getFontSet());
+        definition.setDimensionsSet(p.getCircleDimensionSet());
+
+        definition.setExecutionSet(
+                new LinkEventExecutionSet(new LinkRef(p.getLinkRef()))
         );
 
         node.getContent().setBounds(p.getBounds());

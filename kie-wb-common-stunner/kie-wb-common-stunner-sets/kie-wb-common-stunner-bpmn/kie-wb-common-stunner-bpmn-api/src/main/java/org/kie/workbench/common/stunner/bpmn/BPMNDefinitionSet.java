@@ -44,6 +44,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalE
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventCatching;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
@@ -107,6 +109,8 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 IntermediateMessageEventCatching.class,
                 IntermediateSignalEventCatching.class,
                 IntermediateSignalEventThrowing.class,
+                IntermediateLinkEventCatching.class,
+                IntermediateLinkEventThrowing.class,
                 IntermediateErrorEventCatching.class,
                 IntermediateEscalationEvent.class,
                 IntermediateCompensationEvent.class,

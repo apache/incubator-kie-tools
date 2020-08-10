@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.prop
 import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEventThrowing;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventThrowing;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageEventExecutionSet;
@@ -45,6 +46,7 @@ public class IntermediateThrowEventConverter {
         return NodeMatch.fromNode(BaseThrowingIntermediateEvent.class, PropertyWriter.class)
                 .when(IntermediateMessageEventThrowing.class, this::messageEvent)
                 .when(IntermediateSignalEventThrowing.class, this::signalEvent)
+                .when(IntermediateLinkEventThrowing.class, this::linkEvent)
                 .when(IntermediateEscalationEventThrowing.class, this::escalationEvent)
                 .when(IntermediateCompensationEventThrowing.class, this::compensationEvent)
                 .apply(node).value();
@@ -68,6 +70,22 @@ public class IntermediateThrowEventConverter {
         p.addSignalScope(definition.getExecutionSet().getSignalScope());
 
         p.setAbsoluteBounds(n);
+        return p;
+    }
+
+    private PropertyWriter linkEvent(Node<View<IntermediateLinkEventThrowing>, ?> n) {
+        IntermediateThrowEvent event = bpmn2.createIntermediateThrowEvent();
+        event.setId(n.getUUID());
+
+        IntermediateLinkEventThrowing definition = n.getContent().getDefinition();
+        ThrowEventPropertyWriter p = propertyWriterFactory.of(event);
+        p.setAbsoluteBounds(n);
+        p.addLink(definition.getExecutionSet().getLinkRef());
+
+        BPMNGeneralSet general = definition.getGeneral();
+        p.setName(general.getName().getValue());
+        p.setDocumentation(general.getDocumentation().getValue());
+
         return p;
     }
 

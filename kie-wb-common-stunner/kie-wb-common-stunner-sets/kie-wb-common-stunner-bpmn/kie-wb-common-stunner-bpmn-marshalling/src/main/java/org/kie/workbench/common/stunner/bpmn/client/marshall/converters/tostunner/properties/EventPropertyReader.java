@@ -27,6 +27,7 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.Expression;
 import org.eclipse.bpmn2.FormalExpression;
+import org.eclipse.bpmn2.LinkEventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.di.BPMNDiagram;
@@ -39,6 +40,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.Tim
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+
+import static org.kie.workbench.common.stunner.core.util.StringUtils.revertIllegalCharsAttribute;
 
 public abstract class EventPropertyReader extends FlowElementPropertyReader {
 
@@ -98,6 +101,15 @@ public abstract class EventPropertyReader extends FlowElementPropertyReader {
         if (eventDefinitions.size() == 1 && eventDefinitions.get(0) instanceof SignalEventDefinition) {
             String signalRefId = ((SignalEventDefinition) eventDefinitions.get(0)).getSignalRef();
             return signalRefId != null ? definitionResolver.resolveSignalName(signalRefId) : "";
+        }
+        return "";
+    }
+
+    public String getLinkRef() {
+        List<EventDefinition> eventDefinitions = getEventDefinitions();
+        if (eventDefinitions.size() == 1 && eventDefinitions.get(0) instanceof LinkEventDefinition) {
+            String linkRef = ((LinkEventDefinition) eventDefinitions.get(0)).getName();
+            return linkRef != null ? revertIllegalCharsAttribute(linkRef) : "";
         }
         return "";
     }

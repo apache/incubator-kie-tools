@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensation
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateConditionalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateErrorEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateEscalationEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
@@ -73,6 +74,7 @@ public class StunnerBPMNEntryPoint {
         FormFiltersProviderFactory.registerProvider(new CatchingIntermediateEventFilterProvider(sessionManager, IntermediateConditionalEvent.class));
         FormFiltersProviderFactory.registerProvider(new CatchingIntermediateEventFilterProvider(sessionManager, IntermediateCompensationEvent.class));
         FormFiltersProviderFactory.registerProvider(new CatchingIntermediateEventFilterProvider(sessionManager, IntermediateSignalEventCatching.class));
+        FormFiltersProviderFactory.registerProvider(new CatchingIntermediateEventFilterProvider(sessionManager, IntermediateLinkEventCatching.class));
         FormFiltersProviderFactory.registerProvider(new CatchingIntermediateEventFilterProvider(sessionManager, IntermediateEscalationEvent.class));
         FormFiltersProviderFactory.registerProvider(new CatchingIntermediateEventFilterProvider(sessionManager, IntermediateMessageEventCatching.class));
         FormFiltersProviderFactory.registerProvider(new AssociationFilterProvider());

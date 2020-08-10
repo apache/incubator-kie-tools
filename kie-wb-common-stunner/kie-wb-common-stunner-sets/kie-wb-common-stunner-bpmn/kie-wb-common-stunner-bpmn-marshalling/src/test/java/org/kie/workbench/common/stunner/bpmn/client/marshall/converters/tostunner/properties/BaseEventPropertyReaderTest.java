@@ -29,6 +29,7 @@ import org.eclipse.bpmn2.Event;
 import org.eclipse.bpmn2.EventDefinition;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.FormalExpression;
+import org.eclipse.bpmn2.LinkEventDefinition;
 import org.eclipse.bpmn2.SignalEventDefinition;
 import org.eclipse.bpmn2.TimerEventDefinition;
 import org.eclipse.bpmn2.di.BPMNDiagram;
@@ -69,6 +70,8 @@ public abstract class BaseEventPropertyReaderTest {
     protected static final String SCOPE_ELEMENT_NAME = "customScope";
     protected static final String SCOPE = "SCOPE";
 
+    protected static final String LINK_REF_ID = "LINK_REF_ID";
+
     protected static final String SLADUEDATE_ELEMENT_NAME = "customSLADueDate";
     protected static final String SLADUEDATE = "12/25/1983";
 
@@ -94,6 +97,8 @@ public abstract class BaseEventPropertyReaderTest {
     protected EventPropertyReader propertyReader;
 
     protected abstract EventPropertyReader newPropertyReader();
+
+    protected abstract void setLinkEventDefinitionOnCurrentMock(EventDefinition eventDefinition);
 
     protected abstract void setSignalEventDefinitionOnCurrentMock(SignalEventDefinition eventDefinition);
 
@@ -135,6 +140,26 @@ public abstract class BaseEventPropertyReaderTest {
         Event eventMock = getCurrentEventMock();
         when(eventMock.getExtensionValues()).thenReturn(extensionValues);
         assertEquals(SCOPE, propertyReader.getSignalScope());
+    }
+
+    @Test
+    public void testGetLinkRef() {
+        // Link Event can't be Boundary.
+        if (this.getClass() == BoundaryEventPropertyReaderTest.class) {
+            return;
+        }
+        LinkEventDefinition eventDefinition = mock(LinkEventDefinition.class);
+        setLinkEventDefinitionOnCurrentMock(eventDefinition);
+
+        when(eventDefinition.getName()).thenReturn(null);
+        assertEquals("", propertyReader.getLinkRef());
+
+        when(eventDefinition.getName()).thenReturn(LINK_REF_ID);
+        assertEquals(LINK_REF_ID, propertyReader.getLinkRef());
+
+        EventDefinition differentType = mock(EventDefinition.class);
+        setLinkEventDefinitionOnCurrentMock(differentType);
+        assertEquals("", propertyReader.getLinkRef());
     }
 
     // TODO: Kogito - @Test
