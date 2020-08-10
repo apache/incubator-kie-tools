@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessagePurpose } from "../../api";
+import { EnvelopeBusMessage, EnvelopeBusMessagePurpose, FunctionPropertyNames } from "../../api";
 import { EnvelopeServer } from "../EnvelopeServer";
-import { EnvelopeBusMessage, FunctionPropertyNames } from "@kogito-tooling/envelope-bus/dist/api";
 
 interface ApiToProvide {
   setText(text: string): void;
