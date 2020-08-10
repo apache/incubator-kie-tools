@@ -79,8 +79,8 @@ export function HomePage(props: Props) {
   const history = useHistory();
   const { i18n } = useOnlineI18n();
 
-  const [fileName, setFileName] = useState("");
-  const [isRejected, setIsRejected] = useState(false);
+  const [uploadedFileName, setUploadedFileName] = useState("");
+  const [isUploadRejected, setIsUploadRejected] = useState(false);
 
   const [inputFileUrl, setInputFileUrl] = useState("");
   const [inputFileUrlState, setInputFileUrlState] = useState<InputFileUrlStateType>({
@@ -118,10 +118,10 @@ export function HomePage(props: Props) {
       event.stopPropagation();
       event.preventDefault();
 
-      setFileName(fileName);
+      setUploadedFileName(fileName);
       const fileExtension = extractFileExtension(fileName);
       if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
-        setIsRejected(false);
+        setIsUploadRejected(false);
       } else {
         openFile(file, fileName, fileExtension);
       }
@@ -486,19 +486,19 @@ export function HomePage(props: Props) {
                   fieldId={"file-upload-field"}
                   helperText={i18n.homePage.uploadFile.helperText}
                   helperTextInvalid={i18n.homePage.uploadFile.helperInvalidText}
-                  validated={isRejected ? "error" : "default"}
+                  validated={isUploadRejected ? "error" : "default"}
                 >
                   <FileUpload
                     id={"file-upload-field"}
                     filenamePlaceholder={i18n.homePage.uploadFile.placeholder}
-                    filename={fileName}
+                    filename={uploadedFileName}
                     onChange={onFileUpload}
                     hideDefaultPreview={false}
                     dropzoneProps={{
                       accept: ".dmn, .bpmn, .bpmn2",
-                      onDropRejected: () => setIsRejected(true)
+                      onDropRejected: () => setIsUploadRejected(true)
                     }}
-                    validated={isRejected ? "error" : "default"}
+                    validated={isUploadRejected ? "error" : "default"}
                   />
                 </FormGroup>
               </Form>
