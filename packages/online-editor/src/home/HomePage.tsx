@@ -92,19 +92,20 @@ export function HomePage(props: Props) {
     (
       file: File,
       fileName: string,
-      event:
+      e:
         | React.DragEvent<HTMLElement>
         | React.ChangeEvent<HTMLTextAreaElement>
         | React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
-      event.stopPropagation();
-      event.preventDefault();
+      e.stopPropagation();
+      e.preventDefault();
 
       setUploadedFileName(fileName);
+      setIsUploadRejected(false);
+
       const fileExtension = extractFileExtension(fileName);
       if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
-        setIsUploadRejected(true);
-        return
+        return;
       }
 
       props.onFileOpened({
@@ -490,7 +491,7 @@ export function HomePage(props: Props) {
                     filename={uploadedFileName}
                     onChange={onFileUpload}
                     dropzoneProps={{
-                      accept: ".dmn, .bpmn, .bpmn2",
+                      accept: [...context.editorEnvelopeLocator.mapping.keys()].map(ext => "." + ext).join(", "),
                       onDropRejected
                     }}
                     validated={isUploadRejected ? "error" : "default"}
