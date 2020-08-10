@@ -89,7 +89,7 @@ export function HomePage(props: Props) {
   const context = useContext(GlobalContext);
   const history = useHistory();
   const { i18n } = useOnlineI18n();
-  
+
   const [fileName, setFileName] = useState("");
   const [isRejected, setIsRejected] = useState(false);
 
@@ -490,8 +490,8 @@ export function HomePage(props: Props) {
                 {i18n.homePage.editExistingFile}
               </Title>
             </CardHeader>
-            <CardBody isFilled={false}>Upload your BPMN or DMN file here to start making new edits!</CardBody>
-            <CardBody>
+            <CardBody>Upload your BPMN or DMN file here to start making new edits!</CardBody>
+            <CardFooter>
               <Form>
                 <FormGroup
                   fieldId={"file-upload-field"}
@@ -509,10 +509,11 @@ export function HomePage(props: Props) {
                       accept: ".dmn, .bpmn, .bpmn2",
                       onDropRejected: () => setIsRejected(true)
                     }}
+                    validated={isRejected ? "error" : "default"}
                   />
                 </FormGroup>
               </Form>
-            </CardBody>
+            </CardFooter>
           </Card>
           <Card>
             <CardHeader>
