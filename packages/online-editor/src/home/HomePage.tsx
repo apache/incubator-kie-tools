@@ -69,17 +69,6 @@ enum InputFileUrlState {
   VALID
 }
 
-enum UploadFileInputState {
-  INITIAL,
-  INVALID_EXTENSION
-}
-
-enum UploadFileDndState {
-  INITIAL,
-  INVALID_EXTENSION,
-  HOVER
-}
-
 interface InputFileUrlStateType {
   urlValidation: InputFileUrlState;
   urlToOpen: string | undefined;
@@ -487,21 +476,21 @@ export function HomePage(props: Props) {
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
-                {i18n.homePage.editExistingFile}
+                {i18n.homePage.uploadFile.header}
               </Title>
             </CardHeader>
-            <CardBody>Upload your BPMN or DMN file here to start making new edits!</CardBody>
+            <CardBody>{i18n.homePage.uploadFile.body}</CardBody>
             <CardFooter>
               <Form>
                 <FormGroup
                   fieldId={"file-upload-field"}
-                  helperText={"Upload a .bpmn, .bpmn2 or .dmn file"}
-                  helperTextInvalid={i18n.homePage.uploadFile.fileInput}
+                  helperText={i18n.homePage.uploadFile.helperText}
+                  helperTextInvalid={i18n.homePage.uploadFile.helperInvalidText}
                   validated={isRejected ? "error" : "default"}
                 >
                   <FileUpload
                     id={"file-upload-field"}
-                    filenamePlaceholder={"Drag a file or browse for it."}
+                    filenamePlaceholder={i18n.homePage.uploadFile.placeholder}
                     filename={fileName}
                     onChange={onFileUpload}
                     hideDefaultPreview={false}
