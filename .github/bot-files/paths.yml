@@ -1,0 +1,4 @@
+# In this repository we trigger the CI for every PR
+# After https://issues.redhat.com/browse/KOGITO-3027 this file creation will be optional.
+files:
+  - Jenkinsfile*

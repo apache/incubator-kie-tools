@@ -1,0 +1,7 @@
+prFirstTimeContributor: Welcome to the Kogito Community!. Please make sure you've read the [contributors' guide](README.md#contributing-to-kogito-images-repository)
+
+prCiTrigger: /jenkins test
+
+prEdit: Change detected in the PR, requesting reviews and running pipeline(if required) again
+
+prReopen: PR reopened. requesting reviews and running pipeline(if required) again

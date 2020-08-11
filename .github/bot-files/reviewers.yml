@@ -1,0 +1,11 @@
+# we don't need path reviewers here but the bot expects atleast one row inside it.
+# This compulsion will be removed after https://issues.redhat.com/browse/KOGITO-3026
+
+review:
+  - paths:
+      - anything/**
+    reviewers:
+      - Kaitou786
+default:
+  - Kaitou786
+  - spolti
