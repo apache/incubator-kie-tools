@@ -31,12 +31,15 @@ import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.drools.workbench.screens.scenariosimulation.client.collectioneditor.CollectionPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.collectioneditor.CollectionViewImpl;
 import org.drools.workbench.screens.scenariosimulation.client.domelements.CollectionEditorDOMElement;
+import org.drools.workbench.screens.scenariosimulation.client.events.CloseCompositeEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.SaveEditorEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.CloseCompositeEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SaveEditorEventHandler;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
@@ -62,6 +65,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -133,7 +137,7 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
 
     @Test
     public void createDomElement() {
-        when(scenarioGridModelMock.getSelectedCellsOrigin()).thenReturn(new GridData.SelectedCell(0,0));
+        when(scenarioGridModelMock.getSelectedCellsOrigin()).thenReturn(new GridData.SelectedCell(0, 0));
         when(factMappingMock.getExpressionAlias()).thenReturn(MAP_CLASS_NAME);
         when(factMappingMock.getClassName()).thenReturn(MAP_CLASS_NAME);
         collectionEditorSingletonDOMElementFactorySpy.createDomElement(scenarioGridLayerMock, scenarioGridMock);
@@ -271,7 +275,25 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
     public void registerHandlers() {
         CollectionEditorDOMElement collectionEditorDOMElementMock = mock(CollectionEditorDOMElement.class);
         collectionEditorSingletonDOMElementFactorySpy.registerHandlers(collectionEditorViewImpl, collectionEditorDOMElementMock);
-        verify(collectionEditorViewImpl, times(1)).addCloseCompositeEventHandler(isA(CloseCompositeEventHandler.class));
-        verify(collectionEditorViewImpl, times(1)).addSaveEditorEventHandler(isA(SaveEditorEventHandler.class));
+
+        ArgumentCaptor<CloseCompositeEventHandler> closeHandler = ArgumentCaptor.forClass(CloseCompositeEventHandler.class);
+        verify(collectionEditorViewImpl, times(1)).addCloseCompositeEventHandler(closeHandler.capture());
+        closeHandler.getValue().onEvent(mock(CloseCompositeEvent.class));
+        verify(collectionEditorSingletonDOMElementFactorySpy).destroyResources();
+        verify(scenarioGridLayerMock).batch();
+        verify(scenarioGridPanelMock).setFocus(eq(true));
+        verify(collectionEditorDOMElementMock).stopEditingMode();
+
+        reset(collectionEditorSingletonDOMElementFactorySpy);
+        reset(scenarioGridLayerMock);
+        reset(scenarioGridPanelMock);
+
+        ArgumentCaptor<SaveEditorEventHandler> saveHandler = ArgumentCaptor.forClass(SaveEditorEventHandler.class);
+        verify(collectionEditorViewImpl, times(1)).addSaveEditorEventHandler(saveHandler.capture());
+
+        saveHandler.getValue().onEvent(mock(SaveEditorEvent.class));
+        verify(collectionEditorSingletonDOMElementFactorySpy).flush();
+        verify(scenarioGridLayerMock).batch();
+        verify(scenarioGridPanelMock).setFocus(eq(true));
     }
 }

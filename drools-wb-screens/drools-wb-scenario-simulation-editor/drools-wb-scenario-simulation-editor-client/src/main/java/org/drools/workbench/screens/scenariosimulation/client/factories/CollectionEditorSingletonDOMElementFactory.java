@@ -82,8 +82,10 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
         /* Don't propagate MouseWheel and RightClick events to the Grid */
         this.widget.addDomHandler(MouseWheelEvent::stopPropagation,
                                   MouseWheelEvent.getType());
-        this.widget.addDomHandler(event -> {event.stopPropagation();
-                                            event.preventDefault();},
+        this.widget.addDomHandler(event -> {
+                                      event.stopPropagation();
+                                      event.preventDefault();
+                                  },
                                   ContextMenuEvent.getType());
         this.widget.addDomHandler(ClickEvent::stopPropagation,
                                   ClickEvent.getType());
@@ -196,7 +198,11 @@ public class CollectionEditorSingletonDOMElementFactory extends BaseSingletonDOM
     @Override
     public void registerHandlers(final CollectionViewImpl widget, final CollectionEditorDOMElement widgetDomElement) {
         widget.addCloseCompositeEventHandler(event -> commonCloseHandling(widgetDomElement));
-        widget.addSaveEditorEventHandler(event -> flush());
+        widget.addSaveEditorEventHandler(event -> {
+            flush();
+            gridLayer.batch();
+            gridPanel.setFocus(true);
+        });
     }
 }
 
