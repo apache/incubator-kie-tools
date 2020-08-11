@@ -948,6 +948,10 @@ With this Makefile you can:
       ```bash
       $ make push-staging
       ```
+      To override an existing tag use:
+      ```bash
+      $ make push-staging override=-o
+      ```
       It uses the [push-staging.py](scripts/push-staging.py) script to handle the images.
 
 - Push images to a local registry for testing 

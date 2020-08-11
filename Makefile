@@ -186,10 +186,11 @@ endif
 
 
 # push staging images to quay.io, done before release, this requires permissions under kiegroup organization
+# to force updating an existing tag instead create a new one, use `$ make push-staging override=-o`
 .PHONY: push-staging
 push-staging: build _push-staging
 _push-staging:
-	python3 scripts/push-staging.py
+	python3 scripts/push-staging.py ${override}
 
 
 # push to local registry, useful to push the built images to local registry

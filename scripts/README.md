@@ -84,6 +84,7 @@ The script updates the version on:
 - image.yaml file descriptor
 - kogito-imagestream.yaml
 
+
 #### Script dependencies
 
 The `push-staging.py` has a few dependencies that probably needs to be manually installed:
@@ -99,6 +100,7 @@ This script is called as the last step of the `make push-staging` command define
 
 It will look for the current RC images available on [quay.io](https://quay.io/organization/kiegroup) to increase the rc tag 
 accordingly then push the new tag so it can be tested by others. 
+If there is no need to update the tag, there is the option to override it, just set the flag "-o".
 
 ### Updating Kogito Images Service artifacts
 
