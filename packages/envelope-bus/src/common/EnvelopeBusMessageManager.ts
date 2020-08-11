@@ -16,7 +16,10 @@
 
 import {
   ApiDefinition,
+  ApiNotifications,
+  ApiRequests,
   ArgsType,
+  ClientApi,
   EnvelopeBusMessage,
   EnvelopeBusMessagePurpose,
   FunctionPropertyNames,
@@ -24,7 +27,8 @@ import {
   MessageBusServer,
   NotificationCallback,
   NotificationPropertyNames,
-  RequestPropertyNames
+  RequestPropertyNames,
+  SubscriptionCallback
 } from "../api";
 
 export class EnvelopeBusMessageManager<
@@ -50,8 +54,40 @@ export class EnvelopeBusMessageManager<
   }
   public get server(): MessageBusServer<ApiToProvide, ApiToConsume> {
     return {
-      receive: (m, api) => this.receive(m, api)
+      receive: (m, apiImpl) => this.receive(m, apiImpl)
     };
+  }
+
+  public get clientApi(): ClientApi<ApiToConsume> {
+    const requests: ApiRequests<ApiToConsume> = new Proxy<ApiRequests<ApiToConsume>>({} as ApiRequests<ApiToConsume>, {
+      get: (target, name) => {
+        return (...args: ArgsType<ApiToConsume[keyof ApiToConsume]>) =>
+          this.request(name as RequestPropertyNames<ApiToConsume>, ...args);
+      }
+    });
+
+    const notifications = new Proxy<ApiNotifications<ApiToConsume>>({} as ApiNotifications<ApiToConsume>, {
+      get: (target, name) => {
+        return (...args: ArgsType<ApiToConsume[keyof ApiToConsume]>) =>
+          this.notify(name as NotificationPropertyNames<ApiToConsume>, ...args);
+      }
+    });
+
+    const subscribe = <M extends NotificationPropertyNames<ApiToConsume>>(
+      method: M,
+      callback: SubscriptionCallback<ApiToConsume, M>
+    ) => {
+      return this.subscribe(method, callback);
+    };
+
+    const unsubscribe = <M extends NotificationPropertyNames<ApiToConsume>>(
+      method: M,
+      callback: SubscriptionCallback<ApiToConsume, M>
+    ) => {
+      this.unsubscribe(method, callback);
+    };
+
+    return { requests, notifications, subscribe, unsubscribe };
   }
 
   constructor(
@@ -97,7 +133,7 @@ export class EnvelopeBusMessageManager<
       type: method,
       purpose: EnvelopeBusMessagePurpose.UNSUBSCRIPTION,
       data: []
-    })
+    });
   }
 
   private request<M extends RequestPropertyNames<ApiToConsume>>(method: M, ...args: ArgsType<ApiToConsume[M]>) {
@@ -172,7 +208,7 @@ export class EnvelopeBusMessageManager<
   private receive(
     // We can receive messages from both the APIs we provide and consume.
     message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToConsume> | FunctionPropertyNames<ApiToProvide>>,
-    api: ApiToProvide
+    apiImpl: ApiToProvide
   ) {
     if (message.purpose === EnvelopeBusMessagePurpose.RESPONSE) {
       // We can only receive responses for the API we consume.
@@ -184,7 +220,7 @@ export class EnvelopeBusMessageManager<
       // We can only receive requests for the API we provide.
       const request = message as EnvelopeBusMessage<unknown, RequestPropertyNames<ApiToProvide>>;
 
-      const response = api[request.type].apply(api, request.data);
+      const response = apiImpl[request.type].apply(apiImpl, request.data);
       if (!(response instanceof Promise)) {
         throw new Error(`Cannot make a request to '${request.type}' because it does not return a Promise`);
       }
@@ -196,7 +232,7 @@ export class EnvelopeBusMessageManager<
     if (message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
       // We can only receive notifications for methods of the API we provide.
       const method = message.type as NotificationPropertyNames<ApiToProvide>;
-      api[method]?.apply(api, message.data);
+      apiImpl[method]?.apply(apiImpl, message.data);
 
       if (this.remoteSubscriptions.indexOf(method) >= 0) {
         this.send({

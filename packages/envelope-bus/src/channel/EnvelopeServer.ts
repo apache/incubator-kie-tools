@@ -39,6 +39,10 @@ export class EnvelopeServer<
     return this.manager.client;
   }
 
+  public get envelopeApi() {
+    return this.manager.clientApi;
+  }
+
   constructor(
     bus: EnvelopeBus,
     public readonly origin: string,

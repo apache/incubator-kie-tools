@@ -24,6 +24,8 @@ interface ApiToProvide {
 
 interface ApiToConsume {
   init(): Promise<void>;
+  someNotification(arg1: string): void;
+  someRequest(arg1: string): Promise<void>;
 }
 
 let sentMessages: Array<EnvelopeBusMessage<unknown, any>>;
@@ -156,6 +158,18 @@ describe("receive", () => {
     );
 
     expect(api.setText).toBeCalledWith("some text");
+  });
+});
+
+describe("envelopeApi", () => {
+  test("notification", async () => {
+    envelopeServer.envelopeApi.notifications.someNotification("test");
+    expect(sentMessages.length).toStrictEqual(1);
+  });
+
+  test("request", async () => {
+    const a = envelopeServer.envelopeApi.requests.someRequest("test");
+    expect(sentMessages.length).toStrictEqual(1);
   });
 });
 

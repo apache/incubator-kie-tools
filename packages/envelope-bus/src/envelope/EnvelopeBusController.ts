@@ -36,6 +36,10 @@ export class EnvelopeBusController<
     return this.manager.client;
   }
 
+  public get channelApi() {
+    return this.manager.clientApi;
+  }
+
   constructor(private readonly bus: EnvelopeBus) {
     this.manager = new EnvelopeBusMessageManager(message => this.send(message), "KogitoEnvelopeBus");
   }
@@ -45,12 +49,12 @@ export class EnvelopeBusController<
     this.associatedEnvelopeServerId = envelopeServerId;
   }
 
-  public startListening(api: ApiToProvide) {
+  public startListening(apiImpl: ApiToProvide) {
     if (this.eventListener) {
       return;
     }
 
-    this.eventListener = (event: any) => this.receive(event.data, api);
+    this.eventListener = (event: any) => this.receive(event.data, apiImpl);
     window.addEventListener("message", this.eventListener);
   }
 
@@ -69,10 +73,10 @@ export class EnvelopeBusController<
 
   public receive(
     message: EnvelopeBusMessage<any, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>,
-    api: ApiToProvide
+    apiImpl: ApiToProvide
   ) {
     if (!message.envelopeServerId) {
-      this.manager.server.receive(message, api);
+      this.manager.server.receive(message, apiImpl);
     } else if (message.envelopeServerId && message.purpose === EnvelopeBusMessagePurpose.NOTIFICATION) {
       this.manager.server.receive(message, {} as any);
     }

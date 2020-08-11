@@ -18,12 +18,11 @@ import { EditorContent, EditorInitArgs, KogitoEditorChannelApi, KogitoEditorEnve
 import { EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 
-export class KogitoEditorEnvelopeServer extends EnvelopeServer<
-  KogitoEditorChannelApi,
-  KogitoEditorEnvelopeApi
-> {
-  constructor(bus: EnvelopeBus, origin: string, private readonly initArgs: EditorInitArgs) {
-    super(bus, origin, self => this.request_initResponse(this.origin, this.initArgs));
+export class KogitoEditorEnvelopeServer extends EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi> {
+  constructor(bus: EnvelopeBus, origin: string, initArgs: EditorInitArgs) {
+    super(bus, origin, self =>
+      self.envelopeApi.requests.receive_initRequest({ origin: origin, envelopeServerId: this.id }, initArgs)
+    );
   }
 
   public notify_editorUndo() {
@@ -44,9 +43,5 @@ export class KogitoEditorEnvelopeServer extends EnvelopeServer<
 
   public request_previewResponse() {
     return this.client.request("receive_previewRequest");
-  }
-
-  public request_initResponse(origin: string, initArgs: EditorInitArgs) {
-    return this.client.request("receive_initRequest", { origin: origin, envelopeServerId: this.id }, initArgs);
   }
 }

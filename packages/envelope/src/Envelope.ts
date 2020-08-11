@@ -33,6 +33,10 @@ export class Envelope<
     return this.envelopeBusController.client;
   }
 
+  public get channelApi() {
+    return this.envelopeBusController.channelApi;
+  }
+
   public async start(
     viewDelegate: () => Promise<ViewType>,
     context: ContextType,
