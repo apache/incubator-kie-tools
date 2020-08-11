@@ -18,8 +18,8 @@ import {
   ChannelType,
   ResourceContentRequest,
   ResourceListRequest
-} from "@kogito-tooling/microeditor-envelope-protocol";
-import { EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/embedded-editor";
+} from "@kogito-tooling/channel-common-api";
+import { EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { runScriptOnPage } from "../../utils";

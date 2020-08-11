@@ -1,9 +1,9 @@
 import * as React from "react";
 import { CurrentTutorialContext, CurrentTutorialContextType } from "../contexts";
-import { DEFAULT_RECT, Rect, Tutorial } from "@kogito-tooling/microeditor-envelope-protocol";
 import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n";
-import { guidedTourI18nDefaults, guidedTourI18nDictionaries, GuidedTourI18nContext } from "../i18n/locales";
+import { GuidedTourI18nContext, guidedTourI18nDefaults, guidedTourI18nDictionaries } from "../i18n/locales";
 import { GuidedTourI18n } from "../i18n";
+import { DEFAULT_RECT, Rect, Tutorial } from "../api";
 
 export function usingCurrentTutorialContext(children: React.ReactElement, ctx?: Partial<CurrentTutorialContextType>) {
   const currentTutorialContext: CurrentTutorialContextType = {

@@ -15,8 +15,9 @@
  */
 
 import { DefaultKogitoCommandRegistry } from "./KogitoCommandRegistry";
-import { KogitoEditorChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
 import { StateControlApi } from "../api/StateControlApi";
+import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
 
 export class GwtStateControlService {
   private undoCommand: () => void;

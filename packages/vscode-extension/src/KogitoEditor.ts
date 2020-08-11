@@ -16,16 +16,20 @@
 
 import * as vscode from "vscode";
 import {
+  EditorApi,
   EditorEnvelopeLocator,
   EnvelopeMapping,
-  KogitoEditorChannel,
   KogitoEditorChannelApi
-} from "@kogito-tooling/microeditor-envelope-protocol";
+} from "@kogito-tooling/editor/dist/api";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { EditorApi } from "@kogito-tooling/editor-api";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
+import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
+import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
+import { KogitoEditorEnvelopeServer } from "@kogito-tooling/editor/dist/channel";
 
 export class KogitoEditor implements EditorApi {
+  private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;
+
   public constructor(
     public readonly document: KogitoEditableDocument,
     private readonly panel: vscode.WebviewPanel,
@@ -33,46 +37,55 @@ export class KogitoEditor implements EditorApi {
     private readonly editorStore: KogitoEditorStore,
     private readonly envelopeMapping: EnvelopeMapping,
     private readonly envelopeLocator: EditorEnvelopeLocator,
-    private readonly kogitoEditorChannel = new KogitoEditorChannel({
-      postMessage: message => this.panel.webview.postMessage(message)
-    })
+    private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
+    private readonly envelopeServer = new KogitoEditorEnvelopeServer(
+      {
+        postMessage: msg => this.panel.webview.postMessage(msg)
+      },
+      envelopeLocator.targetOrigin,
+      {
+        fileExtension: document.fileExtension,
+        resourcesPathPrefix: envelopeMapping.resourcesPathPrefix
+      }
+    )
   ) {}
 
   public getElementPosition(selector: string) {
-    return this.kogitoEditorChannel.request_guidedTourElementPositionResponse(selector);
+    return this.envelopeServer.client.request("receive_guidedTourElementPositionRequest", selector);
   }
 
   public getContent() {
-    return this.kogitoEditorChannel.request_contentResponse().then(c => c.content);
+    return this.envelopeServer.request_contentResponse().then(c => c.content);
   }
 
   public async setContent(path: string, content: string) {
-    this.kogitoEditorChannel.notify_contentChanged({ path: path, content: content });
+    this.envelopeServer.notify_contentChanged({ path: path, content: content });
   }
 
   public async undo() {
-    this.kogitoEditorChannel.notify_editorUndo();
+    this.envelopeServer.notify_editorUndo();
   }
 
   public async redo() {
-    this.kogitoEditorChannel.notify_editorRedo();
+    this.envelopeServer.notify_editorRedo();
   }
 
   public getPreview() {
-    return this.kogitoEditorChannel.request_previewResponse();
+    return this.envelopeServer.request_previewResponse();
   }
 
   public startInitPolling() {
-    this.kogitoEditorChannel.startInitPolling(this.envelopeLocator.targetOrigin, {
-      fileExtension: this.document.fileExtension,
-      resourcesPathPrefix: this.envelopeMapping.resourcesPathPrefix
-    });
+    this.envelopeServer.startInitPolling();
   }
 
   public startListening(editorChannelApi: KogitoEditorChannelApi) {
+    this.broadcastSubscription = this.messageBroadcaster.subscribe(msg => {
+      this.envelopeServer.receive(msg, editorChannelApi);
+    });
+
     this.context.subscriptions.push(
       this.panel.webview.onDidReceiveMessage(
-        msg => this.kogitoEditorChannel.receive(msg, editorChannelApi),
+        msg => this.messageBroadcaster.broadcast(msg),
         this,
         this.context.subscriptions
       )
@@ -98,8 +111,9 @@ export class KogitoEditor implements EditorApi {
   public setupPanelOnDidDispose() {
     this.panel.onDidDispose(
       () => {
-        this.kogitoEditorChannel.stopInitPolling();
+        this.envelopeServer.stopInitPolling();
         this.editorStore.close(this);
+        this.messageBroadcaster.unsubscribe(this.broadcastSubscription);
       },
       this,
       this.context.subscriptions
