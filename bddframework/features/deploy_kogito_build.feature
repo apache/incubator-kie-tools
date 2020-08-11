@@ -56,6 +56,8 @@ Feature: Deploy Kogito Build
       | runtime    | example-service         | native   | profile |
       | quarkus    | process-quarkus-example | disabled | default |
 
+    # Disabled due to https://github.com/kiegroup/kogito-cloud-operator/pull/485
+    @disabled
     @quarkus
     @native
     Examples:
