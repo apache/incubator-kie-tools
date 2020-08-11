@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Rect, UserInteraction } from "@kogito-tooling/microeditor-envelope-protocol";
+import { Rect, UserInteraction } from "../api";
 import { GuidedTourCookie } from "../core";
 
 export type EventLabel = "GuidedTour.startTutorial" | "GuidedTour.userInteraction" | "GuidedTour.newPosition";

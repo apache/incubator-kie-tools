@@ -42,12 +42,6 @@ export class KogitoEditorStore {
     this.activeEditor = undefined;
   }
 
-  public withActive(consumer: (activeEditor: KogitoEditor) => any) {
-    if (this.activeEditor) {
-      consumer(this.activeEditor);
-    }
-  }
-
   public close(editor: KogitoEditor) {
     this.openEditors.delete(editor);
 

@@ -32,7 +32,7 @@ import { TimesCircleIcon, BookIcon } from "@patternfly/react-icons";
 
 import { NavigationControls } from "..";
 import { CurrentTutorialContext } from "../../contexts";
-import { Step } from "@kogito-tooling/microeditor-envelope-protocol";
+import { Step } from "../../api";
 import { useGuidedTourI18n } from "../../i18n/locales";
 import { I18nHtml } from "@kogito-tooling/i18n";
 

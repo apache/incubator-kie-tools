@@ -13,7 +13,7 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/editor-api": "0.6.1",
+    "@kogito-tooling/editor": "0.6.1",
     "@kogito-tooling/patternfly-base": "0.6.1",
     "@kogito-tooling/pmml-editor-marshaller": "0.6.1",
     "@types/react-router": "5.1.1",

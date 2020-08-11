@@ -20,9 +20,9 @@ import { useEffect } from "react";
 import { Button, Divider, List, ListItem, Text, Title } from "@patternfly/react-core";
 import { BookOpenIcon, TrophyIcon } from "@patternfly/react-icons";
 
-import { File } from "@kogito-tooling/embedded-editor";
-import { KogitoGuidedTour } from "@kogito-tooling/guided-tour";
-import { DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/microeditor-envelope-protocol";
+import { File } from "@kogito-tooling/editor/dist/embedded";
+import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/channel";
+import { DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/guided-tour/dist/api";
 import { OnlineI18n, useOnlineI18n } from "../common/i18n";
 import { I18nHtml } from "@kogito-tooling/i18n";
 

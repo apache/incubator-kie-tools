@@ -17,8 +17,8 @@
 import * as React from "react";
 import { render } from "@testing-library/react";
 import { EditorToolbar } from "../../editor/EditorToolbar";
+import { StateControl } from "@kogito-tooling/editor/dist/embedded";
 import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
-import { StateControl } from "@kogito-tooling/embedded-editor";
 const onFileNameChanged = jest.fn((file: string) => null);
 const enterFullscreen = jest.fn(() => null);
 const requestSave = jest.fn(() => null);

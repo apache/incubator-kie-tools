@@ -20,7 +20,7 @@ import { ResourceContentServiceFactory } from "../app/components/common/ChromeRe
 import { GitHubContext, GitHubContextType } from "../app/components/common/GitHubContext";
 import { Logger } from "../Logger";
 import { Dependencies } from "../app/Dependencies";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
 import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n";
 import {
   ChromeExtensionI18nContext,

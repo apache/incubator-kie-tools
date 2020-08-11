@@ -46,13 +46,14 @@ module.exports = [
     },
     target: "web",
     entry: {
-      "webview/index": "./src/webview/index.ts"
+      "webview/GwtEditorsEnvelopeApp": "./src/webview/GwtEditorsEnvelopeApp.ts"
     },
     module: {
       rules: [...pfWebpackOptions.patternflyRules]
     },
     plugins: [
       new CopyWebpackPlugin([
+        { from: "./static", to: "static" },
         { from: "../kie-bc-editors-unpacked/bpmn", to: "webview/editors/bpmn" },
         { from: "../kie-bc-editors-unpacked/dmn", to: "webview/editors/dmn" },
         { from: "../kie-bc-editors-unpacked/scesim", to: "webview/editors/scesim" }

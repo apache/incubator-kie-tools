@@ -16,7 +16,7 @@
 
 import { GwtAppFormerApi, GwtEditor } from "../GwtAppFormerApi";
 import { DummyEditor } from "./DummyEditor";
-import { Editor } from "@kogito-tooling/editor-api";
+import { Editor } from "@kogito-tooling/editor/dist/api";
 
 class DummyGwtEditor {
   private wrappedEditor: Editor;

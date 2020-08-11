@@ -15,7 +15,8 @@
  */
 
 import { DefaultKogitoCommandRegistry } from "../../gwtStateControl";
-import { KogitoEditorChannelApi, MessageBusClient } from "@kogito-tooling/microeditor-envelope-protocol";
+import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
+import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
 
 class Command {
   private id: string;
@@ -39,7 +40,7 @@ const COMMAND4 = new Command("4");
 
 describe("DefaultKogitoCommandRegistry", () => {
   beforeEach(() => {
-    messageBusClient = { notify: jest.fn(), request: jest.fn() };
+    messageBusClient = { notify: jest.fn(), request: jest.fn(), subscribe: jest.fn(), unsubscribe: jest.fn() };
     registry = new DefaultKogitoCommandRegistry<Command>(messageBusClient);
   });
 
