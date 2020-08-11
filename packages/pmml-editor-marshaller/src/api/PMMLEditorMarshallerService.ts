@@ -16,20 +16,50 @@
 
 import { PMMLDocumentData, PMMLModelData } from "@kogito-tooling/microeditor-envelope-protocol";
 import { XML2PMML } from "../marshaller";
-import {BayesianNetworkModel, Scorecard} from "../marshaller/model/pmml4_4";
+import {
+    AnomalyDetectionModel,
+    AssociationModel,
+    BaselineModel,
+    BayesianNetworkModel,
+    ClusteringModel,
+    GaussianProcessModel,
+    GeneralRegressionModel,
+    MiningModel,
+    NaiveBayesModel,
+    NearestNeighborModel,
+    NeuralNetwork,
+    RegressionModel,
+    RuleSetModel,
+    Scorecard,
+    SequenceModel,
+    SupportVectorMachineModel,
+    TextModel,
+    TimeSeriesModel,
+    TreeModel
+} from "../marshaller/model/pmml4_4";
 
 export class PMMLEditorMarshallerService {
 
     public getPMMLDocumentData(xmlContent: string) : PMMLDocumentData {
         const pmml = XML2PMML(xmlContent);
-
         const models : PMMLModelData[] = [];
         const document = new PMMLDocumentData(models);
 
         if (pmml.models) {
             pmml.models.forEach(model => {
-                if (model instanceof Scorecard || model instanceof BayesianNetworkModel) {
-                    const modelName = model.modelName!;
+                if (model instanceof AnomalyDetectionModel || model instanceof AssociationModel
+                    || model instanceof BayesianNetworkModel || model instanceof BaselineModel
+                    || model instanceof ClusteringModel || model instanceof GaussianProcessModel
+                    || model instanceof GeneralRegressionModel || model instanceof MiningModel
+                    || model instanceof NaiveBayesModel || model instanceof NearestNeighborModel
+                    || model instanceof NeuralNetwork || model instanceof RegressionModel
+                    || model instanceof RuleSetModel || model instanceof SequenceModel
+                    || model instanceof Scorecard || model instanceof SupportVectorMachineModel
+                    || model instanceof TextModel || model instanceof TimeSeriesModel || model instanceof TreeModel) {
+                    const modelName = model.modelName;
+                    if (modelName == null) {
+                        return;
+                    }
                     const fields = model.MiningSchema.MiningField.map(field => field.name.toString());
                     models.push(new PMMLModelData(modelName, fields));
                     return;

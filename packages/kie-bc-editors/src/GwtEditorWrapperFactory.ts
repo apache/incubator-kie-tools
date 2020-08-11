@@ -109,7 +109,6 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     window.envelope = {
       editorContext: envelopeContext.context,
       keyboardShortcuts: envelopeContext.services.keyboardShortcuts,
-      pmmlEditorMarshallerService: envelopeContext.services.pmmlEditorMarshallerService,
       guidedTourService: {
         refresh(userInteraction: UserInteraction): void {
           envelopeContext.channelApi.notify("receive_guidedTourUserInteraction", userInteraction);
@@ -145,7 +144,8 @@ export class GwtEditorWrapperFactory implements EditorFactory {
         onLocaleChange: (onLocaleChange: (locale: string) => void) => {
           envelopeContext.services.i18n.setOnLocaleChange(onLocaleChange);
         }
-      }
+      },
+      pmmlEditorMarshallerService: envelopeContext.services.pmmlEditorMarshallerService
     };
   }
 

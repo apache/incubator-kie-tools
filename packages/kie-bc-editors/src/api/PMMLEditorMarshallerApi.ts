@@ -22,10 +22,9 @@ import { PMMLDocumentData } from "@kogito-tooling/microeditor-envelope-protocol"
 export interface PMMLEditorMarshallerApi {
 
     /**
-     * It performs the marshall of a xmlContent retrieved from a PMML file, returning Models data
+     * It performs the marshall of a xmlContent retrieved from a PMML file returning a PMMLDocumentData
      * * @param xmlContent
      */
     getPMMLDocumentData(xmlContent: string): PMMLDocumentData;
-
 }
 
