@@ -170,7 +170,7 @@ public class DMNSimulationSettingsCreationStrategy implements SimulationSettings
         }
         // otherwise it adds a column for each simple properties direct or nested
         else {
-            for (Map.Entry<String, FactModelTree.PropertyTypeName> entry : factModelTree.getSimpleProperties().entrySet()) {
+            factModelTree.getSimpleProperties().entrySet().stream().sorted(Map.Entry.comparingByKey()).forEach(entry -> {
                 String factName = entry.getKey();
                 String factTypeName = entry.getValue().getTypeName();
 
@@ -180,9 +180,9 @@ public class DMNSimulationSettingsCreationStrategy implements SimulationSettings
                     factMapping.setGenericTypes(factModelTree.getGenericTypeInfo(factName));
                 }
                 factMapping.addExpressionElement(factName, factTypeName);
-            }
+            });
 
-            for (Map.Entry<String, String> entry : factModelTree.getExpandableProperties().entrySet()) {
+            factModelTree.getExpandableProperties().entrySet().stream().sorted(Map.Entry.comparingByValue()).forEach(entry -> {
                 String factType = entry.getValue();
                 FactModelTree nestedModelTree = hiddenValues.get(factType);
 
@@ -196,7 +196,7 @@ public class DMNSimulationSettingsCreationStrategy implements SimulationSettings
                     alreadyVisited.add(factModelTree.getFactName());
                     internalAddToScenario(factMappingExtractor, nestedModelTree, currentSteps, hiddenValues, alreadyVisited);
                 }
-            }
+            });
         }
     }
 

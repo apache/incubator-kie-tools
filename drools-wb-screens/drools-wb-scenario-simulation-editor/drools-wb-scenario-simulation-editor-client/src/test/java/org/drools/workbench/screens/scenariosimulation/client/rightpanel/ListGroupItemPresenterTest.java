@@ -27,6 +27,7 @@ import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.Fact
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Spy;
 
@@ -39,6 +40,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -169,17 +171,15 @@ public class ListGroupItemPresenterTest extends AbstractTestToolsTest {
         listGroupItemPresenter.populateListGroupItemView(listGroupItemViewMock, "", FACT_MODEL_TREE.getFactName(), FACT_MODEL_TREE);
         verify(listGroupItemViewMock, times(1)).setFactName(eq(FACT_MODEL_TREE.getFactName()));
         Map<String, FactModelTree.PropertyTypeName> simpleProperties = FACT_MODEL_TREE.getSimpleProperties();
-        for (String key : simpleProperties.keySet()) {
+        InOrder inOrder = inOrder(fieldItemPresenterSpy);
+        simpleProperties.keySet().stream().sorted().forEach(key -> {
             FactModelTree.PropertyTypeName value = simpleProperties.get(key);
-            verify(fieldItemPresenterSpy, times(1)).getLIElement(eq(FACT_MODEL_TREE.getFactName()), eq(FACT_MODEL_TREE.getFactName()), eq(key), eq(value.getTypeName()), eq(value.getPropertyTypeNameToVisualize()));
-        }
+            inOrder.verify(fieldItemPresenterSpy, times(1)).getLIElement(eq(FACT_MODEL_TREE.getFactName()), eq(FACT_MODEL_TREE.getFactName()), eq(key), eq(value.getTypeName()), eq(value.getPropertyTypeNameToVisualize()));
+        });
         verify(listGroupItemViewMock, times(simpleProperties.size())).addFactField(anyObject());
         reset(listGroupItemViewMock);
         Map<String, String> expandableProperties = FACT_MODEL_TREE.getExpandableProperties();
-        for (String key : expandableProperties.keySet()) {
-            String value = expandableProperties.get(key);
-            verify(listGroupItemPresenter, times(1)).getDivElement(eq(""), eq(key), eq(value));
-        }
+        expandableProperties.entrySet().stream().sorted().forEach(entry -> inOrder.verify(listGroupItemPresenter, times(1)).getDivElement(eq(""), eq(entry.getKey()), eq(entry.getValue())));
         verify(listGroupItemViewMock, times(expandableProperties.size())).addExpandableFactField(anyObject());
     }
 
