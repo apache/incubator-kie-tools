@@ -1,0 +1,25 @@
+schema_version: 1
+name: org.kie.kogito.graalvm.installer
+version: "20.1.0-java-1.8"
+
+envs:
+  - name: "JAVA_HOME"
+    value: "/usr/share/graalvm"
+  - name: "GRAALVM_HOME"
+    value: "/usr/share/graalvm"
+  #version without prefix ce
+  - name: "GRAALVM_VERSION"
+    value: "20.1.0"
+  - name: "GRAALVM_JAVA_VERSION"
+    value: "8"
+
+artifacts:
+- name: graalvm-ce-java8-linux-amd64-20.1.0.tar.gz
+  url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.1.0/graalvm-ce-java8-linux-amd64-20.1.0.tar.gz
+  md5: 18ab19e0a739c9172f2e88d3cda09a6d
+- name: native-image-installable-svm-java8-linux-amd64-20.1.0.jar
+  url: https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-20.1.0/native-image-installable-svm-java8-linux-amd64-20.1.0.jar
+  md5: bb79277a6fa0f91de88298fe853041e7
+
+execute:
+- script: configure
