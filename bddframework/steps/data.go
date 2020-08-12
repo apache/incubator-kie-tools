@@ -152,7 +152,7 @@ func logScenarioDuration(data *Data) {
 func handleScenarioResult(data *Data, scenario *godog.Scenario, err error) {
 	newLogFolderName := fmt.Sprintf("%s - %s", strings.ReplaceAll(scenario.GetName(), "/", "_"), data.Namespace)
 	if err != nil {
-		framework.GetLogger(data.Namespace).Errorf("Error in scenario '%s': %v", scenario.GetName(), err)
+		framework.GetLogger(data.Namespace).Errorw("Error in scenario '%s': %v", scenario.GetName(), err)
 
 		newLogFolderName = "error - " + newLogFolderName
 	} else {
