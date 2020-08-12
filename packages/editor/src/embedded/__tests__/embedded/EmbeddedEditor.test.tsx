@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-import {EditorEnvelopeLocator} from "../../../api";
-import {ChannelType, KogitoEdit} from "@kogito-tooling/channel-common-api";
-import {EnvelopeServer} from "@kogito-tooling/envelope-bus/dist/channel";
+import { EditorEnvelopeLocator } from "../../../api";
+import { ChannelType, KogitoEdit } from "@kogito-tooling/channel-common-api";
+import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import * as React from "react";
-import {File} from "../../common";
-import {EmbeddedEditor, EmbeddedEditorRef} from "../../embedded";
-import {incomingMessage} from "./EmbeddedEditorTestUtils";
-import {render} from "@testing-library/react";
-import {EnvelopeBusMessagePurpose} from "@kogito-tooling/envelope-bus/dist/api";
-import {KogitoEditorEnvelopeServer} from "../../../channel";
+import { File } from "../../common";
+import { EmbeddedEditor, EmbeddedEditorRef } from "../../embedded";
+import { incomingMessage } from "./EmbeddedEditorTestUtils";
+import { render } from "@testing-library/react";
+import { EnvelopeBusMessagePurpose } from "@kogito-tooling/envelope-bus/dist/api";
 
 describe("EmbeddedEditor::ONLINE", () => {
   const file: File = {
@@ -40,10 +39,8 @@ describe("EmbeddedEditor::ONLINE", () => {
 
   const channelType = ChannelType.ONLINE;
   const editorRef = React.createRef<EmbeddedEditorRef>();
-  const envelopeServerId = "test-bus-id";
 
   beforeEach(() => {
-    jest.spyOn(EnvelopeServer.prototype, "generateRandomId").mockReturnValue(envelopeServerId);
     jest.clearAllMocks();
   });
 
@@ -77,7 +74,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     const spyOnContentChangedNotification = jest.spyOn(
-      editorRef.current!.envelopeServer().envelopeApi.notifications,
+      editorRef.current!.getEnvelopeServer().envelopeApi.notifications,
       "receive_contentChanged"
     );
 
@@ -98,8 +95,8 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     const spyRequest_contentResponse = jest.spyOn(
-        editorRef.current!.envelopeServer().envelopeApi.requests,
-        "receive_contentRequest"
+      editorRef.current!.getEnvelopeServer().envelopeApi.requests,
+      "receive_contentRequest"
     );
     editorRef.current?.getContent();
 
@@ -118,8 +115,8 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     const spyRequest_previewResponse = jest.spyOn(
-        editorRef.current!.envelopeServer().envelopeApi.requests,
-        "receive_previewRequest"
+      editorRef.current!.getEnvelopeServer().envelopeApi.requests,
+      "receive_previewRequest"
     );
     editorRef.current?.getPreview();
 
@@ -141,7 +138,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      envelopeServerId: envelopeServerId,
+      envelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "receive_setContentError",
       data: []
@@ -166,7 +163,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      envelopeServerId: envelopeServerId,
+      envelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "receive_ready",
       data: []
@@ -191,7 +188,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      envelopeServerId: envelopeServerId,
+      envelopeServerId: editorRef.current!.getEnvelopeServer().id,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceContentRequest",
@@ -217,7 +214,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      envelopeServerId: envelopeServerId,
+      envelopeServerId: editorRef.current!.getEnvelopeServer().id,
       requestId: "1",
       purpose: EnvelopeBusMessagePurpose.REQUEST,
       type: "receive_resourceListRequest",
@@ -243,7 +240,7 @@ describe("EmbeddedEditor::ONLINE", () => {
     );
 
     await incomingMessage({
-      envelopeServerId: envelopeServerId,
+      envelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "receive_newEdit",
       data: [new KogitoEdit("1")]

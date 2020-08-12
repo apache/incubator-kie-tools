@@ -51,7 +51,7 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
 export type EmbeddedEditorRef =
   | (EditorApi & {
       getStateControl(): StateControl;
-      envelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
+      getEnvelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
     })
   | null;
 
@@ -118,7 +118,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
       return {
         getStateControl: () => stateControl,
-        envelopeServer: () => envelopeServer,
+        getEnvelopeServer: () => envelopeServer,
         getElementPosition: selector =>
           envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(selector),
         undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorUndo()),
