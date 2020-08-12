@@ -33,8 +33,6 @@ type Data struct {
 	KogitoExamplesLocation string
 	ScenarioName           string
 	ScenarioContext        map[string]string
-	// Remove this once new Strimzi version with https://github.com/strimzi/strimzi-kafka-operator/issues/3092 fix is released
-	stopZookeeperMonitoring chan bool
 }
 
 // RegisterAllSteps register all steps available to the test suite
@@ -78,11 +76,6 @@ func (data *Data) BeforeScenario(scenario *godog.Scenario) error {
 		return err
 	}
 
-	// Remove this once new Strimzi version with https://github.com/strimzi/strimzi-kafka-operator/issues/3092 fix is released
-	go func() {
-		respinZookeeperWhenStuck(data)
-	}()
-
 	return nil
 }
 
@@ -122,9 +115,6 @@ func (data *Data) AfterScenario(scenario *godog.Scenario, err error) error {
 	handleScenarioResult(data, scenario, err)
 	logScenarioDuration(data)
 	deleteTemporaryExamplesFolder(data)
-
-	// Remove this once new Strimzi version with https://github.com/strimzi/strimzi-kafka-operator/issues/3092 fix is released
-	data.stopZookeeperMonitoring <- true
 
 	if error != nil {
 		return error
@@ -168,40 +158,5 @@ func deleteTemporaryExamplesFolder(data *Data) {
 	err := framework.DeleteFolder(data.KogitoExamplesLocation)
 	if err != nil {
 		framework.GetMainLogger().Errorf("Error while deleting temporary examples folder %s: %v", data.KogitoExamplesLocation, err)
-	}
-}
-
-// Remove this once new Strimzi version with https://github.com/strimzi/strimzi-kafka-operator/issues/3092 fix is released
-func respinZookeeperWhenStuck(data *Data) {
-	data.stopZookeeperMonitoring = make(chan bool)
-	scanningPeriod := time.NewTicker(5 * time.Second)
-	defer scanningPeriod.Stop()
-	for {
-		select {
-		case <-data.stopZookeeperMonitoring:
-			return
-		case <-scanningPeriod.C:
-			namespaceExists, err := framework.IsNamespace(data.Namespace)
-			if err != nil {
-				framework.GetLogger(data.Namespace).Errorf("Error while checking existence of namespace for zookeeper workaround: %v", err)
-			} else if namespaceExists {
-				pods, err := framework.GetPodsWithLabels(data.Namespace, map[string]string{"app.kubernetes.io/name": "zookeeper"})
-				if err != nil {
-					framework.GetLogger(data.Namespace).Errorf("Error while getting zookeeper pods for zookeeper workaround: %v", err)
-				} else {
-					for _, pod := range pods.Items {
-						// Ignore possible errors as container may not be initialized yet
-						log, _ := framework.GetContainerLog(data.Namespace, pod.GetName(), "zookeeper")
-						if strings.Contains(log, "java.io.FileNotFoundException: /tmp/zookeeper/cluster.keystore.p12") {
-							// If zookeeper is stuck just respin the pod
-							err := framework.DeletePod(&pod)
-							if err != nil {
-								framework.GetLogger(data.Namespace).Errorf("Error while terminating zookeeper pod %s: %v", pod.GetName(), err)
-							}
-						}
-					}
-				}
-			}
-		}
 	}
 }
