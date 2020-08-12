@@ -34,6 +34,7 @@ import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
 import { useOnlineI18n } from "../common/i18n";
+import { removeFileExtension } from "../common/utils";
 
 interface Props {
   onFileNameChanged: (fileName: string) => void;
@@ -51,8 +52,7 @@ interface Props {
 export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
   const location = useLocation();
-  const [editingName, setEditingName] = useState(false);
-  const [name, setName] = useState(context.file.fileName);
+  const [name, setName] = useState(removeFileExtension(context.file.fileName));
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const { i18n } = useOnlineI18n();
@@ -66,27 +66,21 @@ export function EditorToolbar(props: Props) {
   }, [location]);
 
   const saveNewName = useCallback(() => {
-    props.onFileNameChanged(name);
-    setEditingName(false);
+    props.onFileNameChanged(`${name}.${fileExtension}`);
   }, [props.onFileNameChanged, name]);
 
   const cancelNewName = useCallback(() => {
-    setEditingName(false);
-    setName(context.file.fileName);
+    setName(removeFileExtension(context.file.fileName));
   }, [context.file.fileName]);
-
-  const editName = useCallback(() => {
-    if (!context.readonly) {
-      setEditingName(true);
-    }
-  }, [context.readonly]);
 
   const onNameInputKeyUp = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.keyCode === 13 /* Enter */) {
         saveNewName();
+        e.currentTarget.blur()
       } else if (e.keyCode === 27 /* ESC */) {
         cancelNewName();
+        e.currentTarget.blur()
       }
     },
     [saveNewName, cancelNewName]
@@ -148,34 +142,28 @@ export function EditorToolbar(props: Props) {
 
   const filenameInput = (
     <>
-      {!editingName && (
-        <div data-testid="toolbar-title" className="kogito--editor__toolbar-title">
-          <Title headingLevel={"h3"} size={"xl"} onClick={editName} title={"Rename"} aria-label={"File name"}>
-            {context.file.fileName + "." + fileExtension}
-          </Title>
-          {props.isEdited && (
-            <span className={"kogito--editor__toolbar-edited"} data-testid="is-dirty-indicator">
-              {` - ${i18n.terms.edited}`}
-            </span>
-          )}
-        </div>
-      )}
-      {editingName && (
-        <div className={"kogito--editor__toolbar-name-container"}>
-          <Title headingLevel={"h3"} size={"xl"}>
-            {name + "." + fileExtension}
-          </Title>
-          <TextInput
-            autoFocus={true}
-            value={name}
-            type={"text"}
-            aria-label={"File name"}
-            className={"pf-c-title pf-m-xl"}
-            onChange={setName}
-            onKeyUp={onNameInputKeyUp}
-            onBlur={saveNewName}
-          />
-        </div>
+      <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
+        <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
+          {name}
+        </Title>
+        <TextInput
+          value={name}
+          type={"text"}
+          aria-label={"Edit file name"}
+          className={"kogito--editor__toolbar-title"}
+          onChange={setName}
+          onKeyUp={onNameInputKeyUp}
+          onBlur={saveNewName}
+        />
+      </div>
+      {props.isEdited && (
+        <span
+          aria-label={"File was edited"}
+          className={"kogito--editor__toolbar-edited"}
+          data-testid="is-dirty-indicator"
+        >
+          {` - ${i18n.terms.edited}`}
+        </span>
       )}
     </>
   );
