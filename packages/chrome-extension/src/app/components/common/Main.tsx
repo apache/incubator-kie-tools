@@ -24,7 +24,7 @@ import { Dependencies } from "../../Dependencies";
 import { kogitoMenuContainer } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
-import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
 import {
   chromeExtensionI18nDictionaries,

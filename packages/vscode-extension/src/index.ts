@@ -17,10 +17,11 @@
 import * as vscode from "vscode";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
-import { KogitoWebviewProvider } from "./KogitoWebviewProvider";
-import { EditorEnvelopeLocator } from "@kogito-tooling/microeditor-envelope-protocol";
-import * as __path from "path";
-import * as fs from "fs";
+import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
+import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
+import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
+import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
+import { generateSvg } from "./generateSvg";
 
 /**
  * Starts a Kogito extension.
@@ -37,22 +38,31 @@ export function startExtension(args: {
   getPreviewCommandId: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
 }) {
+  const workspaceApi = new VsCodeWorkspaceApi();
   const editorStore = new KogitoEditorStore();
-  const editorFactory = new KogitoEditorFactory(args.context, editorStore, args.editorEnvelopeLocator);
-  const webviewProvider = new KogitoWebviewProvider(args.viewType, editorFactory, editorStore, args.context);
+  const messageBroadcaster = new EnvelopeBusMessageBroadcaster();
+  const editorFactory = new KogitoEditorFactory(
+    args.context,
+    editorStore,
+    args.editorEnvelopeLocator,
+    messageBroadcaster,
+    workspaceApi
+  );
 
-  args.context.subscriptions.push(webviewProvider.register());
+  const editorWebviewProvider = new KogitoEditorWebviewProvider(
+    args.context,
+    args.viewType,
+    editorStore,
+    editorFactory
+  );
+
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(args.getPreviewCommandId, () => {
-      editorStore.withActive(async editor => {
-        const previewSvg = await editor.getPreview();
-        if (previewSvg) {
-          const parsedPath = __path.parse(editor.document.uri.fsPath);
-          fs.writeFileSync(`${parsedPath.dir}/${parsedPath.name}-svg.svg`, previewSvg);
-        } else {
-          console.info(`Unable to create SVG for '${editor.document.uri.fsPath}'`);
-        }
-      });
+    vscode.window.registerCustomEditorProvider(args.viewType, editorWebviewProvider, {
+      webviewOptions: { retainContextWhenHidden: true }
     })
+  );
+
+  args.context.subscriptions.push(
+    vscode.commands.registerCommand(args.getPreviewCommandId, () => generateSvg(editorStore, workspaceApi))
   );
 }

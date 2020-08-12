@@ -27,7 +27,7 @@ const MockEditor = jest.fn(() => ({
 }));
 
 const mockEditor = new MockEditor();
-const mockMessageBus = { notify: jest.fn(), request: jest.fn() };
+const mockMessageBus = { notify: jest.fn(), request: jest.fn(), subscribe: jest.fn(), unsubscribe: jest.fn() };
 const mockXmlFormatter = { format: (c: string) => c };
 
 const wrapper = new GwtEditorWrapper(

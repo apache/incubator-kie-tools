@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-import { ChannelType, EditorContext, I18nService, OperatingSystem } from "@kogito-tooling/microeditor-envelope-protocol";
+import { Editor, EditorContext, I18nService, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
 import { FACTORY_TYPE, PMMLEditorFactory } from "../editor/PMMLEditorFactory";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
-import { Editor, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor-api";
-import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts";
+import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
+import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { PMMLEditorMarshallerService } from "@kogito-tooling/pmml-editor-marshaller";
 
 const messageBusClient = {
   notify: jest.fn(),
-  request: jest.fn()
+  request: jest.fn(),
+  subscribe: jest.fn(),
+  unsubscribe: jest.fn()
 };
 
 const editorContext: EditorContext = { channel: ChannelType.EMBEDDED, operatingSystem: OperatingSystem.LINUX };
@@ -32,7 +34,7 @@ const envelopeContext: KogitoEditorEnvelopeContextType = {
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
-    keyboardShortcuts: new DefaultKeyboardShortcutsService({ editorContext: editorContext }),
+    keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: editorContext.operatingSystem }),
     i18n: new I18nService(),
     pmmlEditorMarshallerService: new PMMLEditorMarshallerService()
   }
