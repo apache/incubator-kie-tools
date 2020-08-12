@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorApi, EditorEnvelopeLocator, KogitoEditorChannelApi } from "../../api";
+import { EditorApi, EditorEnvelopeLocator, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "../../api";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { useSyncedKeyboardEvents } from "@kogito-tooling/keyboard-shortcuts/dist/channel";
 import { useGuidedTourPositionProvider } from "@kogito-tooling/guided-tour/dist/channel";
@@ -25,7 +25,7 @@ import { File, useEffectAfterFirstRender } from "../common";
 import { StateControl } from "../stateControl";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
-import { KogitoEditorEnvelopeServer } from "../../channel";
+import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -48,7 +48,12 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
 /**
  * Forward reference for the `EmbeddedEditor` to support consumers to call upon embedded operations.
  */
-export type EmbeddedEditorRef = (EditorApi & { getStateControl(): StateControl }) | null;
+export type EmbeddedEditorRef =
+  | (EditorApi & {
+      getStateControl(): StateControl;
+      envelopeServer(): EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
+    })
+  | null;
 
 const containerStyles: CSS.Properties = {
   display: "flex",
@@ -80,10 +85,14 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   }, [stateControl, props.file, props]);
 
   const envelopeServer = useMemo(() => {
-    return new KogitoEditorEnvelopeServer(
+    return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
       { postMessage: message => iframeRef.current?.contentWindow?.postMessage(message, "*") },
       props.editorEnvelopeLocator.targetOrigin,
-      { fileExtension: props.file.fileExtension, resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "" }
+      self =>
+        self.envelopeApi.requests.receive_initRequest(
+          { origin: self.origin, envelopeServerId: self.id },
+          { fileExtension: props.file.fileExtension, resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "" }
+        )
     );
   }, []);
 
@@ -109,13 +118,15 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
 
       return {
         getStateControl: () => stateControl,
+        envelopeServer: () => envelopeServer,
         getElementPosition: selector =>
           envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(selector),
-        redo: () => Promise.resolve(envelopeServer.notify_editorRedo()),
-        undo: () => Promise.resolve(envelopeServer.notify_editorUndo()),
-        getContent: () => envelopeServer.request_contentResponse().then(c => c.content),
-        getPreview: () => envelopeServer.request_previewResponse(),
-        setContent: async content => envelopeServer.notify_contentChanged({ content: content })
+        undo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorUndo()),
+        redo: () => Promise.resolve(envelopeServer.envelopeApi.notifications.receive_editorRedo()),
+        getContent: () => envelopeServer.envelopeApi.requests.receive_contentRequest().then(c => c.content),
+        getPreview: () => envelopeServer.envelopeApi.requests.receive_previewRequest(),
+        setContent: async content =>
+          envelopeServer.envelopeApi.notifications.receive_contentChanged({ content: content })
       };
     },
     [envelopeServer]

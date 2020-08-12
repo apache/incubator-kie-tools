@@ -42,32 +42,58 @@ export class EnvelopeBusMessageManager<
 
   private requestIdCounter: number;
 
-  public get server(): MessageBusServer<ApiToProvide, ApiToConsume> {
-    return {
-      receive: (m, apiImpl) => this.receive(m, apiImpl)
-    };
-  }
+  public clientApi: MessageBusClientApi<ApiToConsume> = (() => {
+    const requestsCache = new Map<
+      RequestPropertyNames<ApiToConsume>,
+      (...args: ArgsType<ApiToConsume[keyof ApiToConsume]>) => Promise<any>
+    >();
 
-  public get clientApi(): MessageBusClientApi<ApiToConsume> {
+    const notificationsCache = new Map<
+      NotificationPropertyNames<ApiToConsume>,
+      (...args: ArgsType<ApiToConsume[keyof ApiToConsume]>) => void
+    >();
+
     const requests: ApiRequests<ApiToConsume> = new Proxy<ApiRequests<ApiToConsume>>({} as ApiRequests<ApiToConsume>, {
+      set: (target, name, value) => {
+        requestsCache.set(name as RequestPropertyNames<ApiToConsume>, value);
+        return true;
+      },
       get: (target, name) => {
-        return (...args: ArgsType<ApiToConsume[keyof ApiToConsume]>) =>
-          this.request(name as RequestPropertyNames<ApiToConsume>, ...args);
+        const method = name as RequestPropertyNames<ApiToConsume>;
+        return (
+          requestsCache.get(method) ??
+          requestsCache.set(method, (...args) => this.request(method, ...args) as Promise<any>).get(method)
+        );
       }
     });
 
     const notifications = new Proxy<ApiNotifications<ApiToConsume>>({} as ApiNotifications<ApiToConsume>, {
+      set: (target, name, value) => {
+        notificationsCache.set(name as NotificationPropertyNames<ApiToConsume>, value);
+        return true;
+      },
       get: (target, name) => {
-        return (...args: ArgsType<ApiToConsume[keyof ApiToConsume]>) =>
-          this.notify(name as NotificationPropertyNames<ApiToConsume>, ...args);
+        const method = name as NotificationPropertyNames<ApiToConsume>;
+        return (
+          notificationsCache.get(method) ??
+          notificationsCache.set(method, (...args) => this.notify(method, ...args)).get(method)
+        );
       }
     });
 
-    return {
+    const clientApi: MessageBusClientApi<ApiToConsume> = {
       requests,
       notifications,
       subscribe: (m, a) => this.subscribe(m, a),
       unsubscribe: (m, a) => this.unsubscribe(m, a)
+    };
+
+    return clientApi;
+  })();
+
+  public get server(): MessageBusServer<ApiToProvide, ApiToConsume> {
+    return {
+      receive: (m, apiImpl) => this.receive(m, apiImpl)
     };
   }
 
@@ -127,7 +153,7 @@ export class EnvelopeBusMessageManager<
       purpose: EnvelopeBusMessagePurpose.REQUEST
     });
 
-    return new Promise((resolve, reject) => {
+    return new Promise<any>((resolve, reject) => {
       this.callbacks.set(requestId, { resolve, reject });
     }) as ReturnType<ApiToConsume[M]>;
 

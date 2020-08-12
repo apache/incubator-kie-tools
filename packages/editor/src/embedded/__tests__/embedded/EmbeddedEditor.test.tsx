@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { EditorEnvelopeLocator } from "../../../api";
-import { ChannelType, KogitoEdit } from "@kogito-tooling/channel-common-api";
-import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
+import {EditorEnvelopeLocator} from "../../../api";
+import {ChannelType, KogitoEdit} from "@kogito-tooling/channel-common-api";
+import {EnvelopeServer} from "@kogito-tooling/envelope-bus/dist/channel";
 import * as React from "react";
-import { File } from "../../common";
-import { EmbeddedEditor, EmbeddedEditorRef } from "../../embedded";
-import { incomingMessage } from "./EmbeddedEditorTestUtils";
-import { render } from "@testing-library/react";
-import { EnvelopeBusMessagePurpose } from "@kogito-tooling/envelope-bus/dist/api";
-import { KogitoEditorEnvelopeServer } from "../../../channel";
+import {File} from "../../common";
+import {EmbeddedEditor, EmbeddedEditorRef} from "../../embedded";
+import {incomingMessage} from "./EmbeddedEditorTestUtils";
+import {render} from "@testing-library/react";
+import {EnvelopeBusMessagePurpose} from "@kogito-tooling/envelope-bus/dist/api";
+import {KogitoEditorEnvelopeServer} from "../../../channel";
 
 describe("EmbeddedEditor::ONLINE", () => {
   const file: File = {
@@ -66,7 +66,6 @@ describe("EmbeddedEditor::ONLINE", () => {
   });
 
   test("EmbeddedEditor::setContent", () => {
-    const spyRespond_contentRequest = jest.spyOn(KogitoEditorEnvelopeServer.prototype, "notify_contentChanged");
     render(
       <EmbeddedEditor
         ref={editorRef}
@@ -76,16 +75,18 @@ describe("EmbeddedEditor::ONLINE", () => {
         locale={"en"}
       />
     );
+
+    const spyOnContentChangedNotification = jest.spyOn(
+      editorRef.current!.envelopeServer().envelopeApi.notifications,
+      "receive_contentChanged"
+    );
+
     editorRef.current?.setContent("content", "");
 
-    expect(spyRespond_contentRequest).toBeCalledWith({ content: "content" });
+    expect(spyOnContentChangedNotification).toBeCalledWith({ content: "content" });
   });
 
   test("EmbeddedEditor::requestContent", () => {
-    const spyRequest_contentResponse = jest.spyOn(
-      KogitoEditorEnvelopeServer.prototype,
-      "request_contentResponse"
-    );
     render(
       <EmbeddedEditor
         ref={editorRef}
@@ -94,6 +95,11 @@ describe("EmbeddedEditor::ONLINE", () => {
         channelType={channelType}
         locale={"en"}
       />
+    );
+
+    const spyRequest_contentResponse = jest.spyOn(
+        editorRef.current!.envelopeServer().envelopeApi.requests,
+        "receive_contentRequest"
     );
     editorRef.current?.getContent();
 
@@ -101,10 +107,6 @@ describe("EmbeddedEditor::ONLINE", () => {
   });
 
   test("EmbeddedEditor::requestPreview", () => {
-    const spyRequest_previewResponse = jest.spyOn(
-      KogitoEditorEnvelopeServer.prototype,
-      "request_previewResponse"
-    );
     render(
       <EmbeddedEditor
         ref={editorRef}
@@ -113,6 +115,11 @@ describe("EmbeddedEditor::ONLINE", () => {
         channelType={channelType}
         locale={"en"}
       />
+    );
+
+    const spyRequest_previewResponse = jest.spyOn(
+        editorRef.current!.envelopeServer().envelopeApi.requests,
+        "receive_previewRequest"
     );
     editorRef.current?.getPreview();
 
