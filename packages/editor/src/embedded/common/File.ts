@@ -60,7 +60,7 @@ export const EMPTY_FILE_SCESIM = {
  */
 export function newFile(fileExtension: string): File {
   return {
-    fileName: `new-file.${fileExtension}`,
+    fileName: "new-file",
     fileExtension: fileExtension,
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false

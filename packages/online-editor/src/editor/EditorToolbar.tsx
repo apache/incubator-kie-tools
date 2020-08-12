@@ -34,10 +34,9 @@ import { useCallback, useContext, useMemo, useState } from "react";
 import { GlobalContext } from "../common/GlobalContext";
 import { useLocation } from "react-router";
 import { useOnlineI18n } from "../common/i18n";
-import { removeFileExtension } from "../common/utils";
 
 interface Props {
-  onFileNameChanged: (fileName: string) => void;
+  onFileNameChanged: (fileName: string, fileExtension: string) => void;
   onFullScreen: () => void;
   onSave: () => void;
   onDownload: () => void;
@@ -52,7 +51,7 @@ interface Props {
 export function EditorToolbar(props: Props) {
   const context = useContext(GlobalContext);
   const location = useLocation();
-  const [name, setName] = useState(removeFileExtension(context.file.fileName));
+  const [fileName, setFileName] = useState(context.file.fileName);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isKebabOpen, setKebabOpen] = useState(false);
   const { i18n } = useOnlineI18n();
@@ -66,21 +65,21 @@ export function EditorToolbar(props: Props) {
   }, [location]);
 
   const saveNewName = useCallback(() => {
-    props.onFileNameChanged(`${name}.${fileExtension}`);
-  }, [props.onFileNameChanged, name]);
+    props.onFileNameChanged(fileName, fileExtension);
+  }, [props.onFileNameChanged, fileName]);
 
   const cancelNewName = useCallback(() => {
-    setName(removeFileExtension(context.file.fileName));
+    setFileName(context.file.fileName);
   }, [context.file.fileName]);
 
   const onNameInputKeyUp = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.keyCode === 13 /* Enter */) {
         saveNewName();
-        e.currentTarget.blur()
+        e.currentTarget.blur();
       } else if (e.keyCode === 27 /* ESC */) {
         cancelNewName();
-        e.currentTarget.blur()
+        e.currentTarget.blur();
       }
     },
     [saveNewName, cancelNewName]
@@ -144,14 +143,14 @@ export function EditorToolbar(props: Props) {
     <>
       <div data-testid={"toolbar-title"} className={"kogito--editor__toolbar-name-container"}>
         <Title aria-label={"File name"} headingLevel={"h3"} size={"2xl"}>
-          {name}
+          {fileName}
         </Title>
         <TextInput
-          value={name}
+          value={fileName}
           type={"text"}
           aria-label={"Edit file name"}
           className={"kogito--editor__toolbar-title"}
-          onChange={setName}
+          onChange={setFileName}
           onKeyUp={onNameInputKeyUp}
           onBlur={saveNewName}
         />
