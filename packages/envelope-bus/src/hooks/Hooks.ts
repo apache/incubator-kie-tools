@@ -15,7 +15,7 @@
  */
 
 import { useEffect } from "react";
-import {ApiDefinition, MessageBusClientApi, NotificationPropertyNames, SubscriptionCallback} from "../api";
+import { ApiDefinition, MessageBusClientApi, NotificationPropertyNames, SubscriptionCallback } from "../api";
 import { EnvelopeServer } from "../channel";
 
 export function useConnectedEnvelopeServer<Api extends ApiDefinition<Api>>(
