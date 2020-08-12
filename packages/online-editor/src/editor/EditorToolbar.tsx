@@ -66,7 +66,7 @@ export function EditorToolbar(props: Props) {
 
   const saveNewName = useCallback(() => {
     props.onFileNameChanged(fileName, fileExtension);
-  }, [props.onFileNameChanged, fileName]);
+  }, [props.onFileNameChanged, fileName, fileExtension]);
 
   const cancelNewName = useCallback(() => {
     setFileName(context.file.fileName);
