@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { PMMLDocumentData } from "@kogito-tooling/microeditor-envelope-protocol";
+
+import { PMMLDocumentData } from "@kogito-tooling/pmml-editor-marshaller";
 
 /**
  * PUBLIC ENVELOPE API

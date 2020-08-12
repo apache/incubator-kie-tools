@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { PMMLDocumentData, PMMLModelData } from "@kogito-tooling/microeditor-envelope-protocol";
 import { XML2PMML } from "../marshaller";
 import {
     AnomalyDetectionModel,
@@ -37,6 +36,8 @@ import {
     TimeSeriesModel,
     TreeModel
 } from "../marshaller/model/pmml4_4";
+import { PMMLDocumentData } from "./PMMLDocumentData";
+import { PMMLModelData } from "./PMMLModelData";
 
 export class PMMLEditorMarshallerService {
 

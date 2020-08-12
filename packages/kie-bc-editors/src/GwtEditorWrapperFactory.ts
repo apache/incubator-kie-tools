@@ -37,6 +37,7 @@ import { EditorContextApi } from "./api/EditorContextApi";
 import { GwtEditorMapping } from "./GwtEditorMapping";
 import { I18nServiceApi } from "./api/I18nServiceApi";
 import { PMMLEditorMarshallerApi } from "./api/PMMLEditorMarshallerApi";
+import { PMMLEditorMarshallerService } from "@kogito-tooling/pmml-editor-marshaller";
 
 declare global {
   interface Window {
@@ -145,7 +146,7 @@ export class GwtEditorWrapperFactory implements EditorFactory {
           envelopeContext.services.i18n.setOnLocaleChange(onLocaleChange);
         }
       },
-      pmmlEditorMarshallerService: envelopeContext.services.pmmlEditorMarshallerService
+      pmmlEditorMarshallerService: new PMMLEditorMarshallerService()
     };
   }
 
