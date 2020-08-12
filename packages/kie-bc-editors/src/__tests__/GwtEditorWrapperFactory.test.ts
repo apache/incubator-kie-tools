@@ -95,8 +95,7 @@ describe("GwtEditorWrapperFactory", () => {
         services: {
           keyboardShortcuts: {} as any,
           guidedTour: {} as any,
-          i18n: {} as any,
-          pmmlEditorMarshallerService: {} as any
+          i18n: {} as any
         }
       },
       { resourcesPathPrefix: "", fileExtension: "txt" }
