@@ -23,7 +23,8 @@ module.exports = merge(common, {
     "hooks/index": "./src/hooks/index.ts",
     "channel/index": "./src/channel/index.ts",
     "envelope/index": "./src/envelope/index.ts",
-    "api/index": "./src/api/index.ts"
+    "api/index": "./src/api/index.ts",
+    "common/__tests__/index": "./src/common/__tests__/index.ts"
   },
   output: {
     libraryTarget: "commonjs2"

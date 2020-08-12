@@ -18,26 +18,22 @@ import * as React from "react";
 import { fireEvent } from "@testing-library/react";
 import { renderHook } from "@testing-library/react-hooks";
 import { useSyncedKeyboardEvents } from "../Hooks";
-import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import { KeyboardShortcutsEnvelopeApi } from "../../api";
+import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
 
-let messageBusClient: MessageBusClient<KeyboardShortcutsEnvelopeApi>;
+let envelopeApi: MessageBusClientApi<KeyboardShortcutsEnvelopeApi>;
 
 beforeEach(() => {
-  messageBusClient = {
-    notify: jest.fn(),
-    request: jest.fn(),
-    subscribe: jest.fn(),
-    unsubscribe: jest.fn()
-  };
+  envelopeApi = messageBusClientApiMock();
 });
 
 describe("useSyncedKeyboardEvents", () => {
   test("EmbeddedEditor::notify keyboardEvent::keydown", async () => {
-    renderHook(() => useSyncedKeyboardEvents(messageBusClient));
+    renderHook(() => useSyncedKeyboardEvents(envelopeApi));
     window.dispatchEvent(new KeyboardEvent("keydown", { ctrlKey: true }));
 
-    expect(messageBusClient.notify).toBeCalledWith("receive_channelKeyboardEvent", {
+    expect(envelopeApi.notifications.receive_channelKeyboardEvent).toBeCalledWith({
       altKey: false,
       ctrlKey: true,
       shiftKey: false,
@@ -49,10 +45,10 @@ describe("useSyncedKeyboardEvents", () => {
   });
 
   test("EmbeddedEditor::notify keyboardEvent::keyup", async () => {
-    renderHook(() => useSyncedKeyboardEvents(messageBusClient));
+    renderHook(() => useSyncedKeyboardEvents(envelopeApi));
     window.dispatchEvent(new KeyboardEvent("keyup", { altKey: true }));
 
-    expect(messageBusClient.notify).toBeCalledWith("receive_channelKeyboardEvent", {
+    expect(envelopeApi.notifications.receive_channelKeyboardEvent).toBeCalledWith({
       altKey: true,
       ctrlKey: false,
       shiftKey: false,
@@ -64,10 +60,10 @@ describe("useSyncedKeyboardEvents", () => {
   });
 
   test("EmbeddedEditor::notify keyboardEvent::keypress", async () => {
-    renderHook(() => useSyncedKeyboardEvents(messageBusClient));
+    renderHook(() => useSyncedKeyboardEvents(envelopeApi));
     window.dispatchEvent(new KeyboardEvent("keypress", { shiftKey: true }));
 
-    expect(messageBusClient.notify).toBeCalledWith("receive_channelKeyboardEvent", {
+    expect(envelopeApi.notifications.receive_channelKeyboardEvent).toBeCalledWith({
       altKey: false,
       ctrlKey: false,
       shiftKey: true,
@@ -79,10 +75,10 @@ describe("useSyncedKeyboardEvents", () => {
   });
 
   test("EmbeddedEditor::notify_keyboardEvent::keydown::metakey", async () => {
-    renderHook(() => useSyncedKeyboardEvents(messageBusClient, document.body));
+    renderHook(() => useSyncedKeyboardEvents(envelopeApi, document.body));
     fireEvent(document.body, new KeyboardEvent("keydown", { metaKey: true, code: "KeyA" }));
 
-    expect(messageBusClient.notify).toBeCalledWith("receive_channelKeyboardEvent", {
+    expect(envelopeApi.notifications.receive_channelKeyboardEvent).toBeCalledWith({
       altKey: false,
       ctrlKey: false,
       shiftKey: false,

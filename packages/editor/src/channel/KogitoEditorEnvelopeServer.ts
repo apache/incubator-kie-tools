@@ -26,22 +26,22 @@ export class KogitoEditorEnvelopeServer extends EnvelopeServer<KogitoEditorChann
   }
 
   public notify_editorUndo() {
-    this.client.notify("receive_editorUndo");
+    this.envelopeApi.notifications.receive_editorUndo();
   }
 
   public notify_editorRedo() {
-    this.client.notify("receive_editorRedo");
+    this.envelopeApi.notifications.receive_editorRedo();
   }
 
   public notify_contentChanged(content: EditorContent) {
-    this.client.notify("receive_contentChanged", content);
+    this.envelopeApi.notifications.receive_contentChanged(content);
   }
 
   public request_contentResponse() {
-    return this.client.request("receive_contentRequest");
+    return this.envelopeApi.requests.receive_contentRequest();
   }
 
   public request_previewResponse() {
-    return this.client.request("receive_previewRequest");
+    return this.envelopeApi.requests.receive_previewRequest();
   }
 }

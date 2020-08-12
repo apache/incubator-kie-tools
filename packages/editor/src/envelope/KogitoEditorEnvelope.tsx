@@ -52,7 +52,7 @@ export class KogitoEditorEnvelope {
       KogitoEditorEnvelopeContextType
     > = new Envelope(args.bus),
     private readonly context: KogitoEditorEnvelopeContextType = {
-      channelApi: envelope.busClient,
+      channelApi: envelope.channelApi,
       context: args.editorContext,
       services: {
         keyboardShortcuts: keyboardShortcutsService,

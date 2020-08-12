@@ -29,10 +29,6 @@ export class Envelope<
     private readonly envelopeBusController = new EnvelopeBusController<ApiToProvide, ApiToConsume>(bus)
   ) {}
 
-  public get busClient() {
-    return this.envelopeBusController.client;
-  }
-
   public get channelApi() {
     return this.envelopeBusController.channelApi;
   }

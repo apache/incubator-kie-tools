@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
-import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api"
+import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api"
 import * as React from "react";
 
 export interface Props {
   exposing: (s: PMMLEditor) => void;
-  messageBusClient: MessageBusClient<KogitoEditorChannelApi>;
+  channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
 }
 
 export interface State {
@@ -40,7 +40,7 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   public componentDidMount(): void {
-    this.props.messageBusClient.notify("receive_ready");
+    this.props.channelApi.notifications.receive_ready();
   }
 
   public setContent(path: string, content: string): Promise<void> {

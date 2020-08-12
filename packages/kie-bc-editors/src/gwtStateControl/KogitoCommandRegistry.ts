@@ -16,7 +16,7 @@
 
 import { GwtStateControlCommand } from "./GwtStateControlCommand";
 import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
-import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import { KogitoEdit } from "@kogito-tooling/channel-common-api";
 
 /**
@@ -38,13 +38,13 @@ export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T>
   private commands: Array<GwtStateControlCommand<T>> = [];
   private undoneCommands: string[] = [];
 
-  constructor(private readonly messageBus: MessageBusClient<KogitoEditorChannelApi>) {}
+  constructor(private readonly channelApi: MessageBusClientApi<KogitoEditorChannelApi>) {}
 
   private onNewCommand(newCommand: GwtStateControlCommand<T>) {
     if (!this.undoneCommands.includes(newCommand.getId())) {
       // Only notifying if the command is a new command. Also clearing the removedCommands registry, since the undone
       // commands won't be redone
-      this.messageBus.notify("receive_newEdit", new KogitoEdit(newCommand.getId()));
+      this.channelApi.notifications.receive_newEdit(new KogitoEdit(newCommand.getId()));
       this.undoneCommands = [];
     } else {
       // Removing the command from the removedCommands registry since it's been registered again (redo).

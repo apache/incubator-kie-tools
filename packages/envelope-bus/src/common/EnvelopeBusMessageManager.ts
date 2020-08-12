@@ -19,16 +19,14 @@ import {
   ApiNotifications,
   ApiRequests,
   ArgsType,
-  ClientApi,
   EnvelopeBusMessage,
   EnvelopeBusMessagePurpose,
   FunctionPropertyNames,
-  MessageBusClient,
+  MessageBusClientApi,
   MessageBusServer,
   NotificationCallback,
   NotificationPropertyNames,
-  RequestPropertyNames,
-  SubscriptionCallback
+  RequestPropertyNames
 } from "../api";
 
 export class EnvelopeBusMessageManager<
@@ -44,21 +42,13 @@ export class EnvelopeBusMessageManager<
 
   private requestIdCounter: number;
 
-  public get client(): MessageBusClient<ApiToConsume> {
-    return {
-      request: (m, ...a) => this.request(m, ...a),
-      notify: (m, ...a) => this.notify(m, ...a),
-      subscribe: (m, a) => this.subscribe(m, a),
-      unsubscribe: (m, a) => this.unsubscribe(m, a)
-    };
-  }
   public get server(): MessageBusServer<ApiToProvide, ApiToConsume> {
     return {
       receive: (m, apiImpl) => this.receive(m, apiImpl)
     };
   }
 
-  public get clientApi(): ClientApi<ApiToConsume> {
+  public get clientApi(): MessageBusClientApi<ApiToConsume> {
     const requests: ApiRequests<ApiToConsume> = new Proxy<ApiRequests<ApiToConsume>>({} as ApiRequests<ApiToConsume>, {
       get: (target, name) => {
         return (...args: ArgsType<ApiToConsume[keyof ApiToConsume]>) =>
@@ -73,21 +63,12 @@ export class EnvelopeBusMessageManager<
       }
     });
 
-    const subscribe = <M extends NotificationPropertyNames<ApiToConsume>>(
-      method: M,
-      callback: SubscriptionCallback<ApiToConsume, M>
-    ) => {
-      return this.subscribe(method, callback);
+    return {
+      requests,
+      notifications,
+      subscribe: (m, a) => this.subscribe(m, a),
+      unsubscribe: (m, a) => this.unsubscribe(m, a)
     };
-
-    const unsubscribe = <M extends NotificationPropertyNames<ApiToConsume>>(
-      method: M,
-      callback: SubscriptionCallback<ApiToConsume, M>
-    ) => {
-      this.unsubscribe(method, callback);
-    };
-
-    return { requests, notifications, subscribe, unsubscribe };
   }
 
   constructor(

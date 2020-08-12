@@ -17,18 +17,18 @@
 import { useEffect } from "react";
 import { KogitoGuidedTour } from "..";
 import { GuidedTourEnvelopeApi } from "../api";
-import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 
 export function useGuidedTourPositionProvider(
-  messageBusClient: MessageBusClient<GuidedTourEnvelopeApi>,
+  envelopeApi: MessageBusClientApi<GuidedTourEnvelopeApi>,
   iframeRef: React.RefObject<HTMLIFrameElement>
 ) {
   useEffect(() => {
     KogitoGuidedTour.getInstance().registerPositionProvider((selector: string) =>
-      messageBusClient.request("receive_guidedTourElementPositionRequest", selector).then(position => {
+      envelopeApi.requests.receive_guidedTourElementPositionRequest(selector).then(position => {
         const parentRect = iframeRef.current?.getBoundingClientRect();
         KogitoGuidedTour.getInstance().onPositionReceived(position, parentRect);
       })
     );
-  }, [messageBusClient]);
+  }, [envelopeApi]);
 }

@@ -20,7 +20,7 @@ import { Editor, KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api"
 import { editors } from "./GwtEditorMapping";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
-import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
@@ -33,13 +33,13 @@ export class GwtEditorWrapper implements Editor {
 
   private readonly gwtEditor: GwtEditor;
   private readonly xmlFormatter: XmlFormatter;
-  private readonly messageBusClient: MessageBusClient<KogitoEditorChannelApi>;
+  private readonly channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
   private readonly stateControlService: GwtStateControlService;
 
   constructor(
     editorId: string,
     gwtEditor: GwtEditor,
-    messageBus: MessageBusClient<KogitoEditorChannelApi>,
+    messageBus: MessageBusClientApi<KogitoEditorChannelApi>,
     xmlFormatter: XmlFormatter,
     stateControlService: GwtStateControlService
   ) {
@@ -47,7 +47,7 @@ export class GwtEditorWrapper implements Editor {
     this.stateControlService = stateControlService;
     this.af_isReact = true;
     this.gwtEditor = gwtEditor;
-    this.messageBusClient = messageBus;
+    this.channelApi = messageBus;
     this.editorId = editorId;
     this.xmlFormatter = xmlFormatter;
   }
@@ -85,8 +85,7 @@ export class GwtEditorWrapper implements Editor {
   public setContent(path: string, content: string) {
     setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
     return this.gwtEditor.setContent(path, content.trim()).catch(() => {
-      this.messageBusClient.notify(
-        "receive_setContentError",
+      this.channelApi.notifications.receive_setContentError(
         `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
       );
       return Promise.resolve();

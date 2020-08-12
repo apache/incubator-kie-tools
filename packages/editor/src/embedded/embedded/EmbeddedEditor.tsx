@@ -90,14 +90,14 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
 
   useEffectAfterFirstRender(() => {
-    envelopeServer.client.notify("receive_localeChange", props.locale);
+    envelopeServer.envelopeApi.notifications.receive_localeChange(props.locale);
   }, [props.locale]);
 
   // Register position provider for Guided Tour
-  useGuidedTourPositionProvider(envelopeServer.client, iframeRef);
+  useGuidedTourPositionProvider(envelopeServer.envelopeApi, iframeRef);
 
   // Forward keyboard events to the EditorEnvelope
-  useSyncedKeyboardEvents(envelopeServer.client);
+  useSyncedKeyboardEvents(envelopeServer.envelopeApi);
 
   //Forward reference methods
   useImperativeHandle(
@@ -110,7 +110,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       return {
         getStateControl: () => stateControl,
         getElementPosition: selector =>
-          envelopeServer.client.request("receive_guidedTourElementPositionRequest", selector),
+          envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(selector),
         redo: () => Promise.resolve(envelopeServer.notify_editorRedo()),
         undo: () => Promise.resolve(envelopeServer.notify_editorUndo()),
         getContent: () => envelopeServer.request_contentResponse().then(c => c.content),

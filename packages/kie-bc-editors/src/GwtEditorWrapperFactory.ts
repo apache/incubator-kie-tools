@@ -109,10 +109,10 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       keyboardShortcuts: envelopeContext.services.keyboardShortcuts,
       guidedTourService: {
         refresh(userInteraction: UserInteraction): void {
-          envelopeContext.channelApi.notify("receive_guidedTourUserInteraction", userInteraction);
+          envelopeContext.channelApi.notifications.receive_guidedTourUserInteraction(userInteraction);
         },
         registerTutorial(tutorial: Tutorial): void {
-          envelopeContext.channelApi.notify("receive_guidedTourRegisterTutorial", tutorial);
+          envelopeContext.channelApi.notifications.receive_guidedTourRegisterTutorial(tutorial);
         },
         isEnabled(): boolean {
           return envelopeContext.services.guidedTour.isEnabled();
@@ -121,23 +121,23 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       resourceContentEditorService: {
         get(path: string, opts?: ResourceContentOptions) {
           return envelopeContext.channelApi
-            .request("receive_resourceContentRequest", { path, opts })
+            .requests.receive_resourceContentRequest({ path, opts })
             .then(r => r?.content);
         },
         list(pattern: string, opts?: ResourceListOptions) {
           return envelopeContext.channelApi
-            .request("receive_resourceListRequest", { pattern, opts })
+            .requests.receive_resourceListRequest({ pattern, opts })
             .then(r => r.paths.sort());
         }
       },
       workspaceService: {
         openFile(path: string): void {
-          envelopeContext.channelApi.notify("receive_openFile", path);
+          envelopeContext.channelApi.notifications.receive_openFile(path);
         }
       },
       i18nService: {
         getLocale: () => {
-          return envelopeContext.channelApi.request("receive_getLocale");
+          return envelopeContext.channelApi.requests.receive_getLocale();
         },
         onLocaleChange: (onLocaleChange: (locale: string) => void) => {
           envelopeContext.services.i18n.setOnLocaleChange(onLocaleChange);

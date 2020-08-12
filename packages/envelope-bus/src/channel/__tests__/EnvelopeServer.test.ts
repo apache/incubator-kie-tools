@@ -40,7 +40,7 @@ beforeEach(() => {
   };
 
   envelopeServer = new EnvelopeServer({ postMessage: (msg: any) => sentMessages.push(msg) }, "tests", self =>
-    self.client.request("init")
+    self.envelopeApi.requests.init()
   );
 });
 

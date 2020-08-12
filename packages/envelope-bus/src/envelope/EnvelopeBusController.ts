@@ -32,10 +32,6 @@ export class EnvelopeBusController<
   public eventListener?: any;
   public readonly manager: EnvelopeBusMessageManager<ApiToProvide, ApiToConsume>;
 
-  public get client() {
-    return this.manager.client;
-  }
-
   public get channelApi() {
     return this.manager.clientApi;
   }
