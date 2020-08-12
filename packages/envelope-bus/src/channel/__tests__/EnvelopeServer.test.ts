@@ -161,18 +161,6 @@ describe("receive", () => {
   });
 });
 
-describe("envelopeApi", () => {
-  test("notification", async () => {
-    envelopeServer.envelopeApi.notifications.someNotification("test");
-    expect(sentMessages.length).toStrictEqual(1);
-  });
-
-  test("request", async () => {
-    const a = envelopeServer.envelopeApi.requests.someRequest("test");
-    expect(sentMessages.length).toStrictEqual(1);
-  });
-});
-
 async function incomingMessage(
   message: EnvelopeBusMessage<unknown, FunctionPropertyNames<ApiToProvide> | FunctionPropertyNames<ApiToConsume>>
 ) {
