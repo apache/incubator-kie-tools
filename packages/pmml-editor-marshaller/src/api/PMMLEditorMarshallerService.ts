@@ -24,6 +24,7 @@ import {
     GaussianProcessModel,
     GeneralRegressionModel,
     MiningModel,
+    Model,
     NaiveBayesModel,
     NearestNeighborModel,
     NeuralNetwork,
@@ -48,25 +49,28 @@ export class PMMLEditorMarshallerService {
 
         if (pmml.models) {
             pmml.models.forEach(model => {
-                if (model instanceof AnomalyDetectionModel || model instanceof AssociationModel
-                    || model instanceof BayesianNetworkModel || model instanceof BaselineModel
-                    || model instanceof ClusteringModel || model instanceof GaussianProcessModel
-                    || model instanceof GeneralRegressionModel || model instanceof MiningModel
-                    || model instanceof NaiveBayesModel || model instanceof NearestNeighborModel
-                    || model instanceof NeuralNetwork || model instanceof RegressionModel
-                    || model instanceof RuleSetModel || model instanceof SequenceModel
-                    || model instanceof Scorecard || model instanceof SupportVectorMachineModel
-                    || model instanceof TextModel || model instanceof TimeSeriesModel || model instanceof TreeModel) {
-                    const modelName = model.modelName;
-                    if (modelName == null) {
-                        return;
-                    }
-                    const fields = model.MiningSchema.MiningField.map(field => field.name.toString());
-                    models.push(new PMMLModelData(modelName, fields));
-                    return;
+                const modelData = this.retrieveModelData(model);
+                if (modelData) {
+                    models.push(modelData);
                 }
             });
         }
         return document;
+    }
+
+    public retrieveModelData(model : Model) : PMMLModelData | undefined {
+        const modelsTypes = [AnomalyDetectionModel, AssociationModel, BayesianNetworkModel, BaselineModel, ClusteringModel,
+            GaussianProcessModel, GeneralRegressionModel, MiningModel, NaiveBayesModel, NearestNeighborModel,
+            NeuralNetwork, RegressionModel, RuleSetModel, SequenceModel, Scorecard, SupportVectorMachineModel,
+            TextModel, TimeSeriesModel, TreeModel];
+
+        modelsTypes.forEach(type => {
+            if (model instanceof type) {
+                const modelName = model.modelName;
+                const fields = model.MiningSchema.MiningField.map(field => field.name.toString());
+                return new PMMLModelData(modelName == null ? "" : modelName, fields);
+            }
+        });
+        return;
     }
 }
