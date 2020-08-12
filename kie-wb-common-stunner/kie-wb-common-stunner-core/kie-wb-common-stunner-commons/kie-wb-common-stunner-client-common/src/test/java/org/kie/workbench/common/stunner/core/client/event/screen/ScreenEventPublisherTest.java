@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.client.event.screen;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
 import javax.enterprise.event.Event;
+
+import org.hibernate.validator.util.annotationfactory.AnnotationDescriptor;
+import org.hibernate.validator.util.annotationfactory.AnnotationFactory;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.junit.Before;
@@ -39,7 +43,6 @@ import static java.util.stream.Collectors.toSet;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static sun.reflect.annotation.AnnotationParser.annotationForMap;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ScreenEventPublisherTest {
@@ -77,8 +80,11 @@ public class ScreenEventPublisherTest {
         when(placeMinimizedEvent.getPlace()).thenReturn(placeRequest);
         when(activityBeansCache.getActivity(screenId)).thenReturn(syncBeanDef);
 
-        when(syncBeanDef.getQualifiers()).thenReturn(Stream.of(annotationForMap(
-                DiagramEditor.class, new HashMap<>())).collect(toSet()));
+        when(syncBeanDef.getQualifiers()).thenReturn(
+                Stream.of((Annotation) AnnotationFactory.create(
+                        new AnnotationDescriptor(DiagramEditor.class, new HashMap<>()))
+                ).collect(toSet())
+        );
     }
 
     @Test
