@@ -1,21 +1,22 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
-// As Cekit is not compatible with podman, we use docker in that pipeline
-
 IMAGES = [
-            "kogito-quarkus-ubi8", 
-            "kogito-quarkus-jvm-ubi8",
-            "kogito-quarkus-ubi8-s2i",
-            "kogito-springboot-ubi8",
-            "kogito-springboot-ubi8-s2i",
-            "kogito-data-index",
-            "kogito-trusty",
-            "kogito-explainability",
-            "kogito-jobs-service",
-            "kogito-management-console"
+            'kogito-quarkus-ubi8', 
+            'kogito-quarkus-jvm-ubi8',
+            'kogito-quarkus-ubi8-s2i',
+            'kogito-springboot-ubi8',
+            'kogito-springboot-ubi8-s2i',
+            'kogito-data-index',
+            'kogito-trusty',
+            'kogito-explainability',
+            'kogito-jobs-service',
+            'kogito-management-console'
          ]
 
-// Should be a single pipeline (not multibranch)
+
+deployProperties = [ : ]
+
+
 pipeline {
     agent {
         label 'kogito-image-slave && !master'
@@ -26,30 +27,47 @@ pipeline {
         jdk 'kie-jdk11'
     }
 
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
+    }
+
     parameters {
         string(name: 'DISPLAY_NAME', defaultValue: '', description: 'Setup a specific build display name')
-        
+
+        // Git information
         string(name: 'BUILD_BRANCH_NAME', defaultValue: 'master', description: 'Which branch to build ? Set if you are not on a multibranch pipeline.')
         string(name: 'GIT_AUTHOR', defaultValue: 'kiegroup', description: 'Which Git author repository ?')
+        
+        // Build&Test information
+        booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests')
+        string(name: 'MAVEN_ARTIFACT_REPOSITORY', defaultValue: '', description: 'Maven repository where the build artifacts are present')
+        string(name: 'EXAMPLES_URI', defaultValue: '', description: 'Git uri to the kogito-examples repository to use for tests.')
+        string(name: 'EXAMPLES_REF', defaultValue: '', description: 'Git reference (branch/tag) to the kogito-examples repository to use for tests.')
 
+        // Deploy information
         booleanParam(name: 'IMAGE_USE_OPENSHIFT_REGISTRY', defaultValue: false, description: 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
         string(name: 'IMAGE_REGISTRY_CREDENTIALS', defaultValue: '', description: 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
         string(name: 'IMAGE_REGISTRY', defaultValue: '', description: 'Image registry to use to deploy images')
         string(name: 'IMAGE_NAMESPACE', defaultValue: 'kiegroup', description: 'Image namespace to use to deploy images')
         string(name: 'IMAGE_NAME_SUFFIX', defaultValue: '', description: 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
         string(name: 'IMAGE_TAG', defaultValue: '', description: 'Image tag to use to deploy images')
-
-        string(name: 'MAVEN_ARTIFACT_REPOSITORY', defaultValue: '', description: 'Maven repository where the build artifacts are present')
-
-        booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip tests')
+        
+        // Release information
+        booleanParam(name: 'RELEASE', defaultValue: false, description: 'Is this build for a release?')
+        string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
     }
 
     environment {
         JAVA_HOME = "${GRAALVM_HOME}"
 
-        OPENSHIFT_API = credentials("OPENSHIFT_API")
-        OPENSHIFT_REGISTRY = credentials("OPENSHIFT_REGISTRY")
-        OPENSHIFT_CREDS_KEY = "OPENSHIFT_CREDS"
+        OPENSHIFT_API = credentials('OPENSHIFT_API')
+        OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
+        OPENSHIFT_CREDS_KEY = 'OPENSHIFT_CREDS'
+
+        BOT_CREDENTIALS_ID = 'bsig-gh-bot'
+        GIT_AUTHOR_BOT = 'bsig-gh-bot'
+
+        BOT_BRANCH_HASH = "${util.generateHash(10)}"
     }
 
     stages {
@@ -58,19 +76,58 @@ pipeline {
                 script {  
                     clean()
 
-                    if (params.DISPLAY_NAME != "") {
+                    if (params.DISPLAY_NAME != '') {
                         currentBuild.displayName = params.DISPLAY_NAME
                     }
 
-                    checkout(githubscm.resolveRepository("kogito-images", params.GIT_AUTHOR, params.BUILD_BRANCH_NAME, false))
-
                     // Set the mirror url only if no artifact repository is given
-                    if (params.MAVEN_ARTIFACT_REPOSITORY == '' 
+                    if (getMavenArtifactRepository() == '' 
                             && env.MAVEN_MIRROR_REPOSITORY != null
                             && env.MAVEN_MIRROR_REPOSITORY != ''){
-                        echo "Set Maven mirror url"
+                        echo 'Set Maven mirror url'
                         env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
                     }
+
+                    checkoutRepo()
+
+                    if (isRelease()) {
+                        assert getProjectVersion() != ''
+                    }
+                }
+            }
+            post {
+                success {
+                    script {
+                        setDeployPropertyIfNeeded('git.branch', getBuildBranch())
+                        setDeployPropertyIfNeeded('git.author', getGitAuthor())
+                        setDeployPropertyIfNeeded('project.version', getProjectVersion())
+                        setDeployPropertyIfNeeded('release', isRelease())
+                    }
+                }
+            }
+        }
+        stage('Prepare for PR') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    githubscm.forkRepo(env.BOT_CREDENTIALS_ID)
+                    githubscm.createBranch(getBotBranch())
+                }
+            }
+        }
+        stage('Update project version'){
+            when {
+                expression { return getProjectVersion() != '' }
+            }
+            steps {
+                script{
+                    versionCmd = "python3 scripts/manage-kogito-version.py --bump-to ${getProjectVersion()} --confirm"
+                    if(getBuildBranch() != 'master'){
+                        versionCmd += " --examples-ref ${getBuildBranch()}"
+                    }
+                    sh versionCmd
                 }
             }
         }
@@ -78,48 +135,30 @@ pipeline {
             steps {
                 script {
                     // Update artifacts
-                    updateArtifactCmd = "python3 scripts/update-maven-artifacts.py"
-                    if(params.MAVEN_ARTIFACT_REPOSITORY != ''){
-                        updateArtifactCmd += " --repo-url ${params.MAVEN_ARTIFACT_REPOSITORY}"
+                    updateArtifactCmd = 'python3 scripts/update-maven-artifacts.py'
+                    if(getMavenArtifactRepository() != ''){
+                        updateArtifactCmd += " --repo-url ${getMavenArtifactRepository()}"
                     }
                     sh updateArtifactCmd
 
                     // Debug purpose in case of issue
-                    sh "cat modules/kogito-data-index/module.yaml"
-                    sh "cat modules/kogito-trusty/module.yaml"
-                    sh "cat modules/kogito-explainability/module.yaml"
-                    sh "cat modules/kogito-jobs-service/module.yaml"
-                    sh "cat modules/kogito-management-console/module.yaml"
-                }
-            }
-        }
-        stage('Setup tests repository') {
-            when {
-                expression {
-                    return params.MAVEN_ARTIFACT_REPOSITORY != ''
-                }
-            }
-            steps {
-                script {
-                    // Update repo in tests
-                    sh "python3 scripts/update-tests.py --repo-url ${params.MAVEN_ARTIFACT_REPOSITORY}"
-
-                    // Debug purpose in case of issue
-                    sh "cat tests/test-apps/clone-repo.sh"
-                    sh "cat tests/features/kogito-quarkus-ubi8-s2i.feature"
-                    sh "cat tests/features/kogito-springboot-ubi8-s2i.feature"
+                    sh 'cat modules/kogito-data-index/module.yaml'
+                    sh 'cat modules/kogito-trusty/module.yaml'
+                    sh 'cat modules/kogito-explainability/module.yaml'
+                    sh 'cat modules/kogito-jobs-service/module.yaml'
+                    sh 'cat modules/kogito-management-console/module.yaml'
                 }
             }
         }
         stage('Validate CeKit Image and Modules descriptors') {
             steps {
-                sh """
+                sh '''
                     curl -Ls https://github.com/kiegroup/kie-cloud-tools/releases/download/1.0-SNAPSHOT/cekit-image-validator-runner.tgz --output cekit-image-validator-runner.tgz
                     tar -xzvf cekit-image-validator-runner.tgz
                     chmod +x cekit-image-validator-runner
-                """
-                sh "./cekit-image-validator-runner modules/"
-                sh """
+                '''
+                sh './cekit-image-validator-runner modules/'
+                sh '''
                     ./cekit-image-validator-runner image.yaml
                     ./cekit-image-validator-runner kogito-data-index-overrides.yaml
                     ./cekit-image-validator-runner kogito-trusty-overrides.yaml
@@ -131,23 +170,64 @@ pipeline {
                     ./cekit-image-validator-runner kogito-quarkus-s2i-overrides.yaml
                     ./cekit-image-validator-runner kogito-springboot-overrides.yaml
                     ./cekit-image-validator-runner kogito-springboot-s2i-overrides.yaml
-                """
+                '''
             }
-        }
-        stage('Prepare offline kogito-examples') {
-            when {
-                expression {
-                    return !params.SKIP_TESTS;
+            post {
+                always {
+                    sh 'rm -rf cekit-image-validator-runner*'
                 }
             }
+        }
+        stage('Commit Changes'){
+            when {
+                expression { return isRelease() }
+            }
             steps {
-                sh "make clone-repos"
+                script {
+                    // Commit changes before changing tests repository
+                    githubscm.commitChanges("Update project version to ${getProjectVersion()} for release")
+                } 
+            }
+        }
+        stage('Setup for testing') {
+            when {
+                expression { return !shouldSkipTests() }
+            }
+            steps {
+                script {
+                    updateTestsCommand = 'python3 scripts/update-tests.py'
+                    if(getMavenArtifactRepository() != ''){
+                        // Update repo in tests
+                        updateTestsCommand += " --repo-url ${getMavenArtifactRepository()}"
+                    }
+
+                    // Set kogito-examples to bot author/branch if release
+                    if(params.EXAMPLES_REF != ""){
+                        updateTestsCommand += " --examples-ref ${params.EXAMPLES_REF}"
+                    }
+                    if(params.EXAMPLES_URI){
+                        updateTestsCommand += " --examples-uri ${params.EXAMPLES_URI}"
+                    }
+
+                    // Launch update tests
+                    sh updateTestsCommand
+
+                    // Debug purpose in case of issue
+                    sh 'cat tests/test-apps/clone-repo.sh'
+                    sh 'cat tests/features/kogito-quarkus-ubi8-s2i.feature'
+                    sh 'cat tests/features/kogito-springboot-ubi8-s2i.feature'
+
+                    // Prepare local examples
+                    sh 'make clone-repos'
+                }
             }
         }
         stage('Build Images') {
-            steps{
+            steps {
                 script {
+                    // Init workspaces before build
                     IMAGES.each{ image -> initWorkspace(image) }
+                    // Build images
                     launchParallelForEachImage("Build", {img -> buildImage(img)})
                 }
             }
@@ -180,28 +260,74 @@ pipeline {
                     pushImages()
                 }
             }
+            post {
+                success {
+                    script {
+                        // Store image deployment information
+                        String imgPrefix = 'kogito-images.image'
+                        setDeployPropertyIfNeeded("${imgPrefix}.registry", getDeployImageRegistry())
+                        setDeployPropertyIfNeeded("${imgPrefix}.namespace", getDeployImageNamespace())
+                        setDeployPropertyIfNeeded("${imgPrefix}.name-suffix", getDeployImageNameSuffix())
+                        setDeployPropertyIfNeeded("${imgPrefix}.tag", getDeployImageTag())
+                    }
+                }
+            }
+        }
+        stage('Create PR') {
+            when {
+                expression {
+                    return isRelease()
+                }
+            }
+            steps{
+                script{
+                    githubscm.pushObject('origin', getBotBranch(), env.BOT_CREDENTIALS_ID)
+                    
+                    def commitMsg = "Update project version to ${getProjectVersion()} for release"
+                    def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}.\nPlease do not merge, it will be merged automatically after testing."
+                    deployProperties['kogito-images.pr.link'] = githubscm.createPR(commitMsg, prBody, getBuildBranch(), env.BOT_CREDENTIALS_ID)
+                }
+            }
+            post {
+                success {
+                    script {
+                        setDeployPropertyIfNeeded('kogito-images.pr.source.uri', "https://github.com/${getBotAuthor()}/kogito-images")
+                        setDeployPropertyIfNeeded('kogito-images.pr.source.ref', getBotBranch())
+                        setDeployPropertyIfNeeded('kogito-images.pr.target.uri', "https://github.com/${getGitAuthor()}/kogito-images")
+                        setDeployPropertyIfNeeded('kogito-images.pr.target.ref', getBuildBranch())
+                    }
+                }
+            }
         }
     }
     post {
         always {
-            script{
+            script {
+                def propertiesStr = deployProperties.collect{ entry -> "${entry.key}=${entry.value}" }.join('\n')
+                writeFile( file : 'deployment.properties' , text : propertiesStr)
+                archiveArtifacts artifacts: 'deployment.properties', allowEmptyArchive:true
                 clean()
             }
         }
     }
 }
 
+void checkoutRepo() {
+    deleteDir()
+    checkout(githubscm.resolveRepository('kogito-images', getGitAuthor(), getBuildBranch(), false))
+}
+
 void clean() {
-    cleanWorkspaces()
+    cleanWs()
     cleanImages()
 
     // Clean Cekit cache, in case we reuse an old node
-    sh "rm -rf \$HOME/.cekit/cache"
+    sh 'rm -rf \$HOME/.cekit/cache'
 }
 
 void cleanImages(){
-    sh "docker rm -f \$(docker ps -a -q) || date"
-    sh "docker rmi -f \$(docker images -q) || date"
+    sh 'docker rm -f \$(docker ps -a -q) || date'
+    sh 'docker rmi -f \$(docker images -q) || date'
 }
 
 void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
@@ -243,7 +369,7 @@ void pushImages() {
 String buildImageName(String imageName) {
     String finalImageName = imageName
     if(getDeployImageNameSuffix() != ''){
-        finalImageName += "-" + getDeployImageNameSuffix()
+        finalImageName += '-' + getDeployImageNameSuffix()
     }
     return "${getDeployImageRegistry()}/${getDeployImageNamespace()}/${finalImageName}:${getDeployImageTag()}"
 }
@@ -266,6 +392,12 @@ void loginContainerRegistry(String registry, String credsId){
     }
 }
 
+void setDeployPropertyIfneeded(String key, def value){
+    if(value != null && value != '') {
+        deployProperties[key] = value
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////
 // Deploy image information
 ////////////////////////////////////////////////////////////////////////
@@ -275,7 +407,7 @@ boolean isDeployImageInOpenshiftRegistry(){
 }
 
 String getDeployImageRegistryCredentials(){
-    return isDeployImageInOpenshiftRegistry() ? "" : params.IMAGE_REGISTRY_CREDENTIALS
+    return isDeployImageInOpenshiftRegistry() ? '' : params.IMAGE_REGISTRY_CREDENTIALS
 }
 
 String getDeployImageRegistry(){
@@ -283,7 +415,7 @@ String getDeployImageRegistry(){
 }
 
 String getDeployImageNamespace(){
-    return isDeployImageInOpenshiftRegistry() ? "openshift" : params.IMAGE_NAMESPACE
+    return isDeployImageInOpenshiftRegistry() ? 'openshift' : params.IMAGE_NAMESPACE
 }
 
 String getDeployImageNameSuffix(){
@@ -294,7 +426,7 @@ String getDeployImageTag(){
     if (params.IMAGE_TAG != ""){
         return params.IMAGE_TAG
     } else {
-        return sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+        return sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
     }
 }
 
@@ -318,4 +450,46 @@ String getWorkspacesPath(){
 
 String getWorkspacePath(String image){
     return "${getWorkspacesPath()}/${image}"
+}
+
+////////////////////////////////////////////////////////////////////////
+// utils
+////////////////////////////////////////////////////////////////////////
+
+boolean isRelease() {
+    return params.RELEASE
+}
+
+String getBuildBranch() {
+    return params.BUILD_BRANCH_NAME
+}
+
+String getGitAuthor() {
+    return params.GIT_AUTHOR
+}
+
+String getBotBranch(){
+    return "${getProjectVersion()}-${env.BOT_BRANCH_HASH}"
+}
+
+String getBotAuthor(){
+    return env.GIT_AUTHOR_BOT
+}
+
+String getProjectVersion() {
+    return params.PROJECT_VERSION
+}
+
+String getMavenArtifactRepository() {
+    return params.MAVEN_ARTIFACT_REPOSITORY
+}
+
+boolean shouldSkipTests(){
+    return params.SKIP_TESTS
+}
+
+void setDeployPropertyIfNeeded(String key, def value){
+    if (value != null && value != ''){
+        deployProperties[key] = value
+    }
 }
