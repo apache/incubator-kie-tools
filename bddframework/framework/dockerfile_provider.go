@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 
 	kogitores "github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/resource"
@@ -40,34 +41,24 @@ type kogitoApplicationDockerfileProviderStruct struct {
 	imageName               string
 	applicationBinarySuffix string
 	libFolderNeeded         bool
-	matchApplicationBinary  func(filename string) (match bool)
 }
 
 var quarkusNonNativeKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
 	imageName:               kogitores.KogitoQuarkusJVMUbi8Image,
 	applicationBinarySuffix: quarkusJVMApplicationBinarySuffix,
 	libFolderNeeded:         true,
-	matchApplicationBinary: func(filename string) (match bool) {
-		return strings.HasSuffix(filename, quarkusJVMApplicationBinarySuffix)
-	},
 }
 
 var quarkusNativeKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
 	imageName:               kogitores.KogitoQuarkusUbi8Image,
 	applicationBinarySuffix: quarkusNativeApplicationBinarySuffix,
 	libFolderNeeded:         false,
-	matchApplicationBinary: func(filename string) (match bool) {
-		return strings.HasSuffix(filename, quarkusNativeApplicationBinarySuffix)
-	},
 }
 
 var springbootKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
 	imageName:               kogitores.KogitoSpringbootUbi8Image,
 	applicationBinarySuffix: springBootApplicationBinarySuffix,
 	libFolderNeeded:         false,
-	matchApplicationBinary: func(filename string) (match bool) {
-		return strings.HasSuffix(filename, springBootApplicationBinarySuffix) && !strings.Contains(filename, "-sources.") && !strings.Contains(filename, "-tests.")
-	},
 }
 
 // GetKogitoApplicationDockerfileProvider returns KogitoApplicationDockerfileProvider based on project location
@@ -90,11 +81,8 @@ func (dockerfileProvider *kogitoApplicationDockerfileProviderStruct) GetDockerfi
 	dockerfileContent := fmt.Sprintf("FROM %s\n", GetBuildImage(dockerfileProvider.imageName))
 
 	// Copy application binary into $KOGITO_HOME/bin
-	applicationBinaryFileName, err := dockerfileProvider.getApplicationBinaryFileName()
-	if err != nil {
-		return "", err
-	}
-	dockerfileContent += fmt.Sprintf("COPY target/%s $KOGITO_HOME/bin\n", applicationBinaryFileName)
+	applicationName := filepath.Base(dockerfileProvider.projectLocation)
+	dockerfileContent += fmt.Sprintf("COPY target/%s%s $KOGITO_HOME/bin\n", applicationName, dockerfileProvider.applicationBinarySuffix)
 
 	// Copy lib folder
 	if dockerfileProvider.libFolderNeeded {
@@ -122,21 +110,6 @@ func fileWithSuffixExists(scannedDirectory, fileSuffix string) bool {
 		}
 	}
 	return false
-}
-
-func (dockerfileProvider *kogitoApplicationDockerfileProviderStruct) getApplicationBinaryFileName() (string, error) {
-	targetDirectory := dockerfileProvider.projectLocation + "/target"
-	files, err := ioutil.ReadDir(targetDirectory)
-	if err != nil {
-		return "", err
-	}
-
-	for _, file := range files {
-		if dockerfileProvider.matchApplicationBinary(file.Name()) {
-			return file.Name(), nil
-		}
-	}
-	return "", fmt.Errorf("Application binary not found in directory %s", targetDirectory)
 }
 
 func fileOrDirectoryExists(fileOrDirectory string) bool {
