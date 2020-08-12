@@ -249,8 +249,8 @@ export function HomePage(props: Props) {
 
   const trySample = useCallback(
     (fileExtension: string) => {
-      const fileName = "sample";
-      const filePath = `samples/${fileName}.${fileExtension}`;
+      const fileName = `sample.${fileExtension}`;
+      const filePath = `samples/${fileName}`;
       props.onFileOpened({
         isReadOnly: false,
         fileExtension: fileExtension,
