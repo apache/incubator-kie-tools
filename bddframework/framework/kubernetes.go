@@ -342,7 +342,7 @@ func isPodInError(pod *corev1.Pod) (bool, error) {
 
 	for _, status := range pod.Status.ContainerStatuses {
 		for _, reason := range podErrorReasons {
-			if status.State.Waiting.Reason == reason {
+			if status.State.Waiting != nil && status.State.Waiting.Reason == reason {
 				return true, fmt.Errorf("Error in pod, reason: %s", reason)
 			}
 		}
