@@ -16,6 +16,7 @@ package framework
 
 import (
 	"os/exec"
+	"time"
 
 	"go.uber.org/zap"
 )
@@ -31,6 +32,8 @@ type Command interface {
 	WithLoggerContext(loggerContext string) Command
 	// InDirectory method sets the directory where the command will be executed.
 	InDirectory(directory string) Command
+	// WithRetry method defines retry options to be applied to the command.
+	WithRetry(opts ...RetryOption) Command
 	// Execute command and returns the outputs.
 	Execute() (string, error)
 }
@@ -41,6 +44,8 @@ type commandStruct struct {
 	args          []string
 	directory     string
 	loggerContext string
+	retries       int
+	retryDelay    time.Duration
 }
 
 func (cmd *commandStruct) WithLoggerContext(loggerContext string) Command {
@@ -53,6 +58,13 @@ func (cmd *commandStruct) InDirectory(directory string) Command {
 	return cmd
 }
 
+func (cmd *commandStruct) WithRetry(opts ...RetryOption) Command {
+	for _, opt := range opts {
+		opt(cmd)
+	}
+	return cmd
+}
+
 func (cmd *commandStruct) Execute() (string, error) {
 	var logger = cmd.getLogger()
 
@@ -62,9 +74,21 @@ func (cmd *commandStruct) Execute() (string, error) {
 		logger.Infof("Execute command %s %v in directory %s", cmd.name, cmd.args, cmd.directory)
 	}
 
-	command := exec.Command(cmd.name, cmd.args...)
-	command.Dir = cmd.directory
-	out, err := command.Output()
+	var out []byte
+	var err error
+
+	// If retries are set then repeat until command succeed
+	for i := 0; i <= cmd.retries; i++ {
+		command := exec.Command(cmd.name, cmd.args...)
+		command.Dir = cmd.directory
+		out, err = command.Output()
+
+		if err == nil {
+			break
+		}
+
+		time.Sleep(cmd.retryDelay)
+	}
 
 	if err != nil {
 		logger.Errorf("output command: %s", string(out[:]))
@@ -87,4 +111,23 @@ func (cmd *commandStruct) getLogger() *zap.SugaredLogger {
 	}
 
 	return logger
+}
+
+// Retry misc functions
+
+// RetryOption declares funtion to be applied on Retry
+type RetryOption func(*commandStruct)
+
+// RetryDelay declares funtion setting delay between retries
+func RetryDelay(delay time.Duration) RetryOption {
+	return func(cmd *commandStruct) {
+		cmd.retryDelay = delay
+	}
+}
+
+// NumberOfRetries declares funtion setting number of retries
+func NumberOfRetries(retries int) RetryOption {
+	return func(cmd *commandStruct) {
+		cmd.retries = retries
+	}
 }

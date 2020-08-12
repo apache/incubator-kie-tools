@@ -103,7 +103,7 @@ func (containerEngine *containerEngineStruct) PushImage(imageTag string) Contain
 
 func (containerEngine *containerEngineStruct) BuildImage(projectLocation, imageTag string) ContainerEngine {
 	if containerEngine.err == nil {
-		_, containerEngine.err = CreateCommand(containerEngine.engine, containerEngine.buildCommand, "--tag", imageTag, ".").InDirectory(projectLocation).WithLoggerContext(containerEngine.namespace).Execute()
+		_, containerEngine.err = CreateCommand(containerEngine.engine, containerEngine.buildCommand, "--tag", imageTag, ".").InDirectory(projectLocation).WithLoggerContext(containerEngine.namespace).WithRetry(NumberOfRetries(3)).Execute()
 	}
 	return containerEngine
 }
