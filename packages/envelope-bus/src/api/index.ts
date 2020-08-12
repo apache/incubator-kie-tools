@@ -43,11 +43,16 @@ export type ApiNotifications<T extends ApiDefinition<T>> = Pick<T, NotificationP
 export interface MessageBusClientApi<Api extends ApiDefinition<Api>> {
   requests: ApiRequests<Api>;
   notifications: ApiNotifications<Api>;
-  subscribe<M extends NotificationPropertyNames<Api>>(
-    method: M,
-    c: SubscriptionCallback<Api, M>
-  ): SubscriptionCallback<Api, M>;
-  unsubscribe<M extends NotificationPropertyNames<Api>>(method: M, c: SubscriptionCallback<Api, M>): void;
+
+  subscribe<Method extends NotificationPropertyNames<Api>>(
+    method: Method,
+    callback: SubscriptionCallback<Api, Method>
+  ): SubscriptionCallback<Api, Method>;
+
+  unsubscribe<Method extends NotificationPropertyNames<Api>>(
+    method: Method,
+    callback: SubscriptionCallback<Api, Method>
+  ): void;
 }
 
 export interface MessageBusServer<

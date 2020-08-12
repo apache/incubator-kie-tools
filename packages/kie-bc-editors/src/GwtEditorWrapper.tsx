@@ -39,7 +39,7 @@ export class GwtEditorWrapper implements Editor {
   constructor(
     editorId: string,
     gwtEditor: GwtEditor,
-    messageBus: MessageBusClientApi<KogitoEditorChannelApi>,
+    channelApi: MessageBusClientApi<KogitoEditorChannelApi>,
     xmlFormatter: XmlFormatter,
     stateControlService: GwtStateControlService
   ) {
@@ -47,7 +47,7 @@ export class GwtEditorWrapper implements Editor {
     this.stateControlService = stateControlService;
     this.af_isReact = true;
     this.gwtEditor = gwtEditor;
-    this.channelApi = messageBus;
+    this.channelApi = channelApi;
     this.editorId = editorId;
     this.xmlFormatter = xmlFormatter;
   }
