@@ -17,7 +17,7 @@
 import { Defaults, ReferenceDictionary, TranslatedDictionary } from "../Dictionary";
 import { immutableDeepMerge } from "../immutableDeepMerge";
 
-export class I18nDictionaries<D extends ReferenceDictionary<D>> {
+export class I18n<D extends ReferenceDictionary<D>> {
   private locale: string;
   private dictionary: ReferenceDictionary<D>;
 

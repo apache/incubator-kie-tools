@@ -17,7 +17,6 @@
 const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
-const path = require("path");
 
 module.exports = merge(common, {
   entry: {
@@ -25,8 +24,6 @@ module.exports = merge(common, {
   },
   output: {
     libraryTarget: "commonjs2",
-    path: path.resolve("./modules"),
-    filename: "[name].js"
   },
   externals: [nodeExternals({ modulesDir: "../../node_modules" })]
 });

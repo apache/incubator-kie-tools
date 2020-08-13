@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./I18nDictionaries";
+export * from "./I18n";

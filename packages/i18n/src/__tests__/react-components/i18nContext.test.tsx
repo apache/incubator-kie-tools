@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { I18nDictionariesProvider } from "../../react";
+import { I18nDictionariesProvider } from "../../react-components";
 import { immutableDeepMerge } from "../../immutableDeepMerge";
 import { TranslatedDictionary } from "../../Dictionary";
 import { render } from "@testing-library/react";

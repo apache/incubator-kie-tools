@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./react";
+export * from "./react-components";
 export * from "./common";
 export * from "./Dictionary";
