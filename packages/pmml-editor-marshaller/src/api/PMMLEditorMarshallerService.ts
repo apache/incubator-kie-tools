@@ -65,13 +65,13 @@ export class PMMLEditorMarshallerService {
             TextModel, TimeSeriesModel, TreeModel];
         let modelData;
 
-        modelsTypes.forEach(type => {
+        for (const type of modelsTypes) {
             if (model instanceof type) {
-                const modelName = model.modelName;
-                const fields = model.MiningSchema.MiningField.map(field => field.name.toString());
-                modelData = new PMMLModelData(modelName == null ? "" : modelName, fields);
+                modelData = new PMMLModelData(model.modelName == null ? "" : model.modelName,
+                    model.MiningSchema.MiningField.map(field => field.name.toString()));
+                return;
             }
-        });
+        }
 
         return modelData;
     }
