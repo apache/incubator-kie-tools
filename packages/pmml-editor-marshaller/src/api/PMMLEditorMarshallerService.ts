@@ -63,14 +63,16 @@ export class PMMLEditorMarshallerService {
             GaussianProcessModel, GeneralRegressionModel, MiningModel, NaiveBayesModel, NearestNeighborModel,
             NeuralNetwork, RegressionModel, RuleSetModel, SequenceModel, Scorecard, SupportVectorMachineModel,
             TextModel, TimeSeriesModel, TreeModel];
+        let modelData;
 
         modelsTypes.forEach(type => {
             if (model instanceof type) {
                 const modelName = model.modelName;
                 const fields = model.MiningSchema.MiningField.map(field => field.name.toString());
-                return new PMMLModelData(modelName == null ? "" : modelName, fields);
+                modelData = new PMMLModelData(modelName == null ? "" : modelName, fields);
             }
         });
-        return;
+
+        return modelData;
     }
 }
