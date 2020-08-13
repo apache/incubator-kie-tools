@@ -40,10 +40,6 @@
           "light": "./static/svg-icon-light.png",
           "dark": "./static/svg-icon-dark.png"
         }
-      },
-      {
-        "command": "extension.kogito.runTest",
-        "title": "Run"
       }
     ],
     "menus": {
@@ -51,21 +47,12 @@
         {
           "when": "resourceLangId =~ /bpmn|bpmn2|dmn/",
           "command": "extension.kogito.getPreviewSvg"
-        },
-        {
-          "when": "resourceLangId =~ /scesim/",
-          "command": "extension.kogito.runTest"
         }
       ],
       "editor/title": [
         {
           "when": "resourceLangId =~ /bpmn|bpmn2|dmn/",
           "command": "extension.kogito.getPreviewSvg",
-          "group": "navigation"
-        },
-        {
-          "when": "resourceLangId =~ /scesim/",
-          "command": "extension.kogito.runTest",
           "group": "navigation"
         }
       ]

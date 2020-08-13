@@ -18,7 +18,4 @@
  * Identification of services.
  */
 export enum ServiceId {
-  SAMPLE = "SAMPLE",
-  TEST_RUNNER = "TEST_RUNNER",
-  WORKSPACE_WATCHER = "WORKSPACE_WATCHER",
 }

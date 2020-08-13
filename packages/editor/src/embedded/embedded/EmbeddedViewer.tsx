@@ -27,8 +27,7 @@ type ChannelApiMethodsThatAreNoOpOnEmbeddedViewer =
   | "receive_ready"
   | "receive_openFile"
   | "receive_newEdit"
-  | "receive_stateControlCommandUpdate"
-  | "receive_hello";
+  | "receive_stateControlCommandUpdate";
 
 type EmbeddedViewerChannelApiOverrides = Partial<
   Omit<EmbeddedEditorProps, ChannelApiMethodsThatAreNoOpOnEmbeddedViewer>

@@ -15,4 +15,3 @@
  */
 
 export { VsCodeBackendManagerService } from "./VsCodeBackendManagerService";
-export * from "./services";

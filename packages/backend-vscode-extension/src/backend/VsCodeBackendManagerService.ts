@@ -18,17 +18,15 @@ import * as vscode from "vscode";
 
 import { QuarkusLocalServer } from "@kogito-tooling/backend-node";
 import { BackendManagerService } from "@kogito-tooling/backend-api";
-import { VsCodeSampleService, VsCodeWorkspaceWatcherService } from "./services";
 import { DefaultHttpBridge } from "@kogito-tooling/backend-http-bridge";
-import { VsCodeTestRunnerService } from "./services/VsCodeTestRunnerService";
 
 export class VsCodeBackendManagerService extends BackendManagerService {
   public constructor(context: vscode.ExtensionContext) {
     super(
       new DefaultHttpBridge(),
       new QuarkusLocalServer(context.asAbsolutePath(path.join("dist", "server", "quarkus-runner.jar"))),
-      [new VsCodeWorkspaceWatcherService()],
-      [new VsCodeSampleService(), new VsCodeTestRunnerService()]
+      [],
+      []
     );
   }
 }

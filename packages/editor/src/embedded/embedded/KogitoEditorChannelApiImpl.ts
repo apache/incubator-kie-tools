@@ -26,7 +26,6 @@ import {
   ResourcesList
 } from "@kogito-tooling/channel-common-api";
 import { File } from "../common";
-import { CapabilityResponse } from "@kogito-tooling/backend-api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   constructor(
@@ -91,12 +90,5 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
 
   public receive_getLocale(): Promise<string> {
     return Promise.resolve(this.locale);
-  }
-
-  public async receive_hello(name: string, delay: number): Promise<CapabilityResponse<string>> {
-    return (
-      this.overrides.receive_hello?.(name, delay) ??
-      CapabilityResponse.notAvailable("Capability not available on this channel.")
-    );
   }
 }

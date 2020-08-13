@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { CapabilityResponse } from "@kogito-tooling/backend-api";
-
+// tslint:disable-next-line: no-empty-interface
 export interface CapabilityChannelApi {
-  receive_hello(name: string, delay: number): Promise<CapabilityResponse<string>>;
+  // receive_xxx methods go here.
 }

@@ -14,7 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./sample";
-export * from "./testRunner";
-export * from "./watcher";
 export { CapabilityChannelApi } from "./CapabilityChannelApi";

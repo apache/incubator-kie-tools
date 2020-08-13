@@ -36,8 +36,6 @@ import { StateControlApi } from "./api/StateControlApi";
 import { EditorContextApi } from "./api/EditorContextApi";
 import { GwtEditorMapping } from "./GwtEditorMapping";
 import { I18nServiceApi } from "./api/I18nServiceApi";
-import { SampleCapability } from "@kogito-tooling/backend-channel-api";
-import { CapabilityResponse } from "@kogito-tooling/backend-api";
 
 declare global {
   interface Window {
@@ -51,7 +49,6 @@ declare global {
       keyboardShortcuts: KeyboardShortcutsApi;
       workspaceService: WorkspaceServiceApi;
       i18nService: I18nServiceApi;
-      sampleService: SampleCapability;
     };
   }
 }
@@ -144,11 +141,6 @@ export class GwtEditorWrapperFactory implements EditorFactory {
         },
         onLocaleChange: (onLocaleChange: (locale: string) => void) => {
           envelopeContext.services.i18n.setOnLocaleChange(onLocaleChange);
-        }
-      },
-      sampleService: {
-        hello(name: string, delay: number): Promise<CapabilityResponse<string>> {
-          return envelopeContext.channelApi.request("receive_hello", name, delay);
         }
       }
     };
