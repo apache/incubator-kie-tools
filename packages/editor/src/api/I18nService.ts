@@ -25,5 +25,13 @@ export class I18nService {
 
   public subscribeToLocaleChange(onLocaleChange: (locale: string) => void) {
     this.onLocaleChangeSubscriptions.push(onLocaleChange);
+    return onLocaleChange;
+  }
+
+  public unsubscribeToLocaleChange(onLocaleChange: (locale: string) => void) {
+    const index = this.onLocaleChangeSubscriptions.indexOf(onLocaleChange);
+    if (index > -1) {
+      this.onLocaleChangeSubscriptions.splice(index, 1);
+    }
   }
 }
