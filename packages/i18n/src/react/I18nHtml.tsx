@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-const nodeExternals = require("webpack-node-externals");
-const { merge } = require("webpack-merge");
-const common = require("../../webpack.common.config");
-const path = require("path");
+import * as React from "react";
+import { FunctionComponent } from "react";
 
-module.exports = merge(common, {
-  entry: {
-    index: "./src/index.ts"
-  },
-  output: {
-    libraryTarget: "commonjs2",
-    path: path.resolve("./modules"),
-    filename: "[name].js"
-  },
-  externals: [nodeExternals({ modulesDir: "../../node_modules" })]
-});
+interface Props {
+  children: string | string[];
+}
+
+export const I18nHtml: FunctionComponent<Props> = ({ children }) => {
+  let htmlText = children
+  if (Array.isArray(htmlText)) {
+    htmlText = htmlText.join("")
+  }
+  return <p style={{ display: "inline" }} dangerouslySetInnerHTML={{ __html: htmlText }} />;
+};

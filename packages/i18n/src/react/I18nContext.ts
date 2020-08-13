@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-const nodeExternals = require("webpack-node-externals");
-const { merge } = require("webpack-merge");
-const common = require("../../webpack.common.config");
-const path = require("path");
+import * as React from "react";
+import { ReferenceDictionary } from "../Dictionary";
 
-module.exports = merge(common, {
-  entry: {
-    index: "./src/index.ts"
-  },
-  output: {
-    libraryTarget: "commonjs2",
-    path: path.resolve("./modules"),
-    filename: "[name].js"
-  },
-  externals: [nodeExternals({ modulesDir: "../../node_modules" })]
-});
+// tslint:disable-next-line:interface-name
+export interface I18nContextType<D extends ReferenceDictionary<D>> {
+  locale: string;
+  setLocale: React.Dispatch<string>;
+  i18n: D;
+}

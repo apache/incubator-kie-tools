@@ -15,10 +15,11 @@
  */
 
 import * as React from "react";
-import { I18nDictionariesProvider, immutableDeepMerge } from "../I18nDictionariesProvider";
-import { TranslatedDictionary } from "../Dictionary";
+import { I18nDictionariesProvider } from "../../react";
+import { immutableDeepMerge } from "../../immutableDeepMerge";
+import { TranslatedDictionary } from "../../Dictionary";
 import { render } from "@testing-library/react";
-import { DummyContext, DummyDictionary, DummyComponent, dummyDefault, interpolationFunction } from "./utils";
+import { DummyContext, DummyDictionary, DummyComponent, dummyDefault, interpolationFunction } from "../utils";
 
 describe("I18nDictionariesProvider", () => {
   describe("I18nDictionariesProvider::component", () => {

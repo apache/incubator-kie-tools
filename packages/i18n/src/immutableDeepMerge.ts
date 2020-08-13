@@ -14,33 +14,7 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useMemo, useState } from "react";
-import { TranslatedDictionary, ReferenceDictionary, DictionaryInterpolation } from "./Dictionary";
-import { I18nContextType } from "./I18nContext";
-
-// tslint:disable-next-line:interface-name
-export interface I18nDictionariesProviderProps<D extends ReferenceDictionary<D>> {
-  defaults: {
-    dictionary: D;
-    locale: string;
-  };
-  dictionaries: Map<string, TranslatedDictionary<D>>;
-  ctx: React.Context<I18nContextType<D>>;
-  children: React.ReactNode;
-}
-
-export const I18nDictionariesProvider = <D extends ReferenceDictionary<D>>(props: I18nDictionariesProviderProps<D>) => {
-  const [locale, setLocale] = useState(props.defaults.locale);
-  const i18n = useMemo(() => {
-    const selectedDictionary =
-      props.dictionaries.get(locale) ?? props.dictionaries.get(locale.split("-").shift()!) ?? {};
-
-    return immutableDeepMerge(props.defaults.dictionary, selectedDictionary);
-  }, [locale]) as D;
-
-  return <props.ctx.Provider value={{ locale, setLocale, i18n }}>{props.children}</props.ctx.Provider>;
-};
+import { DictionaryInterpolation, ReferenceDictionary, TranslatedDictionary } from "./Dictionary";
 
 function deepMerge<D>(target: ReferenceDictionary<D>, source: TranslatedDictionary<ReferenceDictionary<D>>) {
   Object.keys(source).forEach((key: Extract<keyof D, string>) => {

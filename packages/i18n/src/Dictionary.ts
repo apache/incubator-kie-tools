@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+export interface Defaults<D extends ReferenceDictionary<D>> {
+  locale: string;
+  dictionary: D;
+}
+
 export type DictionaryInterpolation = (...args: Array<string | number>) => string;
 
 export type ReferenceDictionary<D> = {

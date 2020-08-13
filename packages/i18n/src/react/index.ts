@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { ReferenceDictionary } from "./Dictionary";
-
-// tslint:disable-next-line:interface-name
-export interface I18nContextType<D extends ReferenceDictionary<D>> {
-  locale: string;
-  setLocale: React.Dispatch<string>;
-  i18n: D;
-}
+export * from "./I18nContext";
+export * from "./I18nDictionariesProvider";
+export * from "./I18nHtml";
