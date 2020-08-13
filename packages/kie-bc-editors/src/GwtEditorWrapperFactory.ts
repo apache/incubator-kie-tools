@@ -36,7 +36,8 @@ import { StateControlApi } from "./api/StateControlApi";
 import { EditorContextApi } from "./api/EditorContextApi";
 import { GwtEditorMapping } from "./GwtEditorMapping";
 import { I18nServiceApi } from "./api/I18nServiceApi";
-import { kieBcEditorsI18n } from "./i18n/locales";
+import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n/locales";
+import { I18n } from "@kogito-tooling/i18n";
 
 declare global {
   interface Window {
@@ -59,7 +60,8 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     private readonly xmlFormatter: XmlFormatter = new DefaultXmlFormatter(),
     private readonly gwtAppFormerApi = new GwtAppFormerApi(),
     private readonly gwtStateControlService = new GwtStateControlService(),
-    private readonly gwtEditorMapping = new GwtEditorMapping()
+    private readonly gwtEditorMapping = new GwtEditorMapping(),
+    private readonly kieBcEditorsI18n = new I18n(kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries)
   ) {}
 
   public supports(fileExtension: string) {
@@ -70,6 +72,9 @@ export class GwtEditorWrapperFactory implements EditorFactory {
 
   public createEditor(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs) {
     this.gwtAppFormerApi.setClientSideOnly(true);
+
+    this.kieBcEditorsI18n.setLocale(envelopeContext.context.initialLocale);
+    envelopeContext.services.i18n.subscribeToLocaleChange((locale) => this.kieBcEditorsI18n.setLocale(locale))
 
     const languageData = this.gwtEditorMapping.getLanguageData(initArgs);
     if (!languageData) {
@@ -96,7 +101,8 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       this.gwtAppFormerApi.getEditor(languageData.editorId),
       envelopeContext.channelApi,
       this.xmlFormatter,
-      this.gwtStateControlService
+      this.gwtStateControlService,
+      this.kieBcEditorsI18n
     );
   }
 
@@ -137,17 +143,16 @@ export class GwtEditorWrapperFactory implements EditorFactory {
         }
       },
       i18nService: {
-        getLocale: async () => {
-          const locale = await envelopeContext.channelApi.request("receive_getLocale");
-          kieBcEditorsI18n.setLocale(locale);
-          return locale;
+        getLocale: () => {
+          return envelopeContext.channelApi.request("receive_getLocale");
         },
         onLocaleChange: (onLocaleChange: (locale: string) => void) => {
-          envelopeContext.services.i18n.setOnLocaleChange(onLocaleChange);
+          envelopeContext.services.i18n.subscribeToLocaleChange(onLocaleChange);
         }
       }
     };
   }
+
 
   private loadResource(resource: Resource) {
     switch (resource.type) {

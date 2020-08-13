@@ -26,11 +26,10 @@ import {
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEdit } from "@kogito-tooling/channel-common-api";
 import { KogitoEditor } from "./KogitoEditor";
-import {vsCodeI18n} from "./i18n/locales";
+import { VsCodeI18n } from "./i18n";
+import { I18n } from "@kogito-tooling/i18n";
 
 export class KogitoEditableDocument implements CustomDocument {
-  private readonly i18n = vsCodeI18n.getI18n();
-
   private readonly encoder = new TextEncoder();
   private readonly decoder = new TextDecoder("utf-8");
 
@@ -43,7 +42,8 @@ export class KogitoEditableDocument implements CustomDocument {
   public constructor(
     public readonly uri: Uri,
     public readonly initialBackup: Uri | undefined,
-    public readonly editorStore: KogitoEditorStore
+    public readonly editorStore: KogitoEditorStore,
+    private readonly vsCodeI18n: I18n<VsCodeI18n>
   ) {}
 
   public dispose() {
@@ -61,6 +61,7 @@ export class KogitoEditableDocument implements CustomDocument {
   }
 
   public async save(destination: Uri, cancellation: CancellationToken): Promise<void> {
+    const i18n = this.vsCodeI18n.getI18n();
     try {
       const editor = this.editorStore.get(this.uri);
       if (!editor) {
@@ -74,7 +75,7 @@ export class KogitoEditableDocument implements CustomDocument {
       }
 
       await vscode.workspace.fs.writeFile(destination, this.encoder.encode(content));
-      vscode.window.setStatusBarMessage(this.i18n.savedSuccessfully, 3000);
+      vscode.window.setStatusBarMessage(i18n.savedSuccessfully, 3000);
     } catch (e) {
       console.error("Error saving.", e);
     }

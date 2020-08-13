@@ -15,11 +15,8 @@
  */
 
 import { en } from "./en";
-import { I18n } from "@kogito-tooling/i18n/dist/common";
 
 export const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 
 export const kieBcEditorsI18nDefaults = { locale: "en", dictionary: en };
 export const kieBcEditorsI18nDictionaries = new Map([["en", en]]);
-
-export const kieBcEditorsI18n = new I18n(kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries);

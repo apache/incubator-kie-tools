@@ -17,6 +17,7 @@
 import { GwtEditorWrapperFactory } from "@kogito-tooling/kie-bc-editors";
 import * as EditorEnvelope from "@kogito-tooling/editor/dist/envelope";
 import { ChannelType, getOperatingSystem } from "@kogito-tooling/channel-common-api";
+import * as vscode from "vscode";
 
 declare global {
   export const acquireVsCodeApi: any;
@@ -26,5 +27,9 @@ EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
   editorFactory: new GwtEditorWrapperFactory(),
-  editorContext: { channel: ChannelType.VSCODE, operatingSystem: getOperatingSystem() }
+  editorContext: {
+    channel: ChannelType.VSCODE,
+    operatingSystem: getOperatingSystem(),
+    initialLocale: vscode.env.language
+  }
 });

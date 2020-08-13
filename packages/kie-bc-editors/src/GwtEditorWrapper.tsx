@@ -21,7 +21,8 @@ import { editors } from "./GwtEditorMapping";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
 import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
-import { kieBcEditorsI18n } from "./i18n/locales";
+import { I18n } from "@kogito-tooling/i18n";
+import { KieBcEditorsI18n } from "./i18n";
 
 export class GwtEditorWrapper implements Editor {
   public readonly af_isReact = true;
@@ -34,14 +35,15 @@ export class GwtEditorWrapper implements Editor {
   private readonly xmlFormatter: XmlFormatter;
   private readonly messageBusClient: MessageBusClient<KogitoEditorChannelApi>;
   private readonly stateControlService: GwtStateControlService;
-  private readonly i18n = kieBcEditorsI18n.getI18n();
+  private readonly kieBcEditorsI18nI18n: I18n<KieBcEditorsI18n>;
 
   constructor(
     editorId: string,
     gwtEditor: GwtEditor,
     messageBus: MessageBusClient<KogitoEditorChannelApi>,
     xmlFormatter: XmlFormatter,
-    stateControlService: GwtStateControlService
+    stateControlService: GwtStateControlService,
+    kieBcEditorsI18nI18n: I18n<KieBcEditorsI18n>
   ) {
     this.af_componentTitle = editorId;
     this.stateControlService = stateControlService;
@@ -50,6 +52,7 @@ export class GwtEditorWrapper implements Editor {
     this.messageBusClient = messageBus;
     this.editorId = editorId;
     this.xmlFormatter = xmlFormatter;
+    this.kieBcEditorsI18nI18n = kieBcEditorsI18nI18n;
   }
 
   public af_onOpen() {
@@ -83,9 +86,10 @@ export class GwtEditorWrapper implements Editor {
   }
 
   public setContent(path: string, content: string) {
+    const i18n = this.kieBcEditorsI18nI18n.getI18n()
     setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
     return this.gwtEditor.setContent(path, content.trim()).catch(() => {
-      this.messageBusClient.notify("receive_setContentError", this.i18n.unsupportedFile);
+      this.messageBusClient.notify("receive_setContentError", i18n.unsupportedFile);
       return Promise.resolve();
     });
   }

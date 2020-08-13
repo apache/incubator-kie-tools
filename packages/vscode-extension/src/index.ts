@@ -22,6 +22,8 @@ import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
 import { generateSvg } from "./generateSvg";
+import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n/locales";
+import { I18n } from "@kogito-tooling/i18n";
 
 /**
  * Starts a Kogito extension.
@@ -38,6 +40,7 @@ export function startExtension(args: {
   getPreviewCommandId: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
 }) {
+  const vsCodeI18n = new I18n(vsCodeI18nDefaults, vsCodeI18nDictionaries, vscode.env.language);
   const workspaceApi = new VsCodeWorkspaceApi();
   const editorStore = new KogitoEditorStore();
   const messageBroadcaster = new EnvelopeBusMessageBroadcaster();
@@ -53,7 +56,8 @@ export function startExtension(args: {
     args.context,
     args.viewType,
     editorStore,
-    editorFactory
+    editorFactory,
+    vsCodeI18n
   );
 
   args.context.subscriptions.push(
@@ -63,6 +67,6 @@ export function startExtension(args: {
   );
 
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(args.getPreviewCommandId, () => generateSvg(editorStore, workspaceApi))
+    vscode.commands.registerCommand(args.getPreviewCommandId, () => generateSvg(editorStore, workspaceApi, vsCodeI18n))
   );
 }

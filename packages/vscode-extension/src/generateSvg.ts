@@ -19,10 +19,15 @@ import * as __path from "path";
 import * as fs from "fs";
 import * as vscode from "vscode";
 import { WorkspaceApi } from "@kogito-tooling/channel-common-api";
-import { vsCodeI18n } from "./i18n/locales";
+import { VsCodeI18n } from "./i18n";
+import { I18n } from "@kogito-tooling/i18n";
 
-export async function generateSvg(editorStore: KogitoEditorStore, workspaceApi: WorkspaceApi) {
-  const i18n = vsCodeI18n.getI18n()
+export async function generateSvg(
+  editorStore: KogitoEditorStore,
+  workspaceApi: WorkspaceApi,
+  vsCodeI18n: I18n<VsCodeI18n>
+) {
+  const i18n = vsCodeI18n.getI18n();
 
   const editor = editorStore.activeEditor;
   if (!editor) {
