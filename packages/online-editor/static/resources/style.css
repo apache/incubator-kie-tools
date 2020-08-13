@@ -193,7 +193,7 @@
 }
 
 .kogito--editor__toolbar-title {
-  background-color: var(--pf-global--Color--100);
+  background-color: var(--pf-c-page__header-nav--BackgroundColor);
   color: var(--pf-global--Color--light-100);
   border: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
   font-size: var(--pf-global--FontSize--2xl);
