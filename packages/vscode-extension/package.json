@@ -2,7 +2,7 @@
   "name": "@kogito-tooling/vscode-extension",
   "displayName": "KIE :: Kogito Editors",
   "description": "",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -26,7 +26,7 @@
     "outputDirectory": "./target"
   },
   "dependencies": {
-    "@kogito-tooling/editor": "0.6.1",
-    "@kogito-tooling/keyboard-shortcuts": "0.6.1"
+    "@kogito-tooling/editor": "0.7.0",
+    "@kogito-tooling/keyboard-shortcuts": "0.7.0"
   }
 }
