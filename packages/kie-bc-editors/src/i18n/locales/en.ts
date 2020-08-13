@@ -14,5 +14,8 @@
  * limitations under the License.
  */
 
-export * from "./VsCodeI18n";
-export * from "./locales"
+import { KieBcEditorsI18n, KOGITO_JIRA_LINK } from "..";
+
+export const en: KieBcEditorsI18n = {
+  unsupportedFile: `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
+};

@@ -36,6 +36,7 @@ import { StateControlApi } from "./api/StateControlApi";
 import { EditorContextApi } from "./api/EditorContextApi";
 import { GwtEditorMapping } from "./GwtEditorMapping";
 import { I18nServiceApi } from "./api/I18nServiceApi";
+import { kieBcEditorsI18n } from "./i18n/locales";
 
 declare global {
   interface Window {
@@ -136,8 +137,10 @@ export class GwtEditorWrapperFactory implements EditorFactory {
         }
       },
       i18nService: {
-        getLocale: () => {
-          return envelopeContext.channelApi.request("receive_getLocale");
+        getLocale: async () => {
+          const locale = await envelopeContext.channelApi.request("receive_getLocale");
+          kieBcEditorsI18n.setLocale(locale);
+          return locale;
         },
         onLocaleChange: (onLocaleChange: (locale: string) => void) => {
           envelopeContext.services.i18n.setOnLocaleChange(onLocaleChange);

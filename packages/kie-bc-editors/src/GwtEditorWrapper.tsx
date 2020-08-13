@@ -21,8 +21,7 @@ import { editors } from "./GwtEditorMapping";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
 import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
-
-const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
+import { kieBcEditorsI18n } from "./i18n/locales";
 
 export class GwtEditorWrapper implements Editor {
   public readonly af_isReact = true;
@@ -35,6 +34,7 @@ export class GwtEditorWrapper implements Editor {
   private readonly xmlFormatter: XmlFormatter;
   private readonly messageBusClient: MessageBusClient<KogitoEditorChannelApi>;
   private readonly stateControlService: GwtStateControlService;
+  private readonly i18n = kieBcEditorsI18n.getI18n();
 
   constructor(
     editorId: string,
@@ -85,10 +85,7 @@ export class GwtEditorWrapper implements Editor {
   public setContent(path: string, content: string) {
     setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
     return this.gwtEditor.setContent(path, content.trim()).catch(() => {
-      this.messageBusClient.notify(
-        "receive_setContentError",
-        `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
-      );
+      this.messageBusClient.notify("receive_setContentError", this.i18n.unsupportedFile);
       return Promise.resolve();
     });
   }

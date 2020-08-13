@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./VsCodeI18n";
+export * from "./KieBcEditorsI18n";
 export * from "./locales"

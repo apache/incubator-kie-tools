@@ -19,7 +19,7 @@ import { immutableDeepMerge } from "../immutableDeepMerge";
 
 export class I18n<D extends ReferenceDictionary<D>> {
   private locale: string;
-  private dictionary: ReferenceDictionary<D>;
+  private dictionary: D;
 
   constructor(
     private readonly defaults: Defaults<D>,
@@ -30,7 +30,7 @@ export class I18n<D extends ReferenceDictionary<D>> {
       const startingDictionary =
         dictionaries.get(startingLocale) ?? dictionaries.get(startingLocale.split("-").shift()!) ?? {};
 
-      this.dictionary = immutableDeepMerge(defaults.dictionary, startingDictionary);
+      this.dictionary = immutableDeepMerge(defaults.dictionary, startingDictionary) as D;
     } else {
       this.dictionary = defaults.dictionary;
     }
@@ -42,14 +42,14 @@ export class I18n<D extends ReferenceDictionary<D>> {
       const selectedDictionary =
         this.dictionaries.get(locale) ?? this.dictionaries.get(locale.split("-").shift()!) ?? {};
 
-      this.dictionary = immutableDeepMerge(this.defaults.dictionary, selectedDictionary);
+      this.dictionary = immutableDeepMerge(this.defaults.dictionary, selectedDictionary) as D;
     } else {
       this.dictionary = this.defaults.dictionary;
     }
   }
 
-  public getI18n() {
-    return { i18n: this.dictionary };
+  public getI18n(): D {
+    return this.dictionary;
   }
 
   public getLocale() {

@@ -14,5 +14,8 @@
  * limitations under the License.
  */
 
-export * from "./VsCodeI18n";
-export * from "./locales"
+import { ReferenceDictionary } from "@kogito-tooling/i18n";
+
+export interface KieBcEditorsI18n extends ReferenceDictionary<KieBcEditorsI18n> {
+  unsupportedFile: string
+}

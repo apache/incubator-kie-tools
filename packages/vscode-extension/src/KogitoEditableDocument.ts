@@ -26,8 +26,11 @@ import {
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEdit } from "@kogito-tooling/channel-common-api";
 import { KogitoEditor } from "./KogitoEditor";
+import {vsCodeI18n} from "./i18n/locales";
 
 export class KogitoEditableDocument implements CustomDocument {
+  private readonly i18n = vsCodeI18n.getI18n();
+
   private readonly encoder = new TextEncoder();
   private readonly decoder = new TextDecoder("utf-8");
 
@@ -71,7 +74,7 @@ export class KogitoEditableDocument implements CustomDocument {
       }
 
       await vscode.workspace.fs.writeFile(destination, this.encoder.encode(content));
-      vscode.window.setStatusBarMessage("Saved successfully!", 3000);
+      vscode.window.setStatusBarMessage(this.i18n.savedSuccessfully, 3000);
     } catch (e) {
       console.error("Error saving.", e);
     }

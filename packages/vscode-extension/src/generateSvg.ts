@@ -19,26 +19,29 @@ import * as __path from "path";
 import * as fs from "fs";
 import * as vscode from "vscode";
 import { WorkspaceApi } from "@kogito-tooling/channel-common-api";
+import { vsCodeI18n } from "./i18n/locales";
 
 export async function generateSvg(editorStore: KogitoEditorStore, workspaceApi: WorkspaceApi) {
-    const editor = editorStore.activeEditor;
-    if (!editor) {
-        console.info(`Unable to create SVG because there's no Editor open.`);
-        return;
-    }
+  const i18n = vsCodeI18n.getI18n()
 
-    const previewSvg = await editor.getPreview();
-    if (!previewSvg) {
-        console.info(`Unable to create SVG for '${editor.document.uri.fsPath}'`);
-        return;
-    }
+  const editor = editorStore.activeEditor;
+  if (!editor) {
+    console.info(`Unable to create SVG because there's no Editor open.`);
+    return;
+  }
 
-    const parsedPath = __path.parse(editor.document.uri.fsPath);
-    const svgFileName = `${parsedPath.name}${parsedPath.ext}.svg`;
-    const svgAbsoluteFilePath = __path.join(parsedPath.dir, svgFileName);
-    fs.writeFileSync(svgAbsoluteFilePath, previewSvg);
+  const previewSvg = await editor.getPreview();
+  if (!previewSvg) {
+    console.info(`Unable to create SVG for '${editor.document.uri.fsPath}'`);
+    return;
+  }
 
-    vscode.window.showInformationMessage(`SVG saved at '${svgFileName}'.`, "Open SVG").then(() => {
-        workspaceApi.receive_openFile(svgAbsoluteFilePath);
-    });
+  const parsedPath = __path.parse(editor.document.uri.fsPath);
+  const svgFileName = `${parsedPath.name}${parsedPath.ext}.svg`;
+  const svgAbsoluteFilePath = __path.join(parsedPath.dir, svgFileName);
+  fs.writeFileSync(svgAbsoluteFilePath, previewSvg);
+
+  vscode.window.showInformationMessage(i18n.savedSvg(svgFileName), i18n.openSvg).then(() => {
+    workspaceApi.receive_openFile(svgAbsoluteFilePath);
+  });
 }
