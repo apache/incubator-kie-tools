@@ -2,7 +2,7 @@
   "name": "vscode-extension-pack-kogito-kie-editors",
   "displayName": "BPMN, DMN and Test Scenario Editors",
   "description": "",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.46.0"
@@ -108,9 +108,9 @@
     "outputDirectory": "./target"
   },
   "dependencies": {
-    "@kogito-tooling/editor": "0.6.1",
-    "@kogito-tooling/kie-bc-editors": "0.6.1",
-    "@kogito-tooling/patternfly-base": "0.6.1",
-    "@kogito-tooling/vscode-extension": "0.6.1"
+    "@kogito-tooling/editor": "0.7.0",
+    "@kogito-tooling/kie-bc-editors": "0.7.0",
+    "@kogito-tooling/patternfly-base": "0.7.0",
+    "@kogito-tooling/vscode-extension": "0.7.0"
   }
 }
