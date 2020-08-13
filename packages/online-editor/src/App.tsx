@@ -25,7 +25,6 @@ import { HashRouter } from "react-router-dom";
 import { GithubService } from "./common/GithubService";
 import { GlobalContext } from "./common/GlobalContext";
 import { Routes } from "./common/Routes";
-import { extractFileExtension } from "./common/utils";
 import { EditorPage } from "./editor/EditorPage";
 import { DownloadHubModal } from "./home/DownloadHubModal";
 import { HomePage } from "./home/HomePage";
@@ -53,11 +52,11 @@ export function App(props: Props) {
   }, []);
 
   const onFileNameChanged = useCallback(
-    (fileName: string) => {
+    (fileName: string, fileExtension: string) => {
       setFile({
         isReadOnly: false,
-        fileExtension: extractFileExtension(fileName)!,
-        fileName: fileName,
+        fileExtension,
+        fileName,
         getFileContents: file.getFileContents
       });
     },
