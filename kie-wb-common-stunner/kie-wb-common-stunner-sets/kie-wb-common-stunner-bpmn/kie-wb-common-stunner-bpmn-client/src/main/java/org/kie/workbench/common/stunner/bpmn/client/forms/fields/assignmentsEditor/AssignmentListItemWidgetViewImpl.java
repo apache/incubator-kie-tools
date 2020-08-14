@@ -50,7 +50,6 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.widgets.VariableNameTe
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable.VariableType.OUTPUT;
-import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.EXPRESSION;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.isEmpty;
 import static org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils.nonEmpty;
 
@@ -281,17 +280,7 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
 
     @Override
     public void setExpression(final String expression) {
-        if (getModel().getVariableType() == OUTPUT && isConstant(expression)) {
-            notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.CONSTANTS.Only_expressions_allowed_for_output(),
-                                                    NotificationEvent.NotificationType.ERROR));
-            processVarComboBox.textBoxValueChanged("");
-        } else {
-            getModel().setExpression(expression);
-        }
-    }
-
-    private static boolean isConstant(String expression) {
-        return !isEmpty(expression) && !EXPRESSION.test(expression);
+        getModel().setExpression(expression);
     }
 
     @Override
