@@ -49,6 +49,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.Si
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettings;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.TimerSettingsValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
+import org.kie.workbench.common.stunner.core.util.UUID;
 
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.Scripts.asCData;
@@ -129,15 +131,18 @@ public abstract class EventPropertyWriter extends PropertyWriter {
         addEventDefinition(errorEventDefinition);
 
         String errorCode = errorRef.getValue();
-        if (errorCode == null || errorCode.isEmpty()) {
-            return;
+        String errorId;
+        if (StringUtils.nonEmpty(errorCode)) {
+            error.setErrorCode(errorCode);
+            CustomAttribute.errorName.of(errorEventDefinition).set(errorCode);
+            errorId = errorCode;
+        } else {
+            errorId = UUID.uuid();
         }
 
-        error.setId(errorCode);
-        error.setErrorCode(errorCode);
+        error.setId(errorId);
         errorEventDefinition.setErrorRef(error);
 
-        CustomAttribute.errorName.of(errorEventDefinition).set(errorCode);
         addRootElement(error);
     }
 
