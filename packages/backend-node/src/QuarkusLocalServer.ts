@@ -15,6 +15,7 @@
  */
 
 import * as fs from "fs";
+import * as os from "os";
 import * as cp from "child_process";
 import * as portfinder from "portfinder";
 
@@ -33,7 +34,7 @@ export class QuarkusLocalServer extends LocalHttpServer {
   }
 
   public async start(): Promise<void> {
-    this.activeProcess = cp.exec(`java -Dquarkus.http.port=${this.port} -jar ${this.jarFilePath}`);
+    this.activeProcess = cp.spawn("java", [`-Dquarkus.http.port=${this.port}`, "-jar", this.jarFilePath]);
 
     const timeoutPromise = new Promise((resolve) => {
       setTimeout(() => {
@@ -66,7 +67,17 @@ export class QuarkusLocalServer extends LocalHttpServer {
       return;
     }
 
-    this.activeProcess.kill("SIGINT");
+    switch (os.platform()) {
+      case "win32":
+        cp.spawn("taskkill", ["/pid", this.activeProcess.pid.toString(), "/f", "/t"]);
+        break;
+      case "darwin":
+      case "linux":
+      default:
+        this.activeProcess.kill("SIGINT");
+        break;
+    }
+
     this.activeProcess = undefined;
   }
 
