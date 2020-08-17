@@ -21,7 +21,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	kogitores "github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/resource"
+	kogitores "github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitobuild/build"
 )
 
 const (
@@ -56,7 +56,7 @@ var quarkusNativeKogitoApplicationDockerfileProvider = kogitoApplicationDockerfi
 }
 
 var springbootKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               kogitores.KogitoSpringbootUbi8Image,
+	imageName:               kogitores.KogitoSpringBootUbi8Image,
 	applicationBinarySuffix: springBootApplicationBinarySuffix,
 	libFolderNeeded:         false,
 }

@@ -100,12 +100,12 @@ func mapKogitoBuildWebhookTableRow(row *TableRow, kogitoBuild *v1alpha1.KogitoBu
 	secondColumn := getSecondColumn(row)
 
 	if len(kogitoBuild.Spec.WebHooks) == 0 {
-		kogitoBuild.Spec.WebHooks = []v1alpha1.WebhookSecret{{}}
+		kogitoBuild.Spec.WebHooks = []v1alpha1.WebHookSecret{{}}
 	}
 
 	switch secondColumn {
 	case kogitoBuildTypeKey:
-		kogitoBuild.Spec.WebHooks[0].Type = v1alpha1.WebhookType(getThirdColumn(row))
+		kogitoBuild.Spec.WebHooks[0].Type = v1alpha1.WebHookType(getThirdColumn(row))
 	case kogitoBuildSecretKey:
 		kogitoBuild.Spec.WebHooks[0].Secret = getThirdColumn(row)
 

@@ -68,7 +68,7 @@ func WaitForBuildConfigCreated(namespace, buildConfigName string, timeoutInMin i
 }
 
 // WaitForBuildConfigCreatedWithWebhooks waits for a build config to be created with webhooks
-func WaitForBuildConfigCreatedWithWebhooks(namespace, buildConfigName string, expectedWebhooks []v1alpha1.WebhookSecret, timeoutInMin int) error {
+func WaitForBuildConfigCreatedWithWebhooks(namespace, buildConfigName string, expectedWebhooks []v1alpha1.WebHookSecret, timeoutInMin int) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("BuildConfig %s created with webhooks", buildConfigName), timeoutInMin,
 		func() (bool, error) {
 			if bc, err := getBuildConfig(namespace, buildConfigName); err != nil {
@@ -80,14 +80,14 @@ func WaitForBuildConfigCreatedWithWebhooks(namespace, buildConfigName string, ex
 		})
 }
 
-func checkWebhooksInBuildConfig(namespace string, actual []buildv1.BuildTriggerPolicy, expected []v1alpha1.WebhookSecret) bool {
+func checkWebhooksInBuildConfig(namespace string, actual []buildv1.BuildTriggerPolicy, expected []v1alpha1.WebHookSecret) bool {
 	for _, expectedWebhook := range expected {
 		for _, actualTrigger := range actual {
 			var typedTrigger *buildv1.WebHookTrigger
 			switch expectedWebhook.Type {
-			case v1alpha1.GitHubWebhook:
+			case v1alpha1.GitHubWebHook:
 				typedTrigger = actualTrigger.GitHubWebHook
-			case v1alpha1.GenericWebhook:
+			case v1alpha1.GenericWebHook:
 				typedTrigger = actualTrigger.GenericWebHook
 			}
 

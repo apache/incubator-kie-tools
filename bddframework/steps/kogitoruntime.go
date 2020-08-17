@@ -17,7 +17,7 @@ package steps
 import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/resource"
+	framework2 "github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
@@ -88,7 +88,7 @@ func (data *Data) kogitoRuntimeHasPodsRunningWithinMinutes(dName string, podNb, 
 
 	// Workaround because two pods are created at the same time when adding a Kogito Runtime.
 	// We need wait for only one (wait until the wrong one is deleted)
-	return framework.WaitForPodsWithLabel(data.Namespace, resource.LabelKeyAppName, dName, podNb, timeoutInMin)
+	return framework.WaitForPodsWithLabel(data.Namespace, framework2.LabelAppKey, dName, podNb, timeoutInMin)
 }
 
 // Scale steps

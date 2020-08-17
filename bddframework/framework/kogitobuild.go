@@ -16,10 +16,10 @@ package framework
 
 import (
 	"fmt"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitobuild/build"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoapp/resource"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
@@ -114,20 +114,18 @@ func getKogitoBuildS2IImage(kogitoBuild *v1alpha1.KogitoBuild) v1alpha1.Image {
 		return framework.ConvertImageTagToImage(config.GetBuildS2IImageStreamTag())
 	}
 
-	return getKogitoBuildImage(resource.BuildImageStreams[resource.BuildTypeS2I][kogitoBuild.Spec.Runtime])
+	return getKogitoBuildImage(build.KogitoImages[kogitoBuild.Spec.Runtime][true])
 }
 
 func getKogitoBuildRuntimeImage(kogitoBuild *v1alpha1.KogitoBuild) v1alpha1.Image {
 	if len(config.GetBuildRuntimeImageStreamTag()) > 0 {
 		return framework.ConvertImageTagToImage(config.GetBuildRuntimeImageStreamTag())
 	}
-
-	buildType := resource.BuildTypeRuntime
-	if kogitoBuild.Spec.Runtime == v1alpha1.QuarkusRuntimeType && !kogitoBuild.Spec.Native {
-		buildType = resource.BuildTypeRuntimeJvm
+	imageName := build.KogitoImages[kogitoBuild.Spec.Runtime][false]
+	if kogitoBuild.Spec.Native {
+		imageName = build.KogitoQuarkusUbi8Image
 	}
-
-	return getKogitoBuildImage(resource.BuildImageStreams[buildType][kogitoBuild.Spec.Runtime])
+	return getKogitoBuildImage(imageName)
 }
 
 // getKogitoBuildImage returns a build image with defaults set
