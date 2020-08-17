@@ -27,18 +27,15 @@ export class I18n<D extends ReferenceDictionary<D>> {
     private readonly startingLocale = defaults.locale
   ) {
     this.locale = startingLocale ?? defaults.locale;
-    if (this.locale !== defaults.locale) {
-      const startingDictionary =
-        dictionaries.get(this.locale) ?? dictionaries.get(this.locale.split("-").shift()!) ?? {};
-
-      this.dictionary = immutableDeepMerge(defaults.dictionary, startingDictionary) as D;
-    } else {
-      this.dictionary = defaults.dictionary;
-    }
+    this.setDictionary();
   }
 
   public setLocale(locale: string): void {
     this.locale = locale;
+    this.setDictionary();
+  }
+
+  private setDictionary() {
     if (this.locale !== this.defaults.locale) {
       const selectedDictionary =
         this.dictionaries.get(this.locale) ?? this.dictionaries.get(this.locale.split("-").shift()!) ?? {};
