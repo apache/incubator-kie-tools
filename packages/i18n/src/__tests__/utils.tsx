@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { ReferenceDictionary, DictionaryInterpolation } from "../Dictionary";
-import { I18nContextType } from "../react-components/I18nContext";
+import { ReferenceDictionary, DictionaryInterpolation } from "../core/Dictionary";
+import { I18nContextType } from "../react-components";
 
 export interface DummyDictionary extends ReferenceDictionary<DummyDictionary> {
   greeting: (name: string) => string;

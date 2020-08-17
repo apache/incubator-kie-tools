@@ -27,7 +27,7 @@ import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEdit } from "@kogito-tooling/channel-common-api";
 import { KogitoEditor } from "./KogitoEditor";
 import { VsCodeI18n } from "./i18n";
-import { I18n } from "@kogito-tooling/i18n";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 
 export class KogitoEditableDocument implements CustomDocument {
   private readonly encoder = new TextEncoder();

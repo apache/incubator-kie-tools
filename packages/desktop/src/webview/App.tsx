@@ -28,8 +28,8 @@ import { EditorPage } from "./editor/EditorPage";
 import { HomePage } from "./home/HomePage";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
-import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n/locales";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
+import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
 
 interface Props {
   file?: File;

@@ -14,7 +14,21 @@
  * limitations under the License.
  */
 
-import { en } from "../locales";
+// tslint:disable-next-line:interface-name
+export interface I18nDefaults<D extends ReferenceDictionary<D>> {
+  locale: string;
+  dictionary: D;
+}
 
-export const kieBcEditorsI18nDefaults = { locale: "en", dictionary: en };
-export const kieBcEditorsI18nDictionaries = new Map([["en", en]]);
+export type DictionaryInterpolation = (...args: Array<string | number>) => string;
+
+export type ReferenceDictionary<D> = {
+  [K in keyof D]: string | DictionaryInterpolation | ReferenceDictionary<any>;
+};
+
+// Locales that aren't the default should implement this interface
+export type TranslatedDictionary<D extends ReferenceDictionary<D>> = DeepOptional<D>;
+
+type DeepOptional<D> = {
+  [K in keyof D]?: DeepOptional<D[K]>;
+};

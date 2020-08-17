@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KieBcEditorsI18n } from "../setup";
+import { KieBcEditorsI18n } from "../KieBcEditorsI18n";
 import { KOGITO_JIRA_LINK } from ".";
 
 export const en: KieBcEditorsI18n = {

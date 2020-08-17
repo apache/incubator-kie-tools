@@ -37,7 +37,7 @@ import { EditorContextApi } from "./api/EditorContextApi";
 import { GwtEditorMapping } from "./GwtEditorMapping";
 import { I18nServiceApi } from "./api/I18nServiceApi";
 import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
-import { I18n } from "@kogito-tooling/i18n";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 
 declare global {
   interface Window {
@@ -66,14 +66,18 @@ export class GwtEditorWrapperFactory implements EditorFactory {
 
   public supports(fileExtension: string) {
     return (
-      this.gwtEditorMapping.getLanguageData({ fileExtension: fileExtension, resourcesPathPrefix: "" }) !== undefined
+      this.gwtEditorMapping.getLanguageData({
+        fileExtension: fileExtension,
+        resourcesPathPrefix: "",
+        initialLocale: ""
+      }) !== undefined
     );
   }
 
   public createEditor(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs) {
     this.gwtAppFormerApi.setClientSideOnly(true);
 
-    this.kieBcEditorsI18n.setLocale(envelopeContext.context.initialLocale);
+    this.kieBcEditorsI18n.setLocale(initArgs.initialLocale);
     envelopeContext.services.i18n.subscribeToLocaleChange(locale => this.kieBcEditorsI18n.setLocale(locale));
 
     const languageData = this.gwtEditorMapping.getLanguageData(initArgs);

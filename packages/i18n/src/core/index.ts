@@ -15,3 +15,4 @@
  */
 
 export * from "./I18n";
+export * from "./Dictionary";

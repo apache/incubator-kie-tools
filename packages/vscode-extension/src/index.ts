@@ -22,8 +22,8 @@ import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
 import { generateSvg } from "./generateSvg";
-import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n/locales";
-import { I18n } from "@kogito-tooling/i18n";
+import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 
 /**
  * Starts a Kogito extension.

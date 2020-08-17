@@ -36,8 +36,6 @@ Object.defineProperty(global, "frameElement", {
 //Lazy load module as it executes once loaded and, if import'ed, it's before the mocks are setup.
 import module = require("../../envelope/envelope");
 
-afterAll(() => jest.clearAllMocks());
-
 describe("EditorEnvelope.init", () => {
   test("initialisation", () => {
     expect(mockEditorEnvelope.init.mock.calls.length).toEqual(1);

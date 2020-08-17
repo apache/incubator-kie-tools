@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { I18nDictionariesProvider } from "../../react-components";
-import { immutableDeepMerge } from "../../immutableDeepMerge";
-import { TranslatedDictionary } from "../../Dictionary";
+import { immutableDeepMerge } from "../../core/immutableDeepMerge";
+import { TranslatedDictionary } from "../../core/Dictionary";
 import { render } from "@testing-library/react";
 import { DummyContext, DummyDictionary, DummyComponent, dummyDefault, interpolationFunction } from "../utils";
 
@@ -55,7 +55,7 @@ describe("I18nDictionariesProvider", () => {
       expect(getByTestId("dummy-component")).toHaveTextContent(JSON.stringify(dummyDefault));
     });
 
-    it("should use the `en` dictionary due to the `en-US` doesn't exist and it is the location prefix", () => {
+    it("should use the `en` dictionary due to the `en-US` doesn't exist and 'en' is the location prefix", () => {
       const dummyOptional: TranslatedDictionary<DummyDictionary> = {
         welcome: "Welcome!!!"
       };

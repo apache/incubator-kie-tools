@@ -18,7 +18,7 @@ import { GwtEditorWrapper } from "../GwtEditorWrapper";
 import { GwtStateControlService } from "../gwtStateControl";
 import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
 import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
-import { I18n } from "@kogito-tooling/i18n";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "../i18n";
 
 const MockEditor = jest.fn(() => ({

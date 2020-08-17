@@ -29,7 +29,7 @@ import {
 import { CloseIcon } from "@patternfly/react-icons";
 import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";
 import { removeDirectories } from "../../common/utils";
-import { useDesktopI18n } from "../common/i18n/locales";
+import { useDesktopI18n } from "../common/i18n";
 
 interface Props {
   onSave: () => void;

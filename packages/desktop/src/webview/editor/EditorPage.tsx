@@ -32,7 +32,7 @@ import { File, FileSaveActions } from "../../common/File";
 import { GlobalContext } from "../common/GlobalContext";
 import { EditorToolbar } from "./EditorToolbar";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import { useDesktopI18n } from "../common/i18n/locales";
+import { useDesktopI18n } from "../common/i18n";
 
 interface Props {
   fileExtension: string;

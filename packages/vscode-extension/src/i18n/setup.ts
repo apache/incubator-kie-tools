@@ -14,5 +14,7 @@
  * limitations under the License.
  */
 
-export * from "./GuidedTourI18n";
-export * from "./setup";
+import { en } from "./locales";
+
+export const vsCodeI18nDefaults = { locale: "en", dictionary: en };
+export const vsCodeI18nDictionaries = new Map([["en", en]]);

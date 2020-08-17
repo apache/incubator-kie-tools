@@ -14,20 +14,8 @@
  * limitations under the License.
  */
 
-export interface Defaults<D extends ReferenceDictionary<D>> {
-  locale: string;
-  dictionary: D;
+import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
+
+export interface KieBcEditorsI18n extends ReferenceDictionary<KieBcEditorsI18n> {
+  unsupportedFile: string
 }
-
-export type DictionaryInterpolation = (...args: Array<string | number>) => string;
-
-export type ReferenceDictionary<D> = {
-  [K in keyof D]: string | DictionaryInterpolation | ReferenceDictionary<any>;
-};
-
-// Locales that aren't the default should implement this interface
-export type TranslatedDictionary<D extends ReferenceDictionary<D>> = DeepOptional<D>;
-
-type DeepOptional<D> = {
-  [K in keyof D]?: DeepOptional<D[K]>;
-};

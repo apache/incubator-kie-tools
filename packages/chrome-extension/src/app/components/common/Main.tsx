@@ -25,12 +25,12 @@ import { kogitoMenuContainer } from "../../utils";
 import { ExternalEditorManager } from "../../../ExternalEditorManager";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
-import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 import {
   chromeExtensionI18nDictionaries,
   chromeExtensionI8nDefaults,
   ChromeExtensionI18nContext
-} from "../../i18n/locales";
+} from "../../i18n";
 
 export interface Globals {
   id: string;

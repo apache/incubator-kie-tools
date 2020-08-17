@@ -21,7 +21,7 @@ import { editors } from "./GwtEditorMapping";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
 import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
-import { I18n } from "@kogito-tooling/i18n";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 import { KieBcEditorsI18n } from "./i18n";
 
 export class GwtEditorWrapper implements Editor {

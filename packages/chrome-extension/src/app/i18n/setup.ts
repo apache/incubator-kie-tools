@@ -14,5 +14,16 @@
  * limitations under the License.
  */
 
-export * from "./GuidedTourI18n";
-export * from "./setup";
+import * as React from "react";
+import { useContext } from "react";
+import { I18nContextType } from "@kogito-tooling/i18n/dist/react-components";
+import { en } from "./locales";
+import { ChromeExtensionI18n } from "./ChromeExtensionI18n";
+
+export const chromeExtensionI8nDefaults = { locale: navigator.language, dictionary: en };
+export const chromeExtensionI18nDictionaries = new Map([["en", en]]);
+export const ChromeExtensionI18nContext = React.createContext<I18nContextType<ChromeExtensionI18n>>({} as any);
+
+export function useChromeExtensionI18n() {
+  return useContext(ChromeExtensionI18nContext);
+}

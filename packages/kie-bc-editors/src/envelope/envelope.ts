@@ -28,7 +28,7 @@ EditorEnvelope.init({
     }
   },
   editorFactory: new CompositeEditorFactory([new GwtEditorWrapperFactory()]),
-  editorContext: { channel: getChannelType(), operatingSystem: getOperatingSystem(), initialLocale: navigator.language }
+  editorContext: { channel: getChannelType(), operatingSystem: getOperatingSystem() }
 });
 
 export function getChannelType(): ChannelType {

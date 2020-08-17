@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { ReferenceDictionary } from "@kogito-tooling/i18n";
+import { en } from "./locales";
 
-export interface KieBcEditorsI18n extends ReferenceDictionary<KieBcEditorsI18n> {
-  unsupportedFile: string
-}
+export const kieBcEditorsI18nDefaults = { locale: "en", dictionary: en };
+export const kieBcEditorsI18nDictionaries = new Map([["en", en]]);

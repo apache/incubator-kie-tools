@@ -19,5 +19,4 @@ import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api
 export interface EditorContext {
   channel: ChannelType;
   operatingSystem?: OperatingSystem;
-  initialLocale: string;
 }

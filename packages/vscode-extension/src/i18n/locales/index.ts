@@ -14,7 +14,4 @@
  * limitations under the License.
  */
 
-import { en } from "./en";
-
-export const vsCodeI18nDefaults = { locale: "en", dictionary: en };
-export const vsCodeI18nDictionaries = new Map([["en", en]]);
+export { en } from "./en";

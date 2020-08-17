@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import { Defaults, ReferenceDictionary, TranslatedDictionary } from "../Dictionary";
-import { immutableDeepMerge } from "../immutableDeepMerge";
+import { I18nDefaults, ReferenceDictionary, TranslatedDictionary } from "./Dictionary";
+import { immutableDeepMerge } from "./immutableDeepMerge";
 
 export class I18n<D extends ReferenceDictionary<D>> {
   private locale: string;
   private dictionary: D;
 
   constructor(
-    private readonly defaults: Defaults<D>,
+    private readonly defaults: I18nDefaults<D>,
     private readonly dictionaries: Map<string, TranslatedDictionary<D>>,
-    private readonly startingLocale = defaults.locale
+    private readonly initialLocale = defaults.locale
   ) {
-    this.locale = startingLocale ?? defaults.locale;
+    this.locale = initialLocale;
     this.setDictionary();
   }
 
@@ -36,14 +36,10 @@ export class I18n<D extends ReferenceDictionary<D>> {
   }
 
   private setDictionary() {
-    if (this.locale !== this.defaults.locale) {
-      const selectedDictionary =
-        this.dictionaries.get(this.locale) ?? this.dictionaries.get(this.locale.split("-").shift()!) ?? {};
+    const selectedDictionary =
+      this.dictionaries.get(this.locale) ?? this.dictionaries.get(this.locale.split("-").shift()!) ?? {};
 
-      this.dictionary = immutableDeepMerge(this.defaults.dictionary, selectedDictionary) as D;
-    } else {
-      this.dictionary = this.defaults.dictionary;
-    }
+    this.dictionary = immutableDeepMerge(this.defaults.dictionary, selectedDictionary) as D;
   }
 
   public getI18n(): D {

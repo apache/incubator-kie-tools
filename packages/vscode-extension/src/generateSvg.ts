@@ -20,7 +20,7 @@ import * as fs from "fs";
 import * as vscode from "vscode";
 import { WorkspaceApi } from "@kogito-tooling/channel-common-api";
 import { VsCodeI18n } from "./i18n";
-import { I18n } from "@kogito-tooling/i18n";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 
 export async function generateSvg(
   editorStore: KogitoEditorStore,

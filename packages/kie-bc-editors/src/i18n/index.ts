@@ -15,3 +15,4 @@
  */
 
 export * from "./setup";
+export * from "./KieBcEditorsI18n"

@@ -27,5 +27,5 @@ EditorEnvelope.init({
     }
   },
   editorFactory: new GwtEditorWrapperFactory(),
-  editorContext: { channel: ChannelType.GITHUB, operatingSystem: getOperatingSystem(), initialLocale: navigator.language }
+  editorContext: { channel: ChannelType.GITHUB, operatingSystem: getOperatingSystem() }
 });

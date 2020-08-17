@@ -14,5 +14,16 @@
  * limitations under the License.
  */
 
-export * from "./GuidedTourI18n";
-export * from "./setup";
+import * as React from "react";
+import { useContext } from "react";
+import { I18nContextType } from "@kogito-tooling/i18n/dist/react-components";
+import { en } from "./locales/en";
+import { DesktopI18n } from "./DesktopI18n";
+
+export const desktopI18nDefaults = { locale: "en", dictionary: en };
+export const desktopI18nDictionaries = new Map([["en", en]]);
+export const DesktopI18nContext = React.createContext<I18nContextType<DesktopI18n>>({} as any);
+
+export function useDesktopI18n() {
+  return useContext(DesktopI18nContext);
+}

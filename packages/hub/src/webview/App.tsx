@@ -52,7 +52,7 @@ import { Constants } from "../common/Constants";
 import { CommandExecutionResult } from "../common/CommandExecutionResult";
 import { OperatingSystem } from "@kogito-tooling/channel-common-api";
 import IpcRendererEvent = Electron.IpcRendererEvent;
-import { useHubI18n } from "../common/i18n/locales";
+import { useHubI18n } from "../common/i18n";
 
 enum ExtensionStatus {
   UNKNOWN,

@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
-export * from "./react-components";
-export * from "./common";
-export * from "./Dictionary";
+import * as React from "react";
+import { useContext } from "react";
+import { I18nContextType } from "@kogito-tooling/i18n/dist/react-components";
+import { en } from "./locales";
+import { HubI18n } from "./HubI18n";
+
+export const hubI18nDefaults = { locale: "en", dictionary: en };
+export const hubI18nDictionaries = new Map([["en", en]]);
+export const HubI18nContext = React.createContext<I18nContextType<HubI18n>>({} as any);
+
+export function useHubI18n() {
+  return useContext(HubI18nContext);
+}

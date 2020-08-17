@@ -27,7 +27,7 @@ import { useGitHubApi } from "../common/GitHubContext";
 import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
-import { useChromeExtensionI18n } from "../../i18n/locales";
+import { useChromeExtensionI18n } from "../../i18n";
 
 const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
 const GITHUB_EDITOR_SYNC_POLLING_INTERVAL = 1500;

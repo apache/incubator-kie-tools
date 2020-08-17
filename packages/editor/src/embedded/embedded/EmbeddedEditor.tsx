@@ -91,7 +91,11 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       self =>
         self.envelopeApi.requests.receive_initRequest(
           { origin: self.origin, envelopeServerId: self.id },
-          { fileExtension: props.file.fileExtension, resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "" }
+          {
+            fileExtension: props.file.fileExtension,
+            resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "",
+            initialLocale: props.locale
+          }
         )
     );
   }, []);
