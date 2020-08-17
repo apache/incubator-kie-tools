@@ -11,6 +11,10 @@
     "pack-vscode:all": "npx lerna run pack --scope=vscode-extension-* --include-filtered-dependencies --stream",
     "update-version-to": "npx lerna version --no-push --no-git-tag-version --exact --yes"
   },
+  "dependencies": {
+    "react": "16.12.0",
+    "react-dom": "16.12.0"
+  },
   "devDependencies": {
     "lerna": "3.18.3",
     "webpack": "4.42.1",
@@ -20,13 +24,18 @@
     "prettier": "1.19.1",
     "tslint-config-prettier": "1.15.0",
     "copy-webpack-plugin": "5.1.0",
-    "@types/vscode": "1.43.0",
+    "@types/vscode": "^1.46.0",
     "ts-loader": "6.2.1",
-    "typescript": "3.7.2",
+    "typescript": "3.8.3",
     "vsce": "1.75.0",
     "style-loader": "1.0.0",
     "css-loader": "3.2.0",
     "url-loader": "4.0.0",
-    "file-loader": "4.2.0"
+    "file-loader": "4.2.0",
+    "sass-loader": "7.3.1",
+    "node-sass": "4.12.0"
+  },
+  "resolutions": {
+    "@patternfly/react-styles": "4.4.2"
   }
 }

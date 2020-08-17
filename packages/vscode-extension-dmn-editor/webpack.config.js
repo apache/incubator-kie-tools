@@ -16,7 +16,7 @@
 
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const pfWebpackUtils = require("@kogito-tooling/patternfly-base/webpackUtils");
+const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
 const commonConfig = {
   mode: "development",
@@ -36,17 +36,9 @@ const commonConfig = {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader",
-        options: {
-          configFile: path.resolve("./tsconfig.json")
-        }
+        loader: "ts-loader"
       },
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        use: ["babel-loader"]
-      },
-      ...pfWebpackUtils.patternflyLoaders
+      ...pfWebpackOptions.patternflyRules
     ]
   },
   resolve: {

@@ -1,18 +1,15 @@
 {
-  "exclude": [
-    "./**/node_modules"
-  ],
+  "exclude": ["./**/node_modules", "./**/__tests__"],
   "compilerOptions": {
-    "lib": [
-      "es6",
-      "dom",
-      "es2018.promise"
-    ],
+    "lib": ["es6", "dom", "es2018.promise"],
     "target": "es5",
     "declaration": true,
     "sourceMap": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
     "strictNullChecks": true,
     "experimentalDecorators": true,
+    "downlevelIteration": true,
     "jsx": "react"
   }
 }
