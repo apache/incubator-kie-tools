@@ -120,8 +120,10 @@ public class ScenarioHeaderTextAreaDOMElementTest extends AbstractFactoriesTest 
 
     @Test
     public void testDetachCancelEditMode() {
+        scenarioHeaderTextAreaDOMElement.setScenarioHeaderMetaData(scenarioHeaderMetaDataMock);
         scenarioHeaderTextAreaDOMElement.detach();
 
         verify(scenarioGridCellMock).setEditingMode(false);
+        verify(scenarioHeaderMetaDataMock).setEditingMode(false);
     }
 }
