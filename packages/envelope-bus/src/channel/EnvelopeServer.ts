@@ -35,8 +35,8 @@ export class EnvelopeServer<
 
   public readonly id: string;
 
-  public get client() {
-    return this.manager.client;
+  public get envelopeApi() {
+    return this.manager.clientApi;
   }
 
   constructor(

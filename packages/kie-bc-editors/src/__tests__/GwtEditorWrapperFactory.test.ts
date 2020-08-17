@@ -18,6 +18,7 @@ import { GwtEditorWrapperFactory } from "../GwtEditorWrapperFactory";
 import { GwtLanguageData, Resource } from "../GwtLanguageData";
 import { GwtStateControlService } from "../gwtStateControl";
 import { GwtEditorMapping } from "../GwtEditorMapping";
+import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
 
 const cssResource: Resource = {
   type: "css",
@@ -85,12 +86,7 @@ describe("GwtEditorWrapperFactory", () => {
 
     const editorCreation = gwtEditorWrapperFactory.createEditor(
       {
-        channelApi: {
-          notify: jest.fn(),
-          request: jest.fn(),
-          subscribe: jest.fn(),
-          unsubscribe: jest.fn()
-        },
+        channelApi: messageBusClientApiMock(),
         context: {} as any,
         services: {
           keyboardShortcuts: {} as any,

@@ -24,6 +24,8 @@ interface ApiToProvide {
 
 interface ApiToConsume {
   init(): Promise<void>;
+  someNotification(arg1: string): void;
+  someRequest(arg1: string): Promise<void>;
 }
 
 let sentMessages: Array<EnvelopeBusMessage<unknown, any>>;
@@ -38,7 +40,7 @@ beforeEach(() => {
   };
 
   envelopeServer = new EnvelopeServer({ postMessage: (msg: any) => sentMessages.push(msg) }, "tests", self =>
-    self.client.request("init")
+    self.envelopeApi.requests.init()
   );
 });
 

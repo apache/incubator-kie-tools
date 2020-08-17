@@ -21,24 +21,21 @@ import {
   EditorFactory,
   EditorInitArgs,
   I18nService,
+  KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType
 } from "../../api";
 import { DummyEditor } from "./DummyEditor";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
+import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
 
 const dummyEditor: Editor = new DummyEditor();
 
-const messageBusClient = {
-  notify: jest.fn(),
-  request: jest.fn(),
-  subscribe: jest.fn(),
-  unsubscribe: jest.fn()
-};
+const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
 const editorContext: EditorContext = { channel: ChannelType.EMBEDDED, operatingSystem: OperatingSystem.LINUX };
 const envelopeContext: KogitoEditorEnvelopeContextType = {
-  channelApi: messageBusClient,
+  channelApi: channelApi,
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },

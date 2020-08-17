@@ -16,6 +16,8 @@
 
 import { GwtEditorWrapper } from "../GwtEditorWrapper";
 import { GwtStateControlService } from "../gwtStateControl";
+import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
+import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
 
 const MockEditor = jest.fn(() => ({
   undo: jest.fn(),
@@ -27,13 +29,13 @@ const MockEditor = jest.fn(() => ({
 }));
 
 const mockEditor = new MockEditor();
-const mockMessageBus = { notify: jest.fn(), request: jest.fn(), subscribe: jest.fn(), unsubscribe: jest.fn() };
+const mockChannelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 const mockXmlFormatter = { format: (c: string) => c };
 
 const wrapper = new GwtEditorWrapper(
   "MockEditorId",
   mockEditor,
-  mockMessageBus,
+  mockChannelApi,
   mockXmlFormatter,
   new GwtStateControlService()
 );
@@ -51,7 +53,7 @@ describe("GwtEditorWrapper", () => {
 
     await wrapper.setContent("path", " a content ");
     expect(mockEditor.setContent).toHaveBeenCalledWith("path", "a content");
-    expect(mockMessageBus.notify).toHaveBeenCalled();
+    expect(mockChannelApi.notifications.receive_setContentError).toHaveBeenCalled();
   });
 
   test("af_onOpen removes header", () => {

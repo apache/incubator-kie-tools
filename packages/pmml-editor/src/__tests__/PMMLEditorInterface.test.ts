@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-import { EditorContext, I18nService, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
+import {
+  EditorContext,
+  I18nService,
+  KogitoEditorChannelApi,
+  KogitoEditorEnvelopeContextType
+} from "@kogito-tooling/editor/dist/api";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor } from "../editor/PMMLEditor";
 import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
+import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
 
-const messageBusClient = {
-  notify: jest.fn(),
-  request: jest.fn(),
-  subscribe: jest.fn(),
-  unsubscribe: jest.fn()
-};
+const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
 const editorContext: EditorContext = { channel: ChannelType.EMBEDDED, operatingSystem: OperatingSystem.LINUX };
 const envelopeContext: KogitoEditorEnvelopeContextType = {
-  channelApi: messageBusClient,
+  channelApi: channelApi,
   context: editorContext,
   services: {
     guidedTour: { isEnabled: () => false },
@@ -52,7 +53,7 @@ beforeEach(() => {
 
 describe("PMMLEditorInterface", () => {
   test("Mount", () => {
-    expect(messageBusClient.notify).toBeCalledWith("receive_ready");
+    expect(channelApi.notifications.receive_ready).toBeCalled();
   });
 
   test("getContent", async () => {

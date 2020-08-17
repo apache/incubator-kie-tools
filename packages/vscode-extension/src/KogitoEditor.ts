@@ -19,13 +19,14 @@ import {
   EditorApi,
   EditorEnvelopeLocator,
   EnvelopeMapping,
-  KogitoEditorChannelApi
+  KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi
 } from "@kogito-tooling/editor/dist/api";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { EnvelopeBusMessage } from "@kogito-tooling/envelope-bus/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
-import { KogitoEditorEnvelopeServer } from "@kogito-tooling/editor/dist/channel";
+import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 
 export class KogitoEditor implements EditorApi {
   private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;
@@ -38,40 +39,41 @@ export class KogitoEditor implements EditorApi {
     private readonly envelopeMapping: EnvelopeMapping,
     private readonly envelopeLocator: EditorEnvelopeLocator,
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
-    private readonly envelopeServer = new KogitoEditorEnvelopeServer(
+    private readonly envelopeServer = new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
       {
         postMessage: msg => this.panel.webview.postMessage(msg)
       },
       envelopeLocator.targetOrigin,
-      {
-        fileExtension: document.fileExtension,
-        resourcesPathPrefix: envelopeMapping.resourcesPathPrefix
-      }
+      self =>
+        self.envelopeApi.requests.receive_initRequest(
+          { origin: self.origin, envelopeServerId: self.id },
+          { fileExtension: document.fileExtension, resourcesPathPrefix: envelopeMapping.resourcesPathPrefix }
+        )
     )
   ) {}
 
   public getElementPosition(selector: string) {
-    return this.envelopeServer.client.request("receive_guidedTourElementPositionRequest", selector);
+    return this.envelopeServer.envelopeApi.requests.receive_guidedTourElementPositionRequest(selector);
   }
 
   public getContent() {
-    return this.envelopeServer.request_contentResponse().then(c => c.content);
+    return this.envelopeServer.envelopeApi.requests.receive_contentRequest().then(c => c.content);
   }
 
   public async setContent(path: string, content: string) {
-    this.envelopeServer.notify_contentChanged({ path: path, content: content });
+    this.envelopeServer.envelopeApi.notifications.receive_contentChanged({ path: path, content: content });
   }
 
   public async undo() {
-    this.envelopeServer.notify_editorUndo();
+    this.envelopeServer.envelopeApi.notifications.receive_editorUndo();
   }
 
   public async redo() {
-    this.envelopeServer.notify_editorRedo();
+    this.envelopeServer.envelopeApi.notifications.receive_editorRedo();
   }
 
   public getPreview() {
-    return this.envelopeServer.request_previewResponse();
+    return this.envelopeServer.envelopeApi.requests.receive_previewRequest();
   }
 
   public startInitPolling() {
