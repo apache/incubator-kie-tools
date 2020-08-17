@@ -42,15 +42,6 @@ module.exports = [
   }),
   merge(common, {
     entry: {
-      "channel/index": "./src/channel/index.ts"
-    },
-    output: {
-      libraryTarget: "commonjs2"
-    },
-    externals: [nodeExternals({ modulesDir: "../../node_modules" })]
-  }),
-  merge(common, {
-    entry: {
       "embedded/index": "./src/embedded/index.ts"
     },
     output: {

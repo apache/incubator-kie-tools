@@ -20,7 +20,7 @@ import { Editor, KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api"
 import { editors } from "./GwtEditorMapping";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
-import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import { I18n } from "@kogito-tooling/i18n";
 import { KieBcEditorsI18n } from "./i18n";
 
@@ -33,14 +33,14 @@ export class GwtEditorWrapper implements Editor {
 
   private readonly gwtEditor: GwtEditor;
   private readonly xmlFormatter: XmlFormatter;
-  private readonly messageBusClient: MessageBusClient<KogitoEditorChannelApi>;
+  private readonly channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
   private readonly stateControlService: GwtStateControlService;
   private readonly kieBcEditorsI18n: I18n<KieBcEditorsI18n>;
 
   constructor(
     editorId: string,
     gwtEditor: GwtEditor,
-    messageBus: MessageBusClient<KogitoEditorChannelApi>,
+    channelApi: MessageBusClientApi<KogitoEditorChannelApi>,
     xmlFormatter: XmlFormatter,
     stateControlService: GwtStateControlService,
     kieBcEditorsI18n: I18n<KieBcEditorsI18n>
@@ -49,7 +49,7 @@ export class GwtEditorWrapper implements Editor {
     this.stateControlService = stateControlService;
     this.af_isReact = true;
     this.gwtEditor = gwtEditor;
-    this.messageBusClient = messageBus;
+    this.channelApi = channelApi;
     this.editorId = editorId;
     this.xmlFormatter = xmlFormatter;
     this.kieBcEditorsI18n = kieBcEditorsI18n;
@@ -86,10 +86,10 @@ export class GwtEditorWrapper implements Editor {
   }
 
   public setContent(path: string, content: string) {
-    const i18n = this.kieBcEditorsI18n.getI18n()
+    const i18n = this.kieBcEditorsI18n.getI18n();
     setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
     return this.gwtEditor.setContent(path, content.trim()).catch(() => {
-      this.messageBusClient.notify("receive_setContentError", i18n.unsupportedFile);
+      this.channelApi.notifications.receive_setContentError(i18n.unsupportedFile);
       return Promise.resolve();
     });
   }

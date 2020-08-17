@@ -14,5 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./KieBcEditorsI18n";
-export * from "./locales"
+export * from "./setup";

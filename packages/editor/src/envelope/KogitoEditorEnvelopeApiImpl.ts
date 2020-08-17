@@ -97,13 +97,13 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
 
     this.args.view.setLoading();
 
-    const content = await this.args.envelopeContext.channelApi.request("receive_contentRequest");
+    const content = await this.args.envelopeContext.channelApi.requests.receive_contentRequest();
 
     await this.editor
       .setContent(content.path ?? "", content.content)
       .finally(() => this.args.view.setLoadingFinished());
 
-    this.args.envelopeContext.channelApi.notify("receive_ready");
+    this.args.envelopeContext.channelApi.notifications.receive_ready();
   };
 
   public receive_contentChanged = (editorContent: EditorContent) => {
@@ -147,7 +147,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
       "Edit | Redo last edit",
       async () => {
         this.editor.redo();
-        this.args.envelopeContext.channelApi.notify("receive_stateControlCommandUpdate", StateControlCommand.REDO);
+        this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(StateControlCommand.REDO);
       }
     );
     this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
@@ -155,7 +155,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
       "Edit | Undo last edit",
       async () => {
         this.editor.undo();
-        this.args.envelopeContext.channelApi.notify("receive_stateControlCommandUpdate", StateControlCommand.UNDO);
+        this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(StateControlCommand.UNDO);
       }
     );
   }

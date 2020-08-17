@@ -24,13 +24,14 @@ import { KogitoEditorEnvelopeContextType } from "./KogitoEditorEnvelopeContext";
 export interface EditorFactory {
   /**
    * Returns true if the factory supports a language.
-   * @param fileExtension The custom LanguageData
+   * @param fileExtension The extension of a file (e.g. "txt").
    */
   supports(fileExtension: string): boolean;
 
   /**
    * Returns an Editor instance.
-   * Receives a messageBus to be used by the Editor to communicate with the outside of the envelope.
+   * @param envelopeContext The context to be used by Editor implementation.
+   * @param initArgs Initial arguments required for the Editor to initialize itself properly.
    */
   createEditor(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs): Promise<Editor>;
 }

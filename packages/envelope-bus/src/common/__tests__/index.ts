@@ -14,4 +14,21 @@
  * limitations under the License.
  */
 
-export * from "./KogitoEditorEnvelopeServer"
+import { ApiDefinition, MessageBusClientApi } from "../../api";
+
+export function messageBusClientApiMock<T extends ApiDefinition<T>>(): MessageBusClientApi<T> {
+  const mocks = new Map<any, any>();
+
+  const proxyMock = new Proxy({} as any, {
+    get: (target, name) => {
+      return mocks.get(name) ?? mocks.set(name, jest.fn()).get(name);
+    }
+  });
+
+  return {
+    notifications: proxyMock,
+    requests: proxyMock,
+    subscribe: jest.fn(),
+    unsubscribe: jest.fn()
+  };
+}

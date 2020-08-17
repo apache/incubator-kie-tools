@@ -17,7 +17,7 @@
 import { DefaultKogitoCommandRegistry } from "./KogitoCommandRegistry";
 import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
 import { StateControlApi } from "../api/StateControlApi";
-import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 
 export class GwtStateControlService {
   private undoCommand: () => void;
@@ -35,11 +35,11 @@ export class GwtStateControlService {
     }
   }
 
-  public exposeApi(messageBus: MessageBusClient<KogitoEditorChannelApi>): StateControlApi {
+  public exposeApi(channelApi: MessageBusClientApi<KogitoEditorChannelApi>): StateControlApi {
     const stateControl = this;
 
     return {
-      registry: new DefaultKogitoCommandRegistry<unknown>(messageBus),
+      registry: new DefaultKogitoCommandRegistry<unknown>(channelApi),
       setUndoCommand(undoCommand: () => void) {
         stateControl.undoCommand = undoCommand;
       },

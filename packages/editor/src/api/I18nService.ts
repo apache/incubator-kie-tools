@@ -15,7 +15,7 @@
  */
 
 export class I18nService {
-  private onLocaleChangeSubscriptions: Array<(locale: string) => void>;
+  constructor(private readonly onLocaleChangeSubscriptions: Array<(locale: string) => void> = []) {}
 
   public executeOnLocaleChangeSubscriptions(locale: string) {
     this.onLocaleChangeSubscriptions.forEach(onLocaleChange => {

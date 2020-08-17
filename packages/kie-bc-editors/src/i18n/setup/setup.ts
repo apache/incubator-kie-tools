@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import { KieBcEditorsI18n } from "../setup";
-import { KOGITO_JIRA_LINK } from ".";
+import { en } from "../locales";
 
-export const en: KieBcEditorsI18n = {
-  unsupportedFile: `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
-};
+export const kieBcEditorsI18nDefaults = { locale: "en", dictionary: en };
+export const kieBcEditorsI18nDictionaries = new Map([["en", en]]);

@@ -26,9 +26,10 @@ export class I18n<D extends ReferenceDictionary<D>> {
     private readonly dictionaries: Map<string, TranslatedDictionary<D>>,
     private readonly startingLocale = defaults.locale
   ) {
-    if (startingLocale !== defaults.locale) {
+    this.locale = startingLocale ?? defaults.locale;
+    if (this.locale !== defaults.locale) {
       const startingDictionary =
-        dictionaries.get(startingLocale) ?? dictionaries.get(startingLocale.split("-").shift()!) ?? {};
+        dictionaries.get(this.locale) ?? dictionaries.get(this.locale.split("-").shift()!) ?? {};
 
       this.dictionary = immutableDeepMerge(defaults.dictionary, startingDictionary) as D;
     } else {
@@ -36,11 +37,11 @@ export class I18n<D extends ReferenceDictionary<D>> {
     }
   }
 
-  public setLocale(locale: string) {
+  public setLocale(locale: string): void {
     this.locale = locale;
-    if (locale !== this.defaults.locale) {
+    if (this.locale !== this.defaults.locale) {
       const selectedDictionary =
-        this.dictionaries.get(locale) ?? this.dictionaries.get(locale.split("-").shift()!) ?? {};
+        this.dictionaries.get(this.locale) ?? this.dictionaries.get(this.locale.split("-").shift()!) ?? {};
 
       this.dictionary = immutableDeepMerge(this.defaults.dictionary, selectedDictionary) as D;
     } else {
@@ -52,7 +53,7 @@ export class I18n<D extends ReferenceDictionary<D>> {
     return this.dictionary;
   }
 
-  public getLocale() {
+  public getLocale(): string {
     return this.locale;
   }
 }

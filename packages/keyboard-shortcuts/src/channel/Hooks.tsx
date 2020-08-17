@@ -15,7 +15,7 @@
  */
 
 import { useEffect } from "react";
-import { MessageBusClient } from "@kogito-tooling/envelope-bus/dist/api";
+import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import { ChannelKeyboardEvent, KeyboardShortcutsEnvelopeApi } from "../api";
 
 function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKeyboardEvent {
@@ -31,14 +31,14 @@ function getChannelKeyboardEvent(keyboardEvent: KeyboardEvent): ChannelKeyboardE
 }
 
 export function useSyncedKeyboardEvents(
-  messageBusClient: MessageBusClient<KeyboardShortcutsEnvelopeApi>,
+  envelopeApi: MessageBusClientApi<KeyboardShortcutsEnvelopeApi>,
   element: HTMLElement | Window = window
 ) {
   useEffect(() => {
     const listener = (keyboardEvent: KeyboardEvent) => {
       const channelKeyboardEvent = getChannelKeyboardEvent(keyboardEvent);
       console.debug(`New keyboard event (${JSON.stringify(channelKeyboardEvent)})!`);
-      messageBusClient.notify("receive_channelKeyboardEvent", channelKeyboardEvent);
+      envelopeApi.notifications.receive_channelKeyboardEvent(channelKeyboardEvent);
     };
 
     element.addEventListener("keydown", listener);
@@ -49,5 +49,5 @@ export function useSyncedKeyboardEvents(
       element.removeEventListener("keyup", listener);
       element.removeEventListener("keypress", listener);
     };
-  }, [messageBusClient]);
+  }, [envelopeApi]);
 }

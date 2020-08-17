@@ -23,7 +23,7 @@ import { DEFAULT_TESTING_ENVELOPE_CONTEXT, usingEnvelopeContext } from "../utils
 
 describe("KeyBindingsHelpOverlay", () => {
   test("minimal setup", async () => {
-    const context = { operatingSystem: OperatingSystem.WINDOWS, channel: ChannelType.DESKTOP };
+    const context = { operatingSystem: OperatingSystem.WINDOWS, channel: ChannelType.DESKTOP, initialLocale: "en" };
     const keyboardShortcutsService = new DefaultKeyboardShortcutsService({ os: context.operatingSystem });
     keyboardShortcutsService.registerKeyPress("ctrl+c", "Copy", () => Promise.resolve(), {});
 

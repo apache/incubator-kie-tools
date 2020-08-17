@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-import { en } from "./en";
+export { en } from "./en";
 
 export const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
-
-export const kieBcEditorsI18nDefaults = { locale: "en", dictionary: en };
-export const kieBcEditorsI18nDictionaries = new Map([["en", en]]);
