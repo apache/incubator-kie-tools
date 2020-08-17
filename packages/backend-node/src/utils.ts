@@ -24,11 +24,11 @@ interface Version {
 
 /**
  * Verify if Maven is installed on the local machine.
- * @param version Optional minimum version to match.
+ * @param requiredVersion Optional minimum version to match.
  * @returns Whether Maven is installed or not.
  */
-export function isMavenAvailable(version?: Version): Promise<boolean> {
-  return new Promise((resolve) => {
+export function isMavenAvailable(requiredVersion?: Version): Promise<boolean> {
+  return new Promise(resolve => {
     cp.exec("mvn -version", (error, stdout, _) => {
       if (error) {
         resolve(false);
@@ -45,24 +45,25 @@ export function isMavenAvailable(version?: Version): Promise<boolean> {
         return;
       }
 
-      if (!version) {
+      if (!requiredVersion) {
         resolve(!!regexMatch);
         return;
       }
 
       const [, , major, minor, patch] = regexMatch;
-      resolve(+major >= version.major && +minor >= version.minor && +patch >= version.patch);
+      const actualVersion: Version = { major: +major, minor: minor ? +minor : 0, patch: patch ? +patch : 0 };
+      resolve(isRequiredVersionSatisfied(requiredVersion, actualVersion));
     });
   });
 }
 
 /**
  * Verify if Java is installed on the local machine.
- * @param version Optional minimum version to match.
+ * @param requiredVersion Optional minimum version to match.
  * @returns Whether Java is installed or not.
  */
-export function isJavaAvailable(version?: Version): Promise<boolean> {
-  return new Promise((resolve) => {
+export function isJavaAvailable(requiredVersion?: Version): Promise<boolean> {
+  return new Promise(resolve => {
     cp.exec("java -version", (error, _, stderr) => {
       if (error) {
         resolve(false);
@@ -79,13 +80,30 @@ export function isJavaAvailable(version?: Version): Promise<boolean> {
         return;
       }
 
-      if (!version) {
+      if (!requiredVersion) {
         resolve(!!regexMatch);
         return;
       }
 
       const [, , , major, minor, patch] = regexMatch;
-      resolve(+major >= version.major && +minor >= version.minor && +patch >= version.patch);
+      const actualVersion: Version = { major: +major, minor: minor ? +minor : 0, patch: patch ? +patch : 0 };
+      resolve(isRequiredVersionSatisfied(requiredVersion, actualVersion));
     });
   });
+}
+
+function isRequiredVersionSatisfied(required: Version, actual: Version): boolean {
+  if (required.major > actual.major) {
+    return false;
+  }
+
+  if (required.minor > actual.minor) {
+    return false;
+  }
+
+  if (required.patch > actual.patch) {
+    return false;
+  }
+
+  return true;
 }
