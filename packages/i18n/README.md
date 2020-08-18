@@ -1,6 +1,6 @@
 # Kogito Tooling i18n
 
-This package provides a type-safe i18n library for React components.
+This package provides a type-safe i18n library for a Typescript project.
 
 ## Install
 
@@ -9,116 +9,51 @@ Can be installed with `yarn` or `npm`:
 - `yarn add @kogito-tooling/i18n`
 - `npm install @kogito-tooling/i18n`
 
-## Recommended setup
+## Usage
+The library is separated into two submodules:
+ - core
+    
+    All core functionalities, which includes the types, and the I18n class.
+    
+    to use the core:
+    `import * as I18nCore from "@kogito-tooling/i18n/dist/core"`
+ - react-components
+ 
+    All components and types necessaries to integrate on your React project.
+    
+    to use the React components:
+     `import * as I18nReact from "@kogito-tooling/i18n/dist/react-components"`
+ 
+ 
+## Examples
+ - [Typescript](examples/typescript.md)
+ - [React](examples/react.md)
+ 
+## Core
+### Class
+The core class `I18n` is under the `core` submodule "@kogito-tooling/i18n/dist/core".
 
-File structure:
-
+ - Constructor
 ```
-i18n
-├── index.ts
-├── MyDictionary.ts
-└── locales
-    ├── en.ts
-    ├── pt_BR.ts
-    └── index.ts
+defaults: I18nDefaults<D>
+dictionaries: I18nDictionaries<D>
+initialLocale?: string
 ```
+*If no `initialLocale` is provide the default locale will be used as `initialLocale`* 
 
-- Create a dictionary type which extends the type `ReferenceDictionary<D>`:
+ - Available Methods
+ ```
+// Get the current locale
+getLocale(): string
 
-```tsx
-"./i18n/MyDictionary.ts";
+// Get the current dictionary
+getCurrent(): D
 
-interface MyDictionary extends ReferenceDictionary<MyDictionary> {
-  myWord: string;
-  myCurrentLocale: (locale: string) => string;
-  myNestedObject: {
-    myNestedWord: string;
-  };
-}
-```
-
-- Create a dictionary that use the `MyDictionary` type:
-
-```tsx
-"./i18n/locales/en.ts";
-
-const en: MyDictionary = {
-  myWord: "My word",
-  myCurrentLocale: (locale: string) => `My current locale is: ${locale}`,
-  myNestedObject: {
-    myNestedWord: `My ${"Nested".bold()} word`
-  }
-};
-```
-
-- Create a dictionary that use the `TranslatedDictionary<MyDictionary>` type.
-
-*The `TranslatedDictionary<D>` has the same keys of the `MyDictionary`, but they're optionals.
-The `TransletedDictionary` values override the default values on the `MyDictionary`, which prevents any missing translation.*
-
-```tsx
-"./i18n/locales/pt_BR.ts";
-
-const pt_BR: TranslatedDictionary<MyDictionary> = {
-  myWord: "Minha palavra",
-  myCurrentLocale: (locale: string) => `O meu local atual é: ${locale}`,
-};
+// Set a new locale
+setLocale(locale: string): void
 ```
 
-- Create the values that will be used by the I18nDictionariesProvider, and a custom hook that will be useful on nested custom components
-
-```tsx
-"./i18n/locales/index.ts";
-
-export const myAppI18nDefaults = { locale: "en", dictionary: en };
-
-// It's reccomended that the key follows the BCP-47 standard to be compatible with the browser locale
-export const myAppI18nDictionaries = new Map([
-  ["en", en],
-  ["pt-BR", pt_BR]
-]);
-
-export const MyAppI18nContext = React.createContext<I18nContextType<MyDictionary>>({} as any);
-
-export function useMyAppI18n() {
-  return useContext(MyAppI18nContext);
-}
-```
-
-- Use `I18nDictionariesProvider` on the top-level of your App to have access to the `i18n` object using the custom hook.
-
-```tsx
-function App() {
-  return (
-    <I18nDictionariesProvider defaults={myAppI18nDefaults} dictionaries={myAppI18nDictionaries} ctx={MyAppI18nContext}>
-      <MyCustomComponent />
-    </I18nDictionariesProvider>
-  );
-}
-
-// Using the custom hook created on ./i18n/locales/index.ts
-function MyCustomComponent() {
-  const { locale, setLocale, i18n } = useMyAppI18n();
-
-  return (
-    <div>
-      {/* `myNestedWord` will always fallback on the 'en' dictionary because the pt-BR doesn't provide it. */}
-      <I18nHtml>{i18n.myNestedObject.myNestedWord} :)</I18nHtml>
-
-      {/* `myWord` will change accordling to the selected locale*/}
-      <p>{i18n.myWord}</p>
-      <a onClick={() => setLocale("pt-BR")}>pt-BR</a>
-      <a onClick={() => setLocale("en")}> en</a>
-
-      <p>{i18n.myCurrentLocale(locale)}</p>
-    </div>
-  );
-}
-```
-
-_Remember: If you wish it's possible to use the Context directly with `MyAppI18nContext.Provider`!_
-
-## Important Types
+### Types
 
 - `ReferenceDictionary<D>`
   The type of the default dictionary
@@ -126,6 +61,33 @@ _Remember: If you wish it's possible to use the Context directly with `MyAppI18n
 - `TranslatedDictionary<D>`
   The type of any other dictionary that isn't the default.
 
+- `I18nDefaults<D>`
+  The type of the default configs to be used on the `I18nDictionariesProvider` component or `I18n` class.
+```ts
+interface I18nDefaults<D extends ReferenceDictionary<D>> {
+  locale: string; // current locale
+  dictionary: D; // default dictionary
+}
+```
+
+- `I18nDictionaries<D>`
+  The type of the dictionaries to be used on the `I18nDictionariesProvider` component or `I18n` class.
+```ts
+type I18nDictionaries<D extends ReferenceDictionary<D>> = Map<string, TranslatedDictionary<D>>
+```
+
+## React
+### Components
+
+- `<I18nDictionariesProvider>`
+  Provides your implementation of `I18nContextType`
+
+- `<I18nHtml>` Renders a string with HTML tags
+
+_Be aware: the `<I18nHtml>` component uses the `dangerouslySetInnerHTML` prop._
+
+
+### Types
 - `I18nContextType<D>`
   The context type use by `<I18nDictionaryProvider>`, provides an object with the following properties:
 
@@ -136,12 +98,3 @@ interface I18nContextType<D extends ReferenceDictionary<D>> {
   i18n: D; // Dictionary
 }
 ```
-
-## Components
-
-- `<I18nDictionariesProvider>`
-  Provides your implementation of `I18nContextType`
-
-- `<I18nHtml>` Renders a string with HTML tags
-
-_Be aware: the `<I18nHtml>` component uses the `dangerouslySetInnerHTML` prop._
