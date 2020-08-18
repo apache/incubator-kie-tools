@@ -53,8 +53,8 @@ public class ParsedNotificationsInfos {
             notification.setGroups(parseGroup(tBody, "togroups"));
             notification.setEmails(join(",", parseGroup(tBody, "toemails")));
             notification.setReplyTo(parseElement(tBody, "replyTo"));
-            notification.setSubject(replaceVerticalBar(parseElement(tBody, "subject")));
-            notification.setBody(replaceVerticalBar(parseElement(tBody, "body")));
+            notification.setSubject(replaceAsciiSymbols(parseElement(tBody, "subject")));
+            notification.setBody(replaceAsciiSymbols(parseElement(tBody, "body")));
         }
 
         return notification;
@@ -88,8 +88,14 @@ public class ParsedNotificationsInfos {
         return new ParsedNotificationsInfos.CDATA(values, type).get();
     }
 
-    private static String replaceVerticalBar(String value) {
-        return value != null ? value.replaceAll("&#124;", "|") : null;
+    private static String replaceAsciiSymbols(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        return value
+                .replaceAll("&#124;", "|")
+                .replaceAll("&#94;", "^");
     }
 
     private static class CDATA {

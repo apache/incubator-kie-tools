@@ -34,14 +34,14 @@ public class ParsedNotificationsInfosTest {
 
     @Test
     public void testNotification() {
-        String body = "[from:director|tousers:director,jack,katy|togroups:Forms,IT|replyTo:guest|subject:asd|body:asd]@[11h]";
+        String body = "[from:director|tousers:director,jack,katy|togroups:Forms,IT|replyTo:guest|subject:&#94;asd|body:asd&#94;]@[11h]";
         NotificationValue actual = ParsedNotificationsInfos.of(AssociationType.NOT_COMPLETED_NOTIFY.getName(), body);
         NotificationValue expected = new NotificationValue();
         expected.setType(AssociationType.NOT_COMPLETED_NOTIFY.getName());
         expected.setFrom("director");
         expected.setReplyTo("guest");
-        expected.setSubject("asd");
-        expected.setBody("asd");
+        expected.setSubject("^asd");
+        expected.setBody("asd^");
         expected.setExpiresAt("11h");
         expected.setGroups(new ArrayList<>(Arrays.asList("Forms", "IT")));
         expected.setUsers(new ArrayList<>(Arrays.asList("director", "jack", "katy")));

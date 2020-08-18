@@ -152,9 +152,19 @@ public class NotificationValue {
                 "|togroups:" + join(",", groups) +
                 "|toemails:" + emails +
                 "|replyTo:" + replyTo +
-                "|subject:" + (subject != null ? subject.replaceAll("\\|", "&#124;") : "") +
-                "|body:" + (body != null ? body.replaceAll("\\|", "&#124;") : "") +
+                "|subject:" + replaceAsciiSymbols(subject) +
+                "|body:" + replaceAsciiSymbols(body) +
                 "]@[" + expiresAt + "]";
+    }
+
+    private static String replaceAsciiSymbols(String str) {
+        if (str == null) {
+            return "";
+        }
+
+        return str
+                .replaceAll("\\|", "&#124;")
+                .replaceAll("\\^", "&#94;");
     }
 
     @Override

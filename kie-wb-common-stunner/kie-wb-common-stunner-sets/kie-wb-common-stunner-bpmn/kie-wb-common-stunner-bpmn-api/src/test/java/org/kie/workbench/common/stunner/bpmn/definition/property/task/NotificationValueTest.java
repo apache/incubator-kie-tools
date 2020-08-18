@@ -150,15 +150,15 @@ public class NotificationValueTest {
 
     @Test
     public void testNotificationPartialVerticalBar() {
-        NotificationValue test = new NotificationValue("a||||||dssf||sdf|Sdf|sdf|Sdf|SDf",
+        NotificationValue test = new NotificationValue("a||||||dssf||sdf|Sdf|sdf|Sdf|SDf^",
                               "1h",
-                              "z|asd|ASd||asd|Asd|asd|",
+                              "^z|asd|ASd||asd|Asd|asd|",
                               "me",
                               "NotStartedNotify",
                               "me",
                               EMPTY_LIST,
                               EMPTY_LIST,
                               "");
-        assertEquals("[from:me|tousers:|togroups:|toemails:|replyTo:me|subject:z&#124;asd&#124;ASd&#124;&#124;asd&#124;Asd&#124;asd&#124;|body:a&#124;&#124;&#124;&#124;&#124;&#124;dssf&#124;&#124;sdf&#124;Sdf&#124;sdf&#124;Sdf&#124;SDf]@[1h]", test.toCDATAFormat());
+        assertEquals("[from:me|tousers:|togroups:|toemails:|replyTo:me|subject:&#94;z&#124;asd&#124;ASd&#124;&#124;asd&#124;Asd&#124;asd&#124;|body:a&#124;&#124;&#124;&#124;&#124;&#124;dssf&#124;&#124;sdf&#124;Sdf&#124;sdf&#124;Sdf&#124;SDf&#94;]@[1h]", test.toCDATAFormat());
     }
 }
