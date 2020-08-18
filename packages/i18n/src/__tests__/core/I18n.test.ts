@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { I18n } from "../../core";
-import { ReferenceDictionary, TranslatedDictionary } from "../../core/Dictionary";
+import { I18n, ReferenceDictionary, TranslatedDictionary } from "../../core";
 
 interface TestI18n extends ReferenceDictionary<TestI18n> {
   test: string;

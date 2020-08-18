@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { ReferenceDictionary } from "../core/Dictionary";
+import { ReferenceDictionary } from "../core";
 
 // tslint:disable-next-line:interface-name
 export interface I18nContextType<D extends ReferenceDictionary<D>> {
