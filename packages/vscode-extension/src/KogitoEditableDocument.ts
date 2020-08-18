@@ -61,7 +61,7 @@ export class KogitoEditableDocument implements CustomDocument {
   }
 
   public async save(destination: Uri, cancellation: CancellationToken): Promise<void> {
-    const i18n = this.vsCodeI18n.getI18n();
+    const i18n = this.vsCodeI18n.getCurrent();
     try {
       const editor = this.editorStore.get(this.uri);
       if (!editor) {

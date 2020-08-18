@@ -27,7 +27,7 @@ export async function generateSvg(
   workspaceApi: WorkspaceApi,
   vsCodeI18n: I18n<VsCodeI18n>
 ) {
-  const i18n = vsCodeI18n.getI18n();
+  const i18n = vsCodeI18n.getCurrent();
 
   const editor = editorStore.activeEditor;
   if (!editor) {

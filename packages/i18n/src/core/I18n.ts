@@ -42,7 +42,7 @@ export class I18n<D extends ReferenceDictionary<D>> {
     this.dictionary = immutableDeepMerge(this.defaults.dictionary, selectedDictionary) as D;
   }
 
-  public getI18n(): D {
+  public getCurrent(): D {
     return this.dictionary;
   }
 

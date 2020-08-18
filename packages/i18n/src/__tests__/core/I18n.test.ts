@@ -39,23 +39,23 @@ describe("I18n", () => {
     it("startingLocale", () => {
       const i18n = new I18n(defaults, dictionaries, "pt");
       expect(i18n.getLocale()).toEqual("pt");
-      expect(i18n.getI18n().test).toEqual(portuguese.test);
+      expect(i18n.getCurrent().test).toEqual(portuguese.test);
     });
 
     it("default locale", () => {
       const i18n = new I18n(defaults, dictionaries);
       expect(i18n.getLocale()).toEqual("en");
-      expect(i18n.getI18n().test).toEqual(english.test);
+      expect(i18n.getCurrent().test).toEqual(english.test);
     });
   });
 
   it("setLocale", () => {
     const i18n = new I18n(defaults, dictionaries);
     expect(i18n.getLocale()).toEqual("en");
-    expect(i18n.getI18n().test).toEqual(english.test);
+    expect(i18n.getCurrent().test).toEqual(english.test);
 
     i18n.setLocale("pt");
     expect(i18n.getLocale()).toEqual("pt");
-    expect(i18n.getI18n().test).toEqual(portuguese.test);
+    expect(i18n.getCurrent().test).toEqual(portuguese.test);
   });
 });

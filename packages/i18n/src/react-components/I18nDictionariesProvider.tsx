@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { I18nDefaults, I18n, I18nDictionaries, ReferenceDictionary } from "../core";
 import { I18nContextType } from "./I18nContext";
 
@@ -31,9 +31,14 @@ export const I18nDictionariesProvider = <D extends ReferenceDictionary<D>>(props
   const [locale, setLocale] = useState(props.defaults.locale);
   const i18n = useMemo(() => new I18n(props.defaults, props.dictionaries), []);
 
-  useEffect(() => {
-    i18n.setLocale(locale);
-  }, [locale]);
+  const setNewLocale = useCallback((newLocale: string) => {
+    i18n.setLocale(newLocale);
+    setLocale(newLocale)
+  }, []);
 
-  return <props.ctx.Provider value={{ locale, setLocale, i18n: i18n.getI18n() }}>{props.children}</props.ctx.Provider>;
+  return (
+    <props.ctx.Provider value={{ locale, setLocale: setNewLocale, i18n: i18n.getCurrent() }}>
+      {props.children}
+    </props.ctx.Provider>
+  );
 };
