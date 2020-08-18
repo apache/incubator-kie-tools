@@ -16,14 +16,13 @@
 
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
-import { TranslatedDictionary, ReferenceDictionary, I18nDefaults } from "../core/Dictionary";
+import { I18nDefaults, I18n, I18nDictionaries, ReferenceDictionary } from "../core";
 import { I18nContextType } from "./I18nContext";
-import { I18n } from "../core";
 
 // tslint:disable-next-line:interface-name
 export interface I18nDictionariesProviderProps<D extends ReferenceDictionary<D>> {
   defaults: I18nDefaults<D>;
-  dictionaries: Map<string, TranslatedDictionary<D>>;
+  dictionaries: I18nDictionaries<D>;
   ctx: React.Context<I18nContextType<D>>;
   children: React.ReactNode;
 }

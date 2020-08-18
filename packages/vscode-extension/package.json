@@ -20,6 +20,7 @@
     "compile": "webpack",
     "watch": "webpack",
     "test": "jest --silent --verbose",
+    "test:clearCache": "jest --clearCache",
     "build:prod": "yarn run build --mode production --devtool none"
   },
   "jest-junit": {

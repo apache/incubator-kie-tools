@@ -33,8 +33,8 @@ const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 const editorContext: EditorContext = {
   channel: ChannelType.EMBEDDED,
   operatingSystem: OperatingSystem.LINUX,
-  initialLocale: "en"
 };
+
 const envelopeContext: KogitoEditorEnvelopeContextType = {
   channelApi: channelApi,
   context: editorContext,

@@ -31,9 +31,9 @@ const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
 const editorContext: EditorContext = {
   channel: ChannelType.EMBEDDED,
-  operatingSystem: OperatingSystem.LINUX,
-  initialLocale: "en"
+  operatingSystem: OperatingSystem.LINUX
 };
+
 const envelopeContext: KogitoEditorEnvelopeContextType = {
   channelApi: channelApi,
   context: editorContext,
@@ -62,7 +62,8 @@ describe("PMMLEditorFactory", () => {
 
     const created: Promise<Editor> = factory.createEditor(envelopeContext, {
       fileExtension: FACTORY_TYPE,
-      resourcesPathPrefix: ""
+      resourcesPathPrefix: "",
+      initialLocale: "en"
     });
     expect(created).resolves.toBeInstanceOf(PMMLEditorInterface);
   });

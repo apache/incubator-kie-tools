@@ -19,9 +19,14 @@ import { useContext } from "react";
 import { I18nContextType } from "@kogito-tooling/i18n/dist/react-components";
 import { en } from "./locales";
 import { ChromeExtensionI18n } from "./ChromeExtensionI18n";
+import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
 
-export const chromeExtensionI8nDefaults = { locale: navigator.language, dictionary: en };
-export const chromeExtensionI18nDictionaries = new Map([["en", en]]);
+export const chromeExtensionI8nDefaults: I18nDefaults<ChromeExtensionI18n> = {
+  locale: navigator.language,
+  dictionary: en
+};
+
+export const chromeExtensionI18nDictionaries: I18nDictionaries<ChromeExtensionI18n> = new Map([["en", en]]);
 export const ChromeExtensionI18nContext = React.createContext<I18nContextType<ChromeExtensionI18n>>({} as any);
 
 export function useChromeExtensionI18n() {

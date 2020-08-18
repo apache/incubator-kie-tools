@@ -15,6 +15,8 @@
  */
 
 import { en } from "./locales";
+import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
+import { VsCodeI18n } from "./VsCodeI18n";
 
-export const vsCodeI18nDefaults = { locale: "en", dictionary: en };
-export const vsCodeI18nDictionaries = new Map([["en", en]]);
+export const vsCodeI18nDefaults: I18nDefaults<VsCodeI18n> = { locale: "en", dictionary: en };
+export const vsCodeI18nDictionaries: I18nDictionaries<VsCodeI18n> = new Map([["en", en]]);
