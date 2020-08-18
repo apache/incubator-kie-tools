@@ -67,6 +67,7 @@ function usage(){
   printf "\n--services_image_name_suffix {NAMESPACE}\n\tSet the build image name suffix to append to usual image names."
   printf "\n--services_image_version {VERSION}\n\tSet the services image version."
   printf "\n--data_index_image_tag {IMAGE_TAG}\n\tSet the Kogito Data Index image tag ('services_image_version' is ignored)"
+  printf "\n--trusty_image_tag {IMAGE_TAG}\n\tSet the Kogito Trusty image tag ('services_image_version' is ignored)"
   printf "\n--jobs_service_image_tag {IMAGE_TAG}\n\tSet the Kogito Jobs Service image tag ('services_image_version' is ignored)"
   printf "\n--management_console_image_tag {IMAGE_TAG}\n\tSet the Kogito Management Console image tag ('services_image_version' is ignored)"
   printf "\n--runtime_application_image_registry {REGISTRY}\n\tSet the registry for built runtime applications."
@@ -264,6 +265,10 @@ case $1 in
   --data_index_image_tag)
     shift
     if addParamKeyValueIfAccepted "--tests.data-index-image-tag" ${1}; then shift; fi
+  ;;
+    --trusty_image_tag)
+    shift
+    if addParamKeyValueIfAccepted "--tests.trusty-image-tag" ${1}; then shift; fi
   ;;
   --jobs_service_image_tag)
     shift
