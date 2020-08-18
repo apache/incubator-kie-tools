@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 
-import java.util.function.Consumer;
+import java.util.Collection;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.CSSStyleDeclaration;
@@ -24,13 +24,11 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLBodyElement;
 import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLElement;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.client.editors.contextmenu.ContextMenu;
+import org.kie.workbench.common.dmn.client.editors.drd.DRDContextMenu;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -38,13 +36,9 @@ import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.Mock;
 import org.powermock.reflect.Whitebox;
-import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.workbench.common.dmn.client.canvas.controls.toolbox.DMNEditDRDToolboxAction.DRDACTIONS_CONTEXT_MENU_TITLE;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -66,10 +60,7 @@ public class DMNEditDRDToolboxActionTest {
     private Index<?, ?> graphIndex;
 
     @Mock
-    private ContextMenu drdContextMenu;
-
-    @Mock
-    private ClientTranslationService translationService;
+    private DRDContextMenu drdContextMenu;
 
     @Mock
     private MouseClickEvent mouseClickEvent;
@@ -80,7 +71,7 @@ public class DMNEditDRDToolboxActionTest {
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
         when(graphIndex.get(eq(UUID))).thenReturn(node);
 
-        dmnEditDRDToolboxAction = new DMNEditDRDToolboxAction(drdContextMenu, translationService);
+        dmnEditDRDToolboxAction = new DMNEditDRDToolboxAction(drdContextMenu);
     }
 
     @Test
@@ -91,10 +82,11 @@ public class DMNEditDRDToolboxActionTest {
 
     @Test
     public void testGetTitle() {
-        dmnEditDRDToolboxAction.getTitle(canvasHandler, UUID);
+        final String title = "TITLE";
 
-        verify(translationService,
-               times(1)).getValue(eq(DRDACTIONS_CONTEXT_MENU_TITLE));
+        when(drdContextMenu.getTitle()).thenReturn(title);
+
+        assertThat(dmnEditDRDToolboxAction.getTitle(canvasHandler, UUID)).isEqualTo(title);
     }
 
     @Test
@@ -108,15 +100,7 @@ public class DMNEditDRDToolboxActionTest {
 
         dmnEditDRDToolboxAction.onMouseClick(canvasHandler, UUID, mouseClickEvent);
 
-        verify(drdContextMenu, times(1)).show(any(Consumer.class));
+        verify(drdContextMenu, times(1)).show(any(Collection.class));
     }
 
-    @Test
-    public void testContextMenuHandler() {
-        when(translationService.getValue(anyString())).thenReturn(StringUtils.EMPTY);
-        dmnEditDRDToolboxAction.contextMenuHandler(drdContextMenu, node);
-
-        verify(drdContextMenu, times(1)).setHeaderMenu(anyString(), anyString());
-        verify(drdContextMenu, times(3)).addTextMenuItem(anyString(), anyBoolean(), any(Command.class));
-    }
 }

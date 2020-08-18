@@ -16,17 +16,23 @@
 
 package org.kie.workbench.common.dmn.client.canvas.controls.selection;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.ait.lienzo.client.core.event.OnEventHandlers;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.SelectionManager;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Widget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.editors.drd.DRDContextMenu;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -35,14 +41,18 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -98,6 +108,18 @@ public class DomainObjectAwareLienzoMultipleSelectionControlTest {
     @Mock
     private EventSourceMock<CanvasClearSelectionEvent> clearSelectionEvent;
 
+    @Mock
+    private DRDContextMenu drdContextMenu;
+
+    @Mock
+    private WiresCanvasView wiresCanvasView;
+
+    @Mock
+    private Widget canvasWidget;
+
+    @Mock
+    private HandlerRegistration handlerRegistration;
+
     private DomainObjectAwareLienzoMultipleSelectionControl control;
 
     @Before
@@ -110,10 +132,14 @@ public class DomainObjectAwareLienzoMultipleSelectionControlTest {
         final WiresManager wiresManager = spy(WiresManager.get(lienzoLayer));
 
         this.control = new DomainObjectAwareLienzoMultipleSelectionControl(canvasSelectionEvent,
-                                                                           clearSelectionEvent);
+                                                                           clearSelectionEvent,
+                                                                           drdContextMenu);
 
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
+        when(canvas.getView()).thenReturn(wiresCanvasView);
+        when(wiresCanvasView.asWidget()).thenReturn(canvasWidget);
+        when(canvasWidget.addDomHandler(any(), any())).thenReturn(handlerRegistration);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
         when(diagram.getMetadata()).thenReturn(diagramMetadata);
@@ -226,5 +252,38 @@ public class DomainObjectAwareLienzoMultipleSelectionControlTest {
         control.destroy();
 
         assertThat(control.getSelectedItemDefinition()).isNotPresent();
+    }
+
+    @Test
+    public void testIsClickedOnShapeWhenShapeIsClicked() {
+        final DomainObjectAwareLienzoMultipleSelectionControl partiallyMockedControl = mock(DomainObjectAwareLienzoMultipleSelectionControl.class);
+        final View view = mock(View.class);
+
+        when(partiallyMockedControl.getSelectedNodesStream(canvasHandler)).thenReturn(Stream.of(element));
+        when(element.getContent()).thenReturn(view);
+        when(view.getBounds()).thenReturn(new Bounds(
+                new Bound(10d, 5d),
+                new Bound(30d, 20d)
+        ));
+        when(partiallyMockedControl.isClickedOnShape(canvasHandler, 25, 15)).thenCallRealMethod();
+
+        assertThat(partiallyMockedControl.isClickedOnShape(canvasHandler, 25, 15)).isTrue();
+    }
+
+    @Test
+    public void testIsClickedOnShapeWhenShapeIsNotClicked() {
+        assertThat(control.isClickedOnShape(canvasHandler, 0, 0)).isFalse();
+    }
+
+    @Test
+    public void testWhenGettingSelectedNodes() {
+        final DomainObjectAwareLienzoMultipleSelectionControl partiallyMockedControl = mock(DomainObjectAwareLienzoMultipleSelectionControl.class);
+
+        when(partiallyMockedControl.getSelectedNodesStream(canvasHandler)).thenReturn(Stream.of(element));
+        when(partiallyMockedControl.getSelectedNodes(canvasHandler)).thenCallRealMethod();
+
+        final List selectedNodes = partiallyMockedControl.getSelectedNodes(canvasHandler);
+        assertThat(selectedNodes).isNotEmpty();
+        assertThat(selectedNodes).hasSize(1);
     }
 }
