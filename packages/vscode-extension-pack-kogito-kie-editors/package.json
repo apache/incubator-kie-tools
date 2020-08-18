@@ -90,7 +90,19 @@
           "Test Scenario"
         ]
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Kogito",
+      "properties": {
+        "kogito.installBackendExtensionHint": {
+          "type": "boolean",
+          "description": "Specifies if a hint should be shown in case the backend extension is not installed.",
+          "default": true,
+          "scope": "application"
+        }
+      }
+    }
   },
   "scripts": {
     "package:prod": "cross-var \"vsce package --yarn -o ./dist/vscode_extension_kogito_kie_editors_$npm_package_version.vsix\"",

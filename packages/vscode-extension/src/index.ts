@@ -33,6 +33,7 @@ let backendProxy: VsCodeBackendProxy;
  *  @param args.webviewLocation The relative path to search for an "index.js" file for the WebView panel.
  *  @param args.context The vscode.ExtensionContext provided on the activate method of the extension.
  *  @param args.routes The routes to be used to find resources for each language.
+ *  @param args.backendExtensionId The backend extension ID in `publisher.name` format.
  */
 export async function startExtension(args: {
   extensionName: string;
@@ -40,11 +41,13 @@ export async function startExtension(args: {
   viewType: string;
   getPreviewCommandId: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
+  backendExtensionId: string;
 }) {
-  backendProxy = new VsCodeBackendProxy();
+  backendProxy = new VsCodeBackendProxy(args.backendExtensionId);
+
   if (!(await backendProxy.tryLoadBackendExtension())) {
-    // TODO: Show somehow to the user the possibility of using the backend extension.
-    console.info("Consider installing the backend extension to improve your experience.");
+    // TODO: uncomment when the backend extension is available at the VS Code marketplace
+    // configUtils.maybeShowInstallBackendExtensionHint(args.backendExtensionId);
   }
 
   const workspaceApi = new VsCodeWorkspaceApi();

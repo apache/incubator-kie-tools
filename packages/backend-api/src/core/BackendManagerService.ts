@@ -26,13 +26,13 @@ export abstract class BackendManagerService implements Service {
   /**
    * @param bridge Service bridge. Required to start up HTTP services.
    * @param localHttpServer Local HTTP server. Required to start up local HTTP services.
-   * @param initialServices Services that should be started up along with the backend manager.
+   * @param bootstrapServices Services that should be started up along with the backend manager.
    * @param lazyServices Services that should be started upon the first usage.
    */
   public constructor(
     private readonly bridge?: HttpBridge,
     private readonly localHttpServer?: LocalHttpServer,
-    private readonly initialServices?: Service[],
+    private readonly bootstrapServices?: Service[],
     private readonly lazyServices?: Service[]
   ) {}
 
@@ -47,11 +47,11 @@ export abstract class BackendManagerService implements Service {
 
     await this.registerService(this.localHttpServer);
 
-    if (!this.initialServices || this.initialServices.length === 0) {
+    if (!this.bootstrapServices || this.bootstrapServices.length === 0) {
       return;
     }
 
-    for (const service of this.initialServices) {
+    for (const service of this.bootstrapServices) {
       await this.registerService(service);
     }
   }
@@ -121,11 +121,11 @@ export abstract class BackendManagerService implements Service {
       return registeredService as T;
     }
 
-    if (this.lazyServices?.length === 0) {
+    if (!this.lazyServices || this.lazyServices.length === 0) {
       return;
     }
 
-    const lazyService = this.lazyServices?.find((s) => s.identify() === id);
+    const lazyService = this.lazyServices.find((s) => s.identify() === id);
 
     if (!lazyService || !(await this.registerService(lazyService))) {
       return;

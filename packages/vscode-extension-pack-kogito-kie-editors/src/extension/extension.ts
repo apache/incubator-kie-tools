@@ -35,7 +35,8 @@ export function activate(context: vscode.ExtensionContext) {
         ["dmn", { resourcesPathPrefix: "dist/webview/editors/dmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }],
         ["scesim", { resourcesPathPrefix: "dist/webview/editors/scesim", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }]
       ])
-    }
+    },
+    backendExtensionId: "kie-group.backend-vscode-extension"
   });
 
   console.info("Extension is successfully setup.");

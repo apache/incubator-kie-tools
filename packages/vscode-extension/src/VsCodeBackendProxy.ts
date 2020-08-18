@@ -22,7 +22,12 @@ import { BackendExtensionApi } from "@kogito-tooling/backend-channel-api";
  * Augmented {@link BackendProxy} for the VS Code channel.
  */
 export class VsCodeBackendProxy extends BackendProxy {
-  private readonly BACKEND_EXTENSION_ID = "kie-group.backend-vscode-extension";
+  /**
+   * @param backendExtensionId The backend extension ID in `publisher.name` format.
+   */
+  public constructor(private readonly backendExtensionId: string) {
+    super();
+  }
 
   public async withCapability<T extends Capability, U>(
     serviceId: string,
@@ -37,7 +42,7 @@ export class VsCodeBackendProxy extends BackendProxy {
    * @returns True if the backend extension is loaded, otherwise false.
    */
   public async tryLoadBackendExtension(): Promise<boolean> {
-    const backendExtension = vscode.extensions.getExtension(this.BACKEND_EXTENSION_ID);
+    const backendExtension = vscode.extensions.getExtension(this.backendExtensionId);
 
     if (this.backendManager && backendExtension) {
       return true;
