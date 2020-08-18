@@ -27,15 +27,15 @@ export class I18n<D extends ReferenceDictionary<D>> {
     private readonly initialLocale = defaults.locale
   ) {
     this.locale = initialLocale;
-    this.setDictionary();
+    this.updateDictionary();
   }
 
   public setLocale(locale: string): void {
     this.locale = locale;
-    this.setDictionary();
+    this.updateDictionary();
   }
 
-  private setDictionary() {
+  private updateDictionary() {
     const selectedDictionary =
       this.dictionaries.get(this.locale) ?? this.dictionaries.get(this.locale.split("-").shift()!) ?? {};
 
