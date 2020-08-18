@@ -27,7 +27,6 @@ import {
   DropdownItem,
   DropdownToggle,
   FileUpload,
-  FileUploadField,
   Form,
   FormGroup,
   Gallery,
