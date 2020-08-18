@@ -43,3 +43,11 @@ Feature: CLI: Project
       """
 
     Then HTTP GET request on service "jobs-service" with path "jobs/1" is successful within 1 minutes
+
+#####
+
+  Scenario: CLI create project with Kogito Trusty   
+    When CLI create namespace with Kogito Trusty
+
+    Then Kogito Trusty has 1 pods running within 5 minutes
+    And HTTP GET request on service "trusty" is successful within 2 minutes with path "v1/executions"
