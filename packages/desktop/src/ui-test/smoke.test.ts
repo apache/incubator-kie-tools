@@ -1,5 +1,5 @@
 import * as path from 'path';
-import * as helpers from './global-setup'
+import * as helpers from './utils/DesktopTestHelper'
 import {Application, SpectronClient} from  'spectron';
 import { HomePage } from './utils/HomePage';
 import { EditorPage } from'./utils/EditorPage';
@@ -38,15 +38,16 @@ describe('Application Startup', function () {
   beforeEach(async () => {
       const startedApp = await helpers.startApplication({
       args: [path.join(__dirname, '../../')],
+      path: "",
       port: 3000,
-      startTimeout: 25000,
+      startTimeout: 45000,
       waitTimeout: 10000
     });
     app = startedApp;
   });
 
-  afterEach(() => {
-    return helpers.stopApplication(app)
+  afterEach(async () => {
+    await helpers.stopApplication(app)
   });
 
   it('Opens application main window',  async () => {
@@ -85,7 +86,7 @@ describe('Application Startup', function () {
       await app.client.waitUntilWindowLoaded();
       await app.client.click(GO_TO_HOMEPAGE_BUTTON_LOCATOR);
 
-      checkBasicDimensions(app);
+      await checkBasicDimensions(app);
     })
 
     it('opens BPMN editor - sample file', async () => {

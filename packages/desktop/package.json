@@ -24,7 +24,7 @@
     "rebuild": "electron-rebuild -f -w sqlite3",
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "jest",
-    "ui-test": "tsc -p ./ && mocha ./out/ui-test",
+    "ui-test": "rm -rf  out && tsc -p ./ && mocha ./out/ui-test",
     "init": "yarn -f",
     "build": "yarn run lint && yarn test && yarn run build:fast && yarn run ui-test",
     "build:fast": "rm -rf dist && webpack --mode development",
