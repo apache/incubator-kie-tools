@@ -35,6 +35,7 @@ export const GuidedTour = () => {
     <I18nDictionariesProvider
       defaults={guidedTourI18nDefaults}
       dictionaries={guidedTourI18nDictionaries}
+      initialLocale={navigator.language}
       ctx={GuidedTourI18nContext}
     >
       <CurrentTutorialContext.Provider
