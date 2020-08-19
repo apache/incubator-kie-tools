@@ -76,12 +76,11 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
   };
   homePage: {
     uploadFile: {
-      dndZone: {
-        invalidFile: string;
-        waitingFile: string;
-      };
-      or: string;
-      fileInput: string;
+      header: string;
+      body: string;
+      helperText: string;
+      helperInvalidText: string;
+      placeholder: string;
     };
     openUrl: {
       validating: string;
@@ -113,7 +112,6 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
       createNew: string;
     };
     trySample: string;
-    editExistingFile: string;
     chooseLocalFile: string;
   };
   guidedTour: {
