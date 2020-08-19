@@ -59,6 +59,17 @@ Check the usage of the tests script:
 
 ## Development
 
+### Writing new BDD tests
+
+New tests should be added as new scenarios in `features` folder.  
+Existing steps for the scenarios can be found into the different `steps/*.go` files.  
+If you need a new step for your scenario, you will need to add it to one of those files (or create a new one) and implement the functionality.
+
+#### New example to handle
+
+As KogitoRuntime is only taking care of getting a specific kogito image and run it in the cluster, the corresponding image needs to be existing into the runtime application registry.  
+In case you need to add a new Kogito example, which has not been handled yet into the different existing scenarios, you will need to add a new feature/scenario into the `scripts/examples` folder, so the image can be built by the pipeline and pushed to the runtime application registry.
+
 ### Useful Extensions for VS Code
 
 - [Cucumber (Gherkin)](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete))
