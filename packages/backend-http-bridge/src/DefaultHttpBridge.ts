@@ -28,8 +28,14 @@ export class DefaultHttpBridge implements HttpBridge {
         : await axios.get(request.endpoint);
       return { body: response.data };
     } catch (e) {
+      let message = e.message;
+
       const axiosError = e as AxiosError;
-      return Promise.reject(`${axiosError.message} ${axiosError.config?.url}`);
+      if (axiosError.config?.url) {
+        message += " " + axiosError.config.url;
+      }
+
+      return Promise.reject(message);
     }
   }
 }

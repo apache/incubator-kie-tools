@@ -17,7 +17,7 @@
 import * as fs from "fs";
 import * as os from "os";
 import * as cp from "child_process";
-import * as portfinder from "portfinder";
+import { getPortPromise } from "portfinder";
 
 import { LocalHttpServer } from "@kogito-tooling/backend-api";
 import { isJavaAvailable } from "./utils";
@@ -82,18 +82,18 @@ export class QuarkusLocalServer extends LocalHttpServer {
   }
 
   public async satisfyRequirements(): Promise<boolean> {
-    if (!(await isJavaAvailable({ major: 11, minor: 0, patch: 0 }))) {
-      console.error("Java 11.0.0+ could not be identified.");
-      return false;
-    }
-
     if (!fs.existsSync(this.jarFilePath)) {
       console.error(`${this.jarFilePath} does not exist.`);
       return false;
     }
 
+    if (!(await isJavaAvailable({ major: 11, minor: 0, patch: 0 }))) {
+      console.error("Java 11.0.0+ could not be identified.");
+      return false;
+    }
+
     try {
-      this.port = await portfinder.getPortPromise({ port: 8082 });
+      this.port = await getPortPromise({ port: 8082 });
       return true;
     } catch (e) {
       console.error(e);

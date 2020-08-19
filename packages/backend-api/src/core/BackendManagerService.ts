@@ -20,7 +20,7 @@ import { HttpBridge, HttpService, LocalHttpServer, LocalHttpService } from "..";
 /**
  * Service responsible for managing all backend services.
  */
-export abstract class BackendManagerService implements Service {
+export class BackendManagerService implements Service {
   private readonly serviceRegistry: Map<string, Service> = new Map();
 
   /**
@@ -41,11 +41,9 @@ export abstract class BackendManagerService implements Service {
   }
 
   public async start(): Promise<void> {
-    if (!this.localHttpServer) {
-      return;
+    if (this.localHttpServer) {
+      await this.registerService(this.localHttpServer);
     }
-
-    await this.registerService(this.localHttpServer);
 
     if (!this.bootstrapServices || this.bootstrapServices.length === 0) {
       return;
