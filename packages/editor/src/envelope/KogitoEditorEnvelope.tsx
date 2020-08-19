@@ -30,7 +30,7 @@ import * as React from "react";
 import { Envelope } from "@kogito-tooling/envelope";
 import { KogitoEditorEnvelopeApiFactory } from "./KogitoEditorEnvelopeApiImpl";
 import { EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
-import { I18nService } from "../api/I18nService";
+import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 
 export class KogitoEditorEnvelope {
   constructor(

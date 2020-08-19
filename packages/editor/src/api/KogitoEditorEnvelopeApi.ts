@@ -17,6 +17,7 @@
 import { EditorContent } from "./EditorContent";
 import { KeyboardShortcutsEnvelopeApi } from "@kogito-tooling/keyboard-shortcuts/dist/api";
 import { GuidedTourEnvelopeApi } from "@kogito-tooling/guided-tour/dist/api";
+import { I18nEnvelopeApi } from "@kogito-tooling/i18n/dist/api";
 
 export interface Association {
   origin: string;
@@ -29,12 +30,11 @@ export interface EditorInitArgs {
   initialLocale: string;
 }
 
-export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, GuidedTourEnvelopeApi {
+export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, GuidedTourEnvelopeApi, I18nEnvelopeApi {
   receive_contentChanged(content: EditorContent): void;
   receive_editorUndo(): void;
   receive_editorRedo(): void;
   receive_initRequest(association: Association, editorInit: EditorInitArgs): Promise<void>;
   receive_contentRequest(): Promise<EditorContent>;
   receive_previewRequest(): Promise<string>;
-  receive_localeChange(locale: string): void;
 }
