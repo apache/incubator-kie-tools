@@ -64,4 +64,5 @@ export const stopApplication = async (app: Application): Promise<void> => {
 
   await app.stop();
   assert.strictEqual(app.isRunning(), false);
+  return;
 }

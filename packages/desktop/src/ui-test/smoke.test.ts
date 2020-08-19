@@ -41,7 +41,7 @@ describe('Application Startup', function () {
       path: "",
       port: 3000,
       startTimeout: 45000,
-      waitTimeout: 10000
+      waitTimeout: 45000
     });
     app = startedApp;
   });
