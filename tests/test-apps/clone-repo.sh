@@ -4,6 +4,8 @@
 
 SCRIPT_DIR=`pwd`
 MVN_MODULE="${SCRIPT_DIR}/../../modules/kogito-maven/3.6.x"
+CONTAINER_ENGINE="docker"
+MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS="-Dquarkus.native.container-build=true -Dquarkus.native.container-runtime=${CONTAINER_ENGINE}"
 
 # exit when any command fails
 set -e
@@ -31,7 +33,7 @@ cp -rv  /tmp/kogito-examples/rules-quarkus-helloworld/ /tmp/kogito-examples/rule
 # generating the app binaries to test the binary build
 mvn -f rules-quarkus-helloworld clean package -DskipTests -U
 mvn -f process-springboot-example clean package -DskipTests -U
-mvn -f rules-quarkus-helloworld-native -Pnative clean package -DskipTests -U
+mvn -f rules-quarkus-helloworld-native -Pnative clean package -DskipTests -U ${MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS}
 
 # preparing directory to run kogito maven archetypes tests
 mkdir -pv /tmp/kogito-examples/dmn-example

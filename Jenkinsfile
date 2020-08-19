@@ -20,9 +20,6 @@ pipeline{
     tools {
         jdk 'kie-jdk11'
     }
-    environment {
-        JAVA_HOME = "${GRAALVM_HOME}"
-    }
     stages{
         stage('Initialization'){
             steps{
