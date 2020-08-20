@@ -123,7 +123,7 @@ pipeline {
                             emailext body: "Images' modules have been set with latest artifacts from JBoss repository.\n" +
                                     "Please verify in the logs if it has been set correctly: ${env.BUILD_URL}console.\n" +
                                     "And take your decision here: ${env.BUILD_URL}input",
-                                    subject: "Kogito Release on #${getBuildBranch()}",
+                                    subject: "[${getBuildBranch()}] Release Pipeline",
                                     to: ZULIP_EMAIL
                         }
                         input message: 'Are the artifacts set correctly ?', ok: 'Yes'
