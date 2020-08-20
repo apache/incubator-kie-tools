@@ -15,17 +15,14 @@
  */
 
 module.exports = {
-  reporters: ["default"],
-  moduleDirectories: ["node_modules"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
-  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?|js?|ts?)$",
-  transform: {
-    "^.+\\.jsx?$": "babel-jest",
-    "^.+\\.tsx?$": "ts-jest"
-  },
-  moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
-    "electron": "<rootDir>/__mocks__/electron.ts"
-  }
-};
+    moduleDirectories: ["node_modules"],
+    moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+    reporters: ["default"],
+    setupFilesAfterEnv: ["./jest.setup.ts"],
+    testRegex: "/ui-test.*\\.test\\.(tsx?|ts?)$",
+    transform: {
+      "^.+\\.jsx?$": "babel-jest",
+      "^.+\\.tsx?$": "ts-jest"
+    }
+  };
+  

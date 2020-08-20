@@ -186,6 +186,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
         >
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-testid="create-new-bpmn"
           >
             <div
               class="pf-c-card__header"
@@ -208,6 +209,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
           </article>
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-testid="create-new-dmn"
           >
             <div
               class="pf-c-card__header"
@@ -230,6 +232,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
           </article>
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-testid="open-sample-bpmn"
           >
             <div
               class="pf-c-card__header"
@@ -252,6 +255,7 @@ exports[`invalid file type alert alert is closed after 3000ms 1`] = `
           </article>
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-testid="open-sample-dmn"
           >
             <div
               class="pf-c-card__header"
@@ -686,6 +690,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
         >
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-testid="create-new-bpmn"
           >
             <div
               class="pf-c-card__header"
@@ -708,6 +713,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
           </article>
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-testid="create-new-dmn"
           >
             <div
               class="pf-c-card__header"
@@ -730,6 +736,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
           </article>
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-testid="open-sample-bpmn"
           >
             <div
               class="pf-c-card__header"
@@ -752,6 +759,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
           </article>
           <article
             class="pf-c-card pf-m-compact kogito--desktop__actions-card"
+            data-testid="open-sample-dmn"
           >
             <div
               class="pf-c-card__header"
