@@ -30,14 +30,6 @@ export interface EditorEnvelopeDictionary extends ReferenceDictionary<EditorEnve
   loadingScreen: {
     loading: string;
   };
-  resetEditorModal: {
-    title: string;
-    subtitle: string;
-    explanation: string;
-    options: string;
-    reOpen: string;
-    close: string;
-  };
 }
 
 export interface EditorEnvelopeI18n extends EditorEnvelopeDictionary, CommonI18n {}

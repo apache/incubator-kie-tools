@@ -38,7 +38,6 @@ import { GwtEditorMapping } from "./GwtEditorMapping";
 import { I18nServiceApi } from "./api/I18nServiceApi";
 import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
-import { EditorEnvelopeView } from "@kogito-tooling/editor/dist/envelope";
 
 declare global {
   interface Window {
@@ -86,9 +85,10 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     this.kieBcEditorsI18n.setLocale(initArgs.initialLocale);
     envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
       this.kieBcEditorsI18n.setLocale(locale);
+      window.alert("This Editor doesn't support changing locales yet.")
     });
 
-    this.updateGwtLocale();
+    this.appendGwtLocaleMetaTag();
     this.exposeEnvelopeContext(envelopeContext);
 
     const gwtFinishedLoading = new Promise<Editor>(res => {
@@ -161,7 +161,7 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     };
   }
 
-  private updateGwtLocale() {
+  private appendGwtLocaleMetaTag() {
     const meta = document.createElement("meta");
     meta.id = "gwt-locale";
     meta.name = "gwt.property";

@@ -30,13 +30,5 @@ export const en: EditorEnvelopeI18n = {
   },
   loadingScreen: {
     loading: "Loading..."
-  },
-  resetEditorModal: {
-    title: "Reset your editor",
-    subtitle: "Your locale has changed!",
-    explanation: "In order to update your editor with the new locale it's necessary to reset it.",
-    options: "To do that you can:",
-    reOpen: "Re-open your editor by going back to the initial page and opening a new editor.",
-    close: "Close the application and open it again."
   }
 };
