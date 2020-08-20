@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import axios, { AxiosError } from "axios";
 import { HttpBridge, HttpRequest, HttpResponse } from "@kogito-tooling/backend-api";
+import axios, { AxiosError } from "axios";
 
 /**
  * Default bridge between channels and external services that are accessed through HTTP.

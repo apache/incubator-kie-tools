@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./utils";
 export { QuarkusLocalServer } from "./QuarkusLocalServer";
+export * from "./utils";

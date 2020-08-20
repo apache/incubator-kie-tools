@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+import { Service } from "..";
 import { HttpBridge } from "./HttpBridge";
 import { HttpResponse } from "./HttpResponse";
-import { Service } from "..";
 
 /**
  * A service that makes HTTP requests.

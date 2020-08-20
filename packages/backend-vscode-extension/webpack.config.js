@@ -23,22 +23,22 @@ module.exports = [
     output: {
       library: "AppFormer.VsCodePack",
       libraryTarget: "umd",
-      umdNamedDefine: true,
+      umdNamedDefine: true
     },
     externals: {
-      vscode: "commonjs vscode",
+      vscode: "commonjs vscode"
     },
     target: "node",
     entry: {
-      "extension/extension": "./src/extension/extension.ts",
+      "extension/extension": "./src/extension/extension.ts"
     },
     plugins: [
       new CopyWebpackPlugin([
         {
           from: "../backend-quarkus-runner-unpacked/target/dependencies/kogito-extended-services-quarkus-*-runner.jar",
-          to: "server/quarkus-runner.jar",
-        },
-      ]),
-    ],
-  }),
+          to: "server/quarkus-runner.jar"
+        }
+      ])
+    ]
+  })
 ];

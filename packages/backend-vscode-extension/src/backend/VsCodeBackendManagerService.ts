@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as path from "path";
-import * as vscode from "vscode";
-
-import { QuarkusLocalServer } from "@kogito-tooling/backend-node";
 import { BackendManagerService } from "@kogito-tooling/backend-api";
 import { DefaultHttpBridge } from "@kogito-tooling/backend-http-bridge";
+import { QuarkusLocalServer } from "@kogito-tooling/backend-node";
+import * as path from "path";
+import * as vscode from "vscode";
 
 export class VsCodeBackendManagerService extends BackendManagerService {
   public constructor(context: vscode.ExtensionContext) {

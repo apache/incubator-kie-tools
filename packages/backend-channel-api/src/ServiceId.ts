@@ -17,5 +17,4 @@
 /**
  * Identification of services.
  */
-export enum ServiceId {
-}
+export enum ServiceId {}

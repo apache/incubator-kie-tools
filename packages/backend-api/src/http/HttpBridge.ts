@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { HttpResponse } from "./HttpResponse";
 import { HttpRequest } from "./HttpRequest";
+import { HttpResponse } from "./HttpResponse";
 
 /**
  * Bridge between channels and external services accessed through HTTP.

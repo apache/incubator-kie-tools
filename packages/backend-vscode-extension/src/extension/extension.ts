@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+import { BackendExtensionApi } from "@kogito-tooling/backend-channel-api";
 import * as vscode from "vscode";
 import { VsCodeBackendManagerService } from "../backend";
-import { BackendExtensionApi } from "@kogito-tooling/backend-channel-api";
 
 let backendManager: VsCodeBackendManagerService;
 

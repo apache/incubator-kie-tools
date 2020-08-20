@@ -25,5 +25,5 @@ export enum CapabilityResponseStatus {
   /**
    * Capability could not be resolved.
    */
-  NOT_AVAILABLE = "NOT_AVAILABLE",
+  NOT_AVAILABLE = "NOT_AVAILABLE"
 }

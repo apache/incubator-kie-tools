@@ -22,6 +22,7 @@ import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
 import { generateSvg } from "./generateSvg";
+import { maybeShowInstallBackendExtensionHint } from "./configUtils";
 import { VsCodeBackendProxy } from "./VsCodeBackendProxy";
 
 let backendProxy: VsCodeBackendProxy;
@@ -46,8 +47,7 @@ export async function startExtension(args: {
   backendProxy = new VsCodeBackendProxy(args.backendExtensionId);
 
   if (!(await backendProxy.tryLoadBackendExtension())) {
-    // TODO: uncomment when the backend extension is available at the VS Code marketplace
-    // configUtils.maybeShowInstallBackendExtensionHint(args.backendExtensionId);
+    maybeShowInstallBackendExtensionHint(args.backendExtensionId);
   }
 
   const workspaceApi = new VsCodeWorkspaceApi();

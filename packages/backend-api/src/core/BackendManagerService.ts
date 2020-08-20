@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Service } from "./Service";
 import { HttpBridge, HttpService, LocalHttpServer, LocalHttpService } from "..";
+import { Service } from "./Service";
 
 /**
  * Service responsible for managing all backend services.
@@ -55,7 +55,7 @@ export class BackendManagerService implements Service {
   }
 
   public stop(): void {
-    this.serviceRegistry.forEach((service) => service.stop());
+    this.serviceRegistry.forEach(service => service.stop());
     this.serviceRegistry.clear();
   }
 
@@ -123,7 +123,7 @@ export class BackendManagerService implements Service {
       return;
     }
 
-    const lazyService = this.lazyServices.find((s) => s.identify() === id);
+    const lazyService = this.lazyServices.find(s => s.identify() === id);
 
     if (!lazyService || !(await this.registerService(lazyService))) {
       return;

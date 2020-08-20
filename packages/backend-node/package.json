@@ -23,5 +23,9 @@
     "@kogito-tooling/backend-api": "0.7.0",
     "@types/semver": "^7.3.3",
     "portfinder": "^1.0.27"
+  },
+  "devDependencies": {
+    "@types/sinon": "9.0.3",
+    "sinon": "9.0.3"
   }
 }
