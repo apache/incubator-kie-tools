@@ -30,6 +30,8 @@ import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-tooling/enve
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts/dist/api";
 import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries, EditorEnvelopeI18n } from "./i18n";
 
 export class KogitoEditorEnvelopeApiFactory
   implements
@@ -56,6 +58,8 @@ export class KogitoEditorEnvelopeApiFactory
 export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
   private capturedInitRequestYet = false;
   private editor: Editor;
+  private redoId: number;
+  private undoId: number;
 
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
@@ -64,7 +68,8 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
       EditorEnvelopeView,
       KogitoEditorEnvelopeContextType
     >,
-    private readonly editorFactory: EditorFactory
+    private readonly editorFactory: EditorFactory,
+    private readonly i18n = new I18n<EditorEnvelopeI18n>(editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries)
   ) {}
 
   private hasCapturedInitRequestYet() {
@@ -82,6 +87,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
       return;
     }
 
+    this.setupI18n(initArgs);
     this.ackCapturedInitRequest();
 
     this.editor = await this.editorFactory.createEditor(this.args.envelopeContext, initArgs);
@@ -141,18 +147,34 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     return this.args.envelopeContext.services.i18n.executeOnLocaleChangeSubscriptions(locale);
   }
 
+  private setupI18n(initArgs: EditorInitArgs) {
+    this.i18n.setLocale(initArgs.initialLocale);
+    this.args.envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
+      this.i18n.setLocale(locale);
+      this.args.view.setResetEditorModalOpen();
+      this.args.view.setLocale(locale);
+
+      if (this.args.envelopeContext.context.channel !== ChannelType.VSCODE) {
+        this.args.envelopeContext.services.keyboardShortcuts.deregister(this.redoId);
+        this.args.envelopeContext.services.keyboardShortcuts.deregister(this.undoId);
+        this.registerDefaultShortcuts();
+      }
+    });
+  }
+
   private registerDefaultShortcuts() {
-    this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
+    const i18n = this.i18n.getCurrent();
+    this.redoId = this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
       "shift+ctrl+z",
-      "Edit | Redo last edit",
+      `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.redo}`,
       async () => {
         this.editor.redo();
         this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(StateControlCommand.REDO);
       }
     );
-    this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
+    this.undoId = this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
       "ctrl+z",
-      "Edit | Undo last edit",
+      `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.undo}`,
       async () => {
         this.editor.undo();
         this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(StateControlCommand.UNDO);

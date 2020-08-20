@@ -31,10 +31,12 @@ import { EditorContext } from "../../api";
 import { OperatingSystem } from "@kogito-tooling/channel-common-api";
 import "./styles.scss";
 import { useKogitoEditorEnvelopeContext } from "../../api";
+import { useEditorEnvelopeI18nContext } from "../i18n/setup";
 
 export function KeyBindingsHelpOverlay() {
   const [showing, setShowing] = useState(false);
   const envelopeContext = useKogitoEditorEnvelopeContext();
+  const { locale, i18n } = useEditorEnvelopeI18nContext();
 
   const toggle = useCallback(() => {
     setShowing(!showing);
@@ -63,12 +65,12 @@ export function KeyBindingsHelpOverlay() {
   useEffect(() => {
     const id = envelopeContext.services.keyboardShortcuts.registerKeyPress(
       "shift+/",
-      "Help | Show keyboard shortcuts",
+      `${i18n.keyBindingsHelpOverlay.categories.help} | ${i18n.keyBindingsHelpOverlay.showKeyboardOverlay}`,
       async () => setShowing(true),
       { element: window }
     );
     return () => envelopeContext.services.keyboardShortcuts.deregister(id);
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     if (showing) {

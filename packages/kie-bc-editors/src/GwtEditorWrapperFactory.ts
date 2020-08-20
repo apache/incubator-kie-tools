@@ -38,6 +38,7 @@ import { GwtEditorMapping } from "./GwtEditorMapping";
 import { I18nServiceApi } from "./api/I18nServiceApi";
 import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { EditorEnvelopeView } from "@kogito-tooling/editor/dist/envelope";
 
 declare global {
   interface Window {
@@ -77,14 +78,17 @@ export class GwtEditorWrapperFactory implements EditorFactory {
   public createEditor(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs) {
     this.gwtAppFormerApi.setClientSideOnly(true);
 
-    this.kieBcEditorsI18n.setLocale(initArgs.initialLocale);
-    envelopeContext.services.i18n.subscribeToLocaleChange(locale => this.kieBcEditorsI18n.setLocale(locale));
-
     const languageData = this.gwtEditorMapping.getLanguageData(initArgs);
     if (!languageData) {
       throw new Error("Language data does not exist");
     }
 
+    this.kieBcEditorsI18n.setLocale(initArgs.initialLocale);
+    envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
+      this.kieBcEditorsI18n.setLocale(locale);
+    });
+
+    this.updateGwtLocale();
     this.exposeEnvelopeContext(envelopeContext);
 
     const gwtFinishedLoading = new Promise<Editor>(res => {
@@ -155,6 +159,17 @@ export class GwtEditorWrapperFactory implements EditorFactory {
         }
       }
     };
+  }
+
+  private updateGwtLocale() {
+    const meta = document.createElement("meta");
+    meta.id = "gwt-locale";
+    meta.name = "gwt.property";
+    meta.content = `locale=${this.kieBcEditorsI18n
+      .getLocale()
+      .split("-")
+      .join("_")}`;
+    document.head.appendChild(meta);
   }
 
   private loadResource(resource: Resource) {

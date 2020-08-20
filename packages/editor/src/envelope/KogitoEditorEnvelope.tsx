@@ -31,6 +31,8 @@ import { Envelope } from "@kogito-tooling/envelope";
 import { KogitoEditorEnvelopeApiFactory } from "./KogitoEditorEnvelopeApiImpl";
 import { EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
+import { EditorEnvelopeI18nContext, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 
 export class KogitoEditorEnvelope {
   constructor(
@@ -71,7 +73,16 @@ export class KogitoEditorEnvelope {
 
     const app = (
       <KogitoEditorEnvelopeContext.Provider value={this.context}>
-        <EditorEnvelopeView exposing={self => (view = self)} />
+        <I18nDictionariesProvider
+          defaults={editorEnvelopeI18nDefaults}
+          dictionaries={editorEnvelopeI18nDictionaries}
+          ctx={EditorEnvelopeI18nContext}
+          initialLocale={navigator.language}
+        >
+          <EditorEnvelopeI18nContext.Consumer>
+            {({ setLocale }) => <EditorEnvelopeView exposing={self => (view = self)} setLocale={setLocale} />}
+          </EditorEnvelopeI18nContext.Consumer>
+        </I18nDictionariesProvider>
       </KogitoEditorEnvelopeContext.Provider>
     );
 

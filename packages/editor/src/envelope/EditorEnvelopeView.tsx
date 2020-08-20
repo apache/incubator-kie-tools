@@ -21,20 +21,23 @@ import "@patternfly/patternfly/base/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/patternfly/patternfly.scss";
 import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
+import { ResetEditorModal } from "./ResetEditorModal";
 
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
+  setLocale: React.Dispatch<string>;
 }
 
 interface State {
   editor?: Editor;
   loading: boolean;
+  resetEditorModalIsOpen: boolean;
 }
 
 export class EditorEnvelopeView extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { editor: undefined, loading: true };
+    this.state = { editor: undefined, loading: true, resetEditorModalIsOpen: false };
     this.props.exposing(this);
   }
 
@@ -54,9 +57,24 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
     return this.setState({ loading: true });
   }
 
+  public setResetEditorModalOpen() {
+    return this.setState({ resetEditorModalIsOpen: true });
+  }
+
+  public setResetEditorModalClose() {
+    return this.setState({ resetEditorModalIsOpen: false });
+  }
+
+  public setLocale(locale: string) {
+    this.props.setLocale(locale);
+  }
+
   public render() {
     return (
       <>
+        {!this.state.loading && this.state.resetEditorModalIsOpen && (
+          <ResetEditorModal isOpen={this.state.resetEditorModalIsOpen} close={() => this.setResetEditorModalClose()} />
+        )}
         {!this.state.loading && <KeyBindingsHelpOverlay />}
         <div id="loading-screen" style={{ zIndex: 100, position: "relative" }}>
           <LoadingScreen visible={this.state.loading} />
