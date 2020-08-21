@@ -68,4 +68,4 @@ Feature: Kogito Trusty
       }
       """
 
-    Then HTTP GET request on service "trusty" with path "/v1/executions" should contain a string "DECISION" within 3 minutes
+    Then HTTP GET request on service "trusty" with path "/executions" should contain a string "DECISION" within 3 minutes
