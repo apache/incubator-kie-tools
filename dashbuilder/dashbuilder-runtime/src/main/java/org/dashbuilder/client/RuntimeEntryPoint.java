@@ -27,10 +27,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
+import org.dashbuilder.client.error.DefaultRuntimeErrorCallback;
 import org.dashbuilder.client.perspective.NotFoundPerspective;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ioc.client.api.UncaughtExceptionHandler;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.Workbench;
@@ -57,7 +59,10 @@ public class RuntimeEntryPoint {
 
     @Inject
     RuntimeCommunication runtimeCommunication;
-
+    
+    @Inject
+    DefaultRuntimeErrorCallback defaultRuntimeErrorCallback;
+    
     private String perspective;
 
     @PostConstruct
@@ -100,6 +105,11 @@ public class RuntimeEntryPoint {
     public void error(Object e, Throwable t) {
         runtimeCommunication.showError(i18n.errorLoadingDashboards(), t);
         this.hideLoading();
+    }
+    
+    @UncaughtExceptionHandler
+    public void generalErrorHandling(final Throwable t) {
+        defaultRuntimeErrorCallback.error(t);
     }
 
     private void hideLoading() {

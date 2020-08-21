@@ -19,9 +19,14 @@ package org.dashbuilder.backend.remote.services.dummy;
 import java.util.Collection;
 import java.util.Collections;
 
+import javax.enterprise.context.ApplicationScoped;
+
+import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.experimental.service.backend.BackendExperimentalFeatureDefRegistry;
 import org.uberfire.experimental.service.definition.ExperimentalFeatureDefinition;
 
+@Service
+@ApplicationScoped
 public class DummyBackendExperimentalFeatureDefRegistry implements BackendExperimentalFeatureDefRegistry {
 
     @Override

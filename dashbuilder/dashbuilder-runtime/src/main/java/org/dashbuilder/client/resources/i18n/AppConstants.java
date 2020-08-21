@@ -54,5 +54,13 @@ public interface AppConstants extends Messages {
     String dashboardAlreadyImport(String newModelId, String exitingModel);
 
     String importSuccess(String fileName);
-    
+
+    String disconnectedFromServer();
+
+    String couldNotConnectToServer();
+
+    String sessionTimeout();
+
+    String invalidBusResponseProbablySessionTimeout();
+
 }
