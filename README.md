@@ -498,7 +498,7 @@ s2i build target/ quay.io/kiegroup/kogito-quarkus-ubi8:latest binary-test-exampl
 ...
 
 # run the output image
-$ docker run -it -p 8080:8080 binary-test-example-3
+$ docker run -it -p 8080:8080 binary-test-example
 
 # on another terminal, interact with the kogito service
 $ curl -d '{"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}}' -H "Content-Type: application/json" -X POST http://localhost:8080/orders
