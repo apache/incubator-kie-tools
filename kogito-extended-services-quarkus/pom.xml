@@ -18,12 +18,11 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito</groupId>
+    <groupId>io.github.kiegroup</groupId>
     <artifactId>kogito-tooling-java</artifactId>
-    <version>0.0.0</version>
+    <version>0.7.0-SNAPSHOT</version>
   </parent>
 
-  <version>0.7.0-SNAPSHOT</version>
   <artifactId>kogito-extended-services-quarkus</artifactId>
   <name>Kogito Tooling Java - Kogito Extended Services Quarkus</name>
   <description>Quarkus application entry point for Kogito extended services.</description>

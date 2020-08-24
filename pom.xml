@@ -20,31 +20,40 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.kie.kogito</groupId>
+  <groupId>io.github.kiegroup</groupId>
   <artifactId>kogito-tooling-java</artifactId>
   <packaging>pom</packaging>
-  <version>0.0.0</version>
+  <version>0.7.0-SNAPSHOT</version>
 
   <name>Kogito Tooling Java - Parent</name>
   <description>The parent contains all metadata including dependency versions and modules.</description>
-  <url>http://kogito.kie.org</url>
+  <url>https://github.com/kiegroup/kogito-tooling-java</url>
   <inceptionYear>2020</inceptionYear>
-  <organization>
-    <name>JBoss by Red Hat</name>
-    <url>http://www.jboss.org/</url>
-  </organization>
   <licenses>
     <license>
-      <name>The Apache Software License, Version 2.0</name>
+      <name>The Apache License, Version 2.0</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
     </license>
   </licenses>
+
+  <developers>
+    <developer>
+      <name>Kie Tooling</name>
+      <email>kietooling@gmail.com</email>
+      <organization>io.github.kiegroup</organization>
+      <organizationUrl>https://github.com/kiegroup</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/kiegroup/kogito-tooling-java.git</connection>
+    <developerConnection>scm:git:ssh://github.com:kiegroup/kogito-tooling-java.git</developerConnection>
+    <url>http://github.com/kiegroup/kogito-tooling-java/tree/master</url>
+  </scm>
 
   <properties>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
-    <maven.deploy.skip>true</maven.deploy.skip>
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
 
@@ -128,16 +137,70 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>1.6.8</version>
+          <extensions>true</extensions>
+          <configuration>
+            <serverId>ossrh</serverId>
+            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.0.1</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.2.0</version>
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.6</version>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
 
   <distributionManagement>
     <repository>
-      <id>github</id>
-      <name>GitHub Packages</name>
-      <url>https://maven.pkg.github.com/kiegroup/kogito-tooling-java</url>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
   </distributionManagement>
 
 </project>
