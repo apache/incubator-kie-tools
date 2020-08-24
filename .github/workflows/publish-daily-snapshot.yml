@@ -20,11 +20,19 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+        server-id: ossrh
+        server-username: OSSRH_USERNAME
+        server-password: OSSRH_TOKEN
+        gpg-private-key: GPG_PRIVATE_KEY
+        gpg-passphrase: GPG_PASSPHRASE
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    #- name: Publish package
-    #  run: mvn deploy
-    #  env:
-    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Publish package
+      run: mvn deploy
+      env:
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
