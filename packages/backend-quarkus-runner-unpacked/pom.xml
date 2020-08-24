@@ -25,12 +25,8 @@
 
     <repositories>
         <repository>
-            <id>JBoss Nexus</id>
-            <url>https://repository.jboss.org/nexus/content/groups/public</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
     </repositories>
 
@@ -41,7 +37,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kie</groupId>
+            <groupId>io.github.kiegroup</groupId>
             <artifactId>kogito-extended-services-quarkus</artifactId>
             <version>${version.quarkus.runner}</version>
             <classifier>runner</classifier>
