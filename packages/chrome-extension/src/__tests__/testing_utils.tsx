@@ -25,7 +25,7 @@ import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito
 import {
   ChromeExtensionI18nContext,
   chromeExtensionI18nDictionaries,
-  chromeExtensionI8nDefaults
+  chromeExtensionI18nDefaults
 } from "../app/i18n";
 import { ChromeExtensionI18n } from "../app/i18n";
 
@@ -88,7 +88,7 @@ export function usingTestingChromeExtensionI18nContext(
   ctx?: Partial<I18nDictionariesProviderProps<ChromeExtensionI18n>>
 ) {
   const usedCtx: I18nDictionariesProviderProps<ChromeExtensionI18n> = {
-    defaults: chromeExtensionI8nDefaults,
+    defaults: chromeExtensionI18nDefaults,
     dictionaries: chromeExtensionI18nDictionaries,
     ctx: ChromeExtensionI18nContext,
     children,

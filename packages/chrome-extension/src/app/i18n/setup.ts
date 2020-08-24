@@ -21,7 +21,7 @@ import { en } from "./locales";
 import { ChromeExtensionI18n } from "./ChromeExtensionI18n";
 import { I18nDefaults, I18nDictionaries } from "@kogito-tooling/i18n/dist/core";
 
-export const chromeExtensionI8nDefaults: I18nDefaults<ChromeExtensionI18n> = {
+export const chromeExtensionI18nDefaults: I18nDefaults<ChromeExtensionI18n> = {
   locale: navigator.language,
   dictionary: en
 };
