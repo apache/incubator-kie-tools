@@ -24,6 +24,7 @@ describe("NaiveBayesModel tests", () => {
     expect(pmml).not.toBeNull();
 
     const dataDictionary: DataDictionary = pmml.DataDictionary;
+    expect(dataDictionary.numberOfFields).toBe(1);
     expect(dataDictionary.DataField.length).toBe(1);
     expect(dataDictionary.DataField[0].name).toBe("field1");
     expect(dataDictionary.DataField[0].dataType).toBe("double");
