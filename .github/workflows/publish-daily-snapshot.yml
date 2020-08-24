@@ -23,7 +23,7 @@ jobs:
         server-id: ossrh
         server-username: OSSRH_USERNAME
         server-password: OSSRH_TOKEN
-        gpg-private-key: GPG_PRIVATE_KEY
+        gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
         gpg-passphrase: GPG_PASSPHRASE
 
     - name: Build with Maven
@@ -34,5 +34,4 @@ jobs:
       env:
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
-        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
