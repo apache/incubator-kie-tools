@@ -22,6 +22,7 @@ import (
 	"io"
 	"os"
 	"reflect"
+	"sync"
 	"time"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
@@ -42,7 +43,7 @@ const (
 var (
 	logFolder = defaultLogFolder
 
-	monitoredNamespaces = make(map[string]*monitoredNamespace)
+	monitoredNamespaces sync.Map
 
 	loggerOpts = make(map[string]*logger.Opts)
 )
@@ -129,7 +130,7 @@ func StartPodLogCollector(namespace string) error {
 		pods:           make(map[string]*monitoredPod),
 		stopMonitoring: make(chan bool),
 	}
-	monitoredNamespaces[namespace] = monitoredNamespace
+	monitoredNamespaces.Store(namespace, monitoredNamespace)
 
 	scanningPeriod := time.NewTicker(5 * time.Second)
 	defer scanningPeriod.Stop()
@@ -177,7 +178,7 @@ func ReportPerformanceMetric(metric, value, unit string) {
 }
 
 func isNamespaceMonitored(namespace string) bool {
-	_, exists := monitoredNamespaces[namespace]
+	_, exists := monitoredNamespaces.Load(namespace)
 	return exists
 }
 
@@ -236,7 +237,7 @@ func createPrefixedLogFolder(namespace string) error {
 }
 
 func isPodMonitored(namespace, podName string) bool {
-	_, exists := monitoredNamespaces[namespace].pods[podName]
+	_, exists := getMonitoredNamespace(namespace).pods[podName]
 	return exists
 }
 
@@ -244,12 +245,12 @@ func initMonitoredPod(namespace, podName string) {
 	monitoredPod := &monitoredPod{
 		containers: make(map[string]*monitoredContainer),
 	}
-	monitoredNamespaces[namespace].pods[podName] = monitoredPod
+	getMonitoredNamespace(namespace).pods[podName] = monitoredPod
 }
 
 func initMonitoredContainer(namespace, podName, containerName string) {
 	monitoredContainer := &monitoredContainer{loggingFinished: false}
-	monitoredNamespaces[namespace].pods[podName].containers[containerName] = monitoredContainer
+	getMonitoredNamespace(namespace).pods[podName].containers[containerName] = monitoredContainer
 }
 
 func storeContainerLogWithFollow(namespace, podName, containerName string) {
@@ -275,12 +276,12 @@ func getContainerLogWithFollow(namespace, podName, containerName string) (string
 }
 
 func isContainerLoggingFinished(namespace, podName, containerName string) bool {
-	monitoredContainer := monitoredNamespaces[namespace].pods[podName].containers[containerName]
+	monitoredContainer := getMonitoredNamespace(namespace).pods[podName].containers[containerName]
 	return monitoredContainer.loggingFinished
 }
 
 func markContainerLoggingAsFinished(namespace, podName, containerName string) {
-	monitoredContainer := monitoredNamespaces[namespace].pods[podName].containers[containerName]
+	monitoredContainer := getMonitoredNamespace(namespace).pods[podName].containers[containerName]
 	monitoredContainer.loggingFinished = true
 }
 
@@ -299,13 +300,13 @@ func StopPodLogCollector(namespace string) error {
 }
 
 func stopNamespaceMonitoring(namespace string) {
-	monitoredNamespaces[namespace].stopMonitoring <- true
-	close(monitoredNamespaces[namespace].stopMonitoring)
+	getMonitoredNamespace(namespace).stopMonitoring <- true
+	close(getMonitoredNamespace(namespace).stopMonitoring)
 }
 
 // Write log of all containers of pods in namespace which didn't store their log yet
 func storeUnfinishedContainersLog(namespace string) {
-	for podName, pod := range monitoredNamespaces[namespace].pods {
+	for podName, pod := range getMonitoredNamespace(namespace).pods {
 		for containerName, container := range pod.containers {
 			if !container.loggingFinished {
 				storeContainerLog(namespace, podName, containerName)
@@ -335,6 +336,14 @@ func storeContainerLog(namespace string, podName, containerName string) {
 // GetContainerLog exported for Zookeeper workaround, can be unexported once https://github.com/strimzi/strimzi-kafka-operator/issues/3092 is fixed
 func GetContainerLog(namespace, podName, containerName string) (string, error) {
 	return kubernetes.PodC(kubeClient).GetLogs(namespace, podName, containerName)
+}
+
+func getMonitoredNamespace(namespace string) *monitoredNamespace {
+	loadedNamespace, exists := monitoredNamespaces.Load(namespace)
+	if exists {
+		return loadedNamespace.(*monitoredNamespace)
+	}
+	return nil
 }
 
 type monitoredNamespace struct {
