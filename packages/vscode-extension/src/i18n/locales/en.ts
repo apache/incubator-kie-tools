@@ -21,5 +21,8 @@ export const en: VsCodeI18n = {
   ...en_common,
   savedSvg: fileName => `${en_common.names.svg} saved at ${fileName}.`,
   openSvg: `Open ${en_common.names.svg}`,
-  savedSuccessfully: "Saved successfully!"
+  savedSuccessfully: "Saved successfully!",
+  dontShowAgain: "Don't show again",
+  installExtension: "Install extension",
+  installBackendExtensionMessage: "Consider installing the backend extension to augment the capabilities of the editors."
 };

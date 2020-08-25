@@ -46,13 +46,13 @@ export async function startExtension(args: {
   editorEnvelopeLocator: EditorEnvelopeLocator;
   backendExtensionId?: string;
 }) {
-  backendProxy = new VsCodeBackendProxy(args.backendExtensionId);
+  const vsCodeI18n = new I18n(vsCodeI18nDefaults, vsCodeI18nDictionaries, vscode.env.language);
 
+  backendProxy = new VsCodeBackendProxy(args.backendExtensionId);
   if (args.backendExtensionId && !(await backendProxy.tryLoadBackendExtension())) {
-    maybeSuggestBackendExtension(args.context, args.backendExtensionId);
+    maybeSuggestBackendExtension(vsCodeI18n, args.context, args.backendExtensionId);
   }
 
-  const vsCodeI18n = new I18n(vsCodeI18nDefaults, vsCodeI18nDictionaries, vscode.env.language);
   const workspaceApi = new VsCodeWorkspaceApi();
   const editorStore = new KogitoEditorStore();
   const messageBroadcaster = new EnvelopeBusMessageBroadcaster();

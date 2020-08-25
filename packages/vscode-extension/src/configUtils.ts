@@ -14,38 +14,45 @@
  * limitations under the License.
  */
 
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 import * as vscode from "vscode";
+import { VsCodeI18n } from "./i18n";
 
 const SUGGEST_BACKEND_KEY = "SUGGEST_BACKEND";
 
 /**
  * If `SUGGEST_BACKEND` config is enabled,
  * show a notification informing the user to install the backend extension.
+ * @param vsCodeI18n I18n for VS Code.
  * @param context The `vscode.ExtensionContext` provided on the activate method of the extension.
  * @param backendExtensionId The backend extension ID in `publisher.name` format.
  */
-export function maybeSuggestBackendExtension(context: vscode.ExtensionContext, backendExtensionId: string): void {
+export function maybeSuggestBackendExtension(
+  vsCodeI18n: I18n<VsCodeI18n>,
+  context: vscode.ExtensionContext,
+  backendExtensionId: string
+): void {
   const suggestBackend = context.globalState.get<boolean>(SUGGEST_BACKEND_KEY) ?? true;
 
   if (!suggestBackend) {
     return;
   }
 
-  const message = "Consider installing the backend extension to augment the capabilities of the editors.";
-  const installOption = "Install extension";
-  const dontShowAgainOption = "Don't show again";
+  const i18n = vsCodeI18n.getCurrent();
 
-  vscode.window.showInformationMessage(message, installOption, dontShowAgainOption).then(async selection => {
-    if (!selection) {
-      return;
-    }
+  vscode.window
+    .showInformationMessage(i18n.installBackendExtensionMessage, i18n.installExtension, i18n.dontShowAgain)
+    .then(async selection => {
+      if (!selection) {
+        return;
+      }
 
-    if (selection === installOption) {
-      await vscode.env.openExternal(vscode.Uri.parse(`${vscode.env.uriScheme}:extension/${backendExtensionId}`));
-    }
+      if (selection === i18n.installExtension) {
+        await vscode.env.openExternal(vscode.Uri.parse(`${vscode.env.uriScheme}:extension/${backendExtensionId}`));
+      }
 
-    if (selection === dontShowAgainOption) {
-      context.globalState.update(SUGGEST_BACKEND_KEY, false);
-    }
-  });
+      if (selection === i18n.dontShowAgain) {
+        context.globalState.update(SUGGEST_BACKEND_KEY, false);
+      }
+    });
 }

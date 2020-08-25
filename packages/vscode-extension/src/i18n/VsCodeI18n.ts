@@ -21,6 +21,9 @@ interface VsCodeDictionary extends ReferenceDictionary<VsCodeDictionary> {
   savedSvg: (fileName: string) => string;
   openSvg: string;
   savedSuccessfully: string;
+  dontShowAgain: string;
+  installExtension: string;
+  installBackendExtensionMessage: string;
 }
 
 export interface VsCodeI18n extends VsCodeDictionary, CommonI18n {}
