@@ -21,7 +21,7 @@ const common = require("../../webpack.common.config");
 module.exports = [
   merge(common, {
     output: {
-      library: "AppFormer.VsCodePack",
+      library: "AppFormer.VsCodeBackendExtension",
       libraryTarget: "umd",
       umdNamedDefine: true
     },

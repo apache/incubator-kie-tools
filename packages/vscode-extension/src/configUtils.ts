@@ -16,18 +16,18 @@
 
 import * as vscode from "vscode";
 
-const CONFIG_SECTION = "kogito";
-const BACKEND_HINT_CONFIG = "installBackendExtensionHint";
+const SUGGEST_BACKEND_KEY = "SUGGEST_BACKEND";
 
 /**
- * If `kogito.installBackendExtensionHint` config is enabled,
+ * If `SUGGEST_BACKEND` config is enabled,
  * show a notification informing the user to install the backend extension.
+ * @param context The `vscode.ExtensionContext` provided on the activate method of the extension.
  * @param backendExtensionId The backend extension ID in `publisher.name` format.
  */
-export function maybeShowInstallBackendExtensionHint(backendExtensionId: string): void {
-  const config = vscode.workspace.getConfiguration(CONFIG_SECTION);
+export function maybeSuggestBackendExtension(context: vscode.ExtensionContext, backendExtensionId: string): void {
+  const suggestBackend = context.globalState.get<boolean>(SUGGEST_BACKEND_KEY) ?? true;
 
-  if (!config.get<boolean>(BACKEND_HINT_CONFIG)) {
+  if (!suggestBackend) {
     return;
   }
 
@@ -45,7 +45,7 @@ export function maybeShowInstallBackendExtensionHint(backendExtensionId: string)
     }
 
     if (selection === dontShowAgainOption) {
-      config.update(BACKEND_HINT_CONFIG, false, vscode.ConfigurationTarget.Global);
+      context.globalState.update(SUGGEST_BACKEND_KEY, false);
     }
   });
 }

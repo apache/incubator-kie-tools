@@ -79,6 +79,13 @@ jobs:
           name: vscode-extension
           path: packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
 
+      - name: Upload Backend VSCode Extension (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: backend-vscode-extension
+          path: packages/backend-vscode-extension/dist/backend-vscode-extension_${{ steps.version.outputs.version }}.vsix
+
       - name: Upload Desktop App - Ubuntu (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1

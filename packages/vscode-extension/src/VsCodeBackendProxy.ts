@@ -23,9 +23,9 @@ import * as vscode from "vscode";
  */
 export class VsCodeBackendProxy extends BackendProxy {
   /**
-   * @param backendExtensionId The backend extension ID in `publisher.name` format.
+   * @param backendExtensionId The backend extension ID in `publisher.name` format (optional).
    */
-  public constructor(private readonly backendExtensionId: string) {
+  public constructor(private readonly backendExtensionId?: string) {
     super();
   }
 
@@ -42,6 +42,10 @@ export class VsCodeBackendProxy extends BackendProxy {
    * @returns True if the backend extension is loaded, otherwise false.
    */
   public async tryLoadBackendExtension(): Promise<boolean> {
+    if (!this.backendExtensionId) {
+      return false;
+    }
+
     const backendExtension = vscode.extensions.getExtension(this.backendExtensionId);
 
     if (this.backendManager && backendExtension) {

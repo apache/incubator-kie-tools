@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
+import { BackendManagerService } from "@kogito-tooling/backend-api";
 import { BackendExtensionApi } from "@kogito-tooling/backend-channel-api";
+import { DefaultHttpBridge } from "@kogito-tooling/backend-http-bridge";
+import { QuarkusLocalServer } from "@kogito-tooling/backend-node";
+import * as path from "path";
 import * as vscode from "vscode";
-import { VsCodeBackendManagerService } from "../backend";
 
-let backendManager: VsCodeBackendManagerService;
+let backendManager: BackendManagerService;
 
 export async function activate(context: vscode.ExtensionContext): Promise<BackendExtensionApi> {
   console.info("Backend extension is alive.");
 
-  backendManager = new VsCodeBackendManagerService(context);
+  backendManager = new BackendManagerService(
+    new DefaultHttpBridge(),
+    new QuarkusLocalServer(context.asAbsolutePath(path.join("dist", "server", "quarkus-runner.jar"))),
+    [],
+    []
+  );
+
   await backendManager.start();
 
   return { backendManager: backendManager };

@@ -1,1 +1,1 @@
-Kogito Tooling Backend VSCode extension
+Kogito Tooling Backend VS Code extension

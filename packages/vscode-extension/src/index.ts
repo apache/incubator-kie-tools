@@ -22,7 +22,7 @@ import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
 import { generateSvg } from "./generateSvg";
-import { maybeShowInstallBackendExtensionHint } from "./configUtils";
+import { maybeSuggestBackendExtension } from "./configUtils";
 import { VsCodeBackendProxy } from "./VsCodeBackendProxy";
 
 let backendProxy: VsCodeBackendProxy;
@@ -34,7 +34,7 @@ let backendProxy: VsCodeBackendProxy;
  *  @param args.webviewLocation The relative path to search for an "index.js" file for the WebView panel.
  *  @param args.context The vscode.ExtensionContext provided on the activate method of the extension.
  *  @param args.routes The routes to be used to find resources for each language.
- *  @param args.backendExtensionId The backend extension ID in `publisher.name` format.
+ *  @param args.backendExtensionId The backend extension ID in `publisher.name` format (optional).
  */
 export async function startExtension(args: {
   extensionName: string;
@@ -42,12 +42,12 @@ export async function startExtension(args: {
   viewType: string;
   getPreviewCommandId: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
-  backendExtensionId: string;
+  backendExtensionId?: string;
 }) {
   backendProxy = new VsCodeBackendProxy(args.backendExtensionId);
 
-  if (!(await backendProxy.tryLoadBackendExtension())) {
-    maybeShowInstallBackendExtensionHint(args.backendExtensionId);
+  if (args.backendExtensionId && !(await backendProxy.tryLoadBackendExtension())) {
+    maybeSuggestBackendExtension(args.context, args.backendExtensionId);
   }
 
   const workspaceApi = new VsCodeWorkspaceApi();

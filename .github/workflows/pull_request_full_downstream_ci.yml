@@ -37,22 +37,22 @@ jobs:
         id: buildInfo
         run: |
           if [ -z "${{ github.event.pull_request }}" ]; then
-            user=$(node -e "console.log('${{ github.event.comment.body }}'.match(/Build: (.+)\/(.+)$/)[1])"); 
+            user=$(node -e "console.log('${{ github.event.comment.body }}'.match(/Build: (.+)\/(.+)$/)[1])");
             ref=$(node -e "console.log('${{ github.event.comment.body }}'.match(/Build: (.+)\/(.+)$/)[2])");
             category="comment";
             id="${{ github.event.comment.id }}";
-          else 
+          else
             user=${{ github.event.pull_request.user.login }}
             ref=${{ github.head_ref }}
             category="pull";
             id="${{ github.event.pull_request.number }}";
           fi
-          
+
           echo ::set-output name=user::$user
           echo ::set-output name=ref::$ref
           echo ::set-output name=category::$category
           echo ::set-output name=id::$id
-          
+
       - name: Create comment
         if: github.event_name == 'issue_comment'
         uses: peter-evans/create-or-update-comment@v1
@@ -62,7 +62,7 @@ jobs:
             [KOGITO-TOOLING-BUILD] @${{ github.actor }} Build triggered for ${{ steps.buildInfo.outputs.user }}/${{ steps.buildInfo.outputs.ref }}. Check progress at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
             The Online Editor for this job will be available at https://kiegroup.github.io/kogito-online-ci/${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }} once the job is done.
           reactions: rocket
-       
+
       - name: Checkout droolsjbpm-build-bootstrap
         uses: actions/checkout@v2
         with:
@@ -242,6 +242,12 @@ jobs:
           name: vscode-extension-fdb
           path: kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
 
+      - name: Upload Backend VSCode Extension
+        uses: actions/upload-artifact@v1
+        with:
+          name: backend-vscode-extension-fdb
+          path: kogito-tooling/packages/backend-vscode-extension/dist/backend-vscode-extension_${{ steps.version.outputs.version }}.vsix
+
       - name: Upload Chrome Extension
         uses: actions/upload-artifact@v1
         with:
@@ -270,7 +276,7 @@ jobs:
 
       # For this step to work properly, you have to add the owner of KOGITO_TOOLING_BOT_TOKEN as collaborator on 'kogito-online-ci'.
       - name: Update kogito-online-ci resources
-        run: |          
+        run: |
           cd kogito-online-ci
           rm -rf ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}
           mkdir -p ${{ steps.buildInfo.outputs.category }}/${{ steps.buildInfo.outputs.id }}/editors
