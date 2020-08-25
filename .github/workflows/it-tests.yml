@@ -38,15 +38,18 @@ jobs:
           yarn run build
           yarn run build:fast
 
+      - name: Increase inotify watches
+        if: matrix.os == 'ubuntu-latest'
+        run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
       # Starts and waits for servers and runs integrations tests
       - name: Run integration tests
         env:
           DISPLAY: ":99.0"
         run: |
-          echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
           cd packages/online-editor && yarn run start &
           cd packages/chrome-extension-pack-kogito-kie-editors && yarn run serve-envelope &
-          sleep 15  
+          sleep 20  
           cd packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
 
       - name: Archive it test screenshots	
