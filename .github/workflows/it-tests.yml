@@ -38,6 +38,7 @@ jobs:
           yarn run build
           yarn run build:fast
 
+      # Starts and waits for servers and runs integrations tests
       - name: Run integration tests
         env:
           DISPLAY: ":99.0"
