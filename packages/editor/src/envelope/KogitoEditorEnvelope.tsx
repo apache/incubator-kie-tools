@@ -42,17 +42,15 @@ export class KogitoEditorEnvelope {
       editorFactory: EditorFactory;
       editorContext: EditorContext;
     },
-    private readonly kogitoEditorEnvelopeApiFactory = new KogitoEditorEnvelopeApiFactory(args.editorFactory),
-    private readonly keyboardShortcutsService = new DefaultKeyboardShortcutsService({
-      os: args.editorContext.operatingSystem
-    }),
-    private readonly i18nService = new I18nService(),
+    private readonly kogitoEditorEnvelopeApiFactory: KogitoEditorEnvelopeApiFactory,
+    private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService,
+    private readonly i18nService: I18nService,
     private readonly envelope: Envelope<
       KogitoEditorEnvelopeApi,
       KogitoEditorChannelApi,
       EditorEnvelopeView,
       KogitoEditorEnvelopeContextType
-    > = new Envelope(args.bus),
+    >,
     private readonly context: KogitoEditorEnvelopeContextType = {
       channelApi: envelope.channelApi,
       context: args.editorContext,

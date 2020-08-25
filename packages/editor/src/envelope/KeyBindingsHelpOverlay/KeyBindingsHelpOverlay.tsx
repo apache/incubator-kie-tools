@@ -36,7 +36,7 @@ import { useEditorEnvelopeI18nContext } from "../i18n/setup";
 export function KeyBindingsHelpOverlay() {
   const [showing, setShowing] = useState(false);
   const envelopeContext = useKogitoEditorEnvelopeContext();
-  const { locale, i18n } = useEditorEnvelopeI18nContext();
+  const { i18n } = useEditorEnvelopeI18nContext();
 
   const toggle = useCallback(() => {
     setShowing(!showing);
@@ -70,7 +70,7 @@ export function KeyBindingsHelpOverlay() {
       { element: window }
     );
     return () => envelopeContext.services.keyboardShortcuts.deregister(id);
-  }, [locale]);
+  }, [i18n]);
 
   useEffect(() => {
     if (showing) {
