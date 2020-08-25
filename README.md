@@ -19,8 +19,8 @@ To start using uniforms, we have to install three independent packages:
 In this example, we will use the JSONSchema to describe our desired data format and style our form using Semantic UI theme.
 
 ```shell
-npm install uniforms@3.0.0-alpha.5 // or latest alpha
-npm install uniforms-bridge-simple-schema2@3.0.0-alpha.5 // or latest alpha
+npm install uniforms@3.0.0-rc.3 // or latest 
+npm install uniforms-bridge-simple-schema2@3.0.0-rc.3 // or latest
 npm install simpl-schema
 npm install uniforms-patternfly
 ```

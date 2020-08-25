@@ -59,12 +59,12 @@
     "ts-node": "8.8.1",
     "tslib": "1.11.1",
     "typescript": "3.8.3",
-    "uniforms": "v3.0.0-alpha.2",
-    "uniforms-bridge-simple-schema-2": "v3.0.0-alpha.2"
+    "uniforms": "3.0.0-rc.3",
+    "uniforms-bridge-simple-schema-2": "3.0.0-rc.3"
   },
   "dependencies": {
-    "@patternfly/react-core": "3.151.0",
-    "@patternfly/react-icons": "^3.15.14"
+    "@patternfly/react-core": "4.40.4",
+    "@patternfly/react-icons": "4.7.2"
   },
   "engines": {
     "npm": ">=5.0.0"

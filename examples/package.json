@@ -14,7 +14,7 @@
     "react-dom": "16.9.0",
     "react-scripts": "3.1.1",
     "simpl-schema": "^1.5.7",
-    "uniforms": "v3.0.0-alpha.2",
+    "uniforms": "3.0.0-rc.3",
     "uniforms-bridge-graphql": "^2.6.7",
     "uniforms-bridge-json-schema": "^2.6.7",
     "uniforms-bridge-simple-schema": "^2.6.7",
