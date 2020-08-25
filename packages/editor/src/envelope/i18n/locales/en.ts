@@ -24,9 +24,11 @@ export const en: EditorEnvelopeI18n = {
       edit: "Edit",
       help: "Help"
     },
-    undo: "Undo last edit",
-    redo: "Redo last edit",
-    showKeyboardOverlay: "Show keyboard shortcuts"
+    commands: {
+      undo: "Undo last edit",
+      redo: "Redo last edit",
+      showKeyboardOverlay: "Show keyboard shortcuts"
+    }
   },
   loadingScreen: {
     loading: "Loading..."

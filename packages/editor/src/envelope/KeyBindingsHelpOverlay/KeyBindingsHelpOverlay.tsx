@@ -65,7 +65,7 @@ export function KeyBindingsHelpOverlay() {
   useEffect(() => {
     const id = envelopeContext.services.keyboardShortcuts.registerKeyPress(
       "shift+/",
-      `${i18n.keyBindingsHelpOverlay.categories.help} | ${i18n.keyBindingsHelpOverlay.showKeyboardOverlay}`,
+      `${i18n.keyBindingsHelpOverlay.categories.help} | ${i18n.keyBindingsHelpOverlay.commands.showKeyboardOverlay}`,
       async () => setShowing(true),
       { element: window }
     );

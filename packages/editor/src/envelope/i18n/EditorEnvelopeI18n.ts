@@ -23,9 +23,11 @@ export interface EditorEnvelopeDictionary extends ReferenceDictionary<EditorEnve
       edit: string;
       help: string;
     };
-    undo: string;
-    redo: string;
-    showKeyboardOverlay: string;
+    commands: {
+      undo: string;
+      redo: string;
+      showKeyboardOverlay: string;
+    }
   };
   loadingScreen: {
     loading: string;
