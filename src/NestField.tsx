@@ -1,5 +1,5 @@
 import React, { HTMLProps } from 'react';
-import { connectField, joinName, injectName, filterDOMProps } from 'uniforms/es5';
+import { connectField, joinName, filterDOMProps } from 'uniforms/es5';
 import { Card, CardBody } from '@patternfly/react-core';
 
 import AutoField from './AutoField';
@@ -34,18 +34,15 @@ const Nest = ({
     >
       <CardBody className="pf-c-form">
         {label && <label><b>{label}</b></label>}
-        {children
-          ? injectName(name, children)
-          : fields?.map(key => (
-              <>
-                <AutoField key={key} disabled={disabled} name={joinName(name, key)} {...itemProps} />
-              </>
-        ))}
+        {children ||
+          fields?.map(key => (
+            <>
+              <AutoField key={key} disabled={disabled} name={joinName(name, key)} {...itemProps} />
+            </>
+          ))}
       </CardBody>
     </Card>
   );
 }
 
-export default connectField(Nest, {
-  includeInChain: false,
-});
+export default connectField(Nest);

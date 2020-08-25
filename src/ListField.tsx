@@ -23,7 +23,7 @@ export type ListFieldProps<T> = {
   showInlineError?: boolean;
 } & Omit<HTMLProps<HTMLDivElement>, 'children' | 'name'>;
 
-filterDOMProps.register(minCount);
+filterDOMProps.register("minCount");
 
 function ListField<T>({
   children,
@@ -98,6 +98,4 @@ ListField.defaultProps = {
   value: []
 }
 
-export default connectField<ListFieldProps<any>>(ListField, {
-  includeInChain: false,
-});
+export default connectField<ListFieldProps<any>>(ListField);
