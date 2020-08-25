@@ -17,7 +17,7 @@ test(TEST_NAME, async () => {
     const bpmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, "https://github.com/kiegroup/" +
         "kogito-examples/blob/stable/process-business-rules-quarkus/src/main/resources/org/acme/travels/persons.bpmn");
     const onlineEditorPage: OnlineEditorPage = await bpmnPage.openOnlineEditor();
-    expect(await onlineEditorPage.getFileName()).toEqual("persons.bpmn");
+    expect(await onlineEditorPage.getFileName()).toEqual("persons");
     const onlineEditor: BpmnEditor = await onlineEditorPage.getBpmnEditor();
     await onlineEditor.enter();
     const onlineEditorSideBar: SideBar = await onlineEditor.getSideBar();

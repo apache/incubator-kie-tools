@@ -17,7 +17,7 @@ test(TEST_NAME, async () => {
     const dmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, "https://github.com/kiegroup/" +
         "kogito-examples/blob/stable/dmn-quarkus-example/src/main/resources/Traffic%20Violation.dmn");
     const onlineEditorPage: OnlineEditorPage = await dmnPage.openOnlineEditor();
-    expect(await onlineEditorPage.getFileName()).toEqual("Traffic Violation.dmn");
+    expect(await onlineEditorPage.getFileName()).toEqual("Traffic Violation");
     const onlineEditor: DmnEditor = await onlineEditorPage.getDmnEditor();
     await onlineEditor.enter();
     const onlineEditorSideBar: DmnSideBar = await onlineEditor.getSideBar();

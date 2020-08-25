@@ -20,7 +20,7 @@ export default class Driver {
 
         // init chrome options
         const chromeOptions: Options = new Options();
-        chromeOptions.addArguments("--load-extension=" + chromeExtensionPath);
+        chromeOptions.addArguments("--load-extension=" + chromeExtensionPath, "--allow-insecure-localhost");
 
         // init chrome driver log
         const LOGS_DIR: string = resolve("logs");
