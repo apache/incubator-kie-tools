@@ -221,6 +221,15 @@ func WaitForAllPodsByDeploymentConfigToContainTextInLog(namespace, dcName, logTe
 
 // WaitForAllPodsByDeploymentToContainTextInLog waits for pods of specified deployment to contain specified text in log
 func WaitForAllPodsByDeploymentToContainTextInLog(namespace, dName, logText string, timeoutInMin int) error {
+	return waitForPodsByDeploymentToContainTextInLog(namespace, dName, logText, timeoutInMin, checkAllPodsContainingTextInLog)
+}
+
+// WaitForAnyPodsByDeploymentToContainTextInLog waits for pods of specified deployment to contain specified text in log
+func WaitForAnyPodsByDeploymentToContainTextInLog(namespace, dName, logText string, timeoutInMin int) error {
+	return waitForPodsByDeploymentToContainTextInLog(namespace, dName, logText, timeoutInMin, checkAnyPodsContainingTextInLog)
+}
+
+func waitForPodsByDeploymentToContainTextInLog(namespace, dName, logText string, timeoutInMin int, predicate func(string, []corev1.Pod, string, string) (bool, error)) error {
 	return WaitForOnOpenshift(namespace, fmt.Sprintf("Pods for deployment '%s' contain text '%s'", dName, logText), timeoutInMin,
 		func() (bool, error) {
 			pods, err := GetPodsByDeployment(namespace, dName)
@@ -229,8 +238,21 @@ func WaitForAllPodsByDeploymentToContainTextInLog(namespace, dName, logText stri
 			}
 
 			// Container name is equal to deployment config name
-			return checkAllPodsContainingTextInLog(namespace, pods, dName, logText)
+			return predicate(namespace, pods, dName, logText)
 		}, CheckPodsByDeploymentInError(namespace, dName))
+}
+
+func checkAnyPodsContainingTextInLog(namespace string, pods []corev1.Pod, containerName, text string) (bool, error) {
+	for _, pod := range pods {
+		containsText, err := isPodContainingTextInLog(namespace, &pod, containerName, text)
+		if err != nil {
+			return false, err
+		} else if containsText {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
 
 func checkAllPodsContainingTextInLog(namespace string, pods []corev1.Pod, containerName, text string) (bool, error) {

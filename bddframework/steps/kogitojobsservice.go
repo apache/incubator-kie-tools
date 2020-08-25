@@ -41,6 +41,7 @@ func registerKogitoJobsServiceSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^Install Kogito Jobs Service with (\d+) replicas with configuration:$`, data.installKogitoJobsServiceWithReplicasWithConfiguration)
 	ctx.Step(`^Kogito Jobs Service has (\d+) pods running within (\d+) minutes$`, data.kogitoJobsServiceHasPodsRunningWithinMinutes)
 	ctx.Step(`^Scale Kogito Jobs Service to (\d+) pods within (\d+) minutes$`, data.scaleKogitoJobsServiceToPodsWithinMinutes)
+	ctx.Step(`^Kogito Jobs Service log contains text "([^"]*)" within (\d+) minutes$`, data.kogitoJobsServiceLogContainsTextWithinMinutes)
 }
 
 func (data *Data) installKogitoJobsServiceWithReplicas(replicas int) error {
@@ -80,4 +81,8 @@ func (data *Data) scaleKogitoJobsServiceToPodsWithinMinutes(nbPods, timeoutInMin
 		return err
 	}
 	return framework.WaitForKogitoJobsService(data.Namespace, nbPods, timeoutInMin)
+}
+
+func (data *Data) kogitoJobsServiceLogContainsTextWithinMinutes(logText string, timeoutInMin int) error {
+	return framework.WaitForKogitoJobsServiceLogContainsTextWithinMinutes(data.Namespace, logText, timeoutInMin)
 }

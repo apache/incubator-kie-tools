@@ -80,8 +80,6 @@ Feature: Deploy Kogito Runtime
 
 #####
 
-  # Need to synchronize time between OCP nodes to enable the test, also Jobs service URL env variable is missing in KogitoRuntime pods, will be fixed in https://github.com/kiegroup/kogito-cloud-operator/pull/479
-  @disabled
   @jobsservice
   Scenario Outline: Deploy <example-service> service with Jobs service and Maven profile <profile>
     Given Kogito Operator is deployed
@@ -99,9 +97,9 @@ Feature: Deploy Kogito Runtime
       }
       """
 
-    # Implement retrieving of job information from Jobs service once https://issues.redhat.com/browse/KOGITO-1163 is fixed
     Then Kogito Runtime "<example-service>" log contains text "Before timer" within 1 minutes
     And Kogito Runtime "<example-service>" log contains text "After timer" within 1 minutes
+    And Kogito Jobs Service log contains text "<example-service>" within 1 minutes
 
     @springboot
     Examples:
