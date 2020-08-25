@@ -41,7 +41,7 @@ export default function wrapField(
     <FormGroup
       fieldId={id}
       label={label}
-      isValid={!error}
+      validated={error ? "error" : "default"}
       type={type}
       helperText={help}
       helperTextInvalid={errorMessage}
