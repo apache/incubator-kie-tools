@@ -63,7 +63,7 @@
     "uniforms-bridge-simple-schema-2": "3.0.0-rc.3"
   },
   "dependencies": {
-    "@patternfly/react-core": "4.40.4",
+    "@patternfly/react-core": "4.45.1",
     "@patternfly/react-icons": "4.7.2"
   },
   "engines": {

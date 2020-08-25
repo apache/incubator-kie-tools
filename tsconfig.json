@@ -13,7 +13,7 @@
     "paths": {
       "uniforms": ["/node_modules/uniforms/es5"],
     },
-    "strict": true
+    "strict": false
   },
   "exclude": [
     "node_modules",
