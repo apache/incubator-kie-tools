@@ -43,6 +43,7 @@ jobs:
         env:
           DISPLAY: ":99.0"
         run: |
+          echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
           cd packages/online-editor && yarn run start &
           cd packages/chrome-extension-pack-kogito-kie-editors && yarn run serve-envelope &
           sleep 15  
