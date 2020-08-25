@@ -58,8 +58,6 @@ export class KogitoEditorEnvelopeApiFactory
 export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
   private capturedInitRequestYet = false;
   private editor: Editor;
-  private redoId: number;
-  private undoId: number;
 
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
@@ -88,6 +86,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     }
 
     this.ackCapturedInitRequest();
+
     this.setupI18n(initArgs);
 
     this.editor = await this.editorFactory.createEditor(this.args.envelopeContext, initArgs);
@@ -97,14 +96,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     this.editor.af_onStartup?.();
     this.editor.af_onOpen?.();
 
-    if (this.args.envelopeContext.context.channel !== ChannelType.VSCODE) {
-      this.args.envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
-        this.args.envelopeContext.services.keyboardShortcuts.deregister(this.redoId);
-        this.args.envelopeContext.services.keyboardShortcuts.deregister(this.undoId);
-        this.registerDefaultShortcuts();
-      });
-      this.registerDefaultShortcuts();
-    }
+    this.registerDefaultShortcuts();
 
     this.args.view.setLoading();
 
@@ -161,8 +153,12 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
   }
 
   private registerDefaultShortcuts() {
+    if (this.args.envelopeContext.context.channel === ChannelType.VSCODE) {
+      return;
+    }
+
     const i18n = this.i18n.getCurrent();
-    this.redoId = this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
+    const redoId = this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
       "shift+ctrl+z",
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.redo}`,
       async () => {
@@ -170,7 +166,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
         this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(StateControlCommand.REDO);
       }
     );
-    this.undoId = this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
+    const undoId = this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
       "ctrl+z",
       `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.undo}`,
       async () => {
@@ -178,5 +174,12 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
         this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(StateControlCommand.UNDO);
       }
     );
+
+    const subscription = this.args.envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
+      this.args.envelopeContext.services.keyboardShortcuts.deregister(redoId);
+      this.args.envelopeContext.services.keyboardShortcuts.deregister(undoId);
+      this.args.envelopeContext.services.i18n.unsubscribeToLocaleChange(subscription);
+      this.registerDefaultShortcuts();
+    });
   }
 }

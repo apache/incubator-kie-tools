@@ -16,7 +16,6 @@
 
 import {
   EditorContext,
-  EditorFactory,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContext,
@@ -29,19 +28,13 @@ import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { Envelope } from "@kogito-tooling/envelope";
 import { KogitoEditorEnvelopeApiFactory } from "./KogitoEditorEnvelopeApiImpl";
-import { EnvelopeBus } from "@kogito-tooling/envelope-bus/dist/api";
 import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 import { EditorEnvelopeI18nContext, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 
 export class KogitoEditorEnvelope {
   constructor(
-    private readonly args: {
-      container: HTMLElement;
-      bus: EnvelopeBus;
-      editorFactory: EditorFactory;
-      editorContext: EditorContext;
-    },
+    private readonly editorContext: EditorContext,
     private readonly kogitoEditorEnvelopeApiFactory: KogitoEditorEnvelopeApiFactory,
     private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService,
     private readonly i18nService: I18nService,
@@ -53,7 +46,7 @@ export class KogitoEditorEnvelope {
     >,
     private readonly context: KogitoEditorEnvelopeContextType = {
       channelApi: envelope.channelApi,
-      context: args.editorContext,
+      context: editorContext,
       services: {
         keyboardShortcuts: keyboardShortcutsService,
         guidedTour: { isEnabled: () => KogitoGuidedTour.getInstance().isEnabled() },
@@ -62,11 +55,11 @@ export class KogitoEditorEnvelope {
     }
   ) {}
 
-  public start() {
-    return this.envelope.start(() => this.renderView(), this.context, this.kogitoEditorEnvelopeApiFactory);
+  public start(container: HTMLElement) {
+    return this.envelope.start(() => this.renderView(container), this.context, this.kogitoEditorEnvelopeApiFactory);
   }
 
-  private renderView() {
+  private renderView(container: HTMLElement) {
     let view: EditorEnvelopeView;
 
     const app = (
@@ -86,7 +79,7 @@ export class KogitoEditorEnvelope {
 
     return new Promise<EditorEnvelopeView>(res => {
       setTimeout(() => {
-        ReactDOM.render(app, this.args.container, () => res(view!));
+        ReactDOM.render(app, container, () => res(view!));
       }, 0);
     });
   }

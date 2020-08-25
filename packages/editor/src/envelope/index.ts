@@ -55,7 +55,13 @@ export function init(args: {
     KogitoEditorEnvelopeContextType
   >(args.bus);
 
-  return new KogitoEditorEnvelope(args, kogitoEditorFactory, defaultKeyboardShortcuts, i18nService, envelope).start();
+  return new KogitoEditorEnvelope(
+    args.editorContext,
+    kogitoEditorFactory,
+    defaultKeyboardShortcuts,
+    i18nService,
+    envelope
+  ).start(args.container);
 }
 
 export * from "./CompositeEditorFactory";
