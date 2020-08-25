@@ -1,5 +1,5 @@
 import React, { Children, HTMLProps, ReactNode } from 'react';
-import { Tooltip, Split, SplitItem, Divider } from '@patternfly/react-core';
+import { Tooltip, Split, SplitItem } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import { connectField, filterDOMProps, joinName } from 'uniforms/es5';
 
@@ -23,7 +23,7 @@ export type ListFieldProps<T> = {
   showInlineError?: boolean;
 } & Omit<HTMLProps<HTMLDivElement>, 'children' | 'name'>;
 
-filterDOMProps.register('minCount');
+filterDOMProps.register(minCount);
 
 function ListField<T>({
   children,
@@ -42,7 +42,7 @@ function ListField<T>({
 }: ListFieldProps<T>) {
   return (
     <div {...filterDOMProps(props)}>
-      <Split gutter="md">
+      <Split hasGutter>
         <SplitItem>
           {label && (
             <label>
@@ -68,27 +68,27 @@ function ListField<T>({
       <div>
         {children
           ? value.map((item: any, index: number) =>
-              Children.map(children as JSX.Element, child =>
-                React.cloneElement(child, {
-                  key: index,
-                  label: '',
-                  name: joinName(
-                    name,
-                    child.props.name && child.props.name.replace('$', index),
-                  ),
-                }),
-              ),
-            )
+            Children.map(children as JSX.Element, child =>
+              React.cloneElement(child, {
+                key: index,
+                label: '',
+                name: joinName(
+                  name,
+                  child.props.name && child.props.name.replace('$', index),
+                ),
+              }),
+            ),
+          )
           : value.map((item: any, index: number) => (
-              <ListItemField
-                key={index}
-                label={null}
-                name={joinName(name, index)}
-                {...itemProps}
-                // @ts-ignore
-                value={item}
-              />
-            ))}
+            <ListItemField
+              key={index}
+              label={null}
+              name={joinName(name, index)}
+              {...itemProps}
+              // @ts-ignore
+              value={item}
+            />
+          ))}
       </div>
     </div>
   );

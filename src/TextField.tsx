@@ -21,7 +21,7 @@ const Text = (props: TextFieldProps) =>
       id={props.id}
       name={props.name}
       isDisabled={props.disabled}
-      isValid={!props.error}
+      validated={props.error ? "error" : "default"}
       // @ts-ignore
       onChange={(value, event) => props.onChange(event.target.value)}
       placeholder={props.placeholder}

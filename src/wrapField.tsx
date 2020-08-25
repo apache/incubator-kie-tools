@@ -2,6 +2,16 @@ import React from 'react';
 import { FormGroup, FormGroupProps } from '@patternfly/react-core';
 import { filterDOMProps } from 'uniforms/es5';
 
+declare module 'uniforms' {
+  interface FilterDOMProps {
+    decimal: never;
+    minCount: never;
+    autoValue: never;
+    isDisabled: never;
+    checkboxes: never
+  }
+}
+
 filterDOMProps.register('decimal', 'minCount', 'autoValue', 'isDisabled');
 
 type WrapperProps = {
