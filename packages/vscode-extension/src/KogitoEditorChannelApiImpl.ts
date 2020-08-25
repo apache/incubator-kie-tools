@@ -83,6 +83,6 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public receive_getLocale(): Promise<string> {
-    return Promise.resolve(vscode.env.language)
+    return Promise.resolve(vscode.env.language);
   }
 }

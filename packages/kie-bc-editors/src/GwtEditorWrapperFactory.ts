@@ -85,7 +85,7 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     this.kieBcEditorsI18n.setLocale(initArgs.initialLocale);
     envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
       this.kieBcEditorsI18n.setLocale(locale);
-      window.alert("This Editor doesn't support changing locales yet.")
+      window.alert("This Editor doesn't support changing locales yet.");
     });
 
     this.appendGwtLocaleMetaTag();
