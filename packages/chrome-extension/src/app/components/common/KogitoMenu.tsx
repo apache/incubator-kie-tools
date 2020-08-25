@@ -19,7 +19,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useGitHubApi } from "./GitHubContext";
 import * as Octokit from "@octokit/rest";
 import { useGlobals } from "./GlobalContext";
-import { useChromeExtensionI18n } from "../../i18n/locales";
+import { useChromeExtensionI18n } from "../../i18n";
 
 const GITHUB_OAUTH_TOKEN_SIZE = 40;
 

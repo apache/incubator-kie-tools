@@ -33,7 +33,11 @@ const dummyEditor: Editor = new DummyEditor();
 
 const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
-const editorContext: EditorContext = { channel: ChannelType.EMBEDDED, operatingSystem: OperatingSystem.LINUX };
+const editorContext: EditorContext = {
+  channel: ChannelType.EMBEDDED,
+  operatingSystem: OperatingSystem.LINUX
+};
+
 const envelopeContext: KogitoEditorEnvelopeContextType = {
   channelApi: channelApi,
   context: editorContext,
@@ -82,7 +86,7 @@ describe("CompositeEditorFactory", () => {
     jest.spyOn(factory2, "createEditor");
 
     const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
-    const initArgs = { fileExtension: "txt", resourcesPathPrefix: "" };
+    const initArgs = { fileExtension: "txt", resourcesPathPrefix: "", initialLocale: "en" };
     expect(compositeFactory.createEditor(envelopeContext, initArgs)).resolves.toBe(dummyEditor);
     expect(factory2.createEditor).toBeCalledTimes(1);
   });
@@ -94,7 +98,7 @@ describe("CompositeEditorFactory", () => {
     factories.push(factory1);
     factories.push(factory2);
     const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
-    const initArgs = { fileExtension: "txt", resourcesPathPrefix: "" };
+    const initArgs = { fileExtension: "txt", resourcesPathPrefix: "", initialLocale: "en" };
     expect(() => compositeFactory.createEditor(envelopeContext, initArgs)).toThrowError(Error);
   });
 

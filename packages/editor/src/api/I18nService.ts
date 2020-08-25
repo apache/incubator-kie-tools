@@ -15,13 +15,23 @@
  */
 
 export class I18nService {
-  private onLocaleChange: (locale: string) => void;
+  constructor(private readonly onLocaleChangeSubscriptions: Array<(locale: string) => void> = []) {}
 
-  public executeOnLocaleChange(locale: string) {
-    this.onLocaleChange?.(locale);
+  public executeOnLocaleChangeSubscriptions(locale: string) {
+    this.onLocaleChangeSubscriptions.forEach(onLocaleChange => {
+      onLocaleChange?.(locale);
+    });
   }
 
-  public setOnLocaleChange(onLocaleChange: (locale: string) => void) {
-    this.onLocaleChange = onLocaleChange;
+  public subscribeToLocaleChange(onLocaleChange: (locale: string) => void) {
+    this.onLocaleChangeSubscriptions.push(onLocaleChange);
+    return onLocaleChange;
+  }
+
+  public unsubscribeToLocaleChange(onLocaleChange: (locale: string) => void) {
+    const index = this.onLocaleChangeSubscriptions.indexOf(onLocaleChange);
+    if (index > -1) {
+      this.onLocaleChangeSubscriptions.splice(index, 1);
+    }
   }
 }

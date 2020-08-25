@@ -47,7 +47,11 @@ export class KogitoEditor implements EditorApi {
       self =>
         self.envelopeApi.requests.receive_initRequest(
           { origin: self.origin, envelopeServerId: self.id },
-          { fileExtension: document.fileExtension, resourcesPathPrefix: envelopeMapping.resourcesPathPrefix }
+          {
+            fileExtension: document.fileExtension,
+            resourcesPathPrefix: envelopeMapping.resourcesPathPrefix,
+            initialLocale: vscode.env.language
+          }
         )
     )
   ) {}

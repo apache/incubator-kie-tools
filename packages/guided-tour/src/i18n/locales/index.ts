@@ -14,16 +14,4 @@
  * limitations under the License.
  */
 
-import { en } from "./en";
-import { I18nContextType } from "@kogito-tooling/i18n";
-import { GuidedTourI18n } from "../GuidedTourI18n";
-import * as React from "react";
-import { useContext } from "react";
-
-export const guidedTourI18nDefaults = { locale: "en", dictionary: en };
-export const guidedTourI18nDictionaries = new Map([["en", en]]);
-export const GuidedTourI18nContext = React.createContext<I18nContextType<GuidedTourI18n>>({} as any);
-
-export function useGuidedTourI18n() {
-  return useContext(GuidedTourI18nContext);
-}
+export { en } from "./en";

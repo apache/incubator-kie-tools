@@ -14,16 +14,4 @@
  * limitations under the License.
  */
 
-import { en } from "./en";
-import { I18nContextType } from "@kogito-tooling/i18n";
-import { OnlineI18n } from "..";
-import * as React from "react";
-import { useContext } from "react";
-
-export const onlineI18nDefaults = { locale: "en", dictionary: en };
-export const onlineI18nDictionaries = new Map([["en", en]]);
-export const OnlineI18nContext = React.createContext<I18nContextType<OnlineI18n>>({} as any);
-
-export function useOnlineI18n() {
-  return useContext(OnlineI18nContext);
-}
+export { en } from "./en";

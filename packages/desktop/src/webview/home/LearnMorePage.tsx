@@ -35,7 +35,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button/Button"
 import { useCallback } from "react";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons";
 import * as electron from "electron";
-import { useDesktopI18n } from "../common/i18n/locales";
+import { useDesktopI18n } from "../common/i18n";
 
 export function LearnMorePage() {
   const { i18n } = useDesktopI18n();

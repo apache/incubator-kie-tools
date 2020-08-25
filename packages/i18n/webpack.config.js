@@ -20,10 +20,11 @@ const common = require("../../webpack.common.config");
 
 module.exports = merge(common, {
   entry: {
-    index: "./src/index.ts"
+    core: "./src/core/index.ts",
+    "react-components": "./src/react-components/index.ts",
   },
   output: {
-    libraryTarget: "commonjs2"
+    libraryTarget: "commonjs2",
   },
-  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
+  externals: [nodeExternals({ modulesDir: "../../node_modules" })]
 });

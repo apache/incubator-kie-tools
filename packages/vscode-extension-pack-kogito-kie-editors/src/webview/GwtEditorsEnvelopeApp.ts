@@ -26,5 +26,8 @@ EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
   editorFactory: new GwtEditorWrapperFactory(),
-  editorContext: { channel: ChannelType.VSCODE, operatingSystem: getOperatingSystem() }
+  editorContext: {
+    channel: ChannelType.VSCODE,
+    operatingSystem: getOperatingSystem(),
+  }
 });

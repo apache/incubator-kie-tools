@@ -15,10 +15,11 @@
  */
 
 import * as React from "react";
-import { I18nDictionariesProvider, immutableDeepMerge } from "../I18nDictionariesProvider";
-import { TranslatedDictionary } from "../Dictionary";
+import { I18nDictionariesProvider } from "../../react-components";
+import { immutableDeepMerge } from "../../core/immutableDeepMerge";
+import { TranslatedDictionary } from "../../core";
 import { render } from "@testing-library/react";
-import { DummyContext, DummyDictionary, DummyComponent, dummyDefault, interpolationFunction } from "./utils";
+import { DummyContext, DummyDictionary, DummyComponent, dummyDefault, interpolationFunction } from "../utils";
 
 describe("I18nDictionariesProvider", () => {
   describe("I18nDictionariesProvider::component", () => {
@@ -54,7 +55,7 @@ describe("I18nDictionariesProvider", () => {
       expect(getByTestId("dummy-component")).toHaveTextContent(JSON.stringify(dummyDefault));
     });
 
-    it("should use the `en` dictionary due to the `en-US` doesn't exist and it is the location prefix", () => {
+    it("should use the `en` dictionary due to the `en-US` doesn't exist and 'en' is the location prefix", () => {
       const dummyOptional: TranslatedDictionary<DummyDictionary> = {
         welcome: "Welcome!!!"
       };

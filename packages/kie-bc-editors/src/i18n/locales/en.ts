@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { ReferenceDictionary } from "./Dictionary";
+import { KieBcEditorsI18n } from "../KieBcEditorsI18n";
+import { KOGITO_JIRA_LINK } from ".";
 
-// tslint:disable-next-line:interface-name
-export interface I18nContextType<D extends ReferenceDictionary<D>> {
-  locale: string;
-  setLocale: React.Dispatch<string>;
-  i18n: D;
-}
+export const en: KieBcEditorsI18n = {
+  unsupportedFile: `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
+};
