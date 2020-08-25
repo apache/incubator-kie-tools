@@ -39,10 +39,12 @@ jobs:
           yarn run build:fast
 
       - name: Run integration tests
+        env:
+          DISPLAY: ":99.0"
         run: |
           cd packages/online-editor && yarn run start &
           cd packages/chrome-extension-pack-kogito-kie-editors && yarn run serve-envelope &
-          sleep 10
+          sleep 15  
           cd packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
 
       - name: Archive it test screenshots	

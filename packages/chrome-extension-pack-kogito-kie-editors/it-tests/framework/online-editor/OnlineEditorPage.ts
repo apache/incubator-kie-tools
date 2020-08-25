@@ -13,6 +13,6 @@ export default class OnlineEditorPage extends EditorPage {
 
     public async getFileName(): Promise<string> {
         const filename: Element = await this.tools.by(OnlineEditorPage.FILE_NAME_LOCATOR).getElement();
-        return await filename.getAttribute('value');
+        return await filename.getAttribute("value");
     }
 }
