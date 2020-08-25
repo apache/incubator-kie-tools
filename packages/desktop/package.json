@@ -24,6 +24,7 @@
     "rebuild": "electron-rebuild -f -w sqlite3",
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test": "jest --silent --verbose",
+    "test:clearCache": "jest --clearCache",
     "init": "yarn -f",
     "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:fast": "rm -rf dist && webpack --mode development",

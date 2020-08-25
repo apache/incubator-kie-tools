@@ -16,15 +16,13 @@
 
 import * as React from "react";
 import { useEffect } from "react";
-
 import { Button, Divider, List, ListItem, Text, Title } from "@patternfly/react-core";
 import { BookOpenIcon, TrophyIcon } from "@patternfly/react-icons";
-
 import { File } from "@kogito-tooling/editor/dist/embedded";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/channel";
 import { DemoMode, SubTutorialMode, Tutorial } from "@kogito-tooling/guided-tour/dist/api";
 import { OnlineI18n, useOnlineI18n } from "../common/i18n";
-import { I18nHtml } from "@kogito-tooling/i18n";
+import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";
 
 export function useDmnTour(isEditorReady: boolean, file: File) {
   const { i18n } = useOnlineI18n();

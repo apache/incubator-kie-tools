@@ -49,7 +49,7 @@ import { File, UNSAVED_FILE_NAME } from "../../common/File";
 import { RecentOpenedFile } from "../../common/RecentOpenedFile";
 import { extractFileExtension, removeDirectories } from "../../common/utils";
 import { GlobalContext } from "../common/GlobalContext";
-import { useDesktopI18n } from "../common/i18n/locales";
+import { useDesktopI18n } from "../common/i18n";
 
 interface Props {
   openFile: (file: File) => void;

@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-import * as vscode from "vscode";
-import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEditorFactory } from "./KogitoEditorFactory";
-import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
-import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
-import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
-import { generateSvg } from "./generateSvg";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
+import * as vscode from "vscode";
 import { maybeSuggestBackendExtension } from "./configUtils";
+import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
+import { generateSvg } from "./generateSvg";
+import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n";
+import { KogitoEditorFactory } from "./KogitoEditorFactory";
+import { KogitoEditorStore } from "./KogitoEditorStore";
+import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
 import { VsCodeBackendProxy } from "./VsCodeBackendProxy";
+import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -50,6 +52,7 @@ export async function startExtension(args: {
     maybeSuggestBackendExtension(args.context, args.backendExtensionId);
   }
 
+  const vsCodeI18n = new I18n(vsCodeI18nDefaults, vsCodeI18nDictionaries, vscode.env.language);
   const workspaceApi = new VsCodeWorkspaceApi();
   const editorStore = new KogitoEditorStore();
   const messageBroadcaster = new EnvelopeBusMessageBroadcaster();
@@ -66,7 +69,8 @@ export async function startExtension(args: {
     args.context,
     args.viewType,
     editorStore,
-    editorFactory
+    editorFactory,
+    vsCodeI18n
   );
 
   args.context.subscriptions.push(
@@ -76,7 +80,7 @@ export async function startExtension(args: {
   );
 
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(args.getPreviewCommandId, () => generateSvg(editorStore, workspaceApi))
+    vscode.commands.registerCommand(args.getPreviewCommandId, () => generateSvg(editorStore, workspaceApi, vsCodeI18n))
   );
 }
 

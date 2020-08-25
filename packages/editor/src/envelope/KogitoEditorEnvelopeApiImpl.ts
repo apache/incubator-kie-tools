@@ -138,7 +138,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
   };
 
   public receive_localeChange(locale: string) {
-    return this.args.envelopeContext.services.i18n.executeOnLocaleChange(locale);
+    return this.args.envelopeContext.services.i18n.executeOnLocaleChangeSubscriptions(locale);
   }
 
   private registerDefaultShortcuts() {

@@ -21,8 +21,8 @@ import { editors } from "./GwtEditorMapping";
 import { XmlFormatter } from "./XmlFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
 import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
-
-const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { KieBcEditorsI18n } from "./i18n";
 
 export class GwtEditorWrapper implements Editor {
   public readonly af_isReact = true;
@@ -35,13 +35,15 @@ export class GwtEditorWrapper implements Editor {
   private readonly xmlFormatter: XmlFormatter;
   private readonly channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
   private readonly stateControlService: GwtStateControlService;
+  private readonly kieBcEditorsI18n: I18n<KieBcEditorsI18n>;
 
   constructor(
     editorId: string,
     gwtEditor: GwtEditor,
     channelApi: MessageBusClientApi<KogitoEditorChannelApi>,
     xmlFormatter: XmlFormatter,
-    stateControlService: GwtStateControlService
+    stateControlService: GwtStateControlService,
+    kieBcEditorsI18n: I18n<KieBcEditorsI18n>
   ) {
     this.af_componentTitle = editorId;
     this.stateControlService = stateControlService;
@@ -50,6 +52,7 @@ export class GwtEditorWrapper implements Editor {
     this.channelApi = channelApi;
     this.editorId = editorId;
     this.xmlFormatter = xmlFormatter;
+    this.kieBcEditorsI18n = kieBcEditorsI18n;
   }
 
   public af_onOpen() {
@@ -83,11 +86,10 @@ export class GwtEditorWrapper implements Editor {
   }
 
   public setContent(path: string, content: string) {
+    const i18n = this.kieBcEditorsI18n.getCurrent();
     setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
     return this.gwtEditor.setContent(path, content.trim()).catch(() => {
-      this.channelApi.notifications.receive_setContentError(
-        `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
-      );
+      this.channelApi.notifications.receive_setContentError(i18n.unsupportedFile);
       return Promise.resolve();
     });
   }

@@ -36,6 +36,8 @@ import { StateControlApi } from "./api/StateControlApi";
 import { EditorContextApi } from "./api/EditorContextApi";
 import { GwtEditorMapping } from "./GwtEditorMapping";
 import { I18nServiceApi } from "./api/I18nServiceApi";
+import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 
 declare global {
   interface Window {
@@ -58,17 +60,25 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     private readonly xmlFormatter: XmlFormatter = new DefaultXmlFormatter(),
     private readonly gwtAppFormerApi = new GwtAppFormerApi(),
     private readonly gwtStateControlService = new GwtStateControlService(),
-    private readonly gwtEditorMapping = new GwtEditorMapping()
+    private readonly gwtEditorMapping = new GwtEditorMapping(),
+    private readonly kieBcEditorsI18n = new I18n(kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries)
   ) {}
 
   public supports(fileExtension: string) {
     return (
-      this.gwtEditorMapping.getLanguageData({ fileExtension: fileExtension, resourcesPathPrefix: "" }) !== undefined
+      this.gwtEditorMapping.getLanguageData({
+        fileExtension: fileExtension,
+        resourcesPathPrefix: "",
+        initialLocale: ""
+      }) !== undefined
     );
   }
 
   public createEditor(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs) {
     this.gwtAppFormerApi.setClientSideOnly(true);
+
+    this.kieBcEditorsI18n.setLocale(initArgs.initialLocale);
+    envelopeContext.services.i18n.subscribeToLocaleChange(locale => this.kieBcEditorsI18n.setLocale(locale));
 
     const languageData = this.gwtEditorMapping.getLanguageData(initArgs);
     if (!languageData) {
@@ -95,7 +105,8 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       this.gwtAppFormerApi.getEditor(languageData.editorId),
       envelopeContext.channelApi,
       this.xmlFormatter,
-      this.gwtStateControlService
+      this.gwtStateControlService,
+      this.kieBcEditorsI18n
     );
   }
 
@@ -120,13 +131,13 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       },
       resourceContentEditorService: {
         get(path: string, opts?: ResourceContentOptions) {
-          return envelopeContext.channelApi
-            .requests.receive_resourceContentRequest({ path, opts })
+          return envelopeContext.channelApi.requests
+            .receive_resourceContentRequest({ path, opts })
             .then(r => r?.content);
         },
         list(pattern: string, opts?: ResourceListOptions) {
-          return envelopeContext.channelApi
-            .requests.receive_resourceListRequest({ pattern, opts })
+          return envelopeContext.channelApi.requests
+            .receive_resourceListRequest({ pattern, opts })
             .then(r => r.paths.sort());
         }
       },
@@ -140,7 +151,7 @@ export class GwtEditorWrapperFactory implements EditorFactory {
           return envelopeContext.channelApi.requests.receive_getLocale();
         },
         onLocaleChange: (onLocaleChange: (locale: string) => void) => {
-          envelopeContext.services.i18n.setOnLocaleChange(onLocaleChange);
+          envelopeContext.services.i18n.subscribeToLocaleChange(onLocaleChange);
         }
       }
     };

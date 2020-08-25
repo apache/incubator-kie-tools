@@ -15,11 +15,13 @@
   "dependencies": {
     "@kogito-tooling/backend-channel-api": "0.7.0",
     "@kogito-tooling/editor": "0.7.0",
+    "@kogito-tooling/i18n": "0.7.0",
     "@kogito-tooling/kie-bc-editors-unpacked": "0.7.0"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
-    "test": "jest --silent --verbose",
+    "test": "jest --verbose",
+    "test:clearCache": "jest --clearCache",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:prod": "yarn run build --mode production --devtool none"

@@ -29,6 +29,8 @@ import * as fs from "fs";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
+import { VsCodeI18n } from "./i18n";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 
 export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoEditableDocument> {
   private readonly _onDidChangeCustomDocument = new EventEmitter<CustomDocumentEditEvent<KogitoEditableDocument>>();
@@ -38,7 +40,8 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
     private readonly context: vscode.ExtensionContext,
     private readonly viewType: string,
     private readonly editorStore: KogitoEditorStore,
-    private readonly editorFactory: KogitoEditorFactory
+    private readonly editorFactory: KogitoEditorFactory,
+    private readonly vsCodeI18n: I18n<VsCodeI18n>
   ) {}
 
   public register() {
@@ -59,7 +62,12 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
 
   public async openCustomDocument(uri: Uri, openContext: CustomDocumentOpenContext, cancellation: CancellationToken) {
     this.createStorageFolder();
-    const document = new KogitoEditableDocument(uri, this.resolveBackup(openContext.backupId), this.editorStore);
+    const document = new KogitoEditableDocument(
+      uri,
+      this.resolveBackup(openContext.backupId),
+      this.editorStore,
+      this.vsCodeI18n
+    );
     this.setupListeners(document);
     return document;
   }

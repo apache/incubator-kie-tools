@@ -14,16 +14,4 @@
  * limitations under the License.
  */
 
-import { en } from "./en";
-import { I18nContextType } from "@kogito-tooling/i18n";
-import * as React from "react";
-import { HubI18n } from "../HubI18n";
-import { useContext } from "react";
-
-export const hubI18nDefaults = { locale: "en", dictionary: en };
-export const hubI18nDictionaries = new Map([["en", en]]);
-export const HubI18nContext = React.createContext<I18nContextType<HubI18n>>({} as any);
-
-export function useHubI18n() {
-  return useContext(HubI18nContext);
-}
+export { en } from "./en";

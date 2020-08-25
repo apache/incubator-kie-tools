@@ -20,8 +20,7 @@ import { useCallback, useMemo, useState } from "react";
 import { FilesPage } from "./FilesPage";
 import { LearnMorePage } from "./LearnMorePage";
 import { File } from "../../common/File";
-import { useDesktopI18n } from "../common/i18n/locales";
-import { I18nHtml } from "@kogito-tooling/i18n";
+import { useDesktopI18n } from "../common/i18n";
 
 interface Props {
   openFile: (file: File) => void;

@@ -31,8 +31,8 @@ import { HomePage } from "./home/HomePage";
 import { NoMatchPage } from "./NoMatchPage";
 import "../static/resources/style.css";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
-import { I18nDictionariesProvider } from "@kogito-tooling/i18n";
-import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n/locales";
+import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
+import { OnlineI18nContext, onlineI18nDefaults, onlineI18nDictionaries } from "./common/i18n";
 
 interface Props {
   file: File;

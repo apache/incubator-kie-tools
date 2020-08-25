@@ -30,7 +30,11 @@ import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/commo
 
 const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
-const editorContext: EditorContext = { channel: ChannelType.EMBEDDED, operatingSystem: OperatingSystem.LINUX };
+const editorContext: EditorContext = {
+  channel: ChannelType.EMBEDDED,
+  operatingSystem: OperatingSystem.LINUX,
+};
+
 const envelopeContext: KogitoEditorEnvelopeContextType = {
   channelApi: channelApi,
   context: editorContext,
