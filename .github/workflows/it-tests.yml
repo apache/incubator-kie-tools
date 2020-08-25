@@ -33,14 +33,12 @@ jobs:
       - name: Download dependencies
         run: yarn run init
 
-      - name: "Build :: prod and pack"
-        run: yarn run build:prod
-        env:
-          ROUTER_targetOrigin: "https://localhost:9000"
-          ROUTER_relativePath: ""
-          DISPLAY: ":99.0"
+      - name: Build repository
+        run: |
+          yarn run build
+          yarn run build:fast
 
-      - name: "Run integration tests"
+      - name: Run integration tests
         run: |
           cd packages/online-editor && yarn run start &
           cd packages/chrome-extension-pack-kogito-kie-editors && yarn run serve-envelope &
