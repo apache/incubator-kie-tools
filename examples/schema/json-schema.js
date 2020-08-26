@@ -14,74 +14,106 @@ function createValidator(schema) {
 }
 
 const schema = {
-  type: 'object',
-  properties: {
-    name: {
-      type: 'string',
-      title: 'name',
-      uniforms: {
-        title: 'Name',
+  'phases': [
+    'complete',
+    'release'
+  ],
+  'properties': {
+    'traveller': {
+      'properties': {
+        'address': {
+          'properties': {
+            'city': {
+              'type': 'string'
+            },
+            'country': {
+              'type': 'string'
+            },
+            'street': {
+              'type': 'string'
+            },
+            'zipCode': {
+              'type': 'string'
+            }
+          },
+          'type': 'object'
+        },
+        'email': {
+          'format': 'email',
+          'type': 'string'
+        },
+        'firstName': {
+          'type': 'string'
+        },
+        'lastName': {
+          'type': 'string'
+        },
+        'nationality': {
+          'type': 'string'
+        }
+      },
+      'required': [
+        'firstName',
+        'lastName'
+      ],
+      'type': 'object'
+    },
+    'trip': {
+      'properties': {
+        'begin': {
+          'format': 'date-time',
+          'type': 'string'
+        },
+        'city': {
+          'type': 'string'
+        },
+        'country': {
+          'type': 'string'
+        },
+        'end': {
+          'format': 'date-time',
+          'type': 'string'
+        },
+        'visaRequired': {
+          'type': 'boolean'
+        }
+      },
+      'type': 'object',
+      'uniforms': {
+        'disabled': true
       }
     },
-    surname: {
-      type: 'string',
-      uniforms: {
-        placeholder: 'Surname',
-      }
-    },
-    address_one: {
-      type: 'string',
-      title: 'Address Line One',
-      uniforms: {
-        label: 'Address Line One'
-      }
-    },
-    address_two: {
-      type: 'string',
-      title: 'Address Line Two',
-    },
-    city: {
-      type: 'string',
-      title: 'City',
-      uniforms: {
-        label: 'City',
-        placeholder: 'City',
-        errorMessage: 'City is required'
-      }
-    },
-    state: {
-      type: 'string',
-      title: 'State/Province/Region',
-      uniforms: {
-        label: 'State/Province/Region',
-        placeholder: 'State/Province/Region',
-        errorMessage: 'State/Province/Region is required'
-      }
-    },
-    postal_code: {
-      type: 'string',
-      title: 'Post code',
-      uniforms: {
-        label: 'Post code',
-        errorMessage: 'Post code is required'
-      }
-    },
-    country: {
-      type: 'string',
-      title: 'Country',
-      uniforms: {
-        placeholder: 'Select a country',
-        defaultValue: 'Ireland',
-        allowedValues: [
-          'Ireland', 'United Kingdom', 'Australia', 'USA', 'New Zealand'
-        ]
+    'visaApplication': {
+      'properties': {
+        'city': {
+          'type': 'string'
+        },
+        'country': {
+          'type': 'string'
+        },
+        'duration': {
+          'type': 'integer'
+        },
+        'firstName': {
+          'type': 'string'
+        },
+        'lastName': {
+          'type': 'string'
+        },
+        'nationality': {
+          'type': 'string'
+        },
+        'passportNumber': {
+          'type': 'string'
+        }
+      },
+      'type': 'object',
+      'uniforms': {
+        'disabled': true
       }
     }
   },
-  required: [
-    'name', 'surname', 'address_one',
-    'city', 'country'
-  ]
+  'type': 'object'
 };
 
 const schemaValidator = createValidator(schema);
