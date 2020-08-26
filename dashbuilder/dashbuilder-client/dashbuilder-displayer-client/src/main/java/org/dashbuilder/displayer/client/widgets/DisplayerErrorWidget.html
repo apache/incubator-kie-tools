@@ -1,0 +1,38 @@
+<!--
+  ~ Copyright 2020 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<div class="card-pf card-pf-view card-pf-view-xs displayer-error"
+    data-field="displayerErrorRoot">
+    <div class="card-pf-body">
+        <div class="card-pf-heading">
+            <span
+                class="pficon pficon-warning-triangle-o displayer-error-title-icon"></span><span
+                class="card-pf-title"
+                data-i18n-key="displayerErrorTitle"></span>
+        </div>
+        <p data-field="errorBody" class="displayer-error-body"></p>
+        <div>
+            <a data-field="chevronDown" hidden><em
+                class="glyphicon glyphicon-chevron-down"></em></a> <a
+                data-field="chevronRight"><em
+                class="glyphicon glyphicon-chevron-right"></em></a> <span
+                class="chevron-title" data-i18n-key="errorDetails"></span>
+        </div>
+        <div data-field="errorDetailsSection" hidden>
+            <textarea data-field="errorDetails"
+                class="error-details form-control" readonly></textarea>
+        </div>
+    </div>
+</div>

@@ -39,7 +39,8 @@ public class DisplayerViewer extends Composite {
     protected Label label = new Label();
     protected Displayer displayer;
     protected Boolean isShowRendererSelector = false;
-    protected DisplayerError errorWidget = new DisplayerError();
+    @Inject
+    protected DisplayerErrorWidget errorWidget;
     protected boolean error = true;
     protected DisplayerLocator displayerLocator;
     protected RendererSelector rendererSelector;
@@ -132,9 +133,7 @@ public class DisplayerViewer extends Composite {
 
     public Displayer draw() {
         if (displayerInitializationError != null ) {
-            error(displayerInitializationError, 
-                  i18n.displayerviewer_displayer_not_created(), 
-                  displayerInitializationError.getThrowable().getMessage());
+            error(displayerInitializationError, i18n.displayerviewer_displayer_not_created());
         } else {
             try {
                 // Draw the displayer
@@ -161,19 +160,19 @@ public class DisplayerViewer extends Composite {
         return displayer;
     }
 
+    
     public void error(ClientRuntimeError e) {
+        String message = e.getMessage();
         if (e.getThrowable() != null) {
-            error(e, e.getThrowable().getMessage(), e.getCause());
-        } else {
-            error(e, e.getMessage(), e.getCause());
+            message = e.getThrowable().getMessage();
         }
+        error(e, message);
     }
     
-    public void error(ClientRuntimeError e, String message, String cause) {
+    public void error(ClientRuntimeError e, String message) {
         container.clear();
         container.add(errorWidget);
-        errorWidget.show(message, cause);
-
+        errorWidget.show(message, e.getThrowable());
         error = true;
         GWT.log(e.getMessage(),
                 e.getThrowable());

@@ -71,7 +71,9 @@ public class DisplayerEditorView extends Composite
     CheckBox viewAsTableButton;
 
     protected DisplayerEditor presenter;
-    protected DisplayerError errorWidget = new DisplayerError();
+    
+    @Inject
+    protected DisplayerErrorWidget errorWidget;
 
     public void init(DisplayerEditor presenter) {
         this.presenter = presenter;
@@ -171,7 +173,7 @@ public class DisplayerEditorView extends Composite
     public void error(ClientRuntimeError e) {
         centerColumn.clear();
         centerColumn.add(errorWidget);
-        errorWidget.show(e.getMessage(), e.getCause());
+        errorWidget.show(e.getMessage(), e.getThrowable());
 
         if (e.getThrowable() != null) {
             GWT.log(e.getMessage(), e.getThrowable());
