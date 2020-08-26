@@ -1,6 +1,6 @@
 import invariant from 'invariant';
 import { ComponentType, createElement } from 'react';
-import { useField } from 'uniforms/es5';
+import { Override, connectField, useField } from 'uniforms/es5';
 
 import BoolField from './BoolField';
 import DateField from './DateField';
@@ -11,10 +11,13 @@ import RadioField from './RadioField';
 import SelectField from './SelectField';
 import TextField from './TextField';
 
-export type AutoFieldProps = {
-  component?: ComponentType<any>;
-  name: string;
-} & Record<string, unknown>;
+export type AutoFieldProps = Override<
+  Record<string, unknown>,
+  {
+    component?: ComponentType<any> | ReturnType<typeof connectField>;
+    name: string;
+  }
+>;
 
 export default function AutoField(originalProps: AutoFieldProps) {
   const props = useField(originalProps.name, originalProps)[0];
@@ -53,7 +56,8 @@ export default function AutoField(originalProps: AutoFieldProps) {
       invariant(component, 'Unsupported field type: %s', fieldType);
     }
   }
-
-  // TODO: The flow along with the invariant above ensures its existence.
-  return createElement(component!, originalProps);
+  
+  return 'options' in component && component.options?.kind === 'leaf'
+    ? createElement(component.Component, props)
+    : createElement(component, originalProps);;
 }
