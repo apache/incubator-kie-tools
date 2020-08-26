@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { BackendProxy, Capability, CapabilityResponse } from "@kogito-tooling/backend-api";
-import { BackendExtensionApi } from "@kogito-tooling/backend-channel-api";
+import { BackendProxy, Capability, CapabilityResponse } from "@kogito-tooling/backend/dist/api";
+import { BackendExtensionApi } from "@kogito-tooling/backend/dist/channel-api";
 import * as vscode from "vscode";
 
 /**

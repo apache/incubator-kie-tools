@@ -26,7 +26,7 @@ import * as nodePath from "path";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
-import { BackendProxy } from "@kogito-tooling/backend-api";
+import { BackendProxy } from "@kogito-tooling/backend/dist/api";
 
 export class KogitoEditorFactory {
   constructor(

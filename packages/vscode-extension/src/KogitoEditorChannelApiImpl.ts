@@ -26,7 +26,7 @@ import * as vscode from "vscode";
 import * as __path from "path";
 import { KogitoEditor } from "./KogitoEditor";
 import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
-import { BackendProxy } from "@kogito-tooling/backend-api";
+import { BackendProxy } from "@kogito-tooling/backend/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   private readonly decoder = new TextDecoder("utf-8");

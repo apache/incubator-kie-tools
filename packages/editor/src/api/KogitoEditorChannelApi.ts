@@ -18,7 +18,7 @@ import { KogitoToolingChannelCommonApi } from "@kogito-tooling/channel-common-ap
 import { GuidedTourChannelApi } from "@kogito-tooling/guided-tour/dist/api";
 import { StateControlCommand } from "./StateControlCommand";
 import { EditorContent } from "./EditorContent";
-import { CapabilityChannelApi } from "@kogito-tooling/backend-channel-api";
+import { CapabilityChannelApi } from "@kogito-tooling/backend/dist/channel-api";
 
 export interface KogitoEditorChannelApi
   extends KogitoToolingChannelCommonApi,
