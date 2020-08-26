@@ -96,8 +96,8 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1
         with:
-          name: backend-vscode-extension
-          path: kogito-tooling/packages/backend-vscode-extension/dist/backend-vscode-extension_${{ steps.version.outputs.version }}.vsix
+          name: vscode-extension-backend
+          path: kogito-tooling/packages/vscode-extension-backend/dist/vscode-extension-backend_${{ steps.version.outputs.version }}.vsix
 
       - name: Upload Chrome Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
