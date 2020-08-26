@@ -23,7 +23,8 @@
         "prefer-rest-params": "off",
         "react/no-children-prop": "off",
         "react/prop-types": "off",
-        "prettier/prettier": "off"
+        "prettier/prettier": "off",
+        "complexity": "off"
       },
       "settings": {
         "import/resolver": {
