@@ -3,37 +3,40 @@ import { Button, ButtonProps } from '@patternfly/react-core';
 import { MinusCircleIcon } from '@patternfly/react-icons';
 import { useField, filterDOMProps, joinName } from 'uniforms/es5';
 
-export type ListDelFieldProps<T> = {
+export type ListDelFieldProps = {
   name: string;
   parent?: any;
-  value?: T;
-} & Omit<ButtonProps, 'isDisabled'>;
+  value?: unknown;
+} & ButtonProps;
 
-function ListDel<T>(rawProps: ListDelFieldProps<T>) {
-  const props = useField<ListDelFieldProps<T>, T>(rawProps.name, rawProps, {
-    initialValue: false,
-  })[0];
-
-  const nameParts = joinName(null, props.name);
+function ListDel({
+  name,
+  disabled,
+  ...props
+}: ListDelFieldProps) {
+  const nameParts = joinName(null, name);
+  const nameIndex = +nameParts[nameParts.length - 1];
   const parentName = joinName(nameParts.slice(0, -1));
-  const parent = useField<{ minCount?: number }, T[]>(parentName, {})[0];
-  if (rawProps.parent) Object.assign(parent, rawProps.parent);
-  const parentValue = parent.value ?? [];
+  const parent = useField<{ minCount?: number }, unknown[]>(
+    parentName,
+    {},
+    { absoluteName: true },
+  )[0];
 
   const limitNotReached =
-    !props.disabled && 
-    !(parent.minCount! >= parentValue!.length);
+    !disabled && !(parent.minCount! >= parent.value!.length);
 
   return (
     <Button
-      disabled={!limitNotReached || rawProps.disabled}
+      disabled={!limitNotReached || disabled}
       variant="plain"
       style={{ paddingLeft: '0', paddingRight: '0'}}
       onClick={() => {
-        if (limitNotReached) {
-          const value = parentValue.splice(0, parentValue.length - 1);
-          parent.onChange(value);
-        }
+        const value = parent.value!.slice();
+        value.splice(nameIndex, 1);
+        !disabled &&
+        limitNotReached &&
+        parent.onChange(value);
       }}
       {...filterDOMProps(props)}
     >

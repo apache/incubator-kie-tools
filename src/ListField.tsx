@@ -1,45 +1,63 @@
-import React, { Children, HTMLProps, ReactNode } from 'react';
+import React, { Children, HTMLProps, ReactNode, isValidElement, cloneElement } from 'react';
 import { Tooltip, Split, SplitItem } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
-import { connectField, filterDOMProps, joinName } from 'uniforms/es5';
+import { HTMLFieldProps, connectField, filterDOMProps, joinName } from 'uniforms/es5';
 
 import ListItemField from './ListItemField';
 import ListAddField from './ListAddField';
 import { ListDelField } from '.';
 
-export type ListFieldProps<T> = {
-  value: T[];
-  children?: ReactNode;
-  addIcon?: any;
-  error?: boolean;
-  info?: boolean;
-  errorMessage?: string;
-  initialCount?: number;
-  itemProps?: {};
-  labelCol?: any;
-  label: string;
-  wrapperCol?: any;
-  name: string;
-  showInlineError?: boolean;
-} & Omit<HTMLProps<HTMLDivElement>, 'children' | 'name'>;
+// export type ListFieldProps = {
+//   value: unknown[];
+//   children?: ReactNode;
+//   addIcon?: any;
+//   error?: boolean;
+//   info?: boolean;
+//   errorMessage?: string;
+//   initialCount?: number;
+//   itemProps?: {};
+//   labelCol?: any;
+//   label: string;
+//   wrapperCol?: any;
+//   name: string;
+//   showInlineError?: boolean;
+// } & Omit<HTMLProps<HTMLDivElement>, 'children' | 'name'>;
 
-filterDOMProps.register("minCount");
+export type ListFieldProps = HTMLFieldProps<
+  unknown[],
+  HTMLDivElement,
+  {
+    children?: ReactNode;
+    info?: string;
+    error?: boolean;
+    initialCount?: number;
+    itemProps?: object;
+    showInlineError?: boolean;
+  }
+>;
 
-function ListField<T>({
-  children,
+declare module 'uniforms' {
+  interface FilterDOMProps {
+    wrapperCol: never;
+    labelCol: never;
+  }
+}
+
+filterDOMProps.register('minCount', 'wrapperCol', 'labelCol');
+
+function ListField({
+  children = <ListItemField name="$" />,
   error,
   errorMessage,
   info,
   initialCount,
   itemProps,
   label,
-  labelCol,
   name,
   value,
   showInlineError,
-  wrapperCol,
   ...props
-}: ListFieldProps<T>) {
+}: ListFieldProps) {
   return (
     <div {...filterDOMProps(props)}>
       <Split hasGutter>
@@ -66,36 +84,20 @@ function ListField<T>({
       </Split>
 
       <div>
-        {children
-          ? value.map((item: any, index: number) =>
-            Children.map(children as JSX.Element, child =>
-              React.cloneElement(child, {
-                key: index,
-                label: '',
-                name: joinName(
-                  name,
-                  child.props.name && child.props.name.replace('$', index),
-                ),
-              }),
+          {value?.map((item, itemIndex) =>
+            Children.map(children, (child, childIndex) =>
+              isValidElement(child)
+                ? cloneElement(child, {
+                    key: `${itemIndex}-${childIndex}`,
+                    name: child.props.name?.replace('$', '' + itemIndex),
+                    ...itemProps,
+                  })
+                : child,
             ),
-          )
-          : value.map((item: any, index: number) => (
-            <ListItemField
-              key={index}
-              label={null}
-              name={joinName(name, index)}
-              {...itemProps}
-              // @ts-ignore
-              value={item}
-            />
-          ))}
+          )}
       </div>
     </div>
   );
 }
 
-ListField.defaultProps = {
-  value: []
-}
-
-export default connectField<ListFieldProps<any>>(ListField);
+export default connectField(ListField);
