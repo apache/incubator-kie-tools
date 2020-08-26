@@ -295,9 +295,7 @@ jobs:
       - name: Run Chrome plugin integration tests
         env:
           DISPLAY: ":99.0"
-        run: |
-          cd kogito-tooling
-          cd packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
+        run: cd kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
 
       - name: Archive it test screenshots	
         if: always()	
