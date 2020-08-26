@@ -56,8 +56,6 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @EdgeOccurrences(role = "Startevents_all", type = EdgeOccurrences.EdgeType.INCOMING, max = 0)
 // No outgoing sequence flows for end events.
 @EdgeOccurrences(role = "Endevents_all", type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
-// A single outgoing sequence flows for message flow_start roles, such as Tasks or Subprocess.
-@EdgeOccurrences(role = "messageflow_start", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
 // A single outgoing sequence flows for event types that can be docked (boundary) such as Intermediate Timer Event
 @EdgeOccurrences(role = "IntermediateEventOnActivityBoundary", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
 @EdgeOccurrences(role = "IntermediateEventCatching", type = EdgeOccurrences.EdgeType.INCOMING, max = 1)
