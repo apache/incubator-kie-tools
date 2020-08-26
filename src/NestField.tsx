@@ -35,10 +35,8 @@ const Nest = ({
       <CardBody className="pf-c-form">
         {label && <label><b>{label}</b></label>}
         {children ||
-          fields?.map(key => (
-            <>
-              <AutoField key={key} disabled={disabled} name={joinName(name, key)} {...itemProps} />
-            </>
+          fields.map(field => (
+            <AutoField key={field} disabled={disabled} name={field} {...itemProps} />
           ))}
       </CardBody>
     </Card>
