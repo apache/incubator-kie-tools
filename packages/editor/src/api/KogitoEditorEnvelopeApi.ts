@@ -27,6 +27,7 @@ export interface EditorInitArgs {
   resourcesPathPrefix: string;
   fileExtension: string;
   initialLocale: string;
+  isReadOnly: boolean;
 }
 
 export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, GuidedTourEnvelopeApi {

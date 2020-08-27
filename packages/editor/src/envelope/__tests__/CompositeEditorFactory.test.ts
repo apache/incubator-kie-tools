@@ -86,7 +86,7 @@ describe("CompositeEditorFactory", () => {
     jest.spyOn(factory2, "createEditor");
 
     const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
-    const initArgs = { fileExtension: "txt", resourcesPathPrefix: "", initialLocale: "en" };
+    const initArgs = { fileExtension: "txt", resourcesPathPrefix: "", initialLocale: "en", isReadOnly: false };
     expect(compositeFactory.createEditor(envelopeContext, initArgs)).resolves.toBe(dummyEditor);
     expect(factory2.createEditor).toBeCalledTimes(1);
   });
@@ -98,7 +98,7 @@ describe("CompositeEditorFactory", () => {
     factories.push(factory1);
     factories.push(factory2);
     const compositeFactory: CompositeEditorFactory = new CompositeEditorFactory(factories);
-    const initArgs = { fileExtension: "txt", resourcesPathPrefix: "", initialLocale: "en" };
+    const initArgs = { fileExtension: "txt", resourcesPathPrefix: "", initialLocale: "en", isReadOnly: false };
     expect(() => compositeFactory.createEditor(envelopeContext, initArgs)).toThrowError(Error);
   });
 

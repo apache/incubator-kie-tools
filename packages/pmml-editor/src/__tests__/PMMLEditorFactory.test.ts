@@ -63,7 +63,8 @@ describe("PMMLEditorFactory", () => {
     const created: Promise<Editor> = factory.createEditor(envelopeContext, {
       fileExtension: FACTORY_TYPE,
       resourcesPathPrefix: "",
-      initialLocale: "en"
+      initialLocale: "en",
+      isReadOnly: false
     });
     expect(created).resolves.toBeInstanceOf(PMMLEditorInterface);
   });
