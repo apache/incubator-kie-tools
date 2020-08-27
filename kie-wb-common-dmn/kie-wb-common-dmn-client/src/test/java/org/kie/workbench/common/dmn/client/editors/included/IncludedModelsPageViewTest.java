@@ -25,6 +25,7 @@ import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.mock;
@@ -43,11 +44,14 @@ public class IncludedModelsPageViewTest {
     @Mock
     private IncludedModelsPagePresenter presenter;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     private IncludedModelsPageView view;
 
     @Before
     public void setup() {
-        view = new IncludedModelsPageView(grid, includeModelButton);
+        view = new IncludedModelsPageView(grid, includeModelButton, readOnlyProvider);
         view.init(presenter);
     }
 

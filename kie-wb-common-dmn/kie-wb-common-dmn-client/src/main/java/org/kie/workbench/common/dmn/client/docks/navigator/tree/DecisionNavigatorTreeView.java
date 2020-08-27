@@ -18,6 +18,7 @@ package org.kie.workbench.common.dmn.client.docks.navigator.tree;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -161,10 +162,11 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
     Element makeTree(final Collection<DecisionNavigatorItem> items) {
 
         final Element ulElement = createElement("ul");
-
-        items.forEach(item -> {
-            ulElement.appendChild(makeTreeItemElement(item));
-        });
+        if (!Objects.isNull(items)) {
+            items.forEach(item -> {
+                ulElement.appendChild(makeTreeItemElement(item));
+            });
+        }
 
         return ulElement;
     }

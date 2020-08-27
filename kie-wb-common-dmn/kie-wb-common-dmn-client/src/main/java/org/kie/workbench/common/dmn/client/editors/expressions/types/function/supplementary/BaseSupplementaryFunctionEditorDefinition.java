@@ -42,6 +42,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -69,7 +70,8 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
                                                      final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                                      final ListSelectorView.Presenter listSelector,
                                                      final TranslationService translationService,
-                                                     final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                                                     final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                                     final ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -78,7 +80,8 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
               refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               listSelector,
-              translationService);
+              translationService,
+              readOnlyProvider);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
     }
 
@@ -133,7 +136,8 @@ public abstract class BaseSupplementaryFunctionEditorDefinition extends BaseEdit
                                                          translationService,
                                                          isOnlyVisualChangeAllowed,
                                                          nesting,
-                                                         expressionEditorDefinitionsSupplier));
+                                                         expressionEditorDefinitionsSupplier,
+                                                         readOnlyProvider));
     }
 
     @Override

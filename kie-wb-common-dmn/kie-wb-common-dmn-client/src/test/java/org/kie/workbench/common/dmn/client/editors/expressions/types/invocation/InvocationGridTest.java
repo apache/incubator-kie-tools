@@ -76,6 +76,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
@@ -259,6 +260,9 @@ public class InvocationGridTest {
     @Mock
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     @Captor
     private ArgumentCaptor<AddParameterBindingCommand> addParameterBindingCommandCaptor;
 
@@ -314,7 +318,8 @@ public class InvocationGridTest {
                                                     listSelector,
                                                     translationService,
                                                     expressionEditorDefinitionsSupplier,
-                                                    headerEditor);
+                                                    headerEditor,
+                                                    readOnlyProvider);
 
         expression = definition.getModelClass();
         definition.enrich(Optional.empty(), hasExpression, expression);

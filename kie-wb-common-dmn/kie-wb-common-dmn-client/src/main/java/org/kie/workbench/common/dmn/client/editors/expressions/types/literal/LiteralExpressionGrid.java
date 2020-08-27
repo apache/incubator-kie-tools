@@ -46,6 +46,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.LiteralExpressionGridRow;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -85,7 +86,8 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
                                  final TranslationService translationService,
                                  final boolean isOnlyVisualChangeAllowed,
                                  final int nesting,
-                                 final ValueAndDataTypePopoverView.Presenter headerEditor) {
+                                 final ValueAndDataTypePopoverView.Presenter headerEditor,
+                                 final ReadOnlyProvider readOnlyProvider) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -105,7 +107,8 @@ public class LiteralExpressionGrid extends BaseDelegatingExpressionGrid<LiteralE
               listSelector,
               translationService,
               isOnlyVisualChangeAllowed,
-              nesting);
+              nesting,
+              readOnlyProvider);
         this.headerEditor = headerEditor;
 
         setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);

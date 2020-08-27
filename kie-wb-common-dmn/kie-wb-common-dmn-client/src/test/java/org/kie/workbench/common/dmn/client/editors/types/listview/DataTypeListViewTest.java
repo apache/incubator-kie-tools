@@ -40,12 +40,15 @@ import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.imported.ImportDataObjectModal;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBar;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.SUCCESS;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.ARROW_BUTTON_SELECTOR;
@@ -132,6 +135,9 @@ public class DataTypeListViewTest {
     @Mock
     private HTMLDivElement dataTypeButton;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     @Captor
     private ArgumentCaptor<FlashMessage> flashMessageCaptor;
 
@@ -151,7 +157,7 @@ public class DataTypeListViewTest {
         dataTypeButton.classList = mock(DOMTokenList.class);
         listItems.childNodes = new NodeList<>();
 
-        view = spy(new DataTypeListView(listItems, addButton, addButtonPlaceholder, dataTypeButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound, readOnlyMessage, readOnlyMessageCloseButton, scrollHelper, importDataObjectButton, importDataObjectModal, flashMessageEvent, translationService));
+        view = spy(new DataTypeListView(listItems, addButton, addButtonPlaceholder, dataTypeButton, placeholder, searchBarContainer, expandAll, collapseAll, noDataTypesFound, readOnlyMessage, readOnlyMessageCloseButton, scrollHelper, importDataObjectButton, importDataObjectModal, flashMessageEvent, translationService, readOnlyProvider));
         view.init(presenter);
 
         doReturn(element).when(view).getElement();
@@ -162,6 +168,27 @@ public class DataTypeListViewTest {
         // "view.init(..)" called in the setup.
         verify(searchBarContainer).appendChild(searchBarElement);
         verify(listItems).appendChild(dndListComponentElement);
+        verify(view).setupAddButtonReadOnlyStatus();
+    }
+
+    @Test
+    public void testSetupAddButtonReadOnlyStatusWhenIsReadOnly() {
+
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(true);
+
+        view.setupAddButtonReadOnlyStatus();
+
+        assertTrue(addButton.disabled);
+    }
+
+    @Test
+    public void testSetupAddButtonReadOnlyStatusWhenIsNotReadOnly() {
+
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(false);
+
+        view.setupAddButtonReadOnlyStatus();
+
+        assertFalse(addButton.disabled);
     }
 
     @Test

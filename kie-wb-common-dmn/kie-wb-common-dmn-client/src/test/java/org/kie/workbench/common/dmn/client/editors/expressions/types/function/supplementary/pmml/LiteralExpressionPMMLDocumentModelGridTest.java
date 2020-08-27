@@ -37,6 +37,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.su
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
@@ -68,6 +69,9 @@ public class LiteralExpressionPMMLDocumentModelGridTest extends BaseLiteralExpre
     @Mock
     private GraphCommandExecutionContext graphCommandExecutionContext;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     @Before
     public void setup() {
         final GridCellTuple grandParentInformation = new GridCellTuple(0, 0, grandParentFunctionGridWidget);
@@ -93,7 +97,8 @@ public class LiteralExpressionPMMLDocumentModelGridTest extends BaseLiteralExpre
                                                                       listSelector,
                                                                       translationService,
                                                                       headerEditor,
-                                                                      pmmlDocumentMetadataProvider);
+                                                                      pmmlDocumentMetadataProvider,
+                                                                      readOnlyProvider);
     }
 
     @Override

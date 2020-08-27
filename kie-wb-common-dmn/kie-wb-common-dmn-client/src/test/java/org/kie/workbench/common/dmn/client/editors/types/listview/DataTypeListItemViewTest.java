@@ -33,6 +33,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -114,11 +115,15 @@ public class DataTypeListItemViewTest {
     @Mock
     private TranslationService translationService;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     private DataTypeListItemView view;
 
     @Before
     public void setup() {
-        view = spy(new DataTypeListItemView(row, translationService));
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(false);
+        view = spy(new DataTypeListItemView(row, translationService, readOnlyProvider));
         view.init(presenter);
 
         when(presenter.getDragAndDropElement()).thenReturn(dragAndDropElement);
@@ -196,6 +201,20 @@ public class DataTypeListItemViewTest {
 
         dragAndDropElement.classList = mock(DOMTokenList.class);
         when(dataType.isReadOnly()).thenReturn(true);
+
+        view.setupReadOnlyCSSClass(dataType);
+
+        verify(dragAndDropElement.classList).add("read-only");
+    }
+
+    @Test
+    public void testSetupReadOnlyCSSClassWhenIsReadOnlyDiagram() {
+
+        final DataType dataType = mock(DataType.class);
+
+        dragAndDropElement.classList = mock(DOMTokenList.class);
+        when(dataType.isReadOnly()).thenReturn(false);
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(true);
 
         view.setupReadOnlyCSSClass(dataType);
 

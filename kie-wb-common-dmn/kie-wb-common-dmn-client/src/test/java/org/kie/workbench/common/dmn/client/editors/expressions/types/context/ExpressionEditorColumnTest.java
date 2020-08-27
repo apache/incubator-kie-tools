@@ -42,6 +42,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorCh
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -107,6 +108,9 @@ public class ExpressionEditorColumnTest {
 
     @Mock
     private ListSelectorView.Presenter listSelector;
+
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
 
     @Mock
     private TranslationService translationService;
@@ -474,7 +478,8 @@ public class ExpressionEditorColumnTest {
                                       listSelector,
                                       translationService,
                                       false,
-                                      0) {
+                                      0,
+                                      readOnlyProvider) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {
                 return null;

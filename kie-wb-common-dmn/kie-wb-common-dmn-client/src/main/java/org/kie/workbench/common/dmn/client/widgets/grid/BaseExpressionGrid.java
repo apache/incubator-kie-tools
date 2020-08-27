@@ -60,6 +60,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
@@ -103,6 +104,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     protected final Event<ExpressionEditorChanged> editorSelectedEvent;
     protected final ListSelectorView.Presenter listSelector;
     protected final int nesting;
+    protected final ReadOnlyProvider readOnlyProvider;
 
     protected M uiModelMapper;
 
@@ -125,7 +127,8 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                               final ListSelectorView.Presenter listSelector,
                               final TranslationService translationService,
                               final boolean isOnlyVisualChangeAllowed,
-                              final int nesting) {
+                              final int nesting,
+                              final ReadOnlyProvider readOnlyProvider) {
         super(nodeUUID,
               hasExpression,
               hasName,
@@ -146,6 +149,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
         this.editorSelectedEvent = editorSelectedEvent;
         this.listSelector = listSelector;
         this.nesting = nesting;
+        this.readOnlyProvider = readOnlyProvider;
 
         doInitialisation();
     }
@@ -165,6 +169,11 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     protected abstract void initialiseUiRows();
 
     public abstract void initialiseUiCells();
+
+    @Override
+    public boolean isOnlyVisualChangeAllowed() {
+        return super.isOnlyVisualChangeAllowed() || readOnlyProvider.isReadOnlyDiagram();
+    }
 
     @SuppressWarnings("unchecked")
     public <V, HV extends HasValue<V>> Consumer<HV> clearValueConsumer(final boolean updateStunnerTitle,

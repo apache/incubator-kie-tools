@@ -37,13 +37,19 @@ import org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinksHolder;
 import org.kie.workbench.common.dmn.client.editors.documentation.links.NameAndUrlPopoverView;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.mocks.EventSourceMock;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.kie.workbench.common.dmn.client.editors.documentation.DocumentationLinksWidget.READ_ONLY_CSS_CLASS;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_Add;
+import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_None;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -82,10 +88,16 @@ public class DocumentationLinksWidgetTest {
     private DOMTokenList noneContainerClassList;
 
     @Mock
+    private DOMTokenList addButtonClassList;
+
+    @Mock
     private EventSourceMock<LockRequiredEvent> locker;
 
     @Mock
     private DOMTokenList linksContainerClassList;
+
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
 
     private DocumentationLinksWidget widget;
 
@@ -94,6 +106,7 @@ public class DocumentationLinksWidgetTest {
 
         noneContainer.classList = noneContainerClassList;
         linksContainer.classList = linksContainerClassList;
+        addButton.classList = addButtonClassList;
 
         widget = spy(new DocumentationLinksWidget(listItems,
                                                   translationService,
@@ -104,7 +117,8 @@ public class DocumentationLinksWidgetTest {
                                                   cellEditor,
                                                   addLink,
                                                   noLink,
-                                                  locker));
+                                                  locker,
+                                                  readOnlyProvider));
     }
 
     @Test
@@ -214,5 +228,43 @@ public class DocumentationLinksWidgetTest {
         verify(value).addLink(createdLink);
         verify(locker).fire(any());
         verify(widget).refresh();
+    }
+
+    @Test
+    public void testInit() {
+
+        final String addText = "add";
+        final String noLinkText = "no link text";
+
+        when(translationService.getTranslation(DMNDocumentationI18n_Add)).thenReturn(addText);
+        when(translationService.getTranslation(DMNDocumentationI18n_None)).thenReturn(noLinkText);
+
+        widget.init();
+
+        assertEquals(addLink.textContent, addText);
+        assertEquals(noLink.textContent, noLinkText);
+        verify(widget).setupAddButtonReadOnlyStatus();
+    }
+
+    @Test
+    public void testSetupAddButtonReadOnlyStatusWhenIsReadOnly() {
+
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(true);
+
+        widget.setupAddButtonReadOnlyStatus();
+
+        verify(addButtonClassList).add(READ_ONLY_CSS_CLASS);
+        verify(addButtonClassList, never()).remove(READ_ONLY_CSS_CLASS);
+    }
+
+    @Test
+    public void testSetupAddButtonReadOnlyStatusWhenIsNotReadOnly() {
+
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(false);
+
+        widget.setupAddButtonReadOnlyStatus();
+
+        verify(addButtonClassList, never()).add(READ_ONLY_CSS_CLASS);
+        verify(addButtonClassList).remove(READ_ONLY_CSS_CLASS);
     }
 }

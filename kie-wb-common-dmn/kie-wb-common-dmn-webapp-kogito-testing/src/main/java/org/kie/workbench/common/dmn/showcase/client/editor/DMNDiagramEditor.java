@@ -47,6 +47,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.GuidedTourB
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -98,6 +99,7 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
 
     private final Event<NotificationEvent> notificationEvent;
     private final DMNVFSService vfsService;
+    private final ReadOnlyProvider readOnlyProvider;
 
     @Inject
     public DMNDiagramEditor(final View view,
@@ -134,7 +136,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final IncludedModelsPage includedModelsPage,
                             final IncludedModelsPageStateProviderImpl importsPageProvider,
                             final EditorContextProvider contextProvider,
-                            final GuidedTourBridgeInitializer guidedTourBridgeInitializer) {
+                            final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
+                            final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -171,6 +174,7 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               guidedTourBridgeInitializer);
         this.notificationEvent = notificationEvent;
         this.vfsService = vfsService;
+        this.readOnlyProvider = readOnlyProvider;
     }
 
     @Override
@@ -277,5 +281,10 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
     @Override
     public void onRefreshFormPropertiesEvent(final @Observes RefreshFormPropertiesEvent event) {
         super.onRefreshFormPropertiesEvent(event);
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return readOnlyProvider.isReadOnlyDiagram();
     }
 }

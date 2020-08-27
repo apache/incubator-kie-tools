@@ -37,6 +37,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.su
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
@@ -62,6 +63,9 @@ public class PMMLFunctionSupplementaryGridTest extends BaseFunctionSupplementary
     @Mock
     private BaseExpressionGrid literalExpressionPMMLDocumentModelEditor;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     protected PMMLFunctionEditorDefinition getEditorDefinition() {
         return new PMMLFunctionEditorDefinition(definitionUtils,
                                                 sessionManager,
@@ -72,7 +76,8 @@ public class PMMLFunctionSupplementaryGridTest extends BaseFunctionSupplementary
                                                 domainObjectSelectionEvent,
                                                 listSelector,
                                                 translationService,
-                                                expressionEditorDefinitionsSupplier);
+                                                expressionEditorDefinitionsSupplier,
+                                                readOnlyProvider);
     }
 
     protected String[] getExpectedNames() {

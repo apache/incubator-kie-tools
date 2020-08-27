@@ -42,6 +42,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorCh
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -115,6 +116,9 @@ public class RelationEditorDefinitionTest {
     @Mock
     private ValueAndDataTypePopoverView.Presenter headerEditor;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     private Optional<HasName> hasName = Optional.empty();
 
     private RelationEditorDefinition definition;
@@ -138,7 +142,8 @@ public class RelationEditorDefinitionTest {
                                                        domainObjectSelectionEvent,
                                                        listSelector,
                                                        translationService,
-                                                       headerEditors);
+                                                       headerEditors,
+                                                       readOnlyProvider);
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
     }
 

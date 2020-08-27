@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.commands.general;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.enterprise.event.Event;
@@ -154,7 +155,9 @@ public abstract class BaseNavigateCommand extends AbstractCanvasGraphCommand {
     }
 
     protected void hidePaletteWidget(final boolean hidden) {
-        presenter.getPalette().setVisible(!hidden);
+        if (!Objects.isNull(presenter.getPalette())) {
+            presenter.getPalette().setVisible(!hidden);
+        }
     }
 
     private CanvasHandler getCanvasHandler() {

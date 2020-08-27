@@ -74,6 +74,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorCh
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
@@ -237,6 +238,9 @@ public class FunctionGridTest {
     @Mock
     private ValueAndDataTypePopoverView.Presenter headerEditor;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     @Captor
     private ArgumentCaptor<AddParameterCommand> addParameterCommandCaptor;
 
@@ -311,7 +315,8 @@ public class FunctionGridTest {
                                                   supplementaryEditorDefinitionsSupplier,
                                                   headerEditor,
                                                   parametersEditor,
-                                                  kindEditor);
+                                                  kindEditor,
+                                                  readOnlyProvider);
         literalExpressionEditorDefinition = spy(new LiteralExpressionEditorDefinition(definitionUtils,
                                                                                       sessionManager,
                                                                                       sessionCommandManager,
@@ -321,7 +326,8 @@ public class FunctionGridTest {
                                                                                       domainObjectSelectionEvent,
                                                                                       listSelector,
                                                                                       translationService,
-                                                                                      headerEditor));
+                                                                                      headerEditor,
+                                                                                      readOnlyProvider));
 
         expression = definition.getModelClass();
         definition.enrich(Optional.empty(), hasExpression, expression);

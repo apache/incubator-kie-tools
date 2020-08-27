@@ -77,6 +77,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.LiteralExpressionGridRow;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -140,7 +141,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
                              final boolean isOnlyVisualChangeAllowed,
                              final int nesting,
                              final HitPolicyPopoverView.Presenter hitPolicyEditor,
-                             final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors) {
+                             final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors,
+                             final ReadOnlyProvider readOnlyProvider) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -160,7 +162,8 @@ public class DecisionTableGrid extends BaseExpressionGrid<DecisionTable, Decisio
               listSelector,
               translationService,
               isOnlyVisualChangeAllowed,
-              nesting);
+              nesting,
+              readOnlyProvider);
         this.hitPolicyEditor = hitPolicyEditor;
         this.headerEditors = headerEditors;
 

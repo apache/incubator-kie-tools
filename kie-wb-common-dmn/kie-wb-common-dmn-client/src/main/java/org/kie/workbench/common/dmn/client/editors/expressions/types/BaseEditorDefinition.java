@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelect
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -49,6 +50,7 @@ public abstract class BaseEditorDefinition<E extends Expression, D extends GridD
     protected Event<DomainObjectSelectionEvent> domainObjectSelectionEvent;
     protected ListSelectorView.Presenter listSelector;
     protected TranslationService translationService;
+    protected ReadOnlyProvider readOnlyProvider;
 
     public BaseEditorDefinition() {
         //CDI proxy
@@ -62,7 +64,8 @@ public abstract class BaseEditorDefinition<E extends Expression, D extends GridD
                                 final Event<RefreshFormPropertiesEvent> refreshFormPropertiesEvent,
                                 final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                 final ListSelectorView.Presenter listSelector,
-                                final TranslationService translationService) {
+                                final TranslationService translationService,
+                                final ReadOnlyProvider readOnlyProvider) {
         this.definitionUtils = definitionUtils;
         this.sessionManager = sessionManager;
         this.sessionCommandManager = sessionCommandManager;
@@ -72,6 +75,7 @@ public abstract class BaseEditorDefinition<E extends Expression, D extends GridD
         this.domainObjectSelectionEvent = domainObjectSelectionEvent;
         this.listSelector = listSelector;
         this.translationService = translationService;
+        this.readOnlyProvider = readOnlyProvider;
     }
 
     protected abstract D makeGridData(final Supplier<Optional<E>> expression);

@@ -40,6 +40,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.su
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelectorView;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -65,7 +66,8 @@ public class PMMLFunctionEditorDefinition extends BaseSupplementaryFunctionEdito
                                         final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                         final ListSelectorView.Presenter listSelector,
                                         final TranslationService translationService,
-                                        final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                                        final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                        final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -75,7 +77,8 @@ public class PMMLFunctionEditorDefinition extends BaseSupplementaryFunctionEdito
               domainObjectSelectionEvent,
               listSelector,
               translationService,
-              expressionEditorDefinitionsSupplier);
+              expressionEditorDefinitionsSupplier,
+              readOnlyProvider);
     }
 
     @Override

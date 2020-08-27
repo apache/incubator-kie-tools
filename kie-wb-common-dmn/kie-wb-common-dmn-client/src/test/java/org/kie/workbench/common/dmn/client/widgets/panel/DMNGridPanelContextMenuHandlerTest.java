@@ -38,6 +38,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.controls.HasCellEditorCo
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -125,6 +126,9 @@ public class DMNGridPanelContextMenuHandlerTest {
 
     @Mock
     private GridColumn gridColumn;
+
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
 
     private DMNGridPanelContextMenuHandler handler;
 

@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.su
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -53,6 +54,9 @@ public class LiteralExpressionPMMLDocumentGridTest extends BaseLiteralExpression
     @Mock
     private SetCellValueCommand pmmlDocumentModelEditorCommand;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     @Override
     protected BaseEditorDefinition<LiteralExpressionPMMLDocument, DMNGridData> getDefinition() {
         return new LiteralExpressionPMMLDocumentEditorDefinition(definitionUtils,
@@ -65,7 +69,8 @@ public class LiteralExpressionPMMLDocumentGridTest extends BaseLiteralExpression
                                                                  listSelector,
                                                                  translationService,
                                                                  headerEditor,
-                                                                 pmmlDocumentMetadataProvider);
+                                                                 pmmlDocumentMetadataProvider,
+                                                                 readOnlyProvider);
     }
 
     @Override

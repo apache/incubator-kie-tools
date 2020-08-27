@@ -42,10 +42,12 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.property.dmn.DMNExternalLink;
 import org.kie.workbench.common.dmn.api.property.dmn.DocumentationLinks;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.kie.workbench.common.dmn.client.editors.documentation.links.NameAndUrlPopoverView;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.uberfire.client.mvp.LockRequiredEvent;
 
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DMNDocumentationI18n_Add;
@@ -76,6 +78,9 @@ public class DocumentationLinksWidget extends Composite implements HasValue<Docu
     private final NameAndUrlPopoverView.Presenter nameAndUrlPopover;
     private final TranslationService translationService;
     private final Event<LockRequiredEvent> locker;
+    private final ReadOnlyProvider readOnlyProvider;
+
+    static final String READ_ONLY_CSS_CLASS = "read-only";
 
     private boolean enabled;
 
@@ -91,7 +96,8 @@ public class DocumentationLinksWidget extends Composite implements HasValue<Docu
                                     final CellEditorControlsView cellEditor,
                                     @Named("span") final HTMLElement addLink,
                                     @Named("span") final HTMLElement noLink,
-                                    final Event<LockRequiredEvent> locker) {
+                                    final Event<LockRequiredEvent> locker,
+                                    final @DMNEditor ReadOnlyProvider readOnlyProvider) {
 
         this.listItems = listItems;
         this.linksContainer = linksContainer;
@@ -105,6 +111,7 @@ public class DocumentationLinksWidget extends Composite implements HasValue<Docu
         this.enabled = true;
         this.translationService = translationService;
         this.locker = locker;
+        this.readOnlyProvider = readOnlyProvider;
     }
 
     @PostConstruct
@@ -112,6 +119,16 @@ public class DocumentationLinksWidget extends Composite implements HasValue<Docu
         nameAndUrlPopover.setOnExternalLinkCreated(this::onDMNExternalLinkCreated);
         addLink.textContent = translationService.getTranslation(DMNDocumentationI18n_Add);
         noLink.textContent = translationService.getTranslation(DMNDocumentationI18n_None);
+
+        setupAddButtonReadOnlyStatus();
+    }
+
+    void setupAddButtonReadOnlyStatus() {
+        if (readOnlyProvider.isReadOnlyDiagram()) {
+            addButton.classList.add(READ_ONLY_CSS_CLASS);
+        } else {
+            addButton.classList.remove(READ_ONLY_CSS_CLASS);
+        }
     }
 
     void onDMNExternalLinkCreated(final DMNExternalLink externalLink) {

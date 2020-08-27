@@ -67,7 +67,8 @@ public class LiteralExpressionGridTest extends BaseLiteralExpressionGridTest<Lit
                                                      domainObjectSelectionEvent,
                                                      listSelector,
                                                      translationService,
-                                                     headerEditor);
+                                                     headerEditor,
+                                                     readOnlyProvider);
     }
 
     @Override

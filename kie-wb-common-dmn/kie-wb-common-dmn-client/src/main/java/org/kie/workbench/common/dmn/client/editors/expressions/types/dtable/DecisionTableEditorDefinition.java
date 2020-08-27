@@ -42,6 +42,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -73,7 +74,8 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                          final TranslationService translationService,
                                          final HitPolicyPopoverView.Presenter hitPolicyEditor,
                                          final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors,
-                                         final DecisionTableEditorDefinitionEnricher enricher) {
+                                         final DecisionTableEditorDefinitionEnricher enricher,
+                                         final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -82,7 +84,8 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
               refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               listSelector,
-              translationService);
+              translationService,
+              readOnlyProvider);
         this.hitPolicyEditor = hitPolicyEditor;
         this.headerEditors = headerEditors;
         this.enricher = enricher;
@@ -138,7 +141,8 @@ public class DecisionTableEditorDefinition extends BaseEditorDefinition<Decision
                                                  isOnlyVisualChangeAllowed,
                                                  nesting,
                                                  hitPolicyEditor,
-                                                 headerEditors));
+                                                 headerEditors,
+                                                 readOnlyProvider));
     }
 
     @Override

@@ -156,7 +156,8 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                                     includedModelsPage,
                                     importsPageProvider,
                                     contextProvider,
-                                    guidedTourBridgeInitializer) {
+                                    guidedTourBridgeInitializer,
+                                    readonlyProvider) {
 
             @Override
             protected PlaceRequest getPlaceRequest() {

@@ -44,6 +44,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -73,7 +74,8 @@ public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation,
                                       final ListSelectorView.Presenter listSelector,
                                       final TranslationService translationService,
                                       final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                      final ValueAndDataTypePopoverView.Presenter headerEditor) {
+                                      final ValueAndDataTypePopoverView.Presenter headerEditor,
+                                      final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -82,7 +84,8 @@ public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation,
               refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               listSelector,
-              translationService);
+              translationService,
+              readOnlyProvider);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.headerEditor = headerEditor;
     }
@@ -150,7 +153,8 @@ public class InvocationEditorDefinition extends BaseEditorDefinition<Invocation,
                                               isOnlyVisualChangeAllowed,
                                               nesting,
                                               expressionEditorDefinitionsSupplier,
-                                              headerEditor));
+                                              headerEditor,
+                                              readOnlyProvider));
     }
 
     @Override

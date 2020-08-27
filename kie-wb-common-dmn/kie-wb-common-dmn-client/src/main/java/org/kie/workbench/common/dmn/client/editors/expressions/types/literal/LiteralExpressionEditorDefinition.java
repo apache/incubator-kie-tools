@@ -40,6 +40,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -67,7 +68,8 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                              final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                              final ListSelectorView.Presenter listSelector,
                                              final TranslationService translationService,
-                                             final ValueAndDataTypePopoverView.Presenter headerEditor) {
+                                             final ValueAndDataTypePopoverView.Presenter headerEditor,
+                                             final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -76,7 +78,8 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
               refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               listSelector,
-              translationService);
+              translationService,
+              readOnlyProvider);
         this.headerEditor = headerEditor;
     }
 
@@ -121,7 +124,8 @@ public class LiteralExpressionEditorDefinition extends BaseEditorDefinition<Lite
                                                      translationService,
                                                      isOnlyVisualChangeAllowed,
                                                      nesting,
-                                                     headerEditor));
+                                                     headerEditor,
+                                                     readOnlyProvider));
     }
 
     @Override

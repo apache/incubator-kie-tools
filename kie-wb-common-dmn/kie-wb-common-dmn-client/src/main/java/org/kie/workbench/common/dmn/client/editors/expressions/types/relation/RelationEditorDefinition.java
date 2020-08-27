@@ -43,6 +43,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -70,7 +71,8 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                     final Event<DomainObjectSelectionEvent> domainObjectSelectionEvent,
                                     final ListSelectorView.Presenter listSelector,
                                     final TranslationService translationService,
-                                    final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors) {
+                                    final ManagedInstance<ValueAndDataTypePopoverView.Presenter> headerEditors,
+                                    final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -79,7 +81,8 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
               refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               listSelector,
-              translationService);
+              translationService,
+              readOnlyProvider);
         this.headerEditors = headerEditors;
     }
 
@@ -145,7 +148,8 @@ public class RelationEditorDefinition extends BaseEditorDefinition<Relation, Rel
                                             translationService,
                                             isOnlyVisualChangeAllowed,
                                             nesting,
-                                            headerEditors));
+                                            headerEditors,
+                                            readOnlyProvider));
     }
 
     @Override

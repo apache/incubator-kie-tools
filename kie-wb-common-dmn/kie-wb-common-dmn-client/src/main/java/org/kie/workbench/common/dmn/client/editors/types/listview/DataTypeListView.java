@@ -37,11 +37,13 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.api.editors.types.DataObject;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.imported.ImportDataObjectModal;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.uberfire.client.views.pfly.selectpicker.ElementHelper;
 
 import static org.kie.workbench.common.dmn.client.editors.common.messages.FlashMessage.Type.SUCCESS;
@@ -103,6 +105,8 @@ public class DataTypeListView implements DataTypeList.View {
 
     private final TranslationService translationService;
 
+    private final ReadOnlyProvider readOnlyProvider;
+
     private DataTypeList presenter;
 
     @Inject
@@ -121,7 +125,8 @@ public class DataTypeListView implements DataTypeList.View {
                             final HTMLButtonElement importDataObjectButton,
                             final ImportDataObjectModal importDataObjectModal,
                             final Event<FlashMessage> flashMessageEvent,
-                            final TranslationService translationService) {
+                            final TranslationService translationService,
+                            final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         this.listItems = listItems;
         this.addButton = addButton;
         this.addButtonPlaceholder = addButtonPlaceholder;
@@ -138,6 +143,7 @@ public class DataTypeListView implements DataTypeList.View {
         this.importDataObjectModal = importDataObjectModal;
         this.flashMessageEvent = flashMessageEvent;
         this.translationService = translationService;
+        this.readOnlyProvider = readOnlyProvider;
     }
 
     @Override
@@ -147,6 +153,12 @@ public class DataTypeListView implements DataTypeList.View {
         setupSearchBar();
         importDataObjectModal.setup(this::importDataObjects);
         setupListElement();
+
+        setupAddButtonReadOnlyStatus();
+    }
+
+    void setupAddButtonReadOnlyStatus() {
+        addButton.disabled = readOnlyProvider.isReadOnlyDiagram();
     }
 
     void importDataObjects(final List<DataObject> imported) {

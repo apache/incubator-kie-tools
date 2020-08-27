@@ -32,12 +32,14 @@ import elemental2.dom.NodeList;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
 import org.kie.workbench.common.dmn.client.editors.types.common.DataType;
 import org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.SmallSwitchComponent;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraint;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.hide;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.show;
@@ -72,13 +74,17 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
     private final TranslationService translationService;
 
+    private final ReadOnlyProvider readOnlyProvider;
+
     private DataTypeListItem presenter;
 
     @Inject
     public DataTypeListItemView(final HTMLDivElement view,
-                                final TranslationService translationService) {
+                                final TranslationService translationService,
+                                final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         this.view = view;
         this.translationService = translationService;
+        this.readOnlyProvider = readOnlyProvider;
     }
 
     @Override
@@ -118,7 +124,7 @@ public class DataTypeListItemView implements DataTypeListItem.View {
 
         final String readOnlyCSSClass = "read-only";
 
-        if (dataType.isReadOnly()) {
+        if (dataType.isReadOnly() || readOnlyProvider.isReadOnlyDiagram()) {
             getDragAndDropElement().classList.add(readOnlyCSSClass);
         } else {
             getDragAndDropElement().classList.remove(readOnlyCSSClass);

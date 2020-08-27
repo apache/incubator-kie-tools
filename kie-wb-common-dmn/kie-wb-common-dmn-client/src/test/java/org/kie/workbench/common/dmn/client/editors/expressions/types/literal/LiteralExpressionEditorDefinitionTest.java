@@ -40,6 +40,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorCh
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -107,6 +108,9 @@ public class LiteralExpressionEditorDefinitionTest {
     @Mock
     private ValueAndDataTypePopoverView.Presenter headerEditor;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     private Optional<HasName> hasName = Optional.of(HasName.NOP);
 
     private LiteralExpressionEditorDefinition definition;
@@ -128,7 +132,8 @@ public class LiteralExpressionEditorDefinitionTest {
                                                                 domainObjectSelectionEvent,
                                                                 listSelector,
                                                                 translationService,
-                                                                headerEditor);
+                                                                headerEditor,
+                                                                readOnlyProvider);
 
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
         doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());

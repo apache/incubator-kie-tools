@@ -41,6 +41,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -70,7 +71,8 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                final ListSelectorView.Presenter listSelector,
                                                final TranslationService translationService,
                                                final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector,
-                                               final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier) {
+                                               final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
+                                               final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -79,7 +81,8 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
               refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               listSelector,
-              translationService);
+              translationService,
+              readOnlyProvider);
         this.undefinedExpressionSelector = undefinedExpressionSelector;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
     }
@@ -127,7 +130,8 @@ public class UndefinedExpressionEditorDefinition extends BaseEditorDefinition<Ex
                                                        nesting,
                                                        undefinedExpressionSelector,
                                                        expressionEditorDefinitionsSupplier,
-                                                       ((DMNSession) sessionManager.getCurrentSession()).getExpressionGridCache()));
+                                                       ((DMNSession) sessionManager.getCurrentSession()).getExpressionGridCache(),
+                                                       readOnlyProvider));
     }
 
     @Override

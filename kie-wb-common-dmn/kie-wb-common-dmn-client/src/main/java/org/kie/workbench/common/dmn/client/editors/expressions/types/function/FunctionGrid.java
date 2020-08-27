@@ -63,6 +63,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGr
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -109,7 +110,8 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
                         final Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
                         final ValueAndDataTypePopoverView.Presenter headerEditor,
                         final ParametersPopoverView.Presenter parametersEditor,
-                        final KindPopoverView.Presenter kindEditor) {
+                        final KindPopoverView.Presenter kindEditor,
+                        final ReadOnlyProvider readOnlyProvider) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -129,7 +131,8 @@ public class FunctionGrid extends BaseExpressionGrid<FunctionDefinition, DMNGrid
               listSelector,
               translationService,
               isOnlyVisualChangeAllowed,
-              nesting);
+              nesting,
+              readOnlyProvider);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
         this.headerEditor = headerEditor;

@@ -58,6 +58,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -155,6 +156,9 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
     @Mock
     private Group header;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     @Captor
     private ArgumentCaptor<GridLayerRedrawManager.PrioritizedCommand> redrawCommandCaptor;
 
@@ -227,7 +231,8 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
                                       listSelector,
                                       translationService,
                                       false,
-                                      0) {
+                                      0,
+                                      readOnlyProvider) {
             @Override
             protected BaseUIModelMapper makeUiModelMapper() {
                 return mapper;
@@ -974,6 +979,20 @@ public class BaseExpressionGridGeneralTest extends BaseExpressionGridTest {
 
         final Command command = commandCaptor.getValue();
         assertThat(command).isInstanceOf(SetComponentWidthCommand.class);
+    }
+
+    @Test
+    public void testReadOnlyModeActive() {
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(true);
+
+        assertThat(grid.isOnlyVisualChangeAllowed()).isTrue();
+    }
+
+    @Test
+    public void testReadOnlyModeNonActive() {
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(false);
+
+        assertThat(grid.isOnlyVisualChangeAllowed()).isFalse();
     }
 
     /*

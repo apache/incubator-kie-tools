@@ -54,6 +54,7 @@ import org.kie.workbench.common.services.shared.resources.PerspectiveIds;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -131,6 +132,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     private final DMNEditorSearchIndex editorSearchIndex;
     private final SearchBarComponent<DMNSearchableElement> searchBarComponent;
     private final MonacoFEELInitializer feelInitializer;
+    private final ReadOnlyProvider readOnlyProvider;
 
     @Inject
     public DMNDiagramEditor(final View view,
@@ -160,7 +162,8 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final IncludedModelsPageStateProviderImpl importsPageProvider,
                             final DMNEditorSearchIndex editorSearchIndex,
                             final SearchBarComponent<DMNSearchableElement> searchBarComponent,
-                            final MonacoFEELInitializer feelInitializer) {
+                            final MonacoFEELInitializer feelInitializer,
+                            final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         super(view,
               xmlEditorView,
               editorSessionPresenterInstances,
@@ -189,6 +192,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         this.editorSearchIndex = editorSearchIndex;
         this.searchBarComponent = searchBarComponent;
         this.feelInitializer = feelInitializer;
+        this.readOnlyProvider = readOnlyProvider;
     }
 
     @Override
@@ -428,6 +432,11 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     @Override
     public String getEditorIdentifier() {
         return EDITOR_ID;
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return readOnlyProvider.isReadOnlyDiagram();
     }
 
     public void onDataTypeEditModeToggle(final @Observes DataTypeEditModeToggleEvent event) {

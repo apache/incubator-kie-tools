@@ -44,6 +44,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorCh
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -116,6 +117,9 @@ public class LiteralExpressionPMMLDocumentModelEditorDefinitionTest {
     @Mock
     private EventSourceMock<DomainObjectSelectionEvent> domainObjectSelectionEvent;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     private Optional<HasName> hasName = Optional.empty();
 
     private LiteralExpressionPMMLDocumentModelEditorDefinition definition;
@@ -138,7 +142,8 @@ public class LiteralExpressionPMMLDocumentModelEditorDefinitionTest {
                                                                                  listSelector,
                                                                                  translationService,
                                                                                  headerEditor,
-                                                                                 pmmlDocumentMetadataProvider);
+                                                                                 pmmlDocumentMetadataProvider,
+                                                                                 readOnlyProvider);
         final ExpressionEditorDefinitions expressionEditorDefinitions = new ExpressionEditorDefinitions();
         expressionEditorDefinitions.add((ExpressionEditorDefinition) definition);
 

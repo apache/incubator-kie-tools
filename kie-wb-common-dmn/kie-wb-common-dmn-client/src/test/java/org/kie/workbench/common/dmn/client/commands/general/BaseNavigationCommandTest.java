@@ -22,6 +22,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
+import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.AbstractSessionPresenter;
@@ -39,10 +40,11 @@ import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public abstract class BaseNavigationCommandTest {
@@ -95,6 +97,9 @@ public abstract class BaseNavigationCommandTest {
     @Mock
     protected LienzoCanvas canvas;
 
+    @Mock
+    protected PaletteWidget palette;
+
     @Captor
     protected ArgumentCaptor<RefreshFormPropertiesEvent> refreshFormPropertiesEventCaptor;
 
@@ -109,10 +114,10 @@ public abstract class BaseNavigationCommandTest {
         when(sessionPresenter.getDisplayer()).thenReturn(sessionView);
         when(sessionView.getView()).thenReturn(view);
         when(editor.getView()).thenReturn(expressionEditorView);
+        when(sessionPresenter.getPalette()).thenReturn(palette);
 
         this.command = spy(getCommand(isOnlyVisualChangeAllowed));
 
-        doNothing().when(command).hidePaletteWidget(any(Boolean.class));
         doReturn(editorContainerForErrai1090).when(command).wrapElementForErrai1090();
     }
 
@@ -132,6 +137,38 @@ public abstract class BaseNavigationCommandTest {
 
         assertEquals(CanvasCommandResultBuilder.SUCCESS,
                      command.getCanvasCommand(canvasHandler).allow(canvasHandler));
+    }
+
+    @Test
+    public void testHidePaletteWidget() {
+
+        setup(false);
+
+        command.hidePaletteWidget(true);
+
+        verify(palette).setVisible(false);
+    }
+
+    @Test
+    public void testShowPaletteWidget() {
+
+        setup(false);
+
+        command.hidePaletteWidget(false);
+
+        verify(palette).setVisible(true);
+    }
+
+    @Test
+    public void testHidePaletteWidgetWhenPaletteIsNotPresent() {
+
+        setup(false);
+
+        when(sessionPresenter.getPalette()).thenReturn(null);
+
+        command.hidePaletteWidget(true);
+
+        verify(palette, never()).setVisible(anyBoolean());
     }
 
     public abstract void executeCanvasCommand();

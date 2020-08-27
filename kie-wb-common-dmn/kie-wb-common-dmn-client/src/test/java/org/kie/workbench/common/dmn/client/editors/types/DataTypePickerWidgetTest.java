@@ -29,6 +29,7 @@ import org.gwtbootstrap3.extras.select.client.ui.Option;
 import org.gwtbootstrap3.extras.select.client.ui.Select;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
+import org.jboss.errai.common.client.dom.DOMTokenList;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -45,6 +46,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
@@ -55,6 +57,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.dmn.client.editors.types.DataTypePickerWidget.READ_ONLY_CSS_CLASS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
@@ -119,6 +122,12 @@ public class DataTypePickerWidgetTest {
     @Mock
     private DMNModelInstrumentedBase dmnModel;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
+    @Mock
+    private DOMTokenList typeButtonClassList;
+
     private ItemDefinitionUtils itemDefinitionUtils;
 
     @Captor
@@ -151,6 +160,7 @@ public class DataTypePickerWidgetTest {
 
         when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
 
+        when(typeButton.getClassList()).thenReturn(typeButtonClassList);
         this.picker = spy(new DataTypePickerWidget(typeButton,
                                                    manageContainer,
                                                    manageLabel,
@@ -158,7 +168,8 @@ public class DataTypePickerWidgetTest {
                                                    qNameConverter,
                                                    dmnGraphUtils,
                                                    dataTypePageActiveEvent,
-                                                   itemDefinitionUtils));
+                                                   itemDefinitionUtils,
+                                                   readOnlyProvider));
     }
 
     @Test
@@ -412,5 +423,27 @@ public class DataTypePickerWidgetTest {
 
         inOrder.verify(typeSelector).refresh();
         verify(picker).setValue(value, false);
+    }
+
+    @Test
+    public void testSetTypeButtonCSSClassWhenIsReadOnlyDiagram() {
+
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(true);
+
+        picker.setTypeButtonCSSClass();
+
+        verify(typeButtonClassList).add(READ_ONLY_CSS_CLASS);
+        verify(typeButtonClassList, never()).remove(READ_ONLY_CSS_CLASS);
+    }
+
+    @Test
+    public void testSetTypeButtonCSSClassWhenIsNotReadOnlyDiagram() {
+
+        when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(false);
+
+        picker.setTypeButtonCSSClass();
+
+        verify(typeButtonClassList, never()).add(READ_ONLY_CSS_CLASS);
+        verify(typeButtonClassList).remove(READ_ONLY_CSS_CLASS);
     }
 }

@@ -17,14 +17,20 @@
 package org.kie.workbench.common.dmn.client.session;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ToolboxControl;
+import org.mockito.Mock;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DMNViewerSessionTest extends BaseDMNSessionTest<DMNViewerSession> {
+
+    @Mock
+    private ToolboxControl toolboxControl;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -42,6 +48,8 @@ public class DMNViewerSessionTest extends BaseDMNSessionTest<DMNViewerSession> {
 
     @Override
     protected Map<CanvasControl, Class> getCanvasHandlerControlRegistrations() {
-        return Collections.emptyMap();
+        final HashMap<CanvasControl, Class> canvasHandlerControls = new HashMap<>();
+        canvasHandlerControls.put(toolboxControl, ToolboxControl.class);
+        return canvasHandlerControls;
     }
 }

@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -30,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
@@ -96,6 +99,9 @@ public class DMNCommonActionsToolboxFactoryTest {
     private ManagedInstance<DeleteNodeToolboxAction> deleteNodeActions;
 
     @Mock
+    private ReadOnlyProvider readonlyProvider;
+
+    @Mock
     private ManagedInstance<DMNEditDRDToolboxAction> editDRDToolboxActions;
 
     private DMNCommonActionsToolboxFactory tested;
@@ -113,7 +119,8 @@ public class DMNCommonActionsToolboxFactoryTest {
                                                              view,
                                                              commandManager,
                                                              commandFactory,
-                                                             deleteNodeActions));
+                                                             deleteNodeActions,
+                                                             readonlyProvider));
 
         doReturn(Collections.singleton(deleteNodeAction)).
                 when(tested).superGetActions(eq(canvasHandler),
@@ -228,5 +235,61 @@ public class DMNCommonActionsToolboxFactoryTest {
         final boolean actual = tested.isAllowed(canvasHandler, node);
 
         assertFalse(actual);
+    }
+
+    @Test
+    public void testAddEditDecisionAction() {
+
+        final List<ToolboxAction<AbstractCanvasHandler>> actions = new ArrayList<>();
+
+        final Element element = mock(Element.class);
+        final Node node = mock(Node.class);
+        final Definition definition = mock(Definition.class);
+        final Decision decision = mock(Decision.class);
+        when(element.asNode()).thenReturn(node);
+        when(element.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(decision);
+
+        tested.addEditAction(element, actions);
+
+        assertEquals(1, actions.size());
+        assertTrue(DMNEditDecisionToolboxAction.class.isInstance(actions.get(0)));
+    }
+
+    @Test
+    public void testAddEditBusinessKnowledgeModelAction() {
+
+        final List<ToolboxAction<AbstractCanvasHandler>> actions = new ArrayList<>();
+
+        final Element element = mock(Element.class);
+        final Node node = mock(Node.class);
+        final Definition definition = mock(Definition.class);
+        final BusinessKnowledgeModel bkm = mock(BusinessKnowledgeModel.class);
+        when(element.asNode()).thenReturn(node);
+        when(element.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(bkm);
+
+        tested.addEditAction(element, actions);
+
+        assertEquals(1, actions.size());
+        assertTrue(DMNEditBusinessKnowledgeModelToolboxAction.class.isInstance(actions.get(0)));
+    }
+
+    @Test
+    public void testAddEditWhenIsNotDecisionOrBusinessKnowledgeModelAction() {
+
+        final List<ToolboxAction<AbstractCanvasHandler>> actions = new ArrayList<>();
+
+        final Element element = mock(Element.class);
+        final Node node = mock(Node.class);
+        final Definition definition = mock(Definition.class);
+        final Object someObject = mock(Object.class);
+        when(element.asNode()).thenReturn(node);
+        when(element.getContent()).thenReturn(definition);
+        when(definition.getDefinition()).thenReturn(someObject);
+
+        tested.addEditAction(element, actions);
+
+        assertEquals(0, actions.size());
     }
 }

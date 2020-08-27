@@ -36,6 +36,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.su
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.mockito.Mock;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
@@ -55,6 +56,9 @@ public class JavaFunctionSupplementaryGridTest extends BaseFunctionSupplementary
     @Mock
     private BaseExpressionGrid literalExpressionEditor;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     protected JavaFunctionEditorDefinition getEditorDefinition() {
         return new JavaFunctionEditorDefinition(definitionUtils,
                                                 sessionManager,
@@ -65,7 +69,8 @@ public class JavaFunctionSupplementaryGridTest extends BaseFunctionSupplementary
                                                 domainObjectSelectionEvent,
                                                 listSelector,
                                                 translationService,
-                                                expressionEditorDefinitionsSupplier);
+                                                expressionEditorDefinitionsSupplier,
+                                                readOnlyProvider);
     }
 
     protected String[] getExpectedNames() {

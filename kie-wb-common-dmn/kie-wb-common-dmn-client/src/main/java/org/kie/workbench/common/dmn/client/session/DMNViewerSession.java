@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanelControl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.ToolboxControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.MultipleSelection;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.DefaultViewerSession;
@@ -63,6 +64,7 @@ public class DMNViewerSession extends DefaultViewerSession implements DMNSession
         init(s -> s.registerCanvasControl(MediatorsControl.class)
                      .registerCanvasHandlerControl(SelectionControl.class,
                                                    MultipleSelection.class)
+                     .registerCanvasHandlerControl(ToolboxControl.class)
                      .registerCanvasControl(ExpressionGridCache.class)
                      .registerCanvasControl(DMNGridLayerControl.class)
                      //The order of the following registrations is important. Do not re-order!

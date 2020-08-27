@@ -69,6 +69,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellValueTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasGraphCommand;
@@ -225,6 +226,9 @@ public class RelationGridTest {
     @Mock
     private GridBodyCellEditContext gridBodyCellEditContext;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     @Captor
     private ArgumentCaptor<AddRelationColumnCommand> addColumnCommand;
 
@@ -280,7 +284,8 @@ public class RelationGridTest {
                                                   domainObjectSelectionEvent,
                                                   listSelector,
                                                   translationService,
-                                                  headerEditors);
+                                                  headerEditors,
+                                                  readOnlyProvider);
 
         final Decision decision = new Decision();
         decision.setName(new Name("name"));

@@ -25,7 +25,9 @@ import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 
 @Templated
 public class IncludedModelsPageView implements IncludedModelsPagePresenter.View {
@@ -40,9 +42,11 @@ public class IncludedModelsPageView implements IncludedModelsPagePresenter.View 
 
     @Inject
     public IncludedModelsPageView(final HTMLDivElement grid,
-                                  final HTMLButtonElement includeModelButton) {
+                                  final HTMLButtonElement includeModelButton,
+                                  final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         this.grid = grid;
         this.includeModelButton = includeModelButton;
+        this.includeModelButton.disabled = readOnlyProvider.isReadOnlyDiagram();
     }
 
     @Override

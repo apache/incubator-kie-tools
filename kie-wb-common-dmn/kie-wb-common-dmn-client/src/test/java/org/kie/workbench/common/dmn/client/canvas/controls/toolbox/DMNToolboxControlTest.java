@@ -22,32 +22,43 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DMNToolboxControlTest {
 
     @Mock
     private ActionsToolboxFactory flowActionsToolboxFactoryInstance;
+
     private ManagedInstanceStub<ActionsToolboxFactory> flowActionsToolboxFactory;
 
     @Mock
     private ActionsToolboxFactory commonActionsToolboxFactoryInstance;
+
     private ManagedInstanceStub<ActionsToolboxFactory> commonActionsToolboxFactory;
+
+    @Mock
+    private ReadOnlyProvider readonlyProvider;
 
     private DMNToolboxControl tested;
 
     @Before
     public void setup() throws Exception {
-        flowActionsToolboxFactory = new ManagedInstanceStub<>(flowActionsToolboxFactoryInstance);
-        commonActionsToolboxFactory = new ManagedInstanceStub<>(commonActionsToolboxFactoryInstance);
+        flowActionsToolboxFactory = spy(new ManagedInstanceStub<>(flowActionsToolboxFactoryInstance));
+        commonActionsToolboxFactory = spy(new ManagedInstanceStub<>(commonActionsToolboxFactoryInstance));
         this.tested = new DMNToolboxControl(flowActionsToolboxFactory,
-                                            commonActionsToolboxFactory);
+                                            commonActionsToolboxFactory,
+                                            readonlyProvider);
     }
 
     @Test
@@ -60,5 +71,27 @@ public class DMNToolboxControlTest {
                      factories.get(0));
         assertEquals(commonActionsToolboxFactoryInstance,
                      factories.get(1));
+    }
+
+    @Test
+    public void testGetFactoriesWhenIsReadOnlyDiagram() {
+
+        when(readonlyProvider.isReadOnlyDiagram()).thenReturn(true);
+
+        tested.getFactories();
+
+        verify(commonActionsToolboxFactory).get();
+        verify(flowActionsToolboxFactory, never()).get();
+    }
+
+    @Test
+    public void testGetFactoriesWhenIsNotReadOnlyDiagram() {
+
+        when(readonlyProvider.isReadOnlyDiagram()).thenReturn(false);
+
+        tested.getFactories();
+
+        verify(commonActionsToolboxFactory).get();
+        verify(flowActionsToolboxFactory).get();
     }
 }

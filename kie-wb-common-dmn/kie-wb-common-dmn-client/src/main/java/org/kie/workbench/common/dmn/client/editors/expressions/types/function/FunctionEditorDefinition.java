@@ -44,6 +44,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNGridData;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -80,7 +81,8 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                     final @FunctionGridSupplementaryEditor Supplier<ExpressionEditorDefinitions> supplementaryEditorDefinitionsSupplier,
                                     final ValueAndDataTypePopoverView.Presenter headerEditor,
                                     final ParametersPopoverView.Presenter parametersEditor,
-                                    final KindPopoverView.Presenter kindEditor) {
+                                    final KindPopoverView.Presenter kindEditor,
+                                    final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         super(definitionUtils,
               sessionManager,
               sessionCommandManager,
@@ -89,7 +91,8 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
               refreshFormPropertiesEvent,
               domainObjectSelectionEvent,
               listSelector,
-              translationService);
+              translationService,
+              readOnlyProvider);
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.supplementaryEditorDefinitionsSupplier = supplementaryEditorDefinitionsSupplier;
         this.headerEditor = headerEditor;
@@ -155,7 +158,8 @@ public class FunctionEditorDefinition extends BaseEditorDefinition<FunctionDefin
                                             supplementaryEditorDefinitionsSupplier,
                                             headerEditor,
                                             parametersEditor,
-                                            kindEditor));
+                                            kindEditor,
+                                            readOnlyProvider));
     }
 
     @Override

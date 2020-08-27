@@ -52,6 +52,7 @@ import org.kie.workbench.common.services.shared.resources.PerspectiveIds;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -183,6 +184,9 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Mock
     private ElementWrapperWidget searchBarComponentWidget;
 
+    @Mock
+    private ReadOnlyProvider readOnlyProvider;
+
     @Captor
     private ArgumentCaptor<Consumer<String>> errorConsumerCaptor;
 
@@ -241,7 +245,8 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  importsPageProvider,
                                                  editorSearchIndex,
                                                  searchBarComponent,
-                                                 feelInitializer) {
+                                                 feelInitializer,
+                                                 readOnlyProvider) {
             {
                 docks = DMNDiagramEditorTest.this.docks;
                 fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;
@@ -281,7 +286,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
             }
 
             @Override
-            protected boolean isReadOnly() {
+            public boolean isReadOnly() {
                 return DMNDiagramEditorTest.this.isReadOnly;
             }
 

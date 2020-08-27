@@ -53,6 +53,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorGr
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.kie.workbench.common.dmn.client.widgets.panel.DMNGridPanel;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
@@ -92,7 +93,8 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
                                    final int nesting,
                                    final UndefinedExpressionSelectorPopoverView.Presenter undefinedExpressionSelector,
                                    final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
-                                   final ExpressionGridCache expressionGridCache) {
+                                   final ExpressionGridCache expressionGridCache,
+                                   final ReadOnlyProvider readOnlyProvider) {
         super(parent,
               nodeUUID,
               hasExpression,
@@ -112,7 +114,8 @@ public class UndefinedExpressionGrid extends BaseDelegatingExpressionGrid<Expres
               listSelector,
               translationService,
               isOnlyVisualChangeAllowed,
-              nesting);
+              nesting,
+              readOnlyProvider);
         this.undefinedExpressionSelector = undefinedExpressionSelector;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.expressionGridCache = expressionGridCache;

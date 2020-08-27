@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -52,10 +53,12 @@ import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
+import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 
 @Dependent
 @Templated
@@ -65,6 +68,8 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
     static final String CSS_DISPLAY = "display";
 
     static final String CSS_DISPLAY_NONE = "none";
+
+    static final String READ_ONLY_CSS_CLASS = "read-only";
 
     static final Comparator<BuiltInType> BUILT_IN_TYPE_COMPARATOR = Comparator.comparing(o -> {
         if (o == BuiltInType.UNDEFINED) {
@@ -103,6 +108,8 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
 
     private boolean modelAllowsOnlyVisualChange;
 
+    private ReadOnlyProvider readOnlyProvider;
+
     public DataTypePickerWidget() {
         //CDI proxy
     }
@@ -115,7 +122,8 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
                                 final QNameConverter qNameConverter,
                                 final DMNGraphUtils dmnGraphUtils,
                                 final Event<DataTypePageTabActiveEvent> dataTypePageActiveEvent,
-                                final ItemDefinitionUtils itemDefinitionUtils) {
+                                final ItemDefinitionUtils itemDefinitionUtils,
+                                final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         this.typeButton = typeButton;
         this.manageContainer = manageContainer;
         this.manageLabel = manageLabel;
@@ -125,6 +133,7 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
         this.dmnGraphUtils = dmnGraphUtils;
         this.dataTypePageActiveEvent = dataTypePageActiveEvent;
         this.itemDefinitionUtils = itemDefinitionUtils;
+        this.readOnlyProvider = readOnlyProvider;
 
         this.typeSelector.setShowTick(true);
         this.typeSelector.setLiveSearch(true);
@@ -135,6 +144,19 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
         this.manageLabel.setTextContent(translationService.getTranslation(DMNEditorConstants.TypePickerWidget_Manage));
 
         this.typeSelector.addValueChangeHandler((event) -> setValue(qNameConverter.toModelValue(event.getValue()), true));
+    }
+
+    @PostConstruct
+    public void init() {
+        setTypeButtonCSSClass();
+    }
+
+    void setTypeButtonCSSClass() {
+        if (readOnlyProvider.isReadOnlyDiagram()) {
+            typeButton.getClassList().add(READ_ONLY_CSS_CLASS);
+        } else {
+            typeButton.getClassList().remove(READ_ONLY_CSS_CLASS);
+        }
     }
 
     public void setDMNModel(final DMNModelInstrumentedBase dmnModel) {

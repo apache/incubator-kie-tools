@@ -49,6 +49,7 @@ import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerVie
 import org.kie.workbench.common.kogito.webapp.base.client.editor.KogitoScreen;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.annotation.DiagramEditor;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -90,6 +91,7 @@ import static org.appformer.client.context.Channel.VSCODE;
 public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements KogitoScreen {
 
     private static final PlaceRequest DMN_KOGITO_RUNTIME_SCREEN_DEFAULT_REQUEST = new DefaultPlaceRequest(AbstractDMNDiagramEditor.EDITOR_ID);
+    private final ReadOnlyProvider readOnlyProvider;
 
     @Inject
     public DMNDiagramEditor(final View view,
@@ -125,7 +127,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements Kogito
                             final IncludedModelsPage includedModelsPage,
                             final IncludedModelsPageStateProviderImpl importsPageProvider,
                             final EditorContextProvider contextProvider,
-                            final GuidedTourBridgeInitializer guidedTourBridgeInitializer) {
+                            final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
+                            final @DMNEditor ReadOnlyProvider readOnlyProvider) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -160,6 +163,7 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements Kogito
               importsPageProvider,
               contextProvider,
               guidedTourBridgeInitializer);
+        this.readOnlyProvider = readOnlyProvider;
     }
 
     @Override
@@ -206,5 +210,10 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor implements Kogito
     @Override
     public void onRefreshFormPropertiesEvent(final @Observes RefreshFormPropertiesEvent event) {
         super.onRefreshFormPropertiesEvent(event);
+    }
+
+    @Override
+    public boolean isReadOnly() {
+        return readOnlyProvider.isReadOnlyDiagram();
     }
 }
