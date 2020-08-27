@@ -48,7 +48,7 @@ export async function runTestScenario(
       return;
     }
 
-    const testResult = response.body! as TestResult;
+    const testResult = response.body as TestResult;
 
     vscode.window
       .showInformationMessage(

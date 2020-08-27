@@ -48,12 +48,12 @@ export class VsCodeBackendProxy extends BackendProxy {
     serviceId: string,
     consumer: (capability: T) => Promise<CapabilityResponse<U>>
   ): Promise<CapabilityResponse<U>> {
-    const response = await super.withCapability(serviceId, consumer);
+    await this.tryLoadBackendExtension(false);
 
+    const response = await super.withCapability(serviceId, consumer);
     if (response.status === CapabilityResponseStatus.MISSING_INFRA) {
       this.suggestBackendExtension();
     }
-
     return response;
   }
 
