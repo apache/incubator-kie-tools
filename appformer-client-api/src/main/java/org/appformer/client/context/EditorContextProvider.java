@@ -34,4 +34,10 @@ public interface EditorContextProvider {
      * @return The operating system where the editor is running or Optional.empty() if no information is available.
      */
     Optional<OperatingSystem> getOperatingSystem();
+
+    /**
+     * Checks if the editor is in read only mode.
+     * @return If the editor is in read only mode or if is not.
+     */
+    boolean isReadOnly();
 }

@@ -52,4 +52,12 @@ public class KogitoEditorContextProviderImpl implements EditorContextProvider {
         }
         return Optional.empty();
     }
+
+    @Override
+    public boolean isReadOnly() {
+        if (WindowRef.isEnvelopeAvailable()) {
+            return EditorContextWrapper.get().isReadOnly();
+        }
+        return false;
+    }
 }

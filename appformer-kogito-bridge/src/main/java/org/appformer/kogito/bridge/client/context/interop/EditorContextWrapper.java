@@ -36,4 +36,6 @@ public class EditorContextWrapper {
     @JsProperty(name = "editorContext")
     public static native EditorContextWrapper get();
 
+    @JsProperty
+    public native boolean isReadOnly();
 }

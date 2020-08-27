@@ -32,4 +32,9 @@ public class DefaultEditorContextProviderImpl implements EditorContextProvider {
     public Optional<OperatingSystem> getOperatingSystem() {
         return Optional.empty();
     }
+
+    @Override
+    public boolean isReadOnly() {
+        return false;
+    }
 }
