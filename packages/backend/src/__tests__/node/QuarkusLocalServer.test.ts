@@ -17,12 +17,11 @@
 import * as cp from "child_process";
 import * as events from "events";
 import * as fs from "fs";
-import * as os from "os";
 import * as portfinder from "portfinder";
 import * as sinon from "sinon";
 import * as stream from "stream";
-import * as utils from "../../node/utils";
 import { QuarkusLocalServer } from "../../node";
+import * as utils from "../../node/utils";
 
 jest.mock("fs");
 
@@ -136,6 +135,7 @@ describe("start the Quarkus local server", () => {
 
 describe("stop the Quarkus local server", () => {
   const sandbox = sinon.createSandbox();
+  const mockKillProcessFn = jest.spyOn(utils, "killProcess");
 
   let quarkusServer: QuarkusLocalServer;
   beforeEach(() => {
@@ -148,33 +148,16 @@ describe("stop the Quarkus local server", () => {
 
   test("should do nothing since there is no active process", async () => {
     quarkusServer.stop();
-    expect(sandbox.stub(os, "platform").called).toBeFalsy();
+    expect(mockKillProcessFn).not.toBeCalled();
   });
 
-  test("should kill the process through taskkill on Windows OS", async () => {
+  test("should kill the process", async () => {
     await startQuarkusServerTest(quarkusServer);
-    const cpStub = sandbox.stub(cp, "spawn");
-    sandbox.stub(os, "platform").returns("win32");
-    cpStub.returns({} as cp.ChildProcess);
     quarkusServer.stop();
-    expect(cpStub.called).toBeTruthy();
+    expect(mockKillProcessFn).toBeCalled();
   });
 
-  test("should kill the process through the active process on Linux OS", async () => {
-    const process = await startQuarkusServerTest(quarkusServer);
-    sandbox.stub(os, "platform").returns("linux");
-    quarkusServer.stop();
-    expect(process.kill).toBeCalled();
-  });
-
-  test("should kill the process through the active process on Mac OS", async () => {
-    const process = await startQuarkusServerTest(quarkusServer);
-    sandbox.stub(os, "platform").returns("darwin");
-    quarkusServer.stop();
-    expect(process.kill).toBeCalled();
-  });
-
-  async function startQuarkusServerTest(server: QuarkusLocalServer): Promise<cp.ChildProcess> {
+  async function startQuarkusServerTest(server: QuarkusLocalServer): Promise<void> {
     const process = ({ kill: jest.fn(), pid: 9999 } as unknown) as cp.ChildProcess;
     process.stdout = new events.EventEmitter() as stream.Readable;
     sandbox.stub(cp, "spawn").returns(process);
@@ -185,6 +168,5 @@ describe("stop the Quarkus local server", () => {
 
     await server.start();
     sandbox.restore();
-    return process;
   }
 });

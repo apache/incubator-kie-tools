@@ -42,7 +42,7 @@ export class BackendProxy {
     consumer: (capability: T) => Promise<CapabilityResponse<U>>
   ): Promise<CapabilityResponse<U>> {
     if (!this.backendManager) {
-      return CapabilityResponse.notAvailable("Backend services not available.");
+      return CapabilityResponse.missingInfra();
     }
 
     const service = await this.backendManager.getService(serviceId);

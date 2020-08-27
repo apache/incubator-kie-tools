@@ -17,4 +17,6 @@
 /**
  * Identification of services.
  */
-export enum ServiceId {}
+export enum ServiceId {
+  TEST_RUNNER = "TEST_RUNNER"
+}

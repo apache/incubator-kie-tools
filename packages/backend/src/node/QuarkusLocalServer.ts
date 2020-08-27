@@ -16,10 +16,9 @@
 
 import * as cp from "child_process";
 import * as fs from "fs";
-import * as os from "os";
 import { getPortPromise } from "portfinder";
 import { LocalHttpServer } from "../api";
-import { isJavaAvailable } from "./utils";
+import * as utils from "./utils";
 
 export class QuarkusLocalServer extends LocalHttpServer {
   private activeProcess: cp.ChildProcess | undefined;
@@ -65,18 +64,7 @@ export class QuarkusLocalServer extends LocalHttpServer {
     if (!this.activeProcess) {
       return;
     }
-
-    switch (os.platform()) {
-      case "win32":
-        cp.spawn("taskkill", ["/pid", this.activeProcess.pid.toString(), "/f", "/t"]);
-        break;
-      case "darwin":
-      case "linux":
-      default:
-        this.activeProcess.kill("SIGINT");
-        break;
-    }
-
+    utils.killProcess(this.activeProcess);
     this.activeProcess = undefined;
   }
 
@@ -86,7 +74,7 @@ export class QuarkusLocalServer extends LocalHttpServer {
       return false;
     }
 
-    if (!(await isJavaAvailable({ major: 11, minor: 0, patch: 0 }))) {
+    if (!(await utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 }))) {
       console.error("Java 11.0.0+ could not be identified.");
       return false;
     }

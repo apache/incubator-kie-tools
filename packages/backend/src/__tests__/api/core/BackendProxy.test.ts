@@ -17,7 +17,7 @@
 import { BackendManagerService, BackendProxy, CapabilityResponse, CapabilityResponseStatus } from "../../../api";
 import { createMockedService } from "../dummyServices";
 
-const backendManager = new BackendManagerService();
+const backendManager = new BackendManagerService({});
 
 let backendProxy: BackendProxy;
 beforeEach(() => {
@@ -36,10 +36,9 @@ describe("stop services", () => {
 describe("access a capability", () => {
   const testServiceId = "Service A";
 
-  test("should return a NOT_AVAILABLE response when no backend manager is registered", async () => {
+  test("should return a MISSING_INFRA response when no backend manager is registered", async () => {
     const response = await backendProxy.withCapability(testServiceId, async () => CapabilityResponse.ok());
-    expect(response.status).toBe(CapabilityResponseStatus.NOT_AVAILABLE);
-    expect(response.message).toBe("Backend services not available.");
+    expect(response.status).toBe(CapabilityResponseStatus.MISSING_INFRA);
   });
 
   test("should return a NOT_AVAILABLE response when the required service is not found", async () => {

@@ -14,22 +14,5 @@
  * limitations under the License.
  */
 
-/**
- * Available status for capability responses.
- */
-export enum CapabilityResponseStatus {
-  /**
-   * Response completed.
-   */
-  OK = "OK",
-
-  /**
-   * Infrastructure for capabilities is not available.
-   */
-  MISSING_INFRA = "MISSING_INFRA",
-
-  /**
-   * Requested capability could not be resolved.
-   */
-  NOT_AVAILABLE = "NOT_AVAILABLE"
-}
+export { TestResult } from "./TestResult";
+export { TestRunnerCapability } from "./TestRunnerCapability";

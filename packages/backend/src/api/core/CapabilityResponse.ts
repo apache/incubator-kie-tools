@@ -55,4 +55,12 @@ export class CapabilityResponse<T> {
   public static notAvailable<U>(message: string): CapabilityResponse<U> {
     return new CapabilityResponse({ status: CapabilityResponseStatus.NOT_AVAILABLE, message: message });
   }
+
+  /**
+   * Utility to create a response with MISSING_INFRA status.
+   * @returns A capability response with MISSING_INFRA status.
+   */
+  public static missingInfra<U>(): CapabilityResponse<U> {
+    return new CapabilityResponse({ status: CapabilityResponseStatus.MISSING_INFRA });
+  }
 }

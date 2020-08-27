@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-/**
- * Available status for capability responses.
- */
-export enum CapabilityResponseStatus {
+export interface TestResult {
   /**
-   * Response completed.
+   * Path of the result file.
    */
-  OK = "OK",
-
+  filePath: string;
   /**
-   * Infrastructure for capabilities is not available.
+   * Number of tests.
    */
-  MISSING_INFRA = "MISSING_INFRA",
-
+  tests: number;
   /**
-   * Requested capability could not be resolved.
+   * Number of errors.
    */
-  NOT_AVAILABLE = "NOT_AVAILABLE"
+  errors: number;
+  /**
+   * Number of skipped.
+   */
+  skipped: number;
+  /**
+   * Number of failures.
+   */
+  failures: number;
 }

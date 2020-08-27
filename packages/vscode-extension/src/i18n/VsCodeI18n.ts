@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
+import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 
 interface VsCodeDictionary extends ReferenceDictionary<VsCodeDictionary> {
   savedSvg: (fileName: string) => string;
@@ -24,6 +24,9 @@ interface VsCodeDictionary extends ReferenceDictionary<VsCodeDictionary> {
   dontShowAgain: string;
   installExtension: string;
   installBackendExtensionMessage: string;
+  viewTestSummary: string;
+  runningTestScenarios: string;
+  testScenarioSummary: (tests: number, errors: number, skipped: number, failures: number) => string;
 }
 
 export interface VsCodeI18n extends VsCodeDictionary, CommonI18n {}

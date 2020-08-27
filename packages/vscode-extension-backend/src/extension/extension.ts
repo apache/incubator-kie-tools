@@ -20,18 +20,19 @@ import { DefaultHttpBridge } from "@kogito-tooling/backend/dist/http-bridge";
 import { QuarkusLocalServer } from "@kogito-tooling/backend/dist/node";
 import * as path from "path";
 import * as vscode from "vscode";
+import { VsCodeTestRunnerService } from "../services";
 
 let backendManager: BackendManagerService;
 
 export async function activate(context: vscode.ExtensionContext): Promise<BackendExtensionApi> {
   console.info("Backend extension is alive.");
 
-  backendManager = new BackendManagerService(
-    new DefaultHttpBridge(),
-    new QuarkusLocalServer(context.asAbsolutePath(path.join("dist", "server", "quarkus-runner.jar"))),
-    [],
-    []
-  );
+  backendManager = new BackendManagerService({
+    bridge: new DefaultHttpBridge(),
+    localHttpServer: new QuarkusLocalServer(context.asAbsolutePath(path.join("dist", "server", "quarkus-runner.jar"))),
+    bootstrapServices: [],
+    lazyServices: [new VsCodeTestRunnerService()]
+  });
 
   await backendManager.start();
 

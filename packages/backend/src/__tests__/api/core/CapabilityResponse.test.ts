@@ -39,4 +39,10 @@ describe("utility methods to create a CapabilityResponse", () => {
     expect(response.body).toBeUndefined();
     expect(response.message).toBe(responseMessage);
   });
+
+  test("should be a MISSING_INFRA response", () => {
+    const response = CapabilityResponse.missingInfra();
+    expect(response.status).toBe(CapabilityResponseStatus.MISSING_INFRA);
+    expect(response.body).toBeUndefined();
+  });
 });

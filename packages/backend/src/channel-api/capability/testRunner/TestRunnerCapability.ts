@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
+import { Capability, CapabilityResponse } from "../../../api";
+import { TestResult } from "./TestResult";
+
 /**
- * Available status for capability responses.
+ * Capability for running test scenarios.
  */
-export enum CapabilityResponseStatus {
+export interface TestRunnerCapability extends Capability {
   /**
-   * Response completed.
+   * Execute a `mvn clean test` on the given `baseDir` and report back the result.
+   * @param baseDir Directory path where the `pom.xml` file is located.
+   * @param runnerClass Fully qualified class name of the runner, e.g. `testscenario.KogitoScenarioJunitActivatorTest`.
+   * @returns Test result.
    */
-  OK = "OK",
-
-  /**
-   * Infrastructure for capabilities is not available.
-   */
-  MISSING_INFRA = "MISSING_INFRA",
-
-  /**
-   * Requested capability could not be resolved.
-   */
-  NOT_AVAILABLE = "NOT_AVAILABLE"
+  execute(baseDir: string, runnerClass: string): Promise<CapabilityResponse<TestResult>>;
 }

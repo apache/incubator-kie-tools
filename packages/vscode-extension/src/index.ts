@@ -17,13 +17,13 @@
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
 import * as vscode from "vscode";
-import { maybeSuggestBackendExtension } from "./configUtils";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { generateSvg } from "./generateSvg";
 import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
+import { runTestScenario } from "./runTestScenario";
 import { VsCodeBackendProxy } from "./VsCodeBackendProxy";
 import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
 
@@ -48,10 +48,8 @@ export async function startExtension(args: {
 }) {
   const vsCodeI18n = new I18n(vsCodeI18nDefaults, vsCodeI18nDictionaries, vscode.env.language);
 
-  backendProxy = new VsCodeBackendProxy(args.backendExtensionId);
-  if (args.backendExtensionId && !(await backendProxy.tryLoadBackendExtension())) {
-    maybeSuggestBackendExtension(vsCodeI18n, args.context, args.backendExtensionId);
-  }
+  backendProxy = new VsCodeBackendProxy(args.context, vsCodeI18n, args.backendExtensionId);
+  await backendProxy.tryLoadBackendExtension(true);
 
   const workspaceApi = new VsCodeWorkspaceApi();
   const editorStore = new KogitoEditorStore();
@@ -81,6 +79,10 @@ export async function startExtension(args: {
 
   args.context.subscriptions.push(
     vscode.commands.registerCommand(args.getPreviewCommandId, () => generateSvg(editorStore, workspaceApi, vsCodeI18n))
+  );
+
+  args.context.subscriptions.push(
+    vscode.commands.registerCommand("extension.kogito.runTest", () => runTestScenario(backendProxy, workspaceApi, vsCodeI18n))
   );
 }
 

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-/**
- * Available status for capability responses.
- */
-export enum CapabilityResponseStatus {
-  /**
-   * Response completed.
-   */
-  OK = "OK",
+import { TestRunnerService } from "@kogito-tooling/backend/dist/node";
+import * as vscode from "vscode";
 
-  /**
-   * Infrastructure for capabilities is not available.
-   */
-  MISSING_INFRA = "MISSING_INFRA",
+export class VsCodeTestRunnerService extends TestRunnerService {
+  public async satisfyRequirements(): Promise<boolean> {
+    if (!vscode.workspace.workspaceFolders || vscode.workspace.workspaceFolders.length === 0) {
+      console.error("There isn't any workspace folder on VS Code.");
+      return false;
+    }
 
-  /**
-   * Requested capability could not be resolved.
-   */
-  NOT_AVAILABLE = "NOT_AVAILABLE"
+    return super.satisfyRequirements();
+  }
 }

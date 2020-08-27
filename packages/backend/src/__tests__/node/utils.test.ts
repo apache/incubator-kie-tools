@@ -16,6 +16,8 @@
 
 import * as cp from "child_process";
 import * as utils from "../../node";
+import * as sinon from "sinon";
+import * as os from "os";
 
 jest.mock("child_process");
 
@@ -166,3 +168,31 @@ function mockCpExecCallbackOnce(error: cp.ExecException | null, stdout: string, 
     }) as typeof cp.exec
   );
 }
+
+describe("Utility to kill a process", () => {
+  const process = ({ kill: jest.fn(), pid: 9999 } as unknown) as cp.ChildProcess;
+  const sandbox = sinon.createSandbox();
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
+  test("should kill the process through taskkill on Windows OS", async () => {
+    const cpStub = sandbox.stub(cp, "spawn");
+    sandbox.stub(os, "platform").returns("win32");
+    utils.killProcess(process);
+    expect(cpStub.called).toBeTruthy();
+  });
+
+  test("should kill the process through the active process on Linux OS", async () => {
+    sandbox.stub(os, "platform").returns("linux");
+    utils.killProcess(process);
+    expect(process.kill).toBeCalled();
+  });
+
+  test("should kill the process through the active process on Mac OS", async () => {
+    sandbox.stub(os, "platform").returns("darwin");
+    utils.killProcess(process);
+    expect(process.kill).toBeCalled();
+  });
+});

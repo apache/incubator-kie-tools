@@ -14,18 +14,33 @@
  * limitations under the License.
  */
 
-import { BackendProxy, Capability, CapabilityResponse } from "@kogito-tooling/backend/dist/api";
+import {
+  BackendProxy,
+  Capability,
+  CapabilityResponse,
+  CapabilityResponseStatus
+} from "@kogito-tooling/backend/dist/api";
 import { BackendExtensionApi } from "@kogito-tooling/backend/dist/channel-api";
+import { I18n } from "@kogito-tooling/i18n/dist/core/I18n";
 import * as vscode from "vscode";
+import { VsCodeI18n } from "./i18n";
+
+const SUGGEST_BACKEND_KEY = "SUGGEST_BACKEND";
 
 /**
  * Augmented {@link BackendProxy} for the VS Code channel.
  */
 export class VsCodeBackendProxy extends BackendProxy {
   /**
+   * @param context The `vscode.ExtensionContext` provided on the activate method of the extension.
+   * @param vsCodeI18n I18n for VS Code.
    * @param backendExtensionId The backend extension ID in `publisher.name` format (optional).
    */
-  public constructor(private readonly backendExtensionId?: string) {
+  public constructor(
+    private readonly context: vscode.ExtensionContext,
+    private readonly vsCodeI18n: I18n<VsCodeI18n>,
+    private readonly backendExtensionId?: string
+  ) {
     super();
   }
 
@@ -33,27 +48,35 @@ export class VsCodeBackendProxy extends BackendProxy {
     serviceId: string,
     consumer: (capability: T) => Promise<CapabilityResponse<U>>
   ): Promise<CapabilityResponse<U>> {
-    await this.tryLoadBackendExtension();
-    return super.withCapability(serviceId, consumer);
+    const response = await super.withCapability(serviceId, consumer);
+
+    if (response.status === CapabilityResponseStatus.MISSING_INFRA) {
+      this.suggestBackendExtension();
+    }
+
+    return response;
   }
 
   /**
    * Try to load the API from the backend extension if it hasn't been already loaded.
-   * @returns True if the backend extension is loaded, otherwise false.
+   * @param suggestInstall Whether or not to suggest installing the backend extension in case it is missing.
    */
-  public async tryLoadBackendExtension(): Promise<boolean> {
+  public async tryLoadBackendExtension(suggestInstall: boolean): Promise<void> {
     if (!this.backendExtensionId) {
-      return false;
+      return; // Ignoring since no backend extension ID is provided
     }
 
     const backendExtension = vscode.extensions.getExtension(this.backendExtensionId);
 
-    if (this.backendManager && backendExtension) {
-      return true;
+    if (!backendExtension) {
+      if (suggestInstall) {
+        this.trySuggestBackendExtension();
+      }
+      return; // Backend extension is not installed
     }
 
-    if (!backendExtension) {
-      return false;
+    if (this.backendManager && backendExtension) {
+      return; // Backend extension API already loaded
     }
 
     const backendExtensionApi: BackendExtensionApi = backendExtension.isActive
@@ -61,6 +84,59 @@ export class VsCodeBackendProxy extends BackendProxy {
       : await backendExtension.activate();
 
     this.backendManager = backendExtensionApi.backendManager;
-    return !!this.backendManager;
+  }
+
+  /**
+   * If `SUGGEST_BACKEND` config is enabled,
+   * show a notification informing the user to install the backend extension.
+   * This notification also includes a `Don't show again` button to disable the `SUGGEST_BACKEND` config.
+   */
+  public trySuggestBackendExtension(): void {
+    const suggestBackend = this.context.globalState.get<boolean>(SUGGEST_BACKEND_KEY) ?? true;
+
+    if (!suggestBackend) {
+      return;
+    }
+
+    const i18n = this.vsCodeI18n.getCurrent();
+
+    vscode.window
+      .showInformationMessage(i18n.installBackendExtensionMessage, i18n.installExtension, i18n.dontShowAgain)
+      .then(async selection => {
+        if (!selection) {
+          return;
+        }
+
+        if (selection === i18n.installExtension) {
+          await vscode.env.openExternal(
+            vscode.Uri.parse(`${vscode.env.uriScheme}:extension/${this.backendExtensionId}`)
+          );
+        }
+
+        if (selection === i18n.dontShowAgain) {
+          this.context.globalState.update(SUGGEST_BACKEND_KEY, false);
+        }
+      });
+  }
+
+  /**
+   * Show a notification informing the user to install the backend extension.
+   */
+  public suggestBackendExtension(): void {
+    const i18n = this.vsCodeI18n.getCurrent();
+
+    vscode.window
+      .showInformationMessage(i18n.installBackendExtensionMessage, i18n.installExtension)
+      .then(async selection => {
+        if (!selection) {
+          return;
+        }
+
+        if (selection === i18n.installExtension) {
+          await vscode.env.openExternal(
+            vscode.Uri.parse(`${vscode.env.uriScheme}:extension/${this.backendExtensionId}`)
+          );
+        }
+      });
   }
 }

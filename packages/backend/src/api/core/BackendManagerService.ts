@@ -24,16 +24,18 @@ export class BackendManagerService implements Service {
   private readonly serviceRegistry: Map<string, Service> = new Map();
 
   /**
-   * @param bridge Service bridge. Required to start up HTTP services.
-   * @param localHttpServer Local HTTP server. Required to start up local HTTP services.
-   * @param bootstrapServices Services that should be started up along with the backend manager.
-   * @param lazyServices Services that should be started upon the first usage.
+   * @param args.bridge Service bridge. Required to start up HTTP services.
+   * @param args.localHttpServer Local HTTP server. Required to start up local HTTP services.
+   * @param args.bootstrapServices Services that should be started up along with the backend manager.
+   * @param args.lazyServices Services that should be started upon the first usage.
    */
   public constructor(
-    private readonly bridge?: HttpBridge,
-    private readonly localHttpServer?: LocalHttpServer,
-    private readonly bootstrapServices?: Service[],
-    private readonly lazyServices?: Service[]
+    private readonly args: {
+      bridge?: HttpBridge;
+      localHttpServer?: LocalHttpServer;
+      bootstrapServices?: Service[];
+      lazyServices?: Service[];
+    }
   ) {}
 
   public identify(): string {
@@ -41,15 +43,15 @@ export class BackendManagerService implements Service {
   }
 
   public async start(): Promise<void> {
-    if (this.localHttpServer) {
-      await this.registerService(this.localHttpServer);
+    if (this.args.localHttpServer) {
+      await this.registerService(this.args.localHttpServer);
     }
 
-    if (!this.bootstrapServices || this.bootstrapServices.length === 0) {
+    if (!this.args.bootstrapServices || this.args.bootstrapServices.length === 0) {
       return;
     }
 
-    for (const service of this.bootstrapServices) {
+    for (const service of this.args.bootstrapServices) {
       await this.registerService(service);
     }
   }
@@ -82,21 +84,21 @@ export class BackendManagerService implements Service {
       await service.start();
 
       if (service instanceof HttpService) {
-        if (!this.bridge) {
+        if (!this.args.bridge) {
           console.warn(`Could not register an HTTP service (${service.identify()}) without having an HTTP bridge.`);
           return false;
         }
-        service.registerHttpBridge(this.bridge);
+        service.registerHttpBridge(this.args.bridge);
       }
 
       if (service instanceof LocalHttpService) {
-        if (!this.localHttpServer || !this.serviceRegistry.get(this.localHttpServer.identify())) {
+        if (!this.args.localHttpServer || !this.serviceRegistry.get(this.args.localHttpServer.identify())) {
           console.warn(
             `Could not register a local HTTP service (${service.identify()}) without having a local server registered.`
           );
           return false;
         }
-        service.registerPort(this.localHttpServer.getPort());
+        service.registerPort(this.args.localHttpServer.getPort());
       }
 
       this.serviceRegistry.set(service.identify(), service);
@@ -119,11 +121,11 @@ export class BackendManagerService implements Service {
       return registeredService as T;
     }
 
-    if (!this.lazyServices || this.lazyServices.length === 0) {
+    if (!this.args.lazyServices || this.args.lazyServices.length === 0) {
       return;
     }
 
-    const lazyService = this.lazyServices.find(s => s.identify() === id);
+    const lazyService = this.args.lazyServices.find(s => s.identify() === id);
 
     if (!lazyService || !(await this.registerService(lazyService))) {
       return;

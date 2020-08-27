@@ -15,6 +15,7 @@
  */
 
 import * as cp from "child_process";
+import * as os from "os";
 import { lte } from "semver";
 
 interface Version {
@@ -97,4 +98,21 @@ export function isJavaAvailable(version?: Version): Promise<boolean> {
       resolve(lte(requiredVersion, actualVersion));
     });
   });
+}
+
+/**
+ * Kill the given process.
+ * @param process Process to be killed.
+ */
+export function killProcess(process: cp.ChildProcess) {
+  switch (os.platform()) {
+    case "win32":
+      cp.spawn("taskkill", ["/pid", process.pid.toString(), "/f", "/t"]);
+      break;
+    case "darwin":
+    case "linux":
+    default:
+      process.kill("SIGINT");
+      break;
+  }
 }
