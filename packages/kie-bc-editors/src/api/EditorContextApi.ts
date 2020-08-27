@@ -22,5 +22,5 @@ import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api
 export interface EditorContextApi {
   channel: ChannelType;
   operatingSystem?: OperatingSystem;
-  readonly: boolean;
+  readOnly: boolean;
 }

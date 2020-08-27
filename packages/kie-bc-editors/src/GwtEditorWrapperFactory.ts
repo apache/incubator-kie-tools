@@ -120,7 +120,7 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       editorContext: {
         operatingSystem: envelopeContext.context.operatingSystem,
         channel: envelopeContext.context.channel,
-        readonly: initArgs.isReadOnly
+        readOnly: initArgs.isReadOnly
       },
       keyboardShortcuts: envelopeContext.services.keyboardShortcuts,
       guidedTourService: {
