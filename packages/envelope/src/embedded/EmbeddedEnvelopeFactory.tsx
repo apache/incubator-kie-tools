@@ -37,7 +37,7 @@ export function EmbeddedEnvelopeFactory<
   ApiToConsume extends ApiDefinition<ApiToConsume>,
   Ref
 >(props: Props<ApiToProvide, ApiToConsume, Ref>) {
-  return React.forwardRef((_, forwardRef) => {
+  return React.forwardRef((_, forwardedRef) => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
     const bus = useMemo(
@@ -55,7 +55,7 @@ export function EmbeddedEnvelopeFactory<
     );
 
     useImperativeHandle(
-      forwardRef,
+      forwardedRef,
       () => {
         return props.refDelegate(envelopeServer);
       },
