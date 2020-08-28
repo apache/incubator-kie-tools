@@ -72,7 +72,7 @@ public class DisplayerEditorPopup extends BaseModal {
     }
 
     public DisplayerSettings getDisplayerSettings() {
-        return editor.getDisplayerSettings();
+        return this.editor.getDisplayerSettings();
     }
 
     public void setNewDisplayerTitle(String newDisplayerTitle) {
@@ -98,7 +98,15 @@ public class DisplayerEditorPopup extends BaseModal {
     public void setOnCloseCommand(Command closeCommand) {
         this.editor.setOnCloseCommand(closeCommand);
     }
+    
+    public void setTypeSelectorEnabled(boolean enableTypeSelector) {
+        this.editor.setTypeSelectorEnabled(enableTypeSelector);
+    }
 
+    public void setExternalDisplayerEnabled(boolean enabled) {
+        this.editor.setExternalComponentSettingsEnabled(enabled);
+    }
+    
     /**
      * <p>The popup must be visible in order that the table can display the different row's values. So after popup is shown, initialize the editor.</p>
      */

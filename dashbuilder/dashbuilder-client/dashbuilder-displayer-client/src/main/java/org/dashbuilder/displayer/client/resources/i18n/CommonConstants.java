@@ -15,10 +15,7 @@
  */
 package org.dashbuilder.displayer.client.resources.i18n;
 
-import org.dashbuilder.displayer.DisplayerType;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.ConstantsWithLookup;
 import com.google.gwt.i18n.client.Messages;
 
 public interface CommonConstants extends Messages {
@@ -274,4 +271,12 @@ public interface CommonConstants extends Messages {
     String map_group();
 
     String color_scheme();
+
+    String loadingComponent();
+    
+    String componentEditor();
+
+    String componentNotFound();
+
+    String noPropertiesComponent();
 }

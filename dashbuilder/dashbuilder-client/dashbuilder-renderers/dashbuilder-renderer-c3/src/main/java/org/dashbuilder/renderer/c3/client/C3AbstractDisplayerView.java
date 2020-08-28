@@ -29,22 +29,21 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 
-public abstract class C3AbstractDisplayerView<P extends C3AbstractDisplayer> 
-                            extends AbstractGwtDisplayerView<P> 
-                            implements C3AbstractDisplayer.View<P> {
-    
-    
+public abstract class C3AbstractDisplayerView<P extends C3AbstractDisplayer>
+                                             extends AbstractGwtDisplayerView<P>
+                                             implements C3AbstractDisplayer.View<P> {
+
     protected Panel container = GWT.create(FlowPanel.class);
     protected Panel displayerPanel = GWT.create(FlowPanel.class);
     private Panel filterPanel = GWT.create(FlowPanel.class);
     private Panel dataPanel = GWT.create(FlowPanel.class);
     private HTML titleHtml = GWT.create(HTML.class);
-    
+
     FlexTable dataTable = GWT.create(FlexTable.class);
-    
+
     protected int width;
     protected int height;
-    
+
     @Override
     public void init(P presenter) {
         super.setPresenter(presenter);
@@ -57,12 +56,12 @@ public abstract class C3AbstractDisplayerView<P extends C3AbstractDisplayer>
         container.add(dataPanel);
         filterPanel.getElement().setAttribute("cellpadding", "2");
     }
-    
+
     @Override
     public void showTitle(String title) {
         titleHtml.setText(title);
     }
-    
+
     @Override
     public void setFilterLabelSet(FilterLabelSet widget) {
         HTMLElement element = widget.getElement();
@@ -71,8 +70,7 @@ public abstract class C3AbstractDisplayerView<P extends C3AbstractDisplayer>
         filterPanel.clear();
         filterPanel.add(ElementWrapperWidget.getWidget(element));
     }
-    
-    
+
     @Override
     public void noData() {
         FlowPanel noDataPanel = GWT.create(FlowPanel.class);
@@ -85,13 +83,13 @@ public abstract class C3AbstractDisplayerView<P extends C3AbstractDisplayer>
         displayerPanel.add(noDataPanel);
         dataTable.clear();
     }
-    
+
     @Override
     public void setSize(int width, int height) {
         this.width = width;
         this.height = height;
     }
-    
+
     public void setTableData(String[][] data) {
         dataTable.clear();
         for (int i = 0; i < data.length; i++) {
@@ -100,5 +98,4 @@ public abstract class C3AbstractDisplayerView<P extends C3AbstractDisplayer>
             }
         }
     }
-
 }

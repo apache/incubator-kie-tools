@@ -18,6 +18,7 @@ package org.dashbuilder.displayer.client.widgets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -61,6 +62,11 @@ import org.uberfire.mvp.Command;
 @Dependent
 public class DisplayerEditor implements IsWidget {
 
+    private static final int DEFAULT_SECTION = 0;
+    private static final int DATASET_LOOKUP_SECTION = 1;
+    private static final int DISPLAY_SETTINGS_SECTION = 2;
+    private static final int EXTERNAL_COMPONENT_SECTION = 3;
+
     public interface View extends UberView<DisplayerEditor> {
 
         String getBrandNewDisplayerTitle();
@@ -77,17 +83,22 @@ public class DisplayerEditor implements IsWidget {
 
         void setDataSetLookupConfEnabled(boolean enabled);
 
-        void gotoTypeSelection(DisplayerTypeSelector typeSelector);
+        void setComponentSettingsEnabled(boolean enabled);
 
-        void gotoDataSetLookupConf(DataSetLookupEditor lookupEditor);
+        void goToTypeSelection(DisplayerTypeSelector typeSelector);
 
-        void gotoDisplaySettings(DisplayerSettingsEditor settingsEditor);
+        void goToDataSetLookupConf(DataSetLookupEditor lookupEditor);
+
+        void goToDisplaySettings(DisplayerSettingsEditor settingsEditor);
 
         void showTypeChangedWarning(Command yes, Command no);
 
         void error(String error);
 
         void error(ClientRuntimeError error);
+
+        void gotoExternalComponentSettings(ExternalComponentPropertiesEditor externalComponentPropertiesEditor);
+
     }
 
     protected View view = null;
@@ -107,21 +118,27 @@ public class DisplayerEditor implements IsWidget {
     protected boolean typeSelectionEnabled = true;
     protected boolean dataLookupConfEnabled = true;
     protected boolean displaySettingsEnabled = true;
+    protected boolean externalComponentSettingsEnabled = false;
     protected Event<DisplayerEditorSavedEvent> saveEvent;
     protected Event<DisplayerEditorClosedEvent> closeEvent;
-    protected Command onCloseCommand = () -> {};
-    protected Command onSaveCommand = () -> {};
+    protected Command onCloseCommand = () -> {
+    };
+    protected Command onSaveCommand = () -> {
+    };
     protected DisplayerType displayerType = DisplayerType.BARCHART;
     protected DisplayerSubType displayerSubType = null;
     protected RendererManager rendererManager;
+    protected Event<DisplayerSettingsChangedEvent> displayerSettingsChangedEvent;
+    private ExternalComponentPropertiesEditor externalComponentPropertiesEditor;
     protected String currentRenderer = "";
 
     DisplayerListener displayerListener = new AbstractDisplayerListener() {
+
         public void onError(Displayer displayer, ClientRuntimeError error) {
             view.error(error);
         }
     };
-    
+
     @Inject
     public DisplayerEditor(View view,
                            DataSetClientServices clientServices,
@@ -134,7 +151,9 @@ public class DisplayerEditor implements IsWidget {
                            DisplayerHtmlEditor displayerHtmlEditor,
                            Event<DisplayerEditorSavedEvent> savedEvent,
                            Event<DisplayerEditorClosedEvent> closedEvent,
-                           RendererManager rendererManager) {
+                           RendererManager rendererManager,
+                           ExternalComponentPropertiesEditor externalComponentPropertiesEditor,
+                           Event<DisplayerSettingsChangedEvent> displayerSettingsChangedEvent) {
         this.view = view;
         this.displayerLocator = displayerLocator;
         this.clientServices = clientServices;
@@ -147,6 +166,8 @@ public class DisplayerEditor implements IsWidget {
         this.saveEvent = savedEvent;
         this.closeEvent = closedEvent;
         this.rendererManager = rendererManager;
+        this.externalComponentPropertiesEditor = externalComponentPropertiesEditor;
+        this.displayerSettingsChangedEvent = displayerSettingsChangedEvent;
 
         view.init(this);
     }
@@ -174,13 +195,20 @@ public class DisplayerEditor implements IsWidget {
         initTypeSelector();
         initLookupEditor();
         initSettingsEditor();
+        initComponentEditor();
         gotoLastSection();
         showDisplayer();
-        
-        currentRenderer = displayerSettings.getRenderer(); 
+
+        currentRenderer = displayerSettings.getRenderer();
         if (currentRenderer == null || currentRenderer.trim().isEmpty()) {
             currentRenderer = rendererManager.getDefaultRenderer(displayerSettings.getType()).getUUID();
         }
+    }
+
+    private void initComponentEditor() {
+        externalComponentPropertiesEditor.init(displayerSettings.getComponentId(),
+                                               displayerSettings.getComponentProperties(),
+                                               this::onComponentPropertiesUpdate);
     }
 
     protected boolean supportsHtmlTemplate() {
@@ -230,7 +258,7 @@ public class DisplayerEditor implements IsWidget {
     public Displayer getDisplayer() {
         return displayer;
     }
-    
+
     public String getCurrentRenderer() {
         return currentRenderer;
     }
@@ -262,6 +290,11 @@ public class DisplayerEditor implements IsWidget {
         view.setDisplaySettingsEnabled(enabled);
     }
 
+    public void setExternalComponentSettingsEnabled(boolean enabled) {
+        externalComponentSettingsEnabled = enabled;
+        view.setComponentSettingsEnabled(enabled);
+    }
+
     public void setOnSaveCommand(Command saveCommand) {
         this.onSaveCommand = saveCommand != null ? saveCommand : onCloseCommand;
     }
@@ -287,12 +320,10 @@ public class DisplayerEditor implements IsWidget {
             } catch (Exception e) {
                 view.error(new ClientRuntimeError(e));
             }
-        }
-        else if (supportsHtmlTemplate()) {
+        } else if (supportsHtmlTemplate()) {
             displayerHtmlEditor.setDisplayer(displayer);
             view.showDisplayer(displayerHtmlEditor);
-        }
-        else {
+        } else {
             view.showDisplayer(displayer);
         }
     }
@@ -300,12 +331,12 @@ public class DisplayerEditor implements IsWidget {
     public void gotoFirstSectionEnabled() {
         if (typeSelectionEnabled) {
             gotoTypeSelection();
-        }
-        else if (dataLookupConfEnabled) {
+        } else if (dataLookupConfEnabled) {
             gotoDataSetLookupConf();
-        }
-        else if (displaySettingsEnabled) {
+        } else if (displaySettingsEnabled) {
             gotoDisplaySettings();
+        } else if (externalComponentSettingsEnabled) {
+            gotoExternalComponentSettings();
         } else {
             view.error("Nothing to show!");
         }
@@ -315,10 +346,13 @@ public class DisplayerEditor implements IsWidget {
         int lastOption = editorStatus.getSelectedOption(displayerSettings.getUUID());
         if (activeSection < 0 || activeSection != lastOption) {
             switch (lastOption) {
-                case 2:
+                case EXTERNAL_COMPONENT_SECTION:
+                    gotoExternalComponentSettings();
+                    break;
+                case DISPLAY_SETTINGS_SECTION:
                     gotoDisplaySettings();
                     break;
-                case 1:
+                case DATASET_LOOKUP_SECTION:
                     gotoDataSetLookupConf();
                     break;
                 default:
@@ -329,22 +363,29 @@ public class DisplayerEditor implements IsWidget {
     }
 
     public void gotoTypeSelection() {
-        activeSection = 0;
+        activeSection = DEFAULT_SECTION;
         editorStatus.saveSelectedOption(displayerSettings.getUUID(), activeSection);
-        view.gotoTypeSelection(typeSelector);
+        view.goToTypeSelection(typeSelector);
     }
 
     public void gotoDataSetLookupConf() {
-        activeSection = 1;
+        activeSection = DATASET_LOOKUP_SECTION;
         editorStatus.saveSelectedOption(displayerSettings.getUUID(), activeSection);
-        view.gotoDataSetLookupConf(lookupEditor);
+        view.goToDataSetLookupConf(lookupEditor);
         view.setTableDisplayModeEnabled(!DisplayerType.TABLE.equals(displayerSettings.getType()));
     }
 
     public void gotoDisplaySettings() {
-        activeSection = 2;
+        activeSection = DISPLAY_SETTINGS_SECTION;
         editorStatus.saveSelectedOption(displayerSettings.getUUID(), activeSection);
-        view.gotoDisplaySettings(settingsEditor);
+        view.goToDisplaySettings(settingsEditor);
+    }
+
+    public void gotoExternalComponentSettings() {
+        activeSection = EXTERNAL_COMPONENT_SECTION;
+        editorStatus.saveSelectedOption(displayerSettings.getUUID(), activeSection);
+        initComponentEditor();
+        view.gotoExternalComponentSettings(externalComponentPropertiesEditor);
     }
 
     public void save() {
@@ -449,7 +490,7 @@ public class DisplayerEditor implements IsWidget {
         try {
             // Ensure the renderer supports the new type
             displayerLocator.lookupDisplayer(selectedTypeSettings);
-        } catch(Exception e) {
+        } catch (Exception e) {
             // The new type might not support the selected renderer.
             selectedTypeSettings.removeDisplayerSetting(DisplayerAttributeDef.RENDERER);
             view.error(new ClientRuntimeError(e));
@@ -475,8 +516,7 @@ public class DisplayerEditor implements IsWidget {
             for (DataColumn dataColumn : dataSet.getColumns()) {
                 columnIds.add(dataColumn.getId());
             }
-        }
-        else if (dataSetLookup != null) {
+        } else if (dataSetLookup != null) {
             int idx = dataSetLookup.getLastGroupOpIndex(0);
             if (idx != -1) {
                 DataSetGroup groupOp = dataSetLookup.getOperation(idx);
@@ -503,5 +543,10 @@ public class DisplayerEditor implements IsWidget {
         if (!columnIds.contains(displayerSettings.getTableDefaultSortColumnId())) {
             displayerSettings.setTableDefaultSortColumnId(null);
         }
+    }
+
+    void onComponentPropertiesUpdate(Map<String, String> updatedProperties) {
+        updatedProperties.forEach(displayerSettings::setComponentProperty);
+        displayerSettingsChangedEvent.fire(new DisplayerSettingsChangedEvent(displayerSettings));
     }
 }

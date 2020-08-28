@@ -95,6 +95,11 @@ public class DisplayerAttributeDef {
     
     public static final DisplayerAttributeDef MAP_COLOR_SCHEME = new DisplayerAttributeDef("color_scheme", DisplayerAttributeGroupDef.MAP_GROUP);
 
+    public static final DisplayerAttributeDef EXTERNAL_COMPONENT_ID = new DisplayerAttributeDef("external_component_id");
+    
+    public static final DisplayerAttributeDef EXTERNAL_COMPONENT_PARTITION = new DisplayerAttributeDef("external_component_partition");
+
+    
     protected String id;
     protected DisplayerAttributeGroupDef parent;
 

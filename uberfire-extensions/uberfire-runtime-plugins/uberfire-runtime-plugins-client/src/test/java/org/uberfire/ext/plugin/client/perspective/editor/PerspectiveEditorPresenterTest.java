@@ -17,6 +17,8 @@ package org.uberfire.ext.plugin.client.perspective.editor;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -42,6 +44,7 @@ import org.uberfire.ext.editor.commons.file.DefaultMetadata;
 import org.uberfire.ext.layout.editor.api.PerspectiveServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.LayoutEditorPresenter;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
@@ -56,11 +59,11 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -163,10 +166,14 @@ public class PerspectiveEditorPresenterTest {
         when(pluginController.canUpdate(any())).thenReturn(true);
 
         dragComponentGroupA = new LayoutDragComponentGroup(COMPONENT_GROUP_A);
+        dragComponentGroupA.addLayoutDragComponent("fd", mock(LayoutDragComponent.class));
+        
         perspectiveEditorGroupA = new PerspectiveEditorTestGroupProvider(COMPONENT_GROUP_A, dragComponentGroupA);
         when(perspectiveEditorGroupBeanA.getInstance()).thenReturn(perspectiveEditorGroupA);
-
+        
         dragComponentGroupB = new LayoutDragComponentGroup(COMPONENT_GROUP_B);
+        dragComponentGroupB.addLayoutDragComponent("fd", mock(LayoutDragComponent.class));
+
         perspectiveEditorGroupB = new PerspectiveEditorTestGroupProvider(COMPONENT_GROUP_B, dragComponentGroupB);
         when(perspectiveEditorGroupBeanB.getInstance()).thenReturn(perspectiveEditorGroupB);
 

@@ -26,5 +26,6 @@
   <source path='perspectives'/>
   <source path='renderer'/>
   <source path='transfer'/>
+  <source path='external'/>
 
 </module>

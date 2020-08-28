@@ -49,6 +49,7 @@
       <b:TabListItem ui:field="optionType" text="{i18n.displayer_editor_tab_type}" />
       <b:TabListItem ui:field="optionData" text="{i18n.displayer_editor_tab_data}" />
       <b:TabListItem ui:field="optionSettings" text="{i18n.displayer_editor_tab_display}" />
+      <b:TabListItem ui:field="optionComponentSettings" text="{i18n.componentEditor}" />      
     </b:NavTabs>
     
     <b:Container fluid="true" addStyleNames="{style.mainContainer}">

@@ -15,10 +15,10 @@
  */
 package org.dashbuilder.displayer.client.widgets;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 
 import javax.enterprise.context.Dependent;
@@ -42,7 +42,6 @@ import org.dashbuilder.dataset.events.DataSetDefModifiedEvent;
 import org.dashbuilder.dataset.events.DataSetDefRegisteredEvent;
 import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
 import org.dashbuilder.dataset.filter.DataSetFilter;
-import org.dashbuilder.dataset.group.AggregateFunctionType;
 import org.dashbuilder.dataset.group.ColumnGroup;
 import org.dashbuilder.dataset.group.DataSetGroup;
 import org.dashbuilder.dataset.group.GroupFunction;
@@ -133,6 +132,7 @@ public class DataSetLookupEditor implements IsWidget {
     Map<Integer, ColumnFunctionEditor> _editorsMap = new HashMap<Integer, ColumnFunctionEditor>();
 
     DataSetDefFilter dataSetDefFilter = new DataSetDefFilter() {
+
         public boolean accept(DataSetDef def) {
             return true;
         }
@@ -162,19 +162,13 @@ public class DataSetLookupEditor implements IsWidget {
         this.dataSetLookup = dataSetLookup;
         this.lookupConstraints = lookupConstraints;
         this.view.clearAll();
-        this.clientServices.getPublicDataSetDefs(new RemoteCallback<List<DataSetDef>>() {
-            public void callback(List<DataSetDef> dataSetDefs) {
-                showDataSetDefs(dataSetDefs);
-                if (dataSetLookup != null && dataSetLookup.getDataSetUUID() != null) {
-                    fetchMetadata(dataSetLookup.getDataSetUUID(),
-                                  new RemoteCallback<DataSetMetadata>() {
-                                      public void callback(DataSetMetadata metadata) {
-                                          updateDataSetLookup();
-                                      }
-                                  });
-                }
+        this.clientServices.getPublicDataSetDefs((List<DataSetDef> dataSetDefs) -> {
+            showDataSetDefs(dataSetDefs);
+            if (dataSetLookup != null && dataSetLookup.getDataSetUUID() != null) {
+                fetchMetadata(dataSetLookup.getDataSetUUID(), (DataSetMetadata metadata) -> updateDataSetLookup());
             }
         });
+
     }
 
     void fetchMetadata(final String uuid,

@@ -41,6 +41,7 @@ import org.apache.commons.io.FileUtils;
 import org.dashbuilder.dataset.DataSetDefRegistryCDI;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.events.DataSetDefRegisteredEvent;
+import org.dashbuilder.external.service.ExternalComponentLoader;
 import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.dashbuilder.navigation.storage.NavTreeStorage;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -82,6 +83,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
     private Event<NavTreeChangedEvent> navTreeChangedEvent;
     private NavTreeStorage navTreeStorage;
     private byte[] buffer = new byte[1024];
+    private ExternalComponentLoader externalComponentLoader;
 
     public DataTransferServicesImpl() {}
 
@@ -97,7 +99,8 @@ public class DataTransferServicesImpl implements DataTransferServices {
                                     final Event<DataSetDefRegisteredEvent> dataSetDefRegisteredEvent,
                                     final Event<PluginAdded> pluginAddedEvent,
                                     final Event<NavTreeChangedEvent> navTreeChangedEvent,
-                                    final NavTreeStorage navTreeStorage) {
+                                    final NavTreeStorage navTreeStorage,
+                                    final ExternalComponentLoader externalComponentLoader) {
 
         this.ioService = ioService;
         this.datasetsFS = datasetsFS;
@@ -110,6 +113,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
         this.pluginAddedEvent = pluginAddedEvent;
         this.navTreeChangedEvent = navTreeChangedEvent;
         this.navTreeStorage = navTreeStorage;
+        this.externalComponentLoader = externalComponentLoader;
     }
 
     @Override
@@ -144,6 +148,14 @@ public class DataTransferServicesImpl implements DataTransferServices {
             zipFileSystem(navigationFS, zos, p -> true);
         } else {
             zipFileSystem(navigationFS, zos, readmeFilter);
+        }
+
+        String componentsPath = externalComponentLoader.getExternalComponentsDir();
+
+        if (componentsPath != null) {
+            zipComponents(Paths.get("file://" + componentsPath),
+                          zos,
+                          p -> true);
         }
 
         zipFile(createVersionFile(), "VERSION", zos);
@@ -216,7 +228,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
 
         List<DataSetDef> datasetsDefs = listPaths(datasetsFS,
                                                   p -> p.endsWith(DATASET_EXT)).stream()
-                                                                               .map(this::getFileContent)
+                                                                               .map(this::getDataSetFileContent)
                                                                                .map(this::parseDataSetDefinition)
                                                                                .filter(DataSetDef::isPublic)
                                                                                .collect(Collectors.toList());
@@ -225,60 +237,96 @@ public class DataTransferServicesImpl implements DataTransferServices {
 
     private List<String> importFiles(Path path) throws Exception {
         String tmpDir = System.getProperty("java.io.tmpdir");
-        if (tmpDir.lastIndexOf('/') == tmpDir.length() - 1
-                || tmpDir.lastIndexOf('\\') == tmpDir.length() - 1) {
+        if (tmpDir.lastIndexOf('/') == tmpDir.length() - 1 || tmpDir.lastIndexOf('\\') == tmpDir.length() - 1) {
             tmpDir = tmpDir.substring(0, tmpDir.length() - 1);
         }
 
-        String tempPath = new StringBuilder()
-            .append(tmpDir)
-            .append(File.separator)
-            .append(FILE_PATH)
-            .append(File.separator)
-            .toString().replace("\\", "/");
+        String tempPath = new StringBuilder().append(tmpDir)
+                                             .append(File.separator)
+                                             .append(FILE_PATH)
+                                             .append(File.separator)
+                                             .toString().replace("\\", "/");
 
         List<String> imported = new ArrayList<>();
         File destDir = new File(tempPath);
 
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(path.toFile()))) {
 
-            ZipEntry zipEntry = zis.getNextEntry();
+            ZipEntry zipEntry;
 
-            while (zipEntry != null) {
-                File newFile = unzipFile(destDir, zipEntry, zis);
-                zipEntry = zis.getNextEntry();
-                FileSystem fileSystem = getImportFileSystem(newFile, tempPath);
-
-                if (fileSystem == null) {
+            while ((zipEntry = zis.getNextEntry()) != null) {
+                if (zipEntry.isDirectory()) {
                     continue;
                 }
+                File newFile = unzipFile(destDir, zipEntry, zis);
+                FileSystem fileSystem = getImportFileSystem(newFile, tempPath);
 
-                URI uri = URI.create(new StringBuilder().append(SpacesAPI.Scheme.GIT)
-                                                        .append("://")
-                                                        .append(fileSystem.getName())
-                                                        .toString()
-                                                        .replace("\\", "/"));
+                if (fileSystem != null) {
+                    String newFilePath = importFSFile(fileSystem.getName(), newFile, tempPath);
+                    imported.add(new StringBuilder().append(fileSystem.getName())
+                                                    .append(newFilePath)
+                                                    .toString());
+                }
 
-                String newFilePath = newFile.toPath()
-                                            .toString()
-                                            .replace("\\", "/")
-                                            .replace(new StringBuilder(tempPath).append(fileSystem.getName()),
-                                                     "");
+                if (isComponent(zipEntry) &&
+                    externalComponentLoader.getExternalComponentsDir() != null &&
+                    externalComponentLoader.isEnabled()) {
+                    try {
+                        importComponentFile(zipEntry.getName(), newFile);
+                        imported.add(zipEntry.getName());
+                    } catch (Exception e) {
+                        LOGGER.error("Error importing component file {}", zipEntry.getName());
+                        LOGGER.debug("Component file import error.", e);
+                    }
+                }
 
-                ioService.write(Paths.get(uri).resolve(newFilePath),
-                                java.nio.file.Files.readAllBytes(newFile.toPath()));
-
-                imported.add(new StringBuilder().append(fileSystem.getName())
-                                                .append(newFilePath)
-                                                .toString());
-
-                fireEvent(newFile, tempPath, uri, newFilePath);
             }
         }
 
         FileUtils.deleteDirectory(destDir);
 
         return imported;
+    }
+
+    private boolean isComponent(ZipEntry zipEntry) {
+        return zipEntry.getName() != null && zipEntry.getName().startsWith(COMPONENTS_EXPORT_PATH);
+    }
+
+    private String importComponentFile(String entryName, File newFile) {
+        String externalComponentsDir = externalComponentLoader.getExternalComponentsDir();
+        externalComponentsDir = externalComponentsDir.endsWith(File.separator) ? externalComponentsDir : externalComponentsDir + "/";
+        String newFileName = externalComponentsDir + entryName.replaceAll(COMPONENTS_EXPORT_PATH, "");
+        copyFileContents(newFile, newFileName);
+        return newFileName;
+    }
+
+    private void copyFileContents(File newFile, String newFileName) {
+        File target = new File(newFileName);
+        target.getParentFile().mkdirs();
+        if (!target.exists()) {
+            ioService.copy(Paths.get(newFile.toURI()), Paths.get(target.toURI()));
+        }
+    }
+
+    private String importFSFile(String fsName, File newFile, String workingDir) throws Exception {
+        URI uri = URI.create(new StringBuilder().append(SpacesAPI.Scheme.GIT)
+                                                .append("://")
+                                                .append(fsName)
+                                                .toString()
+                                                .replace("\\", "/"));
+
+        String newFilePath = newFile.toPath()
+                                    .toString()
+                                    .replace("\\", "/")
+                                    .replace(new StringBuilder(workingDir).append(fsName),
+                                             "");
+
+        ioService.write(Paths.get(uri).resolve(newFilePath),
+                        java.nio.file.Files.readAllBytes(newFile.toPath()));
+
+        fireEvent(newFile, workingDir, uri, newFilePath);
+        return newFilePath;
+
     }
 
     private void fireEvent(File newFile, String tempPath, URI uri, String newFilePath) {
@@ -361,7 +409,6 @@ public class DataTransferServicesImpl implements DataTransferServices {
 
     private File unzipFile(File destinationDir, ZipEntry zipEntry, ZipInputStream zis) throws java.io.IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
-
         if (!destFile.exists()) {
             destFile.getParentFile().mkdirs();
             if (!destFile.createNewFile()) {
@@ -389,6 +436,28 @@ public class DataTransferServicesImpl implements DataTransferServices {
                     if (pathTest.test(path)) {
                         String location = fs.getName() + path.toString();
                         zipFile(path.toFile(), location, zos);
+                    }
+                    return FileVisitResult.CONTINUE;
+
+                } catch (Exception e) {
+                    LOGGER.error(e.getMessage(), e);
+                    return FileVisitResult.TERMINATE;
+                }
+            }
+        });
+    }
+
+    private void zipComponents(Path componentsRoot, ZipOutputStream zos, Predicate<Path> pathTest) {
+        Files.walkFileTree(componentsRoot, new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
+                try {
+                    if (pathTest.test(path)) {
+                        File file = path.toFile();
+                        Path relativePath = componentsRoot.relativize(path);
+                        String location = COMPONENTS_EXPORT_PATH + relativePath.toString();
+                        zipFile(file, location, zos);
                     }
                     return FileVisitResult.CONTINUE;
 
@@ -446,7 +515,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
         return files;
     }
 
-    private String getFileContent(Path path) {
+    private String getDataSetFileContent(Path path) {
         return Files.readAllLines(path, StandardCharsets.UTF_8).stream().collect(Collectors.joining());
     }
 

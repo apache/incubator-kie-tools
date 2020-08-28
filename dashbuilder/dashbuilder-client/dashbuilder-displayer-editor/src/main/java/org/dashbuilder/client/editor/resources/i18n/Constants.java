@@ -47,4 +47,6 @@ public interface Constants extends Messages {
     String drag_component_name_table();
 
     String drag_component_name_filter();
+
+    String externalComponents();
 }

@@ -67,6 +67,11 @@
       <artifactId>dashbuilder-services</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-external-backend</artifactId>
+    </dependency>
+
   </dependencies>
   
 </project>

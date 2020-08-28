@@ -149,6 +149,17 @@
 		<url-pattern>/org.dashbuilder.DashbuilderShowcase/defaulteditor/download/*</url-pattern>
 	</servlet-mapping>
 
+	<!-- Custom Component assets server -->
+
+	<servlet>
+		<servlet-name>DashbuilderExternalComponentsServlet</servlet-name>
+		<servlet-class>org.dashbuilder.external.ExternalComponentServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DashbuilderExternalComponentsServlet</servlet-name>
+		<url-pattern>/dashbuilder/component/*</url-pattern>
+	</servlet-mapping>
+
 	<!-- Security roles -->
 
 	<security-role>
@@ -177,6 +188,7 @@
 			<url-pattern>/org.dashbuilder.DashbuilderShowcase/*</url-pattern>
 			<url-pattern>*.erraiBus</url-pattern>
 			<url-pattern>/plugins/*</url-pattern>
+			<url-pattern>/dashbuilder/component/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>admin</role-name>

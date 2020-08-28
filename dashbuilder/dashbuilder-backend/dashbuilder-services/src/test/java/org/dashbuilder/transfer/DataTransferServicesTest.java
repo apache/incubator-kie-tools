@@ -33,12 +33,14 @@ import org.dashbuilder.dataset.DataSetDefRegistryCDI;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.events.DataSetDefRegisteredEvent;
 import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
+import org.dashbuilder.external.service.ExternalComponentLoader;
 import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.dashbuilder.navigation.storage.NavTreeStorage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.lesscss.deps.org.apache.commons.io.FileUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.plugin.event.PluginAdded;
@@ -87,10 +89,15 @@ public class DataTransferServicesTest {
     private NavTreeStorage navTreeStorage;
     @Mock
     DataSetDefJSONMarshaller dataSetDefJSONMarshaller;
+    @Mock
+    ExternalComponentLoader externalComponentLoader;
 
+    Path componentsDir;
+    
     @Before
     public void setup() {
         ioService = new IOServiceDotFileImpl();
+        componentsDir = Files.createTempDirectory("dashbuilder-components");
 
         datasetsFS = createFileSystem("datasets");
         perspectivesFS = createFileSystem("perspectives");
@@ -98,6 +105,8 @@ public class DataTransferServicesTest {
         systemFS = createFileSystem("system");
 
         when(dataSetDefRegistryCDI.getDataSetDefJsonMarshaller()).thenReturn(dataSetDefJSONMarshaller);
+        when(externalComponentLoader.getExternalComponentsDir()).thenReturn(componentsDir.toString());
+        when(externalComponentLoader.isEnabled()).thenReturn(true);
 
         dataTransferServices = new DataTransferServicesImpl(ioService,
                                                             datasetsFS,
@@ -109,7 +118,8 @@ public class DataTransferServicesTest {
                                                             dataSetDefRegisteredEvent,
                                                             pluginAddedEvent,
                                                             navTreeChangedEvent,
-                                                            navTreeStorage);
+                                                            navTreeStorage,
+                                                            externalComponentLoader);
     }
 
     @After
@@ -118,6 +128,8 @@ public class DataTransferServicesTest {
         cleanFileSystem(perspectivesFS);
         cleanFileSystem(navigationFS);
         cleanFileSystem(systemFS);
+        
+        FileUtils.deleteQuietly(componentsDir.toFile());
     }
 
     @Test
@@ -338,28 +350,35 @@ public class DataTransferServicesTest {
         moveZipToFileSystem("/import.zip");
 
         List<String> filesImported = dataTransferServices.doImport();
-
+        
         assertEquals(new ArrayList<String>() {{
-                        add("dashbuilder/datasets/definitions/7e68d20d-6807-4b86-8737-1d429afe9dbc.csv");
-                        add("dashbuilder/datasets/definitions/7e68d20d-6807-4b86-8737-1d429afe9dbc.dset");
-                        add("dashbuilder/datasets/definitions/8060a7f1-ef03-4ce9-a0a8-266301e79ff6.csv");
-                        add("dashbuilder/datasets/definitions/8060a7f1-ef03-4ce9-a0a8-266301e79ff6.dset");
-                        add("dashbuilder/datasets/definitions/d1b24449-fe90-40d4-8cd7-f175b498c0bb.csv");
-                        add("dashbuilder/datasets/definitions/d1b24449-fe90-40d4-8cd7-f175b498c0bb.dset");
-                        add("dashbuilder/datasets/definitions/eb241039-1792-4d08-9596-b6c8d27dfe6b.csv");
-                        add("dashbuilder/datasets/definitions/eb241039-1792-4d08-9596-b6c8d27dfe6b.dset");
                         add("dashbuilder/datasets/readme.md");
-                        add("dashbuilder/perspectives/page1/perspective_layout");
-                        add("dashbuilder/perspectives/page1/perspective_layout.plugin");
-                        add("dashbuilder/perspectives/page2/perspective_layout");
-                        add("dashbuilder/perspectives/page2/perspective_layout.plugin");
+                        add("dashbuilder/datasets/definitions/eb241039-1792-4d08-9596-b6c8d27dfe6b.csv");
+                        add("dashbuilder/datasets/definitions/d1b24449-fe90-40d4-8cd7-f175b498c0bb.dset");
+                        add("dashbuilder/datasets/definitions/8060a7f1-ef03-4ce9-a0a8-266301e79ff6.dset");
+                        add("dashbuilder/datasets/definitions/eb241039-1792-4d08-9596-b6c8d27dfe6b.dset");
+                        add("dashbuilder/datasets/definitions/7e68d20d-6807-4b86-8737-1d429afe9dbc.csv");
+                        add("dashbuilder/datasets/definitions/d1b24449-fe90-40d4-8cd7-f175b498c0bb.csv");
+                        add("dashbuilder/datasets/definitions/8060a7f1-ef03-4ce9-a0a8-266301e79ff6.csv");
+                        add("dashbuilder/datasets/definitions/7e68d20d-6807-4b86-8737-1d429afe9dbc.dset");
+                        add("dashbuilder/components/c2/manifest.json");
+                        add("dashbuilder/components/c2/styles/level/styles.css");
+                        add("dashbuilder/components/c2/index.html");
+                        add("dashbuilder/components/c1/manifest.json");
+                        add("dashbuilder/components/c1/images/db_logo.png");
+                        add("dashbuilder/components/c1/scripts/index.js");
+                        add("dashbuilder/components/c1/index.html");
                         add("dashbuilder/perspectives/page3/perspective_layout");
                         add("dashbuilder/perspectives/page3/perspective_layout.plugin");
+                        add("dashbuilder/perspectives/readme.md");
                         add("dashbuilder/perspectives/page4/perspective_layout");
                         add("dashbuilder/perspectives/page4/perspective_layout.plugin");
-                        add("dashbuilder/perspectives/readme.md");
-                        add("dashbuilder/navigation/navigation/navtree.json");
+                        add("dashbuilder/perspectives/page2/perspective_layout");
+                        add("dashbuilder/perspectives/page2/perspective_layout.plugin");
+                        add("dashbuilder/perspectives/page1/perspective_layout");
+                        add("dashbuilder/perspectives/page1/perspective_layout.plugin");
                         add("dashbuilder/navigation/readme.md");
+                        add("dashbuilder/navigation/navigation/navtree.json");
                     }}, filesImported);
 
         assertEquals(new ArrayList<String>() {{
@@ -394,6 +413,18 @@ public class DataTransferServicesTest {
         assertEquals(new ArrayList<String>() {{
                         add("/readme.md");
                     }}, getFiles(systemFS));
+        
+        List<String> expectedComponents = new ArrayList<String>() {{
+            add("c1/index.html");
+            add("c1/scripts/index.js");
+            add("c1/images/db_logo.png");
+            add("c1/manifest.json");
+            add("c2/index.html");
+            add("c2/styles/level/styles.css");
+            add("c2/manifest.json");
+        }};
+        expectedComponents.removeAll(getFiles(componentsDir));
+        assertTrue(expectedComponents.isEmpty());
 
         verify(dataSetDefRegisteredEvent, times(4)).fire(any());
         verify(pluginAddedEvent, times(4)).fire(any());
@@ -479,6 +510,21 @@ public class DataTransferServicesTest {
         Path filePath = path.resolve(filename);
         ioService.write(filePath, data);
         return filePath;
+    }
+    
+    private List<String> getFiles(Path root) {
+        List<String> files = new ArrayList<>();
+
+        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult visitFile(final Path path, final BasicFileAttributes attrs) throws IOException {
+                files.add(path.toString().replaceAll(componentsDir.toString() + "/", ""));
+                return FileVisitResult.CONTINUE;
+            }
+        });
+
+        return files;
     }
 
     private List<String> getFiles(FileSystem fs) {

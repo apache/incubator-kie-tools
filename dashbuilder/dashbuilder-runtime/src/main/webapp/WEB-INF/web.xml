@@ -2,7 +2,7 @@
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-      http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
   version="2.5">
 
   <filter>
@@ -21,7 +21,8 @@
 
     <init-param>
       <param-name>service-locator</param-name>
-      <param-value>org.jboss.errai.cdi.server.CDIServiceLocator</param-value>
+      <param-value>org.jboss.errai.cdi.server.CDIServiceLocator
+      </param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -45,10 +46,24 @@
     <url-pattern>/login</url-pattern>
   </servlet-mapping>
 
+
   <welcome-file-list>
     <welcome-file>dashbuilder.html</welcome-file>
   </welcome-file-list>
 
+  <!-- Custom Component assets server -->
+  <servlet>
+    <servlet-name>DashbuilderExternalComponentsServlet</servlet-name>
+    <servlet-class>org.dashbuilder.external.ExternalComponentServlet</servlet-class>
+    <init-param>
+      <param-name>cache-control</param-name>
+      <param-value>max-age=2592000</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DashbuilderExternalComponentsServlet</servlet-name>
+    <url-pattern>/dashbuilder/component/*</url-pattern>
+  </servlet-mapping>
 
   <!-- Basic Auth Filter for REST API -->
   <filter>
@@ -58,10 +73,14 @@
       <param-name>realmName</param-name>
       <param-value>Dashbuilder Runtime Realm</param-value>
     </init-param>
+    <init-param>
+      <param-name>excludedPaths</param-name>
+      <param-value>/rest/upload</param-value>
+    </init-param>
   </filter>
   <filter-mapping>
     <filter-name>HTTP Basic Auth Filter</filter-name>
-    <url-pattern>/rest/*</url-pattern>
+    <url-pattern>/rest/api/*</url-pattern>
   </filter-mapping>
 
 
@@ -70,7 +89,8 @@
     <form-login-config>
       <form-login-page>/login.html</form-login-page>
       <form-error-page>/login.html?loginMessage=Login failed. Please try
-        again.</form-error-page>
+        again.
+      </form-error-page>
     </form-login-config>
   </login-config>
 
@@ -84,10 +104,14 @@
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>openResources</web-resource-name>
-      <url-pattern>/org.dashbuilder.DashbuilderRuntime/css/*</url-pattern>
-      <url-pattern>/org.dashbuilder.DashbuilderRuntime/fonts/*</url-pattern>
-      <url-pattern>/org.dashbuilder.DashbuilderRuntime/img/*</url-pattern>
-      <url-pattern>/org.dashbuilder.DashbuilderRuntime/images/*</url-pattern>
+      <url-pattern>/org.dashbuilder.DashbuilderRuntime/css/*
+      </url-pattern>
+      <url-pattern>/org.dashbuilder.DashbuilderRuntime/fonts/*
+      </url-pattern>
+      <url-pattern>/org.dashbuilder.DashbuilderRuntime/img/*
+      </url-pattern>
+      <url-pattern>/org.dashbuilder.DashbuilderRuntime/images/*
+      </url-pattern>
     </web-resource-collection>
   </security-constraint>
 
@@ -100,15 +124,15 @@
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>default</web-resource-name>
+      <url-pattern>/rest/upload/*</url-pattern>
       <url-pattern>/dashbuilder.html</url-pattern>
       <url-pattern>/org.dashbuilder.DashbuilderRuntime/*</url-pattern>
       <url-pattern>*.erraiBus</url-pattern>
       <url-pattern>/plugins/*</url-pattern>
+      <url-pattern>/dashbuilder/component/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>admin</role-name>
     </auth-constraint>
   </security-constraint>
-
-
 </web-app>

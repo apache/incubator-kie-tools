@@ -15,11 +15,13 @@
  */
 package org.dashbuilder.displayer;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.DataSet;
@@ -666,4 +668,57 @@ public class DisplayerSettings {
     public MapColorScheme getMapColorScheme() {
         return MapColorScheme.from(settings.get(getSettingPath(DisplayerAttributeDef.MAP_COLOR_SCHEME)));
     }
+
+    public String getComponentId() {
+        return settings.get(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID));
+    }
+
+    public String setComponentId(String componentId) {
+        return settings.put(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID), componentId);
+    }
+
+    public void setComponentProperty(String key, String value) {
+        String componentId = getComponentId();
+        if (componentId != null) {
+            String newParamKey = componentPrefix(componentId, key);
+            settings.put(newParamKey, value);
+        }
+    }
+
+    public String getComponentProperty(String key) {
+        String componentId = getComponentId();
+        if (componentId == null) {
+            return null;
+        }
+        String newKey = componentPrefix(componentId, key);
+        return settings.get(newKey);
+    }
+
+    public Map<String, String> getComponentProperties() {
+        String componentId = getComponentId();
+        if (componentId == null) {
+            return Collections.emptyMap();
+        }
+        return settings.entrySet()
+                       .stream()
+                       .filter(e -> e.getKey().startsWith(componentId))
+                       .collect(Collectors.toMap(e -> removeComponentPrefix(componentId, e.getKey()), Map.Entry::getValue));
+    }
+
+    public String getComponentPartition() {
+        return settings.get(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_PARTITION));
+    }
+
+    public String setComponentPartition(String componentPartition) {
+        return settings.put(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_PARTITION), componentPartition);
+    }
+
+    private String componentPrefix(String componentId, String key) {
+        return componentId + "." + key;
+    }
+
+    private String removeComponentPrefix(String componentId, String key) {
+        return key.replaceAll(componentId + ".", "");
+    }
+
 }

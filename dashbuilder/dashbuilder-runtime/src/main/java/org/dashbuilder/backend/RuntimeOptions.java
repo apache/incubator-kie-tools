@@ -39,7 +39,7 @@ public class RuntimeOptions {
 
     private static final String DEFAULT_MODEL_DIR = "/tmp/dashbuilder/models";
 
-    private static final int DEFAULT_UPLOAD_SIZE_KB = 96 * 1024;
+    private static final int DEFAULT_UPLOAD_SIZE_KB =  10 * 1024 * 1024;
 
     /**
      * Base Directory where dashboards ZIPs are stored
@@ -70,9 +70,15 @@ public class RuntimeOptions {
      * If true datasets IDs will partitioned by the Runtime Model ID.
      */
     private static final String DATASET_PARTITION_PROP = "dashbuilder.dataset.partition";
+    
+    /**
+     * If true components will be partitioned by the Runtime Model ID.
+     */
+    private static final String COMPONENT_PARTITION_PROP = "dashbuilder.dataset.partition";
 
     private boolean multipleImport;
     private boolean datasetPartition;
+    private boolean componentPartition;
     private boolean allowExternal;
     private String importFileLocation;
     private String importsBaseDir;
@@ -83,13 +89,15 @@ public class RuntimeOptions {
         String multipleImportStr = System.getProperty(DASHBUILDER_RUNTIME_MULTIPLE_IMPORT_PROP, Boolean.FALSE.toString());
         String allowExternalStr = System.getProperty(ALLOW_EXTERNAL_FILE_REGISTER_PROP, Boolean.FALSE.toString());
         String datasetPartitionStr = System.getProperty(DATASET_PARTITION_PROP, Boolean.TRUE.toString());
+        String componentPartitionStr = System.getProperty(COMPONENT_PARTITION_PROP, Boolean.TRUE.toString());
 
         importFileLocation = System.getProperty(IMPORT_FILE_LOCATION_PROP);
         importsBaseDir = System.getProperty(IMPORTS_BASE_DIR_PROP, DEFAULT_MODEL_DIR);
         multipleImport = Boolean.parseBoolean(multipleImportStr);
         allowExternal = Boolean.parseBoolean(allowExternalStr);
         datasetPartition = Boolean.parseBoolean(datasetPartitionStr);
-
+        componentPartition = Boolean.parseBoolean(componentPartitionStr);
+        
         uploadSize = DEFAULT_UPLOAD_SIZE_KB;
 
         String uploadSizeStr = System.getProperty(UPLOAD_SIZE_PROP);
@@ -157,6 +165,10 @@ public class RuntimeOptions {
 
     public boolean isDatasetPartition() {
         return datasetPartition;
+    }
+    
+    public boolean isComponentPartition() {
+        return componentPartition;
     }
 
     public String buildFilePath(String fileId) {

@@ -31,6 +31,8 @@ public class ImportDefinitions {
 
     public static final String NAVIGATION_PREFIX = "dashbuilder/navigation";
     public static final String NAVIGATION_FILE = NAVIGATION_PREFIX + "/navigation/navtree.json";
+    
+    public static final String COMPONENT_PREFIX = "dashbuilder/components";
 
     private ImportDefinitions() {
 

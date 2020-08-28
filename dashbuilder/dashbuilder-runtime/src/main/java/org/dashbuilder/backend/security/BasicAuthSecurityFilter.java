@@ -47,12 +47,16 @@ public class BasicAuthSecurityFilter implements Filter {
     public static final String REALM_NAME_PARAM = "realmName";
     public static final String INVALIDATE_PARAM = "invalidate";
     public static final String EXCEPTION_PATHS = "excludedPaths";
+    public static final String ALLOW_OPTIONS = "allowOptions";
+
+    private static final String OPTIONS = "OPTIONS";
 
     @Inject
     AuthenticationService authenticationService;
 
     private String realmName = "UberFire Security Extension Default Realm";
     private Boolean invalidate = true;
+    private Boolean allowOptions = true;
     private Set<String> excludedPaths = new HashSet<>();
 
     @Override
@@ -69,6 +73,10 @@ public class BasicAuthSecurityFilter implements Filter {
         if (excludedPaths != null) {
             this.excludedPaths = Arrays.stream(excludedPaths.split(",")).filter(s -> !isBlank(s)).collect(toSet());
         }
+        final String allowOptions = filterConfig.getInitParameter(ALLOW_OPTIONS);
+        if (allowOptions != null) {
+            this.allowOptions = Boolean.parseBoolean(allowOptions);
+        }
     }
 
     @Override
@@ -78,10 +86,10 @@ public class BasicAuthSecurityFilter implements Filter {
     public void doFilter(final ServletRequest _request,
                          final ServletResponse _response,
                          final FilterChain chain) throws IOException, ServletException {
-
         final HttpServletRequest request = (HttpServletRequest) _request;
         final HttpServletResponse response = (HttpServletResponse) _response;
-        if (isExceptionPath(request)) {
+        
+        if (isExceptionPath(request) || checkOptions(request)) {
             chain.doFilter(request, response);
             return;
         }
@@ -114,6 +122,10 @@ public class BasicAuthSecurityFilter implements Filter {
                 }
             }
         }
+    }
+
+    private boolean checkOptions(HttpServletRequest request) {
+        return OPTIONS.equalsIgnoreCase(request.getMethod()) && allowOptions;
     }
 
     private boolean isExceptionPath(final HttpServletRequest request) {
@@ -167,7 +179,7 @@ public class BasicAuthSecurityFilter implements Filter {
     private boolean isAjaxRequest(HttpServletRequest request) {
         return request.getHeader("X-Requested-With") != null && "XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"));
     }
-    
+
     private boolean isAnonymousUser(User user) {
         if (user.getRoles().size() != 1) {
             return false;

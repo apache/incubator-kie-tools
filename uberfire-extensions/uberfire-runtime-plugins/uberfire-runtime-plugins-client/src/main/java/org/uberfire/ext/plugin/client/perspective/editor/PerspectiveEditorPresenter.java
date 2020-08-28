@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -54,6 +55,8 @@ import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.layout.editor.api.PerspectiveServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentPalette;
 import org.uberfire.ext.layout.editor.client.api.LayoutEditorPlugin;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutComponentPaletteGroupProvider;
@@ -67,7 +70,10 @@ import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
 import org.uberfire.ext.plugin.client.validation.PluginNameValidator;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
-import org.uberfire.lifecycle.*;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnFocus;
+import org.uberfire.lifecycle.OnMayClose;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -195,6 +201,7 @@ public class PerspectiveEditorPresenter extends BaseEditor<LayoutTemplate, Defau
     private Collection<LayoutComponentPaletteGroupProvider> scanPerspectiveDragGroups() {
         List<PerspectiveEditorComponentGroupProvider> result = beanManager.lookupBeans(PerspectiveEditorComponentGroupProvider.class).stream()
                 .map(SyncBeanDef::getInstance)
+                .filter(this::shouldRemoveGroup)
                 .collect(Collectors.toList());
 
         // Sort the results
@@ -313,6 +320,17 @@ public class PerspectiveEditorPresenter extends BaseEditor<LayoutTemplate, Defau
     protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
         return perspectiveServices;
     }
+    
+    protected boolean shouldRemoveGroup(PerspectiveEditorComponentGroupProvider group) {
+        if (group != null) {
+            LayoutDragComponentGroup componentGroup = group.getComponentGroup();
+            if (componentGroup != null) {
+                Map<String, LayoutDragComponent> components = componentGroup.getComponents();
+                return components != null && !components.isEmpty();
+            }
+        }
+        return true;
+    }
 
     public void saveProperty(String key,
                              String value) {
@@ -327,7 +345,7 @@ public class PerspectiveEditorPresenter extends BaseEditor<LayoutTemplate, Defau
     public List<String> getAllTargetDivs() {
         return TargetDivList.list(layoutEditorPlugin.getLayout());
     }
-
+    
     public interface View extends BaseEditorView,
                                   UberView<PerspectiveEditorPresenter> {
 

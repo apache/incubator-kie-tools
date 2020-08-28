@@ -73,9 +73,14 @@ public enum DisplayerType {
     /**
      * Metric
      */
-    METRIC(METRIC_CARD, METRIC_CARD2, METRIC_QUOTA, METRIC_PLAIN_TEXT);
+    METRIC(METRIC_CARD, METRIC_CARD2, METRIC_QUOTA, METRIC_PLAIN_TEXT),
 
-    DisplayerType(DisplayerSubType ... subtypes) {
+    /**
+     * External Component Displayer
+     */
+    EXTERNAL_COMPONENT();
+
+    DisplayerType(DisplayerSubType... subtypes) {
         for (DisplayerSubType displayerSubType : subtypes) {
             this.subtypes.add(displayerSubType);
         }

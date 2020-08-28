@@ -286,6 +286,16 @@ public class DisplayerPrototypes {
                 .filterOn(false, true, true)
                 .buildSettings());
 
+
+        prototypeMap.put(DisplayerType.EXTERNAL_COMPONENT, DisplayerSettingsFactory
+                         .newExternalDisplayerSettings()
+                         .uuid("externalComponentPrototype")
+                         .dataset(dataSetPrototypes.getTopRichCountries())
+                         .column(COUNTRY).format("Country")
+                         .column(GDP_2014)
+                         .column(GDP_2013)
+                         .buildSettings());
+        
         DisplayerSettings selectorDropDown = DisplayerSettingsFactory
                 .newSelectorSettings()
                 .uuid("selectorDropDownPrototype")

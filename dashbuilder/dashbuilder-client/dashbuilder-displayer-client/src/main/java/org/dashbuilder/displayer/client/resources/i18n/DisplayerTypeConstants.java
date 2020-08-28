@@ -129,6 +129,8 @@ public interface DisplayerTypeConstants extends ConstantsWithLookup {
     String METRIC_METRIC_PLAIN_TEXT_tt();
 
     String TABLE_default_tt();
+    
+    String EXTERNAL_COMPONENT_default_tt();
 
     String SELECTOR_SELECTOR_DROPDOWN_tt();
 

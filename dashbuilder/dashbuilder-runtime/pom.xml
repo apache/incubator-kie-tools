@@ -239,6 +239,12 @@
       <artifactId>dashbuilder-kie-server-backend</artifactId>
     </dependency>
 
+    <!-- External Components -->
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-external-backend</artifactId>
+    </dependency>
+
     <!-- UberFire -->
     <dependency>
       <groupId>org.uberfire</groupId>

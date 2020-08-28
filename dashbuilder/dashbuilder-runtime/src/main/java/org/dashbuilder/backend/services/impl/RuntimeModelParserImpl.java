@@ -16,6 +16,8 @@
 
 package org.dashbuilder.backend.services.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -36,7 +38,9 @@ import org.dashbuilder.backend.RuntimeOptions;
 import org.dashbuilder.backend.navigation.RuntimeNavigationBuilder;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.displayer.DisplayerSettings;
+import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
+import org.dashbuilder.external.service.ExternalComponentLoader;
 import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.shared.event.NewDataSetContentEvent;
 import org.dashbuilder.shared.model.DataSetContent;
@@ -48,9 +52,11 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
+import static org.dashbuilder.external.model.ExternalComponent.COMPONENT_PARTITION_KEY;
 import static org.dashbuilder.shared.model.ImportDefinitions.DATASET_DEF_PREFIX;
 import static org.dashbuilder.shared.model.ImportDefinitions.NAVIGATION_FILE;
 import static org.dashbuilder.shared.model.ImportDefinitions.PERSPECTIVE_SUFFIX;
+import static org.dashbuilder.transfer.DataTransferServices.COMPONENTS_EXPORT_PATH;
 
 /**
  * Parses an exported zip file from Transfer Services into RuntimeModel.
@@ -71,6 +77,9 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
     @Inject
     RuntimeModelRegistry registry;
 
+    @Inject
+    ExternalComponentLoader externalComponentLoader;
+
     Gson gson;
 
     private DisplayerSettingsJSONMarshaller displayerSettingsMarshaller;
@@ -90,33 +99,41 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         }
     }
 
-    protected RuntimeModel retrieveRuntimeModel(String modelId, InputStream is) throws IOException {
+    RuntimeModel retrieveRuntimeModel(String modelId, InputStream is) throws IOException {
         List<DataSetContent> datasetContents = new ArrayList<>();
         List<LayoutTemplate> layoutTemplates = new ArrayList<>();
         Optional<String> navTreeOp = Optional.empty();
         try (ZipInputStream zis = new ZipInputStream(is)) {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
-                if (!entry.isDirectory()) {
-                    String entryName = entry.getName();
-                    if (entryName.startsWith(DATASET_DEF_PREFIX)) {
-                        datasetContents.add(retrieveDataSetContent(entry, zis));
-                    }
+                if (entry.isDirectory()) {
+                    continue;
+                }
+                String entryName = entry.getName();
+                
+                if (entryName.startsWith(DATASET_DEF_PREFIX)) {
+                    datasetContents.add(retrieveDataSetContent(entry, zis));
+                }
 
-                    if (entryName.endsWith(PERSPECTIVE_SUFFIX)) {
-                        layoutTemplates.add(retrieveLayoutTemplate(zis));
-                    }
+                if (entryName.endsWith(PERSPECTIVE_SUFFIX)) {
+                    layoutTemplates.add(retrieveLayoutTemplate(zis));
+                }
 
-                    if (entryName.equalsIgnoreCase(NAVIGATION_FILE)) {
-                        navTreeOp = Optional.of(nextEntryContent(zis));
-                    }
+                if (entryName.equalsIgnoreCase(NAVIGATION_FILE)) {
+                    navTreeOp = Optional.of(nextEntryContentAsString(zis));
+                }
+
+                if (entryName.startsWith(COMPONENTS_EXPORT_PATH)) {
+                    extractComponentFile(modelId, zis, entry.getName());
                 }
             }
         }
 
-        if (options.isMultipleImport() && options.isDatasetPartition()) {
-            datasetContents.forEach(ds -> ds.setId(transformId(modelId, ds.getId())));
-            layoutTemplates.forEach(lt -> setLayoutTemplateRuntimeModelId(modelId, lt));
+        if (options.isMultipleImport()) {
+            if (options.isDatasetPartition()) {
+                datasetContents.forEach(ds -> ds.setId(transformId(modelId, ds.getId())));
+            }
+            layoutTemplates.forEach(lt -> partitionLayoutTemplate(modelId, lt));
         }
 
         if (!datasetContents.isEmpty()) {
@@ -127,8 +144,37 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         return new RuntimeModel(navTree, layoutTemplates);
     }
 
+    String transformId(String modelId, String id) {
+        return id + "| RuntimeModel=" + modelId;
+    }
+
+    void extractComponentFile(String modelId, InputStream zis, String name) throws IOException {
+        String externalComponentsDir = externalComponentLoader.getExternalComponentsDir();
+        if (externalComponentsDir != null) {
+            externalComponentsDir = externalComponentsDir.endsWith(File.separator) ? externalComponentsDir : externalComponentsDir + File.separator;
+            String newFileName = null;
+            if (options.isComponentPartition()) {
+                newFileName = externalComponentsDir + modelId + File.separator + name.replaceAll(COMPONENTS_EXPORT_PATH, "");
+            } else {
+                newFileName = externalComponentsDir + name.replaceAll(COMPONENTS_EXPORT_PATH, "");
+            }
+            File target = new File(newFileName);
+            target.getParentFile().mkdirs();
+
+            final int BUFFER_SIZE = 1024;
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int read = 0;
+            try (FileOutputStream fos = new FileOutputStream(target)) {
+                while ((read = zis.read(buffer, 0, BUFFER_SIZE)) >= 0) {
+                    fos.write(buffer, 0, read);
+                }
+            }
+        }
+
+    }
+
     private LayoutTemplate retrieveLayoutTemplate(final ZipInputStream zis) {
-        String content = nextEntryContent(zis);
+        String content = nextEntryContentAsString(zis);
         return gson.fromJson(content, LayoutTemplate.class);
     }
 
@@ -137,11 +183,11 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         String[] nameParts = fileName.split("\\.");
         String id = nameParts[0];
         String ext = nameParts[1];
-        String content = nextEntryContent(zis);
+        String content = nextEntryContentAsString(zis);
         return new DataSetContent(id, content, DataSetContentType.fromFileExtension(ext));
     }
 
-    private String nextEntryContent(final ZipInputStream zis) {
+    private String nextEntryContentAsString(final ZipInputStream zis) {
         try {
             final int BUFFER_SIZE = 8192;
             byte[] buffer = new byte[BUFFER_SIZE];
@@ -157,19 +203,35 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
 
     }
 
-    private void setLayoutTemplateRuntimeModelId(String modelId, LayoutTemplate lt) {
-        allComponentsStream(lt.getRows())
-                                         .filter(lc -> lc.getProperties().get("json") != null)
-                                         .forEach(lc -> {
-                                             String json = lc.getProperties().get("json");
-                                             DisplayerSettings settings = displayerSettingsMarshaller.fromJsonString(json);
-                                             DataSetLookup dataSetLookup = settings.getDataSetLookup();
-                                             if (dataSetLookup != null) {
-                                                 String newId = transformId(modelId, dataSetLookup.getDataSetUUID());
-                                                 dataSetLookup.setDataSetUUID(newId);
-                                                 lc.getProperties().put("json", displayerSettingsMarshaller.toJsonString(settings));
-                                             }
-                                         });
+    private void partitionLayoutTemplate(String modelId, LayoutTemplate lt) {
+        allComponentsStream(lt.getRows()).forEach(lc -> {
+            String json = lc.getProperties().get("json");
+            if (json != null) {
+                partitionDisplayer(lc, modelId, json);
+            }
+            if (options.isComponentPartition()) {
+                lc.getProperties().put(COMPONENT_PARTITION_KEY, modelId);
+            }
+        });
+
+    }
+
+    private void partitionDisplayer(LayoutComponent lc, String modelId, String json) {
+        DisplayerSettings settings = displayerSettingsMarshaller.fromJsonString(json);
+
+        if (options.isDatasetPartition() &&
+            settings.getDataSetLookup() != null) {
+            DataSetLookup dataSetLookup = settings.getDataSetLookup();
+            String newId = transformId(modelId, dataSetLookup.getDataSetUUID());
+            settings.getDataSetLookup().setDataSetUUID(newId);
+        }
+
+        if (options.isComponentPartition() &&
+            settings.getType() == DisplayerType.EXTERNAL_COMPONENT) {
+            settings.setComponentPartition(modelId);
+        }
+
+        lc.getProperties().put("json", displayerSettingsMarshaller.toJsonString(settings));
     }
 
     private Stream<LayoutComponent> allComponentsStream(List<LayoutRow> row) {
@@ -177,10 +239,6 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
                   .flatMap(r -> r.getLayoutColumns().stream())
                   .flatMap(cl -> Stream.concat(cl.getLayoutComponents().stream(),
                                                allComponentsStream(cl.getRows())));
-    }
-
-    protected String transformId(String modelId, String id) {
-        return id + "| RuntimeModel=" + modelId;
     }
 
 }

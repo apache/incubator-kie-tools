@@ -19,6 +19,7 @@
     <module>dashbuilder-navigation-backend</module>
     <module>dashbuilder-services</module>
     <module>dashbuilder-kie-server-backend</module>
+    <module>dashbuilder-external-backend</module>
   </modules>
 
 </project>

@@ -16,8 +16,10 @@
 
 package org.dashbuilder.backend.services.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,6 +33,7 @@ import javax.enterprise.event.Event;
 import org.dashbuilder.backend.RuntimeOptions;
 import org.dashbuilder.backend.navigation.RuntimeNavigationBuilder;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
+import org.dashbuilder.external.service.ExternalComponentLoader;
 import org.dashbuilder.navigation.impl.NavTreeBuilder;
 import org.dashbuilder.shared.event.NewDataSetContentEvent;
 import org.dashbuilder.shared.model.DataSetContent;
@@ -67,6 +70,9 @@ public class RuntimeModelParserImplTest {
     
     @Mock
     RuntimeModelRegistry runtimeModelRegistry;
+    
+    @Mock
+    ExternalComponentLoader externalComponentLoader;
 
     @InjectMocks
     RuntimeModelParserImpl parser;
@@ -150,6 +156,46 @@ public class RuntimeModelParserImplTest {
         assertEquals(transformedId, datasets.get(0).getId());
         assertEquals(transformedId, datasets.get(1).getId());
         
+    }
+    
+    @Test
+    public void testUnzipComponentFile() throws IOException, URISyntaxException {
+        Path componentPath = Paths.get(this.getClass().getResource("/").toURI());
+        when(externalComponentLoader.getExternalComponentsDir()).thenReturn(componentPath.toString());
+        
+        String componentFileContent1 = "This is a component file.";
+        String fileName = "component1/someFile.txt";
+
+        InputStream zis = new ByteArrayInputStream(componentFileContent1.getBytes());
+        
+        parser.extractComponentFile("test", zis, fileName);
+        
+        Path componentFilePath = componentPath.resolve(fileName);
+        assertTrue(Files.exists(componentFilePath));
+        assertEquals(componentFileContent1, Files.readAllLines(componentFilePath).get(0));
+        Files.delete(componentFilePath);
+    }
+    
+    @Test
+    public void testUnzipComponentFileWithPartition() throws IOException, URISyntaxException {
+        Path componentPath = Paths.get(this.getClass().getResource("/").toURI());
+        
+        when(externalComponentLoader.getExternalComponentsDir()).thenReturn(componentPath.toString());
+        when(runtimeOptions.isComponentPartition()).thenReturn(true);
+        
+        String modelId = "testModel";
+        String componentFileContent1 = "This is a component file.";
+        String fileName = "component1/someFile.txt";
+
+        InputStream zis = new ByteArrayInputStream(componentFileContent1.getBytes());
+        
+        parser.extractComponentFile(modelId, zis, fileName);
+        
+        Path componentFilePath = Paths.get(componentPath.toString(), modelId, fileName);
+        
+        assertTrue(Files.exists(componentFilePath));
+        assertEquals(componentFileContent1, Files.readAllLines(componentFilePath).get(0));
+        Files.delete(componentFilePath);
     }
 
     private String getFileContent(String resource) throws IOException {

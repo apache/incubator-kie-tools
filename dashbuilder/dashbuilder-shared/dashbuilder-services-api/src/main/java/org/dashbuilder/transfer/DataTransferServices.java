@@ -26,6 +26,8 @@ public interface DataTransferServices {
     public static final String FILE_PATH = "dashbuilder-data-transfer";
     public static final String EXPORT_FILE_NAME = "export.zip";
     public static final String IMPORT_FILE_NAME = "import.zip";
+    public static final String COMPONENTS_EXPORT_PATH = "dashbuilder/components/";
+
 
     public String doExport(DataTransferExportModel exportsModel) throws java.io.IOException;
 

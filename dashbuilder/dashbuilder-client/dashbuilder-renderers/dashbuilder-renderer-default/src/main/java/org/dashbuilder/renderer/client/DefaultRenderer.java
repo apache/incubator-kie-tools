@@ -29,6 +29,7 @@ import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.AbstractRendererLibrary;
 import org.dashbuilder.displayer.client.Displayer;
+import org.dashbuilder.renderer.client.external.ExternalComponentDisplayer;
 import org.dashbuilder.renderer.client.metric.MetricDisplayer;
 import org.dashbuilder.renderer.client.selector.SelectorDisplayer;
 import org.dashbuilder.renderer.client.selector.SelectorDropDownDisplayer;
@@ -70,7 +71,8 @@ public class DefaultRenderer extends AbstractRendererLibrary {
     public boolean isDefault(DisplayerType type) {
         return TABLE.equals(type) ||
                 SELECTOR.equals(type) ||
-                METRIC.equals(type);
+                METRIC.equals(type) ||
+                EXTERNAL_COMPONENT.equals(type);
     }
 
     @Override
@@ -78,7 +80,8 @@ public class DefaultRenderer extends AbstractRendererLibrary {
         return Arrays.asList(
                 TABLE,
                 SELECTOR,
-                METRIC);
+                METRIC,
+                EXTERNAL_COMPONENT);
     }
 
     @Override
@@ -118,6 +121,10 @@ public class DefaultRenderer extends AbstractRendererLibrary {
             MetricDisplayer displayer = beanManager.lookupBean(MetricDisplayer.class).newInstance();
             _metricDisplayerMap.put(displayer.getView().getUniqueId(), displayer);
             return displayer;
+        }
+        
+        if (EXTERNAL_COMPONENT.equals(type)) {
+            return beanManager.lookupBean(ExternalComponentDisplayer.class).newInstance();
         }
 
         return null;

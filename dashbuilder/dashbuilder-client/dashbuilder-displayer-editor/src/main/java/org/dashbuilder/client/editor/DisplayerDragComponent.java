@@ -87,6 +87,7 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
         }
 
         final DisplayerSettings settings = marshaller.fromJsonString( json );
+        viewer.removeFromParent();
         viewer.init( settings );
         viewer.addAttachHandler(attachEvent -> {
             if (attachEvent.isAttached()) {
@@ -106,9 +107,13 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
 
     @Override
     public Modal getConfigurationModal( final ModalConfigurationContext ctx ) {
+        return buildEditorPopUp(ctx);
+    }
+
+    protected DisplayerEditorPopup buildEditorPopUp(final ModalConfigurationContext ctx) {
         Map<String, String> properties = ctx.getComponentProperties();
         String json = properties.get( "json" );
-        DisplayerSettings settings = json != null ? marshaller.fromJsonString( json ) : null;
+        DisplayerSettings settings = json != null ? marshaller.fromJsonString( json ) : initialSettings(ctx);
         DisplayerEditorPopup editor = beanManager.lookupBean( DisplayerEditorPopup.class ).newInstance();
 
         // For brand new components set the default type/subtype to create
@@ -125,6 +130,10 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
         editor.setOnSaveCommand( getSaveCommand( editor, ctx ) );
         editor.setOnCloseCommand( getCloseCommand( editor, ctx ) );
         return editor;
+    }
+
+    protected DisplayerSettings initialSettings(final ModalConfigurationContext ct) {
+        return null;
     }
 
     protected Command getSaveCommand( final DisplayerEditorPopup editor, final ModalConfigurationContext ctx ) {

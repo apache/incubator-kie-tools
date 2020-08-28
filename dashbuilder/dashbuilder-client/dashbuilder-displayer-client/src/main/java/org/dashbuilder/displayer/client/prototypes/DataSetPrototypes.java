@@ -15,7 +15,6 @@
  */
 package org.dashbuilder.displayer.client.prototypes;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 

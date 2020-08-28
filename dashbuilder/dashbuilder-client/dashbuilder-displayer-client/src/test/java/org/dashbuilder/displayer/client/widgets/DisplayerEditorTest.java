@@ -14,19 +14,11 @@
  */
 package org.dashbuilder.displayer.client.widgets;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.Arrays;
 
 import javax.enterprise.event.Event;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
 import org.dashbuilder.dataset.client.DataSetClientServices;
 import org.dashbuilder.dataset.group.AggregateFunctionType;
@@ -49,9 +41,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@RunWith(GwtMockitoTestRunner.class)
 public class DisplayerEditorTest {
 
     @Mock
@@ -116,6 +116,12 @@ public class DisplayerEditorTest {
     
     @Mock
     DisplayerSettingsChangedEvent displayerSettingsChangedEvent;
+    
+    @Mock
+    ExternalComponentPropertiesEditor componentPropertiesEditor;
+    
+    @Mock
+    Event<DisplayerSettingsChangedEvent> displayerSettingsChangedEventSource;
 
     DisplayerEditor presenter = null;
 
@@ -131,7 +137,7 @@ public class DisplayerEditorTest {
 
         presenter = new DisplayerEditor(view, clientServices, displayerLocator, displayerPrototypes,
                 typeSelector, lookupEditor, settingsEditor, editorStatus, displayerHtmlEditor, saveEvent, 
-                closeEvent, rendererManager);
+                closeEvent, rendererManager, componentPropertiesEditor, displayerSettingsChangedEventSource);
 
     }
 
@@ -164,22 +170,22 @@ public class DisplayerEditorTest {
         // Default
         when(editorStatus.getSelectedOption(anyString())).thenReturn(-1);
         presenter.init(null);
-        verify(view).gotoTypeSelection(typeSelector);
+        verify(view).goToTypeSelection(typeSelector);
 
         // Type selector
         when(editorStatus.getSelectedOption(anyString())).thenReturn(0);
         presenter.init(null);
-        verify(view).gotoTypeSelection(typeSelector);
+        verify(view).goToTypeSelection(typeSelector);
 
         // Data lookup conf
         when(editorStatus.getSelectedOption(anyString())).thenReturn(1);
         presenter.init(null);
-        verify(view).gotoDataSetLookupConf(lookupEditor);
+        verify(view).goToDataSetLookupConf(lookupEditor);
 
         // Display settings
         when(editorStatus.getSelectedOption(anyString())).thenReturn(2);
         presenter.init(null);
-        verify(view).gotoDisplaySettings(settingsEditor);
+        verify(view).goToDisplaySettings(settingsEditor);
     }
 
     @Test
@@ -190,9 +196,9 @@ public class DisplayerEditorTest {
 
         when(editorStatus.getSelectedOption(anyString())).thenReturn(-1);
         presenter.init(null);
-        verify(view).gotoDataSetLookupConf(lookupEditor);
-        verify(view, never()).gotoTypeSelection(typeSelector);
-        verify(view, never()).gotoDisplaySettings(settingsEditor);
+        verify(view).goToDataSetLookupConf(lookupEditor);
+        verify(view, never()).goToTypeSelection(typeSelector);
+        verify(view, never()).goToDisplaySettings(settingsEditor);
     }
 
     @Test
@@ -203,9 +209,9 @@ public class DisplayerEditorTest {
 
         when(editorStatus.getSelectedOption(anyString())).thenReturn(-1);
         presenter.init(null);
-        verify(view, never()).gotoDataSetLookupConf(lookupEditor);
-        verify(view, never()).gotoTypeSelection(typeSelector);
-        verify(view).gotoDisplaySettings(settingsEditor);
+        verify(view, never()).goToDataSetLookupConf(lookupEditor);
+        verify(view, never()).goToTypeSelection(typeSelector);
+        verify(view).goToDisplaySettings(settingsEditor);
     }
 
     @Test

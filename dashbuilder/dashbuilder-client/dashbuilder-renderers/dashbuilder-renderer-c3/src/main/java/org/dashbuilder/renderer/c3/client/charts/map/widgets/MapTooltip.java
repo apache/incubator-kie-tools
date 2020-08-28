@@ -57,7 +57,7 @@ public class MapTooltip implements IsElement {
     
     @PostConstruct
     public void init() {
-        lblTooltipValue.style.visibility = "hidden";
+        mapTooltipContainer.style.visibility = "hidden";
     }
 
     @Override
