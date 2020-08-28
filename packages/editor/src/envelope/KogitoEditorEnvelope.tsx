@@ -75,9 +75,9 @@ export class KogitoEditorEnvelope {
       </KogitoEditorEnvelopeContext.Provider>
     );
 
-    return new Promise<EditorEnvelopeView>(res => {
+    return new Promise<() => EditorEnvelopeView>(res => {
       setTimeout(() => {
-        ReactDOM.render(app, this.args.container, () => res(view!));
+        ReactDOM.render(app, this.args.container, () => res(() => view!));
       }, 0);
     });
   }

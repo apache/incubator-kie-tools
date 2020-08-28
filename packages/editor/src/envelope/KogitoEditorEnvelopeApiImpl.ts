@@ -86,7 +86,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
 
     this.editor = await this.editorFactory.createEditor(this.args.envelopeContext, initArgs);
 
-    await this.args.view.setEditor(this.editor);
+    await this.args.view().setEditor(this.editor);
 
     this.editor.af_onStartup?.();
     this.editor.af_onOpen?.();
@@ -95,22 +95,22 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
       this.registerDefaultShortcuts();
     }
 
-    this.args.view.setLoading();
+    this.args.view().setLoading();
 
     const content = await this.args.envelopeContext.channelApi.requests.receive_contentRequest();
 
     await this.editor
       .setContent(content.path ?? "", content.content)
-      .finally(() => this.args.view.setLoadingFinished());
+      .finally(() => this.args.view().setLoadingFinished());
 
     this.args.envelopeContext.channelApi.notifications.receive_ready();
   };
 
   public receive_contentChanged = (editorContent: EditorContent) => {
-    this.args.view.setLoading();
+    this.args.view().setLoading();
     this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
-      .finally(() => this.args.view.setLoadingFinished());
+      .finally(() => this.args.view().setLoadingFinished());
   };
 
   public receive_editorUndo() {
