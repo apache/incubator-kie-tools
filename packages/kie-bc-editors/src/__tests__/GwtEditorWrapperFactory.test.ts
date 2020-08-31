@@ -18,6 +18,8 @@ import { GwtEditorWrapperFactory } from "../GwtEditorWrapperFactory";
 import { GwtLanguageData, Resource } from "../GwtLanguageData";
 import { GwtStateControlService } from "../gwtStateControl";
 import { GwtEditorMapping } from "../GwtEditorMapping";
+import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
+import { I18nService } from "@kogito-tooling/editor/dist/api";
 
 const cssResource: Resource = {
   type: "css",
@@ -85,20 +87,15 @@ describe("GwtEditorWrapperFactory", () => {
 
     const editorCreation = gwtEditorWrapperFactory.createEditor(
       {
-        channelApi: {
-          notify: jest.fn(),
-          request: jest.fn(),
-          subscribe: jest.fn(),
-          unsubscribe: jest.fn()
-        },
-        context: {} as any,
+        channelApi: messageBusClientApiMock(),
+        context: { initialLocale: "en" } as any,
         services: {
           keyboardShortcuts: {} as any,
           guidedTour: {} as any,
-          i18n: {} as any
+          i18n: new I18nService()
         }
       },
-      { resourcesPathPrefix: "", fileExtension: "txt" }
+      { resourcesPathPrefix: "", fileExtension: "txt", initialLocale: "en" }
     );
 
     await waitForNScriptsToLoad(jsResource.paths.length);

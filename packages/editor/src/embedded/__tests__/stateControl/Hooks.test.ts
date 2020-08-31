@@ -17,7 +17,7 @@
 import * as React from "react";
 import { renderHook } from "@testing-library/react-hooks";
 import { EmbeddedEditorRef } from "../../embedded";
-import { useDirtyState, StateControl } from "../../stateControl";
+import { StateControl, useDirtyState } from "../../stateControl";
 import { act } from "react-test-renderer";
 
 describe("useDirtyState", () => {
@@ -29,12 +29,13 @@ describe("useDirtyState", () => {
     stateControl = new StateControl();
     embeddedEditorRef = {
       getStateControl: () => stateControl,
+      getEnvelopeServer: () => ({} as any),
       undo: jest.fn(),
       redo: jest.fn(),
       getContent: jest.fn(),
       getPreview: jest.fn(),
       setContent: jest.fn(),
-      getElementPosition: jest.fn(),
+      getElementPosition: jest.fn()
     };
     editorRef = {
       current: embeddedEditorRef

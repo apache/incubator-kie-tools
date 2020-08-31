@@ -77,12 +77,11 @@ export const en: OnlineI18n = {
   },
   homePage: {
     uploadFile: {
-      dndZone: {
-        invalidFile: "File extension is not supported",
-        waitingFile: `Drop a ${en_common.names.bpmn} or ${en_common.names.dmn} file here`
-      },
-      or: "or",
-      fileInput: "File extension is not supported"
+      header: "Edit existing file",
+      body: `Upload your ${en_common.names.bpmn} or ${en_common.names.dmn} file here to start making new edits!`,
+      helperText: "Upload a .bpmn, .bpmn2 or .dmn file",
+      helperInvalidText: "File extension is not supported",
+      placeholder: "Drag a file or browse for it."
     },
     openUrl: {
       validating: `Validating ${en_common.names.url}`,
@@ -114,7 +113,6 @@ export const en: OnlineI18n = {
       createNew: "Create new decision model"
     },
     trySample: "Try Sample",
-    editExistingFile: "Edit existing file",
     chooseLocalFile: "Choose a local file"
   },
   guidedTour: {

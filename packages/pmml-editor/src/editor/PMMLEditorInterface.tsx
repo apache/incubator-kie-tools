@@ -43,7 +43,7 @@ export class PMMLEditorInterface implements Editor {
   }
 
   public af_componentRoot() {
-    return <PMMLEditor exposing={s => (this.self = s)} messageBusClient={this.envelopeContext.channelApi} />;
+    return <PMMLEditor exposing={s => (this.self = s)} channelApi={this.envelopeContext.channelApi} />;
   }
 
   public async undo(): Promise<void> {

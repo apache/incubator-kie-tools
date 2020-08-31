@@ -15,4 +15,4 @@
  */
 
 export * from "./OnlineI18n";
-export * from "./locales"
+export * from "./setup";

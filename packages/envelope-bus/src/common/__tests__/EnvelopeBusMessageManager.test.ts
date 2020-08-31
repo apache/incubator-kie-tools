@@ -52,7 +52,7 @@ beforeEach(() => {
 
 describe("request", () => {
   test("method with no parameters", async () => {
-    const retPromise = manager.client.request("getText");
+    const retPromise = manager.clientApi.requests.getText();
     expect(sentMessages).toStrictEqual([
       {
         type: "getText",
@@ -76,7 +76,7 @@ describe("request", () => {
   });
 
   test("method with parameters", async () => {
-    const retPromise = manager.client.request("getSomething", "a", 1);
+    const retPromise = manager.clientApi.requests.getSomething("a", 1);
     expect(sentMessages).toStrictEqual([
       {
         type: "getSomething",
@@ -100,8 +100,8 @@ describe("request", () => {
   });
 
   test("two in a row", async () => {
-    manager.client.request("getText");
-    manager.client.request("getSomething", "b", 2);
+    manager.clientApi.requests.getText();
+    manager.clientApi.requests.getSomething("b", 2);
     expect(sentMessages).toStrictEqual([
       {
         type: "getText",
@@ -121,7 +121,7 @@ describe("request", () => {
 
 describe("notify", () => {
   test("simple notification", async () => {
-    manager.client.notify("setSomething", "something");
+    manager.clientApi.notifications.setSomething("something");
     expect(sentMessages).toStrictEqual([
       {
         type: "setSomething",
@@ -139,7 +139,7 @@ describe("subscribe", () => {
       expect(b).toStrictEqual("bar");
     });
 
-    const subscription = manager.client.subscribe("setSomethings", callback);
+    const subscription = manager.clientApi.subscribe("setSomethings", callback);
     expect(subscription).toStrictEqual(callback);
     expect(sentMessages).toStrictEqual([
       {
@@ -163,7 +163,7 @@ describe("subscribe", () => {
 
 describe("unsubscribe", () => {
   test("simple unsubscription", async () => {
-    const subscription = manager.client.subscribe("setSomething", jest.fn());
+    const subscription = manager.clientApi.subscribe("setSomething", jest.fn());
     await manager.server.receive(
       {
         type: "setSomething",
@@ -176,7 +176,7 @@ describe("unsubscribe", () => {
     expect(subscription).toHaveBeenCalledWith("something");
     expect(subscription).toHaveBeenCalledTimes(1);
 
-    manager.client.unsubscribe("setSomething", subscription);
+    manager.clientApi.unsubscribe("setSomething", subscription);
     expect(sentMessages).toStrictEqual([
       {
         type: "setSomething",

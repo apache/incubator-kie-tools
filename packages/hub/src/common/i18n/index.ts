@@ -15,4 +15,4 @@
  */
 
 export * from "./HubI18n";
-export * from "./locales"
+export * from "./setup";

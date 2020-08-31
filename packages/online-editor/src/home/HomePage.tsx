@@ -26,6 +26,7 @@ import {
   Dropdown,
   DropdownItem,
   DropdownToggle,
+  FileUpload,
   Form,
   FormGroup,
   Gallery,
@@ -67,17 +68,6 @@ enum InputFileUrlState {
   VALID
 }
 
-enum UploadFileInputState {
-  INITIAL,
-  INVALID_EXTENSION
-}
-
-enum UploadFileDndState {
-  INITIAL,
-  INVALID_EXTENSION,
-  HOVER
-}
-
 interface InputFileUrlStateType {
   urlValidation: InputFileUrlState;
   urlToOpen: string | undefined;
@@ -88,37 +78,39 @@ export function HomePage(props: Props) {
   const history = useHistory();
   const { i18n } = useOnlineI18n();
 
-  const uploadInputRef = useRef<HTMLInputElement>(null);
+  const [uploadedFileName, setUploadedFileName] = useState("");
+  const [isUploadRejected, setIsUploadRejected] = useState(false);
 
   const [inputFileUrl, setInputFileUrl] = useState("");
   const [inputFileUrlState, setInputFileUrlState] = useState<InputFileUrlStateType>({
     urlValidation: InputFileUrlState.INITIAL,
     urlToOpen: undefined
   });
-  const [uploadFileDndState, setUploadFileDndState] = useState(UploadFileDndState.INITIAL);
-  const [uploadFileInputState, setUploadFileInputState] = useState(UploadFileInputState.INITIAL);
 
-  const uploadDndOnDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    setUploadFileDndState(UploadFileDndState.HOVER);
-    e.stopPropagation();
-    e.preventDefault();
-    return false;
-  }, []);
+  const onFileUpload = useCallback(
+    (
+      file: File,
+      fileName: string,
+      e:
+        | React.DragEvent<HTMLElement>
+        | React.ChangeEvent<HTMLTextAreaElement>
+        | React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
+      e.stopPropagation();
+      e.preventDefault();
 
-  const uploadDndOnDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    setUploadFileDndState(UploadFileDndState.INITIAL);
-    e.stopPropagation();
-    e.preventDefault();
-    return false;
-  }, []);
+      setUploadedFileName(fileName);
+      setIsUploadRejected(false);
 
-  const openFile = useCallback(
-    (file: File) => {
-      const fileExtension = extractFileExtension(file.name)!;
+      const fileExtension = extractFileExtension(fileName);
+      if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
+        return;
+      }
+
       props.onFileOpened({
         isReadOnly: false,
-        fileExtension: fileExtension,
-        fileName: removeFileExtension(file.name),
+        fileExtension,
+        fileName: removeFileExtension(fileName),
         getFileContents: () =>
           new Promise<string | undefined>(resolve => {
             const reader = new FileReader();
@@ -131,105 +123,7 @@ export function HomePage(props: Props) {
     [context, history]
   );
 
-  const onFileUploadFromDnd = useCallback((file: File) => {
-    const fileExtension = extractFileExtension(file.name);
-    if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
-      setUploadFileDndState(UploadFileDndState.INVALID_EXTENSION);
-    } else {
-      openFile(file);
-    }
-  }, []);
-
-  const uploadDndOnDrop = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
-      setUploadFileDndState(UploadFileDndState.INITIAL);
-      e.stopPropagation();
-      e.preventDefault();
-
-      const file = e.dataTransfer.files[0];
-      // FIXME: On chrome it was observed that sometimes `file` is undefined, although its type says that it's not possible.
-      if (!file) {
-        return false;
-      }
-
-      onFileUploadFromDnd(file);
-      return false;
-    },
-    [onFileUploadFromDnd]
-  );
-
-  const messageForUploadFileFromDndState = useMemo(() => {
-    switch (uploadFileDndState) {
-      case UploadFileDndState.INVALID_EXTENSION:
-        return i18n.homePage.uploadFile.dndZone.invalidFile;
-      default:
-        return i18n.homePage.uploadFile.dndZone.waitingFile;
-    }
-  }, [uploadFileDndState, i18n]);
-
-  const uploadDndClassName = useMemo(() => {
-    switch (uploadFileDndState) {
-      case UploadFileDndState.INVALID_EXTENSION:
-        return "invalid";
-      case UploadFileDndState.HOVER:
-        return "hover";
-      default:
-        return "";
-    }
-  }, [uploadFileDndState]);
-
-  const onFileUploadFromInput = useCallback((file: File) => {
-    const fileExtension = extractFileExtension(file.name);
-    if (!fileExtension || !context.editorEnvelopeLocator.mapping.has(fileExtension)) {
-      setUploadFileInputState(UploadFileInputState.INVALID_EXTENSION);
-    } else {
-      openFile(file);
-    }
-  }, []);
-
-  const uploadFileFromInput = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      if (uploadInputRef.current!.files) {
-        const file = uploadInputRef.current!.files![0];
-        onFileUploadFromInput(file);
-      }
-      e.target.value = "";
-    },
-    [onFileUploadFromInput]
-  );
-
-  const onDndInvalidFileExtensionAnimationEnd = useCallback((e: React.AnimationEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setUploadFileDndState(UploadFileDndState.INITIAL);
-  }, []);
-
-  const onInputInvalidFileExtensionAnimationEnd = useCallback((e: React.AnimationEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setUploadFileInputState(UploadFileInputState.INITIAL);
-  }, []);
-
-  const messageForUploadFileFromInputState = useMemo(() => {
-    switch (uploadFileInputState) {
-      case UploadFileInputState.INVALID_EXTENSION:
-        return i18n.homePage.uploadFile.fileInput;
-      default:
-        return "";
-    }
-  }, [uploadFileInputState, i18n]);
-
-  const uploadInputClassName = useMemo(() => {
-    switch (uploadFileInputState) {
-      case UploadFileInputState.INVALID_EXTENSION:
-        return "invalid";
-      default:
-        return "";
-    }
-  }, [uploadFileInputState]);
+  const onDropRejected = useCallback(() => setIsUploadRejected(true), []);
 
   const createEmptyFile = useCallback(
     (fileExtension: string) => {
@@ -578,38 +472,31 @@ export function HomePage(props: Props) {
           <Card>
             <CardHeader>
               <Title headingLevel="h2" size="2xl">
-                {i18n.homePage.editExistingFile}
+                {i18n.homePage.uploadFile.header}
               </Title>
             </CardHeader>
-            <CardBody isFilled={true} className="kogito--editor-landing__upload-box">
-              {/* Upload Drag Target */}
-              <div
-                onDragOver={uploadDndOnDragOver}
-                onDragLeave={uploadDndOnDragLeave}
-                onDrop={uploadDndOnDrop}
-                className={uploadDndClassName}
-                onAnimationEnd={onDndInvalidFileExtensionAnimationEnd}
-              >
-                <Bullseye>{messageForUploadFileFromDndState}</Bullseye>
-              </div>
-            </CardBody>
-            <CardBody>{i18n.homePage.uploadFile.or}</CardBody>
-            <CardFooter className="kogito--editor-landing__upload-input">
-              <Button variant="secondary" className="kogito--editor-landing__upload-btn">
-                {i18n.homePage.chooseLocalFile}
-                {/* Transparent file input overlays the button */}
-                <input
-                  accept={".dmn, .bpmn, .bpmn2"}
-                  className="pf-c-button"
-                  type="file"
-                  aria-label="File selection"
-                  ref={uploadInputRef}
-                  onChange={uploadFileFromInput}
-                />
-              </Button>
-              <div className={uploadInputClassName} onAnimationEnd={onInputInvalidFileExtensionAnimationEnd}>
-                {messageForUploadFileFromInputState}
-              </div>
+            <CardBody>{i18n.homePage.uploadFile.body}</CardBody>
+            <CardFooter>
+              <Form>
+                <FormGroup
+                  fieldId={"file-upload-field"}
+                  helperText={i18n.homePage.uploadFile.helperText}
+                  helperTextInvalid={i18n.homePage.uploadFile.helperInvalidText}
+                  validated={isUploadRejected ? "error" : "default"}
+                >
+                  <FileUpload
+                    id={"file-upload-field"}
+                    filenamePlaceholder={i18n.homePage.uploadFile.placeholder}
+                    filename={uploadedFileName}
+                    onChange={onFileUpload}
+                    dropzoneProps={{
+                      accept: [...context.editorEnvelopeLocator.mapping.keys()].map(ext => "." + ext).join(", "),
+                      onDropRejected
+                    }}
+                    validated={isUploadRejected ? "error" : "default"}
+                  />
+                </FormGroup>
+              </Form>
             </CardFooter>
           </Card>
           <Card>

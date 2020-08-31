@@ -26,6 +26,7 @@ export interface Association {
 export interface EditorInitArgs {
   resourcesPathPrefix: string;
   fileExtension: string;
+  initialLocale: string;
 }
 
 export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, GuidedTourEnvelopeApi {

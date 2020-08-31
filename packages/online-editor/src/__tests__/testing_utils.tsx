@@ -22,8 +22,8 @@ import { GithubService } from "../common/GithubService";
 import { GlobalContext, GlobalContextType } from "../common/GlobalContext";
 import { Routes } from "../common/Routes";
 import { EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
-import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n";
-import { onlineI18nDefaults, onlineI18nDictionaries, OnlineI18nContext } from "../common/i18n/locales";
+import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kogito-tooling/i18n/dist/react-components";
+import { onlineI18nDefaults, onlineI18nDictionaries, OnlineI18nContext } from "../common/i18n";
 import { OnlineI18n } from "../common/i18n";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
