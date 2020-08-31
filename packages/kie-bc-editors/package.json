@@ -15,7 +15,7 @@
   "dependencies": {
     "@kogito-tooling/editor": "0.7.0",
     "@kogito-tooling/i18n": "0.7.0",
-    "@kogito-tooling/kie-bc-editors-unpacked": "0.7.0"
+    "@kogito-tooling/kie-bc-editors-unpacked": "0.7.0",
     "@kogito-tooling/pmml-editor-marshaller": "0.7.0"
   },
   "scripts": {
