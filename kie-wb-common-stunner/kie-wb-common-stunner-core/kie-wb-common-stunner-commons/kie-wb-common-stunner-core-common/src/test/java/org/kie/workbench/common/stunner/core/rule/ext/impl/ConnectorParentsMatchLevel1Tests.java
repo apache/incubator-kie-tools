@@ -42,7 +42,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.kie.workbench.common.stunner.core.TestingGraphInstances.assertRuleFailedResult;
 import static org.kie.workbench.common.stunner.core.TestingGraphInstances.assertSuccessfullResult;
-import static org.kie.workbench.common.stunner.core.TestingGraphInstances.newLabelsSet;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConnectorParentsMatchLevel1Tests {
@@ -227,7 +226,7 @@ public class ConnectorParentsMatchLevel1Tests {
                                                  Optional.empty());
         Node someNode = graphTestHandler.newNode("someNodeUUID",
                                                  "someNodeId",
-                                                 newLabelsSet("someNodeLabel"));
+                                                 Optional.of(new String[]{"someNodeLabel", "all"}));
         return
                 new CompositeCommand.Builder<GraphCommandExecutionContext, RuleViolation>()
                         .addCommand(new AddChildNodeCommand(parent,

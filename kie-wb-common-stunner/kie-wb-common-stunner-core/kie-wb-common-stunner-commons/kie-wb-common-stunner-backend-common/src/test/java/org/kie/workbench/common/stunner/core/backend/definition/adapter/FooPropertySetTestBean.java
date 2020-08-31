@@ -23,8 +23,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 @PropertySet
 public class FooPropertySetTestBean {
 
-    public static final String FOO_PROPERTY_NAME = "fooProperty";
-
     @Name
     public static final String NAME = "Foo Property Set";
 

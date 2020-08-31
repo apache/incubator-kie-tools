@@ -36,22 +36,30 @@ public abstract class AbstractElementFactory<C, D extends Definition<C>, T exten
 
     protected void appendLabels(final Set<String> target,
                                 final Object definition) {
-        target.addAll(computeLabels(getDefinitionManager()
-                                            .adapters()
-                                            .registry()
-                                            .getDefinitionAdapter(definition.getClass()),
-                                    definition));
+        String[] labels = computeLabels(getDefinitionManager()
+                                                .adapters()
+                                                .registry()
+                                                .getDefinitionAdapter(definition.getClass()),
+                                        definition);
+        for (String label : labels) {
+            target.add(label);
+        }
     }
 
-    public static <T> Set<String> computeLabels(final DefinitionAdapter<T> adapter,
-                                                final T definition) {
+    public static <T> String[] computeLabels(final DefinitionAdapter<T> adapter,
+                                             final T definition) {
         final Set<String> target = new HashSet<>();
         final DefinitionId id = adapter.getId(definition);
         target.add(id.value());
         if (id.isDynamic()) {
             target.add(id.type());
         }
-        target.addAll(adapter.getLabels(definition));
-        return target;
+        String[] labels = adapter.getLabels(definition);
+        if (null != labels) {
+            for (String label : labels) {
+                target.add(label);
+            }
+        }
+        return target.toArray(new String[target.size()]);
     }
 }

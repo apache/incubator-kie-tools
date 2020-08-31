@@ -32,6 +32,7 @@
     <exclude name="org.kie.workbench.common.stunner.basicset.client.**"/>
     <exclude name="org.kie.workbench.common.dmn.client.**"/>
     <exclude name="org.kie.workbench.common.dmn.showcase.client.**"/>
+    <exclude name="org.kie.workbench.common.dmn.webapp.kogito.common.client.**"/>
 
     <!-- Lienzo. -->
     <exclude name="com.ait.lienzo.**"/>

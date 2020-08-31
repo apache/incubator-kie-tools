@@ -22,7 +22,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAda
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.registry.Registry;
 
 /**
@@ -45,11 +44,6 @@ public interface AdapterRegistry extends Registry<Adapter> {
      * Returns the Definition adapter instance for the given type.
      */
     <T> DefinitionAdapter<T> getDefinitionAdapter(final Class<?> type);
-
-    /**
-     * Returns the Property Set adapter instance for the given property set's type.
-     */
-    <T> PropertySetAdapter<T> getPropertySetAdapter(final Class<?> type);
 
     /**
      * Returns the Property adapter instance for the given property's type.

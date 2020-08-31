@@ -46,8 +46,7 @@ public abstract class AbstractBackendAdapterTest {
     public void setup() {
         when(utils.getDefinitionManager()).thenReturn(definitionManager);
         when(definitionManager.adapters()).thenReturn(adapterManager);
-        when(adapterManager.forDefinition()).thenReturn(new BackendDefinitionAdapter<Object>(utils));
-        when(adapterManager.forPropertySet()).thenReturn(new BackendPropertySetAdapter<Object>());
+        when(adapterManager.forDefinition()).thenReturn(new BackendDefinitionAdapter<Object>());
         when(adapterManager.forProperty()).thenReturn(new BackendPropertyAdapter<Object>());
         instance = new FooTestBean(FOO1_VALUE, FOO2_VALUE);
         instancePropertySet = new FooPropertySetTestBean(FOO1_VALUE);

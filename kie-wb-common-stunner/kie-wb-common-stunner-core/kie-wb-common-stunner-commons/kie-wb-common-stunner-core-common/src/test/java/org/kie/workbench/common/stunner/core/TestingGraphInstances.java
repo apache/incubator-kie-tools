@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core;
 
 import java.util.Optional;
-import java.util.Set;
 
 import org.kie.soup.commons.util.Lists;
 import org.kie.soup.commons.util.Sets;
@@ -129,13 +128,13 @@ public class TestingGraphInstances {
         result.subProcessNodeBean = new SubProcessNodeBean();
         graphTestHandler.mockDefAttributes(result.subProcessNodeBean,
                                            getDefinitionId(SubProcessNodeBean.class),
-                                           newLabelsSet("subProcessNodeBeanLabel"));
+                                           Optional.of(new String[]{"subProcessNodeBeanLabel", "all"}));
         result.subProcessNode = graphTestHandler.newNode("subProcessNodeUUID",
                                                          Optional.of(result.subProcessNodeBean));
         result.nodeB =
                 graphTestHandler.newNode("nodeBUUID",
                                          "nodeBId",
-                                         newLabelsSet("nodeBLabel"));
+                                         Optional.of(new String[]{"nodeBLabel", "all"}));
         graphTestHandler
                 .setChild(result.parentNode,
                           result.subProcessNode)
@@ -169,7 +168,7 @@ public class TestingGraphInstances {
         result.parentNodeBean = new ParentNodeBean();
         graphTestHandler.mockDefAttributes(result.parentNodeBean,
                                            getDefinitionId(ParentNodeBean.class),
-                                           newLabelsSet("parentNodeLabel"));
+                                           Optional.of(new String[]{"parentNodeLabel", "all"}));
         result.parentNode =
                 graphTestHandler.newNode("parentNodeUUID",
                                          Optional.of(result.parentNodeBean));
@@ -177,7 +176,7 @@ public class TestingGraphInstances {
         result.containerNodeBean = new ContainerNodeBean();
         graphTestHandler.mockDefAttributes(result.containerNodeBean,
                                            getDefinitionId(ContainerNodeBean.class),
-                                           newLabelsSet("containerNodeLabel"));
+                                           Optional.of(new String[]{"containerNodeLabel", "all"}));
         result.containerNode =
                 graphTestHandler.newNode("containerNodeUUID",
                                          Optional.of(result.containerNodeBean));
@@ -185,15 +184,15 @@ public class TestingGraphInstances {
         result.startNode =
                 graphTestHandler.newNode("startNodeUUID",
                                          "startNodeId",
-                                         newLabelsSet("startNodeLabel"));
+                                         Optional.of(new String[]{"startNodeLabel", "all"}));
         result.intermNode =
                 graphTestHandler.newNode("intermNodeUUID",
                                          "intermNodeId",
-                                         newLabelsSet("intermNodeLabel"));
+                                         Optional.of(new String[]{"intermNodeLabel", "all"}));
         result.endNode =
                 graphTestHandler.newNode("endNodeUUID",
                                          "endNodeId",
-                                         newLabelsSet("endNodeLabel"));
+                                         Optional.of(new String[]{"endNodeLabel", "all"}));
         result.edge1 =
                 graphTestHandler.newEdge("edge1UUID",
                                          "edgeId",
@@ -205,7 +204,7 @@ public class TestingGraphInstances {
         result.nodeA =
                 graphTestHandler.newNode("nodeAUUID",
                                          "nodeAId",
-                                         newLabelsSet("nodeALabel"));
+                                         Optional.of(new String[]{"nodeALabel", "all"}));
     }
 
     public static ContextualGraphCommandExecutionContext createConstrainedExecutionContext(TestingGraphMockHandler graphTestHandler,
@@ -277,10 +276,6 @@ public class TestingGraphInstances {
 
     public static class SubProcessNodeBean {
 
-    }
-
-    public static Optional<Set<String>> newLabelsSet(String label) {
-        return Optional.of(new Sets.Builder<String>().add(label).add("all").build());
     }
 
     public static void assertSuccessfullResult(CommandResult<RuleViolation> result) {

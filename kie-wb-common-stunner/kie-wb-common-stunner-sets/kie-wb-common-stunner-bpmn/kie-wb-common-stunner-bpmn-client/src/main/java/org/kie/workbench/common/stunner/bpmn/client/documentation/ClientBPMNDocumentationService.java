@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.documentation;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -109,6 +109,7 @@ import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationServic
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStripGlyph;
 import org.kie.workbench.common.stunner.core.client.util.js.JsConverter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
@@ -386,9 +387,12 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
     }
 
     private Map<String, String> getElementProperties(Object definition) {
+        final DefinitionAdapter<Object> definitionAdapter = definitionManager.adapters().registry().getDefinitionAdapter(definition.getClass());
         final PropertyAdapter<Object, Object> propertyAdapter = definitionManager.adapters().forProperty();
-        final Set<?> properties = definitionManager.adapters().forDefinition().getProperties(definition);
-        return properties.stream()
+        return Arrays.stream(definitionAdapter.getPropertyFields(definition))
+                .map(field -> definitionAdapter.getProperty(definition, field))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .filter(prop -> !ignoredPropertiesIds.containsKey(propertyAdapter.getId(prop)))
                 .filter(prop -> StringUtils.nonEmpty(propertyAdapter.getCaption(prop)))
                 .filter(prop -> Objects.nonNull(propertyAdapter.getValue(prop)))

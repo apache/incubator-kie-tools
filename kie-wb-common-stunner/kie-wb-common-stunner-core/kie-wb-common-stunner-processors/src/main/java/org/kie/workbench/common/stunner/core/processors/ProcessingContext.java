@@ -26,7 +26,7 @@ import java.util.Set;
 
 import javax.lang.model.element.Element;
 
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.DefinitionAdapterBindings;
 
 public class ProcessingContext {
 
@@ -37,11 +37,9 @@ public class ProcessingContext {
     private final ProcessingDefinitionSetAnnotations defSetAnnotations = new ProcessingDefinitionSetAnnotations();
     private final ProcessingDefinitionAnnotations definitionAnnotations = new ProcessingDefinitionAnnotations();
     private final Set<Element> definitionElements = new LinkedHashSet<>();
-    private final ProcessingPropertySetAnnotations propertySetAnnotations = new ProcessingPropertySetAnnotations();
-    private final Set<Element> propertySetElements = new LinkedHashSet<>();
     private final ProcessingPropertyAnnotations propertyAnnotations = new ProcessingPropertyAnnotations();
-    private final Set<Element> propertyElements = new LinkedHashSet<>();
-    private final Map<PropertyMetaTypes, String> metaPropertyTypes = new LinkedHashMap<>();
+    private final Map<org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes, String> metaPropertyTypes = new LinkedHashMap<>();
+    private final Map<String, DefinitionAdapterBindings.PropertyMetaTypes> metaPropertyTypesFields = new LinkedHashMap<>();
     private final ProcessingMorphingAnnotations morphingAnnotations = new ProcessingMorphingAnnotations();
     private final Set<Element> containmentRuleElementsProcessed = new HashSet<>();
     private final Set<Element> dockingRuleElementsProcessed = new HashSet<>();
@@ -89,16 +87,16 @@ public class ProcessingContext {
         return definitionAnnotations;
     }
 
-    public ProcessingPropertySetAnnotations getPropertySetAnnotations() {
-        return propertySetAnnotations;
-    }
-
     public ProcessingPropertyAnnotations getPropertyAnnotations() {
         return propertyAnnotations;
     }
 
-    public Map<PropertyMetaTypes, String> getMetaPropertyTypes() {
+    public Map<org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes, String> getMetaPropertyTypes() {
         return metaPropertyTypes;
+    }
+
+    public Map<String, DefinitionAdapterBindings.PropertyMetaTypes> getMetaPropertyTypesFields() {
+        return metaPropertyTypesFields;
     }
 
     public ProcessingMorphingAnnotations getMorphingAnnotations() {
@@ -107,14 +105,6 @@ public class ProcessingContext {
 
     public Set<Element> getDefinitionElements() {
         return definitionElements;
-    }
-
-    public Set<Element> getPropertySetElements() {
-        return propertySetElements;
-    }
-
-    public Set<Element> getPropertyElements() {
-        return propertyElements;
     }
 
     public Set<Element> getContainmentRuleElementsProcessed() {

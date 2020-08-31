@@ -16,13 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.definition.clone;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.BindableProxyFactory;
-import org.jboss.errai.databinding.client.BindableProxyProvider;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -31,12 +29,14 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapte
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -59,7 +59,7 @@ public abstract class AbstractCloneProcessTest {
     protected DefinitionAdapter definitionAdapter;
 
     @Mock
-    protected PropertyAdapter<Object, Object> propertyAdapter;
+    protected PropertyAdapter propertyAdapter;
 
     protected final Object def1 = new Object();
 
@@ -97,49 +97,44 @@ public abstract class AbstractCloneProcessTest {
 
     protected final Boolean booleanValue = true;
 
-    protected final Object bindableProperty = new Object();
-
-    protected final BindableTypeMock bindablePropertyValue = mock(BindableTypeMock.class);
-
-    protected final String bindablePropertyId = "bindablePropertyId";
-
-    protected final BindableTypeMock bindableClonedValue = mock(BindableTypeMock.class);
-
-    @SuppressWarnings("unchecked")
     @Before
+    @SuppressWarnings("all")
     public void setUp() throws Exception {
+        AdapterRegistry adapterRegistry = mock(AdapterRegistry.class);
+        when(adapterManager.registry()).thenReturn(adapterRegistry);
+        when(adapterRegistry.getDefinitionAdapter(any())).thenReturn(definitionAdapter);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
+        when(definitionAdapter.getPropertyFields(any())).thenReturn(new String[0]);
         when(definitionAdapter.getId(eq(def1))).thenReturn(ID_DEF1);
         when(definitionAdapter.getId(eq(def2))).thenReturn(ID_DEF2);
         when(definitionAdapter.getId(eq(def3))).thenReturn(ID_DEF3);
-        when(definitionAdapter.getMetaProperty(PropertyMetaTypes.NAME,
-                                               def1)).thenReturn(nameProperty1);
-        when(definitionAdapter.getMetaProperty(PropertyMetaTypes.NAME,
-                                               def2)).thenReturn(nameProperty2);
-        when(definitionAdapter.getMetaProperty(PropertyMetaTypes.NAME,
-                                               def3)).thenReturn(nameProperty3);
+        when(definitionAdapter.getMetaPropertyField(eq(def1), eq(PropertyMetaTypes.NAME))).thenReturn("nameProperty");
+        when(definitionAdapter.getProperty(eq(def1), eq("nameProperty"))).thenReturn(Optional.of(nameProperty1));
+        when(definitionAdapter.getMetaPropertyField(eq(def2), eq(PropertyMetaTypes.NAME))).thenReturn("nameProperty");
+        when(definitionAdapter.getProperty(eq(def2), eq("nameProperty"))).thenReturn(Optional.of(nameProperty2));
+        when(definitionAdapter.getMetaPropertyField(eq(def3), eq(PropertyMetaTypes.NAME))).thenReturn("nameProperty");
+        when(definitionAdapter.getProperty(eq(def3), eq("nameProperty"))).thenReturn(Optional.of(nameProperty3));
+        when(adapterRegistry.getPropertyAdapter(any())).thenReturn(propertyAdapter);
         when(adapterManager.forProperty()).thenReturn(propertyAdapter);
         when(propertyAdapter.getValue(nameProperty1)).thenReturn(nameValue);
         when(propertyAdapter.getValue(textProperty1)).thenReturn(textValue);
         when(propertyAdapter.getValue(booleanProperty1)).thenReturn(booleanValue);
-        when(propertyAdapter.getValue(bindableProperty)).thenReturn(bindablePropertyValue);
         when(factoryManager.newDefinition(anyString())).thenReturn(def2);
-
-        when(definitionAdapter.getProperties(def1)).thenReturn(buildSet(nameProperty1,
-                                                                        textProperty1,
-                                                                        booleanProperty1,
-                                                                        bindableProperty));
-        when(definitionAdapter.getProperties(def2)).thenReturn(buildSet(nameProperty2,
-                                                                        textProperty2,
-                                                                        booleanProperty2,
-                                                                        bindableProperty));
-        when(definitionAdapter.getProperties(def3)).thenReturn(buildSet(nameProperty3,
-                                                                        textProperty3,
-                                                                        booleanProperty3));
-        when(propertyAdapter.isReadOnly(nameProperty1)).thenReturn(false);
-        when(propertyAdapter.isReadOnly(textProperty1)).thenReturn(false);
-        when(propertyAdapter.isReadOnly(booleanProperty1)).thenReturn(false);
-        when(propertyAdapter.isReadOnly(bindableProperty)).thenReturn(false);
+        when(definitionAdapter.getPropertyFields(eq(def1)))
+                .thenReturn(new String[]{"nameProperty", "textProperty", "booleanProperty"});
+        when(definitionAdapter.getProperty(eq(def1), eq("nameProperty"))).thenReturn(Optional.of(nameProperty1));
+        when(definitionAdapter.getProperty(eq(def1), eq("textProperty"))).thenReturn(Optional.of(textProperty1));
+        when(definitionAdapter.getProperty(eq(def1), eq("booleanProperty"))).thenReturn(Optional.of(booleanProperty1));
+        when(definitionAdapter.getPropertyFields(eq(def2)))
+                .thenReturn(new String[]{"nameProperty", "textProperty", "booleanProperty"});
+        when(definitionAdapter.getProperty(eq(def2), eq("nameProperty"))).thenReturn(Optional.of(nameProperty2));
+        when(definitionAdapter.getProperty(eq(def2), eq("textProperty"))).thenReturn(Optional.of(textProperty2));
+        when(definitionAdapter.getProperty(eq(def2), eq("booleanProperty"))).thenReturn(Optional.of(booleanProperty2));
+        when(definitionAdapter.getPropertyFields(eq(def3)))
+                .thenReturn(new String[]{"nameProperty", "textProperty", "booleanProperty"});
+        when(definitionAdapter.getProperty(eq(def3), eq("nameProperty"))).thenReturn(Optional.of(nameProperty3));
+        when(definitionAdapter.getProperty(eq(def3), eq("textProperty"))).thenReturn(Optional.of(textProperty3));
+        when(definitionAdapter.getProperty(eq(def3), eq("booleanProperty"))).thenReturn(Optional.of(booleanProperty3));
         when(propertyAdapter.getId(nameProperty1)).thenReturn(nameId);
         when(propertyAdapter.getId(nameProperty2)).thenReturn(nameId);
         when(propertyAdapter.getId(nameProperty3)).thenReturn(nameId);
@@ -149,10 +144,6 @@ public abstract class AbstractCloneProcessTest {
         when(propertyAdapter.getId(booleanProperty1)).thenReturn(booleanId);
         when(propertyAdapter.getId(booleanProperty2)).thenReturn(booleanId);
         when(propertyAdapter.getId(booleanProperty3)).thenReturn(booleanId);
-        when(propertyAdapter.getId(bindableProperty)).thenReturn(bindablePropertyId);
-        BindableProxyFactory.addBindableProxy(bindablePropertyValue.getClass(), mock(BindableProxyProvider.class));
-        when(bindablePropertyValue.unwrap()).thenReturn(bindableClonedValue);
-        when(bindablePropertyValue.deepUnwrap()).thenReturn(bindableClonedValue);
     }
 
     private <T> Set<T> buildSet(T... objects) {
@@ -170,9 +161,5 @@ public abstract class AbstractCloneProcessTest {
                         source);
         assertEquals(expectedValue,
                      nameArgumentCaptor.getValue());
-    }
-
-    protected interface BindableTypeMock extends BindableProxy {
-
     }
 }

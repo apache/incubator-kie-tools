@@ -23,7 +23,6 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -49,7 +48,6 @@ public abstract class AbstractGraphCommandTest {
     protected AdapterRegistry adapterRegistry;
     protected DefinitionAdapter definitionAdapter;
     protected PropertyAdapter propertyAdapter;
-    protected PropertySetAdapter propertySetAdapter;
     protected FactoryManager factoryManager;
     protected RuleManager ruleManager;
     protected MutableIndex graphIndex;
@@ -66,7 +64,6 @@ public abstract class AbstractGraphCommandTest {
         adapterRegistry = testingGraphMockHandler.getAdapterRegistry();
         definitionAdapter = testingGraphMockHandler.getDefinitionAdapter();
         propertyAdapter = testingGraphMockHandler.getPropertyAdapter();
-        propertySetAdapter = testingGraphMockHandler.getPropertySetAdapter();
         factoryManager = testingGraphMockHandler.getFactoryManager();
         ruleManager = testingGraphMockHandler.getRuleManager();
         graphIndex = testingGraphMockHandler.graphIndex;

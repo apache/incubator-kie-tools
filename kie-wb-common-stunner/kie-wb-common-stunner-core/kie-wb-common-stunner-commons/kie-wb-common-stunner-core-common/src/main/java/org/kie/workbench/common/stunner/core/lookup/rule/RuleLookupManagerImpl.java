@@ -95,7 +95,7 @@ public class RuleLookupManagerImpl
                 try {
                     // Permitted roles on containment rules.
                     final CanContain cr = (CanContain) rule;
-                    final Set<String> rolesSet = toSet(value);
+                    final Collection<String> rolesSet = toCollection(value);
                     if (null != rolesSet) {
                         return isIntersect(cr.getAllowedRoles(),
                                            rolesSet);
@@ -123,7 +123,7 @@ public class RuleLookupManagerImpl
             case ROLE_IN:
                 if (rule instanceof EdgeOccurrences) {
                     final EdgeOccurrences er = (EdgeOccurrences) rule;
-                    final Set<String> set = toSet(value);
+                    final Collection<String> set = toCollection(value);
                     if (null != set && !set.isEmpty()) {
                         for (final String s : set) {
                             if (er.getRole().equals(value)) {
@@ -146,7 +146,7 @@ public class RuleLookupManagerImpl
                 // Connection rules.
                 try {
                     final CanConnect cr = (CanConnect) rule;
-                    final Set<String> fromSet = toSet(value);
+                    final Collection<String> fromSet = toCollection(value);
                     Set<String> ruleSet = getRoles(cr.getPermittedConnections(),
                                                    FROM.equals(key));
                     if (null != fromSet) {

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.definition.adapter.bootstrap;
 
 import java.util.Optional;
-import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
@@ -49,40 +48,30 @@ class BootstrapDefinitionAdapter implements DefinitionAdapter<Object> {
     }
 
     @Override
-    public Optional<String> getNameField(Object pojo) {
-        return getWrapped(pojo).getNameField(pojo);
-    }
-
-    @Override
     public String getDescription(final Object pojo) {
         return getWrapped(pojo).getDescription(pojo);
     }
 
     @Override
-    public Set<String> getLabels(final Object pojo) {
+    public String[] getLabels(final Object pojo) {
         return getWrapped(pojo).getLabels(pojo);
     }
 
     @Override
-    public Set<?> getPropertySets(final Object pojo) {
-        return getWrapped(pojo).getPropertySets(pojo);
+    public String[] getPropertyFields(final Object pojo) {
+        return getWrapped(pojo).getPropertyFields(pojo);
     }
 
     @Override
-    public Set<?> getProperties(final Object pojo) {
-        return getWrapped(pojo).getProperties(pojo);
-    }
-
-    @Override
-    public Optional<?> getProperty(Object pojo, String propertyName) {
+    public Optional<?> getProperty(final Object pojo,
+                                   final String propertyName) {
         return getWrapped(pojo).getProperty(pojo, propertyName);
     }
 
     @Override
-    public Object getMetaProperty(final PropertyMetaTypes metaType,
-                                  final Object pojo) {
-        return getWrapped(pojo).getMetaProperty(metaType,
-                                                pojo);
+    public String getMetaPropertyField(final Object pojo,
+                                       final PropertyMetaTypes metaType) {
+        return getWrapped(pojo).getMetaPropertyField(pojo, metaType);
     }
 
     @Override

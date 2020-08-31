@@ -16,12 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.lookup.criteria;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.kie.workbench.common.stunner.core.lookup.AbstractLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.LookupManager;
@@ -86,7 +87,7 @@ public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManage
         return null;
     }
 
-    protected Set<String> toSet(final String s) {
+    protected Collection<String> toCollection(final String s) {
         if (s != null && !s.startsWith(COLLECTION_START_CHAR)) {
             return new HashSet<>(0);
         } else if (s != null && s.startsWith(COLLECTION_START_CHAR) && s.endsWith(COLLECTION_END_CHAR)) {
@@ -100,6 +101,11 @@ public abstract class AbstractCriteriaLookupManager<I, T, R extends LookupManage
             return result;
         }
         return new HashSet<>(0);
+    }
+
+    protected static <T> boolean isIntersect(final Collection<T> c1,
+                                             final T[] c2) {
+        return isIntersect(c1, Arrays.stream(c2).collect(Collectors.toSet()));
     }
 
     protected static <T> boolean isIntersect(final Collection<T> c1,

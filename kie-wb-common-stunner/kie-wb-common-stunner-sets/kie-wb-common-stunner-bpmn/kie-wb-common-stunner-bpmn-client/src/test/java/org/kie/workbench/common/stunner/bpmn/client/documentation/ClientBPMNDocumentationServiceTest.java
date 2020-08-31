@@ -110,7 +110,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapte
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.model.DocumentationOutput;
@@ -121,6 +120,7 @@ import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
+import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
@@ -132,6 +132,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -272,9 +273,6 @@ public class ClientBPMNDocumentationServiceTest {
     private PropertyAdapter<Object, Object> propertyAdapter;
 
     @Mock
-    private PropertySetAdapter<Object> propertySetAdapter;
-
-    @Mock
     private PropertyDecorators decorators;
 
     private Function<String, Glyph> glyphProvider;
@@ -301,6 +299,7 @@ public class ClientBPMNDocumentationServiceTest {
     private SLADueDate slaDueDate;
 
     @Before
+    @SuppressWarnings("all")
     public void setUp() throws Exception {
 
         //DiagramSet
@@ -413,10 +412,12 @@ public class ClientBPMNDocumentationServiceTest {
 
         //adapters mock
         when(definitionManager.adapters()).thenReturn(adapters);
+        AdapterRegistry adapterRegistry = mock(AdapterRegistry.class);
+        when(adapterRegistry.getDefinitionAdapter(any())).thenReturn(definitionAdapter);
+        when(adapters.registry()).thenReturn(adapterRegistry);
         when(adapters.forDefinition()).thenReturn(definitionAdapter);
         when(adapters.forDefinitionSet()).thenReturn(definitionSetAdapter);
         when(adapters.forProperty()).thenReturn(propertyAdapter);
-        when(adapters.forPropertySet()).thenReturn(propertySetAdapter);
 
         when(definitionAdapter.getId(userTask)).thenReturn(userTaskId);
         when(definitionAdapter.getId(embeddedSubprocess)).thenReturn(subprocessId);
@@ -440,15 +441,15 @@ public class ClientBPMNDocumentationServiceTest {
         //adapters mock for task
         final TaskGeneralSet taskGeneral = userTask.getGeneral();
         final UserTaskExecutionSet taskExecutionSet = userTask.getExecutionSet();
-        when(definitionAdapter.getCategory(userTask)).thenReturn(BPMNCategories.ACTIVITIES);
-        when(definitionAdapter.getProperties(userTask)).thenReturn(toSet(taskGeneral.getDocumentation(),
-                                                                         taskGeneral.getName(),
-                                                                         taskExecutionSet.getSubject(),
-                                                                         taskExecutionSet.getGroupid(),
-                                                                         taskExecutionSet.getPriority(),
-                                                                         taskExecutionSet.getAssignmentsinfo(),
-                                                                         taskExecutionSet.getDescription()
-        ));
+        when(definitionAdapter.getCategory(eq(userTask))).thenReturn(BPMNCategories.ACTIVITIES);
+        when(definitionAdapter.getPropertyFields(eq(userTask))).thenReturn(new String[]{"taskGeneral.documentation", "taskGeneral.name", "taskExecutionSet.subject", "taskExecutionSet.groupId", "taskExecutionSet.priority", "taskExecutionSet.assignmentsInfo", "taskExecutionSet.description"});
+        when(definitionAdapter.getProperty(eq(userTask), eq("taskGeneral.documentation"))).thenReturn((Optional) Optional.of(taskGeneral.getDocumentation()));
+        when(definitionAdapter.getProperty(eq(userTask), eq("taskGeneral.name"))).thenReturn((Optional) Optional.of(taskGeneral.getName()));
+        when(definitionAdapter.getProperty(eq(userTask), eq("taskExecutionSet.subject"))).thenReturn((Optional) Optional.of(taskExecutionSet.getSubject()));
+        when(definitionAdapter.getProperty(eq(userTask), eq("taskExecutionSet.groupId"))).thenReturn((Optional) Optional.of(taskExecutionSet.getGroupid()));
+        when(definitionAdapter.getProperty(eq(userTask), eq("taskExecutionSet.priority"))).thenReturn((Optional) Optional.of(taskExecutionSet.getPriority()));
+        when(definitionAdapter.getProperty(eq(userTask), eq("taskExecutionSet.assignmentsInfo"))).thenReturn((Optional) Optional.of(taskExecutionSet.getAssignmentsinfo()));
+        when(definitionAdapter.getProperty(eq(userTask), eq("taskExecutionSet.description"))).thenReturn((Optional) Optional.of(taskExecutionSet.getDescription()));
 
         mockProperty(taskGeneral.getDocumentation(), TASK_DOCUMENTATION, DOCUMENTATION_CAPTION);
         mockProperty(taskGeneral, TASK_NAME, NAME_CAPTION);
@@ -462,13 +463,13 @@ public class ClientBPMNDocumentationServiceTest {
         //adapters mock for subprocess
         final BPMNGeneralSet subprocessGeneral = embeddedSubprocess.getGeneral();
         final EmbeddedSubprocessExecutionSet subprocessExecutionSet = embeddedSubprocess.getExecutionSet();
-        when(definitionAdapter.getCategory(embeddedSubprocess)).thenReturn(BPMNCategories.SUB_PROCESSES);
-        when(definitionAdapter.getProperties(embeddedSubprocess)).thenReturn(toSet(
-                subprocessGeneral.getDocumentation(),
-                subprocessGeneral.getName(),
-                subprocessExecutionSet.getOnEntryAction(),
-                subprocessExecutionSet.getOnExitAction(),
-                subprocessExecutionSet.getIsAsync()));
+        when(definitionAdapter.getCategory(eq(embeddedSubprocess))).thenReturn(BPMNCategories.SUB_PROCESSES);
+        when(definitionAdapter.getPropertyFields(eq(embeddedSubprocess))).thenReturn(new String[]{"subprocessGeneral.documentation", "subprocessGeneral.name", "subprocessExecutionSet.onEntryAction", "subprocessExecutionSet.onExitAction", "subprocessExecutionSet.isAsync"});
+        when(definitionAdapter.getProperty(eq(embeddedSubprocess), eq("subprocessGeneral.documentation"))).thenReturn((Optional) Optional.of(subprocessGeneral.getDocumentation()));
+        when(definitionAdapter.getProperty(eq(embeddedSubprocess), eq("subprocessGeneral.name"))).thenReturn((Optional) Optional.of(subprocessGeneral.getName()));
+        when(definitionAdapter.getProperty(eq(embeddedSubprocess), eq("subprocessExecutionSet.onEntryAction"))).thenReturn((Optional) Optional.of(subprocessExecutionSet.getOnEntryAction()));
+        when(definitionAdapter.getProperty(eq(embeddedSubprocess), eq("subprocessExecutionSet.onExitAction"))).thenReturn((Optional) Optional.of(subprocessExecutionSet.getOnExitAction()));
+        when(definitionAdapter.getProperty(eq(embeddedSubprocess), eq("subprocessExecutionSet.isAsync"))).thenReturn((Optional) Optional.of(subprocessExecutionSet.getIsAsync()));
 
         mockProperty(subprocessGeneral.getDocumentation(), SUB_PROCESS_DOCUMENTATION, DOCUMENTATION_CAPTION);
         mockProperty(subprocessGeneral, SUB_PROCESS_NAME, NAME_CAPTION);

@@ -69,9 +69,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -225,8 +225,7 @@ public class CaseManagementCanvasHandlerTest {
         when(clientDefinitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
         when(adapterManager.forProperty()).thenReturn(propertyAdapter);
-        when(definitionAdapter.getMetaProperty(eq(PropertyMetaTypes.NAME),
-                                               anyObject())).thenReturn(PropertyMetaTypes.NAME);
+        when(definitionAdapter.getMetaPropertyField(anyObject(), eq(PropertyMetaTypes.NAME))).thenReturn(("name"));
         when(propertyAdapter.getValue(eq(PropertyMetaTypes.NAME))).thenReturn("name");
         return node;
     }

@@ -21,7 +21,6 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertyAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertySetAdapter;
 import org.kie.workbench.common.stunner.core.backend.registry.impl.BackendRegistryFactoryImpl;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 
@@ -42,9 +41,8 @@ public class StunnerTestingBackendAPI extends StunnerTestingMockAPI {
 
     @Override
     protected void initAdapters() {
-        definitionAdapter = new BackendDefinitionAdapter(definitionUtils);
+        definitionAdapter = new BackendDefinitionAdapter();
         definitionSetAdapter = new BackendDefinitionSetAdapter((BackendDefinitionAdapter) definitionAdapter);
-        propertySetAdapter = new BackendPropertySetAdapter();
         propertyAdapter = new BackendPropertyAdapter();
         ruleAdapter = mock(DefinitionSetRuleAdapter.class);
     }

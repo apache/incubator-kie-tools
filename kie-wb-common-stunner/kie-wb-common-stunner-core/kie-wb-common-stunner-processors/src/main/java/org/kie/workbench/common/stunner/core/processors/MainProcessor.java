@@ -16,12 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.processors;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.RoundEnvironment;
@@ -44,6 +49,7 @@ import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 import org.apache.commons.lang3.StringUtils;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.DefinitionAdapterBindings;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -51,8 +57,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphProperty;
 import org.kie.workbench.common.stunner.core.definition.builder.VoidBuilder;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.processors.definition.BindableDefinitionAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.definition.TypeConstructor;
 import org.kie.workbench.common.stunner.core.processors.definitionset.BindableDefinitionSetAdapterGenerator;
@@ -62,7 +66,6 @@ import org.kie.workbench.common.stunner.core.processors.morph.MorphDefinitionGen
 import org.kie.workbench.common.stunner.core.processors.morph.MorphDefinitionProviderGenerator;
 import org.kie.workbench.common.stunner.core.processors.morph.MorphPropertyDefinitionGenerator;
 import org.kie.workbench.common.stunner.core.processors.property.BindablePropertyAdapterGenerator;
-import org.kie.workbench.common.stunner.core.processors.propertyset.BindablePropertySetAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.rule.BindableDefinitionSetRuleAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.rule.CardinalityRuleGenerator;
 import org.kie.workbench.common.stunner.core.processors.rule.ConnectionRuleGenerator;
@@ -70,7 +73,7 @@ import org.kie.workbench.common.stunner.core.processors.rule.ContainmentRuleGene
 import org.kie.workbench.common.stunner.core.processors.rule.DockingRuleGenerator;
 import org.kie.workbench.common.stunner.core.processors.rule.EdgeCardinalityRuleGenerator;
 import org.kie.workbench.common.stunner.core.processors.rule.ExtensionRuleGenerator;
-import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.ClassUtils;
 import org.uberfire.annotations.processors.AbstractErrorAbsorbingProcessor;
 import org.uberfire.annotations.processors.AbstractGenerator;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
@@ -78,7 +81,6 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
 @SupportedAnnotationTypes({
         MainProcessor.ANNOTATION_DEFINITION_SET,
         MainProcessor.ANNOTATION_DEFINITION,
-        MainProcessor.ANNOTATION_PROPERTY_SET,
         MainProcessor.ANNOTATION_PROPERTY,
         MainProcessor.ANNOTATION_RULE_CAN_CONTAIN,
         MainProcessor.ANNOTATION_RULE_CAN_DOCK,
@@ -111,15 +113,8 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             ANNOTATION_DEFINITION_TITLE
     };
 
-    public static final String ANNOTATION_PROPERTY_SET = "org.kie.workbench.common.stunner.core.definition.annotation.PropertySet";
-
     public static final String ANNOTATION_PROPERTY = "org.kie.workbench.common.stunner.core.definition.annotation.Property";
-    public static final String ANNOTATION_PROPERTY_ALLOWED_VALUES = "org.kie.workbench.common.stunner.core.definition.annotation.property.AllowedValues";
     public static final String ANNOTATION_PROPERTY_VALUE = "org.kie.workbench.common.stunner.core.definition.annotation.property.Value";
-    public static final String ANNOTATION_PROPERTY_CAPTION = "org.kie.workbench.common.stunner.core.definition.annotation.property.Caption";
-    public static final String ANNOTATION_PROPERTY_TYPE = "org.kie.workbench.common.stunner.core.definition.annotation.property.Type";
-    public static final String ANNOTATION_PROPERTY_READONLY = "org.kie.workbench.common.stunner.core.definition.annotation.property.ReadOnly";
-    public static final String ANNOTATION_PROPERTY_OPTIONAL = "org.kie.workbench.common.stunner.core.definition.annotation.property.Optional";
 
     public static final String ANNOTATION_MORPH = "org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph";
     public static final String ANNOTATION_MORPH_BASE = "org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase";
@@ -151,7 +146,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
     public static final String DEFINITIONSET_PROXY_CLASSNAME = "DefinitionSetProxyImpl";
     public static final String DEFINITION_FACTORY_CLASSNAME = "ModelFactoryImpl";
     public static final String DEFINITION_ADAPTER_CLASSNAME = "DefinitionAdapterImpl";
-    public static final String PROPERTYSET_ADAPTER_CLASSNAME = "PropertySetAdapterImpl";
     public static final String PROPERTY_ADAPTER_CLASSNAME = "PropertyAdapterImpl";
     public static final String RULE_ADAPTER_CLASSNAME = "RuleAdapterImpl";
 
@@ -164,7 +158,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
     private final ExtensionRuleGenerator extensionRuleGenerator;
     private BindableDefinitionSetAdapterGenerator definitionSetAdapterGenerator;
     private BindableDefinitionAdapterGenerator definitionAdapterGenerator;
-    private BindablePropertySetAdapterGenerator propertySetAdapterGenerator;
     private BindablePropertyAdapterGenerator propertyAdapterGenerator;
     private BindableDefinitionSetRuleAdapterGenerator ruleAdapterGenerator;
     private DefinitionSetProxyGenerator definitionSetProxyGenerator;
@@ -182,7 +175,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         ExtensionRuleGenerator extensionRuleGenerator = null;
         BindableDefinitionSetAdapterGenerator definitionSetAdapterGenerator = null;
         BindableDefinitionAdapterGenerator definitionAdapterGenerator = null;
-        BindablePropertySetAdapterGenerator propertySetAdapterGenerator = null;
         BindablePropertyAdapterGenerator propertyAdapter = null;
         MorphDefinitionGenerator morphDefinitionGenerator = null;
         MorphPropertyDefinitionGenerator morphPropertyDefinitionGenerator = null;
@@ -201,7 +193,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             extensionRuleGenerator = new ExtensionRuleGenerator();
             definitionAdapterGenerator = new BindableDefinitionAdapterGenerator();
             definitionSetAdapterGenerator = new BindableDefinitionSetAdapterGenerator();
-            propertySetAdapterGenerator = new BindablePropertySetAdapterGenerator();
             definitionSetProxyGenerator = new DefinitionSetProxyGenerator();
             morphDefinitionGenerator = new MorphDefinitionGenerator();
             morphPropertyDefinitionGenerator = new MorphPropertyDefinitionGenerator();
@@ -218,7 +209,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         this.extensionRuleGenerator = extensionRuleGenerator;
         this.definitionSetAdapterGenerator = definitionSetAdapterGenerator;
         this.definitionAdapterGenerator = definitionAdapterGenerator;
-        this.propertySetAdapterGenerator = propertySetAdapterGenerator;
         this.propertyAdapterGenerator = propertyAdapter;
         this.ruleAdapterGenerator = ruleAdapter;
         this.definitionSetProxyGenerator = definitionSetProxyGenerator;
@@ -249,38 +239,26 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             return false;
         }
         final Elements elementUtils = processingEnv.getElementUtils();
-        // Process Definition Sets types found on the processing environment.
+
+        // 1- DefinitionSets.
         for (Element e : roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_DEFINITION_SET))) {
             processDefinitionSets(e);
         }
-        // Process Definition types found on the processing environment.
-        for (Element e : roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_DEFINITION))) {
-            processDefinitions(e);
-        }
-        // Process Property Sets types found on the processing environment
-        // AND
-        // Process Property Sets types identified as dependant types for the annotated Defininitions. Note that
-        // those types cannot be directly found on the processing environment if the classes are in a third party
-        // dependency and not directly on the module sources.
-        final Set<? extends Element> propertySetElements = new LinkedHashSet<Element>() {{
-            addAll(roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_PROPERTY_SET)));
-            addAll(processingContext.getPropertySetElements());
-        }};
-        for (Element e : propertySetElements) {
-            processPropertySets(e);
-        }
-        // Process Property types found on the processing environment
-        // AND
-        // Process PropertySets types identified as dependant types for the annotated Defininitions or Property Sets.
-        // Note that // those types cannot be directly found on the processing environment if the classes are in a
-        // third party dependency and not directly on the module sources.
+
+        // 2- Properties.
         final Set<? extends Element> propertyElements = new LinkedHashSet<Element>() {{
             addAll(roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_PROPERTY)));
-            addAll(processingContext.getPropertyElements());
         }};
         for (Element e : propertyElements) {
             processProperties(e);
         }
+
+        // 3- Definitions.
+        for (Element e : roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_DEFINITION))) {
+            processDefinitions(e);
+        }
+
+        // 4- Rules.
         final Set<? extends Element> containRules = new LinkedHashSet<Element>() {{
             addAll(roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_RULE_CAN_CONTAIN)));
             addAll(processingContext.getDefinitionElements());
@@ -357,7 +335,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 mirrors = mte.getTypeMirrors();
             }
             if (null == mirrors) {
-                throw new RuntimeException("No graph class class specifyed for the @DefinitionSet.");
+                throw new RuntimeException("No graph class class declared for the @DefinitionSet.");
             }
             Set<String> defIds = new LinkedHashSet<>();
             for (TypeMirror mirror : mirrors) {
@@ -368,7 +346,8 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 String fqcn = mirror.toString();
                 defIds.add(fqcn);
             }
-            processingContext.getDefSetAnnotations().getDefinitionIds().addAll(defIds);
+            processingContext.getDefSetAnnotations().getDefinitionIds().put(defSetClassName, defIds);
+
             // Builder class.
             processDefinitionSetModelBuilder(e,
                                              defSetClassName,
@@ -381,7 +360,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 mirror = mte.getTypeMirror();
             }
             if (null == mirror) {
-                throw new RuntimeException("No graph factory class specifyed for the @DefinitionSet.");
+                throw new RuntimeException("No graph factory class declared for the @DefinitionSet.");
             }
             String fqcn = mirror.toString();
             processingContext.getDefSetAnnotations().getGraphFactoryTypes().put(defSetClassName,
@@ -393,7 +372,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 mirror = mte.getTypeMirror();
             }
             if (null == mirror) {
-                throw new RuntimeException("No qualifier class specifyed for the @DefinitionSet.");
+                throw new RuntimeException("No qualifier class declared for the @DefinitionSet.");
             }
             processingContext.getDefSetAnnotations().getQualifiers().put(defSetClassName,
                                                                          mirror.toString());
@@ -461,35 +440,38 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 throw new RuntimeException("No graph factory class specified for the @Definition.");
             }
             String fqcn = mirror.toString();
-            processingContext.getDefinitionAnnotations().getGraphFactoryFieldNames().put(defintionClassName,
-                                                                                         fqcn);
+            processingContext.getDefinitionAnnotations().getGraphFactory().put(defintionClassName,
+                                                                               fqcn);
 
-            //Title Field
-            if (StringUtils.isNotBlank(definitionAnn.nameField())) {
-                processingContext.getDefinitionAnnotations().getNameFields().put(defintionClassName,
-                                                                                 definitionAnn.nameField());
-            }
-
-            // PropertySets fields.
-            Map<String, Element> propertySetElements = getFieldNames(classElement,
-                                                                     ANNOTATION_PROPERTY_SET);
-            if (null != propertySetElements && !propertySetElements.isEmpty()) {
-                processingContext.getPropertySetElements().addAll(propertySetElements.values());
-                processingContext.getDefinitionAnnotations().getPropertySetFieldNames().put(defintionClassName,
-                                                                                            new LinkedHashSet<>(propertySetElements.keySet()));
-            } else {
-                note("Definition for tye [" + defintionClassName + "] have no Property Set members.");
-            }
             // Properties fields.
-            Map<String, Element> propertyElements = getFieldNames(classElement,
-                                                                  ANNOTATION_PROPERTY);
-            if (null != propertyElements && !propertyElements.isEmpty()) {
-                processingContext.getPropertyElements().addAll(propertyElements.values());
-                processingContext.getDefinitionAnnotations().getPropertyFieldNames().put(defintionClassName,
-                                                                                         new LinkedHashSet<>(propertyElements.keySet()));
-            } else {
-                note("Definition for tye [" + defintionClassName + "] have no Property members.");
-            }
+            Map<String, VariableElement> propertyFields = visitVariables("",
+                                                                         classElement,
+                                                                         variableElement -> hasAnnotation(variableElement, ANNOTATION_PROPERTY));
+            List<String> propertyFieldNames = new ArrayList<>();
+            List<Boolean> typedPropertyFields = new ArrayList<>();
+            DefinitionAdapterBindings.PropertyMetaTypes defMetaTypes = new DefinitionAdapterBindings.PropertyMetaTypes();
+            propertyFields.forEach((field, variable) -> {
+                TypeMirror type = variable.asType();
+                TypeElement element = (TypeElement) ((DeclaredType) type).asElement();
+                String elementClassName = GeneratorUtils.getTypeMirrorDeclaredName(element.asType());
+                boolean isTypedProperty = processingContext.getPropertyAnnotations().getValueFieldNames().containsKey(elementClassName);
+                int index = propertyFieldNames.size();
+                Property propertyAnnotation = variable.getAnnotation(Property.class);
+                // Populate the context collections.
+                propertyFieldNames.add(field);
+                typedPropertyFields.add(isTypedProperty);
+                org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes propertyMetaType = propertyAnnotation.meta();
+                if (org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes.NONE.equals(propertyMetaType)) {
+                    propertyMetaType = getDeclaredMetaType(elementClassName);
+                }
+                if (null != propertyMetaType) {
+                    defMetaTypes.setIndex(propertyMetaType, index);
+                }
+            });
+            processingContext.getDefinitionAnnotations().getPropertyFieldNames().put(defintionClassName, propertyFieldNames);
+            processingContext.getDefinitionAnnotations().getTypedPropertyFields().put(defintionClassName, typedPropertyFields);
+            processingContext.getMetaPropertyTypesFields().put(defintionClassName, defMetaTypes);
+
             // -- Morphing annotations --
             MorphBase morphBaseAnn = e.getAnnotation(MorphBase.class);
             Morph morphAnn = e.getAnnotation(Morph.class);
@@ -507,7 +489,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                         morphDefaultTypeMirror = mte.getTypeMirror();
                     }
                     if (null == morphDefaultTypeMirror) {
-                        throw new RuntimeException("No default type class specifyed for the @MorphBase.");
+                        throw new RuntimeException("No default type class declared for the @MorphBase.");
                     }
                     String morphDefaultTypeClassName = morphDefaultTypeMirror.toString();
                     processingContext.getMorphingAnnotations().getBaseDefaultTypes().put(morphBaseClassName,
@@ -539,7 +521,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                     morphBaseTypeMirror = mte.getTypeMirror();
                 }
                 if (null == morphBaseTypeMirror) {
-                    throw new RuntimeException("No base type class specifyed for the @MorphBase.");
+                    throw new RuntimeException("No base type class declared for the @MorphBase.");
                 }
                 String morphBaseTypeClassName = morphBaseTypeMirror.toString();
                 Set<String> currentTargets = processingContext.getMorphingAnnotations().getBaseTargets().computeIfAbsent(morphBaseTypeClassName, k -> new LinkedHashSet<>());
@@ -547,6 +529,16 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             }
         }
         return false;
+    }
+
+    private org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes getDeclaredMetaType(String className) {
+        return processingContext.getMetaPropertyTypes()
+                .entrySet()
+                .stream()
+                .filter(e -> e.getValue().equals(className + ".class"))
+                .findAny()
+                .map(Map.Entry::getKey)
+                .orElse(null);
     }
 
     private TypeElement getAnnotationInTypeInheritance(final TypeElement classElement,
@@ -604,7 +596,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                     morphDefaultTypeMirror = mte.getTypeMirror();
                 }
                 if (null == morphDefaultTypeMirror) {
-                    throw new RuntimeException("No binder class specifyed for the @MorphProperty.");
+                    throw new RuntimeException("No binder class declared for the @MorphProperty.");
                 }
                 String binderClassName = morphDefaultTypeMirror.toString();
                 ProcessingMorphProperty morphProperty = new ProcessingMorphProperty(fieldReturnTypeName,
@@ -676,35 +668,7 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         }
     }
 
-    private boolean processPropertySets(final Element e) {
-        final boolean isClass = e.getKind() == ElementKind.CLASS;
-        if (isClass) {
-            TypeElement classElement = (TypeElement) e;
-            PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
-            String propertyClassName = packageElement.getQualifiedName().toString() + "." + classElement.getSimpleName();
-
-            // Name fields.
-            processFieldName(classElement,
-                             propertyClassName,
-                             ANNOTATION_NAME,
-                             processingContext.getPropertySetAnnotations().getNameFieldNames(),
-                             false);
-            // Properties fields.
-            Map<String, Element> propertyElements = getFieldNames(classElement,
-                                                                  ANNOTATION_PROPERTY);
-            if (null != propertyElements) {
-                processingContext.getPropertyElements().addAll(propertyElements.values());
-                processingContext.getPropertySetAnnotations().getPropertiesFieldNames().put(propertyClassName,
-                                                                                            new LinkedHashSet<>(propertyElements.keySet()));
-                if (propertyElements.isEmpty()) {
-                    note("Property Set for tye [" + propertyClassName + "] have no Property members.");
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean processProperties(final Element e) throws Exception {
+    private boolean processProperties(final Element e) {
         final boolean isClass = e.getKind() == ElementKind.CLASS;
         if (isClass) {
             TypeElement classElement = (TypeElement) e;
@@ -713,8 +677,8 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             // Meta-properties
             Property metaProperty = e.getAnnotation(Property.class);
             if (null != metaProperty) {
-                PropertyMetaTypes type = metaProperty.meta();
-                if (!PropertyMetaTypes.NONE.equals(type)) {
+                org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes type = metaProperty.meta();
+                if (!org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes.NONE.equals(type)) {
                     processingContext.getMetaPropertyTypes().put(type,
                                                                  propertyClassName + ".class");
                 }
@@ -725,64 +689,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                              ANNOTATION_PROPERTY_VALUE,
                              processingContext.getPropertyAnnotations().getValueFieldNames(),
                              true);
-            // Allowed Values fields.
-            processFieldName(classElement,
-                             propertyClassName,
-                             ANNOTATION_PROPERTY_ALLOWED_VALUES,
-                             processingContext.getPropertyAnnotations().getAllowedValuesFieldNames(),
-                             false);
-            // Caption fields.
-            processFieldName(classElement,
-                             propertyClassName,
-                             ANNOTATION_PROPERTY_CAPTION,
-                             processingContext.getPropertyAnnotations().getCaptionFieldNames(),
-                             false);
-            // Description fields.
-            processFieldName(classElement,
-                             propertyClassName,
-                             ANNOTATION_DESCRIPTION,
-                             processingContext.getPropertyAnnotations().getDescriptionFieldNames(),
-                             false);
-            // Property Type field.
-            final boolean propTypeAnnFound = processFieldName(classElement,
-                                                              propertyClassName,
-                                                              ANNOTATION_PROPERTY_TYPE,
-                                                              processingContext.getPropertyAnnotations().getTypeFieldNames(),
-                                                              false);
-            // In case no property type annotation found, try to resolve a default type by checking the class for
-            // the value object.
-            if (!propTypeAnnFound) {
-                Map<String, Element> fieldNames = getFieldNames(classElement,
-                                                                ANNOTATION_PROPERTY_VALUE);
-                if (!fieldNames.isEmpty()) {
-                    final TypeElement te = (TypeElement) fieldNames.values().iterator().next();
-                    final String type = te.getQualifiedName().toString();
-                    final Class<?> typeClass = Class.forName(type);
-                    final Class<? extends PropertyType> defaultPropertyType =
-                            DefinitionUtils.getDefaultPropertyType(typeClass);
-                    if (null != defaultPropertyType) {
-                        processingContext.getPropertyAnnotations().getTypes().put(propertyClassName,
-                                                                                  defaultPropertyType.getName());
-                    } else {
-                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                                                                 "No property type specified for class " + propertyClassName,
-                                                                 classElement);
-                    }
-                }
-            }
-
-            // Read only fields.
-            processFieldName(classElement,
-                             propertyClassName,
-                             ANNOTATION_PROPERTY_READONLY,
-                             processingContext.getPropertyAnnotations().getReadOnlyFieldNames(),
-                             false);
-            // Optional fields.
-            processFieldName(classElement,
-                             propertyClassName,
-                             ANNOTATION_PROPERTY_OPTIONAL,
-                             processingContext.getPropertyAnnotations().getOptionalFieldNames(),
-                             false);
         }
         return false;
     }
@@ -792,8 +698,8 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                                      final String annotation,
                                      final Map<String, String> ctxMap,
                                      final boolean mandatory) {
-        Map<String, Element> fieldNames = getFieldNames(classElement,
-                                                        annotation);
+        Map<String, Element> fieldNames = getClassFieldsAnnotatedWith(classElement,
+                                                                      annotation);
         boolean empty = fieldNames.isEmpty();
         if (mandatory && empty) {
             throw new RuntimeException("No annotation of type [" + annotation + "] for Property of class [" + classElement + "]");
@@ -806,23 +712,103 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         return false;
     }
 
-    private Map<String, Element> getFieldNames(TypeElement classElement,
-                                               String annotation) {
-        final Messager messager = processingEnv.getMessager();
-        final Elements elementUtils = processingEnv.getElementUtils();
-        Map<String, Element> result = new LinkedHashMap<>();
-        while (!classElement.toString().equals(Object.class.getName())) {
+    private boolean hasAnnotation(Element annotationTarget,
+                                  String annotationName) {
+        return GeneratorUtils.getAnnotation(processingEnv.getElementUtils(),
+                                            annotationTarget,
+                                            annotationName) != null;
+    }
+
+    private static String appendToNamespace(String namespace,
+                                            String field) {
+        return namespace.trim().length() > 0 ?
+                namespace + "." + field :
+                field;
+    }
+
+    private Map<String, VariableElement> visitVariables(String namespace,
+                                                        TypeElement classElement,
+                                                        Predicate<VariableElement> passFilter) {
+        return visitVariables(namespace, classElement, passFilter, new HashSet<>());
+    }
+
+    private Map<String, VariableElement> visitVariables(String namespace,
+                                                        TypeElement classElement,
+                                                        Predicate<VariableElement> passFilter,
+                                                        Set<String> processedTypes) {
+        String fqcn = classElement.getQualifiedName().toString();
+
+        if (ClassUtils.isJavaRuntimeClassname(fqcn) ||
+                hasAnnotation(classElement, ANNOTATION_PROPERTY) ||
+                processedTypes.contains(fqcn)) {
+            return Collections.emptyMap();
+        }
+        processedTypes.add(fqcn);
+
+        Map<String, VariableElement> result = new LinkedHashMap<>();
+        findClassVariables(classElement,
+                           variableElement -> {
+                               String fieldName = variableElement.getSimpleName().toString();
+                               String key = appendToNamespace(namespace, fieldName);
+
+                               if (!result.containsKey(key)) {
+                                   if (passFilter.test(variableElement)) {
+                                       result.put(key,
+                                                  variableElement);
+                                   } else {
+
+                                       TypeMirror fieldReturnType = variableElement.asType();
+                                       if (fieldReturnType instanceof DeclaredType) {
+                                           TypeElement retunType = (TypeElement) ((DeclaredType) fieldReturnType).asElement();
+
+                                           Map<String, VariableElement> result1 =
+                                                   visitVariables(key,
+                                                                  retunType,
+                                                                  passFilter,
+                                                                  processedTypes);
+
+                                           result.putAll(result1);
+                                       }
+                                   }
+                               }
+                           });
+
+        return result;
+    }
+
+    private void findClassVariables(TypeElement classElement,
+                                    Consumer<VariableElement> variableConsumer) {
+        while (null != classElement && !classElement.toString().equals(Object.class.getName())) {
             List<VariableElement> variableElements = ElementFilter.fieldsIn(classElement.getEnclosedElements());
             for (VariableElement variableElement : variableElements) {
-                if (GeneratorUtils.getAnnotation(elementUtils,
-                                                 variableElement,
-                                                 annotation) != null) {
+                variableConsumer.accept(variableElement);
+            }
+            classElement = getParent(classElement);
+        }
+    }
+
+    private Map<String, Element> getClassFieldsAnnotatedWith(TypeElement classElement,
+                                                             String annotation) {
+        Map<String, Element> result = new LinkedHashMap<>();
+        putFields(result,
+                  classElement,
+                  variableElement -> hasAnnotation(variableElement, annotation));
+        return result;
+    }
+
+    private void putFields(Map<String, Element> result,
+                           TypeElement classElement,
+                           Predicate<VariableElement> passFilter) {
+        final Messager messager = processingEnv.getMessager();
+        while (null != classElement && !classElement.toString().equals(Object.class.getName())) {
+            List<VariableElement> variableElements = ElementFilter.fieldsIn(classElement.getEnclosedElements());
+            for (VariableElement variableElement : variableElements) {
+                if (passFilter.test(variableElement)) {
                     final TypeMirror fieldReturnType = variableElement.asType();
-                    final TypeElement t = (TypeElement) ((DeclaredType) fieldReturnType).asElement();
+                    final TypeElement retunType = (TypeElement) ((DeclaredType) fieldReturnType).asElement();
                     final String fieldReturnTypeName = GeneratorUtils.getTypeMirrorDeclaredName(fieldReturnType);
                     final String fieldName = variableElement.getSimpleName().toString();
-                    result.put(fieldName,
-                               t);
+                    result.put(fieldName, retunType);
                     messager.printMessage(Diagnostic.Kind.NOTE,
                                           "Discovered property value " +
                                                   "for class [" + classElement.getSimpleName() + "] " +
@@ -832,7 +818,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             }
             classElement = getParent(classElement);
         }
-        return result;
     }
 
     private boolean processContainmentRules(final Element e) {
@@ -975,7 +960,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
     private boolean processLastRound() throws Exception {
         processLastRoundDefinitionSetProxyAdapter();
         processLastRoundDefinitionSetAdapter();
-        processLastRoundPropertySetAdapter();
         processLastRoundDefinitionFactory();
         processLastRoundDefinitionAdapter();
         processLastRoundPropertyAdapter();
@@ -1137,30 +1121,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                                                                                     className,
                                                                                     processingContext.getDefinitionSet(),
                                                                                     processingContext.getDefSetAnnotations().getBuilderFieldNames(),
-                                                                                    messager);
-            writeCode(packageName,
-                      className,
-                      ruleClassCode);
-        } catch (GenerationException ge) {
-            final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                                                     msg);
-        }
-        return true;
-    }
-
-    private boolean processLastRoundPropertySetAdapter() throws Exception {
-        final Messager messager = processingEnv.getMessager();
-        try {
-            // Ensure visible on both backend and client sides.
-            final String packageName = getGeneratedPackageName() + ".definition.adapter.binding";
-            final String className = getSetClassPrefix() + PROPERTYSET_ADAPTER_CLASSNAME;
-            final String classFQName = packageName + "." + className;
-            messager.printMessage(Diagnostic.Kind.NOTE,
-                                  "Starting ErraiBinderAdapter adf named " + classFQName);
-            final StringBuffer ruleClassCode = propertySetAdapterGenerator.generate(packageName,
-                                                                                    className,
-                                                                                    processingContext.getPropertySetAnnotations(),
                                                                                     messager);
             writeCode(packageName,
                       className,

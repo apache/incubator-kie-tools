@@ -16,10 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.bootstrap;
 
-import java.util.Map;
-
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 
 class BootstrapPropertyAdapter implements PropertyAdapter<Object, Object> {
@@ -36,38 +33,13 @@ class BootstrapPropertyAdapter implements PropertyAdapter<Object, Object> {
     }
 
     @Override
-    public PropertyType getType(final Object pojo) {
-        return getWrapped(pojo).getType(pojo);
-    }
-
-    @Override
-    public String getCaption(final Object pojo) {
+    public String getCaption(Object pojo) {
         return getWrapped(pojo).getCaption(pojo);
-    }
-
-    @Override
-    public String getDescription(final Object pojo) {
-        return getWrapped(pojo).getDescription(pojo);
-    }
-
-    @Override
-    public boolean isReadOnly(final Object pojo) {
-        return getWrapped(pojo).isReadOnly(pojo);
-    }
-
-    @Override
-    public boolean isOptional(final Object pojo) {
-        return getWrapped(pojo).isOptional(pojo);
     }
 
     @Override
     public Object getValue(final Object pojo) {
         return getWrapped(pojo).getValue(pojo);
-    }
-
-    @Override
-    public Map<Object, String> getAllowedValues(final Object pojo) {
-        return getWrapped(pojo).getAllowedValues(pojo);
     }
 
     @Override

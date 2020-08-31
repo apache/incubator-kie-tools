@@ -16,17 +16,18 @@
 
 package org.kie.workbench.common.stunner.core.definition.clone;
 
-import java.util.AbstractMap;
 import java.util.Objects;
 import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.databinding.client.BindableProxy;
 import org.jboss.errai.databinding.client.BindableProxyFactory;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
+import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.util.ClassUtils;
 
 @ApplicationScoped
@@ -50,29 +51,24 @@ public class DeepCloneProcess extends AbstractCloneProcess implements IDeepClone
     }
 
     @Override
-    public <S, T> T clone(S source,
-                          T target) {
-        adapterManager.forDefinition().getProperties(source)
-                .stream()
-                .filter(p -> !adapterManager.forProperty().isReadOnly(p))
-                .map(p -> {
-                    String id = adapterManager.forProperty().getId(p);
-                    Optional<?> propertyTarget = adapterManager.forDefinition().getProperties(target)
-                            .stream()
-                            .filter(prop -> Objects.equals(adapterManager.forProperty().getId(prop),
-                                                           id))
-                            .findFirst();
-                    return propertyTarget.isPresent() ? new AbstractMap.SimpleEntry(p,
-                                                                                    propertyTarget.get()) : null;
-                })
-                .filter(Objects::nonNull)
-                .filter(entry -> isAllowedToClone(adapterManager.forProperty().getValue(entry.getKey())))
-                .forEach(entry -> {
-                    Object value = adapterManager.forProperty().getValue(entry.getKey());
-                    adapterManager.forProperty().setValue(entry.getValue(),
-                                                          cloneValue(value));
-                });
-
+    @SuppressWarnings("all")
+    public <S, T> T clone(final S source,
+                          final T target) {
+        final AdapterRegistry adapters = adapterManager.registry();
+        final DefinitionAdapter<Object> sourceDefinitionAdapter = adapters.getDefinitionAdapter(source.getClass());
+        for (String field : sourceDefinitionAdapter.getPropertyFields(source)) {
+            Optional<?> property = sourceDefinitionAdapter.getProperty(source, field);
+            property.ifPresent(p -> {
+                final Object value = adapters.getPropertyAdapter(p.getClass()).getValue(p);
+                if (null != value && isAllowedToClone(value)) {
+                    Optional<?> targetProperty = adapters.getDefinitionAdapter(target.getClass()).getProperty(target, field);
+                    targetProperty.ifPresent(tp -> {
+                        final PropertyAdapter tpa = adapters.getPropertyAdapter(tp.getClass());
+                        tpa.setValue(tp, value);
+                    });
+                }
+            });
+        }
         return target;
     }
 
@@ -82,14 +78,5 @@ public class DeepCloneProcess extends AbstractCloneProcess implements IDeepClone
 
     private boolean isSimpleValue(Object value) {
         return (value instanceof String) || classUtils.isPrimitiveClass(value.getClass());
-    }
-
-    private Object cloneValue(Object value) {
-        if (value == null || isSimpleValue(value)) {
-            return value;
-        } else {
-            BindableProxy bindableProxy = (BindableProxy) BindableProxyFactory.getBindableProxy(value);
-            return bindableProxy.deepUnwrap();
-        }
     }
 }

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -72,7 +73,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ElementBuilderControlImplTest {
 
-    protected static final Set<String> DEFINITION_LABELS = Stream.of("label").collect(Collectors.toSet());
+    protected static final String[] DEFINITION_LABELS_ARRAY = new String[]{"label"};
+    protected static final Set<String> DEFINITION_LABELS = new HashSet<>(Arrays.asList(DEFINITION_LABELS_ARRAY));
     protected static final Set<String> PARENT_LABELS = Stream.of("label").collect(Collectors.toSet());
     private static final String SHAPE_SET_ID = "SHAPE_ID";
     private ElementBuilderControlImpl elementBuilderControl;
@@ -153,7 +155,7 @@ public class ElementBuilderControlImplTest {
     public void setUp() throws Exception {
         when(clientDefinitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
-        when(definitionAdapter.getLabels(def)).thenReturn(DEFINITION_LABELS);
+        when(definitionAdapter.getLabels(def)).thenReturn(DEFINITION_LABELS_ARRAY);
         when(canvasHandler.getRuleSet()).thenReturn(ruleSet);
         when(parent.getLabels()).thenReturn(PARENT_LABELS);
         when(parent.getInEdges()).thenReturn(Arrays.asList(grandParentEdge));

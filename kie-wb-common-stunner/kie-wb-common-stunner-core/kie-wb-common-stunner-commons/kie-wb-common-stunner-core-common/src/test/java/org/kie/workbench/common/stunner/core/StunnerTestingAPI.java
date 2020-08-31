@@ -23,7 +23,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapte
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
@@ -46,7 +45,6 @@ public abstract class StunnerTestingAPI {
     public DefinitionSetAdapter definitionSetAdapter;
     public DefinitionAdapter definitionAdapter;
     public PropertyAdapter propertyAdapter;
-    public PropertySetAdapter propertySetAdapter;
     public DefinitionSetRuleAdapter ruleAdapter;
     public FactoryManager factoryManager;
     public FactoryRegistry factoryRegistry;

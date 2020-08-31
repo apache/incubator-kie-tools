@@ -80,12 +80,9 @@ public class CaseGraphFactoryImpl extends BPMNGraphFactoryImpl {
         final List<Command> commands = new ArrayList<>();
         final Node<Definition<BPMNDiagram>, Edge> diagramNode =
                 (Node<Definition<BPMNDiagram>, Edge>) factoryManager.newElement(UUID.uuid(), getDefinitionId(getDiagramType()));
-
-        final AdHoc adHoc = diagramNode.getContent().getDefinition().getDiagramSet().getAdHoc();
-        final String adHocPropertyId = definitionManager.adapters().forProperty().getId(adHoc);
-
         commands.add(graphCommandFactory.addNode(diagramNode));
-        commands.add(graphCommandFactory.updatePropertyValue(diagramNode, adHocPropertyId, true));
+        final AdHoc adHoc = diagramNode.getContent().getDefinition().getDiagramSet().getAdHoc();
+        adHoc.setValue(true);
         return commands;
     }
 }

@@ -62,6 +62,10 @@ public class ClassUtils {
         return type.getName();
     }
 
+    public static boolean isJavaRuntimeClassname(String fqcn) {
+        return fqcn.startsWith("java");
+    }
+
     public boolean isPrimitiveClass(Class<?> type) {
         return type.isPrimitive() || WRAPPER_MAP.containsKey(type);
     }

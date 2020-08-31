@@ -16,8 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.util;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,8 +37,6 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -68,7 +68,7 @@ public class StunnerClientLogger {
         final String category = defAdapter.getCategory(def);
         final String description = defAdapter.getDescription(def);
         final String title = defAdapter.getTitle(def);
-        final Set<String> labels = defAdapter.getLabels(def);
+        final String[] labels = defAdapter.getLabels(def);
         final Set<Object> propertiesVisited = new HashSet<>();
         GWT.log("");
         GWT.log("********************************************************");
@@ -77,35 +77,17 @@ public class StunnerClientLogger {
         GWT.log("DESC = " + description);
         GWT.log("TITLE = " + title);
         GWT.log("LABELS = " + labels);
-        defAdapter.getPropertySets(def)
-                .forEach(propSet -> logPropertySet(definitionManager,
-                                                   propSet,
-                                                   propertiesVisited));
-        defAdapter.getProperties(def)
-                .stream()
+
+        Arrays.stream(defAdapter.getPropertyFields(def))
+                .map(field -> defAdapter.getProperty(def, field))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .filter(prop -> !propertiesVisited.contains(prop))
                 .forEach(prop -> logProperty(definitionManager,
                                              prop,
                                              new HashSet<>()));
         GWT.log("********************************************************");
         GWT.log("");
-    }
-
-    public static void logPropertySet(final DefinitionManager definitionManager,
-                                      final Object propSet,
-                                      final Set<Object> propertiesVisited) {
-        final PropertySetAdapter<Object> adapter =
-                definitionManager.adapters().registry().getPropertySetAdapter(propSet.getClass());
-        final String id = adapter.getId(propSet);
-        final String name = adapter.getName(propSet);
-        GWT.log("    ==================================================");
-        GWT.log("    ID = " + id);
-        GWT.log("    NAME = " + name);
-        final Set<?> properties = adapter.getProperties(propSet);
-        properties.forEach(prop -> logProperty(definitionManager,
-                                               prop,
-                                               propertiesVisited));
-        GWT.log("    ==================================================");
     }
 
     public static void logProperty(final DefinitionManager definitionManager,
@@ -115,14 +97,10 @@ public class StunnerClientLogger {
                 definitionManager.adapters().registry().getPropertyAdapter(prop.getClass());
         final String id = adapter.getId(prop);
         final String caption = adapter.getCaption(prop);
-        final String description = adapter.getDescription(prop);
-        final PropertyType type = adapter.getType(prop);
         final Object value = adapter.getValue(prop);
         GWT.log("    -------------------------------------------------");
         GWT.log("    ID = " + id);
         GWT.log("    CAPTION = " + caption);
-        GWT.log("    DESC = " + description);
-        GWT.log("    TYPE = " + type);
         GWT.log("    VALUE = " + value);
         GWT.log("    -------------------------------------------------");
         propertiesVisited.add(prop);

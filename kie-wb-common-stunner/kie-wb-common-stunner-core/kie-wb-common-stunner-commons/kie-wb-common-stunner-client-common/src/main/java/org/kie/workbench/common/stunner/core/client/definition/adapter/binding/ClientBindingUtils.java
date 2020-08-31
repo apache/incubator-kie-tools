@@ -18,28 +18,36 @@ package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jboss.errai.databinding.client.BindableProxy;
 import org.jboss.errai.databinding.client.HasProperties;
-import org.jboss.errai.databinding.client.NonExistingPropertyException;
 import org.jboss.errai.databinding.client.PropertyType;
 import org.jboss.errai.databinding.client.api.DataBinder;
 
+import static org.kie.workbench.common.stunner.core.util.StringUtils.nonEmpty;
+
 public class ClientBindingUtils {
 
-    private static Logger LOGGER = Logger.getLogger(ClientBindingUtils.class.getName());
+    public static <T> Class<?> getProxiedType(final T pojo,
+                                              final String fieldName) {
+        if (null != pojo && null != fieldName) {
+            HasProperties hasProperties = (HasProperties) DataBinder.forModel(pojo).getModel();
+            PropertyType propertyType = hasProperties.getBeanProperties().get(fieldName);
+            if (null != propertyType) {
+                return propertyType.getType();
+            }
+        }
+        return null;
+    }
 
     @SuppressWarnings("unchecked")
     public static <T, R> R getProxiedValue(final T pojo,
                                            final String fieldName) {
         R result = null;
-        if (null != pojo && null != fieldName) {
-            HasProperties hasProperties = (HasProperties) DataBinder.forModel(pojo).getModel();
-            result = (R) hasProperties.get(fieldName);
+        if (null != pojo && nonEmpty(fieldName)) {
+            PropertyHolder propertyHolder = getProperty(pojo, fieldName);
+            result = (R) propertyHolder.hasProperties.get(propertyHolder.fieldName);
         }
         return result;
     }
@@ -50,8 +58,8 @@ public class ClientBindingUtils {
         Set<R> result = new LinkedHashSet<>();
         if (null != pojo && null != fieldNames && !fieldNames.isEmpty()) {
             for (String fieldName : fieldNames) {
-                HasProperties hasProperties = (HasProperties) DataBinder.forModel(pojo).getModel();
-                result.add((R) hasProperties.get(fieldName));
+                PropertyHolder propertyHolder = getProperty(pojo, fieldName);
+                result.add((R) propertyHolder.hasProperties.get(propertyHolder.fieldName));
             }
         }
         return result;
@@ -61,19 +69,38 @@ public class ClientBindingUtils {
     public static <T, V> void setProxiedValue(final T pojo,
                                               final String fieldName,
                                               final V value) {
-        if (null != pojo && null != fieldName) {
-            HasProperties hasProperties = (HasProperties) DataBinder.forModel(pojo).getModel();
-            hasProperties.set(fieldName,
-                              value);
+        if (null != pojo && nonEmpty(fieldName)) {
+            PropertyHolder propertyHolder = getProperty(pojo, fieldName);
+            propertyHolder.hasProperties.set(propertyHolder.fieldName,
+                                             value);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T newInstance(final Class<?> pojoType) {
-        if (null != pojoType) {
-            return (T) DataBinder.forType(pojoType).getModel();
+    private static class PropertyHolder {
+
+        private HasProperties hasProperties;
+        private String fieldName;
+
+        public PropertyHolder(HasProperties hasProperties, String fieldName) {
+            this.hasProperties = hasProperties;
+            this.fieldName = fieldName;
         }
-        return null;
+    }
+
+    private static PropertyHolder getProperty(final Object pojo,
+                                              final String fieldName) {
+        final int index = fieldName.indexOf('.');
+        if (index > -1) {
+            String parentField = fieldName.substring(0, index);
+            String field = fieldName.substring(index + 1);
+            HasProperties hasProperties = (HasProperties) DataBinder.forModel(pojo).getModel();
+            Object parent = hasProperties.get(parentField);
+            HasProperties parentHasProperties = (HasProperties) DataBinder.forModel(parent).getModel();
+            return new PropertyHolder(parentHasProperties, field);
+        } else {
+            HasProperties hasProperties = (HasProperties) DataBinder.forModel(pojo).getModel();
+            return new PropertyHolder(hasProperties, fieldName);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -81,33 +108,6 @@ public class ClientBindingUtils {
         if (null != pojo) {
             final BindableProxy proxy = (BindableProxy) DataBinder.forModel(pojo).getModel();
             return (T) proxy.deepUnwrap();
-        }
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T, R> R merge(final T source,
-                                 final R target) {
-        if (null != source) {
-            final HasProperties hasProperties = (HasProperties) DataBinder.forModel(source).getModel();
-            if (null != hasProperties) {
-                final Map<String, PropertyType> propertyTypeMap = hasProperties.getBeanProperties();
-                if (null != propertyTypeMap && !propertyTypeMap.isEmpty()) {
-                    final HasProperties targetProperties = (HasProperties) DataBinder.forModel(target).getModel();
-                    for (final Map.Entry<String, PropertyType> entry : propertyTypeMap.entrySet()) {
-                        final String pId = entry.getKey();
-                        try {
-                            targetProperties.set(pId,
-                                                 hasProperties.get(pId));
-                        } catch (NonExistingPropertyException exception) {
-                            // Just skip it, Go to next property.
-                            LOGGER.log(Level.INFO,
-                                       "BindableAdapterUtils#merge - Skipping merge property [" + pId + "]");
-                        }
-                    }
-                    return (R) target;
-                }
-            }
         }
         return null;
     }

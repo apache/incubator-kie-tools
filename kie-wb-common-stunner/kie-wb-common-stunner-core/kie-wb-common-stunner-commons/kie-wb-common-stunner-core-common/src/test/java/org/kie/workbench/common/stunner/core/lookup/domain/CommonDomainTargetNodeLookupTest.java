@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.lookup.domain;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -70,8 +72,8 @@ public class CommonDomainTargetNodeLookupTest {
         when(cache.getConnectionRules()).thenReturn(Collections.singletonList(connectionRule));
         when(cache.getDefinitions(contains("label1"))).thenReturn(Stream.of(TestingGraphInstanceBuilder.DEF1_ID).collect(Collectors.toSet()));
         when(cache.getDefinitions(contains("label2"))).thenReturn(Stream.of(TestingGraphInstanceBuilder.DEF2_ID).collect(Collectors.toSet()));
-        when(definitionsRegistry.getLabels(eq(TestingGraphInstanceBuilder.DEF1_ID))).thenReturn(TestingGraphInstanceBuilder.DEF1_LABELS);
-        when(definitionsRegistry.getLabels(eq(TestingGraphInstanceBuilder.DEF2_ID))).thenReturn(TestingGraphInstanceBuilder.DEF2_LABELS);
+        when(definitionsRegistry.getLabels(eq(TestingGraphInstanceBuilder.DEF1_ID))).thenReturn(new HashSet<>(Arrays.asList(TestingGraphInstanceBuilder.DEF1_LABELS)));
+        when(definitionsRegistry.getLabels(eq(TestingGraphInstanceBuilder.DEF2_ID))).thenReturn(new HashSet<>(Arrays.asList(TestingGraphInstanceBuilder.DEF2_LABELS)));
 
         tested = new CommonDomainLookups(graphTestHandler.getDefinitionUtils(),
                                          definitionsRegistry,

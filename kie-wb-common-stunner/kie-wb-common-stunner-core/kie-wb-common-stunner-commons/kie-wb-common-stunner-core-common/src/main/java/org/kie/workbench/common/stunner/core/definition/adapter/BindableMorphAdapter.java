@@ -22,7 +22,6 @@ import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInheritance;
 import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphProperty;

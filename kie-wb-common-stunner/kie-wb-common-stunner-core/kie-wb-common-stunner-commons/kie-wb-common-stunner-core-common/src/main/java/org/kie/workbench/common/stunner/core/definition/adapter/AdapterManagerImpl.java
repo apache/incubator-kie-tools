@@ -30,7 +30,6 @@ public class AdapterManagerImpl implements AdapterManager {
     private final DefinitionSetAdapter<Object> definitionSetAdapter;
     private final DefinitionSetRuleAdapter<Object> definitionSetRuleAdapter;
     private final DefinitionAdapter<Object> definitionAdapter;
-    private final PropertySetAdapter<Object> propertySetAdapter;
     private final PropertyAdapter<Object, Object> propertyAdapter;
 
     protected AdapterManagerImpl() {
@@ -38,7 +37,6 @@ public class AdapterManagerImpl implements AdapterManager {
         this.definitionSetAdapter = null;
         this.definitionSetRuleAdapter = null;
         this.definitionAdapter = null;
-        this.propertySetAdapter = null;
         this.propertyAdapter = null;
     }
 
@@ -55,7 +53,6 @@ public class AdapterManagerImpl implements AdapterManager {
         this.definitionSetAdapter = bootstrapAdapterFactory.newDefinitionSetAdapter(registry);
         this.definitionSetRuleAdapter = bootstrapAdapterFactory.newDefinitionSetRuleAdapter(registry);
         this.definitionAdapter = bootstrapAdapterFactory.newDefinitionAdapter(registry);
-        this.propertySetAdapter = bootstrapAdapterFactory.newPropertySetAdapter(registry);
         this.propertyAdapter = bootstrapAdapterFactory.newPropertyAdapter(registry);
     }
 
@@ -72,11 +69,6 @@ public class AdapterManagerImpl implements AdapterManager {
     @Override
     public DefinitionAdapter<Object> forDefinition() {
         return definitionAdapter;
-    }
-
-    @Override
-    public PropertySetAdapter<Object> forPropertySet() {
-        return propertySetAdapter;
     }
 
     @Override

@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAda
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 
@@ -50,8 +49,7 @@ public class ClientDefinitionManager extends AbstractDefinitionManager {
     public ClientDefinitionManager(final SyncBeanManager beanManager,
                                    final RegistryFactory registryFactory,
                                    final AdapterManager adapterManager,
-                                   final CloneManager cloneManager
-    ) {
+                                   final CloneManager cloneManager) {
         super(registryFactory,
               adapterManager,
               cloneManager);
@@ -59,43 +57,37 @@ public class ClientDefinitionManager extends AbstractDefinitionManager {
     }
 
     @PostConstruct
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     public void init() {
         // DefinitionSet client adapters.
         Collection<SyncBeanDef<DefinitionSetAdapter>> beanDefSetAdapters = beanManager.lookupBeans(DefinitionSetAdapter.class);
         for (SyncBeanDef<DefinitionSetAdapter> defSet : beanDefSetAdapters) {
-            DefinitionSetAdapter definitionSet = defSet.getInstance();
-            addAdapter(definitionSet);
+            DefinitionSetAdapter definitionSetAdapter = defSet.getInstance();
+            addAdapter(definitionSetAdapter);
         }
         // DefinitionSetRule client adapters.
         Collection<SyncBeanDef<DefinitionSetRuleAdapter>> beanDefSetRuleAdapters = beanManager.lookupBeans(DefinitionSetRuleAdapter.class);
         for (SyncBeanDef<DefinitionSetRuleAdapter> defSet : beanDefSetRuleAdapters) {
-            DefinitionSetRuleAdapter definitionSet = defSet.getInstance();
-            addAdapter(definitionSet);
+            DefinitionSetRuleAdapter definitionSetRuleAdapter = defSet.getInstance();
+            addAdapter(definitionSetRuleAdapter);
         }
         // Definition client adapters.
         Collection<SyncBeanDef<DefinitionAdapter>> beanDefAdapters = beanManager.lookupBeans(DefinitionAdapter.class);
         for (SyncBeanDef<DefinitionAdapter> defSet : beanDefAdapters) {
-            DefinitionAdapter definitionSet = defSet.getInstance();
-            addAdapter(definitionSet);
-        }
-        // PropertySet client adapters.
-        Collection<SyncBeanDef<PropertySetAdapter>> beanPropSetAdapters = beanManager.lookupBeans(PropertySetAdapter.class);
-        for (SyncBeanDef<PropertySetAdapter> defSet : beanPropSetAdapters) {
-            PropertySetAdapter definitionSet = defSet.getInstance();
-            addAdapter(definitionSet);
+            DefinitionAdapter definitionAdapter = defSet.getInstance();
+            addAdapter(definitionAdapter);
         }
         // Property client adapters.
         Collection<SyncBeanDef<PropertyAdapter>> beanPropAdapters = beanManager.lookupBeans(PropertyAdapter.class);
         for (SyncBeanDef<PropertyAdapter> defSet : beanPropAdapters) {
-            PropertyAdapter definitionSet = defSet.getInstance();
-            addAdapter(definitionSet);
+            PropertyAdapter propertyAdapter = defSet.getInstance();
+            addAdapter(propertyAdapter);
         }
         // Morph adapters.
         Collection<SyncBeanDef<MorphAdapter>> beanMorphAdapters = beanManager.lookupBeans(MorphAdapter.class);
         for (SyncBeanDef<MorphAdapter> morphAdapter : beanMorphAdapters) {
-            MorphAdapter instance = morphAdapter.getInstance();
-            addAdapter(instance);
+            MorphAdapter morphAdapterInstance = morphAdapter.getInstance();
+            addAdapter(morphAdapterInstance);
         }
         // Once adapters present, add the Definition Sets found on current context.
         Collection<SyncBeanDef<DefinitionSetProxy>> beanDefSets = beanManager.lookupBeans(DefinitionSetProxy.class);

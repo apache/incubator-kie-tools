@@ -16,16 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.binding;
 
-import java.lang.annotation.Annotation;
-import java.util.Map;
-import java.util.Set;
-
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
 
 public interface BindableDefinitionSetAdapter<T> extends DefinitionSetAdapter<T> {
 
-    void setBindings(final Map<Class, String> propertyDescriptionFieldNames,
-                     final Map<Class, Class> graphFactoryType,
-                     final Map<Class, Annotation> qualifiers,
-                     final Set<String> definitionIds);
+    void setBindings(Class<?> type, DefinitionSetAdapterBindings bindings);
 }

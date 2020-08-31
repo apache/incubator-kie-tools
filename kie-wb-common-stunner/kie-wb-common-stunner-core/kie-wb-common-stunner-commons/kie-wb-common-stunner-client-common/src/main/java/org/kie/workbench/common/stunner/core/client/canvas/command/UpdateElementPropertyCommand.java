@@ -26,14 +26,14 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 public class UpdateElementPropertyCommand extends AbstractCanvasGraphCommand {
 
     private final Element element;
-    private final String propertyId;
+    private final String field;
     private final Object value;
 
     public UpdateElementPropertyCommand(final Element element,
-                                        final String propertyId,
+                                        final String field,
                                         final Object value) {
         this.element = element;
-        this.propertyId = propertyId;
+        this.field = field;
         this.value = value;
     }
 
@@ -42,10 +42,10 @@ public class UpdateElementPropertyCommand extends AbstractCanvasGraphCommand {
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
         return (element instanceof Node ?
                 new UpdateElementPropertyValueCommand(element,
-                                                      propertyId,
+                                                      field,
                                                       value) :
                 new UpdateElementPropertyValueCommand(element.getUUID(),
-                                                      propertyId,
+                                                      field,
                                                       value));
     }
 
@@ -58,8 +58,8 @@ public class UpdateElementPropertyCommand extends AbstractCanvasGraphCommand {
         return element;
     }
 
-    public String getPropertyId() {
-        return propertyId;
+    public String getField() {
+        return field;
     }
 
     public Object getValue() {
@@ -70,7 +70,7 @@ public class UpdateElementPropertyCommand extends AbstractCanvasGraphCommand {
     public String toString() {
         return getClass().getSimpleName() +
                 " [element=" + toUUID(element) + "," +
-                "propertyId=" + propertyId + "," +
+                "field=" + field + "," +
                 "value=" + value + "]";
     }
 }

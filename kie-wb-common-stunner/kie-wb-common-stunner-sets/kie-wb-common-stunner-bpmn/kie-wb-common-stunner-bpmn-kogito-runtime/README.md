@@ -38,10 +38,11 @@ User Super Dev Mode: `true`
 
 VM Options:
 
-        -Xmx4G
+        -Xmx8G
         -Xms1024m
         -Xss1M
         -Derrai.dynamic_validation.enabled=true
+        -Derrai.ioc.jsinterop.support=true
     
 [OPTIONAL] Dev Mode Parameters:
         

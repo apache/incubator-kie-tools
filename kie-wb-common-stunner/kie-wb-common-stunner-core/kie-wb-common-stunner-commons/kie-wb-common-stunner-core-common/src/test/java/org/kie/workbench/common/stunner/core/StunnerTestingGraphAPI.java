@@ -22,7 +22,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.factory.impl.EdgeFactoryImpl;
 import org.kie.workbench.common.stunner.core.factory.impl.GraphFactoryImpl;
 import org.kie.workbench.common.stunner.core.factory.impl.NodeFactoryImpl;
@@ -74,10 +73,6 @@ public abstract class StunnerTestingGraphAPI {
 
     public PropertyAdapter getPropertyAdapter() {
         return api.propertyAdapter;
-    }
-
-    public PropertySetAdapter getPropertySetAdapter() {
-        return api.propertySetAdapter;
     }
 
     public DefinitionSetRuleAdapter getRuleAdapter() {

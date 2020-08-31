@@ -201,10 +201,10 @@ public abstract class DefaultCanvasCommandFactory implements CanvasCommandFactor
 
     @Override
     public CanvasCommand<AbstractCanvasHandler> updatePropertyValue(final Element element,
-                                                                    final String propertyId,
+                                                                    final String field,
                                                                     final Object value) {
         return new UpdateElementPropertyCommand(element,
-                                                propertyId,
+                                                field,
                                                 value);
     }
 

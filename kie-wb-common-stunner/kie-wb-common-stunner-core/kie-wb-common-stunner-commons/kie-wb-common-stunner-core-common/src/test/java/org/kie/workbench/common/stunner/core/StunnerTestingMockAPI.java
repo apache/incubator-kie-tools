@@ -25,7 +25,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapte
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
@@ -74,10 +73,8 @@ public class StunnerTestingMockAPI extends StunnerTestingAPI {
         definitionSetAdapter = mock(DefinitionSetAdapter.class);
         definitionAdapter = mock(DefinitionAdapter.class);
         propertyAdapter = mock(PropertyAdapter.class);
-        propertySetAdapter = mock(PropertySetAdapter.class);
         ruleAdapter = mock(DefinitionSetRuleAdapter.class);
         when(definitionAdapter.getProperty(anyObject(), anyString())).thenReturn(Optional.empty());
-        when(propertySetAdapter.getProperty(anyObject(), anyString())).thenReturn(Optional.empty());
     }
 
     @SuppressWarnings("unchecked")
@@ -88,12 +85,10 @@ public class StunnerTestingMockAPI extends StunnerTestingAPI {
         when(adapterManager.forDefinitionSet()).thenReturn(definitionSetAdapter);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
         when(adapterManager.forProperty()).thenReturn(propertyAdapter);
-        when(adapterManager.forPropertySet()).thenReturn(propertySetAdapter);
         when(adapterManager.forRules()).thenReturn(ruleAdapter);
         when(adapterRegistry.getDefinitionSetAdapter(any(Class.class))).thenReturn(definitionSetAdapter);
         when(adapterRegistry.getDefinitionAdapter(any(Class.class))).thenReturn(definitionAdapter);
         when(adapterRegistry.getPropertyAdapter(any(Class.class))).thenReturn(propertyAdapter);
-        when(adapterRegistry.getPropertySetAdapter(any(Class.class))).thenReturn(propertySetAdapter);
         when(adapterRegistry.getDefinitionSetRuleAdapter(any(Class.class))).thenReturn(ruleAdapter);
         when(ruleManager.evaluate(any(RuleSet.class),
                                   any(RuleEvaluationContext.class))).thenReturn(DEFAULT_RULE_VIOLATIONS);

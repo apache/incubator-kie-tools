@@ -107,7 +107,7 @@ public interface CanvasCommandFactory<H extends CanvasHandler> {
                             BoundingBox boundingBox);
 
     CanvasCommand<H> updatePropertyValue(Element element,
-                                         String propertyId,
+                                         String nameField,
                                          Object value);
 
     CanvasCommand<H> updateDomainObjectPropertyValue(DomainObject domainObject,

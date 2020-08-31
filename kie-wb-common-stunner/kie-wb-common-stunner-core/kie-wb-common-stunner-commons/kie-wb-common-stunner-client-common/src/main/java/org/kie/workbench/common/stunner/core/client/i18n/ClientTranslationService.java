@@ -77,7 +77,7 @@ public class ClientTranslationService extends AbstractTranslationService {
         if (ruleViolation instanceof CanvasViolation) {
             return getCanvasViolationMessage((CanvasViolation) ruleViolation);
         }
-        return getRuleViolationMessage(ruleViolation);
+        return super.getViolationMessage(ruleViolation);
     }
 
     private String getCanvasViolationMessage(final CanvasViolation canvasViolation) {

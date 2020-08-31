@@ -16,10 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
-import java.util.Map;
-
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-
 /**
  * A Property pojo adapter..
  */
@@ -28,47 +24,20 @@ public interface PropertyAdapter<T, V> extends PriorityAdapter {
     /**
      * Returns the property's identifier for a given pojo.
      */
-    String getId(final T pojo);
-
-    /**
-     * Returns the property's type for a given pojo.
-     */
-    PropertyType getType(final T pojo);
+    String getId(T pojo);
 
     /**
      * Returns the property's caption for a given pojo.
      */
-    String getCaption(final T pojo);
-
-    /**
-     * Returns the property's description for a given pojo.
-     */
-    String getDescription(final T pojo);
-
-    /**
-     * Specifies if the property is read only.
-     */
-    boolean isReadOnly(final T pojo);
-
-    /**
-     * Specifies if the property is optional.
-     */
-    boolean isOptional(final T pojo);
+    String getCaption(T pojo);
 
     /**
      * Returns the property's value for a given pojo.
      */
-    V getValue(final T pojo);
-
-    /**
-     * Returns allowed values for this property, if multiple.
-     * Otherwise returns null,.
-     */
-    Map<V, String> getAllowedValues(final T pojo);
+    V getValue(T pojo);
 
     /**
      * Update's the property value for a given pojo..
      */
-    void setValue(final T pojo,
-                  final V value);
+    void setValue(T pojo, V value);
 }

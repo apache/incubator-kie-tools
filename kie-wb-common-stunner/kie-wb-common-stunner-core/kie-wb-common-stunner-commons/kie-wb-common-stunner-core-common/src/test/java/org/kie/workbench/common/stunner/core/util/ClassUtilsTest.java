@@ -49,4 +49,13 @@ public class ClassUtilsTest {
         assertFalse(classUtils.isPrimitiveClass(BigInteger.class));
         assertFalse(classUtils.isPrimitiveClass(this.getClass()));
     }
+
+    @Test
+    public void TestIsJavaRuntimeClass() {
+        assertTrue(ClassUtils.isJavaRuntimeClassname("java.lang.Object"));
+        assertTrue(ClassUtils.isJavaRuntimeClassname("java.util.HashMap"));
+        assertTrue(ClassUtils.isJavaRuntimeClassname("javax.bind"));
+        assertFalse(ClassUtils.isJavaRuntimeClassname("org.kie"));
+        assertFalse(ClassUtils.isJavaRuntimeClassname("com.google"));
+    }
 }

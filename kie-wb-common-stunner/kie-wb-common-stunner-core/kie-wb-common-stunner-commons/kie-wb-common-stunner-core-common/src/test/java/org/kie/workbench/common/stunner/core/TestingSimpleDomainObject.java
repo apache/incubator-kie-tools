@@ -26,44 +26,24 @@ import static org.mockito.Mockito.when;
 
 public class TestingSimpleDomainObject implements DomainObject {
 
-    public static final String PROPERTY_SET = "propertySet";
     public static final String NAME = "name";
-    public static final String NAME_FIELD = PROPERTY_SET + "." + NAME;
 
     public static class SomePropertyBean {
 
     }
 
-    public static class SomePropertySetBean {
-
-    }
-
-    private final SomePropertySetBean propertySet;
     private final SomePropertyBean nameProperty;
 
     @SuppressWarnings("unchecked")
     public TestingSimpleDomainObject(final TestingGraphMockHandler graphMockHandler) {
-        propertySet = new SomePropertySetBean();
         nameProperty = new SomePropertyBean();
         when(graphMockHandler.getDefinitionAdapter().accepts(eq(TestingSimpleDomainObject.class))).thenReturn(true);
-        when(graphMockHandler.getDefinitionAdapter().accepts(eq(SomePropertySetBean.class))).thenReturn(false);
         when(graphMockHandler.getDefinitionAdapter().accepts(eq(SomePropertyBean.class))).thenReturn(false);
         when(graphMockHandler.getPropertyAdapter().accepts(eq(SomePropertyBean.class))).thenReturn(true);
-        when(graphMockHandler.getPropertyAdapter().accepts(eq(SomePropertySetBean.class))).thenReturn(false);
         when(graphMockHandler.getPropertyAdapter().accepts(eq(TestingSimpleDomainObject.class))).thenReturn(false);
-        when(graphMockHandler.getPropertySetAdapter().accepts(eq(SomePropertySetBean.class))).thenReturn(true);
-        when(graphMockHandler.getPropertySetAdapter().accepts(eq(SomePropertyBean.class))).thenReturn(false);
-        when(graphMockHandler.getPropertySetAdapter().accepts(eq(TestingSimpleDomainObject.class))).thenReturn(false);
-        when(graphMockHandler.getPropertySetAdapter().getId(eq(propertySet))).thenReturn(PROPERTY_SET);
         when(graphMockHandler.getPropertyAdapter().getId(eq(nameProperty))).thenReturn(NAME);
-        when(graphMockHandler.getDefinitionAdapter().getProperty(eq(this), eq(PROPERTY_SET))).thenReturn(Optional.of(propertySet));
-        when(graphMockHandler.getPropertySetAdapter().getProperty(eq(propertySet), eq(NAME))).thenReturn(Optional.of(nameProperty));
-        when(graphMockHandler.getDefinitionAdapter().getNameField(eq(this))).thenReturn(Optional.of(NAME_FIELD));
-        when(graphMockHandler.getDefinitionAdapter().getMetaProperty(eq(PropertyMetaTypes.NAME), eq(this))).thenReturn(nameProperty);
-    }
-
-    public SomePropertySetBean getPropertySet() {
-        return propertySet;
+        when(graphMockHandler.getDefinitionAdapter().getMetaPropertyField(eq(this), eq(PropertyMetaTypes.NAME))).thenReturn("name");
+        when(graphMockHandler.getDefinitionAdapter().getProperty(eq(this), eq("name"))).thenReturn((Optional) Optional.of(nameProperty));
     }
 
     public SomePropertyBean getNameProperty() {

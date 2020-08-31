@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.util;
 
-import java.util.Optional;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +25,6 @@ import org.kie.workbench.common.stunner.core.registry.impl.DefaultDefinitionsCac
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -56,14 +53,6 @@ public class DefinitionUtilsTest {
 
     @Test
     public void getNameIdentifier() {
-        final String nameIdentifier = tested.getNameIdentifier(domainObject);
-        assertEquals(TestingSimpleDomainObject.NAME_FIELD, nameIdentifier);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void getNameIdentifierFromMetadata() {
-        when(graphMockHandler.getDefinitionAdapter().getNameField(eq(domainObject))).thenReturn(Optional.empty());
         final String nameIdentifier = tested.getNameIdentifier(domainObject);
         assertEquals(TestingSimpleDomainObject.NAME, nameIdentifier);
     }

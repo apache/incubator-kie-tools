@@ -24,7 +24,6 @@ import java.util.stream.StreamSupport;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.stunner.core.TestingGraphInstances;
 import org.kie.workbench.common.stunner.core.TestingGraphMockHandler;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -96,9 +95,7 @@ public class StatefulGraphEvaluationContextsTests {
     public void testConnectorCardinalityState() {
         Edge someNewEdge = graphTestHandler.buildEdge("someNewEdgeUUID",
                                                       graphTestHandler.newDef("someNewEdgeId",
-                                                                              Optional.of(new Sets.Builder<String>()
-                                                                                                  .add("someNewEdgeLabel")
-                                                                                                  .build())));
+                                                                              Optional.of(new String[]{"someNewEdgeLabel"})));
 
         // Test cardinality - Add outgoing edge.
         ConnectorCardinalityContext addOutgoingEdge = contextBuilder.edgeCardinality(graphInstance.startNode,

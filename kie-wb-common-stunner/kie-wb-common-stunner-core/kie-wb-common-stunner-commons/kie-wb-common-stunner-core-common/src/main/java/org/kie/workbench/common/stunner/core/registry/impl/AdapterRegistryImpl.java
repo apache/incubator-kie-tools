@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -31,7 +30,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRul
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PriorityAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.exception.AdapterNotFoundException;
 import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
@@ -44,7 +42,6 @@ public class AdapterRegistryImpl implements AdapterRegistry,
     private final List<DefinitionSetAdapter> definitionSetAdapters = new LinkedList<>();
     private final List<DefinitionSetRuleAdapter> definitionSetRuleAdapters = new LinkedList<>();
     private final List<DefinitionAdapter> definitionAdapters = new LinkedList<>();
-    private final List<PropertySetAdapter> propertySetAdapters = new ArrayList<>();
     private final List<PropertyAdapter> propertyAdapters = new LinkedList<>();
     private final List<MorphAdapter> morphAdapters = new LinkedList<>();
 
@@ -81,18 +78,6 @@ public class AdapterRegistryImpl implements AdapterRegistry,
             }
         }
         return nullHandling(DefinitionAdapter.class,
-                            type);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T> PropertySetAdapter<T> getPropertySetAdapter(final Class<?> type) {
-        for (PropertySetAdapter adapter : propertySetAdapters) {
-            if (adapter.accepts(type)) {
-                return adapter;
-            }
-        }
-        return nullHandling(PropertySetAdapter.class,
                             type);
     }
 
@@ -135,10 +120,6 @@ public class AdapterRegistryImpl implements AdapterRegistry,
             definitionAdapters.add((DefinitionAdapter) item);
             sortAdapters(definitionAdapters);
             registered = true;
-        } else if (item instanceof PropertySetAdapter) {
-            propertySetAdapters.add((PropertySetAdapter) item);
-            sortAdapters(propertySetAdapters);
-            registered = true;
         } else if (item instanceof PropertyAdapter) {
             propertyAdapters.add((PropertyAdapter) item);
             sortAdapters(propertyAdapters);
@@ -163,8 +144,6 @@ public class AdapterRegistryImpl implements AdapterRegistry,
             return definitionSetRuleAdapters.contains(item);
         } else if (item instanceof DefinitionAdapter) {
             return definitionAdapters.contains(item);
-        } else if (item instanceof PropertySetAdapter) {
-            return propertySetAdapters.contains(item);
         } else if (item instanceof PropertyAdapter) {
             return propertyAdapters.contains(item);
         } else if (item instanceof MorphAdapter) {
@@ -178,7 +157,6 @@ public class AdapterRegistryImpl implements AdapterRegistry,
         return definitionSetAdapters.isEmpty() &&
                 definitionSetRuleAdapters.isEmpty() &&
                 definitionAdapters.isEmpty() &&
-                propertySetAdapters.isEmpty() &&
                 propertyAdapters.isEmpty() &&
                 morphAdapters.isEmpty();
     }
@@ -192,8 +170,6 @@ public class AdapterRegistryImpl implements AdapterRegistry,
             return definitionSetRuleAdapters.remove(item);
         } else if (item instanceof DefinitionAdapter) {
             return definitionAdapters.remove(item);
-        } else if (item instanceof PropertySetAdapter) {
-            return propertySetAdapters.remove(item);
         } else if (item instanceof PropertyAdapter) {
             return propertyAdapters.remove(item);
         } else if (item instanceof MorphAdapter) {

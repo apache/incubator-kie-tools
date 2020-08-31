@@ -124,9 +124,7 @@ public class DecisionServiceMoveDividerControl extends AbstractCanvasHandlerRegi
         final DefinitionAdapter<Object> adapter = canvasHandler.getDefinitionManager().adapters().registry().getDefinitionAdapter(definition.getClass());
         final Optional<?> dividerYProperty = adapter.getProperty(definition, DIVIDER_Y_PROPERTY_ID);
         if (dividerYProperty.isPresent()) {
-            final Object dyp = dividerYProperty.get();
-            final String id = canvasHandler.getDefinitionManager().adapters().forProperty().getId(dyp);
-            return Optional.of(canvasCommandFactory.updatePropertyValue(element, id, dividerY));
+            return Optional.of(canvasCommandFactory.updatePropertyValue(element, DIVIDER_Y_PROPERTY_ID, dividerY));
         }
         return Optional.empty();
     }

@@ -47,7 +47,7 @@ public class ReflectionAdapterUtils {
     }
 
     public static <T, V> Set<V> getFieldValues(final T object,
-                                               final Set<String> fieldNames) throws IllegalAccessException {
+                                               final Collection<String> fieldNames) throws IllegalAccessException {
         Set<V> result = new LinkedHashSet<V>();
         if (null != fieldNames) {
             for (String fieldName : fieldNames) {
@@ -64,6 +64,18 @@ public class ReflectionAdapterUtils {
             }
         }
         return result;
+    }
+
+    @SuppressWarnings("all")
+    public static <T, V> V getValue(final T object,
+                                    final String fieldName) throws IllegalAccessException {
+        String[] fields = fieldName.contains(".") ? fieldName.split("\\.") : new String[]{fieldName};
+        Object value = object;
+        for (int i = 0; i < fields.length; i++) {
+            String field = fields[i];
+            value = getFieldValue(value, field);
+        }
+        return (V) value;
     }
 
     public static <T, V> V getFieldValue(final T object,
@@ -87,14 +99,12 @@ public class ReflectionAdapterUtils {
                                                                         final Class<A> annotationType) throws IllegalAccessException {
         V result = null;
         Field[] fields = sourceType.getDeclaredFields();
-        if (null != fields) {
-            for (Field field : fields) {
-                A annotation = field.getAnnotation(annotationType);
-                if (null != annotation) {
-                    field.setAccessible(true);
-                    result = (V) field.get(object);
-                    break;
-                }
+        for (Field field : fields) {
+            A annotation = field.getAnnotation(annotationType);
+            if (null != annotation) {
+                field.setAccessible(true);
+                result = (V) field.get(object);
+                break;
             }
         }
         return result;
@@ -106,13 +116,11 @@ public class ReflectionAdapterUtils {
                                          final String fieldName) throws IllegalAccessException {
         V result = null;
         Field[] fields = sourceType.getDeclaredFields();
-        if (null != fields) {
-            for (Field field : fields) {
-                if (field.getName().equals(fieldName)) {
-                    field.setAccessible(true);
-                    result = (V) field.get(object);
-                    break;
-                }
+        for (Field field : fields) {
+            if (field.getName().equals(fieldName)) {
+                field.setAccessible(true);
+                result = (V) field.get(object);
+                break;
             }
         }
         return result;
@@ -135,11 +143,9 @@ public class ReflectionAdapterUtils {
     public static Field getField(final Class<?> sourceType,
                                  final String fieldName) throws SecurityException {
         Field[] fields = sourceType.getDeclaredFields();
-        if (null != fields) {
-            for (Field field : fields) {
-                if (field.getName().equals(fieldName)) {
-                    return field;
-                }
+        for (Field field : fields) {
+            if (field.getName().equals(fieldName)) {
+                return field;
             }
         }
         return null;

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
 import java.util.Optional;
-import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
@@ -30,65 +29,51 @@ public interface DefinitionAdapter<T> extends PriorityAdapter {
     /**
      * Returns the definition's identifier for a given pojo.
      */
-    DefinitionId getId(final T pojo);
+    DefinitionId getId(T pojo);
 
     /**
      * Returns the definition's category for a given pojo.
      */
-    String getCategory(final T pojo);
+    String getCategory(T pojo);
 
     /**
      * Returns the definition's title for a given pojo.
      */
-    String getTitle(final T pojo);
+    String getTitle(T pojo);
 
     /**
      * Returns the definition's description for a given pojo.
      */
-    String getDescription(final T pojo);
+    String getDescription(T pojo);
 
     /**
      * Returns the definition's labels for a given pojo.
      */
-    Set<String> getLabels(final T pojo);
+    String[] getLabels(T pojo);
 
     /**
-     * Returns the definition's property sets for a given pojo.
+     * Returns the fields which are declared as properties, for a given pojo.
      */
-    Set<?> getPropertySets(final T pojo);
-
-    /**
-     * Returns all the definition's properties for a given pojo.
-     * Must return the properties from the different
-     * definition's property sets as well.
-     */
-    Set<?> getProperties(final T pojo);
+    String[] getPropertyFields(T pojo);
 
     /**
      * Returns the property instance with the given name.
-     * @param pojo definition
-     * @param propertyName property field name on the class
+     *
+     * @param pojo  the "bean" definition instance
+     * @param field field path relative to the pojo
      * @return
      */
-    Optional<?> getProperty(final T pojo, final String propertyName);
+    Optional<?> getProperty(T pojo, String field);
 
     /**
-     * Returns the property bean instance for the given meta-property type..
+     * Returns the bean's field for the given meta-property type..
      * Stunner provides some built-in features that could require model updates,
      * so this meta-properties are used for binding these features with the property beans.
      */
-    Object getMetaProperty(final PropertyMetaTypes metaType,
-                           final T pojo);
+    String getMetaPropertyField(T pojo, PropertyMetaTypes metaType);
 
     /**
      * Returns the definition's graph element factory class for a given pojo.
      */
-    Class<? extends ElementFactory> getGraphFactoryType(final T pojo);
-
-    /**
-     * Respective name field with namespace (i.e. attribue1.attribue2.name)
-     * @param pojo definition
-     * @return the field with namespace if applied
-     */
-    Optional<String> getNameField(final T pojo);
+    Class<? extends ElementFactory> getGraphFactoryType(T pojo);
 }

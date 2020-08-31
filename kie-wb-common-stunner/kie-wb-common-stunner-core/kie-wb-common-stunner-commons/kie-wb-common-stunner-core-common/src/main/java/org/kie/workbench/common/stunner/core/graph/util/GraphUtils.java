@@ -26,7 +26,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -54,62 +53,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class GraphUtils {
-
-    public static Object getProperty(final DefinitionManager definitionManager,
-                                     final Element<? extends Definition> element,
-                                     final String id) {
-
-        return Optional.ofNullable(element)
-                .map(Element::getContent)
-                .map(Definition::getDefinition)
-                .map(def -> Exceptions.<Set>swallow(() -> definitionManager.adapters().forDefinition().getProperties(def),
-                                                    Collections.emptySet()))
-                .map(properties -> Exceptions.swallow(() -> getProperty(definitionManager, properties, id), null))
-                .orElseGet(
-                        //getting by field if not found by the id (class name)
-                        () -> Optional.ofNullable(element)
-                                .map(Element::getContent)
-                                .map(Definition::getDefinition)
-                                .map(def -> getPropertyByField(definitionManager, def, id))
-                                .orElse(null)
-                );
-    }
-
-    public static Object getPropertyByField(final DefinitionManager definitionManager,
-                                            final Object bean,
-                                            final String field) {
-        return getPropertyByField(currentField -> definitionManager.adapters().forDefinition().getProperty(bean, currentField),
-                                  (ps, currentField) -> definitionManager.adapters().forPropertySet().getProperty(ps, currentField),
-                                  field);
-    }
-
-    private static Object getPropertyByField(final Function<String, Optional<?>> propertyProvider,
-                                             final BiFunction<Object, String, Optional<?>> childPropertiesProvider,
-                                             final String field) {
-        final int index = field.indexOf('.');
-        final String firstField = index > -1 ? field.substring(0, index) : field;
-        final Optional<?> optionalBean = propertyProvider.apply(firstField);
-        final Object bean = optionalBean.orElse(null);
-        return (index > 0 && null != bean)
-                ? getPropertyByField(currentField -> childPropertiesProvider.apply(bean, currentField),
-                                     childPropertiesProvider,
-                                     field.substring(index + 1))
-                : bean;
-    }
-
-    public static Object getProperty(final DefinitionManager definitionManager,
-                                     final Set properties,
-                                     final String id) {
-        if (null != id && null != properties) {
-            for (final Object property : properties) {
-                final String pId = definitionManager.adapters().forProperty().getId(property);
-                if (pId.equals(id)) {
-                    return property;
-                }
-            }
-        }
-        return null;
-    }
 
     public static int countEdges(final DefinitionManager definitionManager,
                                  final String edgeId,
@@ -309,8 +252,9 @@ public class GraphUtils {
 
     /**
      * Finds the first node in the graph structure for the given type.
+     *
      * @param graph The graph structure.
-     * @param type The Definition type..
+     * @param type  The Definition type..
      */
     @SuppressWarnings("unchecked")
     public static <C> Node<Definition<C>, ?> getFirstNode(final Graph<?, Node> graph,

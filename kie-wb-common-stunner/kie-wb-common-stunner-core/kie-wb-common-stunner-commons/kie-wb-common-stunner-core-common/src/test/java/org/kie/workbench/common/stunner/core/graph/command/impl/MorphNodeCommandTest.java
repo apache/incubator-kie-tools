@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -85,10 +84,10 @@ public class MorphNodeCommandTest extends AbstractGraphCommandTest {
         when(graphIndex.get(eq(UUID))).thenReturn(candidate);
         when(graphIndex.getNode(eq(UUID))).thenReturn(candidate);
         when(definitionAdapter.getId(CURRENT_DEFINITION)).thenReturn(DefinitionId.build(CURRENT_DEFINITION_ID));
-        when(definitionAdapter.getLabels(CURRENT_DEFINITION)).thenReturn(Collections.emptySet());
+        when(definitionAdapter.getLabels(CURRENT_DEFINITION)).thenReturn(new String[0]);
         when(morphAdaptor.morph(CURRENT_DEFINITION, morphDefinition, CURRENT_DEFINITION_ID)).thenReturn(NEW_DEFINITION);
         when(definitionAdapter.getId(NEW_DEFINITION)).thenReturn(DefinitionId.build(NEW_DEFINITION_ID));
-        when(definitionAdapter.getLabels(NEW_DEFINITION)).thenReturn(Collections.singleton(NEW_DEFINITION_LABEL));
+        when(definitionAdapter.getLabels(NEW_DEFINITION)).thenReturn(new String[]{NEW_DEFINITION_LABEL});
         when(morphAdaptor.morph(NEW_DEFINITION, morphDefinition, CURRENT_DEFINITION_ID)).thenReturn(CURRENT_DEFINITION);
         tested = new MorphNodeCommand(candidate, morphDefinition, CURRENT_DEFINITION_ID);
     }

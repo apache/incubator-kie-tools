@@ -16,10 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.lookup.definition;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -89,9 +92,9 @@ public class DefinitionLookupManagerImpl
                                         definitionAdapter);
                 return "node".equals(value) && isNode;
             case "labels":
-                final Set<String> labelSet = toSet(value);
+                final Collection<String> labelSet = toCollection(value);
                 if (null != labelSet) {
-                    Set<String> defLabels = definitionAdapter.getLabels(def);
+                    String[] defLabels = definitionAdapter.getLabels(def);
                     return isIntersect(labelSet,
                                        defLabels);
                 }
@@ -108,12 +111,12 @@ public class DefinitionLookupManagerImpl
     private DefinitionRepresentation buildRepresentation(final String id,
                                                          final Object def) {
         final DefinitionAdapter<Object> definitionAdapter = definitionManager.adapters().registry().getDefinitionAdapter(def.getClass());
-        final Set<String> labels = definitionAdapter.getLabels(def);
+        final String[] labels = definitionAdapter.getLabels(def);
         boolean isNode = isNode(def,
                                 definitionAdapter);
         return new DefinitionRepresentation(id,
                                             isNode,
-                                            labels);
+                                            Arrays.stream(labels).collect(Collectors.toSet()));
     }
 
     private boolean isNode(final Object def,

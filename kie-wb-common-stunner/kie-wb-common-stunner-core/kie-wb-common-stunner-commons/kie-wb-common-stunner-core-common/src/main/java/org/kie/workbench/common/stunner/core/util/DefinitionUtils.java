@@ -17,11 +17,8 @@
 package org.kie.workbench.common.stunner.core.util;
 
 import java.lang.annotation.Annotation;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -29,8 +26,8 @@ import javax.inject.Inject;
 import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.HasInheritance;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInheritance;
 import org.kie.workbench.common.stunner.core.definition.clone.ClonePolicy;
 import org.kie.workbench.common.stunner.core.definition.morph.MorphDefinition;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
@@ -45,7 +42,6 @@ import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 
@@ -70,38 +66,18 @@ public class DefinitionUtils {
         this.definitionsRegistry = definitionsRegistry;
     }
 
-    public <T> Object getProperty(final T definition,
-                                  final String propertyId) {
-        final Set<?> properties = definitionManager.adapters().forDefinition().getProperties(definition);
-        if (null != properties && !properties.isEmpty()) {
-            for (final Object property : properties) {
-                final String pId = definitionManager.adapters().forProperty().getId(property);
-                if (pId.equals(propertyId)) {
-                    return property;
-                }
-            }
+    public <T> String getName(final T definition) {
+        final DefinitionAdapter<Object> definitionAdapter = definitionManager.adapters().registry().getDefinitionAdapter(definition.getClass());
+        final String nameField = definitionAdapter.getMetaPropertyField(definition, PropertyMetaTypes.NAME);
+        if (null != nameField) {
+            Object name = definitionAdapter.getProperty(definition, nameField).get();
+            return getPropertyValueAsString(name);
         }
         return null;
     }
 
-    public <T> String getName(final T definition) {
-        final Optional<String> nameField = definitionManager.adapters()
-                .forDefinition()
-                .getNameField(definition);
-
-        //first try to get by name field from Definition annotation
-        if (nameField.isPresent()) {
-            return getPropertyValueAsString(GraphUtils.getPropertyByField(definitionManager,
-                                                                          definition,
-                                                                          nameField.get()));
-        }
-
-        //default getting by metadata
-        return Optional.ofNullable(definitionManager.adapters()
-                                           .forDefinition()
-                                           .getMetaProperty(PropertyMetaTypes.NAME, definition))
-                .map(this::getPropertyValueAsString)
-                .orElse(null);
+    public <T> String getNameIdentifier(final T definition) {
+        return definitionManager.adapters().forDefinition().getMetaPropertyField(definition, PropertyMetaTypes.NAME);
     }
 
     private String getPropertyValueAsString(Object property) {
@@ -122,44 +98,34 @@ public class DefinitionUtils {
                               final double x,
                               final double y) {
         final DefinitionAdapter<Object> adapter = definitionManager.adapters().registry().getDefinitionAdapter(definition.getClass());
-        final Object r = adapter.getMetaProperty(PropertyMetaTypes.RADIUS,
-                                                 definition);
+        final String radiusField = adapter.getMetaPropertyField(definition, PropertyMetaTypes.RADIUS);
         Double width = null;
         Double height = null;
-        if (null != r) {
-            final Double rv = (Double) definitionManager.adapters().forProperty().getValue(r);
-            if (null != rv) {
-                width = rv * 2;
-                height = width;
+        if (null != radiusField) {
+            Optional<?> hasRadius = adapter.getProperty(definition, radiusField);
+            if (hasRadius.isPresent()) {
+                final Double rv = (Double) definitionManager.adapters().forProperty().getValue(hasRadius.get());
+                if (null != rv) {
+                    width = rv * 2;
+                    height = width;
+                }
             }
         } else {
-            final Object w = adapter.getMetaProperty(PropertyMetaTypes.WIDTH,
-                                                     definition);
-            final Object h = adapter.getMetaProperty(PropertyMetaTypes.HEIGHT,
-                                                     definition);
-            if (null != w && null != h) {
-                width = (Double) definitionManager.adapters().forProperty().getValue(w);
-                height = (Double) definitionManager.adapters().forProperty().getValue(h);
+            final String wField = adapter.getMetaPropertyField(definition, PropertyMetaTypes.WIDTH);
+            final String hField = adapter.getMetaPropertyField(definition, PropertyMetaTypes.HEIGHT);
+            if (null != wField && null != hField) {
+                Optional<?> hasWitdth = adapter.getProperty(definition, wField);
+                Optional<?> hasHeight = adapter.getProperty(definition, hField);
+                if (hasWitdth.isPresent() && hasHeight.isPresent()) {
+                    width = (Double) definitionManager.adapters().forProperty().getValue(hasWitdth.get());
+                    height = (Double) definitionManager.adapters().forProperty().getValue(hasHeight.get());
+                }
             }
         }
 
         final double _width = null != width ? width : 0d;
         final double _height = null != height ? height : 0d;
         return Bounds.create(x, y, x + _width, y + _height);
-    }
-
-    public <T> String getNameIdentifier(final T definition) {
-        return definitionManager.adapters()
-                .forDefinition()
-                .getNameField(definition)
-                .orElseGet(
-                        () -> Optional.ofNullable(definitionManager.adapters()
-                                                          .forDefinition()
-                                                          .getMetaProperty(PropertyMetaTypes.NAME, definition))
-                                .filter(Objects::nonNull)
-                                .map(name -> definitionManager.adapters().forProperty().getId(name))
-                                .orElse(null)
-                );
     }
 
     public <T> MorphDefinition getMorphDefinition(final T definition) {
@@ -230,43 +196,6 @@ public class DefinitionUtils {
 
     private Annotation getQualifier(final Object ds) {
         return definitionManager.adapters().forDefinitionSet().getQualifier(ds);
-    }
-
-    /**
-     * Returns all properties from Definition's property sets.
-     */
-    public Set<?> getPropertiesFromPropertySets(final Object definition) {
-        final Set<Object> properties = new HashSet<>();
-        // And properties on each definition's PropertySet instance.
-        final Set<?> propertySets = definitionManager.adapters().forDefinition().getPropertySets(definition);
-        if (null != propertySets && !propertySets.isEmpty()) {
-            for (Object propertySet : propertySets) {
-                final Set<?> setProperties = definitionManager.adapters().forPropertySet().getProperties(propertySet);
-                if (null != setProperties && !setProperties.isEmpty()) {
-                    for (final Object property : setProperties) {
-                        if (null != property) {
-                            properties.add(property);
-                        }
-                    }
-                }
-            }
-        }
-        return properties;
-    }
-
-    @SuppressWarnings("unchecked")
-    public Object getPropertyAllowedValue(final Object property,
-                                          final String value) {
-        final Map<Object, String> allowedValues = definitionManager.adapters().forProperty().getAllowedValues(property);
-        if (null != value && null != allowedValues && !allowedValues.isEmpty()) {
-            for (final Map.Entry<Object, String> entry : allowedValues.entrySet()) {
-                final String v = entry.getValue();
-                if (value.equals(v)) {
-                    return entry.getKey();
-                }
-            }
-        }
-        return null;
     }
 
     public static boolean isNodeFactory(final Class<? extends ElementFactory> graphFactoryClass,

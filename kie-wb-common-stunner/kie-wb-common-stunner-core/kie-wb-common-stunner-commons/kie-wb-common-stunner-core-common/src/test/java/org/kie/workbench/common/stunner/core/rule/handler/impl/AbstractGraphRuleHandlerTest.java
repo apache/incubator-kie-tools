@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,26 +44,18 @@ public abstract class AbstractGraphRuleHandlerTest {
     protected static final String DEFINITION_ID = "defId1";
     protected static final String DEFINITION_ROLE1 = "defId1Role1";
     protected static final String DEFINITION_ROLE2 = "defId1Role2";
-    protected static final Set<String> DEFINITION_LABELS = new HashSet<String>(3) {{
-        add(DEFINITION_ID);
-        add(DEFINITION_ROLE1);
-        add(DEFINITION_ROLE2);
-    }};
+    protected static final String[] DEFINITION_LABELS_ARRAY = new String[]{DEFINITION_ID, DEFINITION_ROLE1, DEFINITION_ROLE2};
+    protected static final Set<String> DEFINITION_LABELS = new HashSet<>(Arrays.asList(DEFINITION_LABELS_ARRAY));
 
     protected static final String PARENT_ID = "pId1";
-    protected static final Set<String> PARENT_LABELS = new HashSet<String>(2) {{
-        add(PARENT_ID);
-        add("theParent");
-    }};
+    protected static final String[] PARENT_LABELS_ARRAY = new String[]{PARENT_ID, "theParent"};
+    protected static final Set<String> PARENT_LABELS = new HashSet<>(Arrays.asList(PARENT_LABELS_ARRAY));
 
     protected static final String CANDIDATE_ID = "cId1";
     protected static final String CANDIDATE_ROLE1 = "cId1Role1";
     protected static final String CANDIDATE_ROLE2 = "cId1Role2";
-    protected static final Set<String> CANDIDATE_LABELS = new HashSet<String>(3) {{
-        add(CANDIDATE_ID);
-        add(CANDIDATE_ROLE1);
-        add(CANDIDATE_ROLE2);
-    }};
+    protected static final String[] CANDIDATE_LABELS_ARRAY = new String[]{CANDIDATE_ID, CANDIDATE_ROLE1, CANDIDATE_ROLE2};
+    protected static final Set<String> CANDIDATE_LABELS = new HashSet<>(Arrays.asList(CANDIDATE_LABELS_ARRAY));
 
     @Mock
     protected DefinitionManager definitionManager;
@@ -98,7 +91,7 @@ public abstract class AbstractGraphRuleHandlerTest {
         when(element.getLabels()).thenReturn(DEFINITION_LABELS);
         when(elementContent.getDefinition()).thenReturn(elementDefinition);
         when(definitionAdapter.getId(eq(elementDefinition))).thenReturn(DefinitionId.build(DEFINITION_ID));
-        when(definitionAdapter.getLabels(eq(elementDefinition))).thenReturn(DEFINITION_LABELS);
+        when(definitionAdapter.getLabels(eq(elementDefinition))).thenReturn(DEFINITION_LABELS_ARRAY);
         when(candidate.getContent()).thenReturn(candidateContent);
         when(candidate.getLabels()).thenReturn(CANDIDATE_LABELS);
         when(candidateContent.getDefinition()).thenReturn(candidateDefinition);
@@ -106,9 +99,9 @@ public abstract class AbstractGraphRuleHandlerTest {
         when(parent.getLabels()).thenReturn(PARENT_LABELS);
         when(parentContent.getDefinition()).thenReturn(parentDefinition);
         when(definitionAdapter.getId(eq(candidateDefinition))).thenReturn(DefinitionId.build(CANDIDATE_ID));
-        when(definitionAdapter.getLabels(eq(candidateDefinition))).thenReturn(CANDIDATE_LABELS);
+        when(definitionAdapter.getLabels(eq(candidateDefinition))).thenReturn(CANDIDATE_LABELS_ARRAY);
         when(definitionAdapter.getId(eq(parentDefinition))).thenReturn(DefinitionId.build(PARENT_ID));
-        when(definitionAdapter.getLabels(eq(parentDefinition))).thenReturn(PARENT_LABELS);
+        when(definitionAdapter.getLabels(eq(parentDefinition))).thenReturn(PARENT_LABELS_ARRAY);
     }
 
     @SuppressWarnings("unchecked")
@@ -120,7 +113,7 @@ public abstract class AbstractGraphRuleHandlerTest {
         when(e.getContent()).thenReturn(v);
         when(v.getDefinition()).thenReturn(d);
         when(definitionAdapter.getId(eq(d))).thenReturn(DefinitionId.build(id));
-        when(definitionAdapter.getLabels(eq(d))).thenReturn(labels);
+        when(definitionAdapter.getLabels(eq(d))).thenReturn(labels.toArray(new String[labels.size()]));
         when(e.getLabels()).thenReturn(labels);
         return e;
     }
@@ -134,7 +127,7 @@ public abstract class AbstractGraphRuleHandlerTest {
         when(e.getContent()).thenReturn(v);
         when(v.getDefinition()).thenReturn(d);
         when(definitionAdapter.getId(eq(d))).thenReturn(DefinitionId.build(id));
-        when(definitionAdapter.getLabels(eq(d))).thenReturn(labels);
+        when(definitionAdapter.getLabels(eq(d))).thenReturn(labels.toArray(new String[labels.size()]));
         when(e.getLabels()).thenReturn(labels);
         return e;
     }
@@ -148,7 +141,7 @@ public abstract class AbstractGraphRuleHandlerTest {
         when(e.getContent()).thenReturn(v);
         when(v.getDefinition()).thenReturn(d);
         when(definitionAdapter.getId(eq(d))).thenReturn(DefinitionId.build(id));
-        when(definitionAdapter.getLabels(eq(d))).thenReturn(labels);
+        when(definitionAdapter.getLabels(eq(d))).thenReturn(labels.toArray(new String[labels.size()]));
         when(e.getLabels()).thenReturn(labels);
         return e;
     }

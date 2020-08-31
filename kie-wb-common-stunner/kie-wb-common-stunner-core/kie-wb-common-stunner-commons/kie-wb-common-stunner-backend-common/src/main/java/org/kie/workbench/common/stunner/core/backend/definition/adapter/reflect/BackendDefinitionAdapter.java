@@ -18,22 +18,24 @@ package org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.AbstractReflectAdapter;
+import org.kie.workbench.common.stunner.core.backend.definition.adapter.ReflectionAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
+import org.kie.workbench.common.stunner.core.definition.adapter.HasInheritance;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.HasInheritance;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -44,7 +46,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
-import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.util.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,11 +68,8 @@ public class BackendDefinitionAdapter<T>
             Property.class
     };
 
-    private final DefinitionUtils definitionUtils;
-
     @Inject
-    public BackendDefinitionAdapter(final DefinitionUtils definitionUtils) {
-        this.definitionUtils = definitionUtils;
+    public BackendDefinitionAdapter() {
     }
 
     @Override
@@ -97,21 +96,69 @@ public class BackendDefinitionAdapter<T>
     }
 
     @Override
-    public Object getMetaProperty(final PropertyMetaTypes metaType,
-                                  final T pojo) {
-        Set<?> properties = getProperties(pojo);
-        if (null != properties) {
-            return properties
-                    .stream()
-                    .filter(property -> {
-                        Property p = getClassAnnotation(property.getClass(),
-                                                        Property.class);
-                        return null != p && metaType.equals(p.meta());
-                    })
-                    .findFirst()
-                    .orElse(null);
+    public String[] getPropertyFields(final T pojo) {
+        final List<String> fields = visitFields(pojo.getClass(), field -> null != field.getAnnotation(Property.class));
+        return fields.toArray(new String[fields.size()]);
+    }
+
+    private static List<String> visitFields(Class<?> type,
+                                            Predicate<Field> fieldAcceptor) {
+        final ArrayList<String> result = new ArrayList<>();
+        visitFields(type, "", fieldAcceptor, result, new HashSet<>());
+        return result;
+    }
+
+    private static void visitFields(Class<?> type,
+                                    String namespace,
+                                    Predicate<Field> fieldAcceptor,
+                                    List<String> result,
+                                    Set<String> processedTypes) {
+        final String fqcn = type.getName();
+        if (ClassUtils.isJavaRuntimeClassname(fqcn) ||
+                processedTypes.contains(fqcn)) {
+            return;
         }
-        return null;
+        processedTypes.add(fqcn);
+
+        final List<Field> fields = ReflectionAdapterUtils.getFields(type);
+        fields.forEach(field -> {
+            final String fieldName = field.getName();
+            final String absoluteFieldName = appendToNamespace(namespace, fieldName);
+            if (fieldAcceptor.test(field)) {
+                result.add(absoluteFieldName);
+            } else {
+                Class<?> fieldType = field.getType();
+                visitFields(fieldType,
+                            absoluteFieldName,
+                            fieldAcceptor,
+                            result,
+                            processedTypes);
+            }
+        });
+    }
+
+    private static String appendToNamespace(String namespace,
+                                            String field) {
+        return namespace.trim().length() > 0 ?
+                namespace + "." + field :
+                field;
+    }
+
+    private static boolean isPropertyOfMetaType(final Field field,
+                                                final PropertyMetaTypes metaType) {
+        final Property annotation = field.getAnnotation(Property.class);
+        if (null != annotation) {
+            PropertyMetaTypes type = annotation.meta();
+            return metaType.equals(type);
+        }
+        return false;
+    }
+
+    @Override
+    public String getMetaPropertyField(final T pojo,
+                                       final PropertyMetaTypes metaType) {
+        List<String> fields = visitFields(pojo.getClass(), field -> isPropertyOfMetaType(field, metaType));
+        return !fields.isEmpty() ? fields.get(0) : null;
     }
 
     @Override
@@ -137,12 +184,6 @@ public class BackendDefinitionAdapter<T>
     }
 
     @Override
-    public Optional<String> getNameField(T definition) {
-        return Optional.ofNullable(getDefinitionAnnotation(definition.getClass()))
-                .map(Definition::nameField);
-    }
-
-    @Override
     public String getDescription(final T definition) {
         try {
             return getAnnotatedFieldValue(definition,
@@ -154,74 +195,19 @@ public class BackendDefinitionAdapter<T>
     }
 
     @Override
-    public Set<String> getLabels(final T definition) {
+    @SuppressWarnings("all")
+    public String[] getLabels(final T definition) {
         try {
-            return getAnnotatedFieldValue(definition,
-                                          Labels.class);
+            Object value = getAnnotatedFieldValue(definition,
+                                                  Labels.class);
+            if (value instanceof Collection) {
+                return (String[]) ((Collection) value).toArray(new String[((Collection) value).size()]);
+            }
+            return null != value ? (String[]) value : new String[0];
         } catch (Exception e) {
             LOG.error("Error obtaining annotated labels for Definition with id " + getId(definition));
         }
-        return Collections.emptySet();
-    }
-
-    @Override
-    public Set<?> getPropertySets(final T definition) {
-        Collection<Field> fields = getFieldAnnotations(definition.getClass(),
-                                                       PropertySet.class);
-        if (null != fields) {
-            Set<Object> result = new LinkedHashSet<>();
-            fields.forEach(field -> {
-                try {
-                    Object v = _getValue(field,
-                                         PropertySet.class,
-                                         definition);
-                    result.add(v);
-                } catch (Exception e) {
-                    LOG.error("Error obtaining annotated property sets for Definition with id " + getId(definition));
-                }
-            });
-            return result;
-        }
-        return Collections.emptySet();
-    }
-
-    @Override
-    public Set<?> getProperties(final T definition) {
-        if (null != definition) {
-            final Set<Object> result = new HashSet<>();
-            // Obtain all properties from property sets.
-            Set<?> propertySetProperties = definitionUtils.getPropertiesFromPropertySets(definition);
-            if (null != propertySetProperties) {
-                result.addAll(propertySetProperties);
-            }
-            Collection<Field> fields = getFieldAnnotations(definition.getClass(),
-                                                           Property.class);
-            if (null != fields) {
-                fields.forEach(field -> {
-                    try {
-                        Object v = _getValue(field,
-                                             Property.class,
-                                             definition);
-                        result.add(v);
-                    } catch (Exception e) {
-                        LOG.error("Error obtaining annotated properties for Definition with id " + getId(definition));
-                    }
-                });
-                return result;
-            }
-        }
-        return Collections.emptySet();
-    }
-
-    @SuppressWarnings("unchecked")
-    private <V> V _getValue(final Field field,
-                            final Object annotation,
-                            final T definition) throws IllegalAccessException {
-        if (null != annotation) {
-            field.setAccessible(true);
-            return (V) field.get(definition);
-        }
-        return null;
+        return new String[0];
     }
 
     @Override
@@ -239,9 +225,7 @@ public class BackendDefinitionAdapter<T>
         if (null != type) {
             Definition annotation = getClassAnnotation(type,
                                                        Definition.class);
-            if (null != annotation) {
-                return annotation;
-            }
+            return annotation;
         }
         return null;
     }
@@ -252,15 +236,14 @@ public class BackendDefinitionAdapter<T>
                 .filter(t -> !t.isPrimitive())
                 .filter(t -> Objects.nonNull(getClassAnnotation(t, Definition.class)))
                 .map(this::findBaseParent)
-                .map(this::getDefinitionId)
+                .map(BackendDefinitionAdapter::getDefinitionId)
                 .orElse(null);
     }
 
     /**
      * Find on the parent hierarchy of the given type the Class that is a BaseType
-     * @param type
-     * @return
      */
+    @SuppressWarnings("all")
     private Class findBaseParent(final Class type) {
         return (Objects.isNull(type) || Object.class.equals(type)
                 ? null
@@ -275,15 +258,14 @@ public class BackendDefinitionAdapter<T>
         throw new UnsupportedOperationException("Not implemented yet. Must keep some collection for this. ");
     }
 
+    @SuppressWarnings("all")
     private boolean isBaseType(final Class<?> type) {
         Field[] fields = type.getDeclaredFields();
-        if (null != fields) {
-            for (Field field : fields) {
-                for (Class a : DEF_ANNOTATIONS) {
-                    Annotation annotation = field.getAnnotation(a);
-                    if (null != annotation) {
-                        return true;
-                    }
+        for (Field field : fields) {
+            for (Class a : DEF_ANNOTATIONS) {
+                Annotation annotation = field.getAnnotation(a);
+                if (null != annotation) {
+                    return true;
                 }
             }
         }

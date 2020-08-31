@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.processors;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public abstract class AbstractBindableAdapterGenerator extends AbstractAdapterGenerator {
 
@@ -32,10 +31,10 @@ public abstract class AbstractBindableAdapterGenerator extends AbstractAdapterGe
                  fieldNamesList);
     }
 
-    protected void addSetFields(final String fieldName,
-                                final Map<String, Object> ctxt,
-                                final Map<String, Set<String>> fieldsMap) {
-        List<ProcessingElementSet> fieldNamesList = toElementSet(fieldsMap);
+    protected void addListFields(final String fieldName,
+                                 final Map<String, Object> ctxt,
+                                 final Map<String, List<String>> fieldsMap) {
+        List<ProcessingElementList> fieldNamesList = toElementList(fieldsMap);
         ctxt.put(fieldName + "Size",
                  fieldNamesList.size());
         ctxt.put(fieldName,

@@ -16,65 +16,36 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
-import java.util.Map;
-
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-
 public abstract class PropertyAdapterWrapper<T, V, A extends PropertyAdapter<T, V>> implements PropertyAdapter<T, V> {
 
-    protected final A adapter;
+    protected A adapter;
 
     protected PropertyAdapterWrapper() {
         this(null);
     }
 
-    public PropertyAdapterWrapper(final A adapter) {
+    public PropertyAdapterWrapper(A adapter) {
         this.adapter = adapter;
     }
 
     @Override
-    public String getId(final T pojo) {
+    public String getId(T pojo) {
         return adapter.getId(pojo);
     }
 
     @Override
-    public PropertyType getType(final T pojo) {
-        return adapter.getType(pojo);
-    }
-
-    @Override
-    public String getCaption(final T pojo) {
+    public String getCaption(T pojo) {
         return adapter.getCaption(pojo);
     }
 
     @Override
-    public String getDescription(final T pojo) {
-        return adapter.getDescription(pojo);
-    }
-
-    @Override
-    public boolean isReadOnly(final T pojo) {
-        return adapter.isReadOnly(pojo);
-    }
-
-    @Override
-    public boolean isOptional(final T pojo) {
-        return adapter.isOptional(pojo);
-    }
-
-    @Override
-    public V getValue(final T pojo) {
+    public V getValue(T pojo) {
         return adapter.getValue(pojo);
     }
 
     @Override
-    public Map<V, String> getAllowedValues(final T pojo) {
-        return adapter.getAllowedValues(pojo);
-    }
-
-    @Override
-    public void setValue(final T pojo,
-                         final V value) {
+    public void setValue(T pojo,
+                         V value) {
         adapter.setValue(pojo,
                          value);
     }
@@ -85,7 +56,7 @@ public abstract class PropertyAdapterWrapper<T, V, A extends PropertyAdapter<T, 
     }
 
     @Override
-    public boolean accepts(final Class<?> type) {
+    public boolean accepts(Class<?> type) {
         return adapter.accepts(type);
     }
 }

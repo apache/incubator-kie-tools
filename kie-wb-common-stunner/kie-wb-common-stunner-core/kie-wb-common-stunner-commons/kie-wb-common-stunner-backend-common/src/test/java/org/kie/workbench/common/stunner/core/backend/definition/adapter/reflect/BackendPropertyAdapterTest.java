@@ -20,15 +20,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.FooProperty1TestBean;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.FooProperty2TestBean;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
-import org.kie.workbench.common.stunner.core.definition.property.type.BooleanType;
-import org.kie.workbench.common.stunner.core.definition.property.type.StringType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -54,40 +48,9 @@ public class BackendPropertyAdapterTest extends AbstractBackendAdapterTest {
     }
 
     @Test
-    public void testIsOptional() {
-        final boolean optional = tested.isOptional(instance);
-        assertTrue(optional);
-    }
-
-    @Test
-    public void testIsReadOnly() {
-        final boolean readOnly = tested.isReadOnly(instance);
-        assertFalse(readOnly);
-    }
-
-    @Test
     public void testGetCaption() {
         final String title = tested.getCaption(instance);
         assertEquals(FooProperty1TestBean.CAPTION, title);
-    }
-
-    @Test
-    public void testGetDescription() {
-        final String description = tested.getDescription(instance);
-        assertEquals(FooProperty1TestBean.DESCRIPTION, description);
-    }
-
-    @Test
-    public void testGetPropertyType() {
-        final PropertyType type = tested.getType(instance);
-        assertEquals(StringType.class, type.getClass());
-    }
-
-    @Test
-    public void testGetPropertyTypeFromAnnotation() {
-        final FooProperty2TestBean p = new FooProperty2TestBean(FOO1_VALUE);
-        final PropertyType type = tested.getType(p);
-        assertEquals(BooleanType.class, type.getClass());
     }
 
     @Test

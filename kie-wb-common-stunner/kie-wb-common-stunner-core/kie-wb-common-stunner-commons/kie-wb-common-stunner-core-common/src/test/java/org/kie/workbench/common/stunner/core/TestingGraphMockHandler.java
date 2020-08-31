@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -29,7 +28,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapte
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -132,10 +130,6 @@ public class TestingGraphMockHandler {
         return graphAPI.getPropertyAdapter();
     }
 
-    public PropertySetAdapter getPropertySetAdapter() {
-        return graphAPI.getPropertySetAdapter();
-    }
-
     public DefinitionSetRuleAdapter getRuleAdapter() {
         return graphAPI.getRuleAdapter();
     }
@@ -165,7 +159,7 @@ public class TestingGraphMockHandler {
     }
 
     public Object newDef(final String id,
-                         final Optional<Set<String>> labels) {
+                         final Optional<String[]> labels) {
         final Object def = mock(Object.class);
         mockDefAttributes(def,
                           id,
@@ -176,7 +170,7 @@ public class TestingGraphMockHandler {
     @SuppressWarnings("unchecked")
     public void mockDefAttributes(final Object def,
                                   final String id,
-                                  final Optional<Set<String>> labels) {
+                                  final Optional<String[]> labels) {
         doReturn(DefinitionId.build(id)).when(getDefinitionAdapter()).getId(eq(def));
         if (labels.isPresent()) {
             doReturn(labels.get()).when(getDefinitionAdapter()).getLabels(eq(def));
@@ -185,7 +179,7 @@ public class TestingGraphMockHandler {
 
     public Node newNode(String uuid,
                         String id,
-                        Optional<Set<String>> labels) {
+                        Optional<String[]> labels) {
         return newViewNode(uuid,
                            Optional.of(newDef(id,
                                               labels)),
@@ -226,7 +220,7 @@ public class TestingGraphMockHandler {
 
     public Edge newEdge(String uuid,
                         String id,
-                        Optional<Set<String>> labels) {
+                        Optional<String[]> labels) {
         final Object definition = newDef(id,
                                          labels);
         return newEdge(uuid, definition);

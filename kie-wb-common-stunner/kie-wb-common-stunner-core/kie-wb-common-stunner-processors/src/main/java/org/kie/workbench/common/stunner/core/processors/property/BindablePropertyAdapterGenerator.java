@@ -21,8 +21,6 @@ import java.util.Map;
 
 import javax.annotation.processing.Messager;
 
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterFactory;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertyAdapterProxy;
 import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.ProcessingPropertyAnnotations;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
@@ -43,37 +41,11 @@ public class BindablePropertyAdapterGenerator extends AbstractBindableAdapterGen
                  packageName);
         root.put("className",
                  className);
-        root.put("parentAdapterClassName",
-                 BindablePropertyAdapterProxy.class.getName());
-        root.put("adapterFactoryClassName",
-                 BindableAdapterFactory.class.getName());
         root.put("generatedByClassName",
                  BindablePropertyAdapterGenerator.class.getName());
         addFields("valuePropNames",
                   root,
                   processingPropertyAnnotations.getValueFieldNames());
-        addFields("captionPropNames",
-                  root,
-                  processingPropertyAnnotations.getCaptionFieldNames());
-        addFields("descriptionPropNames",
-                  root,
-                  processingPropertyAnnotations.getDescriptionFieldNames());
-        addFields("propTypePropNames",
-                  root,
-                  processingPropertyAnnotations.getTypeFieldNames());
-        addFields("propTypes",
-                  root,
-                  processingPropertyAnnotations.getTypes());
-        addFields("readOnlyPropNames",
-                  root,
-                  processingPropertyAnnotations.getReadOnlyFieldNames());
-        addFields("optionalPropNames",
-                  root,
-                  processingPropertyAnnotations.getOptionalFieldNames());
-        addFields("allowedValuesPropNames",
-                  root,
-                  processingPropertyAnnotations.getAllowedValuesFieldNames());
-
         //Generate code
         return writeTemplate(packageName,
                              className,

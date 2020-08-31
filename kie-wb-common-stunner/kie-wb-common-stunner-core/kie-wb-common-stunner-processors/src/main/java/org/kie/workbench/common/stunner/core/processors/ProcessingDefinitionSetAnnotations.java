@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.processors;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,7 +25,7 @@ import org.kie.workbench.common.stunner.core.processors.definition.TypeConstruct
 public class ProcessingDefinitionSetAnnotations {
 
     private final Map<String, String> descriptionFieldNames = new HashMap<>();
-    private final Set<String> definitionIds = new HashSet<>();
+    private final Map<String, Set<String>> definitionIds = new HashMap<>();
     private final Map<String, TypeConstructor> builderFieldNames = new HashMap<>();
     private final Map<String, String> graphTypes = new HashMap<>();
     private final Map<String, String> qualifiers = new HashMap<>();
@@ -36,7 +35,7 @@ public class ProcessingDefinitionSetAnnotations {
         return descriptionFieldNames;
     }
 
-    public Set<String> getDefinitionIds() {
+    public Map<String, Set<String>> getDefinitionIds() {
         return definitionIds;
     }
 

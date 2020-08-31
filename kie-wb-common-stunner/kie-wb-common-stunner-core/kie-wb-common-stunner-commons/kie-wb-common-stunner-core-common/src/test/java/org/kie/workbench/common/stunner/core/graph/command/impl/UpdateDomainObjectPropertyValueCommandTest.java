@@ -45,7 +45,7 @@ public class UpdateDomainObjectPropertyValueCommandTest extends AbstractGraphCom
         when(propertyAdapter.getValue(domainObject.getNameProperty())).thenReturn(PROPERTY_OLD_VALUE);
 
         this.command = new UpdateDomainObjectPropertyValueCommand(domainObject,
-                                                                  TestingSimpleDomainObject.NAME_FIELD,
+                                                                  TestingSimpleDomainObject.NAME,
                                                                   PROPERTY_VALUE);
     }
 

@@ -38,7 +38,6 @@ import static org.mockito.Mockito.when;
 public class ClientStunnerTranslationServiceTest {
 
     public static final String DEFINITION_SET = "org.kie.workbench.common.stunner.core.test.DefinitionSet";
-    public static final String PROPERTY_SET = "org.kie.workbench.common.stunner.core.test.PropertySet";
     public static final String DEFINITION = "org.kie.workbench.common.stunner.core.test.Definition";
     public static final String PROPERTY = "org.kie.workbench.common.stunner.core.test.Property";
 
@@ -76,20 +75,10 @@ public class ClientStunnerTranslationServiceTest {
         verify(translationService).getTranslation(getKey(DEFINITION,
                                                          DESCRIPTION_SUFFIX));
 
-        stunnerTranslationService.getPropertySetName(PROPERTY_SET);
-
-        verify(translationService).getTranslation(getKey(PROPERTY_SET,
-                                                         CAPTION_SUFFIX));
-
         stunnerTranslationService.getPropertyCaption(PROPERTY);
 
         verify(translationService).getTranslation(getKey(PROPERTY,
                                                          CAPTION_SUFFIX));
-
-        stunnerTranslationService.getPropertyDescription(PROPERTY);
-
-        verify(translationService).getTranslation(getKey(PROPERTY,
-                                                         DESCRIPTION_SUFFIX));
     }
 
     @Test

@@ -25,7 +25,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
@@ -36,18 +35,18 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 public final class UpdateDomainObjectPropertyValueCommand extends AbstractGraphCommand {
 
     private final DomainObject domainObject;
-    private final String propertyId;
+    private final String field;
     private final Object value;
 
     private Object oldValue;
 
     public UpdateDomainObjectPropertyValueCommand(final @MapsTo("domainObject") DomainObject domainObject,
-                                                  final @MapsTo("propertyId") String propertyId,
+                                                  final @MapsTo("field") String field,
                                                   final @MapsTo("value") Object value) {
         this.domainObject = PortablePreconditions.checkNotNull("domainObject",
                                                                domainObject);
-        this.propertyId = PortablePreconditions.checkNotNull("propertyId",
-                                                             propertyId);
+        this.field = PortablePreconditions.checkNotNull("field",
+                                                        field);
         this.value = value;
     }
 
@@ -60,7 +59,7 @@ public final class UpdateDomainObjectPropertyValueCommand extends AbstractGraphC
     @SuppressWarnings("unchecked")
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
         final DefinitionManager definitionManager = context.getDefinitionManager();
-        final Object p = GraphUtils.getPropertyByField(definitionManager, domainObject, propertyId);
+        final Object p = definitionManager.adapters().forDefinition().getProperty(domainObject, field).get();
         final AdapterManager adapterManager = definitionManager.adapters();
         final AdapterRegistry adapterRegistry = adapterManager.registry();
         final PropertyAdapter<Object, Object> adapter = (PropertyAdapter<Object, Object>) adapterRegistry.getPropertyAdapter(p.getClass());
@@ -73,13 +72,13 @@ public final class UpdateDomainObjectPropertyValueCommand extends AbstractGraphC
     @Override
     public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
         final UpdateDomainObjectPropertyValueCommand undoCommand = new UpdateDomainObjectPropertyValueCommand(domainObject,
-                                                                                                              propertyId,
+                                                                                                              field,
                                                                                                               oldValue);
         return undoCommand.execute(context);
     }
 
     @Override
     public String toString() {
-        return "UpdateDomainObjectPropertyValueCommand [domainObject=" + domainObject + ", property=" + propertyId + ", value=" + value + "]";
+        return "UpdateDomainObjectPropertyValueCommand [domainObject=" + domainObject + ", field=" + field + ", value=" + value + "]";
     }
 }

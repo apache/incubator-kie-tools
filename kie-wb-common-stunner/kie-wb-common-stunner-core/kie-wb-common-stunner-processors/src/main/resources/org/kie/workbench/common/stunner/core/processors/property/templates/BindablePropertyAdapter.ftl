@@ -16,90 +16,33 @@
 
 package ${packageName};
 
-import ${parentAdapterClassName};
-
+import java.util.HashMap;
 import javax.annotation.Generated;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterFactory;
+
+import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapterWrapper;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterFunctions;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertyAdapterProxy;
-import org.kie.workbench.common.stunner.core.definition.property.*;
-import org.kie.workbench.common.stunner.core.definition.property.type.*;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindablePropertyAdapterImpl;
+import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 
 @Generated("${generatedByClassName}")
 @ApplicationScoped
-public class ${className} extends ${parentAdapterClassName}<Object, Object> {
-
-    private static final Map<Class, String> propValueFieldNames = new HashMap<Class, String>(${valuePropNamesSize}) {{
-        <#list valuePropNames as valuePropName>
-            put( ${valuePropName.className}.class, "${valuePropName.methodName}" );
-        </#list>
-
-    }};
-
-    private static final Map<Class, String> propAllowedValuesFieldNames = new HashMap<Class, String>(${allowedValuesPropNamesSize}) {{
-        <#list allowedValuesPropNames as allowedValuesPropName>
-            put( ${allowedValuesPropName.className}.class, "${allowedValuesPropName.methodName}" );
-        </#list>
-    }};
-
-    private static final Map<Class, String> propTypeFieldNames = new HashMap<Class, String>(${propTypePropNamesSize}) {{
-        <#list propTypePropNames as propTypePropName>
-              put( ${propTypePropName.className}.class, "${propTypePropName.methodName}" );
-        </#list>
-    }};
-
-    private static final Map<Class, PropertyType> propTypes = new HashMap<Class, PropertyType>(${valuePropNamesSize}) {{
-        <#list propTypes as pType>
-            put( ${pType.className}.class, new ${pType.methodName}() );
-        </#list>
-    }};
-
-    private static final Map<Class, String> propCaptionFieldNames = new HashMap<Class, String>(${captionPropNamesSize}) {{
-        <#list captionPropNames as captionPropName>
-              put( ${captionPropName.className}.class, "${captionPropName.methodName}" );
-        </#list>
-    }};
-
-    private static final Map<Class, String> propDescriptionFieldNames = new HashMap<Class, String>(${descriptionPropNamesSize}) {{
-        <#list descriptionPropNames as descriptionPropName>
-              put( ${descriptionPropName.className}.class, "${descriptionPropName.methodName}" );
-        </#list>
-    }};
-
-    private static final Map<Class, String> propReadOnlyFieldNames = new HashMap<Class, String>(${readOnlyPropNamesSize}) {{
-        <#list readOnlyPropNames as readOnlyPropName>
-            put( ${readOnlyPropName.className}.class, "${readOnlyPropName.methodName}" );
-        </#list>
-    }};
-
-    private static final Map<Class, String> propOptionalFieldNames = new HashMap<Class, String>(${optionalPropNamesSize}) {{
-        <#list optionalPropNames as optionalPropName>
-           put( ${optionalPropName.className}.class, "${optionalPropName.methodName}" );
-        </#list>
-    }};
-
-    protected ${className}() {
-    }
+public class ${className} extends PropertyAdapterWrapper<Object, Object, BindablePropertyAdapter<Object, Object>> {
 
     @Inject
-    public ${className}(${adapterFactoryClassName} adapterFactory) {
-        super(adapterFactory);
+    public ${className}(StunnerTranslationService translationService,
+                            BindableAdapterFunctions functions) {
+        super(BindablePropertyAdapterImpl.create(translationService, functions, new HashMap<>(${valuePropNamesSize})));
     }
 
-    @Override
-    protected void setBindings(final BindablePropertyAdapter<Object, Object> adapter) {
-        adapter.setBindings(    propTypeFieldNames,
-                                propTypes,
-                                propCaptionFieldNames,
-                                propDescriptionFieldNames,
-                                propReadOnlyFieldNames,
-                                propOptionalFieldNames,
-                                propValueFieldNames,
-                                propAllowedValuesFieldNames );
+    @PostConstruct
+    public void init() {
+        <#list valuePropNames as valuePropName>
+            adapter.addBinding(${valuePropName.className}.class, "${valuePropName.methodName}");
+        </#list>
     }
 
 }

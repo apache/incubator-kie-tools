@@ -24,7 +24,6 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 /**
@@ -34,18 +33,18 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 public final class UpdateElementPropertyValueCommand extends AbstractGraphCommand {
 
     private final String elementUUID;
-    private final String propertyId;
+    private final String field;
     private final Object value;
     private Object oldValue;
     private transient Element<?> element;
 
     public UpdateElementPropertyValueCommand(final @MapsTo("elementUUID") String elementUUID,
-                                             final @MapsTo("propertyId") String propertyId,
+                                             final @MapsTo("field") String field,
                                              final @MapsTo("value") Object value) {
         this.elementUUID = PortablePreconditions.checkNotNull("elementUUID",
                                                               elementUUID);
-        this.propertyId = PortablePreconditions.checkNotNull("propertyId",
-                                                             propertyId);
+        this.field = PortablePreconditions.checkNotNull("field",
+                                                        field);
         this.value = value;
 
         this.element = null;
@@ -70,9 +69,8 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
     @SuppressWarnings("unchecked")
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
         final Element<Definition<?>> element = (Element<Definition<?>>) getNullSafeElement(context);
-        final Object p = GraphUtils.getProperty(context.getDefinitionManager(),
-                                                element,
-                                                propertyId);
+        final Object p = context.getDefinitionManager().adapters().forDefinition().getProperty(element.getContent().getDefinition(),
+                                                                                               field).get();
         final PropertyAdapter<Object, Object> adapter = (PropertyAdapter<Object, Object>) context.getDefinitionManager().adapters().registry().getPropertyAdapter(p.getClass());
         oldValue = adapter.getValue(p);
         adapter.setValue(p,
@@ -83,7 +81,7 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
     @Override
     public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
         final UpdateElementPropertyValueCommand undoCommand = new UpdateElementPropertyValueCommand(getNullSafeElement(context),
-                                                                                                    propertyId,
+                                                                                                    field,
                                                                                                     oldValue);
         return undoCommand.execute(context);
     }
@@ -92,8 +90,8 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
         return oldValue;
     }
 
-    public String getPropertyId() {
-        return propertyId;
+    public String getField() {
+        return field;
     }
 
     public Object getValue() {
@@ -114,6 +112,6 @@ public final class UpdateElementPropertyValueCommand extends AbstractGraphComman
 
     @Override
     public String toString() {
-        return "UpdateElementPropertyValueCommand [element=" + elementUUID + ", property=" + propertyId + ", value=" + value + "]";
+        return "UpdateElementPropertyValueCommand [element=" + elementUUID + ", field=" + field + ", value=" + value + "]";
     }
 }

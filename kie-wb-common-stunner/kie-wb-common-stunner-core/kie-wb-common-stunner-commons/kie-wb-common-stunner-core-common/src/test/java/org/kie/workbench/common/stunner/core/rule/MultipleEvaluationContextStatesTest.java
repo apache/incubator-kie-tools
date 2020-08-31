@@ -35,7 +35,6 @@ import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
-import static org.kie.workbench.common.stunner.core.TestingGraphInstances.newLabelsSet;
 import static org.kie.workbench.common.stunner.core.command.util.CommandUtils.isError;
 import static org.kie.workbench.common.stunner.core.command.util.CommandUtils.isWarn;
 
@@ -132,17 +131,17 @@ public class MultipleEvaluationContextStatesTest {
         TestGraph result = new TestGraph();
         result.graph = graphTestHandler.graph;
         result.startNodeBean = graphTestHandler.newDef("startNodeBeanId",
-                                                       newLabelsSet("startNodeBeanLabel"));
+                                                       Optional.of(new String[]{"startNodeBeanLabel", "all"}));
         result.startNode =
                 graphTestHandler.newNode("startNodeUUID",
                                          Optional.of(result.startNodeBean));
         result.intermNodeBean = graphTestHandler.newDef("intermNodeBeanId",
-                                                        newLabelsSet("intermNodeBeanLabel"));
+                                                        Optional.of(new String[]{"intermNodeBeanLabel", "all"}));
         result.intermNode =
                 graphTestHandler.newNode("intermNodeUUID",
                                          Optional.of(result.intermNodeBean));
         result.endNodeBean = graphTestHandler.newDef("endNodeBeanId",
-                                                     newLabelsSet("endNodeBeanLabel"));
+                                                     Optional.of(new String[]{"endNodeBeanLabel", "all"}));
         result.endNode =
                 graphTestHandler.newNode("endNodeUUID",
                                          Optional.of(result.endNodeBean));

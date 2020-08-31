@@ -19,9 +19,7 @@ package org.kie.workbench.common.stunner.core;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -38,18 +36,18 @@ import org.kie.workbench.common.stunner.core.rule.impl.Occurrences;
 public class TestingGraphInstanceBuilder {
 
     public static final String DEF0_ID = "def0";
-    public static final Set<String> DEF0_LABELS = new Sets.Builder<String>().add("label0").add("all").build();
+    public static final String[] DEF0_LABELS = new String[]{"label0", "all"};
     //public static final Set<String> DEF0_LABELS = Collections.singleton("label0");
     public static final String DEF1_ID = "def1";
-    public static final Set<String> DEF1_LABELS = new Sets.Builder<String>().add("label1").add("all").build();
+    public static final String[] DEF1_LABELS = new String[]{"label1", "all"};
     public static final String DEF2_ID = "def2";
-    public static final Set<String> DEF2_LABELS = new Sets.Builder<String>().add("label2").add("dockLabel").add("all").build();
+    public static final String[] DEF2_LABELS = new String[]{"label2", "dockLabel", "all"};
     public static final String DEF3_ID = "def3";
-    public static final Set<String> DEF3_LABELS = new Sets.Builder<String>().add("label3").add("all").build();
+    public static final String[] DEF3_LABELS = new String[]{"label3", "all"};
     public static final String DEF4_ID = "def4";
-    public static final Set<String> DEF4_LABELS = new Sets.Builder<String>().add("label4").add("all").build();
+    public static final String[] DEF4_LABELS = new String[]{"label4", "all"};
     public static final String DEF5_ID = "def5";
-    public static final Set<String> DEF5_LABELS = new Sets.Builder<String>().add("label4").add("dockLabel").add("all").build();
+    public static final String[] DEF5_LABELS = new String[]{"label4", "dockLabel", "all"};
 
     public static final String EDGE1_ID = "edge11d";
     public static final String EDGE2_ID = "edge21d";

@@ -30,6 +30,7 @@ import javax.enterprise.inject.Instance;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetService;
@@ -225,13 +226,14 @@ public abstract class AbstractVFSDiagramService<M extends Metadata, D extends Di
         return diagramFilePath.getParent().resolve(fileName);
     }
 
-    private String getDiagramSvgFileName(Diagram diagram) {
-        final Object metaProperty = definitionManager.adapters()
-                .forDefinition()
-                .getMetaProperty(PropertyMetaTypes.ID,
-                                 ((Definition) diagram.getGraph()
-                                         .getNode(diagram.getMetadata().getCanvasRootUUID())
-                                         .getContent()).getDefinition());
+    @SuppressWarnings("all")
+    private String getDiagramSvgFileName(final Diagram diagram) {
+        final DefinitionAdapter<Object> definitionAdapter = definitionManager.adapters().forDefinition();
+        final Object pojo = ((Definition) diagram.getGraph()
+                .getNode(diagram.getMetadata().getCanvasRootUUID())
+                .getContent()).getDefinition();
+        final String metaPropertyField = definitionAdapter.getMetaPropertyField(pojo, PropertyMetaTypes.ID);
+        final Object metaProperty = definitionAdapter.getProperty(pojo, metaPropertyField).get();
         final Object diagramFileId = definitionManager.adapters().forProperty().getValue(metaProperty);
         return String.valueOf(diagramFileId).concat(SVG_SUFFIX);
     }

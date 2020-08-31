@@ -166,6 +166,7 @@ public class ObserverBuilderControlTest {
         when(adapters.forDefinition()).thenReturn(definitionAdapter);
         when(adapters.forRules()).thenReturn(rulesAdapter);
         when(definitionAdapter.getId(DEF)).thenReturn(DefinitionId.build(DEF_ID));
+        when(definitionAdapter.getLabels(DEF)).thenReturn(new String[0]);
 
         when(clientDefinitionManager.adapters()).thenReturn(adapters);
         when(clientDefinitionManager.definitionSets()).thenReturn(mock(TypeDefinitionSetRegistry.class));

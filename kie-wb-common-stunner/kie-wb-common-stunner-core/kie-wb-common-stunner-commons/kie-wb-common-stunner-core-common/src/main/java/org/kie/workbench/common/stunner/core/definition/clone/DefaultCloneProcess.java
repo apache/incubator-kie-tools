@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 
 @ApplicationScoped
@@ -37,8 +38,11 @@ public class DefaultCloneProcess extends AbstractCloneProcess {
 
     @Override
     public <S, T> T clone(S source, T target) {
-        final Object nameProperty = adapterManager.forDefinition().getMetaProperty(PropertyMetaTypes.NAME, source);
-        final Object targetNameProperty = adapterManager.forDefinition().getMetaProperty(PropertyMetaTypes.NAME, target);
+        final DefinitionAdapter<Object> definitionAdapter = adapterManager.forDefinition();
+        final String namePropertyField = definitionAdapter.getMetaPropertyField(source, PropertyMetaTypes.NAME);
+        final String targetNamePropertyField = definitionAdapter.getMetaPropertyField(target, PropertyMetaTypes.NAME);
+        final Object nameProperty = definitionAdapter.getProperty(source, namePropertyField).get();
+        final Object targetNameProperty = definitionAdapter.getProperty(target, targetNamePropertyField).get();
         final Object namePropertyValue = adapterManager.forProperty().getValue(nameProperty);
 
         adapterManager.forProperty().setValue(targetNameProperty, namePropertyValue);

@@ -26,12 +26,10 @@ import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 
-@Definition(graphFactory = NodeFactory.class, nameField = FooTestBean.FOO_PROPERTY_NAME)
+@Definition()
 public class FooTestBean {
-
-    public static final String FOO_PROPERTY_NAME = "fooProperty";
 
     @Category
     public static final String CATEGORY = "cat1";
@@ -51,7 +49,7 @@ public class FooTestBean {
     @PropertySet
     public FooPropertySetTestBean fooPropertySet;
 
-    @Property
+    @Property(meta = PropertyMetaTypes.NAME)
     public FooProperty2TestBean fooProperty;
 
     public FooTestBean(String value1,

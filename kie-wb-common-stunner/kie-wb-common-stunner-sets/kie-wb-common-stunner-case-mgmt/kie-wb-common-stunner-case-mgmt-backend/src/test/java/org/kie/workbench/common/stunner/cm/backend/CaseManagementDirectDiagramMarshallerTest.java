@@ -33,7 +33,6 @@ import org.kie.workbench.common.stunner.core.backend.StunnerTestingModelFactory;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertyAdapter;
-import org.kie.workbench.common.stunner.core.backend.definition.adapter.reflect.BackendPropertySetAdapter;
 import org.kie.workbench.common.stunner.core.backend.service.XMLEncoderDiagramMetadataMarshaller;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.factory.impl.EdgeFactoryImpl;
@@ -90,12 +89,9 @@ public class CaseManagementDirectDiagramMarshallerTest {
         StunnerTestingModelFactory testScopeModelFactory =
                 new StunnerTestingModelFactory(new CaseManagementDefinitionSet.CaseManagementDefinitionSetBuilder().build());
         // Definition manager.
-        final BackendDefinitionAdapter definitionAdapter = new BackendDefinitionAdapter(definitionUtils);
+        final BackendDefinitionAdapter definitionAdapter = new BackendDefinitionAdapter();
         final BackendDefinitionSetAdapter definitionSetAdapter = new BackendDefinitionSetAdapter(definitionAdapter);
-        final BackendPropertySetAdapter propertySetAdapter = new BackendPropertySetAdapter();
         final BackendPropertyAdapter propertyAdapter = new BackendPropertyAdapter();
-        mockAdapterManager(definitionAdapter, definitionSetAdapter, propertySetAdapter, propertyAdapter);
-        mockAdapterRegistry(definitionAdapter, definitionSetAdapter, propertySetAdapter, propertyAdapter);
         applicationFactoryManager = new MockApplicationFactoryManager(definitionManager,
                                                                       new GraphFactoryImpl(definitionManager),
                                                                       testScopeModelFactory,
@@ -121,21 +117,17 @@ public class CaseManagementDirectDiagramMarshallerTest {
 
     private void mockAdapterRegistry(BackendDefinitionAdapter definitionAdapter,
                                      BackendDefinitionSetAdapter definitionSetAdapter,
-                                     BackendPropertySetAdapter propertySetAdapter,
                                      BackendPropertyAdapter propertyAdapter) {
         when(adapterRegistry.getDefinitionSetAdapter(any(Class.class))).thenReturn(definitionSetAdapter);
         when(adapterRegistry.getDefinitionAdapter(any(Class.class))).thenReturn(definitionAdapter);
-        when(adapterRegistry.getPropertySetAdapter(any(Class.class))).thenReturn(propertySetAdapter);
         when(adapterRegistry.getPropertyAdapter(any(Class.class))).thenReturn(propertyAdapter);
     }
 
     private void mockAdapterManager(BackendDefinitionAdapter definitionAdapter,
                                     BackendDefinitionSetAdapter definitionSetAdapter,
-                                    BackendPropertySetAdapter propertySetAdapter,
                                     BackendPropertyAdapter propertyAdapter) {
         when(adapterManager.forDefinitionSet()).thenReturn(definitionSetAdapter);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
-        when(adapterManager.forPropertySet()).thenReturn(propertySetAdapter);
         when(adapterManager.forProperty()).thenReturn(propertyAdapter);
     }
 

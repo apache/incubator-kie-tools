@@ -40,6 +40,5 @@ public class DeepCloneProcessTest extends AbstractCloneProcessTest {
         testPropertySet(clone, def1, nameProperty2, nameValue);
         testPropertySet(clone, def1, textProperty2, textValue);
         testPropertySet(clone, def1, booleanProperty2, booleanValue);
-        testPropertySet(clone, def1, bindableProperty, bindableClonedValue);
     }
 }

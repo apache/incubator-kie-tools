@@ -41,11 +41,6 @@ public interface StunnerTranslationService {
     String getDefinitionSetDescription(String defSetId);
 
     /**
-     * Retrieves the name for the given Property Set ID
-     */
-    String getPropertySetName(String propertySetId);
-
-    /**
      * Retrieves the title for the given Definition ID
      */
     String getDefinitionTitle(String defId);
@@ -59,11 +54,6 @@ public interface StunnerTranslationService {
      * Retrieves the caption for the given Property ID
      */
     String getPropertyCaption(String propId);
-
-    /**
-     * Retrieves the description for the given Property ID
-     */
-    String getPropertyDescription(String propId);
 
     /**
      * Returns the localized message for the given rule violation.

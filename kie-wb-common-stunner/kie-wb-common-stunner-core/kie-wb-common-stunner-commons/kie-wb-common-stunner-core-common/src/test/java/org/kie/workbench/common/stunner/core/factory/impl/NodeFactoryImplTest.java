@@ -16,10 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.factory.impl;
 
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,8 +43,7 @@ public class NodeFactoryImplTest {
     public static final String UUID = "uuid1";
     public static final String DEF_TYPE_ID = "defType";
     public static final String DEF_ID = "defId";
-    public static final Set<String> LABELS = Arrays.asList("label1",
-                                                           "label2").stream().collect(Collectors.toSet());
+    public static final String[] LABELS = new String[]{"label1", "label2"};
     public static final Bounds BOUNDS = Bounds.create(10d, 10.6d, 1034.42d, 1032.26d);
 
     @Mock

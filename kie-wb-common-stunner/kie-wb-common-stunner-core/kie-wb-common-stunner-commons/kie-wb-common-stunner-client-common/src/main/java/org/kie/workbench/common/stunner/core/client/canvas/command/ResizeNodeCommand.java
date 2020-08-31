@@ -224,28 +224,25 @@ public class ResizeNodeCommand extends AbstractCanvasCompositeCommand {
                         .adapters().registry().getDefinitionAdapter(def.getClass());
         final List<Command<AbstractCanvasHandler, CanvasViolation>> result =
                 new LinkedList<>();
-        final Object width = adapter.getMetaProperty(PropertyMetaTypes.WIDTH,
-                                                     def);
-        if (null != width) {
+        final String widthField = adapter.getMetaPropertyField(def, PropertyMetaTypes.WIDTH);
+        if (null != widthField) {
             appendCommandForModelProperty(canvasHandler,
-                                          width,
+                                          widthField,
                                           w,
                                           result);
         }
-        final Object height = adapter.getMetaProperty(PropertyMetaTypes.HEIGHT,
-                                                      def);
-        if (null != height) {
+        final String heightField = adapter.getMetaPropertyField(def, PropertyMetaTypes.HEIGHT);
+        if (null != heightField) {
             appendCommandForModelProperty(canvasHandler,
-                                          height,
+                                          heightField,
                                           h,
                                           result);
         }
-        final Object radius = adapter.getMetaProperty(PropertyMetaTypes.RADIUS,
-                                                      def);
-        if (null != radius) {
+        final String radiusField = adapter.getMetaPropertyField(def, PropertyMetaTypes.RADIUS);
+        if (null != radiusField) {
             final double r = w > h ? (h / 2) : (w / 2);
             appendCommandForModelProperty(canvasHandler,
-                                          radius,
+                                          radiusField,
                                           r,
                                           result);
         }
@@ -253,12 +250,11 @@ public class ResizeNodeCommand extends AbstractCanvasCompositeCommand {
     }
 
     private void appendCommandForModelProperty(final AbstractCanvasHandler canvasHandler,
-                                               final Object property,
+                                               final String field,
                                                final Object value,
                                                final List<Command<AbstractCanvasHandler, CanvasViolation>> result) {
-        final String id = canvasHandler.getDefinitionManager().adapters().forProperty().getId(property);
         result.add(new UpdateElementPropertyCommand(candidate,
-                                                    id,
+                                                    field,
                                                     value));
     }
 

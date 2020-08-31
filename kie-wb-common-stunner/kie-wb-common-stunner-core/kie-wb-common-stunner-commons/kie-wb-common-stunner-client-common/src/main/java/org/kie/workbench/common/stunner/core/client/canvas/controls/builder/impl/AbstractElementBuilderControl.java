@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -99,7 +100,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     protected ParentAssignment getParentAssignment(final Node<View<?>, Edge> parent, final Object definition) {
 
         Objects.requireNonNull(definition);
-        final Set<String> labels = clientDefinitionManager.adapters().forDefinition().getLabels(definition);
+        final Set<String> labels = Arrays.stream(clientDefinitionManager.adapters().forDefinition().getLabels(definition)).collect(Collectors.toSet());
         final RuleSet ruleSet = canvasHandler.getRuleSet();
 
         // Check containment rules.
@@ -129,7 +130,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         final Object definition = request.getDefinition();
         final Node<View<?>, Edge> parent = getParent(x,
                                                      y);
-        final Set<String> labels = clientDefinitionManager.adapters().forDefinition().getLabels(definition);
+        final Set<String> labels = Arrays.stream(clientDefinitionManager.adapters().forDefinition().getLabels(definition)).collect(Collectors.toSet());
         final RuleSet ruleSet = canvasHandler.getRuleSet();
 
         // Check containment rules.
@@ -141,7 +142,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         final Map<String, Integer> graphLabelCount = GraphUtils.getLabelsCount(canvasHandler.getDiagram().getGraph(),
                                                                                labels);
         final DefaultRuleViolations cardinalityViolations = new DefaultRuleViolations();
-        labels.forEach(role -> {
+        for (String role : labels) {
             final Integer roleCount = Optional.ofNullable(graphLabelCount.get(role)).orElse(0);
             final RuleViolations violations =
                     ruleManager.evaluate(ruleSet,
@@ -149,10 +150,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                                                                                                  roleCount,
                                                                                                  Optional.of(CardinalityContext.Operation.ADD)));
             cardinalityViolations.addViolations(violations);
-        });
-        labels.stream().forEach(role -> {
-
-        });
+        }
         return isValid(cardinalityViolations);
     }
 

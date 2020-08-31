@@ -28,14 +28,15 @@ import org.kie.workbench.common.stunner.core.backend.definition.adapter.FooTestB
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.FooTestBeanBaseGrandParent;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.FooTestBeanBaseParent;
 import org.kie.workbench.common.stunner.core.backend.definition.adapter.FooTestBeanNoParent;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,8 +51,7 @@ public class BackendDefinitionAdapterTest extends AbstractBackendAdapterTest {
         final Set p = new HashSet<Object>() {{
             add(instance.fooPropertySet.fooProperty);
         }};
-        tested = new BackendDefinitionAdapter<>(utils);
-        when(utils.getPropertiesFromPropertySets(eq(instance))).thenReturn(p);
+        tested = new BackendDefinitionAdapter<>();
         when(adapterManager.forDefinition()).thenReturn(tested);
     }
 
@@ -81,41 +81,14 @@ public class BackendDefinitionAdapterTest extends AbstractBackendAdapterTest {
 
     @Test
     public void testGetLabels() {
-        final Set<String> labels = tested.getLabels(instance);
-        assertEquals(FooTestBean.LABELS, labels);
+        final String[] labels = tested.getLabels(instance);
+        assertArrayEquals(FooTestBean.LABELS.toArray(), labels);
     }
 
     @Test
     public void testGraphFactory() {
         final Class<? extends ElementFactory> graphFactoryType = tested.getGraphFactoryType(instance);
         assertEquals(NodeFactory.class, graphFactoryType);
-    }
-
-    @Test
-    public void testGetPropertySets() {
-        final Set<?> propertySets = tested.getPropertySets(instance);
-        assertEquals(1, propertySets.size());
-        assertEquals(instance.fooPropertySet, propertySets.iterator().next());
-    }
-
-    @Test
-    public void testGetProperties() {
-        final Set<?> properties = tested.getProperties(instance);
-        assertEquals(2, properties.size());
-        assertTrue(properties.contains(instance.fooProperty));
-        assertTrue(properties.contains(instance.fooPropertySet.fooProperty));
-    }
-
-    @Test
-    public void getNameField() {
-        final Optional<String> nameField = tested.getNameField(instance);
-        assertEquals(nameField.get(), FooTestBean.FOO_PROPERTY_NAME);
-    }
-
-    @Test
-    public void getPropertyByName() {
-        final Optional<?> property = tested.getProperty(instance, FooTestBean.FOO_PROPERTY_NAME);
-        assertEquals(property.get(), instance.fooProperty);
     }
 
     @Test
@@ -142,5 +115,25 @@ public class BackendDefinitionAdapterTest extends AbstractBackendAdapterTest {
         assertNull(baseType);
         baseType = tested.getBaseType(double.class);
         assertNull(baseType);
+    }
+
+    @Test
+    public void testGetProperties() {
+        String[] propertyFields = tested.getPropertyFields(instance);
+        assertEquals(2, propertyFields.length);
+        assertEquals("fooPropertySet.fooProperty", propertyFields[0]);
+        assertEquals("fooProperty", propertyFields[1]);
+        Optional<?> p0 = tested.getProperty(instance, "fooPropertySet.fooProperty");
+        assertTrue(p0.isPresent());
+        assertEquals(instance.fooPropertySet.fooProperty, p0.get());
+        Optional<?> p1 = tested.getProperty(instance, "fooProperty");
+        assertTrue(p1.isPresent());
+        assertEquals(instance.fooProperty, p1.get());
+    }
+
+    @Test
+    public void getNameField() {
+        String nameField = tested.getMetaPropertyField(instance, PropertyMetaTypes.NAME);
+        assertEquals("fooProperty", nameField);
     }
 }

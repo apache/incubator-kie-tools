@@ -161,8 +161,7 @@ public class DomainLookupFunctionsTest {
     @SuppressWarnings("unchecked")
     public void testLookupAllowedDefinitionsByLabels() {
         when(cache.getDefinitions(eq("label1"))).thenReturn(Collections.singleton(TestingGraphInstanceBuilder.DEF1_ID));
-        when(definitionsCache.getLabels(eq(TestingGraphInstanceBuilder.DEF1_ID)))
-                .thenReturn(TestingGraphInstanceBuilder.DEF1_LABELS);
+        when(definitionsCache.getLabels(eq(TestingGraphInstanceBuilder.DEF1_ID))).thenReturn(new HashSet<>(Arrays.asList(TestingGraphInstanceBuilder.DEF1_LABELS)));
         LookupAllowedDefinitionsByLabels function = new LookupAllowedDefinitionsByLabels(graph1Instance.graph,
                                                                                          new HashSet<String>(1) {{
                                                                                              add("label1");
@@ -184,8 +183,7 @@ public class DomainLookupFunctionsTest {
     @SuppressWarnings("unchecked")
     public void testLookupAllowedDefinitionsByLabelsWithFiltering() {
         when(cache.getDefinitions(eq("label1"))).thenReturn(Collections.singleton(TestingGraphInstanceBuilder.DEF1_ID));
-        when(definitionsCache.getLabels(eq(TestingGraphInstanceBuilder.DEF1_ID)))
-                .thenReturn(TestingGraphInstanceBuilder.DEF1_LABELS);
+        when(definitionsCache.getLabels(eq(TestingGraphInstanceBuilder.DEF1_ID))).thenReturn(new HashSet<>(Arrays.asList(TestingGraphInstanceBuilder.DEF1_LABELS)));
         LookupAllowedDefinitionsByLabels function = new LookupAllowedDefinitionsByLabels(graph1Instance.graph,
                                                                                          new HashSet<String>(1) {{
                                                                                              add("label1");
@@ -200,8 +198,8 @@ public class DomainLookupFunctionsTest {
     public void testLookupTargetConnectors() {
         CanConnect frmom3To1 = new CanConnect("cc1",
                                               TestingGraphInstanceBuilder.EDGE1_ID,
-                                              Collections.singletonList(new CanConnect.PermittedConnection(TestingGraphInstanceBuilder.DEF3_LABELS.iterator().next(),
-                                                                                                           TestingGraphInstanceBuilder.DEF1_LABELS.iterator().next())));
+                                              Collections.singletonList(new CanConnect.PermittedConnection(TestingGraphInstanceBuilder.DEF3_LABELS[0],
+                                                                                                           TestingGraphInstanceBuilder.DEF1_LABELS[0])));
         when(cache.getConnectionRules()).thenReturn(Collections.singletonList(frmom3To1));
         LookupTargetConnectors function = new LookupTargetConnectors(graph1Instance.endNode);
         Set<String> result = function.execute(context);

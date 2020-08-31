@@ -17,16 +17,16 @@
 package org.kie.workbench.common.stunner.core.processors;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.processors.definition.TypeConstructor;
 
 public class ProcessingDefinitionAnnotations {
 
     private final Map<String, String> baseTypes = new HashMap<>();
-    private final Map<String, Set<String>> propertySetFieldNames = new HashMap<>();
-    private final Map<String, Set<String>> propertyFieldNames = new HashMap<>();
+    private final Map<String, List<String>> propertyFieldNames = new HashMap<>();
+    private final Map<String, List<Boolean>> typedPropertyFields = new HashMap<>();
     private final Map<String, String> graphFactoryFieldNames = new HashMap<>();
     private final Map<String, String> idFieldNames = new HashMap<>();
     private final Map<String, String> labelsFieldNames = new HashMap<>();
@@ -35,21 +35,20 @@ public class ProcessingDefinitionAnnotations {
     private final Map<String, String> descriptionFieldNames = new HashMap<>();
     private final Map<String, TypeConstructor> builderFieldNames = new HashMap<>();
     private final Map<String, String[]> shapeDefs = new HashMap<>();
-    private final Map<String, String> nameFields = new HashMap<>();
 
     public Map<String, String> getBaseTypes() {
         return baseTypes;
     }
 
-    public Map<String, Set<String>> getPropertySetFieldNames() {
-        return propertySetFieldNames;
-    }
-
-    public Map<String, Set<String>> getPropertyFieldNames() {
+    public Map<String, List<String>> getPropertyFieldNames() {
         return propertyFieldNames;
     }
 
-    public Map<String, String> getGraphFactoryFieldNames() {
+    public Map<String, List<Boolean>> getTypedPropertyFields() {
+        return typedPropertyFields;
+    }
+
+    public Map<String, String> getGraphFactory() {
         return graphFactoryFieldNames;
     }
 
@@ -79,9 +78,5 @@ public class ProcessingDefinitionAnnotations {
 
     public Map<String, String[]> getShapeDefinitions() {
         return shapeDefs;
-    }
-
-    public Map<String, String> getNameFields() {
-        return nameFields;
     }
 }

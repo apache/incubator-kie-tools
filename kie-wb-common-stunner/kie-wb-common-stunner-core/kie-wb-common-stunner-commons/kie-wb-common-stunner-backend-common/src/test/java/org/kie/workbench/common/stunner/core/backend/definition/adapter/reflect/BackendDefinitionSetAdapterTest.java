@@ -40,7 +40,7 @@ public class BackendDefinitionSetAdapterTest extends AbstractBackendAdapterTest 
     public void setup() {
         super.setup();
         instance = new FooTestSet();
-        tested = new BackendDefinitionSetAdapter<>(new BackendDefinitionAdapter(utils));
+        tested = new BackendDefinitionSetAdapter<>(new BackendDefinitionAdapter());
         when(adapterManager.forDefinitionSet()).thenReturn(tested);
     }
 

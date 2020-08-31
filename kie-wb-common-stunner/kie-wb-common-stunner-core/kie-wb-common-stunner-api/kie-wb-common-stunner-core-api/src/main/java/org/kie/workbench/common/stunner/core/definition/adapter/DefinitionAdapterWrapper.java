@@ -17,12 +17,12 @@
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
 import java.util.Optional;
-import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 
-public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>> implements DefinitionAdapter<T> {
+public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>>
+        implements DefinitionAdapter<T> {
 
     protected final A adapter;
 
@@ -50,28 +50,18 @@ public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>
     }
 
     @Override
-    public Optional<String> getNameField(T pojo) {
-        return adapter.getNameField(pojo);
-    }
-
-    @Override
     public String getDescription(final T pojo) {
         return adapter.getDescription(pojo);
     }
 
     @Override
-    public Set<String> getLabels(final T pojo) {
+    public String[] getLabels(final T pojo) {
         return adapter.getLabels(pojo);
     }
 
     @Override
-    public Set<?> getPropertySets(final T pojo) {
-        return adapter.getPropertySets(pojo);
-    }
-
-    @Override
-    public Set<?> getProperties(final T pojo) {
-        return adapter.getProperties(pojo);
+    public String[] getPropertyFields(final T pojo) {
+        return adapter.getPropertyFields(pojo);
     }
 
     @Override
@@ -85,10 +75,9 @@ public abstract class DefinitionAdapterWrapper<T, A extends DefinitionAdapter<T>
     }
 
     @Override
-    public Object getMetaProperty(final PropertyMetaTypes metaType,
-                                  final T pojo) {
-        return adapter.getMetaProperty(metaType,
-                                       pojo);
+    public String getMetaPropertyField(final T pojo,
+                                       final PropertyMetaTypes metaType) {
+        return adapter.getMetaPropertyField(pojo, metaType);
     }
 
     @Override

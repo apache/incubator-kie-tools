@@ -23,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.processing.Messager;
 import javax.tools.Diagnostic;
@@ -97,11 +96,11 @@ public abstract class AbstractAdapterGenerator {
         return result;
     }
 
-    protected List<ProcessingElementSet> toElementSet(final Map<String, Set<String>> map) {
-        List<ProcessingElementSet> result = new LinkedList<>();
-        for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
-            result.add(new ProcessingElementSet(entry.getKey(),
-                                                entry.getValue()));
+    protected List<ProcessingElementList> toElementList(final Map<String, List<String>> map) {
+        List<ProcessingElementList> result = new LinkedList<>();
+        for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+            result.add(new ProcessingElementList(entry.getKey(),
+                                                 entry.getValue()));
         }
         return result;
     }

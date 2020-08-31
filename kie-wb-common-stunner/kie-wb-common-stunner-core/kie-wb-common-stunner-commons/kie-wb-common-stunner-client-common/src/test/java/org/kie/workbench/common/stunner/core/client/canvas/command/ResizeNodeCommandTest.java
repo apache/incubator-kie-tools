@@ -199,7 +199,7 @@ public class ResizeNodeCommandTest {
     private BoundingBox boundingBox;
 
     @Before
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     public void setup() {
         when(canvasHandler.getDefinitionManager()).thenReturn(definitionManager);
         when(definitionManager.adapters()).thenReturn(adapterManager);
@@ -211,12 +211,13 @@ public class ResizeNodeCommandTest {
         when(propertyAdapter.getId(eq(wProperty))).thenReturn(W_PROPERTY_ID);
         when(propertyAdapter.getId(eq(hProperty))).thenReturn(H_PROPERTY_ID);
         when(propertyAdapter.getId(eq(rProperty))).thenReturn(R_PROPERTY_ID);
-        when(definitionAdapter.getMetaProperty(eq(PropertyMetaTypes.WIDTH),
-                                               eq(definition))).thenReturn(wProperty);
-        when(definitionAdapter.getMetaProperty(eq(PropertyMetaTypes.HEIGHT),
-                                               eq(definition))).thenReturn(hProperty);
-        when(definitionAdapter.getMetaProperty(eq(PropertyMetaTypes.RADIUS),
-                                               eq(definition))).thenReturn(rProperty);
+
+        when(definitionAdapter.getMetaPropertyField(eq(definition), eq(PropertyMetaTypes.WIDTH))).thenReturn(W_PROPERTY_ID);
+        when(definitionAdapter.getMetaPropertyField(eq(definition), eq(PropertyMetaTypes.HEIGHT))).thenReturn(H_PROPERTY_ID);
+        when(definitionAdapter.getMetaPropertyField(eq(definition), eq(PropertyMetaTypes.RADIUS))).thenReturn(R_PROPERTY_ID);
+        when(definitionAdapter.getProperty(eq(definition), eq(W_PROPERTY_ID))).thenReturn((Optional) Optional.of(wProperty));
+        when(definitionAdapter.getProperty(eq(definition), eq(H_PROPERTY_ID))).thenReturn((Optional) Optional.of(hProperty));
+        when(definitionAdapter.getProperty(eq(definition), eq(R_PROPERTY_ID))).thenReturn((Optional) Optional.of(rProperty));
         when(element.getUUID()).thenReturn(ELEMENT_UUID);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(element.getContent()).thenReturn(elementContent);
@@ -279,24 +280,21 @@ public class ResizeNodeCommandTest {
         final UpdateElementPropertyCommand wPropertyCommand = (UpdateElementPropertyCommand) commands.get(0);
         assertEquals(element,
                      wPropertyCommand.getElement());
-        assertEquals(W_PROPERTY_ID,
-                     wPropertyCommand.getPropertyId());
+        assertEquals(W_PROPERTY_ID, wPropertyCommand.getField());
         assertEquals(boundingBox.getWidth(),
                      wPropertyCommand.getValue());
         assertTrue(commands.get(1) instanceof UpdateElementPropertyCommand);
         final UpdateElementPropertyCommand hPropertyCommand = (UpdateElementPropertyCommand) commands.get(1);
         assertEquals(element,
                      hPropertyCommand.getElement());
-        assertEquals(H_PROPERTY_ID,
-                     hPropertyCommand.getPropertyId());
+        assertEquals(H_PROPERTY_ID, hPropertyCommand.getField());
         assertEquals(boundingBox.getHeight(),
                      hPropertyCommand.getValue());
         assertTrue(commands.get(2) instanceof UpdateElementPropertyCommand);
         final UpdateElementPropertyCommand rPropertyCommand = (UpdateElementPropertyCommand) commands.get(2);
         assertEquals(element,
                      rPropertyCommand.getElement());
-        assertEquals(R_PROPERTY_ID,
-                     rPropertyCommand.getPropertyId());
+        assertEquals(R_PROPERTY_ID, rPropertyCommand.getField());
         assertEquals(50d,
                      rPropertyCommand.getValue());
         verify(magnetLocationProvider, times(1)).apply(eq(shape), eq(0));

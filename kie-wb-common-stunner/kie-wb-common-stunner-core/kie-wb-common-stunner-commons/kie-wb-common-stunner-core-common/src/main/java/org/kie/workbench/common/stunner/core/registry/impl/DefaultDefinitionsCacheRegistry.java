@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -116,9 +118,9 @@ public class DefaultDefinitionsCacheRegistry
         final Class<?> type = instance.getClass();
         final DefinitionAdapter<Object> adapter = getAdapter(type);
         final String id = adapter.getId(instance).value();
-        final Set<String> labels = adapter.getLabels(instance);
+        final String[] labels = adapter.getLabels(instance);
         final DefinitionHolder holder = new DefinitionHolder(instance,
-                                                             labels);
+                                                             Arrays.stream(labels).collect(Collectors.toSet()));
         definitionsById.put(id, holder);
         definitionsByType.put(type.getName(), holder);
         return holder;

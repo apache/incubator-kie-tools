@@ -29,7 +29,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAda
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.PropertySetAdapter;
 import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 
@@ -40,7 +39,6 @@ public class BackendDefinitionManager extends AbstractDefinitionManager {
     private final Instance<DefinitionSetAdapter<?>> definitionSetAdapterInstances;
     private final Instance<DefinitionSetRuleAdapter<?>> definitionSetRuleAdapterInstances;
     private final Instance<DefinitionAdapter<?>> definitionAdapterInstances;
-    private final Instance<PropertySetAdapter<?>> propertySetAdapterInstances;
     private final Instance<PropertyAdapter<?, ?>> propertyAdapterInstances;
     private final Instance<MorphAdapter<?>> morphAdapterInstances;
 
@@ -50,7 +48,6 @@ public class BackendDefinitionManager extends AbstractDefinitionManager {
         this.definitionSetAdapterInstances = null;
         this.definitionSetRuleAdapterInstances = null;
         this.definitionAdapterInstances = null;
-        this.propertySetAdapterInstances = null;
         this.propertyAdapterInstances = null;
         this.morphAdapterInstances = null;
     }
@@ -62,7 +59,6 @@ public class BackendDefinitionManager extends AbstractDefinitionManager {
                                     final Instance<DefinitionSetAdapter<?>> definitionSetAdapterInstances,
                                     final Instance<DefinitionSetRuleAdapter<?>> definitionSetRuleAdapterInstances,
                                     final Instance<DefinitionAdapter<?>> definitionAdapterInstances,
-                                    final Instance<PropertySetAdapter<?>> propertySetAdapterInstances,
                                     final Instance<PropertyAdapter<?, ?>> propertyAdapterInstances,
                                     final Instance<MorphAdapter<?>> morphAdapterInstances,
                                     final CloneManager cloneManager) {
@@ -73,7 +69,6 @@ public class BackendDefinitionManager extends AbstractDefinitionManager {
         this.definitionSetAdapterInstances = definitionSetAdapterInstances;
         this.definitionSetRuleAdapterInstances = definitionSetRuleAdapterInstances;
         this.definitionAdapterInstances = definitionAdapterInstances;
-        this.propertySetAdapterInstances = propertySetAdapterInstances;
         this.propertyAdapterInstances = propertyAdapterInstances;
         this.morphAdapterInstances = morphAdapterInstances;
     }
@@ -101,9 +96,6 @@ public class BackendDefinitionManager extends AbstractDefinitionManager {
         }
         for (DefinitionAdapter definitionAdapter : definitionAdapterInstances) {
             addAdapter(definitionAdapter);
-        }
-        for (PropertySetAdapter propertySetAdapter : propertySetAdapterInstances) {
-            addAdapter(propertySetAdapter);
         }
         for (PropertyAdapter propertyAdapter : propertyAdapterInstances) {
             addAdapter(propertyAdapter);

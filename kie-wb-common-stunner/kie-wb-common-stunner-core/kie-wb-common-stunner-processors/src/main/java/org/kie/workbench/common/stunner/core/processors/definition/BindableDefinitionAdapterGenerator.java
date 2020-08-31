@@ -17,14 +17,13 @@
 package org.kie.workbench.common.stunner.core.processors.definition;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.Messager;
 
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterFactory;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionAdapterProxy;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.DefinitionAdapterBindings;
 import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.ProcessingContext;
 import org.kie.workbench.common.stunner.core.processors.ProcessingDefinitionAnnotations;
@@ -46,64 +45,51 @@ public class BindableDefinitionAdapterGenerator extends AbstractBindableAdapterG
                  packageName);
         root.put("className",
                  className);
-        root.put("parentAdapterClassName",
-                 BindableDefinitionAdapterProxy.class.getName());
         root.put("generatedByClassName",
                  BindableDefinitionAdapterGenerator.class.getName());
-        root.put("adapterFactoryClassName",
-                 BindableAdapterFactory.class.getName());
         ProcessingDefinitionAnnotations processingDefinitionAnnotations = processingContext.getDefinitionAnnotations();
-        addFields("baseTypes",
-                  root,
-                  processingDefinitionAnnotations.getBaseTypes());
-        addFields("idFieldNames",
-                  root,
-                  processingDefinitionAnnotations.getIdFieldNames());
-        addFields("categoryFieldNames",
-                  root,
-                  processingDefinitionAnnotations.getCategoryFieldNames());
-        addFields("titleFieldNames",
-                  root,
-                  processingDefinitionAnnotations.getTitleFieldNames());
-        addFields("descriptionFieldNames",
-                  root,
-                  processingDefinitionAnnotations.getDescriptionFieldNames());
-        addFields("labelsFieldNames",
-                  root,
-                  processingDefinitionAnnotations.getLabelsFieldNames());
-        addFields("graphFactoryFieldNames",
-                  root,
-                  processingDefinitionAnnotations.getGraphFactoryFieldNames());
-        addSetFields("propertySetsFieldNames",
-                     root,
-                     processingDefinitionAnnotations.getPropertySetFieldNames());
-        addSetFields("propertiesFieldNames",
-                     root,
-                     processingDefinitionAnnotations.getPropertyFieldNames());
-        addFields("nameFields",
-                  root,
-                  processingDefinitionAnnotations.getNameFields());
-
-        // Meta-properties.
-        final Map<String, String> metaMap = new LinkedHashMap<>();
-        processingContext.getMetaPropertyTypes().entrySet().stream().forEach(entry -> {
-            metaMap.put(toStringMetaType(entry.getKey()),
-                        entry.getValue());
+        // Bindings.
+        Map<String, List<String>> fieldNames = processingDefinitionAnnotations.getPropertyFieldNames();
+        Map<String, String> defAdapterBindings = new HashMap<>();
+        fieldNames.forEach((type, fields) -> {
+            String baseType = processingDefinitionAnnotations.getBaseTypes().get(type);
+            baseType = null != baseType && baseType.trim().length() > 0 ? baseType : "java.lang.Object";
+            String graphFactory = processingDefinitionAnnotations.getGraphFactory().get(type);
+            String idField = processingDefinitionAnnotations.getIdFieldNames().get(type);
+            idField = null != idField && idField.trim().length() > 0 ? "\"" + idField + "\"" : null;
+            String titleField = processingDefinitionAnnotations.getTitleFieldNames().get(type);
+            titleField = null != titleField && titleField.trim().length() > 0 ? "\"" + titleField + "\"" : null;
+            String labelsField = "\"" + processingDefinitionAnnotations.getLabelsFieldNames().get(type) + "\"";
+            String categoryField = "\"" + processingDefinitionAnnotations.getCategoryFieldNames().get(type) + "\"";
+            String descriptionField = processingDefinitionAnnotations.getDescriptionFieldNames().get(type);
+            descriptionField = null != descriptionField && descriptionField.trim().length() > 0 ? "\"" + descriptionField + "\"" : null;
+            List<String> propertyFields = processingDefinitionAnnotations.getPropertyFieldNames().get(type);
+            String propertyFieldsArray = propertyFields.stream().map(f -> "\"" + f + "\"").collect(Collectors.joining(","));
+            List<Boolean> typedPropertyFields = processingDefinitionAnnotations.getTypedPropertyFields().get(type);
+            String typedPropertyFieldsArray = typedPropertyFields.stream().map(Object::toString).collect(Collectors.joining(","));
+            DefinitionAdapterBindings.PropertyMetaTypes metaTypes = processingContext.getMetaPropertyTypesFields().get(type);
+            defAdapterBindings.put(type,
+                                   "new DefinitionAdapterBindings()" +
+                                           ".setBaseType(" + baseType + ".class)" +
+                                           ".setGraphFactory(" + graphFactory + ".class)" +
+                                           ".setIdField(" + idField + ")" +
+                                           ".setTitleField(" + titleField + ")" +
+                                           ".setLabelsField(" + labelsField + ")" +
+                                           ".setCategoryField(" + categoryField + ")" +
+                                           ".setDescriptionField(" + descriptionField + ")" +
+                                           ".setPropertiesFieldNames(Arrays.asList(" + propertyFieldsArray + "))" +
+                                           ".setTypedPropertyFields(Arrays.asList(" + typedPropertyFieldsArray + "))" +
+                                           ".setMetaTypes(DefinitionAdapterBindings.PropertyMetaTypes.parse(\"" + metaTypes.format() + "\"))"
+            );
         });
-        root.put("metaTypeClass",
-                 PropertyMetaTypes.class.getName());
-        addFields("metaTypes",
+        addFields("bindings",
                   root,
-                  metaMap);
+                  defAdapterBindings);
 
         //Generate code
         return writeTemplate(packageName,
                              className,
                              root,
                              messager);
-    }
-
-    private String toStringMetaType(final PropertyMetaTypes type) {
-        return PropertyMetaTypes.class.getName() + "." + type.name();
     }
 }

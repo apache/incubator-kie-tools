@@ -15,8 +15,7 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -67,10 +66,9 @@ public class UpdateElementPropertyValueCommandTest extends AbstractGraphCommandT
                            50);
         when(candidate.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(definition);
-        Set<Object> properties = new HashSet<Object>(1) {{
-            add(property);
-        }};
-        when(definitionAdapter.getProperties(eq(definition))).thenReturn(properties);
+
+        when(definitionAdapter.getPropertyFields(eq(definition))).thenReturn(new String[]{PROPERTY_ID});
+        when(definitionAdapter.getProperty(eq(definition), eq(PROPERTY_ID))).thenReturn(Optional.of(property));
         when(definitionAdapter.getId(eq(definition))).thenReturn(DefinitionId.build(DEF_ID));
         when(propertyAdapter.getId(eq(property))).thenReturn(PROPERTY_ID);
         when(propertyAdapter.getValue(eq(property))).thenReturn(PROPERTY_OLD_VALUE);

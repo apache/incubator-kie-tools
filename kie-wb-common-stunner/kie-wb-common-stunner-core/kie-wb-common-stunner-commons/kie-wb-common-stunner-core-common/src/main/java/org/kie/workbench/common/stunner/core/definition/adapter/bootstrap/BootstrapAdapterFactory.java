@@ -35,10 +35,6 @@ public class BootstrapAdapterFactory {
         return new BootstrapDefinitionAdapter(registry);
     }
 
-    public BootstrapPropertySetAdapter newPropertySetAdapter(final AdapterRegistry registry) {
-        return new BootstrapPropertySetAdapter(registry);
-    }
-
     public BootstrapPropertyAdapter newPropertyAdapter(final AdapterRegistry registry) {
         return new BootstrapPropertyAdapter(registry);
     }

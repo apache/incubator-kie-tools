@@ -15,9 +15,9 @@
  */
 package org.kie.workbench.common.stunner.core.lookup.criteria;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,47 +55,47 @@ public class AbstractCriteriaLookupManagerTest {
     @Test
     public void checkToSet_NullSet() {
         assertEquals(Collections.emptySet(),
-                     manager.toSet(null));
+                     manager.toCollection(null));
     }
 
     @Test
     public void checkToSet_EmptySet() {
         assertEquals(Collections.emptySet(),
-                     manager.toSet(""));
+                     manager.toCollection(""));
     }
 
     @Test
     public void checkToSet_NoCollectionDelimiters() {
         assertEquals(Collections.emptySet(),
-                     manager.toSet("label"));
+                     manager.toCollection("label"));
     }
 
     @Test
     public void checkToSet_NoCollectionStartDelimiter() {
         assertEquals(Collections.emptySet(),
-                     manager.toSet("label]"));
+                     manager.toCollection("label]"));
     }
 
     @Test
     public void checkToSet_NoCollectionEndDelimiter() {
         assertEquals(Collections.emptySet(),
-                     manager.toSet("[label"));
+                     manager.toCollection("[label"));
     }
 
     @Test
     public void checkToSet_SingleValue() {
-        final Set<String> set = manager.toSet("[label1]");
+        final Collection<String> set = manager.toCollection("[label1]");
         assertEquals(1,
                      set.size());
-        assertTrue(set.stream().filter(s -> s.equals("label1")).findFirst().isPresent());
+        assertTrue(set.stream().anyMatch(s -> s.equals("label1")));
     }
 
     @Test
     public void checkToSet_MultipleValues() {
-        final Set<String> set = manager.toSet("[label1,label2]");
+        final Collection<String> set = manager.toCollection("[label1,label2]");
         assertEquals(2,
                      set.size());
-        assertTrue(set.stream().filter(s -> s.equals("label1")).findFirst().isPresent());
-        assertTrue(set.stream().filter(s -> s.equals("label2")).findFirst().isPresent());
+        assertTrue(set.stream().anyMatch(s -> s.equals("label1")));
+        assertTrue(set.stream().anyMatch(s -> s.equals("label2")));
     }
 }

@@ -16,19 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.binding;
 
-import java.util.Map;
-
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 
 public interface BindablePropertyAdapter<T, V> extends PropertyAdapter<T, V> {
 
-    void setBindings(final Map<Class, String> propertyTypeFieldNames,
-                     final Map<Class, PropertyType> propertyTypes,
-                     final Map<Class, String> propertyCaptionFieldNames,
-                     final Map<Class, String> propertyDescriptionFieldNames,
-                     final Map<Class, String> propertyReadOnlyFieldNames,
-                     final Map<Class, String> propertyOptionalFieldNames,
-                     final Map<Class, String> propertyValueFieldNames,
-                     final Map<Class, String> propertyAllowedValuesFieldNames);
+    void addBinding(Class<?> type, String valueField);
 }

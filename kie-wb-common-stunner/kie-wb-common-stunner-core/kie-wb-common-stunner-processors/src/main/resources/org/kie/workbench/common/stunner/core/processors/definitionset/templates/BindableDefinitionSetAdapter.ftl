@@ -16,65 +16,32 @@
 
 package ${packageName};
 
-import ${parentAdapterClassName};
-
 import javax.annotation.Generated;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import javax.inject.Inject;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterFactory;
+
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionSetAdapter;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionSetAdapterProxy;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionSetAdapterImpl;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.DefinitionSetAdapterBindings;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapterWrapper;
+import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 
 @Generated("${generatedByClassName}")
 @ApplicationScoped
-public class ${className} extends ${parentAdapterClassName}<Object> {
-
-    private static final Map<Class, String> descriptionFieldNames = new HashMap<Class, String>(${valuePropNamesSize}) {{
-        <#list valuePropNames as valuePropName>
-            put( ${valuePropName.className}.class, "${valuePropName.methodName}" );
-        </#list>
-    }};
-
-    private static final Map<Class, Annotation> qualifiers = new HashMap<Class, Annotation>(${qualifiersSize}) {{
-        <#list qualifiers as qualifier>
-            put( ${qualifier.className}.class,
-                new ${qualifier.methodName}() {
-                    @Override
-                    public Class<? extends Annotation> annotationType() {
-                        return ${qualifier.methodName}.class;
-                }
-            });
-        </#list>
-    }};
-
-    private static final Set<String> definitionIds = new HashSet<String>(${definitionIdsSize}) {{
-        <#list definitionIds as definitionId>
-            add( "${definitionId}" );
-        </#list>
-    }};
-
-    private static final Map<Class, Class> graphFactoryTypes = new HashMap<Class, Class>(${graphFactoryTypesSize}) {{
-    <#list graphFactoryTypes as graphFactoryType>
-        put( ${graphFactoryType.className}.class, ${graphFactoryType.methodName}.class );
-    </#list>
-        }};
-
-    protected ${className}() {
-    }
+public class ${className} extends DefinitionSetAdapterWrapper<Object, BindableDefinitionSetAdapter<Object>> {
 
     @Inject
-    public ${className}(${adapterFactoryClassName} adapterFactory) {
-        super(adapterFactory);
+    public ${className}(StunnerTranslationService translationService) {
+        super(BindableDefinitionSetAdapterImpl.create(translationService));
     }
 
-    @Override
-    protected void setBindings(final BindableDefinitionSetAdapter<Object> adapter) {
-        adapter.setBindings( descriptionFieldNames, graphFactoryTypes, qualifiers, definitionIds );
+    @PostConstruct
+    public void init() {
+        adapter.setBindings(${bindingsKey}, ${bindingsValue});
     }
 
 }

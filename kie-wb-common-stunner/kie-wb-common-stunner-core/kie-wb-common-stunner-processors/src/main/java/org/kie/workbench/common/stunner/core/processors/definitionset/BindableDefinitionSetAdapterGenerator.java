@@ -18,11 +18,11 @@ package org.kie.workbench.common.stunner.core.processors.definitionset;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.Messager;
 
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterFactory;
-import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableDefinitionSetAdapterProxy;
 import org.kie.workbench.common.stunner.core.processors.AbstractBindableAdapterGenerator;
 import org.kie.workbench.common.stunner.core.processors.ProcessingDefinitionSetAnnotations;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
@@ -43,25 +43,30 @@ public class BindableDefinitionSetAdapterGenerator extends AbstractBindableAdapt
                  packageName);
         root.put("className",
                  className);
-        root.put("parentAdapterClassName",
-                 BindableDefinitionSetAdapterProxy.class.getName());
-        root.put("adapterFactoryClassName",
-                 BindableAdapterFactory.class.getName());
         root.put("generatedByClassName",
                  BindableDefinitionSetAdapterGenerator.class.getName());
-        addFields("graphFactoryTypes",
-                  root,
-                  processingDefinitionSetAnnotations.getGraphFactoryTypes());
-        addFields("qualifiers",
-                  root,
-                  processingDefinitionSetAnnotations.getQualifiers());
-        addFields("valuePropNames",
-                  root,
-                  processingDefinitionSetAnnotations.getDescriptionFieldNames());
-        root.put("definitionIds",
-                 processingDefinitionSetAnnotations.getDefinitionIds());
-        root.put("definitionIdsSize",
-                 processingDefinitionSetAnnotations.getDefinitionIds().size());
+
+        Map<String, Set<String>> definitionIds = processingDefinitionSetAnnotations.getDefinitionIds();
+        String defSetClassName = definitionIds.keySet().iterator().next();
+        String graphFactory = processingDefinitionSetAnnotations.getGraphFactoryTypes().get(defSetClassName);
+        graphFactory = null != graphFactory && graphFactory.trim().length() > 0 ? graphFactory + ".class" : "null";
+        String qualifier = processingDefinitionSetAnnotations.getQualifiers().get(defSetClassName);
+        Set<String> defIds = processingDefinitionSetAnnotations.getDefinitionIds().get(defSetClassName);
+        String defIdsArray = defIds.stream().map(f -> "\"" + f + "\"").collect(Collectors.joining(","));
+
+        String bindingsRaw = "new DefinitionSetAdapterBindings() " +
+                ".setGraphFactory(" + graphFactory + ")" +
+                ".setDefinitionIds(new HashSet<>(Arrays.asList(" + defIdsArray + ")))";
+        if (null != qualifier) {
+            bindingsRaw += ".setQualifier(new " + qualifier + "() {\n" +
+                    "                    @Override\n" +
+                    "                    public Class<? extends Annotation> annotationType() {\n" +
+                    "                        return " + qualifier + ".class;\n" +
+                    "                }})";
+        }
+        root.put("bindingsKey", defSetClassName + ".class");
+        root.put("bindingsValue", bindingsRaw);
+
         // Generate code from the template.
         return writeTemplate(packageName,
                              className,

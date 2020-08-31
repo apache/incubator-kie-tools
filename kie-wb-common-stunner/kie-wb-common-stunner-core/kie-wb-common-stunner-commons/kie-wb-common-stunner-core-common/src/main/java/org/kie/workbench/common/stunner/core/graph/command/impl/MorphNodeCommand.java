@@ -96,8 +96,10 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
                         .registry()
                         .getDefinitionAdapter(targetDef.getClass());
         candidate.getLabels().clear();
-        candidate.getLabels().addAll(AbstractElementFactory.computeLabels(adapter, targetDef));
-
+        final String[] labels = AbstractElementFactory.computeLabels(adapter, targetDef);
+        for (String label : labels) {
+            candidate.getLabels().add(label);
+        }
         return results;
     }
 

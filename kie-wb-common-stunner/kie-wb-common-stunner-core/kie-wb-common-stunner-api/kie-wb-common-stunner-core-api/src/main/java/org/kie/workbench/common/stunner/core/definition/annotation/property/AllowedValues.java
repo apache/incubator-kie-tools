@@ -24,6 +24,7 @@ import java.lang.annotation.Target;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
+@Deprecated
 public @interface AllowedValues {
 
 }

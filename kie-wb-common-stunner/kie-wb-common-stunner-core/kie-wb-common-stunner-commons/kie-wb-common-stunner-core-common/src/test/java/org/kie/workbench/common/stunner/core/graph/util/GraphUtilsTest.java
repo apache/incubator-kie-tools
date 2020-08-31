@@ -43,7 +43,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.computeCardinalityState;
 import static org.mockito.Mockito.when;
@@ -154,37 +153,6 @@ public class GraphUtilsTest {
         assertEquals(dockedNodes.get(1), graphInstance.intermNode);
         assertEquals(dockedNodes.get(2), graphInstance.endNode);
         assertEquals(dockedNodes.get(3), graphInstance.dockedNode);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testGetPropertyForNullElement() {
-        assertNull(GraphUtils.getProperty(getDefinitionManager(),
-                                          (Element) null,
-                                          TestingSimpleDomainObject.NAME));
-    }
-
-    @Test
-    public void testGetPropertyForNonNullElement() {
-        assertEquals(domainObject.getPropertySet(), GraphUtils.getProperty(getDefinitionManager(),
-                                                                           element,
-                                                                           TestingSimpleDomainObject.PROPERTY_SET));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testGetPropertyForElementUsingField() {
-        assertEquals(domainObject.getNameProperty(), GraphUtils.getProperty(getDefinitionManager(),
-                                                                            element,
-                                                                            TestingSimpleDomainObject.NAME_FIELD));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testEmptyGetPropertyForElementUsingField() {
-        assertNull(GraphUtils.getProperty(getDefinitionManager(),
-                                          element,
-                                          TestingSimpleDomainObject.PROPERTY_SET + "." + "someField"));
     }
 
     @Test

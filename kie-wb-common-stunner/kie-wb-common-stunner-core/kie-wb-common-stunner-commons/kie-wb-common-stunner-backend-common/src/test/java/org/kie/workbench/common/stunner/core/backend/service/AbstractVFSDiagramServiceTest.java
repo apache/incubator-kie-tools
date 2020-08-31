@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.backend.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.inject.Instance;
 
@@ -169,6 +170,7 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
     protected PropertyAdapter<Object, Object> propertyAdapter;
 
     @Before
+    @SuppressWarnings("all")
     public void setUp() throws IOException {
         when(resourceType.getPrefix()).thenReturn(RESOURCE_TYPE_PREFIX);
         when(resourceType.getSuffix()).thenReturn(RESOURCE_TYPE_SUFFIX);
@@ -205,13 +207,15 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
         when(definitionManager.adapters()).thenReturn(adapters);
         when(adapters.forDefinition()).thenReturn(definitionAdapter);
 
-        when(definitionAdapter.getMetaProperty(PropertyMetaTypes.ID, DEFINITION_SET)).thenReturn(idProperty);
+        when(definitionAdapter.getMetaPropertyField(eq(DEFINITION_SET), eq(PropertyMetaTypes.ID))).thenReturn("idProperty");
+        Optional idPropertyOpt = Optional.of(this.idProperty);
+        when(definitionAdapter.getProperty(eq(DEFINITION_SET), eq("idProperty"))).thenReturn(idPropertyOpt);
         when(diagram.getGraph()).thenReturn(graph);
         when(graph.getNode(DIAGRAM_UUID)).thenReturn(graphNode);
         when(graphNode.getContent()).thenReturn(graphContent);
         when(metadata.getCanvasRootUUID()).thenReturn(DIAGRAM_UUID);
         when(adapters.forProperty()).thenReturn(propertyAdapter);
-        when(propertyAdapter.getValue(idProperty)).thenReturn(DIAGRAM_FILE_ID);
+        when(propertyAdapter.getValue(this.idProperty)).thenReturn(DIAGRAM_FILE_ID);
 
         diagramService = spy(createVFSDiagramService());
         when(factoryRegistry.getDiagramFactory(DEFINITION_SET, getMetadataType())).thenReturn(diagramFactory);
