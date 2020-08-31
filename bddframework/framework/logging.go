@@ -27,6 +27,7 @@ import (
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/logger"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/util"
 	"go.uber.org/zap"
 	"k8s.io/api/events/v1beta1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -104,10 +105,12 @@ func getOrCreateLoggerOpts(logName string) (*logger.Opts, error) {
 		}
 
 		opts = &logger.Opts{
-			Output: io.MultiWriter(os.Stdout, fileWriter),
+			Output:  io.MultiWriter(os.Stdout, fileWriter),
+			Verbose: util.GetBoolOSEnv("DEBUG"),
 		}
 		loggerOpts[logName] = opts
 	}
+
 	return opts, nil
 }
 
