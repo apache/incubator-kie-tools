@@ -723,16 +723,15 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
           <strict>true</strict>
-          <localWorkers>8</localWorkers>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
-          <draftCompile>true</draftCompile>
-          <extraJvmArgs>-Xmx4096m -Xms1024m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
+          <extraJvmArgs>-Xmx4G -Xms1G -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
           <module>org.kie.workbench.common.stunner.standalone.StunnerStandaloneShowcaseWithSourceMap</module>
-          <style>PRETTY</style>
-          <logLevel>INFO</logLevel>
           <noServer>false</noServer>
           <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
+          <logLevel>INFO</logLevel>
+          <draftCompile>true</draftCompile>
           <disableCastChecking>true</disableCastChecking>
+          <optimizationLevel>0</optimizationLevel>
           <runTarget>index.html</runTarget>
           <hostedWebapp>src/main/webapp</hostedWebapp>
           <gwtSdkFirstInClasspath>false</gwtSdkFirstInClasspath>

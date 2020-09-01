@@ -20,7 +20,7 @@
 
   <inherits name="org.kie.workbench.common.stunner.standalone.StunnerStandaloneShowcase"/>
 
-  <set-property name="user.agent" value="safari,gecko1_8"/>
+  <set-property name="user.agent" value="safari"/>
   <set-property name="locale" value="default"/>
 
   <collapse-all-properties/>

@@ -97,7 +97,7 @@
   <source path='client'/>
   <source path='bpmn'/>
 
-  <set-property name="user.agent" value="gecko1_8,safari"/>
+  <set-property name="user.agent" value="safari"/>
   <set-property name="locale" value="default"/>
 
 </module>
