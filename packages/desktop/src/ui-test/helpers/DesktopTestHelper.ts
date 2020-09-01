@@ -15,10 +15,11 @@ import * as path from 'path';
 export default class DesktopTestHelper {
 
     private applicationOptions: BasicAppSettings = {
-        path: path.join(__dirname, '..', '..', '..', 'node_modules', '.bin', 'electron'),
+        path: path.join(__dirname, '..', '..', '..', 'node_modules', '.bin', 'electron',
+                        process.platform === 'win32' ? '.cmd' : ''),
         args: [path.join(__dirname, '..', '..', '..')],
         startTimeout: 30000,
-        chromeDriverArgs: ['--disable-dev-shm-usage', 'remote-debugging-port=9222'],
+        chromeDriverArgs: ['--no-sandbox','--disable-dev-shm-usage', 'remote-debugging-port=12209'],
         chromeDriverLogPath: path.join(__dirname, '..', '..', '..', 'chrome-logs.txt')
     }
 

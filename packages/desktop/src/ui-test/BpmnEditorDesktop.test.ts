@@ -26,7 +26,7 @@ describe("BPMN Editor Tests", () => {
     });
 
     afterEach(async() => {
-      if (app.isRunning()){
+      if (app && app.isRunning()){
         await appTester.stopApplication();
       } 
     });
