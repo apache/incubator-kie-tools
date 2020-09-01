@@ -229,15 +229,17 @@ public class DataModelerServiceTest {
     }
 
     @Test
-    public void renameWorkaround() {
+    public void testRenameWorkaround() {
         Path dataObjectPath = PathFactory.newPath("TestDataObject",
                                                   "file:///dataobjects/TestDataObject.java");
+        Path targetPath = PathFactory.newPath("TestNewDataObject",
+                                              "file:///dataobjects/TestNewDataObject.java");
         DataModelerRenameWorkaroundHelper renameHelper = mock(DataModelerRenameWorkaroundHelper.class);
         List<DataModelerRenameWorkaroundHelper> renameHelpers = Arrays.asList(renameHelper);
         when(renameHelperInstance.iterator()).thenReturn(renameHelpers.iterator());
 
         dataModelerService.renameWorkaround(dataObjectPath,
-                                            "NewName",
+                                            targetPath,
                                             "New content",
                                             "Comment");
 
@@ -247,6 +249,42 @@ public class DataModelerServiceTest {
                times(1)).move(any(org.uberfire.java.nio.file.Path.class),
                               any(org.uberfire.java.nio.file.Path.class),
                               any(CommentedOption.class));
+        verify(ioService,
+               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                                         eq("New content"),
+                                         any(CommentedOption.class));
+        verify(renameHelper,
+               times(1)).postProcess(any(Path.class),
+                                     any(Path.class));
+        verify(ioService,
+               times(1)).endBatch();
+    }
+
+    @Test
+    public void testRenameWorkaroundWithoutNewContent() {
+        Path dataObjectPath = PathFactory.newPath("TestDataObject",
+                                                  "file:///dataobjects/TestDataObject.java");
+        Path targetPath = PathFactory.newPath("TestNewDataObject",
+                                              "file:///newdataobjects/TestNewDataObject.java");
+        DataModelerRenameWorkaroundHelper renameHelper = mock(DataModelerRenameWorkaroundHelper.class);
+        List<DataModelerRenameWorkaroundHelper> renameHelpers = Arrays.asList(renameHelper);
+        when(renameHelperInstance.iterator()).thenReturn(renameHelpers.iterator());
+
+        dataModelerService.renameWorkaround(dataObjectPath,
+                                            targetPath,
+                                            null,
+                                            "Comment");
+
+        verify(ioService,
+               times(1)).startBatch(any(FileSystem.class));
+        verify(ioService,
+               times(1)).move(any(org.uberfire.java.nio.file.Path.class),
+                              any(org.uberfire.java.nio.file.Path.class),
+                              any(CommentedOption.class));
+        verify(ioService,
+               times(0)).write(any(org.uberfire.java.nio.file.Path.class),
+                               any(String.class),
+                               any(CommentedOption.class));
         verify(renameHelper,
                times(1)).postProcess(any(Path.class),
                                      any(Path.class));

@@ -774,7 +774,18 @@ public class DataModelerServiceImpl
                                                                        null,
                                                                        newName);
                     if (!refactoringResult.hasErrors()) {
-                        targetPath = Paths.convert(Paths.convert(path).resolveSibling(newName + ".java"));
+                        String originalFileName = path.getFileName();
+                        final String extension = originalFileName.substring(originalFileName.lastIndexOf('.'));
+                        if (saveCurrentChanges) {
+                            Package targetPackage = serviceHelper.ensurePackageStructure(moduleService.resolveModule(path),
+                                                                                         refactoringResult
+                                                                                                 .getDataObject()
+                                                                                                 .getPackageName());
+                            targetPath = Paths.convert(Paths.convert(targetPackage.getPackageMainSrcPath())
+                                                               .resolve(newName + extension));
+                        } else {
+                            targetPath = Paths.convert(Paths.convert(path).resolveSibling(newName + extension));
+                        }
                         renameHelper.addRefactoredPath(targetPath,
                                                        refactoringResult.getSource(),
                                                        comment);
@@ -800,7 +811,7 @@ public class DataModelerServiceImpl
                 //I will implement the rename here as a workaround
                 //remove this workaround when we can find the error.
                 Path updatedPath = renameWorkaround(path,
-                                                    newName,
+                                                    targetPath,
                                                     newContent,
                                                     comment);
                 dataObjectRenamedEvent.fire((DataObjectRenamedEvent) new DataObjectRenamedEvent().withPath(updatedPath));
@@ -814,34 +825,28 @@ public class DataModelerServiceImpl
     }
 
     public Path renameWorkaround(final Path path,
-                                 final String newName,
+                                 final Path targetPath,
                                  final String newContent,
                                  final String comment) {
         try {
 
             final org.uberfire.java.nio.file.Path _path = Paths.convert(path);
-
-            String originalFileName = _path.getFileName().toString();
-            final String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-            final org.uberfire.java.nio.file.Path _target = _path.resolveSibling(newName + extension);
-            final Path targetPath = Paths.convert(_target);
+            final org.uberfire.java.nio.file.Path _target = Paths.convert(targetPath);
 
             try {
-
-                if (newContent != null) {
-                    //first overwrite the content with the new content, then we can rename the file.
-                    //this is the workaround.
-                    ioService.write(_path,
-                                    newContent,
-                                    serviceHelper.makeCommentedOption(comment));
-                }
-
+                // First move the file to target path and then modify the content with newContent
                 ioService.startBatch(_target.getFileSystem());
 
                 ioService.move(_path,
                                _target,
                                serviceHelper.makeCommentedOption("File [" + path.toURI() + "] renamed to [" + targetPath.toURI() + "].")
                 );
+
+                if (newContent != null) {
+                    ioService.write(_target,
+                                    newContent,
+                                    serviceHelper.makeCommentedOption(comment));
+                }
 
                 if (renameHelperInstance != null) {
                     for (DataModelerRenameWorkaroundHelper renameHelper : renameHelperInstance) {
