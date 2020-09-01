@@ -1,25 +1,22 @@
 **Thank you for submitting this pull request**
 
-**JIRA**: _(please edit the JIRA link if it exists)_ 
+**JIRA**: [JBPM-0000](https://issues.redhat.com/browse/JBPM-0000)
 
-[link](https://www.example.com)
-
-**referenced Pull Requests**: _(please edit the URLs of referenced pullrequests if they exist)_
-
+**Referenced Pull Requests**:
 * paste the link(s) from GitHub here
 * link 2
 * link 3 etc.
 
+**Business Central**: [WAR file](https://donwnload.here/something)
+
+**VS Code**: [plugin](https://donwnload.here/something)
+
 <pre>
-How to retest a PR or trigger a specific build:
+To retest a PR or trigger a specific build please add a comment:
 
-* <b>a pull request</b> please add comment: <b>Jenkins retest this</b>
- 
-* <b>a full downstream build</b> please add comment: <b>Jenkins run fdb</b>
-  
-* <b>a compile downstream build</b> please  add comment: <b>Jenkins run cdb</b>
-
-* <b>a full production downstream build</b> please add comment: <b>Jenkins execute product fdb</b>
-
-* <b>an upstream build</b> please add comment: <b>Jenkins run upstream</b>
+* Retest PR: <b>jenkins retest this</b>
+* A full downstream build: <b>jenkins do fdb</b>
+* A compile downstream build: <b>jenkins do cdb</b>
+* A full production downstream build: <b>jenkins do product fdb</b>
+* An upstream build: <b>jenkins do upstream</b>
 </pre>
