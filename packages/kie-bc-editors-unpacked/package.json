@@ -3,9 +3,6 @@
   "version": "0.7.0",
   "description": "",
   "license": "Apache-2.0",
-  "files": [
-    "pom.xml"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"
