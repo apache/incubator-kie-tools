@@ -18,12 +18,14 @@ import * as React from "react";
 import { useLayoutEffect, useState } from "react";
 import { Bullseye, Page, Spinner, Title } from "@patternfly/react-core";
 import "./styles.scss";
+import { useEditorEnvelopeI18nContext } from "../i18n/setup";
 
 export const FADE_OUT_DELAY = 400;
 
 export function LoadingScreen(props: { visible: boolean }) {
   let cssAnimation;
   const [mustRender, setMustRender] = useState(true);
+  const { i18n } = useEditorEnvelopeI18nContext();
 
   if (props.visible) {
     cssAnimation = { opacity: 1 };
@@ -47,11 +49,11 @@ export function LoadingScreen(props: { visible: boolean }) {
       >
         <Page tabIndex={-1}>
           <Bullseye>
-            <div>
+            <div className={"kogito-tooling--loading-screen-spinner"}>
               <div>
                 <Spinner />
               </div>
-              <Title headingLevel={"h5"}>Loading...</Title>
+              <Title headingLevel={"h5"}>{i18n.loadingScreen.loading}</Title>
             </div>
           </Bullseye>
         </Page>
