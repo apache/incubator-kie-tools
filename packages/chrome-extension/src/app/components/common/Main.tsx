@@ -63,6 +63,7 @@ export const Main: React.FunctionComponent<Globals> = props => {
     <I18nDictionariesProvider
       defaults={chromeExtensionI18nDefaults}
       dictionaries={chromeExtensionI18nDictionaries}
+      initialLocale={navigator.language}
       ctx={ChromeExtensionI18nContext}
     >
       <GlobalContext.Provider

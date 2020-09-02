@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-export * from "./Editor";
-export * from "./EditorFactory";
-export * from "./KogitoEditorEnvelopeContext";
-export * from "./KogitoEditorChannelApi";
-export * from "./KogitoEditorEnvelopeApi";
-export * from "./EditorContext";
-export * from "./StateControlCommand";
-export * from "./EditorContent";
-export * from "./EditorEnvelopeLocator";
+import { EditorEnvelopeI18n } from "../EditorEnvelopeI18n";
+import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
+
+export const en: EditorEnvelopeI18n = {
+  ...en_common,
+  keyBindingsHelpOverlay: {
+    categories: {
+      edit: "Edit",
+      help: "Help"
+    },
+    commands: {
+      undo: "Undo last edit",
+      redo: "Redo last edit",
+      showKeyboardOverlay: "Show keyboard shortcuts"
+    }
+  },
+  loadingScreen: {
+    loading: "Loading..."
+  }
+};

@@ -18,11 +18,16 @@ import * as React from "react";
 import { cleanup, fireEvent, getByTestId, render } from "@testing-library/react";
 import { EditorEnvelopeView } from "../../envelope/EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
-import { usingEnvelopeContext } from "./utils";
+import { usingEditorEnvelopeI18nContext, usingEnvelopeContext } from "./utils";
 
 function renderEditorEnvelopeView(): EditorEnvelopeView {
   let view: EditorEnvelopeView;
-  render(usingEnvelopeContext(<EditorEnvelopeView exposing={self => (view = self)} />).wrapper);
+  const setLocale = jest.fn();
+  render(
+    usingEditorEnvelopeI18nContext(
+      usingEnvelopeContext(<EditorEnvelopeView exposing={self => (view = self)} setLocale={setLocale} />).wrapper
+    ).wrapper
+  );
   return view!;
 }
 

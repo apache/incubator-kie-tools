@@ -23,13 +23,14 @@ import { I18nContextType } from "./I18nContext";
 export interface I18nDictionariesProviderProps<D extends ReferenceDictionary<D>> {
   defaults: I18nDefaults<D>;
   dictionaries: I18nDictionaries<D>;
+  initialLocale?: string;
   ctx: React.Context<I18nContextType<D>>;
   children: React.ReactNode;
 }
 
 export const I18nDictionariesProvider = <D extends ReferenceDictionary<D>>(props: I18nDictionariesProviderProps<D>) => {
-  const [locale, setLocale] = useState(props.defaults.locale);
-  const i18n = useMemo(() => new I18n(props.defaults, props.dictionaries), []);
+  const [locale, setLocale] = useState(props.initialLocale ?? props.defaults.locale);
+  const i18n = useMemo(() => new I18n(props.defaults, props.dictionaries, locale), []);
 
   const setNewLocale = useCallback((newLocale: string) => {
     i18n.setLocale(newLocale);

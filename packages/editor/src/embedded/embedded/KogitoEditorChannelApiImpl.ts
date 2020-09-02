@@ -89,6 +89,6 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public receive_getLocale(): Promise<string> {
-    return Promise.resolve(this.locale)
+    return Promise.resolve(this.locale);
   }
 }

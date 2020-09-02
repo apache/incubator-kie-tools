@@ -16,7 +16,6 @@
 
 import {
   EditorContext,
-  I18nService,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType
 } from "@kogito-tooling/editor/dist/api";
@@ -27,6 +26,7 @@ import { PMMLEditorInterface } from "../editor/PMMLEditorInterface";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
+import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 
 const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 

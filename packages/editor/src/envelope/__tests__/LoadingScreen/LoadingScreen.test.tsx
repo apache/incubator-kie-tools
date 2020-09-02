@@ -17,20 +17,23 @@
 import * as React from "react";
 import { fireEvent, render } from "@testing-library/react";
 import { LoadingScreen } from "../../../envelope/LoadingScreen";
+import { usingEditorEnvelopeI18nContext } from "../utils";
 
 describe("LoadingScreen", () => {
   test("when visible", () => {
-    const { container } = render(<LoadingScreen visible={true} />);
+    const { container } = render(usingEditorEnvelopeI18nContext(<LoadingScreen visible={true} />).wrapper);
     expect(container).toMatchSnapshot();
   });
 
   test("when just made not visible", () => {
-    const { container } = render(<LoadingScreen visible={false} />);
+    const { container } = render(usingEditorEnvelopeI18nContext(<LoadingScreen visible={false} />).wrapper);
     expect(container).toMatchSnapshot();
   });
 
   test("when not visible after fadeout delay", async () => {
-    const { getByTestId, container } = render(<LoadingScreen visible={false} />);
+    const { getByTestId, container } = render(
+      usingEditorEnvelopeI18nContext(<LoadingScreen visible={false} />).wrapper
+    );
     fireEvent.transitionEnd(getByTestId("loading-screen-div"));
 
     expect(container).toMatchSnapshot();
