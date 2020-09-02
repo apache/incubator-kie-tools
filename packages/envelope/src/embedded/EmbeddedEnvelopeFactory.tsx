@@ -19,6 +19,19 @@ import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef } from "react";
 import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
+import * as CSS from "csstype";
+
+const containerStyles: CSS.Properties = {
+  display: "flex",
+  flex: 1,
+  flexDirection: "column",
+  width: "100%",
+  height: "100%",
+  border: "none",
+  margin: 0,
+  padding: 0,
+  overflow: "hidden"
+};
 
 export interface Props<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
@@ -37,7 +50,7 @@ export function EmbeddedEnvelopeFactory<
   ApiToConsume extends ApiDefinition<ApiToConsume>,
   Ref
 >(props: Props<ApiToProvide, ApiToConsume, Ref>) {
-  return React.forwardRef((_, forwardedRef) => {
+  return React.forwardRef((_, forwardRef) => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
     const bus = useMemo(
@@ -55,7 +68,7 @@ export function EmbeddedEnvelopeFactory<
     );
 
     useImperativeHandle(
-      forwardedRef,
+      forwardRef,
       () => {
         return props.refDelegate(envelopeServer);
       },
@@ -64,6 +77,6 @@ export function EmbeddedEnvelopeFactory<
 
     useConnectedEnvelopeServer<ApiToProvide>(envelopeServer, props.api);
 
-    return <iframe ref={iframeRef} src={props.envelopePath} style={{ height: "100%" }} title="X" />;
+    return <iframe ref={iframeRef} src={props.envelopePath} style={containerStyles} title="X" />;
   });
 }
