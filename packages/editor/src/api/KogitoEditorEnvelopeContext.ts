@@ -20,7 +20,7 @@ import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
 import { EditorContext } from "./EditorContext";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
-import { I18nService } from "./I18nService";
+import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 
 export interface KogitoEditorEnvelopeContextType {
   channelApi: MessageBusClientApi<KogitoEditorChannelApi>;

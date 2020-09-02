@@ -128,7 +128,9 @@ exports[`EditorEnvelopeView first open 1`] = `
             <div
               class="pf-l-bullseye"
             >
-              <div>
+              <div
+                class="kogito-tooling--loading-screen-spinner"
+              >
                 <div>
                   <span
                     aria-valuetext="Loading..."

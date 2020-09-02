@@ -24,6 +24,7 @@ import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
 
 interface Props {
   exposing: (self: EditorEnvelopeView) => void;
+  setLocale: React.Dispatch<string>;
 }
 
 interface State {
@@ -52,6 +53,10 @@ export class EditorEnvelopeView extends React.Component<Props, State> {
 
   public setLoading() {
     return this.setState({ loading: true });
+  }
+
+  public setLocale(locale: string) {
+    this.props.setLocale(locale);
   }
 
   public render() {

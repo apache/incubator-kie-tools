@@ -67,6 +67,7 @@ export function App(props: Props) {
     <I18nDictionariesProvider
       defaults={onlineI18nDefaults}
       dictionaries={onlineI18nDictionaries}
+      initialLocale={navigator.language}
       ctx={OnlineI18nContext}
     >
       <GlobalContext.Provider
