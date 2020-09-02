@@ -18,7 +18,9 @@ exports[`LoadingScreen when just made not visible 1`] = `
         <div
           class="pf-l-bullseye"
         >
-          <div>
+          <div
+            class="kogito-tooling--loading-screen-spinner"
+          >
             <div>
               <span
                 aria-valuetext="Loading..."
@@ -69,7 +71,9 @@ exports[`LoadingScreen when visible 1`] = `
         <div
           class="pf-l-bullseye"
         >
-          <div>
+          <div
+            class="kogito-tooling--loading-screen-spinner"
+          >
             <div>
               <span
                 aria-valuetext="Loading..."

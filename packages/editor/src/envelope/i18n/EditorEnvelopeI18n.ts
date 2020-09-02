@@ -14,12 +14,24 @@
  * limitations under the License.
  */
 
-export * from "./Editor";
-export * from "./EditorFactory";
-export * from "./KogitoEditorEnvelopeContext";
-export * from "./KogitoEditorChannelApi";
-export * from "./KogitoEditorEnvelopeApi";
-export * from "./EditorContext";
-export * from "./StateControlCommand";
-export * from "./EditorContent";
-export * from "./EditorEnvelopeLocator";
+import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
+import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
+
+export interface EditorEnvelopeDictionary extends ReferenceDictionary<EditorEnvelopeDictionary> {
+  keyBindingsHelpOverlay: {
+    categories: {
+      edit: string;
+      help: string;
+    };
+    commands: {
+      undo: string;
+      redo: string;
+      showKeyboardOverlay: string;
+    }
+  };
+  loadingScreen: {
+    loading: string;
+  };
+}
+
+export interface EditorEnvelopeI18n extends EditorEnvelopeDictionary, CommonI18n {}

@@ -23,7 +23,12 @@ import { HubI18nContext, hubI18nDefaults, hubI18nDictionaries } from "../common/
 
 document.addEventListener("DOMContentLoaded", () => {
   ReactDOM.render(
-    <I18nDictionariesProvider defaults={hubI18nDefaults} dictionaries={hubI18nDictionaries} ctx={HubI18nContext}>
+    <I18nDictionariesProvider
+      defaults={hubI18nDefaults}
+      dictionaries={hubI18nDictionaries}
+      initialLocale={navigator.language}
+      ctx={HubI18nContext}
+    >
       <App />
     </I18nDictionariesProvider>,
     document.getElementById("app")!,
