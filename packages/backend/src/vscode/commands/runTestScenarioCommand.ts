@@ -47,7 +47,7 @@ async function run(backendProxy: VsCodeBackendProxy, workspaceApi: WorkspaceApi,
 
   try {
     const response = await backendProxy.withCapability(
-      ServiceId.TEST_RUNNER,
+      ServiceId.TEST_SCENARIO_RUNNER,
       async (capability: TestScenarioRunnerCapability) =>
         vscode.window.withProgress(
           { location: vscode.ProgressLocation.Notification, title: i18n.runningTestScenarios, cancellable: true },

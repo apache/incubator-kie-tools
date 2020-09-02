@@ -26,7 +26,7 @@ export class TestScenarioRunnerService implements Service, TestScenarioRunnerCap
   private activeProcess: cp.ChildProcess | undefined;
 
   public identify(): string {
-    return ServiceId.TEST_RUNNER;
+    return ServiceId.TEST_SCENARIO_RUNNER;
   }
 
   public async start(): Promise<void> {
