@@ -160,6 +160,7 @@ export function App(props: Props) {
     <I18nDictionariesProvider
       defaults={desktopI18nDefaults}
       dictionaries={desktopI18nDictionaries}
+      initialLocale={navigator.language}
       ctx={DesktopI18nContext}
     >
       <DesktopI18nContext.Consumer>
@@ -174,7 +175,7 @@ export function App(props: Props) {
               <div className={"kogito--alert-container"}>
                 <Alert
                   variant={AlertVariant.danger}
-                  title="This file extension is not supported."
+                  title={i18n.app.title}
                   actionClose={<AlertActionCloseButton onClose={closeInvalidFileTypeErrorAlert} />}
                 />
               </div>

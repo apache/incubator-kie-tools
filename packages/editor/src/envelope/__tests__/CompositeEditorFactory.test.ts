@@ -20,7 +20,6 @@ import {
   EditorContext,
   EditorFactory,
   EditorInitArgs,
-  I18nService,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType
 } from "../../api";
@@ -28,6 +27,7 @@ import { DummyEditor } from "./DummyEditor";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { ChannelType, OperatingSystem } from "@kogito-tooling/channel-common-api";
 import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
+import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 
 const dummyEditor: Editor = new DummyEditor();
 

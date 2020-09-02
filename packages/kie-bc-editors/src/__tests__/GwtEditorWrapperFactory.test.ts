@@ -19,7 +19,7 @@ import { GwtLanguageData, Resource } from "../GwtLanguageData";
 import { GwtStateControlService } from "../gwtStateControl";
 import { GwtEditorMapping } from "../GwtEditorMapping";
 import { messageBusClientApiMock } from "@kogito-tooling/envelope-bus/dist/common/__tests__";
-import { I18nService } from "@kogito-tooling/editor/dist/api";
+import { I18nService } from "@kogito-tooling/i18n/dist/envelope";
 
 const cssResource: Resource = {
   type: "css",

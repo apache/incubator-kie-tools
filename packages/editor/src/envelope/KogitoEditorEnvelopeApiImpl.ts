@@ -30,6 +30,8 @@ import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-tooling/enve
 import { EditorEnvelopeView } from "./EditorEnvelopeView";
 import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts/dist/api";
 import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { EditorEnvelopeI18n } from "./i18n";
 
 export class KogitoEditorEnvelopeApiFactory
   implements
@@ -39,7 +41,7 @@ export class KogitoEditorEnvelopeApiFactory
       EditorEnvelopeView,
       KogitoEditorEnvelopeContextType
     > {
-  constructor(private readonly editorFactory: EditorFactory) {}
+  constructor(private readonly editorFactory: EditorFactory, private readonly i18n: I18n<EditorEnvelopeI18n>) {}
 
   public create(
     args: EnvelopeApiFactoryArgs<
@@ -49,7 +51,7 @@ export class KogitoEditorEnvelopeApiFactory
       KogitoEditorEnvelopeContextType
     >
   ) {
-    return new KogitoEditorEnvelopeApiImpl(args, this.editorFactory);
+    return new KogitoEditorEnvelopeApiImpl(args, this.editorFactory, this.i18n);
   }
 }
 
@@ -64,7 +66,8 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
       EditorEnvelopeView,
       KogitoEditorEnvelopeContextType
     >,
-    private readonly editorFactory: EditorFactory
+    private readonly editorFactory: EditorFactory,
+    private readonly i18n: I18n<EditorEnvelopeI18n>
   ) {}
 
   private hasCapturedInitRequestYet() {
@@ -84,6 +87,8 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
 
     this.ackCapturedInitRequest();
 
+    this.setupI18n(initArgs);
+
     this.editor = await this.editorFactory.createEditor(this.args.envelopeContext, initArgs);
 
     await this.args.view.setEditor(this.editor);
@@ -91,9 +96,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     this.editor.af_onStartup?.();
     this.editor.af_onOpen?.();
 
-    if (this.args.envelopeContext.context.channel !== ChannelType.VSCODE) {
-      this.registerDefaultShortcuts();
-    }
+    this.registerDefaultShortcuts();
 
     this.args.view.setLoading();
 
@@ -141,22 +144,42 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     return this.args.envelopeContext.services.i18n.executeOnLocaleChangeSubscriptions(locale);
   }
 
+  private setupI18n(initArgs: EditorInitArgs) {
+    this.i18n.setLocale(initArgs.initialLocale);
+    this.args.envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
+      this.i18n.setLocale(locale);
+      this.args.view.setLocale(locale);
+    });
+  }
+
   private registerDefaultShortcuts() {
-    this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
+    if (this.args.envelopeContext.context.channel === ChannelType.VSCODE) {
+      return;
+    }
+
+    const i18n = this.i18n.getCurrent();
+    const redoId = this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
       "shift+ctrl+z",
-      "Edit | Redo last edit",
+      `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.redo}`,
       async () => {
         this.editor.redo();
         this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(StateControlCommand.REDO);
       }
     );
-    this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
+    const undoId = this.args.envelopeContext.services.keyboardShortcuts.registerKeyPress(
       "ctrl+z",
-      "Edit | Undo last edit",
+      `${i18n.keyBindingsHelpOverlay.categories.edit} | ${i18n.keyBindingsHelpOverlay.commands.undo}`,
       async () => {
         this.editor.undo();
         this.args.envelopeContext.channelApi.notifications.receive_stateControlCommandUpdate(StateControlCommand.UNDO);
       }
     );
+
+    const subscription = this.args.envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
+      this.args.envelopeContext.services.keyboardShortcuts.deregister(redoId);
+      this.args.envelopeContext.services.keyboardShortcuts.deregister(undoId);
+      this.args.envelopeContext.services.i18n.unsubscribeToLocaleChange(subscription);
+      this.registerDefaultShortcuts();
+    });
   }
 }
