@@ -31,6 +31,7 @@
     "@kogito-tooling/editor": "0.7.0",
     "@kogito-tooling/keyboard-shortcuts": "0.7.0",
     "@kogito-tooling/i18n": "0.7.0",
-    "@kogito-tooling/i18n-common-dictionary": "0.7.0"
+    "@kogito-tooling/i18n-common-dictionary": "0.7.0",
+    "@kogito-tooling/workspace": "0.7.0"
   }
 }

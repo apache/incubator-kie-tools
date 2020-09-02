@@ -15,4 +15,4 @@
  */
 
 export { CapabilityChannelApi } from "./CapabilityChannelApi";
-export * from "./testRunner";
+export * from "./testScenarioRunner";

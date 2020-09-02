@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+import { VsCodeBackendProxy } from "@kogito-tooling/backend/dist/vscode";
 import { EditorEnvelopeLocator } from "@kogito-tooling/editor/dist/api";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { VsCodeWorkspaceApi } from "@kogito-tooling/workspace/dist/vscode";
 import * as vscode from "vscode";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { generateSvg } from "./generateSvg";
@@ -23,11 +25,6 @@ import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
-import { runTestScenario } from "./runTestScenario";
-import { VsCodeBackendProxy } from "./VsCodeBackendProxy";
-import { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";
-
-let backendProxy: VsCodeBackendProxy;
 
 /**
  * Starts a Kogito extension.
@@ -36,7 +33,7 @@ let backendProxy: VsCodeBackendProxy;
  *  @param args.webviewLocation The relative path to search for an "index.js" file for the WebView panel.
  *  @param args.context The vscode.ExtensionContext provided on the activate method of the extension.
  *  @param args.routes The routes to be used to find resources for each language.
- *  @param args.backendExtensionId The backend extension ID in `publisher.name` format (optional).
+ *  @param args.backendProxy The proxy between channels and available backend services.
  */
 export async function startExtension(args: {
   extensionName: string;
@@ -44,13 +41,11 @@ export async function startExtension(args: {
   viewType: string;
   getPreviewCommandId: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
-  backendExtensionId?: string;
+  backendProxy: VsCodeBackendProxy;
 }) {
+  await args.backendProxy.tryLoadBackendExtension(true);
+
   const vsCodeI18n = new I18n(vsCodeI18nDefaults, vsCodeI18nDictionaries, vscode.env.language);
-
-  backendProxy = new VsCodeBackendProxy(args.context, vsCodeI18n, args.backendExtensionId);
-  await backendProxy.tryLoadBackendExtension(true);
-
   const workspaceApi = new VsCodeWorkspaceApi();
   const editorStore = new KogitoEditorStore();
   const messageBroadcaster = new EnvelopeBusMessageBroadcaster();
@@ -60,7 +55,7 @@ export async function startExtension(args: {
     args.editorEnvelopeLocator,
     messageBroadcaster,
     workspaceApi,
-    backendProxy
+    args.backendProxy
   );
 
   const editorWebviewProvider = new KogitoEditorWebviewProvider(
@@ -80,15 +75,4 @@ export async function startExtension(args: {
   args.context.subscriptions.push(
     vscode.commands.registerCommand(args.getPreviewCommandId, () => generateSvg(editorStore, workspaceApi, vsCodeI18n))
   );
-
-  args.context.subscriptions.push(
-    vscode.commands.registerCommand("extension.kogito.runTest", () => runTestScenario(backendProxy, workspaceApi, vsCodeI18n))
-  );
-}
-
-/**
- * Stops the Kogito extension.
- */
-export function stopExtension() {
-  backendProxy?.stopServices();
 }

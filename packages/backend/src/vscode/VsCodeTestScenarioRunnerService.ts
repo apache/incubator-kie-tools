@@ -14,9 +14,19 @@
  * limitations under the License.
  */
 
-import { KogitoEdit } from "./KogitoEdit";
+import * as vscode from "vscode";
+import { TestScenarioRunnerService } from "../node";
 
-export interface KogitoToolingChannelCommonApi {
-  receive_ready(): void;
-  receive_newEdit(edit: KogitoEdit): void;
+/**
+ * Augmented {@link TestScenarioRunnerService} for the VS Code channel.
+ */
+export class VsCodeTestScenarioRunnerService extends TestScenarioRunnerService {
+  public async satisfyRequirements(): Promise<boolean> {
+    if (!vscode.workspace.workspaceFolders || vscode.workspace.workspaceFolders.length === 0) {
+      console.error("There isn't any workspace folder on VS Code.");
+      return false;
+    }
+
+    return super.satisfyRequirements();
+  }
 }

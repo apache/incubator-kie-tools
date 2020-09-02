@@ -14,9 +14,5 @@
  * limitations under the License.
  */
 
-import { KogitoEdit } from "./KogitoEdit";
-
-export interface KogitoToolingChannelCommonApi {
-  receive_ready(): void;
-  receive_newEdit(edit: KogitoEdit): void;
-}
+export * from "./BackendI18n";
+export * from "./setup";

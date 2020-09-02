@@ -14,18 +14,4 @@
  * limitations under the License.
  */
 
-import { Capability, CapabilityResponse } from "../../../api";
-import { TestResult } from "./TestResult";
-
-/**
- * Capability for running test scenarios.
- */
-export interface TestRunnerCapability extends Capability {
-  /**
-   * Execute a `mvn clean test` on the given `baseDir` and report back the result.
-   * @param baseDir Directory path where the `pom.xml` file is located.
-   * @param runnerClass Fully qualified class name of the runner, e.g. `testscenario.KogitoScenarioJunitActivatorTest`.
-   * @returns Test result.
-   */
-  execute(baseDir: string, runnerClass: string): Promise<CapabilityResponse<TestResult>>;
-}
+export { VsCodeWorkspaceApi } from "./VsCodeWorkspaceApi";

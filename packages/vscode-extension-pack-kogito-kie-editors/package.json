@@ -121,9 +121,12 @@
     "outputDirectory": "./target"
   },
   "dependencies": {
+    "@kogito-tooling/backend": "0.7.0",
     "@kogito-tooling/editor": "0.7.0",
     "@kogito-tooling/kie-bc-editors": "0.7.0",
+    "@kogito-tooling/i18n": "0.7.0",
     "@kogito-tooling/patternfly-base": "0.7.0",
-    "@kogito-tooling/vscode-extension": "0.7.0"
+    "@kogito-tooling/vscode-extension": "0.7.0",
+    "@kogito-tooling/workspace": "0.7.0"
   }
 }

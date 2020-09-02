@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor/dist/api";
+import { BackendProxy } from "@kogito-tooling/backend/dist/api";
 import {
   KogitoEdit,
   ResourceContentRequest,
   ResourceContentService,
-  ResourceListRequest,
-  WorkspaceApi
+  ResourceListRequest
 } from "@kogito-tooling/channel-common-api";
-import * as vscode from "vscode";
-import * as __path from "path";
-import { KogitoEditor } from "./KogitoEditor";
+import { KogitoEditorChannelApi, StateControlCommand } from "@kogito-tooling/editor/dist/api";
 import { Tutorial, UserInteraction } from "@kogito-tooling/guided-tour/dist/api";
-import { BackendProxy } from "@kogito-tooling/backend/dist/api";
+import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
+import * as __path from "path";
+import * as vscode from "vscode";
+import { KogitoEditor } from "./KogitoEditor";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   private readonly decoder = new TextDecoder("utf-8");

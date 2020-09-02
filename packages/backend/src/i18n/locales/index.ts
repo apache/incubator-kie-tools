@@ -14,16 +14,4 @@
  * limitations under the License.
  */
 
-import { TestRunnerService } from "@kogito-tooling/backend/dist/node";
-import * as vscode from "vscode";
-
-export class VsCodeTestRunnerService extends TestRunnerService {
-  public async satisfyRequirements(): Promise<boolean> {
-    if (!vscode.workspace.workspaceFolders || vscode.workspace.workspaceFolders.length === 0) {
-      console.error("There isn't any workspace folder on VS Code.");
-      return false;
-    }
-
-    return super.satisfyRequirements();
-  }
-}
+export { en } from "./en";

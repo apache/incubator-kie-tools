@@ -18,11 +18,11 @@ import {
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
-  ResourcesList,
-  WorkspaceApi
+  ResourcesList
 } from "@kogito-tooling/channel-common-api";
 import * as fs from "fs";
 import * as vscode from "vscode";
+import { WorkspaceApi } from "../api";
 
 export class VsCodeWorkspaceApi implements WorkspaceApi {
   public receive_openFile(path: string) {
@@ -40,7 +40,7 @@ export class VsCodeWorkspaceApi implements WorkspaceApi {
     throw new Error("This is not implemented yet.");
   }
 
-  public async receive_getLocale() {
+  public async receive_getLocale(): Promise<string> {
     return vscode.env.language;
   }
 }

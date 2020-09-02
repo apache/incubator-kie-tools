@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
+import { BackendI18n } from "..";
 import { en as en_common } from "@kogito-tooling/i18n-common-dictionary";
-import { VsCodeI18n } from "..";
 
-export const en: VsCodeI18n = {
+export const en: BackendI18n = {
   ...en_common,
-  savedSvg: fileName => `${en_common.names.svg} saved at ${fileName}.`,
-  openSvg: `Open ${en_common.names.svg}`,
-  savedSuccessfully: "Saved successfully!"
+  dontShowAgain: "Don't Show Again",
+  installExtension: "Install",
+  installBackendExtensionMessage: "Consider installing the backend extension to augment the capabilities of the editors.",
+  viewTestSummary: "View summary",
+  runningTestScenarios: "Running test scenarios ...",
+  testScenarioSummary: (tests: number, errors: number, skipped: number, failures: number) => `Completed execution of ${tests} tests (errors: ${errors}, skipped: ${skipped}, failures: ${failures})`
 };

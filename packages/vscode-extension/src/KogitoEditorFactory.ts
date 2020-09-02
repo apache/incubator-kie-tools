@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEditor } from "./KogitoEditor";
+import { BackendProxy } from "@kogito-tooling/backend/dist/api";
+import { ResourceContentService } from "@kogito-tooling/channel-common-api";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
-import { ResourceContentService, WorkspaceApi } from "@kogito-tooling/channel-common-api";
-import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
-import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
+import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
+import * as nodePath from "path";
 import * as vscode from "vscode";
 import { Uri, Webview } from "vscode";
-import * as nodePath from "path";
-import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
-import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
-import { BackendProxy } from "@kogito-tooling/backend/dist/api";
+import { KogitoEditableDocument } from "./KogitoEditableDocument";
+import { KogitoEditor } from "./KogitoEditor";
+import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
+import { KogitoEditorStore } from "./KogitoEditorStore";
+import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
+import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 
 export class KogitoEditorFactory {
   constructor(

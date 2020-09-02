@@ -15,5 +15,5 @@
  */
 
 export { QuarkusLocalServer } from "./QuarkusLocalServer";
-export { TestRunnerService } from "./TestRunnerService";
+export { TestScenarioRunnerService } from "./TestScenarioRunnerService";
 export * from "./utils";

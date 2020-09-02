@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-import {
-  BackendProxy,
-  Capability,
-  CapabilityResponse,
-  CapabilityResponseStatus
-} from "@kogito-tooling/backend/dist/api";
-import { BackendExtensionApi } from "@kogito-tooling/backend/dist/channel-api";
 import { I18n } from "@kogito-tooling/i18n/dist/core/I18n";
 import * as vscode from "vscode";
-import { VsCodeI18n } from "./i18n";
+import { BackendProxy, Capability, CapabilityResponse, CapabilityResponseStatus } from "../api";
+import { BackendExtensionApi } from "../channel-api";
+import { BackendI18n } from "../i18n";
 
 const SUGGEST_BACKEND_KEY = "SUGGEST_BACKEND";
 
@@ -33,12 +28,12 @@ const SUGGEST_BACKEND_KEY = "SUGGEST_BACKEND";
 export class VsCodeBackendProxy extends BackendProxy {
   /**
    * @param context The `vscode.ExtensionContext` provided on the activate method of the extension.
-   * @param vsCodeI18n I18n for VS Code.
+   * @param backendI18n I18n for backend services.
    * @param backendExtensionId The backend extension ID in `publisher.name` format (optional).
    */
   public constructor(
     private readonly context: vscode.ExtensionContext,
-    private readonly vsCodeI18n: I18n<VsCodeI18n>,
+    private readonly backendI18n: I18n<BackendI18n>,
     private readonly backendExtensionId?: string
   ) {
     super();
@@ -98,7 +93,7 @@ export class VsCodeBackendProxy extends BackendProxy {
       return;
     }
 
-    const i18n = this.vsCodeI18n.getCurrent();
+    const i18n = this.backendI18n.getCurrent();
 
     vscode.window
       .showInformationMessage(i18n.installBackendExtensionMessage, i18n.installExtension, i18n.dontShowAgain)
@@ -123,7 +118,7 @@ export class VsCodeBackendProxy extends BackendProxy {
    * Show a notification informing the user to install the backend extension.
    */
   public suggestBackendExtension(): void {
-    const i18n = this.vsCodeI18n.getCurrent();
+    const i18n = this.backendI18n.getCurrent();
 
     vscode.window
       .showInformationMessage(i18n.installBackendExtensionMessage, i18n.installExtension)

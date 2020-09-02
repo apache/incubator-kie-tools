@@ -18,11 +18,11 @@ import * as cp from "child_process";
 import * as xmlParser from "fast-xml-parser";
 import * as fs from "fs";
 import * as path from "path";
-import { Service, CapabilityResponse } from "../api";
-import { TestRunnerCapability, ServiceId, TestResult } from "../channel-api";
+import { CapabilityResponse, Service } from "../api";
+import { ServiceId, TestResult, TestScenarioRunnerCapability } from "../channel-api";
 import * as utils from "./utils";
 
-export class TestRunnerService implements Service, TestRunnerCapability {
+export class TestScenarioRunnerService implements Service, TestScenarioRunnerCapability {
   private activeProcess: cp.ChildProcess | undefined;
 
   public identify(): string {
@@ -48,7 +48,16 @@ export class TestRunnerService implements Service, TestRunnerCapability {
       return false;
     }
 
+    if (!(await utils.isJavaAvailable({ major: 11, minor: 0, patch: 0 }))) {
+      console.error("Java 11.0.0+ could not be identified.");
+      return false;
+    }
+
     return true;
+  }
+
+  public stopActiveExecution() {
+    this.stop();
   }
 
   public execute(baseDir: string, runnerClass: string): Promise<CapabilityResponse<TestResult>> {
@@ -61,8 +70,16 @@ export class TestRunnerService implements Service, TestRunnerCapability {
     }
 
     return new Promise((resolve, reject) => {
+      this.stopActiveExecution();
+
       this.activeProcess = cp.spawn("mvn", ["clean", "test", "-f", baseDir]);
-      this.activeProcess.on("exit", () => {
+
+      this.activeProcess.on("exit", (code: number | null) => {
+        if (code !== 0) {
+          resolve(CapabilityResponse.ok());
+          return;
+        }
+
         const resultFilePath = path.join(baseDir, "target", "surefire-reports", runnerClass + ".txt");
 
         if (!fs.existsSync(resultFilePath)) {

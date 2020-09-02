@@ -14,13 +14,31 @@
  * limitations under the License.
  */
 
-import * as vscode from "vscode";
+import { backendI18nDefaults, backendI18nDictionaries } from "@kogito-tooling/backend/dist/i18n";
+import { registerTestScenarioRunnerCommand, VsCodeBackendProxy } from "@kogito-tooling/backend/dist/vscode";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 import * as KogitoVsCode from "@kogito-tooling/vscode-extension";
+import { VsCodeWorkspaceApi } from "@kogito-tooling/workspace/dist/vscode";
+import * as vscode from "vscode";
 
-export function activate(context: vscode.ExtensionContext) {
+let backendProxy: VsCodeBackendProxy;
+
+export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   const envelopeTargetOrigin = "vscode";
+
+  const workspaceApi = new VsCodeWorkspaceApi();
+  const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
+  backendProxy = new VsCodeBackendProxy(context, backendI18n, "kie-group.vscode-extension-backend");
+
+  registerTestScenarioRunnerCommand({
+    command: "extension.kogito.runTest",
+    context: context,
+    backendProxy: backendProxy,
+    backendI18n: backendI18n,
+    workspaceApi: workspaceApi
+  });
 
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-pack-kogito-kie-editors",
@@ -30,30 +48,18 @@ export function activate(context: vscode.ExtensionContext) {
     editorEnvelopeLocator: {
       targetOrigin: envelopeTargetOrigin,
       mapping: new Map([
-        [
-          "bpmn",
-          { resourcesPathPrefix: "dist/webview/editors/bpmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }
-        ],
-        [
-          "bpmn2",
-          { resourcesPathPrefix: "dist/webview/editors/bpmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }
-        ],
-        [
-          "dmn",
-          { resourcesPathPrefix: "dist/webview/editors/dmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }
-        ],
-        [
-          "scesim",
-          { resourcesPathPrefix: "dist/webview/editors/scesim", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }
-        ]
+        ["bpmn", { resourcesPathPrefix: "dist/webview/editors/bpmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }],
+        ["bpmn2", { resourcesPathPrefix: "dist/webview/editors/bpmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }],
+        ["dmn", { resourcesPathPrefix: "dist/webview/editors/dmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }],
+        ["scesim", { resourcesPathPrefix: "dist/webview/editors/scesim", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }]
       ])
     },
-    backendExtensionId: "kie-group.vscode-extension-backend"
+    backendProxy: backendProxy
   });
 
   console.info("Extension is successfully setup.");
 }
 
 export function deactivate() {
-  KogitoVsCode.stopExtension();
+  backendProxy?.stopServices();
 }

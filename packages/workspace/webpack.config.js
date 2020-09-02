@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,21 +21,8 @@ const common = require("../../webpack.common.config");
 module.exports = [
   merge(common, {
     entry: {
-      "api/index": "./src/api/index.ts",
-      "channel-api/index": "./src/channel-api/index.ts",
-      "http-bridge/index": "./src/http-bridge/index.ts",
-      "i18n/index": "./src/i18n/index.ts"
+      "api/index": "./src/api/index.ts"
     },
-    output: {
-      libraryTarget: "commonjs2"
-    },
-    externals: [nodeExternals({ modulesDir: "../../node_modules" })]
-  }),
-  merge(common, {
-    entry: {
-      "node/index": "./src/node/index.ts"
-    },
-    target: "node",
     output: {
       libraryTarget: "commonjs2"
     },

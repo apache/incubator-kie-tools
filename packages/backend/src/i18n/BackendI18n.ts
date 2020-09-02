@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-import { KogitoEdit } from "./KogitoEdit";
+import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
+import { ReferenceDictionary } from "@kogito-tooling/i18n/dist/core";
 
-export interface KogitoToolingChannelCommonApi {
-  receive_ready(): void;
-  receive_newEdit(edit: KogitoEdit): void;
+interface BackendDictionary extends ReferenceDictionary<BackendDictionary> {
+  dontShowAgain: string;
+  installExtension: string;
+  installBackendExtensionMessage: string;
+  viewTestSummary: string;
+  runningTestScenarios: string;
+  testScenarioSummary: (tests: number, errors: number, skipped: number, failures: number) => string;
 }
+
+export interface BackendI18n extends BackendDictionary, CommonI18n {}
