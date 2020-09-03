@@ -10,7 +10,7 @@ from ruamel.yaml import YAML
 # All kogito-image modules that have the kogito version.
 MODULES = {"kogito-data-index", "kogito-trusty", 
            "kogito-explainability", "kogito-image-dependencies",
-           "kogito-jobs-service",
+           "kogito-jobs-service", "kogito-trusty-ui"
            "kogito-jq", "kogito-kubernetes-client",
            "kogito-launch-scripts", "kogito-logging",
            "kogito-management-console", "kogito-persistence",

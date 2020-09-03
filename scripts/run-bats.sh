@@ -31,6 +31,9 @@ echo "----> running bats on kogito-kubernetes-client"
 echo "----> running bats on kogito-management-console"
 ./bats/bin/bats modules/kogito-management-console/tests/bats/
 
+echo "----> running bats on kogito-trusty-ui"
+./bats/bin/bats modules/kogito-trusty-ui/tests/bats/
+
 echo "----> running bats on kogito-maven"
 ./bats/bin/bats modules/kogito-maven/tests/bats
 

@@ -10,7 +10,8 @@ IMAGES = [
             'kogito-trusty',
             'kogito-explainability',
             'kogito-jobs-service',
-            'kogito-management-console'
+            'kogito-management-console',
+            'kogito-trusty-ui'
          ]
 
 
@@ -147,6 +148,7 @@ pipeline {
                     sh 'cat modules/kogito-explainability/module.yaml'
                     sh 'cat modules/kogito-jobs-service/module.yaml'
                     sh 'cat modules/kogito-management-console/module.yaml'
+                    sh 'cat modules/kogito-trusty-ui/module.yaml'
                 }
             }
         }
@@ -165,6 +167,7 @@ pipeline {
                     ./cekit-image-validator-runner kogito-explainability-overrides.yaml
                     ./cekit-image-validator-runner kogito-jobs-service-overrides.yaml
                     ./cekit-image-validator-runner kogito-management-console-overrides.yaml
+                    ./cekit-image-validator-runner kogito-trusty-ui-overrides.yaml
                     ./cekit-image-validator-runner kogito-quarkus-jvm-overrides.yaml
                     ./cekit-image-validator-runner kogito-quarkus-overrides.yaml
                     ./cekit-image-validator-runner kogito-quarkus-s2i-overrides.yaml

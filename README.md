@@ -56,6 +56,7 @@ Table of Contents
     - [Kogito Explainability Component Image](#kogito-explainability-component-image)
     - [Kogito Jobs Service Component Image](#kogito-jobs-service-component-image)
     - [Kogito Management Console Component Image](#kogito-management-console-component-image)
+    - [Kogito Trusty UI Component Image](#kogito-trusty-ui-component-image)
   - [Using Kogito Images to Deploy Apps on OpenShift](#using-kogito-images-to-deploy-apps-on-openshift)
     - [Using released images](#using-released-images)
     - [Pushing the built images to a local OCP registry:](#pushing-the-built-images-to-a-local-ocp-registry)
@@ -571,6 +572,7 @@ Today we have 3 Kogito Component Images:
 * [quay.io/kiegroup/kogito-explainability](https://quay.io/kiegroup/kogito-explainability)
 * [quay.io/kiegroup/kogito-jobs-service](htps://quay.io/kiegroup/kogito-jobs-service)
 * [quay.io/kiegroup/kogito-management-console](https://quay.io/kiegroup/kogito-management-console)
+* [quay.io/kiegroup/kogito-trusty-ui](https://quay.io/kiegroup/kogito-trusty-ui)
 
 
 ### Kogito Data Index Component Image
@@ -705,6 +707,30 @@ To know what configurations this image accepts please take a look [here](kogito-
 The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Management Console 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
 
+### Kogito Trusty UI Component Image
+
+The Kogito Trusty UI provides an audit tool that allows you to retrieve and inspect the decisions that have been taken by Kogito Runtime Services.
+It depends on the Kogito Trusty Service on which the Trusty UI will connect to so it can be able to retrieve the information to display.
+
+To work correctly, the Kogito Trusty UI needs the Kogito Trusty Service url. If not provided, it will try to connect to the default one (http://localhost:8180).
+
+Basic usage:
+
+```bash
+$ docker run -it --env KOGITO_TRUSTY_ENDPOINT=trusty-service-url:9090 quay.io/kiegroup/kogito-trusty-ui:latest
+```
+
+To enable debug just use this env while running this image:
+
+```bash
+docker run -it --env SCRIPT_DEBUG=true --env KOGITO_TRUSTY_ENDPOINT=trusty-service-url:9090 quay.io/kiegroup/kogito-trusty-ui:latest
+```
+You should notice a few debug messages being printed in the system output.
+
+To know what configurations this image accepts please take a look [here](kogito-trusty-ui-overrides.yaml) on the **envs** section.
+
+The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Trusty UI 
+to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
 
 ## Using Kogito Images to Deploy Apps on OpenShift
 
@@ -930,6 +956,7 @@ With this Makefile you can:
      $ make kogito-explainability
      $ make kogito-jobs-service 
      $ make kogito-management-console
+     $ make kogito-trusty-ui
      ```
   
      We can ignore the build or the tests while interacting with a specific image as well, to build only:
@@ -992,6 +1019,7 @@ Below you can find all modules used to build the Kogito Images
 - [kogito-launch-scripts](modules/kogito-launch-scripts): Main script for all images, it contains the startup script for Kogito Images
 - [kogito-logging](modules/kogito-logging): Provides common logging functions.
 - [kogito-management-console](modules/kogito-management-console): Installs and Configure the management-console jar inside the image
+- [kogito-trusty-ui](modules/kogito-trusty-ui): Installs and Configure the trusty-ui jar inside the image
 - [kogito-maven](modules/kogito-maven): Installs and configure Maven on the S2I images, also provides custom configuration script.
 - [kogito-openjdk](modules/kogito-openjdk): Provides OpenJDK and JRE.
 - [kogito-persistence](modules/kogito-persistence): Provides the needed configuration scripts to properly configure the Kogito Services in the target image.
@@ -1011,6 +1039,7 @@ Please inspect the images overrides files to learn which modules are being insta
 - [quay.io/kiegroup/kogito-explainability](kogito-explainability-overrides.yaml)
 - [quay.io/kiegroup/kogito-jobs-service](kogito-jobs-service-overrides.yaml)
 - [quay.io/kiegroup/kogito-management-console](kogito-management-console-overrides.yaml)
+- [quay.io/kiegroup/kogito-trusty-ui](kogito-trusty-ui-overrides.yaml)
 - [quay.io/kiegroup/kogito-quarkus-jvm-ubi8](kogito-quarkus-jvm-overrides.yaml)
 - [quay.io/kiegroup/kogito-quarkus-ubi8](kogito-quarkus-overrides.yaml)
 - [quay.io/kiegroup/kogito-quarkus-ubi8-s2i](kogito-quarkus-s2i-overrides.yaml)

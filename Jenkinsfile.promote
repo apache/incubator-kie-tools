@@ -11,7 +11,8 @@ IMAGES = [
             'kogito-trusty',
             'kogito-explainability',
             'kogito-jobs-service',
-            'kogito-management-console'
+            'kogito-management-console',
+            'kogito-trusty-ui'
          ]
 
 deployProperties=[:]
@@ -117,6 +118,7 @@ pipeline {
                         sh 'cat modules/kogito-explainability/module.yaml'
                         sh 'cat modules/kogito-jobs-service/module.yaml'
                         sh 'cat modules/kogito-management-console/module.yaml'
+                        sh 'cat modules/kogito-trusty-ui/module.yaml'
 
                         // Input for checking new artifacts have been set correctly
                         withCredentials([string(credentialsId: 'KOGITO_CI_EMAIL_TO', variable: 'ZULIP_EMAIL')]) {

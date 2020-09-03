@@ -145,6 +145,18 @@ ifneq ($(findstring rc,$(IMAGE_VERSION)), rc)
 	${BUILD_ENGINE} tag quay.io/kiegroup/kogito-management-console:${IMAGE_VERSION} quay.io/kiegroup/kogito-management-console:${SHORTENED_LATEST_VERSION}
 endif
 
+# build the quay.io/kiegroup/kogito-trusty-ui image
+kogito-trusty-ui:
+ifneq ($(ignore_build),true)
+	${CEKIT_CMD} build --overrides-file kogito-trusty-ui-overrides.yaml ${BUILD_ENGINE}
+endif
+# if ignore_test is set tu true, ignore the tests
+ifneq ($(ignore_test),true)
+	${CEKIT_CMD} test --overrides-file kogito-trusty-ui-overrides.yaml behave
+endif
+ifneq ($(findstring rc,$(IMAGE_VERSION)), rc)
+	${BUILD_ENGINE} tag quay.io/kiegroup/kogito-trusty-ui:${IMAGE_VERSION} quay.io/kiegroup/kogito-trusty-ui:${SHORTENED_LATEST_VERSION}
+endif
 
 # push images to quay.io, this requires permissions under kiegroup organization
 .PHONY: push
@@ -169,7 +181,9 @@ _push:
 	docker push quay.io/kiegroup/kogito-jobs-service:${IMAGE_VERSION}
 	docker push quay.io/kiegroup/kogito-jobs-service:latest
 	docker push quay.io/kiegroup/kogito-management-console:${IMAGE_VERSION}
-	docker push quay.io/kiegroup/kogito-management-console:latest
+	docker push quay.io/kiegroup/kogito-management-console:latest	
+	docker push quay.io/kiegroup/kogito-trusty-ui:${IMAGE_VERSION}
+	docker push quay.io/kiegroup/kogito-trusty-ui:latest
 ifneq ($(findstring rc,$(IMAGE_VERSION)), rc)
 	@echo "${SHORTENED_LATEST_VERSION} will be pushed"
 	docker push quay.io/kiegroup/kogito-quarkus-ubi8:${SHORTENED_LATEST_VERSION}
@@ -182,6 +196,7 @@ ifneq ($(findstring rc,$(IMAGE_VERSION)), rc)
 	docker push quay.io/kiegroup/kogito-explainability:${SHORTENED_LATEST_VERSION}
 	docker push quay.io/kiegroup/kogito-jobs-service:${SHORTENED_LATEST_VERSION}
 	docker push quay.io/kiegroup/kogito-management-console:${SHORTENED_LATEST_VERSION}
+	docker push quay.io/kiegroup/kogito-trusty-ui:${SHORTENED_LATEST_VERSION}
 endif
 
 

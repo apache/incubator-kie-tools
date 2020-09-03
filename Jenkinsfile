@@ -13,7 +13,8 @@ IMAGES = ["kogito-quarkus-ubi8",
             "kogito-trusty",
             "kogito-explainability",
             "kogito-jobs-service",
-            "kogito-management-console"]
+            "kogito-management-console",
+            "kogito-trusty-ui"]
 
 pipeline{
     agent { label 'kogito-image-slave && !master'}
@@ -51,6 +52,7 @@ pipeline{
                     ./cekit-image-validator-runner kogito-explainability-overrides.yaml
                     ./cekit-image-validator-runner kogito-jobs-service-overrides.yaml
                     ./cekit-image-validator-runner kogito-management-console-overrides.yaml
+                    ./cekit-image-validator-runner kogito-trusty-ui-overrides.yaml
                     ./cekit-image-validator-runner kogito-quarkus-jvm-overrides.yaml
                     ./cekit-image-validator-runner kogito-quarkus-overrides.yaml
                     ./cekit-image-validator-runner kogito-quarkus-s2i-overrides.yaml

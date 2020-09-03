@@ -32,7 +32,8 @@ Modules = {
     "explainability-service-rest": "kogito-explainability",
     "explainability-service-messaging": "kogito-explainability",
     "jobs-service": "kogito-jobs-service",
-    "management-console": "kogito-management-console"
+    "management-console": "kogito-management-console",
+    "trusty-ui": "kogito-trusty-ui"
 }
 
 def isSnapshotVersion(version):
