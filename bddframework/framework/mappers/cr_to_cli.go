@@ -98,6 +98,9 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 		if runtime := kogitoRuntime.Spec.Runtime; len(runtime) > 0 {
 			cmd = append(cmd, "--runtime", string(runtime))
 		}
+		if kogitoRuntime.Spec.Monitoring.Scrape {
+			cmd = append(cmd, "--scrape")
+		}
 	}
 
 	return cmd

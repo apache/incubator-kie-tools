@@ -37,6 +37,7 @@ import (
 	| runtime-request  | cpu/memory        | value                     |
 	| runtime-limit    | cpu/memory        | value                     |
 	| runtime-env      | varName           | varValue                  |
+	| monitoring       | scrape            | enabled/disabled          |
 */
 
 const (
