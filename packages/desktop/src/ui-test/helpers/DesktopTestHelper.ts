@@ -15,7 +15,7 @@ import * as path from 'path';
 export default class DesktopTestHelper {
 
     private applicationOptions: BasicAppSettings = {
-        path: path.join(__dirname, '..', '..', '..', 'node_modules', '.bin', 'electron'),
+        path: this.getElectronPath(),
         args: [path.join(__dirname, '..', '..', '..')],
         startTimeout: 30000,
         chromeDriverArgs: ['--no-sandbox','--disable-dev-shm-usage', '--remote-debugging-port=0'],
@@ -25,9 +25,6 @@ export default class DesktopTestHelper {
     private testedApplication: Application;
 
     public startApplication = async (): Promise<Application> => {
-        if (process.platform === 'win32') {
-            this.applicationOptions.path += '.cmd'
-        }
         this.testedApplication = new Application(this.applicationOptions);
         await this.testedApplication.start()
         expect(this.testedApplication.isRunning()).toBeTruthy();
@@ -85,5 +82,13 @@ export default class DesktopTestHelper {
      */
     public switchToParentFrame = async (): Promise<void> => {
         this.testedApplication.client.frameParent();
+    }
+
+    private getElectronPath() {
+        let electronPath = path.join(__dirname, '..', '..', '..', 'node_modules', '.bin', 'electron');
+        if (process.platform === 'win32') {
+            electronPath += '.cmd'
+        }
+        return electronPath;
     }
 }

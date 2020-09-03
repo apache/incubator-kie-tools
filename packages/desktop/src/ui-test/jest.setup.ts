@@ -15,3 +15,4 @@
  */
 
 import "electron";
+import "spectron";
