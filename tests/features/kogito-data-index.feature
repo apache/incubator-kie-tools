@@ -11,22 +11,45 @@ Feature: Kogito-data-index feature.
     And the image should contain label io.k8s.display-name with value Kogito Data Index Service
     And the image should contain label io.openshift.tags with value kogito,data-index
 
-  Scenario: verify if the binary index is available on /home/kogito
+  Scenario: verify if the indexing service binaries are available on /home/kogito/bin
     When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/kogito-data-index-runner.jar' in container and immediately check its output for /home/kogito/bin/kogito-data-index-runner.jar
+    Then run sh -c 'ls /home/kogito/bin/data-index-service-infinispan.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-infinispan.jar
+     And run sh -c 'ls /home/kogito/bin/data-index-service-mongodb.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-mongodb.jar
 
-  Scenario: Verify if the debug is correctly enabled and test default http port
+  Scenario: Verify if the debug is correctly enabled and test default http port with default infinispan indexing service
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=8080 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-data-index-runner.jar
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=8080 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/data-index-service-infinispan.jar
 
-  Scenario: Verify if the debug is correctly enabled and test custom http port
+  Scenario:   Scenario: Verify if the debug is correctly enabled and test default http port with mongodb indexing service
+    When container is started with env
+      | variable               | value   |
+      | SCRIPT_DEBUG           | true    |
+      | DATA_INDEX_PERSISTENCE | mongodb |
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=8080 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/data-index-service-mongodb.jar
+
+  Scenario: Verify if the debug is correctly enabled and test custom http port using default infinispan indexing service
     When container is started with env
       | variable      | value |
       | SCRIPT_DEBUG  | true  |
       | HTTP_PORT     | 9090  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-data-index-runner.jar
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/data-index-service-infinispan.jar
+
+  Scenario: Verify if the debug is correctly enabled and test custom http port using mongodb indexing service
+    When container is started with env
+      | variable               | value   |
+      | SCRIPT_DEBUG           | true    |
+      | HTTP_PORT              | 9090    |
+      | DATA_INDEX_PERSISTENCE | mongodb |
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/data-index-service-mongodb.jar
+
+  Scenario: Verify if the persistence is correctly set to its default value if a wrong persistence type is set
+    When container is started with env
+      | variable               | value    |
+      | SCRIPT_DEBUG           | true     |
+      | DATA_INDEX_PERSISTENCE | nonsense |
+    Then container log should contain WARN Data index persistence type nonsense is not allowed, the allowed types are [INFINISPAN MONGODB]. Defaulting to INFINISPAN.
 
   Scenario: verify if all parameters are correctly set
     When container is started with env

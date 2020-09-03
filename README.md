@@ -577,7 +577,15 @@ Today we have 3 Kogito Component Images:
 
 The Data Index Service aims at capturing and indexing data produced by one more Kogito runtime services. 
 For more information please visit this (link)(https://docs.jboss.org/kogito/release/latest/html_single/#proc_kogito-travel-agency-enable-data-index). 
-The Data Index Service depends on a running Infinispan Server.
+The Data Index Service depends on a running Infinispan or MongoDB Server.
+The Persistence service can be switched by setting the following variable:
+
+```bash
+DATA_INDEX_PERSISTENCE
+```
+
+The supported values are: `infinispan` and `mongodb`. If the environment variable above is empty, then `infinispan` will be used.
+
 
 
 Basic usage

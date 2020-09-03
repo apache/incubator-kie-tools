@@ -20,6 +20,9 @@ envs:
   - name: "HTTP_PORT"
     example: "9090"
     description: "Defines which port the Data Index Container Image will listen on."
+  - name: "DATA_INDEX_PERSISTENCE"
+    example: "mongodb"
+    description: "Defines which Data Index Service persistence implementation will be used. If empty defaults to 'infinispan'. Allowed types are 'infinispan' and 'mongodb'."
 
 ports:
 - value: 8080

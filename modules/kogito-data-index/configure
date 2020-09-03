@@ -5,7 +5,8 @@ SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname $0)
 ADDED_DIR=${SCRIPT_DIR}/added
 
-cp -v ${SOURCES_DIR}/kogito-data-index-runner.jar ${KOGITO_HOME}/bin/
+cp -v ${SOURCES_DIR}/data-index-service-infinispan.jar ${KOGITO_HOME}/bin/
+cp -v ${SOURCES_DIR}/data-index-service-mongodb.jar ${KOGITO_HOME}/bin/
 cp -rv ${ADDED_DIR}/launch/* ${KOGITO_HOME}/launch/
 
 mkdir -p ${KOGITO_HOME}/data/protobufs/

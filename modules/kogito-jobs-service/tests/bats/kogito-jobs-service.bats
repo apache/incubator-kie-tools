@@ -21,6 +21,7 @@ teardown() {
     [ "${KOGITO_JOBS_PROPS}" = "${expected}" ]
 }
 
+
 @test "check if the maxIntervalLimitToRetryMillis is correctly set" {
     export MAX_INTERVAL_LIMIT_RETRY="8000"
     configure_jobs_service
@@ -69,24 +70,24 @@ teardown() {
 }
 
 @test "check if default http port is correctly set" {
+    configure_jobs_service_http_port
 
-  configure_jobs_service_http_port
+    result="${KOGITO_JOBS_PROPS}"
+    expected=" -Dquarkus.http.port=8080"
 
-  result="${KOGITO_JOBS_PROPS}"
-  expected=" -Dquarkus.http.port=8080"
-
-  echo "Result is ${result} and expected is ${expected}"
+    echo "Result is ${result} and expected is ${expected}"
     [ "${result}" = "${expected}" ]
 }
 
 @test "check if custom http port is correctly set" {
-  export HTTP_PORT="9090"
+    export HTTP_PORT="9090"
 
-  configure_jobs_service_http_port
+    configure_jobs_service_http_port
 
-  result="${KOGITO_JOBS_PROPS}"
-  expected=" -Dquarkus.http.port=9090"
+    result="${KOGITO_JOBS_PROPS}"
+    expected=" -Dquarkus.http.port=9090"
 
-  echo "Result is ${result} and expected is ${expected}"
+    echo "Result is ${result} and expected is ${expected}"
     [ "${result}" = "${expected}" ]
 }
+
