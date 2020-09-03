@@ -38,6 +38,8 @@ import org.kie.workbench.common.services.backend.whitelist.PackageNameWhiteListS
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
 
 import static java.util.stream.Collectors.toCollection;
@@ -48,6 +50,12 @@ import static java.util.stream.StreamSupport.stream;
  */
 @ApplicationScoped
 public class LRUBuilderCache extends LRUCache<Module, Builder> {
+    private static final Logger logger = LoggerFactory.getLogger(LRUBuilderCache.class);
+
+    protected static final String BUILDER_CACHE_SIZE = "org.kie.builder.cache.size";
+    protected static final String DEFAULT_BUILDER_CACHE_SIZE = "20";
+    protected static final int MAX_ENTRIES = Integer.parseInt(validateCacheSize(System.getProperty(BUILDER_CACHE_SIZE,
+                                                                                                 DEFAULT_BUILDER_CACHE_SIZE)));
 
     private final List<BuildValidationHelper> buildValidationHelpers = new ArrayList<>();
     private final List<Predicate<String>> classFilters = new ArrayList<>();
@@ -73,6 +81,7 @@ public class LRUBuilderCache extends LRUCache<Module, Builder> {
                            final @Named("LRUPomModelCache") LRUPomModelCache pomModelCache,
                            final PackageNameWhiteListService packageNameWhiteListService,
                            final @JavaSourceFilter Instance<Predicate<String>> classFilterBeans) {
+        super(MAX_ENTRIES);
         this.ioService = ioService;
         this.moduleService = moduleService;
         this.importsService = importsService;
@@ -95,6 +104,14 @@ public class LRUBuilderCache extends LRUCache<Module, Builder> {
     public void destroyInstances() {
         buildValidationHelpers.forEach(helper -> buildValidationHelperBeans.destroy(helper));
         classFilters.forEach(filter -> classFilterBeans.destroy(filter));
+    }
+
+    protected static String validateCacheSize(final String value) {
+        if (value == null || value.length() == 0 || !value.matches("^[0-9]*$")) {
+            logger.error("Illeagal Argument : Property {} should be a positive integer", BUILDER_CACHE_SIZE);
+            return DEFAULT_BUILDER_CACHE_SIZE;
+        }
+        return value;
     }
 
     public void invalidateProjectCache(@Observes final InvalidateDMOModuleCacheEvent event) {
