@@ -18,13 +18,13 @@ module.exports = {
     moduleDirectories: ["node_modules"],
     moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
     reporters: ["default"],
+    runner: '@jest-runner/electron',
     setupFilesAfterEnv: ["./jest.setup.ts"],
+    testEnvironment: '@jest-runner/electron/environment',
     testRegex: "/ui-test.*\\.test\\.(tsx?|ts?)$",
     transform: {
       "^.+\\.jsx?$": "babel-jest",
       "^.+\\.tsx?$": "ts-jest"
-    },
-    runner: '@jest-runner/electron',
-    testEnvironment: '@jest-runner/electron/environment',
+    }
   };
   
