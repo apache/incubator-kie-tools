@@ -18,7 +18,7 @@ export default class DesktopTestHelper {
         path: this.getElectronPath(),
         args: [path.join(__dirname, '..', '..', '..')],
         startTimeout: 30000,
-        chromeDriverArgs: ['--no-sandbox','--disable-dev-shm-usage']
+        chromeDriverArgs: ['--no-sandbox','--disable-dev-shm-usage', '--headless']
     }
 
     private testedApplication: Application;

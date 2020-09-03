@@ -25,7 +25,7 @@
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
     "test:clearCache": "jest --clearCache",
     "test": "jest --silent --verbose",
-    "ui-test": "jest ./src/ui-test -c ./src/ui-test/jest.config.js --silent --verbose --runInBand --detectOpenHandles",
+    "ui-test": "jest ./src/ui-test -c ./src/ui-test/jest.config.js --silent --verbose --runInBand --detectOpenHandles --forceExit",
     "init": "yarn -f",
     "build": "yarn run lint && yarn test && yarn run ui-test && yarn run build:fast",
     "build:fast": "rm -rf dist && webpack --mode development",
