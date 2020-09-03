@@ -17,9 +17,9 @@ export default class DesktopTestHelper {
     private applicationOptions: BasicAppSettings = {
         path: this.getElectronPath(),
         args: [path.join(__dirname, '..', '..', '..')],
-        startTimeout: 30000,
-        chromeDriverArgs: ['--no-sandbox','--disable-dev-shm-usage'],
-        chromeDriverLogPath: path.join(__dirname, '..', '..', '..', 'chrome-logs.txt')
+        startTimeout: 30000,/*
+        chromeDriverArgs: ['--no-sandbox','--disable-dev-shm-usage', '--headless'],
+        chromeDriverLogPath: path.join(__dirname, '..', '..', '..', 'chrome-logs.txt')*/
     }
 
     private testedApplication: Application;
