@@ -32,14 +32,11 @@ public abstract class LRUCache<Path, V> implements Cache<Path, V> {
     private Map<Path, V> cache;
 
     public LRUCache() {
-        cache = new LinkedHashMap<Path, V>(MAX_ENTRIES + 1,
-                                           0.75f,
-                                           true) {
-            public boolean removeEldestEntry(Map.Entry eldest) {
-                return size() > MAX_ENTRIES;
-            }
-        };
-        cache = (Map) Collections.synchronizedMap(cache);
+        setCache(MAX_ENTRIES);
+    }
+
+    public LRUCache(final int maxEntries) {
+        setCache(maxEntries);
     }
 
     @Override
@@ -74,5 +71,16 @@ public abstract class LRUCache<Path, V> implements Cache<Path, V> {
 
     public Set<Path> getKeys() {
         return cache.keySet();
+    }
+
+    private void setCache(final int maxEntries) {
+        cache = new LinkedHashMap<Path, V>(maxEntries + 1,
+                                           0.75f,
+                                           true) {
+            public boolean removeEldestEntry(Map.Entry eldest) {
+                return size() > maxEntries;
+            }
+        };
+        cache = (Map) Collections.synchronizedMap(cache);
     }
 }
