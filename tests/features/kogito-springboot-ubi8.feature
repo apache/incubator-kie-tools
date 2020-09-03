@@ -23,11 +23,14 @@ Feature: springboot-quarkus-ubi8 feature.
       | variable            | value        |
       | JAVA_OPTIONS        | -Ddebug=true |
     Then check that page is served
-      | property             | value     |
-      | port                 | 8080      |
-      | path                 | /orders/1 |
-      | wait                 | 80        |
-      | expected_status_code | 204       |
+      | property             | value                                                                         |
+      | port                 | 8080                                                                          |
+      | path                 | /orders                                                                       |
+      | wait                 | 80                                                                            |
+      | request_method       | POST                                                                          |
+      | request_body         | {"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}} |
+      | content_type         | application/json                                                              |
+      | expected_status_code | 201                                                                           |
     And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain DEBUG 1 --- [           main] o.s.boot.SpringApplication
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
@@ -38,11 +41,14 @@ Feature: springboot-quarkus-ubi8 feature.
       | JAVA_OPTIONS        | -Ddebug=true |
       | HTTP_PORT           | 9090         |
     Then check that page is served
-      | property             | value     |
-      | port                 | 9090      |
-      | path                 | /orders/1 |
-      | wait                 | 80        |
-      | expected_status_code | 204       |
+      | property             | value                                                                         |
+      | port                 | 9090                                                                          |
+      | path                 | /orders                                                                       |
+      | wait                 | 80                                                                            |
+      | request_method       | POST                                                                          |
+      | request_body         | {"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}} |
+      | content_type         | application/json                                                              |
+      | expected_status_code | 201                                                                           |
     And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain DEBUG 1 --- [           main] o.s.boot.SpringApplication
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
@@ -53,11 +59,14 @@ Feature: springboot-quarkus-ubi8 feature.
       | JAVA_OPTIONS        | -Ddebug=true |
       | BINARY_BUILD        | true         |
     Then check that page is served
-      | property             | value     |
-      | port                 | 8080      |
-      | path                 | /orders/1 |
-      | wait                 | 80        |
-      | expected_status_code | 204       |
+      | property             | value                                                                         |
+      | port                 | 8080                                                                          |
+      | path                 | /orders                                                                       |
+      | wait                 | 80                                                                            |
+      | request_method       | POST                                                                          |
+      | request_body         | {"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}} |
+      | content_type         | application/json                                                              |
+      | expected_status_code | 201                                                                           |
     And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain DEBUG 1 --- [           main] o.s.boot.SpringApplication
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true

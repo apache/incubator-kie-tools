@@ -6,11 +6,14 @@ Feature: kogito-springboot-ubi8-s2i image tests
       | variable | value |
       | JAVA_OPTIONS | -Ddebug=true |
     Then check that page is served
-      | property             | value     |
-      | port                 | 8080      |
-      | path                 | /orders/1 |
-      | wait                 | 80        |
-      | expected_status_code | 204       |
+      | property             | value                                                                         |
+      | port                 | 8080                                                                          |
+      | path                 | /orders                                                                       |
+      | wait                 | 80                                                                            |
+      | request_method       | POST                                                                          |
+      | request_body         | {"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}} |
+      | content_type         | application/json                                                              |
+      | expected_status_code | 201                                                                           |
     And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain main] .c.l.ClasspathLoggingApplicationListener
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
@@ -20,11 +23,14 @@ Feature: kogito-springboot-ubi8-s2i image tests
       | variable | value |
       | JAVA_OPTIONS        | -Ddebug=true |
     Then check that page is served
-      | property             | value     |
-      | port                 | 8080      |
-      | path                 | /orders/1 |
-      | wait                 | 80        |
-      | expected_status_code | 204       |
+      | property             | value                                                                         |
+      | port                 | 8080                                                                          |
+      | path                 | /orders                                                                       |
+      | wait                 | 80                                                                            |
+      | request_method       | POST                                                                          |
+      | request_body         | {"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}} |
+      | content_type         | application/json                                                              |
+      | expected_status_code | 201                                                                           |
     And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain main] .c.l.ClasspathLoggingApplicationListener
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
@@ -34,11 +40,14 @@ Feature: kogito-springboot-ubi8-s2i image tests
       # Leave those here as placeholder for scripts adding variable to the test. No impact on tests if empty.
       | variable | value |
     Then check that page is served
-      | property             | value     |
-      | port                 | 8080      |
-      | path                 | /orders/1 |
-      | wait                 | 80        |
-      | expected_status_code | 204       |
+      | property             | value                                                                         |
+      | port                 | 8080                                                                          |
+      | path                 | /orders                                                                       |
+      | wait                 | 80                                                                            |
+      | request_method       | POST                                                                          |
+      | request_body         | {"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}} |
+      | content_type         | application/json                                                              |
+      | expected_status_code | 201                                                                           |
     And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain Tomcat initialized with port(s): 8080 (http)
 
@@ -47,11 +56,14 @@ Feature: kogito-springboot-ubi8-s2i image tests
       | variable            | value |
       | HTTP_PORT           | 9090  |
     Then check that page is served
-      | property             | value     |
-      | port                 | 9090      |
-      | path                 | /orders/1 |
-      | wait                 | 80        |
-      | expected_status_code | 204       |
+      | property             | value                                                                         |
+      | port                 | 9090                                                                          |
+      | path                 | /orders                                                                       |
+      | wait                 | 80                                                                            |
+      | request_method       | POST                                                                          |
+      | request_body         | {"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}} |
+      | content_type         | application/json                                                              |
+      | expected_status_code | 201                                                                           |
     And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain Tomcat initialized with port(s): 9090 (http)
 
@@ -73,25 +85,31 @@ Feature: kogito-springboot-ubi8-s2i image tests
       | ARTIFACT_DIR      | process-springboot-example/target  |
       | MAVEN_ARGS_APPEND | -pl process-springboot-example -am |
     Then check that page is served
-      | property             | value     |
-      | port                 | 8080      |
-      | path                 | /orders/1 |
-      | wait                 | 80        |
-      | expected_status_code | 204       |
+      | property             | value                                                                         |
+      | port                 | 8080                                                                          |
+      | path                 | /orders                                                                       |
+      | wait                 | 80                                                                            |
+      | request_method       | POST                                                                          |
+      | request_body         | {"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}} |
+      | content_type         | application/json                                                              |
+      | expected_status_code | 201                                                                           |
     And file /home/kogito/bin/process-springboot-example.jar should exist
     And container log should contain main] .c.l.ClasspathLoggingApplicationListener
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
 
-  Scenario: Scenario: Perform a incremental s2i build
+  Scenario: Perform a incremental s2i build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from process-springboot-example with env and incremental using master
       # Leave those here as placeholder for scripts adding variable to the test. No impact on tests if empty.
       | variable | value |
     Then check that page is served
-      | property             | value     |
-      | port                 | 8080      |
-      | path                 | /orders/1 |
-      | wait                 | 80        |
-      | expected_status_code | 204       |
+      | property             | value                                                                         |
+      | port                 | 8080                                                                          |
+      | path                 | /orders                                                                       |
+      | wait                 | 80                                                                            |
+      | request_method       | POST                                                                          |
+      | request_body         | {"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}} |
+      | content_type         | application/json                                                              |
+      | expected_status_code | 201                                                                           |
     And file /home/kogito/bin/process-springboot-example.jar should exist
 
   # Since the same image is used we can do a subsequent incremental build and verify if it is working as expected.
