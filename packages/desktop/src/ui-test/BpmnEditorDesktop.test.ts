@@ -31,6 +31,14 @@ describe("BPMN Editor Tests", () => {
       } 
     });
 
+    afterAll(async done => {
+      // make sure jest exits when app is taking too long to stop
+      if (app && app.isRunning()){
+        await appTester.stopApplication();
+      }
+      done();
+    });
+
     it('opens BPMN editor - new file', async () => {
       await homeTester.openNewBpmn();
 
