@@ -14,13 +14,31 @@
  * limitations under the License.
  */
 
-import * as vscode from "vscode";
+import { backendI18nDefaults, backendI18nDictionaries } from "@kogito-tooling/backend/dist/i18n";
+import { registerTestScenarioRunnerCommand, VsCodeBackendProxy } from "@kogito-tooling/backend/dist/vscode";
+import { I18n } from "@kogito-tooling/i18n/dist/core";
 import * as KogitoVsCode from "@kogito-tooling/vscode-extension";
+import { VsCodeWorkspaceApi } from "@kogito-tooling/workspace/dist/vscode";
+import * as vscode from "vscode";
 
-export function activate(context: vscode.ExtensionContext) {
+let backendProxy: VsCodeBackendProxy;
+
+export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   const envelopeTargetOrigin = "vscode";
+
+  const workspaceApi = new VsCodeWorkspaceApi();
+  const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
+  backendProxy = new VsCodeBackendProxy(context, backendI18n, "kie-group.vscode-extension-backend");
+
+  registerTestScenarioRunnerCommand({
+    command: "extension.kogito.runTest",
+    context: context,
+    backendProxy: backendProxy,
+    backendI18n: backendI18n,
+    workspaceApi: workspaceApi
+  });
 
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-pack-kogito-kie-editors",
@@ -35,13 +53,13 @@ export function activate(context: vscode.ExtensionContext) {
         ["dmn", { resourcesPathPrefix: "dist/webview/editors/dmn", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }],
         ["scesim", { resourcesPathPrefix: "dist/webview/editors/scesim", envelopePath: "dist/webview/GwtEditorsEnvelopeApp.js" }]
       ])
-    }
+    },
+    backendProxy: backendProxy
   });
 
   console.info("Extension is successfully setup.");
 }
 
 export function deactivate() {
-  //FIXME: For some reason, this method is not being called :(
-  console.info("Extension is deactivating");
+  backendProxy?.stopServices();
 }

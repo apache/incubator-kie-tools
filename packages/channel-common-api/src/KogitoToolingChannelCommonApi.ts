@@ -14,19 +14,9 @@
  * limitations under the License.
  */
 
-import { ResourceContentRequest } from "./ResourceContentRequest";
-import { ResourceContent } from "./ResourceContent";
-import { ResourceListRequest } from "./ResourceListRequest";
-import { ResourcesList } from "./ResourcesList";
 import { KogitoEdit } from "./KogitoEdit";
 
-export interface WorkspaceApi {
-  receive_openFile(path: string): void;
-  receive_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined>;
-  receive_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;
-}
-
-export interface KogitoToolingChannelCommonApi extends WorkspaceApi {
+export interface KogitoToolingChannelCommonApi {
   receive_ready(): void;
   receive_newEdit(edit: KogitoEdit): void;
 }

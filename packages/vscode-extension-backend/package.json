@@ -1,0 +1,79 @@
+{
+  "name": "vscode-extension-backend",
+  "displayName": "Backend services for BPMN, DMN and Test Scenario Editors",
+  "description": "",
+  "version": "0.7.0",
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.46.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "categories": [
+    "Other"
+  ],
+  "publisher": "kie-group",
+  "main": "./dist/extension/extension.js",
+  "activationEvents": [
+    "onLanguage:bpmn",
+    "onLanguage:dmn",
+    "onLanguage:scesim"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "bpmn",
+        "extensions": [
+          ".bpmn",
+          ".bpmn2"
+        ],
+        "aliases": [
+          "bpmn",
+          "bpmn2",
+          "Business Process Model and Notation"
+        ]
+      },
+      {
+        "id": "dmn",
+        "extensions": [
+          ".dmn"
+        ],
+        "aliases": [
+          "dmn",
+          "Decision Model and Notation"
+        ]
+      },
+      {
+        "id": "scesim",
+        "extensions": [
+          ".scesim"
+        ],
+        "aliases": [
+          "scesim",
+          "Test Scenario"
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "package:prod": "cross-var \"vsce package --yarn -o ./dist/vscode-extension-backend_$npm_package_version.vsix\"",
+    "compile": "webpack",
+    "watch": "webpack",
+    "test": "jest --silent --verbose --passWithNoTests",
+    "test:it": "echo 'No tests to run.'",
+    "build:fast": "rm -rf dist && webpack",
+    "build": "yarn run build:fast",
+    "build:prod:linux:darwin": "yarn run build --mode production --devtool none && yarn run test && yarn run test:it && yarn run package:prod",
+    "build:prod:windows": "yarn run build --mode production --devtool none && yarn run test && yarn run package:prod",
+    "build:prod": "run-script-os"
+  },
+  "jest-junit": {
+    "outputDirectory": "./target"
+  },
+  "dependencies": {
+    "@kogito-tooling/backend": "0.7.0",
+    "@kogito-tooling/backend-quarkus-runner-unpacked": "0.7.0"
+  }
+}

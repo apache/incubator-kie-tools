@@ -13,11 +13,13 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
+    "@kogito-tooling/backend": "0.7.0",
     "@kogito-tooling/envelope": "0.7.0",
     "@kogito-tooling/envelope-bus": "0.7.0",
     "@kogito-tooling/guided-tour": "0.7.0",
     "@kogito-tooling/keyboard-shortcuts": "0.7.0",
-    "@kogito-tooling/i18n": "0.7.0"
+    "@kogito-tooling/i18n": "0.7.0",
+    "@kogito-tooling/workspace": "0.7.0"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",

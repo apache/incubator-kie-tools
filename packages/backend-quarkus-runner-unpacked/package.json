@@ -1,0 +1,16 @@
+{
+  "name": "@kogito-tooling/backend-quarkus-runner-unpacked",
+  "version": "0.7.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling"
+  },
+  "scripts": {
+    "test": "echo 'No tests to run'",
+    "build:fast": "mvn clean package -B -nsu && echo ",
+    "build": "yarn run build:fast",
+    "build:prod": "mvn clean package -B -nsu && echo "
+  }
+}

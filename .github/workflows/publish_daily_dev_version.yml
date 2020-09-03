@@ -92,6 +92,13 @@ jobs:
           name: vscode-extension
           path: kogito-tooling/packages/vscode-extension-pack-kogito-kie-editors/dist/vscode_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.vsix
 
+      - name: Upload Backend VSCode Extension (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: vscode-extension-backend
+          path: kogito-tooling/packages/vscode-extension-backend/dist/vscode-extension-backend_${{ steps.version.outputs.version }}.vsix
+
       - name: Upload Chrome Extension (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1
@@ -152,7 +159,7 @@ jobs:
 
       - name: Update kogito-online resources (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
-        run: |          
+        run: |
           cd kogito-online
           rm -rf dev
           mkdir -p dev/editors

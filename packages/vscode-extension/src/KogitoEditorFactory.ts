@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEditor } from "./KogitoEditor";
+import { BackendProxy } from "@kogito-tooling/backend/dist/api";
+import { ResourceContentService } from "@kogito-tooling/channel-common-api";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kogito-tooling/editor/dist/api";
-import { ResourceContentService, WorkspaceApi } from "@kogito-tooling/channel-common-api";
-import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
-import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
+import { WorkspaceApi } from "@kogito-tooling/workspace/dist/api";
+import * as nodePath from "path";
 import * as vscode from "vscode";
 import { Uri, Webview } from "vscode";
-import * as nodePath from "path";
-import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
-import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
+import { KogitoEditableDocument } from "./KogitoEditableDocument";
+import { KogitoEditor } from "./KogitoEditor";
+import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
+import { KogitoEditorStore } from "./KogitoEditorStore";
+import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
+import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
 
 export class KogitoEditorFactory {
   constructor(
@@ -33,7 +35,8 @@ export class KogitoEditorFactory {
     private readonly editorStore: KogitoEditorStore,
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator,
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
-    private readonly workspaceApi: WorkspaceApi
+    private readonly workspaceApi: WorkspaceApi,
+    private readonly backendProxy: BackendProxy
   ) {}
 
   public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditableDocument) {
@@ -61,7 +64,12 @@ export class KogitoEditorFactory {
       this.messageBroadcaster
     );
 
-    const editorChannelApi = new KogitoEditorChannelApiImpl(editor, resourceContentService, this.workspaceApi);
+    const editorChannelApi = new KogitoEditorChannelApiImpl(
+      editor,
+      resourceContentService,
+      this.workspaceApi,
+      this.backendProxy
+    );
 
     this.editorStore.addAsActive(editor);
     editor.startListening(editorChannelApi);
