@@ -15,8 +15,7 @@ import * as path from 'path';
 export default class DesktopTestHelper {
 
     private applicationOptions: BasicAppSettings = {
-        path: path.join(__dirname, '..', '..', '..', 'node_modules', '.bin', 'electron',
-                        process.platform === 'win32' ? '.cmd' : ''),
+        path: path.join(__dirname, '..', '..', '..', 'node_modules', '.bin', 'electron'),
         args: [path.join(__dirname, '..', '..', '..')],
         startTimeout: 30000,
         chromeDriverArgs: ['--no-sandbox','--disable-dev-shm-usage', 'remote-debugging-port=0', '--whitelisted-ips='],
