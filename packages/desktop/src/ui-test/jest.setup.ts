@@ -15,5 +15,3 @@
  */
 
 import "electron";
-
-process.env.DISPLAY = ':99.0'

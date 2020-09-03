@@ -23,6 +23,8 @@ module.exports = {
     transform: {
       "^.+\\.jsx?$": "babel-jest",
       "^.+\\.tsx?$": "ts-jest"
-    }
+    },
+    runner: '@jest-runner/electron',
+    testEnvironment: '@jest-runner/electron/environment',
   };
   
