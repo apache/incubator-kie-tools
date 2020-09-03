@@ -18,13 +18,16 @@ export default class DesktopTestHelper {
         path: path.join(__dirname, '..', '..', '..', 'node_modules', '.bin', 'electron'),
         args: [path.join(__dirname, '..', '..', '..')],
         startTimeout: 30000,
-        chromeDriverArgs: ['--no-sandbox','--disable-dev-shm-usage', 'remote-debugging-port=0', '--whitelisted-ips='],
+        chromeDriverArgs: ['--no-sandbox','--disable-dev-shm-usage', 'remote-debugging-port=0'],
         chromeDriverLogPath: path.join(__dirname, '..', '..', '..', 'chrome-logs.txt')
     }
 
     private testedApplication: Application;
 
     public startApplication = async (): Promise<Application> => {
+        if (process.platform === 'win32') {
+            this.applicationOptions.path += '.cmd'
+        }
         this.testedApplication = new Application(this.applicationOptions);
         await this.testedApplication.start()
         expect(this.testedApplication.isRunning()).toBeTruthy();
