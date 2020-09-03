@@ -14,6 +14,8 @@ Feature: Kogito-explainability feature.
   Scenario: verify if the messaging binary is available on /home/kogito
     When container is started with command bash
     Then run sh -c 'ls /home/kogito/bin/kogito-explainability-messaging-runner.jar' in container and immediately check its output for /home/kogito/bin/kogito-explainability-messaging-runner.jar
+    And run sh -c 'ls /home/kogito/bin/kogito-explainability-rest-runner.jar' in container and immediately check its output for /home/kogito/bin/kogito-explainability-rest-runner.jar
+
 
   Scenario: verify if the rest binary is available on /home/kogito
     When container is started with command bash
@@ -32,7 +34,6 @@ Feature: Kogito-explainability feature.
       | HTTP_PORT     | 9090  |
     Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-explainability-messaging-runner.jar
 
-
   Scenario: Verify if the explainability rest binary is selected by the enviroment variable EXPLAINABILITY_COMMUNICATION
     When container is started with env
       | variable      | value |
@@ -40,3 +41,10 @@ Feature: Kogito-explainability feature.
       | SCRIPT_DEBUG  | true  |
       | HTTP_PORT     | 9090  |
     Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-explainability-rest-runner.jar
+
+  Scenario: Verify if the communication is correctly set to its default value if a wrong communication type is set
+    When container is started with env
+      | variable               | value    |
+      | SCRIPT_DEBUG           | true     |
+      | EXPLAINABILITY_COMMUNICATION | nonsense |
+    Then container log should contain WARN Explainability communication type nonsense is not allowed, the allowed types are [REST MESSAGING]. Defaulting to MESSAGING.

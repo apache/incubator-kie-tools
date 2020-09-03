@@ -8,6 +8,7 @@ if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     SHOW_JVM_SETTINGS="-XshowSettings:properties"
     log_info "Script debugging is enabled, allowing bash commands and their arguments to be printed as they are executed"
     log_info "JVM settings debug is enabled."
+    printenv
 fi
 
 
@@ -19,13 +20,7 @@ CONFIGURE_SCRIPTS=(
 source ${KOGITO_HOME}/launch/configure.sh
 #############################################
 
-if [ ${EXPLAINABILITY_COMMUNICATION^^} = "REST" ] ; then 
-      EXPLAINABILITY_JAR="kogito-explainability-rest-runner.jar"
-    else
-      EXPLAINABILITY_JAR="kogito-explainability-messaging-runner.jar"
-fi
-
 exec java ${SHOW_JVM_SETTINGS} ${JAVA_OPTIONS} ${KOGITO_EXPLAINABILITY_PROPS} \
         -Djava.library.path=$KOGITO_HOME/lib \
         -Dquarkus.http.host=0.0.0.0 \
-        -jar $KOGITO_HOME/bin/$EXPLAINABILITY_JAR
+        -jar $KOGITO_HOME/bin/$EXPLAINABILITY_SERVICE_JAR

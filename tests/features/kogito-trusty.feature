@@ -19,14 +19,22 @@ Feature: Kogito-trusty feature.
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=8080 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-trusty-runner.jar
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=8080 -Dtrusty.explainability.enabled=true -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-trusty-runner.jar
 
   Scenario: Verify if the debug is correctly enabled and test custom http port
     When container is started with env
       | variable      | value |
       | SCRIPT_DEBUG  | true  |
       | HTTP_PORT     | 9090  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-trusty-runner.jar
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Dtrusty.explainability.enabled=true -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-trusty-runner.jar
+
+  Scenario: Verify if the explainability messaging is disabled
+    When container is started with env
+      | variable      | value |
+      | SCRIPT_DEBUG  | true  |
+      | HTTP_PORT     | 9090  |
+      | EXPLAINABILITY_ENABLED     | false  |
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Dtrusty.explainability.enabled=false -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-trusty-runner.jar
 
   Scenario: verify if auth is correctly set
     When container is started with env

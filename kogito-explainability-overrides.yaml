@@ -20,7 +20,9 @@ envs:
   - name: "HTTP_PORT"
     example: "9090"
     description: "Defines which port the Explainability Container Image will listen on."
-
+  - name: "EXPLAINABILITY_COMMUNICATION"
+    example: "REST"
+    description: "Defines which kind of communication should be used by the Explainability Container: rest api or kafka events."
 ports:
 - value: 8080
 
