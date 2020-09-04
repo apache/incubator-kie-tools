@@ -75,10 +75,8 @@ public class ContainerRemoteStatusPresenter {
         if ( serverInstanceUpdated != null &&
                 serverInstanceUpdated.getServerInstance() != null ) {
             final String updatedServerInstanceKey = serverInstanceUpdated.getServerInstance().getServerInstanceId();
-            if ( index.containsKey( updatedServerInstanceKey ) || index.isEmpty() ) {
-                final Map<String, ContainerCardPresenter> oldIndex = index.isEmpty() ?
-                        new HashMap<String, ContainerCardPresenter>() :
-                        new HashMap<String, ContainerCardPresenter>( index.remove( updatedServerInstanceKey ) );
+            if ( index.containsKey( updatedServerInstanceKey )) {
+                final Map<String, ContainerCardPresenter> oldIndex = new HashMap<String, ContainerCardPresenter>( index.remove( updatedServerInstanceKey ) );
                 final Map<String, ContainerCardPresenter> newIndexIndex = new HashMap<String, ContainerCardPresenter>( serverInstanceUpdated.getServerInstance().getContainers().size() );
                 index.put( updatedServerInstanceKey, newIndexIndex );
                 for ( final Container container : serverInstanceUpdated.getServerInstance().getContainers() ) {
@@ -98,7 +96,8 @@ public class ContainerRemoteStatusPresenter {
                 }
             } else {
                 for ( final Container container : serverInstanceUpdated.getServerInstance().getContainers() ) {
-                    if ( container.getServerTemplateId().equals( containerSpec.getServerTemplateKey().getId() ) &&
+                    if ( containerSpec != null &&
+                            container.getServerTemplateId().equals( containerSpec.getServerTemplateKey().getId() ) &&
                             container.getContainerSpecId().equals( containerSpec.getId() ) ) {
                         buildAndIndexContainer( container );
                     }

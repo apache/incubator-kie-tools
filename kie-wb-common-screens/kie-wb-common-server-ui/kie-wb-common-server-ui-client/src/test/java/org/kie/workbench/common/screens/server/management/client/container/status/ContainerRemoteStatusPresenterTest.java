@@ -158,6 +158,11 @@ public class ContainerRemoteStatusPresenterTest {
         newContainer.setStatus( KieContainerStatus.STARTED );
         newServerInstance.addContainer( newContainer );
 
+        // To check when ContainerSpec not available
+        presenter.onServerInstanceUpdated( new ServerInstanceUpdated( newServerInstance ) );
+
+        verify( cardPresenter , times(0)).setup( toKey( newServerInstance ), newContainer );
+
         presenter.setup( new ContainerSpec( "containerSpecId", "containerName", new ServerTemplateKey( "templateId", "templateId" ), new ReleaseId(), KieContainerStatus.STARTED, Collections.<Capability, ContainerConfig>emptyMap() ), Arrays.asList( existingContainer ) );
 
         verify( cardPresenter ).setup( toKey( serverInstance ), existingContainer );
