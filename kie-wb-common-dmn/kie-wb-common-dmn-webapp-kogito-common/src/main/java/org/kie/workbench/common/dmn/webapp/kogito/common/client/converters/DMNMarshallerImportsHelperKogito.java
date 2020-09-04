@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
+import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.marshalling.DMNMarshallerImportsHelper;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDRGElement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
@@ -43,6 +44,9 @@ public interface DMNMarshallerImportsHelperKogito extends DMNMarshallerImportsHe
 
     Promise<Map<JSITImport, PMMLDocumentMetadata>> getPMMLDocumentsAsync(final Metadata metadata,
                                                                          final List<JSITImport> imports);
+
+    void getPMMLDocumentsMetadataFromFiles(final List<PMMLIncludedModel> files,
+                                           final ServiceCallback<List<PMMLDocumentMetadata>> callback);
 
     void getImportedItemDefinitionsByNamespaceAsync(final String modelName,
                                                     final String namespace,

@@ -15,23 +15,39 @@
  */
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.services;
 
+import java.util.Collections;
+
 import elemental2.promise.Promise;
+import org.appformer.kogito.bridge.client.pmmleditor.marshaller.PMMLEditorMarshallerApi;
+import org.appformer.kogito.bridge.client.pmmleditor.marshaller.model.PMMLDocumentData;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
+import org.mockito.Mock;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.when;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(PMMLDocumentData.class)
 public class PMMLMarshallerServiceTest {
 
+    private static final String CONTENT = "<xml>content</xml>";
     private static final String FILENAME = "fileName.pmml";
     private static final String PATH = "test/" + FILENAME;
-    private static final String CONTENT = "<xml>content</xml>";
+    private static final String UNDEFINED = "undefined";
+
+    @Mock
+    private PMMLEditorMarshallerApi pmmlEditorMarshallerApiMock;
 
     private Promises promises;
     private PMMLMarshallerService pmmlMarshallerService;
@@ -39,18 +55,22 @@ public class PMMLMarshallerServiceTest {
     @Before
     public void setup() {
         promises = new SyncPromises();
-        pmmlMarshallerService = new PMMLMarshallerService(promises);
+        pmmlMarshallerService = new PMMLMarshallerService(promises, pmmlEditorMarshallerApiMock);
     }
 
     @Test
     public void getDocumentMetadata() {
+        final PMMLDocumentData pmmlDocumentData = PowerMockito.mock(PMMLDocumentData.class);
+        PowerMockito.when(pmmlDocumentData.getModels()).thenReturn(Collections.emptyList());
+        when(pmmlEditorMarshallerApiMock.getPMMLDocumentData(CONTENT)).thenReturn(pmmlDocumentData);
         Promise<PMMLDocumentMetadata> returnPromise = pmmlMarshallerService.getDocumentMetadata(PATH, CONTENT);
         assertNotNull(returnPromise);
         returnPromise.then(pmmlDocumentMetadata -> {
             assertNotNull(pmmlDocumentMetadata);
             assertEquals("test/fileName.pmml", pmmlDocumentMetadata.getPath());
-            assertEquals("fileName.pmml", pmmlDocumentMetadata.getName());
+            assertEquals(UNDEFINED, pmmlDocumentMetadata.getName());
             assertEquals(DMNImportTypes.PMML.getDefaultNamespace(), pmmlDocumentMetadata.getImportType());
+            assertEquals(0, pmmlDocumentMetadata.getModels().size());
             return promises.resolve();
         }).catch_(i -> {
             Assert.fail("Promise should've been resolved!");
@@ -60,12 +80,12 @@ public class PMMLMarshallerServiceTest {
 
     @Test
     public void getDocumentMetadataNullFile() {
-        getDocumentMetadataInvalidContent(null, CONTENT, "PMML fileName required to be marshalled is empty or null");
+        getDocumentMetadataInvalidContent(null, CONTENT, "PMML file required to be marshalled is empty or null");
     }
 
     @Test
     public void getDocumentMetadataEmptyFile() {
-        getDocumentMetadataInvalidContent("", CONTENT, "PMML fileName required to be marshalled is empty or null");
+        getDocumentMetadataInvalidContent("", CONTENT, "PMML file required to be marshalled is empty or null");
     }
 
     @Test
