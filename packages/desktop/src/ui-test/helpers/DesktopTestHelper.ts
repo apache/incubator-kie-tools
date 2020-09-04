@@ -17,9 +17,9 @@ export default class DesktopTestHelper {
     private applicationOptions: BasicAppSettings = {
         path: this.getElectronPath(),
         args: [path.join(__dirname, '..', '..', '..')],
-        startTimeout: 30000,
+        startTimeout: 50000,
         port: 9516,
-        chromeDriverArgs: ['--no-sandbox','--disable-dev-shm-usage', '--headless', '--remote-debugging-port=9253', '--verbose', 'whitelisted-ips=9222'],
+        chromeDriverArgs: ['--no-sandbox','--disable-dev-shm-usage', '--headless', '--remote-debugging-port=9253', '--verbose'],
         chromeDriverLogPath: path.join(__dirname, '..', '..', '..', 'chrome-logs.txt')
     }
 
