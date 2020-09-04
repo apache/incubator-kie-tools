@@ -56,7 +56,8 @@ export class KogitoEditor implements EditorApi {
           {
             fileExtension: document.fileExtension,
             resourcesPathPrefix: envelopeMapping.resourcesPathPrefix,
-            initialLocale: vscode.env.language
+            initialLocale: vscode.env.language,
+            isReadOnly: false
           }
         )
     )
