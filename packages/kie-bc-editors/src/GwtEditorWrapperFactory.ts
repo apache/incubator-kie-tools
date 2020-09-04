@@ -38,6 +38,8 @@ import { GwtEditorMapping } from "./GwtEditorMapping";
 import { I18nServiceApi } from "./api/I18nServiceApi";
 import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { PMMLEditorMarshallerApi } from "./api/PMMLEditorMarshallerApi";
+import { PMMLEditorMarshallerService } from "@kogito-tooling/pmml-editor-marshaller";
 
 declare global {
   interface Window {
@@ -51,6 +53,7 @@ declare global {
       keyboardShortcuts: KeyboardShortcutsApi;
       workspaceService: WorkspaceServiceApi;
       i18nService: I18nServiceApi;
+      pmmlEditorMarshallerService: PMMLEditorMarshallerApi;
     };
   }
 }
@@ -157,7 +160,8 @@ export class GwtEditorWrapperFactory implements EditorFactory {
         onLocaleChange: (onLocaleChange: (locale: string) => void) => {
           envelopeContext.services.i18n.subscribeToLocaleChange(onLocaleChange);
         }
-      }
+      },
+      pmmlEditorMarshallerService: new PMMLEditorMarshallerService()
     };
   }
 
