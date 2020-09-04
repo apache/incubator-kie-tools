@@ -15,3 +15,8 @@
  */
 
 import "electron";
+import { exec } from 'child_process';
+
+if (process.platform === 'linux') {
+    exec("fuser -l 98/tcp")
+}
