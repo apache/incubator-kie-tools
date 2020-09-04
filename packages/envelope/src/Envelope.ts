@@ -34,7 +34,7 @@ export class Envelope<
   }
 
   public async start(
-    viewDelegate: () => Promise<() => ViewType>,
+    viewDelegate: () => Promise<ViewType>,
     context: ContextType,
     apiFactory: EnvelopeApiFactory<ApiToProvide, ApiToConsume, ViewType, ContextType>
   ) {

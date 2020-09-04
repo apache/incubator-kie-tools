@@ -23,7 +23,7 @@ import {
 } from "../api";
 import { DefaultKeyboardShortcutsService } from "@kogito-tooling/keyboard-shortcuts/dist/envelope";
 import { KogitoGuidedTour } from "@kogito-tooling/guided-tour/dist/envelope";
-import { EditorEnvelopeView } from "./EditorEnvelopeView";
+import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { Envelope } from "@kogito-tooling/envelope";
@@ -41,7 +41,7 @@ export class KogitoEditorEnvelope {
     private readonly envelope: Envelope<
       KogitoEditorEnvelopeApi,
       KogitoEditorChannelApi,
-      EditorEnvelopeView,
+      EditorEnvelopeViewApi,
       KogitoEditorEnvelopeContextType
     >,
     private readonly context: KogitoEditorEnvelopeContextType = {
@@ -60,7 +60,7 @@ export class KogitoEditorEnvelope {
   }
 
   private renderView(container: HTMLElement) {
-    let view: EditorEnvelopeView;
+    const editorEnvelopeViewRef = React.createRef<EditorEnvelopeViewApi>();
 
     const app = (
       <KogitoEditorEnvelopeContext.Provider value={this.context}>
@@ -71,16 +71,19 @@ export class KogitoEditorEnvelope {
           initialLocale={navigator.language}
         >
           <EditorEnvelopeI18nContext.Consumer>
-            {({ setLocale }) => <EditorEnvelopeView exposing={self => (view = self)} setLocale={setLocale} />}
+            {({ setLocale }) => <EditorEnvelopeView ref={editorEnvelopeViewRef} setLocale={setLocale} />}
           </EditorEnvelopeI18nContext.Consumer>
         </I18nDictionariesProvider>
       </KogitoEditorEnvelopeContext.Provider>
     );
 
-    return new Promise<() => EditorEnvelopeView>(res => {
-      setTimeout(() => {
-        ReactDOM.render(app, container, () => res(() => view!));
-      }, 0);
+    return new Promise<EditorEnvelopeViewApi>((res, rej) => {
+      ReactDOM.render(app, container, () => {
+        if (editorEnvelopeViewRef.current) {
+          res(editorEnvelopeViewRef.current);
+        }
+        rej();
+      });
     });
   }
 }

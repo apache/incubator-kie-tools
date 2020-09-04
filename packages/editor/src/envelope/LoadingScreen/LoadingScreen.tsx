@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,48 +15,54 @@
  */
 
 import * as React from "react";
-import { useLayoutEffect, useState } from "react";
 import { Bullseye, Page, Spinner, Title } from "@patternfly/react-core";
 import "./styles.scss";
-import { useEditorEnvelopeI18nContext } from "../i18n/setup";
+import { useEditorEnvelopeI18nContext } from "../i18n";
+import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 
-export const FADE_OUT_DELAY = 400;
-
-export function LoadingScreen(props: { visible: boolean }) {
-  let cssAnimation;
+export function LoadingScreen(props: { loading: boolean }) {
   const [mustRender, setMustRender] = useState(true);
   const { i18n } = useEditorEnvelopeI18nContext();
 
-  if (props.visible) {
-    cssAnimation = { opacity: 1 };
-  } else {
-    cssAnimation = { opacity: 0, transition: `opacity ${FADE_OUT_DELAY}ms` };
-  }
+  const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setMustRender(false);
+  }, []);
+
+  const loadingScreenClassName = useMemo(() => {
+    if (props.loading) {
+      return "";
+    } else {
+      return "loading-finished";
+    }
+  }, [props.loading]);
 
   useLayoutEffect(() => {
-    if (props.visible) {
+    if (props.loading) {
       setMustRender(true);
     }
-  }, [props.visible]);
+  }, [props.loading]);
 
   return (
     (mustRender && (
-      <div
-        className="kogito-tooling--loading-screen"
-        style={{ ...cssAnimation }}
-        data-testid={"loading-screen-div"}
-        onTransitionEnd={() => setMustRender(false)}
-      >
-        <Page tabIndex={-1}>
-          <Bullseye>
-            <div className={"kogito-tooling--loading-screen-spinner"}>
-              <div>
-                <Spinner />
+      <div id="loading-screen" className="kogito-tooling--loading-screen">
+        <div
+          className={`kogito-tooling--loading-screen ${loadingScreenClassName}`}
+          onAnimationEnd={onAnimationEnd}
+          data-testid={"loading-screen-div"}
+        >
+          <Page tabIndex={-1}>
+            <Bullseye>
+              <div className={"kogito-tooling--loading-screen-spinner"}>
+                <div>
+                  <Spinner />
+                </div>
+                <Title headingLevel={"h5"}>{i18n.loadingScreen.loading}</Title>
               </div>
-              <Title headingLevel={"h5"}>{i18n.loadingScreen.loading}</Title>
-            </div>
-          </Bullseye>
-        </Page>
+            </Bullseye>
+          </Page>
+        </div>
       </div>
     )) || <></>
   );

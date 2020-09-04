@@ -27,7 +27,7 @@ import {
 } from "../api";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
-import { EditorEnvelopeView } from "./EditorEnvelopeView";
+import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts/dist/api";
 import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
@@ -38,7 +38,7 @@ export class KogitoEditorEnvelopeApiFactory
     EnvelopeApiFactory<
       KogitoEditorEnvelopeApi,
       KogitoEditorChannelApi,
-      EditorEnvelopeView,
+      EditorEnvelopeViewApi,
       KogitoEditorEnvelopeContextType
     > {
   constructor(private readonly editorFactory: EditorFactory, private readonly i18n: I18n<EditorEnvelopeI18n>) {}
@@ -47,7 +47,7 @@ export class KogitoEditorEnvelopeApiFactory
     args: EnvelopeApiFactoryArgs<
       KogitoEditorEnvelopeApi,
       KogitoEditorChannelApi,
-      EditorEnvelopeView,
+      EditorEnvelopeViewApi,
       KogitoEditorEnvelopeContextType
     >
   ) {
@@ -63,7 +63,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     private readonly args: EnvelopeApiFactoryArgs<
       KogitoEditorEnvelopeApi,
       KogitoEditorChannelApi,
-      EditorEnvelopeView,
+      EditorEnvelopeViewApi,
       KogitoEditorEnvelopeContextType
     >,
     private readonly editorFactory: EditorFactory,
@@ -91,29 +91,29 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
 
     this.editor = await this.editorFactory.createEditor(this.args.envelopeContext, initArgs);
 
-    await this.args.view().setEditor(this.editor);
+    await this.args.view.setEditor(this.editor);
 
     this.editor.af_onStartup?.();
     this.editor.af_onOpen?.();
 
     this.registerDefaultShortcuts();
 
-    this.args.view().setLoading();
+    this.args.view.setLoading();
 
     const content = await this.args.envelopeContext.channelApi.requests.receive_contentRequest();
 
     await this.editor
       .setContent(content.path ?? "", content.content)
-      .finally(() => this.args.view().setLoadingFinished());
+      .finally(() => this.args.view.setLoadingFinished());
 
     this.args.envelopeContext.channelApi.notifications.receive_ready();
   };
 
   public receive_contentChanged = (editorContent: EditorContent) => {
-    this.args.view().setLoading();
+    this.args.view.setLoading();
     this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
-      .finally(() => this.args.view().setLoadingFinished());
+      .finally(() => this.args.view.setLoadingFinished());
   };
 
   public receive_editorUndo() {
@@ -148,7 +148,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     this.i18n.setLocale(initArgs.initialLocale);
     this.args.envelopeContext.services.i18n.subscribeToLocaleChange(locale => {
       this.i18n.setLocale(locale);
-      this.args.view().setLocale(locale);
+      this.args.view.setLocale(locale);
     });
   }
 

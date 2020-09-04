@@ -23,8 +23,7 @@ exports[`EditorEnvelopeView after loading stops 1`] = `
       </svg>
     </div>
     <div
-      id="loading-screen"
-      style="z-index: 100; position: relative;"
+      style="position: absolute; width: 100vw; height: 100vh; top: 0px; left: 0px;"
     />
   </div>
   <div />
@@ -54,14 +53,14 @@ exports[`EditorEnvelopeView after loading stops and editor is set 1`] = `
       </svg>
     </div>
     <div
-      id="loading-screen"
-      style="z-index: 100; position: relative;"
-    />
-    <div
-      data-testid="dummy-editor"
+      style="position: absolute; width: 100vw; height: 100vh; top: 0px; left: 0px;"
     >
-      Here's the dummy content: 
-      
+      <div
+        data-testid="dummy-editor"
+      >
+        Here's the dummy content: 
+        
+      </div>
     </div>
   </div>
   <div />
@@ -91,14 +90,14 @@ exports[`EditorEnvelopeView after set content 1`] = `
       </svg>
     </div>
     <div
-      id="loading-screen"
-      style="z-index: 100; position: relative;"
-    />
-    <div
-      data-testid="dummy-editor"
+      style="position: absolute; width: 100vw; height: 100vh; top: 0px; left: 0px;"
     >
-      Here's the dummy content: 
-      some-test-content
+      <div
+        data-testid="dummy-editor"
+      >
+        Here's the dummy content: 
+        
+      </div>
     </div>
   </div>
   <div />
@@ -109,13 +108,12 @@ exports[`EditorEnvelopeView first open 1`] = `
 <body>
   <div>
     <div
+      class="kogito-tooling--loading-screen"
       id="loading-screen"
-      style="z-index: 100; position: relative;"
     >
       <div
-        class="kogito-tooling--loading-screen"
+        class="kogito-tooling--loading-screen "
         data-testid="loading-screen-div"
-        style="opacity: 1;"
       >
         <div
           class="pf-c-page"
@@ -159,6 +157,9 @@ exports[`EditorEnvelopeView first open 1`] = `
         </div>
       </div>
     </div>
+    <div
+      style="position: absolute; width: 100vw; height: 100vh; top: 0px; left: 0px;"
+    />
   </div>
 </body>
 `;
