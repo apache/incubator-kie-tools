@@ -95,7 +95,7 @@ describe("GwtEditorWrapperFactory", () => {
           i18n: new I18nService()
         }
       },
-      { resourcesPathPrefix: "", fileExtension: "txt", initialLocale: "en" }
+      { resourcesPathPrefix: "", fileExtension: "txt", initialLocale: "en", isReadOnly: false}
     );
 
     await waitForNScriptsToLoad(jsResource.paths.length);

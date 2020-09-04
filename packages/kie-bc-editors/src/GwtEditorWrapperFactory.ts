@@ -72,7 +72,8 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       this.gwtEditorMapping.getLanguageData({
         fileExtension: fileExtension,
         resourcesPathPrefix: "",
-        initialLocale: ""
+        initialLocale: "",
+        isReadOnly: false
       }) !== undefined
     );
   }
@@ -92,7 +93,7 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     });
 
     this.appendGwtLocaleMetaTag();
-    this.exposeEnvelopeContext(envelopeContext);
+    this.exposeEnvelopeContext(envelopeContext, initArgs);
 
     const gwtFinishedLoading = new Promise<Editor>(res => {
       this.gwtAppFormerApi.onFinishedLoading(() => {
@@ -117,13 +118,17 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     );
   }
 
-  private exposeEnvelopeContext(envelopeContext: KogitoEditorEnvelopeContextType) {
+  private exposeEnvelopeContext(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs) {
     window.gwt = {
       stateControl: this.gwtStateControlService.exposeApi(envelopeContext.channelApi)
     };
 
     window.envelope = {
-      editorContext: envelopeContext.context,
+      editorContext: {
+        operatingSystem: envelopeContext.context.operatingSystem,
+        channel: envelopeContext.context.channel,
+        readOnly: initArgs.isReadOnly
+      },
       keyboardShortcuts: envelopeContext.services.keyboardShortcuts,
       guidedTourService: {
         refresh(userInteraction: UserInteraction): void {

@@ -96,7 +96,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     this.editor.af_onStartup?.();
     this.editor.af_onOpen?.();
 
-    this.registerDefaultShortcuts();
+    this.registerDefaultShortcuts(initArgs);
 
     this.args.view.setLoading();
 
@@ -152,8 +152,8 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     });
   }
 
-  private registerDefaultShortcuts() {
-    if (this.args.envelopeContext.context.channel === ChannelType.VSCODE) {
+  private registerDefaultShortcuts(initArgs: EditorInitArgs) {
+    if (this.args.envelopeContext.context.channel === ChannelType.VSCODE || initArgs.isReadOnly) {
       return;
     }
 
@@ -179,7 +179,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
       this.args.envelopeContext.services.keyboardShortcuts.deregister(redoId);
       this.args.envelopeContext.services.keyboardShortcuts.deregister(undoId);
       this.args.envelopeContext.services.i18n.unsubscribeToLocaleChange(subscription);
-      this.registerDefaultShortcuts();
+      this.registerDefaultShortcuts(initArgs);
     });
   }
 }

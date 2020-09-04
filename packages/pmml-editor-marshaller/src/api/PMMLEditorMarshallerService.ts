@@ -69,7 +69,8 @@ export class PMMLEditorMarshallerService {
         for (const type of modelsTypes) {
             if (model instanceof type) {
                 const modelFields = model.MiningSchema.MiningField.map(field => new PMMLFieldData(field.name.toString(), field.usageType));
-                modelData = new PMMLModelData(model.modelName == null ? "" : model.modelName, modelFields);
+                modelData = new PMMLModelData(model.modelName == null ? "" : model.modelName,
+                                              modelFields);
             }
         }
 
