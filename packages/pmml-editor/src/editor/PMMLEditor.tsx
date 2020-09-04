@@ -13,52 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
-import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api"
+import {KogitoEditorChannelApi} from "@kogito-tooling/editor/dist/api";
+import {MessageBusClientApi} from "@kogito-tooling/envelope-bus/dist/api"
 import * as React from "react";
 
 export interface Props {
-  exposing: (s: PMMLEditor) => void;
-  channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
+    exposing: (s: PMMLEditor) => void;
+    channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
 }
 
 export interface State {
-  path: string;
-  content: string;
-  originalContent: string;
+    path: string;
+    content: string;
+    originalContent: string;
 }
 
 export class PMMLEditor extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    props.exposing(this);
-    this.state = {
-      path: "",
-      content: "",
-      originalContent: ""
-    };
-  }
+    constructor(props: Props) {
+        super(props);
+        props.exposing(this);
+        this.state = {
+            path: "",
+            content: "",
+            originalContent: ""
+        };
+    }
 
-  public componentDidMount(): void {
-    this.props.channelApi.notifications.receive_ready();
-  }
+    public componentDidMount(): void {
+        this.props.channelApi.notifications.receive_ready();
+    }
 
-  public setContent(path: string, content: string): Promise<void> {
-    return new Promise<void>(res => this.setState({ originalContent: content }, res));
-  }
+    public setContent(path: string, content: string): Promise<void> {
+        return new Promise<void>(res => this.setState({path: path, content: content, originalContent: content}, res));
+    }
 
-  public getContent(): Promise<string> {
-    return new Promise<string>(res => this.state.content);
-  }
+    public getContent(): Promise<string> {
+        return new Promise<string>(res => this.state.content);
+    }
 
-  public render() {
-    return (
-      <textarea
-        style={{ width: "100%", height: "100%", outline: 0, boxSizing: "border-box", border: 0 }}
-        value={this.state.content}
-        onInput={(e: any) => this.setState(e.target.value)}
-        onChange={(e: any) => this.setState(e.target.value)}
-      />
-    );
-  }
+    public render() {
+        return (
+            <textarea
+                style={{width: "100%", height: "100%", outline: 0, boxSizing: "border-box", border: 0}}
+                value={this.state.content}
+                onInput={(e: any) => this.setState({content: e.target.value})}
+                onChange={(e: any) => this.setState({content: e.target.value})}
+            />
+        );
+    }
 }
