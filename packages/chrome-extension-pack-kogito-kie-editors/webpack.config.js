@@ -23,15 +23,15 @@ const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 
 function getLatestGitTag() {
-  const tagName = require("child_process")
+  /*const tagName = require("child_process")
     .execSync("git rev-list --tags --max-count=1")
     .toString()
-    .trim();
+    .trim();*/
 
-  return require("child_process")
+  return "0.6.1" /*require("child_process")
     .execSync("git describe --tags " + tagName)
     .toString()
-    .trim();
+    .trim();*/
 }
 
 function getRouterArgs(argv) {
