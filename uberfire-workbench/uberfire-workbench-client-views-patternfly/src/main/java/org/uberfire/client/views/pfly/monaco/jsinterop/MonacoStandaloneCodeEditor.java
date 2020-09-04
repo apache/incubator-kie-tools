@@ -16,6 +16,7 @@
 
 package org.uberfire.client.views.pfly.monaco.jsinterop;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.NativeEvent;
 import elemental2.core.JsObject;
 import jsinterop.annotations.JsFunction;
@@ -28,6 +29,8 @@ public class MonacoStandaloneCodeEditor {
     public JsObject _contentWidgets;
 
     public native void focus();
+
+    public native void layout(JavaScriptObject dimensions);
 
     public native void dispose();
 

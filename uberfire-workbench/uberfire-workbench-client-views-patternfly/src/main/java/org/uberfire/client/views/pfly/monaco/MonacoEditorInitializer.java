@@ -16,6 +16,7 @@
 
 package org.uberfire.client.views.pfly.monaco;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.google.gwt.core.client.JsArrayString;
@@ -34,53 +35,68 @@ public class MonacoEditorInitializer {
 
     static final String VS_EDITOR_EDITOR_MAIN_MODULE = "vs/editor/editor.main";
 
-    public void require(final Consumer<Monaco> monacoConsumer) {
+    public void require(final Consumer<Monaco> monacoConsumer,
+                        final String... modules) {
+        require(MonacoLoader::require,
+                monacoConsumer,
+                modules);
+    }
+
+    void require(final BiConsumer<JsArrayString, MonacoLoader.CallbackFunction> monacoLoader,
+                 final Consumer<Monaco> monacoConsumer,
+                 final String... modules) {
 
         switchAMDLoaderFromDefaultToMonaco();
 
-        require(monacoModule(), monaco -> {
+        final Consumer<Monaco> resultConsumer = monaco -> {
             monacoConsumer.accept(monaco);
             switchAMDLoaderFromMonacoToDefault();
-        });
+        };
+
+        monacoLoader.accept(toJsArrayString(VS_EDITOR_EDITOR_MAIN_MODULE),
+                            monaco -> {
+                                if (modules.length == 0) {
+                                    resultConsumer.accept(monaco);
+                                } else {
+                                    monacoLoader.accept(toJsArrayString(modules), monaco1 -> {
+                                        resultConsumer.accept(monaco);
+                                    });
+                                }
+                            });
     }
 
-    void require(final JsArrayString modules,
-                 final MonacoLoader.CallbackFunction callback) {
-        MonacoLoader.require(modules, callback);
-    }
-
-    void switchAMDLoaderFromDefaultToMonaco() {
+    public void switchAMDLoaderFromDefaultToMonaco() {
         nativeSwitchAMDLoaderFromDefaultToMonaco();
     }
 
-    void switchAMDLoaderFromMonacoToDefault() {
+    public void switchAMDLoaderFromMonacoToDefault() {
         nativeSwitchAMDLoaderFromMonacoToDefault();
     }
 
-    JsArrayString monacoModule() {
-        final JsArrayString modules = makeJsArrayString();
-        modules.push(VS_EDITOR_EDITOR_MAIN_MODULE);
-        return modules;
-    }
-
-    JsArrayString makeJsArrayString() {
-        return (JsArrayString) createArray();
-    }
-
-    private native void nativeSwitchAMDLoaderFromDefaultToMonaco() /*-{
-
+    private static native void nativeSwitchAMDLoaderFromDefaultToMonaco() /*-{
         // Store current definition of 'define' and 'require'
         $wnd.__GLOBAL_DEFINE__ = $wnd.define;
         $wnd.__GLOBAL_REQUIRE__ = $wnd.require;
-
         // Set Monaco AMD Loader definition of 'define' and 'require'
         $wnd.define = $wnd.__MONACO_AMD_LOADER__.define;
         $wnd.require = $wnd.__MONACO_AMD_LOADER__.require;
     }-*/;
 
-    private native void nativeSwitchAMDLoaderFromMonacoToDefault() /*-{
+    private static native void nativeSwitchAMDLoaderFromMonacoToDefault() /*-{
         // Reset the definition of 'define' and 'require'
         $wnd.define = $wnd.__GLOBAL_DEFINE__;
         $wnd.require = $wnd.__GLOBAL_REQUIRE__;
     }-*/;
+
+    JsArrayString toJsArrayString(String... modules) {
+        final JsArrayString result = makeJsArrayString();
+        for (String module : modules) {
+            result.push(module);
+        }
+        return result;
+    }
+
+    private static JsArrayString makeJsArrayString() {
+        return (JsArrayString) createArray();
+    }
 }

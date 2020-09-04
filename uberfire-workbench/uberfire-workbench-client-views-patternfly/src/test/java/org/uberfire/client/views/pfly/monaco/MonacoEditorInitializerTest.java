@@ -16,6 +16,7 @@
 
 package org.uberfire.client.views.pfly.monaco;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.google.gwt.core.client.JsArrayString;
@@ -23,73 +24,89 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InOrder;
-import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.uberfire.client.views.pfly.monaco.jsinterop.Monaco;
 import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoLoader;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 import static org.uberfire.client.views.pfly.monaco.MonacoEditorInitializer.VS_EDITOR_EDITOR_MAIN_MODULE;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class MonacoEditorInitializerTest {
 
-    @Mock
-    private JsArrayString monacoModule;
-
-    @Mock
-    private Monaco monaco;
-
-    @Captor
-    private ArgumentCaptor<MonacoLoader.CallbackFunction> callbackFunctionCaptor;
-
-    private MonacoEditorInitializer initializer;
+    private MonacoEditorInitializer tested;
 
     @Before
     public void setup() {
-        initializer = spy(new MonacoEditorInitializer());
+        tested = spy(new MonacoEditorInitializer());
     }
 
     @Test
-    public void testRequire() {
-
-        final int[] monacoConsumerCalls = new int[1];
-        final Consumer<Monaco> monacoConsumer = (e) -> monacoConsumerCalls[0]++;
-
-        doNothing().when(initializer).require(any(), any());
-        doReturn(monacoModule).when(initializer).monacoModule();
-
-        initializer.require(monacoConsumer);
-
-        final InOrder inOrder = inOrder(initializer);
-
-        inOrder.verify(initializer).switchAMDLoaderFromDefaultToMonaco();
-        inOrder.verify(initializer).require(eq(monacoModule), callbackFunctionCaptor.capture());
-        callbackFunctionCaptor.getValue().call(monaco);
-        assertEquals(1, monacoConsumerCalls[0]);
-        inOrder.verify(initializer).switchAMDLoaderFromMonacoToDefault();
+    public void testRequireOnlyEditorModule() {
+        assertFalse(testRequire(new String[0]));
     }
 
     @Test
-    public void testMonacoModule() {
+    public void testRequireModules() {
+        assertTrue(testRequire(new String[]{"someModulePathHere"}));
+    }
 
-        final JsArrayString expectedModules = mock(JsArrayString.class);
+    @SuppressWarnings("all")
+    private boolean testRequire(final String[] modules) {
 
-        doReturn(expectedModules).when(initializer).makeJsArrayString();
+        final JsArrayString mainModuleJsArray = mock(JsArrayString.class);
+        final JsArrayString modulesArray = mock(JsArrayString.class);
+        doAnswer(new Answer<JsArrayString>() {
+            @Override
+            public JsArrayString answer(InvocationOnMock invocation) throws Throwable {
+                String arg = (String) invocation.getArguments()[0];
+                if (VS_EDITOR_EDITOR_MAIN_MODULE.equals(arg)) {
+                    return mainModuleJsArray;
+                }
+                if (modules.length > 0 && modules[0].equals(arg)) {
+                    return modulesArray;
+                }
+                return null;
+            }
+        }).when(tested).toJsArrayString(any());
 
-        final JsArrayString actualModules = initializer.monacoModule();
+        final boolean[] callbackExecuted = new boolean[]{false};
+        final boolean[] mainModulesLoadingExecuted = new boolean[]{false};
+        final boolean[] modulesLoadingExecuted = new boolean[]{false};
+        Consumer<Monaco> monacoConsumer = monaco -> {
+            callbackExecuted[0] = true;
+        };
+        Monaco monaco = mock(Monaco.class);
+        BiConsumer<JsArrayString, MonacoLoader.CallbackFunction> monacoLoader =
+                (array, callback) -> {
+                    if (array == mainModuleJsArray) {
+                        mainModulesLoadingExecuted[0] = true;
+                        callback.call(monaco);
+                    }
+                    if (array == modulesArray) {
+                        modulesLoadingExecuted[0] = true;
+                        callback.call(monaco);
+                    }
+                };
 
-        verify(expectedModules).push(VS_EDITOR_EDITOR_MAIN_MODULE);
-        assertEquals(expectedModules, actualModules);
+        tested.require(monacoLoader,
+                       monacoConsumer,
+                       modules);
+
+        final InOrder inOrder = inOrder(tested);
+        inOrder.verify(tested, times(1)).switchAMDLoaderFromDefaultToMonaco();
+        inOrder.verify(tested, times(1)).switchAMDLoaderFromMonacoToDefault();
+        assertTrue(mainModulesLoadingExecuted[0]);
+        assertTrue(callbackExecuted[0]);
+        return modulesLoadingExecuted[0];
     }
 }
