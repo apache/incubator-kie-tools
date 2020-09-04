@@ -45,7 +45,6 @@
     "glob": "7.1.4",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^25.2.7",
-    "@jest-runner/electron": "3.0.0",
     "jest-junit": "9.0.0",
     "jest-webextension-mock": "^3.5.0",
     "lerna": "3.18.3",
