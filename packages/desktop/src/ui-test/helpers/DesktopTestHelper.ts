@@ -19,7 +19,12 @@ export default class DesktopTestHelper {
         args: [path.join(__dirname, '..', '..', '..')],
         startTimeout: 50000,
         port: 9999,
-       // chromeDriverArgs: ['--no-sandbox','--disable-dev-shm-usage', '--headless', '--verbose'],
+        env: {
+            ELECTRON_ENABLE_LOGGING: true,
+            ELECTRON_ENABLE_STACK_DUMPING: true,
+            NODE_ENV: 'test'
+        },
+        chromeDriverArgs: ['--no-sandbox','--disable-dev-shm-usage', 'remote-debugging-port=9222'],
         chromeDriverLogPath: path.join(__dirname, '..', '..', '..', 'chrome-logs.txt')
     }
 
