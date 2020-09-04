@@ -46,3 +46,11 @@
     margin: 0 0 0 5px;
     padding: 0;
 }
+
+.comment-container .comment-actions .dropdown-kebab-pf {
+    margin-left: 1em !important;
+}
+
+.comment-container .comment-actions .dropdown-kebab-pf .dropdown-menu-right {
+    right: -15px !important;
+}
