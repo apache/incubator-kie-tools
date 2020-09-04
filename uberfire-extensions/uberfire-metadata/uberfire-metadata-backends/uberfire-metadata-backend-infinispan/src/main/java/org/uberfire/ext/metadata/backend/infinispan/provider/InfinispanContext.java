@@ -59,6 +59,8 @@ public class InfinispanContext implements Disposable {
 
     private static final String PORT = "org.appformer.ext.metadata.infinispan.port";
     private static final String HOST = "org.appformer.ext.metadata.infinispan.host";
+    private static final String TIMEOUT = "org.appformer.ext.metadata.infinispan.timeout";
+    private static final String RETRIES = "org.appformer.ext.metadata.infinispan.retries";
     private static final String USERNAME = "org.appformer.ext.metadata.infinispan.username";
     private static final String PASSWORD = "org.appformer.ext.metadata.infinispan.password";
     private static final String REALM = "org.appformer.ext.metadata.infinispan.realm";
@@ -91,6 +93,12 @@ public class InfinispanContext implements Disposable {
             put(PORT,
                 System.getProperty(PORT,
                                    "11222"));
+            put(TIMEOUT,
+                System.getProperty(TIMEOUT,
+                                   "30000"));
+            put(RETRIES,
+                System.getProperty(RETRIES,
+                                   "5"));
             put(USERNAME,
                 System.getProperty(USERNAME,
                                    ""));
@@ -176,14 +184,16 @@ public class InfinispanContext implements Disposable {
 
         String host = properties.get(HOST);
         String port = properties.get(PORT);
+        String timeout = properties.get(TIMEOUT);
+        String retries = properties.get(RETRIES);
 
         try {
             ConfigurationBuilder builder = getMaybeSecurityBuilder(properties)
                     .addServer()
                     .host(host)
                     .port(Integer.parseInt(port))
-                    .connectionTimeout(5)
-                    .maxRetries(1)
+                    .connectionTimeout(Integer.parseInt(timeout))
+                    .maxRetries(Integer.parseInt(retries))
                     .marshaller(new ProtoStreamMarshaller())
                     .marshaller(marshaller);
             return new RemoteCacheManager(builder.build());

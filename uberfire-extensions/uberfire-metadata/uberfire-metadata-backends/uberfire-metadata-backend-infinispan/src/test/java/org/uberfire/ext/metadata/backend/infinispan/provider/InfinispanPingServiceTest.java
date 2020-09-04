@@ -69,21 +69,21 @@ public class InfinispanPingServiceTest {
     public void testExternalTimeoutVariable() {
         {
             InfinispanPingService service = spy(new InfinispanPingService(remoteCache));
-            int result = service.getTimeoutOrElse(InfinispanPingService.TIMEOUT, 5);
+            int result = service.getTimeoutOrElse(InfinispanPingService.PING, 5);
             assertEquals(5, result);
         }
 
         {
-            System.setProperty(InfinispanPingService.TIMEOUT, String.valueOf(4));
+            System.setProperty(InfinispanPingService.PING, String.valueOf(4));
             InfinispanPingService service = spy(new InfinispanPingService(remoteCache));
-            int result = service.getTimeoutOrElse(InfinispanPingService.TIMEOUT, 5);
+            int result = service.getTimeoutOrElse(InfinispanPingService.PING, 5);
             assertEquals(4, result);
         }
 
         {
-            System.setProperty(InfinispanPingService.TIMEOUT, "");
+            System.setProperty(InfinispanPingService.PING, "");
             InfinispanPingService service = spy(new InfinispanPingService(remoteCache));
-            int result = service.getTimeoutOrElse(InfinispanPingService.TIMEOUT, 5);
+            int result = service.getTimeoutOrElse(InfinispanPingService.PING, 5);
             assertEquals(5, result);
         }
     }

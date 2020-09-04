@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class InfinispanPingService {
 
     private Logger logger = LoggerFactory.getLogger(InfinispanPingService.class);
-    protected static final String TIMEOUT = "org.appformer.ext.metadata.infinispan.ping";
+    protected static final String PING = "org.appformer.ext.metadata.infinispan.ping";
 
     private final ExecutorService executor;
     private long sleep;
@@ -38,7 +38,7 @@ public class InfinispanPingService {
 
     public InfinispanPingService(RemoteCacheImpl remoteCache) {
 
-        sleep = this.getTimeoutOrElse(TIMEOUT, 5);
+        sleep = this.getTimeoutOrElse(PING, 5);
 
         this.executor = Executors.newSingleThreadExecutor();
         this.executor.submit(() -> {
