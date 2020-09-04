@@ -34,7 +34,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Simu
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
@@ -62,7 +61,7 @@ public abstract class BaseTask implements BPMNViewDefinition {
     @Category
     public static final transient String category = BPMNCategories.ACTIVITIES;
 
-    @PropertySet
+    @Property
     @FormField
     @Valid
     protected TaskGeneralSet general;
@@ -71,17 +70,17 @@ public abstract class BaseTask implements BPMNViewDefinition {
     @MorphProperty(binder = TaskTypeMorphPropertyBinding.class)
     protected TaskType taskType;
 
-    @PropertySet
+    @Property
     @Valid
     protected BackgroundSet backgroundSet;
 
-    @PropertySet
+    @Property
     protected FontSet fontSet;
 
-    @PropertySet
+    @Property
     protected SimulationSet simulationSet;
 
-    @PropertySet
+    @Property
     protected RectangleDimensionsSet dimensionsSet;
 
     public static class TaskTypeMorphPropertyBinding implements MorphPropertyValueBinding<TaskType, TaskTypes> {

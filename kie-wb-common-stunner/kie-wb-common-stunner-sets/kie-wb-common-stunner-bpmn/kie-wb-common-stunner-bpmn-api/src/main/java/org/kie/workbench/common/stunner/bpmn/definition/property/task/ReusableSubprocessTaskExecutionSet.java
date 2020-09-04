@@ -34,12 +34,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.IsCa
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.MultipleInstanceVariableFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(
         startElement = "calledElement"
 )

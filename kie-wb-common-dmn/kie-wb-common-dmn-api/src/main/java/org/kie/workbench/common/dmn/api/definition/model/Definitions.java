@@ -30,12 +30,10 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
 public class Definitions extends NamedElement implements DMNPropertySet {
 

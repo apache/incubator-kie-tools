@@ -34,9 +34,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseCance
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
@@ -44,7 +43,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @Morph(base = BaseCatchingIntermediateEvent.class)
 @FormDefinition(
         startElement = "general",
@@ -53,7 +52,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 )
 public class IntermediateCompensationEvent extends BaseCatchingIntermediateEvent {
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "general")
     @Valid
     protected BaseCancellingEventExecutionSet executionSet;
@@ -106,8 +105,8 @@ public class IntermediateCompensationEvent extends BaseCatchingIntermediateEvent
         }
         if (o instanceof IntermediateCompensationEvent) {
             IntermediateCompensationEvent other = (IntermediateCompensationEvent) o;
-            return super.equals(other)  &&
-                   Objects.equals(executionSet, other.executionSet);
+            return super.equals(other) &&
+                    Objects.equals(executionSet, other.executionSet);
         }
         return false;
     }

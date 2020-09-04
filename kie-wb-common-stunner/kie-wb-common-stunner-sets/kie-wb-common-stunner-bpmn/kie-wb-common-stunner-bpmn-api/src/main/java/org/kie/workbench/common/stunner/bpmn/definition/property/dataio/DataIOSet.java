@@ -28,11 +28,9 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(
         startElement = "assignmentsinfo"
 )

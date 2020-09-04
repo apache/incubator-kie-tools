@@ -38,11 +38,9 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSetti
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static java.util.Collections.singletonList;
@@ -56,8 +54,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
  */
 @Portable
 @Bindable
-@PropertySet
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
         i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.model.OutputClauseLiteralExpression"),

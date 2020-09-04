@@ -41,7 +41,6 @@ import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
@@ -79,24 +78,24 @@ public class Decision extends DRGElement implements DomainObject,
     @Valid
     protected AllowedAnswers allowedAnswers;
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "allowedAnswers")
     @Valid
     protected InformationItemPrimary variable;
 
     protected Expression expression;
 
-    @PropertySet
+    @Property
     @FormField
     @Valid
     protected BackgroundSet backgroundSet;
 
-    @PropertySet
+    @Property
     @FormField
     @Valid
     protected FontSet fontSet;
 
-    @PropertySet
+    @Property
     protected GeneralRectangleDimensionsSet dimensionsSet;
 
     public Decision() {

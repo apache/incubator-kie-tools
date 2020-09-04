@@ -36,12 +36,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptType
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskName;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(startElement = "isAsync")
 public class CustomTaskExecutionSet implements BPMNPropertySet {
 

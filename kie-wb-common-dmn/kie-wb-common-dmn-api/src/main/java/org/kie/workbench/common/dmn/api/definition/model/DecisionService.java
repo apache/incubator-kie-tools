@@ -41,7 +41,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
@@ -72,22 +71,22 @@ public class DecisionService extends DRGElement implements HasVariable<Informati
             .add("decision-service")
             .build();
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "nameHolder")
     @Valid
     protected InformationItemPrimary variable;
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "variable")
     @Valid
     protected BackgroundSet backgroundSet;
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "backgroundSet")
     @Valid
     protected FontSet fontSet;
 
-    @PropertySet
+    @Property
     protected DecisionServiceRectangleDimensionsSet dimensionsSet;
 
     @Property

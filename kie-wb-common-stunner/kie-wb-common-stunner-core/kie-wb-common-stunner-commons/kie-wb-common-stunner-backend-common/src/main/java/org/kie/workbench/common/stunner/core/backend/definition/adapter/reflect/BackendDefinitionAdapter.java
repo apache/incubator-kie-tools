@@ -39,7 +39,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Bindable
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Id;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
@@ -64,7 +63,6 @@ public class BackendDefinitionAdapter<T>
             Title.class,
             Category.class,
             Description.class,
-            PropertySet.class,
             Property.class
     };
 
@@ -125,14 +123,20 @@ public class BackendDefinitionAdapter<T>
             final String fieldName = field.getName();
             final String absoluteFieldName = appendToNamespace(namespace, fieldName);
             if (fieldAcceptor.test(field)) {
-                result.add(absoluteFieldName);
-            } else {
+
+                List<String> result1 = new ArrayList<>();
                 Class<?> fieldType = field.getType();
                 visitFields(fieldType,
                             absoluteFieldName,
                             fieldAcceptor,
-                            result,
+                            result1,
                             processedTypes);
+
+                if (result1.isEmpty()) {
+                    result.add(absoluteFieldName);
+                } else {
+                    result.addAll(result1);
+                }
             }
         });
     }

@@ -18,9 +18,8 @@ package org.kie.workbench.common.stunner.core.backend.definition.adapter;
 
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
-@PropertySet
+@Property
 public class FooPropertySetTestBean {
 
     @Name

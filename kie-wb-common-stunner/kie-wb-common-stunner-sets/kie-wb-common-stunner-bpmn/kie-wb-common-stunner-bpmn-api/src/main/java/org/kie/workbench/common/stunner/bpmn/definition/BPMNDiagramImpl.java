@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.AdvancedData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
@@ -62,38 +62,38 @@ public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData, Adv
     public static final String ADVANCED_DATA = "advancedData";
     public static final String CASE_MANAGEMENT_SET = "caseManagementSet";
 
-    @PropertySet
+    @Property
     @FormField
     @Valid
     private DiagramSet diagramSet;
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = DIAGRAM_SET
     )
     @Valid
     protected ProcessData processData;
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = PROCESS_DATA
     )
     @Valid
     protected AdvancedData advancedData;
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = ADVANCED_DATA
     )
     protected CaseManagementSet caseManagementSet;
 
-    @PropertySet
+    @Property
     private BackgroundSet backgroundSet;
 
-    @PropertySet
+    @Property
     private FontSet fontSet;
 
-    @PropertySet
+    @Property
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels

@@ -37,7 +37,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.cm.definition.property.task.UserTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -54,7 +54,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 )
 public class UserTask extends BaseUserTask<UserTaskExecutionSet> {
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = "general"
     )

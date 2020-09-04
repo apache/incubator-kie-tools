@@ -25,11 +25,9 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition
 public class ProcessData implements BaseProcessData {
 

@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.cm.definition.property.task.ProcessReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -50,7 +50,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 public class ProcessReusableSubprocess
         extends ReusableSubprocess<ProcessReusableSubprocessTaskExecutionSet> {
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = "general"
     )

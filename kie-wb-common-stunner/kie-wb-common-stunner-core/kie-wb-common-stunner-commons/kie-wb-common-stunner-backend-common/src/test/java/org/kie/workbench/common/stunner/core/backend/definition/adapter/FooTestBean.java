@@ -22,7 +22,6 @@ import java.util.Set;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
@@ -46,7 +45,7 @@ public class FooTestBean {
         add("label2");
     }};
 
-    @PropertySet
+    @Property
     public FooPropertySetTestBean fooPropertySet;
 
     @Property(meta = PropertyMetaTypes.NAME)

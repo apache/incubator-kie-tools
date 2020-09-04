@@ -32,12 +32,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.CancelAct
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(startElement = "cancelActivity")
 public class CancellingConditionalEventExecutionSet extends BaseCancellingEventExecutionSet {
 

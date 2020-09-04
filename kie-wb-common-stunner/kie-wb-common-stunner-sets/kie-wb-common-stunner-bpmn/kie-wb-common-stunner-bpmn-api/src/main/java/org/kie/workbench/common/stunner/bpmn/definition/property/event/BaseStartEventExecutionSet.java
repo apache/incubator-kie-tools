@@ -29,12 +29,10 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.ty
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(startElement = "isInterrupting")
 public class BaseStartEventExecutionSet implements BPMNPropertySet {
 
@@ -86,7 +84,7 @@ public class BaseStartEventExecutionSet implements BPMNPropertySet {
         if (o instanceof BaseStartEventExecutionSet) {
             BaseStartEventExecutionSet other = (BaseStartEventExecutionSet) o;
             return Objects.equals(isInterrupting, other.isInterrupting) &&
-                   Objects.equals(slaDueDate, other.slaDueDate);
+                    Objects.equals(slaDueDate, other.slaDueDate);
         }
         return false;
     }

@@ -33,11 +33,10 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.i18n.I18nSettings;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.dmn.api.definition.model.common.HasTypeRefHelper.getNotNullHasTypeRefs;
@@ -46,7 +45,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
         i18n = @I18nSettings(keyPreffix = "org.kie.workbench.common.dmn.api.definition.model.InputClause"),
@@ -60,11 +59,11 @@ public class InputClause extends DMNElement implements HasTypeRefs,
     @Labels
     private static final Set<String> stunnerLabels = new Sets.Builder<String>().build();
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "description", labelKey = "inputExpression")
     protected InputClauseLiteralExpression inputExpression;
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "inputExpression", labelKey = "inputValues")
     protected InputClauseUnaryTests inputValues;
 

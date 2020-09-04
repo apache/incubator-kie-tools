@@ -37,9 +37,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
@@ -47,7 +46,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @Morph(base = BaseStartEvent.class)
 @FormDefinition(
         startElement = "general",
@@ -56,7 +55,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 )
 public class StartCompensationEvent extends BaseStartEvent {
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "general")
     @Valid
     protected BaseStartEventExecutionSet executionSet;

@@ -26,7 +26,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
@@ -37,7 +36,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
  */
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED,
         defaultFieldSettings = {@FieldParam(name = FIELD_CONTAINER_PARAM, value = COLLAPSIBLE_CONTAINER)},
         startElement = "id")

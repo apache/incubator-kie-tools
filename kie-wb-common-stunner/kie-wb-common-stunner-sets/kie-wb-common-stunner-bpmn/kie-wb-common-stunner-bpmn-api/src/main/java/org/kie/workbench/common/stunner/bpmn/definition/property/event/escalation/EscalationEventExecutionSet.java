@@ -28,12 +28,10 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.annotations.field.selector.SelectorDataProvider;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(startElement = "escalationRef")
 public class EscalationEventExecutionSet {
 

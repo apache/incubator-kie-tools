@@ -36,7 +36,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -68,17 +67,17 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition<Gen
     @FormField(afterElement = "type")
     protected LocationURI locationURI;
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "locationURI")
     @Valid
     protected BackgroundSet backgroundSet;
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "backgroundSet")
     @Valid
     protected FontSet fontSet;
 
-    @PropertySet
+    @Property
     protected GeneralRectangleDimensionsSet dimensionsSet;
 
     public KnowledgeSource() {

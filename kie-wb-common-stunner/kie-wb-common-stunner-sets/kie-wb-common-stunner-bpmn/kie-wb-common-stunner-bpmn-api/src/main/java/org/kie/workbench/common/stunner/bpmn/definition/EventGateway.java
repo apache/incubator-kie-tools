@@ -29,14 +29,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.FIELD_CONTAINER_PARAM;
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @Morph(base = BaseGateway.class)
 @FormDefinition(
         startElement = "general",

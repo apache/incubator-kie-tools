@@ -38,7 +38,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.variables.Advan
 import org.kie.workbench.common.stunner.cm.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.cm.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
@@ -76,36 +76,38 @@ public class CaseManagementDiagram implements BPMNDiagram<DiagramSet, ProcessDat
             .add("diagram")
             .build();
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = DIAGRAM_SET
     )
     @Valid
     protected ProcessData processData;
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = PROCESS_DATA
     )
     @Valid
     protected AdvancedData advancedData;
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = ADVANCED_DATA
     )
     protected CaseManagementSet caseManagementSet;
 
-    @PropertySet
+    @Property
     protected RectangleDimensionsSet dimensionsSet;
 
-    @PropertySet
+    @Property
     @FormField
     @Valid
     private DiagramSet diagramSet;
-    @PropertySet
+
+    @Property
     private BackgroundSet backgroundSet;
-    @PropertySet
+
+    @Property
     private FontSet fontSet;
 
     public CaseManagementDiagram() {

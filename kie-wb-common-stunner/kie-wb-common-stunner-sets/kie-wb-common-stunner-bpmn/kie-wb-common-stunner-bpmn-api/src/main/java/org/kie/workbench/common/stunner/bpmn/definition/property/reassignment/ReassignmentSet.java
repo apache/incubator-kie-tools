@@ -29,14 +29,12 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.type.ReassignmentsType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ReassignmentsEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.property.Type;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(
         startElement = "reassignmentsInfo"
 )

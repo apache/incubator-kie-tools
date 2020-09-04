@@ -33,9 +33,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Rect
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.SubFormFieldInitializer.COLLAPSIBLE_CONTAINER;
@@ -43,7 +42,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @FormDefinition(
         policy = FieldPolicy.ONLY_MARKED,
         startElement = "general",
@@ -51,7 +50,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 )
 public class TextAnnotation extends BaseArtifacts {
 
-    @PropertySet
+    @Property
     @FormField
     @Valid
     protected BPMNGeneralSet general;

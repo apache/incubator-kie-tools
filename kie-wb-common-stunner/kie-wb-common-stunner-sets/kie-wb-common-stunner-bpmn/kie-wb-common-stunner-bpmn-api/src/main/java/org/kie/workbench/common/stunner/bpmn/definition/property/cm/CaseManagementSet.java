@@ -32,12 +32,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.cm.RolesEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(
         policy = FieldPolicy.ONLY_MARKED,
         startElement = "caseIdPrefix"

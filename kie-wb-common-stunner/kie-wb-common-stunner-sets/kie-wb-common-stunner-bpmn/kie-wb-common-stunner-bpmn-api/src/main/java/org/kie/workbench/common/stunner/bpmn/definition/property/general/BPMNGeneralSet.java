@@ -27,12 +27,10 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.ty
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNBaseInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(
         startElement = "name"
 )

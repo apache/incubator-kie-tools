@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Circ
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationAttributeSet;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
@@ -45,22 +45,22 @@ public abstract class BaseStartEvent implements BPMNViewDefinition,
     @Labels
     protected final Set<String> labels = new HashSet<String>();
 
-    @PropertySet
+    @Property
     @FormField
     @Valid
     protected BPMNGeneralSet general;
 
-    @PropertySet
+    @Property
     @Valid
     protected BackgroundSet backgroundSet;
 
-    @PropertySet
+    @Property
     protected FontSet fontSet;
 
-    @PropertySet
+    @Property
     private CircleDimensionSet dimensionsSet;
 
-    @PropertySet
+    @Property
     private SimulationAttributeSet simulationSet;
 
     public BaseStartEvent() {

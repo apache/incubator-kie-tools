@@ -35,9 +35,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Simu
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.AdHocSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -49,7 +48,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 @Bindable
 @CanContain(roles = {"cm_activity", "cm_stage", "IntermediateEventsMorph", "GatewaysMorph", "EndEventsMorph", "text_annotation", "connector"})
 @CanDock(roles = {"IntermediateEventOnSubprocessBoundary"})
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @Morph(base = BaseSubprocess.class)
 @FormDefinition(
         startElement = "general",
@@ -59,12 +58,12 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 public class AdHocSubprocess
         extends BaseAdHocSubprocess<ProcessData, AdHocSubprocessTaskExecutionSet> {
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "general")
     @Valid
     protected AdHocSubprocessTaskExecutionSet executionSet;
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "executionSet")
     @Valid
     private ProcessData processData;

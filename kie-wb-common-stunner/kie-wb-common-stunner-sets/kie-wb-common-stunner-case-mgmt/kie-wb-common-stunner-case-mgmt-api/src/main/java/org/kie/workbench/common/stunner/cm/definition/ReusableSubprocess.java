@@ -28,13 +28,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.BaseReusableSubprocessTaskExecutionSet;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 public abstract class ReusableSubprocess<E extends BaseReusableSubprocessTaskExecutionSet>
         extends BaseReusableSubprocess<E> implements DataIOModel {
 
-    @PropertySet
+    @Property
     @FormField
     @Valid
     protected DataIOSet dataIOSet;

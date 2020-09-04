@@ -63,12 +63,10 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.MultipleInstanceVariabl
 import org.kie.workbench.common.stunner.bpmn.forms.model.NotificationsEditorFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ReassignmentsEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(startElement = "taskName")
 public class UserTaskExecutionSet implements BaseUserTaskExecutionSet {
 

@@ -37,7 +37,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.AbstractEmbeddedFormsInitializer.COLLAPSIBLE_CONTAINER;
@@ -46,7 +45,7 @@ import static org.kie.workbench.common.stunner.core.util.StringUtils.revertIlleg
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @FormDefinition(
         policy = FieldPolicy.ONLY_MARKED,
         startElement = "name",

@@ -30,12 +30,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.IsInterru
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ComboBoxFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(startElement = "isInterrupting")
 public class InterruptingSignalEventExecutionSet extends BaseStartEventExecutionSet {
 

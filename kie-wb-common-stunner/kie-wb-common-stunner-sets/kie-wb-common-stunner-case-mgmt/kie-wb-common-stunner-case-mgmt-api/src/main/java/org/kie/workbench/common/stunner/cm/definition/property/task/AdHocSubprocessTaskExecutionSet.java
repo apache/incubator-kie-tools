@@ -40,12 +40,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.OnExitActi
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(startElement = "adHocActivationCondition")
 public class AdHocSubprocessTaskExecutionSet
         extends BaseSubprocessTaskExecutionSet

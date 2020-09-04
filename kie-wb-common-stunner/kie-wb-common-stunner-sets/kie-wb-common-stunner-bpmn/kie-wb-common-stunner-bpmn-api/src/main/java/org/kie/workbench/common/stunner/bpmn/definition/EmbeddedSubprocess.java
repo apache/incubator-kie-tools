@@ -37,9 +37,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.subProcess.exec
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.HasProcessData;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -49,7 +48,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @Morph(base = BaseSubprocess.class)
 @CanContain(roles = {"all"})
 @CanDock(roles = {"IntermediateEventOnSubprocessBoundary"})
@@ -61,12 +60,12 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 public class EmbeddedSubprocess extends BaseSubprocess implements DataIOModel,
                                                                   HasProcessData<ProcessData> {
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "general")
     @Valid
     private EmbeddedSubprocessExecutionSet executionSet;
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "executionSet")
     @Valid
     private ProcessData processData;

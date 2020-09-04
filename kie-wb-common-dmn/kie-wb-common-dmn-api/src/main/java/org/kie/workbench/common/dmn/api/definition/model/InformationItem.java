@@ -38,18 +38,15 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static java.util.Collections.singletonList;
 
 @Portable
 @Bindable
-@PropertySet
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @FormDefinition(policy = FieldPolicy.ONLY_MARKED, startElement = "id")
 public class InformationItem extends NamedElement implements DMNPropertySet,
                                                              IsInformationItem {

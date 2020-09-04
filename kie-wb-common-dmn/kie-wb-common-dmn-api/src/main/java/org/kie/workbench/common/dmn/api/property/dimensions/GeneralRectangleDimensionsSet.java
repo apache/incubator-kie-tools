@@ -18,12 +18,10 @@ package org.kie.workbench.common.dmn.api.property.dimensions;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 public class GeneralRectangleDimensionsSet implements RectangleDimensionsSet {
 
     public static final double DEFAULT_WIDTH = 100.0;

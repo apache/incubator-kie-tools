@@ -31,12 +31,10 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.l
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(startElement = "adHocActivationCondition")
 public class AdHocSubprocessTaskExecutionSet
         extends BaseSubprocessTaskExecutionSet

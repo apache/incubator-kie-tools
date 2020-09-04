@@ -24,7 +24,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -33,14 +33,14 @@ public abstract class BaseArtifacts implements BPMNViewDefinition {
     @Category
     public static final transient String category = BPMNCategories.ARTIFACTS;
 
-    @PropertySet
+    @Property
     @Valid
     protected BackgroundSet backgroundSet;
 
-    @PropertySet
+    @Property
     protected RectangleDimensionsSet dimensionsSet;
 
-    @PropertySet
+    @Property
     protected FontSet fontSet;
 
     public BaseArtifacts(final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
@@ -96,5 +96,4 @@ public abstract class BaseArtifacts implements BPMNViewDefinition {
         }
         return false;
     }
-
 }

@@ -33,10 +33,9 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Rect
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -45,7 +44,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @CanContain(roles = {"lane_child"})
 @FormDefinition(
         startElement = "general",
@@ -57,19 +56,19 @@ public class Lane implements BPMNViewDefinition {
     @Category
     public static final transient String category = BPMNCategories.CONTAINERS;
 
-    @PropertySet
+    @Property
     @FormField
     @Valid
     protected BPMNGeneralSet general;
 
-    @PropertySet
+    @Property
     @Valid
     protected BackgroundSet backgroundSet;
 
-    @PropertySet
+    @Property
     private FontSet fontSet;
 
-    @PropertySet
+    @Property
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels

@@ -30,12 +30,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.common.Conditio
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ConditionEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(
         startElement = "priority"
 )

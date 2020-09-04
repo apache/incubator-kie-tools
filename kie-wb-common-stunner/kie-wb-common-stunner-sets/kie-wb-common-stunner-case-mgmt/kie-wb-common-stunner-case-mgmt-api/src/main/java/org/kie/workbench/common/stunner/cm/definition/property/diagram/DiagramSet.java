@@ -42,12 +42,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.SLADueDate;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ImportsFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(
         policy = FieldPolicy.ONLY_MARKED,
         startElement = "name"

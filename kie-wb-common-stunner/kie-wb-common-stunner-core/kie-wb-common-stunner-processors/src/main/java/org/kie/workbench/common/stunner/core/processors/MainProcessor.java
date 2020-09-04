@@ -753,9 +753,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
 
                                if (!result.containsKey(key)) {
                                    if (passFilter.test(variableElement)) {
-                                       result.put(key,
-                                                  variableElement);
-                                   } else {
 
                                        TypeMirror fieldReturnType = variableElement.asType();
                                        if (fieldReturnType instanceof DeclaredType) {
@@ -767,7 +764,12 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                                                                   passFilter,
                                                                   processedTypes);
 
-                                           result.putAll(result1);
+                                           if (result1.isEmpty()) {
+                                               result.put(key,
+                                                          variableElement);
+                                           } else {
+                                               result.putAll(result1);
+                                           }
                                        }
                                    }
                                }

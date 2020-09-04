@@ -30,12 +30,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.MetaDat
 import org.kie.workbench.common.stunner.bpmn.forms.model.MetaDataEditorFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.VariablesEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(startElement = "metaDataAttributes")
 public class AdvancedData implements BaseAdvancedData {
 

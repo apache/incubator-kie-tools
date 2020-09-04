@@ -21,7 +21,6 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 
@@ -36,8 +35,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
  * 5) It must have a {@link Category} property and associated public getter.
  * 6) It must have a {@link Labels} property and associated public getter.
  * 7) It must be included in a {@link DefinitionSet} declaration.
- * 8) It can have one or more {@link PropertySet} or {@link Property}
- * 9) All {@link PropertySet} or {@link Property} must be non-null instances.
+ * 8) It can have one or more {@link Property}
  */
 public interface DomainObject {
 

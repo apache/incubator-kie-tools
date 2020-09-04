@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.definition.adapter.binding;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.jboss.errai.databinding.client.BindableProxy;
@@ -47,7 +48,7 @@ public class ClientBindingUtils {
         R result = null;
         if (null != pojo && nonEmpty(fieldName)) {
             PropertyHolder propertyHolder = getProperty(pojo, fieldName);
-            result = (R) propertyHolder.hasProperties.get(propertyHolder.fieldName);
+            result = (R) propertyHolder.getValue().orElse(null);
         }
         return result;
     }
@@ -59,7 +60,7 @@ public class ClientBindingUtils {
         if (null != pojo && null != fieldNames && !fieldNames.isEmpty()) {
             for (String fieldName : fieldNames) {
                 PropertyHolder propertyHolder = getProperty(pojo, fieldName);
-                result.add((R) propertyHolder.hasProperties.get(propertyHolder.fieldName));
+                propertyHolder.getValue().ifPresent(value -> result.add((R) value));
             }
         }
         return result;
@@ -71,8 +72,7 @@ public class ClientBindingUtils {
                                               final V value) {
         if (null != pojo && nonEmpty(fieldName)) {
             PropertyHolder propertyHolder = getProperty(pojo, fieldName);
-            propertyHolder.hasProperties.set(propertyHolder.fieldName,
-                                             value);
+            propertyHolder.setValue(value);
         }
     }
 
@@ -81,9 +81,23 @@ public class ClientBindingUtils {
         private HasProperties hasProperties;
         private String fieldName;
 
+        public static PropertyHolder empty() {
+            return new PropertyHolder(null, null);
+        }
+
         public PropertyHolder(HasProperties hasProperties, String fieldName) {
             this.hasProperties = hasProperties;
             this.fieldName = fieldName;
+        }
+
+        public Optional<?> getValue() {
+            return null != hasProperties ? Optional.ofNullable(hasProperties.get(fieldName)) : Optional.empty();
+        }
+
+        public void setValue(Object value) {
+            if (null != hasProperties) {
+                hasProperties.set(fieldName, value);
+            }
         }
     }
 
@@ -95,6 +109,9 @@ public class ClientBindingUtils {
             String field = fieldName.substring(index + 1);
             HasProperties hasProperties = (HasProperties) DataBinder.forModel(pojo).getModel();
             Object parent = hasProperties.get(parentField);
+            if (null == parent) {
+                return PropertyHolder.empty();
+            }
             HasProperties parentHasProperties = (HasProperties) DataBinder.forModel(parent).getModel();
             return new PropertyHolder(parentHasProperties, field);
         } else {
@@ -103,7 +120,7 @@ public class ClientBindingUtils {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     public static <T> T clone(final T pojo) {
         if (null != pojo) {
             final BindableProxy proxy = (BindableProxy) DataBinder.forModel(pojo).getModel();

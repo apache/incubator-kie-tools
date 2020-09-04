@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.Rect
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
@@ -40,22 +40,22 @@ public abstract class BaseSubprocess implements BPMNViewDefinition {
     @Category
     public static final transient String category = BPMNCategories.SUB_PROCESSES;
 
-    @PropertySet
+    @Property
     @FormField
     @Valid
     protected BPMNGeneralSet general;
 
-    @PropertySet
+    @Property
     @Valid
     protected BackgroundSet backgroundSet;
 
-    @PropertySet
+    @Property
     protected FontSet fontSet;
 
-    @PropertySet
+    @Property
     protected SimulationSet simulationSet;
 
-    @PropertySet
+    @Property
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels

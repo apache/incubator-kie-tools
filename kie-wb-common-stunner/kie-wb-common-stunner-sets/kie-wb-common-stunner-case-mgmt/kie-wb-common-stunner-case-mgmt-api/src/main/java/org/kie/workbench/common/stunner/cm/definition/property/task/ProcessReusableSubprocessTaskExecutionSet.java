@@ -52,12 +52,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptType
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.WaitForCompletion;
 import org.kie.workbench.common.stunner.bpmn.forms.model.MultipleInstanceVariableFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(
         startElement = "calledElement"
 )

@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Id;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
@@ -62,14 +62,14 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 )
 public class CustomTask extends BaseCustomTask implements DataIOModel {
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = "general"
     )
     @Valid
     protected CustomTaskExecutionSet executionSet;
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = "executionSet"
     )

@@ -29,13 +29,11 @@ import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.type.SliderFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(
         policy = FieldPolicy.ONLY_MARKED,
         startElement = "bgColor"

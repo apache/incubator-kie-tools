@@ -34,9 +34,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGen
 import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.SimulationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ReusableSubprocessTaskExecutionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -45,7 +44,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @Morph(base = BaseNonContainerSubprocess.class)
 @CanDock(roles = {"IntermediateEventOnSubprocessBoundary"})
 @FormDefinition(
@@ -56,14 +55,14 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 public class ReusableSubprocess
         extends BaseReusableSubprocess<ReusableSubprocessTaskExecutionSet> implements DataIOModel {
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = "general"
     )
     @Valid
     protected ReusableSubprocessTaskExecutionSet executionSet;
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = "executionSet"
     )

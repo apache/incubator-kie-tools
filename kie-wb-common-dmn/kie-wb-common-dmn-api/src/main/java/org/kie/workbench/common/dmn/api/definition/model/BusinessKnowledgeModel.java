@@ -37,7 +37,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
@@ -64,24 +64,24 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable<In
             .add("business-knowledge-model")
             .build();
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "nameHolder")
     @Valid
     protected InformationItemPrimary variable;
 
     protected FunctionDefinition encapsulatedLogic;
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "variable")
     @Valid
     protected BackgroundSet backgroundSet;
 
-    @PropertySet
+    @Property
     @FormField(afterElement = "backgroundSet")
     @Valid
     protected FontSet fontSet;
 
-    @PropertySet
+    @Property
     protected GeneralRectangleDimensionsSet dimensionsSet;
 
     public BusinessKnowledgeModel() {

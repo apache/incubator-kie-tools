@@ -27,7 +27,7 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -37,16 +37,16 @@ public abstract class BaseConnector implements BPMNViewDefinition {
     @Category
     public static final transient String category = BPMNCategories.CONNECTING_OBJECTS;
 
-    @PropertySet
+    @Property
     @FormField
     @Valid
     protected BPMNGeneralSet general;
 
-    @PropertySet
+    @Property
     @Valid
     protected BackgroundSet backgroundSet;
 
-    @PropertySet
+    @Property
     protected FontSet fontSet;
 
     public static final transient String COLOR = "#000000";

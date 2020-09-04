@@ -38,9 +38,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.simulation.Simu
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -49,7 +48,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @CanDock(roles = {"IntermediateEventOnActivityBoundary"})
 @Morph(base = BaseTask.class)
 @FormDefinition(
@@ -59,13 +58,14 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 )
 public class GenericServiceTask extends BaseTask implements DataIOModel {
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = "general"
     )
     protected GenericServiceTaskExecutionSet executionSet;
 
     @Valid
+    @Property
     protected DataIOSet dataIOSet;
 
     public GenericServiceTask() {

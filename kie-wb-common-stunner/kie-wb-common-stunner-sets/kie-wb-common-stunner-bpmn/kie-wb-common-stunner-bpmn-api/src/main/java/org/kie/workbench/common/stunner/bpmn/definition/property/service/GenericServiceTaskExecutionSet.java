@@ -49,12 +49,10 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldT
 import org.kie.workbench.common.stunner.bpmn.forms.model.GenericServiceTaskEditorFieldType;
 import org.kie.workbench.common.stunner.bpmn.forms.model.MultipleInstanceVariableFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
 @Bindable
-@PropertySet
 @FormDefinition(startElement = "genericServiceTaskInfo")
 public class GenericServiceTaskExecutionSet implements BPMNPropertySet {
 
@@ -362,5 +360,4 @@ public class GenericServiceTaskExecutionSet implements BPMNPropertySet {
         }
         return false;
     }
-
 }

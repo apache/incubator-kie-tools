@@ -37,9 +37,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.BusinessRu
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskType;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.TaskTypes;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -48,7 +47,7 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class)
+@Definition
 @CanDock(roles = {"IntermediateEventOnActivityBoundary"})
 @Morph(base = BaseTask.class)
 @FormDefinition(
@@ -61,14 +60,14 @@ public class BusinessRuleTask extends BaseTask implements DataIOModel {
     public static final String EXECUTION_SET = "executionSet";
     public static final String DATA_IO_SET = "dataIOSet";
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = "general"
     )
     @Valid
     protected BusinessRuleTaskExecutionSet executionSet;
 
-    @PropertySet
+    @Property
     @FormField(
             afterElement = "executionSet"
     )
