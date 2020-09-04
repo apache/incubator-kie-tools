@@ -135,6 +135,8 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
 
     String ClassName();
 
+    String Language();
+
     // Notifications
     String replyToOptional();
 

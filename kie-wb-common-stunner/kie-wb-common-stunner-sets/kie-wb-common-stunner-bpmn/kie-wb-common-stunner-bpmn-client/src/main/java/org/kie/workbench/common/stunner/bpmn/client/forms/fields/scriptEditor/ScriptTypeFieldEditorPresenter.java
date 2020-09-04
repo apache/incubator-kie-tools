@@ -17,16 +17,20 @@
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.scriptEditor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.common.client.dom.HTMLElement;
+import org.kie.workbench.common.stunner.bpmn.client.components.monaco_editor.MonacoEditorLanguage;
+import org.kie.workbench.common.stunner.bpmn.client.components.monaco_editor.MonacoEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.commons.data.Pair;
 
 import static org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode.ACTION_SCRIPT;
 import static org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode.COMPLETION_CONDITION;
@@ -36,35 +40,59 @@ import static org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode.F
 public class ScriptTypeFieldEditorPresenter
         extends FieldEditorPresenter<ScriptTypeValue> {
 
-    private static final String JAVA = "java";
+    public static class View implements UberElement<ScriptTypeFieldEditorPresenter> {
 
-    private static final String JAVASCRIPT = "javascript";
+        private final MonacoEditorPresenter monacoEditor;
 
-    private static final String MVEL = "mvel";
+        public View(MonacoEditorPresenter monacoEditor) {
+            this.monacoEditor = monacoEditor;
+        }
 
-    private static final String DROOLS = "drools";
+        @Override
+        public void init(ScriptTypeFieldEditorPresenter presenter) {
+            monacoEditor.setOnChangeCallback(presenter::onChange);
+            monacoEditor.setWidthPx(311);
+            monacoEditor.setHeightPx(200);
+        }
 
-    private static final String FEEL = "feel";
+        public void addLanguage(MonacoEditorLanguage language) {
+            monacoEditor.addLanguage(language);
+        }
 
-    public interface View extends UberElement<ScriptTypeFieldEditorPresenter> {
+        public void setValue(String lang, String value) {
+            monacoEditor.setValue(lang, value);
+        }
 
-        void setScript(String script);
+        public void setReadOnly(boolean readOnly) {
+            monacoEditor.setReadOnly(readOnly);
+        }
 
-        String getScript();
+        public String getLanguageId() {
+            return monacoEditor.getLanguageId();
+        }
 
-        void setLanguage(String language);
+        public String getValue() {
+            return monacoEditor.getValue();
+        }
 
-        String getLanguage();
+        @Override
+        public HTMLElement getElement() {
+            return monacoEditor.getView().getElement();
+        }
 
-        void setLanguageOptions(List<Pair<String, String>> options);
-
-        void setReadOnly(boolean readOnly);
+        public MonacoEditorPresenter getMonacoEditor() {
+            return monacoEditor;
+        }
     }
 
     private final View view;
 
     @Inject
-    public ScriptTypeFieldEditorPresenter(final View view) {
+    public ScriptTypeFieldEditorPresenter(final MonacoEditorPresenter monacoEditor) {
+        this(new View(monacoEditor));
+    }
+
+    ScriptTypeFieldEditorPresenter(final View view) {
         this.view = view;
     }
 
@@ -73,7 +101,7 @@ public class ScriptTypeFieldEditorPresenter
         view.init(this);
     }
 
-    public ScriptTypeFieldEditorPresenter.View getView() {
+    public IsElement getView() {
         return view;
     }
 
@@ -81,13 +109,12 @@ public class ScriptTypeFieldEditorPresenter
     public void setValue(ScriptTypeValue value) {
         super.setValue(value);
         if (value != null) {
-            view.setLanguage(value.getLanguage());
-            view.setScript(value.getScript());
+            view.setValue(value.getLanguage(), value.getScript());
         }
     }
 
     public void setMode(ScriptTypeMode mode) {
-        view.setLanguageOptions(getLanguageOptions(mode));
+        getLanguages(mode).forEach(view::addLanguage);
     }
 
     @Override
@@ -95,52 +122,39 @@ public class ScriptTypeFieldEditorPresenter
         view.setReadOnly(readOnly);
     }
 
-    private List<Pair<String, String>> getLanguageOptions(ScriptTypeMode mode) {
-        List<Pair<String, String>> options = new ArrayList<>();
+    private static List<MonacoEditorLanguage> getLanguages(ScriptTypeMode mode) {
+        List<MonacoEditorLanguage> languages = null;
         if (mode == ACTION_SCRIPT) {
-            options.add(new Pair<>(JAVA,
-                                   JAVA));
-            options.add(new Pair<>(JAVASCRIPT,
-                                   JAVASCRIPT));
-            options.add(new Pair<>(MVEL,
-                                   MVEL));
+            languages = new ArrayList<>(3);
+            languages.add(MonacoEditorLanguage.JAVA);
+            languages.add(MonacoEditorLanguage.JAVA_SCRIPT);
+            languages.add(MonacoEditorLanguage.MVEL);
         } else if (mode == COMPLETION_CONDITION) {
-            options.add(new Pair<>(MVEL,
-                                   MVEL));
-            options.add(new Pair<>(DROOLS,
-                                   DROOLS));
+            languages = new ArrayList<>(2);
+            languages.add(MonacoEditorLanguage.MVEL);
+            languages.add(MonacoEditorLanguage.DROOLS);
         } else if (mode == FLOW_CONDITION) {
-            options.add(new Pair<>(JAVA,
-                                   JAVA));
-            options.add(new Pair<>(JAVASCRIPT,
-                                   JAVASCRIPT));
-            options.add(new Pair<>(MVEL,
-                                   MVEL));
-            options.add(new Pair<>(DROOLS,
-                                   DROOLS));
-            options.add(new Pair<>(FEEL,
-                                   FEEL));
+            languages = new ArrayList<>(5);
+            languages.add(MonacoEditorLanguage.JAVA);
+            languages.add(MonacoEditorLanguage.JAVA_SCRIPT);
+            languages.add(MonacoEditorLanguage.MVEL);
+            languages.add(MonacoEditorLanguage.DROOLS);
+            languages.add(MonacoEditorLanguage.FEEL);
         } else if (mode == DROOLS_CONDITION) {
-            options.add(new Pair<>(DROOLS,
-                                   DROOLS));
+            languages = new ArrayList<>(1);
+            languages.add(MonacoEditorLanguage.DROOLS);
+        } else {
+            languages = Collections.emptyList();
         }
-        return options;
-    }
-
-    protected void onLanguageChange() {
-        onChange();
-    }
-
-    protected void onScriptChange() {
-        onChange();
+        return languages;
     }
 
     protected void onChange() {
         ScriptTypeValue oldValue = value;
         value = copy(oldValue,
                      true);
-        value.setScript(view.getScript());
-        value.setLanguage(view.getLanguage());
+        value.setScript(view.getValue());
+        value.setLanguage(view.getLanguageId());
         notifyChange(oldValue,
                      value);
     }

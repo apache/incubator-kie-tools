@@ -16,19 +16,22 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.scriptEditor;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.client.components.monaco_editor.MonacoEditorLanguage;
+import org.kie.workbench.common.stunner.bpmn.client.components.monaco_editor.MonacoEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenter;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.FieldEditorPresenterBaseTest;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.bpmn.forms.model.ScriptTypeMode;
 import org.mockito.ArgumentCaptor;
-import org.uberfire.commons.data.Pair;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,7 +50,7 @@ public class ScriptTypeFieldEditorPresenterTest
 
     @Override
     public ScriptTypeFieldEditorPresenter.View mockEditorView() {
-        return mock(ScriptTypeFieldEditorPresenter.View.class);
+        return spy(new ScriptTypeFieldEditorPresenter.View(mock(MonacoEditorPresenter.class)));
     }
 
     @Override
@@ -66,57 +69,56 @@ public class ScriptTypeFieldEditorPresenterTest
         ScriptTypeValue value = new ScriptTypeValue(LANGUAGE,
                                                     SCRIPT);
         editor.setValue(value);
-        verify(view,
-               times(1)).setLanguage(LANGUAGE);
-        verify(view,
-               times(1)).setScript(SCRIPT);
+        verify(view, times(1)).setValue(eq(LANGUAGE), eq(SCRIPT));
     }
 
     @Test
     public void testSetCompletionConditionMode() {
         editor.setMode(ScriptTypeMode.COMPLETION_CONDITION);
-        verifyOptionsWhereSet("mvel",
-                              "drools");
+        verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.MVEL));
+        verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.DROOLS));
+        verify(view, never()).addLanguage(eq(MonacoEditorLanguage.JAVA));
+        verify(view, never()).addLanguage(eq(MonacoEditorLanguage.JAVA_SCRIPT));
+        verify(view, never()).addLanguage(eq(MonacoEditorLanguage.FEEL));
     }
 
     @Test
     public void testSetFlowConditionMode() {
         editor.setMode(ScriptTypeMode.FLOW_CONDITION);
-        verifyOptionsWhereSet("java",
-                              "javascript",
-                              "mvel",
-                              "drools",
-                              "feel");
+        verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.JAVA));
+        verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.JAVA_SCRIPT));
+        verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.MVEL));
+        verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.DROOLS));
+        verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.FEEL));
     }
 
     @Test
     public void testSetActionScriptMode() {
         editor.setMode(ScriptTypeMode.ACTION_SCRIPT);
-        verifyOptionsWhereSet("java",
-                              "javascript",
-                              "mvel");
+        verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.JAVA));
+        verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.JAVA_SCRIPT));
+        verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.MVEL));
+        verify(view, never()).addLanguage(eq(MonacoEditorLanguage.DROOLS));
+        verify(view, never()).addLanguage(eq(MonacoEditorLanguage.FEEL));
     }
 
     @Test
     public void testSetDroolsConditionScriptMode() {
         editor.setMode(ScriptTypeMode.DROOLS_CONDITION);
-        verifyOptionsWhereSet("drools");
-    }
-
-    private void verifyOptionsWhereSet(String... options) {
-        List<Pair<String, String>> optionsList = Arrays.stream(options).map(option -> new Pair<>(option,
-                                                                                                 option)).collect(Collectors.toList());
-        verify(view,
-               times(1)).setLanguageOptions(optionsList);
+        verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.DROOLS));
+        verify(view, never()).addLanguage(eq(MonacoEditorLanguage.JAVA));
+        verify(view, never()).addLanguage(eq(MonacoEditorLanguage.JAVA_SCRIPT));
+        verify(view, never()).addLanguage(eq(MonacoEditorLanguage.MVEL));
+        verify(view, never()).addLanguage(eq(MonacoEditorLanguage.FEEL));
     }
 
     @Test
     public void testOnLanguageChange() {
         ScriptTypeValue oldValue = new ScriptTypeValue();
         editor.setValue(oldValue);
-        when(view.getLanguage()).thenReturn(LANGUAGE);
-        when(view.getScript()).thenReturn(SCRIPT);
-        editor.onLanguageChange();
+        when(view.getLanguageId()).thenReturn(LANGUAGE);
+        when(view.getValue()).thenReturn(SCRIPT);
+        editor.onChange();
         verifyValueChange(oldValue,
                           new ScriptTypeValue(LANGUAGE,
                                               SCRIPT));
@@ -126,9 +128,9 @@ public class ScriptTypeFieldEditorPresenterTest
     public void testOnScriptChange() {
         ScriptTypeValue oldValue = new ScriptTypeValue();
         editor.setValue(oldValue);
-        when(view.getLanguage()).thenReturn(LANGUAGE);
-        when(view.getScript()).thenReturn(SCRIPT);
-        editor.onScriptChange();
+        when(view.getLanguageId()).thenReturn(LANGUAGE);
+        when(view.getValue()).thenReturn(SCRIPT);
+        editor.onChange();
         verifyValueChange(oldValue,
                           new ScriptTypeValue(LANGUAGE,
                                               SCRIPT));
@@ -146,5 +148,25 @@ public class ScriptTypeFieldEditorPresenterTest
         editor.setReadOnly(false);
         verify(view,
                times(1)).setReadOnly(false);
+    }
+
+    @Test
+    public void testMonacoEditorView() {
+        MonacoEditorPresenter monaco = mock(MonacoEditorPresenter.class);
+        ScriptTypeFieldEditorPresenter.View view = new ScriptTypeFieldEditorPresenter.View(monaco);
+        view.init(editor);
+        verify(monaco, times(1)).setOnChangeCallback(any());
+        verify(monaco, times(1)).setWidthPx(anyInt());
+        verify(monaco, times(1)).setHeightPx(anyInt());
+        view.addLanguage(MonacoEditorLanguage.JAVA);
+        verify(monaco, times(1)).addLanguage(eq(MonacoEditorLanguage.JAVA));
+        view.setValue("java", "someValue");
+        verify(monaco, times(1)).setValue(eq("java"), eq("someValue"));
+        view.setReadOnly(true);
+        verify(monaco, times(1)).setReadOnly(eq(true));
+        when(monaco.getLanguageId()).thenReturn("l1");
+        assertEquals("l1", view.getLanguageId());
+        when(monaco.getValue()).thenReturn("v1");
+        assertEquals("v1", view.getValue());
     }
 }

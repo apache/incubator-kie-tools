@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
+  ~ Copyright 2020 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -14,17 +14,18 @@
   ~ limitations under the License.
   -->
 
-<div id="scriptTypeEditorWidget" class="row">
+<div id="monacoEditorContainer" data-field="rootContainer" class="row">
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-12">
-                <textarea class="form-control" data-field="script" rows="5"></textarea>
+                <div data-field="monacoEditor" style="border: 1px solid lightgrey;"></div>
+                <div data-field="loadingEditor" class="spinner spinner-lg"
+                     style="display: none; margin-top: 5px; margin-bottom: 5px;"></div>
             </div>
         </div>
-
         <div class="row">
             <div class="col-md-12">
-                <select class="form-control" data-field="language"></select>
+                <select class="form-control" data-field="monacoLanguageSelector"></select>
             </div>
         </div>
     </div>
