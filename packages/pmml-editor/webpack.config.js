@@ -52,7 +52,7 @@ module.exports = (env, argv) => {
         historyApiFallback: false,
         disableHostCheck: true,
         watchContentBase: true,
-        contentBase: [path.join(__dirname, "./dist/showcase"), path.join(__dirname, "./dist/showcase/static")],
+        contentBase: path.join(__dirname, "./dist/showcase"),
         compress: true,
         port: 9001,
         open: true
