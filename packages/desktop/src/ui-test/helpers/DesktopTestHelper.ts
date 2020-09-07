@@ -25,6 +25,7 @@ export default class DesktopTestHelper {
             NODE_ENV: 'test'
         },
         chromeDriverArgs: [ '--verbose',
+                            '--port=9875',
                             '--no-sandbox',
                             '--url-base=/wd/hub',
                             '--user-data-dir=' +path.join(__dirname, '..', '..', '..', 'src/test-resources'),
