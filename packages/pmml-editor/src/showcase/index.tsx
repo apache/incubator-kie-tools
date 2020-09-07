@@ -14,28 +14,31 @@
  * limitations under the License.
  */
 
-import {KogitoEditorChannelApi} from "@kogito-tooling/editor/dist/api";
-import {PMMLEditor} from "../editor";
+import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
+import { PMMLEditor } from "../editor";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import {EnvelopeBusMessageManager} from "@kogito-tooling/envelope-bus/dist/common";
+import { EnvelopeBusMessageManager } from "@kogito-tooling/envelope-bus/dist/common";
 
-const manager: EnvelopeBusMessageManager<KogitoEditorChannelApi, KogitoEditorChannelApi> = new EnvelopeBusMessageManager((msg: any) => console.log(msg));
+const manager: EnvelopeBusMessageManager<
+  KogitoEditorChannelApi,
+  KogitoEditorChannelApi
+> = new EnvelopeBusMessageManager((msg: any) => console.log(msg));
 
 let editor: PMMLEditor;
 
 ReactDOM.render(
+  <div>
+    <PMMLEditor exposing={(self: PMMLEditor) => (editor = self)} channelApi={manager.clientApi} />
     <div>
-        <PMMLEditor exposing={(self: PMMLEditor) => editor = self} channelApi={manager.clientApi}/>
-        <div>
-            <button onClick={setContent}>Set content</button>
-        </div>
-    </div>,
-    document.getElementById("app")!
+      <button onClick={setContent}>Set content</button>
+    </div>
+  </div>,
+  document.getElementById("app")!
 );
 
 function setContent(): void {
-    if (editor) {
-        editor.setContent("", "content").finally(null);
-    }
+  if (editor) {
+    editor.setContent("", "content").finally(null);
+  }
 }
