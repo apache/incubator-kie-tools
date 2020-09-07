@@ -13,3 +13,4 @@ packages/kie-bc-editors-unpacked/scesim
 .classpath
 .project
 .settings/
+**/test-resources/**

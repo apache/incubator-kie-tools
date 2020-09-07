@@ -24,7 +24,13 @@ export default class DesktopTestHelper {
             ELECTRON_ENABLE_STACK_DUMPING: true,
             NODE_ENV: 'test'
         },
-        chromeDriverArgs: ['--verbose','--no-sandbox','--url-base=/wd/hub', 'window-size=1024,768','--disable-dev-shm-usage', 'remote-debugging-port=9222'],
+        chromeDriverArgs: [ '--verbose',
+                            '--no-sandbox',
+                            '--url-base=/wd/hub',
+                            '--user-data-dir=' +path.join(__dirname, '..', '..', '..', 'src/test-resources'),
+                            'window-size=1024,768',
+                            '--disable-dev-shm-usage',
+                            'remote-debugging-port=9222'],
         chromeDriverLogPath: path.join(__dirname, '..', '..', '..', 'chrome-logs.txt')
     }
 
