@@ -24,19 +24,9 @@
   position: relative;
 }
 
-.kogito-tooling--loading-screen > div.loading-finished {
-  animation-name: test;
-  animation-duration: 400ms;
-}
-
-@keyframes test {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
+.loading-finished {
+  opacity: 0;
+  transition: opacity 10s;
 }
 
 .kogito-tooling--loading-screen-spinner {

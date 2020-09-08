@@ -24,9 +24,7 @@ export function LoadingScreen(props: { loading: boolean }) {
   const [mustRender, setMustRender] = useState(true);
   const { i18n } = useEditorEnvelopeI18nContext();
 
-  const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const onTransitionEnd = useCallback((e: React.TransitionEvent<HTMLDivElement>) => {
     setMustRender(false);
   }, []);
 
@@ -46,23 +44,22 @@ export function LoadingScreen(props: { loading: boolean }) {
 
   return (
     (mustRender && (
-      <div id="loading-screen" className="kogito-tooling--loading-screen">
-        <div
-          className={`kogito-tooling--loading-screen ${loadingScreenClassName}`}
-          onAnimationEnd={onAnimationEnd}
-          data-testid={"loading-screen-div"}
-        >
-          <Page tabIndex={-1}>
-            <Bullseye>
-              <div className={"kogito-tooling--loading-screen-spinner"}>
-                <div>
-                  <Spinner />
-                </div>
-                <Title headingLevel={"h5"}>{i18n.loadingScreen.loading}</Title>
+      <div
+        id={"loading-screen"}
+        className={`kogito-tooling--loading-screen ${loadingScreenClassName}`}
+        onTransitionEnd={onTransitionEnd}
+        data-testid={"loading-screen-div"}
+      >
+        <Page tabIndex={-1}>
+          <Bullseye>
+            <div className={"kogito-tooling--loading-screen-spinner"}>
+              <div>
+                <Spinner />
               </div>
-            </Bullseye>
-          </Page>
-        </div>
+              <Title headingLevel={"h5"}>{i18n.loadingScreen.loading}</Title>
+            </div>
+          </Bullseye>
+        </Page>
       </div>
     )) || <></>
   );
