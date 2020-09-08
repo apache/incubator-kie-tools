@@ -36,7 +36,7 @@
     "@types/selenium-webdriver": "^4.0.9",
     "@types/vscode": "^1.46.0",
     "babel-loader": "8.0.6",
-    "chromedriver": "^83.0.1",
+    "chromedriver": "^85.0.0",
     "circular-dependency-plugin": "5.2.0",
     "copy-webpack-plugin": "5.1.0",
     "cross-var": "1.1.0",
