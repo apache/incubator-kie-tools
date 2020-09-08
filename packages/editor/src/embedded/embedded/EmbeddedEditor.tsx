@@ -94,7 +94,8 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           {
             fileExtension: props.file.fileExtension,
             resourcesPathPrefix: envelopeMapping?.resourcesPathPrefix ?? "",
-            initialLocale: props.locale
+            initialLocale: props.locale,
+            isReadOnly: props.file.isReadOnly
           }
         )
     );

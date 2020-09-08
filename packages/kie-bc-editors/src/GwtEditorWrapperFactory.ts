@@ -38,6 +38,8 @@ import { GwtEditorMapping } from "./GwtEditorMapping";
 import { I18nServiceApi } from "./api/I18nServiceApi";
 import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
+import { PMMLEditorMarshallerApi } from "./api/PMMLEditorMarshallerApi";
+import { PMMLEditorMarshallerService } from "@kogito-tooling/pmml-editor-marshaller";
 
 declare global {
   interface Window {
@@ -51,6 +53,7 @@ declare global {
       keyboardShortcuts: KeyboardShortcutsApi;
       workspaceService: WorkspaceServiceApi;
       i18nService: I18nServiceApi;
+      pmmlEditorMarshallerService: PMMLEditorMarshallerApi;
     };
   }
 }
@@ -69,7 +72,8 @@ export class GwtEditorWrapperFactory implements EditorFactory {
       this.gwtEditorMapping.getLanguageData({
         fileExtension: fileExtension,
         resourcesPathPrefix: "",
-        initialLocale: ""
+        initialLocale: "",
+        isReadOnly: false
       }) !== undefined
     );
   }
@@ -89,7 +93,7 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     });
 
     this.appendGwtLocaleMetaTag();
-    this.exposeEnvelopeContext(envelopeContext);
+    this.exposeEnvelopeContext(envelopeContext, initArgs);
 
     const gwtFinishedLoading = new Promise<Editor>(res => {
       this.gwtAppFormerApi.onFinishedLoading(() => {
@@ -114,13 +118,17 @@ export class GwtEditorWrapperFactory implements EditorFactory {
     );
   }
 
-  private exposeEnvelopeContext(envelopeContext: KogitoEditorEnvelopeContextType) {
+  private exposeEnvelopeContext(envelopeContext: KogitoEditorEnvelopeContextType, initArgs: EditorInitArgs) {
     window.gwt = {
       stateControl: this.gwtStateControlService.exposeApi(envelopeContext.channelApi)
     };
 
     window.envelope = {
-      editorContext: envelopeContext.context,
+      editorContext: {
+        operatingSystem: envelopeContext.context.operatingSystem,
+        channel: envelopeContext.context.channel,
+        readOnly: initArgs.isReadOnly
+      },
       keyboardShortcuts: envelopeContext.services.keyboardShortcuts,
       guidedTourService: {
         refresh(userInteraction: UserInteraction): void {
@@ -157,7 +165,8 @@ export class GwtEditorWrapperFactory implements EditorFactory {
         onLocaleChange: (onLocaleChange: (locale: string) => void) => {
           envelopeContext.services.i18n.subscribeToLocaleChange(onLocaleChange);
         }
-      }
+      },
+      pmmlEditorMarshallerService: new PMMLEditorMarshallerService()
     };
   }
 
