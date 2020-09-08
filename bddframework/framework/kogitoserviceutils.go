@@ -71,7 +71,7 @@ func enableUseKogitoInfraIfInfinispanURLsNotDefined(serviceHolder *bddtypes.Kogi
 // enableUseKogitoInfraIfKafkaURLsNotDefined sets Kogito service to use KogitoInfra in case events are enabled and Kafka URL is not defined
 func enableUseKogitoInfraIfKafkaURLsNotDefined(serviceHolder *bddtypes.KogitoServiceHolder) {
 	if kafkaAware, ok := serviceHolder.GetSpec().(v1alpha1.KafkaAware); ok {
-		if serviceHolder.EnableEvents && (len(kafkaAware.GetKafkaProperties().ExternalURI) == 0 || len(kafkaAware.GetKafkaProperties().Instance) == 0) {
+		if serviceHolder.EnableEvents && (len(kafkaAware.GetKafkaProperties().ExternalURI) == 0 && len(kafkaAware.GetKafkaProperties().Instance) == 0) {
 			kafkaAware.GetKafkaProperties().UseKogitoInfra = true
 		}
 	}
