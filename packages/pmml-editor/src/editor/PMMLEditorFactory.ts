@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 import { PMMLEditorInterface } from "./PMMLEditorInterface";
-import { Editor, EditorFactory, KogitoEditorEnvelopeContextType } from "@kogito-tooling/editor/dist/api";
-import { EditorInitArgs } from "@kogito-tooling/editor/dist/api";
+import {
+  Editor,
+  EditorFactory,
+  EditorInitArgs,
+  KogitoEditorEnvelopeContextType
+} from "@kogito-tooling/editor/dist/api";
 
 export const FACTORY_TYPE = "pmml";
 

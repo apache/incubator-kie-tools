@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
-import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api"
+import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import * as React from "react";
 
 export interface Props {
@@ -44,7 +44,7 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   public setContent(path: string, content: string): Promise<void> {
-    return new Promise<void>(res => this.setState({ originalContent: content }, res));
+    return new Promise<void>(res => this.setState({ path: path, content: content, originalContent: content }, res));
   }
 
   public getContent(): Promise<string> {
@@ -56,8 +56,8 @@ export class PMMLEditor extends React.Component<Props, State> {
       <textarea
         style={{ width: "100%", height: "100%", outline: 0, boxSizing: "border-box", border: 0 }}
         value={this.state.content}
-        onInput={(e: any) => this.setState(e.target.value)}
-        onChange={(e: any) => this.setState(e.target.value)}
+        onInput={(e: any) => this.setState({ content: e.target.value })}
+        onChange={(e: any) => this.setState({ content: e.target.value })}
       />
     );
   }

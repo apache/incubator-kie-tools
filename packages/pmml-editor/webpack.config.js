@@ -14,17 +14,57 @@
  * limitations under the License.
  */
 
+const path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
+const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
-const nodeExternals = require("webpack-node-externals");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
 
-module.exports = merge(common, {
+let config = merge(common, {
   entry: {
-    index: "./src/index.ts"
+    "editor/index": "./src/editor/index.ts"
   },
-  externals: [nodeExternals({ modulesDir: "../../node_modules" })],
+  output: {
+    libraryTarget: "umd",
+    globalObject: "this"
+  },
   module: {
     rules: [...pfWebpackOptions.patternflyRules]
   }
 });
+
+module.exports = (env, argv) => {
+  if (argv.mode === "development") {
+    config = merge(config, {
+      entry: {
+        "showcase/index": "./src/showcase/index.tsx"
+      },
+      plugins: [
+        new CopyPlugin([
+          { from: "./src/showcase/static/resources", to: "./showcase/resources" },
+          { from: "./src/showcase/static/index.html", to: "./showcase/index.html" },
+          { from: "./src/showcase/static/favicon.ico", to: "./showcase/favicon.ico" }
+        ])
+      ],
+      devtool: "source-map",
+      devServer: {
+        historyApiFallback: false,
+        disableHostCheck: true,
+        watchContentBase: true,
+        contentBase: path.join(__dirname, "./dist/showcase"),
+        compress: true,
+        port: 9001,
+        open: true
+      }
+    });
+  }
+
+  if (argv.mode === "production") {
+    config = merge(config, {
+      externals: [nodeExternals({ modulesDir: "../../node_modules" })]
+    });
+  }
+
+  return config;
+};
