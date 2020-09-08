@@ -33,9 +33,8 @@ export function LoadingScreen(props: { loading: boolean }) {
   const loadingScreenClassName = useMemo(() => {
     if (props.loading) {
       return "";
-    } else {
-      return "loading-finished";
     }
+    return "loading-finished";
   }, [props.loading]);
 
   useLayoutEffect(() => {

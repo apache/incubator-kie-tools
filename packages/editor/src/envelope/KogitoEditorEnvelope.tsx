@@ -82,6 +82,7 @@ export class KogitoEditorEnvelope {
         ReactDOM.render(app, container, () => {
           if (editorEnvelopeViewRef.current) {
             res(editorEnvelopeViewRef.current);
+            return;
           }
           rej();
         });
