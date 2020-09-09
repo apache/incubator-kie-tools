@@ -19,50 +19,64 @@ import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
 import * as React from "react";
 import { useImperativeHandle, useMemo, useRef } from "react";
 import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
+import * as CSS from "csstype";
+
+const containerStyles: CSS.Properties = {
+  display: "flex",
+  flex: 1,
+  flexDirection: "column",
+  width: "100%",
+  height: "100%",
+  border: "none",
+  margin: 0,
+  padding: 0,
+  overflow: "hidden"
+};
 
 export interface Props<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>,
-  T
+  Ref
 > {
-  refDelegate: (envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>) => T;
-  forwardedRef: React.Ref<T>;
+  refDelegate: (envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>) => Ref;
   api: ApiToProvide;
   envelopePath: string;
   origin: string;
   pollInit: (envelopeServer: EnvelopeServer<ApiToProvide, ApiToConsume>) => Promise<any>;
 }
 
-export function EmbeddedEnvelope<
+export function EmbeddedEnvelopeFactory<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
   ApiToConsume extends ApiDefinition<ApiToConsume>,
   Ref
->(props: Props<ApiToProvide, ApiToConsume, Ref>, forwardedRef: React.Ref<Ref>) {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+>(props: Props<ApiToProvide, ApiToConsume, Ref>) {
+  return React.forwardRef((_, forwardRef) => {
+    const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  const bus = useMemo(
-    () => ({
-      postMessage<D, T>(message: EnvelopeBusMessage<D, T>) {
-        iframeRef.current?.contentWindow?.postMessage(message, "*");
-      }
-    }),
-    []
-  );
+    const bus = useMemo(
+      () => ({
+        postMessage<D, T>(message: EnvelopeBusMessage<D, T>) {
+          iframeRef.current?.contentWindow?.postMessage(message, "*");
+        }
+      }),
+      []
+    );
 
-  const envelopeServer = useMemo(
-    () => new EnvelopeServer<ApiToProvide, ApiToConsume>(bus, props.origin, self => props.pollInit(self)),
-    [bus, props.origin, props.pollInit]
-  );
+    const envelopeServer = useMemo(
+      () => new EnvelopeServer<ApiToProvide, ApiToConsume>(bus, props.origin, self => props.pollInit(self)),
+      [bus, props.origin, props.pollInit]
+    );
 
-  useImperativeHandle(
-    forwardedRef,
-    () => {
-      return props.refDelegate(envelopeServer);
-    },
-    [props.refDelegate]
-  );
+    useImperativeHandle(
+      forwardRef,
+      () => {
+        return props.refDelegate(envelopeServer);
+      },
+      [props.refDelegate]
+    );
 
-  useConnectedEnvelopeServer<ApiToProvide>(envelopeServer, props.api);
+    useConnectedEnvelopeServer<ApiToProvide>(envelopeServer, props.api);
 
-  return <iframe ref={iframeRef} src={props.envelopePath} title="X" />;
+    return <iframe ref={iframeRef} src={props.envelopePath} style={containerStyles} title="X" />;
+  });
 }

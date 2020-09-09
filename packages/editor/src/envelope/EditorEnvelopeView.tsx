@@ -21,53 +21,70 @@ import "@patternfly/patternfly/base/patternfly-variables.css";
 import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/patternfly/patternfly.scss";
 import { KeyBindingsHelpOverlay } from "./KeyBindingsHelpOverlay";
+import { useCallback, useImperativeHandle, useState } from "react";
 
 interface Props {
-  exposing: (self: EditorEnvelopeView) => void;
   setLocale: React.Dispatch<string>;
 }
 
-interface State {
-  editor?: Editor;
-  loading: boolean;
+export interface EditorEnvelopeViewApi {
+  getEditor: () => Editor | undefined;
+  setEditor: (editor: Editor) => void;
+  setLoading: () => void;
+  setLoadingFinished: () => void;
+  setLocale: (locale: string) => void;
 }
 
-export class EditorEnvelopeView extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { editor: undefined, loading: true };
-    this.props.exposing(this);
-  }
+export const EditorEnvelopeViewRef: React.RefForwardingComponent<EditorEnvelopeViewApi, Props> = (
+  props: Props,
+  forwardingRef
+) => {
+  const [editor, setEditor] = useState<Editor | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
 
-  public getEditor() {
-    return this.state.editor;
-  }
+  const getEditor = useCallback(() => {
+    return editor;
+  }, [editor]);
 
-  public setEditor(editor: Editor) {
-    return new Promise(res => this.setState({ editor: editor }, res));
-  }
+  const setNewEditor = useCallback((newEditor: Editor) => {
+    setEditor(newEditor);
+  }, []);
 
-  public setLoadingFinished() {
-    return new Promise(res => this.setState({ loading: false }, res));
-  }
+  const setLoadingInit = useCallback(() => {
+    setLoading(true);
+  }, []);
 
-  public setLoading() {
-    return this.setState({ loading: true });
-  }
+  const setLoadingFinished = useCallback(() => {
+    setLoading(false);
+  }, []);
 
-  public setLocale(locale: string) {
-    this.props.setLocale(locale);
-  }
+  const setLocale = useCallback((locale: string) => {
+    props.setLocale(locale);
+  }, []);
 
-  public render() {
-    return (
-      <>
-        {!this.state.loading && <KeyBindingsHelpOverlay />}
-        <div id="loading-screen" style={{ zIndex: 100, position: "relative" }}>
-          <LoadingScreen visible={this.state.loading} />
-        </div>
-        {this.state.editor && this.state.editor.af_isReact && this.state.editor.af_componentRoot()}
-      </>
-    );
-  }
-}
+  useImperativeHandle(
+    forwardingRef,
+    () => {
+      return {
+        getEditor: () => getEditor(),
+        setEditor: newEditor => setNewEditor(newEditor),
+        setLoading: () => setLoadingInit(),
+        setLoadingFinished: () => setLoadingFinished(),
+        setLocale: locale => setLocale(locale)
+      };
+    },
+    []
+  );
+
+  return (
+    <>
+      {!loading && <KeyBindingsHelpOverlay />}
+      <LoadingScreen loading={loading} />
+      <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0", left: "0" }}>
+        {editor && editor.af_isReact && editor.af_componentRoot()}
+      </div>
+    </>
+  );
+};
+
+export const EditorEnvelopeView = React.forwardRef(EditorEnvelopeViewRef);

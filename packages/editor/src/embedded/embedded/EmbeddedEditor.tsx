@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,8 +24,8 @@ import { useImperativeHandle, useMemo, useRef } from "react";
 import { File, useEffectAfterFirstRender } from "../common";
 import { StateControl } from "../stateControl";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
-import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
 import { EnvelopeServer } from "@kogito-tooling/envelope-bus/dist/channel";
+import { useConnectedEnvelopeServer } from "@kogito-tooling/envelope-bus/dist/hooks";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -99,13 +99,19 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           }
         )
     );
-  }, []);
+  }, [envelopeMapping, props.file, props.editorEnvelopeLocator]);
 
   useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
 
   useEffectAfterFirstRender(() => {
     envelopeServer.envelopeApi.notifications.receive_localeChange(props.locale);
   }, [props.locale]);
+
+  useEffectAfterFirstRender(() => {
+    props.file.getFileContents().then(content => {
+      envelopeServer.envelopeApi.notifications.receive_contentChanged({ content: content! });
+    });
+  }, [props.file]);
 
   // Register position provider for Guided Tour
   useGuidedTourPositionProvider(envelopeServer.envelopeApi, iframeRef);
@@ -134,7 +140,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
           envelopeServer.envelopeApi.notifications.receive_contentChanged({ content: content })
       };
     },
-    [envelopeServer]
+    [envelopeServer, stateControl]
   );
 
   return (
@@ -146,6 +152,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
       )}
       {envelopeMapping && (
         <iframe
+          key={envelopeMapping.envelopePath}
           ref={iframeRef}
           id={"kogito-iframe"}
           data-testid={"kogito-iframe"}

@@ -27,7 +27,7 @@ import {
 } from "../api";
 import { ChannelType } from "@kogito-tooling/channel-common-api";
 import { EnvelopeApiFactory, EnvelopeApiFactoryArgs } from "@kogito-tooling/envelope";
-import { EditorEnvelopeView } from "./EditorEnvelopeView";
+import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import { ChannelKeyboardEvent } from "@kogito-tooling/keyboard-shortcuts/dist/api";
 import { DEFAULT_RECT } from "@kogito-tooling/guided-tour/dist/api";
 import { I18n } from "@kogito-tooling/i18n/dist/core";
@@ -38,7 +38,7 @@ export class KogitoEditorEnvelopeApiFactory
     EnvelopeApiFactory<
       KogitoEditorEnvelopeApi,
       KogitoEditorChannelApi,
-      EditorEnvelopeView,
+      EditorEnvelopeViewApi,
       KogitoEditorEnvelopeContextType
     > {
   constructor(private readonly editorFactory: EditorFactory, private readonly i18n: I18n<EditorEnvelopeI18n>) {}
@@ -47,7 +47,7 @@ export class KogitoEditorEnvelopeApiFactory
     args: EnvelopeApiFactoryArgs<
       KogitoEditorEnvelopeApi,
       KogitoEditorChannelApi,
-      EditorEnvelopeView,
+      EditorEnvelopeViewApi,
       KogitoEditorEnvelopeContextType
     >
   ) {
@@ -63,7 +63,7 @@ export class KogitoEditorEnvelopeApiImpl implements KogitoEditorEnvelopeApi {
     private readonly args: EnvelopeApiFactoryArgs<
       KogitoEditorEnvelopeApi,
       KogitoEditorChannelApi,
-      EditorEnvelopeView,
+      EditorEnvelopeViewApi,
       KogitoEditorEnvelopeContextType
     >,
     private readonly editorFactory: EditorFactory,
