@@ -32,7 +32,7 @@ const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
 const editorContext: EditorContext = {
   channel: ChannelType.EMBEDDED,
-  operatingSystem: OperatingSystem.LINUX,
+  operatingSystem: OperatingSystem.LINUX
 };
 
 const envelopeContext: KogitoEditorEnvelopeContextType = {

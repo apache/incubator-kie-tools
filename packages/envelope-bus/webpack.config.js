@@ -24,6 +24,7 @@ module.exports = merge(common, {
     "channel/index": "./src/channel/index.ts",
     "envelope/index": "./src/envelope/index.ts",
     "api/index": "./src/api/index.ts",
+    "common/index": "./src/common/index.ts",
     "common/__tests__/index": "./src/common/__tests__/index.ts"
   },
   output: {

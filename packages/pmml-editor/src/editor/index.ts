@@ -16,6 +16,6 @@
 
 import "@patternfly/patternfly/patternfly.css";
 
-export * from "./editor/PMMLEditor";
-export * from "./editor/PMMLEditorFactory";
-export * from "./editor/PMMLEditorInterface";
+export * from "./PMMLEditor";
+export * from "./PMMLEditorFactory";
+export * from "./PMMLEditorInterface";
