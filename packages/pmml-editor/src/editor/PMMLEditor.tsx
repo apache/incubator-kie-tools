@@ -16,6 +16,15 @@
 import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
 import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import * as React from "react";
+import { AppProvider } from "./PMMLEditorContextProvider";
+import { HistoryLog, StateButtons } from "./MockHistoryUI";
+import { enableAllPlugins } from "immer";
+import MockVersionUI from "./MockVersionUI";
+import MockDataFieldsUI from "./MockDataFieldsUI";
+import MockSummaryUI from "./MockSummaryUI";
+import MockHeaderUI from "./MockHeaderUI";
+
+enableAllPlugins();
 
 export interface Props {
   exposing: (s: PMMLEditor) => void;
@@ -53,12 +62,35 @@ export class PMMLEditor extends React.Component<Props, State> {
 
   public render() {
     return (
-      <textarea
-        style={{ width: "100%", height: "100%", outline: 0, boxSizing: "border-box", border: 0 }}
-        value={this.state.content}
-        onInput={(e: any) => this.setState({ content: e.target.value })}
-        onChange={(e: any) => this.setState({ content: e.target.value })}
-      />
+      <AppProvider>
+        <StateButtons />
+        <hr />
+        <MockVersionUI />
+        <hr />
+        <MockHeaderUI />
+        <hr />
+        <MockDataFieldsUI />
+        <hr />
+        <MockSummaryUI />
+        <hr />
+        <HistoryLog />
+      </AppProvider>
     );
   }
 }
+
+export const Timestamp = () => {
+  return (
+    <div>
+      <sub>Rendered: {new Date().getTime()}</sub>
+    </div>
+  );
+};
+
+interface TitleProps {
+  title: string;
+}
+
+export const Title = (props: TitleProps) => {
+  return <h1 className="pf-c-title pf-m-xl">{props.title}</h1>;
+};

@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
-import { PMMLEditor } from "../editor";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { EnvelopeBusMessageManager } from "@kogito-tooling/envelope-bus/dist/common";
+import { AppContext } from "./PMMLEditorContextProvider";
+import { Timestamp, Title } from "./PMMLEditor";
 
-const manager: EnvelopeBusMessageManager<
-  KogitoEditorChannelApi,
-  KogitoEditorChannelApi
-> = new EnvelopeBusMessageManager((msg: any) => console.log(msg));
+const style = {
+  padding: "5px 5px 5px 5px"
+};
 
-let editor: PMMLEditor;
+const MockSummaryUI = () => {
+  const { state } = React.useContext(AppContext);
 
-ReactDOM.render(
-  <div>
-    <PMMLEditor exposing={(self: PMMLEditor) => (editor = self)} channelApi={manager.clientApi} />
-  </div>,
-  document.getElementById("app")!
-);
+  return (
+    <div style={style}>
+      <Title title="JSON" />
+      <pre>{`${JSON.stringify(state, undefined, 2)}`}</pre>
+      <Timestamp />
+    </div>
+  );
+};
+
+export default MockSummaryUI;
