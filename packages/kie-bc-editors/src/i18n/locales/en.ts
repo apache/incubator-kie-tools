@@ -15,7 +15,8 @@
  */
 
 import { KieBcEditorsI18n } from "../KieBcEditorsI18n";
-import { KOGITO_JIRA_LINK } from ".";
+
+const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO"
 
 export const en: KieBcEditorsI18n = {
   unsupportedFile: `This file contains a construct that is not yet supported. Please refer to ${KOGITO_JIRA_LINK} and report an issue. Don't forget to upload the current file.`
