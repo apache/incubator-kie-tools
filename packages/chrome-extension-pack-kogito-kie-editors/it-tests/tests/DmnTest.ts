@@ -32,9 +32,7 @@ test(TEST_NAME, async () => {
     const editorPage: GitHubEditorPage = await gitHubFile.open();
     const dmnEditor: DmnEditor = await editorPage.getDmnEditor();
 
-    // move annotation to canvas
     await dmnEditor.enter();
-    await dmnEditor.dragAndDropAnnotationToCanvas();
 
     // check dmn properties
     const sideBar: DmnSideBar = await dmnEditor.getSideBar();
@@ -44,7 +42,7 @@ test(TEST_NAME, async () => {
     //check DMN nodes in navigator
     const decisionNavigator: DecisionNavigator = await sideBar.openDecisionNavigator();
     expect((await decisionNavigator.getNodeNames()).sort())
-        .toEqual(["Driver", "Fine", "Decision Table", "Should the driver be suspended?", "Context", "Violation", "TextAnnotation-1"].sort());
+        .toEqual(["Driver", "Fine", "Decision Table", "Should the driver be suspended?", "Context", "Violation"].sort());
     expect(await decisionNavigator.getDmnName()).toEqual(DMN_NAME);
 
     // check Driver node properties

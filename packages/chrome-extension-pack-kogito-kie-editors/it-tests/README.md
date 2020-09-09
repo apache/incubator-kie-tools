@@ -11,9 +11,9 @@ unzip chrome_extension_kogito_kie_editors_X.Y.Z.zip
 export UNZIPPED_CHROME_EXTENSION_PATH=/path/to/unzipped/dist 
 ```
 
-2. Follow the instruction in the project README to run productized build 
+2. Run the tests 
 
-These tests are part of `yarn run build:prod` command run.
+Use `yarn run test:it` command to run the tests.
 
 ## Repository strucure
 
