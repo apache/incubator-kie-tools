@@ -111,7 +111,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
     props.file.getFileContents().then(content => {
       envelopeServer.envelopeApi.notifications.receive_contentChanged({ content: content! });
     });
-  }, [props.file]);
+  }, [props.file.getFileContents]);
 
   // Register position provider for Guided Tour
   useGuidedTourPositionProvider(envelopeServer.envelopeApi, iframeRef);
