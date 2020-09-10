@@ -1,14 +1,16 @@
 {
   "name": "uniforms-patternfly",
-  "version": "4.0.0",
+  "version": "4.0.1-dev.1",
   "description": "Patternfly forms for uniforms",
   "repository": "git@github.com:aerogear/uniforms-patternfly.git",
   "author": "Gianluca <gzuccare@redhat.com>",
-  "license": "Apache-2.0",
+  "license": "Apache-2.0", 
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build --incremental",
+    "buildProd": "tsc --build",
+    "watch": "tsc --watch --incremental",
     "clean": "rimraf dist coverage tsconfig.tsbuildinfo && tsc",
     "coverage": "jest --coverage",
     "lint": "eslint --ext js,ts,tsx src",

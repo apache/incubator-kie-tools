@@ -14,106 +14,68 @@ function createValidator(schema) {
 }
 
 const schema = {
-  'phases': [
-    'complete',
-    'release'
-  ],
-  'properties': {
-    'traveller': {
-      'properties': {
-        'address': {
-          'properties': {
-            'city': {
-              'type': 'string'
+  type: 'object',
+  properties: {
+    flight: {
+      type: 'object',
+      properties: {
+        flightNumber: {
+          type: 'string'
+        },
+        seat: {
+          type: 'string'
+        },
+        gate: {
+          type: 'string'
+        },
+        departure: {
+          type: 'string',
+          format: 'date-time'
+        },
+        arrival: {
+          type: 'string',
+          format: 'date-time'
+        }
+      },
+      disabled: true
+    },
+    hotel: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string'
+        },
+        address: {
+          type: 'object',
+          properties: {
+            street: {
+              type: 'string'
             },
-            'country': {
-              'type': 'string'
+            city: {
+              type: 'string'
             },
-            'street': {
-              'type': 'string'
+            zipCode: {
+              type: 'string'
             },
-            'zipCode': {
-              'type': 'string'
+            country: {
+              type: 'string'
             }
-          },
-          'type': 'object'
+          }
         },
-        'email': {
-          'format': 'email',
-          'type': 'string'
+        phone: {
+          type: 'string'
         },
-        'firstName': {
-          'type': 'string'
+        bookingNumber: {
+          type: 'string'
         },
-        'lastName': {
-          'type': 'string'
-        },
-        'nationality': {
-          'type': 'string'
+        room: {
+          type: 'string'
         }
       },
-      'required': [
-        'firstName',
-        'lastName'
-      ],
-      'type': 'object'
-    },
-    'trip': {
-      'properties': {
-        'begin': {
-          'format': 'date-time',
-          'type': 'string'
-        },
-        'city': {
-          'type': 'string'
-        },
-        'country': {
-          'type': 'string'
-        },
-        'end': {
-          'format': 'date-time',
-          'type': 'string'
-        },
-        'visaRequired': {
-          'type': 'boolean'
-        }
-      },
-      'type': 'object',
-      'uniforms': {
-        'disabled': true
-      }
-    },
-    'visaApplication': {
-      'properties': {
-        'city': {
-          'type': 'string'
-        },
-        'country': {
-          'type': 'string'
-        },
-        'duration': {
-          'type': 'integer'
-        },
-        'firstName': {
-          'type': 'string'
-        },
-        'lastName': {
-          'type': 'string'
-        },
-        'nationality': {
-          'type': 'string'
-        },
-        'passportNumber': {
-          'type': 'string'
-        }
-      },
-      'type': 'object',
-      'uniforms': {
-        'disabled': true
-      }
+      disabled: true
     }
   },
-  'type': 'object'
+  phases: ['complete', 'release']
 };
 
 const schemaValidator = createValidator(schema);

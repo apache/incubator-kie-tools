@@ -3,15 +3,15 @@
   "private": true,
   "root": true,
   "scripts": {
-    "build": "parcel build index.html",
-    "start": "parcel serve index.html"
+    "build": "parcel build --no-cache index.html",
+    "start": "parcel serve  --no-cache index.html"
   },
   "dependencies": {
     "@patternfly/react-core": "4.45.1",
     "@patternfly/react-icons": "4.7.2",
     "ajv": "6.10.2",
-    "react": "^16.13.1",
-    "react-dom": "16.9.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
     "react-scripts": "3.1.1",
     "simpl-schema": "1.5.7",
     "uniforms": "3.0.0-rc.3",
