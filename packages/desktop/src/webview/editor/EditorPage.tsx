@@ -221,14 +221,15 @@ export function EditorPage(props: Props) {
     };
   }, []);
 
+  const getFileContents = useMemo(() => () => Promise.resolve(context.file?.fileContent ?? ""), []);
   const file = useMemo(
     () => ({
       fileName: context.file?.filePath ?? "",
       fileExtension: context.file?.fileType!,
-      getFileContents: () => Promise.resolve(context.file?.fileContent ?? ""),
+      getFileContents,
       isReadOnly: false
     }),
-    [context.file?.filePath, context.file?.fileType, context.file?.fileContent]
+    [context.file?.filePath, context.file?.fileType]
   );
 
   return (
