@@ -121,14 +121,6 @@ export function IsolatedPrEditor(props: {
     setEditorReady(true);
   }, []);
 
-  useEffectAfterFirstRender(() => {
-    getFileContents().then(c => {
-      if (isolatedEditorRef.current) {
-        isolatedEditorRef.current.setContent(c || "");
-      }
-    });
-  }, [showOriginal, getFileContents]);
-
   const toggleOriginal = useCallback(() => {
     setShowOriginal(!showOriginal);
   }, [showOriginal]);

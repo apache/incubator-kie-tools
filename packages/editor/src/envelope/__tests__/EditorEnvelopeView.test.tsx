@@ -15,20 +15,20 @@
  */
 
 import * as React from "react";
-import { cleanup, fireEvent, getByTestId, render } from "@testing-library/react";
-import { EditorEnvelopeView } from "../../envelope/EditorEnvelopeView";
+import { cleanup, fireEvent, getByTestId, render, act } from "@testing-library/react";
+import { EditorEnvelopeView, EditorEnvelopeViewApi } from "../EditorEnvelopeView";
 import { DummyEditor } from "./DummyEditor";
 import { usingEditorEnvelopeI18nContext, usingEnvelopeContext } from "./utils";
 
-function renderEditorEnvelopeView(): EditorEnvelopeView {
-  let view: EditorEnvelopeView;
+function renderEditorEnvelopeView(): EditorEnvelopeViewApi {
+  const editorEnvelopeRef = React.createRef<EditorEnvelopeViewApi>();
   const setLocale = jest.fn();
   render(
     usingEditorEnvelopeI18nContext(
-      usingEnvelopeContext(<EditorEnvelopeView exposing={self => (view = self)} setLocale={setLocale} />).wrapper
+      usingEnvelopeContext(<EditorEnvelopeView ref={editorEnvelopeRef} setLocale={setLocale} />).wrapper
     ).wrapper
   );
-  return view!;
+  return editorEnvelopeRef.current!;
 }
 
 describe("EditorEnvelopeView", () => {
@@ -44,31 +44,44 @@ describe("EditorEnvelopeView", () => {
   test("after loading stops", async () => {
     const view = renderEditorEnvelopeView();
 
-    await view.setLoadingFinished();
-    fireEvent.transitionEnd(getByTestId(document.body, "loading-screen-div"));
+    act(() => {
+      view.setLoadingFinished();
+    });
+
+    fireEvent.animationEnd(getByTestId(document.body, "loading-screen-div"));
 
     expect(document.body).toMatchSnapshot();
   });
 
-  test("after loading stops and editor is set", async () => {
+  test("after loading stops and editor is set", () => {
     const view = renderEditorEnvelopeView();
 
-    await view.setLoadingFinished();
-    fireEvent.transitionEnd(getByTestId(document.body, "loading-screen-div"));
+    act(() => {
+      view.setLoadingFinished();
+    });
 
-    await view.setEditor(new DummyEditor());
+    fireEvent.animationEnd(getByTestId(document.body, "loading-screen-div"));
+
+    act(() => {
+      view.setEditor(new DummyEditor());
+    });
 
     expect(document.body).toMatchSnapshot();
   });
 
-  test("after set content", async () => {
+  test("after set content", () => {
     const view = renderEditorEnvelopeView();
 
-    await view.setLoadingFinished();
-    fireEvent.transitionEnd(getByTestId(document.body, "loading-screen-div"));
+    act(() => {
+      view.setLoadingFinished();
+    });
 
-    await view.setEditor(new DummyEditor());
-    await view.getEditor()!.setContent("/some/path.txt", "some-test-content");
+    fireEvent.animationEnd(getByTestId(document.body, "loading-screen-div"));
+
+    act(() => {
+      view.setEditor(new DummyEditor());
+    });
+    setTimeout(() => view.getEditor()!.setContent("/some/path.txt", "some-test-content"), 100);
 
     expect(document.body).toMatchSnapshot();
   });

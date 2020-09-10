@@ -20,6 +20,7 @@ import { useGitHubApi } from "./GitHubContext";
 import * as Octokit from "@octokit/rest";
 import { useGlobals } from "./GlobalContext";
 import { useChromeExtensionI18n } from "../../i18n";
+import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";
 
 const GITHUB_OAUTH_TOKEN_SIZE = 40;
 
@@ -116,7 +117,7 @@ export function KogitoMenu() {
                       <b>
                         <u>{i18n.terms.note.toUpperCase()}:</u>&nbsp;
                       </b>
-                      {i18n.common.menu.tokenInfo.permission}
+                      <I18nHtml>{i18n.common.menu.tokenInfo.permission}</I18nHtml>
                     </p>
                   </div>
                 )}
