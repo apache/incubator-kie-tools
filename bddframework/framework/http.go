@@ -16,6 +16,7 @@ package framework
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -34,7 +35,8 @@ type (
 
 	// HTTPRequestInfo structure encapsulates all information needed to execute an HTTP request
 	HTTPRequestInfo struct {
-		HTTPMethod, URI, Path, BodyFormat, BodyContent string
+		HTTPMethod, URI, Path, BodyFormat, BodyContent, Token string
+		Unsecure                                              bool
 	}
 )
 
@@ -72,6 +74,14 @@ func WaitForSuccessfulHTTPRequest(namespace string, requestInfo HTTPRequestInfo,
 		})
 }
 
+// WaitForForbiddenHTTPRequest waits for an HTTP request to be unauthorized
+func WaitForForbiddenHTTPRequest(namespace string, requestInfo HTTPRequestInfo, timeoutInMin int) error {
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("HTTP %s request on path '%s' to be forbidden", requestInfo.HTTPMethod, requestInfo.Path), timeoutInMin,
+		func() (bool, error) {
+			return IsHTTPRequestForbidden(namespace, requestInfo)
+		})
+}
+
 // ExecuteHTTPRequest executes an HTTP request
 func ExecuteHTTPRequest(namespace string, requestInfo HTTPRequestInfo) (*http.Response, error) {
 	// Setup a retry in case the first time it did not work
@@ -80,7 +90,7 @@ func ExecuteHTTPRequest(namespace string, requestInfo HTTPRequestInfo) (*http.Re
 	var err error
 	for retry < config.GetHTTPRetryNumber() {
 		resp, err = ExecuteHTTPRequestC(&http.Client{}, namespace, requestInfo)
-		if err == nil && checkHTTPResponseSuccessful(namespace, resp) {
+		if err == nil && checkHTTPResponseSuccessful(resp) {
 			return resp, err
 		} else if err != nil {
 			GetLogger(namespace).Warnf("Error while making http call: %v", err)
@@ -111,6 +121,8 @@ func ExecuteHTTPRequestC(client *http.Client, namespace string, requestInfo HTTP
 			request.Header.Add("Content-Type", "application/json")
 		case "xml":
 			request.Header.Add("Content-Type", "application/xml")
+		case "x-www-form-urlencoded":
+			request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 		default:
 			return nil, fmt.Errorf("Unknown body format to set into request: %s", requestInfo.BodyFormat)
 		}
@@ -118,6 +130,13 @@ func ExecuteHTTPRequestC(client *http.Client, namespace string, requestInfo HTTP
 
 	if err != nil {
 		return nil, err
+	}
+
+	addHTTPAuthentication(request, requestInfo)
+	if requestInfo.Unsecure {
+		client.Transport = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
 	}
 
 	return client.Do(request)
@@ -129,7 +148,7 @@ func ExecuteHTTPRequestWithStringResponse(namespace string, requestInfo HTTPRequ
 	if err != nil {
 		return "", err
 	}
-	if !checkHTTPResponseSuccessful(namespace, httpResponse) {
+	if !checkHTTPResponseSuccessful(httpResponse) {
 		return "", nil
 	}
 	// Check response
@@ -159,11 +178,16 @@ func ExecuteHTTPRequestWithUnmarshalledResponse(namespace string, requestInfo HT
 
 // IsHTTPRequestSuccessful makes and checks whether an http request is successful
 func IsHTTPRequestSuccessful(namespace string, requestInfo HTTPRequestInfo) (bool, error) {
-	return IsHTTPRequestSuccessfulC(&http.Client{}, namespace, requestInfo)
+	return checkHTTPRequestConditionC(&http.Client{}, namespace, requestInfo, checkHTTPResponseSuccessful)
 }
 
-// IsHTTPRequestSuccessfulC makes and checks whether an http request is successful using a given client
-func IsHTTPRequestSuccessfulC(client *http.Client, namespace string, requestInfo HTTPRequestInfo) (bool, error) {
+// IsHTTPRequestForbidden makes and checks whether an http request is unauthorized
+func IsHTTPRequestForbidden(namespace string, requestInfo HTTPRequestInfo) (bool, error) {
+	return checkHTTPRequestConditionC(&http.Client{}, namespace, requestInfo, checkHTTPResponseForbidden)
+}
+
+// checkHTTPRequestConditionC makes and checks whether an http request matches a condition using a given HTTP client
+func checkHTTPRequestConditionC(client *http.Client, namespace string, requestInfo HTTPRequestInfo, condition func(response *http.Response) bool) (bool, error) {
 	response, err := ExecuteHTTPRequestC(client, namespace, requestInfo)
 	if err != nil {
 		return false, err
@@ -172,7 +196,23 @@ func IsHTTPRequestSuccessfulC(client *http.Client, namespace string, requestInfo
 		return false, err
 	}
 	defer response.Body.Close()
-	return checkHTTPResponseSuccessful(namespace, response), nil
+	GetLogger(namespace).Debugf("Got response status code %d", response.StatusCode)
+	if !condition(response) {
+		GetLogger(namespace).Warnf("Request not expected. Got status code %d", response.StatusCode)
+		return false, nil
+	}
+
+	return true, nil
+}
+
+// checkHTTPResponseSuccessful checks the HTTP response is successful
+func checkHTTPResponseSuccessful(response *http.Response) bool {
+	return response.StatusCode >= 200 && response.StatusCode < 300
+}
+
+// checkHTTPResponseForbidden checks the HTTP response is successful
+func checkHTTPResponseForbidden(response *http.Response) bool {
+	return response.StatusCode == 401
 }
 
 // ExecuteHTTPRequestsInThreads executes given number of requests using given number of threads (Go routines).
@@ -218,7 +258,7 @@ func runRequestRoutine(threadID int, waitGroup *sync.WaitGroup, client *http.Cli
 	defer waitGroup.Done()
 	GetLogger(namespace).Infof("Starting Go routine #%d", threadID)
 	for i := 0; i < requestPerThread; i++ {
-		if success, err := IsHTTPRequestSuccessfulC(client, namespace, requestInfo); err != nil {
+		if success, err := checkHTTPRequestConditionC(client, namespace, requestInfo, checkHTTPResponseSuccessful); err != nil {
 			GetLogger(namespace).Errorf("Go routine #%d - Failed with error: %v", threadID, err)
 			results[threadID] = HTTPRequestResultError
 			return
@@ -230,16 +270,6 @@ func runRequestRoutine(threadID int, waitGroup *sync.WaitGroup, client *http.Cli
 	}
 	GetLogger(namespace).Infof("Go routine #%d finished", threadID)
 	results[threadID] = HTTPRequestResultSuccess
-}
-
-// checkHTTPResponseSuccessful checks the HTTP response is successful
-func checkHTTPResponseSuccessful(namespace string, response *http.Response) bool {
-	GetLogger(namespace).Debugf("Got response status code %d", response.StatusCode)
-	if response.StatusCode < 200 || response.StatusCode >= 300 {
-		GetLogger(namespace).Warnf("Request not successful. Got status code %d", response.StatusCode)
-		return false
-	}
-	return true
 }
 
 // IsHTTPResponseArraySize makes and checks whether an http request returns an array of a specific size
@@ -280,5 +310,12 @@ func NewPOSTHTTPRequestInfo(uri, path, bodyFormat, bodyContent string) HTTPReque
 		Path:        path,
 		BodyFormat:  bodyFormat,
 		BodyContent: bodyContent,
+	}
+}
+
+func addHTTPAuthentication(request *http.Request, requestInfo HTTPRequestInfo) {
+	if len(requestInfo.Token) > 0 {
+		// Bearer authentication
+		request.Header.Add("Authorization", "Bearer "+requestInfo.Token)
 	}
 }

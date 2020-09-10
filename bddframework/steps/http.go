@@ -24,10 +24,13 @@ import (
 
 func registerHTTPSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" is successful within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathIsSuccessfulWithinMinutes)
+	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" is forbidden within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathIsForbiddenWithinMinutes)
+	ctx.Step(`^HTTP GET request on service "([^"]*)" using access token "([^"]*)" with path "([^"]*)" is successful within (\d+) minutes$`, data.httpGetRequestOnServiceUsingAccessTokenWithPathIsSuccessfulWithinMinutes)
 	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should return an array of size (\d+) within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldReturnAnArrayofSizeWithinMinutes)
 	ctx.Step(`^HTTP GET request on service "([^"]*)" with path "([^"]*)" should contain a string "([^"]*)" within (\d+) minutes$`, data.httpGetRequestOnServiceWithPathShouldContainAstringWithinMinutes)
 	ctx.Step(`^HTTP POST request on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceWithPathAndBody)
 	ctx.Step(`^HTTP POST request on service "([^"]*)" is successful within (\d+) minutes with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody)
+	ctx.Step(`^HTTP POST request on service "([^"]*)" using access token "([^"]*)" is successful within (\d+) minutes with path "([^"]*)" and body:$`, data.httpPostRequestOnServiceUsingAccessTokenIsSuccessfulWithinMinutesWithPathAndBody)
 	ctx.Step(`^(\d+) HTTP POST requests using (\d+) threads on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestsUsingThreadsOnServiceWithPathAndBody)
 	ctx.Step(`^(\d+) HTTP POST requests with report using (\d+) threads on service "([^"]*)" with path "([^"]*)" and body:$`, data.httpPostRequestsWithReportUsingThreadsOnServiceWithPathAndBody)
 }
@@ -38,6 +41,27 @@ func (data *Data) httpGetRequestOnServiceWithPathIsSuccessfulWithinMinutes(servi
 		return err
 	}
 	requestInfo := framework.NewGETHTTPRequestInfo(uri, data.ResolveWithScenarioContext(path))
+	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, requestInfo, timeoutInMin)
+}
+
+func (data *Data) httpGetRequestOnServiceWithPathIsForbiddenWithinMinutes(serviceName, path string, timeoutInMin int) error {
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+	requestInfo := framework.NewGETHTTPRequestInfo(uri, data.ResolveWithScenarioContext(path))
+	return framework.WaitForForbiddenHTTPRequest(data.Namespace, requestInfo, timeoutInMin)
+}
+
+func (data *Data) httpGetRequestOnServiceUsingAccessTokenWithPathIsSuccessfulWithinMinutes(serviceName, token, path string, timeoutInMin int) error {
+	token = data.ResolveWithScenarioContext(token)
+
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+	requestInfo := framework.NewGETHTTPRequestInfo(uri, data.ResolveWithScenarioContext(path))
+	requestInfo.Token = token
 	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, requestInfo, timeoutInMin)
 }
 
@@ -57,6 +81,20 @@ func (data *Data) httpPostRequestOnServiceWithPathAndBody(serviceName, path stri
 		return fmt.Errorf("HTTP POST request to path %s was not successful", path)
 	}
 	return nil
+}
+
+func (data *Data) httpPostRequestOnServiceUsingAccessTokenIsSuccessfulWithinMinutesWithPathAndBody(serviceName, token string, timeoutInMin int, path string, body *godog.DocString) error {
+	path = data.ResolveWithScenarioContext(path)
+	bodyContent := data.ResolveWithScenarioContext(body.GetContent())
+	token = data.ResolveWithScenarioContext(token)
+	framework.GetLogger(data.Namespace).Debugf("httpPostRequestOnServiceUsingAccessTokenIsSuccessfulWithinMinutesWithPathAndBody with service %s, token %s, path %s, %s bodyContent %s and timeout %d", serviceName, token, path, body.GetMediaType(), bodyContent, timeoutInMin)
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+	requestInfo := framework.NewPOSTHTTPRequestInfo(uri, path, body.GetMediaType(), bodyContent)
+	requestInfo.Token = token
+	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, requestInfo, timeoutInMin)
 }
 
 func (data *Data) httpPostRequestOnServiceIsSuccessfulWithinMinutesWithPathAndBody(serviceName string, timeoutInMin int, path string, body *godog.DocString) error {
