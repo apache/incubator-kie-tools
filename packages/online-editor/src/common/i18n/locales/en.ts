@@ -117,7 +117,7 @@ export const en: OnlineI18n = {
   },
   guidedTour: {
     init: {
-      title: "Welcome to this 5 minutes tour",
+      title: "Welcome to this 5-minute tour",
       learnMore: `Learn more about the DMN online editor by taking this brief and interactive tour.`,
       letsGo: "Let's go"
     },
@@ -127,13 +127,13 @@ export const en: OnlineI18n = {
       nextSteps: {
         title: "As next steps, you can try to",
         firstStep: `Connect the ${"Age".bold()} input with the ${"Can drive?".bold()} decision;`,
-        secondStep: `Define the decision logic into the ${"Can drive?".bold()} node, to return ${"true".bold()} when ${"Age".bold()} is
-              greater ${"21".bold()}, otherwise ${"false".bold()};`,
+        secondStep: `Define the decision logic in the ${"Can drive?".bold()} node to return ${"true".bold()} when ${"Age".bold()} is
+              greater than ${"21".bold()}, otherwise ${"false".bold()};`,
         thirdStep: "Execute the model."
       },
-      findUsefulInfo: "You can find useful information at the",
+      findUsefulInfo: "You can find useful information in the",
       learnDMN: `Learn ${en_common.names.dmn} in 15 minutes`,
-      courseOr: "course or at the",
+      courseOr: "course or in the",
       kogitoDoc: `${en_common.names.kogito} documentation`,
       finish: "Finish the Tour"
     }
