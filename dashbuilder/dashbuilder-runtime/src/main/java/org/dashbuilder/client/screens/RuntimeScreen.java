@@ -16,6 +16,8 @@
 
 package org.dashbuilder.client.screens;
 
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -26,7 +28,9 @@ import org.dashbuilder.shared.model.RuntimeModel;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.workbench.model.menu.Menus;
 
 /**
@@ -38,6 +42,8 @@ import org.uberfire.workbench.model.menu.Menus;
 public class RuntimeScreen {
 
     public static final String ID = "RuntimeScreen";
+
+    public static final String INDEX_PAGE_NAME = "index";
 
     private static AppConstants i18n = AppConstants.INSTANCE;
 
@@ -53,6 +59,9 @@ public class RuntimeScreen {
     @Inject
     NavBarHelper menusHelper;
 
+    @Inject
+    PlaceManager placeManager;
+
     @WorkbenchPartTitle
     public String getScreenTitle() {
         return i18n.runtimeScreenTitle();
@@ -67,6 +76,18 @@ public class RuntimeScreen {
         NavTree navTree = runtimeModel.getNavTree();
         Menus menus = menusHelper.buildMenusFromNavTree(navTree).build();
         view.addMenus(menus);
+    }
+
+    public void goToIndex(List<LayoutTemplate> templates) {
+        if (templates.size() == 1) {
+            placeManager.goTo(templates.get(0).getName());
+        } else {
+            templates.stream()
+                     .map(LayoutTemplate::getName)
+                     .filter(INDEX_PAGE_NAME::equals)
+                     .findFirst()
+                     .ifPresent(placeManager::goTo);
+        }
     }
 
 }

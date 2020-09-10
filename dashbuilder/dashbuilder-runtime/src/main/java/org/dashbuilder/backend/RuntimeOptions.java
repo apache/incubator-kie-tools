@@ -74,7 +74,7 @@ public class RuntimeOptions {
     /**
      * If true components will be partitioned by the Runtime Model ID.
      */
-    private static final String COMPONENT_PARTITION_PROP = "dashbuilder.dataset.partition";
+    private static final String COMPONENT_PARTITION_PROP = "dashbuilder.components.partition";
 
     private boolean multipleImport;
     private boolean datasetPartition;
