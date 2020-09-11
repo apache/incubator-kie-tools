@@ -85,6 +85,7 @@ function usage(){
   printf "\n--build_image_tag {TAG}\n\tSet the build image full tag."
   printf "\n--build_s2i_image_tag {TAG}\n\tSet the S2I build image full tag."
   printf "\n--build_runtime_image_tag {NAME}\n\tSet the Runtime build image full tag."
+  printf "\n--disable_maven_native_build_container\n\tBy default, Maven native builds are done in container (via container engine). Possibility to disable it."
 
   # examples repository
   printf "\n--examples_uri {URI}\n\tSet the URI for the kogito-examples repository. Default is https://github.com/kiegroup/kogito-examples."
@@ -327,6 +328,10 @@ case $1 in
   --build_runtime_image_tag)
     shift
     if addParamKeyValueIfAccepted "--tests.build-runtime-image-tag" ${1}; then shift; fi
+  ;;
+  --disable_maven_native_build_container)
+    addParam "--tests.disable-maven-native-build-container"
+    shift
   ;;
 
   # examples repository

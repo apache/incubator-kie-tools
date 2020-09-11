@@ -720,6 +720,18 @@ setup() {
     [[ "${output}" != *"--tests.build-runtime-image-tag"* ]]
 }
 
+@test "invoke run-tests with disable_maven_native_build_container" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --disable_maven_native_build_container --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.disable-maven-native-build-container" ]]
+}
+
+@test "invoke run-tests without disable_maven_native_build_container" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.disable-maven-native-build-container"* ]]
+}
+
 # examples repository
 
 @test "invoke run-tests with examples_uri" {
