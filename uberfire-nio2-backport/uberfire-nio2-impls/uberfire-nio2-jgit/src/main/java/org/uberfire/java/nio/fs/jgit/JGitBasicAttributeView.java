@@ -16,7 +16,12 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractBasicFileAttributeView;
 import org.uberfire.java.nio.base.FileTimeImpl;
@@ -24,6 +29,7 @@ import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
+import org.uberfire.java.nio.fs.jgit.util.model.CommitHistory;
 import org.uberfire.java.nio.fs.jgit.util.model.PathInfo;
 import org.uberfire.java.nio.fs.jgit.util.model.PathType;
 
@@ -65,21 +71,26 @@ public class JGitBasicAttributeView extends AbstractBasicFileAttributeView<JGitP
 
         final Ref ref = fs.getGit().getRef(branchName);
 
-        return new BasicFileAttributes() {
+        final List<Date> records = new ArrayList<>();
 
-            private FileTime lastModifiedDate = null;
-            private FileTime creationDate = null;
+        if (ref != null) {
+            try {
+                final CommitHistory history = fs.getGit().listCommits(ref, pathInfo.getPath());
+                for (final RevCommit commit : history.getCommits()) {
+                    records.add(commit.getAuthorIdent().getWhen());
+                }
+            } catch (Exception e) {
+                throw new IOException(e);
+            }
+        }
+        return new BasicFileAttributes() {
 
             @Override
             public FileTime lastModifiedTime() {
-                if (lastModifiedDate == null) {
-                    try {
-                        lastModifiedDate = new FileTimeImpl(fs.getGit().getLastCommit(ref).getCommitterIdent().getWhen().getTime());
-                    } catch (final Exception e) {
-                        lastModifiedDate = new FileTimeImpl(0);
-                    }
+                if (!records.isEmpty()) {
+                    return new FileTimeImpl(records.get(0).getTime());
                 }
-                return lastModifiedDate;
+                return new FileTimeImpl(0);
             }
 
             @Override
@@ -89,14 +100,10 @@ public class JGitBasicAttributeView extends AbstractBasicFileAttributeView<JGitP
 
             @Override
             public FileTime creationTime() {
-                if (creationDate == null) {
-                    try {
-                        creationDate = new FileTimeImpl(fs.getGit().getFirstCommit(ref).getCommitterIdent().getWhen().getTime());
-                    } catch (final Exception e) {
-                        creationDate = new FileTimeImpl(0);
-                    }
+                if (!records.isEmpty()) {
+                    return new FileTimeImpl(records.get(records.size() - 1).getTime());
                 }
-                return creationDate;
+                return new FileTimeImpl(0);
             }
 
             @Override
