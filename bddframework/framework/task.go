@@ -19,8 +19,14 @@ import (
 	"strings"
 )
 
+// Task Kogito process task representation
+type Task struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
 // GetTasks retrieves tasks of specific process instance
-func GetTasks(namespace, routeURI, processName, processInstanceID string) (foundTasks map[string]string, err error) {
+func GetTasks(namespace, routeURI, processName, processInstanceID string) (foundTasks []Task, err error) {
 	tasksEndpointPath := getTasksEndpointPath(processName, processInstanceID)
 	requestInfo := NewGETHTTPRequestInfo(routeURI, tasksEndpointPath)
 	err = ExecuteHTTPRequestWithUnmarshalledResponse(namespace, requestInfo, &foundTasks)
@@ -28,7 +34,7 @@ func GetTasks(namespace, routeURI, processName, processInstanceID string) (found
 }
 
 // GetTasksByUser retrieves tasks of specific process instance and user
-func GetTasksByUser(namespace, routeURI, processName, processInstanceID, user string) (foundTasks map[string]string, err error) {
+func GetTasksByUser(namespace, routeURI, processName, processInstanceID, user string) (foundTasks []Task, err error) {
 	tasksEndpointPath := getTasksEndpointPath(processName, processInstanceID) + "?user=" + user
 	requestInfo := NewGETHTTPRequestInfo(routeURI, tasksEndpointPath)
 	err = ExecuteHTTPRequestWithUnmarshalledResponse(namespace, requestInfo, &foundTasks)

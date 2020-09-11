@@ -42,9 +42,9 @@ func (data *Data) serviceContainsTasksOfProcessWithNameAndTaskName(serviceName s
 	if err != nil {
 		return err
 	}
-	for _, foundTaskName := range foundTasks {
-		if taskName != foundTaskName {
-			return fmt.Errorf("found unexpected task name %s", foundTaskName)
+	for _, foundTask := range foundTasks {
+		if taskName != foundTask.Name {
+			return fmt.Errorf("found unexpected task name %s", foundTask.Name)
 		}
 	}
 	if len(foundTasks) < numberOfTasks {
@@ -129,10 +129,10 @@ func getProcessInstanceID(namespace, routeURI, processName string) (string, erro
 }
 
 // getTaskID Returns task id of the task with name searchedTaskName and flag is the task with such name exists in tasks map
-func getTaskID(tasks map[string]string, searchedTaskName string) (string, bool) {
-	for taskID, taskName := range tasks {
-		if taskName == searchedTaskName {
-			return taskID, true
+func getTaskID(tasks []framework.Task, searchedTaskName string) (string, bool) {
+	for _, task := range tasks {
+		if task.Name == searchedTaskName {
+			return task.ID, true
 		}
 	}
 	return "", false
