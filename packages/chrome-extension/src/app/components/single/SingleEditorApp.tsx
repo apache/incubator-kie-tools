@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import * as ReactDOM from "react-dom";
 import { FullScreenToolbar } from "./FullScreenToolbar";
 import { SingleEditorToolbar } from "./SingleEditorToolbar";
@@ -24,7 +24,7 @@ import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
 import { iframeFullscreenContainer } from "../../utils";
 import { IsolatedEditor } from "../common/IsolatedEditor";
 import { useGlobals } from "../common/GlobalContext";
-import { IsolatedEditorRef } from "../common/IsolatedEditorRef";
+import { useIsolatedEditorRef } from "../common/IsolatedEditorRef";
 import { FileInfo } from "./singleEditorView";
 
 function useFullScreenEditorTogglingEffect(fullscreen: boolean) {
@@ -52,7 +52,7 @@ export function SingleEditorApp(props: {
   const [textModeEnabled, setTextModeEnabled] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const globals = useGlobals();
-  const isolatedEditorRef = useRef<IsolatedEditorRef>(null);
+  const { isolatedEditor, isolatedEditorRef } = useIsolatedEditorRef();
 
   useFullScreenEditorTogglingEffect(fullscreen);
   useIsolatedEditorTogglingEffect(textMode, props.iframeContainer, props.githubTextEditorToReplace);
@@ -96,12 +96,12 @@ export function SingleEditorApp(props: {
   useEffect(() => {
     const listener = globals.externalEditorManager?.listenToComeBack(fileName => {
       globals.dependencies.all.edit__githubFileNameInput()!.value = fileName;
-    }, isolatedEditorRef.current?.setContent!);
+    }, isolatedEditor?.setContent!);
 
     return () => {
       listener?.stopListening();
     };
-  }, [globals.externalEditorManager]);
+  }, [globals.externalEditorManager, isolatedEditor]);
 
   const onEditorReady = useCallback(() => {
     setTextModeEnabled(true);

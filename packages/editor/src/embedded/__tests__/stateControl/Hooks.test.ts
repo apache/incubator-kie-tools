@@ -21,13 +21,12 @@ import { StateControl, useDirtyState } from "../../stateControl";
 import { act } from "react-test-renderer";
 
 describe("useDirtyState", () => {
-  let embeddedEditorRef: EmbeddedEditorRef;
+  let editorRef: EmbeddedEditorRef;
   let stateControl: StateControl;
-  let editorRef: React.MutableRefObject<EmbeddedEditorRef>;
 
   beforeEach(() => {
     stateControl = new StateControl();
-    embeddedEditorRef = {
+    editorRef = {
       getStateControl: () => stateControl,
       getEnvelopeServer: () => ({} as any),
       undo: jest.fn(),
@@ -36,9 +35,6 @@ describe("useDirtyState", () => {
       getPreview: jest.fn(),
       setContent: jest.fn(),
       getElementPosition: jest.fn()
-    };
-    editorRef = {
-      current: embeddedEditorRef
     };
   });
 

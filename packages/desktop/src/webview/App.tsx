@@ -135,12 +135,13 @@ export function App(props: Props) {
   }, [page, file]);
 
   useEffect(() => {
-    electron.ipcRenderer.on("saveFileSuccess", (event: IpcRendererEvent, data: { filePath: string }) => {
+    const saveFileSuccess = (event: IpcRendererEvent, data: { filePath: string }) => {
       file!.filePath = data.filePath;
-    });
+    };
+    electron.ipcRenderer.on("saveFileSuccess", saveFileSuccess);
 
     return () => {
-      electron.ipcRenderer.removeAllListeners("saveFileSuccess");
+      electron.ipcRenderer.removeListener("saveFileSuccess", saveFileSuccess);
     };
   }, [file]);
 

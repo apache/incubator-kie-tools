@@ -15,7 +15,7 @@
  */
 
 import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/editor/dist/embedded";
+import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import {
   Alert,
   AlertActionCloseButton,
@@ -45,12 +45,12 @@ let contentRequestData: { action: FileSaveActions; file?: File };
 
 export function EditorPage(props: Props) {
   const context = useContext(GlobalContext);
-  const editorRef = useRef<EmbeddedEditorRef>(null);
+  const { editor, editorRef } = useEditorRef();
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [saveFileSuccessAlertVisible, setSaveFileSuccessAlertVisible] = useState(false);
   const [savePreviewSuccessAlertVisible, setSavePreviewSuccessAlertVisible] = useState(false);
-  const isDirty = useDirtyState(editorRef);
+  const isDirty = useDirtyState(editor);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
   const { locale, i18n } = useDesktopI18n();
 
@@ -69,7 +69,7 @@ export function EditorPage(props: Props) {
 
   const requestSaveFile = useCallback(() => {
     setShowUnsavedAlert(false);
-    editorRef.current?.getContent().then(content => {
+    editor?.getContent().then(content => {
       contentRequestData.file = {
         filePath: context.file!.filePath,
         fileType: context.file!.fileType,
@@ -77,10 +77,10 @@ export function EditorPage(props: Props) {
       };
       electron.ipcRenderer.send("saveFile", contentRequestData);
     });
-  }, []);
+  }, [context.file, editor]);
 
   const requestCopyContentToClipboard = useCallback(() => {
-    editorRef.current?.getContent().then(content => {
+    editor?.getContent().then(content => {
       if (copyContentTextArea.current) {
         copyContentTextArea.current.value = content;
         copyContentTextArea.current.select();
@@ -89,27 +89,27 @@ export function EditorPage(props: Props) {
         }
       }
     });
-  }, []);
+  }, [editor]);
 
   const requestSavePreview = useCallback(() => {
-    editorRef.current?.getPreview().then(previewSvg => {
+    editor?.getPreview().then(previewSvg => {
       electron.ipcRenderer.send("savePreview", {
         filePath: context.file!.filePath,
         fileType: "svg",
         fileContent: previewSvg
       });
     });
-  }, []);
+  }, [editor]);
 
   const requestThumbnailPreview = useCallback(() => {
-    editorRef.current?.getPreview().then(previewSvg => {
+    editor?.getPreview().then(previewSvg => {
       electron.ipcRenderer.send("saveThumbnail", {
         filePath: context.file!.filePath,
         fileType: "svg",
         fileContent: previewSvg
       });
     });
-  }, []);
+  }, [editor]);
 
   const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
   const closeSaveFileSuccessAlert = useCallback(() => setSaveFileSuccessAlertVisible(false), []);
@@ -200,16 +200,17 @@ export function EditorPage(props: Props) {
   }, [requestThumbnailPreview]);
 
   useEffect(() => {
-    electron.ipcRenderer.on("saveFileSuccess", () => {
-      editorRef.current?.getStateControl().setSavedCommand();
+    const saveFileSuccessListener = () => {
+      editor?.getStateControl().setSavedCommand();
       setSaveFileSuccessAlertVisible(true);
       requestThumbnailPreview();
-    });
-
-    return () => {
-      electron.ipcRenderer.removeAllListeners("saveFileSuccess");
     };
-  }, [requestThumbnailPreview]);
+
+    electron.ipcRenderer.on("saveFileSuccess", saveFileSuccessListener);
+    return () => {
+      electron.ipcRenderer.removeListener("saveFileSuccess", saveFileSuccessListener);
+    };
+  }, [requestThumbnailPreview, editor]);
 
   useEffect(() => {
     electron.ipcRenderer.on("savePreviewSuccess", () => {
@@ -232,7 +233,7 @@ export function EditorPage(props: Props) {
       getFileContents,
       isReadOnly: false
     }),
-    [context.file?.filePath, context.file?.fileType]
+    [context.file?.filePath, context.file?.fileType, getFileContents]
   );
 
   return (
