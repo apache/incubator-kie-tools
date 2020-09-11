@@ -22,6 +22,7 @@ import (
 
 func registerGraphQLSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^GraphQL request on service "([^"]*)" is successful within (\d+) minutes with path "([^"]*)" and query:$`, data.graphqlRequestOnServiceIsSuccessfulWithinMinutesWithPathAndQuery)
+	ctx.Step(`^GraphQL request on service "([^"]*)" is successful using access token "([^"]*)" within (\d+) minutes with path "([^"]*)" and query:$`, data.graphqlRequestOnServiceIsSuccessfulUsingAccessTokenWithinMinutesWithPathAndQuery)
 	ctx.Step(`^GraphQL request on Data Index service returns ProcessInstances processName "([^"]*)" within (\d+) minutes$`, data.graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWithinMinutes)
 	ctx.Step(`^GraphQL request on Data Index service returns Jobs ID "([^"]*)" within (\d+) minutes$`, data.graphqlRequestOnDataIndexReturnsJobsIDWithinMinutes)
 }
@@ -34,6 +35,17 @@ func (data *Data) graphqlRequestOnServiceIsSuccessfulWithinMinutesWithPathAndQue
 	}
 	var response interface{}
 	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, uri, path, query.GetContent(), timeoutInMin, response, nil)
+}
+
+func (data *Data) graphqlRequestOnServiceIsSuccessfulUsingAccessTokenWithinMinutesWithPathAndQuery(serviceName, accessToken string, timeoutInMin int, path string, query *godog.DocString) error {
+	accessToken = data.ResolveWithScenarioContext(accessToken)
+	framework.GetLogger(data.Namespace).Debugf("graphqlRequestOnServiceIsSuccessfulUsingAccessTokenWithinMinutesWithPathAndQuery with service %s, path %s, query %s, access token %s and timeout %d", serviceName, path, query, accessToken, timeoutInMin)
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+	var response interface{}
+	return framework.WaitForSuccessfulGraphQLRequestUsingAccessToken(data.Namespace, uri, path, query.GetContent(), accessToken, timeoutInMin, response, nil)
 }
 
 func (data *Data) graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWithinMinutes(processName string, timeoutInMin int) error {
