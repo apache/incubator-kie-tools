@@ -89,6 +89,10 @@ func (mvnCmd *mavenCommandStruct) Execute(targets ...string) (string, error) {
 		return "", err
 	}
 
+	if !config.IsDisableMavenNativeBuildInContainer() {
+		mvnCmd.otherOptions = append(mvnCmd.otherOptions, "-Dquarkus.native.container-build=true", fmt.Sprintf("-Dquarkus.native.container-runtime=%s", config.GetContainerEngine()))
+	}
+
 	if mvnCmd.skipTests {
 		mvnCmd.otherOptions = append(mvnCmd.otherOptions, "-DskipTests")
 	}

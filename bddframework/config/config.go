@@ -58,14 +58,15 @@ type TestConfig struct {
 	runtimeApplicationImageVersion    string
 
 	// build
-	customMavenRepoURL   string
-	mavenMirrorURL       string
-	buildImageRegistry   string
-	buildImageNamespace  string
-	buildImageNameSuffix string
-	buildImageVersion    string
-	buildS2iImageTag     string
-	buildRuntimeImageTag string
+	customMavenRepoURL                 string
+	mavenMirrorURL                     string
+	buildImageRegistry                 string
+	buildImageNamespace                string
+	buildImageNameSuffix               string
+	buildImageVersion                  string
+	buildS2iImageTag                   string
+	buildRuntimeImageTag               string
+	disableMavenNativeBuildInContainer bool
 
 	// examples repository
 	examplesRepositoryURI string
@@ -91,7 +92,7 @@ const (
 	defaultLoadFactor      = 1
 	defaultHTTPRetryNumber = 3
 
-	defaultContainerEngine = "docker"
+	defaultContainerEngine = "podman"
 )
 
 var (
@@ -148,6 +149,7 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.buildImageVersion, prefix+"build-image-version", "", "Set the build image version")
 	set.StringVar(&env.buildS2iImageTag, prefix+"build-s2i-image-tag", "", "Set the S2I build image full tag")
 	set.StringVar(&env.buildRuntimeImageTag, prefix+"build-runtime-image-tag", "", "Set the Runtime build image full tag")
+	set.BoolVar(&env.disableMavenNativeBuildInContainer, prefix+"disable-maven-native-build-container", false, "By default, Maven native builds are done in container (via container engine). Possibility to disable it.")
 
 	// examples repository
 	set.StringVar(&env.examplesRepositoryURI, prefix+"examples-uri", defaultKogitoExamplesURI, "Set the URI for the kogito-examples repository")
@@ -340,6 +342,11 @@ func GetBuildS2IImageStreamTag() string {
 // GetBuildRuntimeImageStreamTag return the tag for the runtime build image
 func GetBuildRuntimeImageStreamTag() string {
 	return env.buildRuntimeImageTag
+}
+
+// IsDisableMavenNativeBuildInContainer return whether Maven native build in container should be disabled
+func IsDisableMavenNativeBuildInContainer() bool {
+	return env.disableMavenNativeBuildInContainer
 }
 
 // examples repository
