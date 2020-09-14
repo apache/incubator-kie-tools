@@ -41,6 +41,12 @@ public class Cookie {
         DomGlobal.document.cookie = name + "=" + value;
     }
 
+    public void set(final String name,
+                    final String value,
+                    final int maxAge) {
+        DomGlobal.document.cookie = name + "=" + value + ";max-age=" + maxAge;
+    }
+
     public void clear(final String name) {
         set(name, "");
     }
