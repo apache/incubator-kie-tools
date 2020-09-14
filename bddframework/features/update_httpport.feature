@@ -36,7 +36,7 @@ Feature: Update the HTTP Port field in Kogito Services
 
 #####
 
-  Scenario Outline: Update HTTP Port for Kogito Runtime
+  Scenario Outline: Update HTTP Port for Kogito Runtime with runtime <runtime> and build profile <profile>
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
