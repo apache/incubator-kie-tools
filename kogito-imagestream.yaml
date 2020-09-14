@@ -156,6 +156,48 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
+      name: kogito-trusty-ui
+      annotations:
+        openshift.io/display-name: Runtime image for the Kogito Trusty UI Service
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '1.0.0-snapshot'
+          annotations:
+            description: Runtime image for the Kogito Trusty UI Service
+            iconClass: icon-jbpm
+            tags: kogito,trusty-ui
+            supports: Audit UI
+            version: '1.0.0-snapshot'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-trusty-ui:1.0.0-snapshot
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-explainability
+      annotations:
+        openshift.io/display-name: Runtime image for the Kogito Explainability Service
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '1.0.0-snapshot'
+          annotations:
+            description: Runtime image for the Kogito Explainability Service
+            iconClass: icon-jbpm
+            tags: kogito,explainability
+            supports: explainability for decisions
+            version: '1.0.0-snapshot'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-explainability:1.0.0-snapshot
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
       name: kogito-jobs-service
       annotations:
         openshift.io/display-name: Runtime image for the Kogito Jobs Service
