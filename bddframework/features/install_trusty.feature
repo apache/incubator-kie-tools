@@ -7,6 +7,7 @@ Feature: Kogito Trusty
     Given Namespace is created
     And Kogito Operator is deployed with Infinispan and Kafka operators
 
+  @disabled
   @smoke
   Scenario: Install Kogito Trusty
     When Install Kogito Trusty with 1 replicas
@@ -14,6 +15,8 @@ Feature: Kogito Trusty
     
 #####
 
+  # Disabled as long as https://issues.redhat.com/browse/KOGITO-3176 is not solved
+  @disabled
   @externalcomponent
   @infinispan
   @kafka
