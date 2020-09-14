@@ -17,15 +17,16 @@
 import { useEffect, useState } from "react";
 import { EmbeddedEditorRef } from "../embedded";
 
-export function useDirtyState(editorRef: React.MutableRefObject<EmbeddedEditorRef>) {
+export function useDirtyState(editor?: EmbeddedEditorRef) {
   const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
-    const callback = editorRef.current?.getStateControl().subscribe(setIsDirty)!;
+    setIsDirty(editor?.getStateControl().isDirty() ?? false);
+    const callback = editor?.getStateControl().subscribe(setIsDirty)!;
     return () => {
-      editorRef.current?.getStateControl().unsubscribe(callback);
+      editor?.getStateControl().unsubscribe(callback);
     };
-  }, []);
+  }, [editor]);
 
   return isDirty;
 }

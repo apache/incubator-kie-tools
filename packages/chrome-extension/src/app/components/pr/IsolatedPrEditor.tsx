@@ -15,14 +15,10 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FileStatusOnPr } from "./FileStatusOnPr";
-import {
-  useEffectAfterFirstRender,
-  useInitialAsyncCallEffect,
-  useIsolatedEditorTogglingEffect
-} from "../common/customEffects";
-import { IsolatedEditorRef } from "../common/IsolatedEditorRef";
+import { useInitialAsyncCallEffect, useIsolatedEditorTogglingEffect } from "../common/customEffects";
+import { useIsolatedEditorRef } from "../common/IsolatedEditorRef";
 import { IsolatedEditorContext } from "../common/IsolatedEditorContext";
 import * as ReactDOM from "react-dom";
 import { PrToolbar } from "./PrToolbar";
@@ -65,7 +61,7 @@ export function IsolatedPrEditor(props: {
   const [editorReady, setEditorReady] = useState(false);
   const [fileStatusOnPr, setFileStatusOnPr] = useState(FileStatusOnPr.UNKNOWN);
 
-  const isolatedEditorRef = useRef<IsolatedEditorRef>(null);
+  const { isolatedEditorRef } = useIsolatedEditorRef();
   const originalFilePath = useMemo(() => getOriginalFilePath(props.unprocessedFilePath), []);
   const modifiedFilePath = useMemo(() => getModifiedFilePath(props.unprocessedFilePath), []);
 

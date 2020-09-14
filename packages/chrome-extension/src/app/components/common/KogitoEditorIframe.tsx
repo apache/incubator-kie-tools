@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-import {
-  ChannelType,
-  ResourceContentRequest,
-  ResourceListRequest
-} from "@kogito-tooling/channel-common-api";
-import { EmbeddedEditor, EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { ChannelType, ResourceContentRequest, ResourceListRequest } from "@kogito-tooling/channel-common-api";
+import { EmbeddedEditor, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { useCallback, useContext, useEffect, useImperativeHandle, useMemo } from "react";
 import { runScriptOnPage } from "../../utils";
-import { useGitHubApi } from "../common/GitHubContext";
+import { useGitHubApi } from "./GitHubContext";
 import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
@@ -44,7 +40,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
   forwardedRef
 ) => {
   const githubApi = useGitHubApi();
-  const editorRef = useRef<EmbeddedEditorRef>(null);
+  const { editor, editorRef } = useEditorRef();
   const { envelopeLocator, resourceContentServiceFactory } = useGlobals();
   const { repoInfo, textMode, fullscreen, onEditorReady } = useContext(IsolatedEditorContext);
   const { locale } = useChromeExtensionI18n();
@@ -76,7 +72,7 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
 
   useEffect(() => {
     if (textMode) {
-      editorRef.current?.getContent();
+      editor?.getContent();
       return;
     }
 
@@ -87,11 +83,11 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
     let task: number;
     Promise.resolve()
       .then(() => props.getFileContents())
-      .then(c => editorRef.current?.setContent(c ?? "", props.contentPath))
+      .then(c => editor?.setContent(c ?? "", props.contentPath))
       .then(() => {
         task = window.setInterval(
           () =>
-            editorRef.current?.getContent().then(c => {
+            editor?.getContent().then(c => {
               if (props.readonly) {
                 return;
               }
@@ -108,24 +104,24 @@ const RefForwardingKogitoEditorIframe: React.RefForwardingComponent<IsolatedEdit
       });
 
     return () => clearInterval(task);
-  }, [textMode]);
+  }, [textMode, editor]);
 
   //Forward reference methods to set content programmatically vs property
   useImperativeHandle(
     forwardedRef,
     () => {
-      if (!editorRef.current) {
+      if (!editor) {
         return null;
       }
 
       return {
         setContent: (content: string) => {
-          editorRef.current?.setContent(content, props.contentPath);
+          editor?.setContent(content, props.contentPath);
           return Promise.resolve();
         }
       };
     },
-    []
+    [editor]
   );
 
   return (

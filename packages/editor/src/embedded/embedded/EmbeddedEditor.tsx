@@ -72,7 +72,7 @@ const RefForwardingEmbeddedEditor: React.RefForwardingComponent<EmbeddedEditorRe
   forwardedRef
 ) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const stateControl = useMemo(() => new StateControl(), []);
+  const stateControl = useMemo(() => new StateControl(), [props.file.getFileContents]);
 
   const envelopeMapping = useMemo(() => props.editorEnvelopeLocator.mapping.get(props.file.fileExtension), [
     props.editorEnvelopeLocator,
