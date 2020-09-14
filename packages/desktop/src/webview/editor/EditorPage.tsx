@@ -167,7 +167,7 @@ export function EditorPage(props: Props) {
     return () => {
       electron.ipcRenderer.removeAllListeners("requestOpenedFile");
     };
-  }, []);
+  }, [requestSaveFile]);
 
   useEffect(() => {
     electron.ipcRenderer.on("copyContentToClipboard", () => {
@@ -177,7 +177,7 @@ export function EditorPage(props: Props) {
     return () => {
       electron.ipcRenderer.removeAllListeners("copyContentToClipboard");
     };
-  }, []);
+  }, [requestCopyContentToClipboard]);
 
   useEffect(() => {
     electron.ipcRenderer.on("savePreview", () => {
@@ -187,7 +187,7 @@ export function EditorPage(props: Props) {
     return () => {
       electron.ipcRenderer.removeAllListeners("savePreview");
     };
-  }, []);
+  }, [requestSavePreview]);
 
   useEffect(() => {
     electron.ipcRenderer.on("saveThumbnail", () => {
