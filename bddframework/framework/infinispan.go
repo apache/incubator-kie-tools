@@ -23,7 +23,7 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	infinispaninfra "github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoinfra/infinispan"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 )
 
 // DeployInfinispanInstance deploys an instance of Infinispan
@@ -46,7 +46,7 @@ func CreateInfinispanSecret(namespace, name string, credentialsMap map[string]st
 		return err
 	}
 
-	return CreateSecret(namespace, name, map[string]string{infinispaninfra.IdentityFileName: credentialsFileData})
+	return CreateSecret(namespace, name, map[string]string{infrastructure.InfinispanIdentityFileName: credentialsFileData})
 }
 
 // WaitForInfinispanPodsToBeRunningWithConfig waits for an Infinispan pod to be running with the expected configuration
@@ -93,12 +93,12 @@ func GetInfinispanStub(namespace, name, secretName string) *infinispan.Infinispa
 }
 
 func convertInfinispanCredentialsToYaml(credentialsMap map[string]string) (string, error) {
-	credentials := []infinispaninfra.Credential{}
+	var credentials []infrastructure.InfinispanCredential
 	for username, password := range credentialsMap {
-		credentials = append(credentials, infinispaninfra.Credential{Username: username, Password: password})
+		credentials = append(credentials, infrastructure.InfinispanCredential{Username: username, Password: password})
 	}
 
-	identity := infinispaninfra.Identity{Credentials: credentials}
+	identity := infrastructure.InfinispanIdentity{Credentials: credentials}
 
 	data, err := yaml.Marshal(&identity)
 	if err != nil {

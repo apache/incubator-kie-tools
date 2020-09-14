@@ -58,9 +58,9 @@ var buildahContainerEngine = containerEngineStruct{
 }
 
 var containerEngines = map[string]containerEngineStruct{
-	(dockerContainerEngine.engine):  dockerContainerEngine,
-	(podmanContainerEngine.engine):  podmanContainerEngine,
-	(buildahContainerEngine.engine): buildahContainerEngine,
+	dockerContainerEngine.engine:  dockerContainerEngine,
+	podmanContainerEngine.engine:  podmanContainerEngine,
+	buildahContainerEngine.engine: buildahContainerEngine,
 }
 
 // GetContainerEngine returns container engine based on test configuration

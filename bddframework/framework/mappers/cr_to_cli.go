@@ -25,7 +25,7 @@ import (
 
 //GetServiceCLIFlags returns CLI flags based on Kogito service passed in parameter
 func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
-	cmd := []string{}
+	var cmd []string
 
 	// Flags ordered alphabetically
 
@@ -108,7 +108,7 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 
 //GetBuildCLIFlags returns CLI flags based on KogitoBuild passed in parameter
 func GetBuildCLIFlags(kogitoBuild *v1alpha1.KogitoBuild) []string {
-	cmd := []string{}
+	var cmd []string
 
 	// Flags ordered alphabetically
 
