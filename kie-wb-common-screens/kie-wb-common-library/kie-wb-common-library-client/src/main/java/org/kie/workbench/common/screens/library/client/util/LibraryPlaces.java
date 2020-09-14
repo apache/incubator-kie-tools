@@ -30,7 +30,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
-
 import elemental2.promise.IThenable;
 import elemental2.promise.Promise;
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
@@ -51,7 +50,6 @@ import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.soup.commons.validation.PortablePreconditions;
@@ -268,19 +266,19 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     public static Object nativeGoToSpace(final String spaceName) {
         return self.promises
-            .promisify(self.organizationalUnitService,
-                       s -> {
-                           return s.getOrganizationalUnit(spaceName);
-                       })
-            .then(space -> {
-                if (space == null) {
-                    self.cookie.clear(self.getLastSpaceCookie());
-                } else {
-                    self.cookie.set(self.getLastSpaceCookie(), spaceName);
-                }
-                self.projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(space));
-                return self.goToLibrary();
-            });
+                .promisify(self.organizationalUnitService,
+                           s -> {
+                               return s.getOrganizationalUnit(spaceName);
+                           })
+                .then(space -> {
+                    if (space == null) {
+                        self.cookie.clear(self.getLastSpaceCookie());
+                    } else {
+                        self.cookie.set(self.getLastSpaceCookie(), spaceName);
+                    }
+                    self.projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(space));
+                    return self.goToLibrary();
+                });
     }
 
     public native void expose() /*-{
@@ -362,6 +360,14 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     private String getLastSpaceCookie() {
         return sessionInfo.getIdentity().getIdentifier() + "_lastSpace";
+    }
+
+    private String getLastProjectCookie() {
+        return sessionInfo.getIdentity().getIdentifier() + "_lastProject";
+    }
+
+    private String getProjectLastBranchCookie(String projectName) {
+        return sessionInfo.getIdentity().getIdentifier() + "_" + projectName + "_lastBranch";
     }
 
     public void deleteProject(final WorkspaceProject project,
@@ -450,28 +456,35 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public Promise<Void> goToLibrary() {
         if (!projectContext.getActiveOrganizationalUnit().isPresent()) {
             return promises.create((res, rej) -> {
-                    String lastSpace = cookie.get(self.getLastSpaceCookie());
-                    if (!lastSpace.equals("")) {
-                        nativeGoToSpace(lastSpace);
-                        return;
-                    }
-                    libraryService.call((RemoteCallback<OrganizationalUnit>) organizationalUnit -> {
-                            this.goToOrganizationalUnits();
-                            res.onInvoke((IThenable<Void>) null);
-                        },
-                        (message, throwable) -> {
-                            try {
-                                throw throwable;
-                            } catch (UnauthorizedException ue) {
-                                this.goToOrganizationalUnits();
-                                res.onInvoke((IThenable<Void>) null);
-                                return false;
-                            } catch (Throwable t) {
-                                rej.onInvoke(null);
-                                return true; // Let default error handling happen.
-                            }
-                        }).getDefaultOrganizationalUnit();
-                });
+                String lastSpace = cookie.get(self.getLastSpaceCookie());
+                String lastProject = cookie.get(self.getLastProjectCookie());
+                String lastBranch = cookie.get(self.getProjectLastBranchCookie(lastProject));
+
+                if (!lastProject.equals("") && !lastBranch.equals("")) {
+                    goToProject(lastSpace, lastProject, lastBranch);
+                    return;
+                }
+                if (!lastSpace.equals("")) {
+                    nativeGoToSpace(lastSpace);
+                    return;
+                }
+                libraryService.call((RemoteCallback<OrganizationalUnit>) organizationalUnit -> {
+                                        this.goToOrganizationalUnits();
+                                        res.onInvoke((IThenable<Void>) null);
+                                    },
+                                    (message, throwable) -> {
+                                        try {
+                                            throw throwable;
+                                        } catch (UnauthorizedException ue) {
+                                            this.goToOrganizationalUnits();
+                                            res.onInvoke((IThenable<Void>) null);
+                                            return false;
+                                        } catch (Throwable t) {
+                                            rej.onInvoke(null);
+                                            return true; // Let default error handling happen.
+                                        }
+                                    }).getDefaultOrganizationalUnit();
+            });
         } else {
             setupLibraryPerspective();
             return promises.resolve();
@@ -503,11 +516,18 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         if (projectContext.getActiveWorkspaceProject()
                 .map(activeProject -> !activeProject.equals(project))
                 .orElse(true)) {
+            final String lastBranch = cookie.get(getProjectLastBranchCookie(project.getName()));
+            cookie.set(getLastProjectCookie(), project.getName());
             closeAllPlacesOrNothing(() -> {
                 projectContextChangeEvent.fire(new WorkspaceProjectContextChangeEvent(project,
                                                                                       project.getMainModule()));
-                goToProject(project,
-                            project.getBranch());
+
+                if (!lastBranch.equals("")) {
+                    goToProject(project.getSpace().getName(), project.getName(), lastBranch);
+                } else {
+                    goToProject(project,
+                                project.getBranch());
+                }
             });
         } else {
             goToProject();
@@ -516,7 +536,10 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
 
     public void goToProject(final WorkspaceProject project,
                             final Branch branch) {
-        projectService.call((RemoteCallback<WorkspaceProject>) this::goToProject,
+        projectService.call((RemoteCallback<WorkspaceProject>) pro -> {
+                                cookie.set(getProjectLastBranchCookie(project.getName()), branch.getName(), 604800);
+                                goToProject(pro);
+                            },
                             (o, throwable) -> {
                                 logger.info("Project " + project.getName() + " branch " + branch.getName() + " not found.");
                                 return false;
@@ -527,6 +550,18 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
         goToProject(() -> {
             // do nothing.
         });
+    }
+
+    public void goToProject(final String spaceName, final String projectName, final String branchName) {
+        projectService.call((RemoteCallback<WorkspaceProject>) project -> {
+            goToProject(project);
+        }, (o, throwable) -> {
+            logger.info("Project " + projectName + " branch " + branchName + " not found.");
+            self.cookie.clear(self.getLastProjectCookie());
+            self.cookie.clear(self.getProjectLastBranchCookie(projectName));
+            goToOrganizationalUnits();
+            return false;
+        }).resolveProject(new Space(spaceName), projectName, branchName);
     }
 
     private void goToProject(final Command callback) {
@@ -739,7 +774,7 @@ public class LibraryPlaces implements WorkspaceProjectContextChangeHandler {
     public boolean isThisUserAccessingThisRepository(final String userIdentifier,
                                                      final Repository repository) {
         return isThisRepositoryBeingAccessed(repository)
-            && sessionInfo.getIdentity().getIdentifier().equals(userIdentifier);
+                && sessionInfo.getIdentity().getIdentifier().equals(userIdentifier);
     }
 
     public boolean isThisRepositoryBeingAccessed(final Repository repository) {

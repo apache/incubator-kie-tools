@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
@@ -94,11 +95,24 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singleton;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LibraryPlacesTest {
@@ -189,6 +203,10 @@ public class LibraryPlacesTest {
 
     @Mock
     private Cookie cookie;
+
+    private String lastSpaceCookie;
+    private String lastProjectCookie;
+    private String lastBranchCookie;
 
     @Captor
     private ArgumentCaptor<WorkspaceProjectContextChangeEvent> projectContextChangeEventArgumentCaptor;
@@ -292,7 +310,9 @@ public class LibraryPlacesTest {
         doReturn(pathPlaceRequest).when(libraryPlaces).createPathPlaceRequest(any());
 
         doReturn(importRepositoryPopUpPresenter).when(importRepositoryPopUpPresenters).get();
-
+        lastSpaceCookie = user.getIdentifier() + "_lastSpace";
+        lastProjectCookie = user.getIdentifier() + "_lastProject";
+        lastBranchCookie = user.getIdentifier() + "_"+ activeProject.getName() + "_lastBranch";
         doReturn("").when(cookie).get(any());
     }
 
@@ -621,7 +641,7 @@ public class LibraryPlacesTest {
 
     @Test
     public void goToLibrarySpaceWhenCookieExists() {
-        doReturn("space").when(cookie).get(any());
+        doReturn("space").when(cookie).get(lastSpaceCookie);
         when(projectContext.getActiveOrganizationalUnit())
                 .thenReturn(Optional.empty())
                 .thenReturn(Optional.of(mock(OrganizationalUnit.class)));
@@ -638,6 +658,47 @@ public class LibraryPlacesTest {
         verify(libraryBreadcrumbs).setupForSpacesScreen();
         verify(projectContextChangeEvent, times(2)).fire(projectContextChangeEventArgumentCaptor.capture());
         assertNotNull(projectContextChangeEventArgumentCaptor.getValue().getOrganizationalUnit());
+    }
+
+    @Test
+    public void goToLibraryProjectWhenCookieExists() {
+        doReturn(activeSpace.getName()).when(cookie).get(lastSpaceCookie);
+        doReturn(activeProject.getName()).when(cookie).get(lastProjectCookie);
+        doReturn(activeBranch.getName()).when(cookie).get(lastBranchCookie);
+        when(projectContext.getActiveOrganizationalUnit())
+                .thenReturn(Optional.empty())
+                .thenReturn(Optional.of(mock(OrganizationalUnit.class)));
+        doReturn(Optional.of(activeProject)).when(projectContext).getActiveWorkspaceProject();
+        when(projectService.resolveProject(any(), any(), any())).thenReturn(activeProject);
+
+        libraryPlaces.goToLibrary();
+
+        final PlaceRequest projectScreen = new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN);
+        final PartDefinitionImpl part = new PartDefinitionImpl(projectScreen);
+        part.setSelectable(false);
+
+        verify(cookie).get(lastBranchCookie);
+        verify(cookie).get(lastProjectCookie);
+        verify(libraryPlaces).goToProject(activeSpace.getName(), activeProject.getName(), activeBranch.getName());
+        verify(libraryPlaces).goToProject(activeProject);
+        verify(placeManager).goTo(eq(part),
+                                  any(PanelDefinition.class));
+        verify(projectContextChangeEvent,
+               never()).fire(any(WorkspaceProjectContextChangeEvent.class));
+        verify(libraryBreadcrumbs).setupForProject(activeProject);
+    }
+
+    @Test
+    public void testClearProjectCookie() {
+        doReturn(activeSpace.getName()).when(cookie).get(lastSpaceCookie);
+        doReturn(activeProject.getName()).when(cookie).get(lastProjectCookie);
+        doReturn(activeProject.getBranch().getName()).when(cookie).get(lastBranchCookie);
+        when(projectService.resolveProject(any(), any(), any())).thenThrow(new IllegalArgumentException());
+
+        libraryPlaces.goToProject(activeSpace.getName(), activeProject.getName(), activeBranch.getName());
+
+        verify(cookie).clear(lastProjectCookie);
+        verify(cookie).clear(lastBranchCookie);
     }
 
     @Test
@@ -773,6 +834,22 @@ public class LibraryPlacesTest {
 
         libraryPlaces.goToProject(project);
 
+        verify(libraryPlaces).goToProject(project, activeBranch);
+        verify(projectContextChangeEvent).fire(any(WorkspaceProjectContextChangeEvent.class));
+        verify(placeManager).closeAllPlaces();
+    }
+
+    @Test
+    public void setProjectCookieTest() {
+        final WorkspaceProject project = new WorkspaceProject(activeOrganizationalUnit,
+                                                              activeRepository,
+                                                              activeBranch,
+                                                              mock(Module.class));
+        doReturn(activeProject).when(projectService).resolveProject(activeSpace, activeBranch);
+
+        libraryPlaces.goToProject(project);
+        verify(cookie).set(lastProjectCookie, project.getName());
+        verify(cookie).set(lastBranchCookie, project.getBranch().getName(), 604800);
         verify(libraryPlaces).goToProject(project, activeBranch);
         verify(projectContextChangeEvent).fire(any(WorkspaceProjectContextChangeEvent.class));
         verify(placeManager).closeAllPlaces();
