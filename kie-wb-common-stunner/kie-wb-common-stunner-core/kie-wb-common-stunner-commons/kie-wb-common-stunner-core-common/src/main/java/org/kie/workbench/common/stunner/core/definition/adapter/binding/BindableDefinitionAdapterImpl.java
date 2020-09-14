@@ -120,10 +120,14 @@ public class BindableDefinitionAdapterImpl<T> implements BindableDefinitionAdapt
     public Optional<?> getProperty(T pojo, String field) {
         DefinitionAdapterBindings b = bindings.get(pojo.getClass());
         final int index = b.getPropertiesFieldNames().indexOf(field);
-        final Boolean isTyped = b.getTypedPropertyFields().get(index);
-        return isTyped ?
-                Optional.ofNullable(getFieldValue(pojo, field)) :
-                Optional.of(new DefinitionBindableProperty<>(pojo, field));
+        if (index > -1) {
+            final Boolean isTyped = b.getTypedPropertyFields().get(index);
+            return isTyped ?
+                    Optional.ofNullable(getFieldValue(pojo, field)) :
+                    Optional.of(new DefinitionBindableProperty<>(pojo, field));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override

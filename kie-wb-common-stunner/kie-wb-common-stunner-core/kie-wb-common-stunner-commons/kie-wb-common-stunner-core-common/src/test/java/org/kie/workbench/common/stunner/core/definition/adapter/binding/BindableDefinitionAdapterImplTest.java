@@ -32,6 +32,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
@@ -133,6 +134,13 @@ public class BindableDefinitionAdapterImplTest {
         DefinitionBindableProperty name = (DefinitionBindableProperty) nameValue.get();
         assertEquals(BEAN1, name.getPojo());
         assertEquals("nameField", name.getField());
+    }
+
+    @Test
+    @SuppressWarnings("all")
+    public void testGetNonexistentProperty() {
+        Optional<?> nameValue = tested.getProperty(BEAN1, "someField");
+        assertFalse(nameValue.isPresent());
     }
 
     @Test
