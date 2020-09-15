@@ -502,6 +502,24 @@ setup() {
     [[ "${output}" != *"--tests.management-console-image-tag"* ]]
 }
 
+@test "invoke run-tests with trusty_ui_image_tag" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --trusty_ui_image_tag tag --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.trusty-ui-image-tag=tag" ]]
+}
+
+@test "invoke run-tests with trusty_ui_image_tag missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --trusty_ui_image_tag --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.trusty-ui-image-tag"* ]]
+}
+
+@test "invoke run-tests with trusty_ui_image_tag empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --trusty_ui_image_tag "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.trusty-ui-image-tag"* ]]
+}
+
 @test "invoke run-tests with runtime_application_image_registry" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --runtime_application_image_registry registry --dry_run
     [ "$status" -eq 0 ]
