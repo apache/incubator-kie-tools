@@ -15,6 +15,7 @@
 
 
 DIR=$(mktemp -d)
+LEAK_RESOURCES=( infinispan keycloakclients keycloakusers keycloakrealms )
 
 oc get namespaces | grep "Terminating" | awk -F " " '{print $1}' > ${DIR}/projects
 
@@ -22,14 +23,17 @@ while read project
 do 
 	echo "Stuck project ${project}"
 
-    oc get infinispan -n "${project}" | grep -v "NAME" | awk -F " " '{print $1}' > ${DIR}/infinispan-instances
-    while read infinispan
+    for resource in "${LEAK_RESOURCES[@]}"
     do
-        echo "Remove finalizer from infinispan ${infinispan} from project ${project}"
+      oc get $resource -n "${project}" | grep -v "NAME" | awk -F " " '{print $1}' > ${DIR}/$resource-instances
+      while read instance
+      do
+          echo "Remove finalizer from $resource ${instance} from project ${project}"
 
-        oc get infinispan ${infinispan} -o yaml -n ${project} | grep -v "finalizer" > ${DIR}/infinispan
-        oc replace -f ${DIR}/infinispan -n ${project}
-    done < ${DIR}/infinispan-instances
+          oc patch $resource ${instance} -n ${project} -p '{"metadata":{"finalizers":[]}}' --type=merge
+      done < ${DIR}/$resource-instances
+      rm ${DIR}/$resource-instances
+    done
 done < ${DIR}/projects
 
 echo "Projects deleted:"
@@ -37,5 +41,3 @@ cat ${DIR}/projects
 
 # Cleanup
 rm ${DIR}/projects
-rm ${DIR}/infinispan-instances
-rm ${DIR}/infinispan
