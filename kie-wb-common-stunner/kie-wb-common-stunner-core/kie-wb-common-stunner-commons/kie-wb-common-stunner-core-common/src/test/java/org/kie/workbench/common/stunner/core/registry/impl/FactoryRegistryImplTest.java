@@ -16,13 +16,19 @@
 
 package org.kie.workbench.common.stunner.core.registry.impl;
 
+import java.util.Collection;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.factory.Factory;
 import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactory;
+import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
+import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
+import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;
 import org.kie.workbench.common.stunner.core.factory.impl.EdgeFactoryImpl;
-import org.kie.workbench.common.stunner.core.factory.impl.NodeFactoryImpl;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -31,6 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -45,14 +52,12 @@ public class FactoryRegistryImplTest {
     private DefinitionFactory missingFactory;
     @Mock
     private EdgeFactoryImpl elementFactory;
-    @Mock
-    private NodeFactoryImpl elementFactory2;
 
-    private FactoryRegistryImpl factory;
+    private FactoryRegistryImpl tested;
 
     @Before
     public void setup() {
-        factory = new FactoryRegistryImpl(adapter);
+        tested = new FactoryRegistryImpl(adapter);
         Class clazz = EdgeFactoryImpl.class;
         when(elementFactory.getFactoryType()).thenReturn(clazz);
         when(definitionFactory.accepts(DefinitionFactory.class.getName())).thenReturn(true);
@@ -60,82 +65,171 @@ public class FactoryRegistryImplTest {
 
     @Test
     public void testGetDefinitionFactory() {
-        assertNull(factory.getDefinitionFactory(DefinitionFactory.class.getName()));
-        factory.register(definitionFactory);
-        assertNull(factory.getDefinitionFactory(NOT_VALID_ID));
+        assertNull(tested.getDefinitionFactory(DefinitionFactory.class.getName()));
+        tested.register(definitionFactory);
+        assertNull(tested.getDefinitionFactory(NOT_VALID_ID));
         assertEquals(definitionFactory,
-                     factory.getDefinitionFactory(DefinitionFactory.class.getName()));
+                     tested.getDefinitionFactory(DefinitionFactory.class.getName()));
         assertEquals(definitionFactory,
-                     factory.getDefinitionFactory(DefinitionFactory.class));
+                     tested.getDefinitionFactory(DefinitionFactory.class));
     }
 
     @Test
     public void testGetGraphFactory() {
-        assertNull(factory.getElementFactory(elementFactory.getFactoryType()));
-        factory.register(elementFactory);
+        assertNull(tested.getElementFactory(elementFactory.getFactoryType()));
+        tested.register(elementFactory);
         assertEquals(elementFactory,
-                     factory.getElementFactory(elementFactory.getFactoryType()));
+                     tested.getElementFactory(elementFactory.getFactoryType()));
     }
 
     @Test
     public void testGetItems() {
-        factory.register(elementFactory);
-        factory.register(definitionFactory);
+        tested.register(elementFactory);
+        tested.register(definitionFactory);
         assertArrayEquals(new Object[]{definitionFactory, elementFactory},
-                          factory.getAllFactories().toArray());
+                          tested.getAllFactories().toArray());
     }
 
     @Test
     public void testContains() {
-        assertFalse(factory.contains(elementFactory));
-        assertFalse(factory.contains(definitionFactory));
-        assertFalse(factory.contains(null));
-        factory.register(elementFactory);
-        factory.register(definitionFactory);
-        assertTrue(factory.contains(elementFactory));
-        assertTrue(factory.contains(definitionFactory));
-        assertFalse(factory.contains(missingFactory));
-        assertFalse(factory.contains(null));
+        assertFalse(tested.contains(elementFactory));
+        assertFalse(tested.contains(definitionFactory));
+        assertFalse(tested.contains(null));
+        tested.register(elementFactory);
+        tested.register(definitionFactory);
+        assertTrue(tested.contains(elementFactory));
+        assertTrue(tested.contains(definitionFactory));
+        assertFalse(tested.contains(missingFactory));
+        assertFalse(tested.contains(null));
     }
 
     @Test
     public void testClear() {
-        factory.register(elementFactory);
-        factory.register(definitionFactory);
-        factory.register(missingFactory);
-        factory.clear();
+        tested.register(elementFactory);
+        tested.register(definitionFactory);
+        tested.register(missingFactory);
+        tested.clear();
         assertArrayEquals(new Object[0],
-                          factory.getAllFactories().toArray());
+                          tested.getAllFactories().toArray());
     }
 
     @Test
     public void testEmpty() {
-        boolean empty = factory.isEmpty();
+        boolean empty = tested.isEmpty();
         assertTrue(empty);
     }
 
     @Test
     public void testNotEmpty() {
-        factory.register(definitionFactory);
-        boolean empty = factory.isEmpty();
+        tested.register(definitionFactory);
+        boolean empty = tested.isEmpty();
         assertFalse(empty);
     }
 
     @Test
     public void testRemove() {
-        factory.register(elementFactory);
-        factory.register(definitionFactory);
-        assertFalse(factory.remove(missingFactory));
-        assertTrue(factory.contains(elementFactory));
-        assertTrue(factory.contains(definitionFactory));
-        assertTrue(factory.remove(elementFactory));
-        assertFalse(factory.contains(elementFactory));
-        assertTrue(factory.contains(definitionFactory));
-        assertFalse(factory.remove(null));
-        assertTrue(factory.contains(definitionFactory));
-        assertTrue(factory.remove(definitionFactory));
-        assertFalse(factory.contains(definitionFactory));
+        tested.register(elementFactory);
+        tested.register(definitionFactory);
+        assertFalse(tested.remove(missingFactory));
+        assertTrue(tested.contains(elementFactory));
+        assertTrue(tested.contains(definitionFactory));
+        assertTrue(tested.remove(elementFactory));
+        assertFalse(tested.contains(elementFactory));
+        assertTrue(tested.contains(definitionFactory));
+        assertFalse(tested.remove(null));
+        assertTrue(tested.contains(definitionFactory));
+        assertTrue(tested.remove(definitionFactory));
+        assertFalse(tested.contains(definitionFactory));
         assertArrayEquals(new Object[0],
-                          factory.getAllFactories().toArray());
+                          tested.getAllFactories().toArray());
+    }
+
+    @Test
+    public void testRegister() {
+        DefinitionFactory definitionFactory = mock(DefinitionFactory.class);
+        ElementFactory graphFactory = mock(ElementFactory.class);
+        DiagramFactory diagramFactory = mock(DiagramFactory.class);
+        Factory randomFactory = mock(Factory.class);
+
+        FactoryRegistryImpl factory = new FactoryRegistryImpl(adapter);
+        factory.register(definitionFactory);
+        factory.register(graphFactory);
+        factory.register(diagramFactory);
+        factory.register(randomFactory);
+
+        Collection<?> factories = factory.getAllFactories();
+        assertEquals(3, factories.stream().count());
+    }
+
+    @Test
+    public void testRegisterGraphFactory() {
+        Class<? extends ElementFactory> factoryType = GraphFactory.class;
+        ElementFactory graphFactory1 = createGraphFactory(factoryType);
+        ElementFactory graphFactory2 = createGraphFactory(factoryType);
+        ElementFactory delegateGraphFactory = createDelegateGraphFactory(factoryType);
+
+        FactoryRegistryImpl factory = new FactoryRegistryImpl(adapter);
+
+        factory.register(null);
+        assertTrue(factory.getAllFactories().isEmpty());
+
+        factory.registerGraphFactory(graphFactory1);
+        assertEquals(graphFactory1, factory.getElementFactory(factoryType));
+
+        factory.clear();
+        factory.registerGraphFactory(delegateGraphFactory);
+        assertEquals(delegateGraphFactory, factory.getElementFactory(factoryType));
+
+        factory.clear();
+        factory.registerGraphFactory(graphFactory1);
+        factory.registerGraphFactory(graphFactory2);
+        assertEquals(graphFactory1, factory.getElementFactory(factoryType));
+
+        factory.registerGraphFactory(graphFactory1);
+        factory.registerGraphFactory(delegateGraphFactory);
+        assertEquals(delegateGraphFactory, factory.getElementFactory(factoryType));
+    }
+
+    private static ElementFactory createGraphFactory(final Class<? extends ElementFactory> factoryType) {
+        return new ElementFactory() {
+            @Override
+            public Class<? extends ElementFactory> getFactoryType() {
+                return factoryType;
+            }
+
+            @Override
+            public Element build(String uuid, Object definition) {
+                return null;
+            }
+
+            @Override
+            public boolean accepts(Object source) {
+                return false;
+            }
+        };
+    }
+
+    private static ElementFactory createDelegateGraphFactory(final Class<? extends ElementFactory> factoryType) {
+        return new ElementFactory() {
+            @Override
+            public Class<? extends ElementFactory> getFactoryType() {
+                return factoryType;
+            }
+
+            @Override
+            public boolean isDelegateFactory() {
+                return true;
+            }
+
+            @Override
+            public Element build(String uuid, Object definition) {
+                return null;
+            }
+
+            @Override
+            public boolean accepts(Object source) {
+                return false;
+            }
+        };
     }
 }

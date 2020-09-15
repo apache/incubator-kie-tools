@@ -31,6 +31,10 @@ public interface ElementFactory<C, D extends Definition<C>, T extends Element<D>
 
     Class<? extends ElementFactory> getFactoryType();
 
+    default boolean isDelegateFactory() {
+        return false;
+    }
+
     T build(final String uuid,
             final C definition);
 

@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
+import org.kie.workbench.common.stunner.forms.client.formFilters.FormFiltersProviderFactory;
 import org.kie.workbench.common.stunner.forms.client.widgets.container.FormsContainer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
@@ -186,8 +187,17 @@ public class FormPropertiesWidget implements IsElement,
         return (lastElement != null && lastElement.getUUID().equals(element.getUUID()) && computedPosition.equals(lastPosition));
     }
 
-    private static boolean isNode(final Element<? extends Definition<?>> element) {
+    protected static boolean isNode(final Element<? extends Definition<?>> element) {
         return element instanceof Node;
+    }
+
+    protected static boolean isFiltered(final Element<? extends Definition<?>> element) {
+        final Definition content = element.getContent();
+        if (Objects.isNull(content)) {
+            return false;
+        }
+        final Object definition = content.getDefinition();
+        return !FormFiltersProviderFactory.getFilterForDefinition(element.getUUID(), definition).isEmpty();
     }
 
     private void show(final String graphUuid,
@@ -195,7 +205,10 @@ public class FormPropertiesWidget implements IsElement,
                       final Command callback) {
         if (element != null) {
 
-            if (lastElement != null && lastElement.getUUID().equals(element.getUUID()) && isNode(element)) {
+            if (isNode(element) &&
+                    !isFiltered(element) &&
+                    lastElement != null &&
+                    lastElement.getUUID().equals(element.getUUID())) {
                 lastPosition = GraphUtils.getComputedPosition((Node<?, ? extends Edge>) element);
                 return;
             }

@@ -17,7 +17,9 @@
 package org.kie.workbench.common.stunner.forms.client.widgets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 
 import javax.enterprise.event.Event;
@@ -29,6 +31,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -42,10 +45,13 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
+import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
+import org.kie.workbench.common.stunner.forms.client.formFilters.FormFiltersProviderFactory;
+import org.kie.workbench.common.stunner.forms.client.formFilters.StunnerFormElementFilterProvider;
 import org.kie.workbench.common.stunner.forms.client.widgets.container.FormsContainer;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -56,6 +62,8 @@ import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -76,6 +84,8 @@ public class FormPropertiesWidgetTest {
     private static final String NODE2_UUID = "node2";
     private static final String DOMAIN_OBJECT_UUID = "domainObject1";
     private static final String DOMAIN_OBJECT_TRANSLATION_KEY = "domainObjectTranslationKey";
+    private static final String RANDOM_FIELD = "randomField";
+    private static final String CUSTOM_DEFINITION = "MyCustomDefinition";
 
     @Mock
     private FormPropertiesWidgetView view;
@@ -108,11 +118,17 @@ public class FormPropertiesWidgetTest {
     @Mock
     private NodeImpl node;
     @Mock
+    private NodeImpl filterednode;
+    @Mock
     private NodeImpl node2;
+    @Mock
+    private GraphImpl graphImpl;
 
     private EdgeImpl edge;
     @Mock
     private Definition nodeContent;
+    @Mock
+    private Definition filteredContent;
     @Mock
     private Object nodeDefObject;
     @Mock
@@ -153,6 +169,22 @@ public class FormPropertiesWidgetTest {
         when(graph.getUUID()).thenReturn(GRAPH_UUID);
         when(node.getUUID()).thenReturn(ROOT_UUID);
         when(node.getContent()).thenReturn(nodeContent);
+        when(filterednode.getUUID()).thenReturn(ROOT_UUID);
+        when(filterednode.getContent()).thenReturn(filteredContent);
+        when(filteredContent.getDefinition()).thenReturn(CUSTOM_DEFINITION);
+        FormFiltersProviderFactory.registerProvider(new StunnerFormElementFilterProvider() {
+            @Override
+            public Class<?> getDefinitionType() {
+                return String.class;
+            }
+
+            @Override
+            public Collection<FormElementFilter> provideFilters(String elementUUID, Object definition) {
+                final Predicate predicate = t -> false;
+                final FormElementFilter filter = new FormElementFilter(RANDOM_FIELD, predicate);
+                return Arrays.asList(filter);
+            }
+        });
         when(nodeContent.getDefinition()).thenReturn(nodeDefObject);
         when(node2.getUUID()).thenReturn(NODE2_UUID);
         when(node2.getContent()).thenReturn(nodeContent);
@@ -304,10 +336,14 @@ public class FormPropertiesWidgetTest {
 
         formRenderer.render(GRAPH_UUID, node, command);
         formRenderer.render(GRAPH_UUID, node, command);
+        formRenderer.render(GRAPH_UUID, graphImpl, command);
 
         verify(formsCanvasSessionHandler, never()).executeUpdateProperty(any(), any(), any());
-        // Verify it is only rendered once, since the same item was already rendered
         verify(formsContainer, atMost(1)).render(any(), any(), any(), any(), any(), any());
+
+        formRenderer.render(GRAPH_UUID, filterednode, command);
+        formRenderer.render(GRAPH_UUID, filterednode, command);
+        verify(formsContainer, atMost(3)).render(any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -376,5 +412,34 @@ public class FormPropertiesWidgetTest {
 
         formRenderer.render(GRAPH_UUID, edge, command);
         assertEquals("Value is not the same ", tested.areLastPositionsForSameElementSame(node), false);
+    }
+
+    @Test
+    public void testIsNode() {
+        NodeImpl node = mock(NodeImpl.class);
+        assertTrue(FormPropertiesWidget.isNode(node));
+
+        GraphImpl notNode = mock(GraphImpl.class);
+        assertFalse(FormPropertiesWidget.isNode(notNode));
+    }
+
+    @Test
+    public void testIsFiltered() {
+        NodeImpl nodeNullContent = mock(NodeImpl.class);
+        when(nodeNullContent.getContent()).thenReturn(null);
+        assertFalse(FormPropertiesWidget.isFiltered(nodeNullContent));
+
+        Definition content = mock(Definition.class);
+
+        NodeImpl nodeUnfiltered = mock(NodeImpl.class);
+        Object unfilteredDefinition = mock(Object.class);
+        when(nodeUnfiltered.getContent()).thenReturn(content);
+        when(content.getDefinition()).thenReturn(unfilteredDefinition);
+        assertFalse(FormPropertiesWidget.isFiltered(nodeUnfiltered));
+
+        NodeImpl nodeFiltered = mock(NodeImpl.class);
+        when(nodeFiltered.getContent()).thenReturn(content);
+        when(content.getDefinition()).thenReturn(CUSTOM_DEFINITION);
+        assertTrue(FormPropertiesWidget.isFiltered(nodeFiltered));
     }
 }

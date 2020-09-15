@@ -70,6 +70,11 @@ public class BPMNDelegateGraphFactory implements BPMNGraphFactory {
     }
 
     @Override
+    public boolean isDelegateFactory() {
+        return true;
+    }
+
+    @Override
     public void setDiagramType(Class<? extends BPMNDiagram> diagramType) {
         bpmnGraphFactory.setDiagramType(diagramType);
         caseGraphFactory.setDiagramType(diagramType);

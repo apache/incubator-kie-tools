@@ -117,4 +117,9 @@ public class BPMNDelegateGraphFactoryTest {
         verify(bpmnGraphFactory).accepts(SOURCE);
         verify(caseGraphFactory).accepts(SOURCE);
     }
+
+    @Test
+    public void isDelegateFactory() {
+        assertTrue(tested.isDelegateFactory());
+    }
 }

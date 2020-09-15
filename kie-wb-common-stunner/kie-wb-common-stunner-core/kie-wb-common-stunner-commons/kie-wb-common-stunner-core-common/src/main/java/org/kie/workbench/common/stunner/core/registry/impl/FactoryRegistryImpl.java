@@ -88,8 +88,7 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
         if (item instanceof DefinitionFactory) {
             definitionFactories.add((DefinitionFactory<?>) item);
         } else if (item instanceof ElementFactory) {
-            graphFactories.put(((ElementFactory) item).getFactoryType(),
-                               (ElementFactory<?, ?, ?>) item);
+            registerGraphFactory((ElementFactory) item);
         } else if (item instanceof DiagramFactory) {
             diagramFactories.add((DiagramFactory<?, ?>) item);
         }
@@ -146,5 +145,12 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
         final String id = BindableAdapterUtils.getDefinitionId(type,
                                                                adapterManager.registry());
         return getDefinitionFactory(id);
+    }
+
+    protected void registerGraphFactory(final ElementFactory item) {
+        final Class<? extends ElementFactory> factoryType = item.getFactoryType();
+        if (!graphFactories.containsKey(item.getFactoryType()) || item.isDelegateFactory()) {
+            graphFactories.put(factoryType, item);
+        }
     }
 }

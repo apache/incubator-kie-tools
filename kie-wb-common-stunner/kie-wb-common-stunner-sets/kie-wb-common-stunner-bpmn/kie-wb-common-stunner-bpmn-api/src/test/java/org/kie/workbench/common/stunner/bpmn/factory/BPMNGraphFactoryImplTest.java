@@ -39,6 +39,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
@@ -115,5 +116,10 @@ public class BPMNGraphFactoryImplTest {
         final CompositeCommand compositeCommand = (CompositeCommand) command;
         assertEquals(1,
                      compositeCommand.size());
+    }
+
+    @Test
+    public void testIsDelegateFactory() {
+        assertFalse(tested.isDelegateFactory());
     }
 }
