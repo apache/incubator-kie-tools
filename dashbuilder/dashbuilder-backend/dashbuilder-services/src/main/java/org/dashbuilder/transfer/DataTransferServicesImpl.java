@@ -150,12 +150,22 @@ public class DataTransferServicesImpl implements DataTransferServices {
             zipFileSystem(navigationFS, zos, readmeFilter);
         }
 
-        String componentsPath = externalComponentLoader.getExternalComponentsDir();
-
-        if (componentsPath != null) {
-            zipComponents(Paths.get("file://" + componentsPath),
-                          zos,
-                          p -> true);
+        if (externalComponentLoader.isEnabled()) {
+            String componentsPath = externalComponentLoader.getExternalComponentsDir();
+    
+            if (componentsPath != null && exists(componentsPath)) {
+                Path componentsBasePath = Paths.get(new StringBuilder().append(SpacesAPI.Scheme.FILE)
+                                                    .append("://")
+                                                    .append(componentsPath)
+                                                    .toString());
+                externalComponentLoader.load().forEach(c -> {                
+                 Path componentPath = componentsBasePath.resolve(c.getId());
+                 zipComponentFiles(componentsBasePath,
+                                   componentPath,
+                                   zos,
+                                   p -> true);
+                });
+            }
         }
 
         zipFile(createVersionFile(), "VERSION", zos);
@@ -447,8 +457,8 @@ public class DataTransferServicesImpl implements DataTransferServices {
         });
     }
 
-    private void zipComponents(Path componentsRoot, ZipOutputStream zos, Predicate<Path> pathTest) {
-        Files.walkFileTree(componentsRoot, new SimpleFileVisitor<Path>() {
+    private void zipComponentFiles(Path componentsRoot, Path componentRoot, ZipOutputStream zos, Predicate<Path> pathTest) {
+        Files.walkFileTree(componentRoot, new SimpleFileVisitor<Path>() {
 
             @Override
             public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
@@ -558,5 +568,9 @@ public class DataTransferServicesImpl implements DataTransferServices {
             }
             return false;
         };
+    }
+    
+    private boolean exists(String file) {
+        return java.nio.file.Files.exists(java.nio.file.Paths.get(file));
     }
 }

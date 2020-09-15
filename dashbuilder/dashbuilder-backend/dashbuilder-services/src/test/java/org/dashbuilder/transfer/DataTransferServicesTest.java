@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -33,6 +34,7 @@ import org.dashbuilder.dataset.DataSetDefRegistryCDI;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.events.DataSetDefRegisteredEvent;
 import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
+import org.dashbuilder.external.model.ExternalComponent;
 import org.dashbuilder.external.service.ExternalComponentLoader;
 import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.dashbuilder.navigation.storage.NavTreeStorage;
@@ -57,6 +59,9 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.SpacesAPI;
 
+import static java.util.Arrays.asList;
+import static org.dashbuilder.transfer.DataTransferServices.COMPONENTS_EXPORT_PATH;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -133,6 +138,7 @@ public class DataTransferServicesTest {
     }
 
     @Test
+    @SuppressWarnings("serial")
     public void testDoExportEmptyFileSystems() throws Exception {
         String exportPath = dataTransferServices.doExport(DataTransferExportModel.exportAll());
 
@@ -154,6 +160,7 @@ public class DataTransferServicesTest {
     }
 
     @Test
+    @SuppressWarnings("serial")
     public void testDoExportNotEmptyFileSystems() throws Exception {
         createFile(datasetsFS, "definitions/dataset1.csv", "Test 1");
         createFile(datasetsFS, "definitions/dataset1.dset", "Test ABC");
@@ -186,6 +193,7 @@ public class DataTransferServicesTest {
     }
     
     @Test
+    @SuppressWarnings("serial")
     public void testDoExportFilteringDataSets() throws Exception {
         createFile(datasetsFS, "definitions/dataset1.csv", "");
         createFile(datasetsFS, "definitions/dataset1.dset", "");
@@ -221,6 +229,7 @@ public class DataTransferServicesTest {
     }
     
     @Test
+    @SuppressWarnings("serial")
     public void testDoExportFilteringPages() throws Exception {
         createFile(datasetsFS, "definitions/dataset.csv", "");
         createFile(datasetsFS, "definitions/dataset.dset", "");
@@ -257,6 +266,7 @@ public class DataTransferServicesTest {
     }
     
     @Test
+    @SuppressWarnings("serial")
     public void testDoExportWithoutNavigation() throws Exception {
         createFile(datasetsFS, "definitions/dataset.csv", "");
         createFile(datasetsFS, "definitions/dataset.dset", "");
@@ -288,8 +298,104 @@ public class DataTransferServicesTest {
                     }}, getFiles(zis));
         cleanFileSystems();
     }
-
+    
     @Test
+    public void testDoExportWithComponents() throws Exception {
+        when(externalComponentLoader.load()).thenReturn(asList(component("c1")));
+
+        createFile(perspectivesFS, "page1/perspective_layout", "");
+        createFile(perspectivesFS, "page1/perspective_layout.plugin", "");
+        
+        createComponentFile("c1", "manifest.json", "manifest");
+        createComponentFile("c1", "index.html", "html");
+        createComponentFile("c1", "css/style.css", "style");
+        createComponentFile("c1", "js/index.js", "js");
+        
+        // lost file in component Dir that should be ignored
+        createComponentFile("lost", "lostfile", "ignore-me-import");
+        
+        dataTransferServices.doExport(DataTransferExportModel.exportAll());
+
+        ZipInputStream zis = getZipInputStream();
+
+        String[] expectedFiles = {
+                                  datasetsFS.getName() + "/readme.md",
+                                  perspectivesFS.getName() + "/page1/perspective_layout",
+                                  perspectivesFS.getName() + "/page1/perspective_layout.plugin",
+                                  perspectivesFS.getName() + "/readme.md",
+                                  navigationFS.getName() + "/readme.md",
+                                  COMPONENTS_EXPORT_PATH + "c1/js/index.js",
+                                  COMPONENTS_EXPORT_PATH + "c1/css/style.css",
+                                  COMPONENTS_EXPORT_PATH + "c1/index.html",
+                                  COMPONENTS_EXPORT_PATH + "c1/manifest.json",
+                                  "VERSION"
+                              };
+        Object[] actualList = getFiles(zis).toArray();
+        Arrays.sort(expectedFiles);
+        Arrays.sort(actualList);
+        assertArrayEquals(expectedFiles, actualList);
+        
+        cleanFileSystems();
+        
+    }
+    
+    @Test
+    @SuppressWarnings("serial")
+    public void testDoExportIgnoringComponents() throws Exception {
+        when(externalComponentLoader.isEnabled()).thenReturn(false);
+        when(externalComponentLoader.load()).thenReturn(asList(component("c1")));
+        
+        createFile(perspectivesFS, "page1/perspective_layout", "");
+        createFile(perspectivesFS, "page1/perspective_layout.plugin", "");
+        
+        createComponentFile("c1", "manifest.json", "manifest");
+        createComponentFile("c1", "index.html", "html");
+        createComponentFile("c1", "css/style.css", "style");
+        createComponentFile("c1", "js/index.js", "js");
+                
+        dataTransferServices.doExport(DataTransferExportModel.exportAll());
+
+        ZipInputStream zis = getZipInputStream();
+
+        assertEquals(new ArrayList<String>() {{
+                        add(datasetsFS.getName() + "/readme.md");
+                        add(perspectivesFS.getName() + "/page1/perspective_layout");
+                        add(perspectivesFS.getName() + "/page1/perspective_layout.plugin");
+                        add(perspectivesFS.getName() + "/readme.md");
+                        add(navigationFS.getName() + "/readme.md");
+                        add("VERSION");
+                    }}, getFiles(zis));
+        
+        cleanFileSystems();
+        
+    }
+    
+    @Test
+    @SuppressWarnings("serial")
+    public void testDoExportWhenComponentsDirIsNotPresent() throws Exception {
+        createFile(perspectivesFS, "page1/perspective_layout", "");
+        createFile(perspectivesFS, "page1/perspective_layout.plugin", "");
+
+        FileUtils.deleteQuietly(componentsDir.toFile());
+        
+        dataTransferServices.doExport(DataTransferExportModel.exportAll());
+
+        ZipInputStream zis = getZipInputStream();
+
+        assertEquals(new ArrayList<String>() {{
+                        add(datasetsFS.getName() + "/readme.md");
+                        add(perspectivesFS.getName() + "/page1/perspective_layout");
+                        add(perspectivesFS.getName() + "/page1/perspective_layout.plugin");
+                        add(perspectivesFS.getName() + "/readme.md");
+                        add(navigationFS.getName() + "/readme.md");
+                        add("VERSION");
+                    }}, getFiles(zis));
+        
+        cleanFileSystems();        
+    }
+    
+    @Test
+    @SuppressWarnings("serial")
     public void testDoImportNoZip() throws Exception {
         List<String> filesImported = dataTransferServices.doImport();
 
@@ -317,6 +423,7 @@ public class DataTransferServicesTest {
     }
 
     @Test
+    @SuppressWarnings("serial")
     public void testDoImportEmptyZip() throws Exception {
         moveZipToFileSystem("/empty.zip");
 
@@ -346,6 +453,7 @@ public class DataTransferServicesTest {
     }
 
     @Test
+    @SuppressWarnings("serial")
     public void testDoImportNotEmptyZip() throws Exception {
         moveZipToFileSystem("/import.zip");
 
@@ -468,6 +576,7 @@ public class DataTransferServicesTest {
         assertTrue(assetsToExport.getPages().isEmpty());
     }
 
+    @SuppressWarnings("serial")
     private FileSystem createFileSystem(String name) {
         String path = new StringBuilder().append("git://dashbuilder")
                                          .append(File.separator)
@@ -510,6 +619,14 @@ public class DataTransferServicesTest {
         Path filePath = path.resolve(filename);
         ioService.write(filePath, data);
         return filePath;
+    }
+    
+    private Path createComponentFile(String componentId, String filename, String data) {
+        Path componentPath = componentsDir.resolve(componentId);
+        Path componentFile = componentPath.resolve(filename);
+        componentFile.getParent().toFile().mkdirs();
+        ioService.write(componentFile, data);
+        return componentFile;
     }
     
     private List<String> getFiles(Path root) {
@@ -622,6 +739,11 @@ public class DataTransferServicesTest {
                                                             .append(getExpectedExportFilePath())
                                                             .toString()));
         return new ZipInputStream(new ByteArrayInputStream(ioService.readAllBytes(path)));
+    }
+    
+    
+    public ExternalComponent component(String id) {
+        return new ExternalComponent(id, id, "", false, Collections.emptyList());
     }
     
 }
