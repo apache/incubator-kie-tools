@@ -447,6 +447,23 @@ setup() {
     [ "$status" -eq 0 ]
     [[ "${output}" != *"--tests.data-index-image-tag"* ]]
 }
+@test "invoke run-tests with explainability_image_tag" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --explainability_image_tag tag --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.explainability-image-tag=tag" ]]
+}
+
+@test "invoke run-tests with explainability_image_tag missing value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --explainability_image_tag --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.explainability-image-tag"* ]]
+}
+
+@test "invoke run-tests with explainability_image_tag empty value" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --explainability_image_tag "" --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.explainability-image-tag"* ]]
+}
 
 @test "invoke run-tests with trusty_image_tag" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --trusty_image_tag tag --dry_run

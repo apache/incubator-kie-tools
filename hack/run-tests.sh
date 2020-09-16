@@ -267,6 +267,10 @@ case $1 in
   --data_index_image_tag)
     shift
     if addParamKeyValueIfAccepted "--tests.data-index-image-tag" ${1}; then shift; fi
+  ;;  
+  --explainability_image_tag)
+    shift
+    if addParamKeyValueIfAccepted "--tests.explainability-image-tag" ${1}; then shift; fi
   ;;
     --trusty_image_tag)
     shift
