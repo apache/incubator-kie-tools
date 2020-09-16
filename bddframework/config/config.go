@@ -49,6 +49,7 @@ type TestConfig struct {
 	servicesImageNameSuffix           string
 	servicesImageVersion              string
 	dataIndexImageTag                 string
+	explainabilityImageTag            string
 	trustyImageTag                    string
 	jobsServiceImageTag               string
 	mgmtConsoleImageTag               string
@@ -128,11 +129,12 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.cliPath, prefix+"cli-path", defaultCliPath, "Path to built CLI to test")
 
 	// runtime
-	set.StringVar(&env.servicesImageRegistry, prefix+"services-image-registry", "", "Set the services (jobs-service, data-index, trusty) image registry")
-	set.StringVar(&env.servicesImageNamespace, prefix+"services-image-namespace", "", "Set the services (jobs-service, data-index, trusty) image namespace")
-	set.StringVar(&env.servicesImageNameSuffix, prefix+"services-image-name-suffix", "", "Set the services (jobs-service, data-index, trusty) image name suffix")
-	set.StringVar(&env.servicesImageVersion, prefix+"services-image-version", "", "Set the services (jobs-service, data-index, trusty) image version")
+	set.StringVar(&env.servicesImageRegistry, prefix+"services-image-registry", "", "Set the services (jobs-service, data-index, trusty, explainability) image registry")
+	set.StringVar(&env.servicesImageNamespace, prefix+"services-image-namespace", "", "Set the services (jobs-service, data-index, trusty, explainability) image namespace")
+	set.StringVar(&env.servicesImageNameSuffix, prefix+"services-image-name-suffix", "", "Set the services (jobs-service, data-index, trusty, explainability) image name suffix")
+	set.StringVar(&env.servicesImageVersion, prefix+"services-image-version", "", "Set the services (jobs-service, data-index, trusty, explainability) image version")
 	set.StringVar(&env.dataIndexImageTag, prefix+"data-index-image-tag", "", "Set the Kogito Data Index image tag ('services-image-version' is ignored)")
+	set.StringVar(&env.explainabilityImageTag, prefix+"explainability-image-tag", "", "Set the Kogito Explainability image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.trustyImageTag, prefix+"trusty-image-tag", "", "Set the Kogito Trusty image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.jobsServiceImageTag, prefix+"jobs-service-image-tag", "", "Set the Kogito Jobs Service image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.mgmtConsoleImageTag, prefix+"management-console-image-tag", "", "Set the Kogito Management Console image tag ('services-image-version' is ignored)")
@@ -267,6 +269,11 @@ func GetServicesImageVersion() string {
 // GetDataIndexImageTag return the Kogito Data Index image tag
 func GetDataIndexImageTag() string {
 	return env.dataIndexImageTag
+}
+
+// GetExplainabilityImageTag return the Kogito Explainability image tag
+func GetExplainabilityImageTag() string {
+	return env.explainabilityImageTag
 }
 
 // GetTrustyImageTag return the Kogito Trusty image tag

@@ -46,6 +46,7 @@ func (data *Data) RegisterAllSteps(ctx *godog.ScenarioContext) {
 	registerKogitoBuildSteps(ctx, data)
 	registerKogitoRuntimeSteps(ctx, data)
 	registerKogitoDataIndexServiceSteps(ctx, data)
+	registerKogitoExplainabilityServiceSteps(ctx, data)
 	registerKogitoTrustyServiceSteps(ctx, data)
 	registerKogitoInfraSteps(ctx, data)
 	registerKogitoJobsServiceSteps(ctx, data)
@@ -109,7 +110,7 @@ func (data *Data) AfterScenario(scenario *godog.Scenario, err error) error {
 		if err := framework.BumpEvents(data.Namespace); err != nil {
 			framework.GetMainLogger().Errorf("Error bumping events for namespace %s: %v", namespace, err)
 		}
-		if err := framework.LogKubernetesObjects(data.Namespace, &imgv1.ImageStreamList{}, &appv1alpha1.KogitoRuntimeList{}, &appv1alpha1.KogitoBuildList{}, &appv1alpha1.KogitoDataIndexList{}, &appv1alpha1.KogitoInfraList{}, &appv1alpha1.KogitoJobsServiceList{}, &appv1alpha1.KogitoMgmtConsoleList{}); err != nil {
+		if err := framework.LogKubernetesObjects(data.Namespace, &imgv1.ImageStreamList{}, &appv1alpha1.KogitoRuntimeList{}, &appv1alpha1.KogitoBuildList{}, &appv1alpha1.KogitoDataIndexList{}, &appv1alpha1.KogitoInfraList{}, &appv1alpha1.KogitoJobsServiceList{}, &appv1alpha1.KogitoMgmtConsoleList{}, &appv1alpha1.KogitoTrustyList{}, &appv1alpha1.KogitoTrustyUIList{}, &appv1alpha1.KogitoExplainabilityList{}); err != nil {
 			framework.GetMainLogger().Errorf("Error logging Kubernetes objects for namespace %s: %v", namespace, err)
 		}
 		return nil
