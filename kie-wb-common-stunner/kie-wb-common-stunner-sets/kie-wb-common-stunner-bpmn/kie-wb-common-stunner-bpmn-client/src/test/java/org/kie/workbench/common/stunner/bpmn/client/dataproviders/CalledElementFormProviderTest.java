@@ -76,4 +76,11 @@ public class CalledElementFormProviderTest {
         assertTrue(values.containsKey("p3"));
         verify(event, times(1)).fire(any(RequestProcessDataEvent.class));
     }
+
+    @Test
+    public void testService() {
+        tested.populateData();
+        verify(event, times(1)).fire(any(RequestProcessDataEvent.class));
+        assertTrue(tested.requestProcessDataEvent.equals(tested.getRequestProcessDataEventSingleton()));
+    }
 }
