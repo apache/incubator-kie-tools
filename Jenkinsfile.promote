@@ -130,8 +130,18 @@ pipeline {
                         }
                         input message: 'Are the artifacts set correctly ?', ok: 'Yes'
 
-                        githubscm.commitChanges('Setup Maven artifacts to released ones')
-                        githubscm.pushObject('origin', getPRSourceBranch(), env.BOT_CREDENTIALS_ID)
+                        try {
+                            githubscm.commitChanges('Setup Maven artifacts to released ones')
+                            githubscm.pushObject('origin', getPRSourceBranch(), env.BOT_CREDENTIALS_ID)
+                        } catch (err) {
+                            withCredentials([string(credentialsId: 'KOGITO_CI_EMAIL_TO', variable: 'ZULIP_EMAIL')]) {
+                            emailext body: "Seems like no change is to be committed.\nPlease review in ${env.BUILD_URL}console.\n" +
+                                    "And take your decision here: ${env.BUILD_URL}input",
+                                    subject: "[${getBuildBranch()}] Release Pipeline",
+                                    to: ZULIP_EMAIL
+                            }
+                            input message: 'Should the pipeline continue ?', ok: 'Yes'
+                        }
                     }
                 }
             }
