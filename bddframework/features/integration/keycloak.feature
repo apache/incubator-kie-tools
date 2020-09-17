@@ -42,18 +42,20 @@ Feature: Kogito integration with Keycloak
     And Keycloak user "my-user" with password "my-password" is deployed
 
     When Install Kogito Jobs Service with 1 replicas with configuration:
-      | runtime-env  | quarkus.oidc.tenant-enabled                          | true                                           |
-      | runtime-env  | quarkus.oidc.tls.verification                        | none                                           |
-      | runtime-env  | quarkus.oidc.auth-server-url                         | https://keycloak:8443/auth/realms/kogito-realm |
-      | runtime-env  | quarkus.oidc.client-id                               | kogito-jobs-service                            |
-      | runtime-env  | quarkus.http.auth.permission.secure.paths            | /jobs*                                         |
-      | runtime-env  | quarkus.http.auth.permission.secure.policy           | authenticated                                  |
+      | runtime-env  | quarkus.oidc.tenant-enabled                    | true                                           |
+      | runtime-env  | quarkus.oidc.tls.verification                  | none                                           |
+      | runtime-env  | quarkus.oidc.auth-server-url                   | https://keycloak:8443/auth/realms/kogito-realm |
+      | runtime-env  | quarkus.oidc.client-id                         | kogito-jobs-service                            |
+      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*                                      |
+      | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
+      | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
+      | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
     And Kogito Jobs Service has 1 pods running within 10 minutes
 
     Then HTTP GET request on service "jobs-service" with path "jobs" is forbidden within 1 minutes
     
     When Stores access token for user "my-user" and password "my-password" on realm "kogito-realm" and client "kogito-jobs-service" into variable "my-user-token"
-    When HTTP POST request on service "jobs-service" using access token "{my-user-token}" is successful within 2 minutes with path "jobs" and body:
+    And HTTP POST request on service "jobs-service" using access token "{my-user-token}" is successful within 2 minutes with path "jobs" and body:
       """json
       {
         "id": "1",
@@ -62,4 +64,6 @@ Feature: Kogito integration with Keycloak
         "callbackEndpoint": "http://localhost:8080/callback"
       }
       """
+
     Then HTTP GET request on service "jobs-service" using access token "{my-user-token}" with path "jobs/1" is successful within 1 minutes
+    
