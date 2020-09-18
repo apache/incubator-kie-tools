@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.processes;
 
 import java.util.ArrayList;
@@ -71,7 +72,6 @@ final class ProcessConverterDelegate {
             List<FlowElement> flowElements,
             List<LaneSet> laneSets) {
 
-
         // Fixes id and name for Data Objects
         for (FlowElement element : flowElements) {
             element.setId(revertIllegalCharsAttribute(element.getId()));
@@ -114,9 +114,9 @@ final class ProcessConverterDelegate {
     }
 
     private Result<Map<String, BpmnNode>> convertFlowElements(List<FlowElement> flowElements) {
-        final List<Result<BpmnNode>> results = flowElements
-                .stream()
+        final List<Result<BpmnNode>> results = flowElements.stream()
                 .map(converterFactory.flowElementConverter()::convertNode)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         final Map<String, BpmnNode> resultMap = results.stream()

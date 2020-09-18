@@ -52,7 +52,8 @@ import org.kie.workbench.common.stunner.core.validation.Violation;
  *     // unwrap the result on success, raise an exception otherwise
  *     T2 t2 = result.value();
  * </pre>
- * @param <In> the input type of the match
+ *
+ * @param <In>  the input type of the match
  * @param <Out> the type of the result of the match
  */
 public class Match<In, Out> {
@@ -105,6 +106,16 @@ public class Match<In, Out> {
                         defaultValue, MarshallingMessage.builder().message("Ignored " + t).build());
     }
 
+    private <T> Function<T, Result<Out>> ignored(Class<?> expectedClass, Out outValue) {
+        return t ->
+                Result.ignored(
+                        "Ignored: " +
+                                Optional.ofNullable(t)
+                                        .map(o -> o.getClass().getCanonicalName())
+                                        .orElse("null -- expected " + expectedClass.getCanonicalName()),
+                        outValue, MarshallingMessage.builder().message("Ignored " + t).build());
+    }
+
     public <Sub> Match<In, Out> when(Class<Sub> type, Function<Sub, Out> then) {
         Function<Sub, Result<Out>> thenWrapped = sub -> Result.of(then.apply(sub));
         return when_(type, thenWrapped);
@@ -135,6 +146,10 @@ public class Match<In, Out> {
 
     public <Sub> Match<In, Out> ignore(Class<Sub> type) {
         return when_(type, ignored(type));
+    }
+
+    public <Sub> Match<In, Out> ignore(Class<Sub> type, Out outValue) {
+        return when_(type, ignored(type, outValue));
     }
 
     public Match<In, Out> orElse(Function<In, Out> then) {

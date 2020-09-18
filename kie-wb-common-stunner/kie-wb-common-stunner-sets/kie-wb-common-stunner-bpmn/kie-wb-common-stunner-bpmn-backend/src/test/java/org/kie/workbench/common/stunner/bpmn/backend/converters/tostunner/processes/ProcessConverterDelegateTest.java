@@ -183,6 +183,24 @@ public class ProcessConverterDelegateTest {
     }
 
     @Test
+    public void testConvertIgnoredFlowElements() {
+        List<LaneSet> laneSets = Collections.emptyList();
+        //adding 2 supported and 2 unsupported elements
+        List<FlowElement> flowElements = Arrays.asList(mockTask("1"),
+                                                       mockTask("2"),
+                                                       mockSequenceFlow("3", null, null),
+                                                       mockUnsupportedDataObject("4"));
+
+        Result<Map<String, BpmnNode>> result = converterDelegate.convertChildNodes(parentNode, flowElements, laneSets);
+        Map<String, BpmnNode> values = result.value();
+        List<MarshallingMessage> messages = result.messages();
+        //check one message per unsupported element
+        assertEquals(2, values.size());
+        assertEquals(1, messages.size());
+        assertTrue(messages.stream().map(MarshallingMessage::getViolationType).allMatch(Violation.Type.WARNING::equals));
+    }
+
+    @Test
     public void testConvertLanes() {
         Task task0_1 = mockTask("TASK0_1");
         Task task0_2 = mockTask("TASK0_2");

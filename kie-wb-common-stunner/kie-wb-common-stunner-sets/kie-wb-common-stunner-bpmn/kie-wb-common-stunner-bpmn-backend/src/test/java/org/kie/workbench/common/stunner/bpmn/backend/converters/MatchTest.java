@@ -23,6 +23,7 @@ import org.eclipse.bpmn2.EventSubprocess;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.ManualTask;
 import org.eclipse.bpmn2.ReceiveTask;
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.impl.UserTaskImpl;
@@ -47,6 +48,9 @@ public class MatchTest {
 
     @Mock
     private BpmnNode defaultValue;
+
+    @Mock
+    private BpmnNode outValue;
 
     @Mock
     private Function<UserTaskImpl, BpmnNode> assertUserTask;
@@ -96,33 +100,55 @@ public class MatchTest {
 
     @Test
     public void ignoreTestAuto() {
-        ManualTask element = Bpmn2Factory.eINSTANCE.createManualTask();
-        Result<BpmnNode> result = match().apply(element);
-        assertEquals(result.value(), defaultValue);
-        assertTrue(result.isIgnored());
-        assertFalse(result.isFailure());
+        ManualTask manualTask = Bpmn2Factory.eINSTANCE.createManualTask();
+        Result<BpmnNode> result1 = match().apply(manualTask);
+        assertEquals(result1.value(), defaultValue);
+        assertTrue(result1.isIgnored());
+        assertFalse(result1.isFailure());
+
+        SequenceFlow sequenceFlow = Bpmn2Factory.eINSTANCE.createSequenceFlow();
+        Result<BpmnNode> result2 = match().apply(sequenceFlow);
+        assertEquals(result2.value(), outValue);
+        assertTrue(result2.isIgnored());
+        assertFalse(result2.isFailure());
     }
 
     @Test
     public void ignoreTestIgnore() {
-        ManualTask element = Bpmn2Factory.eINSTANCE.createManualTask();
-        Result<BpmnNode> result = match()
+        ManualTask manualTask = Bpmn2Factory.eINSTANCE.createManualTask();
+        Result<BpmnNode> result1 = match()
                 .mode(MarshallingRequest.Mode.IGNORE)
-                .apply(element);
-        assertEquals(result.value(), defaultValue);
-        assertTrue(result.isIgnored());
-        assertFalse(result.isFailure());
+                .apply(manualTask);
+        assertEquals(result1.value(), defaultValue);
+        assertTrue(result1.isIgnored());
+        assertFalse(result1.isFailure());
+
+        SequenceFlow sequenceFlow = Bpmn2Factory.eINSTANCE.createSequenceFlow();
+        Result<BpmnNode> result2 = match()
+                .mode(MarshallingRequest.Mode.IGNORE)
+                .apply(sequenceFlow);
+        assertEquals(result2.value(), outValue);
+        assertTrue(result2.isIgnored());
+        assertFalse(result2.isFailure());
     }
 
     @Test
     public void ignoreTestError() {
-        ManualTask element = Bpmn2Factory.eINSTANCE.createManualTask();
-        Result<BpmnNode> result = match()
+        ManualTask manualTask = Bpmn2Factory.eINSTANCE.createManualTask();
+        Result<BpmnNode> result1 = match()
                 .mode(MarshallingRequest.Mode.ERROR)
-                .apply(element);
-        assertEquals(result.value(), defaultValue);
-        assertFalse(result.isIgnored());
-        assertTrue(result.isFailure());
+                .apply(manualTask);
+        assertEquals(result1.value(), defaultValue);
+        assertFalse(result1.isIgnored());
+        assertTrue(result1.isFailure());
+
+        SequenceFlow sequenceFlow = Bpmn2Factory.eINSTANCE.createSequenceFlow();
+        Result<BpmnNode> result2 = match()
+                .mode(MarshallingRequest.Mode.ERROR)
+                .apply(sequenceFlow);
+        assertEquals(result2.value(), defaultValue);
+        assertFalse(result2.isIgnored());
+        assertTrue(result2.isFailure());
     }
 
     @Test
@@ -138,6 +164,7 @@ public class MatchTest {
                 .whenExactly(UserTaskImpl.class, assertUserTask)
                 .when(SubProcess.class, assertSubProcess)
                 .ignore(ManualTask.class)
+                .ignore(SequenceFlow.class, outValue)
                 .missing(ReceiveTask.class)
                 .defaultValue(defaultValue)
                 .mode(MarshallingRequest.Mode.AUTO);

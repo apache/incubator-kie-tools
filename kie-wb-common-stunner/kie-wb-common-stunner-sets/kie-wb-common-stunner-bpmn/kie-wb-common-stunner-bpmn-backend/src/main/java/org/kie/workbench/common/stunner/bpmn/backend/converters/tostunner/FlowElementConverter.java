@@ -18,14 +18,15 @@ package org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner;
 
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.eclipse.bpmn2.CallActivity;
-import org.eclipse.bpmn2.DataObject;
 import org.eclipse.bpmn2.DataObjectReference;
+import org.eclipse.bpmn2.DataStore;
 import org.eclipse.bpmn2.DataStoreReference;
 import org.eclipse.bpmn2.EndEvent;
 import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
 import org.eclipse.bpmn2.IntermediateThrowEvent;
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Task;
@@ -57,7 +58,8 @@ public class FlowElementConverter extends AbstractConverter {
                 .when(TextAnnotation.class, converterFactory.artifactsConverter()::convert)
                 .when(DataObjectReference.class, converterFactory.artifactsConverter()::convert)
                 .ignore(DataStoreReference.class)
-                .ignore(DataObject.class)
+                .ignore(DataStore.class)
+                .ignore(SequenceFlow.class, null)
                 .defaultValue(Result.ignored("FlowElement not found", getNotFoundMessage(flowElement)))
                 .inputDecorator(BPMNElementDecorators.flowElementDecorator())
                 .outputDecorator(BPMNElementDecorators.resultBpmnDecorator())

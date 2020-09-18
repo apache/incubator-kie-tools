@@ -26,6 +26,7 @@ import org.eclipse.bpmn2.FlowElement;
 import org.eclipse.bpmn2.Gateway;
 import org.eclipse.bpmn2.IntermediateCatchEvent;
 import org.eclipse.bpmn2.IntermediateThrowEvent;
+import org.eclipse.bpmn2.SequenceFlow;
 import org.eclipse.bpmn2.StartEvent;
 import org.eclipse.bpmn2.SubProcess;
 import org.eclipse.bpmn2.Task;
@@ -47,6 +48,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -155,9 +157,20 @@ public class FlowElementConverterTest {
     }
 
     @Test
+    public void convertIgnored() {
+        assertIgnored(SequenceFlow.class);
+    }
+
+    @Test
     public void convertUnsupported() {
         assertUnsupported(DataStoreReference.class);
         assertUnsupported(DataObject.class);
+    }
+
+    private <T extends FlowElement> void assertIgnored(Class<T> type) {
+        T element = mock(type);
+        Result<BpmnNode> result = tested.convertNode(element);
+        assertNull(result);
     }
 
     private <T extends FlowElement> void assertUnsupported(Class<T> type) {
