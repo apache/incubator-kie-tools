@@ -11,12 +11,14 @@
 
 **VS Code**: [plugin](https://donwnload.here/something)
 
-<pre>
-To retest a PR or trigger a specific build please add a comment:
+<details>
+<summary>
+How to retest this PR or trigger a specific build:
+</summary>
 
 * Retest PR: <b>jenkins retest this</b>
 * A full downstream build: <b>jenkins do fdb</b>
 * A compile downstream build: <b>jenkins do cdb</b>
 * A full production downstream build: <b>jenkins do product fdb</b>
 * An upstream build: <b>jenkins do upstream</b>
-</pre>
+</details>
