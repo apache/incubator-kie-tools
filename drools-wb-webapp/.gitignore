@@ -17,3 +17,13 @@
 
 # Repository wide ignore mac DS_Store files
 .DS_Store
+
+# Copied during build from kie-wb-common-dmn-webapp-kogito-marshaller
+/src/main/webapp/model/DC.js
+/src/main/webapp/model/DI.js
+/src/main/webapp/model/DMN12.js
+/src/main/webapp/model/DMNDI12.js
+/src/main/webapp/model/KIE.js
+/src/main/webapp/model/Jsonix-all.js
+/src/main/webapp/model/MainJs.js
+/src/main/webapp/model/FormatterJs.js

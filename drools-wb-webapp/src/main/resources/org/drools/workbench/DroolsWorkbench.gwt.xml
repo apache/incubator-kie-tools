@@ -92,7 +92,9 @@
   <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoClient"/>
 
   <!-- DMN Editor -->
+  <inherits name="org.kie.workbench.common.dmn.project.DMNProjectAPI"/>
   <inherits name="org.kie.workbench.common.dmn.project.DMNProjectClient"/>
+  <inherits name="org.kie.workbench.common.dmn.webapp.kogito.marshaller.DMNMarshaller"/>
 
   <!-- Uberfire Apps-->
   <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
