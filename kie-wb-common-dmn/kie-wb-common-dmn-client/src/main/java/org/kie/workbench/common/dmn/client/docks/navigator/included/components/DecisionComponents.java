@@ -30,13 +30,15 @@ import javax.inject.Inject;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
-import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.FileUtils;
 import org.uberfire.client.mvp.UberElemental;
 
@@ -47,8 +49,6 @@ public class DecisionComponents {
 
     private final View view;
 
-    private final DMNGraphUtils graphUtils;
-
     private final DMNIncludeModelsClient client;
 
     private final ManagedInstance<DecisionComponentsItem> itemManagedInstance;
@@ -57,17 +57,24 @@ public class DecisionComponents {
 
     private final List<DecisionComponentsItem> decisionComponentsItems = new ArrayList<>();
 
+    private final DMNDiagramsSession dmnDiagramsSession;
+
+    public DecisionComponents() {
+        this(null, null, null, null, null);
+        // CDI proxy
+    }
+
     @Inject
     public DecisionComponents(final View view,
-                              final DMNGraphUtils graphUtils,
                               final DMNIncludeModelsClient client,
                               final ManagedInstance<DecisionComponentsItem> itemManagedInstance,
-                              final DecisionComponentFilter filter) {
+                              final DecisionComponentFilter filter,
+                              final DMNDiagramsSession dmnDiagramsSession) {
         this.view = view;
-        this.graphUtils = graphUtils;
         this.client = client;
         this.itemManagedInstance = itemManagedInstance;
         this.filter = filter;
+        this.dmnDiagramsSession = dmnDiagramsSession;
     }
 
     @PostConstruct
@@ -79,23 +86,63 @@ public class DecisionComponents {
         return view;
     }
 
-    public void refresh(final Diagram diagram) {
+    public void refresh() {
 
         clearDecisionComponents();
         startLoading();
 
-        client.loadNodesFromImports(getDMNIncludedModels(diagram), getNodesConsumer());
+        client.loadNodesFromImports(getDMNIncludedModels(), getNodesConsumer());
+
+        loadDRDComponents();
+    }
+
+    void loadDRDComponents() {
+
+        final List<DecisionComponent> decisionComponents = new ArrayList<>();
+
+        dmnDiagramsSession.getModelDRGElements().forEach(drgElement -> {
+            decisionComponents.add(makeDecisionComponent(drgElement.getDiagramId(),
+                                                         drgElement));
+        });
+
+        createDecisionComponentItems(decisionComponents);
+
+        view.enableFilterInputs();
+        view.hideLoading();
+        view.setComponentsCounter(view.getComponentsCounter() + decisionComponents.size());
+    }
+
+    boolean definitionContainsDRGElement(final Node node) {
+        return (node.getContent() instanceof Definition)
+                && ((Definition) node.getContent()).getDefinition() instanceof DRGElement;
+    }
+
+    void createDecisionComponentItems(final List<DecisionComponent> decisionComponents) {
+        for (final DecisionComponent component : decisionComponents) {
+            createDecisionComponentItem(component);
+        }
+    }
+
+    void createDecisionComponentItem(final DecisionComponent component) {
+        final DecisionComponentsItem item = itemManagedInstance.get();
+
+        item.setDecisionComponent(component);
+
+        getDecisionComponentsItems().add(item);
+        view.addListItem(item.getView().getElement());
     }
 
     Consumer<List<DMNIncludedNode>> getNodesConsumer() {
         return nodes -> {
-            view.setComponentsCounter(nodes.size());
-            view.hideLoading();
-            if (!nodes.isEmpty()) {
-                nodes.forEach(this::addComponent);
-                view.enableFilterInputs();
-            } else {
-                view.showEmptyState();
+            if (!Objects.isNull(nodes)) {
+                view.setComponentsCounter(nodes.size());
+                view.hideLoading();
+                if (!nodes.isEmpty()) {
+                    nodes.forEach(this::addComponent);
+                    view.enableFilterInputs();
+                } else {
+                    view.showEmptyState();
+                }
             }
         };
     }
@@ -137,23 +184,20 @@ public class DecisionComponents {
     }
 
     void addComponent(final DMNIncludedNode node) {
-
-        final DecisionComponentsItem item = itemManagedInstance.get();
-
-        item.setDecisionComponent(makeDecisionComponent(node));
-
-        getDecisionComponentsItems().add(item);
-        view.addListItem(item.getView().getElement());
+        createDecisionComponentItem(makeDecisionComponent(node));
     }
 
-    private DecisionComponent makeDecisionComponent(final DMNIncludedNode node) {
-        return new DecisionComponent(node.getFileName(), node.getDrgElement());
+    DecisionComponent makeDecisionComponent(final DMNIncludedNode node) {
+        return new DecisionComponent(node.getFileName(), node.getDrgElement(), true);
     }
 
-    List<DMNIncludedModel> getDMNIncludedModels(final Diagram diagram) {
-        return graphUtils
-                .getDefinitions(diagram)
-                .getImport()
+    DecisionComponent makeDecisionComponent(final String id, final DRGElement drgElement) {
+        return new DecisionComponent(id, drgElement, false);
+    }
+
+    List<DMNIncludedModel> getDMNIncludedModels() {
+        return dmnDiagramsSession
+                .getModelImports()
                 .stream()
                 .filter(anImport -> Objects.equals(DMNImportTypes.DMN, determineImportType(anImport.getImportType())))
                 .map(this::asDMNIncludedModel)
@@ -198,5 +242,7 @@ public class DecisionComponents {
         void enableFilterInputs();
 
         void setComponentsCounter(final Integer count);
+
+        Integer getComponentsCounter();
     }
 }

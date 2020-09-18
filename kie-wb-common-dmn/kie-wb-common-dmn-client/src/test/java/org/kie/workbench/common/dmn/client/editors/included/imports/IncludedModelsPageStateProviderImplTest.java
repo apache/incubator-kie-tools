@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.api.property.dmn.Text;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -47,11 +48,18 @@ public class IncludedModelsPageStateProviderImplTest {
     @Mock
     private IncludedModelsFactory factory;
 
+    @Mock
+    private DMNDiagramsSession dmnDiagramsSession;
+
+    @Mock
+    private Diagram diagram;
+
     private IncludedModelsPageStateProviderImpl stateProvider;
 
     @Before
     public void setup() {
-        stateProvider = spy(new IncludedModelsPageStateProviderImpl(dmnGraphUtils, factory));
+        when(dmnDiagramsSession.getDRGDiagram()).thenReturn(diagram);
+        stateProvider = spy(new IncludedModelsPageStateProviderImpl(dmnGraphUtils, factory, dmnDiagramsSession));
     }
 
     @Test
@@ -71,11 +79,9 @@ public class IncludedModelsPageStateProviderImplTest {
     @Test
     public void testGetImportsWhenDiagramIsPresent() {
 
-        final Diagram diagram = mock(Diagram.class);
         final Definitions definitions = mock(Definitions.class);
         final List<Import> expectedImports = asList(mock(Import.class), mock(Import.class));
 
-        stateProvider.withDiagram(diagram);
         when(dmnGraphUtils.getDefinitions(diagram)).thenReturn(definitions);
         when(definitions.getImport()).thenReturn(expectedImports);
 
@@ -87,8 +93,7 @@ public class IncludedModelsPageStateProviderImplTest {
     @Test
     public void testGetImportsWhenDiagramIsNotPresent() {
 
-        stateProvider.withDiagram(null);
-
+        when(dmnDiagramsSession.getDRGDiagram()).thenReturn(null);
         final List<Import> actualImports = stateProvider.getImports();
         final List<Import> expectedImports = emptyList();
 
@@ -98,11 +103,9 @@ public class IncludedModelsPageStateProviderImplTest {
     @Test
     public void testGetCurrentDiagramNamespace() {
 
-        final Diagram diagram = mock(Diagram.class);
         final Definitions definitions = mock(Definitions.class);
         final String expectedNamespace = "://namespace";
 
-        stateProvider.withDiagram(diagram);
         when(dmnGraphUtils.getDefinitions(diagram)).thenReturn(definitions);
         when(definitions.getNamespace()).thenReturn(new Text(expectedNamespace));
 

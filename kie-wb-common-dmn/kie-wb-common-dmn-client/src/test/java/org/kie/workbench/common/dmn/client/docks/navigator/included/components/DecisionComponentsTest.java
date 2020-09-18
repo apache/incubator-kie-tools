@@ -17,6 +17,8 @@
 package org.kie.workbench.common.dmn.client.docks.navigator.included.components;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -26,28 +28,37 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagramElement;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.api.definition.model.ImportDMN;
 import org.kie.workbench.common.dmn.api.definition.model.ImportPMML;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedNode;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
-import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,9 +70,6 @@ public class DecisionComponentsTest {
     private DecisionComponents.View view;
 
     @Mock
-    private DMNGraphUtils graphUtils;
-
-    @Mock
     private DMNIncludeModelsClient client;
 
     @Mock
@@ -70,11 +78,18 @@ public class DecisionComponentsTest {
     @Mock
     private DecisionComponentFilter filter;
 
+    @Mock
+    private DMNDiagramsSession dmnDiagramsSession;
+
+    @Captor
+    private ArgumentCaptor<List<DecisionComponent>> decisionComponentListCaptor;
+
     private DecisionComponents decisionComponents;
 
     @Before
     public void setup() {
-        decisionComponents = spy(new DecisionComponents(view, graphUtils, client, itemManagedInstance, filter));
+
+        decisionComponents = spy(new DecisionComponents(view, client, itemManagedInstance, filter, dmnDiagramsSession));
     }
 
     @Test
@@ -91,34 +106,31 @@ public class DecisionComponentsTest {
     @Test
     public void testRefresh() {
 
-        final Diagram diagram = mock(Diagram.class);
         final List<DMNIncludedModel> includedModels = new ArrayList<>();
         final Consumer<List<DMNIncludedNode>> listConsumer = (list) -> {/* Nothing. */};
 
-        doReturn(includedModels).when(decisionComponents).getDMNIncludedModels(diagram);
+        doReturn(includedModels).when(decisionComponents).getDMNIncludedModels();
         doReturn(listConsumer).when(decisionComponents).getNodesConsumer();
 
-        decisionComponents.refresh(diagram);
+        decisionComponents.refresh();
 
         verify(decisionComponents).clearDecisionComponents();
         verify(decisionComponents).startLoading();
         verify(client).loadNodesFromImports(includedModels, listConsumer);
+        verify(decisionComponents).loadDRDComponents();
     }
 
     @Test
     public void testGetDMNIncludedModelsOnlyIncludesDMN() {
-        final Diagram diagram = mock(Diagram.class);
-        final Definitions definitions = new Definitions();
         final ImportDMN dmnImport = new ImportDMN();
         final ImportPMML pmmlImport = new ImportPMML();
         dmnImport.getName().setValue("dmn");
         dmnImport.setImportType(DMNImportTypes.DMN.getDefaultNamespace());
         pmmlImport.setImportType(DMNImportTypes.PMML.getDefaultNamespace());
-        definitions.getImport().addAll(asList(dmnImport, pmmlImport));
 
-        when(graphUtils.getDefinitions(diagram)).thenReturn(definitions);
+        when(dmnDiagramsSession.getModelImports()).thenReturn(asList(dmnImport, pmmlImport));
 
-        final List<DMNIncludedModel> includedModels = decisionComponents.getDMNIncludedModels(diagram);
+        final List<DMNIncludedModel> includedModels = decisionComponents.getDMNIncludedModels();
 
         assertThat(includedModels).hasSize(1);
         assertThat(includedModels.get(0).getModelName()).isEqualTo("dmn");
@@ -219,21 +231,13 @@ public class DecisionComponentsTest {
     public void testAddComponent() {
 
         final DMNIncludedNode node = mock(DMNIncludedNode.class);
-        final DecisionComponentsItem item = mock(DecisionComponentsItem.class);
-        final List<DecisionComponentsItem> decisionComponentsItems = spy(new ArrayList<>());
-        final DecisionComponentsItem.View decisionComponentsView = mock(DecisionComponentsItem.View.class);
-        final HTMLElement htmlElement = mock(HTMLElement.class);
-
-        when(decisionComponentsView.getElement()).thenReturn(htmlElement);
-        when(itemManagedInstance.get()).thenReturn(item);
-        when(item.getView()).thenReturn(decisionComponentsView);
-        doReturn(decisionComponentsItems).when(decisionComponents).getDecisionComponentsItems();
+        final DecisionComponent item = mock(DecisionComponent.class);
+        doReturn(item).when(decisionComponents).makeDecisionComponent(node);
+        doNothing().when(decisionComponents).createDecisionComponentItem(item);
 
         decisionComponents.addComponent(node);
 
-        verify(item).setDecisionComponent(any(DecisionComponent.class));
-        verify(decisionComponentsItems).add(item);
-        verify(view).addListItem(htmlElement);
+        verify(decisionComponents).createDecisionComponentItem(item);
     }
 
     @Test
@@ -256,5 +260,134 @@ public class DecisionComponentsTest {
         assertEquals(namespace, includedModel.getNamespace());
         assertEquals(type, includedModel.getImportType());
         assertEquals(file, includedModel.getPath());
+    }
+
+    @Test
+    public void testGetNodesConsumerWhenNodesAreNull() {
+
+        final Consumer<List<DMNIncludedNode>> consumer = decisionComponents.getNodesConsumer();
+
+        consumer.accept(null);
+
+        verify(view, never()).setComponentsCounter(anyInt());
+        verify(view, never()).hideLoading();
+        verify(view, never()).enableFilterInputs();
+        verify(view, never()).showEmptyState();
+    }
+
+    @Test
+    public void testGetNodesConsumerWhenNodesAreEmpty() {
+
+        final Consumer<List<DMNIncludedNode>> consumer = decisionComponents.getNodesConsumer();
+
+        consumer.accept(Collections.emptyList());
+
+        verify(view).setComponentsCounter(0);
+        verify(view).hideLoading();
+        verify(view, never()).enableFilterInputs();
+        verify(view).showEmptyState();
+    }
+
+    @Test
+    public void testGetNodesConsumer() {
+
+        final DMNIncludedNode includedNode1 = mock(DMNIncludedNode.class);
+        final DMNIncludedNode includedNode2 = mock(DMNIncludedNode.class);
+        final List<DMNIncludedNode> nodes = Arrays.asList(includedNode1, includedNode2);
+        final Consumer<List<DMNIncludedNode>> consumer = decisionComponents.getNodesConsumer();
+
+        doNothing().when(decisionComponents).addComponent(includedNode1);
+        doNothing().when(decisionComponents).addComponent(includedNode2);
+
+        consumer.accept(nodes);
+
+        verify(view).setComponentsCounter(2);
+        verify(view).hideLoading();
+        verify(view).enableFilterInputs();
+        verify(decisionComponents).addComponent(includedNode1);
+        verify(decisionComponents).addComponent(includedNode2);
+        verify(view, never()).showEmptyState();
+    }
+
+    @Test
+    public void testLoadDRDComponents() {
+
+        final int existingComponentsCounter = 3;
+        final Id diagramId = mock(Id.class);
+        final String id = "0000-1111-2222";
+        final DMNDiagramElement diagramElement = mock(DMNDiagramElement.class);
+        final DRGElement drg1Element = mock(DRGElement.class);
+        final DRGElement drg2Element = mock(DRGElement.class);
+        final DecisionComponent decisionComponent1 = mock(DecisionComponent.class);
+        final DecisionComponent decisionComponent2 = mock(DecisionComponent.class);
+
+        when(dmnDiagramsSession.getModelDRGElements()).thenReturn(Arrays.asList(drg1Element, drg2Element));
+        when(diagramId.getValue()).thenReturn(id);
+        when(diagramElement.getId()).thenReturn(diagramId);
+        when(drg1Element.getDiagramId()).thenReturn(id);
+        when(drg2Element.getDiagramId()).thenReturn(id);
+        doReturn(decisionComponent1).when(decisionComponents).makeDecisionComponent(id, drg1Element);
+        doReturn(decisionComponent2).when(decisionComponents).makeDecisionComponent(id, drg2Element);
+        when(view.getComponentsCounter()).thenReturn(existingComponentsCounter);
+        doNothing().when(decisionComponents).createDecisionComponentItems(any());
+
+        decisionComponents.loadDRDComponents();
+
+        verify(view).enableFilterInputs();
+        verify(view).hideLoading();
+        verify(view).setComponentsCounter(existingComponentsCounter + 2);
+        verify(decisionComponents).createDecisionComponentItems(decisionComponentListCaptor.capture());
+        verify(decisionComponents).makeDecisionComponent(id, drg1Element);
+        verify(decisionComponents).makeDecisionComponent(id, drg2Element);
+
+        final List<DecisionComponent> list = decisionComponentListCaptor.getValue();
+        assertTrue(list.contains(decisionComponent1));
+        assertTrue(list.contains(decisionComponent2));
+        assertEquals(2, list.size());
+    }
+
+    @Test
+    public void testDefinitionContainsDRGElementWhenContainsDRGElement() {
+
+        final Node node = mock(Node.class);
+        final Definition content = mock(Definition.class);
+        final DRGElement drgElement = mock(DRGElement.class);
+        when(node.getContent()).thenReturn(content);
+        when(content.getDefinition()).thenReturn(drgElement);
+
+        assertTrue(decisionComponents.definitionContainsDRGElement(node));
+    }
+
+    @Test
+    public void testDefinitionContainsDRGElementWhenDoesNotContainsDRGElement() {
+
+        final Node node = mock(Node.class);
+        final Definition content = mock(Definition.class);
+        final Object obj = mock(Object.class);
+        when(node.getContent()).thenReturn(content);
+        when(content.getDefinition()).thenReturn(obj);
+
+        assertFalse(decisionComponents.definitionContainsDRGElement(node));
+    }
+
+    @Test
+    public void testCreateDecisionComponentItem() {
+
+        final DecisionComponentsItem item = mock(DecisionComponentsItem.class);
+        final List<DecisionComponentsItem> decisionComponentsItems = spy(new ArrayList<>());
+        final DecisionComponentsItem.View decisionComponentsView = mock(DecisionComponentsItem.View.class);
+        final HTMLElement htmlElement = mock(HTMLElement.class);
+        final DecisionComponent component = mock(DecisionComponent.class);
+
+        when(decisionComponentsView.getElement()).thenReturn(htmlElement);
+        when(itemManagedInstance.get()).thenReturn(item);
+        when(item.getView()).thenReturn(decisionComponentsView);
+        doReturn(decisionComponentsItems).when(decisionComponents).getDecisionComponentsItems();
+
+        decisionComponents.createDecisionComponentItem(component);
+
+        verify(item).setDecisionComponent(any(DecisionComponent.class));
+        verify(decisionComponentsItems).add(item);
+        verify(view).addListItem(htmlElement);
     }
 }

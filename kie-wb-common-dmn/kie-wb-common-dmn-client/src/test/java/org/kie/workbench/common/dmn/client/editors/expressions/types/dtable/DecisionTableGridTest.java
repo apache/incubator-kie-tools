@@ -65,6 +65,7 @@ import org.kie.workbench.common.dmn.client.commands.general.DeleteHasValueComman
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetHasValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.GridFactoryCommandUtils;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
 import org.kie.workbench.common.dmn.client.editors.types.HasValueAndTypeRef;
@@ -212,6 +213,9 @@ public class DecisionTableGridTest {
     private DMNDiagramUtils dmnDiagramUtils;
 
     @Mock
+    private DMNDiagramsSession dmnDiagramsSession;
+
+    @Mock
     private SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     @Mock
@@ -352,7 +356,7 @@ public class DecisionTableGridTest {
                                                             hitPolicyEditor,
                                                             headerEditors,
                                                             new DecisionTableEditorDefinitionEnricher(sessionManager,
-                                                                                                      new DMNGraphUtils(sessionManager, dmnDiagramUtils),
+                                                                                                      new DMNGraphUtils(sessionManager, dmnDiagramUtils, dmnDiagramsSession),
                                                                                                       itemDefinitionUtils),
                                                             readOnlyProvider);
 

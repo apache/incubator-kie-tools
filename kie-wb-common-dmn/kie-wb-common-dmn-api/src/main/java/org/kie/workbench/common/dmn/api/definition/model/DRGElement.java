@@ -28,10 +28,12 @@ import org.kie.workbench.common.dmn.api.rules.NoInputNodesInImportedDecisionRule
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
+import org.kie.workbench.common.stunner.core.graph.content.HasContentDefinitionId;
 import org.kie.workbench.common.stunner.core.rule.annotation.RuleExtension;
 
 @RuleExtension(handler = NoInputNodesInImportedDecisionRule.class)
-public abstract class DRGElement extends NamedElement implements DynamicReadOnly {
+public abstract class DRGElement extends NamedElement implements DynamicReadOnly,
+                                                                 HasContentDefinitionId {
 
     private static final String[] READONLY_FIELDS = {
             "NameHolder",
@@ -43,6 +45,11 @@ public abstract class DRGElement extends NamedElement implements DynamicReadOnly
             "LocationURI"};
 
     protected boolean allowOnlyVisualChange;
+
+    /**
+     * Hold the {@link DMNDiagramElement} id for the {@link DRGElement} instance.
+     */
+    private String dmnDiagramId;
 
     @Property
     @FormField(afterElement = "description", type = DocumentationLinksFieldType.class)
@@ -83,6 +90,26 @@ public abstract class DRGElement extends NamedElement implements DynamicReadOnly
         }
 
         return ReadOnly.FALSE;
+    }
+
+    @Override
+    public String getContentDefinitionId() {
+        return getId().getValue();
+    }
+
+    @Override
+    public String getDiagramId() {
+        return dmnDiagramId;
+    }
+
+    @Override
+    public void setDiagramId(final String dmnDiagramId) {
+        this.dmnDiagramId = dmnDiagramId;
+    }
+
+    @Override
+    public void setContentDefinitionId(final String contentDefinitionId) {
+        setId(new Id(contentDefinitionId));
     }
 
     protected boolean isReadonlyField(final String fieldName) {

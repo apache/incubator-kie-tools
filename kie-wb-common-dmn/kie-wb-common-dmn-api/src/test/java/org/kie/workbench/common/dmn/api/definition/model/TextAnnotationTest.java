@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -26,6 +27,10 @@ import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly.ReadOnly.FALSE;
 import static org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly.ReadOnly.NOT_SET;
 import static org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly.ReadOnly.TRUE;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TextAnnotationTest {
@@ -38,7 +43,7 @@ public class TextAnnotationTest {
 
     @Before
     public void setup() {
-        textAnnotation = new TextAnnotation();
+        textAnnotation = spy(new TextAnnotation());
     }
 
     @Test
@@ -88,6 +93,20 @@ public class TextAnnotationTest {
 
         checkIfItIsNotReadOnly("Font");
         checkIfItIsNotReadOnly("Something");
+    }
+
+    @Test
+    public void testGetContentDefinitionId() {
+
+        final String contentDefinitionId = "the id";
+        final Id id = mock(Id.class);
+
+        doReturn(id).when(textAnnotation).getId();
+        when(id.getValue()).thenReturn(contentDefinitionId);
+
+        final String currentId = textAnnotation.getContentDefinitionId();
+
+        assertEquals(contentDefinitionId, currentId);
     }
 
     private void checkIfItIsNotReadOnly(final String property) {

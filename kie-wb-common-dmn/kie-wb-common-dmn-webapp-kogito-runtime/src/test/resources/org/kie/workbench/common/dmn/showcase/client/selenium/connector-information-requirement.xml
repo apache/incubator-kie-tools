@@ -22,11 +22,11 @@
     </dmn:informationRequirement>
   </dmn:decision>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id='_8D33D1CF-88AB-41FF-8AAF-81E3A3ADFC4D' name='DRG'>
       <di:extension>
         <kie:ComponentsWidthsExtension/>
       </di:extension>
-      <dmndi:DMNShape id='dmnshape-_425056D1-B0A9-46BB-BEC2-346931E341D1' dmnElementRef='_425056D1-B0A9-46BB-BEC2-346931E341D1' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_425056D1-B0A9-46BB-BEC2-346931E341D1' dmnElementRef='_425056D1-B0A9-46BB-BEC2-346931E341D1' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>
@@ -35,7 +35,7 @@
         <dc:Bounds x='285' y='207' width='100' height='50'/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNShape id='dmnshape-_49F22725-E7A5-409B-9180-ECA9A5F11199' dmnElementRef='_49F22725-E7A5-409B-9180-ECA9A5F11199' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_49F22725-E7A5-409B-9180-ECA9A5F11199' dmnElementRef='_49F22725-E7A5-409B-9180-ECA9A5F11199' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>
@@ -44,7 +44,7 @@
         <dc:Bounds x='465' y='207' width='100' height='50'/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNEdge id='dmnedge-_9BD6BA2F-70E0-47F7-8253-4451F88277FB' dmnElementRef='_9BD6BA2F-70E0-47F7-8253-4451F88277FB'>
+      <dmndi:DMNEdge id='dmnedge-drg-_9BD6BA2F-70E0-47F7-8253-4451F88277FB' dmnElementRef='_9BD6BA2F-70E0-47F7-8253-4451F88277FB'>
         <di:waypoint x='385' y='232'/>
         <di:waypoint x='465' y='232'/>
       </dmndi:DMNEdge>

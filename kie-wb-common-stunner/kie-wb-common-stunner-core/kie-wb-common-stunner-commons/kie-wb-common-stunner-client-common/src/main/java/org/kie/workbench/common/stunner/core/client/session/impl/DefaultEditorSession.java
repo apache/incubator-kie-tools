@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.session.impl;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
@@ -85,7 +86,12 @@ public class DefaultEditorSession
                 .onCanvasHandlerControlRegistered(this::onCanvasHandlerControlRegistered)
                 .onCanvasControlDestroyed(AbstractSession::onControlDestroyed)
                 .onCanvasHandlerControlDestroyed(AbstractSession::onControlDestroyed);
-        commandRegistry.setRegistryChangeListener(() -> registerChangedEvent.fire(new RegisterChangedEvent(session.getCanvasHandler())));
+        Optional.ofNullable(getCommandRegistry())
+                .ifPresent(registry -> registry.setRegistryChangeListener(() -> fireRegistryChangedEvent()));
+    }
+
+    protected void fireRegistryChangedEvent() {
+        registerChangedEvent.fire(new RegisterChangedEvent(session.getCanvasHandler()));
     }
 
     @Override

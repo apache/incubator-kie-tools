@@ -16,7 +16,7 @@
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id='_287A95E9-2497-4D01-93DA-5FD53B8DE981' name='DRG'>
       <di:extension>
         <kie:ComponentsWidthsExtension/>
       </di:extension>

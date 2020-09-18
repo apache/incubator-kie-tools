@@ -38,7 +38,7 @@ public class Binding extends DMNModelInstrumentedBase implements HasExpression,
 
     public Binding copy() {
         final Binding bindingCloned = new Binding();
-        bindingCloned.parameter = parameter.copy();
+        bindingCloned.parameter = Optional.ofNullable(parameter).map(InformationItem::copy).orElse(null);
         bindingCloned.expression = Optional.ofNullable(expression).map(Expression::copy).orElse(null);
         return bindingCloned;
     }

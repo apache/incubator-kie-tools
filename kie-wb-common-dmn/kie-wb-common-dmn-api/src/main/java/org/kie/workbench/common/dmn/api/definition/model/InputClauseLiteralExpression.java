@@ -115,10 +115,10 @@ public class InputClauseLiteralExpression extends DMNModelInstrumentedBase imple
 
     public InputClauseLiteralExpression copy() {
         final InputClauseLiteralExpression clonedInputClauseLiteralExpression = new InputClauseLiteralExpression();
-        clonedInputClauseLiteralExpression.description = description.copy();
-        clonedInputClauseLiteralExpression.typeRef = typeRef.copy();
-        clonedInputClauseLiteralExpression.typeRefHolder = typeRefHolder.copy();
-        clonedInputClauseLiteralExpression.text = text.copy();
+        clonedInputClauseLiteralExpression.description =  Optional.ofNullable(description).map(Description::copy).orElse(null);
+        clonedInputClauseLiteralExpression.typeRef =  Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
+        clonedInputClauseLiteralExpression.typeRefHolder =  Optional.ofNullable(typeRefHolder).map(QNameHolder::copy).orElse(null);
+        clonedInputClauseLiteralExpression.text =  Optional.ofNullable(text).map(Text::copy).orElse(null);
         clonedInputClauseLiteralExpression.importedValues = Optional.ofNullable(importedValues).map(ImportedValues::copy).orElse(null);
         return clonedInputClauseLiteralExpression;
     }

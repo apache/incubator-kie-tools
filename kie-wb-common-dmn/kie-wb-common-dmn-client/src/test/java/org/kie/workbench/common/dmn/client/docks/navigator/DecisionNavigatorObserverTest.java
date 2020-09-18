@@ -27,6 +27,7 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramSelected;
 import org.kie.workbench.common.dmn.client.docks.navigator.tree.DecisionNavigatorTreePresenter;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
@@ -36,18 +37,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEven
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasFocusedShapeEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -95,80 +90,50 @@ public class DecisionNavigatorObserverTest {
     @Test
     public void testOnCanvasClearWhenPresenterIsPresent() {
         observer.init(presenter);
-
         observer.onCanvasClear(new CanvasClearEvent(canvas));
-
-        verify(presenter).removeAllElements();
-        verify(presenter).refreshTreeView();
+        verify(presenter).refresh();
     }
 
     @Test
-    public void testOnCanvasClearWhenPresenterIsNotPresent() {
-        observer.onCanvasClear(new CanvasClearEvent(canvas));
-
-        verify(presenter, never()).removeAllElements();
-        verify(presenter, never()).refreshTreeView();
-    }
-
-    @Test
-    public void testOnCanvasElementAddedWhenPresenterIsPresent() {
+    public void testOnCanvasElementAdded() {
         observer.init(presenter);
-
         observer.onCanvasElementAdded(new CanvasElementAddedEvent(canvasHandler, element));
-
-        verify(presenter).addOrUpdateElement(element);
+        verify(presenter).refresh();
     }
 
     @Test
-    public void testOnCanvasElementAddedWhenPresenterIsNotPresent() {
-        observer.onCanvasElementAdded(new CanvasElementAddedEvent(canvasHandler, element));
-
-        verify(presenter, never()).addOrUpdateElement(any());
-    }
-
-    @Test
-    public void testOnCanvasElementUpdatedWhenPresenterIsPresent() {
+    public void testOnCanvasElementUpdated() {
         observer.init(presenter);
-
         observer.onCanvasElementUpdated(new CanvasElementUpdatedEvent(canvasHandler, element));
-
-        verify(presenter).addOrUpdateElement(element);
+        verify(presenter).refresh();
     }
 
     @Test
-    public void testOnCanvasElementUpdatedWhenPresenterIsNotPresent() {
-        observer.onCanvasElementUpdated(new CanvasElementUpdatedEvent(canvasHandler, element));
-
-        verify(presenter, never()).addOrUpdateElement(any());
-    }
-
-    @Test
-    public void testOnCanvasElementRemovedWhenPresenterIsPresent() {
+    public void testOnCanvasElementRemoved() {
         observer.init(presenter);
-
         observer.onCanvasElementRemoved(new CanvasElementRemovedEvent(canvasHandler, element));
-
-        verify(presenter).removeElement(element);
-    }
-
-    @Test
-    public void testOnCanvasElementRemovedWhenPresenterIsNotPresent() {
-        observer.onCanvasElementRemoved(new CanvasElementRemovedEvent(canvasHandler, element));
-
-        verify(presenter, never()).removeElement(any());
+        verify(presenter).refresh();
     }
 
     @Test
     public void testOnNestedElementSelected() {
-        final EditExpressionEvent event = makeEditExpressionEvent();
+        observer.init(presenter);
+        observer.onNestedElementSelected(new EditExpressionEvent(clientSession, uuid, hasExpression, Optional.of(hasName), false));
+        verify(presenter).refresh();
+    }
 
-        doNothing().when(observer).selectItem(any());
-        doNothing().when(observer).setActiveParent(any());
+    @Test
+    public void testOnNestedElementAdded() {
+        observer.init(presenter);
+        observer.onNestedElementAdded(new ExpressionEditorChanged(uuid));
+        verify(presenter).refresh();
+    }
 
-        observer.onNestedElementSelected(event);
-
-        verify(observer).selectItem(event);
-        verify(observer).setActiveParent(event);
+    @Test
+    public void testOnDMNDiagramSelected() {
+        observer.init(presenter);
+        observer.onDMNDiagramSelected(new DMNDiagramSelected(null));
+        verify(presenter).refresh();
     }
 
     @Test
@@ -183,7 +148,7 @@ public class DecisionNavigatorObserverTest {
         when(id.getValue()).thenReturn(uuid);
 
         observer.init(presenter);
-        observer.selectItem(event);
+        observer.selectItem(event.getHasExpression());
 
         verify(treePresenter).selectItem(uuid);
     }
@@ -196,7 +161,7 @@ public class DecisionNavigatorObserverTest {
         when(hasExpression.getExpression()).thenReturn(null);
 
         observer.init(presenter);
-        observer.selectItem(event);
+        observer.selectItem(event.getHasExpression());
 
         verify(treePresenter, never()).selectItem(anyString());
     }
@@ -210,39 +175,6 @@ public class DecisionNavigatorObserverTest {
         observer.setActiveParent(event);
 
         verify(treePresenter).setActiveParentUUID(uuid);
-    }
-
-    @Test
-    public void testOnNestedElementAdded() {
-
-        final String uuid1 = "123";
-        final String uuid2 = "456";
-        final String uuid3 = "789";
-        final DecisionNavigatorItem child1 = makeItem(uuid2);
-        final DecisionNavigatorItem child2 = makeItem(uuid3);
-        final DecisionNavigatorItem item = makeItem(uuid1, child1, child2);
-        final Graph graph = mock(Graph.class);
-        final Node node = mock(Node.class);
-
-        when(presenter.getGraph()).thenReturn(Optional.of(graph));
-        when(graph.getNode(uuid1)).thenReturn(node);
-        doReturn(Optional.of(item)).when(observer).getActiveParent();
-
-        observer.init(presenter);
-        observer.onNestedElementAdded(new ExpressionEditorChanged(""));
-
-        verify(presenter).updateElement(node);
-        verify(treePresenter).selectItem(uuid2);
-        verify(treePresenter).selectItem(uuid3);
-    }
-
-    @Test
-    public void testOnNestedElementLostFocus() {
-
-        observer.init(presenter);
-        observer.onNestedElementLostFocus(new CanvasFocusedShapeEvent(canvasHandler, uuid));
-
-        verify(treePresenter).deselectItem();
     }
 
     @Test
@@ -260,7 +192,7 @@ public class DecisionNavigatorObserverTest {
 
     private DecisionNavigatorItem makeItem(final String uuid,
                                            final DecisionNavigatorItem... items) {
-        final DecisionNavigatorItem item = new DecisionNavigatorItem(uuid);
+        final DecisionNavigatorItem item = new DecisionNavigatorItemBuilder().withUUID(uuid).build();
         item.getChildren().addAll(Arrays.asList(items));
         return item;
     }

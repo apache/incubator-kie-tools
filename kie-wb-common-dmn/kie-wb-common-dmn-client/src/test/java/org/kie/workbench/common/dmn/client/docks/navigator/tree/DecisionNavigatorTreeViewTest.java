@@ -21,11 +21,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLInputElement;
 import elemental2.dom.HTMLUListElement;
 import elemental2.dom.Node;
 import elemental2.dom.Text;
@@ -36,12 +40,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem;
+import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItemBuilder;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem.Type.CONTEXT;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -67,10 +70,22 @@ public class DecisionNavigatorTreeViewTest {
     private Elemental2DomUtil util;
 
     @Mock
-    private HTMLDivElement text;
+    private elemental2.dom.HTMLElement icon;
 
     @Mock
-    private elemental2.dom.HTMLElement icon;
+    private elemental2.dom.HTMLElement textContent;
+
+    @Mock
+    private HTMLInputElement inputText;
+
+    @Mock
+    private elemental2.dom.HTMLElement save;
+
+    @Mock
+    private elemental2.dom.HTMLElement edit;
+
+    @Mock
+    private elemental2.dom.HTMLElement remove;
 
     @Mock
     private HTMLUListElement subItems;
@@ -82,7 +97,7 @@ public class DecisionNavigatorTreeViewTest {
     @Before
     public void setup() {
         treeView = spy(new DecisionNavigatorTreeView(view, items, managedInstance, util));
-        treeItem = spy(new DecisionNavigatorTreeView.TreeItem(text, icon, subItems));
+        treeItem = spy(new DecisionNavigatorTreeView.TreeItem(textContent, inputText, icon, subItems, save, edit, remove));
     }
 
     @Test
@@ -115,58 +130,6 @@ public class DecisionNavigatorTreeViewTest {
     }
 
     @Test
-    public void testAddItemWhenElementExists() {
-
-        final String itemUUID = "itemUUID";
-        final String nextItemUUID = "nextItemUUID";
-        final String parentUUID = "parentUUID";
-        final DecisionNavigatorItem item = makeItem(itemUUID, parentUUID);
-        final DecisionNavigatorItem nextItem = makeItem(nextItemUUID, parentUUID);
-        final Element parentElement = mock(Element.class);
-        final Element parentChildrenElement = mock(Element.class);
-        final Element newChild = mock(Element.class);
-        final Element refChild = mock(Element.class);
-        final DOMTokenList domTokenList = mock(DOMTokenList.class);
-
-        parentElement.classList = domTokenList;
-
-        doReturn(parentElement).when(treeView).findTreeItemElement(parentUUID);
-        doReturn(parentChildrenElement).when(treeView).findTreeItemChildrenElement(parentUUID);
-        doReturn(newChild).when(treeView).makeTreeItemElement(item);
-        doReturn(refChild).when(treeView).findItem(nextItem);
-
-        treeView.addItem(item, nextItem);
-
-        verify(domTokenList).add("parent-node");
-        verify(parentChildrenElement).insertBefore(newChild, refChild);
-    }
-
-    @Test
-    public void testUpdate() {
-
-        final String itemUUID = "itemUUID";
-        final String nextItemUUID = "nextItemUUID";
-        final String parentUUID = "parentUUID";
-        final DecisionNavigatorItem item = makeItem(itemUUID, parentUUID);
-        final DecisionNavigatorItem nextItem = makeItem(nextItemUUID, parentUUID);
-        final Element parentElement = mock(Element.class);
-        final Element oldChild = mock(Element.class);
-        final Element newChild = mock(Element.class);
-        final Element refChild = mock(Element.class);
-
-        doReturn(parentElement).when(treeView).findTreeItemChildrenElement(parentUUID);
-        doReturn(oldChild).when(treeView).findItem(item);
-        doReturn(newChild).when(treeView).makeTreeItemElement(item);
-        doReturn(refChild).when(treeView).findItem(nextItem);
-
-        treeView.update(item, nextItem);
-
-        verify(parentElement).removeChild(oldChild);
-        verify(oldChild, never()).remove();
-        verify(parentElement).insertBefore(newChild, refChild);
-    }
-
-    @Test
     public void testMakeTree() {
 
         final DecisionNavigatorItem item = makeItem("uuid");
@@ -188,20 +151,6 @@ public class DecisionNavigatorTreeViewTest {
         treeView.findTreeItemTextElement("123");
 
         verify(treeView).itemsQuerySelector("[data-uuid=\"123\"] div");
-    }
-
-    @Test
-    public void testFindTreeItemChildrenElement() {
-        treeView.findTreeItemChildrenElement("123");
-
-        verify(treeView).itemsQuerySelector("[data-uuid=\"123\"] ul");
-    }
-
-    @Test
-    public void testFindTreeItemElement() {
-        treeView.findTreeItemElement("123");
-
-        verify(treeView).itemsQuerySelector("[data-uuid=\"123\"]");
     }
 
     @Test
@@ -233,70 +182,6 @@ public class DecisionNavigatorTreeViewTest {
         final Element actualHtmlElement = treeView.makeTreeItemElement(item);
 
         assertEquals(expectedHtmlElement, actualHtmlElement);
-    }
-
-    @Test
-    public void testFindItem() {
-
-        final String uuid = "uuid";
-        final DecisionNavigatorItem item = makeItem(uuid);
-        final Element expectedElement = mock(Element.class);
-
-        doReturn(expectedElement).when(treeView).findTreeItemElement(uuid);
-
-        final Element actualElement = treeView.findItem(item);
-
-        assertEquals(expectedElement, actualElement);
-    }
-
-    @Test
-    public void testHasItemWhenItemExists() {
-
-        final String uuid = "uuid";
-        final DecisionNavigatorItem item = makeItem(uuid);
-        final Element element = mock(Element.class);
-
-        doReturn(element).when(treeView).findItem(item);
-
-        assertTrue(treeView.hasItem(item));
-    }
-
-    @Test
-    public void testHasItemWhenItemDoesNotExist() {
-
-        final String uuid = "uuid";
-        final DecisionNavigatorItem item = makeItem(uuid);
-
-        assertFalse(treeView.hasItem(item));
-    }
-
-    @Test
-    public void testRemove() {
-
-        final DecisionNavigatorItem item = makeItem("uuid");
-        final Element element = mock(Element.class);
-        final Element parentElement = mock(Element.class);
-        element.parentNode = parentElement;
-
-        doReturn(element).when(treeView).findItem(item);
-
-        treeView.remove(item);
-
-        verify(parentElement).removeChild(element);
-        verify(element, never()).remove();
-    }
-
-    @Test
-    public void testRemoveItemWhenDoesNotHaveParent() {
-
-        final DecisionNavigatorItem item = makeItem("uuid");
-        final Element element = mock(Element.class);
-
-        doReturn(element).when(treeView).findItem(item);
-
-        treeView.remove(item);
-
-        verify(element, never()).remove();
     }
 
     @Test
@@ -351,16 +236,113 @@ public class DecisionNavigatorTreeViewTest {
     }
 
     @Test
-    public void testTreeItemOnTextClick() {
+    public void testTreeItemOnTextContentClick() {
 
-        final DecisionNavigatorItem item = mock(DecisionNavigatorItem.class);
         final ClickEvent event = mock(ClickEvent.class);
+        final DecisionNavigatorItem item = mock(DecisionNavigatorItem.class);
 
         doReturn(item).when(treeItem).getItem();
 
-        treeItem.onTextClick(event);
+        treeItem.onTextContentClick(event);
 
         verify(item).onClick();
+    }
+
+    @Test
+    public void testTreeItemOnInputTextKeyPressWhenKeyIsEnter() {
+
+        final KeyDownEvent event = mock(KeyDownEvent.class);
+        final NativeEvent nativeEvent = mock(NativeEvent.class);
+
+        doNothing().when(treeItem).save();
+        when(event.getNativeEvent()).thenReturn(nativeEvent);
+        when(nativeEvent.getKeyCode()).thenReturn(13);
+
+        treeItem.onInputTextKeyPress(event);
+
+        verify(treeItem).save();
+    }
+
+    @Test
+    public void testTreeItemOnInputTextKeyPressWhenKeyIsNotEnter() {
+
+        final KeyDownEvent event = mock(KeyDownEvent.class);
+        final NativeEvent nativeEvent = mock(NativeEvent.class);
+
+        when(event.getNativeEvent()).thenReturn(nativeEvent);
+        when(nativeEvent.getKeyCode()).thenReturn(99);
+
+        treeItem.onInputTextKeyPress(event);
+
+        verify(treeItem, never()).save();
+    }
+
+    @Test
+    public void testOnInputTextBlur() {
+        final BlurEvent event = mock(BlurEvent.class);
+        doNothing().when(treeItem).save();
+        treeItem.onInputTextBlur(event);
+        verify(treeItem).save();
+    }
+
+    @Test
+    public void testOnSaveClick() {
+        final ClickEvent event = mock(ClickEvent.class);
+        doNothing().when(treeItem).save();
+        treeItem.onSaveClick(event);
+        verify(treeItem).save();
+    }
+
+    @Test
+    public void testOnEditClick() {
+
+        final HTMLElement element = mock(HTMLElement.class);
+        final ClickEvent event = mock(ClickEvent.class);
+        final org.jboss.errai.common.client.dom.DOMTokenList tokenList = mock(org.jboss.errai.common.client.dom.DOMTokenList.class);
+
+        doReturn(element).when(treeItem).getElement();
+        when(element.getClassList()).thenReturn(tokenList);
+
+        treeItem.onEditClick(event);
+
+        verify(tokenList).add("editing");
+    }
+
+    @Test
+    public void testOnRemoveClick() {
+
+        final HTMLElement element = mock(HTMLElement.class);
+        final DecisionNavigatorItem item = mock(DecisionNavigatorItem.class);
+        final ClickEvent event = mock(ClickEvent.class);
+        final org.jboss.errai.common.client.dom.DOMTokenList tokenList = mock(org.jboss.errai.common.client.dom.DOMTokenList.class);
+
+        doReturn(element).when(treeItem).getElement();
+        doReturn(item).when(treeItem).getItem();
+        when(element.getClassList()).thenReturn(tokenList);
+
+        treeItem.onRemoveClick(event);
+
+        verify(item).onRemove();
+    }
+
+    @Test
+    public void testSave() {
+
+        final HTMLElement element = mock(HTMLElement.class);
+        final DecisionNavigatorItem item = mock(DecisionNavigatorItem.class);
+        final org.jboss.errai.common.client.dom.DOMTokenList tokenList = mock(org.jboss.errai.common.client.dom.DOMTokenList.class);
+
+        doNothing().when(treeItem).updateLabel();
+        doReturn(element).when(treeItem).getElement();
+        doReturn(item).when(treeItem).getItem();
+        when(element.getClassList()).thenReturn(tokenList);
+
+        treeItem.save();
+
+        verify(item).setLabel(inputText.value);
+        verify(tokenList).remove("editing");
+        verify(treeItem).updateLabel();
+        verify(item).onUpdate();
     }
 
     @Test
@@ -437,11 +419,13 @@ public class DecisionNavigatorTreeViewTest {
         doReturn(cssClass).when(treeItem).getCSSClass(item);
         when(element.getClassList()).thenReturn(classList);
         when(item.getChildren()).thenReturn(children);
+        when(item.isEditable()).thenReturn(true);
 
         treeItem.updateCSSClass();
 
         verify(classList).add(cssClass);
         verify(classList).add("parent-node");
+        verify(classList).add("editable");
     }
 
     @Test
@@ -456,11 +440,13 @@ public class DecisionNavigatorTreeViewTest {
         doReturn(element).when(treeItem).getElement();
         doReturn(cssClass).when(treeItem).getCSSClass(item);
         when(element.getClassList()).thenReturn(classList);
+        when(item.isEditable()).thenReturn(false);
 
         treeItem.updateCSSClass();
 
         verify(classList).add(cssClass);
         verify(classList, never()).add("parent-node");
+        verify(classList, never()).add("editable");
     }
 
     @Test
@@ -476,7 +462,8 @@ public class DecisionNavigatorTreeViewTest {
 
         treeItem.updateLabel();
 
-        verify(text).appendChild(textNode);
+        assertEquals(label, inputText.value);
+        verify(textContent).appendChild(textNode);
     }
 
     @Test
@@ -512,10 +499,10 @@ public class DecisionNavigatorTreeViewTest {
         final String uuid = "uuid";
         final String label = "label";
         final DecisionNavigatorItem.Type subItem = CONTEXT;
-        final Command onClick = () -> {
-        };
+        final Command onClick = () -> {/* Nothing. */};
         final String expectedCSSClass = "kie-context";
-        final String actualCSSClass = treeItem.getCSSClass(new DecisionNavigatorItem(uuid, label, subItem, onClick, null));
+        final DecisionNavigatorItem item = new DecisionNavigatorItemBuilder().withUUID(uuid).withLabel(label).withType(subItem).withOnClick(onClick).build();
+        final String actualCSSClass = treeItem.getCSSClass(item);
 
         assertEquals(expectedCSSClass, actualCSSClass);
     }
@@ -526,6 +513,6 @@ public class DecisionNavigatorTreeViewTest {
 
     private DecisionNavigatorItem makeItem(final String uuid,
                                            final String parentUUID) {
-        return new DecisionNavigatorItem(uuid, null, null, null, parentUUID);
+        return new DecisionNavigatorItemBuilder().withUUID(uuid).withParentUUID(parentUUID).build();
     }
 }

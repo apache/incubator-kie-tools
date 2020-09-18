@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CurrentRegistryChangedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -166,5 +167,13 @@ public class UndoSessionCommandTest extends BaseSessionCommandKeyboardTest {
                never()).execute();
         verify(commandRegistry,
                never()).clear();
+    }
+
+    @Test
+    public void testOnCurrentRegistryChanged() {
+        final CurrentRegistryChangedEvent event = mock(CurrentRegistryChangedEvent.class);
+        ((UndoSessionCommand)command).onCurrentRegistryChanged(event);
+
+        verify((UndoSessionCommand)command).checkState();
     }
 }

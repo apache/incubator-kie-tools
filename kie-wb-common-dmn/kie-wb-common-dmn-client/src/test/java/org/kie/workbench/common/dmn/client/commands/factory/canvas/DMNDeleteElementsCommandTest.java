@@ -22,11 +22,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.commands.factory.graph.DMNDeleteElementsGraphCommand;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,12 +39,14 @@ public class DMNDeleteElementsCommandTest {
     @Test
     public void testNewGraphCommand() {
 
+        final GraphsProvider selectedDiagramProvider = mock(GraphsProvider.class);
         final ArrayList<Element> elements = new ArrayList<>();
         final Element element = mock(Element.class);
         when(element.getUUID()).thenReturn("uuid");
         elements.add(element);
-        final DMNDeleteElementsCommand cmd = new DMNDeleteElementsCommand(elements);
+        final DMNDeleteElementsCommand cmd = new DMNDeleteElementsCommand(elements, selectedDiagramProvider);
         final Command<GraphCommandExecutionContext, RuleViolation> actual = cmd.newGraphCommand(null);
         assertTrue(actual instanceof DMNDeleteElementsGraphCommand);
+        assertEquals(cmd.getGraphsProvider(), ((DMNDeleteElementsGraphCommand) actual).getGraphsProvider());
     }
 }

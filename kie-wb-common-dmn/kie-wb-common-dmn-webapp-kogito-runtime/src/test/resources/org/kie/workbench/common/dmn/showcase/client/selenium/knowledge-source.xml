@@ -15,11 +15,11 @@
     <dmn:type/>
   </dmn:knowledgeSource>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id='_828210B5-92F6-4241-8236-66C0768D87ED' name='DRG'>
       <di:extension>
         <kie:ComponentsWidthsExtension/>
       </di:extension>
-      <dmndi:DMNShape id='dmnshape-_1A16186A-53A5-4E7C-8289-302DF0AC1D56' dmnElementRef='_1A16186A-53A5-4E7C-8289-302DF0AC1D56' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_1A16186A-53A5-4E7C-8289-302DF0AC1D56' dmnElementRef='_1A16186A-53A5-4E7C-8289-302DF0AC1D56' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>

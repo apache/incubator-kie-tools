@@ -154,7 +154,7 @@ public class DataTypePickerWidgetTest {
 
         when(typeSelector.getElement()).thenReturn(typeSelectorElement);
         when(option.getElement()).thenReturn(optionElement);
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
         when(dmnModel.getPrefixForNamespaceURI(anyString())).thenReturn(Optional.empty());
         when(manageContainer.getStyle()).thenReturn(manageContainerStyle);
 

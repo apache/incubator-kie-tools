@@ -20,9 +20,12 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -32,10 +35,14 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.AbstractChildrenTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.AbstractTreeTraverseCallback;
+import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
 
 import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getDockParent;
 import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getDockedNodes;
 import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.isDockedNode;
+import static org.kie.workbench.common.stunner.core.graph.util.NodeDefinitionHelper.getContentDefinitionId;
+import static org.kie.workbench.common.stunner.core.graph.util.NodeDefinitionHelper.getDiagramId;
 
 public class SafeDeleteNodeProcessor {
 
@@ -65,21 +72,36 @@ public class SafeDeleteNodeProcessor {
     private final Graph graph;
     private final ChildrenTraverseProcessor childrenTraverseProcessor;
     private final boolean keepChildren;
+    private final Optional<TreeWalkTraverseProcessor> treeWalkTraverseProcessor;
+    private final Optional<GraphsProvider> graphsProvider;
+
+    private String candidateDiagramId;
+    private String candidateContentDefinitionId;
 
     public SafeDeleteNodeProcessor(final ChildrenTraverseProcessor childrenTraverseProcessor,
                                    final Graph graph,
                                    final Node<Definition<?>, Edge> candidate) {
-        this(childrenTraverseProcessor, graph, candidate, false);
+        this(childrenTraverseProcessor, graph, candidate, false, null, null);
     }
 
     public SafeDeleteNodeProcessor(final ChildrenTraverseProcessor childrenTraverseProcessor,
                                    final Graph graph,
                                    final Node<Definition<?>, Edge> candidate,
-                                   final boolean keepChildren) {
+                                   final boolean keepChildren,
+                                   final TreeWalkTraverseProcessor treeWalkTraverseProcessor,
+                                   final GraphsProvider graphsProvider) {
         this.childrenTraverseProcessor = childrenTraverseProcessor;
         this.graph = graph;
         this.candidate = candidate;
         this.keepChildren = keepChildren;
+        this.treeWalkTraverseProcessor = Optional.ofNullable(treeWalkTraverseProcessor);
+        this.graphsProvider = Optional.ofNullable(graphsProvider);
+        init();
+    }
+
+    void init() {
+        this.candidateContentDefinitionId = getContentDefinitionId(candidate);
+        this.candidateDiagramId = getDiagramId(candidate);
     }
 
     @SuppressWarnings("unchecked")
@@ -95,10 +117,76 @@ public class SafeDeleteNodeProcessor {
         processNode(candidate,
                     callback,
                     true);
+
+        graphsProvider.ifPresent(selectedDiagram -> {
+            if (selectedDiagram.isGlobalGraphSelected()) {
+                deleteGlobalGraphNodes(callback, nodes);
+            }
+        });
     }
 
     Deque<Node<View, Edge>> createNodesDequeue() {
         return new ArrayDeque();
+    }
+
+    boolean isDuplicatedOnTheCurrentDiagram(final Node node,
+                                            final String nodeId,
+                                            final String diagramId) {
+        return !Objects.equals(candidate, node)
+                && Objects.equals(getCandidateDiagramId(), diagramId)
+                && Objects.equals(getCandidateContentDefinitionId(), nodeId);
+    }
+
+    public String getCandidateDiagramId() {
+        return candidateDiagramId;
+    }
+
+    public String getCandidateContentDefinitionId() {
+        return candidateContentDefinitionId;
+    }
+
+    protected void deleteGlobalGraphNodes(final Callback callback,
+                                          final Deque<Node<View, Edge>> nodes) {
+
+        treeWalkTraverseProcessor.ifPresent(treeWalk -> {
+            graphsProvider.get().getGraphs().stream().forEach(existingGraph -> {
+                treeWalk.traverse(existingGraph,
+                                  new AbstractTreeTraverseCallback<Graph, Node, Edge>() {
+                                      @Override
+                                      public boolean startNodeTraversal(final Node node) {
+                                          super.startNodeTraversal(node);
+                                          return processGlobalNodeForDeletion(node, nodes);
+                                      }
+
+                                      @Override
+                                      public boolean startEdgeTraversal(final Edge edge) {
+                                          super.startEdgeTraversal(edge);
+                                          return true;
+                                      }
+                                  });
+            });
+        });
+
+        nodes.descendingIterator().forEachRemaining(node -> processNode(node,
+                                                                        callback,
+                                                                        false));
+    }
+
+    boolean processGlobalNodeForDeletion(final Node node,
+                                         final Deque<Node<View, Edge>> nodes) {
+        final String nodeId = getContentDefinitionId(node);
+        final String diagramId = getDiagramId(node);
+
+        if (isDuplicatedOnTheCurrentDiagram(node, nodeId, diagramId)) {
+            nodes.clear();
+            return false;
+        }
+
+        if (Objects.equals(getCandidateContentDefinitionId(), nodeId)
+                && !Objects.equals(node, candidate)) {
+            nodes.add(node);
+        }
+        return true;
     }
 
     protected void deleteChildren(final Callback callback,

@@ -16,11 +16,11 @@
     <dmn:variable id='_CCCEBA75-272F-4EAE-9DDF-C1C923E62B1D' name='InputData-1'></dmn:variable>
   </dmn:inputData>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id='_2346842D-EB03-4CD7-8A25-4ACDAFEB41E4' name='DRG'>
       <di:extension>
         <kie:ComponentsWidthsExtension></kie:ComponentsWidthsExtension>
       </di:extension>
-      <dmndi:DMNShape id='dmnshape-_F60D7991-B11F-4760-87B7-4F105E52C611' dmnElementRef='_F60D7991-B11F-4760-87B7-4F105E52C611' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_F60D7991-B11F-4760-87B7-4F105E52C611' dmnElementRef='_F60D7991-B11F-4760-87B7-4F105E52C611' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'></dmndi:FillColor>
           <dmndi:StrokeColor red='0' green='0' blue='0'></dmndi:StrokeColor>

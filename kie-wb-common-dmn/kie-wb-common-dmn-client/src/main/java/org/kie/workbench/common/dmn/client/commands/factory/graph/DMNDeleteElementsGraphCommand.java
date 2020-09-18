@@ -20,24 +20,35 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 import org.kie.workbench.common.dmn.client.commands.factory.canvas.DMNSafeDeleteNodeCommand;
+import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.command.impl.DeleteElementsCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand;
 
-public class DMNDeleteElementsGraphCommand extends org.kie.workbench.common.stunner.core.graph.command.impl.DeleteElementsCommand {
+public class DMNDeleteElementsGraphCommand extends DeleteElementsCommand {
+
+    private GraphsProvider graphsProvider;
 
     public DMNDeleteElementsGraphCommand(final Supplier<Collection<Element>> elements,
-                                         final DeleteCallback callback) {
+                                         final DeleteCallback callback,
+                                         final GraphsProvider graphsProvider) {
         super(elements, callback);
+        this.graphsProvider = graphsProvider;
     }
 
     @Override
-    protected SafeDeleteNodeCommand createSafeDeleteNodeCommand(final Node<?, Edge> node,
-                                                                final SafeDeleteNodeCommand.Options options,
-                                                                final DeleteCallback callback) {
+    protected DMNSafeDeleteNodeCommand createSafeDeleteNodeCommand(final Node<?, Edge> node,
+                                                                   final SafeDeleteNodeCommand.Options options,
+                                                                   final DeleteCallback callback) {
         return new DMNSafeDeleteNodeCommand(node,
                                             callback.onDeleteNode(node, options),
-                                            options);
+                                            options,
+                                            getGraphsProvider());
+    }
+
+    public GraphsProvider getGraphsProvider() {
+        return graphsProvider;
     }
 }

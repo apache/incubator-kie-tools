@@ -24,7 +24,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -115,13 +114,7 @@ public class DMNDiagramsNavigatorScreen extends BaseDMNDiagramsNavigatorScreen i
     }
 
     private RemoteCallback<List<String>> getItems() {
-        return response -> {
-            GWT.log("PATHS:");
-            for (final String s : response) {
-                GWT.log(s);
-            }
-            vfsService.openFile("something.dmn", DMNClientModels.MODEL_WITH_IMPORTS);
-        };
+        return response -> vfsService.openFile("something.dmn", DMNClientModels.MODEL_WITH_IMPORTS);
     }
 
     @Override

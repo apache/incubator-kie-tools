@@ -42,7 +42,7 @@ public class DecisionComponentTest {
     @Before
     public void setup() {
         drgElement = new Decision();
-        component = new DecisionComponent(fileName, drgElement);
+        component = new DecisionComponent(fileName, drgElement, true);
 
         drgElement.setName(new Name(drgElementName));
     }

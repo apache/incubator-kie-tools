@@ -51,6 +51,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinition;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
+import static com.google.gwt.dom.client.Style.Display.BLOCK;
+import static com.google.gwt.dom.client.Style.Display.NONE;
 import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Error;
 import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Info;
 import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Warning;
@@ -67,6 +69,10 @@ public class SessionPresenterView extends Composite
     @Inject
     @DataField
     private Label loadingPanel;
+
+    @Inject
+    @DataField
+    private FlowPanel sessionHeaderContainer;
 
     @Inject
     @DataField
@@ -92,6 +98,9 @@ public class SessionPresenterView extends Composite
     private ScrollType scrollType = ScrollType.AUTO;
     private double paletteInitialTop;
     private double paletteInitialLeft;
+    private double headerInitialTop;
+    private double headerInitialLeft;
+    private double sessionHeaderHeight;
     private HandlerRegistration handlerRegistration;
     private final AtomicBoolean notifying = new AtomicBoolean(false);
 
@@ -121,15 +130,24 @@ public class SessionPresenterView extends Composite
         //getting initial palette position
         paletteInitialTop = palettePanel.getAbsoluteTop();
         paletteInitialLeft = palettePanel.getAbsoluteLeft();
+
+        //getting initial session header section position
+        headerInitialTop = sessionHeaderContainer.getAbsoluteTop();
+        headerInitialLeft = sessionHeaderContainer.getAbsoluteLeft();
     }
 
     @EventHandler("sessionContainer")
     protected void onScroll(@ForEvent("scroll") ScrollEvent e) {
-        // on the editor scroll recalculate palette position to be fixed on the screen
-        palettePanel.getElement().getStyle().setTop(paletteInitialTop + e.getRelativeElement().getScrollTop(),
+        // on the editor scroll recalculate palette and header positions to be fixed on the screen
+        palettePanel.getElement().getStyle().setTop(paletteInitialTop + e.getRelativeElement().getScrollTop() + sessionHeaderHeight,
                                                     Style.Unit.PX);
         palettePanel.getElement().getStyle().setLeft(paletteInitialLeft + e.getRelativeElement().getScrollLeft(),
                                                      Style.Unit.PX);
+
+        sessionHeaderContainer.getElement().getStyle().setTop(headerInitialTop + e.getRelativeElement().getScrollTop(),
+                                                              Style.Unit.PX);
+        sessionHeaderContainer.getElement().getStyle().setLeft(headerInitialLeft + e.getRelativeElement().getScrollLeft(),
+                                                               Style.Unit.PX);
 
         e.preventDefault();
     }
@@ -154,6 +172,9 @@ public class SessionPresenterView extends Composite
     }
 
     @Override
+    public IsWidget getSessionHeaderContainer() { return sessionHeaderContainer.getWidget(0); }
+
+    @Override
     public IsWidget getPaletteWidget() {
         return palettePanel.getWidget(0);
     }
@@ -167,6 +188,12 @@ public class SessionPresenterView extends Composite
     public SessionPresenterView setToolbarWidget(final IsWidget widget) {
         setWidgetForPanel(toolbarPanel,
                           widget);
+        return this;
+    }
+
+    @Override
+    public SessionPresenterView setSessionHeaderContainer(final IsWidget widget) {
+        setWidgetForPanel(sessionHeaderContainer, widget);
         return this;
     }
 
@@ -203,6 +230,20 @@ public class SessionPresenterView extends Composite
         showNotification(translate(SessionPresenterView_Error), message, IconType.EXCLAMATION_CIRCLE);
 
         return this;
+    }
+
+    @Override
+    public void showSessionHeaderContainer(final int sessionHeaderHeight) {
+        this.sessionHeaderHeight = sessionHeaderHeight;
+        sessionHeaderContainer.getElement().getStyle().setDisplay(BLOCK);
+        onResize();
+    }
+
+    @Override
+    public void hideSessionHeaderContainer() {
+        this.sessionHeaderHeight = 0;
+        sessionHeaderContainer.getElement().getStyle().setDisplay(NONE);
+        onResize();
     }
 
     @Override
@@ -257,10 +298,16 @@ public class SessionPresenterView extends Composite
 
     @Override
     public void onResize() {
-        palettePanel.getElement().getStyle().setTop(paletteInitialTop + sessionContainer.getElement().getScrollTop(),
+        palettePanel.getElement().getStyle().setTop(paletteInitialTop + sessionContainer.getElement().getScrollTop() + sessionHeaderHeight,
                                                     Style.Unit.PX);
         palettePanel.getElement().getStyle().setLeft(paletteInitialLeft + sessionContainer.getElement().getScrollLeft(),
                                                      Style.Unit.PX);
+
+        sessionHeaderContainer.getElement().getStyle().setTop(headerInitialTop + sessionContainer.getElement().getScrollTop(),
+                                                              Style.Unit.PX);
+        sessionHeaderContainer.getElement().getStyle().setLeft(headerInitialLeft + sessionContainer.getElement().getScrollLeft(),
+                                                               Style.Unit.PX);
+
         canvasPanel.onResize();
     }
 
@@ -280,6 +327,8 @@ public class SessionPresenterView extends Composite
         canvasPanel.removeFromParent();
         palettePanel.clear();
         palettePanel.removeFromParent();
+        sessionHeaderContainer.clear();
+        sessionHeaderContainer.removeFromParent();
         sessionContainer.clear();
         sessionContainer.removeFromParent();
         this.removeFromParent();

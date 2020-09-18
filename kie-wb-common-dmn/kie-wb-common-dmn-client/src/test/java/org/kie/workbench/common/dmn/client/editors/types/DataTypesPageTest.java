@@ -226,7 +226,7 @@ public class DataTypesPageTest {
     @Test
     public void testCurrentDMNModelNamespaceWhenDefinitionsIsNull() {
 
-        when(dmnGraphUtils.getDefinitions()).thenReturn(null);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(null);
 
         final String actual = page.currentDMNModelNamespace();
         final String expected = "";
@@ -240,7 +240,7 @@ public class DataTypesPageTest {
         final Definitions definitions = mock(Definitions.class);
 
         when(definitions.getNamespace()).thenReturn(null);
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
 
         final String actual = page.currentDMNModelNamespace();
         final String expected = "";
@@ -257,7 +257,7 @@ public class DataTypesPageTest {
 
         when(text.getValue()).thenReturn(expected);
         when(definitions.getNamespace()).thenReturn(text);
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
 
         final String actual = page.currentDMNModelNamespace();
 

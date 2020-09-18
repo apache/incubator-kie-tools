@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -30,6 +31,8 @@ import static org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly.Rea
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DRGElementTest {
@@ -52,6 +55,7 @@ public class DRGElementTest {
         doCallRealMethod().when(drgElement).setAllowOnlyVisualChange(anyBoolean());
         doCallRealMethod().when(drgElement).isAllowOnlyVisualChange();
         doCallRealMethod().when(drgElement).isReadonlyField(anyString());
+        doCallRealMethod().when(drgElement).getContentDefinitionId();
     }
 
     @Test
@@ -102,6 +106,20 @@ public class DRGElementTest {
 
         checkIfItIsNotReadOnly("Font");
         checkIfItIsNotReadOnly("Something");
+    }
+
+    @Test
+    public void testGetContentDefinitionId() {
+
+        final String contentDefinitionId = "the id";
+        final Id id = mock(Id.class);
+
+        when(drgElement.getId()).thenReturn(id);
+        when(id.getValue()).thenReturn(contentDefinitionId);
+
+        final String currentId = drgElement.getContentDefinitionId();
+
+        assertEquals(contentDefinitionId, currentId);
     }
 
     private void checkIfItIsNotReadOnly(final String property) {

@@ -37,9 +37,10 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
+import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
+import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
-import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
@@ -64,6 +65,7 @@ import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelp
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
@@ -128,11 +130,12 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
     private final OpenDiagramLayoutExecutor openDiagramLayoutExecutor;
     private final DataTypesPage dataTypesPage;
     private final IncludedModelsPage includedModelsPage;
-    private final IncludedModelsPageStateProviderImpl importsPageProvider;
     private final DMNEditorSearchIndex editorSearchIndex;
     private final SearchBarComponent<DMNSearchableElement> searchBarComponent;
     private final MonacoFEELInitializer feelInitializer;
     private final ReadOnlyProvider readOnlyProvider;
+    private final DRDNameChanger drdNameChanger;
+    private final LazyCanvasFocusUtils lazyCanvasFocusUtils;
 
     @Inject
     public DMNDiagramEditor(final View view,
@@ -149,7 +152,7 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final DMNEditorMenuSessionItems menuSessionItems,
                             final ProjectMessagesListener projectMessagesListener,
                             final ClientTranslationService translationService,
-                            final ClientProjectDiagramService projectDiagramServices,
+                            final @DMNEditor ClientProjectDiagramService projectDiagramServices,
                             final Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller,
                             final SessionManager sessionManager,
                             final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
@@ -159,11 +162,11 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
                             final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                             final DataTypesPage dataTypesPage,
                             final IncludedModelsPage includedModelsPage,
-                            final IncludedModelsPageStateProviderImpl importsPageProvider,
                             final DMNEditorSearchIndex editorSearchIndex,
                             final SearchBarComponent<DMNSearchableElement> searchBarComponent,
                             final MonacoFEELInitializer feelInitializer,
-                            final @DMNEditor ReadOnlyProvider readOnlyProvider) {
+                            final @DMNEditor ReadOnlyProvider readOnlyProvider,
+                            final DRDNameChanger drdNameChanger, final LazyCanvasFocusUtils lazyCanvasFocusUtils) {
         super(view,
               xmlEditorView,
               editorSessionPresenterInstances,
@@ -188,11 +191,12 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         this.openDiagramLayoutExecutor = openDiagramLayoutExecutor;
         this.dataTypesPage = dataTypesPage;
         this.includedModelsPage = includedModelsPage;
-        this.importsPageProvider = importsPageProvider;
         this.editorSearchIndex = editorSearchIndex;
         this.searchBarComponent = searchBarComponent;
         this.feelInitializer = feelInitializer;
         this.readOnlyProvider = readOnlyProvider;
+        this.drdNameChanger = drdNameChanger;
+        this.lazyCanvasFocusUtils = lazyCanvasFocusUtils;
     }
 
     @Override
@@ -202,6 +206,13 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         getMenuSessionItems().setErrorConsumer(e -> hideLoadingViews());
         editorSearchIndex.setCurrentAssetHashcodeSupplier(getGetCurrentContentHashSupplier());
         editorSearchIndex.setIsDataTypesTabActiveSupplier(getIsDataTypesTabActiveSupplier());
+    }
+
+    private void setupSessionHeaderContainer() {
+        Optional.ofNullable(getSessionPresenter()).ifPresent(s -> {
+            drdNameChanger.setSessionPresenterView(s.getView());
+            s.getView().setSessionHeaderContainer(getWidget(drdNameChanger.getElement()));
+        });
     }
 
     @Override
@@ -357,7 +368,18 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
         feelInitializer.initializeFEELEditor();
 
-        super.open(diagram, callback);
+        super.open(diagram, new Viewer.Callback() {
+            @Override
+            public void onSuccess() {
+                setupSessionHeaderContainer();
+                callback.onSuccess();
+            }
+
+            @Override
+            public void onError(ClientRuntimeError error) {
+                callback.onError(error);
+            }
+        });
     }
 
     @OnOpen
@@ -380,9 +402,10 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
         canvasHandler.ifPresent(c -> {
             final ExpressionEditorView.Presenter expressionEditor = ((DMNSession) sessionManager.getCurrentSession()).getExpressionEditor();
             expressionEditor.setToolbarStateHandler(new DMNProjectToolbarStateHandler(getMenuSessionItems()));
-            decisionNavigatorDock.setupCanvasHandler(c);
+            decisionNavigatorDock.reload();
             dataTypesPage.reload();
-            includedModelsPage.setup(importsPageProvider.withDiagram(c.getDiagram()));
+            includedModelsPage.reload();
+            lazyCanvasFocusUtils.releaseFocus();
         });
     }
 

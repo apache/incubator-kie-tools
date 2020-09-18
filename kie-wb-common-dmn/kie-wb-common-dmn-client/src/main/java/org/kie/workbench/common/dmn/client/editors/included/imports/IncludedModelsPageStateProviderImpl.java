@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.definition.model.Import;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsPageStateProvider;
@@ -42,17 +43,19 @@ public class IncludedModelsPageStateProviderImpl implements IncludedModelsPageSt
 
     private final IncludedModelsFactory factory;
 
-    private Diagram diagram;
+    private final DMNDiagramsSession dmnDiagramsSession;
 
     public IncludedModelsPageStateProviderImpl() {
-        this(null, null);
+        this(null, null, null);
     }
 
     @Inject
     public IncludedModelsPageStateProviderImpl(final DMNGraphUtils dmnGraphUtils,
-                                               final IncludedModelsFactory factory) {
+                                               final IncludedModelsFactory factory,
+                                               final DMNDiagramsSession dmnDiagramsSession) {
         this.dmnGraphUtils = dmnGraphUtils;
         this.factory = factory;
+        this.dmnDiagramsSession = dmnDiagramsSession;
     }
 
     @Override
@@ -65,11 +68,6 @@ public class IncludedModelsPageStateProviderImpl implements IncludedModelsPageSt
         return factory.makeIncludedModels(getImports());
     }
 
-    public IncludedModelsPageStateProvider withDiagram(final Diagram diagram) {
-        this.diagram = diagram;
-        return this;
-    }
-
     public List<Import> getImports() {
         return getDiagram()
                 .map(this::getImports)
@@ -77,7 +75,7 @@ public class IncludedModelsPageStateProviderImpl implements IncludedModelsPageSt
     }
 
     public Optional<Diagram> getDiagram() {
-        return Optional.ofNullable(diagram);
+        return Optional.ofNullable(dmnDiagramsSession.getDRGDiagram());
     }
 
     private List<Import> getImports(final Diagram diagram) {

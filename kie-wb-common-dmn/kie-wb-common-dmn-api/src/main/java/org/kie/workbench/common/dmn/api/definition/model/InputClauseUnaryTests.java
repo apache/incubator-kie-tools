@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -90,7 +91,7 @@ public class InputClauseUnaryTests extends DMNModelInstrumentedBase implements I
     public InputClauseUnaryTests copy() {
         return new InputClauseUnaryTests(
                 new Id(),
-                text.copy(),
+                Optional.ofNullable(text).map(Text::copy).orElse(null),
                 ConstraintType.fromString(constraintTypeProperty.getValue())
         );
     }

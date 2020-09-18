@@ -22,19 +22,29 @@ import org.kie.workbench.common.dmn.client.commands.factory.graph.DMNDeleteEleme
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DeleteElementsCommand;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class DMNDeleteElementsCommand extends DeleteElementsCommand {
 
-    public DMNDeleteElementsCommand(final Collection<Element> elements) {
+    private final GraphsProvider graphsProvider;
+
+    public DMNDeleteElementsCommand(final Collection<Element> elements,
+                                    final GraphsProvider graphsProvider) {
         super(elements);
+        this.graphsProvider = graphsProvider;
+    }
+
+    public GraphsProvider getGraphsProvider() {
+        return graphsProvider;
     }
 
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
         return new DMNDeleteElementsGraphCommand(() -> elements,
-                                                 new CanvasMultipleDeleteProcessor());
+                                                 new CanvasMultipleDeleteProcessor(),
+                                                 getGraphsProvider());
     }
 }

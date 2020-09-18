@@ -120,7 +120,7 @@ public class PMMLIncludedModelHandler implements DRGElementHandler {
 
     private List<Decision> getDecisions() {
         return dmnGraphUtils
-                .getDRGElements()
+                .getModelDRGElements()
                 .stream()
                 .filter(e -> e instanceof Decision)
                 .map(e -> (Decision) e)
@@ -129,7 +129,7 @@ public class PMMLIncludedModelHandler implements DRGElementHandler {
 
     private List<BusinessKnowledgeModel> getBusinessKnowledgeModels() {
         return dmnGraphUtils
-                .getDRGElements()
+                .getModelDRGElements()
                 .stream()
                 .filter(e -> e instanceof BusinessKnowledgeModel)
                 .map(e -> (BusinessKnowledgeModel) e)

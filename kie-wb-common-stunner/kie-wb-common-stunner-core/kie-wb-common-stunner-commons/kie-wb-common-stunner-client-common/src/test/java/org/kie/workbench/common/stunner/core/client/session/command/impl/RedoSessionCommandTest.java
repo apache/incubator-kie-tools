@@ -23,6 +23,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CurrentRegistryChangedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.RedoCommandHandler;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -36,6 +37,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
@@ -155,5 +157,13 @@ public class RedoSessionCommandTest extends BaseSessionCommandKeyboardTest {
                                                                           null);
         command.onCommandExecuted(event);
         verify(redoCommandHandler, times(0)).onCommandExecuted(event.getCommand());
+    }
+
+    @Test
+    public void testOnCurrentRegistryChanged() {
+        final CurrentRegistryChangedEvent event = mock(CurrentRegistryChangedEvent.class);
+        ((RedoSessionCommand)command).onCurrentRegistryChanged(event);
+
+        verify((RedoSessionCommand)command).checkState();
     }
 }

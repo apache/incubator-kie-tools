@@ -54,11 +54,14 @@ public class IncludedModelsPageTest {
     @Mock
     private IncludedModelsPageState pageState;
 
+    @Mock
+    private IncludedModelsPageStateProvider stateProvider;
+
     private IncludedModelsPage page;
 
     @Before
     public void setup() {
-        page = spy(new IncludedModelsPage(pageView, translationService, flashMessages, includedModelsPresenter, pageState) {
+        page = spy(new IncludedModelsPage(pageView, translationService, flashMessages, includedModelsPresenter, pageState, stateProvider) {
             protected void setupPageCSSClass(final String cssClass) {
                 // Do nothing.
             }
@@ -98,9 +101,7 @@ public class IncludedModelsPageTest {
     @Test
     public void testSetup() {
 
-        final IncludedModelsPageStateProvider stateProvider = mock(IncludedModelsPageStateProvider.class);
-
-        page.setup(stateProvider);
+        page.reload();
 
         verify(pageState).init(stateProvider);
         verify(includedModelsPresenter).refresh();

@@ -35,9 +35,10 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
+import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
+import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
-import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
@@ -60,8 +61,10 @@ import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelp
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
 import org.kie.workbench.common.stunner.core.client.error.DiagramClientErrorHandler;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
+import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationPage;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEditorMenuSessionItems;
@@ -156,9 +159,6 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     private IncludedModelsPage includedModelsPage;
 
     @Mock
-    private IncludedModelsPageStateProviderImpl importsPageProvider;
-
-    @Mock
     private MultiPageEditor multiPage;
 
     private DMNDiagramEditor diagramEditor;
@@ -187,6 +187,18 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Mock
     private ReadOnlyProvider readOnlyProvider;
 
+    @Mock
+    private HTMLElement drdNameChangerElement;
+
+    @Mock
+    private DRDNameChanger drdNameChanger;
+
+    @Mock
+    private LazyCanvasFocusUtils lazyCanvasFocusUtils;
+
+    @Mock
+    private ElementWrapperWidget drdNameWidget;
+
     @Captor
     private ArgumentCaptor<Consumer<String>> errorConsumerCaptor;
 
@@ -205,6 +217,8 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(searchBarComponent.getView()).thenReturn(searchBarComponentView);
         when(searchBarComponentView.getElement()).thenReturn(searchBarComponentViewElement);
+        when(drdNameChanger.getElement()).thenReturn(drdNameChangerElement);
+        doReturn(drdNameWidget).when(diagramEditor).getWidget(drdNameChangerElement);
     }
 
     @Override
@@ -242,11 +256,12 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                  layoutExecutor,
                                                  dataTypesPage,
                                                  includedModelsPage,
-                                                 importsPageProvider,
                                                  editorSearchIndex,
                                                  searchBarComponent,
                                                  feelInitializer,
-                                                 readOnlyProvider) {
+                                                 readOnlyProvider,
+                                                 drdNameChanger,
+                                                 lazyCanvasFocusUtils) {
             {
                 docks = DMNDiagramEditorTest.this.docks;
                 fileMenuBuilder = DMNDiagramEditorTest.this.fileMenuBuilder;
@@ -293,6 +308,11 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
             @Override
             ElementWrapperWidget<?> getWidget(final HTMLElement element) {
                 return searchBarComponentWidget;
+            }
+
+            @Override
+            public SessionPresenter<? extends ClientSession, ?, Diagram> getSessionPresenter() {
+                return sessionViewerPresenter;
             }
         });
 
@@ -384,17 +404,15 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         when(sessionManager.getCurrentSession()).thenReturn(dmnEditorSession);
         when(dmnEditorSession.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
-        when(importsPageProvider.withDiagram(diagram)).thenReturn(importsPageProvider);
 
         open();
 
-        final InOrder inOrder = inOrder(decisionNavigatorDock);
-        inOrder.verify(decisionNavigatorDock).setupCanvasHandler(eq(canvasHandler));
-
+        verify(decisionNavigatorDock).reload();
         verify(expressionEditor).setToolbarStateHandler(any(DMNProjectToolbarStateHandler.class));
         verify(dataTypesPage).reload();
         verify(layoutHelper).applyLayout(diagram, layoutExecutor);
-        verify(includedModelsPage).setup(importsPageProvider);
+        verify(includedModelsPage).reload();
+        verify(lazyCanvasFocusUtils).releaseFocus();
     }
 
     @Test
@@ -403,10 +421,11 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         diagramEditor.onDiagramLoad();
 
         verify(expressionEditor, never()).setToolbarStateHandler(any(DMNProjectToolbarStateHandler.class));
-        verify(decisionNavigatorDock, never()).setupCanvasHandler(any());
+        verify(decisionNavigatorDock, never()).reload();
         verify(decisionNavigatorDock, never()).open();
         verify(dataTypesPage, never()).reload();
-        verify(includedModelsPage, never()).setup(any());
+        verify(includedModelsPage, never()).reload();
+        verify(lazyCanvasFocusUtils, never()).releaseFocus();
     }
 
     @Test
@@ -528,6 +547,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         doReturn(sessionPresenter).when(diagramEditor).getSessionPresenter();
         when(sessionPresenter.getInstance()).thenReturn(dmnEditorSession);
+        when(sessionPresenter.getView()).thenReturn(sessionPresenterView);
         when(sessionManager.getCurrentSession()).thenReturn(dmnEditorSession);
 
         open();
@@ -544,6 +564,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         doReturn(sessionPresenter).when(diagramEditor).getSessionPresenter();
         when(sessionPresenter.getInstance()).thenReturn(dmnEditorSession);
+        when(sessionPresenter.getView()).thenReturn(sessionPresenterView);
         when(sessionManager.getCurrentSession()).thenReturn(defaultEditorSession);
         when(defaultEditorSession.getExpressionEditor()).thenReturn(expressionEditor);
 

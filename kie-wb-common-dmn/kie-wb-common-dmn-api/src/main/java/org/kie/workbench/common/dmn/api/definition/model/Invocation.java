@@ -62,8 +62,8 @@ public class Invocation extends Expression implements HasExpression {
     @Override
     public Invocation copy() {
         final Invocation clonedInvocation = new Invocation();
-        clonedInvocation.description = description.copy();
-        clonedInvocation.typeRef = typeRef.copy();
+        clonedInvocation.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        clonedInvocation.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
         clonedInvocation.componentWidths = new ArrayList<>(componentWidths);
         clonedInvocation.expression = Optional.ofNullable(expression).map(Expression::copy).orElse(null);
         clonedInvocation.binding = binding.stream().map(Binding::copy).collect(Collectors.toList());

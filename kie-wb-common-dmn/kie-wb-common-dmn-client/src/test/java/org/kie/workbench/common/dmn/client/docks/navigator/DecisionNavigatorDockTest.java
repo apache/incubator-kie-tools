@@ -22,7 +22,6 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
@@ -81,12 +80,8 @@ public class DecisionNavigatorDockTest {
 
     @Test
     public void testSetupCanvasHandler() {
-
-        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
-
-        dock.setupCanvasHandler(canvasHandler);
-
-        verify(decisionNavigatorPresenter).setHandler(canvasHandler);
+        dock.reload();
+        verify(decisionNavigatorPresenter).refresh();
     }
 
     @Test

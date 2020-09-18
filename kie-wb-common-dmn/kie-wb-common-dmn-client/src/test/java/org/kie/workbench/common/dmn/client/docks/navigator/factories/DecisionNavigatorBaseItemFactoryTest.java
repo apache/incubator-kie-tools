@@ -27,15 +27,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagramElement;
+import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem;
-import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
+import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItemBuilder;
+import org.kie.workbench.common.dmn.client.docks.navigator.common.CanvasFocusUtils;
+import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramSelected;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasFocusedShapeEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -43,21 +46,27 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.HasContentDefinitionId;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.Optional.empty;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem.Type.ITEM;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionNavigatorBaseItemFactory_NoName;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -69,16 +78,10 @@ public class DecisionNavigatorBaseItemFactoryTest {
     private DecisionNavigatorNestedItemFactory nestedItemFactory;
 
     @Mock
-    private DecisionNavigatorPresenter decisionNavigatorPresenter;
-
-    @Mock
     private TextPropertyProviderFactory textPropertyProviderFactory;
 
     @Mock
-    private EventSourceMock<CanvasFocusedShapeEvent> canvasFocusedSelectionEvent;
-
-    @Mock
-    private EventSourceMock<CanvasSelectionEvent> canvasSelectionEvent;
+    private CanvasFocusUtils canvasFocusUtils;
 
     @Mock
     private DefinitionUtils definitionUtils;
@@ -104,20 +107,31 @@ public class DecisionNavigatorBaseItemFactoryTest {
     @Mock
     private DefinitionAdapter<Object> objectDefinitionAdapter;
 
+    @Mock
+    private DMNDiagramsSession dmnDiagramsSession;
+
+    @Mock
+    private LazyCanvasFocusUtils lazyCanvasFocusUtils;
+
+    @Mock
+    private EventSourceMock<DMNDiagramSelected> selectedEvent;
+
+    @Captor
+    private ArgumentCaptor<DMNDiagramSelected> diagramSelectedArgumentCaptor;
+
     private DecisionNavigatorBaseItemFactory factory;
 
     @Before
     public void setup() {
         factory = spy(new DecisionNavigatorBaseItemFactory(nestedItemFactory,
-                                                           decisionNavigatorPresenter,
                                                            textPropertyProviderFactory,
-                                                           canvasFocusedSelectionEvent,
-                                                           canvasSelectionEvent,
+                                                           canvasFocusUtils,
                                                            definitionUtils,
-                                                           translationService));
+                                                           translationService,
+                                                           dmnDiagramsSession,
+                                                           lazyCanvasFocusUtils,
+                                                           selectedEvent));
 
-        when(decisionNavigatorPresenter.getHandler()).thenReturn(canvasHandler);
-        when(decisionNavigatorPresenter.getDiagram()).thenReturn(diagram);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getGraph()).thenReturn(graph);
     }
@@ -134,14 +148,13 @@ public class DecisionNavigatorBaseItemFactoryTest {
         final Node<Definition, Edge> diagramNode = mock(Node.class);
         final Definition diagramDefinition = mock(Definition.class);
         final DMNDiagram diagram = mock(DMNDiagram.class);
-        final DecisionNavigatorItem child = new DecisionNavigatorItem(childUUID);
+        final DecisionNavigatorItem child = new DecisionNavigatorItemBuilder().withUUID(childUUID).build();
         final List<DecisionNavigatorItem> nestedItems = singletonList(child);
 
         when(node.getUUID()).thenReturn(itemUUID);
         doReturn(label).when(factory).getLabel(node);
         doReturn(onClick).when(factory).makeOnClickCommand(node);
         doReturn(nestedItems).when(factory).makeNestedItems(node);
-        when(decisionNavigatorPresenter.getGraph()).thenReturn(Optional.of(graph));
 
         when(graph.nodes()).thenReturn(Collections.singletonList(diagramNode));
         when(diagramNode.getContent()).thenReturn(diagramDefinition);
@@ -152,62 +165,61 @@ public class DecisionNavigatorBaseItemFactoryTest {
 
         assertEquals(itemUUID, item.getUUID());
         assertEquals(label, item.getLabel());
-        assertEquals(onClick, item.getOnClick());
-        assertEquals(graphUUID, item.getParentUUID());
+        assertTrue(item.getOnClick().isPresent());
+        assertEquals(onClick, item.getOnClick().get());
         assertEquals(asTreeSet(child), item.getChildren());
+        assertEquals(itemUUID, child.getParentUUID());
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void testDiagramUUIDWhenGraphIsPresent() {
+    public void testMakeOnClickCommandWhenNodeBelongsToCurrentDiagram() {
 
-        final String expectedUUID = "graphUUID";
-        final Node<Definition, Edge> diagramNode = mock(Node.class);
-        final Definition diagramDefinition = mock(Definition.class);
-        final DMNDiagram diagram = mock(DMNDiagram.class);
+        final String nodeUUID = "nodeUUID";
+        final String nodeDiagramUUID = "diagramUUID";
+        final String diagramUUID = "diagramUUID";
+        final View content = mock(View.class);
+        final HasContentDefinitionId hasContentDefinitionId = mock(HasContentDefinitionId.class);
+        final DMNDiagramElement dmnDiagramElement = mock(DMNDiagramElement.class);
 
-        when(decisionNavigatorPresenter.getGraph()).thenReturn(Optional.of(graph));
-        when(graph.nodes()).thenReturn(Collections.singletonList(diagramNode));
-        when(diagramNode.getContent()).thenReturn(diagramDefinition);
-        when(diagramDefinition.getDefinition()).thenReturn(diagram);
-        when(diagramNode.getUUID()).thenReturn(expectedUUID);
-
-        final String actualUUID = factory.diagramUUID();
-
-        assertEquals(expectedUUID, actualUUID);
-    }
-
-    @Test
-    public void testDiagramUUIDWhenGraphIsNotPresent() {
-
-        when(decisionNavigatorPresenter.getGraph()).thenReturn(empty());
-
-        final String actualUUID = factory.diagramUUID();
-        final String expectedUUID = "";
-
-        assertEquals(expectedUUID, actualUUID);
-    }
-
-    @Test
-    public void testMakeOnClickCommand() {
-
-        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
-        final Canvas canvas = mock(Canvas.class);
-        final String uuid = "uuid";
-        final CanvasSelectionEvent canvasSelection = new CanvasSelectionEvent(canvasHandler, uuid);
-        final CanvasFocusedShapeEvent canvasFocusedShape = new CanvasFocusedShapeEvent(canvasHandler, uuid);
-
-        when(node.getUUID()).thenReturn(uuid);
-        when(decisionNavigatorPresenter.getHandler()).thenReturn(canvasHandler);
-        doReturn(canvasSelection).when(factory).makeCanvasSelectionEvent(canvasHandler, uuid);
-        doReturn(canvasFocusedShape).when(factory).makeCanvasFocusedShapeEvent(canvasHandler, uuid);
-        doReturn(canvas).when(canvasHandler).getCanvas();
+        when(node.getUUID()).thenReturn(nodeUUID);
+        when(node.getContent()).thenReturn(content);
+        when(content.getDefinition()).thenReturn(hasContentDefinitionId);
+        when(hasContentDefinitionId.getDiagramId()).thenReturn(nodeDiagramUUID);
+        when(dmnDiagramsSession.getCurrentDMNDiagramElement()).thenReturn(Optional.of(dmnDiagramElement));
+        when(dmnDiagramElement.getId()).thenReturn(new Id(diagramUUID));
 
         factory.makeOnClickCommand(node).execute();
 
-        verify(canvasSelectionEvent).fire(canvasSelection);
-        verify(canvasFocusedSelectionEvent).fire(canvasFocusedShape);
-        verify(canvas).focus();
+        verify(canvasFocusUtils).focus(nodeUUID);
+        verify(lazyCanvasFocusUtils, never()).lazyFocus(anyString());
+        verify(selectedEvent, never()).fire(any());
+    }
+
+    @Test
+    public void testMakeOnClickCommandWhenNodeDoesNotBelongToCurrentDiagram() {
+
+        final String nodeUUID = "nodeUUID";
+        final String nodeDiagramUUID = "otherDiagramUUID";
+        final String diagramUUID = "diagramUUID";
+        final View content = mock(View.class);
+        final HasContentDefinitionId hasContentDefinitionId = mock(HasContentDefinitionId.class);
+        final DMNDiagramElement dmnDiagramElement = mock(DMNDiagramElement.class);
+        final DMNDiagramElement otherDiagramElement = mock(DMNDiagramElement.class);
+
+        when(node.getUUID()).thenReturn(nodeUUID);
+        when(node.getContent()).thenReturn(content);
+        when(content.getDefinition()).thenReturn(hasContentDefinitionId);
+        when(hasContentDefinitionId.getDiagramId()).thenReturn(nodeDiagramUUID);
+        when(dmnDiagramsSession.getCurrentDMNDiagramElement()).thenReturn(Optional.of(dmnDiagramElement));
+        when(dmnDiagramsSession.getDMNDiagramElement(nodeDiagramUUID)).thenReturn(otherDiagramElement);
+        when(dmnDiagramElement.getId()).thenReturn(new Id(diagramUUID));
+
+        factory.makeOnClickCommand(node).execute();
+
+        verify(canvasFocusUtils, never()).focus(anyString());
+        verify(lazyCanvasFocusUtils).lazyFocus(nodeUUID);
+        verify(selectedEvent).fire(diagramSelectedArgumentCaptor.capture());
+        assertEquals(otherDiagramElement, diagramSelectedArgumentCaptor.getValue().getDiagramElement());
     }
 
     @Test

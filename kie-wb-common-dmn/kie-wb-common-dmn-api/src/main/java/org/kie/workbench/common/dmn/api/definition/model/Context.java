@@ -53,8 +53,8 @@ public class Context extends Expression {
     @Override
     public Context copy() {
         final Context clonedContext = new Context();
-        clonedContext.description = description.copy();
-        clonedContext.typeRef = typeRef.copy();
+        clonedContext.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        clonedContext.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
         clonedContext.componentWidths = new ArrayList<>(componentWidths);
         clonedContext.contextEntry = Optional.ofNullable(contextEntry)
                 .map(contextEntryList -> contextEntryList.stream().map(ContextEntry::copy).collect(Collectors.toList()))

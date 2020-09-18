@@ -153,7 +153,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
         final QName typeRef = !Objects.isNull(hasTypeRef) ? hasTypeRef.getTypeRef() : BuiltInType.UNDEFINED.asQName();
         final String name = DecisionTableDefaultValueUtilities.getNewOutputClauseName(dTable);
 
-        final List<ClauseRequirement> outputClausesRequirement = generateOutputClauseRequirements(dmnGraphUtils.getDefinitions(), typeRef, name);
+        final List<ClauseRequirement> outputClausesRequirement = generateOutputClauseRequirements(dmnGraphUtils.getModelDefinitions(), typeRef, name);
 
         if (outputClausesRequirement.isEmpty()) {
             dTable.getOutput().add(
@@ -214,7 +214,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
 
     private boolean typeRefDoesNotMatchAnyDefinition(final QName typeRef) {
         return !isBuiltInType(typeRef.getLocalPart()) &&
-                dmnGraphUtils.getDefinitions().getItemDefinition()
+                dmnGraphUtils.getModelDefinitions().getItemDefinition()
                         .stream()
                         .noneMatch(typeRefIsCustom(typeRef));
     }
@@ -269,7 +269,7 @@ public class DecisionTableEditorDefinitionEnricher implements ExpressionEditorMo
         }
 
         //Extract individual components of InputData TypeRefs
-        final Definitions definitions = dmnGraphUtils.getDefinitions();
+        final Definitions definitions = dmnGraphUtils.getModelDefinitions();
         final List<ClauseRequirement> inputClauseRequirements = new ArrayList<>();
         decisionSet.forEach(decision -> addInputClauseRequirement(decision.getVariable().getTypeRef(),
                                                                   definitions,

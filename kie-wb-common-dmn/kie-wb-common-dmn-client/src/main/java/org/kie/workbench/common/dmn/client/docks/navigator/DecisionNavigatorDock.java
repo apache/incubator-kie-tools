@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.kogito.api.docks.DiagramEditorDock;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
@@ -71,8 +70,8 @@ public class DecisionNavigatorDock implements DiagramEditorDock {
         uberfireDocks.remove(getUberfireDock());
     }
 
-    public void setupCanvasHandler(final CanvasHandler handler) {
-        decisionNavigatorPresenter.setHandler(handler);
+    public void reload() {
+        decisionNavigatorPresenter.refresh();
     }
 
     public void resetContent() {

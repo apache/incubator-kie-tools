@@ -23,6 +23,7 @@ import javax.enterprise.event.Observes;
 
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramSelected;
 import org.kie.workbench.common.dmn.client.docks.navigator.tree.DecisionNavigatorTreePresenter;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
@@ -30,9 +31,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEven
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasFocusedShapeEvent;
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
 
 @ApplicationScoped
 public class DecisionNavigatorObserver {
@@ -43,55 +41,36 @@ public class DecisionNavigatorObserver {
         this.presenter = presenter;
     }
 
-    @SuppressWarnings("unused")
     void onCanvasClear(final @Observes CanvasClearEvent event) {
-        getOptionalPresenter().ifPresent(p -> {
-            p.removeAllElements();
-            p.refreshTreeView();
-        });
+        getOptionalPresenter().ifPresent(DecisionNavigatorPresenter::refresh);
     }
 
     void onCanvasElementAdded(final @Observes CanvasElementAddedEvent event) {
-        getOptionalPresenter().ifPresent(p -> p.addOrUpdateElement(event.getElement()));
+        getOptionalPresenter().ifPresent(DecisionNavigatorPresenter::refresh);
     }
 
     void onCanvasElementUpdated(final @Observes CanvasElementUpdatedEvent event) {
-        getOptionalPresenter().ifPresent(p -> p.addOrUpdateElement(event.getElement()));
+        getOptionalPresenter().ifPresent(DecisionNavigatorPresenter::refresh);
     }
 
     void onCanvasElementRemoved(final @Observes CanvasElementRemovedEvent event) {
-        getOptionalPresenter().ifPresent(p -> p.removeElement(event.getElement()));
+        getOptionalPresenter().ifPresent(DecisionNavigatorPresenter::refresh);
     }
 
     void onNestedElementSelected(final @Observes EditExpressionEvent event) {
-        selectItem(event);
-        setActiveParent(event);
+        getOptionalPresenter().ifPresent(DecisionNavigatorPresenter::refresh);
     }
 
     void onNestedElementAdded(final @Observes ExpressionEditorChanged event) {
-        presenter.getGraph().ifPresent(this::updateNode);
+        getOptionalPresenter().ifPresent(DecisionNavigatorPresenter::refresh);
     }
 
-    private void updateNode(final Graph graph) {
-
-        getActiveParent().ifPresent(activeParent -> {
-
-            final String activeParentUUID = activeParent.getUUID();
-            final Node node = graph.getNode(activeParentUUID);
-
-            presenter.updateElement(node);
-
-            activeParent.getChildren().forEach(e -> getTreePresenter().selectItem(e.getUUID()));
-        });
+    void onDMNDiagramSelected(final @Observes DMNDiagramSelected event) {
+        getOptionalPresenter().ifPresent(DecisionNavigatorPresenter::refresh);
     }
 
-    void onNestedElementLostFocus(final @Observes CanvasFocusedShapeEvent event) {
-        getTreePresenter().deselectItem();
-    }
+    void selectItem(final HasExpression hasExpression) {
 
-    void selectItem(final EditExpressionEvent event) {
-
-        final HasExpression hasExpression = event.getHasExpression();
         final Optional<Expression> optionalExpression = Optional.ofNullable(hasExpression.getExpression());
 
         optionalExpression.ifPresent(expression -> {
@@ -105,8 +84,7 @@ public class DecisionNavigatorObserver {
     }
 
     void setActiveParent(final EditExpressionEvent event) {
-        final String uuid = event.getNodeUUID();
-        getTreePresenter().setActiveParentUUID(uuid);
+        getTreePresenter().setActiveParentUUID(event.getNodeUUID());
     }
 
     private DecisionNavigatorTreePresenter getTreePresenter() {
@@ -117,3 +95,4 @@ public class DecisionNavigatorObserver {
         return Optional.ofNullable(presenter);
     }
 }
+

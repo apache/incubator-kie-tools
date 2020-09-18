@@ -275,7 +275,7 @@ public class PMMLIncludedModelHandlerTest {
         drgElements.add(decision2);
         drgElements.add(decision3);
 
-        when(dmnGraphUtils.getDRGElements()).thenReturn(drgElements);
+        when(dmnGraphUtils.getModelDRGElements()).thenReturn(drgElements);
 
         return Arrays.asList(decision1, decision2, decision3);
     }
@@ -295,7 +295,7 @@ public class PMMLIncludedModelHandlerTest {
         drgElements.add(decision2);
         drgElements.add(decision3);
 
-        when(dmnGraphUtils.getDRGElements()).thenReturn(drgElements);
+        when(dmnGraphUtils.getModelDRGElements()).thenReturn(drgElements);
 
         return Arrays.asList(decision1, decision2, decision3);
     }
@@ -322,7 +322,7 @@ public class PMMLIncludedModelHandlerTest {
         drgElements.add(bkm2);
         drgElements.add(bkm3);
 
-        when(dmnGraphUtils.getDRGElements()).thenReturn(drgElements);
+        when(dmnGraphUtils.getModelDRGElements()).thenReturn(drgElements);
 
         return Arrays.asList(bkm1, bkm2, bkm3);
     }
@@ -351,7 +351,7 @@ public class PMMLIncludedModelHandlerTest {
         drgElements.add(bkm2);
         drgElements.add(bkm3);
 
-        when(dmnGraphUtils.getDRGElements()).thenReturn(drgElements);
+        when(dmnGraphUtils.getModelDRGElements()).thenReturn(drgElements);
 
         return Arrays.asList(bkm1, bkm2, bkm3);
     }

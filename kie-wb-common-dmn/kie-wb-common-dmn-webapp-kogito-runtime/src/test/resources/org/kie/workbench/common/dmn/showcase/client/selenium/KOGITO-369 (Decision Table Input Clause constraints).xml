@@ -31,7 +31,7 @@
           <dmn:text>&lt; 1000</dmn:text>
         </dmn:inputValues>
       </dmn:input>
-      <dmn:output id='_CAFBB4C9-4CCA-4B51-9A86-00AC32F11DAD' typeRef='UNDEFINED'/>
+      <dmn:output id='_CAFBB4C9-4CCA-4B51-9A86-00AC32F11DAD'/>
       <dmn:annotation/>
       <dmn:rule id='_90A5DAA6-4B96-42FF-B786-B24FA23C0547'>
         <dmn:inputEntry id='_3CDA273C-57EB-4FD9-A86F-F4CCDF003F80'>
@@ -50,7 +50,7 @@
     </dmn:decisionTable>
   </dmn:decision>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id='_9ADA3018-5EF5-4AE4-B8F1-A63B6844A215' name='DRG'>
       <di:extension>
         <kie:ComponentsWidthsExtension>
           <kie:ComponentWidths dmnElementRef='_3B5C4F51-7F86-4C25-AE10-565560188523'>
@@ -62,7 +62,7 @@
           </kie:ComponentWidths>
         </kie:ComponentsWidthsExtension>
       </di:extension>
-      <dmndi:DMNShape id='dmnshape-_6BFBA4CD-6484-4AAE-9E28-CF54DA401C3D' dmnElementRef='_6BFBA4CD-6484-4AAE-9E28-CF54DA401C3D' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_6BFBA4CD-6484-4AAE-9E28-CF54DA401C3D' dmnElementRef='_6BFBA4CD-6484-4AAE-9E28-CF54DA401C3D' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>

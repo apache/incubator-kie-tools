@@ -199,7 +199,7 @@ public class ItemDefinitionDestroyHandlerTest {
         final ItemDefinition itemDefinition = makeItemDefinition();
         final List<ItemDefinition> expectedItemDefinitions = singletonList(itemDefinition);
 
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
         when(definitions.getItemDefinition()).thenReturn(expectedItemDefinitions);
 
         final List<ItemDefinition> actualItemDefinitions = handler.itemDefinitions();
@@ -212,7 +212,7 @@ public class ItemDefinitionDestroyHandlerTest {
 
         final List<ItemDefinition> expectedItemDefinitions = emptyList();
 
-        when(dmnGraphUtils.getDefinitions()).thenReturn(null);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(null);
 
         final List<ItemDefinition> actualItemDefinitions = handler.itemDefinitions();
 

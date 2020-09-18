@@ -39,9 +39,10 @@ import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.common.BoxedExpressionHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem;
-import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
+import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItemBuilder;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -78,7 +79,7 @@ public class DecisionNavigatorNestedItemFactory {
 
     private final Event<EditExpressionEvent> editExpressionEvent;
 
-    private final DecisionNavigatorPresenter decisionNavigatorPresenter;
+    private final DMNGraphUtils dmnGraphUtils;
 
     private final Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
 
@@ -89,13 +90,13 @@ public class DecisionNavigatorNestedItemFactory {
     @Inject
     public DecisionNavigatorNestedItemFactory(final SessionManager sessionManager,
                                               final Event<EditExpressionEvent> editExpressionEvent,
-                                              final DecisionNavigatorPresenter decisionNavigatorPresenter,
+                                              final DMNGraphUtils dmnGraphUtils,
                                               final @DMNEditor Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier,
                                               final Event<CanvasSelectionEvent> canvasSelectionEvent,
                                               final BoxedExpressionHelper helper) {
         this.sessionManager = sessionManager;
         this.editExpressionEvent = editExpressionEvent;
-        this.decisionNavigatorPresenter = decisionNavigatorPresenter;
+        this.dmnGraphUtils = dmnGraphUtils;
         this.expressionEditorDefinitionsSupplier = expressionEditorDefinitionsSupplier;
         this.canvasSelectionEvent = canvasSelectionEvent;
         this.helper = helper;
@@ -109,7 +110,13 @@ public class DecisionNavigatorNestedItemFactory {
         final String parentUUID = node.getUUID();
         final Command onClick = makeOnClickCommand(node, parentUUID);
 
-        return new DecisionNavigatorItem(uuid, label, type, onClick, parentUUID);
+        return navigatorItemBuilder()
+                .withUUID(uuid)
+                .withLabel(label)
+                .withType(type)
+                .withOnClick(onClick)
+                .withParentUUID(parentUUID)
+                .build();
     }
 
     public boolean hasNestedElement(final Node<View, Edge> node) {
@@ -121,7 +128,7 @@ public class DecisionNavigatorNestedItemFactory {
 
         return () -> {
 
-            final CanvasHandler canvas = decisionNavigatorPresenter.getHandler();
+            final CanvasHandler canvas = dmnGraphUtils.getCanvasHandler();
 
             canvasSelectionEvent.fire(makeCanvasSelectionEvent(canvas, uuid));
             editExpressionEvent.fire(makeEditExpressionEvent(node));
@@ -167,5 +174,9 @@ public class DecisionNavigatorNestedItemFactory {
 
     private Expression getExpression(final Node<View, Edge> node) {
         return helper.getExpression(node);
+    }
+
+    private DecisionNavigatorItemBuilder navigatorItemBuilder() {
+        return new DecisionNavigatorItemBuilder();
     }
 }

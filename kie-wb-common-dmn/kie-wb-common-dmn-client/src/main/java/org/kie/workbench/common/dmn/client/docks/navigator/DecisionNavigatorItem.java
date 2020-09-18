@@ -19,7 +19,9 @@ package org.kie.workbench.common.dmn.client.docks.navigator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeSet;
+import java.util.function.Consumer;
 
 import org.uberfire.mvp.Command;
 
@@ -29,29 +31,19 @@ public class DecisionNavigatorItem implements Comparable {
 
     private String label;
 
+    private String parentUUID;
+
     private Type type;
 
     private Command onClick;
 
-    private String parentUUID;
+    private boolean isDRG;
+
+    private Consumer<DecisionNavigatorItem> onUpdate;
+
+    private Consumer<DecisionNavigatorItem> onRemove;
 
     private TreeSet<DecisionNavigatorItem> children = new TreeSet<>();
-
-    public DecisionNavigatorItem(final String uuid,
-                                 final String label,
-                                 final Type type,
-                                 final Command onClick,
-                                 final String parentUUID) {
-        this.uuid = uuid;
-        this.label = label;
-        this.type = type;
-        this.onClick = onClick;
-        this.parentUUID = parentUUID;
-    }
-
-    public DecisionNavigatorItem(final String uuid) {
-        this.uuid = uuid;
-    }
 
     public String getUUID() {
         return uuid;
@@ -69,6 +61,46 @@ public class DecisionNavigatorItem implements Comparable {
         return children;
     }
 
+    public Optional<Command> getOnClick() {
+        return Optional.ofNullable(onClick);
+    }
+
+    public String getParentUUID() {
+        return parentUUID;
+    }
+
+    void setUUID(final String uuid) {
+        this.uuid = uuid;
+    }
+
+    public void setLabel(final String label) {
+        this.label = label;
+    }
+
+    void setType(final Type type) {
+        this.type = type;
+    }
+
+    void setParentUUID(final String parentUUID) {
+        this.parentUUID = parentUUID;
+    }
+
+    void setOnClick(final Command onClick) {
+        this.onClick = onClick;
+    }
+
+    void setOnUpdate(final Consumer<DecisionNavigatorItem> onUpdate) {
+        this.onUpdate = onUpdate;
+    }
+
+    void setOnRemove(final Consumer<DecisionNavigatorItem> onRemove) {
+        this.onRemove = onRemove;
+    }
+
+    void setIsDRG(final boolean isDRG) {
+        this.isDRG = isDRG;
+    }
+
     public void removeChild(final DecisionNavigatorItem item) {
         getChildren().removeIf(i -> i.getUUID().equals(item.getUUID()));
     }
@@ -76,18 +108,27 @@ public class DecisionNavigatorItem implements Comparable {
     public void addChild(final DecisionNavigatorItem item) {
         removeChild(item);
         getChildren().add(item);
+        item.setParentUUID(uuid);
     }
 
     public void onClick() {
-        onClick.execute();
+        getOnClick().ifPresent(Command::execute);
     }
 
-    public Command getOnClick() {
-        return onClick;
+    public void onUpdate() {
+        getOnUpdate().ifPresent(c -> c.accept(this));
     }
 
-    public String getParentUUID() {
-        return parentUUID;
+    public void onRemove() {
+        getOnRemove().ifPresent(c -> c.accept(this));
+    }
+
+    public boolean isEditable() {
+        return getOnUpdate().isPresent() && getOnRemove().isPresent() && !isDRG();
+    }
+
+    private boolean isDRG() {
+        return isDRG;
     }
 
     @Override
@@ -130,9 +171,17 @@ public class DecisionNavigatorItem implements Comparable {
         }
     }
 
-    String getOrderingName() {
+    private String getOrderingName() {
         final String orderingLabel = getLabel() + getUUID();
         return orderingLabel.toLowerCase();
+    }
+
+    private Optional<Consumer<DecisionNavigatorItem>> getOnUpdate() {
+        return Optional.ofNullable(onUpdate);
+    }
+
+    private Optional<Consumer<DecisionNavigatorItem>> getOnRemove() {
+        return Optional.ofNullable(onRemove);
     }
 
     public enum Type {
@@ -150,7 +199,8 @@ public class DecisionNavigatorItem implements Comparable {
         INPUT_DATA("InputData"),
         DECISION_SERVICE("DecisionService"),
         KNOWLEDGE_SOURCE("KnowledgeSource"),
-        DECISION("Decision");
+        DECISION("Decision"),
+        SEPARATOR("None");
 
         private static final Map<String, Type> BY_CLASS_NAME = new HashMap<>();
 

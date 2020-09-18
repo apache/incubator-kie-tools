@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
@@ -23,6 +25,7 @@ import javax.inject.Inject;
 
 import org.appformer.client.stateControl.registry.Registry;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CurrentRegistryChangedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.RegisterChangedEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -103,12 +106,17 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     void onCommandAdded(final @Observes RegisterChangedEvent registerChangedEvent) {
         checkNotNull("registerChangedEvent",
                      registerChangedEvent);
-        if (registerChangedEvent.getCanvasHandler().equals(getCanvasHandler())) {
+        if (!Objects.isNull(getSession())
+                && Objects.equals(registerChangedEvent.getCanvasHandler(), getCanvasHandler())) {
             checkState();
         }
     }
 
-    private void checkState() {
+    void onCurrentRegistryChanged(final @Observes CurrentRegistryChangedEvent currentRegistryChangedEvent) {
+        checkState();
+    }
+
+    void checkState() {
         if (getSession() != null) {
             setEnabled(!getSession().getCommandRegistry().getHistory().isEmpty());
             fire();

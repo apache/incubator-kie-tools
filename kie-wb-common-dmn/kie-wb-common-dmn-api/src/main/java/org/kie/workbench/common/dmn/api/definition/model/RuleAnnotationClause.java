@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasName;
@@ -33,7 +34,7 @@ public class RuleAnnotationClause extends DMNElement implements HasName {
 
     public RuleAnnotationClause copy() {
         final RuleAnnotationClause clonedRuleAnnotationClause = new RuleAnnotationClause();
-        clonedRuleAnnotationClause.name = name.copy();
+        clonedRuleAnnotationClause.name = Optional.ofNullable(name).map(Name::copy).orElse(null);
         return clonedRuleAnnotationClause;
     }
 

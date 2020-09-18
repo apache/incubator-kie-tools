@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.client.canvas.controls.builder;
 
+import java.util.Optional;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -24,9 +26,12 @@ import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagramElement;
 import org.kie.workbench.common.dmn.api.definition.model.DMNElement;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
@@ -44,6 +49,8 @@ import org.kie.workbench.common.stunner.core.util.StringUtils;
 @Observer
 public class ObserverBuilderControl extends org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.ObserverBuilderControl {
 
+    private final DMNDiagramsSession dmnDiagramsSession;
+
     @Inject
     public ObserverBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                   final ClientFactoryService clientFactoryServices,
@@ -51,7 +58,8 @@ public class ObserverBuilderControl extends org.kie.workbench.common.stunner.cor
                                   final @DMNEditor DefaultCanvasCommandFactory canvasCommandFactory,
                                   final ClientTranslationMessages translationMessages,
                                   final GraphBoundsIndexer graphBoundsIndexer,
-                                  final Event<CanvasSelectionEvent> canvasSelectionEvent) {
+                                  final Event<CanvasSelectionEvent> canvasSelectionEvent,
+                                  final DMNDiagramsSession dmnDiagramsSession) {
         super(clientDefinitionManager,
               clientFactoryServices,
               ruleManager,
@@ -59,6 +67,7 @@ public class ObserverBuilderControl extends org.kie.workbench.common.stunner.cor
               translationMessages,
               graphBoundsIndexer,
               canvasSelectionEvent);
+        this.dmnDiagramsSession = dmnDiagramsSession;
     }
 
     @Override
@@ -98,5 +107,14 @@ public class ObserverBuilderControl extends org.kie.workbench.common.stunner.cor
                 ((DMNElement) newDefinition).getId().setValue(dmnElement.getId().getValue());
             }
         }
+
+        final Optional<DMNDiagramElement> currentDMNDiagramElement = getDMNDiagramsSession().getCurrentDMNDiagramElement();
+        if (currentDMNDiagramElement.isPresent() && newDefinition instanceof DRGElement) {
+            ((DRGElement) newDefinition).setDiagramId(currentDMNDiagramElement.get().getId().getValue());
+        }
+    }
+
+    DMNDiagramsSession getDMNDiagramsSession() {
+        return dmnDiagramsSession;
     }
 }

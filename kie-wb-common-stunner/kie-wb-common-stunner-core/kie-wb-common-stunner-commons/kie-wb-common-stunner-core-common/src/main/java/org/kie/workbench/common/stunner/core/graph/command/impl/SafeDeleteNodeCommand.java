@@ -28,6 +28,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.soup.commons.validation.PortablePreconditions;
+import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -147,8 +148,18 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
         new SafeDeleteNodeProcessor(new ChildrenTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl()),
                                     graph,
                                     candidate,
-                                    shouldKeepChildren(candidate))
+                                    shouldKeepChildren(candidate),
+                                    new TreeWalkTraverseProcessorImpl(),
+                                    getGraphsProvider())
                 .run(createDeleteNodeAndChildrenCallback(candidate));
+    }
+
+    public GraphsProvider getGraphsProvider() {
+        return null; // not required
+    }
+
+    protected DeregisterNodeCommand createDeregisterNodeCommand(final Node node) {
+        return new DeregisterNodeCommand(node);
     }
 
     private SafeDeleteNodeProcessor.Callback createDeleteNodeAndChildrenCallback(final Node<Definition<?>, Edge> candidate) {
@@ -197,7 +208,7 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
             @Override
             public boolean deleteNode(final Node<?, Edge> node) {
                 if (!isElementExcluded(node)) {
-                    addCommand(new DeregisterNodeCommand(node));
+                    addCommand(createDeregisterNodeCommand(node));
                     safeDeleteCallback.ifPresent(c -> c.deleteNode(node));
                     return true;
                 }

@@ -35,6 +35,7 @@ import org.kie.workbench.common.dmn.api.definition.model.OutputClause;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
 import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.dtable.hitpolicy.HitPolicyPopoverView;
 import org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverView;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
@@ -83,6 +84,9 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
 
     @Mock
     private DMNSession session;
+
+    @Mock
+    private DMNDiagramsSession dmnDiagramsSession;
 
     @Mock
     private AbstractCanvasHandler canvasHandler;
@@ -161,12 +165,13 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
                                                             hitPolicyEditor,
                                                             headerEditors,
                                                             new DecisionTableEditorDefinitionEnricher(sessionManager,
-                                                                                                      new DMNGraphUtils(sessionManager, new DMNDiagramUtils()),
+                                                                                                      new DMNGraphUtils(sessionManager, new DMNDiagramUtils(), dmnDiagramsSession),
                                                                                                       itemDefinitionUtils),
                                                             readOnlyProvider);
 
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(dmnDiagramsSession.getDRGDiagram()).thenReturn(diagram);
         when(diagram.getGraph()).thenReturn(graph);
 
         when(headerEditors.get()).thenReturn(headerEditor);

@@ -85,7 +85,7 @@ public class DMNIncludedModelHandler implements DRGElementHandler {
 
     private List<DRGElement> findDRGElementsByOldName(final String oldModelName) {
         return dmnGraphUtils
-                .getDRGElements()
+                .getModelDRGElements()
                 .stream()
                 .filter(drgElement -> drgElementNameStartsWith(oldModelName, drgElement))
                 .filter(DRGElement::isAllowOnlyVisualChange)
@@ -95,7 +95,7 @@ public class DMNIncludedModelHandler implements DRGElementHandler {
     private void updateDRGElementsVariableAndId(final String oldModelName,
                                                 final String newModelName) {
         dmnGraphUtils
-                .getDRGElements()
+                .getModelDRGElements()
                 .forEach(drgElement -> {
 
                     final Id oldId = drgElement.getId();

@@ -21,7 +21,7 @@
     <dmn:typeRef>string</dmn:typeRef>
   </dmn:itemDefinition>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id='_5F78A02B-0744-45F2-8980-C95C75218D30' name='DRG'>
       <di:extension>
         <kie:ComponentsWidthsExtension/>
       </di:extension>

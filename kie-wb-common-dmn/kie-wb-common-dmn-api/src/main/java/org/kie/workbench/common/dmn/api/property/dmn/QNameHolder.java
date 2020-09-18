@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.dmn.api.property.dmn;
 
+import java.util.Optional;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.property.DMNProperty;
@@ -49,7 +51,7 @@ public class QNameHolder implements DMNProperty {
     }
 
     public QNameHolder copy() {
-        return new QNameHolder(value.copy());
+        return new QNameHolder(Optional.ofNullable(value).map(QName::copy).orElse(null));
     }
 
     public PropertyType getType() {

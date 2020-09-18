@@ -106,9 +106,9 @@ public class OutputClauseLiteralExpression extends DMNModelInstrumentedBase impl
     public OutputClauseLiteralExpression copy() {
         return new OutputClauseLiteralExpression(
                 new Id(),
-                description.copy(),
-                typeRef.copy(),
-                text.copy(),
+                Optional.ofNullable(description).map(Description::copy).orElse(null),
+                Optional.ofNullable(typeRef).map(QName::copy).orElse(null),
+                Optional.ofNullable(text).map(Text::copy).orElse(null),
                 Optional.ofNullable(importedValues).map(ImportedValues::copy).orElse(null)
         );
     }

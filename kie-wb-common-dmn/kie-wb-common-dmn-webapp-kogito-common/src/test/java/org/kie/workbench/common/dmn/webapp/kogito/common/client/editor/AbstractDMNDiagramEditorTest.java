@@ -25,9 +25,10 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
+import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
+import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
-import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
@@ -94,7 +95,9 @@ import static org.kie.workbench.common.dmn.webapp.kogito.common.client.editor.Ab
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -250,13 +253,25 @@ public abstract class AbstractDMNDiagramEditorTest {
     protected IncludedModelsPage includedModelsPage;
 
     @Mock
-    protected IncludedModelsPageStateProviderImpl importsPageProvider;
-
-    @Mock
     protected EditorContextProvider contextProvider;
 
     @Mock
     protected ReadOnlyProvider readonlyProvider;
+
+    @Mock
+    protected DRDNameChanger drdNameChanger;
+
+    @Mock
+    protected LazyCanvasFocusUtils lazyCanvasFocusUtils;
+
+    @Mock
+    private HTMLElement drdNameChangerElement;
+
+    @Mock
+    private ElementWrapperWidget drdNameWidget;
+
+    @Mock
+    private SessionPresenter.View sessionPresenterView;
 
     @Captor
     protected ArgumentCaptor<KogitoDiagramResourceImpl> kogitoDiagramResourceArgumentCaptor;
@@ -295,6 +310,9 @@ public abstract class AbstractDMNDiagramEditorTest {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(root.toURI()).thenReturn(ROOT);
 
+        when(editorPresenter.getView()).thenReturn(sessionPresenterView);
+        when(drdNameChanger.getElement()).thenReturn(drdNameChangerElement);
+
         doAnswer((invocation) -> {
             final Diagram diagram = (Diagram) invocation.getArguments()[0];
             final SessionPresenter.SessionPresenterCallback callback = (SessionPresenter.SessionPresenterCallback) invocation.getArguments()[1];
@@ -307,6 +325,8 @@ public abstract class AbstractDMNDiagramEditorTest {
                                       any(SessionPresenter.SessionPresenterCallback.class));
 
         editor = spy(getEditor());
+
+        doReturn(drdNameWidget).when(editor).getWidget(drdNameChangerElement);
     }
 
     protected abstract AbstractDMNDiagramEditor getEditor();
@@ -508,10 +528,11 @@ public abstract class AbstractDMNDiagramEditorTest {
     }
 
     protected void assertOnDiagramLoad() {
-        verify(decisionNavigatorDock).setupCanvasHandler(canvasHandler);
+        verify(decisionNavigatorDock).reload();
         verify(layoutHelper).applyLayout(eq(diagram), eq(layoutExecutor));
         verify(feelInitializer).initializeFEELEditor();
         verify(dataTypesPage).reload();
+        verify(lazyCanvasFocusUtils, atLeastOnce()).releaseFocus();
     }
 
     @Test

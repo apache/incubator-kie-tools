@@ -26,6 +26,23 @@
     text-align: center;
 }
 
+.session-header-container {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    transition: 0ms linear;
+    -webkit-transition: 0ms linear; /* Safari 3.1 to 6.0 */
+
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    /* Introduced in IE 10.
+       See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+    */
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .palette-panel {
     position: relative;
     float: left;

@@ -65,17 +65,27 @@ import org.uberfire.mvp.Command;
 @DMNEditor
 public class DMNEditorSession extends DefaultEditorSession implements DMNSession {
 
+    private final RegistryProvider registryProvider;
+
     @Inject
     public DMNEditorSession(final ManagedSession session,
                             final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                             final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                             final Registry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry,
-                            final Event<RegisterChangedEvent> registerChangedEvent) {
+                            final Event<RegisterChangedEvent> registerChangedEvent,
+                            final RegistryProvider registryProvider) {
         super(session,
               canvasCommandManager,
               sessionCommandManager,
               commandRegistry,
               registerChangedEvent);
+        this.registryProvider = registryProvider;
+        this.registryProvider.setRegistryChangeListener(() -> fireRegistryChangedEvent());
+    }
+
+    @Override
+    public Registry<org.kie.workbench.common.stunner.core.command.Command<AbstractCanvasHandler, CanvasViolation>> getCommandRegistry() {
+        return registryProvider.getCurrentCommandRegistry();
     }
 
     @Override

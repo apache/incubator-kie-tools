@@ -210,7 +210,7 @@ public class DataTypePickerWidget extends Composite implements HasValue<QName>,
     }
 
     void addItemDefinitions() {
-        final Definitions definitions = dmnGraphUtils.getDefinitions();
+        final Definitions definitions = dmnGraphUtils.getModelDefinitions();
         final List<ItemDefinition> itemDefinitions = definitions != null ? definitions.getItemDefinition() : Collections.emptyList();
 
         final OptGroup group = GWT.create(OptGroup.class);

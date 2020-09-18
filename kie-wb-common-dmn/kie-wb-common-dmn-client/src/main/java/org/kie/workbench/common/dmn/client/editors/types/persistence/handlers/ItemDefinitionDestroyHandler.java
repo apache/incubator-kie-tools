@@ -97,7 +97,7 @@ public class ItemDefinitionDestroyHandler {
     }
 
     List<ItemDefinition> itemDefinitions() {
-        final Optional<Definitions> definitions = Optional.ofNullable(dmnGraphUtils.getDefinitions());
+        final Optional<Definitions> definitions = Optional.ofNullable(dmnGraphUtils.getModelDefinitions());
 
         if (definitions.isPresent()) {
             return definitions.get().getItemDefinition();

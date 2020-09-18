@@ -37,8 +37,8 @@ public class DecisionNavigatorItemTest {
     @Test
     public void testEqualsWhenItemsAreEqual() {
 
-        final DecisionNavigatorItem item1 = new DecisionNavigatorItem("123");
-        final DecisionNavigatorItem item2 = new DecisionNavigatorItem("123");
+        final DecisionNavigatorItem item1 = new DecisionNavigatorItemBuilder().withUUID("123").build();
+        final DecisionNavigatorItem item2 = new DecisionNavigatorItemBuilder().withUUID("123").build();
 
         assertEquals(item1, item2);
     }
@@ -46,8 +46,8 @@ public class DecisionNavigatorItemTest {
     @Test
     public void testEqualsWhenItemsHaveDifferentUUIDs() {
 
-        final DecisionNavigatorItem item1 = new DecisionNavigatorItem("123");
-        final DecisionNavigatorItem item2 = new DecisionNavigatorItem("456");
+        final DecisionNavigatorItem item1 = new DecisionNavigatorItemBuilder().withUUID("123").build();
+        final DecisionNavigatorItem item2 = new DecisionNavigatorItemBuilder().withUUID("456").build();
 
         assertNotEquals(item1, item2);
     }
@@ -55,8 +55,8 @@ public class DecisionNavigatorItemTest {
     @Test
     public void testEqualsWhenItemsHaveDifferentParentUUIDs() {
 
-        final DecisionNavigatorItem item1 = new DecisionNavigatorItem("123", null, null, null, "456");
-        final DecisionNavigatorItem item2 = new DecisionNavigatorItem("123", null, null, null, "789");
+        final DecisionNavigatorItem item1 = new DecisionNavigatorItemBuilder().withUUID("123").withParentUUID("456").build();
+        final DecisionNavigatorItem item2 = new DecisionNavigatorItemBuilder().withUUID("123").withParentUUID("789").build();
 
         assertNotEquals(item1, item2);
     }
@@ -64,8 +64,8 @@ public class DecisionNavigatorItemTest {
     @Test
     public void testEqualsWhenItemsHaveDifferentTypes() {
 
-        final DecisionNavigatorItem item1 = new DecisionNavigatorItem("123", null, ITEM, null, null);
-        final DecisionNavigatorItem item2 = new DecisionNavigatorItem("123", null, CONTEXT, null, null);
+        final DecisionNavigatorItem item1 = new DecisionNavigatorItemBuilder().withUUID("123").withType(ITEM).build();
+        final DecisionNavigatorItem item2 = new DecisionNavigatorItemBuilder().withUUID("123").withType(CONTEXT).build();
 
         assertNotEquals(item1, item2);
     }
@@ -73,8 +73,8 @@ public class DecisionNavigatorItemTest {
     @Test
     public void testEqualsWhenItemsHaveDifferentLabels() {
 
-        final DecisionNavigatorItem item1 = new DecisionNavigatorItem("123", "Node1", null, null, null);
-        final DecisionNavigatorItem item2 = new DecisionNavigatorItem("123", "Node0", null, null, null);
+        final DecisionNavigatorItem item1 = new DecisionNavigatorItemBuilder().withUUID("123").withLabel("Node1").build();
+        final DecisionNavigatorItem item2 = new DecisionNavigatorItemBuilder().withUUID("123").withLabel("Node0").build();
 
         assertNotEquals(item1, item2);
     }
@@ -83,7 +83,7 @@ public class DecisionNavigatorItemTest {
     public void testOnClick() {
 
         final Command command = mock(Command.class);
-        final DecisionNavigatorItem item = new DecisionNavigatorItem("uuid", "label", ITEM, command, null);
+        final DecisionNavigatorItem item = new DecisionNavigatorItemBuilder().withUUID("uuid").withLabel("label").withType(ITEM).withOnClick(command).build();
 
         item.onClick();
 
@@ -93,8 +93,8 @@ public class DecisionNavigatorItemTest {
     @Test
     public void testRemoveChild() {
 
-        final DecisionNavigatorItem item = new DecisionNavigatorItem("item");
-        final DecisionNavigatorItem child = new DecisionNavigatorItem("child");
+        final DecisionNavigatorItem item = new DecisionNavigatorItemBuilder().withUUID("uuid").build();
+        final DecisionNavigatorItem child = new DecisionNavigatorItemBuilder().withUUID("child").build();
 
         item.getChildren().add(child);
         item.removeChild(child);
@@ -105,8 +105,8 @@ public class DecisionNavigatorItemTest {
     @Test
     public void testAddChild() {
 
-        final DecisionNavigatorItem item = new DecisionNavigatorItem("item");
-        final DecisionNavigatorItem child = new DecisionNavigatorItem("child");
+        final DecisionNavigatorItem item = new DecisionNavigatorItemBuilder().withUUID("uuid").build();
+        final DecisionNavigatorItem child = new DecisionNavigatorItemBuilder().withUUID("child").build();
         final TreeSet<DecisionNavigatorItem> expectedChildren = new TreeSet<DecisionNavigatorItem>() {{
             add(child);
         }};
@@ -120,7 +120,7 @@ public class DecisionNavigatorItemTest {
     @Test
     public void testCompareToWhenObjectIsNotADecisionNavigatorItem() {
 
-        final DecisionNavigatorItem item = new DecisionNavigatorItem("123");
+        final DecisionNavigatorItem item = new DecisionNavigatorItemBuilder().withUUID("123").build();
         final Object object = null;
 
         final int result = item.compareTo(object);
@@ -131,8 +131,8 @@ public class DecisionNavigatorItemTest {
     @Test
     public void testCompareToWhenItemAndObjectAreEqual() {
 
-        final DecisionNavigatorItem item = new DecisionNavigatorItem("123");
-        final Object object = new DecisionNavigatorItem("123");
+        final DecisionNavigatorItem item = new DecisionNavigatorItemBuilder().withUUID("123").build();
+        final Object object = new DecisionNavigatorItemBuilder().withUUID("123").build();
 
         final int result = item.compareTo(object);
 
@@ -142,8 +142,8 @@ public class DecisionNavigatorItemTest {
     @Test
     public void testCompareToWhenItemOrderingNameIsGreaterThanObjectOrderingName() {
 
-        final DecisionNavigatorItem item = new DecisionNavigatorItem("123", "Hat", null, null, null);
-        final Object object = new DecisionNavigatorItem("456", "Red", null, null, null);
+        final DecisionNavigatorItem item = new DecisionNavigatorItemBuilder().withUUID("123").withLabel("Hat").build();
+        final Object object = new DecisionNavigatorItemBuilder().withUUID("456").withLabel("Red").build();
 
         final int result = item.compareTo(object);
 
@@ -153,8 +153,8 @@ public class DecisionNavigatorItemTest {
     @Test
     public void testCompareToWhenItemOrderingNameIsLessThanObjectOrderingName() {
 
-        final DecisionNavigatorItem item = new DecisionNavigatorItem("123", "Red", null, null, null);
-        final Object object = new DecisionNavigatorItem("456", "Hat", null, null, null);
+        final DecisionNavigatorItem item = new DecisionNavigatorItemBuilder().withUUID("123").withLabel("Red").build();
+        final Object object = new DecisionNavigatorItemBuilder().withUUID("456").withLabel("Hat").build();
 
         final int result = item.compareTo(object);
 

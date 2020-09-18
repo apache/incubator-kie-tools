@@ -32,7 +32,7 @@
     </dmn:knowledgeRequirement>
   </dmn:businessKnowledgeModel>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id='_C14DDED2-3C49-4A2E-AD41-93C6179AC0B4' name='DRG'>
       <di:extension>
         <kie:ComponentsWidthsExtension>
           <kie:ComponentWidths dmnElementRef='_00A64A05-BAF7-44BD-AF29-49DAB3E128A8'/>
@@ -41,7 +41,7 @@
           <kie:ComponentWidths dmnElementRef='_479A8006-4D8B-4CD3-BA85-89C8FD5A77F3'/>
         </kie:ComponentsWidthsExtension>
       </di:extension>
-      <dmndi:DMNShape id='dmnshape-_C78AA5FB-B1F7-4304-8654-59F8EBDAB5F8' dmnElementRef='_C78AA5FB-B1F7-4304-8654-59F8EBDAB5F8' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_C78AA5FB-B1F7-4304-8654-59F8EBDAB5F8' dmnElementRef='_C78AA5FB-B1F7-4304-8654-59F8EBDAB5F8' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>
@@ -50,7 +50,7 @@
         <dc:Bounds x='421' y='160' width='100' height='50'/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNShape id='dmnshape-_C9954C3F-694F-4EA0-B958-6F5835FBA59E' dmnElementRef='_C9954C3F-694F-4EA0-B958-6F5835FBA59E' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_C9954C3F-694F-4EA0-B958-6F5835FBA59E' dmnElementRef='_C9954C3F-694F-4EA0-B958-6F5835FBA59E' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>
@@ -59,7 +59,7 @@
         <dc:Bounds x='601' y='160' width='100' height='50'/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNEdge id='dmnedge-_A0DDD0BF-85AB-45DA-9C7C-1B242AD8D76B' dmnElementRef='_A0DDD0BF-85AB-45DA-9C7C-1B242AD8D76B'>
+      <dmndi:DMNEdge id='dmnedge-drg-_A0DDD0BF-85AB-45DA-9C7C-1B242AD8D76B' dmnElementRef='_A0DDD0BF-85AB-45DA-9C7C-1B242AD8D76B'>
         <di:waypoint x='521' y='185'/>
         <di:waypoint x='601' y='185'/>
       </dmndi:DMNEdge>

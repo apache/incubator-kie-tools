@@ -101,7 +101,7 @@ public class DMNIncludedModelHandlerTest {
         final List<DRGElement> drgElements = asList(drgElement1, drgElement2, drgElement3, drgElement4);
 
         doNothing().when(handler).updateDRGElementName(any(), anyString());
-        when(dmnGraphUtils.getDRGElements()).thenReturn(drgElements);
+        when(dmnGraphUtils.getModelDRGElements()).thenReturn(drgElements);
 
         handler.update("model1", "model2");
 
@@ -126,7 +126,7 @@ public class DMNIncludedModelHandlerTest {
         final List<DRGElement> drgElements = asList(drgElement1, drgElement2, drgElement3, drgElement4);
 
         doNothing().when(handler).deleteDRGElement(any());
-        when(dmnGraphUtils.getDRGElements()).thenReturn(drgElements);
+        when(dmnGraphUtils.getModelDRGElements()).thenReturn(drgElements);
 
         handler.destroy("model1");
 

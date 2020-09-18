@@ -47,6 +47,7 @@ public class Definitions extends NamedElement implements DMNPropertySet {
     private List<Artifact> artifact;
     private List<ElementCollection> elementCollection;
     private List<BusinessContextElement> businessContextElement;
+    private List<DMNDiagramElement> dmnDiagramElements;
 
     @Property
     @FormField(afterElement = "nameHolder")
@@ -152,6 +153,17 @@ public class Definitions extends NamedElement implements DMNPropertySet {
             businessContextElement = new ArrayList<>();
         }
         return this.businessContextElement;
+    }
+
+    public List<DMNDiagramElement> getDiagramElements() {
+        if (dmnDiagramElements == null) {
+            dmnDiagramElements = new ArrayList<>();
+        }
+        return dmnDiagramElements;
+    }
+
+    public void setDmnDiagramElements(final List<DMNDiagramElement> dmnDiagramElements) {
+        this.dmnDiagramElements = dmnDiagramElements;
     }
 
     public ExpressionLanguage getExpressionLanguage() {

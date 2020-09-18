@@ -28,17 +28,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
+import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
+import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
-import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypesPage;
 import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTypeEditModeToggleEvent;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.dmn.client.marshaller.DMNMarshallerService;
 import org.kie.workbench.common.dmn.client.session.DMNEditorSession;
 import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
+import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNLayoutHelper;
 import org.kie.workbench.common.dmn.showcase.client.perspectives.AuthoringPerspective;
 import org.kie.workbench.common.dmn.webapp.common.client.docks.preview.PreviewDiagramDock;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -46,12 +50,13 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.S
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenPanelView;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.components.layout.LayoutHelper;
 import org.kie.workbench.common.stunner.core.client.components.layout.OpenDiagramLayoutExecutor;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationPage;
 import org.kie.workbench.common.stunner.core.documentation.DocumentationView;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
@@ -72,6 +77,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.showcase.client.editor.DMNDiagramEditor.DATA_TYPES_PAGE_INDEX;
+import static org.kie.workbench.common.dmn.showcase.client.editor.DMNDiagramEditor.MAIN_EDITOR_PAGE_INDEX;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
@@ -106,7 +112,7 @@ public class DMNDiagramEditorTest {
     private PreviewDiagramDock diagramPreviewAndExplorerDock;
 
     @Mock
-    private LayoutHelper layoutHelper;
+    private DMNLayoutHelper layoutHelper;
 
     @Mock
     private OpenDiagramLayoutExecutor layoutExecutor;
@@ -116,9 +122,6 @@ public class DMNDiagramEditorTest {
 
     @Mock
     private IncludedModelsPage includedModelsPage;
-
-    @Mock
-    private IncludedModelsPageStateProviderImpl importsPageProvider;
 
     @Mock
     private DocumentationView<Diagram> documentationView;
@@ -151,7 +154,29 @@ public class DMNDiagramEditorTest {
     private MonacoFEELInitializer feelInitializer;
 
     @Mock
+    private DMNDiagramsSession dmnDiagramsSession;
+
+    @Mock
+    private DMNMarshallerService marshallerService;
+
+    @Mock
     private ElementWrapperWidget searchBarComponentWidget;
+
+    @Mock
+    private HTMLElement drdNameChangerElement;
+
+    @Mock
+    private DRDNameChanger drdNameChanger;
+
+    @Mock
+    private LazyCanvasFocusUtils lazyCanvasFocusUtils;
+
+    @Mock
+    private ElementWrapperWidget drdNameWidget;
+
+    @Mock
+    private SessionPresenter.View sessionPresenterView;
+
     private DMNDiagramEditor editor;
 
     @Before
@@ -159,6 +184,8 @@ public class DMNDiagramEditorTest {
     public void setup() {
         when(searchBarComponent.getView()).thenReturn(searchBarComponentView);
         when(searchBarComponentView.getElement()).thenReturn(searchBarComponentViewElement);
+        when(presenter.getView()).thenReturn(sessionPresenterView);
+        when(drdNameChanger.getElement()).thenReturn(drdNameChangerElement);
         doReturn(presenter).when(presenter).withToolbar(anyBoolean());
         doReturn(presenter).when(presenter).withPalette(anyBoolean());
         doReturn(presenter).when(presenter).displayNotifications(any());
@@ -189,7 +216,6 @@ public class DMNDiagramEditorTest {
                                           layoutExecutor,
                                           dataTypesPage,
                                           includedModelsPage,
-                                          importsPageProvider,
                                           documentationView,
                                           editorSearchIndex,
                                           searchBarComponent,
@@ -200,9 +226,14 @@ public class DMNDiagramEditorTest {
                                           screenPanelView,
                                           null,
                                           kieView,
-                                          feelInitializer));
+                                          feelInitializer,
+                                          dmnDiagramsSession,
+                                          marshallerService,
+                                          drdNameChanger,
+                                          lazyCanvasFocusUtils));
 
         doReturn(searchBarComponentWidget).when(editor).getWidget(searchBarComponentViewElement);
+        doReturn(drdNameWidget).when(editor).getWidget(drdNameChangerElement);
     }
 
     @Test
@@ -292,7 +323,6 @@ public class DMNDiagramEditorTest {
         final Metadata metadata = mock(Metadata.class);
         final AbstractCanvasHandler canvasHandler = mock(AbstractCanvasHandler.class);
 
-        when(importsPageProvider.withDiagram(diagram)).thenReturn(importsPageProvider);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(diagram.getMetadata()).thenReturn(metadata);
 
@@ -302,27 +332,85 @@ public class DMNDiagramEditorTest {
         verify(layoutHelper).applyLayout(diagram, layoutExecutor);
 
         final InOrder inOrder = inOrder(decisionNavigatorDock, diagramPreviewAndExplorerDock, diagramPropertiesDock);
-        inOrder.verify(decisionNavigatorDock).setupCanvasHandler(canvasHandler);
+        inOrder.verify(decisionNavigatorDock).reload();
         inOrder.verify(decisionNavigatorDock).open();
         inOrder.verify(diagramPropertiesDock).open();
         inOrder.verify(diagramPreviewAndExplorerDock).open();
 
         verify(dataTypesPage).reload();
         verify(dataTypesPage).enableShortcuts();
-        verify(includedModelsPage).setup(importsPageProvider);
+        verify(includedModelsPage).reload();
+        verify(lazyCanvasFocusUtils).releaseFocus();
     }
 
     @Test
     public void testOnClose() {
 
+        final Metadata metadata = mock(Metadata.class);
+
         doNothing().when(editor).destroyDock();
         doNothing().when(editor).destroySession();
+        doReturn(metadata).when(editor).getMetadata();
 
         editor.onClose();
 
         verify(editor).destroyDock();
         verify(editor).destroySession();
         verify(dataTypesPage).disableShortcuts();
+        verify(dataTypesPage).disableShortcuts();
+        verify(dmnDiagramsSession).destroyState(metadata);
+    }
+
+    @Test
+    public void testOnDiagramLoadCallbackOnSuccess() {
+
+        final Command callback = mock(Command.class);
+        final Diagram diagram = mock(Diagram.class);
+        final Metadata metadata = mock(Metadata.class);
+        final MultiPageEditor multiPageEditor = mock(MultiPageEditor.class);
+
+        doNothing().when(editor).open(any(), any());
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(kieView.getMultiPage()).thenReturn(multiPageEditor);
+
+        editor.onDiagramLoadCallback(callback).onSuccess(diagram);
+
+        verify(editor).open(diagram, callback);
+        verify(multiPageEditor).selectPage(MAIN_EDITOR_PAGE_INDEX);
+        assertEquals(metadata, editor.getMetadata());
+    }
+
+    @Test
+    public void testOnDiagramLoadCallbackOnError() {
+
+        final Command callback = mock(Command.class);
+        final ClientRuntimeError error = mock(ClientRuntimeError.class);
+
+        doNothing().when(editor).showError(any());
+
+        editor.onDiagramLoadCallback(callback).onError(error);
+
+        verify(editor).showError(error);
+        verify(callback).execute();
+    }
+
+    @Test
+    public void testBuildMetadata() {
+
+        final String defSetId = "defSetId";
+        final String shapeSetId = "shapeSetId";
+        final String title = "title";
+        final String uuid = "00001111";
+
+        doReturn(uuid).when(editor).uuid();
+
+        final MetadataImpl metadata = (MetadataImpl) editor.buildMetadata(defSetId, shapeSetId, title);
+
+        assertEquals(title, metadata.getTitle());
+        assertEquals("default://master@system/stunner/diagrams", metadata.getRoot().toURI());
+        assertEquals("default://master@system/stunner/diagrams/00001111.dmn", metadata.getPath().toURI());
+        assertEquals(shapeSetId, metadata.getShapeSetId());
+        assertEquals(defSetId, metadata.getDefinitionSetId());
     }
 
     @Test

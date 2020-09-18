@@ -277,6 +277,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-dmn-webapp-kogito-marshaller</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-wires-core-grids</artifactId>
       <scope>provided</scope>
@@ -799,6 +804,20 @@
 
     <plugins>
 
+      <!-- Exclude generated code from checkstyle validation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <excludes>
+            org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/**/*,
+            org/kie/workbench/common/dmn/webapp/kogito/marshaller/jre/package-info.java,
+            org/kie/workbench/common/dmn/webapp/kogito/marshaller/mapper/JSIName.java,
+            org/kie/workbench/common/dmn/webapp/kogito/marshaller/mapper/JsUtils.java
+          </excludes>
+        </configuration>
+      </plugin>
+
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
@@ -971,6 +990,7 @@
                 <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-client</compileSourcesArtifact>
                 <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-webapp-common</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.workbench:kie-wb-common-dmn-webapp-kogito-marshaller</compileSourcesArtifact>
                 <compileSourcesArtifact>org.uberfire:uberfire-wires-core-grids</compileSourcesArtifact>
 
                 <compileSourcesArtifact>org.uberfire:appformer-js-bridge</compileSourcesArtifact>
@@ -1029,9 +1049,51 @@
                   </artifactItems>
                 </configuration>
               </execution>
+              <execution>
+                <id>Unpack DMNMarshaller JS from dependency</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.kie.workbench</groupId>
+                      <artifactId>kie-wb-common-dmn-webapp-kogito-marshaller</artifactId>
+                      <version>${version.org.kie}</version>
+                      <type>jar</type>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${project.build.directory}/DMNMarshaller</outputDirectory>
+                      <includes>**/*.js</includes>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
             </executions>
           </plugin>
 
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>Copy DMNMarshaller JS to WAR</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <copy todir="${basedir}/src/main/webapp/model" flatten="true">
+                      <fileset dir="${project.build.directory}/DMNMarshaller">
+                        <include name="**/*.js"/>
+                      </fileset>
+                    </copy>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
 
       </build>

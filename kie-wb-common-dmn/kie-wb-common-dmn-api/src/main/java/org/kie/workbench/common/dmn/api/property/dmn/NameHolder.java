@@ -16,6 +16,7 @@
 package org.kie.workbench.common.dmn.api.property.dmn;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
@@ -54,7 +55,7 @@ public class NameHolder implements DMNProperty {
     }
 
     public NameHolder copy() {
-        return new NameHolder(value.copy());
+        return new NameHolder(Optional.ofNullable(value).map(Name::copy).orElse(null));
     }
 
     public Name getValue() {

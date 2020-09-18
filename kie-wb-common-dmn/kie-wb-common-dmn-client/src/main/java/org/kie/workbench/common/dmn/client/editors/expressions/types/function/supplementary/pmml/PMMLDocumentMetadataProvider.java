@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -36,9 +37,9 @@ import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLModelMetadata;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
+import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
-import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -51,7 +52,7 @@ public class PMMLDocumentMetadataProvider {
 
     private DMNGraphUtils graphUtils;
     private DMNClientServicesProxy clientServicesProxy;
-    private SessionManager sessionManager;
+    private IncludedModelsPageStateProviderImpl stateProvider;
 
     private Map<String, PMMLDocumentMetadata> pmmlDocuments = new HashMap<>();
 
@@ -62,17 +63,24 @@ public class PMMLDocumentMetadataProvider {
     @Inject
     public PMMLDocumentMetadataProvider(final DMNGraphUtils graphUtils,
                                         final DMNClientServicesProxy clientServicesProxy,
-                                        final SessionManager sessionManager) {
+                                        final IncludedModelsPageStateProviderImpl stateProvider) {
         this.graphUtils = graphUtils;
         this.clientServicesProxy = clientServicesProxy;
-        this.sessionManager = sessionManager;
+        this.stateProvider = stateProvider;
     }
 
     @PostConstruct
     public void loadPMMLIncludedDocuments() {
+
+        final Optional<Diagram> diagram = stateProvider.getDiagram();
+
+        if (!diagram.isPresent()) {
+            return;
+        }
+
         pmmlDocuments.clear();
-        clientServicesProxy.loadPMMLDocumentsFromImports(getDMNModelPath(),
-                                                         getPMMLIncludedModels(),
+        clientServicesProxy.loadPMMLDocumentsFromImports(getDMNModelPath(diagram.get()),
+                                                         getPMMLIncludedModels(diagram.get()),
                                                          new ServiceCallback<List<PMMLDocumentMetadata>>() {
                                                              @Override
                                                              public void onSuccess(final List<PMMLDocumentMetadata> documents) {
@@ -92,18 +100,11 @@ public class PMMLDocumentMetadataProvider {
         loadPMMLIncludedDocuments();
     }
 
-    private Diagram getDiagram() {
-        return sessionManager.getCurrentSession().getCanvasHandler().getDiagram();
-    }
-
-    private Path getDMNModelPath() {
-        final Diagram diagram = getDiagram();
+    private Path getDMNModelPath(final Diagram diagram) {
         return diagram.getMetadata().getPath();
     }
 
-    private List<PMMLIncludedModel> getPMMLIncludedModels() {
-        final Diagram diagram = getDiagram();
-
+    private List<PMMLIncludedModel> getPMMLIncludedModels(final Diagram diagram) {
         return graphUtils
                 .getDefinitions(diagram)
                 .getImport()

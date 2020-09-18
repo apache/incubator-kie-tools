@@ -21,14 +21,18 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -51,19 +55,32 @@ public class PreviewDiagramScreenTest {
 
     @Mock
     private SessionDiagramPreview<AbstractSession> sessionPreview;
-    private ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews;
 
     @Mock
     private IsWidget previewWidget;
-    @Mock
 
+    @Mock
     private AbstractSession session;
 
     @Mock
     private PreviewDiagramScreen.View view;
 
+    @Mock
+    private DMNDiagramsSession dmnDiagramsSession;
+
+    @Mock
+    private CanvasHandler canvasHandler;
+
+    @Mock
+    private Diagram diagram;
+
+    @Mock
+    private Metadata metadata;
+
     @Captor
     private ArgumentCaptor<SessionViewer.SessionViewerCallback> sessionViewerCallbackArgumentCaptor;
+
+    private ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews;
 
     private PreviewDiagramScreen tested;
 
@@ -73,11 +90,15 @@ public class PreviewDiagramScreenTest {
         when(clientSessionManager.getCurrentSession()).thenReturn(session);
         when(sessionPreview.getView()).thenReturn(previewWidget);
         when(sessionPreview.getInstance()).thenReturn(session);
+        when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getMetadata()).thenReturn(metadata);
 
         this.sessionPreviews = new ManagedInstanceStub<>(sessionPreview);
         this.tested = spy(new PreviewDiagramScreen(clientSessionManager,
                                                    sessionPreviews,
-                                                   view));
+                                                   view,
+                                                   dmnDiagramsSession));
     }
 
     @Test
@@ -95,8 +116,13 @@ public class PreviewDiagramScreenTest {
     }
 
     @Test
-    public void testOnCanvasSessionOpened() {
+    public void testOnCanvasSessionOpenedWhenItsTheSameSession() {
         final SessionOpenedEvent event = mock(SessionOpenedEvent.class);
+        final String currentSessionKey = "key1";
+        final String eventSessionKey = "key1";
+
+        when(dmnDiagramsSession.getCurrentSessionKey()).thenReturn(currentSessionKey);
+        when(dmnDiagramsSession.getSessionKey(metadata)).thenReturn(eventSessionKey);
         when(event.getSession()).thenReturn(session);
 
         tested.onCanvasSessionOpened(event);
@@ -105,8 +131,29 @@ public class PreviewDiagramScreenTest {
     }
 
     @Test
-    public void testOnCanvasSessionDestroyed() {
+    public void testOnCanvasSessionOpenedWhenItsNotTheSameSession() {
+        final SessionOpenedEvent event = mock(SessionOpenedEvent.class);
+        final String currentSessionKey = "key1";
+        final String eventSessionKey = "key2";
+
+        when(dmnDiagramsSession.getCurrentSessionKey()).thenReturn(currentSessionKey);
+        when(dmnDiagramsSession.getSessionKey(metadata)).thenReturn(eventSessionKey);
+        when(event.getSession()).thenReturn(session);
+
+        tested.onCanvasSessionOpened(event);
+
+        verify(tested, never()).showPreview(session);
+    }
+
+    @Test
+    public void testOnCanvasSessionDestroyedWhenItsTheSameSession() {
         final SessionDestroyedEvent event = mock(SessionDestroyedEvent.class);
+        final String currentSessionKey = "key1";
+        final String eventSessionKey = "key1";
+
+        when(event.getMetadata()).thenReturn(metadata);
+        when(dmnDiagramsSession.getCurrentSessionKey()).thenReturn(currentSessionKey);
+        when(dmnDiagramsSession.getSessionKey(metadata)).thenReturn(eventSessionKey);
 
         tested.onCanvasSessionDestroyed(event);
 
@@ -114,13 +161,48 @@ public class PreviewDiagramScreenTest {
     }
 
     @Test
-    public void testOnSessionDiagramOpenedEvent() {
+    public void testOnCanvasSessionDestroyedWhenItsNotTheSameSession() {
+        final SessionDestroyedEvent event = mock(SessionDestroyedEvent.class);
+        final String currentSessionKey = "key1";
+        final String eventSessionKey = "key2";
+
+        when(event.getMetadata()).thenReturn(metadata);
+        when(dmnDiagramsSession.getCurrentSessionKey()).thenReturn(currentSessionKey);
+        when(dmnDiagramsSession.getSessionKey(metadata)).thenReturn(eventSessionKey);
+
+        tested.onCanvasSessionDestroyed(event);
+
+        verify(tested, never()).closePreview();
+    }
+
+    @Test
+    public void testOnSessionDiagramOpenedEventWhenItsTheSameSession() {
         final SessionDiagramOpenedEvent event = mock(SessionDiagramOpenedEvent.class);
+        final String currentSessionKey = "key1";
+        final String eventSessionKey = "key1";
+
+        when(dmnDiagramsSession.getCurrentSessionKey()).thenReturn(currentSessionKey);
+        when(dmnDiagramsSession.getSessionKey(metadata)).thenReturn(eventSessionKey);
         when(event.getSession()).thenReturn(session);
 
         tested.onSessionDiagramOpenedEvent(event);
 
         verify(tested).showPreview(session);
+    }
+
+    @Test
+    public void testOnSessionDiagramOpenedEventWhenItsNotTheSameSession() {
+        final SessionDiagramOpenedEvent event = mock(SessionDiagramOpenedEvent.class);
+        final String currentSessionKey = "key1";
+        final String eventSessionKey = "key2";
+
+        when(dmnDiagramsSession.getCurrentSessionKey()).thenReturn(currentSessionKey);
+        when(dmnDiagramsSession.getSessionKey(metadata)).thenReturn(eventSessionKey);
+        when(event.getSession()).thenReturn(session);
+
+        tested.onSessionDiagramOpenedEvent(event);
+
+        verify(tested, never()).showPreview(session);
     }
 
     @Test

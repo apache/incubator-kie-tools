@@ -16,6 +16,7 @@
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.editor;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -31,9 +32,9 @@ import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
+import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
-import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
@@ -124,9 +125,9 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
     protected final CanvasFileExport canvasFileExport;
     protected final Promises promises;
     protected final IncludedModelsPage includedModelsPage;
-    protected final IncludedModelsPageStateProviderImpl importsPageProvider;
     protected final EditorContextProvider contextProvider;
     protected final GuidedTourBridgeInitializer guidedTourBridgeInitializer;
+    protected final DRDNameChanger drdNameChanger;
 
     public AbstractDMNDiagramEditor(final View view,
                                     final FileMenuBuilder fileMenuBuilder,
@@ -159,9 +160,9 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
                                     final CanvasFileExport canvasFileExport,
                                     final Promises promises,
                                     final IncludedModelsPage includedModelsPage,
-                                    final IncludedModelsPageStateProviderImpl importsPageProvider,
                                     final EditorContextProvider contextProvider,
-                                    final GuidedTourBridgeInitializer guidedTourBridgeInitializer) {
+                                    final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
+                                    final DRDNameChanger drdNameChanger) {
         super(view,
               fileMenuBuilder,
               placeManager,
@@ -193,9 +194,9 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         this.canvasFileExport = canvasFileExport;
         this.promises = promises;
         this.includedModelsPage = includedModelsPage;
-        this.importsPageProvider = importsPageProvider;
         this.contextProvider = contextProvider;
         this.guidedTourBridgeInitializer = guidedTourBridgeInitializer;
+        this.drdNameChanger = drdNameChanger;
     }
 
     @OnStartup
@@ -224,6 +225,13 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
         }
         setupEditorSearchIndex();
         setupSearchComponent();
+    }
+
+    private void setupSessionHeaderContainer() {
+        Optional.ofNullable(getSessionPresenter()).ifPresent(s -> {
+            drdNameChanger.setSessionPresenterView(s.getView());
+            s.getView().setSessionHeaderContainer(getWidget(drdNameChanger.getElement()));
+        });
     }
 
     private void setupEditorSearchIndex() {
@@ -267,7 +275,18 @@ public abstract class AbstractDMNDiagramEditor extends AbstractDiagramEditor {
                      final Viewer.Callback callback) {
         this.layoutHelper.applyLayout(diagram, openDiagramLayoutExecutor);
         feelInitializer.initializeFEELEditor();
-        super.open(diagram, callback);
+        super.open(diagram, new Viewer.Callback() {
+            @Override
+            public void onSuccess() {
+                setupSessionHeaderContainer();
+                callback.onSuccess();
+            }
+
+            @Override
+            public void onError(ClientRuntimeError error) {
+                callback.onError(error);
+            }
+        });
     }
 
     @OnOpen

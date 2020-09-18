@@ -20,14 +20,14 @@
     </dmn:encapsulatedLogic>
   </dmn:businessKnowledgeModel>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id='_28826FFB-0228-4491-9192-6EA8A986B445' name='DRG'>
       <di:extension>
         <kie:ComponentsWidthsExtension>
           <kie:ComponentWidths dmnElementRef='_E33700E8-1CA6-4239-9941-595D41107BE3'/>
           <kie:ComponentWidths dmnElementRef='_9282F671-189E-47AA-8736-ED78A68ACEC8'/>
         </kie:ComponentsWidthsExtension>
       </di:extension>
-      <dmndi:DMNShape id='dmnshape-_E94436F2-A47F-4B93-8DA8-9E346EAFD5A9' dmnElementRef='_E94436F2-A47F-4B93-8DA8-9E346EAFD5A9' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_E94436F2-A47F-4B93-8DA8-9E346EAFD5A9' dmnElementRef='_E94436F2-A47F-4B93-8DA8-9E346EAFD5A9' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>

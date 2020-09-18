@@ -95,12 +95,12 @@ public class LiteralExpression extends Expression implements IsLiteralExpression
     @Override
     public LiteralExpression copy() {
         final LiteralExpression clonedLiteralExpression = new LiteralExpression();
-        clonedLiteralExpression.description = description.copy();
-        clonedLiteralExpression.typeRef = typeRef.copy();
+        clonedLiteralExpression.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        clonedLiteralExpression.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
         clonedLiteralExpression.componentWidths = new ArrayList<>(componentWidths);
-        clonedLiteralExpression.text = text.copy();
+        clonedLiteralExpression.text = Optional.ofNullable(text).map(Text::copy).orElse(null);
         clonedLiteralExpression.importedValues = Optional.ofNullable(importedValues).map(ImportedValues::copy).orElse(null);
-        clonedLiteralExpression.expressionLanguage = expressionLanguage.copy();
+        clonedLiteralExpression.expressionLanguage = Optional.ofNullable(expressionLanguage).map(ExpressionLanguage::copy).orElse(null);
         return clonedLiteralExpression;
     }
 

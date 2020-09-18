@@ -17,22 +17,62 @@
 package org.kie.workbench.common.dmn.client.commands.factory.canvas;
 
 import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
+import org.kie.workbench.common.dmn.client.commands.factory.graph.DMNDeregisterNodeCommand;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.impl.DeregisterNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.util.NodeDefinitionHelper;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public class DMNSafeDeleteNodeCommand extends SafeDeleteNodeCommand {
 
+    private final GraphsProvider graphsProvider;
+    private final Node<?, Edge> node;
+
     public DMNSafeDeleteNodeCommand(final Node<?, Edge> node,
                                     final SafeDeleteNodeCommandCallback safeDeleteCallback,
-                                    final Options options) {
+                                    final Options options,
+                                    final GraphsProvider graphsProvider) {
         super(node, safeDeleteCallback, options);
+        this.graphsProvider = graphsProvider;
+        this.node = node;
     }
 
     @Override
     public boolean shouldKeepChildren(final Node<Definition<?>, Edge> candidate) {
         return DefinitionUtils.getElementDefinition(candidate) instanceof DecisionService;
+    }
+
+    @Override
+    public GraphsProvider getGraphsProvider() {
+        return graphsProvider;
+    }
+
+    @Override
+    protected Graph<?, Node> getGraph(final GraphCommandExecutionContext context) {
+        return getGraph(node);
+    }
+
+    Graph getGraph(final Node node) {
+        final String diagramId = NodeDefinitionHelper.getDiagramId(node);
+        final Diagram diagram = graphsProvider.getDiagram(diagramId);
+        return diagram.getGraph();
+    }
+
+    @Override
+    protected Node<?, Edge> getNode(final GraphCommandExecutionContext context,
+                                    final String uuid) {
+        return node;
+    }
+
+    @Override
+    protected DeregisterNodeCommand createDeregisterNodeCommand(final Node node) {
+        return new DMNDeregisterNodeCommand(getGraph(node), node.getUUID());
     }
 }

@@ -13,7 +13,7 @@
     <dmn:typeRef>number</dmn:typeRef>
   </dmn:itemDefinition>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id='_BBB110B3-2208-4892-9F69-00EC44B6DD14' name='DRG'>
       <di:extension>
         <kie:ComponentsWidthsExtension/>
       </di:extension>

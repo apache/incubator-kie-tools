@@ -87,7 +87,7 @@ public class ImportedValues extends Import implements DMNPropertySet,
         ImportedValues clonedImportedValues = new ImportedValues();
         clonedImportedValues.id = new Id();
         clonedImportedValues.namespace = namespace;
-        clonedImportedValues.locationURI = locationURI.copy();
+        clonedImportedValues.locationURI = Optional.ofNullable(locationURI).map(LocationURI::copy).orElse(null);
         clonedImportedValues.importType = importType;
         clonedImportedValues.importedElement = importedElement;
         clonedImportedValues.expressionLanguage = Optional.ofNullable(expressionLanguage).map(ExpressionLanguage::copy).orElse(null);

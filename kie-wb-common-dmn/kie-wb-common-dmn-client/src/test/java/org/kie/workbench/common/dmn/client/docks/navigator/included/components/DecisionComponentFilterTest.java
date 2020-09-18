@@ -228,7 +228,7 @@ public class DecisionComponentFilterTest {
 
         final DecisionComponentsItem item = mock(DecisionComponentsItem.class);
         final Name name = mock(Name.class);
-        final DecisionComponent decisionComponent = new DecisionComponent("file.dmn", drgElement);
+        final DecisionComponent decisionComponent = new DecisionComponent("file.dmn", drgElement, true);
 
         when(name.getValue()).thenReturn(drgElementName);
         when(item.getDecisionComponent()).thenReturn(decisionComponent);

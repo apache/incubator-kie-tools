@@ -25,16 +25,18 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagramElement;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
+import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.toolbar.ToolbarStateHandler;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
-import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.ManagedSession;
@@ -68,13 +70,13 @@ public class ExpressionEditorTest {
     private ExpressionEditorView view;
 
     @Mock
-    private SessionPresenter sessionPresenter;
-
-    @Mock
     private DecisionNavigatorPresenter decisionNavigator;
 
     @Mock
     private DMNGraphUtils dmnGraphUtils;
+
+    @Mock
+    private DMNDiagramsSession dmnDiagramsSession;
 
     @Mock
     private DMNSession dmnSession;
@@ -97,6 +99,12 @@ public class ExpressionEditorTest {
     @Mock
     private Definition definition;
 
+    @Mock
+    private DMNDiagramElement dmnDiagramElement;
+
+    @Mock
+    private DRDNameChanger drdNameChanger;
+
     @Captor
     private ArgumentCaptor<Optional<HasName>> optionalHasNameCaptor;
 
@@ -118,11 +126,14 @@ public class ExpressionEditorTest {
 
         testedEditor = spy(new ExpressionEditor(view,
                                                 decisionNavigator,
-                                                dmnGraphUtils));
+                                                dmnGraphUtils,
+                                                dmnDiagramsSession,
+                                                drdNameChanger));
         testedEditor.bind(dmnSession);
 
         when(session.getCanvasControl(eq(ExpressionGridCache.class))).thenReturn(expressionGridCache);
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
+        when(dmnDiagramsSession.getCurrentDMNDiagramElement()).thenReturn(Optional.of(dmnDiagramElement));
     }
 
     @Test
@@ -134,6 +145,8 @@ public class ExpressionEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSetExpression() {
+        when(dmnDiagramsSession.isGlobalGraphSelected()).thenReturn(true);
+
         setupExpression(decision, decision, toolbarStateHandler, false);
 
         verify(view).setExpression(eq(NODE_UUID),
@@ -147,6 +160,8 @@ public class ExpressionEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSetExpressionWhenOnlyVisualChangeAllowed() {
+        when(dmnDiagramsSession.isGlobalGraphSelected()).thenReturn(true);
+
         setupExpression(decision, decision, toolbarStateHandler, true);
 
         verify(view).setExpression(eq(NODE_UUID),
@@ -240,6 +255,7 @@ public class ExpressionEditorTest {
 
         when(node.getContent()).thenReturn(definition);
         when(definition.getDefinition()).thenReturn(definitions);
+        when(dmnDiagramsSession.isGlobalGraphSelected()).thenReturn(true);
 
         setupExpression(decision, decision, toolbarStateHandler, false);
 
@@ -300,5 +316,17 @@ public class ExpressionEditorTest {
     public void testIsActiveWhenExpressionEditorIsActive() {
         testedEditor.setExitCommand(mock(Command.class));
         assertTrue(testedEditor.isActive());
+    }
+
+    @Test
+    public void testSetReturnToLinkTextWhenDrdIsSelected() {
+        final String drdName = "DRD Name";
+        when(dmnDiagramsSession.isGlobalGraphSelected()).thenReturn(false);
+        when(dmnDiagramElement.getName()).thenReturn(new Name(drdName));
+        when(dmnDiagramsSession.getCurrentDMNDiagramElement()).thenReturn(Optional.of(dmnDiagramElement));
+
+        setupExpression(decision, decision, toolbarStateHandler, false);
+
+        verify(view).setReturnToLinkText(eq(drdName));
     }
 }

@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -97,11 +98,11 @@ public class OutputClause extends DMNElement implements HasTypeRef,
     public OutputClause copy() {
         return new OutputClause(
                 new Id(),
-                description.copy(),
-                outputValues.copy(),
-                defaultOutputEntry.copy(),
+                Optional.ofNullable(description).map(Description::copy).orElse(null),
+                Optional.ofNullable(outputValues).map(OutputClauseUnaryTests::copy).orElse(null),
+                Optional.ofNullable(defaultOutputEntry).map(OutputClauseLiteralExpression::copy).orElse(null),
                 name,
-                typeRef.copy()
+                Optional.ofNullable(typeRef).map(QName::copy).orElse(null)
         );
     }
 

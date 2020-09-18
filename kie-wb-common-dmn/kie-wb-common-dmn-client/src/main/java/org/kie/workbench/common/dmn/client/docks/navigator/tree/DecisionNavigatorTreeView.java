@@ -19,16 +19,18 @@ package org.kie.workbench.common.dmn.client.docks.navigator.tree;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyDownEvent;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLInputElement;
 import elemental2.dom.HTMLUListElement;
 import elemental2.dom.Text;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
@@ -39,7 +41,6 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem;
 import org.kie.workbench.common.dmn.client.editors.common.RemoveHelper;
-import org.uberfire.client.views.pfly.selectpicker.ElementHelper;
 
 import static java.util.Optional.ofNullable;
 
@@ -92,50 +93,6 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
     }
 
     @Override
-    public void addItem(final DecisionNavigatorItem item,
-                        final DecisionNavigatorItem nextItem) {
-
-        final String uuid = item.getParentUUID();
-        final Element parentElement = findTreeItemElement(uuid);
-        final Element parentChildrenElement = findTreeItemChildrenElement(uuid);
-        final Element newChild = makeTreeItemElement(item);
-        final Element refChild = findItem(nextItem);
-
-        parentElement.classList.add("parent-node");
-        parentChildrenElement.insertBefore(newChild, refChild);
-    }
-
-    @Override
-    public void update(final DecisionNavigatorItem item,
-                       final DecisionNavigatorItem nextItem) {
-
-        final Element parentElement = findTreeItemChildrenElement(item.getParentUUID());
-        final Element oldChild = findItem(item);
-        final Element newChild = makeTreeItemElement(item);
-        final Element refChild = findItem(nextItem);
-
-        if (oldChild != null) {
-            parentElement.removeChild(oldChild);
-        }
-
-        parentElement.insertBefore(newChild, refChild);
-    }
-
-    @Override
-    public boolean hasItem(final DecisionNavigatorItem item) {
-        return findItem(item) != null;
-    }
-
-    @Override
-    public void remove(final DecisionNavigatorItem item) {
-        ofNullable(findItem(item)).ifPresent(element -> {
-            if (element.parentNode != null) {
-                ElementHelper.remove(element);
-            }
-        });
-    }
-
-    @Override
     public void select(final String uuid) {
 
         final Element newElement = findTreeItemTextElement(uuid);
@@ -171,17 +128,6 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
         return ulElement;
     }
 
-    Element findItem(final DecisionNavigatorItem decisionNavigatorItem) {
-
-        final Optional<DecisionNavigatorItem> item = ofNullable(decisionNavigatorItem);
-
-        if (item.isPresent()) {
-            return findTreeItemElement(item.get().getUUID());
-        }
-
-        return null;
-    }
-
     Element makeTreeItemElement(final DecisionNavigatorItem item) {
 
         final Element childrenTree = makeTree(item.getChildren());
@@ -196,14 +142,6 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
 
     void deselect(final Element element) {
         ofNullable(element).ifPresent(e -> e.classList.remove("selected"));
-    }
-
-    Element findTreeItemElement(final String uuid) {
-        return itemsQuerySelector("[data-uuid=\"" + uuid + "\"]");
-    }
-
-    Element findTreeItemChildrenElement(final String uuid) {
-        return itemsQuerySelector("[data-uuid=\"" + uuid + "\"] ul");
     }
 
     Element findTreeItemTextElement(final String uuid) {
@@ -221,8 +159,11 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
     @Templated("DecisionNavigatorTreeView.html#item")
     public static class TreeItem implements IsElement {
 
-        @DataField("text")
-        private HTMLDivElement text;
+        @DataField("text-content")
+        private HTMLElement textContent;
+
+        @DataField("input-text")
+        private HTMLInputElement inputText;
 
         @DataField("icon")
         private HTMLElement icon;
@@ -230,15 +171,32 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
         @DataField("sub-items")
         private HTMLUListElement subItems;
 
+        @DataField("save")
+        private HTMLElement save;
+
+        @DataField("edit")
+        private HTMLElement edit;
+
+        @DataField("remove")
+        private HTMLElement remove;
+
         private DecisionNavigatorItem item;
 
         @Inject
-        public TreeItem(final HTMLDivElement text,
+        public TreeItem(final @Named("span") HTMLElement textContent,
+                        final HTMLInputElement inputText,
                         final @Named("span") HTMLElement icon,
-                        final HTMLUListElement subItems) {
-            this.text = text;
+                        final HTMLUListElement subItems,
+                        final @Named("i") HTMLElement save,
+                        final @Named("i") HTMLElement edit,
+                        final @Named("i") HTMLElement remove) {
+            this.textContent = textContent;
+            this.inputText = inputText;
             this.icon = icon;
             this.subItems = subItems;
+            this.save = save;
+            this.edit = edit;
+            this.remove = remove;
         }
 
         @EventHandler("icon")
@@ -247,9 +205,43 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
             event.stopPropagation();
         }
 
-        @EventHandler("text")
-        public void onTextClick(final ClickEvent event) {
+        @EventHandler("text-content")
+        public void onTextContentClick(final ClickEvent event) {
             getItem().onClick();
+        }
+
+        @EventHandler("input-text")
+        public void onInputTextKeyPress(final KeyDownEvent event) {
+            if (event.getNativeEvent().getKeyCode() == 13) {
+                save();
+            }
+        }
+
+        @EventHandler("input-text")
+        public void onInputTextBlur(final BlurEvent event) {
+            save();
+        }
+
+        @EventHandler("save")
+        public void onSaveClick(final ClickEvent event) {
+            save();
+        }
+
+        @EventHandler("edit")
+        public void onEditClick(final ClickEvent event) {
+            getElement().getClassList().add("editing");
+        }
+
+        @EventHandler("remove")
+        public void onRemoveClick(final ClickEvent event) {
+            getItem().onRemove();
+        }
+
+        void save() {
+            getItem().setLabel(inputText.value);
+            getElement().getClassList().remove("editing");
+            updateLabel();
+            getItem().onUpdate();
         }
 
         public TreeItem setup(final DecisionNavigatorItem item,
@@ -281,10 +273,16 @@ public class DecisionNavigatorTreeView implements DecisionNavigatorTreePresenter
             if (getItem().getChildren().size() > 0) {
                 getElement().getClassList().add("parent-node");
             }
+
+            if (getItem().isEditable()) {
+                getElement().getClassList().add("editable");
+            }
         }
 
         void updateLabel() {
-            text.appendChild(getTextNode(getItem().getLabel()));
+            final String label = getItem().getLabel();
+            inputText.value = label;
+            textContent.appendChild(getTextNode(label));
         }
 
         void updateSubItems(final Element children) {

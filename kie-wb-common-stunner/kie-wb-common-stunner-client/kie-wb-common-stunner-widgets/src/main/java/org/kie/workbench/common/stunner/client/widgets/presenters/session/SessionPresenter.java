@@ -72,6 +72,8 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
 
         IsWidget getToolbarWidget();
 
+        IsWidget getSessionHeaderContainer();
+
         IsWidget getPaletteWidget();
 
         ScrollType getContentScrollType();
@@ -79,6 +81,8 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
         View setCanvasWidget(final IsWidget widget);
 
         View setToolbarWidget(final IsWidget widget);
+
+        View setSessionHeaderContainer(final IsWidget widget);
 
         View setPaletteWidget(final PaletteWidget<PaletteDefinition> paletteWidget);
 
@@ -91,6 +95,10 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
         View showWarning(final String message);
 
         View showError(final String message);
+
+        void showSessionHeaderContainer(final int sessionHeaderHeight);
+
+        void hideSessionHeaderContainer();
 
         void destroy();
 

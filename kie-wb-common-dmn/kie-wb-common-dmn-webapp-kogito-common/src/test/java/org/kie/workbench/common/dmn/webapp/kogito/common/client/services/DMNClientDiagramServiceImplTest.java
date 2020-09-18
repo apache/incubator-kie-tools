@@ -16,55 +16,147 @@
 
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.services;
 
+import java.util.Optional;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.DMNDefinitionSet;
+import org.kie.workbench.common.dmn.client.DMNShapeSet;
+import org.kie.workbench.common.dmn.client.marshaller.DMNMarshallerService;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
+import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
+import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramResourceImpl;
+import org.mockito.Mock;
+import org.uberfire.client.promise.Promises;
+import org.uberfire.promise.SyncPromises;
 
+import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.stunner.kogito.api.editor.DiagramType.PROJECT_DIAGRAM;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DMNClientDiagramServiceImplTest {
+
+    @Mock
+    private FactoryManager factoryManager;
+
+    @Mock
+    private DefinitionManager definitionManager;
+
+    @Mock
+    private DMNMarshallerService marshallerService;
+
+    @Mock
+    private ServiceCallback<Diagram> callback;
+
+    private Promises promises;
 
     private DMNClientDiagramServiceImpl service;
 
     @Before
     public void setup() {
-        service = spy(new DMNClientDiagramServiceImpl());
+        promises = new SyncPromises();
+        service = spy(new DMNClientDiagramServiceImpl(factoryManager, definitionManager, promises, marshallerService));
     }
 
     @Test
-    public void testTransformWhenFileIsNew() {
+    public void testUnmarshallWhenXmlIsNotPresent() {
+
         final String fileName = "file.dmn";
         final String xml = "";
-        final ServiceCallback<Diagram> callback = mock(ServiceCallback.class);
-        final String title = "file";
 
-        doNothing().when(service).doNewDiagram(title, callback);
+        doNothing().when(service).doNewDiagram(anyString(), any());
 
         service.transform(fileName, xml, callback);
 
-        verify(service).doNewDiagram(title, callback);
+        verify(service).doNewDiagram(fileName, callback);
     }
 
     @Test
-    public void testTransformWhenFileIsNotNew() {
-        final String fileName = "file.dmn";
-        final String xml = "xml";
-        final ServiceCallback<Diagram> callback = mock(ServiceCallback.class);
-        final String title = "title";
+    public void testUnmarshallWhenXmlIsPresent() {
 
-        doNothing().when(service).doNewDiagram(title, callback);
+        final String fileName = "file.dmn";
+        final String xml = "<dmn />";
+
+        doNothing().when(service).doTransformation(anyString(), anyString(), any());
 
         service.transform(fileName, xml, callback);
 
-        verify(service, never()).doNewDiagram(title, callback);
-        verify(service).doTransformation(xml, callback);
+        verify(service).doTransformation(fileName, xml, callback);
+    }
+
+    @Test
+    public void testDoNewDiagram() {
+
+        final String fileName = "file.dmn";
+        final String title = "file";
+        final Metadata metadata = mock(Metadata.class);
+        final String defSetId = BindableAdapterUtils.getDefinitionSetId(DMNDefinitionSet.class);
+        final String shapeSetId = BindableAdapterUtils.getShapeSetId(DMNShapeSet.class);
+        final Diagram diagram = mock(Diagram.class);
+
+        doReturn(metadata).when(service).buildMetadataInstance(fileName);
+        when(factoryManager.newDiagram(title, defSetId, metadata)).thenReturn(diagram);
+
+        service.doNewDiagram(fileName, callback);
+
+        verify(marshallerService).setOnDiagramLoad(callback);
+        verify(marshallerService).registerDiagramInstance(diagram, title, shapeSetId);
+        verify(callback).onSuccess(diagram);
+    }
+
+    @Test
+    public void testDoTransformation() {
+
+        final String fileName = "file.dmn";
+        final String xml = "<dmn />";
+        final Metadata metadata = mock(Metadata.class);
+
+        doReturn(metadata).when(service).buildMetadataInstance(fileName);
+
+        service.doTransformation(fileName, xml, callback);
+
+        verify(marshallerService).unmarshall(metadata, xml, callback);
+    }
+
+    @Test
+    public void testBuildMetadataInstance() {
+
+        final String fileName = "file.dmn";
+        when(definitionManager.definitionSets()).thenReturn(mock(TypeDefinitionSetRegistry.class));
+
+        final Metadata metadata = service.buildMetadataInstance(fileName);
+
+        assertEquals("default://master@system/stunner/diagrams", metadata.getRoot().toURI());
+        assertEquals("default://master@system/stunner/diagrams/file.dmn", metadata.getPath().toURI());
+    }
+
+    @Test
+    public void testMarshall() {
+
+        final KogitoDiagramResourceImpl resource = mock(KogitoDiagramResourceImpl.class);
+        final Diagram diagram = mock(Diagram.class);
+
+        when(resource.getType()).thenReturn(PROJECT_DIAGRAM);
+        when(resource.projectDiagram()).thenReturn(Optional.of(diagram));
+
+        service.transform(resource);
+
+        verify(marshallerService).marshall(eq(diagram), any());
     }
 }

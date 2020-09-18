@@ -16,11 +16,11 @@
     <dmn:variable id='_165716E8-D793-4544-9EB2-65ECC3475482' name='Decision-1'/>
   </dmn:decision>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id='_8CF79705-3217-4F3F-84AF-0FDFC7F37953' name='DRG'>
       <di:extension>
         <kie:ComponentsWidthsExtension/>
       </di:extension>
-      <dmndi:DMNShape id='dmnshape-_4A60F4DE-3F65-4D33-8674-72C0FDBC44DE' dmnElementRef='_4A60F4DE-3F65-4D33-8674-72C0FDBC44DE' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_4A60F4DE-3F65-4D33-8674-72C0FDBC44DE' dmnElementRef='_4A60F4DE-3F65-4D33-8674-72C0FDBC44DE' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>

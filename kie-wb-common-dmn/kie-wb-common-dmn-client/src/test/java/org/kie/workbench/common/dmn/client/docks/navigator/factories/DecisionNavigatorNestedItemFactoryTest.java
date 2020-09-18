@@ -30,10 +30,10 @@ import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.client.common.BoxedExpressionHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem;
-import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinition;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.ExpressionEditorDefinitions;
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
+import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
@@ -70,7 +70,7 @@ public class DecisionNavigatorNestedItemFactoryTest {
     private Node<View, Edge> node;
 
     @Mock
-    private DecisionNavigatorPresenter decisionNavigatorPresenter;
+    private DMNGraphUtils dmnGraphUtils;
 
     @Mock
     private Supplier<ExpressionEditorDefinitions> expressionEditorDefinitionsSupplier;
@@ -91,7 +91,7 @@ public class DecisionNavigatorNestedItemFactoryTest {
     public void setup() {
         factory = spy(new DecisionNavigatorNestedItemFactory(sessionManager,
                                                              editExpressionEvent,
-                                                             decisionNavigatorPresenter,
+                                                             dmnGraphUtils,
                                                              expressionEditorDefinitionsSupplier,
                                                              canvasSelectionEvent,
                                                              boxedExpressionHelper));
@@ -121,10 +121,11 @@ public class DecisionNavigatorNestedItemFactoryTest {
 
         final DecisionNavigatorItem item = factory.makeItem(node);
 
+        assertTrue(item.getOnClick().isPresent());
+        assertEquals(command, item.getOnClick().get());
         assertEquals(uuid, item.getUUID());
         assertEquals(label, item.getLabel());
         assertEquals(type, item.getType());
-        assertEquals(command, item.getOnClick());
         assertEquals(parentUUID, item.getParentUUID());
     }
 
@@ -136,7 +137,7 @@ public class DecisionNavigatorNestedItemFactoryTest {
         final CanvasSelectionEvent event = mock(CanvasSelectionEvent.class);
         final String uuid = "uuid";
 
-        when(decisionNavigatorPresenter.getHandler()).thenReturn(canvasHandler);
+        when(dmnGraphUtils.getCanvasHandler()).thenReturn(canvasHandler);
 
         doReturn(event).when(factory).makeCanvasSelectionEvent(canvasHandler, uuid);
         doReturn(expressionEvent).when(factory).makeEditExpressionEvent(node);

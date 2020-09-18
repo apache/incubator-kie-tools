@@ -22,6 +22,7 @@ import java.util.Map;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.appformer.client.stateControl.registry.Registry;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.canvas.controls.resize.DecisionServiceMoveDividerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -48,8 +49,11 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
@@ -104,6 +108,9 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
     @Mock
     private AbstractCanvasShortcutsControlImpl canvasShortcutsControl;
 
+    @Mock
+    private RegistryProvider registryProvider;
+
     @Before
     @Override
     @SuppressWarnings("unchecked")
@@ -113,11 +120,13 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
 
     @Override
     protected DMNEditorSession getSession() {
+
         final DMNEditorSession session = new DMNEditorSession(managedSession,
                                                               canvasCommandManager,
                                                               sessionCommandManager,
                                                               commandRegistry,
-                                                              registerChangedEvent);
+                                                              registerChangedEvent,
+                                                              registryProvider);
         session.constructInstance();
         return session;
     }
@@ -154,5 +163,16 @@ public class DMNEditorSessionTest extends BaseDMNSessionTest<DMNEditorSession> {
         verify(managedSession).registerCanvasHandlerControl(eq(CanvasInPlaceTextEditorControl.class), eq(SingleLineTextEditorBox.class));
         verify(managedSession).registerCanvasHandlerControl(eq(ElementBuilderControl.class), eq(Observer.class));
         verify(managedSession).registerCanvasHandlerControl(eq(DMNCanvasShortcutsControl.class));
+    }
+
+    @Test
+    public void testGetCommandRegistry() {
+        final Registry expectedRegistry = mock(Registry.class);
+
+        when(registryProvider.getCurrentCommandRegistry()).thenReturn(expectedRegistry);
+
+        final Registry actualRegistry = session.getCommandRegistry();
+
+        assertEquals(expectedRegistry, actualRegistry);
     }
 }

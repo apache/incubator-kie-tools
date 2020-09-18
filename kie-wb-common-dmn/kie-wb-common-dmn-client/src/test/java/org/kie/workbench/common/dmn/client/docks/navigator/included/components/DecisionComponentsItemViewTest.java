@@ -192,6 +192,7 @@ public class DecisionComponentsItemViewTest {
         when(clientTranslationService.getValue(DecisionComponentsItemView_DuplicatedNode)).thenReturn(expectedWarnMessage);
         doReturn(graph).when(view).getGraph();
 
+        view.setIsImported(true);
         view.makeDragProxyCallbackImpl(drgElement, factory).onComplete(x, y);
 
         verify(buildCanvasShapeEvent, never()).fire(any());
@@ -201,6 +202,39 @@ public class DecisionComponentsItemViewTest {
 
         assertEquals(expectedWarnMessage, notificationEvent.getNotification());
         assertEquals(expectedWarnType, notificationEvent.getType());
+    }
+
+    @Test
+    public void testMakeDragProxyCallbackImplWhenNodeIsDuplicatedButIsNotImported() {
+
+        final ClientSession currentSession = mock(ClientSession.class);
+        final AbstractCanvasHandler canvasHandler = mock(AbstractCanvasHandler.class);
+        final ShapeFactory factory = mock(ShapeFactory.class);
+        final DRGElement drgElement = mock(DRGElement.class);
+        final int x = 10;
+        final int y = 20;
+
+        final Graph<?, Node> graph = mock(Graph.class);
+        final List<Node> nodes = new ArrayList<>();
+
+        final String id1 = "123";
+        final String id2 = "123";
+
+        nodes.add(createNode(id1));
+        nodes.add(createNode(id2));
+
+        when(graph.nodes()).thenReturn(nodes);
+        when(drgElement.getId()).thenReturn(new Id(id1));
+        when(sessionManager.getCurrentSession()).thenReturn(currentSession);
+        when(currentSession.getCanvasHandler()).thenReturn(canvasHandler);
+
+        doReturn(graph).when(view).getGraph();
+        view.setIsImported(false);
+
+        view.makeDragProxyCallbackImpl(drgElement, factory).onComplete(x, y);
+
+        verify(buildCanvasShapeEvent).fire(any());
+        verify(notificationEvent, never()).fire(notificationEventArgumentCaptor.capture());
     }
 
     private Node createNode(final String id) {

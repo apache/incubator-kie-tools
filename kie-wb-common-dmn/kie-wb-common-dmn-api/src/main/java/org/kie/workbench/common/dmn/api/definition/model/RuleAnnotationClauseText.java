@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.dmn.api.definition.HasText;
@@ -33,7 +34,7 @@ public class RuleAnnotationClauseText extends DMNElement implements HasText {
 
     public RuleAnnotationClauseText copy() {
         final RuleAnnotationClauseText clonedRuleAnnotationClauseText = new RuleAnnotationClauseText();
-        clonedRuleAnnotationClauseText.text = text.copy();
+        clonedRuleAnnotationClauseText.text = Optional.ofNullable(text).map(Text::copy).orElse(null);
         return clonedRuleAnnotationClauseText;
     }
 

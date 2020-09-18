@@ -17,8 +17,6 @@
 package org.kie.workbench.common.dmn.client.docks.navigator;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.appformer.client.context.Channel;
@@ -28,31 +26,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
-import org.kie.workbench.common.dmn.client.docks.navigator.factories.DecisionNavigatorItemFactory;
 import org.kie.workbench.common.dmn.client.docks.navigator.included.components.DecisionComponents;
 import org.kie.workbench.common.dmn.client.docks.navigator.tree.DecisionNavigatorTreePresenter;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
 import org.mockito.Mock;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionNavigatorPresenter_DecisionNavigator;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -72,16 +60,13 @@ public class DecisionNavigatorPresenterTest {
     private DecisionNavigatorObserver decisionNavigatorObserver;
 
     @Mock
-    private DecisionNavigatorChildrenTraverse navigatorChildrenTraverse;
-
-    @Mock
-    private DecisionNavigatorItemFactory itemFactory;
-
-    @Mock
     private TranslationService translationService;
 
     @Mock
     private EditorContextProvider context;
+
+    @Mock
+    private DecisionNavigatorItemsProvider navigatorItemsProvider;
 
     private DecisionNavigatorPresenter presenter;
 
@@ -91,26 +76,9 @@ public class DecisionNavigatorPresenterTest {
                                                        treePresenter,
                                                        decisionComponents,
                                                        decisionNavigatorObserver,
-                                                       navigatorChildrenTraverse,
-                                                       itemFactory,
                                                        translationService,
-                                                       context));
-    }
-
-    @Test
-    public void testGetDiagram() {
-
-        final CanvasHandler handler = mock(CanvasHandler.class);
-        final Diagram expectedDiagram = mock(Diagram.class);
-
-        doNothing().when(presenter).refreshTreeView();
-        doReturn(expectedDiagram).when(handler).getDiagram();
-
-        presenter.setHandler(handler);
-
-        final Diagram actual = presenter.getDiagram();
-
-        assertEquals(expectedDiagram, actual);
+                                                       context,
+                                                       navigatorItemsProvider));
     }
 
     @Test
@@ -205,201 +173,26 @@ public class DecisionNavigatorPresenterTest {
     }
 
     @Test
-    public void testGetHandler() {
-
-        final CanvasHandler expectedCanvasHandler = mock(CanvasHandler.class);
-        doNothing().when(presenter).refreshTreeView();
-        presenter.setHandler(expectedCanvasHandler);
-
-        final CanvasHandler actualCanvasHandler = presenter.getHandler();
-
-        assertEquals(expectedCanvasHandler, actualCanvasHandler);
-    }
-
-    @Test
-    public void testSetHandler() {
-
-        final CanvasHandler expectedCanvasHandler = mock(CanvasHandler.class);
-        doNothing().when(presenter).refreshTreeView();
-
-        presenter.setHandler(expectedCanvasHandler);
-
-        verify(presenter).refreshTreeView();
-        verify(presenter).refreshComponentsView();
-        assertEquals(expectedCanvasHandler, presenter.getHandler());
-    }
-
-    @Test
     public void testRefreshTreeView() {
 
         final ArrayList<DecisionNavigatorItem> items = new ArrayList<>();
         doReturn(items).when(presenter).getItems();
 
+        presenter.disableRefreshHandlers();
+        presenter.refreshTreeView();
+
+        presenter.enableRefreshHandlers();
         presenter.refreshTreeView();
 
         verify(treePresenter).setupItems(items);
     }
 
     @Test
-    public void testGetItems() {
+    public void testRefresh() {
+        presenter.refresh();
 
-        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
-        final Diagram diagram = mock(Diagram.class);
-        final Graph graph = mock(Graph.class);
-        final List<DecisionNavigatorItem> expectedItems = singletonList(mock(DecisionNavigatorItem.class));
-
-        doNothing().when(presenter).refreshTreeView();
-        when(canvasHandler.getDiagram()).thenReturn(diagram);
-        when(diagram.getGraph()).thenReturn(graph);
-        when(navigatorChildrenTraverse.getItems(graph)).thenReturn(expectedItems);
-
-        presenter.setHandler(canvasHandler);
-
-        final List<DecisionNavigatorItem> actualItems = presenter.getItems();
-
-        assertEquals(expectedItems, actualItems);
-    }
-
-    @Test
-    public void testGetItemsWhenDiagramIsNull() {
-
-        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
-        final List<DecisionNavigatorItem> expectedItems = emptyList();
-
-        when(canvasHandler.getDiagram()).thenReturn(null);
-
-        presenter.setHandler(canvasHandler);
-
-        final List<DecisionNavigatorItem> actualItems = presenter.getItems();
-
-        assertEquals(expectedItems, actualItems);
-    }
-
-    @Test
-    public void testGetGraphWhenDiagramIsNull() {
-
-        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
-
-        when(canvasHandler.getDiagram()).thenReturn(null);
-
-        presenter.setHandler(canvasHandler);
-
-        final Optional<Graph> actualGraph = presenter.getGraph();
-
-        assertFalse(actualGraph.isPresent());
-    }
-
-    @Test
-    public void testGetGraphWhenHandlerIsNull() {
-
-        presenter.setHandler(null);
-
-        final Optional<Graph> actualGraph = presenter.getGraph();
-
-        assertFalse(actualGraph.isPresent());
-    }
-
-    @Test
-    public void testGetGraphWhenGraphExists() {
-
-        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
-        final Diagram diagram = mock(Diagram.class);
-        final Graph expectedGraph = mock(Graph.class);
-
-        when(canvasHandler.getDiagram()).thenReturn(diagram);
-        when(diagram.getGraph()).thenReturn(expectedGraph);
-
-        presenter.setHandler(canvasHandler);
-
-        final Optional<Graph> actualGraph = presenter.getGraph();
-
-        assertTrue(actualGraph.isPresent());
-        assertEquals(expectedGraph, actualGraph.get());
-    }
-
-    @Test
-    public void testAddOrUpdateElement() {
-
-        final Element element = mock(Node.class);
-        final DecisionNavigatorItem item = mock(DecisionNavigatorItem.class);
-
-        doReturn(item).when(presenter).makeItem(element);
-
-        presenter.addOrUpdateElement(element);
-
-        verify(treePresenter).addOrUpdateItem(item);
-    }
-
-    @Test
-    public void testAddOrUpdateElementWhenElementIsNotNode() {
-
-        final Element element = mock(Edge.class);
-        final DecisionNavigatorItem item = mock(DecisionNavigatorItem.class);
-
-        presenter.addOrUpdateElement(element);
-
-        verify(treePresenter, never()).addOrUpdateItem(item);
-    }
-
-    @Test
-    public void testUpdateElement() {
-
-        final Element element = mock(Node.class);
-        final DecisionNavigatorItem item = mock(DecisionNavigatorItem.class);
-
-        doReturn(item).when(presenter).makeItem(element);
-
-        presenter.updateElement(element);
-
-        verify(treePresenter).updateItem(item);
-    }
-
-    @Test
-    public void testUpdateElementWhenElementIsNotNode() {
-
-        final Element element = mock(Edge.class);
-        final DecisionNavigatorItem item = mock(DecisionNavigatorItem.class);
-
-        presenter.updateElement(element);
-
-        verify(treePresenter, never()).addOrUpdateItem(item);
-    }
-
-    @Test
-    public void testRemoveElement() {
-
-        final Element element = mock(Node.class);
-        final DecisionNavigatorItem item = mock(DecisionNavigatorItem.class);
-
-        doReturn(item).when(presenter).makeItem(element);
-
-        presenter.removeElement(element);
-
-        verify(treePresenter).remove(item);
-    }
-
-    @Test
-    public void testRemoveElementWhenElementIsNotNode() {
-
-        final Element element = mock(Edge.class);
-        final DecisionNavigatorItem item = mock(DecisionNavigatorItem.class);
-
-        presenter.removeElement(element);
-
-        verify(treePresenter, never()).addOrUpdateItem(item);
-    }
-
-    @Test
-    public void testMakeItem() {
-
-        final Element element = mock(Element.class);
-        final Node node = mock(Node.class);
-
-        when(element.asNode()).thenReturn(node);
-
-        presenter.makeItem(element);
-
-        verify(itemFactory).makeItem(node);
+        verify(presenter).refreshTreeView();
+        verify(presenter).refreshComponentsView();
     }
 
     @Test
@@ -419,25 +212,29 @@ public class DecisionNavigatorPresenterTest {
 
     @Test
     public void testOnRefreshDecisionComponents() {
+
+        presenter.disableRefreshHandlers();
+        presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
         presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
 
-        verify(presenter).refreshComponentsView();
+        presenter.enableRefreshHandlers();
+        presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
+        presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
+
+        verify(decisionComponents, times(2)).refresh();
     }
 
     @Test
-    public void testRefreshComponentsView() {
+    public void testOnElementAdded() {
 
-        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
-        final Diagram diagram = mock(Diagram.class);
-        final Graph expectedGraph = mock(Graph.class);
+        presenter.disableRefreshHandlers();
+        presenter.onElementAdded(mock(CanvasElementAddedEvent.class));
+        presenter.onElementAdded(mock(CanvasElementAddedEvent.class));
 
-        when(canvasHandler.getDiagram()).thenReturn(diagram);
-        when(diagram.getGraph()).thenReturn(expectedGraph);
+        presenter.enableRefreshHandlers();
+        presenter.onElementAdded(mock(CanvasElementAddedEvent.class));
+        presenter.onElementAdded(mock(CanvasElementAddedEvent.class));
 
-        doReturn(Optional.of(canvasHandler)).when(presenter).getOptionalHandler();
-
-        presenter.refreshComponentsView();
-
-        verify(decisionComponents).refresh(diagram);
+        verify(decisionComponents, times(2)).refresh();
     }
 }

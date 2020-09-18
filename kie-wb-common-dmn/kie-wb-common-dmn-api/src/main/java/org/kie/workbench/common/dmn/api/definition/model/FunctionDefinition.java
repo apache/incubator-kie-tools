@@ -64,8 +64,8 @@ public class FunctionDefinition extends Expression implements HasExpression {
     @Override
     public FunctionDefinition copy() {
         final FunctionDefinition clonedFunctionDefinition = new FunctionDefinition();
-        clonedFunctionDefinition.description = description.copy();
-        clonedFunctionDefinition.typeRef = typeRef.copy();
+        clonedFunctionDefinition.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        clonedFunctionDefinition.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
         clonedFunctionDefinition.componentWidths = new ArrayList<>(componentWidths);
         clonedFunctionDefinition.expression = Optional.ofNullable(expression).map(Expression::copy).orElse(null);
         clonedFunctionDefinition.formalParameter = cloneFormalParameterList();

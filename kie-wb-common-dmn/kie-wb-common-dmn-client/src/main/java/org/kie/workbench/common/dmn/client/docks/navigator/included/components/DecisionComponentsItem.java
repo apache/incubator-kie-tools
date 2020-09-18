@@ -55,6 +55,7 @@ public class DecisionComponentsItem {
         view.setIcon(getDecisionComponent().getIcon().getUri().asString());
         view.setName(getDecisionComponent().getName());
         view.setFile(getDecisionComponent().getFileName());
+        view.setIsImported(getDecisionComponent().isImported());
     }
 
     DecisionComponent getDecisionComponent() {
@@ -81,5 +82,7 @@ public class DecisionComponentsItem {
         void setName(final String name);
 
         void setFile(final String includedModelName);
+
+        void setIsImported(final boolean imported);
     }
 }

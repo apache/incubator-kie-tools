@@ -25,6 +25,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
+import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -45,7 +47,9 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
     private ExpressionEditorView view;
     private DecisionNavigatorPresenter decisionNavigator;
     private DMNGraphUtils dmnGraphUtils;
+    private DMNDiagramsSession dmnDiagramsSession;
     private Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent;
+    private DRDNameChanger drdNameChanger;
 
     private Optional<DMNSession> session = Optional.empty();
     private Optional<ExpressionEditorView.Presenter> expressionEditor = Optional.empty();
@@ -85,18 +89,23 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
     public ExpressionEditorControlImpl(final ExpressionEditorView view,
                                        final DecisionNavigatorPresenter decisionNavigator,
                                        final DMNGraphUtils dmnGraphUtils,
-                                       final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent) {
+                                       final DMNDiagramsSession dmnDiagramsSession,
+                                       final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
+                                       final DRDNameChanger drdNameChanger) {
         this.view = view;
         this.decisionNavigator = decisionNavigator;
         this.dmnGraphUtils = dmnGraphUtils;
+        this.dmnDiagramsSession = dmnDiagramsSession;
         this.canvasElementUpdatedEvent = canvasElementUpdatedEvent;
+        this.drdNameChanger = drdNameChanger;
     }
 
     @Override
     public void bind(final DMNSession session) {
         final ExpressionEditorView.Presenter editor = makeExpressionEditor(view,
                                                                            decisionNavigator,
-                                                                           dmnGraphUtils);
+                                                                           dmnGraphUtils,
+                                                                           dmnDiagramsSession);
         editor.bind(session);
         this.session = Optional.of(session);
         this.expressionEditor = Optional.of(editor);
@@ -106,10 +115,13 @@ public class ExpressionEditorControlImpl extends AbstractCanvasControl<AbstractC
 
     ExpressionEditorView.Presenter makeExpressionEditor(final ExpressionEditorView view,
                                                         final DecisionNavigatorPresenter decisionNavigator,
-                                                        final DMNGraphUtils dmnGraphUtils) {
+                                                        final DMNGraphUtils dmnGraphUtils,
+                                                        final DMNDiagramsSession dmnDiagramsSession) {
         return new ExpressionEditor(view,
                                     decisionNavigator,
-                                    dmnGraphUtils);
+                                    dmnGraphUtils,
+                                    dmnDiagramsSession,
+                                    drdNameChanger);
     }
 
     @Override

@@ -37,16 +37,20 @@ public class IncludedModelsPage extends DMNPage {
 
     private final FlashMessages flashMessages;
 
+    private final IncludedModelsPageStateProvider stateProvider;
+
     @Inject
     public IncludedModelsPage(final HTMLDivElement pageView,
                               final TranslationService translationService,
                               final FlashMessages flashMessages,
                               final IncludedModelsPagePresenter includedModelsPresenter,
-                              final IncludedModelsPageState pageState) {
+                              final IncludedModelsPageState pageState,
+                              final IncludedModelsPageStateProvider stateProvider) {
         super(IncludedModelsPage_Title, pageView, translationService);
         this.flashMessages = flashMessages;
         this.includedModelsPresenter = includedModelsPresenter;
         this.pageState = pageState;
+        this.stateProvider = stateProvider;
     }
 
     @Override
@@ -61,7 +65,7 @@ public class IncludedModelsPage extends DMNPage {
         getFlashMessages().hideMessages();
     }
 
-    public void setup(final IncludedModelsPageStateProvider stateProvider) {
+    public void reload() {
         getPageState().init(stateProvider);
         getIncludedModelsPresenter().refresh();
     }

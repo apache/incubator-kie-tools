@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -88,9 +89,9 @@ public class UnaryTests extends DMNElement implements IsUnaryTests,
     public UnaryTests copy() {
         return new UnaryTests(
                 new Id(),
-                description.copy(),
-                text.copy(),
-                expressionLanguage.copy(),
+                Optional.ofNullable(description).map(Description::copy).orElse(null),
+                Optional.ofNullable(text).map(Text::copy).orElse(null),
+                Optional.ofNullable(expressionLanguage).map(ExpressionLanguage::copy).orElse(null),
                 constraintType
         );
     }

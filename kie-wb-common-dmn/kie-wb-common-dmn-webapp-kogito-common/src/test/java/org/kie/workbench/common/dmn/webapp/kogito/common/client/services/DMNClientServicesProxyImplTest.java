@@ -31,7 +31,7 @@ import org.kie.workbench.common.dmn.api.editors.included.PMMLDocumentMetadata;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.types.DMNSimpleTimeZone;
 import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.DMNMarshallerImportsHelperKogito;
+import org.kie.workbench.common.dmn.client.marshaller.included.DMNMarshallerImportsClientHelper;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.mockito.Mock;
@@ -59,7 +59,7 @@ public class DMNClientServicesProxyImplTest {
     private Path path;
 
     @Mock
-    private DMNMarshallerImportsHelperKogito importsHelperKogito;
+    private DMNMarshallerImportsClientHelper importsHelperKogito;
 
     private DMNClientServicesProxyImpl service;
 

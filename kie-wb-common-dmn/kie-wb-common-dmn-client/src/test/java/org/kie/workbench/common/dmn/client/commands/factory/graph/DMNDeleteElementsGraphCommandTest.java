@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.commands.factory.graph;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.commands.factory.canvas.DMNSafeDeleteNodeCommand;
+import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.impl.DeleteElementsCommand;
@@ -36,12 +37,14 @@ public class DMNDeleteElementsGraphCommandTest {
     @Test
     public void testCreateSafeDeleteNodeCommand() {
 
+        final GraphsProvider selectedDiagramProvider = mock(GraphsProvider.class);
         final Node<?, Edge> node = mock(Node.class);
-        when(node.getUUID()).thenReturn("uuid");
         final SafeDeleteNodeCommand.Options options = SafeDeleteNodeCommand.Options.defaults();
         final DeleteElementsCommand.DeleteCallback callback = mock(DeleteElementsCommand.DeleteCallback.class);
         final DMNDeleteElementsGraphCommand command = mock(DMNDeleteElementsGraphCommand.class);
 
+        when(command.getGraphsProvider()).thenReturn(selectedDiagramProvider);
+        when(node.getUUID()).thenReturn("uuid");
         when(command.createSafeDeleteNodeCommand(node, options, callback)).thenCallRealMethod();
 
         final SafeDeleteNodeCommand actual = command.createSafeDeleteNodeCommand(node, options, callback);
@@ -51,5 +54,6 @@ public class DMNDeleteElementsGraphCommandTest {
         final DMNSafeDeleteNodeCommand dmnCommand = (DMNSafeDeleteNodeCommand) actual;
         assertEquals(dmnCommand.getNode(), node);
         assertEquals(dmnCommand.getOptions(), options);
+        assertEquals(dmnCommand.getGraphsProvider(), selectedDiagramProvider);
     }
 }

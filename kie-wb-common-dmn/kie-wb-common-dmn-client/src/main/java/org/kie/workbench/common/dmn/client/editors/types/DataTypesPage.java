@@ -186,7 +186,7 @@ public class DataTypesPage extends DMNPage {
     }
 
     private Optional<Definitions> getDefinitions() {
-        return ofNullable(dmnGraphUtils.getDefinitions());
+        return ofNullable(dmnGraphUtils.getModelDefinitions());
     }
 
     public void enableShortcuts() {

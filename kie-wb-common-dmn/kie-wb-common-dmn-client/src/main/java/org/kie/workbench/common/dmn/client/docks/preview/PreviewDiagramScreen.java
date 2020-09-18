@@ -16,6 +16,8 @@
 package org.kie.workbench.common.dmn.client.docks.preview;
 
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,10 +29,12 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.stunner.client.widgets.canvas.StunnerBoundsProviderFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDestroyedEvent;
@@ -38,6 +42,7 @@ import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagram
 import org.kie.workbench.common.stunner.core.client.session.event.SessionOpenedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -64,11 +69,13 @@ public class PreviewDiagramScreen {
     private final SessionManager clientSessionManager;
     private final ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews;
     private final View view;
+    private final DMNDiagramsSession session;
 
     private SessionDiagramPreview<AbstractSession> previewWidget;
 
     protected PreviewDiagramScreen() {
         this(null,
+             null,
              null,
              null);
     }
@@ -76,10 +83,12 @@ public class PreviewDiagramScreen {
     @Inject
     public PreviewDiagramScreen(final SessionManager clientSessionManager,
                                 final @Any @DMNEditor ManagedInstance<SessionDiagramPreview<AbstractSession>> sessionPreviews,
-                                final View view) {
+                                final View view,
+                                final DMNDiagramsSession session) {
         this.clientSessionManager = clientSessionManager;
         this.sessionPreviews = sessionPreviews;
         this.view = view;
+        this.session = session;
     }
 
     @OnStartup
@@ -133,17 +142,40 @@ public class PreviewDiagramScreen {
 
     void onCanvasSessionOpened(final @Observes SessionOpenedEvent sessionOpenedEvent) {
         checkNotNull("sessionOpenedEvent", sessionOpenedEvent);
-        showPreview(sessionOpenedEvent.getSession());
+
+        if (isSameDiagramSession(sessionOpenedEvent.getSession())) {
+            showPreview(sessionOpenedEvent.getSession());
+        }
     }
 
     void onCanvasSessionDestroyed(final @Observes SessionDestroyedEvent sessionDestroyedEvent) {
         checkNotNull("sessionDestroyedEvent", sessionDestroyedEvent);
-        closePreview();
+
+        if (isSameDiagramSession(sessionDestroyedEvent.getMetadata())) {
+            closePreview();
+        }
     }
 
     void onSessionDiagramOpenedEvent(final @Observes SessionDiagramOpenedEvent sessionDiagramOpenedEvent) {
         checkNotNull("sessionDiagramOpenedEvent", sessionDiagramOpenedEvent);
-        showPreview(sessionDiagramOpenedEvent.getSession());
+
+        if (isSameDiagramSession(sessionDiagramOpenedEvent.getSession())) {
+            showPreview(sessionDiagramOpenedEvent.getSession());
+        }
+    }
+
+    private boolean isSameDiagramSession(final ClientSession session) {
+        final CanvasHandler canvasHandler = session.getCanvasHandler();
+        final Diagram diagram = canvasHandler.getDiagram();
+        return Optional
+                .ofNullable(diagram)
+                .map((Function<Diagram, Metadata>) Diagram::getMetadata)
+                .map(this::isSameDiagramSession)
+                .orElse(false);
+    }
+
+    private boolean isSameDiagramSession(final Metadata metadata) {
+        return Objects.equals(session.getCurrentSessionKey(), session.getSessionKey(metadata));
     }
 
     void showPreview(final ClientSession session) {

@@ -17,6 +17,7 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -87,9 +88,9 @@ public class InputClause extends DMNElement implements HasTypeRefs,
     public InputClause copy() {
         return new InputClause(
                 new Id(),
-                description.copy(),
-                inputExpression.copy(),
-                inputValues.copy()
+                Optional.ofNullable(description).map(Description::copy).orElse(null),
+                Optional.ofNullable(inputExpression).map(InputClauseLiteralExpression::copy).orElse(null),
+                Optional.ofNullable(inputValues).map(InputClauseUnaryTests::copy).orElse(null)
         );
     }
 

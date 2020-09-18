@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -64,6 +65,9 @@ public class DMNGraphUtilsTest {
     private CanvasHandler canvasHandler;
 
     @Mock
+    private DMNDiagramsSession dmnDiagramsSession;
+
+    @Mock
     private Metadata metadata;
 
     private DMNGraphUtils utils;
@@ -74,7 +78,7 @@ public class DMNGraphUtilsTest {
 
     @Before
     public void setup() {
-        this.utils = new DMNGraphUtils(sessionManager, dmnDiagramUtils);
+        this.utils = new DMNGraphUtils(sessionManager, dmnDiagramUtils, dmnDiagramsSession);
         this.graph = new GraphImpl<>(UUID.uuid(), new GraphNodeStoreImpl());
         this.diagram = new DiagramImpl(NAME, graph, metadata);
         when(sessionManager.getCurrentSession()).thenReturn(clientSession);
@@ -87,9 +91,10 @@ public class DMNGraphUtilsTest {
 
         final Definitions expectedDefinitions = mock(Definitions.class);
 
+        when(dmnDiagramsSession.getDRGDiagram()).thenReturn(diagram);
         when(dmnDiagramUtils.getDefinitions(diagram)).thenReturn(expectedDefinitions);
 
-        final Definitions actualDefinitions = utils.getDefinitions();
+        final Definitions actualDefinitions = utils.getModelDefinitions();
 
         assertNotNull(actualDefinitions);
         assertEquals(expectedDefinitions, actualDefinitions);
@@ -111,13 +116,7 @@ public class DMNGraphUtilsTest {
 
     @Test
     public void testGetDefinitionsWithNoNodes() {
-        assertNull(utils.getDefinitions());
-    }
-
-    @Test
-    public void testGetDiagram() {
-        final Diagram actualDiagram = utils.getDiagram();
-        assertEquals(diagram, actualDiagram);
+        assertNull(utils.getModelDefinitions());
     }
 
     @Test
@@ -127,12 +126,12 @@ public class DMNGraphUtilsTest {
     }
 
     @Test
-    public void testGetDRGElements() {
+    public void testGetModelDRGElements() {
 
         final List<DRGElement> expectedDRGElements = asList(mock(DRGElement.class), mock(DRGElement.class));
-        when(dmnDiagramUtils.getDRGElements(diagram)).thenReturn(expectedDRGElements);
+        when(dmnDiagramsSession.getModelDRGElements()).thenReturn(expectedDRGElements);
 
-        final List<DRGElement> actualDRGElements = utils.getDRGElements();
+        final List<DRGElement> actualDRGElements = utils.getModelDRGElements();
 
         assertEquals(expectedDRGElements, actualDRGElements);
     }
@@ -142,6 +141,7 @@ public class DMNGraphUtilsTest {
 
         final Stream<Node> expectedStream = Stream.of(mock(Node.class));
 
+        when(dmnDiagramsSession.getCurrentGraphDiagram()).thenReturn(diagram);
         when(dmnDiagramUtils.getNodeStream(diagram)).thenReturn(expectedStream);
 
         final Stream<Node> actualStream = utils.getNodeStream();

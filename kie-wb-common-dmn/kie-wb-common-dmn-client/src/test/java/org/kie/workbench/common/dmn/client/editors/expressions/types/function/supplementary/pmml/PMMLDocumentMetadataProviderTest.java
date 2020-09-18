@@ -19,6 +19,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.function.s
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,12 +35,10 @@ import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLModelMetadata;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLParameterMetadata;
 import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
+import org.kie.workbench.common.dmn.client.editors.included.imports.IncludedModelsPageStateProviderImpl;
 import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
-import org.kie.workbench.common.stunner.core.client.api.SessionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
-import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.ArgumentCaptor;
@@ -68,7 +67,7 @@ public class PMMLDocumentMetadataProviderTest {
     private DMNClientServicesProxy clientServicesProxy;
 
     @Mock
-    private SessionManager sessionManager;
+    private IncludedModelsPageStateProviderImpl stateProvider;
 
     @Mock
     private Path dmnModelPath;
@@ -88,15 +87,11 @@ public class PMMLDocumentMetadataProviderTest {
         this.definitions = new Definitions();
         this.provider = new PMMLDocumentMetadataProvider(graphUtils,
                                                          clientServicesProxy,
-                                                         sessionManager);
+                                                         stateProvider);
 
-        final ClientSession session = mock(ClientSession.class);
-        final CanvasHandler canvasHandler = mock(CanvasHandler.class);
         final Diagram diagram = mock(Diagram.class);
         final Metadata metadata = mock(Metadata.class);
-        when(sessionManager.getCurrentSession()).thenReturn(session);
-        when(session.getCanvasHandler()).thenReturn(canvasHandler);
-        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(stateProvider.getDiagram()).thenReturn(Optional.of(diagram));
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getPath()).thenReturn(dmnModelPath);
 

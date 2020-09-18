@@ -48,15 +48,15 @@ public class ItemDefinitionUtils {
     }
 
     public List<ItemDefinition> all() {
-        if (dmnGraphUtils.getDefinitions() != null) {
-            return dmnGraphUtils.getDefinitions().getItemDefinition();
+        if (dmnGraphUtils.getModelDefinitions() != null) {
+            return dmnGraphUtils.getModelDefinitions().getItemDefinition();
         } else {
             return Collections.emptyList();
         }
     }
 
     public void addItemDefinitions(final List<ItemDefinition> newItemDefinitions) {
-        final List<ItemDefinition> itemDefinitions = dmnGraphUtils.getDefinitions().getItemDefinition();
+        final List<ItemDefinition> itemDefinitions = dmnGraphUtils.getModelDefinitions().getItemDefinition();
         itemDefinitions.addAll(newItemDefinitions);
     }
 
@@ -81,7 +81,7 @@ public class ItemDefinitionUtils {
     }
 
     Optional<String> getPrefixForNamespaceURI(final String namespace) {
-        final Definitions definitions = dmnGraphUtils.getDefinitions();
+        final Definitions definitions = dmnGraphUtils.getModelDefinitions();
         return definitions == null ? Optional.empty() : definitions.getPrefixForNamespaceURI(namespace);
     }
 }

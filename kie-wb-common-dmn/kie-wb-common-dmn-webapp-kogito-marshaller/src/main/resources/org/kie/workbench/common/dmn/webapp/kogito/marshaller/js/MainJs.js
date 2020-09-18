@@ -9,9 +9,15 @@ MainJs = {
 
     mappings: [DC, DI, DMNDI12, DMN12, KIE],
 
+    isJsInteropConstructorsInitialized: false,
+
     initializeJsInteropConstructors: function (constructorsMap) {
 
-        var extraTypes = [{typeName: 'Name', namespace: null}];
+        if (this.isJsInteropConstructorsInitialized) {
+            return;
+        }
+
+        this.isJsInteropConstructorsInitialized = true;
 
         function createFunction(typeName) {
             return new Function('return { "TYPE_NAME" : "' + typeName + '" }');
@@ -22,15 +28,12 @@ MainJs = {
         }
 
         function createConstructor(value) {
-            console.log("Create createConstructor " + value);
+
             var parsedJson = JSON.parse(value);
             var name = parsedJson["name"];
             var nameSpace = parsedJson["nameSpace"];
             var typeName = parsedJson["typeName"];
-            console.log("parsedJson " + parsedJson);
-            console.log("name " + name);
-            console.log("nameSpace " + nameSpace);
-            console.log("typeName " + typeName);
+
             if (nameSpace != null) {
                 if (typeName != null) {
                     window[nameSpace][name] = createFunction(typeName);
@@ -55,7 +58,6 @@ MainJs = {
         }
 
         function iterateValueEntry(values) {
-            console.log("iterateValueEntry " + values);
             var baseTypes = values.filter(hasNotNameSpace);
             var innerTypes = values.filter(hasNameSpace);
             baseTypes.forEach(createConstructor);
@@ -63,17 +65,16 @@ MainJs = {
         }
 
         function iterateKeyValueEntry(key, values) {
-            console.log("iterateKeyValueEntry " + key + "  " + values);
             iterateValueEntry(values);
         }
-
-        console.log('Generating JsInterop constructors.');
 
         for (var property in constructorsMap) {
             if (constructorsMap.hasOwnProperty(property)) {
                 iterateKeyValueEntry(property, constructorsMap[property]);
             }
         }
+
+        console.log('JsInterop constructors successfully generated.');
     },
 
     unmarshall: function (text, dynamicNamespace, callback) {

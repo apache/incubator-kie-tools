@@ -82,6 +82,8 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
 
     private final ClientTranslationService clientTranslationService;
 
+    private boolean imported;
+
     @Inject
     public DecisionComponentsItemView(final HTMLImageElement icon,
                                       final @Named("h5") HTMLHeadingElement name,
@@ -123,6 +125,11 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
     @Override
     public void setFile(final String file) {
         this.file.textContent = file;
+    }
+
+    @Override
+    public void setIsImported(final boolean imported) {
+        this.imported = imported;
     }
 
     @EventHandler("decision-component-item")
@@ -191,7 +198,7 @@ public class DecisionComponentsItemView implements DecisionComponentsItem.View {
         public void onComplete(final int x,
                                final int y) {
 
-            if (isDuplicatedNode(drgElement)) {
+            if (imported && isDuplicatedNode(drgElement)) {
                 fireDuplicatedNodeWarningMessage();
             } else {
                 fireBuildShapeEvent(x, y);

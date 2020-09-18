@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.graph;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.graph.DMNDiagramUtils;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -36,15 +37,13 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 @Dependent
 public class DMNGraphUtils {
 
-    private static Definitions NO_DEFINITIONS = null;
-
-    private static Diagram NO_DIAGRAM = null;
-
     private static CanvasHandler NO_CANVAS_HANDLER = null;
 
     private SessionManager sessionManager;
 
     private DMNDiagramUtils dmnDiagramUtils;
+
+    private DMNDiagramsSession dmnDiagramsSession;
 
     public DMNGraphUtils() {
         //CDI proxy
@@ -52,43 +51,28 @@ public class DMNGraphUtils {
 
     @Inject
     public DMNGraphUtils(final SessionManager sessionManager,
-                         final DMNDiagramUtils dmnDiagramUtils) {
+                         final DMNDiagramUtils dmnDiagramUtils,
+                         final DMNDiagramsSession dmnDiagramsSession) {
         this.sessionManager = sessionManager;
         this.dmnDiagramUtils = dmnDiagramUtils;
+        this.dmnDiagramsSession = dmnDiagramsSession;
     }
 
-    public Definitions getDefinitions() {
-        return getCurrentSession()
-                .map(clientSession -> {
-                    return getCanvasHandler(clientSession)
-                            .map(canvasHandler -> dmnDiagramUtils.getDefinitions(canvasHandler.getDiagram()))
-                            .orElse(NO_DEFINITIONS);
-                })
-                .orElse(NO_DEFINITIONS);
+    public Definitions getModelDefinitions() {
+        return Optional
+                .ofNullable(dmnDiagramsSession.getDRGDiagram())
+                .map(e -> dmnDiagramUtils.getDefinitions(e))
+                .orElse(null);
     }
 
-    public Diagram getDiagram() {
-        return getCurrentSession()
-                .map(clientSession -> {
-                    return getCanvasHandler(clientSession)
-                            .map((Function<CanvasHandler, Diagram>) CanvasHandler::getDiagram)
-                            .orElse(NO_DIAGRAM);
-                })
-                .orElse(NO_DIAGRAM);
-    }
-
-    public CanvasHandler getCanvasHandler() {
-        return getCurrentSession()
-                .map(clientSession -> getCanvasHandler(clientSession).orElse(NO_CANVAS_HANDLER))
-                .orElse(NO_CANVAS_HANDLER);
+    public List<DRGElement> getModelDRGElements() {
+        return Optional
+                .ofNullable(dmnDiagramsSession.getModelDRGElements())
+                .orElse(new ArrayList<>());
     }
 
     public Definitions getDefinitions(final Diagram diagram) {
         return dmnDiagramUtils.getDefinitions(diagram);
-    }
-
-    public List<DRGElement> getDRGElements() {
-        return getDRGElements(getDiagram());
     }
 
     public List<DRGElement> getDRGElements(final Diagram diagram) {
@@ -99,15 +83,21 @@ public class DMNGraphUtils {
         return dmnDiagramUtils.getNodeStream(diagram);
     }
 
-    public Stream<Node> getNodeStream() {
-        return getNodeStream(getDiagram());
-    }
-
     public Optional<ClientSession> getCurrentSession() {
         return Optional.ofNullable(sessionManager.getCurrentSession());
     }
 
     private Optional<CanvasHandler> getCanvasHandler(final ClientSession session) {
         return Optional.ofNullable(session.getCanvasHandler());
+    }
+
+    public Stream<Node> getNodeStream() {
+        return getNodeStream(dmnDiagramsSession.getCurrentGraphDiagram());
+    }
+
+    public CanvasHandler getCanvasHandler() {
+        return getCurrentSession()
+                .map(clientSession -> getCanvasHandler(clientSession).orElse(NO_CANVAS_HANDLER))
+                .orElse(NO_CANVAS_HANDLER);
     }
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.Optional;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.dmn.api.definition.HasText;
@@ -74,7 +76,7 @@ public class OutputClauseUnaryTests extends DMNModelInstrumentedBase implements 
     public OutputClauseUnaryTests copy() {
         return new OutputClauseUnaryTests(
                 new Id(),
-                text.copy(),
+                Optional.ofNullable(text).map(Text::copy).orElse(null),
                 constraintType
         );
     }

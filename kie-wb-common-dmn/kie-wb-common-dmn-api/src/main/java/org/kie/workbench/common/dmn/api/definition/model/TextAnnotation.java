@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.core.graph.content.HasContentDefinitionId;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.nestedForms.SubFormFieldInitializer.COLLAPSIBLE_CONTAINER;
@@ -56,11 +57,17 @@ import static org.kie.workbench.common.forms.adf.engine.shared.formGeneration.pr
         startElement = "id")
 public class TextAnnotation extends Artifact implements DMNViewDefinition<GeneralRectangleDimensionsSet>,
                                                         HasText,
+                                                        HasContentDefinitionId,
                                                         DynamicReadOnly {
 
     private static final String[] READONLY_FIELDS = {"Description", "Text", "TextFormat"};
 
     protected boolean allowOnlyVisualChange;
+
+    /**
+     * Hold the {@link DMNDiagramElement} id for the {@link TextAnnotation} instance.
+     */
+    private String dmnDiagramId;
 
     @Category
     private static final String stunnerCategory = Categories.NODES;
@@ -175,6 +182,26 @@ public class TextAnnotation extends Artifact implements DMNViewDefinition<Genera
 
     public void setTextFormat(final TextFormat textFormat) {
         this.textFormat = textFormat;
+    }
+
+    @Override
+    public String getContentDefinitionId() {
+        return getId().getValue();
+    }
+
+    @Override
+    public String getDiagramId() {
+        return dmnDiagramId;
+    }
+
+    @Override
+    public void setContentDefinitionId(final String contentDefinitionId) {
+        setId(new Id(contentDefinitionId));
+    }
+
+    @Override
+    public void setDiagramId(final String dmnDiagramId) {
+        this.dmnDiagramId = dmnDiagramId;
     }
 
     @Override

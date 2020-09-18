@@ -31,20 +31,20 @@ import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.types.DMNSimpleTimeZone;
 import org.kie.workbench.common.dmn.api.editors.types.DataObject;
 import org.kie.workbench.common.dmn.api.editors.types.RangeValue;
+import org.kie.workbench.common.dmn.client.marshaller.included.DMNMarshallerImportsClientHelper;
 import org.kie.workbench.common.dmn.client.service.DMNClientServicesProxy;
-import org.kie.workbench.common.dmn.webapp.kogito.common.client.converters.DMNMarshallerImportsHelperKogito;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.uberfire.backend.vfs.Path;
 
 @Dependent
 public class DMNClientServicesProxyImpl implements DMNClientServicesProxy {
 
-    private final DMNMarshallerImportsHelperKogito kogitoImportsHelper;
+    private final DMNMarshallerImportsClientHelper kogitoImportsHelper;
     private final TimeZonesProvider timeZonesProvider;
 
     @Inject
     public DMNClientServicesProxyImpl(final TimeZonesProvider timeZonesProvider,
-                                      final DMNMarshallerImportsHelperKogito kogitoImportsHelper) {
+                                      final DMNMarshallerImportsClientHelper kogitoImportsHelper) {
         this.timeZonesProvider = timeZonesProvider;
         this.kogitoImportsHelper = kogitoImportsHelper;
     }

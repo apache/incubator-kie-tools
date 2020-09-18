@@ -28,14 +28,22 @@ public class DecisionComponent {
 
     private final String fileName;
 
+    private final boolean imported;
+
     private DRGElement drgElement;
 
     private final static Map<Class<?>, ImageDataUriGlyph> PALETTE_MAP = buildPaletteMap();
 
     public DecisionComponent(final String fileName,
-                             final DRGElement drgElement) {
+                             final DRGElement drgElement,
+                             final boolean imported) {
         this.fileName = fileName;
         this.drgElement = drgElement;
+        this.imported = imported;
+    }
+
+    public boolean isImported() {
+        return imported;
     }
 
     public String getFileName() {

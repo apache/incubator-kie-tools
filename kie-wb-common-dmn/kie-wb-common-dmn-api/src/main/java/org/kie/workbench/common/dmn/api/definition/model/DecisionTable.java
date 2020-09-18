@@ -81,8 +81,8 @@ public class DecisionTable extends Expression {
     @Override
     public DecisionTable copy() {
         final DecisionTable clonedDecisionTable = new DecisionTable();
-        clonedDecisionTable.description = description.copy();
-        clonedDecisionTable.typeRef = typeRef.copy();
+        clonedDecisionTable.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        clonedDecisionTable.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
         clonedDecisionTable.componentWidths = new ArrayList<>(componentWidths);
         clonedDecisionTable.input = input.stream().map(InputClause::copy).collect(Collectors.toList());
         clonedDecisionTable.output = output.stream().map(OutputClause::copy).collect(Collectors.toList());

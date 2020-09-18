@@ -57,8 +57,8 @@ public class List extends Expression {
     @Override
     public List copy() {
         final List clonedList = new List();
-        clonedList.description = description.copy();
-        clonedList.typeRef = typeRef.copy();
+        clonedList.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        clonedList.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
         clonedList.componentWidths = new ArrayList<>(componentWidths);
         clonedList.expression = expression.stream().map(expressionWrapperMappingFn(clonedList)).collect(Collectors.toList());
         return clonedList;

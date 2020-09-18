@@ -675,7 +675,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final InformationItemPrimary informationItemPrimary = mock(InformationItemPrimary.class);
         final ItemDefinition tPerson = mockTPersonStructure();
 
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
         when(definitions.getItemDefinition()).thenReturn(Collections.singletonList(tPerson));
         when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(decision);
         when(decision.getVariable()).thenReturn(informationItemPrimary);
@@ -709,7 +709,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         final InformationItemPrimary informationItemPrimary = mock(InformationItemPrimary.class);
         final ItemDefinition tCompany = mockTCompanyStructure();
 
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
         when(definitions.getItemDefinition()).thenReturn(Collections.singletonList(tCompany));
         when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(decision);
         when(decision.getVariable()).thenReturn(informationItemPrimary);
@@ -774,7 +774,7 @@ public class DecisionTableEditorDefinitionEnricherTest extends BaseDecisionTable
         when(tPerson.getTypeRef()).thenReturn(tPersonTypeRef);
         when(tPerson.getItemComponent()).thenReturn(emptyList());
 
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
         when(definitions.getItemDefinition()).thenReturn(Collections.singletonList(tPerson));
         when(hasExpression.asDMNModelInstrumentedBase()).thenReturn(decision);
         when(decision.getVariable()).thenReturn(informationItemPrimary);

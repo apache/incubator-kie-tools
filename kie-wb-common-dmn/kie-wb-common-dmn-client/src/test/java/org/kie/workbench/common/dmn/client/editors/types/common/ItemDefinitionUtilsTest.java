@@ -64,7 +64,7 @@ public class ItemDefinitionUtilsTest {
         final Definitions definitions = mock(Definitions.class);
         final List<ItemDefinition> itemDefinitions = asList(item1, item2);
 
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
         when(definitions.getItemDefinition()).thenReturn(itemDefinitions);
 
         final Optional<ItemDefinition> actual = utils.findByName(name);
@@ -85,7 +85,7 @@ public class ItemDefinitionUtilsTest {
         final List<ItemDefinition> expectedItemDefinitions = asList(itemDefinition2, itemDefinition4, itemDefinition1, itemDefinition3);
         final List<ItemDefinition> actualItemDefinitions = new ArrayList<>(asList(itemDefinition2, itemDefinition4));
 
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
         when(definitions.getItemDefinition()).thenReturn(actualItemDefinitions);
 
         utils.addItemDefinitions(newItemDefinitions);
@@ -98,7 +98,7 @@ public class ItemDefinitionUtilsTest {
 
         final String namespaceURI = FEEL.getUri();
 
-        when(dmnGraphUtils.getDefinitions()).thenReturn(null);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(null);
 
         final Optional<String> prefix = utils.getPrefixForNamespaceURI(namespaceURI);
 
@@ -111,7 +111,7 @@ public class ItemDefinitionUtilsTest {
         final String namespaceURI = FEEL.getUri();
         final Definitions definitions = mock(Definitions.class);
 
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
         when(definitions.getPrefixForNamespaceURI(namespaceURI)).thenReturn(Optional.empty());
 
         final Optional<String> prefix = utils.getPrefixForNamespaceURI(namespaceURI);
@@ -126,7 +126,7 @@ public class ItemDefinitionUtilsTest {
         final Definitions definitions = mock(Definitions.class);
         final Optional<String> expectedPrefix = Optional.of("prefix");
 
-        when(dmnGraphUtils.getDefinitions()).thenReturn(definitions);
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
         when(definitions.getPrefixForNamespaceURI(namespaceURI)).thenReturn(expectedPrefix);
 
         final Optional<String> actualPrefix = utils.getPrefixForNamespaceURI(namespaceURI);

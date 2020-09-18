@@ -55,7 +55,7 @@ public class DecisionRule extends DMNElement implements HasTypeRefs {
 
     public DecisionRule copy() {
         DecisionRule clonedDecisionRule = new DecisionRule();
-        clonedDecisionRule.description = description.copy();
+        clonedDecisionRule.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
         clonedDecisionRule.inputEntry = inputEntry.stream().map(UnaryTests::copy).collect(Collectors.toList());
         clonedDecisionRule.outputEntry = outputEntry.stream().map(LiteralExpression::copy).collect(Collectors.toList());
         clonedDecisionRule.annotationEntry = Optional.ofNullable(annotationEntry)

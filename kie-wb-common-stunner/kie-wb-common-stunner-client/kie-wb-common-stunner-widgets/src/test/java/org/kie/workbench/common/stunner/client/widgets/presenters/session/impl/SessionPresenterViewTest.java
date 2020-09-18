@@ -82,6 +82,9 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
     private FlowPanel palettePanel;
 
     @Mock
+    private FlowPanel sessionHeaderContainer;
+
+    @Mock
     private SessionContainer sessionContainer;
 
     @Mock
@@ -96,7 +99,13 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
     private com.google.gwt.user.client.Element paletteElement;
 
     @Mock
-    private com.google.gwt.dom.client.Style paletteStyle;
+    private com.google.gwt.user.client.Element headerElement;
+
+    @Mock
+    private Style paletteStyle;
+
+    @Mock
+    private Style headerStyle;
 
     @Mock
     private TranslationService translationService;
@@ -112,6 +121,9 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
             setFinal(tested,
                      SessionPresenterView.class.getDeclaredField("palettePanel"),
                      palettePanel);
+            setFinal(tested,
+                     SessionPresenterView.class.getDeclaredField("sessionHeaderContainer"),
+                     sessionHeaderContainer);
             invocation.callRealMethod();
             return null;
         }).when(tested).init();
@@ -144,6 +156,8 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
         when(scrollEvent.getRelativeElement()).thenReturn(element);
         when(palettePanel.getElement()).thenReturn(paletteElement);
         when(paletteElement.getStyle()).thenReturn(paletteStyle);
+        when(sessionHeaderContainer.getElement()).thenReturn(headerElement);
+        when(headerElement.getStyle()).thenReturn(headerStyle);
 
         doReturn(sessionContainerElement).when(sessionContainer).getElement();
         doReturn(sessionContainerElementStyle).when(sessionContainerElement).getStyle();

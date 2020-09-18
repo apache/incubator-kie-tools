@@ -51,11 +51,11 @@
     <dmn:variable id='_9A11ADF3-8489-4EF3-A983-4D2B0819B12A' name='Decision-4'/>
   </dmn:decision>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id='_473F2018-9832-438F-A921-01BAFE229014' name='DRG'>
       <di:extension>
         <kie:ComponentsWidthsExtension/>
       </di:extension>
-      <dmndi:DMNShape id='dmnshape-_4CEF4A0F-B605-4551-9403-7FA31C97DCD1' dmnElementRef='_4CEF4A0F-B605-4551-9403-7FA31C97DCD1' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_4CEF4A0F-B605-4551-9403-7FA31C97DCD1' dmnElementRef='_4CEF4A0F-B605-4551-9403-7FA31C97DCD1' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>
@@ -68,7 +68,7 @@
           <di:waypoint x='870' y='253'/>
         </dmndi:DMNDecisionServiceDividerLine>
       </dmndi:DMNShape>
-      <dmndi:DMNShape id='dmnshape-_B067B665-3343-495F-8257-608689084A91' dmnElementRef='_B067B665-3343-495F-8257-608689084A91' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_B067B665-3343-495F-8257-608689084A91' dmnElementRef='_B067B665-3343-495F-8257-608689084A91' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>
@@ -77,7 +77,7 @@
         <dc:Bounds x='510' y='265' width='100' height='50'/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNShape id='dmnshape-_964EF7FB-010B-4698-9954-BB95ABBDF2A2' dmnElementRef='_964EF7FB-010B-4698-9954-BB95ABBDF2A2' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_964EF7FB-010B-4698-9954-BB95ABBDF2A2' dmnElementRef='_964EF7FB-010B-4698-9954-BB95ABBDF2A2' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>
@@ -86,7 +86,7 @@
         <dc:Bounds x='720' y='265' width='100' height='50'/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNShape id='dmnshape-_A531F162-5032-40CF-B53A-E5818BD2C21A' dmnElementRef='_A531F162-5032-40CF-B53A-E5818BD2C21A' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_A531F162-5032-40CF-B53A-E5818BD2C21A' dmnElementRef='_A531F162-5032-40CF-B53A-E5818BD2C21A' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>
@@ -95,7 +95,7 @@
         <dc:Bounds x='720' y='195' width='100' height='50'/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNShape id='dmnshape-_4C183144-7DAC-42FB-8243-A666FFDA2177' dmnElementRef='_4C183144-7DAC-42FB-8243-A666FFDA2177' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_4C183144-7DAC-42FB-8243-A666FFDA2177' dmnElementRef='_4C183144-7DAC-42FB-8243-A666FFDA2177' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>
@@ -104,7 +104,7 @@
         <dc:Bounds x='930' y='195' width='100' height='50'/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNShape id='dmnshape-_93FD724C-DF9A-4B85-B048-6E26F28B987A' dmnElementRef='_93FD724C-DF9A-4B85-B048-6E26F28B987A' isCollapsed='false'>
+      <dmndi:DMNShape id='dmnshape-drg-_93FD724C-DF9A-4B85-B048-6E26F28B987A' dmnElementRef='_93FD724C-DF9A-4B85-B048-6E26F28B987A' isCollapsed='false'>
         <dmndi:DMNStyle>
           <dmndi:FillColor red='255' green='255' blue='255'/>
           <dmndi:StrokeColor red='0' green='0' blue='0'/>
@@ -113,19 +113,19 @@
         <dc:Bounds x='930' y='265' width='100' height='50'/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNEdge id='dmnedge-_C39CB86B-5530-428C-B083-0ED4DCB215F0' dmnElementRef='_C39CB86B-5530-428C-B083-0ED4DCB215F0'>
+      <dmndi:DMNEdge id='dmnedge-drg-_C39CB86B-5530-428C-B083-0ED4DCB215F0' dmnElementRef='_C39CB86B-5530-428C-B083-0ED4DCB215F0'>
         <di:waypoint x='980' y='265'/>
         <di:waypoint x='820' y='290'/>
       </dmndi:DMNEdge>
-      <dmndi:DMNEdge id='dmnedge-_1A7FAEAA-7931-4EFA-9906-3BA5735B15CF' dmnElementRef='_1A7FAEAA-7931-4EFA-9906-3BA5735B15CF'>
+      <dmndi:DMNEdge id='dmnedge-drg-_1A7FAEAA-7931-4EFA-9906-3BA5735B15CF' dmnElementRef='_1A7FAEAA-7931-4EFA-9906-3BA5735B15CF'>
         <di:waypoint x='560' y='265'/>
         <di:waypoint x='720' y='290'/>
       </dmndi:DMNEdge>
-      <dmndi:DMNEdge id='dmnedge-_A1C47D0D-8082-44B7-A3BD-C875FE2DF92B' dmnElementRef='_A1C47D0D-8082-44B7-A3BD-C875FE2DF92B'>
+      <dmndi:DMNEdge id='dmnedge-drg-_A1C47D0D-8082-44B7-A3BD-C875FE2DF92B' dmnElementRef='_A1C47D0D-8082-44B7-A3BD-C875FE2DF92B'>
         <di:waypoint x='770' y='265'/>
         <di:waypoint x='770' y='245'/>
       </dmndi:DMNEdge>
-      <dmndi:DMNEdge id='dmnedge-_E3493EED-BB6B-40EF-995D-BDF70E9C3531' dmnElementRef='_E3493EED-BB6B-40EF-995D-BDF70E9C3531'>
+      <dmndi:DMNEdge id='dmnedge-drg-_E3493EED-BB6B-40EF-995D-BDF70E9C3531' dmnElementRef='_E3493EED-BB6B-40EF-995D-BDF70E9C3531'>
         <di:waypoint x='770' y='245'/>
         <di:waypoint x='980' y='195'/>
       </dmndi:DMNEdge>
