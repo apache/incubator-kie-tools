@@ -192,10 +192,6 @@ public abstract class BaseTaskConverter<U extends BaseUserTask<S>, S extends Bas
 
         definition.setSimulationSet(p.getSimulationSet());
 
-        definition.setDataIOSet(new DataIOSet(
-                p.getAssignmentsInfo()
-        ));
-
         return BpmnNode.of(node, p);
     }
 

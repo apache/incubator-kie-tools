@@ -128,6 +128,7 @@ import org.uberfire.ext.editor.commons.client.template.mustache.ClientMustacheTe
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyString;
@@ -641,6 +642,13 @@ public class ClientBPMNDocumentationServiceTest {
         assertEquals(taskProperty.getKey(), caption);
         assertEquals(taskProperty.getValue(), value);
         verify(decorators).getDecorator(property);
+    }
+
+    @Test
+    public void processSafeDocumentation() {
+        when(definitionAdapter.getProperty(eq(embeddedSubprocess), eq("subprocessGeneral.name"))).thenThrow(new RuntimeException("Just for testing"));
+        final BPMNDocumentation bpmnDocumentation = tested.processDocumentation(diagram);
+        assertNotNull(bpmnDocumentation);
     }
 
     @Test

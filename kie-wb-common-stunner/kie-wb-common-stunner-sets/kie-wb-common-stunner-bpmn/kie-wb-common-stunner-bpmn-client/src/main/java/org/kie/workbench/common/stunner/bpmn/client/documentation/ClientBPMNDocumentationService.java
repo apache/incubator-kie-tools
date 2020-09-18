@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -125,6 +127,8 @@ import org.uberfire.ext.editor.commons.client.template.mustache.ClientMustacheTe
 
 @Dependent
 public class ClientBPMNDocumentationService implements BPMNDocumentationService {
+
+    private static Logger LOGGER = Logger.getLogger(ClientBPMNDocumentationService.class.getName());
 
     private static final Map<String, Boolean> ignoredPropertiesIds = buildIgnoredPropertiesIds();
     public static final int ICON_HEIGHT = 20;
@@ -310,6 +314,7 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
         return ProcessVariablesTotal.create(variables.size(), variables.size(), JsConverter.fromEntries(variables));
     }
 
+    @SuppressWarnings("all")
     private ElementDetails getElementsDetails(final Graph<?, Node> graph) {
         final List<ElementTotal> elementsTotals = StreamSupport.stream(graph.nodes().spliterator(), false)
                 .map(Node::getContent)
@@ -317,12 +322,8 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
                 .map(c -> (Definition) c)
                 .map(Definition::getDefinition)
                 .filter(e -> !(e instanceof BPMNDiagram))
-                .map(def -> Element.create(getElementName(def),
-                                           getElementCategory(def),
-                                           getElementTitle(def),
-                                           getDefinitionIcon(def),
-                                           getElementProperties(def))
-                )
+                .map(this::processElement)
+                .filter(Objects::nonNull)
                 .sorted(Comparator.comparing(Element::getTitle))
                 .collect(Collectors.groupingBy(Element::getType))
                 .entrySet()
@@ -336,11 +337,25 @@ public class ClientBPMNDocumentationService implements BPMNDocumentationService 
         return ElementDetails.create(elementsTotals);
     }
 
+    private Element processElement(Object def) {
+        String name = getElementName(def);
+        try {
+            return Element.create(name,
+                                  getElementCategory(def),
+                                  getElementTitle(def),
+                                  getDefinitionIcon(def),
+                                  getElementProperties(def));
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error processing documentation properties for [" + name + "]", e);
+            return null;
+        }
+    }
+
     private String getElementTitle(Object def) {
         final DefinitionId definitionId = definitionManager.adapters().forDefinition().getId(def);
         return Optional.ofNullable(definitionId)
                 .map(DefinitionId::value)
-                .map(id -> definitionUtils.getTitle(id))
+                .map(definitionUtils::getTitle)
                 .orElse("");
     }
 
