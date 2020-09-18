@@ -193,6 +193,8 @@ Feature: Deploy Kogito Runtime
       | runtime    | example-service             | profile |
       | quarkus    | process-optaplanner-quarkus | default |
 
+    # Disabled due to https://issues.redhat.com/browse/PLANNER-2084
+    @disabled
     @quarkus
     @native
     Examples:
