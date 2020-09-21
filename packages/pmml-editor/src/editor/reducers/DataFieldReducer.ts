@@ -34,7 +34,10 @@ export const DataFieldReducer: Reducer<DataField[], DataFieldActions> = (
   switch (action.type) {
     case Actions.SetDataFieldName:
       return mutate(state, `DataDictionary.DataField`, draft => {
-        draft[action.payload.index].name = action.payload.name;
+        const index: number = action.payload.index;
+        if (index >= 0 && index < draft.length) {
+          draft[index].name = action.payload.name;
+        }
       });
   }
 

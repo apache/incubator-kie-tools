@@ -15,3 +15,6 @@
  */
 
 import "@testing-library/jest-dom";
+import { enableAllPlugins } from "immer";
+
+enableAllPlugins();

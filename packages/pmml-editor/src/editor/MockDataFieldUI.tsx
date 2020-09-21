@@ -44,7 +44,7 @@ const MockDataFieldUI = (props: Props) => {
     dispatch({
       type: Actions.DeleteDataField,
       payload: {
-        dataFieldIndex: props.index
+        index: props.index
       }
     });
   };

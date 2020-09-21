@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { mutate, redo, undo } from "../editor/history/HistoryProvider";
+import { mutate, redo, undo } from "../../editor/history/HistoryProvider";
 import { Header, PMML } from "@kogito-tooling/pmml-editor-marshaller";
-import { enableAllPlugins } from "immer";
-import { ROOT } from "../editor/reducers/PMMLReducer";
-
-enableAllPlugins();
+import { ROOT } from "../../editor/reducers/PMMLReducer";
 
 const pmml: PMML = {
   version: "1.0",
@@ -34,13 +31,7 @@ const header1: Header = {
   description: "description"
 };
 
-const header2: Header = {
-  copyright: "copyright",
-  modelVersion: "2.0",
-  description: "description"
-};
-
-describe("HistoryProvider::mutate", () => {
+describe("HistoryProvider", () => {
   test("Mutation applied", () => {
     const updated: PMML = mutate(pmml, ROOT, draft => {
       draft.Header = header1;

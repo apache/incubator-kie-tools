@@ -23,7 +23,7 @@ interface DataDictionaryPayload {
     readonly name: string;
   };
   [Actions.DeleteDataField]: {
-    readonly dataFieldIndex: number;
+    readonly index: number;
   };
 }
 
@@ -46,7 +46,10 @@ export const DataDictionaryReducer: Reducer<DataDictionary, DataDictionaryAction
 
     case Actions.DeleteDataField:
       return mutate(state, "DataDictionary", draft => {
-        draft.DataField.splice(action.payload.dataFieldIndex, 1);
+        const index: number = action.payload.index;
+        if (index >= 0 && index < draft.DataField.length) {
+          draft.DataField.splice(index, 1);
+        }
       });
   }
 
