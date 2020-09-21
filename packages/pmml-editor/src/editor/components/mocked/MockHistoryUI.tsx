@@ -15,9 +15,9 @@
  */
 import * as React from "react";
 import { CSSProperties, useContext, useState } from "react";
-import { Actions } from "./reducers/Actions";
-import { HistoryContext, HistoryService } from "./history/HistoryProvider";
-import { Title } from "./PMMLEditor";
+import { HistoryContext, HistoryService } from "../../history/HistoryProvider";
+import { Actions } from "../../reducers/Actions";
+import { Title } from "../../utils/UIUtils";
 import { useDispatch } from "react-redux";
 
 const style: CSSProperties = {

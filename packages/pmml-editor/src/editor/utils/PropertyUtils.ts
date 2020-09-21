@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
-
-ReactDOM.render(
-  <div>
-    <App />
-  </div>,
-  document.getElementById("app")!
-);
+export const coalesce = (value: string | undefined | null, defaultValue: string) => {
+  if (value === null || value === undefined) {
+    return defaultValue;
+  }
+  return value;
+};

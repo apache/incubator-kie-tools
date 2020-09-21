@@ -41,7 +41,6 @@ export class HistoryService {
   };
 
   public mutate = <M>(state: M, path: string | null, recipe: (draft: WritableDraft<M>) => void) => {
-    console.log(path);
     if (this.history.index < this.history.changes.length) {
       this.history.changes = this.history.changes.slice(0, this.history.index);
     }

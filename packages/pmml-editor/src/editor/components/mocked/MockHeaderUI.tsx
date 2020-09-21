@@ -15,11 +15,12 @@
  */
 import * as React from "react";
 import { CSSProperties, useContext } from "react";
-import { Actions } from "./reducers/Actions";
-import { Timestamp, Title } from "./PMMLEditor";
 import { useDispatch, useSelector } from "react-redux";
 import { Header, PMML } from "@kogito-tooling/pmml-editor-marshaller";
-import { HistoryContext, HistoryService } from "./history/HistoryProvider";
+import { HistoryContext, HistoryService } from "../../history/HistoryProvider";
+import { Actions } from "../../reducers/Actions";
+import { Timestamp, Title } from "../../utils/UIUtils";
+import { coalesce } from "../../utils/PropertyUtils";
 
 const style: CSSProperties = {
   padding: "5px 5px 5px 5px"
@@ -43,7 +44,11 @@ const MockHeaderUI = () => {
   return (
     <div style={style}>
       <Title title="Header" />
-      <input value={header.description} onChange={e => setHeaderDescription(e.target.value)} placeholder="Name" />
+      <input
+        value={coalesce(header.description, "")}
+        onChange={e => setHeaderDescription(e.target.value)}
+        placeholder="Header"
+      />
       <Timestamp />
     </div>
   );

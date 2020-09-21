@@ -15,10 +15,11 @@
  */
 import * as React from "react";
 import { CSSProperties, useContext } from "react";
-import { Actions } from "./reducers/Actions";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { useDispatch } from "react-redux";
-import { HistoryContext, HistoryService } from "./history/HistoryProvider";
+import { HistoryContext, HistoryService } from "../../history/HistoryProvider";
+import { Actions } from "../../reducers/Actions";
+import { coalesce } from "../../utils/PropertyUtils";
 
 const style: CSSProperties = {
   padding: "5px 5px 5px 5px"
@@ -57,7 +58,7 @@ const MockDataFieldUI = (props: Props) => {
   return (
     <div style={style}>
       <input
-        value={props.field.name as string}
+        value={coalesce(props.field.name as string, "")}
         onChange={e => setDataFieldName(e.target.value as FieldName)}
         placeholder="Name"
       />

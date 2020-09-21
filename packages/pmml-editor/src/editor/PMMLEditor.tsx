@@ -17,35 +17,29 @@ import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
 import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import * as React from "react";
 import { Reducer } from "react";
-import { HistoryLog, StateButtons } from "./MockHistoryUI";
 import { enableAllPlugins } from "immer";
-import MockVersionUI from "./MockVersionUI";
-import MockDataFieldsUI from "./MockDataFieldsUI";
-import MockSummaryUI from "./MockSummaryUI";
-import MockHeaderUI from "./MockHeaderUI";
 import { createStore, Store } from "redux";
 import { PMMLReducer } from "./reducers/PMMLReducer";
 import { AllActions } from "./reducers/Actions";
-import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { PMML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Provider } from "react-redux";
 import mergeReducers from "combine-reducer";
 import { HeaderReducer } from "./reducers/HeaderReducer";
 import { DataDictionaryReducer } from "./reducers/DataDictionaryReducer";
 import { DataFieldReducer } from "./reducers/DataFieldReducer";
 import { HistoryContext, HistoryService } from "./history/HistoryProvider";
+import { HistoryLog, StateButtons } from "./components/mocked/MockHistoryUI";
+import MockVersionUI from "./components/mocked/MockVersionUI";
+import MockHeaderUI from "./components/mocked/MockHeaderUI";
+import MockDataFieldsUI from "./components/mocked/MockDataFieldsUI";
+import MockSummaryUI from "./components/mocked/MockSummaryUI";
 
 const reducer: Reducer<PMML, AllActions> = mergeReducers(PMMLReducer, {
   Header: HeaderReducer,
   DataDictionary: mergeReducers(DataDictionaryReducer, { DataField: DataFieldReducer })
 });
 
-const store: Store<PMML, AllActions> = createStore(reducer, {
-  Header: { description: "" },
-  DataDictionary: {
-    DataField: []
-  },
-  version: "1.0"
-});
+let store: Store<PMML, AllActions> | undefined;
 
 export interface Props {
   exposing: (s: PMMLEditor) => void;
@@ -76,7 +70,12 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   public setContent(path: string, content: string): Promise<void> {
-    return new Promise<void>(res => this.setState({ path: path, content: content, originalContent: content }, res));
+    return new Promise<void>(res => this.doSetContent(path, content));
+  }
+
+  private doSetContent(path: string, content: string): void {
+    store = createStore(reducer, XML2PMML(content));
+    this.setState({ path: path, content: content, originalContent: content });
   }
 
   public getContent(): Promise<string> {
@@ -84,38 +83,27 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   public render() {
-    return (
-      <Provider store={store}>
-        <HistoryContext.Provider value={{ service: new HistoryService() }}>
-          <StateButtons />
-          <hr />
-          <MockVersionUI />
-          <hr />
-          <MockHeaderUI />
-          <hr />
-          <MockDataFieldsUI />
-          <hr />
-          <MockSummaryUI />
-          <hr />
-          <HistoryLog />
-        </HistoryContext.Provider>
-      </Provider>
-    );
+    if (store) {
+      return (
+        <Provider store={store}>
+          <HistoryContext.Provider value={{ service: new HistoryService() }}>
+            <hr />
+            <StateButtons />
+            <hr />
+            <MockVersionUI />
+            <hr />
+            <MockHeaderUI />
+            <hr />
+            <MockDataFieldsUI />
+            <hr />
+            <MockSummaryUI />
+            <hr />
+            <HistoryLog />
+          </HistoryContext.Provider>
+        </Provider>
+      );
+    } else {
+      return <div>Content not set</div>;
+    }
   }
 }
-
-export const Timestamp = () => {
-  return (
-    <div>
-      <sub>Rendered: {new Date().getTime()}</sub>
-    </div>
-  );
-};
-
-interface TitleProps {
-  title: string;
-}
-
-export const Title = (props: TitleProps) => {
-  return <h1 className="pf-c-title pf-m-xl">{props.title}</h1>;
-};

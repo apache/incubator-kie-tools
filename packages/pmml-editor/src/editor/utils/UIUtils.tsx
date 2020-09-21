@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { CSSProperties } from "react";
-import { Timestamp, Title } from "./PMMLEditor";
-import { useSelector } from "react-redux";
-import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 
-const style: CSSProperties = {
-  padding: "5px 5px 5px 5px"
-};
-
-const MockSummaryUI = () => {
-  const pmml: PMML = useSelector<PMML, PMML>((state: PMML) => state);
-
+export const Timestamp = () => {
   return (
-    <div style={style}>
-      <Title title="JSON" />
-      <pre>{`${JSON.stringify(pmml, undefined, 2)}`}</pre>
-      <Timestamp />
+    <div>
+      <sub>Rendered: {new Date().getTime()}</sub>
     </div>
   );
 };
 
-export default MockSummaryUI;
+interface TitleProps {
+  title: string;
+}
+
+export const Title = (props: TitleProps) => {
+  return <h1 className="pf-c-title pf-m-xl">{props.title}</h1>;
+};
