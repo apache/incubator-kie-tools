@@ -1,6 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+<<<<<<< HEAD
 exports[`LandingPageToolbar render::Has no unsupported models 1`] = `
+=======
+exports[`LandingPageToolbar render 1`] = `
+>>>>>>> FAI-183: Score Cards: Opening a PMML file story
 <div
   class="pf-c-toolbar"
   data-testid="landing-page-toolbar"
@@ -18,6 +22,7 @@ exports[`LandingPageToolbar render::Has no unsupported models 1`] = `
         <div
           class="pf-c-input-group"
         >
+<<<<<<< HEAD
           <form>
             <span
               style="display: flex;"
@@ -145,6 +150,46 @@ exports[`LandingPageToolbar render::Has unsupported models 1`] = `
               </button>
             </span>
           </form>
+=======
+          <input
+            aria-describedby="models-filter"
+            aria-invalid="false"
+            aria-label="filter models"
+            class="pf-c-form-control"
+            data-testid="landing-page-toolbar__model-filter"
+            id="model-filter-input"
+            name="model-filter-input"
+            placeholder="Filter models by name"
+            type="search"
+            value=""
+          />
+          <button
+            aria-disabled="false"
+            aria-label="filter button for filter input"
+            class="pf-c-button pf-m-control"
+            data-ouia-component-id="0"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe="true"
+            data-testid="landing-page-toolbar__submit"
+            id="models-filter"
+            type="button"
+          >
+            <svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="1em"
+              role="img"
+              style="vertical-align: -0.125em;"
+              viewBox="0 0 512 512"
+              width="1em"
+            >
+              <path
+                d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
+                transform=""
+              />
+            </svg>
+          </button>
+>>>>>>> FAI-183: Score Cards: Opening a PMML file story
         </div>
       </div>
       <div
@@ -181,7 +226,11 @@ exports[`LandingPageToolbar render::Has unsupported models 1`] = `
             class="pf-c-switch__label pf-m-off"
             id="only-supported-models-switch-off"
           >
+<<<<<<< HEAD
             Show unsupported models
+=======
+            Hide unsupported models
+>>>>>>> FAI-183: Score Cards: Opening a PMML file story
           </span>
         </label>
       </div>

@@ -13,11 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { coalesce } from "../../../editor/utils";
 
-import "@patternfly/patternfly/patternfly.css";
-import "@patternfly/react-core/dist/styles/base.css";
+const DEFAULT: string = "default";
 
-export * from "./PMMLEditor";
-export * from "./PMMLEditorFactory";
-export * from "./PMMLEditorInterface";
-export * from "./PMMLModelHelper";
+describe("PropertyUtils", () => {
+  test("coalesce::undefined value", () => {
+    expect(coalesce(undefined, DEFAULT)).toBe(DEFAULT);
+  });
+
+  test("coalesce::null value", () => {
+    expect(coalesce(null, DEFAULT)).toBe(DEFAULT);
+  });
+
+  test("coalesce::non-null, non-undefined value", () => {
+    expect(coalesce("cheese", DEFAULT)).toBe("cheese");
+  });
+});

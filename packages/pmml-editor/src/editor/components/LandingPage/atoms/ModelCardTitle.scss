@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-import "@patternfly/patternfly/patternfly.css";
-import "@patternfly/react-core/dist/styles/base.css";
+.model-card {
 
-export * from "./PMMLEditor";
-export * from "./PMMLEditorFactory";
-export * from "./PMMLEditorInterface";
-export * from "./PMMLModelHelper";
+  &__title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
