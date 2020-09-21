@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { AppContext } from "./PMMLEditorContextProvider";
 import { Timestamp, Title } from "./PMMLEditor";
+import { TypedUseSelectorHook, useSelector } from "react-redux";
+import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 
 const style = {
   padding: "5px 5px 5px 5px"
 };
 
 const MockSummaryUI = () => {
-  const { state } = React.useContext(AppContext);
+  const typedUseSelector: TypedUseSelectorHook<PMML> = useSelector;
+  const pmml: PMML = typedUseSelector(state => state);
 
   return (
     <div style={style}>
       <Title title="JSON" />
-      <pre>{`${JSON.stringify(state, undefined, 2)}`}</pre>
+      <pre>{`${JSON.stringify(pmml, undefined, 2)}`}</pre>
       <Timestamp />
     </div>
   );

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { AppContext } from "./PMMLEditorContextProvider";
 import { Actions } from "./reducers/Actions";
 import MockDataFieldUI from "./MockDataFieldUI";
 import { Timestamp, Title } from "./PMMLEditor";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { DataDictionary, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 
 const style = {
   padding: "5px 5px 5px 5px"
@@ -25,7 +26,10 @@ const style = {
 
 const MockDataFieldsUI = () => {
   const [name, setName] = React.useState("");
-  const { state, dispatch } = React.useContext(AppContext);
+
+  const dispatch = useDispatch();
+  const typedUseSelector: TypedUseSelectorHook<PMML> = useSelector;
+  const dataDictionary: DataDictionary = typedUseSelector(state => state.DataDictionary);
 
   const createDataField = () => {
     dispatch({
@@ -42,7 +46,7 @@ const MockDataFieldsUI = () => {
       <input value={name} onChange={e => setName(e.target.value)} placeholder="Value" />
       <button onClick={() => createDataField()}>Create DataField</button>
       <div>
-        {state.DataDictionary.DataField.map((field, index) => (
+        {dataDictionary.DataField.map((field, index) => (
           <MockDataFieldUI key={index} index={index} field={field} />
         ))}
       </div>

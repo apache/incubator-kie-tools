@@ -16,7 +16,7 @@
 import * as React from "react";
 import { Actions } from "./reducers/Actions";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
-import { AppContext } from "./PMMLEditorContextProvider";
+import { useDispatch } from "react-redux";
 
 const style = {
   padding: "5px 5px 5px 5px"
@@ -28,7 +28,7 @@ interface Props {
 }
 
 const MockDataFieldUI = (props: Props) => {
-  const { dispatch } = React.useContext(AppContext);
+  const dispatch = useDispatch();
 
   const setDataFieldName = (name: FieldName) => {
     dispatch({

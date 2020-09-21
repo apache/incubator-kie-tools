@@ -15,17 +15,17 @@
  */
 import * as React from "react";
 import { useState } from "react";
-import { AppContext } from "./PMMLEditorContextProvider";
 import { Actions } from "./reducers/Actions";
 import { history } from "./history/HistoryProvider";
 import { Title } from "./PMMLEditor";
+import { useDispatch } from "react-redux";
 
 const style = {
   padding: "5px 5px 5px 5px"
 };
 
 const StateButtons = () => {
-  const { dispatch } = React.useContext(AppContext);
+  const dispatch = useDispatch();
 
   const doUndo = () => {
     dispatch({

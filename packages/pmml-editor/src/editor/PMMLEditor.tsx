@@ -16,15 +16,37 @@
 import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
 import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import * as React from "react";
-import { AppProvider } from "./PMMLEditorContextProvider";
+import { Reducer } from "react";
 import { HistoryLog, StateButtons } from "./MockHistoryUI";
 import { enableAllPlugins } from "immer";
 import MockVersionUI from "./MockVersionUI";
 import MockDataFieldsUI from "./MockDataFieldsUI";
 import MockSummaryUI from "./MockSummaryUI";
 import MockHeaderUI from "./MockHeaderUI";
+import { createStore, Store } from "redux";
+import { PMMLReducer } from "./reducers/PMMLReducer";
+import { AllActions } from "./reducers/Actions";
+import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { Provider } from "react-redux";
+import mergeReducers from "combine-reducer";
+import { HeaderReducer } from "./reducers/HeaderReducer";
+import { DataDictionaryReducer } from "./reducers/DataDictionaryReducer";
+import { DataFieldReducer } from "./reducers/DataFieldReducer";
 
 enableAllPlugins();
+
+const reducer: Reducer<PMML, AllActions> = mergeReducers(PMMLReducer, {
+  Header: HeaderReducer,
+  DataDictionary: mergeReducers(DataDictionaryReducer, { DataField: DataFieldReducer })
+});
+
+const store: Store<PMML, AllActions> = createStore(reducer, {
+  Header: { description: "" },
+  DataDictionary: {
+    DataField: []
+  },
+  version: "1.0"
+});
 
 export interface Props {
   exposing: (s: PMMLEditor) => void;
@@ -62,7 +84,7 @@ export class PMMLEditor extends React.Component<Props, State> {
 
   public render() {
     return (
-      <AppProvider>
+      <Provider store={store}>
         <StateButtons />
         <hr />
         <MockVersionUI />
@@ -74,7 +96,7 @@ export class PMMLEditor extends React.Component<Props, State> {
         <MockSummaryUI />
         <hr />
         <HistoryLog />
-      </AppProvider>
+      </Provider>
     );
   }
 }
