@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+.model-card {
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
+  &__icon {
+    height: 32px;
+    width: 32px;
+  }
 
-ReactDOM.render(
-  <div>
-    <App />
-  </div>,
-  document.getElementById("app")!
-);
+}

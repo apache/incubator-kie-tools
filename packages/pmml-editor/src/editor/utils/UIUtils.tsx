@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
 
-ReactDOM.render(
-  <div>
-    <App />
-  </div>,
-  document.getElementById("app")!
-);
+export const Timestamp = () => {
+  return (
+    <div>
+      <sub>Rendered: {new Date().getTime()}</sub>
+    </div>
+  );
+};
+
+interface TitleProps {
+  title: string;
+}
+
+export const Title = (props: TitleProps) => {
+  return <h1 className="pf-c-title pf-m-xl">{props.title}</h1>;
+};

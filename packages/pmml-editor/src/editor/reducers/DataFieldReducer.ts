@@ -37,7 +37,7 @@ export const DataFieldReducer: HistoryAwareReducer<DataField[], DataFieldActions
         return service.mutate(state, `DataDictionary.DataField`, draft => {
           const index: number = action.payload.index;
           if (index >= 0 && index < draft.length) {
-            draft[index].name = action.payload.name;
+            draft[index] = { ...draft[index], name: action.payload.name };
           }
         });
     }

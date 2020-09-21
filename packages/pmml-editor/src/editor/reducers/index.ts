@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
-
-ReactDOM.render(
-  <div>
-    <App />
-  </div>,
-  document.getElementById("app")!
-);
+export * from "./Actions";
+export * from "./DataDictionaryReducer";
+export * from "./DataFieldReducer";
+export * from "./HeaderReducer";
+export * from "./PMMLReducer";

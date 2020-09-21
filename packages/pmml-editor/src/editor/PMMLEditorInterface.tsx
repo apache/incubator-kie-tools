@@ -47,10 +47,10 @@ export class PMMLEditorInterface implements Editor {
   }
 
   public async undo(): Promise<void> {
-    //Place holder until StateControl is added for React based components.
+    return this.self.undo();
   }
 
   public async redo(): Promise<void> {
-    //Place holder until StateControl is added for React based components.
+    return this.self.redo();
   }
 }

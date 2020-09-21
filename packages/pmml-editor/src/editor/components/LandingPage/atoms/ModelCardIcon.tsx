@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { coalesce, getModelIconUrl, getModelType } from "../../../utils";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
+import { Model } from "@kogito-tooling/pmml-editor-marshaller";
+import "./ModelCardIcon.scss";
 
-ReactDOM.render(
-  <div>
-    <App />
-  </div>,
-  document.getElementById("app")!
-);
+interface ModelIconProps {
+  model: Model;
+}
+
+export const ModelCardIcon = (props: ModelIconProps) => {
+  const { model } = props;
+  const modelType: string = coalesce(getModelType(model), "<Unknown>");
+  const modelIconUrl: string = getModelIconUrl(model);
+
+  return <img data-testid="model-card__icon" src={modelIconUrl} alt={modelType} className="model-card__icon" />;
+};

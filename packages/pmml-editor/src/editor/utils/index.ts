@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
-
-ReactDOM.render(
-  <div>
-    <App />
-  </div>,
-  document.getElementById("app")!
-);
+export * from "./PMMLUtils";
+export * from "./PropertyUtils";
+export * from "./UIUtils";

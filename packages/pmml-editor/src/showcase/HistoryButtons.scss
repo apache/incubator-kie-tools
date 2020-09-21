@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
+.history-buttons {
 
-ReactDOM.render(
-  <div>
-    <App />
-  </div>,
-  document.getElementById("app")!
-);
+  padding: 5px;
+
+}

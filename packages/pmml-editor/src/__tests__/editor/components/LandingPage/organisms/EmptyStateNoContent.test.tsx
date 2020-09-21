@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { render } from "@testing-library/react";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
+import { EmptyStateNoContent } from "../../../../../editor/components/LandingPage/organisms";
 
-ReactDOM.render(
-  <div>
-    <App />
-  </div>,
-  document.getElementById("app")!
-);
+describe("EmptyStateNoContent", () => {
+  test("render", () => {
+    const { getByTestId } = render(<EmptyStateNoContent />);
+    expect(getByTestId("empty-state-no-content")).toMatchSnapshot();
+  });
+});

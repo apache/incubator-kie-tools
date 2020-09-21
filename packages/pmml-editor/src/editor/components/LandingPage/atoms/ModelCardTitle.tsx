@@ -13,14 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { CardTitle, Tooltip } from "@patternfly/react-core";
+import { coalesce, getModelName } from "../../../utils";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
+import { Model } from "@kogito-tooling/pmml-editor-marshaller";
+import "./ModelCardTitle.scss";
 
-ReactDOM.render(
-  <div>
-    <App />
-  </div>,
-  document.getElementById("app")!
-);
+interface ModelTitleProps {
+  model: Model;
+}
+
+export const ModelCardTitle = (props: ModelTitleProps) => {
+  const { model } = props;
+  const modelName: string = coalesce(getModelName(model), "<Undefined>");
+
+  return (
+    <Tooltip content={<div>{modelName}</div>}>
+      <CardTitle className="model-card__title">
+        <span data-testid="model-card__title">{modelName}</span>
+      </CardTitle>
+    </Tooltip>
+  );
+};

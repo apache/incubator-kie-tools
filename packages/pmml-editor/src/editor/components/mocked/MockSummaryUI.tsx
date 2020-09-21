@@ -13,14 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
+import { CSSProperties } from "react";
+import { useSelector } from "react-redux";
+import { Timestamp, Title } from "../../utils";
+import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 
-ReactDOM.render(
-  <div>
-    <App />
-  </div>,
-  document.getElementById("app")!
-);
+const style: CSSProperties = {
+  padding: "5px 5px 5px 5px"
+};
+
+const MockSummaryUI = () => {
+  const pmml: PMML = useSelector<PMML, PMML>((state: PMML) => state);
+
+  return (
+    <div style={style}>
+      <Title title="JSON" />
+      <pre>{`${JSON.stringify(pmml, undefined, 2)}`}</pre>
+      <Timestamp />
+    </div>
+  );
+};
+
+export default MockSummaryUI;
