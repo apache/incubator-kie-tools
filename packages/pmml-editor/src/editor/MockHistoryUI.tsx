@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useState } from "react";
+import { CSSProperties, useState } from "react";
 import { Actions } from "./reducers/Actions";
 import { history } from "./history/HistoryProvider";
 import { Title } from "./PMMLEditor";
 import { useDispatch } from "react-redux";
 
-const style = {
+const style: CSSProperties = {
   padding: "5px 5px 5px 5px"
 };
 

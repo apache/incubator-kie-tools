@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 import * as React from "react";
+import { CSSProperties } from "react";
 import { Actions } from "./reducers/Actions";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { useDispatch } from "react-redux";
 
-const style = {
+const style: CSSProperties = {
   padding: "5px 5px 5px 5px"
 };
 

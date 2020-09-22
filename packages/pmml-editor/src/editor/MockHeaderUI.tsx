@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 import * as React from "react";
+import { CSSProperties } from "react";
 import { Actions } from "./reducers/Actions";
 import { Timestamp, Title } from "./PMMLEditor";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Header, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 
-const style = {
+const style: CSSProperties = {
   padding: "5px 5px 5px 5px"
 };
 
 const MockHeaderUI = () => {
   const dispatch = useDispatch();
-  const typedUseSelector: TypedUseSelectorHook<PMML> = useSelector;
-  const header: Header = typedUseSelector(state => state.Header);
+  const header: Header = useSelector<PMML, Header>(state => state.Header);
 
   const setHeaderDescription = (description: string) => {
     dispatch({

@@ -33,8 +33,6 @@ import { HeaderReducer } from "./reducers/HeaderReducer";
 import { DataDictionaryReducer } from "./reducers/DataDictionaryReducer";
 import { DataFieldReducer } from "./reducers/DataFieldReducer";
 
-enableAllPlugins();
-
 const reducer: Reducer<PMML, AllActions> = mergeReducers(PMMLReducer, {
   Header: HeaderReducer,
   DataDictionary: mergeReducers(DataDictionaryReducer, { DataField: DataFieldReducer })
@@ -68,6 +66,8 @@ export class PMMLEditor extends React.Component<Props, State> {
       content: "",
       originalContent: ""
     };
+
+    enableAllPlugins();
   }
 
   public componentDidMount(): void {
