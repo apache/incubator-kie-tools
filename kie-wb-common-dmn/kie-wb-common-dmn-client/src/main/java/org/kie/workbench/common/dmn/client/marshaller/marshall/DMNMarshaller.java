@@ -260,6 +260,11 @@ public class DMNMarshaller {
             forEach(dmnEdges, dmnEdge -> {
                 diagram.addDMNDiagramElement(WrapperUtils.getWrappedJSIDMNEdge(Js.uncheckedCast(dmnEdge)));
             });
+
+            //Convert absolute positioning to relative
+            for (final Node<?, ?> node : diagramNodes) {
+                PointUtils.convertToRelativeBounds(node);
+            }
         });
 
         return definitions;

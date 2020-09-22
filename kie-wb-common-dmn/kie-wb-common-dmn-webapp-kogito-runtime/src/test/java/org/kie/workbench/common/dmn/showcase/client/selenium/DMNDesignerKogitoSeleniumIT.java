@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
@@ -1899,7 +1900,7 @@ public class DMNDesignerKogitoSeleniumIT {
         final String expected = loadResource("KOGITO-371 (Decision Service node locations).xml");
         setContent(expected);
 
-        final String actual = getContent();
+        final String actual = twice(this::getContent); // Call the marshaller twice (to check if it's polluting node instances).
         assertThat(actual).isNotBlank();
 
         XmlAssert.assertThat(actual)
@@ -2491,6 +2492,11 @@ public class DMNDesignerKogitoSeleniumIT {
         waitOperation()
                 .withMessage("Designer was not loaded")
                 .until(visibilityOfElementLocated(className("uf-multi-page-editor")));
+    }
+
+    private <T> T twice(final Supplier<T> supplier) {
+        supplier.get();
+        return supplier.get();
     }
 
     private String getContent() {
