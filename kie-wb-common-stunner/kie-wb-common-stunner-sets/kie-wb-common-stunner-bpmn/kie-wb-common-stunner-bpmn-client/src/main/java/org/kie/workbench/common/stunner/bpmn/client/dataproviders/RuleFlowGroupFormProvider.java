@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -39,8 +40,16 @@ public class RuleFlowGroupFormProvider implements SelectorDataProvider {
     @Inject
     Event<RequestRuleFlowGroupDataEvent> requestRuleFlowGroupDataEvent;
 
+    private static Event<RequestRuleFlowGroupDataEvent> requestRuleFlowGroupDataEventEventSingleton = null;
+
     @Inject
     RuleFlowGroupDataProvider dataProvider;
+
+    @PostConstruct
+    public void populateData() {
+        requestRuleFlowGroupDataEvent.fire(new RequestRuleFlowGroupDataEvent());
+        requestRuleFlowGroupDataEventEventSingleton = requestRuleFlowGroupDataEvent;
+    }
 
     @Override
     public String getProviderName() {
@@ -88,4 +97,15 @@ public class RuleFlowGroupFormProvider implements SelectorDataProvider {
         int index = string.indexOf('/');
         return index == -1 ? string.indexOf('\\') : index;
     }
+
+    public static void initServerData() {
+        if (requestRuleFlowGroupDataEventEventSingleton != null) {
+            requestRuleFlowGroupDataEventEventSingleton.fire(new RequestRuleFlowGroupDataEvent());
+        }
+    }
+
+    public static Event<RequestRuleFlowGroupDataEvent> getRequestRuleFlowGroupDataEventEventSingleton() {
+        return requestRuleFlowGroupDataEventEventSingleton;
+    }
+
 }

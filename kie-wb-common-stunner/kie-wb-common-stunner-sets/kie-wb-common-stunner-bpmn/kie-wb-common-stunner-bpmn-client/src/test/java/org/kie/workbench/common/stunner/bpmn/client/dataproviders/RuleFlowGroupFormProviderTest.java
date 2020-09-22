@@ -33,11 +33,13 @@ import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.spy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RuleFlowGroupFormProviderTest {
@@ -52,7 +54,7 @@ public class RuleFlowGroupFormProviderTest {
 
     @Before
     public void setup() {
-        tested = new RuleFlowGroupFormProvider();
+        tested = spy(new RuleFlowGroupFormProvider());
         tested.dataProvider = dataProvider;
         tested.requestRuleFlowGroupDataEvent = requestRuleFlowGroupDataEvent;
     }
@@ -100,5 +102,12 @@ public class RuleFlowGroupFormProviderTest {
         assertEquals(1, values.size());
         assertEquals("g1 [Project1, Project2]", values.get(group1.getName()));
         verify(requestRuleFlowGroupDataEvent, times(1)).fire(any(RequestRuleFlowGroupDataEvent.class));
+    }
+
+    @Test
+    public void serviceInitialized() {
+        tested.populateData();
+        verify(requestRuleFlowGroupDataEvent, times(1)).fire(any(RequestRuleFlowGroupDataEvent.class));
+        assertTrue(tested.requestRuleFlowGroupDataEvent.equals(tested.getRequestRuleFlowGroupDataEventEventSingleton()));
     }
 }

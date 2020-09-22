@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import elemental2.promise.Promise;
 import org.kie.workbench.common.stunner.bpmn.client.dataproviders.CalledElementFormProvider;
+import org.kie.workbench.common.stunner.bpmn.client.dataproviders.RuleFlowGroupFormProvider;
 import org.kie.workbench.common.stunner.bpmn.client.diagram.DiagramTypeClientService;
 import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientService;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
@@ -58,6 +59,7 @@ public class BPMNSessionInitializer implements SessionInitializer {
                      final Command completeCallback) {
         diagramTypeService.loadDiagramType(metadata);
         CalledElementFormProvider.initServerData();
+        RuleFlowGroupFormProvider.initServerData();
         workItemDefinitionService
                 .call(metadata)
                 .then(workItemDefinitions -> {
