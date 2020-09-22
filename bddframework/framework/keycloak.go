@@ -134,18 +134,14 @@ func GetAccessTokenFromKeycloak(namespace, server, userName, password, realm, cl
 
 	requestInfo := NewPOSTHTTPRequestInfo(server, path, "x-www-form-urlencoded", body)
 	requestInfo.Unsecure = true
-	resp, err := ExecuteHTTPRequest(namespace, requestInfo)
-	if err != nil {
-		return "", err
-	}
 
 	var target map[string]json.RawMessage
-	if err = json.NewDecoder(resp.Body).Decode(&target); err != nil {
+	if err := ExecuteHTTPRequestWithUnmarshalledResponse(namespace, requestInfo, &target); err != nil {
 		return "", err
 	}
 
 	var accessToken string
-	if json.Unmarshal(target["access_token"], &accessToken) != nil {
+	if err := json.Unmarshal(target["access_token"], &accessToken); err != nil {
 		return "", err
 	}
 

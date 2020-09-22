@@ -15,11 +15,40 @@
 package framework
 
 import (
+	"fmt"
+
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
+
+// DecisionsResponse represents the decision response
+type DecisionsResponse struct {
+	Status    string     `json:"status"`
+	Saliences []Salience `json:"saliencies"`
+}
+
+// Salience represents the salience response
+type Salience struct {
+	OutcomeName string `json:"outcomeName"`
+}
+
+const (
+	salienceSuccess = "SUCCEEDED"
+	executionsPath  = "executions"
+	decisionsPath   = "executions/decisions/%s/explanations/saliencies"
+)
+
+type executionsResponse struct {
+	Executions []execution `json:"headers"`
+}
+
+type execution struct {
+	ExecutionID        string `json:"executionId"`
+	ExecutedModelName  string `json:"executedModelName"`
+	ExecutionSucceeded bool   `json:"executionSucceeded"`
+}
 
 // InstallKogitoTrustyService install the Kogito Trusty service
 func InstallKogitoTrustyService(namespace string, installerType InstallerType, trusty *bddtypes.KogitoServiceHolder) error {
@@ -47,4 +76,73 @@ func GetKogitoTrustyResourceStub(namespace string, replicas int) *v1alpha1.Kogit
 			KogitoServiceStatus: NewKogitoServiceStatus(),
 		},
 	}
+}
+
+// GetKogitoTrustyDecisionsByExecutionName gets the decisions made by a given execution name
+func GetKogitoTrustyDecisionsByExecutionName(namespace, executionName string, timeoutInMin int) (*DecisionsResponse, error) {
+
+	executionID, err := getKogitoTrustyExecutionIDByExecutionName(namespace, executionName, timeoutInMin)
+	if err != nil {
+		return nil, err
+	}
+
+	uri, err := WaitAndRetrieveEndpointURI(namespace, getTrustyServiceName())
+	if err != nil {
+		return nil, err
+	}
+
+	// Retrieve explainability result for the given execution ID
+	decisionsPathWithExecutionID := fmt.Sprintf(decisionsPath, executionID)
+	decisionsResponse := new(DecisionsResponse)
+	requestInfo := NewGETHTTPRequestInfo(uri, decisionsPathWithExecutionID)
+	err = WaitForOnOpenshift(namespace, fmt.Sprintf("Get decisions by execution ID %s", executionID), timeoutInMin,
+		func() (bool, error) {
+			if err := ExecuteHTTPRequestWithUnmarshalledResponse(namespace, requestInfo, &decisionsResponse); err != nil {
+				return false, err
+			}
+
+			if decisionsResponse.Status != salienceSuccess {
+				return false, fmt.Errorf("Decision for execution %s was not success", executionName)
+			}
+
+			return true, nil
+		})
+
+	return decisionsResponse, err
+}
+
+func getKogitoTrustyExecutionIDByExecutionName(namespace, executionName string, timeoutInMin int) (string, error) {
+	uri, err := WaitAndRetrieveEndpointURI(namespace, getTrustyServiceName())
+	if err != nil {
+		return "", err
+	}
+
+	var executionID string
+	executionsResponse := new(executionsResponse)
+	requestInfo := NewGETHTTPRequestInfo(uri, executionsPath)
+	err = WaitForOnOpenshift(namespace, fmt.Sprintf("Get execution ID by name %s", executionName), timeoutInMin,
+		func() (bool, error) {
+			if err := ExecuteHTTPRequestWithUnmarshalledResponse(namespace, requestInfo, &executionsResponse); err != nil {
+				return false, err
+			}
+
+			GetLogger(namespace).Debugf("Got execution response %v", executionsResponse)
+
+			for _, execution := range executionsResponse.Executions {
+				if execution.ExecutedModelName == executionName {
+					if !execution.ExecutionSucceeded {
+						return false, fmt.Errorf("Execution %s was unsuccessful", executionName)
+					}
+					executionID = execution.ExecutionID
+				}
+			}
+
+			if len(executionID) == 0 {
+				return false, fmt.Errorf("Execution %s not found yet", executionName)
+			}
+
+			return true, nil
+		})
+
+	return executionID, err
 }

@@ -20,6 +20,7 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 
 	kafkabetav1 "github.com/kiegroup/kogito-cloud-operator/pkg/apis/kafka/v1beta1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // DeployKafkaInstance deploys an instance of Kafka
@@ -28,6 +29,29 @@ func DeployKafkaInstance(namespace string, kafka *kafkabetav1.Kafka) error {
 
 	if err := kubernetes.ResourceC(kubeClient).Create(kafka); err != nil {
 		return fmt.Errorf("Error while creating Kafka: %v ", err)
+	}
+
+	return nil
+}
+
+// DeployKafkaTopic deploys a Kafka topic
+func DeployKafkaTopic(namespace, kafkaTopicName, kafkaInstanceName string) error {
+	GetLogger(namespace).Infof("Creating Kafka topic %s in kafka %s.", kafkaTopicName, kafkaInstanceName)
+
+	kafkaTopic := &kafkabetav1.KafkaTopic{
+		ObjectMeta: metav1.ObjectMeta{
+			Namespace: namespace,
+			Name:      kafkaTopicName,
+			Labels:    map[string]string{"strimzi.io/cluster": kafkaInstanceName},
+		},
+		Spec: kafkabetav1.KafkaTopicSpec{
+			Replicas:   1,
+			Partitions: 1,
+		},
+	}
+
+	if err := kubernetes.ResourceC(kubeClient).Create(kafkaTopic); err != nil {
+		return fmt.Errorf("Error while creating Kafka Topic: %v ", err)
 	}
 
 	return nil

@@ -1,4 +1,4 @@
-// Copyright 2019 Red Hat, Inc. and/or its affiliates
+// Copyright 2020 Red Hat, Inc. and/or its affiliates
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,9 +15,7 @@
 package steps
 
 import (
-	"encoding/json"
 	"fmt"
-	"net/http"
 
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
@@ -38,7 +36,7 @@ func registerKogitoExplainabilityServiceSteps(ctx *godog.ScenarioContext, data *
 	ctx.Step(`^Install Kogito Explainability with (\d+) replicas$`, data.installKogitoExplainabilityServiceWithReplicas)
 	ctx.Step(`^Install Kogito Explainability with (\d+) replicas with configuration:$`, data.installKogitoExplainabilityServiceWithReplicasWithConfiguration)
 	ctx.Step(`^Kogito Explainability has (\d+) pods running within (\d+) minutes$`, data.kogitoExplainabilityHasPodsRunningWithinMinutes)
-	ctx.Step(`^Explainability result is available in the Trusty service within (\d+) minutes$`, data.explainabilityResultIsAvailable)
+	ctx.Step(`^Explainability result for execution "([^"]*)" in the Trusty service within (\d+) minutes with saliences:$`, data.explainabilityResultForExecutionWithinMinutesWithSaliences)
 }
 
 func (data *Data) installKogitoExplainabilityServiceWithReplicas(replicas int) error {
@@ -62,67 +60,28 @@ func (data *Data) kogitoExplainabilityHasPodsRunningWithinMinutes(podNb, timeout
 	return framework.WaitForKogitoExplainabilityService(data.Namespace, podNb, timeoutInMin)
 }
 
-type executionsResponse struct {
-	Executions []execution `json:"headers"`
-}
-
-type execution struct {
-	ExecutionID string `json:"executionId"`
-}
-
-func (data *Data) explainabilityResultIsAvailable(timeoutInMin int) error {
-	// Retrieve the execution id from the trusty service
-	executionsPath := "executions"
-	responseContent := "DECISION"
-	trustyServiceName := "trusty"
-	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, trustyServiceName)
+func (data *Data) explainabilityResultForExecutionWithinMinutesWithSaliences(executionName string, timeoutInMin int, table *godog.Table) error {
+	resp, err := framework.GetKogitoTrustyDecisionsByExecutionName(data.Namespace, executionName, timeoutInMin)
 	if err != nil {
 		return err
 	}
 
-	executionsPath = data.ResolveWithScenarioContext(executionsPath)
-	requestInfo := framework.NewGETHTTPRequestInfo(uri, executionsPath)
-	responseContent = data.ResolveWithScenarioContext(responseContent)
-	err = framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("GET request on path %s to return response content '%s'", executionsPath, responseContent), timeoutInMin,
-		func() (bool, error) {
-			return framework.DoesHTTPResponseContain(data.Namespace, requestInfo, responseContent)
-		})
+	if len(table.Rows) > 0 {
+		for _, row := range table.Rows {
+			outcomeNameExpected := row.Cells[0].Value
+			found := false
+			for _, salience := range resp.Saliences {
+				if salience.OutcomeName == outcomeNameExpected {
+					found = true
+					break
+				}
+			}
 
-	if err != nil {
-		return err
+			if !found {
+				return fmt.Errorf("Outcome %s for execution %s was not found", outcomeNameExpected, executionName)
+			}
+		}
 	}
 
-	response, err := framework.ExecuteHTTPRequest(data.Namespace, requestInfo)
-	if err != nil {
-		return err
-	}
-
-	executionsResponse := new(executionsResponse)
-	err = getJSON(response, &executionsResponse)
-	if err != nil {
-		return err
-	}
-
-	executionID := executionsResponse.Executions[0].ExecutionID
-
-	// Retrieve explainability result for the given execution ID
-	executionsPath = fmt.Sprintf("executions/decisions/%s/explanations/saliencies", executionID)
-	responseContent = "SUCCEEDED"
-
-	if err != nil {
-		return err
-	}
-	executionsPath = data.ResolveWithScenarioContext(executionsPath)
-	requestInfo = framework.NewGETHTTPRequestInfo(uri, executionsPath)
-	responseContent = data.ResolveWithScenarioContext(responseContent)
-	return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("GET request on path %s to return response content '%s'", executionsPath, responseContent), timeoutInMin,
-		func() (bool, error) {
-			return framework.DoesHTTPResponseContain(data.Namespace, requestInfo, responseContent)
-		})
-}
-
-func getJSON(r *http.Response, target interface{}) error {
-	defer r.Body.Close()
-
-	return json.NewDecoder(r.Body).Decode(target)
+	return nil
 }

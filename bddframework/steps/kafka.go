@@ -16,6 +16,7 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoinfra/kafka"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
@@ -24,6 +25,7 @@ const defaultReplicas = 1
 
 func registerKafkaSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^Kafka instance "([^"]*)" is deployed$`, data.kafkaInstanceIsDeployed)
+	ctx.Step(`^Kafka topic "([^"]*)" is deployed$`, data.kafkaTopicIsDeployed)
 }
 
 func (data *Data) kafkaInstanceIsDeployed(name string) error {
@@ -34,4 +36,8 @@ func (data *Data) kafkaInstanceIsDeployed(name string) error {
 	}
 
 	return framework.WaitForPodsWithLabel(data.Namespace, "strimzi.io/name", name+"-entity-operator", 1, 5)
+}
+
+func (data *Data) kafkaTopicIsDeployed(name string) error {
+	return framework.DeployKafkaTopic(data.Namespace, name, kafka.InstanceName)
 }
