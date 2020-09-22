@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.appformer.client.stateControl.registry.Registry;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasInlineTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
@@ -31,8 +32,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsCon
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ToolboxControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.MultiLineTextEditorBox;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
@@ -83,8 +82,7 @@ public class BPMNEditorSession extends DefaultEditorSession {
                      .registerCanvasHandlerControl(ConnectionAcceptorControl.class)
                      .registerCanvasHandlerControl(ContainmentAcceptorControl.class)
                      .registerCanvasHandlerControl(DockingAcceptorControl.class)
-                     .registerCanvasHandlerControl(CanvasInPlaceTextEditorControl.class,
-                                                   MultiLineTextEditorBox.class)
+                     .registerCanvasHandlerControl(CanvasInlineTextEditorControl.class)
                      .registerCanvasHandlerControl(LocationControl.class)
                      .registerCanvasHandlerControl(ToolboxControl.class)
                      .registerCanvasHandlerControl(ElementBuilderControl.class,

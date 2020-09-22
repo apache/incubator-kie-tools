@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.canvas.controls.actions;
+package org.kie.workbench.common.stunner.core.client.canvas.controls;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -26,14 +24,14 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 /**
  * Provides element's name edition via some widget.
  */
-public interface CanvasInPlaceTextEditorControl<C extends CanvasHandler, S extends ClientSession, E extends Element>
+public interface CanvasInlineTextEditorControl<C extends CanvasHandler, S extends ClientSession, E extends Element>
         extends CanvasRegistrationControl<C, E>,
                 RequiresCommandManager<C>,
                 CanvasControl.SessionAware<S> {
 
-    CanvasInPlaceTextEditorControl<C, S, E> show(final E item,
-                                                 final double x,
-                                                 final double y);
+    CanvasInlineTextEditorControl<C, S, E> show(final E item);
 
-    CanvasInPlaceTextEditorControl<C, S, E> hide();
+    CanvasInlineTextEditorControl<C, S, E> hide();
+
+    CanvasInlineTextEditorControl<C, S, E> rollback();
 }

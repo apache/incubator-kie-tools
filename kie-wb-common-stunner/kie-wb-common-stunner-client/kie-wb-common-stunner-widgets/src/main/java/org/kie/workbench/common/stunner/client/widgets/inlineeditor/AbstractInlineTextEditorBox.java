@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.widgets.canvas.actions;
+package org.kie.workbench.common.stunner.client.widgets.inlineeditor;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import com.google.gwt.event.dom.client.KeyCodes;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
@@ -28,16 +27,16 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.uberfire.mvp.Command;
 
-public abstract class AbstractTextEditorBox implements TextEditorBoxView.Presenter {
+public abstract class AbstractInlineTextEditorBox implements InlineEditorBoxView.Presenter {
 
-    private AbstractCanvasHandler canvasHandler;
-    private TextPropertyProviderFactory textPropertyProviderFactory;
-    private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
-    private Command closeCallback;
-    private Element<? extends Definition> element;
-    private String value;
+    AbstractCanvasHandler canvasHandler;
+    TextPropertyProviderFactory textPropertyProviderFactory;
+    CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
+    Command closeCallback;
+    Element<? extends Definition> element;
+    String value;
 
-    protected abstract TextEditorBoxView getView();
+    protected abstract InlineEditorBoxView getView();
 
     @PostConstruct
     public void setup() {
@@ -64,24 +63,53 @@ public abstract class AbstractTextEditorBox implements TextEditorBoxView.Present
 
     @Override
     @SuppressWarnings("unchecked")
-    public void show(final Element element) {
+    public void show(final Element element, final double width, final double height) {
         this.element = element;
         final TextPropertyProvider textPropertyProvider = textPropertyProviderFactory.getProvider(element);
         final String name = textPropertyProvider.getText(element);
-        getView().show(name);
+        getView().show(name, width, height);
+    }
+
+    @Override
+    public void setTextBoxInternalAlignment(final String alignment) {
+        getView().setTextBoxInternalAlignment(alignment);
+    }
+
+    @Override
+    public void setMultiline(final boolean isMultiline) {
+        getView().setMultiline(isMultiline);
+    }
+
+    @Override
+    public void setPlaceholder(final String placeholder) {
+        getView().setPlaceholder(placeholder);
+    }
+
+    @Override
+    public void setFontSize(final double size) {
+        getView().setFontSize(size);
+    }
+
+    @Override
+    public void setFontFamily(final String fontFamily) {
+        getView().setFontFamily(fontFamily);
+    }
+
+    @Override
+    public void rollback() {
+        getView().rollback();
     }
 
     @Override
     public void hide() {
         getView().hide();
-        this.value = null;
+        value = null;
     }
 
-    public void onChangeName(final String name) {
-        this.value = name;
+    public void onChangeName(final String value) {
+        this.value = value;
     }
 
-    // TODO: Check command result.
     @Override
     public void onSave() {
         flush();
@@ -91,7 +119,7 @@ public abstract class AbstractTextEditorBox implements TextEditorBoxView.Present
 
     @Override
     public void flush() {
-        if (null != this.value) {
+        if (null != value) {
             final TextPropertyProvider textPropertyProvider = textPropertyProviderFactory.getProvider(element);
             textPropertyProvider.setText(canvasHandler,
                                          commandManagerProvider.getCommandManager(),
@@ -129,34 +157,5 @@ public abstract class AbstractTextEditorBox implements TextEditorBoxView.Present
     @Override
     public HTMLElement getElement() {
         return getView().getElement();
-    }
-
-    @Override
-    public void onKeyPress(final int keyCode,
-                           final boolean shiftKeyPressed,
-                           final String value) {
-        processKey(keyCode,
-                   shiftKeyPressed,
-                   value);
-    }
-
-    private void processKey(final int keyCode,
-                            boolean shiftKeyPressed,
-                            final String value) {
-        this.value = value;
-        // Enter key produces save.
-        if ((KeyCodes.KEY_ENTER == keyCode) && (!shiftKeyPressed)) {
-            onSave();
-        }
-    }
-
-    @Override
-    public void onKeyDown(final int keyCode,
-                          final String value) {
-        this.value = value;
-        // Tab key produces save.
-        if (KeyCodes.KEY_TAB == keyCode) {
-            onSave();
-        }
     }
 }

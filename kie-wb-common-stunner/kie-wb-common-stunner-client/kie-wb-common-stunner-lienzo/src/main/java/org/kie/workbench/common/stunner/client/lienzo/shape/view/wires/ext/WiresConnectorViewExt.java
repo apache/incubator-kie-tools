@@ -197,6 +197,48 @@ public class WiresConnectorViewExt<T>
     }
 
     @Override
+    public String getTitlePosition() {
+        // Do not apply here...
+        return null;
+    }
+
+    @Override
+    public String getOrientation() {
+        // Do not apply here...
+        return null;
+    }
+
+    @Override
+    public double getMarginX() {
+        // Do not apply here...
+        return 0;
+    }
+
+    @Override
+    public String getTitleFontFamily() {
+        // Do not apply here...
+        return null;
+    }
+
+    @Override
+    public double getTitleFontSize() {
+        // Do not apply here...
+        return 0;
+    }
+
+    @Override
+    public String getFontPosition() {
+        // Do not apply here...
+        return null;
+    }
+
+    @Override
+    public String getFontAlignment() {
+        // Do not apply here...
+        return null;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public T moveTitleToTop() {
         label.ifPresent(l -> l.configure(Shape::moveToTop));

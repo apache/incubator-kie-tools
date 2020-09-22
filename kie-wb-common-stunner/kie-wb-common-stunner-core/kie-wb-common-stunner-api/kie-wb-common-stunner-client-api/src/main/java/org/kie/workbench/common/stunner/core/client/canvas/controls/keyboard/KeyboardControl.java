@@ -27,6 +27,8 @@ public interface KeyboardControl<C extends Canvas, S extends ClientSession> exte
 
     KeyboardControl<C, S> addKeyShortcutCallback(final KeyShortcutCallback shortcutCallback);
 
+    void setKeyEventHandlerEnabled(final boolean enabled);
+
     interface KeyShortcutCallback {
 
         void onKeyShortcut(final KeyboardEvent.Key... keys);

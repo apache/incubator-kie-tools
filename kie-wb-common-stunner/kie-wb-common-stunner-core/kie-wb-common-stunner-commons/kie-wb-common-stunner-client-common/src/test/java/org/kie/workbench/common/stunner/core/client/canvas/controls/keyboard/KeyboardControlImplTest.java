@@ -74,4 +74,11 @@ public class KeyboardControlImplTest {
         verify(callback,
                times(1)).onKeyShortcut(eq(KeyboardEvent.Key.ESC));
     }
+
+    @Test
+    public void testSetKeyEventHandlerEnabled() {
+        tested.setKeyEventHandlerEnabled(true);
+        verify(keyEventHandler,
+               times(1)).setEnabled(eq(true));
+    }
 }

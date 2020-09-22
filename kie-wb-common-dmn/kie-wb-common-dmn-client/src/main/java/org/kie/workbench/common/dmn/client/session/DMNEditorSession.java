@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import org.appformer.client.stateControl.registry.Registry;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
+import org.kie.workbench.common.dmn.client.canvas.controls.inlineeditor.DMNCanvasInlineTextEditorControl;
 import org.kie.workbench.common.dmn.client.canvas.controls.resize.DecisionServiceMoveDividerControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorControl;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
@@ -42,8 +43,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsCon
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ToolboxControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasInPlaceTextEditorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.SingleLineTextEditorBox;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
@@ -104,8 +103,7 @@ public class DMNEditorSession extends DefaultEditorSession implements DMNSession
                            .registerCanvasHandlerControl(ConnectionAcceptorControl.class)
                            .registerCanvasHandlerControl(ContainmentAcceptorControl.class)
                            .registerCanvasHandlerControl(DockingAcceptorControl.class)
-                           .registerCanvasHandlerControl(CanvasInPlaceTextEditorControl.class,
-                                                         SingleLineTextEditorBox.class)
+                           .registerCanvasHandlerControl(DMNCanvasInlineTextEditorControl.class)
                            .registerCanvasHandlerControl(LocationControl.class)
                            .registerCanvasHandlerControl(ToolboxControl.class)
                            .registerCanvasHandlerControl(ElementBuilderControl.class,

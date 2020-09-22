@@ -247,6 +247,52 @@ public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
         return this;
     }
 
+    @Override
+    public String getTitleFontFamily() {
+        return text.getFontFamily();
+    }
+
+    @Override
+    public double getTitleFontSize() {
+        return text.getFontSize();
+    }
+
+    @Override
+    public String getTitlePosition() {
+        return getLabelLayout()
+                .getDirectionLayout()
+                .getReferencePosition()
+                .toString();
+    }
+
+    @Override
+    public String getOrientation() {
+        return getLabelLayout()
+                .getDirectionLayout()
+                .getOrientation().name();
+    }
+
+    @Override
+    public double getMarginX() {
+        return getLabelLayout().getSizeConstraints().getMarginX();
+    }
+
+    @Override
+    public String getFontPosition() {
+        return getLabelLayout()
+                .getDirectionLayout()
+                .getReferencePosition()
+                .name();
+    }
+
+    @Override
+    public String getFontAlignment() {
+        return getLabelLayout()
+                .getDirectionLayout()
+                .getVerticalAlignment()
+                .name();
+    }
+
     public WiresTextDecorator setTitleStrokeAlpha(final double strokeAlpha) {
         text.setStrokeAlpha(strokeAlpha);
         return this;
@@ -303,6 +349,7 @@ public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
 
     /**
      * Returns the label layout based on the model
+     *
      * @return
      */
     public LabelLayout getLabelLayout() {

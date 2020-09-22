@@ -66,6 +66,10 @@ public class KeyboardControlImpl
         session = null;
     }
 
+    public void setKeyEventHandlerEnabled(final boolean enabled) {
+        this.keyEventHandler.setEnabled(enabled);
+    }
+
     @Override
     public void bind(final ClientSession session) {
         this.session = session;

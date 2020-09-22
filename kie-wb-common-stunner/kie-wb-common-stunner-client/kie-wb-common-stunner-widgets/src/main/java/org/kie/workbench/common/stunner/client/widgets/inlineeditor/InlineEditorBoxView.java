@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,32 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.widgets.canvas.actions;
+package org.kie.workbench.common.stunner.client.widgets.inlineeditor;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextEditorBox;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.TextEditorBox;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.uberfire.client.mvp.UberElement;
 
-public interface TextEditorBoxView extends UberElement<TextEditorBoxView.Presenter> {
+public interface InlineEditorBoxView extends UberElement<InlineEditorBoxView.Presenter> {
 
-    void show(final String name);
+    void show(final String name, final double width, double height);
 
     void hide();
 
     boolean isVisible();
+
+    void setTextBoxInternalAlignment(final String alignment);
+
+    void setMultiline(final boolean isMultiline);
+
+    void setPlaceholder(final String placeholder);
+
+    void setFontSize(final double size);
+
+    void setFontFamily(final String fontFamily);
+
+    void rollback();
 
     interface Presenter extends TextEditorBox<AbstractCanvasHandler, Element> {
 
@@ -35,14 +47,7 @@ public interface TextEditorBoxView extends UberElement<TextEditorBoxView.Present
 
         void onClose();
 
-        void onChangeName(final String name);
-
-        void onKeyPress(final int keyCode,
-                        final boolean shiftKeyPressed,
-                        final String value);
-
-        void onKeyDown(final int keyCode,
-                       final String value);
+        void onChangeName(final String value);
 
         String getNameValue();
     }

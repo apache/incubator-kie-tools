@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.canvas.controls.actions;
+package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor;
 
 import java.lang.annotation.RetentionPolicy;
 
 @java.lang.annotation.Documented
 @java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
 @javax.inject.Qualifier
-public @interface SingleLineTextEditorBox {
+public @interface InlineTextEditorBox {
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.widgets.canvas.actions;
+package org.kie.workbench.common.stunner.client.widgets.inlineeditor;
 
-import com.google.gwt.event.dom.client.KeyCodes;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,26 +34,29 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TextEditorSingleLineBoxTest {
+public class InlineTextEditorBoxImplTest {
 
     public static final String NAME = "name";
     public static final String MODIFIED_NAME = "modified_name";
     public static final String ID = "id";
+    public static final double BOX_WIDTH = 50d;
+    public static final double BOX_HEIGHT = 50d;
 
-    protected TextEditorSingleLineBox presenter;
+    protected InlineTextEditorBoxImpl presenter;
 
     @Mock
     private DefinitionUtils definitionUtils;
     @Mock
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     @Mock
-    private TextEditorMultiLineBoxView view;
+    private InlineTextEditorBoxViewImpl view;
     @Mock
     private AbstractCanvasHandler canvasHandler;
     @Mock
@@ -87,77 +89,58 @@ public class TextEditorSingleLineBoxTest {
         when(canvasHandler.getTextPropertyProviderFactory()).thenReturn(textPropertyProviderFactory);
         when(textPropertyProviderFactory.getProvider(any(Element.class))).thenReturn(textPropertyProvider);
 
-        presenter = new TextEditorSingleLineBox(view);
-
+        presenter = new InlineTextEditorBoxImpl(view);
         presenter.setup();
-
         verify(view).init(presenter);
-
         presenter.initialize(canvasHandler,
                              closeCallback);
-
         presenter.setCommandManagerProvider(commandProvider);
-
         presenter.getElement();
 
         verify(view).getElement();
 
-        presenter.show(element);
+        presenter.show(element, BOX_WIDTH, BOX_HEIGHT);
 
-        verify(view).show(NAME);
+        verify(view).show(NAME, BOX_WIDTH, BOX_HEIGHT);
     }
 
     @Test
-    public void testSaveByPressingEnter() {
-        presenter.onKeyPress(12,
-                             false,
-                             MODIFIED_NAME);
-
-        verifyNameNotSaved();
-
-        presenter.onKeyPress(KeyCodes.KEY_ENTER,
-                             false,
-                             MODIFIED_NAME);
-
-        verifyNameSaved();
-    }
-
-    @Test
-    public void testSaveByPressingTab() {
-        presenter.onKeyDown(KeyCodes.KEY_T,
-                            MODIFIED_NAME);
-
-        verifyNameNotSaved();
-
-        presenter.onKeyDown(KeyCodes.KEY_TAB,
-                            MODIFIED_NAME);
-
-        verifyNameSaved();
-    }
-
-    @Test
-    public void testSaveByPressingButton() {
+    public void testOnChangeName() {
         presenter.onChangeName(MODIFIED_NAME);
+        assertEquals(MODIFIED_NAME, presenter.getNameValue());
+    }
 
+    @Test
+    public void testOnSave() {
+        presenter.onChangeName(MODIFIED_NAME);
         verifyNameNotSaved();
-
         presenter.onSave();
-
         verifyNameSaved();
     }
 
     @Test
     public void testFlush() {
         presenter.onChangeName(MODIFIED_NAME);
-
         presenter.flush();
-
         verifyNameFlushed();
     }
 
     @Test
+    public void testFlushValueNull() {
+        presenter.onChangeName(null);
+        presenter.flush();
+
+        assertEquals(null,
+                     presenter.getNameValue());
+        verify(definitionUtils, never()).getNameIdentifier(objectDefinition);
+        verify(canvasCommandFactory, never()).updatePropertyValue(element,
+                                                                  ID,
+                                                                  MODIFIED_NAME);
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
-    public void testCloseButton() {
+    public void testOnClose() {
         presenter.onChangeName(MODIFIED_NAME);
 
         assertEquals(MODIFIED_NAME,
@@ -167,42 +150,84 @@ public class TextEditorSingleLineBoxTest {
 
         assertEquals(null,
                      presenter.getNameValue());
-
         verify(definitionUtils,
                never()).getNameIdentifier(objectDefinition);
         verify(canvasCommandFactory,
                never()).updatePropertyValue(element,
                                             ID,
                                             MODIFIED_NAME);
-
         verify(commandProvider,
                never()).getCommandManager();
         verify(canvasCommandManager,
                never()).execute(any(),
                                 any());
-
         verify(view).hide();
         verify(closeCallback).execute();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetFontFamily() {
+        presenter.setFontFamily("Open Sans");
+        verify(view).setFontFamily("Open Sans");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetFontSize() {
+        presenter.setFontSize(10d);
+        verify(view).setFontSize(10d);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetMultiline() {
+        presenter.setMultiline(true);
+        verify(view).setMultiline(true);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetPlaceholder() {
+        presenter.setPlaceholder("Name");
+        verify(view).setPlaceholder("Name");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSetTextBoxInternalAlignment() {
+        presenter.setTextBoxInternalAlignment("MIDDLE");
+        verify(view).setTextBoxInternalAlignment("MIDDLE");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testDestroy() {
+        presenter.destroy();
+
+        assertNull(presenter.canvasHandler);
+        assertNull(presenter.textPropertyProviderFactory);
+        assertNull(presenter.commandManagerProvider);
+        assertNull(presenter.closeCallback);
+        assertNull(presenter.element);
+        assertNull(presenter.value);
     }
 
     @SuppressWarnings("unchecked")
     protected void verifyNameNotSaved() {
         assertEquals(MODIFIED_NAME,
                      presenter.getNameValue());
-
         verify(definitionUtils,
                never()).getNameIdentifier(objectDefinition);
         verify(canvasCommandFactory,
                never()).updatePropertyValue(element,
                                             ID,
                                             MODIFIED_NAME);
-
         verify(commandProvider,
                never()).getCommandManager();
         verify(canvasCommandManager,
                never()).execute(any(),
                                 any());
-
         verify(view,
                never()).hide();
         verify(closeCallback,
@@ -219,12 +244,10 @@ public class TextEditorSingleLineBoxTest {
     protected void verifyNameFlushed() {
         assertEquals(MODIFIED_NAME,
                      presenter.getNameValue());
-
         verify(definitionUtils).getNameIdentifier(objectDefinition);
         verify(canvasCommandFactory).updatePropertyValue(element,
                                                          ID,
                                                          MODIFIED_NAME);
-
         verify(commandProvider).getCommandManager();
         verify(canvasCommandManager).execute(any(),
                                              any());

@@ -35,8 +35,10 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 import org.mockito.Mock;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -110,6 +112,14 @@ public class WiresConnectorViewExtTest {
         verify(labelText, times(1)).setFontSize(eq(0.3d));
         tested.moveTitleToTop();
         verify(labelText, times(1)).moveToTop();
+        assertNull(tested.getTitlePosition());
+        assertNull(tested.getOrientation());
+        assertEquals(0.0, tested.getMarginX(), 0.0001);
+        assertNull(tested.getTitleFontFamily());
+        assertEquals(0.0, tested.getTitleFontSize(), 0.0001);
+        assertNull(tested.getFontPosition());
+        assertNull(tested.getFontAlignment());
+
         tested.destroy();
         verify(label, times(1)).destroy();
         assertFalse(tested.label.isPresent());

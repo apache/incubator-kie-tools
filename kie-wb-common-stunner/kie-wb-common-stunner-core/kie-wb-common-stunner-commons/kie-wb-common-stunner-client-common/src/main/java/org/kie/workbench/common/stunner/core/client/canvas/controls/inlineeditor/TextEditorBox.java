@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.client.canvas.controls.actions;
+package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor;
 
 import org.jboss.errai.common.client.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -29,21 +29,25 @@ public interface TextEditorBox<C extends CanvasHandler, E extends Element>
     void initialize(final C canvasHandler,
                     final Command closeCallback);
 
-    void show(final E element);
+    void show(final E element, final double width, final double height);
 
     boolean isVisible();
+
+    void rollback();
 
     void hide();
 
     void flush();
 
-    default double getDisplayOffsetX() {
-        return 0.0;
-    }
+    void setTextBoxInternalAlignment(final String alignment);
 
-    default double getDisplayOffsetY() {
-        return 0.0;
-    }
+    void setMultiline(final boolean isMultiline);
+
+    void setPlaceholder(final String placeholder);
+
+    void setFontSize(final double size);
+
+    void setFontFamily(final String fontFamily);
 }
 
 

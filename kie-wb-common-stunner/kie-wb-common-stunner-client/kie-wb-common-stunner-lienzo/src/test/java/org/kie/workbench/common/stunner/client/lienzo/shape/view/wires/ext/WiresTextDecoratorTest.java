@@ -201,4 +201,39 @@ public class WiresTextDecoratorTest {
         order.verify(child1.getGroup()).moveToTop();
         order.verify(child2.getGroup()).moveToTop();
     }
+
+    @Test
+    public void testGetTitleFontFamily() {
+        assertEquals("Verdana", decorator.getTitleFontFamily());
+    }
+
+    @Test
+    public void testGetTitleFontSize() {
+        assertEquals(10.0, decorator.getTitleFontSize(), 0.001);
+    }
+
+    @Test
+    public void testGetTitlePosition() {
+        assertEquals("INSIDE", decorator.getTitlePosition());
+    }
+
+    @Test
+    public void testGetOrientation() {
+        assertEquals("HORIZONTAL", decorator.getOrientation());
+    }
+
+    @Test
+    public void testGetMarginX() {
+        assertEquals(0.0, decorator.getMarginX(), 0.001);
+    }
+
+    @Test
+    public void testGetFontPosition() {
+        assertEquals("INSIDE", decorator.getFontPosition());
+    }
+
+    @Test
+    public void testGetFontAlignment() {
+        assertEquals("MIDDLE", decorator.getFontAlignment());
+    }
 }
