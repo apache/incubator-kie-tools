@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { CSSProperties } from "react";
+import { CSSProperties, useContext } from "react";
 import { Actions } from "./reducers/Actions";
 import { Timestamp, Title } from "./PMMLEditor";
 import { useDispatch, useSelector } from "react-redux";
 import { Header, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { HistoryContext, HistoryService } from "./history/HistoryProvider";
 
 const style: CSSProperties = {
   padding: "5px 5px 5px 5px"
@@ -27,11 +28,13 @@ const style: CSSProperties = {
 const MockHeaderUI = () => {
   const dispatch = useDispatch();
   const header: Header = useSelector<PMML, Header>(state => state.Header);
+  const service: HistoryService = useContext(HistoryContext).service;
 
   const setHeaderDescription = (description: string) => {
     dispatch({
       type: Actions.SetHeaderDescription,
       payload: {
+        service: service,
         description: description
       }
     });

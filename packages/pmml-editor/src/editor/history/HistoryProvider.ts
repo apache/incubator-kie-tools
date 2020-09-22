@@ -17,6 +17,7 @@ import { applyPatches, produce } from "immer";
 import { WritableDraft } from "immer/dist/types/types-external";
 import { PMML } from "@kogito-tooling/pmml-editor-marshaller/dist/marshaller/model";
 import { cloneDeep, get, set } from "lodash";
+import { Context, createContext } from "react";
 
 interface Change {
   path: string | null;
@@ -24,55 +25,69 @@ interface Change {
   reverse: any;
 }
 
-interface History {
+interface HistoryStore {
   changes: Change[];
   index: number;
 }
 
-const history: History = {
-  changes: [],
-  index: 0
-};
+interface HistoryProps {
+  service: HistoryService;
+}
 
-const mutate = <M>(state: M, path: string | null, recipe: (draft: WritableDraft<M>) => void) => {
-  console.log(path);
-  if (history.index < history.changes.length) {
-    history.changes = history.changes.slice(0, history.index);
-  }
+export class HistoryService {
+  private readonly history: HistoryStore = {
+    changes: [],
+    index: 0
+  };
 
-  const newState: M = produce(state, recipe, (patches, inversePatches) => {
-    history.changes.push({ path: path, change: patches, reverse: inversePatches });
-  });
-  history.index = history.changes.length;
-  return newState;
-};
+  public mutate = <M>(state: M, path: string | null, recipe: (draft: WritableDraft<M>) => void) => {
+    console.log(path);
+    if (this.history.index < this.history.changes.length) {
+      this.history.changes = this.history.changes.slice(0, this.history.index);
+    }
 
-const undo = (state: PMML): PMML => {
-  if (history.index > 0) {
-    const change: Change = history.changes[--history.index];
-    return apply(state, change.path, change.reverse);
-  }
+    const newState: M = produce(state, recipe, (patches, inversePatches) => {
+      this.history.changes.push({ path: path, change: patches, reverse: inversePatches });
+    });
+    this.history.index = this.history.changes.length;
+    return newState;
+  };
 
-  return state;
-};
+  public undo = (state: PMML): PMML => {
+    if (this.history.index > 0) {
+      const change: Change = this.history.changes[--this.history.index];
+      return this.apply(state, change.path, change.reverse);
+    }
 
-const redo = (state: PMML): PMML => {
-  if (history.index < history.changes.length) {
-    const change: Change = history.changes[history.index++];
-    return apply(state, change.path, change.change);
-  }
+    return state;
+  };
 
-  return state;
-};
+  public redo = (state: PMML): PMML => {
+    if (this.history.index < this.history.changes.length) {
+      const change: Change = this.history.changes[this.history.index++];
+      return this.apply(state, change.path, change.change);
+    }
 
-const apply = (state: PMML, path: string | null, patch: any) => {
-  if (path === null) {
-    return applyPatches(state, patch);
-  }
-  const branch: any = get(state, path);
-  const branchUndone: any = applyPatches(branch, patch);
-  const newState: PMML = cloneDeep(state);
-  return set(newState, path, branchUndone);
-};
+    return state;
+  };
 
-export { mutate, undo, redo, history };
+  public index = (): number => {
+    return this.history.index;
+  };
+
+  public changes = (): Change[] => {
+    return this.history.changes;
+  };
+
+  private apply = (state: PMML, path: string | null, patch: any) => {
+    if (path === null) {
+      return applyPatches(state, patch);
+    }
+    const branch: any = get(state, path);
+    const branchUndone: any = applyPatches(branch, patch);
+    const newState: PMML = cloneDeep(state);
+    return set(newState, path, branchUndone);
+  };
+}
+
+export const HistoryContext: Context<HistoryProps> = createContext({ service: new HistoryService() });

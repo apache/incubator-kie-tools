@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { CSSProperties } from "react";
+import { CSSProperties, useContext } from "react";
 import { Actions } from "./reducers/Actions";
 import { Timestamp, Title } from "./PMMLEditor";
 import { useDispatch, useSelector } from "react-redux";
 import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { HistoryContext, HistoryService } from "./history/HistoryProvider";
 
 const style: CSSProperties = {
   padding: "5px 5px 5px 5px"
@@ -27,11 +28,13 @@ const style: CSSProperties = {
 const MockVersionUI = () => {
   const dispatch = useDispatch();
   const version: string = useSelector<PMML, string>(state => state.version);
+  const service: HistoryService = useContext(HistoryContext).service;
 
   const setVersion = () => {
     dispatch({
       type: Actions.SetVersion,
       payload: {
+        service: service,
         version: Math.random()
           .toString(36)
           .replace(/[^a-z]+/g, "")

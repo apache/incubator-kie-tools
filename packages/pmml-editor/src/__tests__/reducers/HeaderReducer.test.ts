@@ -17,6 +17,7 @@ import { Header } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions, AllActions } from "../../editor/reducers/Actions";
 import { Reducer } from "react";
 import { HeaderReducer } from "../../editor/reducers/HeaderReducer";
+import { HistoryService } from "../../editor/history/HistoryProvider";
 
 const header: Header = { description: "" };
 
@@ -27,6 +28,7 @@ describe("HeaderReducer::Valid actions", () => {
     const updated: Header = reducer(header, {
       type: Actions.SetHeaderDescription,
       payload: {
+        service: new HistoryService(),
         description: "description"
       }
     });
@@ -40,6 +42,7 @@ describe("HeaderReducer::Invalid actions", () => {
     const updated: Header = reducer(header, {
       type: Actions.SetVersion,
       payload: {
+        service: new HistoryService(),
         version: "1.0"
       }
     });

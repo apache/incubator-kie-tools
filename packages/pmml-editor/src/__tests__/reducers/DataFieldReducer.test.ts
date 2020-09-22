@@ -17,6 +17,7 @@ import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { Actions, AllActions } from "../../editor/reducers/Actions";
 import { Reducer } from "react";
 import { DataFieldReducer } from "../../editor/reducers/DataFieldReducer";
+import { HistoryService } from "../../editor/history/HistoryProvider";
 
 const dataFields: DataField[] = [{ name: "field1" as FieldName, dataType: "boolean", optype: "categorical" }];
 
@@ -27,6 +28,7 @@ describe("DataFieldReducer::Valid actions", () => {
     const updated: DataField[] = reducer(dataFields, {
       type: Actions.SetDataFieldName,
       payload: {
+        service: new HistoryService(),
         index: 0,
         name: "updated" as FieldName
       }
@@ -40,6 +42,7 @@ describe("DataFieldReducer::Valid actions", () => {
     const updated: DataField[] = reducer(dataFields, {
       type: Actions.SetDataFieldName,
       payload: {
+        service: new HistoryService(),
         index: -1,
         name: "updated" as FieldName
       }
@@ -51,6 +54,7 @@ describe("DataFieldReducer::Valid actions", () => {
     const updated: DataField[] = reducer(dataFields, {
       type: Actions.SetDataFieldName,
       payload: {
+        service: new HistoryService(),
         index: 1,
         name: "updated" as FieldName
       }
@@ -64,6 +68,7 @@ describe("DataFieldReducer::Invalid actions", () => {
     const updated: DataField[] = reducer(dataFields, {
       type: Actions.SetHeaderDescription,
       payload: {
+        service: new HistoryService(),
         description: "description"
       }
     });

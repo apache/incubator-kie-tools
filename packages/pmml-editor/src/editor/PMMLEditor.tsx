@@ -32,6 +32,7 @@ import mergeReducers from "combine-reducer";
 import { HeaderReducer } from "./reducers/HeaderReducer";
 import { DataDictionaryReducer } from "./reducers/DataDictionaryReducer";
 import { DataFieldReducer } from "./reducers/DataFieldReducer";
+import { HistoryContext, HistoryService } from "./history/HistoryProvider";
 
 const reducer: Reducer<PMML, AllActions> = mergeReducers(PMMLReducer, {
   Header: HeaderReducer,
@@ -85,17 +86,19 @@ export class PMMLEditor extends React.Component<Props, State> {
   public render() {
     return (
       <Provider store={store}>
-        <StateButtons />
-        <hr />
-        <MockVersionUI />
-        <hr />
-        <MockHeaderUI />
-        <hr />
-        <MockDataFieldsUI />
-        <hr />
-        <MockSummaryUI />
-        <hr />
-        <HistoryLog />
+        <HistoryContext.Provider value={{ service: new HistoryService() }}>
+          <StateButtons />
+          <hr />
+          <MockVersionUI />
+          <hr />
+          <MockHeaderUI />
+          <hr />
+          <MockDataFieldsUI />
+          <hr />
+          <MockSummaryUI />
+          <hr />
+          <HistoryLog />
+        </HistoryContext.Provider>
       </Provider>
     );
   }

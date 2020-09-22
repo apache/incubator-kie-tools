@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { mutate, redo, undo } from "../history/HistoryProvider";
+import { HistoryService } from "../history/HistoryProvider";
 import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
@@ -22,6 +22,7 @@ export const ROOT = null;
 
 interface VersionPayload {
   [Actions.SetVersion]: {
+    readonly service: HistoryService;
     readonly version: string;
   };
 }
@@ -29,8 +30,12 @@ interface VersionPayload {
 export type VersionActions = ActionMap<VersionPayload>[keyof ActionMap<VersionPayload>];
 
 interface StateControlPayload {
-  [Actions.Undo]: undefined;
-  [Actions.Redo]: undefined;
+  [Actions.Undo]: {
+    readonly service: HistoryService;
+  };
+  [Actions.Redo]: {
+    readonly service: HistoryService;
+  };
 }
 
 export type StateControlActions = ActionMap<StateControlPayload>[keyof ActionMap<StateControlPayload>];
@@ -38,15 +43,15 @@ export type StateControlActions = ActionMap<StateControlPayload>[keyof ActionMap
 export const PMMLReducer: Reducer<PMML, AllActions> = (state: PMML, action: AllActions) => {
   switch (action.type) {
     case Actions.SetVersion:
-      return mutate(state, ROOT, draft => {
+      return action.payload.service.mutate(state, ROOT, draft => {
         draft.version = action.payload.version;
       });
 
     case Actions.Undo:
-      return undo(state);
+      return action.payload.service.undo(state);
 
     case Actions.Redo:
-      return redo(state);
+      return action.payload.service.redo(state);
   }
 
   return state;

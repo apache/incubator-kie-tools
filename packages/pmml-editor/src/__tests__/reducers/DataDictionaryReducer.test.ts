@@ -17,6 +17,7 @@ import { DataDictionary, FieldName } from "@kogito-tooling/pmml-editor-marshalle
 import { Actions, AllActions } from "../../editor/reducers/Actions";
 import { Reducer } from "react";
 import { DataDictionaryReducer } from "../../editor/reducers/DataDictionaryReducer";
+import { HistoryService } from "../../editor/history/HistoryProvider";
 
 const dataDictionary: DataDictionary = { DataField: [] };
 
@@ -27,6 +28,7 @@ describe("DataDictionaryReducer::Valid actions", () => {
     const updated: DataDictionary = reducer(dataDictionary, {
       type: Actions.CreateDataField,
       payload: {
+        service: new HistoryService(),
         name: "field1"
       }
     });
@@ -49,6 +51,7 @@ describe("DataDictionaryReducer::Valid actions", () => {
       {
         type: Actions.DeleteDataField,
         payload: {
+          service: new HistoryService(),
           index: 0
         }
       }
@@ -61,6 +64,7 @@ describe("DataDictionaryReducer::Valid actions", () => {
     const updated: DataDictionary = reducer(dataDictionary, {
       type: Actions.DeleteDataField,
       payload: {
+        service: new HistoryService(),
         index: -1
       }
     });
@@ -71,6 +75,7 @@ describe("DataDictionaryReducer::Valid actions", () => {
     const updated: DataDictionary = reducer(dataDictionary, {
       type: Actions.DeleteDataField,
       payload: {
+        service: new HistoryService(),
         index: 0
       }
     });
@@ -83,6 +88,7 @@ describe("DataDictionaryReducer::Invalid actions", () => {
     const updated: DataDictionary = reducer(dataDictionary, {
       type: Actions.SetHeaderDescription,
       payload: {
+        service: new HistoryService(),
         description: "description"
       }
     });

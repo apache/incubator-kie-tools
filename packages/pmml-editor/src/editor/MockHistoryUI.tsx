@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { CSSProperties, useState } from "react";
+import { CSSProperties, useContext, useState } from "react";
 import { Actions } from "./reducers/Actions";
-import { history } from "./history/HistoryProvider";
+import { HistoryContext, HistoryService } from "./history/HistoryProvider";
 import { Title } from "./PMMLEditor";
 import { useDispatch } from "react-redux";
 
@@ -26,18 +26,23 @@ const style: CSSProperties = {
 
 const StateButtons = () => {
   const dispatch = useDispatch();
+  const service: HistoryService = useContext(HistoryContext).service;
 
   const doUndo = () => {
     dispatch({
       type: Actions.Undo,
-      payload: undefined
+      payload: {
+        service: service
+      }
     });
   };
 
   const doRedo = () => {
     dispatch({
       type: Actions.Redo,
-      payload: undefined
+      payload: {
+        service: service
+      }
     });
   };
 
@@ -51,6 +56,8 @@ const StateButtons = () => {
 
 const HistoryLog = () => {
   const [state, setState] = useState(true);
+  const service: HistoryService = useContext(HistoryContext).service;
+
   return (
     <div style={style}>
       <Title title={"History"} />
@@ -58,7 +65,14 @@ const HistoryLog = () => {
       <div>
         <sub>This is a hack just to support showing the undo/redo log...</sub>
       </div>
-      <pre>{`${JSON.stringify({ index: history.index, changes: history.changes.reverse() }, undefined, 2)}`}</pre>
+      <pre>{`${JSON.stringify(
+        {
+          index: service.index(),
+          changes: service.changes().reverse()
+        },
+        undefined,
+        2
+      )}`}</pre>
     </div>
   );
 };

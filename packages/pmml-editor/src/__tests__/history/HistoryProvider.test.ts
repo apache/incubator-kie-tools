@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { mutate, redo, undo } from "../../editor/history/HistoryProvider";
 import { Header, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { ROOT } from "../../editor/reducers/PMMLReducer";
+import { HistoryService } from "../../editor/history/HistoryProvider";
+
+const service: HistoryService = new HistoryService();
 
 const pmml: PMML = {
   version: "1.0",
@@ -33,61 +35,61 @@ const header1: Header = {
 
 describe("HistoryProvider", () => {
   test("Mutation applied", () => {
-    const updated: PMML = mutate(pmml, ROOT, draft => {
+    const updated: PMML = service.mutate(pmml, ROOT, draft => {
       draft.Header = header1;
     });
     expect(updated.Header).toBe(header1);
   });
 
   test("Mutation undo", () => {
-    const updated1: PMML = mutate(pmml, ROOT, draft => {
+    const updated1: PMML = service.mutate(pmml, ROOT, draft => {
       draft.Header = header1;
     });
     expect(updated1).not.toStrictEqual(pmml);
 
-    const updated2: PMML = undo(updated1);
+    const updated2: PMML = service.undo(updated1);
     expect(updated2).toStrictEqual(pmml);
   });
 
   test("Mutation redo", () => {
-    const updated1: PMML = mutate(pmml, ROOT, draft => {
+    const updated1: PMML = service.mutate(pmml, ROOT, draft => {
       draft.Header = header1;
     });
     expect(updated1).not.toStrictEqual(pmml);
 
-    const updated2: PMML = undo(updated1);
+    const updated2: PMML = service.undo(updated1);
     expect(updated2).toStrictEqual(pmml);
 
-    const updated3: PMML = redo(updated2);
+    const updated3: PMML = service.redo(updated2);
     expect(updated3).toStrictEqual(updated1);
   });
 
   test("Mutation undo beyond start", () => {
-    const updated1: PMML = mutate(pmml, ROOT, draft => {
+    const updated1: PMML = service.mutate(pmml, ROOT, draft => {
       draft.Header = header1;
     });
     expect(updated1).not.toStrictEqual(pmml);
 
-    const updated2: PMML = undo(updated1);
+    const updated2: PMML = service.undo(updated1);
     expect(updated2).toStrictEqual(pmml);
 
-    const updated3: PMML = undo(updated2);
+    const updated3: PMML = service.undo(updated2);
     expect(updated3).toStrictEqual(pmml);
   });
 
   test("Mutation redo beyond end", () => {
-    const updated1: PMML = mutate(pmml, ROOT, draft => {
+    const updated1: PMML = service.mutate(pmml, ROOT, draft => {
       draft.Header = header1;
     });
     expect(updated1).not.toStrictEqual(pmml);
 
-    const updated2: PMML = undo(updated1);
+    const updated2: PMML = service.undo(updated1);
     expect(updated2).toStrictEqual(pmml);
 
-    const updated3: PMML = redo(updated2);
+    const updated3: PMML = service.redo(updated2);
     expect(updated3).toStrictEqual(updated1);
 
-    const updated4: PMML = redo(updated3);
+    const updated4: PMML = service.redo(updated3);
     expect(updated4).toStrictEqual(updated1);
   });
 });

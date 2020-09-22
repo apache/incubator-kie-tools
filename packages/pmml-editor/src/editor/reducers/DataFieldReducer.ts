@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 import { ActionMap, Actions } from "./Actions";
-import { mutate } from "../history/HistoryProvider";
+import { HistoryService } from "../history/HistoryProvider";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
 interface DataFieldPayload {
   [Actions.SetDataFieldName]: {
+    readonly service: HistoryService;
     readonly index: number;
     readonly name: FieldName;
   };
@@ -33,7 +34,7 @@ export const DataFieldReducer: Reducer<DataField[], DataFieldActions> = (
 ) => {
   switch (action.type) {
     case Actions.SetDataFieldName:
-      return mutate(state, `DataDictionary.DataField`, draft => {
+      return action.payload.service.mutate(state, `DataDictionary.DataField`, draft => {
         const index: number = action.payload.index;
         if (index >= 0 && index < draft.length) {
           draft[index].name = action.payload.name;

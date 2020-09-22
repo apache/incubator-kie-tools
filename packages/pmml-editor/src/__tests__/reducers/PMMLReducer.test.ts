@@ -17,6 +17,7 @@ import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { PMMLReducer } from "../../editor/reducers/PMMLReducer";
 import { Actions, AllActions } from "../../editor/reducers/Actions";
 import { Reducer } from "react";
+import { HistoryService } from "../../editor/history/HistoryProvider";
 
 const pmml: PMML = { Header: {}, DataDictionary: { DataField: [] }, version: "" };
 
@@ -27,6 +28,7 @@ describe("PMMLReducer::Valid actions", () => {
     const updated: PMML = reducer(pmml, {
       type: Actions.SetVersion,
       payload: {
+        service: new HistoryService(),
         version: "1.0"
       }
     });
@@ -40,6 +42,7 @@ describe("PMMLReducer::Invalid actions", () => {
     const updated: PMML = reducer(pmml, {
       type: Actions.SetHeaderDescription,
       payload: {
+        service: new HistoryService(),
         description: "description"
       }
     });

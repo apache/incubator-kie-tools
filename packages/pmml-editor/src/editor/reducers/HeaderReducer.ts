@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 import { ActionMap, Actions } from "./Actions";
-import { mutate } from "../history/HistoryProvider";
 import { Header } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import { HistoryService } from "../history/HistoryProvider";
 
 interface HeaderPayload {
   [Actions.SetHeaderDescription]: {
+    readonly service: HistoryService;
     readonly description: string;
   };
 }
@@ -29,7 +30,7 @@ export type HeaderActions = ActionMap<HeaderPayload>[keyof ActionMap<HeaderPaylo
 export const HeaderReducer: Reducer<Header, HeaderActions> = (state: Header, action: HeaderActions) => {
   switch (action.type) {
     case Actions.SetHeaderDescription:
-      return mutate(state, "Header", draft => {
+      return action.payload.service.mutate(state, "Header", draft => {
         draft.description = action.payload.description;
       });
   }
