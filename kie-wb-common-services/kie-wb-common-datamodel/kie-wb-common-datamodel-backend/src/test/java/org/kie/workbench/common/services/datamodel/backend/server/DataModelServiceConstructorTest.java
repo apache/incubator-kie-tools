@@ -99,6 +99,7 @@ import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUModul
 import org.kie.workbench.common.services.datamodel.backend.server.cache.ModuleDataModelOracleBuilderProvider;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.spi.DataModelExtension;
+import org.kie.workbench.common.services.refactoring.service.PackageServiceLoader;
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
@@ -241,6 +242,7 @@ public class DataModelServiceConstructorTest {
                                                        sessionInfo,
                                                        commentedOptionFactory,
                                                        mock(ModuleFinder.class),
+                                                       mock(PackageServiceLoader.class),
                                                        resourceResolver,
                                                        repositoryResolver);
 
@@ -423,6 +425,7 @@ public class DataModelServiceConstructorTest {
                                           SessionInfo sessionInfo,
                                           CommentedOptionFactory commentedOptionFactory,
                                           ModuleFinder moduleFinder,
+                                          PackageServiceLoader packageServiceLoader,
                                           KieResourceResolver resourceResolver,
                                           ModuleRepositoryResolver repositoryResolver) {
             super(ioService,
@@ -435,6 +438,7 @@ public class DataModelServiceConstructorTest {
                   sessionInfo,
                   commentedOptionFactory,
                   moduleFinder,
+                  packageServiceLoader,
                   resourceResolver,
                   repositoryResolver
             );

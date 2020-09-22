@@ -96,7 +96,7 @@ public class FindAllLibraryAssetsQueryTest
                     System.out.println(refactoringPageRow.getValue());
                 }
 
-                assertEquals(3,
+                assertEquals(4,
                              response.getPageRowList().size());
             } catch (IllegalArgumentException e) {
                 fail("Exception thrown: " + e.getMessage());

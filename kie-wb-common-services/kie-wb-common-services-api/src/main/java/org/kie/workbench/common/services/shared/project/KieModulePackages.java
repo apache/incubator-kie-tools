@@ -26,20 +26,21 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class KieModulePackages {
 
-    private Set<Package> packages;
+    private Set<PackageItem> packages;
 
     private Package defaultPackage;
 
-    public KieModulePackages(@MapsTo("packages") Set<Package> packages, @MapsTo("defaultPackage") Package defaultPackage) {
+    public KieModulePackages(@MapsTo("packages") Set<PackageItem> packages,
+                             @MapsTo("defaultPackage") Package defaultPackage) {
         this.packages = packages;
         this.defaultPackage = defaultPackage;
     }
 
-    public Set<Package> getPackages() {
+    public Set<PackageItem> getPackages() {
         return packages;
     }
 
-    public void setPackages(Set<Package> packages) {
+    public void setPackages(Set<PackageItem> packages) {
         this.packages = packages;
     }
 

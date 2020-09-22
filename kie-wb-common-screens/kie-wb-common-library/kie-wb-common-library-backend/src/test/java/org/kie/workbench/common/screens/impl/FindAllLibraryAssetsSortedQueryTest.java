@@ -41,7 +41,7 @@ public class FindAllLibraryAssetsSortedQueryTest
 
     private static final String TEST_PROJECT_ROOT1 = "/find/all/library/assets/sorted/query/test/mock/project1/root";
 
-    private static final String[] FILE_NAMES = new String[]{"DRL4.drl", "RULE4.rule", "drl1.drl", "drl2.ext2", "drl3.ext3", "functions.functions", "rule3.rule"};
+    private static final String[] FILE_NAMES = new String[]{".gitkeep", "DRL4.drl", "RULE4.rule", "drl1.drl", "drl2.ext2", "drl3.ext3", "functions.functions", "rule3.rule"};
 
     @Override
     protected Set<NamedQuery> getQueries() {
@@ -106,7 +106,7 @@ public class FindAllLibraryAssetsSortedQueryTest
                                                                                                                            TermSearchType.NORMAL));
                                                                            }},
                                                                            0,
-                                                                           4);
+                                                                           6);
 
         final PageResponse<RefactoringPageRow> response1 = service.query(request1);
         assertNotNull(response1);
@@ -120,7 +120,7 @@ public class FindAllLibraryAssetsSortedQueryTest
             resultSet1.add(fileName);
         }
 
-        String[] expectedResult1 = new String[]{"DRL4.drl", "drl1.drl", "drl2.ext2", "drl3.ext3"};
+        String[] expectedResult1 = new String[]{".gitkeep", "DRL4.drl", "drl1.drl", "drl2.ext2", "drl3.ext3"};
         assertArrayEquals(expectedResult1,
                           resultSet1.toArray());
 
@@ -143,7 +143,7 @@ public class FindAllLibraryAssetsSortedQueryTest
             resultSet2.add(fileName);
         }
 
-        String[] expectedResult2 = new String[]{"RULE4.rule", "functions.functions", "rule3.rule"};
+        String[] expectedResult2 = new String[]{"DRL4.drl", "drl3.ext3", "functions.functions", "rule3.rule"};
         assertArrayEquals(expectedResult2,
                           resultSet2.toArray());
     }

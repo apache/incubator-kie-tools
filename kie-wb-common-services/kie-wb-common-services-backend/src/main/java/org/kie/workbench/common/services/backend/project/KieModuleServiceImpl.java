@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.services.backend.project;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -39,11 +40,16 @@ import org.guvnor.common.services.project.service.ModuleRepositoryResolver;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.refactoring.service.PackageServiceLoader;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModulePackages;
+import org.kie.workbench.common.services.shared.project.PackageItem;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.rpc.SessionInfo;
+
+import static org.guvnor.common.services.project.utils.ModuleResourcePaths.MAIN_RESOURCES_PATH;
 
 @Service
 @ApplicationScoped
@@ -54,6 +60,7 @@ public class KieModuleServiceImpl
 
     private ModuleSaver moduleSaver;
     private ModuleRepositoryResolver repositoryResolver;
+    private PackageServiceLoader packageServiceLoader;
 
     public KieModuleServiceImpl() {
     }
@@ -69,6 +76,7 @@ public class KieModuleServiceImpl
                                 final SessionInfo sessionInfo,
                                 final CommentedOptionFactory commentedOptionFactory,
                                 final ModuleFinder moduleFinder,
+                                final PackageServiceLoader packageServiceLoader,
                                 final KieResourceResolver resourceResolver,
                                 final ModuleRepositoryResolver repositoryResolver) {
         super(ioService,
@@ -82,6 +90,7 @@ public class KieModuleServiceImpl
               moduleFinder,
               resourceResolver);
         this.moduleSaver = moduleSaver;
+        this.packageServiceLoader = packageServiceLoader;
         this.repositoryResolver = repositoryResolver;
     }
 
@@ -120,7 +129,41 @@ public class KieModuleServiceImpl
 
     @Override
     public KieModulePackages resolveModulePackages(Module activeModule) {
-        return new KieModulePackages(resolvePackages(activeModule), resolveDefaultWorkspacePackage(activeModule));
+        final HashSet<PackageItem> packages = new HashSet<>();
+
+        packages.add(new PackageItem("",
+                                     PackageItem.DEFAULT_PACKAGE_NAME));
+
+        for (final String packageName : packageServiceLoader.find(activeModule.getRootPath())) {
+            final StringBuilder packageBuilder = new StringBuilder();
+            for (final String token : packageName.split("\\.")) {
+                if (packageBuilder.length() != 0) {
+                    packageBuilder.append(".");
+                }
+                packageBuilder.append(token);
+
+                packages.add(new PackageItem(packageBuilder.toString(),
+                                             packageBuilder.toString()));
+            }
+        }
+
+        return new KieModulePackages(packages,
+                                     resolveDefaultWorkspacePackage(activeModule));
+    }
+
+    @Override
+    public Package resolvePackage(final Module activeModule,
+                                  final String packageName) {
+        final org.uberfire.java.nio.file.Path convert = Paths.convert(activeModule.getRootPath());
+        final String replace = packageName.replace(".", "/");
+        return resourceResolver.resolvePackage(Paths.convert(convert.resolve(MAIN_RESOURCES_PATH).resolve(replace)));
+    }
+
+    @Override
+    public Set<Package> resolvePackages(final Module activeModule,
+                                        final Set<String> packageNames) {
+        return resourceResolver.resolvePackages(activeModule,
+                                                packageNames);
     }
 
     @Override
@@ -169,8 +212,8 @@ public class KieModuleServiceImpl
     }
 
     @Override
-    public Path resolveDefaultPath(Package pkg,
-                                   String resourceType) {
+    public Path resolveDefaultPath(final Package pkg,
+                                   final String resourceType) {
         return resourceResolver.resolveDefaultPath(pkg,
                                                    resourceType);
     }

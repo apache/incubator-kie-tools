@@ -46,6 +46,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.refactoring.service.PackageServiceLoader;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -112,6 +113,7 @@ public class ModuleServiceImplNewModuleTest {
                                                  mock(SessionInfo.class),
                                                  mock(CommentedOptionFactory.class),
                                                  mock(ModuleFinder.class),
+                                                 mock(PackageServiceLoader.class),
                                                  mock(KieResourceResolver.class),
                                                  moduleRepositoryResolver) {
         };

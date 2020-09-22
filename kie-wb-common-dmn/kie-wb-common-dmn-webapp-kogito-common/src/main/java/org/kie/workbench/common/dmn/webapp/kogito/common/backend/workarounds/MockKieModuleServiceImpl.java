@@ -61,6 +61,11 @@ public class MockKieModuleServiceImpl implements KieModuleService {
     }
 
     @Override
+    public Set<Package> resolvePackages(final Module module, final Set<String> packageNames) {
+        throw new UnsupportedOperationException("Not available in Kogito");
+    }
+
+    @Override
     public Set<Package> resolvePackages(final Package pkg) {
         throw new UnsupportedOperationException("Not available in Kogito");
     }
@@ -147,6 +152,12 @@ public class MockKieModuleServiceImpl implements KieModuleService {
 
     @Override
     public KieModulePackages resolveModulePackages(final Module activeModule) {
+        throw new UnsupportedOperationException("Not available in Kogito");
+    }
+
+    @Override
+    public Package resolvePackage(final Module activeModule,
+                                  final String packageName) {
         throw new UnsupportedOperationException("Not available in Kogito");
     }
 

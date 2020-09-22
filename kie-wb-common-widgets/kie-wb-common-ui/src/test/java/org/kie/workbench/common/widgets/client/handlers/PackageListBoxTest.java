@@ -30,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.project.KieModulePackages;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
+import org.kie.workbench.common.services.shared.project.PackageItem;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -39,10 +40,13 @@ import org.uberfire.mvp.Command;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -61,8 +65,6 @@ public class PackageListBoxTest {
     @Captor
     private ArgumentCaptor<Map> mapArgumentCaptor;
 
-    private CallerMock<KieModuleService> moduleServiceCaller;
-
     private WorkspaceProjectContext moduleContext;
 
     private PackageListBox packageListBox;
@@ -71,23 +73,25 @@ public class PackageListBoxTest {
 
     @Before
     public void setup() {
-        moduleServiceCaller = new CallerMock<>(moduleService);
-        setupWorkspaceProjectContext();
+        final Package activePackage = mock(Package.class);
+        doReturn("com").when(activePackage).getCaption();
+        setupWorkspaceProjectContext(activePackage);
+
         packageListBox = spy(new PackageListBox(view,
                                                 moduleContext,
-                                                moduleServiceCaller));
+                                                new CallerMock<>(moduleService)));
     }
 
     private void setupPackageList() {
-        final List<Package> packages = new ArrayList<>();
-        packages.add(createPackage(""));
-        packages.add(createPackage("com"));
-        packages.add(createPackage("com.myteam"));
-        final Package defaultPackage = createPackage("com.myteam.mymodule");
+        final List<PackageItem> packages = new ArrayList<>();
+        packages.add(createPackageItem(""));
+        packages.add(createPackageItem("com"));
+        packages.add(createPackageItem("com.myteam"));
+        final PackageItem defaultPackage = createPackageItem("com.myteam.mymodule");
         packages.add(defaultPackage);
-        packages.add(createPackage("com.myteam.mymodule.mypackage"));
+        packages.add(createPackageItem("com.myteam.mymodule.mypackage"));
 
-        kieModulePackages = new KieModulePackages(new HashSet<>(packages), defaultPackage);
+        kieModulePackages = new KieModulePackages(new HashSet<>(packages), createPackage("com.myteam.mymodule"));
         doReturn(kieModulePackages).when(moduleService).resolveModulePackages(any(Module.class));
     }
 
@@ -187,6 +191,76 @@ public class PackageListBoxTest {
         verify(packagesLoadedCommand).execute();
     }
 
+    @Test
+    public void testNoPackages() {
+        kieModulePackages = new KieModulePackages(new HashSet<>(), createPackage("com.myteam.mymodule"));
+        doReturn(kieModulePackages).when(moduleService).resolveModulePackages(any(Module.class));
+
+        kieModulePackages.setDefaultPackage(createPackage("com"));
+        doReturn(kieModulePackages).when(moduleService).resolveModulePackages(any());
+
+        final Command packagesLoadedCommand = mock(Command.class);
+
+        packageListBox.setUp(false,
+                             packagesLoadedCommand);
+
+        verify(view, never()).setUp(anyString(),
+                                    anyMap());
+    }
+
+    @Test
+    public void testUseWhatIsThereIfWhatIsProposedDoesNotMatch() {
+        final HashSet<PackageItem> packages = new HashSet<>();
+        packages.add(new PackageItem("not the right package",
+                                     "not the right package"));
+        kieModulePackages = new KieModulePackages(packages, createPackage("com.myteam.mymodule"));
+        doReturn(kieModulePackages).when(moduleService).resolveModulePackages(any(Module.class));
+
+        kieModulePackages.setDefaultPackage(createPackage("com"));
+        doReturn(kieModulePackages).when(moduleService).resolveModulePackages(any());
+
+        final Command packagesLoadedCommand = mock(Command.class);
+
+        packageListBox.setUp(false,
+                             packagesLoadedCommand);
+
+        verify(view).setUp(eq("not the right package"),
+                           anyMap());
+    }
+
+    @Test
+    public void testOnPackageSelected() {
+
+        final Package pkg = new Package();
+
+        doReturn(pkg).when(moduleService).resolvePackage(any(Module.class),
+                                                         eq("com.myteam"));
+
+        packageListBox.onPackageSelected("com.myteam");
+
+        assertEquals(pkg, packageListBox.getSelectedPackage());
+    }
+
+    @Test
+    public void testOnPackageSelectedDefaultPackage() {
+
+        final Package pkg = new Package();
+
+        doReturn(pkg).when(moduleService).resolvePackage(any(Module.class),
+                                                         eq(""));
+
+        packageListBox.onPackageSelected(PackageItem.DEFAULT_PACKAGE_NAME);
+
+        assertEquals(pkg, packageListBox.getSelectedPackage());
+    }
+
+    private PackageItem createPackageItem(String caption) {
+        final PackageItem pkg = mock(PackageItem.class);
+        doReturn(caption).when(pkg).getCaption();
+        doReturn(caption).when(pkg).getPackageName();
+        return pkg;
+    }
+
     private Package createPackage(String caption) {
         final Package pkg = mock(Package.class);
         doReturn(caption).when(pkg).getCaption();
@@ -194,12 +268,10 @@ public class PackageListBoxTest {
         return pkg;
     }
 
-    private void setupWorkspaceProjectContext() {
+    private void setupWorkspaceProjectContext(final Package activePackage) {
         moduleContext = new WorkspaceProjectContext() {
             {
                 setActiveModule(mock(Module.class));
-                Package activePackage = mock(Package.class);
-                doReturn("com").when(activePackage).getCaption();
                 setActivePackage(activePackage);
             }
         };

@@ -16,11 +16,15 @@
 
 package org.kie.workbench.common.services.backend;
 
+import java.util.Set;
+
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
 import org.guvnor.m2repo.service.M2RepoService;
+import org.kie.workbench.common.services.refactoring.service.PackageServiceLoader;
+import org.uberfire.backend.vfs.Path;
 
 import static org.mockito.Mockito.*;
 
@@ -32,6 +36,17 @@ public class TestAppSetup {
     @Alternative
     public M2RepoService m2RepoService() {
         return mock( M2RepoService.class );
+    }
+
+    @Produces
+    @Alternative
+    public PackageServiceLoader packageServiceLoader() {
+        return new PackageServiceLoader() {
+            @Override
+            public Set<String> find(final Path path) {
+                return null;
+            }
+        };
     }
 
 }

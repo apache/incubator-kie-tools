@@ -16,6 +16,7 @@
 package org.kie.workbench.common.services.shared.project;
 
 import org.guvnor.common.services.project.model.Module;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ModuleService;
 import org.jboss.errai.bus.server.annotations.Remote;
 
@@ -25,5 +26,15 @@ import org.jboss.errai.bus.server.annotations.Remote;
 @Remote
 public interface KieModuleService
         extends ModuleService<KieModule> {
-    KieModulePackages resolveModulePackages(Module activeModule);
+
+    KieModulePackages resolveModulePackages(final Module activeModule);
+
+    /**
+     *
+     * @param activeModule Module from where to look for the pkg.
+     * @param packageName Package name for example "org.test".
+     * @return The package or null if package could not be resolved.
+     */
+    Package resolvePackage(final Module activeModule,
+                           final String packageName);
 }

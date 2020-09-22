@@ -17,7 +17,9 @@
 package org.kie.workbench.common.services.backend.project;
 
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Set;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 
@@ -28,12 +30,16 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.test.WeldJUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.refactoring.service.PackageServiceLoader;
 import org.kie.workbench.common.services.shared.project.KieModule;
-import org.kie.workbench.common.services.shared.project.KieModulePackages;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
+import org.kie.workbench.common.services.shared.project.PackageItem;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests for ModuleServiceImpl resolveTestPackage
@@ -44,11 +50,7 @@ public class ModuleServiceImplResolvePackagesTest extends ModuleTestBase {
     @Test
     public void testResolvePackages() throws Exception {
 
-        final Bean moduleServiceBean = (Bean) beanManager.getBeans(KieModuleService.class).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext(moduleServiceBean);
-        final KieModuleService moduleService = (KieModuleService) beanManager.getReference(moduleServiceBean,
-                                                                                           KieModuleService.class,
-                                                                                           cc);
+        final KieModuleService moduleService = getKieModuleService();
 
         final URL root = this.getClass().getResource("/ModuleBackendTestModule1");
         final URL pomUrl = this.getClass().getResource("/ModuleBackendTestModule1/pom.xml");
@@ -74,10 +76,23 @@ public class ModuleServiceImplResolvePackagesTest extends ModuleTestBase {
         }
 
         {
-            when(pom.getGav()).thenReturn(new GAV("org.mygroup","my-project","1.0.0"));
-            KieModulePackages kieModulePackages = moduleService.resolveModulePackages(module);
-            assertEquals(kieModulePackages.getPackages(), moduleService.resolvePackages(module));
-            assertEquals("<default>", moduleService.resolveDefaultPackage(module).getCaption());
+            when(pom.getGav()).thenReturn(new GAV("org.mygroup", "my-project", "1.0.0"));
+            final Set<Package> packages = moduleService.resolvePackages(module);
+            final HashSet<String> packageNames = new HashSet<>();
+            packageNames.add("");
+            packageNames.add("org");
+            packageNames.add("org.kie");
+            packageNames.add("org.kie.test");
+            packageNames.add("org.kie.test.project");
+            packageNames.add("org.kie.test.project.backend");
+            final Set<Package> actual = moduleService.resolvePackages(module,
+                                                                      packageNames);
+            assertEquals(packages.size(), actual.size());
+            for (Package aPackage : actual) {
+                assertEquals(1, packages.stream().filter(p -> p.getPackageName().equals(aPackage.getPackageName())).count());
+            }
+
+            assertEquals(PackageItem.DEFAULT_PACKAGE_NAME, moduleService.resolveDefaultPackage(module).getCaption());
         }
 
         Package defaultPkg = null;
@@ -86,7 +101,7 @@ public class ModuleServiceImplResolvePackagesTest extends ModuleTestBase {
             assertEquals(6,
                          packages.size());
             for (final Package pkg : packages) {
-                if (pkg.getCaption().equals("<default>")) {
+                if (pkg.getCaption().equals(PackageItem.DEFAULT_PACKAGE_NAME)) {
                     defaultPkg = pkg;
                     break;
                 }
@@ -96,9 +111,9 @@ public class ModuleServiceImplResolvePackagesTest extends ModuleTestBase {
         }
 
         assertNotNull(defaultPkg);
-        assertEquals("<default>",
+        assertEquals(PackageItem.DEFAULT_PACKAGE_NAME,
                      defaultPkg.getCaption());
-        assertEquals("<default>",
+        assertEquals(PackageItem.DEFAULT_PACKAGE_NAME,
                      defaultPkg.getRelativeCaption());
 
         Package rootPkg = null;
@@ -128,8 +143,9 @@ public class ModuleServiceImplResolvePackagesTest extends ModuleTestBase {
         assertEquals("kie",
                      kiePkg.getRelativeCaption());
 
-        assertEquals(rootPkg,
-                     moduleService.resolveParentPackage(kiePkg));
+        final Package actual = moduleService.resolveParentPackage(kiePkg);
+        assertEquals(rootPkg.getPackageName(),
+                     actual.getPackageName());
 
         assertEquals(defaultPkg,
                      moduleService.resolveParentPackage(rootPkg));
@@ -141,5 +157,21 @@ public class ModuleServiceImplResolvePackagesTest extends ModuleTestBase {
             assertEquals(1,
                          packages.size());
         }
+    }
+
+    private KieModuleService getKieModuleService() {
+        final Bean moduleServiceBean = (Bean) beanManager.getBeans(KieModuleService.class).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext(moduleServiceBean);
+        return (KieModuleService) beanManager.getReference(moduleServiceBean,
+                                                           KieModuleService.class,
+                                                           cc);
+    }
+
+    private PackageServiceLoader getPackageServiceLoader() {
+        final Bean bean = (Bean) beanManager.getBeans(PackageServiceLoader.class).iterator().next();
+        final CreationalContext cc = beanManager.createCreationalContext(bean);
+        return (PackageServiceLoader) beanManager.getReference(bean,
+                                                               PackageServiceLoader.class,
+                                                               cc);
     }
 }
