@@ -108,7 +108,7 @@ public abstract class BaseIndexTest {
     protected IndexerDispatcherFactory indexerDispatcherFactory(MetaIndexEngine indexEngine) {
         if (indexerDispatcherFactory == null) {
             Factory schedulerFactory = new ConstraintBuilder().createFactory();
-            IndexerDispatcher.createFactory(indexEngine, schedulerFactory, testEvent(), LoggerFactory.getLogger(IndexerDispatcher.class));
+            indexerDispatcherFactory = IndexerDispatcher.createFactory(indexEngine, schedulerFactory, testEvent(), LoggerFactory.getLogger(IndexerDispatcher.class));
         }
 
         return indexerDispatcherFactory;

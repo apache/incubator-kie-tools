@@ -49,6 +49,15 @@ public interface ModuleResourceResolver<T extends Module> {
      */
     Set<Package> resolvePackages(final Module module);
 
+    /**
+     * Given a Module resolves the calculation of all the packages for this module for the given packages.
+     * @param module
+     * @param packageNames For example ["org.test", "org.hello"]
+     * @return Collection containing all given packages for the module.
+     */
+    Set<Package> resolvePackages(final Module module,
+                                 final Set<String> packageNames);
+
     Set<Package> resolvePackages(final Package pkg);
 
     Package resolveDefaultPackage(final Module module);

@@ -18,6 +18,7 @@ package org.uberfire.ext.metadata.io;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -211,7 +212,8 @@ public final class BatchIndex {
                     checkNotNull("attrs",
                                  attrs);
 
-                    if (!file.getFileName().toString().startsWith(".")) {
+                    if (!file.getFileName().toString().startsWith(".")
+                            || Objects.equals(file.getFileName().toString(), ".gitkeep")) {
 
                         if (!indexDisposed.get()) {
                             dispatcher.offer(new IndexableIOEvent.NewFileEvent(file));

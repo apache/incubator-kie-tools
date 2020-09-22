@@ -53,6 +53,11 @@ public class ModuleServiceMock
     }
 
     @Override
+    public Set<Package> resolvePackages(final Module module, final Set<String> packageNames) {
+        return null;
+    }
+
+    @Override
     public Set<Package> resolvePackages(Package pkg) {
         return null;
     }

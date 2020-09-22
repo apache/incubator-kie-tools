@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 import javax.enterprise.inject.Instance;
 
 import org.apache.commons.lang3.StringUtils;
@@ -242,9 +243,29 @@ public abstract class ResourceResolver<T extends Module>
                                                 true));
         }
 
+        return resolvePackages(module,
+                               packageNames);
+    }
+
+    @Override
+    public Set<Package> resolvePackages(final Module module,
+                                        final Set<String> packageNames) {
+        final Set<Package> packages = new HashSet<>();
+        if (module == null) {
+            return packages;
+        }
+
+        final Set<String> convertedPackages = new HashSet<>();
+        for (String packageName : packageNames) {
+            convertedPackages.add(packageName.replace(".", "/"));
+        }
+
+        final Path moduleRoot = module.getRootPath();
+        final org.uberfire.java.nio.file.Path nioModuleRootPath = Paths.convert(moduleRoot);
+
         //Construct Package objects for each package name
         final java.util.Set<String> resolvedPackages = new java.util.HashSet<>();
-        for (String packagePathSuffix : packageNames) {
+        for (String packagePathSuffix : convertedPackages) {
             for (String src : SOURCE_PATHS) {
                 final org.uberfire.java.nio.file.Path nioPackagePath = nioModuleRootPath.resolve(src).resolve(packagePathSuffix);
                 if (Files.exists(nioPackagePath) && !resolvedPackages.contains(packagePathSuffix)) {
@@ -475,6 +496,7 @@ public abstract class ResourceResolver<T extends Module>
 
     /**
      * This does not contain the POM. So it is simple.
+     *
      * @param nioModuleRootPath Module root path
      * @return
      */
