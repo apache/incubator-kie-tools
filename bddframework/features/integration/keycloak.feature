@@ -100,3 +100,28 @@ Feature: Kogito integration with Keycloak
         }
       }
       """
+
+#####
+
+  # Disabled as long as https://issues.redhat.com/browse/KOGITO-3176 is not solved
+  @disabled
+  @trusty
+  Scenario: Install Kogito Trusty with Keycloak security
+    Given Keycloak instance with realm "kogito-realm" and client "kogito-trusty-service" is deployed
+    And Keycloak user "my-user" with password "my-password" is deployed
+
+    When Install Kogito Trusty with 1 replicas with configuration:
+      | runtime-env  | quarkus.oidc.tenant-enabled                    | true                                           |
+      | runtime-env  | quarkus.oidc.tls.verification                  | none                                           |
+      | runtime-env  | quarkus.oidc.auth-server-url                   | https://keycloak:8443/auth/realms/kogito-realm |
+      | runtime-env  | quarkus.oidc.client-id                         | kogito-trusty-service                          |
+      | runtime-env  | quarkus.http.auth.permission.unsecure.paths    | /health/*                                      |
+      | runtime-env  | quarkus.http.auth.permission.unsecure.policy   | permit                                         |
+      | runtime-env  | quarkus.http.auth.permission.secure.paths      | /*                                             |
+      | runtime-env  | quarkus.http.auth.permission.secure.policy     | authenticated                                  |
+    And Kogito Trusty has 1 pods running within 10 minutes
+
+    Then HTTP GET request on service "trusty" with path "/executions" is forbidden within 3 minutes
+
+    When Stores access token for user "my-user" and password "my-password" on realm "kogito-realm" and client "kogito-trusty-service" into variable "my-user-token"
+    Then HTTP GET request on service "trusty" using access token "{my-user-token}" with path "/executions" is successful within 3 minutes
