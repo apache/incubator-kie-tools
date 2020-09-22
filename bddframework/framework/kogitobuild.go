@@ -109,17 +109,17 @@ func SetupKogitoBuildImageStreams(kogitoBuild *v1alpha1.KogitoBuild) {
 	kogitoBuild.Spec.RuntimeImage = getKogitoBuildRuntimeImage(kogitoBuild)
 }
 
-func getKogitoBuildS2IImage(kogitoBuild *v1alpha1.KogitoBuild) v1alpha1.Image {
+func getKogitoBuildS2IImage(kogitoBuild *v1alpha1.KogitoBuild) string {
 	if len(config.GetBuildS2IImageStreamTag()) > 0 {
-		return framework.ConvertImageTagToImage(config.GetBuildS2IImageStreamTag())
+		return config.GetBuildS2IImageStreamTag()
 	}
 
 	return getKogitoBuildImage(build.KogitoImages[kogitoBuild.Spec.Runtime][true])
 }
 
-func getKogitoBuildRuntimeImage(kogitoBuild *v1alpha1.KogitoBuild) v1alpha1.Image {
+func getKogitoBuildRuntimeImage(kogitoBuild *v1alpha1.KogitoBuild) string {
 	if len(config.GetBuildRuntimeImageStreamTag()) > 0 {
-		return framework.ConvertImageTagToImage(config.GetBuildRuntimeImageStreamTag())
+		return config.GetBuildRuntimeImageStreamTag()
 	}
 	imageName := build.KogitoImages[kogitoBuild.Spec.Runtime][false]
 	if kogitoBuild.Spec.Native {
@@ -129,7 +129,7 @@ func getKogitoBuildRuntimeImage(kogitoBuild *v1alpha1.KogitoBuild) v1alpha1.Imag
 }
 
 // getKogitoBuildImage returns a build image with defaults set
-func getKogitoBuildImage(imageName string) v1alpha1.Image {
+func getKogitoBuildImage(imageName string) string {
 	image := v1alpha1.Image{
 		Domain:    config.GetBuildImageRegistry(),
 		Namespace: config.GetBuildImageNamespace(),
@@ -140,6 +140,5 @@ func getKogitoBuildImage(imageName string) v1alpha1.Image {
 	if len(config.GetBuildImageNameSuffix()) > 0 {
 		image.Name = fmt.Sprintf("%s-%s", imageName, config.GetBuildImageNameSuffix())
 	}
-
-	return image
+	return framework.ConvertImageToImageTag(image)
 }

@@ -23,7 +23,6 @@ import (
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
 
@@ -48,7 +47,6 @@ func SetKogitoRuntimeReplicas(namespace, name string, nbPods int) error {
 
 // GetKogitoRuntimeStub Get basic KogitoRuntime stub with all needed fields initialized
 func GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag string) *v1alpha1.KogitoRuntime {
-	image := framework.ConvertImageTagToImage(imageTag)
 	replicas := int32(1)
 	kogitoRuntime := &v1alpha1.KogitoRuntime{
 		ObjectMeta: metav1.ObjectMeta{
@@ -63,7 +61,7 @@ func GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag string) *v1alph
 		Spec: v1alpha1.KogitoRuntimeSpec{
 			Runtime: v1alpha1.RuntimeType(runtimeType),
 			KogitoServiceSpec: v1alpha1.KogitoServiceSpec{
-				Image: image,
+				Image: imageTag,
 				// Use insecure registry flag in tests
 				InsecureImageRegistry: true,
 				Replicas:              &replicas,

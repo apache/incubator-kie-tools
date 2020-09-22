@@ -120,9 +120,9 @@ func NewKogitoServiceStatus() v1alpha1.KogitoServiceStatus {
 }
 
 // NewImageOrDefault Returns Image parsed from provided image tag or created from configuration options
-func NewImageOrDefault(fullImage string, defaultImageName string) v1alpha1.Image {
+func NewImageOrDefault(fullImage string, defaultImageName string) string {
 	if len(fullImage) > 0 {
-		return framework.ConvertImageTagToImage(fullImage)
+		return fullImage
 	}
 
 	image := v1alpha1.Image{}
@@ -150,8 +150,7 @@ func NewImageOrDefault(fullImage string, defaultImageName string) v1alpha1.Image
 			image.Name = fmt.Sprintf("%s-%s", image.Name, config.GetServicesImageNameSuffix())
 		}
 	}
-
-	return image
+	return framework.ConvertImageToImageTag(image)
 }
 
 func isRuntimeImageInformationSet() bool {

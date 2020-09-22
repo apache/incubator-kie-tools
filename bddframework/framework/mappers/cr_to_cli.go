@@ -19,7 +19,6 @@ import (
 	"strconv"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
 
@@ -45,7 +44,7 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 		cmd = append(cmd, "--http-port", strconv.Itoa(int(httpPort)))
 	}
 
-	image := framework.ConvertImageToImageTag(*serviceHolder.GetSpec().GetImage())
+	image := serviceHolder.GetSpec().GetImage()
 	if len(image) > 0 {
 		cmd = append(cmd, "--image", image)
 	}
@@ -131,12 +130,12 @@ func GetBuildCLIFlags(kogitoBuild *v1alpha1.KogitoBuild) []string {
 		cmd = append(cmd, "--context-dir", contextDir)
 	}
 
-	image := framework.ConvertImageToImageTag(kogitoBuild.Spec.RuntimeImage)
+	image := kogitoBuild.Spec.RuntimeImage
 	if len(image) > 0 {
 		cmd = append(cmd, "--image-runtime", image)
 	}
 
-	image = framework.ConvertImageToImageTag(kogitoBuild.Spec.BuildImage)
+	image = kogitoBuild.Spec.BuildImage
 	if len(image) > 0 {
 		cmd = append(cmd, "--image-s2i", image)
 	}
@@ -147,11 +146,6 @@ func GetBuildCLIFlags(kogitoBuild *v1alpha1.KogitoBuild) []string {
 
 	if kogitoBuild.Spec.Native {
 		cmd = append(cmd, "--native")
-	}
-
-	image = framework.ConvertImageToImageTag(kogitoBuild.Spec.RuntimeImage)
-	if len(image) > 0 {
-		cmd = append(cmd, "--image-runtime", image)
 	}
 
 	// webhooks
