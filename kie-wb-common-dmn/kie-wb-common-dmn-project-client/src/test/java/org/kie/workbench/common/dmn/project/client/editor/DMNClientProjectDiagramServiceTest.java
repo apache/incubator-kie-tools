@@ -186,4 +186,23 @@ public class DMNClientProjectDiagramServiceTest {
 
         verify(service).saveAsXml(path, xml, metadata, comment, stringCallback);
     }
+
+    @Test
+    public void testAsProjectDiagramImpl() {
+
+        final Graph graph = mock(Graph.class);
+        final Diagram diagram = mock(Diagram.class);
+        final DMNContentResource resource = mock(DMNContentResource.class);
+        final ProjectMetadata metadata = mock(ProjectMetadata.class);
+
+        when(diagram.getName()).thenReturn("Traffic Violation.dmn");
+        when(diagram.getGraph()).thenReturn(graph);
+        when(resource.getMetadata()).thenReturn(metadata);
+
+        final ProjectDiagramImpl projectDiagram = service.asProjectDiagramImpl(diagram, resource);
+
+        assertEquals("Traffic Violation", projectDiagram.getName());
+        assertEquals(graph, projectDiagram.getGraph());
+        assertEquals(metadata, projectDiagram.getMetadata());
+    }
 }

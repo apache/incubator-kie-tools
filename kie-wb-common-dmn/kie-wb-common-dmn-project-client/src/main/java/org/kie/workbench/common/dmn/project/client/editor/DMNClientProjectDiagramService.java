@@ -35,7 +35,9 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagramSavedEvent;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.service.DiagramLookupService;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
@@ -88,9 +90,7 @@ public class DMNClientProjectDiagramService extends ClientProjectDiagramService 
 
             @Override
             public void onSuccess(final Diagram diagram) {
-                callback.onSuccess(new ProjectDiagramImpl(diagram.getName(),
-                                                          diagram.getGraph(),
-                                                          (ProjectMetadata) resource.getMetadata()));
+                callback.onSuccess(asProjectDiagramImpl(diagram, resource));
             }
 
             @Override
@@ -98,6 +98,14 @@ public class DMNClientProjectDiagramService extends ClientProjectDiagramService 
                 callback.onError(error);
             }
         };
+    }
+
+    ProjectDiagramImpl asProjectDiagramImpl(final Diagram diagram,
+                                            final DMNContentResource resource) {
+        final String name = removeExtension(diagram.getName());
+        final Graph graph = diagram.getGraph();
+        final ProjectMetadata metadata = (ProjectMetadata) resource.getMetadata();
+        return new ProjectDiagramImpl(name, graph, metadata);
     }
 
     @Override
@@ -136,5 +144,19 @@ public class DMNClientProjectDiagramService extends ClientProjectDiagramService 
                 DomGlobal.console.error(e.getMessage(), e);
             }
         };
+    }
+
+    private String removeExtension(final String filename) {
+
+        if (StringUtils.isEmpty(filename)) {
+            return "";
+        }
+
+        final int index = filename.lastIndexOf(".");
+        if (index == -1) {
+            return filename;
+        }
+
+        return filename.substring(0, index);
     }
 }
