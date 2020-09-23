@@ -18,8 +18,6 @@ import { HistoryService } from "../history/HistoryProvider";
 import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
-export const ROOT = null;
-
 interface VersionPayload {
   [Actions.SetVersion]: {
     readonly service: HistoryService;
@@ -43,7 +41,7 @@ export type StateControlActions = ActionMap<StateControlPayload>[keyof ActionMap
 export const PMMLReducer: Reducer<PMML, AllActions> = (state: PMML, action: AllActions) => {
   switch (action.type) {
     case Actions.SetVersion:
-      return action.payload.service.mutate(state, ROOT, draft => {
+      return action.payload.service.mutate(state, null, draft => {
         draft.version = action.payload.version;
       });
 

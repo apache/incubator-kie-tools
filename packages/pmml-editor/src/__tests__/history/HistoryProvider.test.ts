@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import { Header, PMML } from "@kogito-tooling/pmml-editor-marshaller";
-import { ROOT } from "../../editor/reducers/PMMLReducer";
 import { HistoryService } from "../../editor/history/HistoryProvider";
 
 const service: HistoryService = new HistoryService();
@@ -35,14 +34,14 @@ const header1: Header = {
 
 describe("HistoryProvider", () => {
   test("Mutation applied", () => {
-    const updated: PMML = service.mutate(pmml, ROOT, draft => {
+    const updated: PMML = service.mutate(pmml, null, draft => {
       draft.Header = header1;
     });
     expect(updated.Header).toBe(header1);
   });
 
   test("Mutation undo", () => {
-    const updated1: PMML = service.mutate(pmml, ROOT, draft => {
+    const updated1: PMML = service.mutate(pmml, null, draft => {
       draft.Header = header1;
     });
     expect(updated1).not.toStrictEqual(pmml);
@@ -52,7 +51,7 @@ describe("HistoryProvider", () => {
   });
 
   test("Mutation redo", () => {
-    const updated1: PMML = service.mutate(pmml, ROOT, draft => {
+    const updated1: PMML = service.mutate(pmml, null, draft => {
       draft.Header = header1;
     });
     expect(updated1).not.toStrictEqual(pmml);
@@ -65,7 +64,7 @@ describe("HistoryProvider", () => {
   });
 
   test("Mutation undo beyond start", () => {
-    const updated1: PMML = service.mutate(pmml, ROOT, draft => {
+    const updated1: PMML = service.mutate(pmml, null, draft => {
       draft.Header = header1;
     });
     expect(updated1).not.toStrictEqual(pmml);
@@ -78,7 +77,7 @@ describe("HistoryProvider", () => {
   });
 
   test("Mutation redo beyond end", () => {
-    const updated1: PMML = service.mutate(pmml, ROOT, draft => {
+    const updated1: PMML = service.mutate(pmml, null, draft => {
       draft.Header = header1;
     });
     expect(updated1).not.toStrictEqual(pmml);
