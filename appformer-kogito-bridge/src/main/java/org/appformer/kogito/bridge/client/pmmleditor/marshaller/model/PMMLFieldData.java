@@ -15,32 +15,16 @@
  */
 package org.appformer.kogito.bridge.client.pmmleditor.marshaller.model;
 
-import java.util.List;
-
-import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
-import jsinterop.base.JsArrayLike;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class PMMLModelData {
+public class PMMLFieldData {
 
-    @JsOverlay
-    public final List<PMMLFieldData> getFields() {
-        if (getNativeFields() == null) {
-            setNativeFields(JSIUtils.getNativeArray());
-        }
-        return JSIUtils.toList(JSIUtils.getUnwrappedElementsArray(getNativeFields()));
-    }
+    @JsProperty(name = "fieldName")
+    public native String getFieldName();
 
-    @JsProperty(name = "modelName")
-    public native String getModelName();
-
-    @JsProperty(name = "fields")
-    public native JsArrayLike<PMMLFieldData> getNativeFields();
-
-    @JsProperty(name = "fields")
-    public native void setNativeFields(JsArrayLike<PMMLFieldData> models);
-
+    @JsProperty(name = "usageType")
+    public native String getUsageType();
 }
