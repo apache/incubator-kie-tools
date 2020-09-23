@@ -180,6 +180,8 @@ public class NewContainerWizardTest {
         verify( processConfigPagePresenter ).buildProcessConfig();
         verify( newContainerFormPresenter ).buildContainerSpec( eq( serverTemplate.getId() ), anyMap() );
 
+        verify(newContainerFormPresenter).showBusyIndicator(containerSpec.getReleasedId().toString());
+        verify(newContainerFormPresenter).hideBusyIndicator();
         final ArgumentCaptor<NotificationEvent> eventCaptor = ArgumentCaptor.forClass( NotificationEvent.class );
         verify( notification ).fire( eventCaptor.capture() );
         final NotificationEvent event = eventCaptor.getValue();

@@ -45,6 +45,7 @@ import org.kie.workbench.common.screens.server.management.service.SpecManagement
 import org.slf4j.Logger;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
@@ -322,6 +323,14 @@ public class NewContainerFormPresenter implements WizardPage {
         MANDATORY
     }
 
+    public void showBusyIndicator(String deploymentId) {
+        BusyPopup.showMessage(view.getNewContainerDeploying(deploymentId));
+    }
+
+    public void hideBusyIndicator() {
+        BusyPopup.close();
+    }
+
     public GAV getCurrentGAV() {
         return new GAV(view.getGroupId(), view.getArtifactId(), view.getVersion());
     }
@@ -395,5 +404,7 @@ public class NewContainerFormPresenter implements WizardPage {
         String getNewContainerSaveContainerSpec();
 
         String getNewContainerSave();
+
+        String getNewContainerDeploying(String deploymentId);
     }
 }

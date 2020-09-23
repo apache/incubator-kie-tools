@@ -366,6 +366,12 @@ public class NewContainerFormView extends Composite
         return translationService.format(Constants.NewContainer_Save);
     }
 
+    @Override
+    public String getNewContainerDeploying(final String deploymentId) {
+        return translationService.format(Constants.NewContainer_Deploying, deploymentId);
+    }
+
+
     private String getTitleText() {
         return translationService.getTranslation(Constants.NewContainerFormView_TitleText);
     }

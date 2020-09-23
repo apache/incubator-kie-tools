@@ -248,4 +248,7 @@ public class Constants {
     @TranslationKey(defaultValue = "")
     public static final String NewContainer_Save = "NewContainer.Save";
 
+    @TranslationKey(defaultValue = "")
+    public static final String NewContainer_Deploying = "NewContainer.Deploying";
+
 }
