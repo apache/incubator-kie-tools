@@ -17,43 +17,43 @@ import { ActionMap, Actions } from "./Actions";
 import { HistoryService } from "../history/HistoryProvider";
 import { DataDictionary, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import { HistoryAwareReducer } from "../history/HistoryAwareReducer";
 
 interface DataDictionaryPayload {
   [Actions.CreateDataField]: {
-    readonly service: HistoryService;
     readonly name: string;
   };
   [Actions.DeleteDataField]: {
-    readonly service: HistoryService;
     readonly index: number;
   };
 }
 
 export type DataDictionaryActions = ActionMap<DataDictionaryPayload>[keyof ActionMap<DataDictionaryPayload>];
 
-export const DataDictionaryReducer: Reducer<DataDictionary, DataDictionaryActions> = (
-  state: DataDictionary,
-  action: DataDictionaryActions
-) => {
-  switch (action.type) {
-    case Actions.CreateDataField:
-      return action.payload.service.mutate(state, "DataDictionary", draft => {
-        draft.DataField.push({
-          dataType: "string",
-          name: action.payload.name as FieldName,
-          displayName: action.payload.name,
-          optype: "categorical"
+export const DataDictionaryReducer: HistoryAwareReducer<DataDictionary, DataDictionaryActions> = (
+  service: HistoryService
+): Reducer<DataDictionary, DataDictionaryActions> => {
+  return (state: DataDictionary, action: DataDictionaryActions) => {
+    switch (action.type) {
+      case Actions.CreateDataField:
+        return service.mutate(state, "DataDictionary", draft => {
+          draft.DataField.push({
+            dataType: "string",
+            name: action.payload.name as FieldName,
+            displayName: action.payload.name,
+            optype: "categorical"
+          });
         });
-      });
 
-    case Actions.DeleteDataField:
-      return action.payload.service.mutate(state, "DataDictionary", draft => {
-        const index: number = action.payload.index;
-        if (index >= 0 && index < draft.DataField.length) {
-          draft.DataField.splice(index, 1);
-        }
-      });
-  }
+      case Actions.DeleteDataField:
+        return service.mutate(state, "DataDictionary", draft => {
+          const index: number = action.payload.index;
+          if (index >= 0 && index < draft.DataField.length) {
+            draft.DataField.splice(index, 1);
+          }
+        });
+    }
 
-  return state;
+    return state;
+  };
 };

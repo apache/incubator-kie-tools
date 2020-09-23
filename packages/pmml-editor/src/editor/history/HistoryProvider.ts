@@ -17,7 +17,6 @@ import { applyPatches, produce } from "immer";
 import { WritableDraft } from "immer/dist/types/types-external";
 import { PMML } from "@kogito-tooling/pmml-editor-marshaller/dist/marshaller/model";
 import { cloneDeep, get, set } from "lodash";
-import { Context, createContext } from "react";
 
 interface Change {
   path: string | null;
@@ -30,10 +29,6 @@ interface HistoryStore {
   index: number;
 }
 
-interface HistoryProps {
-  service: HistoryService;
-}
-
 export class HistoryService {
   private readonly history: HistoryStore = {
     changes: [],
@@ -41,7 +36,6 @@ export class HistoryService {
   };
 
   public mutate = <M>(state: M, path: string | null, recipe: (draft: WritableDraft<M>) => void) => {
-    console.log(path);
     if (this.history.index < this.history.changes.length) {
       this.history.changes = this.history.changes.slice(0, this.history.index);
     }
@@ -89,5 +83,3 @@ export class HistoryService {
     return set(newState, path, branchUndone);
   };
 }
-
-export const HistoryContext: Context<HistoryProps> = createContext({ service: new HistoryService() });

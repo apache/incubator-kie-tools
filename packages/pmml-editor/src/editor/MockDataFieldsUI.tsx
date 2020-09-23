@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { CSSProperties, useContext } from "react";
+import { CSSProperties } from "react";
 import { Actions } from "./reducers/Actions";
 import MockDataFieldUI from "./MockDataFieldUI";
 import { Timestamp, Title } from "./PMMLEditor";
 import { useDispatch, useSelector } from "react-redux";
 import { DataDictionary, PMML } from "@kogito-tooling/pmml-editor-marshaller";
-import { HistoryContext } from "./history/HistoryProvider";
 
 const style: CSSProperties = {
   padding: "5px 5px 5px 5px"
@@ -31,13 +30,11 @@ const MockDataFieldsUI = () => {
 
   const dispatch = useDispatch();
   const dataDictionary: DataDictionary = useSelector<PMML, DataDictionary>((state: PMML) => state.DataDictionary);
-  const { service } = useContext(HistoryContext);
 
   const createDataField = () => {
     dispatch({
       type: Actions.CreateDataField,
       payload: {
-        service: service,
         name: name
       }
     });

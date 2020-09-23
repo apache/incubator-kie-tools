@@ -21,14 +21,13 @@ import { HistoryService } from "../../editor/history/HistoryProvider";
 
 const header: Header = { description: "" };
 
-const reducer: Reducer<Header, AllActions> = HeaderReducer;
+const reducer: Reducer<Header, AllActions> = HeaderReducer(new HistoryService());
 
 describe("HeaderReducer::Valid actions", () => {
   test("Actions.SetHeaderDescription", () => {
     const updated: Header = reducer(header, {
       type: Actions.SetHeaderDescription,
       payload: {
-        service: new HistoryService(),
         description: "description"
       }
     });
@@ -42,7 +41,6 @@ describe("HeaderReducer::Invalid actions", () => {
     const updated: Header = reducer(header, {
       type: Actions.SetVersion,
       payload: {
-        service: new HistoryService(),
         version: "1.0"
       }
     });

@@ -21,14 +21,13 @@ import { HistoryService } from "../../editor/history/HistoryProvider";
 
 const dataDictionary: DataDictionary = { DataField: [] };
 
-const reducer: Reducer<DataDictionary, AllActions> = DataDictionaryReducer;
+const reducer: Reducer<DataDictionary, AllActions> = DataDictionaryReducer(new HistoryService());
 
 describe("DataDictionaryReducer::Valid actions", () => {
   test("Actions.CreateDataField", () => {
     const updated: DataDictionary = reducer(dataDictionary, {
       type: Actions.CreateDataField,
       payload: {
-        service: new HistoryService(),
         name: "field1"
       }
     });
@@ -51,7 +50,6 @@ describe("DataDictionaryReducer::Valid actions", () => {
       {
         type: Actions.DeleteDataField,
         payload: {
-          service: new HistoryService(),
           index: 0
         }
       }
@@ -64,7 +62,6 @@ describe("DataDictionaryReducer::Valid actions", () => {
     const updated: DataDictionary = reducer(dataDictionary, {
       type: Actions.DeleteDataField,
       payload: {
-        service: new HistoryService(),
         index: -1
       }
     });
@@ -75,7 +72,6 @@ describe("DataDictionaryReducer::Valid actions", () => {
     const updated: DataDictionary = reducer(dataDictionary, {
       type: Actions.DeleteDataField,
       payload: {
-        service: new HistoryService(),
         index: 0
       }
     });
@@ -88,7 +84,6 @@ describe("DataDictionaryReducer::Invalid actions", () => {
     const updated: DataDictionary = reducer(dataDictionary, {
       type: Actions.SetHeaderDescription,
       payload: {
-        service: new HistoryService(),
         description: "description"
       }
     });

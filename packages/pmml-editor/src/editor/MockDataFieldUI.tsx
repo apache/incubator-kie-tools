@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { CSSProperties, useContext } from "react";
+import { CSSProperties } from "react";
 import { Actions } from "./reducers/Actions";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { useDispatch } from "react-redux";
-import { HistoryContext, HistoryService } from "./history/HistoryProvider";
 
 const style: CSSProperties = {
   padding: "5px 5px 5px 5px"
@@ -31,13 +30,11 @@ interface Props {
 
 const MockDataFieldUI = (props: Props) => {
   const dispatch = useDispatch();
-  const { service } = useContext(HistoryContext);
 
   const setDataFieldName = (name: FieldName) => {
     dispatch({
       type: Actions.SetDataFieldName,
       payload: {
-        service: service,
         index: props.index,
         name: name
       }
@@ -48,7 +45,6 @@ const MockDataFieldUI = (props: Props) => {
     dispatch({
       type: Actions.DeleteDataField,
       payload: {
-        service: service,
         index: props.index
       }
     });

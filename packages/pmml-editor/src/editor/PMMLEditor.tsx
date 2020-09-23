@@ -32,20 +32,7 @@ import mergeReducers from "combine-reducer";
 import { HeaderReducer } from "./reducers/HeaderReducer";
 import { DataDictionaryReducer } from "./reducers/DataDictionaryReducer";
 import { DataFieldReducer } from "./reducers/DataFieldReducer";
-import { HistoryContext, HistoryService } from "./history/HistoryProvider";
-
-const reducer: Reducer<PMML, AllActions> = mergeReducers(PMMLReducer, {
-  Header: HeaderReducer,
-  DataDictionary: mergeReducers(DataDictionaryReducer, { DataField: DataFieldReducer })
-});
-
-const store: Store<PMML, AllActions> = createStore(reducer, {
-  Header: { description: "" },
-  DataDictionary: {
-    DataField: []
-  },
-  version: "1.0"
-});
+import { HistoryService } from "./history/HistoryProvider";
 
 export interface Props {
   exposing: (s: PMMLEditor) => void;
@@ -59,6 +46,10 @@ export interface State {
 }
 
 export class PMMLEditor extends React.Component<Props, State> {
+  private readonly store: Store<PMML, AllActions>;
+  private readonly service: HistoryService = new HistoryService();
+  private readonly reducer: Reducer<PMML, AllActions>;
+
   constructor(props: Props) {
     super(props);
     props.exposing(this);
@@ -69,6 +60,19 @@ export class PMMLEditor extends React.Component<Props, State> {
     };
 
     enableAllPlugins();
+
+    this.reducer = mergeReducers(PMMLReducer(this.service), {
+      Header: HeaderReducer(this.service),
+      DataDictionary: mergeReducers(DataDictionaryReducer(this.service), { DataField: DataFieldReducer(this.service) })
+    });
+
+    this.store = createStore(this.reducer, {
+      Header: { description: "" },
+      DataDictionary: {
+        DataField: []
+      },
+      version: "1.0"
+    });
   }
 
   public componentDidMount(): void {
@@ -85,20 +89,18 @@ export class PMMLEditor extends React.Component<Props, State> {
 
   public render() {
     return (
-      <Provider store={store}>
-        <HistoryContext.Provider value={{ service: new HistoryService() }}>
-          <StateButtons />
-          <hr />
-          <MockVersionUI />
-          <hr />
-          <MockHeaderUI />
-          <hr />
-          <MockDataFieldsUI />
-          <hr />
-          <MockSummaryUI />
-          <hr />
-          <HistoryLog />
-        </HistoryContext.Provider>
+      <Provider store={this.store}>
+        <StateButtons />
+        <hr />
+        <MockVersionUI />
+        <hr />
+        <MockHeaderUI />
+        <hr />
+        <MockDataFieldsUI />
+        <hr />
+        <MockSummaryUI />
+        <hr />
+        <HistoryLog service={this.service} />
       </Provider>
     );
   }

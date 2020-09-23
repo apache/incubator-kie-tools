@@ -17,10 +17,10 @@ import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryService } from "../history/HistoryProvider";
 import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import { HistoryAwareReducer } from "../history/HistoryAwareReducer";
 
 interface VersionPayload {
   [Actions.SetVersion]: {
-    readonly service: HistoryService;
     readonly version: string;
   };
 }
@@ -28,29 +28,29 @@ interface VersionPayload {
 export type VersionActions = ActionMap<VersionPayload>[keyof ActionMap<VersionPayload>];
 
 interface StateControlPayload {
-  [Actions.Undo]: {
-    readonly service: HistoryService;
-  };
-  [Actions.Redo]: {
-    readonly service: HistoryService;
-  };
+  [Actions.Undo]: undefined;
+  [Actions.Redo]: undefined;
 }
 
 export type StateControlActions = ActionMap<StateControlPayload>[keyof ActionMap<StateControlPayload>];
 
-export const PMMLReducer: Reducer<PMML, AllActions> = (state: PMML, action: AllActions) => {
-  switch (action.type) {
-    case Actions.SetVersion:
-      return action.payload.service.mutate(state, null, draft => {
-        draft.version = action.payload.version;
-      });
+export const PMMLReducer: HistoryAwareReducer<PMML, AllActions> = (
+  service: HistoryService
+): Reducer<PMML, AllActions> => {
+  return (state: PMML, action: AllActions) => {
+    switch (action.type) {
+      case Actions.SetVersion:
+        return service.mutate(state, null, draft => {
+          draft.version = action.payload.version;
+        });
 
-    case Actions.Undo:
-      return action.payload.service.undo(state);
+      case Actions.Undo:
+        return service.undo(state);
 
-    case Actions.Redo:
-      return action.payload.service.redo(state);
-  }
+      case Actions.Redo:
+        return service.redo(state);
+    }
 
-  return state;
+    return state;
+  };
 };

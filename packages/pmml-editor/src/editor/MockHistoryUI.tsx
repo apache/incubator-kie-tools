@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { CSSProperties, useContext, useState } from "react";
+import { CSSProperties, useState } from "react";
 import { Actions } from "./reducers/Actions";
-import { HistoryContext, HistoryService } from "./history/HistoryProvider";
+import { HistoryService } from "./history/HistoryProvider";
 import { Title } from "./PMMLEditor";
 import { useDispatch } from "react-redux";
 
@@ -26,23 +26,16 @@ const style: CSSProperties = {
 
 const StateButtons = () => {
   const dispatch = useDispatch();
-  const { service } = useContext(HistoryContext);
 
   const doUndo = () => {
     dispatch({
-      type: Actions.Undo,
-      payload: {
-        service: service
-      }
+      type: Actions.Undo
     });
   };
 
   const doRedo = () => {
     dispatch({
-      type: Actions.Redo,
-      payload: {
-        service: service
-      }
+      type: Actions.Redo
     });
   };
 
@@ -54,9 +47,12 @@ const StateButtons = () => {
   );
 };
 
-const HistoryLog = () => {
+interface HistoryLogProps {
+  service: HistoryService;
+}
+
+const HistoryLog = (props: HistoryLogProps) => {
   const [state, setState] = useState(true);
-  const service: HistoryService = useContext(HistoryContext).service;
 
   return (
     <div style={style}>
@@ -67,8 +63,8 @@ const HistoryLog = () => {
       </div>
       <pre>{`${JSON.stringify(
         {
-          index: service.index(),
-          changes: service.changes().reverse()
+          index: props.service.index(),
+          changes: [props.service.changes()].reverse()
         },
         undefined,
         2

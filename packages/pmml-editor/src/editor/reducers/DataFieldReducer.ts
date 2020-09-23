@@ -17,10 +17,10 @@ import { ActionMap, Actions } from "./Actions";
 import { HistoryService } from "../history/HistoryProvider";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import { HistoryAwareReducer } from "../history/HistoryAwareReducer";
 
 interface DataFieldPayload {
   [Actions.SetDataFieldName]: {
-    readonly service: HistoryService;
     readonly index: number;
     readonly name: FieldName;
   };
@@ -28,19 +28,20 @@ interface DataFieldPayload {
 
 export type DataFieldActions = ActionMap<DataFieldPayload>[keyof ActionMap<DataFieldPayload>];
 
-export const DataFieldReducer: Reducer<DataField[], DataFieldActions> = (
-  state: DataField[],
-  action: DataFieldActions
-) => {
-  switch (action.type) {
-    case Actions.SetDataFieldName:
-      return action.payload.service.mutate(state, `DataDictionary.DataField`, draft => {
-        const index: number = action.payload.index;
-        if (index >= 0 && index < draft.length) {
-          draft[index].name = action.payload.name;
-        }
-      });
-  }
+export const DataFieldReducer: HistoryAwareReducer<DataField[], DataFieldActions> = (
+  service: HistoryService
+): Reducer<DataField[], DataFieldActions> => {
+  return (state: DataField[], action: DataFieldActions) => {
+    switch (action.type) {
+      case Actions.SetDataFieldName:
+        return service.mutate(state, `DataDictionary.DataField`, draft => {
+          const index: number = action.payload.index;
+          if (index >= 0 && index < draft.length) {
+            draft[index].name = action.payload.name;
+          }
+        });
+    }
 
-  return state;
+    return state;
+  };
 };

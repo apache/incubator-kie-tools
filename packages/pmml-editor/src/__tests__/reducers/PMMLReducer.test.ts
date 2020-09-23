@@ -21,14 +21,13 @@ import { HistoryService } from "../../editor/history/HistoryProvider";
 
 const pmml: PMML = { Header: {}, DataDictionary: { DataField: [] }, version: "" };
 
-const reducer: Reducer<PMML, AllActions> = PMMLReducer;
+const reducer: Reducer<PMML, AllActions> = PMMLReducer(new HistoryService());
 
 describe("PMMLReducer::Valid actions", () => {
   test("Actions.SetVersion", () => {
     const updated: PMML = reducer(pmml, {
       type: Actions.SetVersion,
       payload: {
-        service: new HistoryService(),
         version: "1.0"
       }
     });
@@ -42,7 +41,6 @@ describe("PMMLReducer::Invalid actions", () => {
     const updated: PMML = reducer(pmml, {
       type: Actions.SetHeaderDescription,
       payload: {
-        service: new HistoryService(),
         description: "description"
       }
     });
