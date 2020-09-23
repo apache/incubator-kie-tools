@@ -30,6 +30,7 @@ import org.uberfire.client.views.pfly.widgets.D3;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 
 @Templated
 @ApplicationScoped
@@ -57,7 +58,7 @@ public class MapTooltip implements IsElement {
     
     @PostConstruct
     public void init() {
-        mapTooltipContainer.style.visibility = "hidden";
+        mapTooltipContainer.style.opacity = Js.cast("0");
     }
 
     @Override
