@@ -64,6 +64,38 @@ Feature: Deploy Kogito Build
       | runtime    | example-service         | native  | profile |
       | quarkus    | process-quarkus-example | enabled | native  |
 
+#####
+
+  @cli
+  Scenario Outline: Build <runtime> binary build from local example service target folder with native <native> using KogitoBuild
+    Given Clone Kogito examples into local directory
+    And Local example service "<example-service>" is built by Maven using profile "<profile>"
+
+    When Build binary <runtime> local example service "<example-service>" from target folder with configuration:
+      | config | native | <native> |
+
+    Then Kogito Runtime "<example-service>" has 1 pods running within 5 minutes
+    And Service "<example-service>" with process name "orders" is available within 2 minutes
+
+    @springboot
+    Examples:
+      | runtime    | example-service            | native   | profile |
+      | springboot | process-springboot-example | disabled | default |
+
+    @smoke
+    @quarkus
+    Examples:
+      | runtime    | example-service         | native   | profile |
+      | quarkus    | process-quarkus-example | disabled | default |
+
+    @quarkus
+    @native
+    Examples:
+      | runtime    | example-service         | native  | profile |
+      | quarkus    | process-quarkus-example | enabled | native  |
+
+#####
+
   Scenario Outline: Configure <type> webhook trigger in remote S2I using KogitoBuild
     When Build quarkus example service "process-quarkus-example" with configuration:
       | webhook | type   | <type>    |

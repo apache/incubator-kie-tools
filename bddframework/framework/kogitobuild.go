@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitobuild/build"
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
@@ -60,6 +61,8 @@ func cliDeployKogitoBuild(buildHolder *bddtypes.KogitoBuildHolder) error {
 	// If GIT URI is defined then it needs to be appended as second parameter
 	if gitURI := buildHolder.KogitoBuild.Spec.GitSource.URI; len(gitURI) > 0 {
 		cmd = append(cmd, gitURI)
+	} else if len(buildHolder.BuiltBinaryFolder) > 0 {
+		cmd = append(cmd, buildHolder.BuiltBinaryFolder)
 	}
 
 	cmd = append(cmd, mappers.GetBuildCLIFlags(buildHolder.KogitoBuild)...)

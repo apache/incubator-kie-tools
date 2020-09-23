@@ -33,6 +33,9 @@ type KogitoServiceHolder struct {
 type KogitoBuildHolder struct {
 	*KogitoServiceHolder
 	*v1alpha1.KogitoBuild
+
+	// Specifies folder with prebuilt Kogito binaries to be uploaded to KogitoBuild
+	BuiltBinaryFolder string
 }
 
 //IsInfinispanUsernameSpecified Returns true if Infinispan username is specified

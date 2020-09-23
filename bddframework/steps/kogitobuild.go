@@ -15,6 +15,7 @@
 package steps
 
 import (
+	"fmt"
 	"path/filepath"
 
 	"github.com/cucumber/godog"
@@ -37,6 +38,7 @@ func registerKogitoBuildSteps(ctx *godog.ScenarioContext, data *Data) {
 	// Deploy steps
 	ctx.Step(`^Build (quarkus|springboot) example service "([^"]*)" with configuration:$`, data.buildExampleServiceWithConfiguration)
 	ctx.Step(`^Build binary (quarkus|springboot) service "([^"]*)" with configuration:$`, data.buildBinaryServiceWithConfiguration)
+	ctx.Step(`^Build binary (quarkus|springboot) local example service "([^"]*)" from target folder with configuration:$`, data.buildBinaryLocalExampleServiceFromTargetFolderWithConfiguration)
 }
 
 // Build service steps
@@ -66,6 +68,18 @@ func (data *Data) buildBinaryServiceWithConfiguration(runtimeType, serviceName s
 	buildHolder.KogitoBuild.Spec.Type = v1alpha1.BinaryBuildType
 
 	return framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
+}
+
+func (data *Data) buildBinaryLocalExampleServiceFromTargetFolderWithConfiguration(runtimeType, serviceName string, table *godog.Table) error {
+	buildHolder, err := getKogitoBuildConfiguredStub(data.Namespace, runtimeType, serviceName, table)
+	if err != nil {
+		return err
+	}
+
+	buildHolder.KogitoBuild.Spec.Type = v1alpha1.BinaryBuildType
+	buildHolder.BuiltBinaryFolder = fmt.Sprintf(`%s/%s/target`, data.KogitoExamplesLocation, serviceName)
+
+	return framework.DeployKogitoBuild(data.Namespace, framework.CLIInstallerType, buildHolder)
 }
 
 // Misc methods
