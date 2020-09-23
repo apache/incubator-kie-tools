@@ -8,7 +8,6 @@ Feature: Kogito Trusty
     And Kogito Operator is deployed with Infinispan and Kafka operators
 
   @disabled
-  @smoke
   Scenario: Install Kogito Trusty
     When Install Kogito Trusty with 1 replicas
     Then Kogito Trusty has 1 pods running within 10 minutes

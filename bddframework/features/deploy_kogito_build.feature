@@ -50,7 +50,6 @@ Feature: Deploy Kogito Build
       | runtime    | example-service            | native   | profile |
       | springboot | process-springboot-example | disabled | default |
 
-    @smoke
     @quarkus
     Examples:
       | runtime    | example-service         | native   | profile |

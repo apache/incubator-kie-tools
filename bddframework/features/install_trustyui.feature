@@ -5,7 +5,6 @@ Feature: Install Kogito Trusty UI
     Given Namespace is created
     And Kogito Operator is deployed
 
-  @smoke
   Scenario: Install Kogito Trusty UI
     When Install Kogito Trusty UI with 1 replicas
     Then Kogito Trusty UI has 1 pods running within 10 minutes

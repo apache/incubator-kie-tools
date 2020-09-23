@@ -5,7 +5,6 @@ Feature: Deploy source files (dmn, drl, bpmn, bpmn2, ...) with CLI
     Given Namespace is created
     And Kogito Operator is deployed
 
-  @smoke
   Scenario: Deploy .dmn source files with CLI using runtime <runtime>
     Given Clone Kogito examples into local directory
     
@@ -24,6 +23,8 @@ Feature: Deploy source files (dmn, drl, bpmn, bpmn2, ...) with CLI
       }
       """
 
+    # Running just SpringBoot for smoke tests as quarkus is executed for directory deployment below
+    @smoke
     @springboot
     Examples:
       | runtime    |
@@ -47,6 +48,7 @@ Feature: Deploy source files (dmn, drl, bpmn, bpmn2, ...) with CLI
       }
       """
 
+  @smoke
   Scenario: Deploy source files in folder with CLI
     Given Clone Kogito examples into local directory
     

@@ -5,6 +5,7 @@ Feature: Service Deployment: Prometheus
     And Kogito Operator is deployed
     And Prometheus Operator is deployed
 
+  @smoke
   Scenario: Deploy dmn-drools-quarkus-metrics service and verify that it successfully connects to Prometheus
     Given Prometheus instance is deployed, monitoring services with label name "app" and value "dmn-drools-quarkus-metrics"
     And Clone Kogito examples into local directory

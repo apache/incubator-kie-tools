@@ -5,7 +5,6 @@ Feature: Kogito Explainability service
   Background:
     Given Namespace is created
 
-  @smoke
   Scenario Outline: Install Kogito Explainability with communication <communication>
     Given Kogito Operator is deployed with Kafka operator
     And Kafka topic "trusty-explainability-result" is deployed
