@@ -340,6 +340,19 @@ public class NewContainerWizardTest {
     }
 
     @Test
+    public void testPageSelectedWithSamePageIndex() {
+        newContainerWizard.pages.add(mock(WizardPage.class));
+        newContainerWizard.pages.add(mock(WizardPage.class));
+        newContainerWizard.setCurrentPageIndex(1);
+        newContainerWizard.pageSelected(1);
+
+        verify(newContainerFormPresenter, never()).getCurrentGAV();
+        verify(m2RepoService, never()).listArtifacts(any());
+        verify(dependencyPathSelectedEvent, never()).fire(any());
+        verify(notification, never()).fire(any());
+    }
+
+    @Test
     public void testPageSelectedCanNotFind() {
         PageResponse<JarListPageRow> response = new PageResponse<JarListPageRow>();
         JarListPageRow jarListPageRow = new JarListPageRow();

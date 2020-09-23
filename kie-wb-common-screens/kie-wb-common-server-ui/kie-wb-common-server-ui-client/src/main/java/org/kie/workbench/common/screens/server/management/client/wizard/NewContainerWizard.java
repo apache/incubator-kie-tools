@@ -180,6 +180,10 @@ public class NewContainerWizard extends AbstractMultiPageWizard {
 
     @Override
     public void pageSelected(final int pageNumber) {
+        if (this.getSelectedPage() == pageNumber) {
+            return;
+        }
+
         if (pageNumber == 1 && !isSelected) {
             GAV gav = newContainerFormPresenter.getCurrentGAV();
             JarListPageRequest request = new JarListPageRequest(0, Integer.MAX_VALUE, null, Arrays.asList("jar"), null, false);
@@ -198,5 +202,9 @@ public class NewContainerWizard extends AbstractMultiPageWizard {
             }).listArtifacts(request);
         }
         super.pageSelected(pageNumber);
+    }
+
+    protected void setCurrentPageIndex(final int index) {
+        super.pageSelected(index);
     }
 }
