@@ -16,9 +16,9 @@
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.converters;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.appformer.kogito.bridge.client.pmmleditor.marshaller.model.PMMLDocumentData;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
@@ -27,6 +27,8 @@ import org.kie.workbench.common.dmn.api.editors.included.PMMLModelMetadata;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLParameterMetadata;
 
 public class PMMLMarshallerConverter {
+
+    public static final String ACTIVE = "active";
 
     private PMMLMarshallerConverter() {
         // Utils class with static methods.
@@ -37,17 +39,18 @@ public class PMMLMarshallerConverter {
         final List<PMMLModelMetadata> models = new ArrayList<>();
         pmmlDocumentData.getModels().stream().forEach(pmmlModelData -> {
             final String modelName = pmmlModelData.getModelName();
-            final Set<PMMLParameterMetadata> fields = new HashSet<>();
-
-            for (final String field : pmmlModelData.getFields()) {
-                fields.add(new PMMLParameterMetadata(field));
-            }
-
+            final Set<PMMLParameterMetadata> fields =
+                    pmmlModelData.getFields().stream().filter(field -> isValidInputField(field.getUsageType()))
+                    .map(field -> new PMMLParameterMetadata(field.getFieldName())).collect(Collectors.toSet());
             models.add(new PMMLModelMetadata(modelName, fields));
         });
         return new PMMLDocumentMetadata(pmmlFilePath,
                                         DMNImportTypes.PMML.getDefaultNamespace(),
                                         models);
+    }
+
+    private static boolean isValidInputField(String usageType) {
+        return usageType == null || ACTIVE.equals(usageType);
     }
 
 }
