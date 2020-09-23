@@ -31,7 +31,7 @@ interface Props {
 
 const MockDataFieldUI = (props: Props) => {
   const dispatch = useDispatch();
-  const service: HistoryService = useContext(HistoryContext).service;
+  const { service } = useContext(HistoryContext);
 
   const setDataFieldName = (name: FieldName) => {
     dispatch({

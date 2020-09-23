@@ -19,7 +19,7 @@ import { Actions } from "./reducers/Actions";
 import { Timestamp, Title } from "./PMMLEditor";
 import { useDispatch, useSelector } from "react-redux";
 import { Header, PMML } from "@kogito-tooling/pmml-editor-marshaller";
-import { HistoryContext, HistoryService } from "./history/HistoryProvider";
+import { HistoryContext } from "./history/HistoryProvider";
 
 const style: CSSProperties = {
   padding: "5px 5px 5px 5px"
@@ -28,7 +28,7 @@ const style: CSSProperties = {
 const MockHeaderUI = () => {
   const dispatch = useDispatch();
   const header: Header = useSelector<PMML, Header>(state => state.Header);
-  const service: HistoryService = useContext(HistoryContext).service;
+  const { service } = useContext(HistoryContext);
 
   const setHeaderDescription = (description: string) => {
     dispatch({

@@ -20,7 +20,7 @@ import MockDataFieldUI from "./MockDataFieldUI";
 import { Timestamp, Title } from "./PMMLEditor";
 import { useDispatch, useSelector } from "react-redux";
 import { DataDictionary, PMML } from "@kogito-tooling/pmml-editor-marshaller";
-import { HistoryContext, HistoryService } from "./history/HistoryProvider";
+import { HistoryContext } from "./history/HistoryProvider";
 
 const style: CSSProperties = {
   padding: "5px 5px 5px 5px"
@@ -31,7 +31,7 @@ const MockDataFieldsUI = () => {
 
   const dispatch = useDispatch();
   const dataDictionary: DataDictionary = useSelector<PMML, DataDictionary>((state: PMML) => state.DataDictionary);
-  const service: HistoryService = useContext(HistoryContext).service;
+  const { service } = useContext(HistoryContext);
 
   const createDataField = () => {
     dispatch({

@@ -26,7 +26,7 @@ const style: CSSProperties = {
 
 const StateButtons = () => {
   const dispatch = useDispatch();
-  const service: HistoryService = useContext(HistoryContext).service;
+  const { service } = useContext(HistoryContext);
 
   const doUndo = () => {
     dispatch({
