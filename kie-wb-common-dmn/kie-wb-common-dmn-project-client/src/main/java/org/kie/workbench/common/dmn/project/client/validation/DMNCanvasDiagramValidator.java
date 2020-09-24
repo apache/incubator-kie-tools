@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.project.client.validation;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Specializes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
@@ -28,7 +27,7 @@ import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasVali
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationSuccessEvent;
 
 @Dependent
-@Specializes
+@DMNEditor
 public class DMNCanvasDiagramValidator extends CanvasDiagramValidator<AbstractCanvasHandler> {
 
     @Inject

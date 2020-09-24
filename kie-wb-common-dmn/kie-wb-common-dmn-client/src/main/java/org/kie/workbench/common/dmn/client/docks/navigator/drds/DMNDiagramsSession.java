@@ -92,6 +92,10 @@ public class DMNDiagramsSession implements GraphsProvider {
         return state;
     }
 
+    public boolean isSessionStatePresent() {
+        return getSessionState() != null;
+    }
+
     public DMNDiagramsSessionState getSessionState() {
         return dmnSessionStatesByPathURI.get(getCurrentSessionKey());
     }

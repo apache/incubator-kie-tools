@@ -28,6 +28,7 @@ import org.appformer.client.context.Channel;
 import org.appformer.client.context.EditorContextProvider;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.docks.navigator.included.components.DecisionComponents;
 import org.kie.workbench.common.dmn.client.docks.navigator.tree.DecisionNavigatorTreePresenter;
@@ -64,6 +65,8 @@ public class DecisionNavigatorPresenter {
 
     private DecisionNavigatorItemsProvider navigatorItemsProvider;
 
+    private DMNDiagramsSession dmnDiagramsSession;
+
     private boolean isRefreshHandlersEnabled = false;
 
     @Inject
@@ -73,7 +76,8 @@ public class DecisionNavigatorPresenter {
                                       final DecisionNavigatorObserver decisionNavigatorObserver,
                                       final TranslationService translationService,
                                       final EditorContextProvider context,
-                                      final DecisionNavigatorItemsProvider navigatorItemsProvider) {
+                                      final DecisionNavigatorItemsProvider navigatorItemsProvider,
+                                      final DMNDiagramsSession dmnDiagramsSession) {
         this.view = view;
         this.treePresenter = treePresenter;
         this.decisionComponents = decisionComponents;
@@ -81,6 +85,7 @@ public class DecisionNavigatorPresenter {
         this.translationService = translationService;
         this.context = context;
         this.navigatorItemsProvider = navigatorItemsProvider;
+        this.dmnDiagramsSession = dmnDiagramsSession;
     }
 
     @WorkbenchPartView
@@ -140,8 +145,10 @@ public class DecisionNavigatorPresenter {
     }
 
     public void refresh() {
-        refreshTreeView();
-        refreshComponentsView();
+        if (dmnDiagramsSession.isSessionStatePresent()) {
+            refreshTreeView();
+            refreshComponentsView();
+        }
     }
 
     public void refreshTreeView() {

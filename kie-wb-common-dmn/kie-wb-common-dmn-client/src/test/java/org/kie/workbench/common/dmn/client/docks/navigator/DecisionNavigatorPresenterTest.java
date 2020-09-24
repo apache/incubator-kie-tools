@@ -25,6 +25,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.docks.navigator.included.components.DecisionComponents;
 import org.kie.workbench.common.dmn.client.docks.navigator.tree.DecisionNavigatorTreePresenter;
@@ -68,6 +69,9 @@ public class DecisionNavigatorPresenterTest {
     @Mock
     private DecisionNavigatorItemsProvider navigatorItemsProvider;
 
+    @Mock
+    private DMNDiagramsSession dmnDiagramsSession;
+
     private DecisionNavigatorPresenter presenter;
 
     @Before
@@ -78,7 +82,8 @@ public class DecisionNavigatorPresenterTest {
                                                        decisionNavigatorObserver,
                                                        translationService,
                                                        context,
-                                                       navigatorItemsProvider));
+                                                       navigatorItemsProvider,
+                                                       dmnDiagramsSession));
     }
 
     @Test
@@ -189,10 +194,22 @@ public class DecisionNavigatorPresenterTest {
 
     @Test
     public void testRefresh() {
+        doReturn(true).when(dmnDiagramsSession).isSessionStatePresent();
+
         presenter.refresh();
 
         verify(presenter).refreshTreeView();
         verify(presenter).refreshComponentsView();
+    }
+
+    @Test
+    public void testRefreshWhenSessionStateIsNotPresent() {
+        doReturn(false).when(dmnDiagramsSession).isSessionStatePresent();
+
+        presenter.refresh();
+
+        verify(presenter, never()).refreshTreeView();
+        verify(presenter, never()).refreshComponentsView();
     }
 
     @Test

@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNPerformAutomaticLayoutCommand;
 import org.kie.workbench.common.dmn.project.client.session.command.SaveDiagramSessionCommand;
+import org.kie.workbench.common.dmn.project.client.validation.DMNValidateSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.ManagedClientSessionCommands;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
@@ -58,7 +59,7 @@ public class DMNEditorSessionCommands extends EditorSessionCommands {
                 .register(DeleteSelectionSessionCommand.class)
                 .register(UndoSessionCommand.class)
                 .register(RedoSessionCommand.class)
-                .register(ValidateSessionCommand.class)
+                .register(DMNValidateSessionCommand.class)
                 .register(ExportToPngSessionCommand.class)
                 .register(ExportToJpgSessionCommand.class)
                 .register(ExportToPdfSessionCommand.class)
@@ -69,6 +70,11 @@ public class DMNEditorSessionCommands extends EditorSessionCommands {
                 .register(CutSelectionSessionCommand.class)
                 .register(SaveDiagramSessionCommand.class)
                 .register(DMNPerformAutomaticLayoutCommand.class);
+    }
+
+    @Override
+    public ValidateSessionCommand getValidateSessionCommand() {
+        return get(DMNValidateSessionCommand.class);
     }
 
     public PerformAutomaticLayoutCommand getPerformAutomaticLayoutCommand() {

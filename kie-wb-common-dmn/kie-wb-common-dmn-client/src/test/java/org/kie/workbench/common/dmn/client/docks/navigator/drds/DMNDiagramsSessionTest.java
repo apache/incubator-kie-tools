@@ -93,7 +93,7 @@ public class DMNDiagramsSessionTest {
     public void setup() {
 
         dmnDiagramsSessionState = spy(new DMNDiagramsSessionState(dmnDiagramUtils));
-        dmnDiagramsSession = new DMNDiagramsSession(dmnDiagramsSessionStates, sessionManager, dmnDiagramUtils);
+        dmnDiagramsSession = spy(new DMNDiagramsSession(dmnDiagramsSessionStates, sessionManager, dmnDiagramUtils));
 
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(clientSession.getCanvasHandler()).thenReturn(canvasHandler);
@@ -287,5 +287,18 @@ public class DMNDiagramsSessionTest {
         final String actualId = dmnDiagramsSession.getCurrentDiagramId();
 
         assertEquals(expectedId, actualId);
+    }
+
+    @Test
+    public void testsSessionStatePresentWhenItReturnsTrue() {
+        final DMNDiagramsSessionState sessionState = mock(DMNDiagramsSessionState.class);
+        doReturn(sessionState).when(dmnDiagramsSession).getSessionState();
+        assertTrue(dmnDiagramsSession.isSessionStatePresent());
+    }
+
+    @Test
+    public void testsSessionStatePresentWhenItReturnsFalse() {
+        doReturn(null).when(dmnDiagramsSession).getSessionState();
+        assertFalse(dmnDiagramsSession.isSessionStatePresent());
     }
 }

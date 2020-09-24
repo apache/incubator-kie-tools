@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNPerformAutomaticLayoutCommand;
 import org.kie.workbench.common.dmn.project.client.session.command.SaveDiagramSessionCommand;
+import org.kie.workbench.common.dmn.project.client.validation.DMNValidateSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CopySelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.CutSelectionSessionCommand;
@@ -33,14 +34,15 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSe
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
 import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommandsTest;
 import org.mockito.InOrder;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DMNEditorSessionCommandsTest extends EditorSessionCommandsTest {
@@ -62,7 +64,7 @@ public class DMNEditorSessionCommandsTest extends EditorSessionCommandsTest {
         inOrder.verify(commands).register(DeleteSelectionSessionCommand.class);
         inOrder.verify(commands).register(UndoSessionCommand.class);
         inOrder.verify(commands).register(RedoSessionCommand.class);
-        inOrder.verify(commands).register(ValidateSessionCommand.class);
+        inOrder.verify(commands).register(DMNValidateSessionCommand.class);
         inOrder.verify(commands).register(ExportToPngSessionCommand.class);
         inOrder.verify(commands).register(ExportToJpgSessionCommand.class);
         inOrder.verify(commands).register(ExportToPdfSessionCommand.class);
@@ -73,5 +75,13 @@ public class DMNEditorSessionCommandsTest extends EditorSessionCommandsTest {
         inOrder.verify(commands).register(CutSelectionSessionCommand.class);
         inOrder.verify(commands).register(SaveDiagramSessionCommand.class);
         inOrder.verify(commands).register(DMNPerformAutomaticLayoutCommand.class);
+    }
+
+    @Test
+    @Override
+    public void testGetValidateSessionCommand() {
+        editorSessionCommands.getValidateSessionCommand();
+
+        verify(commands).get(eq(DMNValidateSessionCommand.class));
     }
 }
