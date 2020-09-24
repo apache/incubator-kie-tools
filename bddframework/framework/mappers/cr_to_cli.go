@@ -115,7 +115,7 @@ func GetBuildCLIFlags(kogitoBuild *v1alpha1.KogitoBuild) []string {
 		cmd = append(cmd, "--branch", reference)
 	}
 
-	for _, envVar := range kogitoBuild.Spec.Envs {
+	for _, envVar := range kogitoBuild.Spec.Env {
 		cmd = append(cmd, "--build-env", fmt.Sprintf("%s=%s", envVar.Name, envVar.Value))
 	}
 

@@ -89,7 +89,7 @@ func GetKogitoBuildStub(namespace, runtimeType, name string) *v1alpha1.KogitoBui
 	}
 
 	if len(config.GetCustomMavenRepoURL()) > 0 {
-		kogitoBuild.Spec.Envs = framework.EnvOverride(kogitoBuild.Spec.Envs, corev1.EnvVar{Name: "MAVEN_REPO_URL", Value: config.GetCustomMavenRepoURL()})
+		kogitoBuild.Spec.Env = framework.EnvOverride(kogitoBuild.Spec.Env, corev1.EnvVar{Name: "MAVEN_REPO_URL", Value: config.GetCustomMavenRepoURL()})
 	}
 
 	return kogitoBuild
