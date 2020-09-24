@@ -28,7 +28,6 @@ import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.DMNDiagramElement;
 import org.kie.workbench.common.dmn.api.definition.model.DMNElement;
-import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.commands.factory.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
@@ -39,6 +38,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationMessages;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.content.HasContentDefinitionId;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
@@ -109,8 +109,8 @@ public class ObserverBuilderControl extends org.kie.workbench.common.stunner.cor
         }
 
         final Optional<DMNDiagramElement> currentDMNDiagramElement = getDMNDiagramsSession().getCurrentDMNDiagramElement();
-        if (currentDMNDiagramElement.isPresent() && newDefinition instanceof DRGElement) {
-            ((DRGElement) newDefinition).setDiagramId(currentDMNDiagramElement.get().getId().getValue());
+        if (currentDMNDiagramElement.isPresent() && newDefinition instanceof HasContentDefinitionId) {
+            ((HasContentDefinitionId) newDefinition).setDiagramId(currentDMNDiagramElement.get().getId().getValue());
         }
     }
 

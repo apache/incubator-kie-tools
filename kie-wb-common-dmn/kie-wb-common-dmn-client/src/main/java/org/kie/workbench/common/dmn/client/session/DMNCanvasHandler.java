@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.dmn.client.session;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.google.common.base.Strings;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.graph.DMNElementsSynchronizer;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
@@ -37,9 +39,12 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.registration.Ca
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.HasContentDefinitionId;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -50,6 +55,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 public class DMNCanvasHandler<D extends Diagram, C extends AbstractCanvas> extends CanvasHandlerImpl<D, C> {
 
     private final DMNElementsSynchronizer dmnElementsSynchronizer;
+    private final GraphsProvider graphsProvider;
 
     @Inject
     public DMNCanvasHandler(final ClientDefinitionManager clientDefinitionManager,
@@ -63,9 +69,11 @@ public class DMNCanvasHandler<D extends Diagram, C extends AbstractCanvas> exten
                             final Event<CanvasElementRemovedEvent> canvasElementRemovedEvent,
                             final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
                             final Event<CanvasElementsClearEvent> canvasElementsClearEvent,
-                            final DMNElementsSynchronizer dmnElementsSynchronizer) {
+                            final DMNElementsSynchronizer dmnElementsSynchronizer,
+                            final GraphsProvider graphsProvider) {
         super(clientDefinitionManager, commandFactory, ruleManager, graphUtils, indexBuilder, shapeManager, textPropertyProviderFactory, canvasElementAddedEvent, canvasElementRemovedEvent, canvasElementUpdatedEvent, canvasElementsClearEvent);
         this.dmnElementsSynchronizer = dmnElementsSynchronizer;
+        this.graphsProvider = graphsProvider;
     }
 
     @Override
@@ -75,7 +83,43 @@ public class DMNCanvasHandler<D extends Diagram, C extends AbstractCanvas> exten
 
         if (element instanceof Node) {
             dmnElementsSynchronizer.synchronizeFromNode(Optional.of((Node) element));
+            updateDiagramId(element);
         }
+    }
+
+    void updateDiagramId(final Element element) {
+        final Object content = element.getContent();
+        if (content instanceof Definition) {
+            final Object definition = ((Definition) content).getDefinition();
+            if (definition instanceof HasContentDefinitionId) {
+                final HasContentDefinitionId hasContentDefinitionId = (HasContentDefinitionId) definition;
+                if (Strings.isNullOrEmpty(hasContentDefinitionId.getDiagramId())) {
+                    hasContentDefinitionId.setDiagramId(getGraphsProvider().getCurrentDiagramId());
+                }
+            }
+        }
+    }
+
+    GraphsProvider getGraphsProvider() {
+        return graphsProvider;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void addChild(final Element parent,
+                         final Element child) {
+        if (!isCanvasRoot(parent)) {
+            final Shape parentShape = getCanvas().getShape(parent.getUUID());
+            if (Objects.isNull(parentShape)) {
+                return;
+            }
+        }
+        superAddChild(parent, child);
+    }
+
+    void superAddChild(final Element parent,
+                       final Element child) {
+        super.addChild(parent, child);
     }
 }
 
