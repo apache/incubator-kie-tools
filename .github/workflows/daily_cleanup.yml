@@ -32,7 +32,7 @@ jobs:
           for buildDir in */*/;
           do
             buildDate=$(git log -1 --pretty="format:%ct" --date="iso-strict" -- $buildDir)
-            limitDate=$(date -d "-30 days" +%s)
+            limitDate=$(date -d "-12 days" +%s)
             if [ $buildDate -lt $limitDate ]; then
               echo "Should remove: $buildDir"
               rm -rf $buildDir
