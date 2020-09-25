@@ -164,13 +164,12 @@ public class InlineTextEditorBoxViewImpl
     void onChangeName(Event e) {
         if (isVisible()) {
             if (e.getTypeInt() == Event.ONBLUR) {
-                rollback();
+                saveChanges();
             } else if (e.getTypeInt() == Event.ONKEYDOWN) {
                 if (e.getKeyCode() == KeyCodes.KEY_ENTER && !e.getShiftKey()) {
                     e.stopPropagation();
                     e.preventDefault();
-                    scheduleDeferredCommand(() -> presenter.onChangeName(getTextContent()));
-                    scheduleDeferredCommand(() -> presenter.onSave());
+                    saveChanges();
                 } else if ((!isMultiline && e.getKeyCode() == KeyCodes.KEY_ENTER && e.getShiftKey()) ||
                         e.getKeyCode() == KeyCodes.KEY_TAB) {
                     e.stopPropagation();
@@ -180,6 +179,11 @@ public class InlineTextEditorBoxViewImpl
                 }
             }
         }
+    }
+
+    private void saveChanges() {
+        scheduleDeferredCommand(() -> presenter.onChangeName(getTextContent()));
+        scheduleDeferredCommand(() -> presenter.onSave());
     }
 
     private String getTextContent() {

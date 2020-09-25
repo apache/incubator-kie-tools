@@ -105,10 +105,13 @@ public class InlineTextEditorBoxViewImplTest {
 
     @Test
     public void testOnBlurEvent() {
-        doAnswer(i -> true).when(tested).isVisible();
         when(event.getTypeInt()).thenReturn(Event.ONBLUR);
+        when(nameField.getInnerHTML()).thenReturn(NAME);
+        doAnswer(i -> true).when(tested).isVisible();
         tested.onChangeName(event);
 
+        verify(presenter,
+               times(1)).onChangeName(anyString());
         verify(presenter,
                times(1)).onSave();
     }
@@ -155,6 +158,8 @@ public class InlineTextEditorBoxViewImplTest {
         doAnswer(i -> true).when(tested).isVisible();
         tested.onChangeName(event);
 
+        verify(presenter,
+               times(1)).onChangeName(anyString());
         verify(presenter,
                times(1)).onSave();
     }
