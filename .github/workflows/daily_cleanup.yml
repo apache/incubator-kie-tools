@@ -22,6 +22,7 @@ jobs:
           path: kogito-online-ci
           repository: kiegroup/kogito-online-ci
           ref: gh-pages
+          fetch-depth: 0
 
       - name: Remove builds older than 14 days
         id: remove_build_artifacts
