@@ -588,23 +588,16 @@ public class DataModelerScreenPresenter
 
                 final DataObject[] modifiedDataObject = new DataObject[1];
                 if (isDirty()) {
-                    if (context.isEditorChanged()) {
-
-                        //at save time the source has always priority over the model.
-                        //If the source was properly parsed and the editor has changes, we need to send the DataObject
-                        //to the server in order to let the source to be updated prior to save.
-                        modifiedDataObject[0] = context.getDataObject();
-                    } else {
-                        //if the source has changes, no update form the UI to the source will be performed.
-                        //instead the parsed DataObject must be returned from the server.
-                        modifiedDataObject[0] = null;
-                    }
+                    /* when DataObject editor or source is changed we
+                     * need to send the DataObject to the server  in order
+                     *  to let the source to be updated prior to save.
+                     */
+                    modifiedDataObject[0] = context.getDataObject();
                 }
                 view.showSaving();
 
                 if (newTypeInfo != null) {
-                    modelerService.call(getSaveSuccessCallback(newTypeInfo,
-                                                               path),
+                    modelerService.call(getSaveSuccessCallback(path),
                                         new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_saving_error())).saveSource(
                             getSource(),
                             path,
@@ -614,8 +607,7 @@ public class DataModelerScreenPresenter
                             newTypeInfo.getPackageName(),
                             newTypeInfo.getName());
                 } else {
-                    modelerService.call(getSaveSuccessCallback(newTypeInfo,
-                                                               path),
+                    modelerService.call(getSaveSuccessCallback(path),
                                         new DataModelerErrorCallback(Constants.INSTANCE.modelEditor_saving_error())).saveSource(
                             getSource(),
                             path,
@@ -627,16 +619,13 @@ public class DataModelerScreenPresenter
         };
     }
 
-    private RemoteCallback<GenerationResult> getSaveSuccessCallback(final JavaTypeInfo newTypeInfo,
-                                                                    final Path currentPath) {
+    private RemoteCallback<GenerationResult> getSaveSuccessCallback(final Path currentPath) {
         return new RemoteCallback<GenerationResult>() {
 
             @Override
             public void callback(GenerationResult result) {
 
                 view.hideBusyIndicator();
-
-                if (newTypeInfo == null) {
 
                     Boolean oldDirtyStatus = isDirty();
 
@@ -678,14 +667,6 @@ public class DataModelerScreenPresenter
                                                              null));
 
                     versionRecordManager.reloadVersions(currentPath);
-                } else {
-                    notification.fire(new NotificationEvent(
-                            org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants.INSTANCE.ItemRenamedSuccessfully(),
-                            NotificationEvent.NotificationType.SUCCESS));
-                    //If the file was renamed as part of the file saving, don't do anything.
-                    //A rename event will arrive, the same as for the "Rename" case.
-                    //and the file will be automatically reloaded.
-                }
             }
         };
     }

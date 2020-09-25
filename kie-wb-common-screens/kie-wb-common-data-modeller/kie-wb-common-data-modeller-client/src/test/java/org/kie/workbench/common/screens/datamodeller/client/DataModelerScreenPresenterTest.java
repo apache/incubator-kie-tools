@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.guvnor.common.services.project.model.Module;
 import org.guvnor.common.services.project.model.WorkspaceProject;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
@@ -29,7 +30,9 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
+import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.widgets.metadata.client.validation.JavaAssetUpdateValidator;
 import org.mockito.ArgumentCaptor;
@@ -71,6 +74,10 @@ public class DataModelerScreenPresenterTest
     private ArgumentCaptor<Path> pathArgumentCaptor;
     private ArgumentCaptor<Validator> validatorArgumentCaptor;
     private ArgumentCaptor<CommandWithFileNameAndCommitMessage> commandWithFileNameArgumentCaptor;
+    private ArgumentCaptor<Command> yesCommandCaptor;
+    private ArgumentCaptor<Command> noCommandCaptor;
+    private ArgumentCaptor<ParameterizedCommand> parameterizedCommandCaptor;
+    
     @Mock
     private FileNameAndCommitMessage commitMessage;
 
@@ -81,6 +88,9 @@ public class DataModelerScreenPresenterTest
         pathArgumentCaptor = ArgumentCaptor.forClass(Path.class);
         validatorArgumentCaptor = ArgumentCaptor.forClass(Validator.class);
         commandWithFileNameArgumentCaptor = ArgumentCaptor.forClass(CommandWithFileNameAndCommitMessage.class);
+        yesCommandCaptor = ArgumentCaptor.forClass(Command.class);
+        noCommandCaptor = ArgumentCaptor.forClass(Command.class);
+        parameterizedCommandCaptor = ArgumentCaptor.forClass(ParameterizedCommand.class);
     }
 
     /**
@@ -434,7 +444,105 @@ public class DataModelerScreenPresenterTest
                                           anyString(),
                                           eq(ButtonType.DANGER));
     }
-
+    
+    @Test
+    public void testSaveSuccessCallbackWithPathChange() {
+        final String commitMessage = "testCommitMessage";
+        final GenerationResult result = setupSave();
+        when(modelerService.saveSource(eq("testSource"),
+                                       any(Path.class),
+                                       eq(testObject1),
+                                       any(Metadata.class),
+                                       eq(commitMessage),
+                                       any(String.class),
+                                       any(String.class))).thenReturn(result);
+        
+        presenter.save();
+        
+        /* when package or file name is changed YesNoCancel Popup should show up
+         */
+        verify(view).showYesNoCancelPopup(anyString(),
+                                          anyString(),
+                                          yesCommandCaptor.capture(),
+                                          anyString(),
+                                          eq(ButtonType.PRIMARY),
+                                          any(Command.class),
+                                          anyString(),
+                                          eq(ButtonType.DANGER));
+        
+        /* Execute command when package or file name changed
+         */
+        yesCommandCaptor.getValue().execute();
+        verify(savePopUpPresenter).show(any(Path.class),
+                                        parameterizedCommandCaptor.capture());
+        
+        /* Execute saveCommand at save with comment pop up
+         */
+        parameterizedCommandCaptor.getValue().execute(commitMessage);
+        verify(dataModelerEvent, times(2))
+                .fire(any(DataModelStatusChangeEvent.class));
+        verify(versionRecordManager).reloadVersions(any(Path.class));
+    }
+    
+    @Test
+    public void testSaveSuccessCallbackRejectingPathChange() {
+        final String commitMessage = "testCommitMessage";
+        final GenerationResult result = setupSave();
+        when(modelerService.saveSource(eq("testSource"),
+                                       any(Path.class),
+                                       eq(testObject1),
+                                       any(Metadata.class),
+                                       eq(commitMessage))).thenReturn(result);
+        
+        presenter.save();
+        
+        /* when package or file name is changed YesNoCancel Popup should show up
+         */
+        verify(view).showYesNoCancelPopup(anyString(),
+                                          anyString(),
+                                          any(Command.class),
+                                          anyString(),
+                                          eq(ButtonType.PRIMARY),
+                                          noCommandCaptor.capture(),
+                                          anyString(),
+                                          eq(ButtonType.DANGER));
+ 
+        /* Execute command when package or file name change rejected
+         */
+        noCommandCaptor.getValue().execute();
+        verify(savePopUpPresenter).show(any(Path.class),
+                                        parameterizedCommandCaptor.capture());
+        
+        /* Execute saveCommand at save with comment pop up
+         */
+        parameterizedCommandCaptor.getValue().execute(commitMessage);
+        verify(dataModelerEvent, times(2))
+                .fire(any(DataModelStatusChangeEvent.class));
+        verify(versionRecordManager).reloadVersions(any(Path.class));
+    }
+    
+    private GenerationResult setupSave() {
+        presenter.context = mock(DataModelerContext.class);
+        
+        when(validationService.validateForSave(any(Path.class),
+                                               any(DataObject.class))).thenReturn(Collections.emptyList());
+        
+        when(presenter.context.getDataObject()).thenReturn(testObject1);
+        when(presenter.context.isEditorChanged()).thenReturn(true);
+        when(presenter.context.getEditorModelContent()).thenReturn(mock(EditorModelContent.class));
+        when(presenter.context.getEditorModelContent().getOriginalPackageName()).thenReturn(testObject1.getPackageName());
+        
+        final ObservablePath mockPath = mock(ObservablePath.class);
+        when(versionRecordManager.getPathToLatest()).thenReturn(mockPath);
+        when(mockPath.getFileName()).thenReturn("testCurrentFile.java");
+        
+        final GenerationResult result = mock(GenerationResult.class);
+        when(result.hasErrors()).thenReturn(false);
+        
+        when(presenter.getSource()).thenReturn("testSource");
+        return result;
+    }
+    
     @Test
     public void onSafeDeleteWithOriginalClassName() {
         loadFileSuccessfulTest(false);

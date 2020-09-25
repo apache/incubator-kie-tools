@@ -138,44 +138,59 @@ public class DataModelerServiceTest {
     @Test
     public void saveSourcePackageNameChanged() {
         testSaveSource("newPackageName",
-                       null);
+                       null,
+                       new DataObjectImpl("dataobjects",
+                                          "TestDataObject"));
     }
 
     @Test
     public void saveSourceFileNameChanged() {
         testSaveSource(null,
-                       "newFileName");
+                       "newFileName",
+                       new DataObjectImpl("dataobjects",
+                                          "TestDataObject"));
     }
 
     @Test
     public void saveSourceBothPackageAndFileNameChanged() {
         testSaveSource("newPackageName",
-                       "newFileName");
+                       "newFileName",
+                       new DataObjectImpl("dataobjects",
+                                          "TestDataObject"));
+    }
+    
+    @Test
+    public void saveSourceBothPackageAndFileNameChangedNullDataObj() {
+        testSaveSource("newPackageName",
+                       "newFileName",
+                       null);
     }
 
     @Test
     public void saveSourceNoPackageAndFileNameChange() {
         testSaveSource(null,
-                       null);
+                       null,
+                       new DataObjectImpl("dataobjects",
+                                          "TestDataObject"));
     }
 
     private void testSaveSource(String newPackageName,
-                                String newFileName) {
+                                String newFileName,
+                                DataObject dataObject) {
         Path dataObjectPath = PathFactory.newPath("TestDataObject",
                                                   "file:///dataobjects/TestDataObject.java");
         Path srcPath = PathFactory.newPath("src",
                                            "file:///src");
         Package packageMock = mock(Package.class);
         when(packageMock.getPackageMainSrcPath()).thenReturn(srcPath);
+        when(moduleService.resolvePackage(dataObjectPath)).thenReturn(packageMock);
+        when(packageMock.getPackageName()).thenReturn("dataobjects");
         when(serviceHelper.ensurePackageStructure(any(Module.class),
                                                   anyString())).thenReturn(packageMock);
 
         DataModelerSaveHelper saveHelper = mock(DataModelerSaveHelper.class);
         List<DataModelerSaveHelper> saveHelpers = Arrays.asList(saveHelper);
         when(saveHelperInstance.iterator()).thenReturn(saveHelpers.iterator());
-
-        DataObject dataObject = new DataObjectImpl("dataobjects",
-                                                   "TestDataObject");
 
         dataModelerService.saveSource("Source",
                                       dataObjectPath,

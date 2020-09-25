@@ -545,10 +545,7 @@ public class DataModelerServiceImpl
         boolean onBatch = false;
 
         try {
-
-            GenerationResult result = resolveSaveSource(source,
-                                                        path,
-                                                        dataObject);
+            
 
             Package currentPackage = moduleService.resolvePackage(path);
             Package targetPackage = currentPackage;
@@ -569,6 +566,19 @@ public class DataModelerServiceImpl
                 targetName = newFileName + ".java";
                 nameChanged = true;
             }
+            
+            /* Modify data object with updated fileName and packageName
+             * or by resolving from @path before resolving source to handle
+             * inconsistencies in source code and data object
+             * */
+            if (dataObject != null) {
+                dataObject.setName(targetName.replace(".java", ""));
+                dataObject.setPackageName(targetPackage.getPackageName());
+            }
+            
+            GenerationResult result = resolveSaveSource(source,
+                                                        path,
+                                                        dataObject);
 
             ioService.startBatch(targetPath.getFileSystem());
             onBatch = true;
