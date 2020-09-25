@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import jsinterop.base.Js;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Element;
 import org.jboss.errai.common.client.dom.Event;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Node;
@@ -45,6 +46,9 @@ public class MonacoEditorView implements UberElement<MonacoEditorPresenter> {
 
     static final String DISPLAY = "display";
     static final String NONE = "none";
+    static final String PANEL_TITLE = "panel-title";
+    static final String EVENT_NAME = "click";
+    static final int DEPTH = 14;
 
     @Inject
     @DataField
@@ -107,6 +111,28 @@ public class MonacoEditorView implements UberElement<MonacoEditorPresenter> {
                      MonacoEditorOptions options,
                      Runnable callback) {
         load(new MonacoEditorInitializer(), modules, options, callback);
+    }
+
+    // Workaround for refreshing Monaco editor and get scrollbars visible when the accordion is expanded
+    void attachListenerToPanelTitle() {
+        final NodeList titleNodes = getParentInDepth(rootContainer, DEPTH).getElementsByClassName(PANEL_TITLE);
+        for (int i = 0; i < titleNodes.getLength(); i++) {
+            titleNodes.item(i)
+                    .addEventListener(EVENT_NAME,
+                                      event -> presenter.onLanguageChanged(languageSelector.getValue()),
+                                      false);
+        }
+    }
+
+    static Element getParentInDepth(final Element element, int depth) {
+        if (null != element && depth > 0) {
+            Element parent = element.getParentElement();
+            return null != parent ?
+                    getParentInDepth(parent, --depth)
+                    :
+                    element;
+        }
+        return element;
     }
 
     void load(MonacoEditorInitializer initializer,

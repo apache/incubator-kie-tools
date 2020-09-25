@@ -109,6 +109,7 @@ public class MonacoEditorPresenter {
                   () -> {
                       view.loadingEnds();
                       view.setLanguageReadOnly(readyOnly);
+                      view.attachListenerToPanelTitle();
                   });
     }
 

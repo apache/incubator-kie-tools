@@ -20,7 +20,9 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
 import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Element;
 import org.jboss.errai.common.client.dom.Event;
+import org.jboss.errai.common.client.dom.Node;
 import org.jboss.errai.common.client.dom.NodeList;
 import org.jboss.errai.common.client.dom.Select;
 import org.junit.Before;
@@ -33,6 +35,8 @@ import org.uberfire.client.views.pfly.monaco.jsinterop.MonacoStandaloneCodeEdito
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -53,6 +57,18 @@ public class MonacoEditorViewTest {
 
     @Mock
     private Div rootContainer;
+
+    @Mock
+    private Div level1;
+
+    @Mock
+    private Div level2;
+
+    @Mock
+    private Div level3;
+
+    @Mock
+    private Node node;
 
     @Mock
     private Select languageSelector;
@@ -169,5 +185,54 @@ public class MonacoEditorViewTest {
         verify(monacoEditor, times(1)).getChildNodes();
         verify(rootContainer, times(1)).getChildNodes();
         assertNull(tested.editor);
+    }
+
+    @Test
+    public void testGetParentInDepth() {
+        setElementChain();
+        Element parentElementRecovered = tested.getParentInDepth(rootContainer, 3);
+        assertEquals(level1, parentElementRecovered);
+    }
+
+    @Test
+    public void testGetParentInDepthOutOfBounds() {
+        setElementChain();
+        Element parentElementRecovered = tested.getParentInDepth(rootContainer, 4);
+        assertEquals(level1, parentElementRecovered);
+    }
+
+    @Test
+    public void testGetParentInDepthNullElement() {
+        setElementChain();
+        Element parentElementRecovered = tested.getParentInDepth(null, 4);
+        assertNull(parentElementRecovered);
+    }
+
+    @Test
+    public void testAttachListenerToPanelTitle() {
+        setElementChain();
+        when(level1.getElementsByClassName(anyString())).thenReturn(getNodeList());
+        tested.attachListenerToPanelTitle();
+        verify(node, times(1)).addEventListener(anyString(), anyObject(), anyBoolean());
+    }
+
+    private void setElementChain() {
+        when(rootContainer.getParentElement()).thenReturn(level3);
+        when(level3.getParentElement()).thenReturn(level2);
+        when(level2.getParentElement()).thenReturn(level1);
+    }
+
+    private NodeList getNodeList() {
+        return new NodeList() {
+            @Override
+            public Node item(int i) {
+                return node;
+            }
+
+            @Override
+            public int getLength() {
+                return 1;
+            }
+        };
     }
 }

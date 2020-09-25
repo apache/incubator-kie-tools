@@ -113,6 +113,7 @@ public class MonacoEditorPresenterTest {
         callbackCaptor.getValue().run();
         verify(view, times(1)).loadingEnds();
         verify(view, times(1)).setLanguageReadOnly(eq(true));
+        verify(view, times(1)).attachListenerToPanelTitle();
     }
 
     @Test
