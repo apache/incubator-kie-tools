@@ -37,10 +37,12 @@ import org.kie.workbench.common.dmn.api.definition.model.Association;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
 import org.kie.workbench.common.dmn.api.definition.model.DMNElement;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.api.definition.model.InputData;
 import org.kie.workbench.common.dmn.api.definition.model.KnowledgeSource;
 import org.kie.workbench.common.dmn.api.definition.model.TextAnnotation;
@@ -86,7 +88,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ControlPoint;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
-import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.kie.workbench.common.dmn.client.marshaller.common.IdUtils.getEdgeId;
 import static org.kie.workbench.common.dmn.client.marshaller.common.IdUtils.getRawId;
@@ -95,6 +96,7 @@ import static org.kie.workbench.common.dmn.client.marshaller.common.JsInteropUti
 import static org.kie.workbench.common.dmn.client.marshaller.converters.dd.PointUtils.upperLeftBound;
 import static org.kie.workbench.common.dmn.client.marshaller.converters.dd.PointUtils.xOfBound;
 import static org.kie.workbench.common.dmn.client.marshaller.converters.dd.PointUtils.yOfBound;
+import static org.kie.workbench.common.stunner.core.util.DefinitionUtils.getElementDefinition;
 
 @ApplicationScoped
 public class DMNMarshaller {
@@ -154,7 +156,7 @@ public class DMNMarshaller {
         final Map<String, JSITDRGElement> nodes = new HashMap<>();
         final Map<String, JSITTextAnnotation> textAnnotations = new HashMap<>();
         final Node<View<DMNDiagram>, ?> dmnDiagramRoot = (Node<View<DMNDiagram>, ?>) DMNGraphUtils.findDMNDiagramRoot(dmnDiagramsSession.getDRGDiagram().getGraph());
-        final Definitions definitionsStunnerPojo = ((DMNDiagram) DefinitionUtils.getElementDefinition(dmnDiagramRoot)).getDefinitions();
+        final Definitions definitionsStunnerPojo = ((DMNDiagram) getElementDefinition(dmnDiagramRoot)).getDefinitions();
         final List<String> dmnDiagramElementIds = new ArrayList<>();
 
         final JSITDefinitions definitions = DefinitionsConverter.dmnFromWB(definitionsStunnerPojo, true);
@@ -211,7 +213,7 @@ public class DMNMarshaller {
                     final DRGElement drgElement = (DRGElement) viewDefinition;
                     if (!drgElement.isAllowOnlyVisualChange()) {
                         nodes.put(drgElement.getId().getValue(),
-                                  stunnerToDMN(node,
+                                  stunnerToDMN(withIncludedModels(node, definitionsStunnerPojo),
                                                componentWidthsConsumer));
                     }
                     final String namespaceURI = definitionsStunnerPojo.getDefaultNamespace();
@@ -268,6 +270,54 @@ public class DMNMarshaller {
         });
 
         return definitions;
+    }
+
+    Node<?, ?> withIncludedModels(final Node<?, ?> node,
+                                  final Definitions definitionsStunnerPojo) {
+
+        final Object elementDefinition = getElementDefinition(node);
+        final List<Import> diagramImports = definitionsStunnerPojo.getImport();
+
+        if (!(elementDefinition instanceof DRGElement) || diagramImports.isEmpty()) {
+            return node;
+        }
+
+        final DRGElement drgElement = (DRGElement) elementDefinition;
+        final Optional<Definitions> nodeDefinitions = getDefinitions(drgElement);
+
+        if (!nodeDefinitions.isPresent()) {
+            return node;
+        }
+
+        final List<Import> nodeImports = nodeDefinitions.get().getImport();
+        updateNodeImports(diagramImports, nodeImports);
+
+        return node;
+    }
+
+    private void updateNodeImports(final List<Import> diagramImports,
+                                   final List<Import> nodeImports) {
+        for (final Import anImport : diagramImports) {
+            if (!nodeImports.contains(anImport)) {
+                nodeImports.add(anImport);
+            }
+        }
+    }
+
+    private static Optional<Definitions> getDefinitions(final DRGElement drgElement) {
+
+        final DMNModelInstrumentedBase parent = drgElement.getParent();
+
+        if (parent instanceof DMNDiagram) {
+            final DMNDiagram diagram = (DMNDiagram) parent;
+            return Optional.ofNullable(diagram.getDefinitions());
+        }
+
+        if (parent instanceof Definitions) {
+            return Optional.of((Definitions) parent);
+        }
+
+        return Optional.empty();
     }
 
     void mergeOrAddNodeToDefinitions(final JSITDRGElement node,

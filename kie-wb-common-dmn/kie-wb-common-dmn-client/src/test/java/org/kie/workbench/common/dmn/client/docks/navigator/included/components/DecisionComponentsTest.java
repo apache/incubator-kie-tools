@@ -18,7 +18,6 @@ package org.kie.workbench.common.dmn.client.docks.navigator.included.components;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -28,8 +27,9 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.dmn.api.definition.model.DMNDiagramElement;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.Decision;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.api.definition.model.ImportDMN;
 import org.kie.workbench.common.dmn.api.definition.model.ImportPMML;
@@ -41,8 +41,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.LocationURI;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.dmn.client.graph.DMNGraphUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -51,15 +50,14 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -81,15 +79,20 @@ public class DecisionComponentsTest {
     @Mock
     private DMNDiagramsSession dmnDiagramsSession;
 
+    @Mock
+    private DMNGraphUtils dmnGraphUtils;
+
+    @Mock
+    private DecisionComponentsItem.View decisionComponentsItemView;
+
     @Captor
-    private ArgumentCaptor<List<DecisionComponent>> decisionComponentListCaptor;
+    private ArgumentCaptor<DecisionComponent> decisionComponentArgumentCaptor;
 
     private DecisionComponents decisionComponents;
 
     @Before
     public void setup() {
-
-        decisionComponents = spy(new DecisionComponents(view, client, itemManagedInstance, filter, dmnDiagramsSession));
+        decisionComponents = spy(new DecisionComponents(view, client, itemManagedInstance, filter, dmnDiagramsSession, dmnGraphUtils));
     }
 
     @Test
@@ -104,20 +107,166 @@ public class DecisionComponentsTest {
     }
 
     @Test
+    public void testRefreshWhenIncludedNodeListsIsUpdated() {
+
+        final List<DMNIncludedModel> dmnModelIncludedModels = new ArrayList<>();
+        final List<DMNIncludedModel> latestIncludedModelsLoaded = new ArrayList<>();
+
+        when(dmnDiagramsSession.isSessionStatePresent()).thenReturn(true);
+        doReturn(dmnModelIncludedModels).when(decisionComponents).getDMNIncludedModels();
+        doReturn(latestIncludedModelsLoaded).when(decisionComponents).getLatestIncludedModelsLoaded();
+        doNothing().when(decisionComponents).refreshIncludedNodesList();
+        doNothing().when(decisionComponents).loadModelComponents();
+
+        dmnModelIncludedModels.add(makeDMNIncludedModel("://namespace1"));
+        dmnModelIncludedModels.add(makeDMNIncludedModel("://namespace2"));
+        latestIncludedModelsLoaded.add(makeDMNIncludedModel("://namespace1"));
+        latestIncludedModelsLoaded.add(makeDMNIncludedModel("://namespace2"));
+
+        decisionComponents.refresh();
+
+        verify(decisionComponents, never()).refreshIncludedNodesList();
+        verify(decisionComponents).loadModelComponents();
+    }
+
+    @Test
+    public void testRefreshWhenIncludedNodeListsIsNotUpdated() {
+
+        final List<DMNIncludedModel> dmnModelIncludedModels = new ArrayList<>();
+        final List<DMNIncludedModel> latestIncludedModelsLoaded = new ArrayList<>();
+
+        when(dmnDiagramsSession.isSessionStatePresent()).thenReturn(true);
+        doReturn(dmnModelIncludedModels).when(decisionComponents).getDMNIncludedModels();
+        doReturn(latestIncludedModelsLoaded).when(decisionComponents).getLatestIncludedModelsLoaded();
+        doNothing().when(decisionComponents).refreshIncludedNodesList();
+        doNothing().when(decisionComponents).loadModelComponents();
+
+        dmnModelIncludedModels.add(makeDMNIncludedModel("://namespace1"));
+        dmnModelIncludedModels.add(makeDMNIncludedModel("://namespace2"));
+        dmnModelIncludedModels.add(makeDMNIncludedModel("://namespaceNEW"));
+        latestIncludedModelsLoaded.add(makeDMNIncludedModel("://namespace1"));
+        latestIncludedModelsLoaded.add(makeDMNIncludedModel("://namespace2"));
+
+        decisionComponents.refresh();
+
+        verify(decisionComponents).refreshIncludedNodesList();
+        verify(decisionComponents).loadModelComponents();
+    }
+
+    @Test
+    public void testRefreshWhenSessionStateIsNotPresent() {
+
+        when(dmnDiagramsSession.isSessionStatePresent()).thenReturn(false);
+
+        decisionComponents.refresh();
+
+        verify(decisionComponents, never()).refreshIncludedNodesList();
+        verify(decisionComponents, never()).loadModelComponents();
+    }
+
+    @Test
     public void testRefresh() {
 
-        final List<DMNIncludedModel> includedModels = new ArrayList<>();
         final Consumer<List<DMNIncludedNode>> listConsumer = (list) -> {/* Nothing. */};
+        final List<DMNIncludedModel> includedModels = new ArrayList<>();
+        includedModels.add(makeDMNIncludedModel("://namespace1"));
+        includedModels.add(makeDMNIncludedModel("://namespace2"));
 
         doReturn(includedModels).when(decisionComponents).getDMNIncludedModels();
         doReturn(listConsumer).when(decisionComponents).getNodesConsumer();
 
-        decisionComponents.refresh();
+        decisionComponents.refreshIncludedNodesList();
 
-        verify(decisionComponents).clearDecisionComponents();
         verify(decisionComponents).startLoading();
         verify(client).loadNodesFromImports(includedModels, listConsumer);
-        verify(decisionComponents).loadDRDComponents();
+        assertEquals(includedModels, decisionComponents.getLatestIncludedModelsLoaded());
+    }
+
+    @Test
+    public void testLoadModelComponents() {
+
+        final String dmnModelName = "ModelName";
+        final DRGElement drgElement1 = mock(DRGElement.class);
+        final DRGElement drgElement2 = mock(DRGElement.class);
+        final DecisionComponent decisionComponent1 = mock(DecisionComponent.class);
+        final DecisionComponent decisionComponent2 = mock(DecisionComponent.class);
+        final List<DecisionComponent> decisionComponentsList = new ArrayList<>();
+
+        final Definitions definitions = mock(Definitions.class);
+        when(definitions.getName()).thenReturn(new Name(dmnModelName));
+
+        when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
+        when(dmnDiagramsSession.getModelDRGElements()).thenReturn(Arrays.asList(drgElement1, drgElement2));
+        when(drgElement1.getName()).thenReturn(new Name("Decision-1"));
+        when(drgElement2.getName()).thenReturn(new Name("Decision-2"));
+        when(decisionComponent1.getName()).thenReturn("Decision-1");
+        when(decisionComponent2.getName()).thenReturn("Decision-2");
+
+        doReturn(decisionComponent1).when(decisionComponents).makeDecisionComponent(dmnModelName, drgElement1);
+        doReturn(decisionComponent2).when(decisionComponents).makeDecisionComponent(dmnModelName, drgElement2);
+        doReturn(decisionComponentsList).when(decisionComponents).getModelDRGElements();
+        doNothing().when(decisionComponents).refreshView();
+
+        decisionComponents.loadModelComponents();
+
+        assertTrue(decisionComponentsList.contains(decisionComponent1));
+        assertTrue(decisionComponentsList.contains(decisionComponent2));
+        assertEquals(2, decisionComponentsList.size());
+        verify(decisionComponents).refreshView();
+    }
+
+    @Test
+    public void testRefreshViewWhenDecisionComponentsListIsNotEmpty() {
+
+        final List<DecisionComponent> modelDRGElements = new ArrayList<>();
+        final List<DecisionComponent> includedDRGElements = new ArrayList<>();
+        final List<DecisionComponent> decisionComponentsItems = spy(new ArrayList<>());
+
+        doReturn(modelDRGElements).when(decisionComponents).getModelDRGElements();
+        doReturn(includedDRGElements).when(decisionComponents).getIncludedDRGElements();
+        doReturn(decisionComponentsItems).when(decisionComponents).getDecisionComponentsItems();
+        doReturn(5).when(decisionComponentsItems).size();
+        doReturn(false).when(decisionComponentsItems).isEmpty();
+        doNothing().when(decisionComponents).createDecisionComponentItem(any());
+
+        modelDRGElements.add(makeDecisionComponent("Decision-1", "ModeName", false));
+        modelDRGElements.add(makeDecisionComponent("Decision-1", "ModeName", false));
+        modelDRGElements.add(makeDecisionComponent("Decision-3", "ModeName", false));
+        includedDRGElements.add(makeDecisionComponent("included.Decision-1", "includedModel.dmn", true));
+        includedDRGElements.add(makeDecisionComponent("included.Decision-2", "includedModel.dmn", true));
+
+        decisionComponents.refreshView();
+
+        verify(decisionComponentsItems).clear();
+        verify(view).clear();
+        verify(view).setComponentsCounter(5);
+        verify(decisionComponents, times(5)).createDecisionComponentItem(any(DecisionComponent.class));
+        verify(view).enableFilterInputs();
+        verify(view, never()).disableFilterInputs();
+        verify(view, never()).showEmptyState();
+    }
+
+    @Test
+    public void testRefreshViewWhenDecisionComponentsListIsEmpty() {
+
+        final List<DecisionComponent> modelDRGElements = new ArrayList<>();
+        final List<DecisionComponent> includedDRGElements = new ArrayList<>();
+        final List<DecisionComponent> decisionComponentsItems = spy(new ArrayList<>());
+
+        doReturn(modelDRGElements).when(decisionComponents).getModelDRGElements();
+        doReturn(includedDRGElements).when(decisionComponents).getIncludedDRGElements();
+        doReturn(decisionComponentsItems).when(decisionComponents).getDecisionComponentsItems();
+        doNothing().when(decisionComponents).createDecisionComponentItem(any());
+
+        decisionComponents.refreshView();
+
+        verify(decisionComponentsItems).clear();
+        verify(view).clear();
+        verify(view).setComponentsCounter(0);
+        verify(decisionComponents, never()).createDecisionComponentItem(any(DecisionComponent.class));
+        verify(view, never()).enableFilterInputs();
+        verify(view).disableFilterInputs();
+        verify(view).showEmptyState();
     }
 
     @Test
@@ -201,12 +350,16 @@ public class DecisionComponentsTest {
     public void testGetNodesConsumerWhenNodeListIsEmpty() {
 
         final List<DMNIncludedNode> list = emptyList();
+        final List<DecisionComponent> includedDRGElements = spy(new ArrayList<>());
+
+        doReturn(includedDRGElements).when(decisionComponents).getIncludedDRGElements();
 
         decisionComponents.getNodesConsumer().accept(list);
 
-        verify(view).setComponentsCounter(0);
         verify(view).hideLoading();
-        verify(view).showEmptyState();
+        verify(includedDRGElements).clear();
+        verify(includedDRGElements, never()).add(any());
+        verify(decisionComponents).refreshView();
     }
 
     @Test
@@ -214,30 +367,38 @@ public class DecisionComponentsTest {
 
         final DMNIncludedNode dmnIncludedNode1 = mock(DMNIncludedNode.class);
         final DMNIncludedNode dmnIncludedNode2 = mock(DMNIncludedNode.class);
-        final List<DMNIncludedNode> list = asList(dmnIncludedNode1, dmnIncludedNode2);
+        final DecisionComponent drgDecisionComponent1 = mock(DecisionComponent.class);
+        final DecisionComponent drgDecisionComponent2 = mock(DecisionComponent.class);
+        final List<DMNIncludedNode> includedNodes = asList(dmnIncludedNode1, dmnIncludedNode2);
+        final List<DecisionComponent> includedDRGElements = spy(new ArrayList<>());
 
-        doNothing().when(decisionComponents).addComponent(any());
+        doReturn(includedDRGElements).when(decisionComponents).getIncludedDRGElements();
+        doReturn(drgDecisionComponent1).when(decisionComponents).makeDecisionComponent(dmnIncludedNode1);
+        doReturn(drgDecisionComponent2).when(decisionComponents).makeDecisionComponent(dmnIncludedNode2);
+        doNothing().when(decisionComponents).refreshView();
 
-        decisionComponents.getNodesConsumer().accept(list);
+        decisionComponents.getNodesConsumer().accept(includedNodes);
 
-        verify(view).setComponentsCounter(2);
         verify(view).hideLoading();
-        verify(view).enableFilterInputs();
-        verify(decisionComponents).addComponent(dmnIncludedNode1);
-        verify(decisionComponents).addComponent(dmnIncludedNode2);
+        verify(includedDRGElements).clear();
+        verify(includedDRGElements).add(drgDecisionComponent1);
+        verify(includedDRGElements).add(drgDecisionComponent2);
+        verify(decisionComponents).refreshView();
     }
 
     @Test
-    public void testAddComponent() {
+    public void testGetNodesConsumerWhenNodesAreNull() {
 
-        final DMNIncludedNode node = mock(DMNIncludedNode.class);
-        final DecisionComponent item = mock(DecisionComponent.class);
-        doReturn(item).when(decisionComponents).makeDecisionComponent(node);
-        doNothing().when(decisionComponents).createDecisionComponentItem(item);
+        final List<DecisionComponent> includedDRGElements = spy(new ArrayList<>());
 
-        decisionComponents.addComponent(node);
+        doReturn(includedDRGElements).when(decisionComponents).getIncludedDRGElements();
 
-        verify(decisionComponents).createDecisionComponentItem(item);
+        decisionComponents.getNodesConsumer().accept(null);
+
+        verify(view).hideLoading();
+        verify(includedDRGElements, never()).clear();
+        verify(includedDRGElements, never()).add(any());
+        verify(decisionComponents, never()).refreshView();
     }
 
     @Test
@@ -263,114 +424,6 @@ public class DecisionComponentsTest {
     }
 
     @Test
-    public void testGetNodesConsumerWhenNodesAreNull() {
-
-        final Consumer<List<DMNIncludedNode>> consumer = decisionComponents.getNodesConsumer();
-
-        consumer.accept(null);
-
-        verify(view, never()).setComponentsCounter(anyInt());
-        verify(view, never()).hideLoading();
-        verify(view, never()).enableFilterInputs();
-        verify(view, never()).showEmptyState();
-    }
-
-    @Test
-    public void testGetNodesConsumerWhenNodesAreEmpty() {
-
-        final Consumer<List<DMNIncludedNode>> consumer = decisionComponents.getNodesConsumer();
-
-        consumer.accept(Collections.emptyList());
-
-        verify(view).setComponentsCounter(0);
-        verify(view).hideLoading();
-        verify(view, never()).enableFilterInputs();
-        verify(view).showEmptyState();
-    }
-
-    @Test
-    public void testGetNodesConsumer() {
-
-        final DMNIncludedNode includedNode1 = mock(DMNIncludedNode.class);
-        final DMNIncludedNode includedNode2 = mock(DMNIncludedNode.class);
-        final List<DMNIncludedNode> nodes = Arrays.asList(includedNode1, includedNode2);
-        final Consumer<List<DMNIncludedNode>> consumer = decisionComponents.getNodesConsumer();
-
-        doNothing().when(decisionComponents).addComponent(includedNode1);
-        doNothing().when(decisionComponents).addComponent(includedNode2);
-
-        consumer.accept(nodes);
-
-        verify(view).setComponentsCounter(2);
-        verify(view).hideLoading();
-        verify(view).enableFilterInputs();
-        verify(decisionComponents).addComponent(includedNode1);
-        verify(decisionComponents).addComponent(includedNode2);
-        verify(view, never()).showEmptyState();
-    }
-
-    @Test
-    public void testLoadDRDComponents() {
-
-        final int existingComponentsCounter = 3;
-        final Id diagramId = mock(Id.class);
-        final String id = "0000-1111-2222";
-        final DMNDiagramElement diagramElement = mock(DMNDiagramElement.class);
-        final DRGElement drg1Element = mock(DRGElement.class);
-        final DRGElement drg2Element = mock(DRGElement.class);
-        final DecisionComponent decisionComponent1 = mock(DecisionComponent.class);
-        final DecisionComponent decisionComponent2 = mock(DecisionComponent.class);
-
-        when(dmnDiagramsSession.getModelDRGElements()).thenReturn(Arrays.asList(drg1Element, drg2Element));
-        when(diagramId.getValue()).thenReturn(id);
-        when(diagramElement.getId()).thenReturn(diagramId);
-        when(drg1Element.getDiagramId()).thenReturn(id);
-        when(drg2Element.getDiagramId()).thenReturn(id);
-        doReturn(decisionComponent1).when(decisionComponents).makeDecisionComponent(id, drg1Element);
-        doReturn(decisionComponent2).when(decisionComponents).makeDecisionComponent(id, drg2Element);
-        when(view.getComponentsCounter()).thenReturn(existingComponentsCounter);
-        doNothing().when(decisionComponents).createDecisionComponentItems(any());
-
-        decisionComponents.loadDRDComponents();
-
-        verify(view).enableFilterInputs();
-        verify(view).hideLoading();
-        verify(view).setComponentsCounter(existingComponentsCounter + 2);
-        verify(decisionComponents).createDecisionComponentItems(decisionComponentListCaptor.capture());
-        verify(decisionComponents).makeDecisionComponent(id, drg1Element);
-        verify(decisionComponents).makeDecisionComponent(id, drg2Element);
-
-        final List<DecisionComponent> list = decisionComponentListCaptor.getValue();
-        assertTrue(list.contains(decisionComponent1));
-        assertTrue(list.contains(decisionComponent2));
-        assertEquals(2, list.size());
-    }
-
-    @Test
-    public void testDefinitionContainsDRGElementWhenContainsDRGElement() {
-
-        final Node node = mock(Node.class);
-        final Definition content = mock(Definition.class);
-        final DRGElement drgElement = mock(DRGElement.class);
-        when(node.getContent()).thenReturn(content);
-        when(content.getDefinition()).thenReturn(drgElement);
-
-        assertTrue(decisionComponents.definitionContainsDRGElement(node));
-    }
-
-    @Test
-    public void testDefinitionContainsDRGElementWhenDoesNotContainsDRGElement() {
-
-        final Node node = mock(Node.class);
-        final Definition content = mock(Definition.class);
-        final Object obj = mock(Object.class);
-        when(node.getContent()).thenReturn(content);
-        when(content.getDefinition()).thenReturn(obj);
-
-        assertFalse(decisionComponents.definitionContainsDRGElement(node));
-    }
-
-    @Test
     public void testCreateDecisionComponentItem() {
 
         final DecisionComponentsItem item = mock(DecisionComponentsItem.class);
@@ -389,5 +442,50 @@ public class DecisionComponentsTest {
         verify(item).setDecisionComponent(any(DecisionComponent.class));
         verify(decisionComponentsItems).add(item);
         verify(view).addListItem(htmlElement);
+    }
+
+    @Test
+    public void testCreateDecisionComponentItems() {
+
+        final List<DecisionComponent> decisionComponentsItems = new ArrayList<>();
+        decisionComponentsItems.add(makeDecisionComponent("Decision-1", "uuid1", "ModelName", false));
+        decisionComponentsItems.add(makeDecisionComponent("Decision-1", "uuid1", "ModelName", false));
+        decisionComponentsItems.add(makeDecisionComponent("Decision-1", "uuid2", "ModelName", false));
+        decisionComponentsItems.add(makeDecisionComponent("included.Decision-2", "uuidA", "included.dmn", true));
+        decisionComponentsItems.add(makeDecisionComponent("included.Decision-2", "uuidA", "included.dmn", true));
+        decisionComponentsItems.add(makeDecisionComponent("included.Decision-2", "uuidB", "included.dmn", true));
+
+        when(itemManagedInstance.get()).then((e) -> new DecisionComponentsItem(decisionComponentsItemView));
+
+        decisionComponents.createDecisionComponentItems(decisionComponentsItems);
+
+        verify(decisionComponents, times(4)).createDecisionComponentItem(decisionComponentArgumentCaptor.capture());
+
+        final List<DecisionComponent> createdDecisionComponents = decisionComponentArgumentCaptor.getAllValues();
+        assertEquals("uuid1", createdDecisionComponents.get(0).getDrgElement().getId().getValue());
+        assertEquals("uuid2", createdDecisionComponents.get(1).getDrgElement().getId().getValue());
+        assertEquals("uuidA", createdDecisionComponents.get(2).getDrgElement().getId().getValue());
+        assertEquals("uuidB", createdDecisionComponents.get(3).getDrgElement().getId().getValue());
+    }
+
+    private DMNIncludedModel makeDMNIncludedModel(final String namespace) {
+        return new DMNIncludedModel("", "", "", namespace, "", 0, 0);
+    }
+
+    private DecisionComponent makeDecisionComponent(final String name,
+                                                    final String drgElementId,
+                                                    final String fileName,
+                                                    final boolean imported) {
+        final Decision decision = new Decision();
+        decision.setName(new Name(name));
+        decision.setId(new Id(drgElementId));
+        return new DecisionComponent(fileName, decision, imported);
+    }
+
+    private DecisionComponent makeDecisionComponent(final String name,
+                                                    final String fileName,
+                                                    final boolean imported) {
+        final String drgElementId = new Id().getValue();
+        return makeDecisionComponent(name, drgElementId, fileName, imported);
     }
 }

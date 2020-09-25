@@ -23,6 +23,10 @@ import java.util.Optional;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.api.definition.model.DMNDiagram;
+import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
+import org.kie.workbench.common.dmn.api.definition.model.Definitions;
+import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITAuthorityRequirement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITBusinessKnowledgeModel;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDRGElement;
@@ -31,6 +35,8 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITInformationRequirement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITKnowledgeRequirement;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITKnowledgeSource;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -39,9 +45,11 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DMNMarshallerTest {
@@ -104,6 +112,91 @@ public class DMNMarshallerTest {
 
         assertTrue(existingNode.isPresent());
         assertEquals(definitionsDRGElement1, existingNode.get());
+    }
+
+    @Test
+    public void testWithIncludedModelsWhenNodeParentIsDMNDiagram() {
+
+        final DMNMarshaller dmnMarshaller = spy(new DMNMarshaller());
+        final Node node = mock(Node.class);
+        final Definition nodeDefinition = mock(Definition.class);
+        final DRGElement drgElement = mock(DRGElement.class);
+        final Definitions definitionsStunnerPojo = mock(Definitions.class);
+        final Import import1 = mock(Import.class);
+        final Import import2 = mock(Import.class);
+        final List<Import> diagramImports = new ArrayList<>(asList(import1, import2));
+        final DMNDiagram nodeDiagram = mock(DMNDiagram.class);
+        final Definitions nodeDiagramDefinitions = mock(Definitions.class);
+        final List<Import> nodeDiagramImports = new ArrayList<>();
+
+        when(node.getContent()).thenReturn(nodeDefinition);
+        when(nodeDefinition.getDefinition()).thenReturn(drgElement);
+        when(definitionsStunnerPojo.getImport()).thenReturn(diagramImports);
+        when(drgElement.getParent()).thenReturn(nodeDiagram);
+        when(nodeDiagram.getDefinitions()).thenReturn(nodeDiagramDefinitions);
+        when(nodeDiagramDefinitions.getImport()).thenReturn(nodeDiagramImports);
+
+        dmnMarshaller.withIncludedModels(node, definitionsStunnerPojo);
+
+        assertEquals(2, nodeDiagramImports.size());
+        assertTrue(nodeDiagramImports.contains(import1));
+        assertTrue(nodeDiagramImports.contains(import2));
+    }
+
+    @Test
+    public void testWithIncludedModelsWhenNodeAlreadyHasImports() {
+
+        final DMNMarshaller dmnMarshaller = spy(new DMNMarshaller());
+        final Node node = mock(Node.class);
+        final Definition nodeDefinition = mock(Definition.class);
+        final DRGElement drgElement = mock(DRGElement.class);
+        final Definitions definitionsStunnerPojo = mock(Definitions.class);
+        final Import import1 = mock(Import.class);
+        final Import import2 = mock(Import.class);
+        final List<Import> diagramImports = new ArrayList<>(asList(import1, import2));
+        final DMNDiagram nodeDiagram = mock(DMNDiagram.class);
+        final Definitions nodeDiagramDefinitions = mock(Definitions.class);
+        final List<Import> nodeDiagramImports = new ArrayList<>(asList(import1, import2));
+
+        when(node.getContent()).thenReturn(nodeDefinition);
+        when(nodeDefinition.getDefinition()).thenReturn(drgElement);
+        when(definitionsStunnerPojo.getImport()).thenReturn(diagramImports);
+        when(drgElement.getParent()).thenReturn(nodeDiagram);
+        when(nodeDiagram.getDefinitions()).thenReturn(nodeDiagramDefinitions);
+        when(nodeDiagramDefinitions.getImport()).thenReturn(nodeDiagramImports);
+
+        dmnMarshaller.withIncludedModels(node, definitionsStunnerPojo);
+
+        assertEquals(2, nodeDiagramImports.size());
+        assertTrue(nodeDiagramImports.contains(import1));
+        assertTrue(nodeDiagramImports.contains(import2));
+    }
+
+    @Test
+    public void testWithIncludedModelsWhenNodeParentIsDefinitions() {
+
+        final DMNMarshaller dmnMarshaller = spy(new DMNMarshaller());
+        final Node node = mock(Node.class);
+        final Definition nodeDefinition = mock(Definition.class);
+        final DRGElement drgElement = mock(DRGElement.class);
+        final Definitions definitionsStunnerPojo = mock(Definitions.class);
+        final Import import1 = mock(Import.class);
+        final Import import2 = mock(Import.class);
+        final List<Import> diagramImports = new ArrayList<>(asList(import1, import2));
+        final Definitions nodeDiagramDefinitions = mock(Definitions.class);
+        final List<Import> nodeDiagramImports = new ArrayList<>();
+
+        when(node.getContent()).thenReturn(nodeDefinition);
+        when(nodeDefinition.getDefinition()).thenReturn(drgElement);
+        when(definitionsStunnerPojo.getImport()).thenReturn(diagramImports);
+        when(drgElement.getParent()).thenReturn(nodeDiagramDefinitions);
+        when(nodeDiagramDefinitions.getImport()).thenReturn(nodeDiagramImports);
+
+        dmnMarshaller.withIncludedModels(node, definitionsStunnerPojo);
+
+        assertEquals(2, nodeDiagramImports.size());
+        assertTrue(nodeDiagramImports.contains(import1));
+        assertTrue(nodeDiagramImports.contains(import2));
     }
 
     private JSITDecision makeDecision(final String id) {

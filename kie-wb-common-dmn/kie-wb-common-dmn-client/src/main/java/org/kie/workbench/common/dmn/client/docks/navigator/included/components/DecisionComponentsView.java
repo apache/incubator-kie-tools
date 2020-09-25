@@ -149,11 +149,6 @@ public class DecisionComponentsView implements DecisionComponents.View {
         componentsCounter.textContent = count.toString();
     }
 
-    @Override
-    public Integer getComponentsCounter() {
-        return Integer.valueOf(componentsCounter.textContent);
-    }
-
     private void disableFilterInputs(final boolean disabled) {
         termFilter.disabled = disabled;
         drgElementFilter.disabled = disabled;
