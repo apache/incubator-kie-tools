@@ -16,10 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.editors.contextmenu;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -29,6 +28,8 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
 import elemental2.dom.EventListener;
+import jsinterop.base.Js;
+import jsinterop.base.JsArrayLike;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
@@ -83,19 +84,21 @@ public class ContextMenuView implements ContextMenu.View,
     }
 
     private final EventListener hideContextMenuHandler = event -> {
-        if (!Arrays.asList(getEventPath(event)).contains(getElement())) {
+        if (!getEventPath(event).contains(getElement())) {
             listSelector.hide();
         }
     };
 
-    Element[] getEventPath(Event event) {
+    List<Element> getEventPath(Event event) {
         return Optional
                 .ofNullable(event.path)
-                .orElseGet(() ->
-                                   Stream.of(event.composedPath())
-                                           .filter(Event.ComposedPathArrayUnionType::isElement)
-                                           .map(Event.ComposedPathArrayUnionType::asElement)
-                                           .toArray(Element[]::new)
+                .map(JsArrayLike::asList)
+                .orElseGet(() -> event.composedPath()
+                        .asList()
+                        .stream()
+                        .filter(e -> e instanceof Element)
+                        .map(obj -> (Element) Js.uncheckedCast(obj))
+                        .collect(Collectors.toList())
                 );
     }
 

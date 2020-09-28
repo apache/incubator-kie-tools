@@ -16,12 +16,15 @@
 
 package org.kie.workbench.common.dmn.client.editors.contextmenu;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import elemental2.core.JsArray;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
+import elemental2.dom.EventTarget;
 import elemental2.dom.HTMLDocument;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +38,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -104,48 +109,42 @@ public class ContextMenuViewTest {
     public void testWhenGettingEventPath() {
         final Event event = mock(Event.class);
         final Element element = mock(Element.class);
+        final List<EventTarget> pathArray = new ArrayList<>();
         final String value = "test-val";
-        event.path = new Element[] {element};
+        event.path = spy(new JsArray<>());
+        pathArray.add(element);
+
+        doReturn(pathArray).when(event.path).asList();
 
         when(element.getAttribute(anyString())).thenReturn(value);
 
-        final Element[] eventPath = contextMenuView.getEventPath(event);
+        final List<Element> eventPath = contextMenuView.getEventPath(event);
 
         assertThat(eventPath).isNotNull();
         assertThat(eventPath).isNotEmpty();
-        assertThat(eventPath.length).isEqualTo(1);
-        assertThat(eventPath[0]).extracting(elem -> elem.getAttribute("test-attr")).isEqualTo(value);
+        assertThat(eventPath.size()).isEqualTo(1);
+        assertThat(eventPath.get(0)).extracting(elem -> elem.getAttribute("test-attr")).isEqualTo(value);
     }
 
     @Test
     public void testWhenGettingEventPathAndPathIsNull() {
         final Event event = mock(Event.class);
         final Element element = mock(Element.class);
+        final JsArray<EventTarget> composedPath = spy(new JsArray<>());
+        final List<EventTarget> composedPathAsList = new ArrayList<>();
         final String value = "test-val";
         event.path = null;
+        composedPathAsList.add(element);
 
-        when(event.composedPath()).thenReturn(new Event.ComposedPathArrayUnionType[]{buildComposedPathArrayUnionType(element)});
+        doReturn(composedPathAsList).when(composedPath).asList();
+        when(event.composedPath()).thenReturn(composedPath);
         when(element.getAttribute(anyString())).thenReturn(value);
 
-        final Element[] eventPath = contextMenuView.getEventPath(event);
+        final List<Element> eventPath = contextMenuView.getEventPath(event);
 
         assertThat(eventPath).isNotNull();
         assertThat(eventPath).isNotEmpty();
-        assertThat(eventPath.length).isEqualTo(1);
-        assertThat(eventPath[0]).extracting(elem -> elem.getAttribute("test-attr")).isEqualTo(value);
-    }
-
-    private Event.ComposedPathArrayUnionType buildComposedPathArrayUnionType(Element element) {
-        return new Event.ComposedPathArrayUnionType() {
-                @Override
-                public boolean isElement() {
-                    return true;
-                }
-
-                @Override
-                public Element asElement() {
-                    return element;
-                }
-            };
+        assertThat(eventPath.size()).isEqualTo(1);
+        assertThat(eventPath.get(0)).extracting(elem -> elem.getAttribute("test-attr")).isEqualTo(value);
     }
 }

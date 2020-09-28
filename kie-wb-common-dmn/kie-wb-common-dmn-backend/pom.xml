@@ -145,6 +145,11 @@
       <artifactId>uberfire-io</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+    </dependency>
+
     <!-- as javax.inject is excluded in parent pom's errai-bus dep. It had to be declared here -->
     <dependency>
       <groupId>javax.inject</groupId>

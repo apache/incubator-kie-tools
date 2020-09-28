@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.providers;
 
 import java.util.Optional;
 
-import elemental2.dom.ClientRect;
+import elemental2.dom.DOMRect;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLDocument;
@@ -36,7 +36,7 @@ public class HTMLElementsPositionProviderFactory implements PositionProviderFact
 
     private Rect makeRect(final Element element) {
 
-        final ClientRect clientRect = element.getBoundingClientRect();
+        final DOMRect clientRect = element.getBoundingClientRect();
 
         final int bottom = (int) clientRect.bottom;
         final int top = (int) clientRect.top;

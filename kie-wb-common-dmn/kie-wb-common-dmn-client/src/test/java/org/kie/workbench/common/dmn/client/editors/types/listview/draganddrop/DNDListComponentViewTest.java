@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.CSSStyleDeclaration;
-import elemental2.dom.ClientRect;
+import elemental2.dom.DOMRect;
 import elemental2.dom.DOMTokenList;
 import elemental2.dom.Element;
 import elemental2.dom.Event;
@@ -909,7 +909,7 @@ public class DNDListComponentViewTest {
 
         final MouseEvent event = mock(MouseEvent.class);
         final HTMLElement draggingElement = mock(HTMLElement.class);
-        final ClientRect rect = mock(ClientRect.class);
+        final DOMRect rect = mock(DOMRect.class);
 
         event.x = 100;
         rect.left = 25;
@@ -930,7 +930,7 @@ public class DNDListComponentViewTest {
 
         final MouseEvent event = mock(MouseEvent.class);
         final HTMLElement draggingElement = mock(HTMLElement.class);
-        final ClientRect rect = mock(ClientRect.class);
+        final DOMRect rect = mock(DOMRect.class);
 
         event.x = 1000;
         rect.left = 25;
@@ -951,7 +951,7 @@ public class DNDListComponentViewTest {
 
         final MouseEvent event = mock(MouseEvent.class);
         final HTMLElement draggingElement = mock(HTMLElement.class);
-        final ClientRect rect = mock(ClientRect.class);
+        final DOMRect rect = mock(DOMRect.class);
 
         event.x = -1000;
         rect.left = 25;
@@ -972,7 +972,7 @@ public class DNDListComponentViewTest {
 
         final MouseEvent event = mock(MouseEvent.class);
         final HTMLElement draggingElement = mock(HTMLElement.class);
-        final ClientRect rect = mock(ClientRect.class);
+        final DOMRect rect = mock(DOMRect.class);
 
         event.y = 100;
         rect.top = 25;
@@ -994,7 +994,7 @@ public class DNDListComponentViewTest {
 
         final MouseEvent event = mock(MouseEvent.class);
         final HTMLElement draggingElement = mock(HTMLElement.class);
-        final ClientRect rect = mock(ClientRect.class);
+        final DOMRect rect = mock(DOMRect.class);
 
         event.y = 1000;
         rect.top = 25;

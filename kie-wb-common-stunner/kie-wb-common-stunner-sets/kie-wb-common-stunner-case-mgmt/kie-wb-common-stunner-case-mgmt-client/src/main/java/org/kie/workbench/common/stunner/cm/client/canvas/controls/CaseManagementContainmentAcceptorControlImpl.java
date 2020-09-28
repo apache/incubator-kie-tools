@@ -209,7 +209,7 @@ public class CaseManagementContainmentAcceptorControlImpl
             final int i = index.orElse(0);
             final Optional<Node<View<?>, Edge>> last = i > 0 ? Optional.of(WiresUtils.getNode(getCanvasHandler(), container.getChildShapes().get(i - 1))) : Optional.empty();
 
-            final Optional<Node<View<?>, Edge>> originalParent = originalContainer.flatMap((c) -> Optional.ofNullable(WiresUtils.getNode(getCanvasHandler(), c)));
+            final Optional<Node<View<?>, Edge>> originalParent = originalContainer.flatMap((c) -> Optional.ofNullable((Node<View<?>, Edge>) WiresUtils.getNode(getCanvasHandler(), c)));
 
             // Set relationship.
             return getSetEdgeCommand(parent,

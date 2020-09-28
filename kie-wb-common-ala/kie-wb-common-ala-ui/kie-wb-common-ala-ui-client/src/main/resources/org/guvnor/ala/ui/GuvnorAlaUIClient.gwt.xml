@@ -26,8 +26,6 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
 
-  <inherits name="jsinterop.annotations.Annotations" />
-
   <inherits name="org.jboss.errai.ui.UI"/>
   <inherits name="org.jboss.errai.common.ErraiCommon"/>
 
