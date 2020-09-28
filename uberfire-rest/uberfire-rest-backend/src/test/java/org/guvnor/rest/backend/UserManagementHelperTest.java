@@ -18,7 +18,6 @@ package org.guvnor.rest.backend;
 
 import java.util.Arrays;
 
-import javax.jws.soap.SOAPBinding;
 import javax.ws.rs.core.Response;
 
 import org.guvnor.common.services.project.service.WorkspaceProjectService;
@@ -53,10 +52,6 @@ import org.uberfire.security.authz.VotingStrategy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

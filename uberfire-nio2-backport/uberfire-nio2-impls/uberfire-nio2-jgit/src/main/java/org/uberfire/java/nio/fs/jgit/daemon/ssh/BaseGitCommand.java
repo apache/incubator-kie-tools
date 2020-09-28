@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutorService;
 
 import org.apache.sshd.common.channel.ChannelOutputStream;
 import org.apache.sshd.common.session.Session;
-import org.apache.sshd.server.Command;
+import org.apache.sshd.server.command.Command;
 import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
 import org.apache.sshd.server.SessionAware;

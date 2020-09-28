@@ -74,7 +74,6 @@
     <version.org.webjars.bower.d3geoprojection>2.5.1</version.org.webjars.bower.d3geoprojection>
     <version.org.webjars.bower.jqueryui>1.12.1</version.org.webjars.bower.jqueryui>
 
-    <version.org.jboss.byteman>3.0.10</version.org.jboss.byteman>
     <version.org.jboss.jboss-msc>1.2.7.SP1</version.org.jboss.jboss-msc>
 
     <version.org.apache.activemq.artemis>2.3.0</version.org.apache.activemq.artemis>
