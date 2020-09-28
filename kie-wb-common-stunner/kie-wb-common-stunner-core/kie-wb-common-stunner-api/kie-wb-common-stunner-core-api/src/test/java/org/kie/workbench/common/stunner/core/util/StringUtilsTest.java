@@ -23,12 +23,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.replaceIllegalCharsAttribute;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.replaceIllegalCharsForDataObjects;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.revertIllegalCharsAttribute;
 
 public class StringUtilsTest {
 
     private final String ENCODED_VALUE = "&lt; Valid &quot;&amp;&quot; Symbols &gt;";
     private final String DECODED_VALUE = "< Valid \"&\" Symbols >";
+    private final String DECODED_VALUE_DATA_OBJECT_NEWLINE = "DATA\nOBJECT";
+
     private final String EMPTY_STRING = "";
 
     @Test
@@ -156,7 +159,6 @@ public class StringUtilsTest {
     public void testReplaceIllegalCharsAttribute() {
         assertSame(EMPTY_STRING, replaceIllegalCharsAttribute(EMPTY_STRING));
         assertEquals(null, replaceIllegalCharsAttribute(null));
-
         assertEquals("&lt; Valid &quot;&amp;&quot; Symbols &gt;", replaceIllegalCharsAttribute(DECODED_VALUE));
     }
 
@@ -164,7 +166,12 @@ public class StringUtilsTest {
     public void testRevertIllegalCharsAttribute() {
         assertSame(EMPTY_STRING, revertIllegalCharsAttribute(EMPTY_STRING));
         assertEquals(null, revertIllegalCharsAttribute(null));
-
         assertEquals("< Valid \"&\" Symbols >", revertIllegalCharsAttribute(ENCODED_VALUE));
     }
+
+    @Test
+    public void testReplaceIllegalCharsDataObject() {
+        assertEquals("DATAOBJECT", replaceIllegalCharsForDataObjects(DECODED_VALUE_DATA_OBJECT_NEWLINE));
+    }
+
 }

@@ -131,6 +131,8 @@ public class StringUtils {
                 case ' ':
                     sb.append("-");
                     break;
+                case '\n':
+                    break;
                 default:
                     sb.append(c);
                     break;
@@ -138,7 +140,6 @@ public class StringUtils {
         }
         return sb.toString();
     }
-
 
     /**
      * Returning unsafe characters by HTML escaping to the string.

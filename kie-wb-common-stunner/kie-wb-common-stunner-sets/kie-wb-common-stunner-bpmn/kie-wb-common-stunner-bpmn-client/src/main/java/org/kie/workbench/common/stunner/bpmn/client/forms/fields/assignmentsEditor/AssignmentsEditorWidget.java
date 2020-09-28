@@ -166,12 +166,12 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
     }
 
     String getVariableCountsString(final String datainput,
-                                             final String datainputset,
-                                             final String dataoutput,
-                                             final String dataoutputset,
-                                             final String processvars,
-                                             final String assignments,
-                                             final String disallowedpropertynames) {
+                                   final String datainputset,
+                                   final String dataoutput,
+                                   final String dataoutputset,
+                                   final String processvars,
+                                   final String assignments,
+                                   final String disallowedpropertynames) {
         String inputvars = null;
         if (datainput != null) {
             inputvars = datainput;
@@ -210,7 +210,6 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
                 DataObjectUtils.findDataObjects(canvasSessionManager.getCurrentSession(), graphUtils, getSelectedElement(), getParentIds()).stream()
                         .map(AssignmentsEditorWidget::dataObjectToProcessVariableFormat)
                         .collect(Collectors.joining(","));
-
         if (!dataObjects.isEmpty()) {
             sb.append(dataObjects);
         }
@@ -251,8 +250,8 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
         return parentIds;
     }
 
-    private static String dataObjectToProcessVariableFormat(DataObject dataObject) {
-        return dataObject.getName().getValue() + ":" + dataObject.getType().getValue().getType();
+    protected static String dataObjectToProcessVariableFormat(DataObject dataObject) {
+        return dataObject.getName().getValue().replace("\n", "") + ":" + dataObject.getType().getValue().getType();
     }
 
     protected String getSelectedElementUUID(ClientSession clientSession) {

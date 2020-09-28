@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.DataObject;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
@@ -480,6 +481,14 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         verify(activityDataIOEditor,
                times(1)).setReadOnly(false);
     }
+
+    @Test
+    public void testDataObjectsNewLine() {
+        DataObject dataObject = new DataObject();
+        dataObject.getName().setValue("Data\nObject");
+        String doNameFilter = widget.dataObjectToProcessVariableFormat(dataObject);
+        assertEquals(doNameFilter, "DataObject:Object");
+     }
 
     @Test
     public void testAssignmentsForNormalTaskWithInputOutput() {
