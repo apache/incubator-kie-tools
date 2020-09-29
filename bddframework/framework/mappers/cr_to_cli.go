@@ -63,36 +63,6 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 		cmd = append(cmd, "--svc-labels", fmt.Sprintf("%s=%s", labelName, labelValue))
 	}
 
-	if infinispanAware, ok := serviceHolder.GetSpec().(v1alpha1.InfinispanAware); ok {
-		infinispanProperties := infinispanAware.GetInfinispanProperties()
-		if authRealm := infinispanProperties.AuthRealm; len(authRealm) > 0 {
-			cmd = append(cmd, "--infinispan-authrealm", authRealm)
-		}
-		if saslMechanism := infinispanProperties.SaslMechanism; len(saslMechanism) > 0 {
-			cmd = append(cmd, "--infinispan-sasl", string(saslMechanism))
-		}
-		if uri := infinispanProperties.URI; len(uri) > 0 {
-			cmd = append(cmd, "--infinispan-url", uri)
-		}
-
-		if username := serviceHolder.Infinispan.Username; len(username) > 0 {
-			cmd = append(cmd, "--infinispan-user", username)
-		}
-		if password := serviceHolder.Infinispan.Password; len(password) > 0 {
-			cmd = append(cmd, "--infinispan-password", password)
-		}
-	}
-
-	if kafkaAware, ok := serviceHolder.GetSpec().(v1alpha1.KafkaAware); ok {
-		kafkaProperties := kafkaAware.GetKafkaProperties()
-		if externalURI := kafkaProperties.ExternalURI; len(externalURI) > 0 {
-			cmd = append(cmd, "--kafka-url", externalURI)
-		}
-		if instance := kafkaProperties.Instance; len(instance) > 0 {
-			cmd = append(cmd, "--kafka-instance", instance)
-		}
-	}
-
 	if kogitoRuntime, ok := serviceHolder.KogitoService.(*v1alpha1.KogitoRuntime); ok {
 		if runtime := kogitoRuntime.Spec.Runtime; len(runtime) > 0 {
 			cmd = append(cmd, "--runtime", string(runtime))

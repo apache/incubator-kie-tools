@@ -16,7 +16,7 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	//"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
@@ -63,9 +63,9 @@ func (data *Data) installKogitoJobsServiceWithReplicasWithConfiguration(replicas
 		if err := framework.CreateSecret(data.Namespace, kogitoExternalInfinispanSecret, map[string]string{usernameSecretKey: jobsService.Infinispan.Username, passwordSecretKey: jobsService.Infinispan.Password}); err != nil {
 			return err
 		}
-		jobsService.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.SecretName = kogitoExternalInfinispanSecret
-		jobsService.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.UsernameKey = usernameSecretKey
-		jobsService.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.PasswordKey = passwordSecretKey
+		//jobsService.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.SecretName = kogitoExternalInfinispanSecret
+		//jobsService.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.UsernameKey = usernameSecretKey
+		//jobsService.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.PasswordKey = passwordSecretKey
 	}
 
 	return framework.InstallKogitoJobsService(framework.GetDefaultInstallerType(), jobsService)

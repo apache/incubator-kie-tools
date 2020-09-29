@@ -16,7 +16,6 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
@@ -59,9 +58,9 @@ func (data *Data) installKogitoTrustyServiceWithReplicasWithConfiguration(replic
 		if err := framework.CreateSecret(data.Namespace, kogitoExternalInfinispanSecret, map[string]string{usernameSecretKey: trusty.Infinispan.Username, passwordSecretKey: trusty.Infinispan.Password}); err != nil {
 			return err
 		}
-		trusty.KogitoService.(*v1alpha1.KogitoTrusty).Spec.InfinispanProperties.Credentials.SecretName = kogitoExternalInfinispanSecret
-		trusty.KogitoService.(*v1alpha1.KogitoTrusty).Spec.InfinispanProperties.Credentials.UsernameKey = usernameSecretKey
-		trusty.KogitoService.(*v1alpha1.KogitoTrusty).Spec.InfinispanProperties.Credentials.PasswordKey = passwordSecretKey
+		//trusty.KogitoService.(*v1alpha1.KogitoTrusty).Spec.InfinispanProperties.Credentials.SecretName = kogitoExternalInfinispanSecret
+		//trusty.KogitoService.(*v1alpha1.KogitoTrusty).Spec.InfinispanProperties.Credentials.UsernameKey = usernameSecretKey
+		//trusty.KogitoService.(*v1alpha1.KogitoTrusty).Spec.InfinispanProperties.Credentials.PasswordKey = passwordSecretKey
 	}
 
 	return framework.InstallKogitoTrustyService(data.Namespace, framework.GetDefaultInstallerType(), trusty)

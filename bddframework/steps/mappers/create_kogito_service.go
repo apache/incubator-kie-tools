@@ -29,8 +29,6 @@ import (
 const (
 	// DataTable first column
 	kogitoServiceConfigKey          = "config"
-	kogitoServiceInfinispanKey      = "infinispan"
-	kogitoServiceKafkaKey           = "kafka"
 	kogitoServiceRuntimeRequestKey  = "runtime-request"
 	kogitoServiceRuntimeLimitKey    = "runtime-limit"
 	kogitoServiceRuntimeEnvKey      = "runtime-env"
@@ -39,11 +37,6 @@ const (
 	kogitoServiceMonitoringKey      = "monitoring"
 
 	// DataTable second column
-	kogitoServiceInfinispanUsernameKey          = "username"
-	kogitoServiceInfinispanPasswordKey          = "password"
-	kogitoServiceInfinispanURIKey               = "uri"
-	kogitoServiceKafkaExternalURIKey            = "externalURI"
-	kogitoServiceKafkaInstanceKey               = "instance"
 	kogitoServiceHTTPPortKey                    = "httpPort"
 	kogitoServiceInfinispanEnablePersistenceKey = "enablePersistence"
 	kogitoServiceInfinispanEnableEventsKey      = "enableEvents"
@@ -72,12 +65,6 @@ func mapKogitoServiceTableRow(row *TableRow, kogitoService *bddtypes.KogitoServi
 	firstColumn := getFirstColumn(row)
 
 	switch firstColumn {
-	case kogitoServiceInfinispanKey:
-		return mapKogitoServiceInfinispanTableRow(row, kogitoService)
-
-	case kogitoServiceKafkaKey:
-		return mapKogitoServiceKafkaTableRow(row, kogitoService)
-
 	case kogitoServiceServiceLabelKey:
 		kogitoService.KogitoService.GetSpec().AddServiceLabel(getSecondColumn(row), getThirdColumn(row))
 
@@ -103,49 +90,6 @@ func mapKogitoServiceTableRow(row *TableRow, kogitoService *bddtypes.KogitoServi
 		return false, fmt.Errorf("Unrecognized configuration option: %s", firstColumn)
 	}
 
-	return true, nil
-}
-
-func mapKogitoServiceInfinispanTableRow(row *TableRow, kogitoService *bddtypes.KogitoServiceHolder) (mappingFound bool, err error) {
-	secondColumn := getSecondColumn(row)
-
-	if infinispanAware, ok := kogitoService.KogitoService.GetSpec().(v1alpha1.InfinispanAware); ok {
-		switch secondColumn {
-		case kogitoServiceInfinispanUsernameKey:
-			kogitoService.Infinispan.Username = getThirdColumn(row)
-
-		case kogitoServiceInfinispanPasswordKey:
-			kogitoService.Infinispan.Password = getThirdColumn(row)
-
-		case kogitoServiceInfinispanURIKey:
-			infinispanAware.GetInfinispanProperties().URI = getThirdColumn(row)
-
-		default:
-			return false, fmt.Errorf("Unrecognized Infinispan configuration option: %s", secondColumn)
-		}
-	} else {
-		return false, fmt.Errorf("Kogito service %s doesn't support Infinispan configuration", kogitoService.KogitoService.GetName())
-	}
-	return true, nil
-}
-
-func mapKogitoServiceKafkaTableRow(row *TableRow, kogitoService *bddtypes.KogitoServiceHolder) (mappingFound bool, err error) {
-	secondColumn := getSecondColumn(row)
-
-	if kafkaAware, ok := kogitoService.KogitoService.GetSpec().(v1alpha1.KafkaAware); ok {
-		switch secondColumn {
-		case kogitoServiceKafkaExternalURIKey:
-			kafkaAware.GetKafkaProperties().ExternalURI = getThirdColumn(row)
-
-		case kogitoServiceKafkaInstanceKey:
-			kafkaAware.GetKafkaProperties().Instance = getThirdColumn(row)
-
-		default:
-			return false, fmt.Errorf("Unrecognized Kafka configuration option: %s", secondColumn)
-		}
-	} else {
-		return false, fmt.Errorf("Kogito service %s doesn't support Kafka configuration", kogitoService.KogitoService.GetName())
-	}
 	return true, nil
 }
 

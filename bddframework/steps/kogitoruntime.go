@@ -73,9 +73,9 @@ func (data *Data) deployExampleServiceFromRuntimeRegistryWithConfiguration(runti
 		if err := framework.CreateSecret(data.Namespace, kogitoExternalInfinispanSecret, map[string]string{usernameSecretKey: kogitoRuntime.Infinispan.Username, passwordSecretKey: kogitoRuntime.Infinispan.Password}); err != nil {
 			return err
 		}
-		kogitoRuntime.KogitoService.(*v1alpha1.KogitoRuntime).Spec.InfinispanProperties.Credentials.SecretName = kogitoExternalInfinispanSecret
-		kogitoRuntime.KogitoService.(*v1alpha1.KogitoRuntime).Spec.InfinispanProperties.Credentials.UsernameKey = usernameSecretKey
-		kogitoRuntime.KogitoService.(*v1alpha1.KogitoRuntime).Spec.InfinispanProperties.Credentials.PasswordKey = passwordSecretKey
+		//kogitoRuntime.KogitoService.(*v1alpha1.KogitoRuntime).Spec.InfinispanProperties.Credentials.SecretName = kogitoExternalInfinispanSecret
+		//kogitoRuntime.KogitoService.(*v1alpha1.KogitoRuntime).Spec.InfinispanProperties.Credentials.UsernameKey = usernameSecretKey
+		//kogitoRuntime.KogitoService.(*v1alpha1.KogitoRuntime).Spec.InfinispanProperties.Credentials.PasswordKey = passwordSecretKey
 	}
 
 	return framework.DeployRuntimeService(data.Namespace, framework.GetDefaultInstallerType(), kogitoRuntime)

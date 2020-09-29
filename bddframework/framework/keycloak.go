@@ -26,6 +26,10 @@ import (
 	keycloak "github.com/keycloak/keycloak-operator/pkg/apis/keycloak/v1alpha1"
 )
 
+const (
+	keycloakKey = "keycloak"
+)
+
 // DeployKeycloakInstance deploys an instance of Keycloak
 func DeployKeycloakInstance(namespace string) error {
 	GetLogger(namespace).Infof("Creating Keycloak instance.")

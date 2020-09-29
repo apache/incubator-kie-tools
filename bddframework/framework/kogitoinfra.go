@@ -14,6 +14,7 @@
 
 package framework
 
+/*
 import (
 	"fmt"
 	"strings"
@@ -167,3 +168,4 @@ func getWaitRunningMessage(component string, shouldRun bool) string {
 	}
 	return fmt.Sprintf("%s is %s", component, msg)
 }
+*/
