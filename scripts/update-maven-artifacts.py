@@ -21,8 +21,6 @@ import argparse
 DEFAULT_REPO_URL = "https://repository.jboss.org/nexus/content/groups/public/"
 KOGITO_ARTIFACT_PATH = "org/kie/kogito"
 
-ARTIFACTS_VERSION = "1.0.0-SNAPSHOT"
-
 Modules = {
     #service-name: module-name(directory in which module's module.yaml file is present)
     #Note: Service name should be same as given in the repository
@@ -124,12 +122,15 @@ if __name__ == "__main__":
     parser.add_argument('--repo-url', dest='repo_url', default=DEFAULT_REPO_URL, help='Defines the url of the repository to extract the artifacts from, defaults to {}'.format(DEFAULT_REPO_URL))
     args = parser.parse_args()
     
+    artifactsVersion = common.retrieve_artifacts_version()
+    print("Retrieve artifacts version: ", artifactsVersion)
+
     # Update Kogito Service modules
     for serviceName, modulePath in Modules.items():
         service = {
-            "repo_url" : args.repo_url + "{}/{}/{}/".format(KOGITO_ARTIFACT_PATH, serviceName, ARTIFACTS_VERSION),
+            "repo_url" : args.repo_url + "{}/{}/{}/".format(KOGITO_ARTIFACT_PATH, serviceName, artifactsVersion),
             "name" : serviceName,
-            "version" : ARTIFACTS_VERSION
+            "version" : artifactsVersion
         }
         moduleYamlFile = "modules/{}/module.yaml".format(modulePath)
         

@@ -21,6 +21,10 @@ modules:
   repositories:
     - path: modules
 
+envs:
+  - name: "KOGITO_VERSION"
+    value: "1.0.0-SNAPSHOT"
+
 packages:
   manager: microdnf
 

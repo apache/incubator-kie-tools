@@ -25,6 +25,7 @@ MODULES_DIR = "modules"
 IMAGE_STREAM_FILENAME = "kogito-imagestream.yaml"
 # image.yaml file definition that needs to be updated
 IMAGE_FILENAME = "image.yaml"
+ARTIFACTS_VERSION_ENV_KEY="KOGITO_VERSION"
 
 # behave tests that needs to be update
 BEHAVE_BASE_DIR = 'tests/features'
@@ -142,56 +143,38 @@ def update_module_version(moduleDir, target_version):
         raise
 
 
-def update_artifacts_version_env_in_modules(artifacts_version):
+def retrieve_artifacts_version():
     """
-    Update all modules which contains the `KOGITO_VERSION` env var.
-    :param target_version: kogito version used to update all modules which contains the `KOGITO_VERSION` env var
-    """
-    update_env_in_all_modules("KOGITO_VERSION", artifacts_version)
-
-def update_env_in_all_modules(envKey, envValue):
-    """
-    Update all modules which contains the given envKey to the given envValue.
-    :param envKey: Environment variable key to update
-    :param envValue: Environment variable value to set
-    """
-    for module_dir in get_all_module_dirs():
-        update_env_in_module(module_dir, envKey, envValue)
-
-def update_env_in_module(module_dir, envKey, envValue):
-    """
-    Update a module if it contains the given envKey to the given envValue.
-    :param envKey: Environment variable key to update if exists
-    :param envValue: Environment variable value to set if exists
+    Retrieve the artifacts version from envs in main image.yaml
     """
     try:
-        moduleFile = os.path.join(module_dir, "module.yaml")
-        changed = False
-        with open(moduleFile) as module:
-            data = yaml_loader().load(module)
-            if 'envs' in data:
-                for index, env in enumerate(data['envs'], start=0):
-                    if envKey == env['name']:
-                        print("Updating module {0} env var {1} with value {2}".format(data['name'], envKey, envValue))
-                        data['envs'][index]['value'] = envValue
-                        changed = True
-
-        if (changed):
-            with open(moduleFile, 'w') as module:
-                yaml_loader().dump(data, module)
+        with open(IMAGE_FILENAME) as imageFile:
+            data = yaml_loader().load(imageFile)
+            for index, env in enumerate(data['envs'], start=0):
+                if env['name'] == ARTIFACTS_VERSION_ENV_KEY:
+                    return data['envs'][index]['value']
 
     except TypeError:
         raise
 
-def update_artifacts_version_in_python_scripts(artifacts_version):
+def update_artifacts_version_env_in_image(artifacts_version):
     """
-    Update python scripts with the default artifacts version
-    :param artifacts_version: artifacts version to set
+    Update `KOGITO_VERSION` env var in image.yaml.
+    :param target_version: kogito version used to update image.yaml which contains the `KOGITO_VERSION` env var
     """
-    print("Set artifacts_version {} in python scripts".format(artifacts_version))
-    pattern = re.compile(r'(ARTIFACTS_VERSION=.*)')
-    replacement = 'ARTIFACTS_VERSION="{}"'.format(artifacts_version)
-    update_in_file("scripts/update-maven-artifacts.py", pattern, replacement)
+    try:
+        with open(IMAGE_FILENAME) as imageFile:
+            data = yaml_loader().load(imageFile)
+            for index, env in enumerate(data['envs'], start=0):
+                if env['name'] == ARTIFACTS_VERSION_ENV_KEY:
+                    print("Updating image.yaml env var {0} with value {1}".format(ARTIFACTS_VERSION_ENV_KEY, artifacts_version))
+                    data['envs'][index]['value'] = artifacts_version
+
+        with open(IMAGE_FILENAME, 'w') as imageFile:
+            yaml_loader().dump(data, imageFile)
+
+    except TypeError:
+        raise
 
 def update_examples_ref_in_behave_tests(examples_ref):
     """

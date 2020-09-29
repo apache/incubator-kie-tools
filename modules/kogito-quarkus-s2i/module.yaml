@@ -4,7 +4,3 @@ version: "1.0.0-snapshot"
 
 execute:
   - script: configure
-
-envs:
-  - name: "KOGITO_VERSION"
-    value: "1.0.0-SNAPSHOT"
