@@ -7,18 +7,24 @@ Feature: Deploy Travel agency service and verify its functionality
   Background:
     Given Namespace is created
     And Kogito Operator is deployed with Infinispan and Kafka operators
-    And Install Kogito Data Index with 1 replicas
+    And Install Infinispan Kogito Infra "infinispan" within 5 minutes
+    And Install Kafka Kogito Infra "kafka" within 10 minutes
+    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
+    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
+    And Install Kogito Data Index with 1 replicas with configuration:
+      | config | infra | infinispan |
+      | config | infra | kafka      |
 
   Scenario Outline: Travel application without required Visa and build profile <profile>
     Given Clone Kogito examples into local directory
     And Local example service "kogito-travel-agency/extended/travels" is built by Maven using profile "<profile>" and deployed to runtime registry
     And Local example service "kogito-travel-agency/extended/visas" is built by Maven using profile "<profile>" and deployed to runtime registry
     And Deploy quarkus example service "travels" from runtime registry with configuration:
-      | config     | enableEvents      | enabled |
-      | config     | enablePersistence | enabled |
+      | config | infra | infinispan |
+      | config | infra | kafka      |
     And Deploy quarkus example service "visas" from runtime registry with configuration:
-      | config     | enableEvents      | enabled |
-      | config     | enablePersistence | enabled |
+      | config | infra | infinispan |
+      | config | infra | kafka      |
     And Kogito Runtime "travels" has 1 pods running within 10 minutes
     And Service "travels" with process name "travels" is available within 1 minutes
     And Kogito Runtime "visas" has 1 pods running within 10 minutes
@@ -71,11 +77,11 @@ Feature: Deploy Travel agency service and verify its functionality
     And Local example service "kogito-travel-agency/extended/travels" is built by Maven using profile "<profile>" and deployed to runtime registry
     And Local example service "kogito-travel-agency/extended/visas" is built by Maven using profile "<profile>" and deployed to runtime registry
     And Deploy quarkus example service "travels" from runtime registry with configuration:
-      | config     | enableEvents      | enabled |
-      | config     | enablePersistence | enabled |
+      | config | infra | infinispan |
+      | config | infra | kafka      |
     And Deploy quarkus example service "visas" from runtime registry with configuration:
-      | config     | enableEvents      | enabled |
-      | config     | enablePersistence | enabled |
+      | config | infra | infinispan |
+      | config | infra | kafka      |
     And Kogito Runtime "travels" has 1 pods running within 10 minutes
     And Service "travels" with process name "travels" is available within 1 minutes
     And Kogito Runtime "visas" has 1 pods running within 10 minutes

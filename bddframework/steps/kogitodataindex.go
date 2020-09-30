@@ -23,11 +23,7 @@ import (
 
 /*
 	DataTable for Data Index:
-	| infinispan      | username    | developer                 |
-	| infinispan      | password    | mypass                    |
-	| infinispan      | uri         | external-infinispan:11222 |
-	| kafka           | externalURI | kafka-bootstrap:9092      |
-	| kafka           | instance    | external-kafka            |
+	| config          | infra       | <KogitoInfra name>        |
 	| runtime-request | cpu/memory  | value                     |
 	| runtime-limit   | cpu/memory  | value                     |
 	| runtime-env     | varName     | varValue                  |
@@ -51,13 +47,6 @@ func (data *Data) installKogitoDataIndexServiceWithReplicasWithConfiguration(rep
 
 	if err := mappers.MapKogitoServiceTable(table, dataIndex); err != nil {
 		return err
-	}
-
-	if dataIndex.IsInfinispanUsernameSpecified() && framework.GetDefaultInstallerType() == framework.CRInstallerType {
-		// If Infinispan authentication is set and CR installer is used, the Secret holding Infinispan credentials needs to be created and passed to Data index CR.
-		if err := framework.CreateSecret(data.Namespace, kogitoExternalInfinispanSecret, map[string]string{usernameSecretKey: dataIndex.Infinispan.Username, passwordSecretKey: dataIndex.Infinispan.Password}); err != nil {
-			return err
-		}
 	}
 
 	return framework.InstallKogitoDataIndexService(data.Namespace, framework.GetDefaultInstallerType(), dataIndex)

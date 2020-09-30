@@ -28,14 +28,6 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 
 	// Flags ordered alphabetically
 
-	if serviceHolder.EnableEvents {
-		cmd = append(cmd, "--enable-events")
-	}
-
-	if serviceHolder.EnablePersistence {
-		cmd = append(cmd, "--enable-persistence")
-	}
-
 	for _, envVar := range serviceHolder.GetSpec().GetEnvs() {
 		cmd = append(cmd, "--env", fmt.Sprintf("%s=%s", envVar.Name, envVar.Value))
 	}
@@ -47,6 +39,10 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 	image := serviceHolder.GetSpec().GetImage()
 	if len(image) > 0 {
 		cmd = append(cmd, "--image", image)
+	}
+
+	for _, infra := range serviceHolder.GetSpec().GetInfra() {
+		cmd = append(cmd, "--infra", infra)
 	}
 
 	for resourceName, quantity := range serviceHolder.GetSpec().GetResources().Limits {
@@ -123,6 +119,31 @@ func GetBuildCLIFlags(kogitoBuild *v1alpha1.KogitoBuild) []string {
 		for _, webhook := range kogitoBuild.Spec.WebHooks {
 			cmd = append(cmd, "--web-hook", fmt.Sprintf("%s=%s", webhook.Type, webhook.Secret))
 		}
+	}
+
+	return cmd
+}
+
+//GetInfraCLIFlags returns CLI flags based on KogitoInfra passed in parameter
+func GetInfraCLIFlags(infraResource *v1alpha1.KogitoInfra) []string {
+	var cmd []string
+
+	// Flags ordered alphabetically
+
+	if apiVersion := infraResource.Spec.Resource.APIVersion; len(apiVersion) > 0 {
+		cmd = append(cmd, "--apiVersion", apiVersion)
+	}
+
+	if kind := infraResource.Spec.Resource.Kind; len(kind) > 0 {
+		cmd = append(cmd, "--kind", kind)
+	}
+
+	if resourceName := infraResource.Spec.Resource.Name; len(resourceName) > 0 {
+		cmd = append(cmd, "--resource-name", resourceName)
+	}
+
+	if resourceNamespace := infraResource.Spec.Resource.Namespace; len(resourceNamespace) > 0 {
+		cmd = append(cmd, "--resource-namespace", resourceNamespace)
 	}
 
 	return cmd

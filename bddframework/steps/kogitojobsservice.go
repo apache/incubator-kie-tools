@@ -24,13 +24,7 @@ import (
 
 /*
 	DataTable for Jobs Service:
-	| config           | enableEvents      | enabled/disabled          |
-	| config           | enablePersistence | enabled/disabled          |
-	| infinispan       | username          | developer                 |
-	| infinispan       | password          | mypass                    |
-	| infinispan       | uri               | external-infinispan:11222 |
-	| kafka            | externalURI       | kafka-bootstrap:9092      |
-	| kafka            | instance          | external-kafka            |
+	| config           | infra             | <KogitoInfra name>        |
 	| runtime-request  | cpu/memory        | value                     |
 	| runtime-limit    | cpu/memory        | value                     |
 	| runtime-env      | varName           | varValue                  |
@@ -56,16 +50,6 @@ func (data *Data) installKogitoJobsServiceWithReplicasWithConfiguration(replicas
 
 	if err := mappers.MapKogitoServiceTable(table, jobsService); err != nil {
 		return err
-	}
-
-	if jobsService.IsInfinispanUsernameSpecified() && framework.GetDefaultInstallerType() == framework.CRInstallerType {
-		// If Infinispan authentication is set and CR installer is used, the Secret holding Infinispan credentials needs to be created and passed to Data index CR.
-		if err := framework.CreateSecret(data.Namespace, kogitoExternalInfinispanSecret, map[string]string{usernameSecretKey: jobsService.Infinispan.Username, passwordSecretKey: jobsService.Infinispan.Password}); err != nil {
-			return err
-		}
-		//jobsService.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.SecretName = kogitoExternalInfinispanSecret
-		//jobsService.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.UsernameKey = usernameSecretKey
-		//jobsService.KogitoService.(*v1alpha1.KogitoDataIndex).Spec.InfinispanProperties.Credentials.PasswordKey = passwordSecretKey
 	}
 
 	return framework.InstallKogitoJobsService(framework.GetDefaultInstallerType(), jobsService)

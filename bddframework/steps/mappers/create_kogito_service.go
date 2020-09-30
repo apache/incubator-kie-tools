@@ -37,10 +37,9 @@ const (
 	kogitoServiceMonitoringKey      = "monitoring"
 
 	// DataTable second column
-	kogitoServiceHTTPPortKey                    = "httpPort"
-	kogitoServiceInfinispanEnablePersistenceKey = "enablePersistence"
-	kogitoServiceInfinispanEnableEventsKey      = "enableEvents"
-	kogitoServiceMonitoringScrapeKey            = "scrape"
+	kogitoServiceHTTPPortKey         = "httpPort"
+	kogitoServiceMonitoringScrapeKey = "scrape"
+	kogitoServiceInfraKey            = "infra"
 )
 
 // MapKogitoServiceTable maps Cucumber table to KogitoServiceHolder
@@ -105,11 +104,8 @@ func mapKogitoServiceConfigTableRow(row *TableRow, kogitoService *bddtypes.Kogit
 
 		kogitoService.KogitoService.GetSpec().SetHTTPPort(int32(httpPort))
 
-	case kogitoServiceInfinispanEnablePersistenceKey:
-		kogitoService.EnablePersistence = MustParseEnabledDisabled(getThirdColumn(row))
-
-	case kogitoServiceInfinispanEnableEventsKey:
-		kogitoService.EnableEvents = MustParseEnabledDisabled(getThirdColumn(row))
+	case kogitoServiceInfraKey:
+		kogitoService.KogitoService.GetSpec().AddInfra(getThirdColumn(row))
 
 	default:
 		return false, fmt.Errorf("Unrecognized config configuration option: %s", secondColumn)

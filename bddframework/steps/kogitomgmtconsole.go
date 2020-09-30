@@ -21,6 +21,14 @@ import (
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
 
+/*
+	DataTable for Management console:
+	| config          | infra       | <KogitoInfra name>        |
+	| runtime-request | cpu/memory  | value                     |
+	| runtime-limit   | cpu/memory  | value                     |
+	| runtime-env     | varName     | varValue                  |
+*/
+
 // RegisterCliSteps register all CLI steps existing
 func registerKogitoManagementConsoleSteps(s *godog.ScenarioContext, data *Data) {
 	s.Step(`^Install Kogito Management Console with (\d+) replicas$`, data.installKogitoManagementConsoleWithReplicas)

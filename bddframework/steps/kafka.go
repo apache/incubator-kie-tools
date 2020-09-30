@@ -24,8 +24,13 @@ import (
 const defaultReplicas = 1
 
 func registerKafkaSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Kafka instance "([^"]*)" has (\d+) (?:pod|pods) running within (\d+) (?:minute|minutes)$`, data.kafkaInstanceHasPodsRunningWithinMinutes)
 	ctx.Step(`^Kafka instance "([^"]*)" is deployed$`, data.kafkaInstanceIsDeployed)
 	ctx.Step(`^Kafka topic "([^"]*)" is deployed$`, data.kafkaTopicIsDeployed)
+}
+
+func (data *Data) kafkaInstanceHasPodsRunningWithinMinutes(name string, numberOfPods, timeOutInMin int) error {
+	return framework.WaitForPodsWithLabel(data.Namespace, "strimzi.io/name", name+"-entity-operator", numberOfPods, timeOutInMin)
 }
 
 func (data *Data) kafkaInstanceIsDeployed(name string) error {

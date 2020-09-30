@@ -25,13 +25,7 @@ import (
 
 /*
 	DataTable for KogitoRuntime:
-	| config           | enableEvents      | enabled/disabled          |
-	| config           | enablePersistence | enabled/disabled          |
-	| infinispan       | username          | developer                 |
-	| infinispan       | password          | mypass                    |
-	| infinispan       | uri               | external-infinispan:11222 |
-	| kafka            | externalURI       | kafka-bootstrap:9092      |
-	| kafka            | instance          | external-kafka            |
+	| config           | infra             | <KogitoInfra name>        |
 	| service-label    | labelKey          | labelValue                |
 	| deployment-label | labelKey          | labelValue                |
 	| runtime-request  | cpu/memory        | value                     |
@@ -46,6 +40,7 @@ const (
 
 func registerKogitoRuntimeSteps(ctx *godog.ScenarioContext, data *Data) {
 	// Deploy steps
+	ctx.Step(`^Deploy (quarkus|springboot) example service "([^"]*)" from runtime registry$`, data.deployExampleServiceFromRuntimeRegistry)
 	ctx.Step(`^Deploy (quarkus|springboot) example service "([^"]*)" from runtime registry with configuration:$`, data.deployExampleServiceFromRuntimeRegistryWithConfiguration)
 
 	// Deployment steps
@@ -59,6 +54,17 @@ func registerKogitoRuntimeSteps(ctx *godog.ScenarioContext, data *Data) {
 }
 
 // Deploy service steps
+func (data *Data) deployExampleServiceFromRuntimeRegistry(runtimeType, kogitoApplicationName string) error {
+	imageTag := data.ScenarioContext[getBuiltRuntimeImageTagContextKey(kogitoApplicationName)]
+	kogitoRuntime := &bddtypes.KogitoServiceHolder{
+		KogitoService: framework.GetKogitoRuntimeStub(data.Namespace, runtimeType, kogitoApplicationName, imageTag),
+	}
+
+	addDefaultJavaOptionsIfNotProvided(kogitoRuntime.KogitoService.GetSpec())
+
+	return framework.DeployRuntimeService(data.Namespace, framework.GetDefaultInstallerType(), kogitoRuntime)
+}
+
 func (data *Data) deployExampleServiceFromRuntimeRegistryWithConfiguration(runtimeType, kogitoApplicationName string, table *godog.Table) error {
 	imageTag := data.ScenarioContext[getBuiltRuntimeImageTagContextKey(kogitoApplicationName)]
 	kogitoRuntime, err := getKogitoRuntimeExamplesStub(data.Namespace, runtimeType, kogitoApplicationName, imageTag, table)
@@ -67,16 +73,6 @@ func (data *Data) deployExampleServiceFromRuntimeRegistryWithConfiguration(runti
 	}
 
 	addDefaultJavaOptionsIfNotProvided(kogitoRuntime.KogitoService.GetSpec())
-
-	if kogitoRuntime.IsInfinispanUsernameSpecified() && framework.GetDefaultInstallerType() == framework.CRInstallerType {
-		// If Infinispan authentication is set and CR installer is used, the Secret holding Infinispan credentials needs to be created and passed to Data index CR.
-		if err := framework.CreateSecret(data.Namespace, kogitoExternalInfinispanSecret, map[string]string{usernameSecretKey: kogitoRuntime.Infinispan.Username, passwordSecretKey: kogitoRuntime.Infinispan.Password}); err != nil {
-			return err
-		}
-		//kogitoRuntime.KogitoService.(*v1alpha1.KogitoRuntime).Spec.InfinispanProperties.Credentials.SecretName = kogitoExternalInfinispanSecret
-		//kogitoRuntime.KogitoService.(*v1alpha1.KogitoRuntime).Spec.InfinispanProperties.Credentials.UsernameKey = usernameSecretKey
-		//kogitoRuntime.KogitoService.(*v1alpha1.KogitoRuntime).Spec.InfinispanProperties.Credentials.PasswordKey = passwordSecretKey
-	}
 
 	return framework.DeployRuntimeService(data.Namespace, framework.GetDefaultInstallerType(), kogitoRuntime)
 }

@@ -9,7 +9,15 @@ Feature: Kogito Data Index
 
   @smoke
   Scenario: Install Kogito Data Index
-    When Install Kogito Data Index with 1 replicas
+    Given Install Infinispan Kogito Infra "infinispan" within 5 minutes
+    And Install Kafka Kogito Infra "kafka" within 10 minutes
+    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
+    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
+
+    When Install Kogito Data Index with 1 replicas with configuration:
+      | config | infra | infinispan |
+      | config | infra | kafka      |
+
     Then Kogito Data Index has 1 pods running within 10 minutes
     And GraphQL request on service "data-index" is successful within 2 minutes with path "graphql" and query:
     """
@@ -28,11 +36,13 @@ Feature: Kogito Data Index
     Given Infinispan instance "external-infinispan" is deployed with configuration:
       | username | developer |
       | password | mypass |
+    And Install Infinispan Kogito Infra "external-infinispan" connected to resource "external-infinispan" within 5 minutes
+    And Install Kafka Kogito Infra "kafka" within 10 minutes
+    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
 
     When Install Kogito Data Index with 1 replicas with configuration:
-      | infinispan | username | developer                 |
-      | infinispan | password | mypass                    |
-      | infinispan | uri      | external-infinispan:11222 |
+      | config | infra | external-infinispan |
+      | config | infra | kafka               |
 
     Then Kogito Data Index has 1 pods running within 10 minutes
     And GraphQL request on service "data-index" is successful within 2 minutes with path "graphql" and query:

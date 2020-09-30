@@ -25,11 +25,10 @@ import (
 
 /*
 	DataTable for Explainability:
+	| config          | infra       | <KogitoInfra name>        |
 	| runtime-request | cpu/memory  | value                     |
 	| runtime-limit   | cpu/memory  | value                     |
 	| runtime-env     | varName     | varValue                  |
-	| kafka           | externalURI | kafka-bootstrap:9092      |
-	| kafka           | instance    | external-kafka            |
 */
 
 func registerKogitoExplainabilityServiceSteps(ctx *godog.ScenarioContext, data *Data) {

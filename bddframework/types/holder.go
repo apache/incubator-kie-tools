@@ -21,12 +21,6 @@ import (
 // KogitoServiceHolder Helper structure holding informations which are not available in KogitoService
 type KogitoServiceHolder struct {
 	v1alpha1.KogitoService
-	Infinispan struct {
-		Username string
-		Password string
-	}
-	EnablePersistence bool
-	EnableEvents      bool
 }
 
 // KogitoBuildHolder Helper structure holding informations for Kogito build
@@ -36,9 +30,4 @@ type KogitoBuildHolder struct {
 
 	// Specifies folder with prebuilt Kogito binaries to be uploaded to KogitoBuild
 	BuiltBinaryFolder string
-}
-
-//IsInfinispanUsernameSpecified Returns true if Infinispan username is specified
-func (serviceHolder *KogitoServiceHolder) IsInfinispanUsernameSpecified() bool {
-	return len(serviceHolder.Infinispan.Username) > 0
 }

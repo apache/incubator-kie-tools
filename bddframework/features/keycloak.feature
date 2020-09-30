@@ -12,8 +12,14 @@ Feature: Kogito integration with Keycloak
   Scenario: Install Kogito Data Index with Keycloak security
     Given Keycloak instance with realm "kogito-realm" and client "kogito-dataindex-service" is deployed
     And Keycloak user "my-user" with password "my-password" is deployed
+    And Install Infinispan Kogito Infra "infinispan" within 5 minutes
+    And Install Kafka Kogito Infra "kafka" within 10 minutes
+    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
+    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
 
     When Install Kogito Data Index with 1 replicas with configuration:
+      | config       | infra                                          | infinispan                                     |
+      | config       | infra                                          | kafka                                          |
       | runtime-env  | quarkus.oidc.tenant-enabled                    | true                                           |
       | runtime-env  | quarkus.oidc.tls.verification                  | none                                           |
       | runtime-env  | quarkus.oidc.auth-server-url                   | https://keycloak:8443/auth/realms/kogito-realm |
@@ -73,8 +79,11 @@ Feature: Kogito integration with Keycloak
   Scenario: Install Kogito Explainability with Keycloak security
     Given Keycloak instance with realm "kogito-realm" and client "kogito-explainability-service" is deployed
     And Keycloak user "my-user" with password "my-password" is deployed
+    And Install Kafka Kogito Infra "kafka" within 10 minutes
+    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
 
     When Install Kogito Explainability with 1 replicas with configuration:
+      | config       | infra                                          | kafka                                          |
       | runtime-env  | EXPLAINABILITY_COMMUNICATION                   | rest                                           |
       | runtime-env  | quarkus.oidc.tenant-enabled                    | true                                           |
       | runtime-env  | quarkus.oidc.tls.verification                  | none                                           |
@@ -109,8 +118,14 @@ Feature: Kogito integration with Keycloak
   Scenario: Install Kogito Trusty with Keycloak security
     Given Keycloak instance with realm "kogito-realm" and client "kogito-trusty-service" is deployed
     And Keycloak user "my-user" with password "my-password" is deployed
+    And Install Infinispan Kogito Infra "infinispan" within 5 minutes
+    And Install Kafka Kogito Infra "kafka" within 10 minutes
+    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
+    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
 
     When Install Kogito Trusty with 1 replicas with configuration:
+      | config       | infra                                          | infinispan                                     |
+      | config       | infra                                          | kafka                                          |
       | runtime-env  | quarkus.oidc.tenant-enabled                    | true                                           |
       | runtime-env  | quarkus.oidc.tls.verification                  | none                                           |
       | runtime-env  | quarkus.oidc.auth-server-url                   | https://keycloak:8443/auth/realms/kogito-realm |

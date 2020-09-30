@@ -29,10 +29,7 @@ import (
 */
 
 const (
-	externalInfinispanSecret       = "external-infinispan-secret"
-	kogitoExternalInfinispanSecret = "kogito-external-infinispan-secret"
-	usernameSecretKey              = "user"
-	passwordSecretKey              = "pass"
+	externalInfinispanSecret = "external-infinispan-secret"
 )
 
 var performanceInfinispanContainerSpec = infinispan.InfinispanContainerSpec{
@@ -42,8 +39,13 @@ var performanceInfinispanContainerSpec = infinispan.InfinispanContainerSpec{
 }
 
 func registerInfinispanSteps(ctx *godog.ScenarioContext, data *Data) {
+	ctx.Step(`^Infinispan instance "([^"]*)" has (\d+) (?:pod|pods) running within (\d+) (?:minute|minutes)$`, data.infinispanInstanceHasPodsRunningWithinMinutes)
 	ctx.Step(`^Infinispan instance "([^"]*)" is deployed with configuration:$`, data.infinispanInstanceIsDeployedWithConfiguration)
 	ctx.Step(`^Infinispan instance "([^"]*)" is deployed for performance within (\d+) minute\(s\) with configuration:$`, data.infinispanInstanceIsDeployedForPerformanceWithinMinutesWithConfiguration)
+}
+
+func (data *Data) infinispanInstanceHasPodsRunningWithinMinutes(name string, numberOfPods, timeOutInMin int) error {
+	return framework.WaitForPodsWithLabel(data.Namespace, "infinispan_cr", name, numberOfPods, timeOutInMin)
 }
 
 func (data *Data) infinispanInstanceIsDeployedWithConfiguration(name string, table *godog.Table) error {

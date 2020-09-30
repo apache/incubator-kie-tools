@@ -23,11 +23,7 @@ import (
 
 /*
 	DataTable for Trusty:
-	| infinispan      | username    | developer                 |
-	| infinispan      | password    | mypass                    |
-	| infinispan      | uri         | external-infinispan:11222 |
-	| kafka           | externalURI | kafka-bootstrap:9092      |
-	| kafka           | instance    | external-kafka            |
+	| config          | infra       | <KogitoInfra name>        |
 	| runtime-request | cpu/memory  | value                     |
 	| runtime-limit   | cpu/memory  | value                     |
 	| runtime-env     | varName     | varValue                  |
@@ -51,16 +47,6 @@ func (data *Data) installKogitoTrustyServiceWithReplicasWithConfiguration(replic
 
 	if err := mappers.MapKogitoServiceTable(table, trusty); err != nil {
 		return err
-	}
-
-	if trusty.IsInfinispanUsernameSpecified() && framework.GetDefaultInstallerType() == framework.CRInstallerType {
-		// If Infinispan authentication is set and CR installer is used, the Secret holding Infinispan credentials needs to be created and passed to Trusty CR.
-		if err := framework.CreateSecret(data.Namespace, kogitoExternalInfinispanSecret, map[string]string{usernameSecretKey: trusty.Infinispan.Username, passwordSecretKey: trusty.Infinispan.Password}); err != nil {
-			return err
-		}
-		//trusty.KogitoService.(*v1alpha1.KogitoTrusty).Spec.InfinispanProperties.Credentials.SecretName = kogitoExternalInfinispanSecret
-		//trusty.KogitoService.(*v1alpha1.KogitoTrusty).Spec.InfinispanProperties.Credentials.UsernameKey = usernameSecretKey
-		//trusty.KogitoService.(*v1alpha1.KogitoTrusty).Spec.InfinispanProperties.Credentials.PasswordKey = passwordSecretKey
 	}
 
 	return framework.InstallKogitoTrustyService(data.Namespace, framework.GetDefaultInstallerType(), trusty)

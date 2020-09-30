@@ -14,158 +14,100 @@
 
 package framework
 
-/*
 import (
 	"fmt"
-	"strings"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoinfra/infinispan"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoinfra/kafka"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoinfra/keycloak"
+	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
+	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/types"
 )
-
-// KogitoInfraComponent defines the KogitoInfra component
-type KogitoInfraComponent struct {
-	name string
-}
-
-const (
-	infinispanKey = "infinispan"
-	kafkaKey      = "kafka"
-	keycloakKey   = "keycloak"
-)
-
-var (
-	// InfinispanKogitoInfraComponent is for infinispan
-	InfinispanKogitoInfraComponent = KogitoInfraComponent{name: infinispanKey}
-	// KafkaKogitoInfraComponent is for kafka
-	KafkaKogitoInfraComponent = KogitoInfraComponent{name: kafkaKey}
-	// KeycloakKogitoInfraComponent is for keycloak
-	KeycloakKogitoInfraComponent = KogitoInfraComponent{name: keycloakKey}
-)
-
-// ParseKogitoInfraComponent retrieves the correspoding KogitoInfraComponent
-func ParseKogitoInfraComponent(component string) KogitoInfraComponent {
-	switch cmp := strings.ToLower(component); cmp {
-	case infinispanKey:
-		return InfinispanKogitoInfraComponent
-	case kafkaKey:
-		return KafkaKogitoInfraComponent
-	case keycloakKey:
-		return KeycloakKogitoInfraComponent
-	default:
-		return KogitoInfraComponent{name: cmp}
-	}
-}
 
 // InstallKogitoInfraComponent installs the desired component with the given installer type
-func InstallKogitoInfraComponent(namespace string, installerType InstallerType, component KogitoInfraComponent) error {
-	GetLogger(namespace).Infof("%s install Kogito Infra Component %s", installerType, component.name)
+func InstallKogitoInfraComponent(namespace string, installerType InstallerType, infra *v1alpha1.KogitoInfra) error {
+	GetLogger(namespace).Infof("%s install Kogito Infra resource with APIVersion %s and Kind %s", installerType, infra.Spec.Resource.APIVersion, infra.Spec.Resource.Kind)
 	switch installerType {
 	case CLIInstallerType:
-		return cliInstallKogitoInfraComponent(namespace, component)
+		return cliInstallKogitoInfraComponent(namespace, infra)
 	case CRInstallerType:
-		return crInstallKogitoInfraComponent(namespace, component)
+		return crInstallKogitoInfraComponent(namespace, infra)
 	default:
 		panic(fmt.Errorf("Unknown installer type %s", installerType))
 	}
 }
 
-func crInstallKogitoInfraComponent(namespace string, component KogitoInfraComponent) error {
-	ensureComponent := infrastructure.EnsureKogitoInfra(namespace, kubeClient)
-	switch component {
-	case InfinispanKogitoInfraComponent:
-		ensureComponent = ensureComponent.WithInfinispan()
-	case KafkaKogitoInfraComponent:
-		ensureComponent = ensureComponent.WithKafka()
-	case KeycloakKogitoInfraComponent:
-		ensureComponent = ensureComponent.WithKeycloak()
+func crInstallKogitoInfraComponent(namespace string, infra *v1alpha1.KogitoInfra) error {
+	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(infra); err != nil {
+		return fmt.Errorf("Error creating KogitoInfra: %v", err)
 	}
-	_, _, err := ensureComponent.Apply()
+	return nil
+}
+
+func cliInstallKogitoInfraComponent(namespace string, infraResource *v1alpha1.KogitoInfra) error {
+	cmd := []string{"install", "infra", infraResource.Name}
+
+	cmd = append(cmd, mappers.GetInfraCLIFlags(infraResource)...)
+
+	_, err := ExecuteCliCommandInNamespace(namespace, cmd...)
 	return err
 }
 
-func cliInstallKogitoInfraComponent(namespace string, component KogitoInfraComponent) error {
-	_, err := ExecuteCliCommandInNamespace(namespace, "install", component.name)
-	return err
+// GetKogitoInfraResourceStub Get basic KogitoInfra stub with all needed fields initialized
+func GetKogitoInfraResourceStub(namespace, name, targetResourceType string) (*v1alpha1.KogitoInfra, error) {
+	infraResource, err := parseKogitoInfraResource(targetResourceType)
+	if err != nil {
+		return nil, err
+	}
+
+	return &v1alpha1.KogitoInfra{
+		ObjectMeta: NewObjectMetadata(namespace, name),
+		Spec: v1alpha1.KogitoInfraSpec{
+			Resource: *infraResource,
+		},
+	}, nil
 }
 
-// RemoveKogitoInfraComponent removes the desired component with the given installer type
-func RemoveKogitoInfraComponent(namespace string, installerType InstallerType, component KogitoInfraComponent) error {
-	GetLogger(namespace).Infof("%s remove Kogito Infra Component %s", installerType, component.name)
-	switch installerType {
-	case CLIInstallerType:
-		return cliRemoveKogitoInfraComponent(namespace, component)
-	case CRInstallerType:
-		return crRemoveKogitoInfraComponent(namespace, component)
+// Converts infra resource from name to Resource struct
+func parseKogitoInfraResource(targetResourceType string) (*v1alpha1.Resource, error) {
+	switch targetResourceType {
+	case infinispan.Kind:
+		return &v1alpha1.Resource{APIVersion: infinispan.APIVersion, Kind: infinispan.Kind}, nil
+	case kafka.Kind:
+		return &v1alpha1.Resource{APIVersion: kafka.APIVersion, Kind: kafka.Kind}, nil
+	case keycloak.Kind:
+		return &v1alpha1.Resource{APIVersion: keycloak.APIVersion, Kind: keycloak.Kind}, nil
 	default:
-		panic(fmt.Errorf("Unknown installer type %s", installerType))
+		return nil, fmt.Errorf("Unknown KogitoInfra target resource type %s", targetResourceType)
 	}
 }
 
-func crRemoveKogitoInfraComponent(namespace string, component KogitoInfraComponent) error {
-	ensureComponent := infrastructure.EnsureKogitoInfra(namespace, kubeClient)
-	switch component {
-	case InfinispanKogitoInfraComponent:
-		ensureComponent = ensureComponent.WithoutInfinispan()
-	case KafkaKogitoInfraComponent:
-		ensureComponent = ensureComponent.WithoutKafka()
-	case KeycloakKogitoInfraComponent:
-		ensureComponent = ensureComponent.WithoutKeycloak()
-	}
-	_, _, err := ensureComponent.Apply()
-	return err
-}
-
-func cliRemoveKogitoInfraComponent(namespace string, component KogitoInfraComponent) error {
-	_, err := ExecuteCliCommandInNamespace(namespace, "remove", component.name)
-	return err
-}
-
-// WaitForKogitoInfraComponent waits for the given component to be installed or removed
-func WaitForKogitoInfraComponent(namespace string, component KogitoInfraComponent, shouldRun bool, timeoutInMin int) error {
-	return WaitForOnOpenshift(namespace, getWaitRunningMessage(component.name, shouldRun), timeoutInMin,
+// WaitForKogitoInfraResource waits for the given KogitoInfra resource to be ready
+func WaitForKogitoInfraResource(namespace, name string, timeoutInMin int) error {
+	return WaitForOnOpenshift(namespace, fmt.Sprintf("KogitoInfra %s status to be Success", name), timeoutInMin,
 		func() (bool, error) {
-			if shouldRun {
-				return IsKogitoInfraComponentRunning(namespace, component)
+			infraResource, err := getKogitoInfraResource(namespace, name)
+			if err != nil {
+				return false, err
 			}
-			return IsKogitoInfraComponentTerminated(namespace, component)
+			if infraResource == nil {
+				return false, nil
+			}
+
+			return infraResource.Status.Condition.Type == "Success" && infraResource.Status.Condition.Status == "True", nil
 		})
 }
 
-// IsKogitoInfraComponentRunning checks whether the given component is running from KogitoInfra
-func IsKogitoInfraComponentRunning(namespace string, component KogitoInfraComponent) (bool, error) {
-	ensureComponent := infrastructure.EnsureKogitoInfra(namespace, kubeClient)
-	switch component {
-	case InfinispanKogitoInfraComponent:
-		ensureComponent = ensureComponent.WithInfinispan()
-	case KafkaKogitoInfraComponent:
-		ensureComponent = ensureComponent.WithKafka()
-	case KeycloakKogitoInfraComponent:
-		ensureComponent = ensureComponent.WithKeycloak()
+// retrieves the KogitoInfra resource
+func getKogitoInfraResource(namespace, name string) (*v1alpha1.KogitoInfra, error) {
+	infraResource := &v1alpha1.KogitoInfra{}
+	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: name, Namespace: namespace}, infraResource); err != nil && !errors.IsNotFound(err) {
+		return nil, fmt.Errorf("Error while trying to look for KogitoInfra %s: %v ", name, err)
+	} else if !exists {
+		return nil, nil
 	}
-	_, ready, err := ensureComponent.Apply()
-	return ready, err
+	return infraResource, nil
 }
-
-// IsKogitoInfraComponentTerminated checks whether the given component is terminated from KogitoInfra
-func IsKogitoInfraComponentTerminated(namespace string, component KogitoInfraComponent) (bool, error) {
-	ensureComponent := infrastructure.EnsureKogitoInfra(namespace, kubeClient)
-	switch component {
-	case InfinispanKogitoInfraComponent:
-		ensureComponent = ensureComponent.WithoutInfinispan()
-	case KafkaKogitoInfraComponent:
-		ensureComponent = ensureComponent.WithoutKafka()
-	case KeycloakKogitoInfraComponent:
-		ensureComponent = ensureComponent.WithoutKeycloak()
-	}
-	_, ready, err := ensureComponent.Apply()
-	return ready, err
-}
-
-func getWaitRunningMessage(component string, shouldRun bool) string {
-	msg := "running"
-	if !shouldRun {
-		msg = fmt.Sprintf("not %s", msg)
-	}
-	return fmt.Sprintf("%s is %s", component, msg)
-}
-*/

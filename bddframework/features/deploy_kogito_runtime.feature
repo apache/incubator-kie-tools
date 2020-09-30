@@ -8,8 +8,7 @@ Feature: Deploy Kogito Runtime
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
 
-    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
-      | config | enablePersistence | disabled |
+    When Deploy <runtime> example service "<example-service>" from runtime registry
 
     Then Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
     And Service "<example-service>" with process name "orders" is available within 2 minutes
@@ -40,9 +39,11 @@ Feature: Deploy Kogito Runtime
     Given Kogito Operator is deployed with Infinispan operator
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
+    And Install Infinispan Kogito Infra "infinispan" within 5 minutes
+    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
 
     When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
-      | config     | enablePersistence | enabled |
+      | config | infra | infinispan |
     And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
     And Start "orders" process on service "<example-service>" within 3 minutes with body:
       """json
@@ -87,8 +88,7 @@ Feature: Deploy Kogito Runtime
     And Kogito Jobs Service has 1 pods running within 10 minutes
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
-    And Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
-      | config | enablePersistence | disabled |
+    And Deploy <runtime> example service "<example-service>" from runtime registry
     And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
 
     When Start "timers" process on service "<example-service>" within 2 minutes with body:
@@ -127,13 +127,19 @@ Feature: Deploy Kogito Runtime
   @kafka
   Scenario Outline: Deploy <example-service> with Maven profile <profile> with events using Kogito Runtime
     Given Kogito Operator is deployed with Infinispan and Kafka operators
-    And Install Kogito Data Index with 1 replicas
+    And Install Infinispan Kogito Infra "infinispan" within 5 minutes
+    And Install Kafka Kogito Infra "kafka" within 10 minutes
+    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
+    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
+    And Install Kogito Data Index with 1 replicas with configuration:
+      | config | infra | infinispan |
+      | config | infra | kafka      |
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
 
     When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
-      | config     | enablePersistence | enabled |
-      | config     | enableEvents      | enabled |
+      | config | infra | infinispan |
+      | config | infra | kafka      |
     And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
     And Start "orders" process on service "<example-service>" within 3 minutes with body:
       """json
@@ -171,8 +177,7 @@ Feature: Deploy Kogito Runtime
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
 
-    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
-      | config | enablePersistence | disabled |
+    When Deploy <runtime> example service "<example-service>" from runtime registry
 
     Then Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
     And HTTP POST request on service "<example-service>" is successful within 2 minutes with path "rest/flights" and body:
@@ -208,8 +213,7 @@ Feature: Deploy Kogito Runtime
     Given Kogito Operator is deployed
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
-    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
-      | config | enablePersistence | disabled |
+    And Deploy <runtime> example service "<example-service>" from runtime registry
     And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
 
     When Start "orders" process on service "<example-service>" within 3 minutes with body:
@@ -257,13 +261,11 @@ Feature: Deploy Kogito Runtime
     And Infinispan instance "external-infinispan" is deployed with configuration:
       | username | developer |
       | password | mypass    |
+    And Install Infinispan Kogito Infra "external-infinispan" connected to resource "external-infinispan" within 5 minutes
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
-    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
-      | config     | enablePersistence | enabled                   |
-      | infinispan | username          | developer                 |
-      | infinispan | password          | mypass                    |
-      | infinispan | uri               | external-infinispan:11222 |
+    And Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
+      | config | infra | external-infinispan |
     And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
     And Start "orders" process on service "<example-service>" within 3 minutes with body:
       """json
@@ -306,14 +308,17 @@ Feature: Deploy Kogito Runtime
   Scenario: Deploy <example-service> with Maven profile <profile> with events using external Kafka
     Given Kogito Operator is deployed with Infinispan and Kafka operators
     And Kafka instance "external-kafka" is deployed
+    And Install Infinispan Kogito Infra "infinispan" within 5 minutes
+    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
+    And Install Kafka Kogito Infra "external-kafka" connected to resource "external-kafka" within 5 minutes
     And Install Kogito Data Index with 1 replicas with configuration:
-      | kafka | externalURI | external-kafka-kafka-bootstrap:9092 |
+      | config | infra | infinispan     |
+      | config | infra | external-kafka |
     And Clone Kogito examples into local directory
     And Local example service "<example-service>" is built by Maven using profile "<profile>" and deployed to runtime registry
-    When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
-      | config | enableEvents      | enabled                             |
-      | config | enablePersistence | enabled                             |
-      | kafka  | externalURI       | external-kafka-kafka-bootstrap:9092 |
+    And Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
+      | config | infra | infinispan     |
+      | config | infra | external-kafka |
     And Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
 
     When Start "orders" process on service "<example-service>" within 3 minutes with body:

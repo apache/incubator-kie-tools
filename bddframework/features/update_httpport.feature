@@ -17,8 +17,16 @@ Feature: Update the HTTP Port field in Kogito Services
   @kafka
   Scenario: Update HTTP Port for Data Index Service
     Given Kogito Operator is deployed with Infinispan and Kafka operators
+    And Install Infinispan Kogito Infra "infinispan" within 5 minutes
+    And Install Kafka Kogito Infra "kafka" within 10 minutes
+    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
+    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
+
     When Install Kogito Data Index with 1 replicas with configuration:
-      | config | httpPort | 9082 |
+      | config | infra    | infinispan |
+      | config | infra    | kafka      |
+      | config | httpPort | 9082       |
+
     Then Kogito Data Index has 1 pods running within 10 minutes
 
 #####
@@ -28,10 +36,18 @@ Feature: Update the HTTP Port field in Kogito Services
   @kafka
   Scenario: Update HTTP Port for Management Console
     Given Kogito Operator is deployed with Infinispan and Kafka operators
-    And Install Kogito Data Index with 1 replicas
+    And Install Infinispan Kogito Infra "infinispan" within 5 minutes
+    And Install Kafka Kogito Infra "kafka" within 10 minutes
+    And Infinispan instance "kogito-infinispan" has 1 pod running within 5 minutes
+    And Kafka instance "kogito-kafka" has 1 pod running within 5 minutes
+    And Install Kogito Data Index with 1 replicas with configuration:
+      | config | infra | infinispan |
+      | config | infra | kafka      |
     And Kogito Data Index has 1 pods running within 10 minutes
+
     When Install Kogito Management Console with 1 replicas with configuration:
       | config | httpPort | 9082 |
+
     Then Kogito Management Console has 1 pods running within 10 minutes
 
 #####
