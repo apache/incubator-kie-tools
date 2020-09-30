@@ -35,7 +35,9 @@ public class InputClausePropertyConverter {
         final Id id = IdPropertyConverter.wbFromDMN(dmn.getId());
         final Description description = DescriptionPropertyConverter.wbFromDMN(dmn.getDescription());
         final InputClauseLiteralExpression inputExpression = InputClauseLiteralExpressionPropertyConverter.wbFromDMN(dmn.getInputExpression());
-        final InputClauseUnaryTests inputValues = InputClauseUnaryTestsPropertyConverter.wbFromDMN(dmn.getInputValues());
+        final InputClauseUnaryTests inputValues = Optional
+                .ofNullable(InputClauseUnaryTestsPropertyConverter.wbFromDMN(dmn.getInputValues()))
+                .orElse(new InputClauseUnaryTests());
 
         final InputClause result = new InputClause(id,
                                                    description,
@@ -45,9 +47,7 @@ public class InputClausePropertyConverter {
         if (Objects.nonNull(inputExpression)) {
             inputExpression.setParent(result);
         }
-        if (Objects.nonNull(inputValues)) {
-            inputValues.setParent(result);
-        }
+        inputValues.setParent(result);
 
         return result;
     }
