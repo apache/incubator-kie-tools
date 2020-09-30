@@ -40,8 +40,8 @@
         <version>${version.io.takari.maven.plugins.compiler}</version>
         <configuration>
           <compilerId>jdt</compilerId>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
           <failOnError>false</failOnError>
         </configuration>
         <extensions>true</extensions>
