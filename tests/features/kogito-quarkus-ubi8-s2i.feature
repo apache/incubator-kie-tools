@@ -136,7 +136,9 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And s2i build log should contain [persistence] Generated checksum for /home/kogito/data/protobufs/persons.proto with the name: /home/kogito/data/protobufs/persons-md5.txt
     And s2i build log should contain [persistence] Generated checksum for /home/kogito/data/protobufs/demo.orders.proto with the name: /home/kogito/data/protobufs/demo.orders-md5.txt
 
-  Scenario: Scenario: Verify if the multi-module s2i build is finished as expected performing a non native build
+  # https://issues.redhat.com/browse/KOGITO-3469
+  @ignore
+  Scenario: Verify if the multi-module s2i build is finished as expected performing a non native build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from . using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable | value |
       | NATIVE            | false                            |
@@ -153,6 +155,8 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | expected_phrase | ["hello","world"]     |
     And file /home/kogito/bin/rules-quarkus-helloworld-runner.jar should exist
 
+  # https://issues.redhat.com/browse/KOGITO-3469
+  @ignore
   Scenario: Verify if the multi-module s2i build is finished as expected performing a native build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from . using master and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
       | variable | value |
@@ -244,7 +248,7 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And run sh -c 'echo $MAVEN_VERSION' in container and immediately check its output for 3.6.2
     And run sh -c 'echo $JAVA_HOME' in container and immediately check its output for /usr/lib/jvm/java-11
     And run sh -c 'echo $GRAALVM_HOME' in container and immediately check its output for /usr/share/graalvm
-    And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 20.1.0
+    And run sh -c 'echo $GRAALVM_VERSION' in container and immediately check its output for 20.2.0
 
   Scenario: Verify that the Kogito Maven archetype is generating the project and compiling it correctly
     Given s2i build /tmp/kogito-examples from dmn-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
