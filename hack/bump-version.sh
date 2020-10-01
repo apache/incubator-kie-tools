@@ -15,6 +15,8 @@
 
 source ./hack/export-version.sh
 
+OLM_DIR="deploy/olm-catalog/kogito-operator"
+
 old_version=${OP_VERSION}
 new_version=$1
 release=$2
@@ -33,16 +35,23 @@ if [ -z "$no_release_branch" ]; then
   no_release_branch="true"
 fi
 
-sed -i "s/$old_version/$new_version/g" cmd/kogito/version/version.go README.md version/version.go deploy/operator.yaml deploy/olm-catalog/kogito-operator/kogito-operator.package.yaml deploy/olm-catalog/kogito-operator/custom-subscription-example.yaml hack/go-build.sh hack/go-vet.sh .osdk-scorecard.yaml
-sed -i "s|operated-by: kogito-operator.*|operated-by: kogito-operator.${new_version}|g" deploy/olm-catalog/kogito-operator/manifests/kogito-operator.clusterserviceversion.yaml
+# Get latest released olm version from folders in deploy/olm-catalog/kogito-operator/
+latest_released_olm_version=$(cd ${OLM_DIR} && for i in $(ls -d */); do echo ${i%%/}; done | grep -v manifests | grep -v ${old_version} | sort -V | tail -1)
+echo "Latest released OLM version = $latest_released_olm_version"
 
-source ./hack/export-container-image.sh
-sed -i "s|containerImage: .*|containerImage: ${CONTAINER_IMAGE}|g" deploy/olm-catalog/kogito-operator/manifests/kogito-operator.clusterserviceversion.yaml
+sed -i "s/$old_version/$new_version/g" cmd/kogito/version/version.go README.md version/version.go deploy/operator.yaml ${OLM_DIR}/kogito-operator.package.yaml ${OLM_DIR}/custom-subscription-example.yaml hack/go-build.sh hack/go-vet.sh .osdk-scorecard.yaml
 
 if [ "${old_version}" != "${new_version}" ]; then
   operator-sdk generate csv --apis-dir ./pkg/apis/app/v1alpha1 --verbose --csv-version "$new_version" --from-version "$old_version" --update-crds --operator-name kogito-operator
 fi
 make vet
+
+# replace in csv file
+source ./hack/export-container-image.sh
+csv_files="${OLM_DIR}/manifests/kogito-operator.clusterserviceversion.yaml ${OLM_DIR}/${new_version}/*.clusterserviceversion.yaml"
+sed -i "s|operated-by: kogito-operator.*|operated-by: kogito-operator.${new_version}|g" ${csv_files}
+sed -i "s|containerImage: .*|containerImage: ${CONTAINER_IMAGE}|g" ${csv_files}
+sed -i "s|replaces: kogito-operator.*|replaces: kogito-operator.v${latest_released_olm_version}|g" ${csv_files}
 
 # rewrite test default config, all other configuration into the file will be overridden
 test_config_file="test/.default_config"
@@ -55,6 +64,7 @@ if [ "${no_release_branch}" = "true" ]; then
     image_version="latest"
   fi
 fi
+echo "Set test config with image version ${image_version} and branch ${branch}"
 sed -i "s|tests.build-image-version=.*|tests.build-image-version=${image_version}|g" ${test_config_file}
 sed -i "s|tests.services-image-version=.*|tests.services-image-version=${image_version}|g" ${test_config_file}
 sed -i "s|tests.runtime-application-image-version=.*|tests.runtime-application-image-version=${image_version}|g" ${test_config_file}
