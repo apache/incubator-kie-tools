@@ -41,7 +41,7 @@ import org.uberfire.annotations.processors.AbstractErrorAbsorbingProcessor;
 import org.uberfire.annotations.processors.GenerationCompleteCallback;
 
 @SupportedAnnotationTypes(FieldRendererProcessor.FIELD_RENDERER_ANNOTATION)
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class FieldRendererProcessor extends AbstractErrorAbsorbingProcessor {
 
     private static Logger LOGGER = LoggerFactory.getLogger(FieldRendererProcessor.class.getName());

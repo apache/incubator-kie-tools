@@ -47,7 +47,7 @@ import org.uberfire.annotations.processors.AbstractErrorAbsorbingProcessor;
  * Note that current implementation only considers a single SVGViewFactory for each module.
  */
 @SupportedAnnotationTypes({SVGShapeProcessor.ANNOTATION_SVGSHAPE_VIEW_FACTORY})
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
 
     public final static String ANNOTATION_SVGSHAPE_VIEW_FACTORY = "org.kie.workbench.common.stunner.svg.annotation.SVGViewFactory";

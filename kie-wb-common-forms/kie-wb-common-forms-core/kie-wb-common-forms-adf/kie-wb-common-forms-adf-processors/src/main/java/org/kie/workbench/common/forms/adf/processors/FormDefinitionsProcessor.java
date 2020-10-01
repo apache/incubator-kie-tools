@@ -37,7 +37,7 @@ import static org.kie.workbench.common.forms.adf.processors.FormDefinitionsProce
         FORM_DEFINITON_ANNOTATION,
         FIELD_DEFINITION_ANNOTATION
 })
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
 
     public static final String FORM_DEFINITON_ANNOTATION = "org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition";
