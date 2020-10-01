@@ -257,11 +257,8 @@ public class ServerManagementBrowserPresenter {
         if ( serverTemplateUpdated != null &&
                 serverTemplateUpdated.getServerTemplate() != null ) {
             final ServerTemplate serverTemplate = serverTemplateUpdated.getServerTemplate();
-            if ( isEmpty ) {
-                setup( new ArrayList<ServerTemplateKey>() {{
-                    add( serverTemplate );
-                }}, serverTemplate.getId() );
-            }
+
+            refreshList(new ServerTemplateListRefresh(serverTemplate.getId()));
         } else {
             logger.warn( "Illegal event argument." );
         }

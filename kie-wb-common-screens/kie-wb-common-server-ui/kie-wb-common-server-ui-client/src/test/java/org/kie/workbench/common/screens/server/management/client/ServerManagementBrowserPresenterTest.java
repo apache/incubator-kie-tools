@@ -235,19 +235,25 @@ public class ServerManagementBrowserPresenterTest {
 
     @Test
     public void testOnServerTemplateUpdated() {
+        final ServerInstanceKey serverInstanceKey = new ServerInstanceKey( "serverInstanceKeyId", "serverName", "serverInstanceId", "url" );
         final ServerTemplate serverTemplate = new ServerTemplate( "ServerTemplateId", "ServerTemplateName" );
+        serverTemplate.addServerInstance( serverInstanceKey );
+        when( serverTemplatePresenter.getCurrentServerTemplate() ).thenReturn( serverTemplate );
+        final ServerTemplateKey serverTemplateKey = new ServerTemplateKey( "ServerTemplateKeyId", "ServerTemplateKeyName" );
+        final List<ServerTemplateKey> serverTemplateKeys = Collections.singletonList( serverTemplateKey );
+        when( specManagementService.listServerTemplateKeys() ).thenReturn( new ServerTemplateKeyList(serverTemplateKeys) );
 
         presenter.onServerTemplateUpdated( new ServerTemplateUpdated( serverTemplate ) );
 
         final ArgumentCaptor<Collection> serverTemplateKeysCaptor = ArgumentCaptor.forClass( Collection.class );
-        verify( navigationPresenter ).setup( eq( serverTemplate ), serverTemplateKeysCaptor.capture() );
-        final Collection<ServerTemplateKey> serverTemplateKeys = serverTemplateKeysCaptor.getValue();
-        assertEquals( 1, serverTemplateKeys.size() );
-        assertTrue( serverTemplateKeys.contains( serverTemplate ) );
+        verify( navigationPresenter ).setup( eq( serverTemplateKey ), serverTemplateKeysCaptor.capture() );
+        final Collection<ServerTemplateKey> serverTemplateKeysValue = serverTemplateKeysCaptor.getValue();
+        assertEquals( 1, serverTemplateKeysValue.size() );
+        assertTrue( serverTemplateKeysValue.contains( serverTemplateKey ) );
 
         final ArgumentCaptor<ServerTemplateSelected> templateSelectedCaptor = ArgumentCaptor.forClass( ServerTemplateSelected.class );
         verify( serverTemplateSelectedEvent ).fire( templateSelectedCaptor.capture() );
-        assertEquals( serverTemplate, templateSelectedCaptor.getValue().getServerTemplateKey() );
+        assertEquals( serverTemplateKey, templateSelectedCaptor.getValue().getServerTemplateKey() );
     }
 
     @Test
