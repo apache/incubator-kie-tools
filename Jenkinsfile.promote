@@ -61,6 +61,7 @@ pipeline {
     }
 
     environment {
+        CI = true
         OPENSHIFT_API = credentials('OPENSHIFT_API')
         OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
         OPENSHIFT_CREDS_KEY = 'OPENSHIFT_CREDS'

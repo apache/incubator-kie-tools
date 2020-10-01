@@ -21,6 +21,9 @@ pipeline{
     tools {
         jdk 'kie-jdk11'
     }
+    environment {
+        CI = true
+    }
     stages{
         stage('Initialization'){
             steps{

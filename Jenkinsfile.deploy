@@ -59,6 +59,7 @@ pipeline {
     }
 
     environment {
+        CI = true
         JAVA_HOME = "${GRAALVM_HOME}"
 
         OPENSHIFT_API = credentials('OPENSHIFT_API')

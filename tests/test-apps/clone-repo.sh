@@ -9,13 +9,15 @@ MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS="-Dquarkus.native.container-build=true
 
 # exit when any command fails
 set -e
-
+#Setup maven configuration only on CI
+if [ $CI ]; then
 # setup maven env
-export JBOSS_MAVEN_REPO_URL="https://repository.jboss.org/nexus/content/groups/public/"
-# export MAVEN_REPO_URL=
-cp ${MVN_MODULE}/maven/settings.xml ${HOME}/.m2/settings.xml
-source ${MVN_MODULE}/added/configure-maven.sh
-configure
+    export JBOSS_MAVEN_REPO_URL="https://repository.jboss.org/nexus/content/groups/public/"
+    # export MAVEN_REPO_URL=
+    cp ${MVN_MODULE}/maven/settings.xml ${HOME}/.m2/settings.xml
+    source ${MVN_MODULE}/added/configure-maven.sh
+    configure
+fi
 
 cat ${HOME}/.m2/settings.xml
 
@@ -48,4 +50,6 @@ cp ${SCRIPT_DIR}/application.properties /tmp/kogito-examples/rules-quarkus-hello
 git add --all  :/
 git commit -am "test"
 
-rm ${HOME}/.m2/settings.xml
+if [ $CI ]; then
+    rm ${HOME}/.m2/settings.xml
+fi
