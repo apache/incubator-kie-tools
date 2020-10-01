@@ -36,7 +36,7 @@ import org.uberfire.annotations.processors.facades.ClientAPIModule;
  * Processor for {@code WorkbenchPopup} and related annotations
  */
 @SupportedAnnotationTypes("org.uberfire.client.annotations.WorkbenchPopup")
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class WorkbenchPopupProcessor extends AbstractErrorAbsorbingProcessor {
 
     private final PopupActivityGenerator activityGenerator;
