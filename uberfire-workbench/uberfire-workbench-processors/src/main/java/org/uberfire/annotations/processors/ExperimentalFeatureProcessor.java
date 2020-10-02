@@ -39,7 +39,7 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
 import org.uberfire.annotations.processors.facades.ClientAPIModule;
 
 @SupportedAnnotationTypes(ClientAPIModule.experimentalFeature)
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ExperimentalFeatureProcessor extends AbstractErrorAbsorbingProcessor {
 
     private static final String PROVIDER_SUFFIX = "ExperimentalFeatureDefinitionProvider";

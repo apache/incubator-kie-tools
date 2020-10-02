@@ -39,7 +39,7 @@ import org.uberfire.preferences.shared.annotations.WorkbenchPreference;
  * Processor for {@link WorkbenchPreference} and related annotations
  */
 @SupportedAnnotationTypes(WorkbenchPreferenceProcessor.WORKBENCH_PREFERENCE)
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class WorkbenchPreferenceProcessor extends AbstractErrorAbsorbingProcessor {
 
     public static final String WORKBENCH_PREFERENCE = "org.uberfire.preferences.shared.annotations.WorkbenchPreference";
