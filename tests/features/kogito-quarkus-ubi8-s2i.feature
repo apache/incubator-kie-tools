@@ -136,8 +136,6 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And s2i build log should contain [persistence] Generated checksum for /home/kogito/data/protobufs/persons.proto with the name: /home/kogito/data/protobufs/persons-md5.txt
     And s2i build log should contain [persistence] Generated checksum for /home/kogito/data/protobufs/demo.orders.proto with the name: /home/kogito/data/protobufs/demo.orders-md5.txt
 
-  # https://issues.redhat.com/browse/KOGITO-3469
-  @ignore
   Scenario: Verify if the multi-module s2i build is finished as expected performing a non native build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from . using master and runtime-image quay.io/kiegroup/kogito-quarkus-jvm-ubi8:latest
       | variable | value |
@@ -155,8 +153,6 @@ Feature: kogito-quarkus-ubi8-s2i image tests
       | expected_phrase | ["hello","world"]     |
     And file /home/kogito/bin/rules-quarkus-helloworld-runner.jar should exist
 
-  # https://issues.redhat.com/browse/KOGITO-3469
-  @ignore
   Scenario: Verify if the multi-module s2i build is finished as expected performing a native build
     Given s2i build https://github.com/kiegroup/kogito-examples.git from . using master and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
       | variable | value |
