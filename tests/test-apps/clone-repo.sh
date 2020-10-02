@@ -17,9 +17,9 @@ if [ $CI ]; then
     cp ${MVN_MODULE}/maven/settings.xml ${HOME}/.m2/settings.xml
     source ${MVN_MODULE}/added/configure-maven.sh
     configure
-fi
 
-cat ${HOME}/.m2/settings.xml
+    cat ${HOME}/.m2/settings.xml
+fi
 
 # Clone examples
 cd /tmp
