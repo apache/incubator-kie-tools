@@ -297,6 +297,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
                                                    errorPopupPresenter,
                                                    diagramClientErrorHandler,
                                                    translationService));
+                this.saveAndRenameCommandBuilder = saveAndRenameCommandBuilderMock;
                 return presenterCore;
             }
 

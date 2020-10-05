@@ -75,6 +75,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
+import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
@@ -595,6 +596,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     public void open(final ProjectDiagram diagram,
                      final Viewer.Callback callback) {
         editor.open(diagram, callback);
+        SaveAndRenameCommandBuilder saveAndRenameCommandBuilder = getSaveAndRenameCommandBuilder();
+        saveAndRenameCommandBuilder.addContentSupplier(editor.getEditorProxy().getContentSupplier());
     }
 
     @Override

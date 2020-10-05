@@ -81,6 +81,7 @@ import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
+import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
@@ -236,6 +237,10 @@ public class ProjectDiagramEditorTest {
     @Mock
     private Caller<ProjectDiagramResourceService> projectDiagramResourceServiceCaller;
 
+    @Mock
+    private SaveAndRenameCommandBuilder saveAndRenameCommandBuilderMock;
+
+
     private ProjectDiagramEditorStub presenter;
 
     private AbstractProjectDiagramEditorCore<ProjectMetadata, ProjectDiagram, ProjectDiagramResource, ProjectDiagramEditorProxy<ProjectDiagramResource>> presenterCore;
@@ -336,6 +341,11 @@ public class ProjectDiagramEditorTest {
                                                    diagramClientErrorHandler,
                                                    translationService));
                 return presenterCore;
+            }
+
+            @Override
+            protected SaveAndRenameCommandBuilder<ProjectDiagramResource, Metadata> getSaveAndRenameCommandBuilder() {
+                return saveAndRenameCommandBuilderMock;
             }
         };
         presenter.init();

@@ -99,6 +99,7 @@ import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
+import org.uberfire.ext.editor.commons.client.menu.common.SaveAndRenameCommandBuilder;
 import org.uberfire.ext.editor.commons.service.support.SupportsSaveAndRename;
 import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorView;
@@ -252,6 +253,9 @@ public class AbstractProjectDiagramEditorTest {
     @Mock
     protected AbstractProjectDiagramEditorCore<ProjectMetadata, ProjectDiagram, ProjectDiagramResource, ProjectDiagramEditorProxy<ProjectDiagramResource>> presenterCore;
 
+    @Mock
+    protected SaveAndRenameCommandBuilder saveAndRenameCommandBuilderMock;
+
     protected boolean isReadOnly = false;
 
     protected Promises promises = new SyncPromises();
@@ -381,6 +385,7 @@ public class AbstractProjectDiagramEditorTest {
                                                    errorPopupPresenter,
                                                    diagramClientErrorHandler,
                                                    translationService));
+                this.saveAndRenameCommandBuilder = saveAndRenameCommandBuilderMock;
                 return presenterCore;
             }
 
@@ -472,6 +477,8 @@ public class AbstractProjectDiagramEditorTest {
         verify(kieView).addMainEditorPage(eq(view));
         verify(kieView).addOverviewPage(eq(overviewWidget),
                                         any(com.google.gwt.user.client.Command.class));
+
+        verify(saveAndRenameCommandBuilderMock).addContentSupplier(any());
     }
 
     @Test
