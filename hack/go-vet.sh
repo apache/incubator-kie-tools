@@ -22,7 +22,7 @@ export GOPATH=$(go env GOPATH)
 operator-sdk generate k8s
 operator-sdk generate crds --crd-version=v1beta1
 # get the openapi binary
-which openapi-gen > /dev/null || go build -o $GOPATH/bin/openapi-gen k8s.io/kube-openapi/cmd/openapi-gen
+which openapi-gen > /dev/null || go build -o "${GOPATH}"/bin/openapi-gen k8s.io/kube-openapi/cmd/openapi-gen
 # generate the openapi files
 echo "Generating openapi files"
 openapi-gen --logtostderr=true -o "" -i github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1 -O zz_generated.openapi -p ./pkg/apis/app/v1alpha1 -h ./hack/boilerplate.go.txt -r "-"
@@ -35,6 +35,6 @@ go vet ./...
 # Copy crds and csv to version folder
 OLM_FOLDER="deploy/olm-catalog/kogito-operator"
 olm_versioned_folder="${OLM_FOLDER}/${OP_VERSION}"
-mkdir -p ${olm_versioned_folder}
-cp ${OLM_FOLDER}/manifests/* ${olm_versioned_folder}/
-mv ${olm_versioned_folder}/kogito-operator.clusterserviceversion.yaml ${olm_versioned_folder}/kogito-operator.v${OP_VERSION}.clusterserviceversion.yaml 
+mkdir -p "${olm_versioned_folder}"
+cp ${OLM_FOLDER}/manifests/* "${olm_versioned_folder}"/
+mv "${olm_versioned_folder}/kogito-operator.clusterserviceversion.yaml" "${olm_versioned_folder}/kogito-operator.v${OP_VERSION}.clusterserviceversion.yaml"
