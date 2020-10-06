@@ -18,10 +18,12 @@ package org.kie.workbench.common.stunner.core.client.i18n;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -31,19 +33,23 @@ import org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementNameProvider;
 
 @Singleton
 public class ClientTranslationService extends AbstractTranslationService {
 
     private final TranslationService erraiTranslationService;
+    private final ManagedInstance<DiagramElementNameProvider> elementNameProviders;
     private SessionManager sessionManager;
     private DefinitionUtils definitionUtils;
 
     @Inject
     public ClientTranslationService(final TranslationService erraiTranslationService,
+                                    final ManagedInstance<DiagramElementNameProvider> elementNameProviders,
                                     final SessionManager sessionManager,
                                     final DefinitionUtils definitionUtils) {
         this.erraiTranslationService = erraiTranslationService;
+        this.elementNameProviders = elementNameProviders;
         this.sessionManager = sessionManager;
         this.definitionUtils = definitionUtils;
     }
@@ -85,7 +91,13 @@ public class ClientTranslationService extends AbstractTranslationService {
     }
 
     @Override
-    public Optional<String> getElementName(String uuid) {
+    public Optional<String> getElementName(final String uuid) {
+        return getNameProvider(uuid)
+                .map(nameProvider -> nameProvider.getElementName(uuid))
+                .orElse(Optional.of(defaultElementName(uuid)));
+    }
+
+    private String defaultElementName(String uuid) {
         final Node<? extends Definition, ?> node = sessionManager.getCurrentSession()
                 .getCanvasHandler()
                 .getDiagram()
@@ -93,11 +105,22 @@ public class ClientTranslationService extends AbstractTranslationService {
                 .getNode(uuid);
         Optional<Object> definition = Optional.ofNullable(node)
                 .map(Node::getContent)
-                .map(Definition::getDefinition)
-                .filter(Objects::nonNull);
+                .map(Definition::getDefinition);
 
         return definition
                 .map(definitionUtils::getName)
-                .filter(StringUtils::nonEmpty);
+                .filter(StringUtils::nonEmpty)
+                .orElse(uuid);
+    }
+
+    private Optional<DiagramElementNameProvider> getNameProvider(final String uuid) {
+        return StreamSupport
+                .stream(elementNameProviders.spliterator(), false)
+                .filter(elementNameProvider -> Objects.equals(elementNameProvider.getDefinitionSetId(), getSessionDefinitionSetId()))
+                .findFirst();
+    }
+
+    private String getSessionDefinitionSetId() {
+        return sessionManager.getCurrentSession().getCanvasHandler().getDiagram().getMetadata().getDefinitionSetId();
     }
 }

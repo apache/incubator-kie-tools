@@ -174,7 +174,7 @@ public class DMNDomainValidatorImpl implements DMNDomainValidator {
         return new MarshallingMessage.MarshallingMessageBuilder()
                 .elementUUID(getDMNElementUUID(message.getSourceReference()))
                 .type(convert(message.getLevel()))
-                .message(message.getText())
+                .message(message.getMessage())
                 .build();
     }
 

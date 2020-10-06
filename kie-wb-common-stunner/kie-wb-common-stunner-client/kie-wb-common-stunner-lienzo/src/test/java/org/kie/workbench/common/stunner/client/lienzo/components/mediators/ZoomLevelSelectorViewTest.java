@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementNameProvider;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
 
@@ -77,6 +78,18 @@ public class ZoomLevelSelectorViewTest {
     @Mock
     private ZoomLevelSelector presenter;
 
+    @Mock
+    private TranslationService translationService;
+
+    @Mock
+    private ManagedInstance<DiagramElementNameProvider> elementNameProviders;
+
+    @Mock
+    private SessionManager sessionManager;
+
+    @Mock
+    private DefinitionUtils definitionUtils;
+
     private ZoomLevelSelectorView tested;
 
     @Before
@@ -91,9 +104,7 @@ public class ZoomLevelSelectorViewTest {
         tested.dropDownText = dropDownText;
         tested.dropDownMenu = dropDownMenu;
         tested.items = items;
-        tested.translationService = new ClientTranslationService(mock(TranslationService.class),
-                                                                 mock(SessionManager.class),
-                                                                 mock(DefinitionUtils.class));
+        tested.translationService = new ClientTranslationService(translationService, elementNameProviders, sessionManager, definitionUtils);
     }
 
     @Test

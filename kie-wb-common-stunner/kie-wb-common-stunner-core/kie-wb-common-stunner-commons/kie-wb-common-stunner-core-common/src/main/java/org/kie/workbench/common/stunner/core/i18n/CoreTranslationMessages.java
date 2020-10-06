@@ -135,11 +135,9 @@ public class CoreTranslationMessages {
 
         return Optional.of(message)
                 .filter(StringUtils::nonEmpty)
-                .map(msg -> {
-                    final String name = translationService.getElementName(uuid)
-                            .filter(StringUtils::nonEmpty)
-                            .orElse(uuid);
-                    return translationService.getValue(ELEMENT, name, msg);
-                });
+                .map(msg -> translationService
+                        .getElementName(uuid)
+                        .map(name -> translationService.getValue(ELEMENT, name, msg))
+                        .orElse(msg));
     }
 }

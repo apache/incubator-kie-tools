@@ -25,6 +25,7 @@ import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.mediators.PanelMediators;
 import com.ait.lienzo.client.widget.panel.mediators.PanelPreviewMediator;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,6 +42,7 @@ import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementNameProvider;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
@@ -48,7 +50,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -87,7 +88,20 @@ public class LienzoCanvasMediatorsTest {
     @Mock
     private Consumer<AbstractCanvas.Cursors> cursor;
 
+    @Mock
+    private TranslationService translationService;
+
+    @Mock
+    private ManagedInstance<DiagramElementNameProvider> elementNameProviders;
+
+    @Mock
+    private SessionManager sessionManager;
+
+    @Mock
+    private DefinitionUtils definitionUtils;
+
     private LienzoCanvasMediators tested;
+
     private KeyEventHandlerImpl keyEventHandler;
 
     @Before
@@ -101,9 +115,7 @@ public class LienzoCanvasMediatorsTest {
         when(mediators.getPanMediator()).thenReturn(panMediator);
         when(mediators.getPreviewMediator()).thenReturn(previewMediator);
         tested = new LienzoCanvasMediators(keyEventHandler,
-                                           new ClientTranslationService(mock(TranslationService.class),
-                                                                        mock(SessionManager.class),
-                                                                        mock(DefinitionUtils.class)),
+                                           new ClientTranslationService(translationService, elementNameProviders, sessionManager, definitionUtils),
                                            notification,
                                            p -> mediators);
         tested.init(() -> canvas);

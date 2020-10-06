@@ -27,6 +27,7 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +41,7 @@ import org.kie.workbench.common.stunner.core.client.components.views.FloatingWid
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementNameProvider;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.mvp.Command;
@@ -79,6 +81,18 @@ public class ZoomLevelSelectorPresenterTest {
     @Mock
     private ZoomLevelSelector.View selectorView;
 
+    @Mock
+    private TranslationService translationServiceMock;
+
+    @Mock
+    private ManagedInstance<DiagramElementNameProvider> elementNameProviders;
+
+    @Mock
+    private SessionManager sessionManager;
+
+    @Mock
+    private DefinitionUtils definitionUtils;
+
     private ZoomLevelSelectorPresenter tested;
     private ClientTranslationService translationService;
     private FloatingView<IsWidget> floatingView;
@@ -87,9 +101,7 @@ public class ZoomLevelSelectorPresenterTest {
 
     @Before
     public void setUp() {
-        translationService = new ClientTranslationService(mock(TranslationService.class),
-                                                          mock(SessionManager.class),
-                                                          mock(DefinitionUtils.class));
+        translationService = new ClientTranslationService(translationServiceMock, elementNameProviders, sessionManager, definitionUtils);
         selector = spy(new ZoomLevelSelector(selectorView));
         layer = spy(new Layer());
         when(layer.getViewport()).thenReturn(viewport);

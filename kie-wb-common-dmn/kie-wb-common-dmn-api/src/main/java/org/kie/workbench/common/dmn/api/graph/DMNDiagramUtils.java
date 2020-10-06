@@ -66,7 +66,7 @@ public class DMNDiagramUtils {
                 .orElse(NONE);
     }
 
-    private Stream<Object> getDefinitionStream(final Diagram diagram) {
+    public Stream<Object> getDefinitionStream(final Diagram diagram) {
         return getNodeStream(diagram)
                 .map(Node::getContent)
                 .filter(c -> c instanceof Definition)

@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.stunner.core.client.i18n;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementNameProvider;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -44,7 +46,8 @@ public class ClientStunnerTranslationServiceTest {
     @Mock
     private TranslationService translationService;
 
-    private ClientTranslationService stunnerTranslationService;
+    @Mock
+    private ManagedInstance<DiagramElementNameProvider> elementNameProviders;
 
     @Mock
     private DefinitionUtils definitionUtils;
@@ -52,9 +55,11 @@ public class ClientStunnerTranslationServiceTest {
     @Mock
     private SessionManager sessionManager;
 
+    private ClientTranslationService stunnerTranslationService;
+
     @Before
     public void init() {
-        stunnerTranslationService = new ClientTranslationService(translationService, sessionManager, definitionUtils);
+        stunnerTranslationService = new ClientTranslationService(translationService, elementNameProviders, sessionManager, definitionUtils);
     }
 
     @Test
