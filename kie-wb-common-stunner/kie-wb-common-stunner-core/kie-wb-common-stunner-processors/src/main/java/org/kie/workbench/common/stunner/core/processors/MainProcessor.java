@@ -92,7 +92,7 @@ import org.uberfire.annotations.processors.exceptions.GenerationException;
         MainProcessor.ANNOTATION_RULE_EDGE_OCCS,
         MainProcessor.ANNOTATION_RULE_ALLOWED_OCCS,
         MainProcessor.ANNOTATION_RULE_OCCS})
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class MainProcessor extends AbstractErrorAbsorbingProcessor {
 
     public static final String ANNOTATION_DESCRIPTION = "org.kie.workbench.common.stunner.core.definition.annotation.Description";
