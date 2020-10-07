@@ -20,7 +20,7 @@ import { Reducer } from "react";
 import { enableAllPlugins } from "immer";
 import { createStore, Store } from "redux";
 import { Actions, AllActions, DataDictionaryReducer, DataFieldReducer, HeaderReducer, PMMLReducer } from "./reducers";
-import { Model, PMML, PMML2XML, Scorecard, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { Model, PMML, PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Provider } from "react-redux";
 import mergeReducers from "combine-reducer";
 import { HistoryService } from "./history";
@@ -29,10 +29,14 @@ import { Page } from "@patternfly/react-core";
 import { HashRouter } from "react-router-dom";
 import { Redirect, Route, Switch } from "react-router";
 import { EmptyStateNoContent } from "./components/LandingPage/organisms";
-import { ScorecardEditorPage } from "./components/ScorecardEditor/templates";
-import { getModelType } from "./utils";
+import { SingleEditorRouter } from "./components/EditorCore/organisms";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
+
+export interface HasSingleModel {
+  path: string;
+  model: Model;
+}
 
 interface Props {
   exposing: (s: PMMLEditor) => void;
@@ -121,32 +125,37 @@ export class PMMLEditor extends React.Component<Props, State> {
     }
   }
 
-  private getSingleModelType(store: Store<PMML, AllActions>): string | undefined {
-    const models: Model[] | undefined = store.getState().models;
+  private isSingleModel(): boolean {
+    if (!this.store) {
+      return false;
+    }
+    const models: Model[] | undefined = this.store.getState().models;
     if (models !== undefined) {
       if (models.length === 1) {
-        return getModelType(models[0]);
+        return true;
       }
     }
-    return undefined;
+    return false;
   }
 
   public render() {
+    const isSingleModel: boolean = this.isSingleModel();
+
     if (this.store) {
+      const path: string = this.state.path;
       return (
         <HashRouter>
           <Page>
             <Provider store={this.store}>
               <Switch>
                 <Route exact={true} path={"/"}>
-                  {this.getSingleModelType(this.store) && <Redirect to={"/editor"} />}
-                  <LandingPage path={this.state.path} />
+                  {!isSingleModel && <LandingPage path={path} />}
+                  {isSingleModel && <Redirect from={"/"} to={"/editor/0"} />}
                 </Route>
-                <Route exact={true} path={"/editor"}>
-                  {this.getSingleModelType(this.store) === "Scorecard" && (
-                    <ScorecardEditorPage path={this.state.path} />
-                  )}
+                <Route exact={true} path={"/editor/:index"}>
+                  <SingleEditorRouter path={path} />
                 </Route>
+                <Route exact={true} path={"/editor"} component={SingleEditorRouter} />
               </Switch>
             </Provider>
           </Page>

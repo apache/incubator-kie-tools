@@ -60,9 +60,9 @@ export const LandingPage = (props: LandingPageProps) => {
   const filteredModels: Model[] = useMemo(() => filterModels(), [filter, showUnsupportedModels, models]);
 
   const goToModel = useCallback(
-    (index: number) => {
+    (_model: Model) => {
       history.push({
-        pathname: "editor/" + index
+        pathname: "editor/" + models?.indexOf(_model)
       });
     },
     [history]

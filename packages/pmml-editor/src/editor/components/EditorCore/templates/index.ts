@@ -14,13 +14,4 @@
  * limitations under the License.
  */
 
-.model-card {
-  height: 280px;
-  cursor: pointer;
-
-  &__title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
+export * from "./UnsupportedModelPage";

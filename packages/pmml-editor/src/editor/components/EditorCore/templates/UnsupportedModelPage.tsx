@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 import { Header } from "../../Header/molecules";
+import { Level, PageSection, PageSectionVariants } from "@patternfly/react-core";
 
-interface EditorPageProps {
+interface UnsupportedModelPageProps {
   path: string;
+  model: Model;
 }
 
-export const ScorecardEditorPage = (props: EditorPageProps) => {
+export const UnsupportedModelPage = (props: UnsupportedModelPageProps) => {
   return (
     <>
-      <div data-testid="editor-page">
+      <div data-testid="unsupported-model-page">
         <PageSection variant={PageSectionVariants.light}>
           <Header title={props.path} />
         </PageSection>
 
         <PageSection isFilled={true}>
-          <section>Hello</section>
+          <Level>
+            <pre>{JSON.stringify(props.model, undefined, 2)}</pre>
+          </Level>
         </PageSection>
       </div>
     </>
