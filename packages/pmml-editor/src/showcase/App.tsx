@@ -23,8 +23,6 @@ import { PMMLEmptyState } from "./EmptyState";
 import { DisplayProperty } from "csstype";
 import { HistoryButtons } from "./HistoryButtons";
 
-const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
-
 const manager: EnvelopeBusMessageManager<
   KogitoEditorChannelApi,
   KogitoEditorChannelApi
@@ -54,8 +52,8 @@ export const App = () => {
       {content === undefined && (
         <PMMLEmptyState
           newContent={() => {
-            setContent(EMPTY_PMML);
-            editor.setContent("New document", EMPTY_PMML).finally();
+            setContent("");
+            editor.setContent("New document", "").finally();
           }}
           setContent={(path: string, xml: string) => {
             setContent(xml);

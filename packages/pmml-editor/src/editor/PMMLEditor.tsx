@@ -20,17 +20,21 @@ import { Reducer } from "react";
 import { enableAllPlugins } from "immer";
 import { createStore, Store } from "redux";
 import { Actions, AllActions, DataDictionaryReducer, DataFieldReducer, HeaderReducer, PMMLReducer } from "./reducers";
-import { PMML, PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { Model, PMML, PMML2XML, Scorecard, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Provider } from "react-redux";
 import mergeReducers from "combine-reducer";
 import { HistoryService } from "./history";
 import { LandingPage } from "./components/LandingPage/templates";
 import { Page } from "@patternfly/react-core";
 import { HashRouter } from "react-router-dom";
-import { Route, Switch } from "react-router";
+import { Redirect, Route, Switch } from "react-router";
 import { EmptyStateNoContent } from "./components/LandingPage/organisms";
+import { ScorecardEditorPage } from "./components/ScorecardEditor/templates";
+import { getModelType } from "./utils";
 
-export interface Props {
+const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
+
+interface Props {
   exposing: (s: PMMLEditor) => void;
   channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
 }
@@ -72,8 +76,12 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   private doSetContent(path: string, content: string): void {
-    this.store = createStore(this.reducer, XML2PMML(content));
-    this.setState({ path: path, content: content, originalContent: content });
+    let _content: string = content;
+    if (content === "") {
+      _content = EMPTY_PMML;
+    }
+    this.store = createStore(this.reducer, XML2PMML(_content));
+    this.setState({ path: path, content: _content, originalContent: _content });
   }
 
   public getContent(): Promise<string> {
@@ -113,6 +121,16 @@ export class PMMLEditor extends React.Component<Props, State> {
     }
   }
 
+  private getSingleModelType(store: Store<PMML, AllActions>): string | undefined {
+    const models: Model[] | undefined = store.getState().models;
+    if (models !== undefined) {
+      if (models.length === 1) {
+        return getModelType(models[0]);
+      }
+    }
+    return undefined;
+  }
+
   public render() {
     if (this.store) {
       return (
@@ -121,7 +139,13 @@ export class PMMLEditor extends React.Component<Props, State> {
             <Provider store={this.store}>
               <Switch>
                 <Route exact={true} path={"/"}>
+                  {this.getSingleModelType(this.store) && <Redirect to={"/editor"} />}
                   <LandingPage path={this.state.path} />
+                </Route>
+                <Route exact={true} path={"/editor"}>
+                  {this.getSingleModelType(this.store) === "Scorecard" && (
+                    <ScorecardEditorPage path={this.state.path} />
+                  )}
                 </Route>
               </Switch>
             </Provider>

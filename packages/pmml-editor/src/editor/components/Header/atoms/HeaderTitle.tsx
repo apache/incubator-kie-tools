@@ -13,6 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as React from "react";
+import { TextContent, Title } from "@patternfly/react-core";
 
-export * from "./ModelCard";
-export * from "./LandingPageToolbar";
+interface HeaderTitleProps {
+  title: string;
+}
+
+export const HeaderTitle = (props: HeaderTitleProps) => {
+  return (
+    <TextContent>
+      <Title size="3xl" headingLevel="h2">
+        {props.title}
+      </Title>
+    </TextContent>
+  );
+};

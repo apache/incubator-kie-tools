@@ -15,7 +15,7 @@
  */
 import { fireEvent, render } from "@testing-library/react";
 import * as React from "react";
-import { LandingPageToolbar } from "../../../../../editor/components/LandingPage/organisms";
+import { LandingPageToolbar } from "../../../../../editor/components/LandingPage/molecules";
 
 const setFilter = jest.fn((_filter: string) => {
   /*NOP*/

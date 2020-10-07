@@ -13,6 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as React from "react";
+import { PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { Header } from "../../Header/molecules";
 
-export * from "./ModelCard";
-export * from "./LandingPageToolbar";
+interface EditorPageProps {
+  path: string;
+}
+
+export const ScorecardEditorPage = (props: EditorPageProps) => {
+  return (
+    <>
+      <div data-testid="editor-page">
+        <PageSection variant={PageSectionVariants.light}>
+          <Header title={props.path} />
+        </PageSection>
+
+        <PageSection isFilled={true}>
+          <section>Hello</section>
+        </PageSection>
+      </div>
+    </>
+  );
+};

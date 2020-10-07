@@ -13,6 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ActionSelector, HeaderTitle } from "../atoms";
+import * as React from "react";
+import { Split, SplitItem } from "@patternfly/react-core";
 
-export * from "./ModelCard";
-export * from "./LandingPageToolbar";
+interface HeaderProps {
+  title: string;
+}
+
+export const Header = (props: HeaderProps) => {
+  return (
+    <Split>
+      <SplitItem>
+        <HeaderTitle title={props.title} />
+      </SplitItem>
+      <SplitItem isFilled={true}>&nbsp;</SplitItem>
+      <SplitItem>
+        <ActionSelector />
+      </SplitItem>
+    </Split>
+  );
+};

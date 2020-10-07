@@ -15,7 +15,7 @@
  */
 import { render } from "@testing-library/react";
 import * as React from "react";
-import { ActionSelector } from "../../../../../editor/components/LandingPage/molecules";
+import { ActionSelector } from "../../../../../editor/components/Header/atoms";
 
 describe("ActionSelector", () => {
   test("render::Collapsed", () => {
