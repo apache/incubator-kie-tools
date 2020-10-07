@@ -341,6 +341,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+    </dependency>
+
     <!-- Needed by forms for JSR303 validation -->
     <dependency>
       <groupId>javax.validation</groupId>
