@@ -15,6 +15,7 @@
  */
 
 export const UNSAVED_FILE_NAME = "unsaved file";
+export const SAMPLE = "sample";
 
 export interface File {
   filePath: string;

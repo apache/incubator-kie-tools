@@ -15,18 +15,15 @@
  */
 
 import { useCallback, useState } from "react";
+import { EmbeddedEditorRef } from "./EmbeddedEditor";
 
-export type IsolatedEditorRef = {
-  setContent(content: string): Promise<void>;
-} | null;
+export function useEditorRef() {
+  const [editor, setEditor] = useState<EmbeddedEditorRef | undefined>(null);
 
-export function useIsolatedEditorRef() {
-  const [isolatedEditor, setIsolatedEditor] = useState<IsolatedEditorRef | undefined>(null);
-
-  const isolatedEditorRef = useCallback((node: IsolatedEditorRef) => {
+  const editorRef = useCallback((node: EmbeddedEditorRef) => {
     if (node !== null) {
-      setIsolatedEditor(node);
+      setEditor(node);
     }
   }, []);
-  return { isolatedEditor, isolatedEditorRef };
+  return { editor, editorRef };
 }

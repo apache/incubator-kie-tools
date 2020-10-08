@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { File, FileSaveActions, UNSAVED_FILE_NAME } from "../common/File";
+import { File, FileSaveActions, UNSAVED_FILE_NAME, SAMPLE } from "../common/File";
 import { BrowserWindow, dialog, ipcMain } from "electron";
 import { Files } from "../storage/core/Files";
 import { FS } from "../storage/core/FS";
@@ -34,8 +34,12 @@ export class FileOperations {
     this.menu = menu;
     this.userData = userData;
 
-    ipcMain.on("saveFile", (event: IpcMainEvent, data: { action: FileSaveActions, file: File }) => {
-      if (data.action !== FileSaveActions.SAVE_AS && data.file.filePath !== UNSAVED_FILE_NAME) {
+    ipcMain.on("saveFile", (event: IpcMainEvent, data: { action: FileSaveActions; file: File }) => {
+      if (
+        data.action !== FileSaveActions.SAVE_AS &&
+        data.file.filePath !== UNSAVED_FILE_NAME &&
+        data.file.filePath !== SAMPLE
+      ) {
         this.writeFile(data.file.filePath, data.file.fileContent);
         return;
       }
@@ -139,7 +143,7 @@ export class FileOperations {
       .then(content => {
         this.window.webContents.send("openFile", {
           file: {
-            filePath: UNSAVED_FILE_NAME,
+            filePath: SAMPLE,
             fileType: extractFileExtension(filePath),
             fileContent: content
           }
