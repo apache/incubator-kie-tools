@@ -30,6 +30,7 @@ public class ClientDMNType {
     private boolean composite;
     private Map<String, ClientDMNType> fields = new HashMap<>();
     private BuiltInType feelType;
+    private ClientDMNType baseType;
 
     public ClientDMNType(String namespace, String name, String id, boolean isCollection, BuiltInType feelType) {
         this.namespace = namespace;
@@ -80,16 +81,20 @@ public class ClientDMNType {
         return collection;
     }
 
+    public void setCollection(final boolean collection) {
+        this.collection = collection;
+    }
+
     public boolean isComposite() {
         return composite;
     }
 
-    public Map<String, ClientDMNType> getFields() {
-        return Collections.unmodifiableMap(fields);
+    public void setIsComposite(final boolean isComposite) {
+        this.composite = isComposite;
     }
 
-    public BuiltInType getFeelType() {
-        return feelType;
+    public Map<String, ClientDMNType> getFields() {
+        return Collections.unmodifiableMap(fields);
     }
 
     public void addField(String fieldName, ClientDMNType clientDMNType) {
@@ -100,15 +105,20 @@ public class ClientDMNType {
         this.fields.putAll(fields);
     }
 
-    public void setIsComposite(final boolean isComposite) {
-        this.composite = isComposite;
-    }
-
-    public void setCollection(final boolean collection) {
-        this.collection = collection;
+    public BuiltInType getFeelType() {
+        return feelType;
     }
 
     public void setFeelType(BuiltInType feelType) {
         this.feelType = feelType;
     }
+
+    public ClientDMNType getBaseType() {
+        return baseType;
+    }
+
+    public void setBaseType(ClientDMNType baseType) {
+        this.baseType = baseType;
+    }
+
 }

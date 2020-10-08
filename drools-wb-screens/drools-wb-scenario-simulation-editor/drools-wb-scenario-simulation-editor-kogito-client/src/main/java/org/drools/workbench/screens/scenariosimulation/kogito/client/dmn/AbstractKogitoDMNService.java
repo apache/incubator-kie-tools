@@ -216,7 +216,8 @@ public abstract class AbstractKogitoDMNService implements KogitoDMNService {
                 itemDefinitionDMNType.addFields(superDmnType.getFields());
                 itemDefinitionDMNType.setCollection(superDmnType.isCollection() || itemDefinitionDMNType.isCollection());
                 itemDefinitionDMNType.setIsComposite(superDmnType.isComposite() || itemDefinitionDMNType.isComposite());
-                itemDefinitionDMNType.setFeelType(superDmnType.getFeelType() != null ? superDmnType.getFeelType() : null);
+                itemDefinitionDMNType.setFeelType(superDmnType.getFeelType());
+                itemDefinitionDMNType.setBaseType(getBaseTypeForItemDefinition(itemDefinition, superDmnType));
             } else {
                 throw new IllegalStateException(
                         "Item: " + itemDefinition.getName() + " refers to typeRef: " + itemDefinition.getTypeRef()
@@ -231,6 +232,12 @@ public abstract class AbstractKogitoDMNService implements KogitoDMNService {
 
         return itemDefinitionDMNType;
    }
+
+    protected ClientDMNType getBaseTypeForItemDefinition(JSITItemDefinition itemDefinition, ClientDMNType superDmnType) {
+        final boolean hasAllowedValues = itemDefinition.getAllowedValues() != null
+                && !itemDefinition.getAllowedValues().getText().isEmpty();
+        return hasAllowedValues ? superDmnType : superDmnType.getBaseType();
+    }
 
     /**
      * This method aim is to populate all fields and subfields present in a given <code>JSITItemDefinitionItem</code>
@@ -256,17 +263,23 @@ public abstract class AbstractKogitoDMNService implements KogitoDMNService {
                 final String typeRef = jsitItemDefinitionField.getTypeRef();
                 final List<JSITItemDefinition> subfields = jsitItemDefinitionField.getItemComponent();
                 final boolean hasSubFields = subfields != null && !subfields.isEmpty();
+                final boolean hasAllowedValues = jsitItemDefinitionField.getAllowedValues() != null
+                        && !jsitItemDefinitionField.getAllowedValues().getText().isEmpty();
+
                 ClientDMNType fieldDMNType;
                 /* Retrieving field ClientDMNType */
-                if (typeRef != null && !hasSubFields) {
-                    /* The field refers to a DMType which must be present in dmnTypesMap */
+                if (typeRef != null && !hasSubFields && !hasAllowedValues) {
+                    /* The field refers to a DMType which is present in dmnTypesMap or needs to be created */
                     fieldDMNType = getOrCreateDMNType(allItemDefinitions, typeRef, namespace, dmnTypesMap);
+                } else if (typeRef != null && !hasSubFields && hasAllowedValues) {
+                    /* This case requires to create a new "Anonymous" DMNType to handle the allowed values */
+                    fieldDMNType = createDMNType(allItemDefinitions, jsitItemDefinitionField, namespace, dmnTypesMap);
                 } else if (typeRef == null && hasSubFields) {
-                    /* In this case we are handling an "in place" Structure type not defined in allItemDefinition list.
+                    /* In this case we are handling an "Anonymous" type not defined in allItemDefinition list.
                      * Therefore, a new DMNType must be created and then it manages its defined subfields in recursive way */
                     fieldDMNType = createDMNType(allItemDefinitions, jsitItemDefinitionField, namespace, dmnTypesMap);
                 } else {
-                    /* The following case are not managed, because invalid typeRef empty and no subfields OR typeRef
+                    /* Remaining cases are not managed, because invalid. Eg typeRef empty and no subfields OR typeRef
                      * empty and at least one subfield */
                     continue;
                 }
@@ -551,8 +564,11 @@ public abstract class AbstractKogitoDMNService implements KogitoDMNService {
                         hiddenFacts.put(typeName, fact);
                     }
                     toReturn.addExpandableProperty(entry.getKey(), typeName);
-                } else {  // a simple type is just name -> type
-                    simpleFields.put(entry.getKey(), new FactModelTree.PropertyTypeName(typeName));
+                } else {
+                    FactModelTree.PropertyTypeName propertyTypeName = entry.getValue().getBaseType() != null ?
+                            new FactModelTree.PropertyTypeName(typeName, entry.getValue().getBaseType().getName()) :
+                            new FactModelTree.PropertyTypeName(typeName);
+                    simpleFields.put(entry.getKey(), propertyTypeName);
                 }
             }
         }

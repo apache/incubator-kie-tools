@@ -41,6 +41,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITInformationItem;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITInputData;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITItemDefinition;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITUnaryTests;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 
@@ -773,6 +774,31 @@ public class AbstractKogitoDMNServiceTest {
         assertFalse(clientDmnType.isComposite());
         assertTrue(clientDmnType.getFields().isEmpty());
         assertEquals(BuiltInType.STRING, clientDmnType.getFeelType());
+        assertNull(clientDmnType.getBaseType());
+        assertTrue(defaultTypesMap.containsKey(TYPE_NAME));
+        assertTrue(defaultTypesMap.containsValue(clientDmnType));
+    }
+
+    @Test
+    public void createDMNTypeItemDefinitionSimpleTypeRefNoFieldsWithAllowedValues() {
+        Map<String, ClientDMNType> defaultTypesMap = new HashMap<>(abstractKogitoDMNServiceSpy.getDMNDataTypesMap(Collections.emptyList(), NAMESPACE));
+        allDefinitions = abstractKogitoDMNServiceSpy.indexDefinitionsByName(Arrays.asList(jsitItemDefinitionMock));
+        when(jsitItemDefinitionMock.getItemComponent()).thenReturn(new ArrayList<>());
+        when(jsitItemDefinitionMock.getTypeRef()).thenReturn(BuiltInType.STRING.getName());
+        JSITUnaryTests jsitUnaryTestsMock = mock(JSITUnaryTests.class);
+        when(jsitUnaryTestsMock.getText()).thenReturn("value1, value2, value3");
+        when(jsitItemDefinitionMock.getAllowedValues()).thenReturn(jsitUnaryTestsMock);
+        ClientDMNType clientDmnType = abstractKogitoDMNServiceSpy.createDMNType(allDefinitions,
+                                                                                jsitItemDefinitionMock,
+                                                                                NAMESPACE,
+                                                                                defaultTypesMap);
+        assertEquals(NAMESPACE, clientDmnType.getNamespace());
+        assertEquals(TYPE_NAME, clientDmnType.getName());
+        assertFalse(clientDmnType.isCollection());
+        assertFalse(clientDmnType.isComposite());
+        assertTrue(clientDmnType.getFields().isEmpty());
+        assertEquals(BuiltInType.STRING, clientDmnType.getFeelType());
+        assertEquals("string", clientDmnType.getBaseType().getName());
         assertTrue(defaultTypesMap.containsKey(TYPE_NAME));
         assertTrue(defaultTypesMap.containsValue(clientDmnType));
     }
@@ -842,6 +868,36 @@ public class AbstractKogitoDMNServiceTest {
         assertEquals(BuiltInType.STRING, clientDmnType.getFields().get("tNested").getFeelType());
         assertFalse(clientDmnType.getFields().get("tNested").isCollection());
         assertFalse(clientDmnType.getFields().get("tNested").isComposite());
+        assertNull(clientDmnType.getFields().get("tNested").getBaseType());
+        assertNull(clientDmnType.getFeelType());
+        assertFalse(defaultTypesMap.containsKey(TYPE_NAME));
+        assertFalse(defaultTypesMap.containsValue(clientDmnType));
+    }
+
+    @Test
+    public void createDMNTypeItemComponentWithFieldWithAllowedValues() {
+        Map<String, ClientDMNType> defaultTypesMap = new HashMap<>(abstractKogitoDMNServiceSpy.getDMNDataTypesMap(Collections.emptyList(), NAMESPACE));
+        when(jsitItemDefinitionMock.getItemComponent()).thenReturn(Arrays.asList(jsitItemDefinitionNestedMock));
+        when(jsitItemDefinitionNestedMock.getName()).thenReturn("tNested");
+        when(jsitItemDefinitionNestedMock.getId()).thenReturn(ID);
+        when(jsitItemDefinitionNestedMock.getTypeRef()).thenReturn(BuiltInType.STRING.getName());
+        JSITUnaryTests jsitUnaryTestsMock = mock(JSITUnaryTests.class);
+        when(jsitUnaryTestsMock.getText()).thenReturn("value1, value2, value3");
+        when(jsitItemDefinitionNestedMock.getAllowedValues()).thenReturn(jsitUnaryTestsMock);
+        ClientDMNType clientDmnType = abstractKogitoDMNServiceSpy.createDMNType(allDefinitions,
+                                                                                jsitItemDefinitionMock,
+                                                                                NAMESPACE,
+                                                                                defaultTypesMap);
+        assertEquals(NAMESPACE, clientDmnType.getNamespace());
+        assertEquals(TYPE_NAME, clientDmnType.getName());
+        assertFalse(clientDmnType.isCollection());
+        assertTrue(clientDmnType.isComposite());
+        assertNotNull(clientDmnType.getFields());
+        assertTrue(clientDmnType.getFields().size() == 1);
+        assertEquals(BuiltInType.STRING, clientDmnType.getFields().get("tNested").getFeelType());
+        assertFalse(clientDmnType.getFields().get("tNested").isCollection());
+        assertFalse(clientDmnType.getFields().get("tNested").isComposite());
+        assertEquals("string", clientDmnType.getFields().get("tNested").getBaseType().getName());
         assertNull(clientDmnType.getFeelType());
         assertFalse(defaultTypesMap.containsKey(TYPE_NAME));
         assertFalse(defaultTypesMap.containsValue(clientDmnType));
@@ -975,6 +1031,27 @@ public class AbstractKogitoDMNServiceTest {
     }
 
     @Test
+    public void createTopLevelFactModelTreeCompositeNoCollectionBaseType() {
+        // Single property retrieve
+        ClientDMNType composite = getSingleCompositeWithBaseTypeField();
+        FactModelTree retrieved = abstractKogitoDMNServiceSpy.createTopLevelFactModelTree("testPath", composite, new TreeMap<>(), FactModelTree.Type.INPUT);
+        assertNotNull(retrieved);
+        assertEquals("testPath", retrieved.getFactName());
+        assertEquals(2, retrieved.getSimpleProperties().size());
+        assertTrue(retrieved.getSimpleProperties().containsKey("name"));
+        assertEquals(TYPE_NAME, retrieved.getSimpleProperties().get("name").getTypeName());
+        assertFalse(retrieved.getSimpleProperties().get("name").getBaseTypeName().isPresent());
+        assertEquals(TYPE_NAME, retrieved.getSimpleProperties().get("name").getPropertyTypeNameToVisualize());
+        //
+        assertTrue(retrieved.getSimpleProperties().containsKey("gender"));
+        assertEquals("gender", retrieved.getSimpleProperties().get("gender").getTypeName());
+        assertEquals("string", retrieved.getSimpleProperties().get("gender").getBaseTypeName().get());
+        assertEquals("string", retrieved.getSimpleProperties().get("gender").getPropertyTypeNameToVisualize());
+        assertTrue(retrieved.getExpandableProperties().isEmpty());
+        assertTrue(retrieved.getGenericTypesMap().isEmpty());
+    }
+
+    @Test
     public void createTopLevelFactModelTreeCompositeNoCollection() {
         // Single property retrieve
         ClientDMNType compositePerson = getSingleCompositeWithSimpleCollection();
@@ -1076,5 +1153,17 @@ public class AbstractKogitoDMNServiceTest {
         compositePersonField.put("name", nameSimple);
 
         return new ClientDMNType(NAMESPACE, TYPE_NAME, null, true, true, compositePersonField, null);
+    }
+
+    private ClientDMNType getSingleCompositeWithBaseTypeField() {
+        // Complex object retrieve
+        ClientDMNType toReturn = new ClientDMNType(null, "tComposite", null, false, true);
+        ClientDMNType genderDMNType = new ClientDMNType(null, "gender", null, false, null);
+        genderDMNType.setBaseType(new ClientDMNType(null, "string", null, false, null));
+
+        toReturn.addField("gender", genderDMNType);
+        toReturn.addField("name", new ClientDMNType(null, TYPE_NAME, null, false, null));
+
+        return toReturn;
     }
 }
