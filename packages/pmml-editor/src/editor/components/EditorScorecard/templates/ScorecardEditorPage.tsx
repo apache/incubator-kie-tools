@@ -18,6 +18,7 @@ import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { Header } from "../../Header/molecules";
 import { Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { coalesce } from "../../../utils";
+import { CorePropertiesTable } from "../organisms";
 
 interface EditorPageProps {
   path: string;
@@ -26,16 +27,19 @@ interface EditorPageProps {
 
 export const ScorecardEditorPage = (props: EditorPageProps) => {
   return (
-    <>
-      <div data-testid="editor-page">
-        <PageSection variant={PageSectionVariants.light}>
-          <Header title={props.path} />
-        </PageSection>
+    <div data-testid="editor-page">
+      <PageSection variant={PageSectionVariants.light}>
+        <Header title={coalesce(props.model.modelName, "<Unnamed>")} />
+      </PageSection>
 
-        <PageSection isFilled={true}>
-          <section>{coalesce(props.model.modelName, "<Unnamed>")}</section>
-        </PageSection>
-      </div>
-    </>
+      <PageSection isFilled={true}>
+        <CorePropertiesTable
+          baselineScore={props.model.baselineScore}
+          baselineMethod={props.model.baselineMethod}
+          initialScore={props.model.initialScore}
+          useReasonCodes={props.model.useReasonCodes}
+        />
+      </PageSection>
+    </div>
   );
 };

@@ -18,8 +18,6 @@ import * as React from "react";
 import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { ModelCard } from "../../../../../editor/components/LandingPage/molecules";
 
-const onDelete = jest.fn((_model: Model) => null);
-
 const model: Model = new Scorecard({
   modelName: "Name",
   Characteristics: { Characteristic: [] },
@@ -30,7 +28,10 @@ const model: Model = new Scorecard({
 
 describe("ModelCard", () => {
   test("render::Basics", () => {
-    const { getByTestId } = render(<ModelCard model={model} onDelete={onDelete} />);
+    const onClick = jest.fn((_model: Model) => null);
+    const onDelete = jest.fn((_model: Model) => null);
+
+    const { getByTestId } = render(<ModelCard model={model} onClick={onClick} onDelete={onDelete} />);
     expect(getByTestId("model-card")).toMatchSnapshot();
 
     const element: HTMLElement = getByTestId("model-card__model-type");
@@ -39,7 +40,10 @@ describe("ModelCard", () => {
   });
 
   test("Delete::click", () => {
-    const { getByTestId } = render(<ModelCard model={model} onDelete={onDelete} />);
+    const onClick = jest.fn((_model: Model) => null);
+    const onDelete = jest.fn((_model: Model) => null);
+
+    const { getByTestId } = render(<ModelCard model={model} onClick={onClick} onDelete={onDelete} />);
     const element: HTMLElement = getByTestId("model-card__delete");
     expect(element).toBeInTheDocument();
     expect(element).toBeInstanceOf(HTMLButtonElement);
@@ -47,5 +51,21 @@ describe("ModelCard", () => {
     (element as HTMLButtonElement).click();
     expect(onDelete).toBeCalledTimes(1);
     expect(onDelete).toBeCalledWith(model);
+    expect(onClick).not.toBeCalled();
+  });
+
+  test("Click::click", () => {
+    const onClick = jest.fn((_model: Model) => null);
+    const onDelete = jest.fn((_model: Model) => null);
+
+    const { getByTestId } = render(<ModelCard model={model} onClick={onClick} onDelete={onDelete} />);
+    const element: HTMLElement = getByTestId("model-card");
+    expect(element).toBeInTheDocument();
+    expect(element).toBeInstanceOf(HTMLElement);
+
+    (element as HTMLElement).click();
+    expect(onClick).toBeCalledTimes(1);
+    expect(onClick).toBeCalledWith(model);
+    expect(onDelete).not.toBeCalled();
   });
 });
