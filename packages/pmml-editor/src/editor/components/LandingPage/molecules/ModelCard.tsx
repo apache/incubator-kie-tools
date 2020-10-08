@@ -28,19 +28,41 @@ import * as React from "react";
 import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 import "./ModelCard.scss";
 import { ModelCardIcon } from "../atoms";
+import { useCallback } from "react";
 
 interface ModelCardProps {
-  model: Model;
-  onDelete: (model: Model) => void;
+  index: number | undefined;
+  modelName: string;
+  modelType: ModelType;
+  onDelete: (index: number) => void;
+  onClick: (index: number) => void;
 }
 
 export const ModelCard = (props: ModelCardProps) => {
-  const { model } = props;
-  const modelName: string = getModelName(model) ?? "<Undefined>";
-  const modelType: ModelType | undefined = getModelType(model);
+  const { index, modelName, modelType } = props;
+
+  const onClickModel = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      if (index !== undefined) {
+        e.stopPropagation();
+        props.onClick(index);
+      }
+    },
+    [index]
+  );
+
+  const onDeleteModel = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      if (index !== undefined) {
+        e.stopPropagation();
+        props.onDelete(index);
+      }
+    },
+    [index]
+  );
 
   return (
-    <Card data-testid="model-card" isHoverable={true} className="model-card">
+    <Card data-testid="model-card" isHoverable={true} className="model-card" onClick={onClickModel}>
       <CardHeader>
         <CardHeaderMain>
           <ModelCardIcon type={modelType} />
@@ -55,7 +77,7 @@ export const ModelCard = (props: ModelCardProps) => {
         <div data-testid="model-card__model-type">{modelType}</div>
       </CardBody>
       <CardFooter>
-        <Button data-testid="model-card__delete" variant="primary" onClick={e => props.onDelete(model)}>
+        <Button data-testid="model-card__delete" variant="primary" onClick={onDeleteModel}>
           Delete
         </Button>
       </CardFooter>

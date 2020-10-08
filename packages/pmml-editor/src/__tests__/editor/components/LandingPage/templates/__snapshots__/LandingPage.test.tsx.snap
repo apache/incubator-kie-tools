@@ -12,10 +12,14 @@ exports[`LandingPage render::No Models 1`] = `
     >
       <div
 <<<<<<< HEAD
+<<<<<<< HEAD
         class="pf-l-split__item pf-m-fill"
 =======
         class="pf-l-split__item"
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
+=======
+        class="pf-l-split__item pf-m-fill"
+>>>>>>> Simple updates following peer review.
       >
         <div
           class="pf-c-content"
@@ -29,6 +33,7 @@ exports[`LandingPage render::No Models 1`] = `
       </div>
       <div
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         class="pf-l-split__item pf-m-fill"
       >
@@ -36,6 +41,8 @@ exports[`LandingPage render::No Models 1`] = `
       </div>
       <div
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
+=======
+>>>>>>> Simple updates following peer review.
         class="pf-l-split__item"
       >
         <div
@@ -317,10 +324,14 @@ exports[`LandingPage render::With Models 1`] = `
     >
       <div
 <<<<<<< HEAD
+<<<<<<< HEAD
         class="pf-l-split__item pf-m-fill"
 =======
         class="pf-l-split__item"
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
+=======
+        class="pf-l-split__item pf-m-fill"
+>>>>>>> Simple updates following peer review.
       >
         <div
           class="pf-c-content"
@@ -334,6 +345,7 @@ exports[`LandingPage render::With Models 1`] = `
       </div>
       <div
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         class="pf-l-split__item pf-m-fill"
       >
@@ -341,6 +353,8 @@ exports[`LandingPage render::With Models 1`] = `
       </div>
       <div
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
+=======
+>>>>>>> Simple updates following peer review.
         class="pf-l-split__item"
       >
         <div
@@ -590,9 +604,13 @@ exports[`LandingPage render::With Models 1`] = `
               </span>
             </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
              
 =======
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
+=======
+             
+>>>>>>> Simple updates following peer review.
             <div
               class="pf-c-card__body"
             >

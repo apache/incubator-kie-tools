@@ -38,11 +38,13 @@ interface LandingPageProps {
 }
 
 export const LandingPage = (props: LandingPageProps) => {
-  const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>((state: PMML) => state.models);
-
+  const history = useHistory();
   const dispatch = useDispatch();
+
   const [filter, setFilter] = useState("");
   const [showUnsupportedModels, setShowUnsupportedModels] = useState(true);
+
+  const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>((state: PMML) => state.models);
   const hasUnsupportedModels = useMemo(() => (models ?? []).find(model => !isSupportedModelType(model)) !== undefined, [
     models
   ]);
@@ -61,35 +63,24 @@ export const LandingPage = (props: LandingPageProps) => {
 
   const filteredModels: Model[] = useMemo(() => filterModels(), [filter, showUnsupportedModels, models]);
 
-  const onDelete = useCallback((_model: Model) => {
-    dispatch({
-      type: Actions.DeleteModel,
-      payload: {
-        model: _model
-      }
-    });
-  }, []);
+  const goToModel = useCallback(
+    (index: number) => {
+      history.push({
+        pathname: "editor/" + index
+      });
+    },
+    [history]
+  );
 
   return (
     <div data-testid="landing-page">
       <PageSection variant={PageSectionVariants.light}>
-        <Split>
-          <SplitItem isFilled={true}>
-            <TextContent>
-              <Title size="3xl" headingLevel="h2">
-                {props.path}
-              </Title>
-            </TextContent>
-          </SplitItem>
-          <SplitItem>
-            <ActionSelector />
-          </SplitItem>
-        </Split>
+        <Header title={props.path} />
         <LandingPageToolbar
-          onFilter={setFilter}
+          setFilter={setFilter}
           hasUnsupportedModels={hasUnsupportedModels}
           showUnsupportedModels={showUnsupportedModels}
-          onShowUnsupportedModels={setShowUnsupportedModels}
+          setShowUnsupportedModels={setShowUnsupportedModels}
         />
       </PageSection>
 
@@ -97,11 +88,33 @@ export const LandingPage = (props: LandingPageProps) => {
         <section>
           {filteredModels.length > 0 && (
             <Gallery hasGutter={true}>
-              {filteredModels.map(model => (
-                <GalleryItem key={uuid()} data-testid="landing-page__model-card">
-                  <ModelCard model={model} onDelete={onDelete} />
-                </GalleryItem>
-              ))}
+              {filteredModels.map(model => {
+                //model should always be a member of models at this point.
+                const index: number | undefined = models?.indexOf(model);
+                const modelName: string = getModelName(model);
+                const modelType: ModelType = getModelType(model);
+
+                return (
+                  <GalleryItem key={uuid()} data-testid="landing-page__model-card">
+                    <ModelCard
+                      index={index}
+                      modelName={modelName}
+                      modelType={modelType}
+                      onClick={goToModel}
+                      onDelete={(_model: Model) => {
+                        if (window.confirm(`Delete Model "${modelName}"?`)) {
+                          dispatch({
+                            type: Actions.DeleteModel,
+                            payload: {
+                              modelIndex: index
+                            }
+                          });
+                        }
+                      }}
+                    />
+                  </GalleryItem>
+                );
+              })}
             </Gallery>
           )}
           {filteredModels.length === 0 && (

@@ -29,9 +29,13 @@ exports[`ModelCard render::Basics 1`] = `
     </span>
   </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
    
 =======
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
+=======
+   
+>>>>>>> Simple updates following peer review.
   <div
     class="pf-c-card__body"
   >
