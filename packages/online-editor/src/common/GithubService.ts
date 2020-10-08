@@ -42,6 +42,7 @@ export interface CreateGistArgs {
 export class GithubService {
   private octokit: Octokit;
   private authenticated: boolean;
+  private userLogin: string;
 
   constructor() {
     this.init(false);
@@ -50,6 +51,7 @@ export class GithubService {
   private init(resetToken: boolean): void {
     this.octokit = new Octokit();
     this.authenticated = false;
+    this.userLogin = "";
 
     if (resetToken) {
       setCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME, EMPTY_TOKEN);
@@ -63,15 +65,15 @@ export class GithubService {
     setCookie(GITHUB_AUTH_TOKEN_COOKIE_NAME, token);
   }
 
-  private validateToken(token: string): Promise<boolean> {
+  private validateToken(token: string): Promise<string | false> {
     if (!token) {
       return Promise.resolve(false);
     }
 
     const testOctokit = new Octokit({ auth: token });
-    return testOctokit.emojis
-      .get({})
-      .then(() => Promise.resolve(true))
+    return testOctokit.users
+      .getAuthenticated()
+      .then(res => Promise.resolve(res.data.login))
       .catch(() => Promise.resolve(false));
   }
 
@@ -82,11 +84,13 @@ export class GithubService {
   public async authenticate(token: string = EMPTY_TOKEN) {
     token = this.resolveToken(token);
 
-    if (!(await this.validateToken(token))) {
+    const userLogin = await this.validateToken(token);
+    if (!userLogin) {
       this.init(true);
       return false;
     }
 
+    this.userLogin = userLogin;
     this.initAuthenticated(token);
     return true;
   }
@@ -103,16 +107,36 @@ export class GithubService {
     return this.authenticated;
   }
 
+  public getLogin(): string {
+    return this.userLogin;
+  }
+
   public isGithub(url: string): boolean {
     return /^(http:\/\/|https:\/\/)?(www\.)?github.com.*$/.test(url);
   }
 
   public isGist(url: string): boolean {
+    return this.isGistDefault(url) || this.isGistRaw(url);
+  }
+
+  public isGistDefault(url: string): boolean {
     return /^(http:\/\/|https:\/\/)?(www\.)?gist.github.com.*$/.test(url);
+  }
+
+  public isGistRaw(url: string): boolean {
+    return /^(http:\/\/|https:\/\/)?(www\.)?gist.githubusercontent.com.*$/.test(url);
   }
 
   public extractGistId(url: string): string {
     return url.substr(url.lastIndexOf("/") + 1);
+  }
+
+  public extractGistIdFromRawUrl(url: string): string {
+    return url.split("gist.githubusercontent.com/")[1].split("/")[1];
+  }
+
+  public extractUserLoginFromGistRawUrl(url: string): string {
+    return url.split("gist.githubusercontent.com/")[1].split("/")[0];
   }
 
   public retrieveFileInfo(fileUrl: string): FileInfo {
@@ -187,9 +211,26 @@ export class GithubService {
       .catch(e => Promise.reject("Not able to create gist on Github."));
   }
 
+  public updateGist(args: any) {
+    const gistContent: any = {
+      gist_id: args.gistId,
+      description: args.description,
+      public: args.isPublic,
+      files: {
+        [args.filename]: {
+          content: args.content
+        }
+      }
+    };
+
+    return this.octokit.gists.update(gistContent);
+  }
+
   public getGistRawUrlFromId(gistId: string): Promise<string> {
     return this.octokit.gists
-      .get({ gist_id: gistId })
+      .get({
+        gist_id: gistId
+      })
       .then(response => {
         const filename = Object.keys(response.data.files)[0];
         return (response.data as any).files[filename].raw_url;

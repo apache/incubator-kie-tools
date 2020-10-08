@@ -35,6 +35,10 @@ export function extractEditorFileExtensionFromUrl(supportedFileExtensions: strin
   return supportedFileExtensions.indexOf(typeFromUrl!) !== -1 ? typeFromUrl : undefined;
 }
 
+export function getFileUrl(): string | undefined {
+  return window.location.search.split("?file=")[1];
+}
+
 export function removeFileExtension(fileName: string) {
   const fileExtension = extractFileExtension(fileName);
 
