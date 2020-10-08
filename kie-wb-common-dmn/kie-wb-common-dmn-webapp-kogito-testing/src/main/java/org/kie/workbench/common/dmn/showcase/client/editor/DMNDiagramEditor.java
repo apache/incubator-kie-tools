@@ -23,7 +23,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.appformer.client.context.EditorContextProvider;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
@@ -31,6 +30,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocu
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
+import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsContext;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
@@ -136,7 +136,7 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final MonacoFEELInitializer feelInitializer,
                             final CanvasFileExport canvasFileExport,
                             final IncludedModelsPage includedModelsPage,
-                            final EditorContextProvider contextProvider,
+                            final IncludedModelsContext includedModelsContext,
                             final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                             final @DMNEditor ReadOnlyProvider readOnlyProvider,
                             final DRDNameChanger drdNameChanger,
@@ -172,7 +172,7 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               canvasFileExport,
               promises,
               includedModelsPage,
-              contextProvider,
+              includedModelsContext,
               guidedTourBridgeInitializer,
               drdNameChanger);
         this.notificationEvent = notificationEvent;

@@ -154,7 +154,7 @@ public class DMNDiagramEditorTest extends AbstractDMNDiagramEditorTest {
                                     feelInitializer,
                                     canvasFileExport,
                                     includedModelsPage,
-                                    contextProvider,
+                                    includedModelContext,
                                     guidedTourBridgeInitializer,
                                     readonlyProvider,
                                     drdNameChanger,

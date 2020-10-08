@@ -17,7 +17,6 @@ package org.kie.workbench.common.dmn.webapp.kogito.common.client.editor;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
-import org.appformer.client.context.EditorContextProvider;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +28,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocu
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
+import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsContext;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
 import org.kie.workbench.common.dmn.client.editors.search.DMNSearchableElement;
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
@@ -253,7 +253,7 @@ public abstract class AbstractDMNDiagramEditorTest {
     protected IncludedModelsPage includedModelsPage;
 
     @Mock
-    protected EditorContextProvider contextProvider;
+    protected IncludedModelsContext includedModelContext;
 
     @Mock
     protected ReadOnlyProvider readonlyProvider;

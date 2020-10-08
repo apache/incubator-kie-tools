@@ -17,21 +17,19 @@
 package org.kie.workbench.common.dmn.client.docks.navigator;
 
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.appformer.client.context.Channel;
-import org.appformer.client.context.EditorContextProvider;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisionComponents;
 import org.kie.workbench.common.dmn.client.docks.navigator.included.components.DecisionComponents;
 import org.kie.workbench.common.dmn.client.docks.navigator.tree.DecisionNavigatorTreePresenter;
+import org.kie.workbench.common.dmn.client.editors.included.common.IncludedModelsContext;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -41,8 +39,6 @@ import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
-import static org.appformer.client.context.Channel.DEFAULT;
-import static org.appformer.client.context.Channel.VSCODE;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionNavigatorPresenter_DecisionNavigator;
 
 @ApplicationScoped
@@ -61,7 +57,7 @@ public class DecisionNavigatorPresenter {
 
     private TranslationService translationService;
 
-    private EditorContextProvider context;
+    private IncludedModelsContext includedModelContext;
 
     private DecisionNavigatorItemsProvider navigatorItemsProvider;
 
@@ -75,7 +71,7 @@ public class DecisionNavigatorPresenter {
                                       final DecisionComponents decisionComponents,
                                       final DecisionNavigatorObserver decisionNavigatorObserver,
                                       final TranslationService translationService,
-                                      final EditorContextProvider context,
+                                      final IncludedModelsContext includedModelContext,
                                       final DecisionNavigatorItemsProvider navigatorItemsProvider,
                                       final DMNDiagramsSession dmnDiagramsSession) {
         this.view = view;
@@ -83,7 +79,7 @@ public class DecisionNavigatorPresenter {
         this.decisionComponents = decisionComponents;
         this.decisionNavigatorObserver = decisionNavigatorObserver;
         this.translationService = translationService;
-        this.context = context;
+        this.includedModelContext = includedModelContext;
         this.navigatorItemsProvider = navigatorItemsProvider;
         this.dmnDiagramsSession = dmnDiagramsSession;
     }
@@ -135,8 +131,7 @@ public class DecisionNavigatorPresenter {
 
     void setupView() {
         view.setupMainTree(treePresenter.getView());
-        final Channel channel = context.getChannel();
-        if (Objects.equals(channel, VSCODE) || Objects.equals(channel, DEFAULT)) {
+        if (includedModelContext.isIncludedModelChannel()) {
             view.showDecisionComponentsContainer();
             view.setupDecisionComponents(decisionComponents.getView());
         } else {
