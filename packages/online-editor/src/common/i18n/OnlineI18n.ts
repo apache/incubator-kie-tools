@@ -58,6 +58,7 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
     downloadSVG: string;
     gistIt: string;
     fileActions: string;
+    updateGist: string;
   };
   githubTokenModal: {
     header: {

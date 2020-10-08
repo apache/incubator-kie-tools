@@ -58,7 +58,8 @@ export const en: OnlineI18n = {
     copySource: "Copy Source",
     downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
     gistIt: "Gist it!",
-    fileActions: "File actions"
+    fileActions: "File actions",
+    updateGist: "Update Gist"
   },
   githubTokenModal: {
     header: {
