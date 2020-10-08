@@ -28,7 +28,7 @@ import {
 import { SearchIcon } from "@patternfly/react-icons";
 
 interface LandingPageToolbarProps {
-  onFilter: (filter: string) => void;
+  setFilter: (filter: string) => void;
   hasUnsupportedModels: boolean;
   showUnsupportedModels: boolean;
   onShowUnsupportedModels: (showUnsupportedModels: boolean) => void;

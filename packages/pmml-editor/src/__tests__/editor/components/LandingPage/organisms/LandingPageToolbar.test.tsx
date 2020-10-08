@@ -29,9 +29,9 @@ describe("LandingPageToolbar", () => {
   test("render::Has unsupported models", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
-        onFilter={setFilter}
+        setFilter={setFilter}
         hasUnsupportedModels={true}
-        onShowUnsupportedModels={setShowUnsupportedModels}
+        setShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
     );
@@ -41,9 +41,21 @@ describe("LandingPageToolbar", () => {
   test("render::Has no unsupported models", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
-        onFilter={setFilter}
+        setFilter={setFilter}
         hasUnsupportedModels={false}
-        onShowUnsupportedModels={setShowUnsupportedModels}
+        setShowUnsupportedModels={setShowUnsupportedModels}
+        showUnsupportedModels={true}
+      />
+    );
+    expect(getByTestId("landing-page-toolbar")).toMatchSnapshot();
+  });
+
+  test("render::Has no unsupported models", () => {
+    const { getByTestId } = render(
+      <LandingPageToolbar
+        setFilter={setFilter}
+        hasUnsupportedModels={false}
+        setShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
     );
@@ -53,9 +65,9 @@ describe("LandingPageToolbar", () => {
   test("render::setFilter::Submit", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
-        onFilter={setFilter}
+        setFilter={setFilter}
         hasUnsupportedModels={false}
-        onShowUnsupportedModels={setShowUnsupportedModels}
+        setShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
     );
@@ -76,9 +88,9 @@ describe("LandingPageToolbar", () => {
   test("render::setShowUnsupportedModels", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
-        onFilter={setFilter}
+        setFilter={setFilter}
         hasUnsupportedModels={true}
-        onShowUnsupportedModels={setShowUnsupportedModels}
+        setShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
     );

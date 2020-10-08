@@ -191,6 +191,7 @@ exports[`LandingPage render::No Models 1`] = `
               </button>
             </div>
           </div>
+<<<<<<< HEAD
           <div
             class="pf-c-toolbar__item"
           >
@@ -230,6 +231,8 @@ exports[`LandingPage render::No Models 1`] = `
             </label>
           </div>
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
+=======
+>>>>>>> More complex updates following peer review.
         </div>
         <div
           class="pf-c-toolbar__expandable-content"
@@ -290,10 +293,14 @@ exports[`LandingPage render::No Models 1`] = `
             aria-disabled="false"
             class="pf-c-button pf-m-primary"
 <<<<<<< HEAD
+<<<<<<< HEAD
             data-ouia-component-id="2"
 =======
             data-ouia-component-id="3"
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
+=======
+            data-ouia-component-id="2"
+>>>>>>> More complex updates following peer review.
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             data-testid="empty-state-no-models__create-model"
@@ -309,10 +316,14 @@ exports[`LandingPage render::No Models 1`] = `
 `;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 exports[`LandingPage render::With Supported Model 1`] = `
 =======
 exports[`LandingPage render::With Models 1`] = `
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
+=======
+exports[`LandingPage render::With Supported Model 1`] = `
+>>>>>>> More complex updates following peer review.
 <div
   data-testid="landing-page"
 >
@@ -360,10 +371,14 @@ exports[`LandingPage render::With Models 1`] = `
         <div
           class="pf-c-dropdown pf-m-align-right"
 <<<<<<< HEAD
+<<<<<<< HEAD
           data-ouia-component-id="3"
 =======
           data-ouia-component-id="4"
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
+=======
+          data-ouia-component-id="3"
+>>>>>>> More complex updates following peer review.
           data-ouia-component-type="PF4/Dropdown"
           data-ouia-safe="true"
           data-testid="action-selector"
@@ -483,7 +498,7 @@ exports[`LandingPage render::With Models 1`] = `
                 aria-disabled="false"
                 aria-label="filter button for filter input"
                 class="pf-c-button pf-m-control"
-                data-ouia-component-id="5"
+                data-ouia-component-id="4"
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe="true"
                 data-testid="landing-page-toolbar__submit"
@@ -507,6 +522,7 @@ exports[`LandingPage render::With Models 1`] = `
               </button>
             </div>
           </div>
+<<<<<<< HEAD
           <div
             class="pf-c-toolbar__item"
           >
@@ -546,6 +562,8 @@ exports[`LandingPage render::With Models 1`] = `
             </label>
           </div>
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
+=======
+>>>>>>> More complex updates following peer review.
         </div>
         <div
           class="pf-c-toolbar__expandable-content"
@@ -627,10 +645,14 @@ exports[`LandingPage render::With Models 1`] = `
                 aria-disabled="false"
                 class="pf-c-button pf-m-primary"
 <<<<<<< HEAD
+<<<<<<< HEAD
                 data-ouia-component-id="5"
 =======
                 data-ouia-component-id="7"
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
+=======
+                data-ouia-component-id="5"
+>>>>>>> More complex updates following peer review.
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe="true"
                 data-testid="model-card__delete"
