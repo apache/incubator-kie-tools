@@ -91,7 +91,7 @@ export function GithubTokenModal(props: Props) {
               placeholder={i18n.githubTokenModal.footer.placeHolder}
               maxLength={GITHUB_OAUTH_TOKEN_SIZE}
               isDisabled={authenticated}
-              validated={!!authenticated ? "error" : "default"}
+              validated={!authenticated ? "error" : "default"}
               value={tokenToDisplay}
               onPaste={onPasteHandler}
               autoFocus={true}
