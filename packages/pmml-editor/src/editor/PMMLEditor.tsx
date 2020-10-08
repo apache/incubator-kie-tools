@@ -155,7 +155,6 @@ export class PMMLEditor extends React.Component<Props, State> {
                 <Route exact={true} path={"/editor/:index"}>
                   <SingleEditorRouter path={path} />
                 </Route>
-                <Route exact={true} path={"/editor"} component={SingleEditorRouter} />
               </Switch>
             </Provider>
           </Page>
