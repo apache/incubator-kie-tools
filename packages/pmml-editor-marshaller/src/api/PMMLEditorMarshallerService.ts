@@ -39,6 +39,7 @@ import {
 } from "../marshaller/model/pmml4_4";
 import { PMMLDocumentData } from "./PMMLDocumentData";
 import { PMMLModelData } from "./PMMLModelData";
+import { PMMLFieldData } from "./PMMLFieldData";
 
 export class PMMLEditorMarshallerService {
 
@@ -67,8 +68,9 @@ export class PMMLEditorMarshallerService {
 
         for (const type of modelsTypes) {
             if (model instanceof type) {
+                const modelFields = model.MiningSchema.MiningField.map(field => new PMMLFieldData(field.name.toString(), field.usageType));
                 modelData = new PMMLModelData(model.modelName == null ? "" : model.modelName,
-                                              model.MiningSchema.MiningField.map(field => field.name.toString()));
+                                              modelFields);
             }
         }
 

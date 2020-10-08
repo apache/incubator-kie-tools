@@ -15,4 +15,3 @@
  */
 export * from './PMMLDocumentData';
 export * from "./PMMLEditorMarshallerService";
-export * from './PMMLModelData';
