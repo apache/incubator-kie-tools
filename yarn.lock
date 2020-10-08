@@ -76,91 +76,129 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
-"@kogito-tooling/channel-common-api@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/channel-common-api/-/channel-common-api-0.6.1.tgz#fcc5fc4e969fc27164346bc599773f4b727d19c5"
-  integrity sha512-6hFx/z1vSLDPqflWny56i9CXxXU7BnAOQ35W1qslm7xjyfQU/XqF3H4+7wd8Holly/aB+MugVnq/87fGX5aQmA==
-
-"@kogito-tooling/editor@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/editor/-/editor-0.6.1.tgz#52fd9597426b45cf6b49f2ef2ef41407102aa575"
-  integrity sha512-43JltV6soGwYtxxv6pPGWqf2R09Pp/tjUs5sPjB376IJDMH/n/K1uf4HGcSoFzvYzh99PKClvjtNHk8sykfK1Q==
+"@kogito-tooling/backend@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/backend/-/backend-0.7.0.tgz#acd9169f2446f804797fc420e3a25756a5fa8586"
+  integrity sha512-rC842DIY/+EfOHKA374HZKM8AjgrDQud2rf5Iq6/GV8rc6RCHJn2QxsRlaprJYbT/nq+EXEQX1RRaucP+A8gtA==
   dependencies:
-    "@kogito-tooling/envelope" "0.6.1"
-    "@kogito-tooling/envelope-bus" "0.6.1"
-    "@kogito-tooling/guided-tour" "0.6.1"
-    "@kogito-tooling/keyboard-shortcuts" "0.6.1"
+    "@kogito-tooling/i18n" "0.7.0"
+    "@kogito-tooling/i18n-common-dictionary" "0.7.0"
+    "@kogito-tooling/workspace" "0.7.0"
+    "@types/semver" "^7.3.3"
+    axios "^0.19.2"
+    fast-xml-parser "^3.17.4"
+    portfinder "^1.0.27"
 
-"@kogito-tooling/envelope-bus@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/envelope-bus/-/envelope-bus-0.6.1.tgz#88864c40e14748431e51ea64ab3731df019e656b"
-  integrity sha512-2INOMepepa/c1YeOeKH+MW7GrUpgGWYEGXP8D0xlgmM+wH41Yagw0QB705fUpHHFQaaaFhwc71nUx5TR6m/lHg==
+"@kogito-tooling/channel-common-api@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/channel-common-api/-/channel-common-api-0.7.0.tgz#6c51f30bc5117d9ca5cde7cf2b66ae8ee97189d1"
+  integrity sha512-pwYkPCcVaaIY4DbTKtO8c/OMiRMraTtkF9TjyPtuVzisHmeR0qevNH2zAgfPv+tiiE9xB93LTT1qXTdPxPmscg==
 
-"@kogito-tooling/envelope@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/envelope/-/envelope-0.6.1.tgz#60aa38e5981ad1a9f81f7570d6d021bd1b20cb0f"
-  integrity sha512-n9zX0mH3ItjkCMfnnvJzSSD6tUI5T/RQQXDUGu0dBNxObwh3Wk9CceH5gJSFajxwf4XSCyMXMJzwLL24tSKVkg==
+"@kogito-tooling/editor@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/editor/-/editor-0.7.0.tgz#e471b14409c8fa8faaba454912fefdf0d1a25979"
+  integrity sha512-M0N9xadYQDHz/ta5zQfERiQSJrCKFsRSMI2+TDTkjdZhauAXAdT4AJL72O5BNHqguIbHxms5fqUaNIC2jpX58w==
   dependencies:
-    "@kogito-tooling/envelope-bus" "0.6.1"
+    "@kogito-tooling/backend" "0.7.0"
+    "@kogito-tooling/envelope" "0.7.0"
+    "@kogito-tooling/envelope-bus" "0.7.0"
+    "@kogito-tooling/guided-tour" "0.7.0"
+    "@kogito-tooling/i18n" "0.7.0"
+    "@kogito-tooling/keyboard-shortcuts" "0.7.0"
+    "@kogito-tooling/workspace" "0.7.0"
 
-"@kogito-tooling/guided-tour@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/guided-tour/-/guided-tour-0.6.1.tgz#60a39b3faa501ddfa558de543165fee69de84396"
-  integrity sha512-GUCA0Yu2on00ZbTmg2fcMZBmTS046zPSwVkvAr21y5EVnrT1ChivAae4XAk/CHHj4rOJiYVr3+6yOR1BPrUF1Q==
+"@kogito-tooling/envelope-bus@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/envelope-bus/-/envelope-bus-0.7.0.tgz#1ad7fc9692dc410cda4b29f02a341b71fa861c80"
+  integrity sha512-FZOj63/xSZZ6/P8eZ1kIq8JIJbRfhPvzY+h1Ld751i+jug0hRJq/2JapRCbEaolHed8NiKe8URxa2baKv6anOA==
+
+"@kogito-tooling/envelope@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/envelope/-/envelope-0.7.0.tgz#213a6ecfaa3db7ed55d1d2f69a280d73dd690d34"
+  integrity sha512-F8aERuGGR06mcz00gMsFxgNlIE+rdrgpYXgRMvbLWZ0xaxVqbtoapfajQbJkWzFVZr2Tb1PLOC01pQMdcvho8Q==
   dependencies:
-    "@kogito-tooling/envelope-bus" "0.6.1"
-    "@kogito-tooling/i18n" "0.6.1"
-    "@kogito-tooling/i18n-common-dictionary" "0.6.1"
+    "@kogito-tooling/envelope-bus" "0.7.0"
 
-"@kogito-tooling/i18n-common-dictionary@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/i18n-common-dictionary/-/i18n-common-dictionary-0.6.1.tgz#74adeabf226abda76821766daa665a41a8b04b6c"
-  integrity sha512-5jHe4Q2tUKtE7ynedxYqK1ZN+NN2VqNoxDztbd1r4m5DeNoijeOipzYxeroV/51XOjQIgUBiMeHqWETfQCjuaA==
+"@kogito-tooling/guided-tour@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/guided-tour/-/guided-tour-0.7.0.tgz#b44d333267412842ae9a9ff32a410afc6e0f53ec"
+  integrity sha512-y6WcTmGztJS+alSeOdSn7zU649etY05geEnF/h1lLmiOaLFBsSqUke9dcCIT4WNmFsO+qr87WP//a+d9RnjDRQ==
   dependencies:
-    "@kogito-tooling/i18n" "0.6.1"
+    "@kogito-tooling/envelope-bus" "0.7.0"
+    "@kogito-tooling/i18n" "0.7.0"
+    "@kogito-tooling/i18n-common-dictionary" "0.7.0"
 
-"@kogito-tooling/i18n@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/i18n/-/i18n-0.6.1.tgz#54b7909a99fd28882521950c69552989521d549f"
-  integrity sha512-QKTVoFUfQIrIx7FxQNXLJRm4CyjCJF2awaiIpXtuSOX0xWIoykLuaUTw2keMYbDo9ozRG8NVHgzOinLJvXl3Hw==
-
-"@kogito-tooling/keyboard-shortcuts@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/keyboard-shortcuts/-/keyboard-shortcuts-0.6.1.tgz#c0ecf75a84ef4a70c5db1267fc11a72e7b75184b"
-  integrity sha512-3tz0hhqYxPXzFODTQYkRQYGZxlJSf6Sd/GUQudPk1ttsU/41tCWG/zK/GTeLZcXCCi2Z/rPlzlDYF27NJ9zO8w==
+"@kogito-tooling/i18n-common-dictionary@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/i18n-common-dictionary/-/i18n-common-dictionary-0.7.0.tgz#a5427a81bcb66f96ac021fee0b0e0d7a6530a498"
+  integrity sha512-10V1ww1Io/eLTgyEiecsrfnIzQSs42TtAGEbfQRDIxFWrQPmDnQdTSdJplRJvDnCLCf4uDw20qJspMJjo3AcWQ==
   dependencies:
-    "@kogito-tooling/channel-common-api" "0.6.1"
-    "@kogito-tooling/envelope-bus" "0.6.1"
+    "@kogito-tooling/i18n" "0.7.0"
 
-"@kogito-tooling/kie-bc-editors-unpacked@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-bc-editors-unpacked/-/kie-bc-editors-unpacked-0.6.1.tgz#3f39f715b346770bc4e6336971e3f0c4f97ac72b"
-  integrity sha512-d8F5GiT7nKOQWVVopkGGyD+Ffrj1NpwIhlyRKJsVbKqnjbTryEMOGdCDu2GPbCVG/F0KAUJ9BycAVX1M/xNoeg==
+"@kogito-tooling/i18n@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/i18n/-/i18n-0.7.0.tgz#e1ba862c114c6e5bff55726588c8498087a29c51"
+  integrity sha512-iLIKIVpFQbt0J/gx2tomNcAOTh0q3Og7wi9RbXndRTEV21kJOjdQhXoKUNSon2tXTWg8QymAmQTbdGhFE444rw==
 
-"@kogito-tooling/kie-bc-editors@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-bc-editors/-/kie-bc-editors-0.6.1.tgz#79633c6226a8f08105c02ca377235555c2db8c71"
-  integrity sha512-+bUmKmOn52J4jXMlhgpFOMD+1hodHYbOVRIrga3atUyfy6e7f6BZS1jnVPtXaT+U1lxhVB7GRIwHzNcTep3orQ==
+"@kogito-tooling/keyboard-shortcuts@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/keyboard-shortcuts/-/keyboard-shortcuts-0.7.0.tgz#25c7b3be524261503a8b68f2f4ecb341fd912a45"
+  integrity sha512-7DpLyebYnklvbAGGneyIpgF5rvnedhuwQ8aeXARaL++ABwpxhhkRGGGRCly1C+8fG/0ddTAaAn7GaG1ob4gWmg==
   dependencies:
-    "@kogito-tooling/editor" "0.6.1"
-    "@kogito-tooling/kie-bc-editors-unpacked" "0.6.1"
+    "@kogito-tooling/channel-common-api" "0.7.0"
+    "@kogito-tooling/envelope-bus" "0.7.0"
 
-"@kogito-tooling/patternfly-base@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/patternfly-base/-/patternfly-base-0.6.1.tgz#7e1ae2a5fee1202e2df7c40d3a9eb74001e64bd7"
-  integrity sha512-MIc/CRerKCCs1qwdN5u6ht27p3v6+U4IuSF4wf/Kkb9Kxw34uddPZub8wgm9m6k2TtMniPAxcF/GXXmMxcxBDw==
+"@kogito-tooling/kie-bc-editors-unpacked@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-bc-editors-unpacked/-/kie-bc-editors-unpacked-0.7.0.tgz#23b24823d66807e3772220ad19c2b896a955ae35"
+  integrity sha512-K8vcpxsqgvRcqfSJVJh3ZGZ75rxSay/qDKcBV3znQJ7DaioYO71zb2+edj609zIcYTGx9jW4TfhqF3hb1gmFLw==
+
+"@kogito-tooling/kie-bc-editors@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/kie-bc-editors/-/kie-bc-editors-0.7.0.tgz#84555c1261e034fe507fff66df29eba6c563fc99"
+  integrity sha512-uU4enFklQB4nDFnDt4i/7Pfms3qyrgj2+Fptz7qJA/F341aRlhnRzwSPcukk64nAcrxPJG+ytePU3bC673kNsw==
+  dependencies:
+    "@kogito-tooling/backend" "0.7.0"
+    "@kogito-tooling/editor" "0.7.0"
+    "@kogito-tooling/i18n" "0.7.0"
+    "@kogito-tooling/kie-bc-editors-unpacked" "0.7.0"
+    "@kogito-tooling/pmml-editor-marshaller" "0.7.0"
+
+"@kogito-tooling/patternfly-base@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/patternfly-base/-/patternfly-base-0.7.0.tgz#87f27482d8727d7d7763690a3fe2771c9a4d3ddf"
+  integrity sha512-Z72amN5ABnCzXsSDkn6ISF/3kOfu/WoCW/ZXBB59sh3+L8Dh+le06Q0b9n8Kan6SszVQPdH1IdXsfUbJL38D+w==
   dependencies:
     "@patternfly/patternfly" "4.16.7"
     "@patternfly/react-core" "4.23.1"
     "@patternfly/react-icons" "4.4.2"
 
-"@kogito-tooling/vscode-extension@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@kogito-tooling/vscode-extension/-/vscode-extension-0.6.1.tgz#e9e8133ecc0f786961a2467362c0c1cc43280a60"
-  integrity sha512-+9Gz+XJo+o3/vPaH62mtrjt0lsuK93eQ18UaoxeYQJKxwOpq2FDKoxtzbVU2p/3pSDldZ4mEFCI5w0Cj3yGfGg==
+"@kogito-tooling/pmml-editor-marshaller@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/pmml-editor-marshaller/-/pmml-editor-marshaller-0.7.0.tgz#a7acb4ca0672b9eef4ba26f5625b3069a451acf6"
+  integrity sha512-lkN61lK7JD5unA1GweaJcFze77Mdb3JW45m+CvbMQi8IWGnmbzjYBWwW5vPyXAwofA/QTF62b1CW23LMknKSFw==
   dependencies:
-    "@kogito-tooling/editor" "0.6.1"
-    "@kogito-tooling/keyboard-shortcuts" "0.6.1"
+    jsonata "^1.8.3"
+    xml-js "^1.6.11"
+
+"@kogito-tooling/vscode-extension@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/vscode-extension/-/vscode-extension-0.7.0.tgz#90f2af082dcf73cea2fb36acd2e09614a06f0dfb"
+  integrity sha512-hcgQ822UrAnadRTzo/WXKgu0zvE7zWUfyXlvrRGqrR01t7iKyoM51YqAG+LTIITspF6TqxUKLsA9MnFJYhevfw==
+  dependencies:
+    "@kogito-tooling/backend" "0.7.0"
+    "@kogito-tooling/editor" "0.7.0"
+    "@kogito-tooling/i18n" "0.7.0"
+    "@kogito-tooling/i18n-common-dictionary" "0.7.0"
+    "@kogito-tooling/keyboard-shortcuts" "0.7.0"
+    "@kogito-tooling/workspace" "0.7.0"
+
+"@kogito-tooling/workspace@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@kogito-tooling/workspace/-/workspace-0.7.0.tgz#a84e661e8524fa990baaf3cf7e02fe826b4b1a89"
+  integrity sha512-+UpLG6iZKmc89p6nbbn5JDmvjvxfU620MHAxsKMPCePjDoAtwkGQ84WxoIcRovZiIVS/6/ggs0wqxIlVPaxHpw==
+  dependencies:
+    "@kogito-tooling/channel-common-api" "0.7.0"
 
 "@lerna/add@3.18.0":
   version "3.18.0"
@@ -1016,6 +1054,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.11.1.tgz#49a2a83df9d26daacead30d0ccc8762b128d53c7"
   integrity sha512-eWQGP3qtxwL8FGneRrC5DwrJLGN4/dH1clNTuLfN81HCrxVtxRjygDTUoZJ5ASlDEeo0ppYFQjQIlXhtXpOn6g==
 
+"@types/semver@^7.3.3":
+  version "7.3.4"
+  resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.3.4.tgz#43d7168fec6fa0988bb1a513a697b29296721afb"
+  integrity sha512-+nVsLKlcUCeMzD2ufHEYuJ9a2ovstb6Dp52A5VsoKxDXgvE051XgHI/33I1EymwkRGQkwnA0LkhnUzituGs4EQ==
+
 "@types/vscode@^1.46.0":
   version "1.47.0"
   resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.47.0.tgz#4a4051c21ecaadcf383a2c4387bea282540e96de"
@@ -1501,6 +1544,13 @@ aws4@^1.8.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.9.1.tgz#7e33d8f7d449b3f673cd72deb9abdc552dbe528e"
   integrity sha512-wMHVg2EOHaMRxbzgFJ9gtjOOCrI80OHLG14rxi28XwOW8ux6IiEbRCGGGqCtdAIg4FQCbW20k9RsT4y3gJlFug==
+
+axios@^0.19.2:
+  version "0.19.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
+  integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
+  dependencies:
+    follow-redirects "1.5.10"
 
 azure-devops-node-api@^7.2.0:
   version "7.2.0"
@@ -2463,7 +2513,7 @@ debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   dependencies:
     ms "2.0.0"
 
-debug@3.1.0:
+debug@3.1.0, debug@=3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
   integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
@@ -3125,6 +3175,11 @@ fast-json-stable-stringify@^2.0.0:
   resolved "https://registry.yarnpkg.com/fast-json-stable-stringify/-/fast-json-stable-stringify-2.1.0.tgz#874bf69c6f404c2b5d99c481341399fd55892633"
   integrity sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==
 
+fast-xml-parser@^3.17.4:
+  version "3.17.4"
+  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-3.17.4.tgz#d668495fb3e4bbcf7970f3c24ac0019d82e76477"
+  integrity sha512-qudnQuyYBgnvzf5Lj/yxMcf4L9NcVWihXJg7CiU1L+oUCq8MUnFEfH2/nXR/W5uq+yvUN1h7z6s7vs2v1WkL1A==
+
 faye-websocket@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/faye-websocket/-/faye-websocket-0.10.0.tgz#4e492f8d04dfb6f89003507f6edbf2d501e7c6f4"
@@ -3264,6 +3319,13 @@ focus-trap@4.0.2:
   dependencies:
     tabbable "^3.1.2"
     xtend "^4.0.1"
+
+follow-redirects@1.5.10:
+  version "1.5.10"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.5.10.tgz#7b7a9f9aea2fdff36786a94ff643ed07f4ff5e2a"
+  integrity sha512-0V5l4Cizzvqt5D44aTXbFZz+FtyXV1vrDN6qrelxtfYQKW0KO0W2T/hkE8xvGa/540LkZlkaUjO4ailYTFtHVQ==
+  dependencies:
+    debug "=3.1.0"
 
 follow-redirects@^1.0.0:
   version "1.11.0"
@@ -4409,6 +4471,11 @@ json5@^2.1.2:
   dependencies:
     minimist "^1.2.5"
 
+jsonata@^1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/jsonata/-/jsonata-1.8.3.tgz#4d0c7337166e813689485e4fe7c7b5f067df3f80"
+  integrity sha512-r6ztI6ohbpRo77AxBm6vMs3aHZi2L2PaakW7TCPwSkeGcuAZ/SxXGLWH2Npwqq5+YBM/fg/g0EXg/pI9HvXQ8Q==
+
 jsonfile@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-4.0.0.tgz#8771aae0799b64076b76640fca058f9c10e33ecb"
@@ -5026,7 +5093,7 @@ mkdirp@*:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-"mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@^0.5.3:
+"mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@^0.5.3, mkdirp@^0.5.5:
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.5.tgz#d91cefd62d1436ca0f41620e251288d420099def"
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
@@ -5874,6 +5941,15 @@ portfinder@^1.0.25:
     debug "^3.1.1"
     mkdirp "^0.5.1"
 
+portfinder@^1.0.27:
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.28.tgz#67c4622852bd5374dd1dd900f779f53462fac778"
+  integrity sha512-Se+2isanIcEqf2XMHjyUKskczxbPH7dQnlMjXX6+dybayyHvAf/TCgyMRlzf/B6QDhAEFOGes0pzRo3by4AbMA==
+  dependencies:
+    async "^2.6.2"
+    debug "^3.1.1"
+    mkdirp "^0.5.5"
+
 posix-character-classes@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
@@ -6539,6 +6615,11 @@ sass-loader@7.3.1:
     neo-async "^2.5.0"
     pify "^4.0.1"
     semver "^6.3.0"
+
+sax@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
+  integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
 
 scheduler@^0.18.0:
   version "0.18.0"
@@ -7990,6 +8071,13 @@ ws@^6.2.1:
   integrity sha512-GIyAXC2cB7LjvpgMt9EKS2ldqr0MTrORaleiOno6TweZ6r3TKtoFQWay/2PceJ3RuBasOHzXNn5Lrw1X0bEjqA==
   dependencies:
     async-limiter "~1.0.0"
+
+xml-js@^1.6.11:
+  version "1.6.11"
+  resolved "https://registry.yarnpkg.com/xml-js/-/xml-js-1.6.11.tgz#927d2f6947f7f1c19a316dd8eea3614e8b18f8e9"
+  integrity sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==
+  dependencies:
+    sax "^1.2.4"
 
 xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.1:
   version "4.0.2"
