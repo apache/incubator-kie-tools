@@ -237,4 +237,24 @@ items:
           from:
             kind: DockerImage
             name: quay.io/kiegroup/kogito-management-console:1.0.0-snapshot
-
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: kogito-task-console
+      annotations:
+        openshift.io/display-name: Runtime image for the Kogito Task Console
+        openshift.io/provider-display-name: Kie Group.
+    spec:
+      tags:
+        - name: '1.0.0-snapshot'
+          annotations:
+            description: Runtime image for the Kogito Task Console
+            iconClass: icon-jbpm
+            tags: kogito,task-console
+            supports: business process management
+            version: '1.0.0-snapshot'
+          referencePolicy:
+            type: Local
+          from:
+            kind: DockerImage
+            name: quay.io/kiegroup/kogito-task-console:1.0.0-snapshot

@@ -13,11 +13,11 @@ MODULES = {"kogito-data-index", "kogito-trusty",
            "kogito-jobs-service", "kogito-trusty-ui",
            "kogito-jq", "kogito-kubernetes-client",
            "kogito-launch-scripts", "kogito-logging",
-           "kogito-management-console", "kogito-persistence",
-           "kogito-quarkus", "kogito-quarkus-jvm",
-           "kogito-quarkus-s2i", "kogito-s2i-core",
-           "kogito-springboot", "kogito-springboot-s2i",
-           "kogito-system-user"}
+           "kogito-management-console", "kogito-task-console",
+           "kogito-persistence", "kogito-quarkus",
+           "kogito-quarkus-jvm", "kogito-quarkus-s2i",
+           "kogito-s2i-core", "kogito-springboot",
+           "kogito-springboot-s2i", "kogito-system-user"}
 MODULE_FILENAME = "module.yaml"
 MODULES_DIR = "modules"
 

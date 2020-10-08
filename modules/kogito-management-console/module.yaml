@@ -2,10 +2,6 @@ schema_version: 1
 name: org.kie.kogito.management.console
 version: "1.0.0-snapshot"
 
-envs:
-  - name: "KOGITO_DATAINDEX_HTTP_URL"
-    description: "Kogito Data Index address, if empty defaults to http://localhost:8180."
-
 artifacts:
   - name: kogito-management-console-runner.jar
     url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/management-console/1.0.0-SNAPSHOT/management-console-1.0.0-20200831.025059-32-runner.jar

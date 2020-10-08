@@ -12,6 +12,7 @@ IMAGES = [
             'kogito-explainability',
             'kogito-jobs-service',
             'kogito-management-console',
+            'kogito-task-console',
             'kogito-trusty-ui'
          ]
 
@@ -119,6 +120,7 @@ pipeline {
                         sh 'cat modules/kogito-explainability/module.yaml'
                         sh 'cat modules/kogito-jobs-service/module.yaml'
                         sh 'cat modules/kogito-management-console/module.yaml'
+                        sh 'cat modules/kogito-task-console/module.yaml'
                         sh 'cat modules/kogito-trusty-ui/module.yaml'
 
                         // Input for checking new artifacts have been set correctly

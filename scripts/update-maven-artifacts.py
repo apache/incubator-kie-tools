@@ -31,6 +31,7 @@ Modules = {
     "explainability-service-messaging": "kogito-explainability",
     "jobs-service": "kogito-jobs-service",
     "management-console": "kogito-management-console",
+    "task-console": "kogito-task-console",
     "trusty-ui": "kogito-trusty-ui"
 }
 

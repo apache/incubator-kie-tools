@@ -14,6 +14,7 @@ IMAGES = ["kogito-quarkus-ubi8",
             "kogito-explainability",
             "kogito-jobs-service",
             "kogito-management-console",
+            "kogito-task-console",
             "kogito-trusty-ui"]
 
 pipeline{
@@ -60,6 +61,7 @@ pipeline{
                     ./cekit-image-validator-runner kogito-explainability-overrides.yaml
                     ./cekit-image-validator-runner kogito-jobs-service-overrides.yaml
                     ./cekit-image-validator-runner kogito-management-console-overrides.yaml
+                    ./cekit-image-validator-runner kogito-task-console-overrides.yaml
                     ./cekit-image-validator-runner kogito-trusty-ui-overrides.yaml
                     ./cekit-image-validator-runner kogito-quarkus-jvm-overrides.yaml
                     ./cekit-image-validator-runner kogito-quarkus-overrides.yaml

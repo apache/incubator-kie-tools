@@ -21,7 +21,7 @@ import argparse
 IMAGES = ["kogito-quarkus-ubi8", "kogito-quarkus-jvm-ubi8", "kogito-quarkus-ubi8-s2i",
           "kogito-springboot-ubi8", "kogito-springboot-ubi8-s2i", "kogito-data-index",
           "kogito-trusty", "kogito-explainability", "kogito-trusty-ui",
-          "kogito-jobs-service", "kogito-management-console"]
+          "kogito-jobs-service", "kogito-management-console", "kogito-task-console"]
 
 IMAGES_NEXT_RC_TAG = []
 QUAY_KOGITO_ORG_PLACE_HOLDER = "quay.io/kiegroup/{}:{}"
