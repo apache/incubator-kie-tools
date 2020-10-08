@@ -17,6 +17,7 @@ if __name__ == "__main__":
     parser.add_argument('--examples-uri', dest='examples_uri', help='To update the examples uri for testing')
     parser.add_argument('--examples-ref', dest='examples_ref', help='To update the examples ref for testing')
     parser.add_argument('--artifacts-version', dest='artifacts_version', help='To update the artifacts version for testing')
+    parser.add_argument('--ignore-self-signed-cert', dest='ignore_self_signed_cert', default=False, action='store_true', help='If set to true will relax the SSL for user-generated self-signed certificates')
     args = parser.parse_args()
 
     if args.repo_url:
@@ -33,3 +34,6 @@ if __name__ == "__main__":
 
     if args.artifacts_version:
         common.update_artifacts_version_in_behave_tests(args.artifacts_version)
+    
+    if args.ignore_self_signed_cert:
+        common.ignore_maven_self_signed_certificate_in_behave_tests()

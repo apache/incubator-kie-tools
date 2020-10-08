@@ -37,6 +37,11 @@ pipeline{
                     }
 
                     githubscm.checkoutIfExists('kogito-images', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
+
+                    //Ignore self-signed certificates if MAVEN_MIRROR_URL is defined
+                    if(env.MAVEN_MIRROR_URL != ''){
+                        sh 'python3 scripts/update-tests.py --ignore-self-signed-cert'
+                    }
                 }
             }
         }

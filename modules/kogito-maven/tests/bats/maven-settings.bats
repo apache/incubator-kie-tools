@@ -164,6 +164,27 @@ function _generate_random_id() {
     [ "${expected}" = "${result}" ]
 }
 
+@test "test maven args when IGNORE_SELF_SIGNED_CERTIFICATE is true" {
+    prepareEnv
+    MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE="true"
+    ignore_maven_self_signed_certificates
+    expected=" -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true"
+    result="${MAVEN_ARGS_APPEND}"
+    echo "expected=${expected}"
+    echo "result=${result}"
+    [ "${expected}" = "${result}" ]
+}
+
+@test "test maven args when IGNORE_SELF_SIGNED_CERTIFICATE is false" {
+    prepareEnv
+    ignore_maven_self_signed_certificates
+    expected=""
+    result="${MAVEN_ARGS_APPEND}"
+    echo "expected=${expected}"
+    echo "result=${result}"
+    [ "${expected}" = "${result}" ]
+}
+
 @test "test maven custom repo with ID and all supported configurations" {
     prepareEnv
     MAVEN_REPO_URL="http://my.cool.mvn.repo.severinolabs.com/group/public"

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+#Please keep them in alphabatical order
 function prepareEnv() {
     unset HTTP_PROXY_HOST
     unset HTTP_PROXY_PORT
@@ -7,8 +8,9 @@ function prepareEnv() {
     unset HTTP_PROXY_USERNAME
     unset HTTP_PROXY_NONPROXYHOSTS
     unset HTTPS_PROXY
-    unset MAVEN_MIRROR_URL
     unset MAVEN_DOWNLOAD_OUTPUT
+    unset MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE
+    unset MAVEN_MIRROR_URL
     unset MAVEN_REPO_ID
     unset MAVEN_REPO_LAYOUT
     unset MAVEN_REPO_RELEASES_ENABLED
@@ -25,6 +27,7 @@ function configure() {
     configure_proxy
     configure_mirrors
     configure_maven_download_output
+    ignore_maven_self_signed_certificates
     set_kogito_maven_repo
     add_maven_repo
 }
@@ -89,6 +92,12 @@ function configure_mirrors() {
 function configure_maven_download_output() {
     if [ "${MAVEN_DOWNLOAD_OUTPUT}" != "true" ]; then
         export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} --no-transfer-progress"
+    fi
+}
+
+function ignore_maven_self_signed_certificates() {
+    if [ "${MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE}" == "true" ]; then
+        export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true"
     fi
 }
 

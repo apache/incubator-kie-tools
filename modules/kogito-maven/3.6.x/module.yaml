@@ -62,7 +62,9 @@ envs:
   - name: "MAVEN_REPOS"
     description: "Used to define multiple repositories, this env defines a prefix that will be used to create different repositories."
     example: "CENTRAL,INTERNAL"
-
+  - name: "MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE"
+    description: "When set, use of relaxed SSL check for user generated certificates. Default value is false"
+    example: "true"
 # unfortunately by now the version needs to be hardcoded.
 artifacts:
   - name: apache-maven-3.6.2-bin.tar.gz
