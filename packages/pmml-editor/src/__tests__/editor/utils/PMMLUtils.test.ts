@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getModelIconUrl, getModelName, getModelType, isCollection, isSupportedModelType } from "../../../editor/utils";
+import {
+  getModelIconUrlByType,
+  getModelName,
+  getModelType,
+  isCollection,
+  isSupportedModelType
+} from "../../../editor/utils";
 import { Scorecard, TreeModel } from "@kogito-tooling/pmml-editor-marshaller";
 
 describe("PMMLUtils::getModelIconUrl", () => {
   test("getModelIconUrl::Undefined", () => {
-    expect(getModelIconUrl({})).toContain("card-icon-default.svg");
+    expect(getModelIconUrlByType("<Unknown>")).toContain("card-icon-default.svg");
   });
 
   test("getModelIconUrl::Scorecard", () => {
-    expect(
-      getModelIconUrl(
-        new Scorecard({
-          Characteristics: { Characteristic: [] },
-          MiningSchema: { MiningField: [] },
-          functionName: "regression",
-          baselineMethod: "max"
-        })
-      )
-    ).toContain("card-icon-scorecard.svg");
+    expect(getModelIconUrlByType("Scorecard")).toContain("card-icon-scorecard.svg");
   });
 });
 
@@ -47,7 +44,7 @@ describe("PMMLUtils::getModelName", () => {
 
 describe("PMMLUtils::getModelType", () => {
   test("getModelType::Undefined", () => {
-    expect(getModelType({})).toBeUndefined();
+    expect(getModelType({})).toBe("<Unknown>");
   });
 
   test("getModelType::Scorecard", () => {

@@ -26,10 +26,23 @@ const setShowUnsupportedModels = jest.fn((showUnsupportedModels: boolean) => {
 });
 
 describe("LandingPageToolbar", () => {
-  test("render", () => {
+  test("render::Has unsupported models", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
         setFilter={setFilter}
+        hasUnsupportedModels={true}
+        setShowUnsupportedModels={setShowUnsupportedModels}
+        showUnsupportedModels={true}
+      />
+    );
+    expect(getByTestId("landing-page-toolbar")).toMatchSnapshot();
+  });
+
+  test("render::Has no unsupported models", () => {
+    const { getByTestId } = render(
+      <LandingPageToolbar
+        setFilter={setFilter}
+        hasUnsupportedModels={false}
         setShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
@@ -41,6 +54,7 @@ describe("LandingPageToolbar", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
         setFilter={setFilter}
+        hasUnsupportedModels={false}
         setShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
@@ -59,6 +73,7 @@ describe("LandingPageToolbar", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
         setFilter={setFilter}
+        hasUnsupportedModels={false}
         setShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
@@ -82,6 +97,7 @@ describe("LandingPageToolbar", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
         setFilter={setFilter}
+        hasUnsupportedModels={true}
         setShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />

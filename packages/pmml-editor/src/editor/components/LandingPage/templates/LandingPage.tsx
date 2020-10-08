@@ -43,6 +43,9 @@ export const LandingPage = (props: LandingPageProps) => {
   const dispatch = useDispatch();
   const [filter, setFilter] = useState("");
   const [showUnsupportedModels, setShowUnsupportedModels] = useState(true);
+  const hasUnsupportedModels = useMemo(() => (models ?? []).find(model => !isSupportedModelType(model)) !== undefined, [
+    models
+  ]);
 
   const filterModels = useCallback((): Model[] => {
     const _lowerCaseFilter = filter.toLowerCase();
@@ -75,6 +78,7 @@ export const LandingPage = (props: LandingPageProps) => {
         </Split>
         <LandingPageToolbar
           setFilter={setFilter}
+          hasUnsupportedModels={hasUnsupportedModels}
           showUnsupportedModels={showUnsupportedModels}
           setShowUnsupportedModels={setShowUnsupportedModels}
         />

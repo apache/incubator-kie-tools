@@ -29,12 +29,13 @@ import { SearchIcon } from "@patternfly/react-icons";
 
 interface LandingPageToolbarProps {
   setFilter: (filter: string) => void;
+  hasUnsupportedModels: boolean;
   showUnsupportedModels: boolean;
   setShowUnsupportedModels: (showUnsupportedModels: boolean) => void;
 }
 
 export const LandingPageToolbar = (props: LandingPageToolbarProps) => {
-  const { setFilter, showUnsupportedModels, setShowUnsupportedModels } = props;
+  const { setFilter, hasUnsupportedModels, showUnsupportedModels, setShowUnsupportedModels } = props;
 
   const filterField = useRef<HTMLInputElement>(null);
   const onFilterSubmit = (): void => {
@@ -74,16 +75,17 @@ export const LandingPageToolbar = (props: LandingPageToolbarProps) => {
             </Button>
           </InputGroup>
         </ToolbarItem>
-        <ToolbarItem>
-          <Switch
-            id="only-supported-models-switch"
-            data-testid="landing-page-toolbar__supported-models"
-            label="Show unsupported models"
-            labelOff="Hide unsupported models"
-            isChecked={showUnsupportedModels}
-            onChange={setShowUnsupportedModels}
-          />
-        </ToolbarItem>
+        {hasUnsupportedModels && (
+          <ToolbarItem>
+            <Switch
+              id="only-supported-models-switch"
+              data-testid="landing-page-toolbar__supported-models"
+              label="Show unsupported models"
+              isChecked={showUnsupportedModels}
+              onChange={setShowUnsupportedModels}
+            />
+          </ToolbarItem>
+        )}
       </ToolbarContent>
     </Toolbar>
   );

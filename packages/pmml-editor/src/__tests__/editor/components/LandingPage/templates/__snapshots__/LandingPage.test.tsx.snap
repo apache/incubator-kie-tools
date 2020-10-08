@@ -125,44 +125,6 @@ exports[`LandingPage render::No Models 1`] = `
               </button>
             </div>
           </div>
-          <div
-            class="pf-c-toolbar__item"
-          >
-            <label
-              class="pf-c-switch"
-              data-ouia-component-id="2"
-              data-ouia-component-type="PF4/Switch"
-              data-ouia-safe="true"
-              for="only-supported-models-switch"
-            >
-              <input
-                aria-label=""
-                aria-labelledby="only-supported-models-switch-on"
-                checked=""
-                class="pf-c-switch__input"
-                data-testid="landing-page-toolbar__supported-models"
-                id="only-supported-models-switch"
-                type="checkbox"
-              />
-              <span
-                class="pf-c-switch__toggle"
-              />
-              <span
-                aria-hidden="true"
-                class="pf-c-switch__label pf-m-on"
-                id="only-supported-models-switch-on"
-              >
-                Show unsupported models
-              </span>
-              <span
-                aria-hidden="true"
-                class="pf-c-switch__label pf-m-off"
-                id="only-supported-models-switch-off"
-              >
-                Hide unsupported models
-              </span>
-            </label>
-          </div>
         </div>
         <div
           class="pf-c-toolbar__expandable-content"
@@ -222,7 +184,7 @@ exports[`LandingPage render::No Models 1`] = `
           <button
             aria-disabled="false"
             class="pf-c-button pf-m-primary"
-            data-ouia-component-id="3"
+            data-ouia-component-id="2"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             data-testid="empty-state-no-models__create-model"
@@ -237,7 +199,7 @@ exports[`LandingPage render::No Models 1`] = `
 </div>
 `;
 
-exports[`LandingPage render::With Models 1`] = `
+exports[`LandingPage render::With Supported Model 1`] = `
 <div
   data-testid="landing-page"
 >
@@ -265,7 +227,7 @@ exports[`LandingPage render::With Models 1`] = `
       >
         <div
           class="pf-c-dropdown pf-m-align-right"
-          data-ouia-component-id="4"
+          data-ouia-component-id="3"
           data-ouia-component-type="PF4/Dropdown"
           data-ouia-safe="true"
           data-testid="action-selector"
@@ -338,7 +300,7 @@ exports[`LandingPage render::With Models 1`] = `
                 aria-disabled="false"
                 aria-label="filter button for filter input"
                 class="pf-c-button pf-m-control"
-                data-ouia-component-id="5"
+                data-ouia-component-id="4"
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe="true"
                 data-testid="landing-page-toolbar__submit"
@@ -361,44 +323,6 @@ exports[`LandingPage render::With Models 1`] = `
                 </svg>
               </button>
             </div>
-          </div>
-          <div
-            class="pf-c-toolbar__item"
-          >
-            <label
-              class="pf-c-switch"
-              data-ouia-component-id="6"
-              data-ouia-component-type="PF4/Switch"
-              data-ouia-safe="true"
-              for="only-supported-models-switch"
-            >
-              <input
-                aria-label=""
-                aria-labelledby="only-supported-models-switch-on"
-                checked=""
-                class="pf-c-switch__input"
-                data-testid="landing-page-toolbar__supported-models"
-                id="only-supported-models-switch"
-                type="checkbox"
-              />
-              <span
-                class="pf-c-switch__toggle"
-              />
-              <span
-                aria-hidden="true"
-                class="pf-c-switch__label pf-m-on"
-                id="only-supported-models-switch-on"
-              >
-                Show unsupported models
-              </span>
-              <span
-                aria-hidden="true"
-                class="pf-c-switch__label pf-m-off"
-                id="only-supported-models-switch-off"
-              >
-                Hide unsupported models
-              </span>
-            </label>
           </div>
         </div>
         <div
@@ -473,7 +397,7 @@ exports[`LandingPage render::With Models 1`] = `
               <button
                 aria-disabled="false"
                 class="pf-c-button pf-m-primary"
-                data-ouia-component-id="7"
+                data-ouia-component-id="5"
                 data-ouia-component-type="PF4/Button"
                 data-ouia-safe="true"
                 data-testid="model-card__delete"

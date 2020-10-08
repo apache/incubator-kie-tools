@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getModelIconUrl, getModelType } from "../../../utils";
+import { getModelIconUrlByType, ModelType } from "../../../utils";
 import * as React from "react";
-import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 import "./ModelCardIcon.scss";
 
 interface ModelIconProps {
-  model: Model;
+  type: ModelType;
 }
 
 export const ModelCardIcon = (props: ModelIconProps) => {
-  const { model } = props;
-  const modelType: string = getModelType(model) ?? "<Unknown>";
-  const modelIconUrl: string = getModelIconUrl(model);
+  const { type } = props;
+  const modelIconUrl: string = getModelIconUrlByType(type);
 
-  return <img data-testid="model-card__icon" src={modelIconUrl} alt={modelType} className="model-card__icon" />;
+  return <img data-testid="model-card__icon" src={modelIconUrl} alt={type} className="model-card__icon" />;
 };

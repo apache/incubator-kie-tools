@@ -16,11 +16,10 @@
 import { render } from "@testing-library/react";
 import * as React from "react";
 import { ModelCardIcon } from "../../../../../editor/components/LandingPage/atoms";
-import { Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 
 describe("ModelCardIcon", () => {
   test("render::Undefined", () => {
-    const { getByTestId } = render(<ModelCardIcon model={{}} />);
+    const { getByTestId } = render(<ModelCardIcon type={"<Unknown>"} />);
     const element: HTMLElement = getByTestId("model-card__icon");
     expect(element).toBeInTheDocument();
     expect(element instanceof HTMLImageElement);
@@ -28,18 +27,7 @@ describe("ModelCardIcon", () => {
   });
 
   test("render::Scorecard", () => {
-    const { getByTestId } = render(
-      <ModelCardIcon
-        model={
-          new Scorecard({
-            Characteristics: { Characteristic: [] },
-            MiningSchema: { MiningField: [] },
-            baselineMethod: "max",
-            functionName: "regression"
-          })
-        }
-      />
-    );
+    const { getByTestId } = render(<ModelCardIcon type={"Scorecard"} />);
     const element: HTMLElement = getByTestId("model-card__icon");
     expect(element).toBeInTheDocument();
     expect(element instanceof HTMLImageElement);

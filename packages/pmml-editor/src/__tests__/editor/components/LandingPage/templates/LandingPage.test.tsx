@@ -36,7 +36,7 @@ describe("LandingPage", () => {
     expect(getByTestId("empty-state-no-models")).not.toBeUndefined();
   });
 
-  test("render::With Models", () => {
+  test("render::With Supported Model", () => {
     const pmml: PMML = {
       version: "1.0",
       DataDictionary: { DataField: [] },
@@ -58,6 +58,9 @@ describe("LandingPage", () => {
     );
     expect(getByTestId("landing-page")).toMatchSnapshot();
     expect(getAllByTestId("landing-page__model-card").length).toBe(1);
+    expect(() => getAllByTestId("landing-page-toolbar__supported-models")).toThrowError(
+      'Unable to find an element by: [data-testid="landing-page-toolbar__supported-models"]'
+    );
   });
 
   test("render::With Supported Model::Filter", () => {
@@ -121,3 +124,4 @@ describe("LandingPage", () => {
     expect(getByTestId("empty-state-no-models")).not.toBeUndefined();
   });
 });
+/**/

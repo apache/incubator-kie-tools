@@ -41,9 +41,32 @@ import get = Reflect.get;
 const ICON_BASE: string = "images/";
 const ICON_DEFAULT: string = "card-icon-default.svg";
 
+export type ModelType =
+  | "Anomaly Detection Model"
+  | "card-icon-default.svg"
+  | "Association Model"
+  | "Bayesian Network Model"
+  | "Baseline Model"
+  | "Clustering Model"
+  | "Gaussian Process Model"
+  | "General Regression Model"
+  | "Mining Model"
+  | "Naive Bayes Model"
+  | "Nearest Neighbor Model"
+  | "Neural Network"
+  | "Regression Model"
+  | "RuleSet Model"
+  | "Sequence Model"
+  | "Scorecard"
+  | "Support Vector Machine Model"
+  | "Text Model"
+  | "Time Series Model"
+  | "Tree Model"
+  | "<Unknown>";
+
 interface PMMLModelMapping {
   model: any;
-  type: string;
+  type: ModelType;
   iconUrl: string;
   isSupported: boolean;
 }
@@ -96,18 +119,18 @@ export const getModelName = (model: Model): string | undefined => {
   return get(model, "modelName");
 };
 
-export const getModelType = (model: Model): string | undefined => {
+export const getModelType = (model: Model): ModelType => {
   for (const _mapping of PMMLModels) {
     if (model instanceof _mapping.model) {
       return _mapping.type;
     }
   }
-  return undefined;
+  return "<Unknown>";
 };
 
-export const getModelIconUrl = (model: Model): string => {
+export const getModelIconUrlByType = (type: ModelType): string => {
   for (const _mapping of PMMLModels) {
-    if (model instanceof _mapping.model) {
+    if (type === _mapping.type) {
       return ICON_BASE + _mapping.iconUrl;
     }
   }

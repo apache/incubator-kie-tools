@@ -23,7 +23,7 @@ import {
   CardTitle,
   Tooltip
 } from "@patternfly/react-core";
-import { getModelName, getModelType } from "../../../utils";
+import { getModelName, getModelType, ModelType } from "../../../utils";
 import * as React from "react";
 import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 import "./ModelCard.scss";
@@ -37,13 +37,13 @@ interface ModelCardProps {
 export const ModelCard = (props: ModelCardProps) => {
   const { model } = props;
   const modelName: string = getModelName(model) ?? "<Undefined>";
-  const modelType: string = getModelType(model) ?? "<Unknown>";
+  const modelType: ModelType | undefined = getModelType(model);
 
   return (
     <Card data-testid="model-card" isHoverable={true} className="model-card">
       <CardHeader>
         <CardHeaderMain>
-          <ModelCardIcon model={model} />
+          <ModelCardIcon type={modelType} />
         </CardHeaderMain>
       </CardHeader>
       <Tooltip content={<div>{modelName}</div>}>
