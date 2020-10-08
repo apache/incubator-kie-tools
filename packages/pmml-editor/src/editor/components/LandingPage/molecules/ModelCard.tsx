@@ -13,12 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Button, Card, CardBody, CardFooter, CardHeader, CardHeaderMain } from "@patternfly/react-core";
-import { coalesce, getModelType } from "../../../utils";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  CardHeaderMain,
+  CardTitle,
+  Tooltip
+} from "@patternfly/react-core";
+import { getModelName, getModelType } from "../../../utils";
 import * as React from "react";
 import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 import "./ModelCard.scss";
-import { ModelCardIcon, ModelCardTitle } from "../atoms";
+import { ModelCardIcon } from "../atoms";
 
 interface ModelCardProps {
   model: Model;
@@ -27,7 +36,8 @@ interface ModelCardProps {
 
 export const ModelCard = (props: ModelCardProps) => {
   const { model } = props;
-  const modelType: string = coalesce(getModelType(model), "<Unknown>");
+  const modelName: string = getModelName(model) ?? "<Undefined>";
+  const modelType: string = getModelType(model) ?? "<Unknown>";
 
   return (
     <Card data-testid="model-card" isHoverable={true} className="model-card">
@@ -36,7 +46,11 @@ export const ModelCard = (props: ModelCardProps) => {
           <ModelCardIcon model={model} />
         </CardHeaderMain>
       </CardHeader>
-      <ModelCardTitle model={model} />
+      <Tooltip content={<div>{modelName}</div>}>
+        <CardTitle className="model-card__title">
+          <span data-testid="model-card__title">{modelName}</span>
+        </CardTitle>
+      </Tooltip>{" "}
       <CardBody>
         <div data-testid="model-card__model-type">{modelType}</div>
       </CardBody>

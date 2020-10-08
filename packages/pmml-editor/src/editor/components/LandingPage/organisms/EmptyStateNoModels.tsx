@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { Button, EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
-import BoxesIcon from "@patternfly/react-icons/dist/js/icons/boxes-icon";
+import { BoxesIcon } from "@patternfly/react-icons";
 
 interface EmptyStateNoModelsProps {
   createModel: () => void;

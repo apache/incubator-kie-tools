@@ -16,7 +16,6 @@
 import * as React from "react";
 import { useState } from "react";
 import { Dropdown, DropdownItem, DropdownPosition, DropdownToggle } from "@patternfly/react-core";
-import CaretDownIcon from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 
 export const ActionSelector = () => {
   const [isOpen, setOpen] = useState(false);
@@ -46,12 +45,7 @@ export const ActionSelector = () => {
       data-testid="action-selector"
       onSelect={onSelect}
       toggle={
-        <DropdownToggle
-          id="action-selector-id"
-          data-testid="action-selector__toggle"
-          onToggle={onToggle}
-          toggleIndicator={CaretDownIcon}
-        >
+        <DropdownToggle id="action-selector-id" data-testid="action-selector__toggle" onToggle={onToggle}>
           Actions
         </DropdownToggle>
       }

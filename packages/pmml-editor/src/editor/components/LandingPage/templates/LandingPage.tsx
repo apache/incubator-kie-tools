@@ -40,16 +40,17 @@ interface LandingPageProps {
 export const LandingPage = (props: LandingPageProps) => {
   const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>((state: PMML) => state.models);
 
+  const dispatch = useDispatch();
   const [filter, setFilter] = useState("");
   const [showUnsupportedModels, setShowUnsupportedModels] = useState(true);
 
   const filterModels = useCallback((): Model[] => {
-    const _lowerCaseFilter: string = filter.toLowerCase();
-    const _filteredModels: Model[] | undefined = models?.filter((_model: Model) => {
-      const _modelName: string | undefined = getModelName(_model);
-      const _isSupportedModelType: boolean = isSupportedModelType(_model);
-      const _nameMatch: boolean = _modelName === undefined || _modelName.toLowerCase().includes(_lowerCaseFilter);
-      const _supportMatch: boolean = showUnsupportedModels || _isSupportedModelType;
+    const _lowerCaseFilter = filter.toLowerCase();
+    const _filteredModels = models?.filter((_model: Model) => {
+      const _modelName = getModelName(_model);
+      const _isSupportedModelType = isSupportedModelType(_model);
+      const _nameMatch = _modelName === undefined || _modelName.toLowerCase().includes(_lowerCaseFilter);
+      const _supportMatch = showUnsupportedModels || _isSupportedModelType;
       return _nameMatch && _supportMatch;
     });
     return _filteredModels ? _filteredModels : [];
@@ -58,64 +59,57 @@ export const LandingPage = (props: LandingPageProps) => {
   const filteredModels: Model[] = useMemo(() => filterModels(), [filter, showUnsupportedModels, models]);
 
   return (
-    <>
-      <div data-testid="landing-page">
-        <PageSection variant={PageSectionVariants.light}>
-          <Split>
-            <SplitItem>
-              <TextContent>
-                <Title size="3xl" headingLevel="h2">
-                  {props.path}
-                </Title>
-              </TextContent>
-            </SplitItem>
-            <SplitItem isFilled={true}>&nbsp;</SplitItem>
-            <SplitItem>
-              <ActionSelector />
-            </SplitItem>
-          </Split>
-          <LandingPageToolbar
-            setFilter={setFilter}
-            showUnsupportedModels={showUnsupportedModels}
-            setShowUnsupportedModels={setShowUnsupportedModels}
-          />
-        </PageSection>
+    <div data-testid="landing-page">
+      <PageSection variant={PageSectionVariants.light}>
+        <Split>
+          <SplitItem isFilled={true}>
+            <TextContent>
+              <Title size="3xl" headingLevel="h2">
+                {props.path}
+              </Title>
+            </TextContent>
+          </SplitItem>
+          <SplitItem>
+            <ActionSelector />
+          </SplitItem>
+        </Split>
+        <LandingPageToolbar
+          setFilter={setFilter}
+          showUnsupportedModels={showUnsupportedModels}
+          setShowUnsupportedModels={setShowUnsupportedModels}
+        />
+      </PageSection>
 
-        <PageSection isFilled={true}>
-          <section>
-            {filteredModels.length > 0 && (
-              <Gallery hasGutter={true}>{filteredModels.map(model => renderCard(model))}</Gallery>
-            )}
-            {filteredModels.length === 0 && (
-              <EmptyStateNoModels
-                createModel={() => {
-                  window.alert("TODO: Create Model");
-                }}
-              />
-            )}
-          </section>
-        </PageSection>
-      </div>
-    </>
-  );
-};
-
-const renderCard = (model: Model) => {
-  const dispatch = useDispatch();
-
-  return (
-    <GalleryItem key={uuid()} data-testid="landing-page__model-card">
-      <ModelCard
-        model={model}
-        onDelete={(_model: Model) => {
-          dispatch({
-            type: Actions.DeleteModel,
-            payload: {
-              model: _model
-            }
-          });
-        }}
-      />
-    </GalleryItem>
+      <PageSection isFilled={true}>
+        <section>
+          {filteredModels.length > 0 && (
+            <Gallery hasGutter={true}>
+              {filteredModels.map(model => (
+                <GalleryItem key={uuid()} data-testid="landing-page__model-card">
+                  <ModelCard
+                    model={model}
+                    onDelete={(_model: Model) => {
+                      dispatch({
+                        type: Actions.DeleteModel,
+                        payload: {
+                          model: _model
+                        }
+                      });
+                    }}
+                  />
+                </GalleryItem>
+              ))}
+            </Gallery>
+          )}
+          {filteredModels.length === 0 && (
+            <EmptyStateNoModels
+              createModel={() => {
+                window.alert("TODO: Create Model");
+              }}
+            />
+          )}
+        </section>
+      </PageSection>
+    </div>
   );
 };

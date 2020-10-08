@@ -11,7 +11,7 @@ exports[`LandingPage render::No Models 1`] = `
       class="pf-l-split"
     >
       <div
-        class="pf-l-split__item"
+        class="pf-l-split__item pf-m-fill"
       >
         <div
           class="pf-c-content"
@@ -22,11 +22,6 @@ exports[`LandingPage render::No Models 1`] = `
             path
           </h2>
         </div>
-      </div>
-      <div
-        class="pf-l-split__item pf-m-fill"
-      >
-         
       </div>
       <div
         class="pf-l-split__item"
@@ -253,7 +248,7 @@ exports[`LandingPage render::With Models 1`] = `
       class="pf-l-split"
     >
       <div
-        class="pf-l-split__item"
+        class="pf-l-split__item pf-m-fill"
       >
         <div
           class="pf-c-content"
@@ -264,11 +259,6 @@ exports[`LandingPage render::With Models 1`] = `
             path
           </h2>
         </div>
-      </div>
-      <div
-        class="pf-l-split__item pf-m-fill"
-      >
-         
       </div>
       <div
         class="pf-l-split__item"
@@ -467,6 +457,7 @@ exports[`LandingPage render::With Models 1`] = `
                 &lt;Undefined&gt;
               </span>
             </div>
+             
             <div
               class="pf-c-card__body"
             >

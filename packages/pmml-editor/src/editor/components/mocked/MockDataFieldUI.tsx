@@ -18,7 +18,6 @@ import { CSSProperties } from "react";
 import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { useDispatch } from "react-redux";
 import { Actions } from "../../reducers";
-import { coalesce } from "../../utils";
 
 const style: CSSProperties = {
   padding: "5px 5px 5px 5px"
@@ -54,7 +53,7 @@ const MockDataFieldUI = (props: Props) => {
   return (
     <div style={style}>
       <input
-        value={coalesce(props.field.name as string, "")}
+        value={(props.field.name as string) ?? ""}
         onChange={e => setDataFieldName(e.target.value as FieldName)}
         placeholder="Name"
       />

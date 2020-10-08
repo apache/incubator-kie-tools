@@ -25,7 +25,7 @@ import {
   EmptyStateVariant,
   Title
 } from "@patternfly/react-core";
-import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { CubesIcon } from "@patternfly/react-icons";
 
 interface NewProps {
   newContent: () => void;

@@ -15,4 +15,3 @@
  */
 
 export * from "./ModelCardIcon";
-export * from "./ModelCardTitle";

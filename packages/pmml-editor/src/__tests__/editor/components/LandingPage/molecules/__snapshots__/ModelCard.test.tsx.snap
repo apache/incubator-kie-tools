@@ -28,6 +28,7 @@ exports[`ModelCard render::Basics 1`] = `
       Name
     </span>
   </div>
+   
   <div
     class="pf-c-card__body"
   >

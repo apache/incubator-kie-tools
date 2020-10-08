@@ -17,7 +17,7 @@ import * as React from "react";
 import { CSSProperties } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Header, PMML } from "@kogito-tooling/pmml-editor-marshaller";
-import { coalesce, Timestamp, Title } from "../../utils";
+import { Timestamp, Title } from "../../utils";
 import { Actions } from "../../reducers";
 
 const style: CSSProperties = {
@@ -41,7 +41,7 @@ const MockHeaderUI = () => {
     <div style={style}>
       <Title title="Header" />
       <input
-        value={coalesce(header.description, "")}
+        value={header.description ?? ""}
         onChange={e => setHeaderDescription(e.target.value)}
         placeholder="Header"
       />

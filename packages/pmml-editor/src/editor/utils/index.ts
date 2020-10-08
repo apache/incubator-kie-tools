@@ -15,5 +15,4 @@
  */
 
 export * from "./PMMLUtils";
-export * from "./PropertyUtils";
 export * from "./UIUtils";
