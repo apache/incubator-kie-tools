@@ -112,8 +112,6 @@ Feature: Kogito integration with Keycloak
 
 #####
 
-  # Disabled as long as https://issues.redhat.com/browse/KOGITO-3176 is not solved
-  @disabled
   @trusty
   Scenario: Install Kogito Trusty with Keycloak security
     Given Keycloak instance with realm "kogito-realm" and client "kogito-trusty-service" is deployed
