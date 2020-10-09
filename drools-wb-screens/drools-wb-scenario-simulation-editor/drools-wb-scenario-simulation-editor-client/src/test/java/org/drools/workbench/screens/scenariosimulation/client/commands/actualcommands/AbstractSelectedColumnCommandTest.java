@@ -331,14 +331,15 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
         verify(simulationDescriptorMock, times(1)).getFactMappingsByFactName(eq(factIdentifierMock.getName()));
         assertEquals(Optional.empty(), retrieved);
         List<FactMapping> factMappingList = new ArrayList<>();
-        when(simulationDescriptorMock.getFactMappingsByFactName(FACT_IDENTIFIER_NAME)).thenReturn(factMappingList);
         factMappingList.add(factMappingMock);
+        when(simulationDescriptorMock.getFactMappingsByFactName(FACT_IDENTIFIER_NAME)).thenReturn(factMappingList.stream());
         String EXPRESSION_ALIAS = "EXPRESSION_ALIAS";
         when(factMappingMock.getExpressionAlias()).thenReturn(EXPRESSION_ALIAS);
         retrieved = ((AbstractSelectedColumnCommand) commandSpy).getMatchingExpressionAlias(scenarioSimulationContextLocal, FULL_PROPERTY_NAME_ELEMENTS, factIdentifierMock);
         assertEquals(Optional.empty(), retrieved);
         List<ExpressionElement> expressionElements = FULL_PROPERTY_NAME_ELEMENTS.stream().map(ExpressionElement::new).collect(Collectors.toList());
         when(factMappingMock.getExpressionElements()).thenReturn(expressionElements);
+        when(simulationDescriptorMock.getFactMappingsByFactName(FACT_IDENTIFIER_NAME)).thenReturn(factMappingList.stream());
         retrieved = ((AbstractSelectedColumnCommand) commandSpy).getMatchingExpressionAlias(scenarioSimulationContextLocal, FULL_PROPERTY_NAME_ELEMENTS, factIdentifierMock);
         assertEquals(Optional.of(EXPRESSION_ALIAS), retrieved);
     }

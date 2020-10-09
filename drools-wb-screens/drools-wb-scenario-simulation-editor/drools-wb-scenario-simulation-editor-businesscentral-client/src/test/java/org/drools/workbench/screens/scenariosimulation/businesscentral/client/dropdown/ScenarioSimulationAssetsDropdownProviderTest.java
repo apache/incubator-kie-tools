@@ -37,6 +37,8 @@ import org.kie.workbench.common.screens.library.api.ProjectAssetsQuery;
 import org.kie.workbench.common.screens.library.client.screens.assets.AssetQueryService;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.widgets.client.assets.dropdown.KieAssetsDropdownItem;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
@@ -78,6 +80,9 @@ public class ScenarioSimulationAssetsDropdownProviderTest {
 
     @Mock
     private Consumer<List<KieAssetsDropdownItem>> assetListConsumerMock;
+
+    @Captor
+    private ArgumentCaptor<List<KieAssetsDropdownItem>> listArgumentCaptor;
 
     private ScenarioSimulationAssetsDropdownProviderBCImpl scenarioSimulationAssetsDropdownProvider;
     private ProjectAssetsQuery projectAssetsQuery;
@@ -124,10 +129,10 @@ public class ScenarioSimulationAssetsDropdownProviderTest {
 
         });
         final ProjectAssetsQuery retrieved = scenarioSimulationAssetsDropdownProvider.createProjectQuery();
-        assertEquals(retrieved.getAmount(),1000);
-        assertEquals(retrieved.getStartIndex(),0);
-        assertEquals(retrieved.getFilter(), "");
-        assertEquals(retrieved.getProject(), workspaceProjectMock);
+        assertEquals(1000,retrieved.getAmount());
+        assertEquals(0, retrieved.getStartIndex());
+        assertEquals("", retrieved.getFilter());
+        assertEquals(workspaceProjectMock, retrieved.getProject());
     }
 
     @Test
@@ -135,6 +140,8 @@ public class ScenarioSimulationAssetsDropdownProviderTest {
         int size = 4;
         AssetQueryResult assetQueryResult = getAssetQueryResult(size);
         scenarioSimulationAssetsDropdownProvider.addAssets(assetQueryResult, assetListConsumerMock);
+        verify(assetListConsumerMock, times(1)).accept(listArgumentCaptor.capture());
+        assertEquals(size, listArgumentCaptor.getValue().size());
     }
 
     private AssetQueryResult getAssetQueryResult(int size) {

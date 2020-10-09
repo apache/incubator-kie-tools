@@ -24,10 +24,6 @@ public enum ImportExportType {
 
     private final String extension;
 
-    ImportExportType(String extension) {
-        this.extension = extension;
-    }
-
     ImportExportType() {
         this.extension = "." + name().toLowerCase();
     }

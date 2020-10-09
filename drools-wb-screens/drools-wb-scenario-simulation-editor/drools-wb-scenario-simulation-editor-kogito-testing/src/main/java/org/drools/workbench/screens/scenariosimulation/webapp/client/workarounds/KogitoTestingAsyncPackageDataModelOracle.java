@@ -29,27 +29,12 @@ import org.drools.workbench.screens.scenariosimulation.kogito.client.dmo.KogitoA
 import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.soup.project.datamodel.oracle.ModelField;
-import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.uberfire.backend.vfs.Path;
 
 @ApplicationScoped
-public class KogitoTestingAsyncPackageDataModelOracle implements KogitoAsyncPackageDataModelOracle {
+public class KogitoTestingAsyncPackageDataModelOracle extends KogitoAsyncPackageDataModelOracle {
 
     protected static final String AUTHOR = "Author";
 
-    final Map<String, String> parametricFieldMap = Stream.of(
-            new AbstractMap.SimpleImmutableEntry<>("Author.books", "Book"))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    private final List<String> packageNames = Arrays.asList("com", "com.example");
-    private final String[] factTypes = {AUTHOR, "Book", String.class.getSimpleName(), Integer.class.getSimpleName()};
-    private final String[] fqcnNames = {"com.Author", "com.Book", String.class.getCanonicalName(), Integer.class.getCanonicalName()};
-    private final Map<String, String> fqcnNamesMap = Stream.of(factTypes, fqcnNames).collect(Collectors.toMap(data -> data[0], data -> data[1]));
-    private final Map<String, Boolean> collectionTypes = Collections.unmodifiableMap(Stream.of(
-            new AbstractMap.SimpleEntry<>("books", true),
-            new AbstractMap.SimpleEntry<>("currentlyPrinted", false),
-            new AbstractMap.SimpleEntry<>("firstBook", false),
-            new AbstractMap.SimpleEntry<>("isAlive", false)).
-            collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
     private final ModelField authorBooks = new ModelField("books",
                                                           List.class.getSimpleName(),
                                                           ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
@@ -138,104 +123,51 @@ public class KogitoTestingAsyncPackageDataModelOracle implements KogitoAsyncPack
             bookTestField,
             bookThis
     };
-    private final Map<String, ModelField[]> modelFieldsMap = Stream.of(
-            new AbstractMap.SimpleImmutableEntry<>(AUTHOR, authorModelFields),
-            new AbstractMap.SimpleImmutableEntry<>("Book", bookModelFields))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    private Path resourcePath;
 
     @Override
-    public void init(Path resourcePath) {
-        this.resourcePath = resourcePath;
+    protected Map<String, ModelField[]> retrieveModelFieldsMap() {
+        return Stream.of(
+                new AbstractMap.SimpleImmutableEntry<>(AUTHOR, authorModelFields),
+                new AbstractMap.SimpleImmutableEntry<>("Book", bookModelFields))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     @Override
-    public Path getResourcePath() {
-        return resourcePath;
+    protected Map<String, Boolean> retrieveCollectionTypes() {
+        return Collections.unmodifiableMap(Stream.of(
+                new AbstractMap.SimpleEntry<>("books", true),
+                new AbstractMap.SimpleEntry<>("currentlyPrinted", false),
+                new AbstractMap.SimpleEntry<>("firstBook", false),
+                new AbstractMap.SimpleEntry<>("isAlive", false)).
+                collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue)));
     }
 
     @Override
-    public List<String> getPackageNames() {
-        return packageNames;
+    protected Map<String, String> retrieveFqcnNamesMap() {
+        return Stream.of(factTypes, fqcnNames).collect(Collectors.toMap(data -> data[0], data -> data[1]));
     }
 
     @Override
-    public String[] getFactTypes() {
-        return factTypes;
+    protected String[] retrieveFqcnNames() {
+        return new String[] {"com.Author", "com.Book", String.class.getCanonicalName(), Integer.class.getCanonicalName()};
+
     }
 
     @Override
-    public String[] getAllFactTypes() {
-        return getFactTypes();
+    protected String[] retrieveFactTypes() {
+        return new String[] {AUTHOR, "Book", String.class.getSimpleName(), Integer.class.getSimpleName()};
     }
 
     @Override
-    public String[] getInternalFactTypes() {
-        return getFactTypes();
+    protected List<String> retrievePackageNames() {
+        return Arrays.asList("com", "com.example");
+
     }
 
     @Override
-    public String[] getExternalFactTypes() {
-        return new String[0];
-    }
-
-    @Override
-    public String getFQCNByFactName(String factName) {
-        return fqcnNamesMap.get(factName);
-    }
-
-    @Override
-    public ModelField[] getFieldCompletions(String factType) {
-        return modelFieldsMap.get(factType);
-    }
-
-    @Override
-    public String getFieldType(String variableClass, String fieldName) {
-        String toReturn = null;
-        ModelField modelField = getModelField(variableClass, fieldName);
-        if (modelField != null) {
-            toReturn = modelField.getType();
-        }
-        return toReturn;
-    }
-
-    @Override
-    public String getFieldClassName(String factName, String fieldName) {
-        String toReturn = null;
-        ModelField modelField = getModelField(factName, fieldName);
-        if (modelField != null) {
-            toReturn = modelField.getClassName();
-        }
-        return toReturn;
-    }
-
-    @Override
-    public String getParametricFieldType(String factType, String fieldName) {
-        String key = factType + "." + fieldName;
-        return parametricFieldMap.get(key);
-    }
-
-    @Override
-    public PackageDataModelOracleBaselinePayload getPackageDataModelOracleBaselinePayload() {
-        PackageDataModelOracleBaselinePayload toReturn = new PackageDataModelOracleBaselinePayload();
-        toReturn.setModelFields(modelFieldsMap);
-        toReturn.setPackageName(packageNames.get(0));
-        toReturn.setCollectionTypes(collectionTypes);
-        toReturn.setFieldParametersType(parametricFieldMap);
-        return toReturn;
-    }
-
-    private ModelField getModelField(String factName, String fieldName) {
-        ModelField toReturn = null;
-        if (modelFieldsMap.containsKey(factName)) {
-            final ModelField[] modelFields = modelFieldsMap.get(factName);
-            for (ModelField modelField : modelFields) {
-                if (modelField.getName().equals(fieldName)) {
-                    toReturn = modelField;
-                    break;
-                }
-            }
-        }
-        return toReturn;
+    protected Map<String, String> retrieveParametricFieldMap() {
+        return Stream.of(
+                new AbstractMap.SimpleImmutableEntry<>("Author.books", "Book"))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

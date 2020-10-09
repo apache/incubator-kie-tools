@@ -27,6 +27,8 @@ import org.uberfire.backend.vfs.Path;
 @ApplicationScoped
 public class ScenarioSimulationBuilder {
 
+    private static final String ERROR_MESSAGE = "Unknown ScenarioSimulationModel.Type ";
+
     @Inject
     protected RULESimulationSettingsCreationStrategy ruleSimulationCreationStrategy;
 
@@ -40,7 +42,7 @@ public class ScenarioSimulationBuilder {
             case DMN:
                 return dmnSimulationCreationStrategy.createSimulation(context, value);
             default:
-                throw new IllegalStateException("Unknown ScenarioSimulationModel.Type " + type);
+                throw new IllegalStateException(ERROR_MESSAGE + type);
         }
     }
 
@@ -51,7 +53,7 @@ public class ScenarioSimulationBuilder {
             case DMN:
                 return dmnSimulationCreationStrategy.createBackground(context, value);
             default:
-                throw new IllegalStateException("Unknown ScenarioSimulationModel.Type " + type);
+                throw new IllegalStateException(ERROR_MESSAGE + type);
         }
     }
 
@@ -62,7 +64,7 @@ public class ScenarioSimulationBuilder {
             case DMN:
                 return dmnSimulationCreationStrategy.createSettings( context,value);
             default:
-                throw new IllegalStateException("Unknown ScenarioSimulationModel.Type " + type);
+                throw new IllegalStateException(ERROR_MESSAGE + type);
         }
     }
 }

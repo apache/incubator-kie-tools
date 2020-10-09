@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.SortedMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
@@ -334,8 +335,8 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
     }
 
     protected Optional<String> getMatchingExpressionAlias(ScenarioSimulationContext context, List<String> propertyNameElements, FactIdentifier factIdentifier) {
-        final List<FactMapping> factMappingsByFactName = context.getAbstractScesimModelByGridWidget(gridWidget).getScesimModelDescriptor().getFactMappingsByFactName(factIdentifier.getName());
-        return factMappingsByFactName.stream()
+        final Stream<FactMapping> factMappingsByFactName = context.getAbstractScesimModelByGridWidget(gridWidget).getScesimModelDescriptor().getFactMappingsByFactName(factIdentifier.getName());
+        return factMappingsByFactName
                 .filter(factMapping -> {
                     List<String> expressionElements = factMapping.getExpressionElements().stream().map(ExpressionElement::getStep).collect(Collectors.toList());
                     return Objects.equals(expressionElements, propertyNameElements);

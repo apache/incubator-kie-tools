@@ -16,40 +16,128 @@
 package org.drools.workbench.screens.scenariosimulation.kogito.client.dmo;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.uberfire.backend.vfs.Path;
 
 /**
- * Interface provide to emulate the "Oracle" implementation used inside Business Central
+ * It provides an emulatation to the "Oracle" implementation used inside Business Central
  */
-public interface KogitoAsyncPackageDataModelOracle {
+public abstract class KogitoAsyncPackageDataModelOracle {
 
-    void init(Path resourcePath);
+    protected Path resourcePath;
+    protected Map<String, String> parametricFieldMap;
+    protected List<String> packageNames;
+    protected String[] factTypes;
+    protected String[] fqcnNames;
+    protected Map<String, String> fqcnNamesMap;
+    protected Map<String, Boolean> collectionTypes;
+    protected Map<String, ModelField[]> modelFieldsMap;
 
-    Path getResourcePath();
+    public void init(Path resourcePath) {
+        this.resourcePath = resourcePath;
+        this.parametricFieldMap = retrieveParametricFieldMap();
+        this.packageNames = retrievePackageNames();
+        this.factTypes = retrieveFactTypes();
+        this.fqcnNames = retrieveFqcnNames();
+        this.fqcnNamesMap = retrieveFqcnNamesMap();
+        this.collectionTypes = retrieveCollectionTypes();
+        this.modelFieldsMap = retrieveModelFieldsMap();
+    }
 
-    List<String> getPackageNames();
+    protected abstract Map<String, ModelField[]> retrieveModelFieldsMap();
 
-    String[] getFactTypes();
+    protected abstract Map<String, Boolean> retrieveCollectionTypes();
 
-    String[] getAllFactTypes();
+    protected abstract Map<String, String> retrieveFqcnNamesMap();
 
-    String[] getInternalFactTypes();
+    protected abstract String[] retrieveFqcnNames();
 
-    String[] getExternalFactTypes();
+    protected abstract String[] retrieveFactTypes();
 
-    String getFQCNByFactName(String factName);
+    protected abstract List<String> retrievePackageNames();
 
-    ModelField[] getFieldCompletions(String factType);
+    protected abstract Map<String, String> retrieveParametricFieldMap();
 
-    String getFieldType(String variableClass, String fieldName);
+    public Path getResourcePath() {
+        return resourcePath;
+    }
 
-    String getFieldClassName(String factName, String fieldName);
+    public List<String> getPackageNames() {
+        return packageNames;
+    }
 
-    String getParametricFieldType(String factType, String fieldName);
+    public String[] getFactTypes() {
+        return factTypes;
+    }
 
-    PackageDataModelOracleBaselinePayload getPackageDataModelOracleBaselinePayload();
+    public String[] getAllFactTypes() {
+        return factTypes;
+    }
+
+    public String[] getInternalFactTypes() {
+        return factTypes;
+    }
+
+    public String[] getExternalFactTypes() {
+        return new String[0];
+    }
+
+    public String getFQCNByFactName(String factName) {
+        return fqcnNamesMap.get(factName);
+    }
+
+    public ModelField[] getFieldCompletions(String factType) {
+        return modelFieldsMap.get(factType);
+    }
+
+    public String getFieldType(String variableClass, String fieldName) {
+        String toReturn = null;
+        ModelField modelField = getModelField(variableClass, fieldName);
+        if (modelField != null) {
+            toReturn = modelField.getType();
+        }
+        return toReturn;
+    }
+
+    public String getFieldClassName(String factName, String fieldName) {
+        String toReturn = null;
+        ModelField modelField = getModelField(factName, fieldName);
+        if (modelField != null) {
+            toReturn = modelField.getClassName();
+        }
+        return toReturn;
+    }
+
+    public String getParametricFieldType(String factType, String fieldName) {
+        String key = factType + "." + fieldName;
+        return parametricFieldMap.get(key);
+    }
+
+    public PackageDataModelOracleBaselinePayload getPackageDataModelOracleBaselinePayload() {
+        PackageDataModelOracleBaselinePayload toReturn = new PackageDataModelOracleBaselinePayload();
+        toReturn.setModelFields(modelFieldsMap);
+        toReturn.setPackageName(packageNames.get(0));
+        toReturn.setCollectionTypes(collectionTypes);
+        toReturn.setFieldParametersType(parametricFieldMap);
+        return toReturn;
+    }
+
+    private ModelField getModelField(String factName, String fieldName) {
+        ModelField toReturn = null;
+        if (modelFieldsMap.containsKey(factName)) {
+            final ModelField[] modelFields = modelFieldsMap.get(factName);
+            for (ModelField modelField : modelFields) {
+                if (Objects.equals(modelField.getName(), fieldName)) {
+                    toReturn = modelField;
+                    break;
+                }
+            }
+        }
+        return toReturn;
+    }
     
 }

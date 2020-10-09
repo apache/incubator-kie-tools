@@ -29,7 +29,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.drools.scenariosimulation.api.model.Background;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
@@ -74,7 +73,6 @@ import org.uberfire.ext.editor.commons.backend.service.SaveAndRenameServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
-import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -90,15 +88,15 @@ public class ScenarioSimulationServiceImpl
 
     private static final String KIE_VERSION = "kie.version";
     private static final String JUNIT_ACTIVATOR_PACKAGE_NAME = "testscenario";
+    private static final String ORG_DROOLS = "org.drools";
+    private static final String ORG_KIE = "org.kie";
+
     @Inject
     protected ScenarioSimulationBuilder scenarioSimulationBuilder;
     @Inject
     protected DMNTypeService dmnTypeService;
     @Inject
     protected ScenarioValidationService scenarioValidationService;
-    @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
     @Inject
     private CopyService copyService;
     @Inject
@@ -450,19 +448,19 @@ public class ScenarioSimulationServiceImpl
     }
 
     protected List<GAV> getOldDependencies() {
-        return Arrays.asList(new GAV("org.drools", "drools-wb-scenario-simulation-editor-api", null),
-                             new GAV("org.drools", "drools-wb-scenario-simulation-editor-backend", null));
+        return Arrays.asList(new GAV(ORG_DROOLS, "drools-wb-scenario-simulation-editor-api", null),
+                             new GAV(ORG_DROOLS, "drools-wb-scenario-simulation-editor-backend", null));
     }
 
     protected List<GAV> getDependencies(String kieVersion) {
-        return Arrays.asList(new GAV("org.drools", "drools-scenario-simulation-api", kieVersion),
-                             new GAV("org.drools", "drools-scenario-simulation-backend", kieVersion),
-                             new GAV("org.drools", "drools-compiler", kieVersion),
+        return Arrays.asList(new GAV(ORG_DROOLS, "drools-scenario-simulation-api", kieVersion),
+                             new GAV(ORG_DROOLS, "drools-scenario-simulation-backend", kieVersion),
+                             new GAV(ORG_DROOLS, "drools-compiler", kieVersion),
                              // needed to compile guided decision table
-                             new GAV("org.drools", "drools-workbench-models-guided-dtable", kieVersion),
-                             new GAV("org.kie", "kie-dmn-feel", kieVersion),
-                             new GAV("org.kie", "kie-dmn-api", kieVersion),
-                             new GAV("org.kie", "kie-dmn-core", kieVersion));
+                             new GAV(ORG_DROOLS, "drools-workbench-models-guided-dtable", kieVersion),
+                             new GAV(ORG_KIE, "kie-dmn-feel", kieVersion),
+                             new GAV(ORG_KIE, "kie-dmn-api", kieVersion),
+                             new GAV(ORG_KIE, "kie-dmn-core", kieVersion));
     }
 
     protected ScenarioSimulationModel unmarshalInternal(String content) throws Exception {

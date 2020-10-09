@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.enterprise.event.Event;
 
@@ -433,6 +434,7 @@ public abstract class AbstractScenarioSimulationTest {
         when(factIdentifierMock.getName()).thenReturn(FACT_IDENTIFIER_NAME);
         when(simulationDescriptorMock.getFactIdentifiers()).thenReturn(factIdentifierSet);
         when(simulationDescriptorMock.getUnmodifiableFactMappings()).thenReturn(factMappingLocal);
+        when(simulationDescriptorMock.getFactMappingsByFactName(anyString())).thenReturn(Stream.empty());
         when(scenarioGridModelMock.nextColumnCount()).thenReturn(factMappingValuesLocal.size());
         when(factMappingMock.getFactIdentifier()).thenReturn(factIdentifierMock);
         when(factMappingMock.getFactAlias()).thenReturn(FACT_ALIAS);
