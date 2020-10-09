@@ -63,6 +63,7 @@ export function GithubTokenModal(props: Props) {
 
   return (
     <Modal
+      data-testid={"github-token-modal"}
       variant={ModalVariant.small}
       isOpen={props.isOpen}
       onClose={props.onClose}

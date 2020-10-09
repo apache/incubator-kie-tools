@@ -96,13 +96,16 @@ export function EditorToolbar(props: Props) {
   useEffect(() => {
     if (fileUrl) {
       const userLogin = context.githubService.extractUserLoginFromGistRawUrl(fileUrl);
+      console.log(userLogin)
+      console.log(context.githubService.getLogin())
+
       if (userLogin === context.githubService.getLogin()) {
         setUpdateGist(true);
       } else {
         setUpdateGist(false);
       }
     }
-  }, [context.githubService.getLogin()]);
+  }, [fileUrl, context.githubService.getLogin()]);
 
   const kebabItems = (dropdownId: string) =>
     useMemo(
@@ -145,6 +148,7 @@ export function EditorToolbar(props: Props) {
           {i18n.editorToolbar.downloadSVG}
         </DropdownItem>,
         <DropdownItem
+          data-testid={"set-github-token"}
           key={`dropdown-${dropdownId}-setup-github-token`}
           component="button"
           onClick={props.onSetGitHubToken}
@@ -155,11 +159,17 @@ export function EditorToolbar(props: Props) {
           {i18n.editorToolbar.gistIt}
         </DropdownItem>,
         <Tooltip
+          data-testid={"update-gist-tooltip"}
           key={`dropdown-${dropdownId}-update-gist`}
           content={<div>{i18n.editorToolbar.updateGistTooltip}</div>}
           trigger={!updateGist ? "mouseenter click" : ""}
         >
-          <DropdownItem component="button" onClick={props.onUpdateGist} isDisabled={!updateGist}>
+          <DropdownItem
+            data-testid={"update-gist-button"}
+            component="button"
+            onClick={props.onUpdateGist}
+            isDisabled={!updateGist}
+          >
             {i18n.editorToolbar.updateGist}
           </DropdownItem>
         </Tooltip>
@@ -220,6 +230,7 @@ export function EditorToolbar(props: Props) {
                 toggle={
                   <DropdownToggle
                     id={"toggle-id-lg"}
+                    data-testid={"file-actions"}
                     className={"kogito--editor__toolbar-toggle-icon-button"}
                     onToggle={isOpen => setMenuOpen(isOpen)}
                   >

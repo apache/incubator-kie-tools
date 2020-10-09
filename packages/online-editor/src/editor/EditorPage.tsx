@@ -126,7 +126,7 @@ export function EditorPage(props: Props) {
   }, [context.file.fileName, editor]);
 
   const requestUpdateGist = useCallback(() => {
-    editorRef.current?.getContent().then(content => {
+    editor?.getContent().then(content => {
       if (!context.githubService.isAuthenticated()) {
         setGithubTokenModalVisible(true);
         return;
@@ -141,7 +141,7 @@ export function EditorPage(props: Props) {
           isPublic: true
         })
         .then(() => {
-          editorRef.current?.getStateControl().setSavedCommand();
+          editor?.getStateControl().setSavedCommand();
           closeAllSuccessAlerts();
           setUpdateGistSuccessAlertVisible(true);
         })

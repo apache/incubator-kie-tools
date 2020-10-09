@@ -15,10 +15,12 @@
  */
 
 import * as React from "react";
-import { render } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import { EditorToolbar } from "../../editor/EditorToolbar";
 import { StateControl } from "@kogito-tooling/editor/dist/embedded";
 import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
+import { GithubService } from "../../common/GithubService";
+
 const onFileNameChanged = jest.fn((file: string) => null);
 const enterFullscreen = jest.fn(() => null);
 const requestSave = jest.fn(() => null);
@@ -27,6 +29,18 @@ const requestCopyContentToClipboard = jest.fn(() => null);
 const fullscreen = false;
 const requestPreview = jest.fn(() => null);
 const requestExportGist = jest.fn(() => null);
+const requestSetGitHubToken = jest.fn(() => null);
+const requestUpdateGist = jest.fn(() => null);
+
+function mockFunctions() {
+  const original = require.requireActual("../../common/utils");
+  return {
+    ...original,
+    getFileUrl: jest.fn().mockImplementationOnce(() => "gist.githubusercontent.com/?file=something")
+  };
+}
+jest.mock("../../common/utils", () => mockFunctions());
+
 
 describe("EditorToolbar", () => {
   let stateControl: StateControl;
@@ -37,6 +51,10 @@ describe("EditorToolbar", () => {
     requestDownload = jest.fn().mockImplementation(() => {
       stateControl.setSavedCommand();
     });
+  });
+
+  afterAll(() => {
+    jest.resetAllMocks();
   });
 
   describe("is dirty indicator", () => {
@@ -55,7 +73,9 @@ describe("EditorToolbar", () => {
               onCopyContentToClipboard={requestCopyContentToClipboard}
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
+              onSetGitHubToken={requestSetGitHubToken}
               onExportGist={requestExportGist}
+              onUpdateGist={requestUpdateGist}
               isEdited={isEdited}
             />
           ).wrapper
@@ -81,7 +101,9 @@ describe("EditorToolbar", () => {
               onCopyContentToClipboard={requestCopyContentToClipboard}
               isPageFullscreen={fullscreen}
               onPreview={requestPreview}
+              onSetGitHubToken={requestSetGitHubToken}
               onExportGist={requestExportGist}
+              onUpdateGist={requestUpdateGist}
               isEdited={isEdited}
             />
           ).wrapper
@@ -90,6 +112,106 @@ describe("EditorToolbar", () => {
 
       expect(queryByTestId("is-dirty-indicator")).toBeNull();
       expect(getByTestId("toolbar-title")).toMatchSnapshot();
+    });
+  });
+
+  describe("file actions", () => {
+    test("Update Gist button should be disable with invalid user", async () => {
+      const githubService = new GithubService();
+      jest.spyOn(githubService, "getLogin").mockImplementation(() => "user1");
+      jest.spyOn(githubService, "extractUserLoginFromGistRawUrl").mockImplementation(() => "user2");
+
+      const { getByTestId, findByTestId } = render(
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(
+            <EditorToolbar
+              onFullScreen={enterFullscreen}
+              onSave={requestSave}
+              onDownload={requestDownload}
+              onClose={close}
+              onFileNameChanged={onFileNameChanged}
+              onCopyContentToClipboard={requestCopyContentToClipboard}
+              isPageFullscreen={fullscreen}
+              onPreview={requestPreview}
+              onSetGitHubToken={requestSetGitHubToken}
+              onExportGist={requestExportGist}
+              onUpdateGist={requestUpdateGist}
+              isEdited={false}
+            />,
+            { githubService }
+          ).wrapper
+        ).wrapper
+      );
+
+      fireEvent.click(getByTestId("file-actions"));
+      expect(getByTestId("update-gist-button")).toBeVisible();
+      expect(getByTestId("update-gist-button")).toBeDisabled();
+
+      // fireEvent.mouseOver(getByTestId("update-gist-button"));
+      // expect(await findByTestId("update-gist-tooltip")).toBeVisible();
+
+      expect(getByTestId("file-actions")).toMatchSnapshot();
+    });
+
+    test("Update Gist button should be enable with valid user", () => {
+      const githubService = new GithubService();
+      jest.spyOn(githubService, "getLogin").mockImplementation(() => "user1");
+      jest.spyOn(githubService, "extractUserLoginFromGistRawUrl").mockImplementation(() => "user1");
+
+      const { getByTestId } = render(
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(
+            <EditorToolbar
+              onFullScreen={enterFullscreen}
+              onSave={requestSave}
+              onDownload={requestDownload}
+              onClose={close}
+              onFileNameChanged={onFileNameChanged}
+              onCopyContentToClipboard={requestCopyContentToClipboard}
+              isPageFullscreen={fullscreen}
+              onPreview={requestPreview}
+              onSetGitHubToken={requestSetGitHubToken}
+              onExportGist={requestExportGist}
+              onUpdateGist={requestUpdateGist}
+              isEdited={false}
+            />,
+            { githubService }
+          ).wrapper
+        ).wrapper
+      );
+
+      fireEvent.click(getByTestId("file-actions"));
+      expect(getByTestId("update-gist-button")).toBeVisible();
+      expect(getByTestId("update-gist-button")).toBeEnabled();
+      expect(getByTestId("file-actions")).toMatchSnapshot();
+    });
+
+    test("Set GitHub token button should open a GitHubTokenModal", () => {
+      const { container, getByTestId } = render(
+        usingTestingOnlineI18nContext(
+          usingTestingGlobalContext(
+            <EditorToolbar
+              onFullScreen={enterFullscreen}
+              onSave={requestSave}
+              onDownload={requestDownload}
+              onClose={close}
+              onFileNameChanged={onFileNameChanged}
+              onCopyContentToClipboard={requestCopyContentToClipboard}
+              isPageFullscreen={fullscreen}
+              onPreview={requestPreview}
+              onSetGitHubToken={requestSetGitHubToken}
+              onExportGist={requestExportGist}
+              onUpdateGist={requestUpdateGist}
+              isEdited={false}
+            />
+          ).wrapper
+        ).wrapper
+      );
+
+      fireEvent.click(getByTestId("file-actions"));
+      fireEvent.click(getByTestId("set-github-token"));
+      // expect(getByTestId("github-token-modal")).toBeVisible();
+      expect(container).toMatchSnapshot();
     });
   });
 });
