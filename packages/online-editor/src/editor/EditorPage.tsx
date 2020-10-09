@@ -15,7 +15,7 @@
  */
 
 import { ChannelType } from "@kogito-tooling/channel-common-api";
-import { EmbeddedEditor, EmbeddedEditorRef, useDirtyState } from "@kogito-tooling/editor/dist/embedded";
+import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { Alert, AlertActionCloseButton, AlertActionLink, Page, PageSection } from "@patternfly/react-core";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -35,7 +35,7 @@ interface Props {
 export function EditorPage(props: Props) {
   const context = useContext(GlobalContext);
   const location = useLocation();
-  const editorRef = useRef<EmbeddedEditorRef>(null);
+  const { editor, editorRef } = useEditorRef();
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const downloadPreviewRef = useRef<HTMLAnchorElement>(null);
   const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
@@ -45,7 +45,7 @@ export function EditorPage(props: Props) {
   const [updateGistSuccessAlertVisible, setUpdateGistSuccessAlertVisible] = useState(false);
   const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
-  const isDirty = useDirtyState(editorRef);
+  const isDirty = useDirtyState(editor);
   const { locale, i18n } = useOnlineI18n();
   const fileUrl = useMemo(() => getFileUrl(), [window.location]);
 
@@ -63,7 +63,7 @@ export function EditorPage(props: Props) {
   }, []);
 
   const requestSave = useCallback(() => {
-    editorRef.current?.getContent().then(content => {
+    editor?.getContent().then(content => {
       window.dispatchEvent(
         new CustomEvent("saveOnlineEditor", {
           detail: {
@@ -74,36 +74,36 @@ export function EditorPage(props: Props) {
         })
       );
     });
-  }, [context.file.fileName]);
+  }, [context.file.fileName, editor]);
 
   const requestDownload = useCallback(() => {
-    editorRef.current?.getStateControl().setSavedCommand();
+    editor?.getStateControl().setSavedCommand();
     setShowUnsavedAlert(false);
-    editorRef.current?.getContent().then(content => {
+    editor?.getContent().then(content => {
       if (downloadRef.current) {
         const fileBlob = new Blob([content], { type: "text/plain" });
         downloadRef.current.href = URL.createObjectURL(fileBlob);
         downloadRef.current.click();
       }
     });
-  }, []);
+  }, [editor]);
 
   const requestPreview = useCallback(() => {
-    editorRef.current?.getPreview().then(previewSvg => {
+    editor?.getPreview().then(previewSvg => {
       if (downloadPreviewRef.current && previewSvg) {
         const fileBlob = new Blob([previewSvg], { type: "image/svg+xml" });
         downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
         downloadPreviewRef.current.click();
       }
     });
-  }, []);
+  }, [editor]);
 
   const requestSetGitHubToken = useCallback(() => {
     setGithubTokenModalVisible(true);
   }, [])
 
   const requestExportGist = useCallback(() => {
-    editorRef.current?.getContent().then(content => {
+    editor?.getContent().then(content => {
       if (!context.githubService.isAuthenticated()) {
         setGithubTokenModalVisible(true);
         return;
@@ -123,7 +123,7 @@ export function EditorPage(props: Props) {
         })
         .catch(() => setGithubTokenModalVisible(true));
     });
-  }, [context.file.fileName]);
+  }, [context.file.fileName, editor]);
 
   const requestUpdateGist = useCallback(() => {
     editorRef.current?.getContent().then(content => {
@@ -154,7 +154,7 @@ export function EditorPage(props: Props) {
   }, [location.pathname]);
 
   const requestCopyContentToClipboard = useCallback(() => {
-    editorRef.current?.getContent().then(content => {
+    editor?.getContent().then(content => {
       if (copyContentTextArea.current) {
         copyContentTextArea.current.value = content;
         copyContentTextArea.current.select();
@@ -164,7 +164,7 @@ export function EditorPage(props: Props) {
         }
       }
     });
-  }, []);
+  }, [editor]);
 
   const enterFullscreen = useCallback(() => {
     document.documentElement.requestFullscreen?.();

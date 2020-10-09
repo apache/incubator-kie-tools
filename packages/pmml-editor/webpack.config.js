@@ -49,13 +49,16 @@ module.exports = (env, argv) => {
       ],
       devtool: "source-map",
       devServer: {
-        historyApiFallback: false,
+        historyApiFallback: true,
         disableHostCheck: true,
         watchContentBase: true,
         contentBase: path.join(__dirname, "./dist/showcase"),
         compress: true,
         port: 9001,
-        open: true
+        open: true,
+        inline: true,
+        hot: true,
+        overlay: true
       }
     });
   }

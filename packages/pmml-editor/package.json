@@ -16,10 +16,15 @@
     "@kogito-tooling/editor": "0.7.0",
     "@kogito-tooling/patternfly-base": "0.7.0",
     "@kogito-tooling/pmml-editor-marshaller": "0.7.0",
-    "@types/react-router": "5.1.1",
     "@types/react-router-dom": "5.1.1",
-    "react-router": "5.1.1",
-    "react-router-dom": "5.1.1"
+    "react-router-dom": "5.1.1",
+    "immer": "^7.0.8",
+    "lodash": "^4.14.2",
+    "@types/lodash": "^4.14.161",
+    "combine-reducer": "^1.0.2",
+    "redux": "^4.0.5",
+    "react-redux": "^7.2.1",
+    "@types/react-redux": "^7.1.9"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
@@ -28,7 +33,7 @@
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
     "build:prod": "yarn run build --mode production --devtool none",
-    "build:showcase": "yarn run build --mode development",
+    "build:showcase": "yarn run build:fast --mode development",
     "start": "webpack-dev-server -d --host 0.0.0.0"
   },
   "babel": {

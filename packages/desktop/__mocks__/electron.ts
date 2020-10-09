@@ -27,6 +27,9 @@ export const ipcRenderer = {
     mockIpcRendererEvents.get(channel)?.(undefined, ...args);
     mockIpcMainEvents.get(channel)?.(undefined, ...args);
   },
+  removeListener(channel: string, callback: () => void) {
+    mockIpcRendererEvents.delete(channel);
+  },
   removeAllListeners(channel: string) {
     mockIpcRendererEvents.delete(channel);
   }

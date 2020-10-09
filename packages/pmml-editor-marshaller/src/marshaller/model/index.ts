@@ -14,19 +14,4 @@
  * limitations under the License.
  */
 
-import { useCallback, useState } from "react";
-
-export type IsolatedEditorRef = {
-  setContent(content: string): Promise<void>;
-} | null;
-
-export function useIsolatedEditorRef() {
-  const [isolatedEditor, setIsolatedEditor] = useState<IsolatedEditorRef | undefined>(null);
-
-  const isolatedEditorRef = useCallback((node: IsolatedEditorRef) => {
-    if (node !== null) {
-      setIsolatedEditor(node);
-    }
-  }, []);
-  return { isolatedEditor, isolatedEditorRef };
-}
+export * from "./pmml4_4";

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Reducer } from "react";
+import { HistoryService } from "./HistoryProvider";
 
-import { useCallback, useState } from "react";
-
-export type IsolatedEditorRef = {
-  setContent(content: string): Promise<void>;
-} | null;
-
-export function useIsolatedEditorRef() {
-  const [isolatedEditor, setIsolatedEditor] = useState<IsolatedEditorRef | undefined>(null);
-
-  const isolatedEditorRef = useCallback((node: IsolatedEditorRef) => {
-    if (node !== null) {
-      setIsolatedEditor(node);
-    }
-  }, []);
-  return { isolatedEditor, isolatedEditorRef };
-}
+export type HistoryAwareReducer<S, A> = (service: HistoryService) => Reducer<S, A>;
