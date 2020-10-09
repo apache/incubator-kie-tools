@@ -41,7 +41,7 @@ pipeline {
         booleanParam(name: 'BASE_IMAGE_USE_OPENSHIFT_REGISTRY', defaultValue: false, description: 'Override `deployment.properties`. Set to true if base image should be retrieved from Openshift registry.In this case, BASE_IMAGE_REGISTRY_CREDENTIALS, BASE_IMAGE_REGISTRY and BASE_IMAGE_NAMESPACE parameters will be ignored')
         string(name: 'BASE_IMAGE_REGISTRY_CREDENTIALS', defaultValue: '', description: 'Override `deployment.properties`. Base Image registry credentials to use to deploy images. Will be ignored if no BASE_IMAGE_REGISTRY is given')
         string(name: 'BASE_IMAGE_REGISTRY', defaultValue: '', description: 'Override `deployment.properties`. Base image registry')
-        string(name: 'BASE_IMAGE_NAMESPACE', defaultValue: 'kiegroup', description: 'Override `deployment.properties`. Base image namespace')
+        string(name: 'BASE_IMAGE_NAMESPACE', defaultValue: '', description: 'Override `deployment.properties`. Base image namespace')
         string(name: 'BASE_IMAGE_NAME_SUFFIX', defaultValue: '', description: 'Override `deployment.properties`. Base image name suffix')
         string(name: 'BASE_IMAGE_TAG', defaultValue: '', description: 'Override `deployment.properties`. Base image tag')
 
@@ -49,7 +49,7 @@ pipeline {
         booleanParam(name: 'PROMOTE_IMAGE_USE_OPENSHIFT_REGISTRY', defaultValue: false, description: 'Set to true if base image should be deployed in Openshift registry.In this case, PROMOTE_IMAGE_REGISTRY_CREDENTIALS, PROMOTE_IMAGE_REGISTRY and PROMOTE_IMAGE_NAMESPACE parameters will be ignored')
         string(name: 'PROMOTE_IMAGE_REGISTRY_CREDENTIALS', defaultValue: '', description: 'Promote Image registry credentials to use to deploy images. Will be ignored if no PROMOTE_IMAGE_REGISTRY is given')
         string(name: 'PROMOTE_IMAGE_REGISTRY', defaultValue: '', description: 'Promote image registry')
-        string(name: 'PROMOTE_IMAGE_NAMESPACE', defaultValue: 'kiegroup', description: 'Promote image namespace')
+        string(name: 'PROMOTE_IMAGE_NAMESPACE', defaultValue: '', description: 'Promote image namespace')
         string(name: 'PROMOTE_IMAGE_NAME_SUFFIX', defaultValue: '', description: 'Promote image name suffix')
         string(name: 'PROMOTE_IMAGE_TAG', defaultValue: '', description: 'Promote image tag')
         booleanParam(name: 'DEPLOY_WITH_LATEST_TAG', defaultValue: false, description: 'Set to true if you want the deployed images to also be with the `latest` tag')         
@@ -58,23 +58,27 @@ pipeline {
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Override `deployment.properties`. Is this build for a release?')
         string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
         string(name: 'GIT_TAG', defaultValue: '', description: 'Git tag to set, if different from PROJECT_VERSION')
+        string(name: 'MAVEN_ARTIFACT_REPOSITORY', defaultValue: '', description: 'Maven repository where the released jar artifacts are present. To be set if git author is not `kiegroup` and repository is different from JBoss repository.')
         string(name: 'RELEASE_NOTES', defaultValue: '', description: 'Release notes to be added. If none provided, a default one will be given.')
+
+        // Bot author information. Set as params for easy testing.
+        string(name: 'BOT_CREDENTIALS_ID', defaultValue: 'bsig-gh-bot', description: 'Credentials for PR creation')
+
+        // Main author creds
+        string(name: 'AUTHOR_CREDS_ID', defaultValue: 'kie-ci', description: 'Credentials for PR merge')
+        string(name: 'GITHUB_TOKEN_CREDS_ID', defaultValue: 'kie-ci2-token', description: 'GH token to be used with GH CLI')        
     }
 
     environment {
-        CI = true
+        CI = true // Used by scripts
+        
         OPENSHIFT_API = credentials('OPENSHIFT_API')
         OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
         OPENSHIFT_CREDS_KEY = 'OPENSHIFT_CREDS'
-
-        AUTHOR_CREDS_ID = 'kie-ci'
-        BOT_CREDENTIALS_ID = 'bsig-gh-bot'
-
-        // for github-release
-        GITHUB_REPO = 'kogito-images'
-        GITHUB_TOKEN_CREDS_ID = 'kie-ci2-token'
-
+        
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
+        
+        GITHUB_REPO = 'kogito-images' // for github-release cli
     }
 
     stages {
@@ -106,13 +110,18 @@ pipeline {
                     // Update maven information with new artifacts from Maven central in the PR
                     dir('kogito-images-update'){
                         checkoutRepo()
-                        githubscm.forkRepo(env.BOT_CREDENTIALS_ID)
+                        githubscm.forkRepo(getBotAuthorCredsID())
 
                         // Get the working branch
                         sh 'git fetch origin'
                         sh "git checkout ${getPRSourceBranch()}"
 
-                        sh 'python3 scripts/update-maven-artifacts.py'
+                        // Update artifacts
+                        updateArtifactCmd = 'python3 scripts/update-maven-artifacts.py'
+                        if(getMavenArtifactRepository() != ''){
+                            updateArtifactCmd += " --repo-url ${getMavenArtifactRepository()}"
+                        }
+                        sh updateArtifactCmd
 
                         // Debug purpose in case of issue
                         sh 'cat modules/kogito-data-index/module.yaml'
@@ -135,7 +144,7 @@ pipeline {
 
                         try {
                             githubscm.commitChanges('Setup Maven artifacts to released ones')
-                            githubscm.pushObject('origin', getPRSourceBranch(), env.BOT_CREDENTIALS_ID)
+                            githubscm.pushObject('origin', getPRSourceBranch(), getBotAuthorCredsID())
                         } catch (err) {
                             withCredentials([string(credentialsId: 'KOGITO_CI_EMAIL_TO', variable: 'ZULIP_EMAIL')]) {
                             emailext body: "Seems like no change is to be committed.\nPlease review in ${env.BUILD_URL}console.\n" +
@@ -192,14 +201,14 @@ pipeline {
                         // Merge PR
                         String prLink = getDeployProperty('kogito-images.pr.link')
                         if(prLink != ''){                            
-                            githubscm.mergePR(prLink, env.AUTHOR_CREDS_ID)
-                            githubscm.pushObject('origin', getBuildBranch(), env.AUTHOR_CREDS_ID)
+                            githubscm.mergePR(prLink, getGitAuthorCredsID())
+                            githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
                         }
 
                         if(getGitTag() != ""){
                             def releaseName = "Kogito Images Version ${getProjectVersion()}" 
                             def description = params.RELEASE_NOTES != '' ? params.RELEASE_NOTES : "We are glad to announce that the Kogito ${getProjectVersion()} release is now available!"
-                            withCredentials([string(credentialsId: env.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
+                            withCredentials([string(credentialsId: params.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
                                 sh """
                                     export GITHUB_USER=${getGitAuthor()}
                                     github-release release --tag ${getGitTag()} --target '${getBuildBranch()}' --name '${releaseName}' --description '${description}' --pre-release
@@ -222,7 +231,7 @@ pipeline {
                     dir('kogito-images-snapshot') { // Use different folder from `Update PR with released Maven artifacts` to avoid conflicts
                         // Prepare PR
                         checkoutRepo()
-                        githubscm.forkRepo(env.BOT_CREDENTIALS_ID)
+                        githubscm.forkRepo(getBotAuthorCredsID())
                         githubscm.createBranch(getSnapshotBranch())
 
                         // Update version to next snapshot
@@ -235,13 +244,13 @@ pipeline {
                         def commitMsg = "Update snapshot version to ${nextVersion}"
                         def prBody = "Generated by build ${BUILD_TAG}: ${BUILD_URL}"
                         githubscm.commitChanges(commitMsg)
-                        githubscm.pushObject('origin', getSnapshotBranch(), env.BOT_CREDENTIALS_ID)
-                        prLink = githubscm.createPR(commitMsg, prBody, getBuildBranch(), env.BOT_CREDENTIALS_ID)
+                        githubscm.pushObject('origin', getSnapshotBranch(), getBotAuthorCredsID())
+                        prLink = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID())
                     }
                     dir('kogito-images') {
                         if (prLink != '') {
-                            githubscm.mergePR(prLink, env.AUTHOR_CREDS_ID)
-                            githubscm.pushObject('origin', getBuildBranch(), env.AUTHOR_CREDS_ID)
+                            githubscm.mergePR(prLink, getGitAuthorCredsID())
+                            githubscm.pushObject('origin', getBuildBranch(), getGitAuthorCredsID())
                         }
                     }
                 }
@@ -409,6 +418,18 @@ String getPRSourceBranch() {
 
 String getGitAuthor() {
     return getParamOrDeployProperty('GIT_AUTHOR', 'git.author')
+}
+
+String getGitAuthorCredsID(){
+    return params.AUTHOR_CREDS_ID
+}
+
+String getBotAuthorCredsID(){
+    return params.BOT_CREDENTIALS_ID
+}
+
+String getMavenArtifactRepository() {
+    return params.MAVEN_ARTIFACT_REPOSITORY
 }
 
 String getNextVersion() {
