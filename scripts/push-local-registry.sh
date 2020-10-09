@@ -24,10 +24,10 @@ fi
 
 echo "Images version ${version} will be pushed to registry ${registry}"
 
-for image in ${IMAGES}; do
+while read image; do
     echo "tagging image ${image} to ${registry}/${namespace}/${image}:${version}"
     ${BUILD_ENGINE} tag quay.io/kiegroup/${image}:${version} ${registry}/${namespace}/${image}:${version}
     echo "Deleting imagestream ${image} if exists `oc delete oc -n ${namespace} ${image}`"
     ${BUILD_ENGINE} push ${registry}/${namespace}/${image}:${version}
-done
+done <<<$(python3 scripts/list-images.py)
 

@@ -1,21 +1,6 @@
 // Promote images
 @Library('jenkins-pipeline-shared-libraries')_
 
-IMAGES = [
-            'kogito-quarkus-ubi8', 
-            'kogito-quarkus-jvm-ubi8',
-            'kogito-quarkus-ubi8-s2i',
-            'kogito-springboot-ubi8',
-            'kogito-springboot-ubi8-s2i',
-            'kogito-data-index',
-            'kogito-trusty',
-            'kogito-explainability',
-            'kogito-jobs-service',
-            'kogito-management-console',
-            'kogito-task-console',
-            'kogito-trusty-ui'
-         ]
-
 deployProperties=[:]
 
 pipeline {
@@ -286,13 +271,13 @@ void cleanImages(){
 }
 
 void pullImages(){
-    for(String imageName : IMAGES){
+    for(String imageName : getImages()){
         sh "podman pull ${getOldImageFullTag(imageName)}"
     }
 }
 
 void tagImages() {
-    for(String imageName : IMAGES){
+    for(String imageName : getImages()){
         sh "podman tag ${getOldImageFullTag(imageName)} ${getNewImageFullTag(imageName, getNewImageTag())}"
         if(isDeployLatestTag()){
             sh "podman tag ${getOldImageFullTag(imageName)} ${getNewImageFullTag(imageName, "latest")}"
@@ -305,7 +290,7 @@ void tagImages() {
 }
 
 void pushImages(){
-    for(String imageName : IMAGES){
+    for(String imageName : getImages()){
         sh "podman push ${getNewImageFullTag(imageName, getNewImageTag())}"
         if(isDeployLatestTag()){
             sh "podman push ${getNewImageFullTag(imageName, "latest")}"
@@ -505,3 +490,6 @@ String getNewImageTag(){
     return params.PROMOTE_IMAGE_TAG
 }
 
+String[] getImages(){
+    return sh(script: "make list | tr '\\n' ','", returnStdout: true).trim().split(',')
+}

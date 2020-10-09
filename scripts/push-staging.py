@@ -33,7 +33,7 @@ def find_next_tag(override_tags):
     Populate the IMAGES_NEXT_RC_TAGS with the next rc tag for each image.
     '''
     global IMAGES_NEXT_RC_TAG
-    for image in IMAGES:
+    for image in common.get_all_images():
         tag = fetch_tag(image, override_tags)
         print("Next tag for image %s is %s" % (image, tag))
         IMAGES_NEXT_RC_TAG.append('{}:{}'.format(image, tag))

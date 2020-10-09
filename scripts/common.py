@@ -115,6 +115,20 @@ def get_kogito_module_dirs():
 
     return modules
 
+def get_all_images():
+    """
+    Retrieve the Kogito images' names
+    """
+    images = []
+
+    # r=>root, d=>directories, f=>files
+    for r, d, f in os.walk("."):
+        for item in f:
+            if re.compile(r'.*-overrides.yaml').match(item):
+                images.append(item.replace("-overrides.yaml", ''))
+
+    return images
+
 def update_modules_version(target_version):
     """
     Update every Kogito module.yaml to the given version.
