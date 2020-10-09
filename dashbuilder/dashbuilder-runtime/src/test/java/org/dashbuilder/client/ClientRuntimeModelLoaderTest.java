@@ -84,7 +84,7 @@ public class ClientRuntimeModelLoaderTest {
         LayoutTemplate perspective = mock(LayoutTemplate.class);
         List<LayoutTemplate> perspectives = Arrays.asList(perspective);
         NavTree navTree = mock(NavTree.class);
-        RuntimeModel runtimeModel = new RuntimeModel(navTree, perspectives);
+        RuntimeModel runtimeModel = new RuntimeModel(navTree, perspectives, System.currentTimeMillis());
         when(runtimeModelService.getRuntimeModel(eq(modelId))).thenReturn(Optional.of(runtimeModel));
 
         Consumer<RuntimeModel> runtimeModelConsumer = mock(Consumer.class);

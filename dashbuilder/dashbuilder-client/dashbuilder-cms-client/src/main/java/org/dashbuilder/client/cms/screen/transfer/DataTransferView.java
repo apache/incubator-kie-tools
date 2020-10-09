@@ -183,4 +183,9 @@ public class DataTransferView implements DataTransferScreen.View, IsElement {
             btnImport.disabled = false;
         }
     }
+
+    @Override
+    public void openUrl(String url) {
+        DomGlobal.window.open(url, "_blank");
+    }
 }

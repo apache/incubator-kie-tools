@@ -559,19 +559,19 @@ public class DataTransferServicesTest {
         createFile(perspectivesFS, PAGE, "");
         createFile(perspectivesFS, PAGE_PLUGIN, "");
 
-        DataTransferAssets assetsToExport = dataTransferServices.assetsToExport();
+        ExportInfo exportInfo = dataTransferServices.exportInfo();
 
-        assertEquals(1, assetsToExport.getDatasetsDefinitions().size());
-        assertEquals(DS_NAME, assetsToExport.getDatasetsDefinitions().get(0).getName());
-        assertEquals(1, assetsToExport.getPages().size());
-        assertEquals(PAGE_ID, assetsToExport.getPages().get(0));
+        assertEquals(1, exportInfo.getDatasetsDefinitions().size());
+        assertEquals(DS_NAME, exportInfo.getDatasetsDefinitions().get(0).getName());
+        assertEquals(1, exportInfo.getPages().size());
+        assertEquals(PAGE_ID, exportInfo.getPages().get(0));
         
         cleanFileSystems();
     }
     
     @Test
     public void testAssetsToImportNoFiles() {
-        DataTransferAssets assetsToExport = dataTransferServices.assetsToExport();
+        ExportInfo assetsToExport = dataTransferServices.exportInfo();
         assertTrue(assetsToExport.getDatasetsDefinitions().isEmpty());
         assertTrue(assetsToExport.getPages().isEmpty());
     }
@@ -607,7 +607,7 @@ public class DataTransferServicesTest {
 
         createFile(datasetsFS, DS, DS_CONTENT);
 
-        DataTransferAssets assetsToExport = dataTransferServices.assetsToExport();
+        ExportInfo assetsToExport = dataTransferServices.exportInfo();
 
         assertTrue(assetsToExport.getDatasetsDefinitions().isEmpty());
         

@@ -90,8 +90,7 @@ public class ExportModelValidationServiceImpl implements ExportModelValidationSe
                                         .map(DisplayerSettings::getDataSetLookup)
                                         .filter(Objects::nonNull)
                                         .map(DataSetLookup::getDataSetUUID)
-                                        .filter(Objects::nonNull)
-                                        ;
+                                        .filter(Objects::nonNull);
     }
 
 }

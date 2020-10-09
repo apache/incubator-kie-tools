@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerConstants;
 import org.dashbuilder.dataset.def.DataSetDef;
-import org.dashbuilder.transfer.DataTransferAssets;
+import org.dashbuilder.transfer.ExportInfo;
 import org.dashbuilder.transfer.DataTransferExportModel;
 import org.dashbuilder.transfer.ExportModelValidationService;
 import org.jboss.errai.common.client.api.Caller;
@@ -55,7 +55,7 @@ public class ExportSummaryWizardPage implements WizardPage {
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
-    DataTransferAssets assets;
+    ExportInfo exportInfo;
 
     private Supplier<DataTransferExportModel> exportModelSupplier;
     private ParameterizedCommand<DataTransferExportModel> dataTransferExportModelCallback;
@@ -66,6 +66,8 @@ public class ExportSummaryWizardPage implements WizardPage {
 
     private Command goToPagesCommand = () -> {
     };
+
+    private ParameterizedCommand<DataTransferExportModel> dataTransferOpenModelCallback;
 
     public interface View extends UberElemental<ExportSummaryWizardPage> {
 
@@ -79,6 +81,8 @@ public class ExportSummaryWizardPage implements WizardPage {
         void emptyState();
 
         void validationError(Throwable error);
+
+        void showOpenExport(boolean externalServerAvailable);
 
     }
 
@@ -124,12 +128,20 @@ public class ExportSummaryWizardPage implements WizardPage {
         this.exportModelSupplier = exportModelSupplier;
     }
 
-    public void setCallback(ParameterizedCommand<DataTransferExportModel> dataTransferExportModelCallback) {
+    public void setDownloadCallback(ParameterizedCommand<DataTransferExportModel> dataTransferExportModelCallback) {
         this.dataTransferExportModelCallback = dataTransferExportModelCallback;
+    }
+    
+    public void setOpenCallback(ParameterizedCommand<DataTransferExportModel> dataTransferOpenModelCallback) {
+        this.dataTransferOpenModelCallback = dataTransferOpenModelCallback;
     }
 
     void confirmDownload() {
         dataTransferExportModelCallback.execute(exportModel);
+    }
+    
+    public void openExport() {
+        dataTransferOpenModelCallback.execute(exportModel);
     }
 
     public void goToDataSetsPage() {
@@ -142,7 +154,7 @@ public class ExportSummaryWizardPage implements WizardPage {
 
     private void validateAndUpdateView() {
         exportModel = exportModelSupplier.get();
-
+        view.showOpenExport(exportInfo.isExternalServerAvailable());
         if (exportModel.getPages().isEmpty() && exportModel.getDatasetDefinitions().isEmpty()) {
             view.exportError(exportModel, i18n.nothingToExport());
             return;
@@ -170,10 +182,10 @@ public class ExportSummaryWizardPage implements WizardPage {
     }
 
     void remapMissingDependencies(Map<String, List<String>> validation) {
-        if (assets == null) {
+        if (exportInfo == null) {
             return;
         }
-        List<DataSetDef> datasets = assets.getDatasetsDefinitions();
+        List<DataSetDef> datasets = exportInfo.getDatasetsDefinitions();
         validation.replaceAll((page, deps) -> {
             return deps.stream()
                        .map(uuid -> datasets.stream()
@@ -183,8 +195,8 @@ public class ExportSummaryWizardPage implements WizardPage {
         });
     }
 
-    public void setAssets(DataTransferAssets assets) {
-        this.assets = assets;
+    public void setExportInfo(ExportInfo exportInfo) {
+        this.exportInfo = exportInfo;
     }
 
 }

@@ -147,4 +147,6 @@ public interface ContentManagerConstants extends Messages {
     String navigationHelpText();
 
     String validationError();
+
+    String openHelpText();
 }

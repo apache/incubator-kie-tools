@@ -33,11 +33,15 @@ public class RuntimeModel {
     NavTree navTree;
 
     List<LayoutTemplate> layoutTemplates;
+    
+    Long lastModified;
 
     public RuntimeModel(@MapsTo("navTree") final NavTree navTree,
-                        @MapsTo("layoutTemplates") final List<LayoutTemplate> layoutTemplates) {
+                        @MapsTo("layoutTemplates") final List<LayoutTemplate> layoutTemplates,
+                        @MapsTo("lastModified") Long lastModified) {
         this.navTree = navTree;
         this.layoutTemplates = layoutTemplates;
+        this.lastModified = lastModified;
     }
 
     public NavTree getNavTree() {
@@ -46,6 +50,10 @@ public class RuntimeModel {
 
     public List<LayoutTemplate> getLayoutTemplates() {
         return layoutTemplates;
+    }
+    
+    public Long getLastModified() {
+        return lastModified;
     }
 
 }

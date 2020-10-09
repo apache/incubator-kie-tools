@@ -806,7 +806,7 @@
 
           </compileSourcesArtifacts>
           <runTarget>dashbuilder.html</runTarget>
-          <extraJvmArgs>-Xmx4024m -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.jboss.debug.port=8787 -Ddashbuilder.components.enable=true</extraJvmArgs>
+	  <extraJvmArgs>-Xmx4024m -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.jboss.debug.port=8787 -Ddashbuilder.components.enable=true -Ddashbuilder.export.dir=/tmp/dashbuilder/models -Ddashbuilder.runtime.location=http://localhost:8280 -Ddashbuilder.shareOpenModel=true</extraJvmArgs>
           <noServer>false</noServer>
           <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
           <hostedWebapp>src/main/webapp</hostedWebapp>

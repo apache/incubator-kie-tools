@@ -26,7 +26,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerConstants;
-import org.dashbuilder.transfer.DataTransferAssets;
+import org.dashbuilder.transfer.ExportInfo;
 import org.dashbuilder.transfer.DataTransferExportModel;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
@@ -67,10 +67,10 @@ public class ExportWizard extends AbstractWizard {
         exportSummaryWizardPage.setGoToPagesCommand(() -> goTo(pagesWizardPage));
     }
 
-    public void start(DataTransferAssets assets) {
-        dataSetsWizardPage.setDataSets(assets.getDatasetsDefinitions());
-        pagesWizardPage.setPages(assets.getPages());
-        exportSummaryWizardPage.setAssets(assets);
+    public void start(ExportInfo exportInfo) {
+        dataSetsWizardPage.setDataSets(exportInfo.getDatasetsDefinitions());
+        pagesWizardPage.setPages(exportInfo.getPages());
+        exportSummaryWizardPage.setExportInfo(exportInfo);
         this.start();
     }
 
@@ -114,8 +114,12 @@ public class ExportWizard extends AbstractWizard {
                                            true);
     }
 
-    public void setCallback(ParameterizedCommand<DataTransferExportModel> dataTransferExportModelCallback) {
-        exportSummaryWizardPage.setCallback(dataTransferExportModelCallback);
+    public void setDownloadCallback(ParameterizedCommand<DataTransferExportModel> dataTransferExportModelCallback) {
+        exportSummaryWizardPage.setDownloadCallback(dataTransferExportModelCallback);
+    }
+    
+    public void setOpenCallback(ParameterizedCommand<DataTransferExportModel> dataTransferExportModelCallback) {
+        exportSummaryWizardPage.setOpenCallback(dataTransferExportModelCallback);
     }
     
     @Override

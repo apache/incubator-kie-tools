@@ -32,7 +32,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.dashbuilder.transfer.DataTransferAssets;
+import org.dashbuilder.transfer.ExportInfo;
 import org.dashbuilder.transfer.DataTransferExportModel;
 import org.dashbuilder.transfer.DataTransferServices;
 import org.dashbuilder.client.cms.resources.i18n.ContentManagerConstants;
@@ -81,7 +81,8 @@ public class DataTransferScreen {
     @PostConstruct
     public void init() {
         view.init(this);
-        exportWizard.setCallback(this::callExportService);
+        exportWizard.setDownloadCallback(this::callExportService);
+        exportWizard.setOpenCallback(this::openExportedModel);
     }
 
     public void doExport() {
@@ -90,20 +91,19 @@ public class DataTransferScreen {
 
     public void doGradualExport() {
         busyIndicatorView.showBusyIndicator(i18n.loadingExportWizard());
-        dataTransferServices.call((DataTransferAssets v) -> {
+        dataTransferServices.call((ExportInfo v) -> {
             busyIndicatorView.hideBusyIndicator();
             exportWizard.start(v);
         }, (message, error) -> {
             busyIndicatorView.hideBusyIndicator();
             view.exportError(error);
             return false;
-        }).assetsToExport();
+        }).exportInfo();
     }
 
     public void doImport() {
         try {
-            dataTransferServices.call(
-                                      (RemoteCallback<List<String>>) imported -> {
+            dataTransferServices.call((RemoteCallback<List<String>>) imported -> {
                                           view.importOK();
                                           popUp.show(imported);
 
@@ -129,6 +129,8 @@ public class DataTransferScreen {
         void exportError(Throwable throwable);
 
         void download(String path);
+
+        void openUrl(String path);
     }
 
     public String getFilePath() {
@@ -157,6 +159,26 @@ public class DataTransferScreen {
                 return false;
 
             }).doExport(dataTransferExportModel);
+
+        } catch (Exception e) {
+            view.exportError(e);
+        }
+    }
+    
+    private void openExportedModel(DataTransferExportModel dataTransferExportModel) {
+        busyIndicatorView.showBusyIndicator(i18n.preparingExportDownload());
+        try {
+            dataTransferServices.call((RemoteCallback<String>) modelUrl -> {
+                busyIndicatorView.hideBusyIndicator();
+                view.exportOK();
+                view.openUrl(modelUrl);
+
+            }, (ErrorCallback<Exception>) (message, throwable) -> {
+                busyIndicatorView.hideBusyIndicator();
+                view.exportError(throwable);
+                return false;
+
+            }).generateExportUrl(dataTransferExportModel);
 
         } catch (Exception e) {
             view.exportError(e);

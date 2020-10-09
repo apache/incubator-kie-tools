@@ -75,28 +75,32 @@ public class RuntimeOptions {
      * If true components will be partitioned by the Runtime Model ID.
      */
     private static final String COMPONENT_PARTITION_PROP = "dashbuilder.components.partition";
+    
+    /**
+     * Boolean property that allows Runtime to check model last update in FS to update its content.
+     */
+    private static final String MODEL_UPDATE_PROP = "dashbuilder.model.update";
 
     private boolean multipleImport;
     private boolean datasetPartition;
     private boolean componentPartition;
     private boolean allowExternal;
+    private boolean modelUpdate;
     private String importFileLocation;
     private String importsBaseDir;
     private int uploadSize;
 
     @PostConstruct
     public void init() {
-        String multipleImportStr = System.getProperty(DASHBUILDER_RUNTIME_MULTIPLE_IMPORT_PROP, Boolean.FALSE.toString());
-        String allowExternalStr = System.getProperty(ALLOW_EXTERNAL_FILE_REGISTER_PROP, Boolean.FALSE.toString());
-        String datasetPartitionStr = System.getProperty(DATASET_PARTITION_PROP, Boolean.TRUE.toString());
-        String componentPartitionStr = System.getProperty(COMPONENT_PARTITION_PROP, Boolean.TRUE.toString());
 
         importFileLocation = System.getProperty(IMPORT_FILE_LOCATION_PROP);
         importsBaseDir = System.getProperty(IMPORTS_BASE_DIR_PROP, DEFAULT_MODEL_DIR);
-        multipleImport = Boolean.parseBoolean(multipleImportStr);
-        allowExternal = Boolean.parseBoolean(allowExternalStr);
-        datasetPartition = Boolean.parseBoolean(datasetPartitionStr);
-        componentPartition = Boolean.parseBoolean(componentPartitionStr);
+        
+        multipleImport = booleanProp(DASHBUILDER_RUNTIME_MULTIPLE_IMPORT_PROP, Boolean.FALSE);
+        allowExternal = booleanProp(ALLOW_EXTERNAL_FILE_REGISTER_PROP, Boolean.FALSE);
+        datasetPartition = booleanProp(DATASET_PARTITION_PROP, Boolean.TRUE);
+        componentPartition = booleanProp(COMPONENT_PARTITION_PROP, Boolean.TRUE);
+        modelUpdate = booleanProp(MODEL_UPDATE_PROP, Boolean.TRUE);
         
         uploadSize = DEFAULT_UPLOAD_SIZE_KB;
 
@@ -109,6 +113,7 @@ public class RuntimeOptions {
                 logger.debug("Not able to parse upload size {}", uploadSizeStr, e);
             }
         }
+        logger.info("Max upload size is {}", uploadSize);
     }
 
     /**
@@ -170,9 +175,18 @@ public class RuntimeOptions {
     public boolean isComponentPartition() {
         return componentPartition;
     }
+    
+    public boolean isModelUpdate() {
+        return modelUpdate;
+    }
 
     public String buildFilePath(String fileId) {
         return String.join("/", getImportsBaseDir(), fileId).concat(DASHBOARD_EXTENSION);
+    }
+    
+    private boolean booleanProp(String prop, Boolean defaultValue) {
+        String propStr = System.getProperty(prop, defaultValue.toString());
+        return Boolean.parseBoolean(propStr);
     }
 
 }

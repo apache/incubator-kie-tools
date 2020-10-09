@@ -28,11 +28,16 @@ public interface DataTransferServices {
     public static final String IMPORT_FILE_NAME = "import.zip";
     public static final String COMPONENTS_EXPORT_PATH = "dashbuilder/components/";
 
+    public static final String EXPORT_LOCATION_PROP = "dashbuilder.export.dir";
+    public static final String SHARE_OPEN_MODEL_PROP = "dashbuilder.shareOpenModel";
+    public static final String DB_STANDALONE_LOCATION_PROP = "dashbuilder.runtime.location";
 
     public String doExport(DataTransferExportModel exportsModel) throws java.io.IOException;
 
     public List<String> doImport() throws Exception;
 
-    public DataTransferAssets assetsToExport();
+    public String generateExportUrl(DataTransferExportModel exportsModel) throws Exception;
+
+    public ExportInfo exportInfo();
 
 }

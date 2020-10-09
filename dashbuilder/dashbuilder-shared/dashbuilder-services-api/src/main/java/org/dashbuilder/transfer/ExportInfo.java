@@ -20,17 +20,22 @@ import java.util.List;
 
 import org.dashbuilder.dataset.def.DataSetDef;
 
-public class DataTransferAssets {
+public class ExportInfo {
+
+    private boolean externalServerAvailable;
 
     private List<DataSetDef> datasetsDefinitions;
 
     private List<String> pages;
 
-    public DataTransferAssets() {}
+    public ExportInfo() {}
 
-    public DataTransferAssets(List<DataSetDef> datasetsDefinitions, List<String> pages) {
+    public ExportInfo(List<DataSetDef> datasetsDefinitions,
+                      List<String> pages,
+                      boolean externalServerAvailable) {
         this.datasetsDefinitions = datasetsDefinitions;
         this.pages = pages;
+        this.externalServerAvailable = externalServerAvailable;
     }
 
     public List<DataSetDef> getDatasetsDefinitions() {
@@ -41,9 +46,15 @@ public class DataTransferAssets {
         return pages;
     }
 
+    public boolean isExternalServerAvailable() {
+        return externalServerAvailable;
+    }
+
     @Override
     public String toString() {
-        return "DataTransferAssetsExport [datasetsDefinitions=" + datasetsDefinitions + ", pages=" + pages + "]";
+        return "ExportModel [externalServerAvailable=" + externalServerAvailable + ", " +
+               "datasetsDefinitions=" + datasetsDefinitions + "," +
+               " pages=" + pages + "]";
     }
 
 }

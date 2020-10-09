@@ -32,12 +32,14 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.http.client.utils.URIBuilder;
 import org.dashbuilder.dataset.DataSetDefRegistryCDI;
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.events.DataSetDefRegisteredEvent;
@@ -85,7 +87,13 @@ public class DataTransferServicesImpl implements DataTransferServices {
     private byte[] buffer = new byte[1024];
     private ExternalComponentLoader externalComponentLoader;
 
-    public DataTransferServicesImpl() {}
+    private String dashbuilderLocation;
+    private String exportDir;
+    private boolean shareOpenModel;
+
+    public DataTransferServicesImpl() {
+        // empty constructor
+    }
 
     @Inject
     public DataTransferServicesImpl(
@@ -114,6 +122,15 @@ public class DataTransferServicesImpl implements DataTransferServices {
         this.navTreeChangedEvent = navTreeChangedEvent;
         this.navTreeStorage = navTreeStorage;
         this.externalComponentLoader = externalComponentLoader;
+    }
+
+    @PostConstruct
+    public void init() {
+        dashbuilderLocation = System.getProperty(DB_STANDALONE_LOCATION_PROP);
+        exportDir = System.getProperty(EXPORT_LOCATION_PROP);
+
+        String shareOpenModelStr = System.getProperty(SHARE_OPEN_MODEL_PROP, Boolean.FALSE.toString());
+        shareOpenModel = Boolean.parseBoolean(shareOpenModelStr);
     }
 
     @Override
@@ -152,18 +169,18 @@ public class DataTransferServicesImpl implements DataTransferServices {
 
         if (externalComponentLoader.isEnabled()) {
             String componentsPath = externalComponentLoader.getExternalComponentsDir();
-    
+
             if (componentsPath != null && exists(componentsPath)) {
                 Path componentsBasePath = Paths.get(new StringBuilder().append(SpacesAPI.Scheme.FILE)
-                                                    .append("://")
-                                                    .append(componentsPath)
-                                                    .toString());
-                externalComponentLoader.load().forEach(c -> {                
-                 Path componentPath = componentsBasePath.resolve(c.getId());
-                 zipComponentFiles(componentsBasePath,
-                                   componentPath,
-                                   zos,
-                                   p -> true);
+                                                                       .append("://")
+                                                                       .append(componentsPath)
+                                                                       .toString());
+                externalComponentLoader.load().forEach(c -> {
+                    Path componentPath = componentsBasePath.resolve(c.getId());
+                    zipComponentFiles(componentsBasePath,
+                                      componentPath,
+                                      zos,
+                                      p -> true);
                 });
             }
         }
@@ -229,7 +246,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
     }
 
     @Override
-    public DataTransferAssets assetsToExport() {
+    public ExportInfo exportInfo() {
         List<String> pages = listPaths(perspectivesFS,
                                        p -> p.endsWith(FILE_EXT)).stream()
                                                                  .map(p -> p.getName(p.getNameCount() - 2))
@@ -242,7 +259,35 @@ public class DataTransferServicesImpl implements DataTransferServices {
                                                                                .map(this::parseDataSetDefinition)
                                                                                .filter(DataSetDef::isPublic)
                                                                                .collect(Collectors.toList());
-        return new DataTransferAssets(datasetsDefs, pages);
+        return new ExportInfo(datasetsDefs, pages, isExternalServerConfigured());
+    }
+
+    @Override
+    public String generateExportUrl(DataTransferExportModel exportModel) throws Exception {
+        if (!isExternalServerConfigured()) {
+            throw new RuntimeException("External Server is not configured.");
+        }
+        try {
+            String path = this.doExport(exportModel);
+            String prefix = shareOpenModel ? "business-central" : sessionInfo.getIdentity().getIdentifier();
+            String fileName = prefix + "-dashboard-latest";
+            String destination = new StringBuilder().append(exportDir)
+                                                    .append(File.separator)
+                                                    .append(fileName)
+                                                    .append(".zip")
+                                                    .toString();
+            FileUtils.deleteQuietly(new File(destination));
+            copyFileContents(Paths.get(path).toFile(), destination);
+            return new URIBuilder(dashbuilderLocation).addParameter("import", fileName).toString();
+        } catch (Exception e) {
+            LOGGER.error("Error generating model link.", e);
+            throw new RuntimeException("Error generating model link.", e);
+        }
+
+    }
+
+    private boolean isExternalServerConfigured() {
+        return exportDir != null && dashbuilderLocation != null;
     }
 
     private List<String> importFiles(Path path) throws Exception {
@@ -310,11 +355,11 @@ public class DataTransferServicesImpl implements DataTransferServices {
         return newFileName;
     }
 
-    private void copyFileContents(File newFile, String newFileName) {
+    private void copyFileContents(File originFile, String newFileName) {
         File target = new File(newFileName);
         target.getParentFile().mkdirs();
         if (!target.exists()) {
-            ioService.copy(Paths.get(newFile.toURI()), Paths.get(target.toURI()));
+            ioService.copy(Paths.get(originFile.toURI()), Paths.get(target.toURI()));
         }
     }
 
@@ -569,7 +614,7 @@ public class DataTransferServicesImpl implements DataTransferServices {
             return false;
         };
     }
-    
+
     private boolean exists(String file) {
         return java.nio.file.Files.exists(java.nio.file.Paths.get(file));
     }

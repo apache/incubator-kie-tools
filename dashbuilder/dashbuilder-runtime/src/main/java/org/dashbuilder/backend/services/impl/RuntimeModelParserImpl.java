@@ -141,7 +141,7 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         }
         NavTree navTree = runtimeNavigationBuilder.build(navTreeOp, layoutTemplates);
 
-        return new RuntimeModel(navTree, layoutTemplates);
+        return new RuntimeModel(navTree, layoutTemplates, System.currentTimeMillis());
     }
 
     String transformId(String modelId, String id) {

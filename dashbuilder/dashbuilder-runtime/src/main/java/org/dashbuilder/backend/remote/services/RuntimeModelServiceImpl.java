@@ -16,6 +16,10 @@
 
 package org.dashbuilder.backend.remote.services;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -84,7 +88,7 @@ public class RuntimeModelServiceImpl implements RuntimeModelService {
     private Optional<RuntimeModel> loadImportById(String id) {
         Optional<RuntimeModel> runtimeModelOp = registry.get(id);
         if (runtimeModelOp.isPresent()) {
-            return runtimeModelOp;
+            return loadLatestModel(id, runtimeModelOp.get());
         }
 
         Optional<String> modelPath = runtimeOptions.modelPath(id);
@@ -96,6 +100,31 @@ public class RuntimeModelServiceImpl implements RuntimeModelService {
             return externalImportService.registerExternalImport(id);
         }
         return Optional.empty();
+    }
+
+    private Optional<RuntimeModel> loadLatestModel(String id, RuntimeModel runtimeModel) {
+        Optional<String> modelPath = runtimeOptions.modelPath(id);
+        if (runtimeOptions.isModelUpdate() && modelPath.isPresent()) {
+            String modelFilePath = modelPath.get();
+            if (lastModified(modelFilePath) > runtimeModel.getLastModified()) {
+                logger.info("Replacing model {}", id);
+                registry.remove(id);
+                return registry.registerFile(modelFilePath);
+            }
+        }
+        return Optional.of(runtimeModel);
+    }
+
+    private long lastModified(String modelFilePath) {
+        try {
+            return Files.readAttributes(Paths.get(modelFilePath), BasicFileAttributes.class)
+                        .lastModifiedTime()
+                        .toMillis();
+        } catch (IOException e) {
+            logger.error("Error reading file last modified time");
+            logger.debug("Error reading file last modified time", e);
+            return -1;
+        }
     }
 
 }
