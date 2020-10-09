@@ -98,6 +98,10 @@ export function EditorPage(props: Props) {
     });
   }, []);
 
+  const requestSetGitHubToken = useCallback(() => {
+    setGithubTokenModalVisible(true);
+  }, [])
+
   const requestExportGist = useCallback(() => {
     editorRef.current?.getContent().then(content => {
       if (!context.githubService.isAuthenticated()) {
@@ -242,6 +246,7 @@ export function EditorPage(props: Props) {
           onCopyContentToClipboard={requestCopyContentToClipboard}
           isPageFullscreen={fullscreen}
           onPreview={requestPreview}
+          onSetGitHubToken={requestSetGitHubToken}
           onExportGist={requestExportGist}
           onUpdateGist={requestUpdateGist}
           isEdited={isDirty}

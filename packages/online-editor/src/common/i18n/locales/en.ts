@@ -57,14 +57,16 @@ export const en: OnlineI18n = {
     sendChangesToGitHub: `Send changes to ${en_common.names.github}`,
     copySource: "Copy Source",
     downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
+    setGitHubToken: `Set up you ${en_common.names.github} token`,
     gistIt: "Gist it!",
     fileActions: "File actions",
-    updateGist: "Update Gist"
+    updateGist: "Update Gist",
+    updateGistTooltip: `To be able to update a gist you need to have access to it through your ${en_common.names.github} token.`
   },
   githubTokenModal: {
     header: {
       title: `${en_common.names.github} ${en_common.names.oauth} ${en_common.terms.token}`,
-      subtitle: `Authentication required for exporting to ${en_common.names.github} gist.`
+      subtitle: `Set your ${en_common.names.github} token so you can export your current file to a Gist or update it.`
     },
     footer: {
       createNewToken: "Create a new token",

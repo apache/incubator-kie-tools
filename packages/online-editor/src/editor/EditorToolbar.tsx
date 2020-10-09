@@ -26,6 +26,7 @@ import {
   PageHeaderToolsGroup,
   PageHeader,
   Brand,
+  Tooltip,
   DropdownToggle
 } from "@patternfly/react-core";
 import { CloseIcon, ExpandIcon, EllipsisVIcon } from "@patternfly/react-icons";
@@ -42,6 +43,7 @@ interface Props {
   onSave: () => void;
   onDownload: () => void;
   onPreview: () => void;
+  onSetGitHubToken: () => void;
   onExportGist: () => void;
   onUpdateGist: () => void;
   onClose: () => void;
@@ -142,16 +144,25 @@ export function EditorToolbar(props: Props) {
         <DropdownItem key={`dropdown-${dropdownId}-download-svg`} component="button" onClick={props.onPreview}>
           {i18n.editorToolbar.downloadSVG}
         </DropdownItem>,
+        <DropdownItem
+          key={`dropdown-${dropdownId}-setup-github-token`}
+          component="button"
+          onClick={props.onSetGitHubToken}
+        >
+          {i18n.editorToolbar.setGitHubToken}
+        </DropdownItem>,
         <DropdownItem key={`dropdown-${dropdownId}-export-gist`} component="button" onClick={props.onExportGist}>
           {i18n.editorToolbar.gistIt}
         </DropdownItem>,
-        <React.Fragment key={`dropdown-${dropdownId}-update-gist`}>
-          {updateGist && (
-            <DropdownItem component="button" onClick={props.onUpdateGist}>
-              {i18n.editorToolbar.updateGist}
-            </DropdownItem>
-          )}
-        </React.Fragment>,
+        <Tooltip
+          key={`dropdown-${dropdownId}-update-gist`}
+          content={<div>{i18n.editorToolbar.updateGistTooltip}</div>}
+          trigger={!updateGist ? "mouseenter click" : ""}
+        >
+          <DropdownItem component="button" onClick={props.onUpdateGist} isDisabled={!updateGist}>
+            {i18n.editorToolbar.updateGist}
+          </DropdownItem>
+        </Tooltip>
       ],
       [
         context.external,
