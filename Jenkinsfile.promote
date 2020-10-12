@@ -82,6 +82,10 @@ pipeline {
                         assert getProjectVersion() != ''
                     }
 
+                    dir('kogito-images') {
+                        checkoutRepo()
+                    }
+
                     installGitHubReleaseCLI()
                 }
             }
@@ -151,14 +155,18 @@ pipeline {
                     } else if (getOldImageRegistryCredentials() != ''){
                         loginContainerRegistry(getOldImageRegistry(), getOldImageRegistryCredentials())
                     }
-                    pullImages()
+                    dir('kogito-images') {
+                        pullImages()
+                    }
                 }
             }
         }
         stage('Tag images'){
             steps{
                 script {
-                    tagImages()
+                    dir('kogito-images') {
+                        tagImages()
+                    }
                 }
             }
         }
@@ -170,7 +178,9 @@ pipeline {
                     } else if (getNewImageRegistryCredentials() != ''){
                         loginContainerRegistry(getNewImageRegistry(), getNewImageRegistryCredentials())
                     }
-                    pushImages()
+                    dir('kogito-images') {
+                        pushImages()
+                    }
                 }
             }
         }
@@ -181,8 +191,6 @@ pipeline {
             steps{
                 script {
                     dir('kogito-images') {
-                        checkoutRepo()
-
                         // Merge PR
                         String prLink = getDeployProperty('kogito-images.pr.link')
                         if(prLink != ''){                            
