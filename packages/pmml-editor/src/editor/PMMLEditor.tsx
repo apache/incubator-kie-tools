@@ -41,11 +41,6 @@ import { SingleEditorRouter } from "./components/EditorCore/organisms";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
 
-export interface HasSingleModel {
-  path: string;
-  model: Model;
-}
-
 interface Props {
   exposing: (s: PMMLEditor) => void;
   channelApi: MessageBusClientApi<KogitoEditorChannelApi>;

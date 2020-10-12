@@ -138,9 +138,9 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
         index: 0,
         isScorable: isScorable,
         functionName: functionName,
-        baselineScore: baselineScore,
+        baselineScore: baselineScore.value,
         baselineMethod: baselineMethod,
-        initialScore: initialScore,
+        initialScore: initialScore.value,
         useReasonCodes: useReasonCodes,
         reasonCodeAlgorithm: reasonCodeAlgorithm
       }

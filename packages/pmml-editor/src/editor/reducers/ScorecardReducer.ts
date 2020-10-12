@@ -40,7 +40,13 @@ export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> 
     switch (action.type) {
       case Actions.Scorecard_SetCoreProperties:
         return service.mutate(state, `models[${action.payload.index}]`, draft => {
+          draft.isScorable = action.payload.isScorable;
           draft.functionName = action.payload.functionName;
+          draft.baselineScore = action.payload.baselineScore;
+          draft.baselineMethod = action.payload.baselineMethod;
+          draft.initialScore = action.payload.initialScore;
+          draft.useReasonCodes = action.payload.useReasonCodes;
+          draft.reasonCodeAlgorithm = action.payload.reasonCodeAlgorithm;
         });
     }
 

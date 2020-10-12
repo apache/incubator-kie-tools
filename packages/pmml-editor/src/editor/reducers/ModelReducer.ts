@@ -15,8 +15,13 @@
  */
 import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { Model } from "@kogito-tooling/pmml-editor-marshaller";
+import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import { ScorecardActions, ScorecardReducer } from "./ScorecardReducer";
+import { immerable } from "immer";
+
+// @ts-ignore
+Scorecard[immerable] = true;
 
 interface ModelPayload {
   [Actions.DeleteModel]: {
@@ -26,10 +31,12 @@ interface ModelPayload {
 
 export type ModelActions = ActionMap<ModelPayload>[keyof ActionMap<ModelPayload>];
 
-export const ModelReducer: HistoryAwareReducer<Model[], ModelActions> = (
+export const ModelReducer: HistoryAwareReducer<Model[], ModelActions | ScorecardActions> = (
   service: HistoryService
-): Reducer<Model[], ModelActions> => {
-  return (state: Model[], action: ModelActions) => {
+): Reducer<Model[], ModelActions | ScorecardActions> => {
+  const scorecardReducer = ScorecardReducer(service);
+
+  return (state: Model[], action: ModelActions | ScorecardActions) => {
     switch (action.type) {
       case Actions.DeleteModel:
         return service.mutate(state, "models", draft => {
@@ -38,6 +45,19 @@ export const ModelReducer: HistoryAwareReducer<Model[], ModelActions> = (
             const index: number = draft.indexOf(model);
             if (index >= 0 && index < draft.length) {
               draft.splice(index, 1);
+            }
+          }
+        });
+
+      case Actions.Scorecard_SetCoreProperties:
+        return service.mutate(state, "models", draft => {
+          if (draft !== undefined) {
+            const index: number = action.payload.index;
+            if (index >= 0 && index < draft.length) {
+              if (draft[index] instanceof Scorecard) {
+                const scorecard: Scorecard = draft[index] as Scorecard;
+                draft[index] = scorecardReducer(scorecard, action);
+              }
             }
           }
         });
