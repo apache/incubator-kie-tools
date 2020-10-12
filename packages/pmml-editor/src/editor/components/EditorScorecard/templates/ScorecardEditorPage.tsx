@@ -22,23 +22,33 @@ import { CorePropertiesTable } from "../organisms";
 
 interface EditorPageProps {
   path: string;
+  index: number;
   model: Scorecard;
 }
 
 export const ScorecardEditorPage = (props: EditorPageProps) => {
   return (
     <div data-testid="editor-page">
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection variant={PageSectionVariants.light} isFilled={false}>
         <Header title={coalesce(props.model.modelName, "<Unnamed>")} />
       </PageSection>
 
-      <PageSection isFilled={true}>
+      <PageSection isFilled={false}>
         <CorePropertiesTable
-          baselineScore={props.model.baselineScore}
-          baselineMethod={props.model.baselineMethod}
-          initialScore={props.model.initialScore}
-          useReasonCodes={props.model.useReasonCodes}
+          isScorable={props.model.isScorable ?? true}
+          functionName={props.model.functionName}
+          baselineScore={props.model.baselineScore ?? 0}
+          baselineMethod={props.model.baselineMethod ?? "other"}
+          initialScore={props.model.initialScore ?? 0}
+          useReasonCodes={props.model.useReasonCodes ?? true}
+          reasonCodeAlgorithm={props.model.reasonCodeAlgorithm ?? "pointsBelow"}
         />
+      </PageSection>
+
+      <PageSection isFilled={true}>
+        <PageSection variant={PageSectionVariants.light}>
+          <h1>Here lives the Characteristics</h1>
+        </PageSection>
       </PageSection>
     </div>
   );

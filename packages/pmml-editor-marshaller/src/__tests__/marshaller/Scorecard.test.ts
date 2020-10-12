@@ -73,6 +73,15 @@ describe("Scorecard tests", () => {
 
     const model: Model = models[0];
     expect(model).toBeInstanceOf(Scorecard);
+
+    const scorecard: Scorecard = model as Scorecard;
+    expect(scorecard.modelName).toBe("SimpleScorecard");
+    expect(scorecard.functionName).toBe("regression");
+    expect(scorecard.useReasonCodes).toBeTruthy();
+    expect(scorecard.reasonCodeAlgorithm).toBe("pointsBelow");
+    expect(scorecard.initialScore).toBe(5);
+    expect(scorecard.baselineMethod).toBe("other");
+    expect(scorecard.baselineScore).toBe(6);
   });
 
   test("Scorecard::Models::No modelName", () => {

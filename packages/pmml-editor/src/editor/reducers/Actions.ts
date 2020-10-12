@@ -38,7 +38,8 @@ export enum Actions {
   SetDataFieldName = "SET_DATA_FIELD_NAME",
   SetHeaderDescription = "SET_HEADER_DESCRIPTION",
   Undo = "UNDO",
-  Redo = "REDO"
+  Redo = "REDO",
+  Scorecard_SetCoreProperties = "SCORECARD_SET_CORE_PROPERTIES"
 }
 
 export type AllActions =

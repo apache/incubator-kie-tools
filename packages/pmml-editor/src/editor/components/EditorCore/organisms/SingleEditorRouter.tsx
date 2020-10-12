@@ -49,7 +49,7 @@ export const SingleEditorRouter = (props: SingleEditorRouterProps) => {
     <div>
       {!_isSupportedModelType && <UnsupportedModelPage path={props.path} model={model} />}
       {_isSupportedModelType && modelType === "Scorecard" && (
-        <ScorecardEditorPage path={props.path} model={model as Scorecard} />
+        <ScorecardEditorPage path={props.path} index={_index} model={model as Scorecard} />
       )}
     </div>
   );

@@ -16,8 +16,7 @@
 import { ActionMap, Actions } from "./Actions";
 import { Header } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { HistoryService } from "../history/HistoryProvider";
-import { HistoryAwareReducer } from "../history/HistoryAwareReducer";
+import { HistoryAwareReducer, HistoryService } from "../history";
 
 interface HeaderPayload {
   [Actions.SetHeaderDescription]: {

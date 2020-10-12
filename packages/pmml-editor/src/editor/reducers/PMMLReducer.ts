@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
-import { HistoryService } from "../history/HistoryProvider";
+import { HistoryAwareReducer, HistoryService } from "../history";
 import { Model, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { HistoryAwareReducer } from "../history/HistoryAwareReducer";
 
 interface PMMLPayload {
   [Actions.SetVersion]: {

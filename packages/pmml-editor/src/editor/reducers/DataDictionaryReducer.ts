@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 import { ActionMap, Actions } from "./Actions";
-import { HistoryService } from "../history/HistoryProvider";
+import { HistoryAwareReducer, HistoryService } from "../history";
 import { DataDictionary, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { HistoryAwareReducer } from "../history/HistoryAwareReducer";
 
 interface DataDictionaryPayload {
   [Actions.CreateDataField]: {

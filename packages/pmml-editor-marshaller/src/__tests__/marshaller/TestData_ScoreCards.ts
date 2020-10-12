@@ -21,7 +21,7 @@ export const SCORE_CARD_SIMPLE_PREDICATE: string = `
     <DataField name="input2" optype="continuous" dataType="double"/>
     <DataField name="score" optype="continuous" dataType="double"/>
   </DataDictionary>
-  <Scorecard modelName="SimpleScorecard" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineMethod="other">
+  <Scorecard modelName="SimpleScorecard" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineScore="6" baselineMethod="other">
     <MiningSchema>
       <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
       <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
