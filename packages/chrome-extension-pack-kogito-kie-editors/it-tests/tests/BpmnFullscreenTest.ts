@@ -1,6 +1,6 @@
 import BpmnEditor from "../framework/editor/bpmn/BpmnEditor";
 import Explorer from "../framework/editor/Explorer";
-import FullscreenPage from "../framework/fullscreen-editor/FullscreenPage";
+import FullScreenPage from "../framework/fullscreen-editor/FullscreenPage";
 import GitHubEditorPage from "../framework/github-editor/GitHubEditorPage";
 import SideBar from "../framework/editor/SideBar";
 import Tools from "../utils/Tools";
@@ -17,7 +17,7 @@ test(TEST_NAME, async () => {
     const processUrl: string = "https://github.com/kiegroup/" +
         "kogito-examples/blob/stable/process-business-rules-quarkus/src/main/resources/org/acme/travels/persons.bpmn";
     let bpmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, processUrl);
-    const fullScreenPage: FullscreenPage = await bpmnPage.fullScreen();
+    const fullScreenPage: FullScreenPage = await bpmnPage.fullScreen();
     const fullScreenEditor: BpmnEditor = await fullScreenPage.getBpmnEditor();
     await fullScreenEditor.enter();
     const fullScreenSideBar: SideBar = await fullScreenEditor.getSideBar();

@@ -1,7 +1,7 @@
 import DecisionNavigator from "../framework/editor/dmn/DecisionNavigator";
 import DmnEditor from "../framework/editor/dmn/DmnEditor";
 import DmnSideBar from "../framework/editor/dmn/DmnSideBar";
-import FullscreenPage from "../framework/fullscreen-editor/FullscreenPage";
+import FullScreenPage from "../framework/fullscreen-editor/FullscreenPage";
 import GitHubEditorPage from "../framework/github-editor/GitHubEditorPage";
 import Tools from "../utils/Tools";
 
@@ -18,7 +18,7 @@ test(TEST_NAME, async () => {
         "kogito-examples/blob/stable/dmn-quarkus-example/src/main/resources/Traffic%20Violation.dmn";
     let dmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, dmnUrl);
     // open and check full screen editor
-    const fullScreenPage: FullscreenPage = await dmnPage.fullScreen();
+    const fullScreenPage: FullScreenPage = await dmnPage.fullScreen();
     const fullScreenEditor: DmnEditor = await fullScreenPage.getDmnEditor();
     await fullScreenEditor.enter();
     const fullScreenSideBar: DmnSideBar = await fullScreenEditor.getSideBar();

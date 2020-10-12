@@ -1,7 +1,7 @@
 import { By } from "selenium-webdriver";
 import EditorPage from "../editor/EditorPage";
 import Element from "../Element";
-import FullscreenPage from "../fullscreen-editor/FullscreenPage";
+import FullScreenPage from "../fullscreen-editor/FullscreenPage";
 import OnlineEditorPage from "../online-editor/OnlineEditorPage";
 
 export default class GitHubEditorPage extends EditorPage {
@@ -56,10 +56,10 @@ export default class GitHubEditorPage extends EditorPage {
         return await this.tools.createPage(OnlineEditorPage);
     }
 
-    public async fullScreen(): Promise<FullscreenPage> {
+    public async fullScreen(): Promise<FullScreenPage> {
         const fullScreenButton: Element = await this.tools.by(GitHubEditorPage.FULL_SCREEN_BUTTON_LOCATOR).getElement();
         // regular click sometimes does not work
         await fullScreenButton.click();
-        return await this.tools.createPage(FullscreenPage);
+        return await this.tools.createPage(FullScreenPage);
     }
 }
