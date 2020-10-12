@@ -33,6 +33,7 @@ import { PencilAltIcon } from "@patternfly/react-icons";
 import { useDispatch } from "react-redux";
 import "./CorePropertiesTable.scss";
 import { NumericInput } from "../atoms/NumericInput";
+import { Actions } from "../../../reducers";
 
 interface CorePropertiesTableProps {
   isScorable: boolean;
@@ -74,7 +75,7 @@ const ValidateInitialScore = (value: number) => {
 };
 
 export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
-  const [dispatch] = useDispatch();
+  const dispatch = useDispatch();
   const [isEditing, setEditing] = useState(false);
   const [isScorable, setScorable] = useState(props.isScorable);
   const [functionName, setFunctionName] = useState(props.functionName);
@@ -131,6 +132,19 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     setEditing(true);
   };
   const commitEdit = () => {
+    dispatch({
+      type: Actions.Scorecard_SetCoreProperties,
+      payload: {
+        index: 0,
+        isScorable: isScorable,
+        functionName: functionName,
+        baselineScore: baselineScore,
+        baselineMethod: baselineMethod,
+        initialScore: initialScore,
+        useReasonCodes: useReasonCodes,
+        reasonCodeAlgorithm: reasonCodeAlgorithm
+      }
+    });
     setEditing(false);
   };
   const cancelEdit = () => {

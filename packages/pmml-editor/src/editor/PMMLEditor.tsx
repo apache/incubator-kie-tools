@@ -19,7 +19,15 @@ import * as React from "react";
 import { Reducer } from "react";
 import { enableAllPlugins } from "immer";
 import { createStore, Store } from "redux";
-import { Actions, AllActions, DataDictionaryReducer, DataFieldReducer, HeaderReducer, PMMLReducer } from "./reducers";
+import {
+  Actions,
+  AllActions,
+  DataDictionaryReducer,
+  DataFieldReducer,
+  HeaderReducer,
+  ModelReducer,
+  PMMLReducer
+} from "./reducers";
 import { Model, PMML, PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Provider } from "react-redux";
 import mergeReducers from "combine-reducer";
@@ -67,7 +75,8 @@ export class PMMLEditor extends React.Component<Props, State> {
 
     this.reducer = mergeReducers(PMMLReducer(this.service), {
       Header: HeaderReducer(this.service),
-      DataDictionary: mergeReducers(DataDictionaryReducer(this.service), { DataField: DataFieldReducer(this.service) })
+      DataDictionary: mergeReducers(DataDictionaryReducer(this.service), { DataField: DataFieldReducer(this.service) }),
+      models: ModelReducer(this.service)
     });
   }
 

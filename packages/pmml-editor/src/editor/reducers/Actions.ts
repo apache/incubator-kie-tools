@@ -17,6 +17,8 @@ import { StateControlActions, VersionActions } from "./PMMLReducer";
 import { DataDictionaryActions } from "./DataDictionaryReducer";
 import { DataFieldActions } from "./DataFieldReducer";
 import { HeaderActions } from "./HeaderReducer";
+import { ModelActions } from "./ModelReducer";
+import { ScorecardActions } from "./ScorecardReducer";
 
 export type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined
@@ -47,4 +49,6 @@ export type AllActions =
   | VersionActions
   | HeaderActions
   | DataDictionaryActions
-  | DataFieldActions;
+  | DataFieldActions
+  | ModelActions
+  | ScorecardActions;

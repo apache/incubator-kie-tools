@@ -15,15 +15,12 @@
  */
 import { ActionMap, Actions, AllActions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { Model, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
 interface PMMLPayload {
   [Actions.SetVersion]: {
     readonly version: string;
-  };
-  [Actions.DeleteModel]: {
-    readonly model: Model;
   };
 }
 
@@ -44,18 +41,6 @@ export const PMMLReducer: HistoryAwareReducer<PMML, AllActions> = (
       case Actions.SetVersion:
         return service.mutate(state, null, draft => {
           draft.version = action.payload.version;
-        });
-
-      case Actions.DeleteModel:
-        return service.mutate(state, null, draft => {
-          const model = action.payload.model;
-          if (draft.models) {
-            const models = draft.models;
-            const index = models.indexOf(model);
-            if (index >= 0 && index < models.length) {
-              models.splice(index, 1);
-            }
-          }
         });
 
       case Actions.Undo:

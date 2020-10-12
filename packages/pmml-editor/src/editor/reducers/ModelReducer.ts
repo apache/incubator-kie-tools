@@ -15,28 +15,30 @@
  */
 import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
+import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
-interface DataFieldPayload {
-  [Actions.SetDataFieldName]: {
-    readonly index: number;
-    readonly name: FieldName;
+interface ModelPayload {
+  [Actions.DeleteModel]: {
+    readonly model: Model;
   };
 }
 
-export type DataFieldActions = ActionMap<DataFieldPayload>[keyof ActionMap<DataFieldPayload>];
+export type ModelActions = ActionMap<ModelPayload>[keyof ActionMap<ModelPayload>];
 
-export const DataFieldReducer: HistoryAwareReducer<DataField[], DataFieldActions> = (
+export const ModelReducer: HistoryAwareReducer<Model[], ModelActions> = (
   service: HistoryService
-): Reducer<DataField[], DataFieldActions> => {
-  return (state: DataField[], action: DataFieldActions) => {
+): Reducer<Model[], ModelActions> => {
+  return (state: Model[], action: ModelActions) => {
     switch (action.type) {
-      case Actions.SetDataFieldName:
-        return service.mutate(state, "DataDictionary.DataField", draft => {
-          const index = action.payload.index;
-          if (index >= 0 && index < draft.length) {
-            draft[index] = { ...draft[index], name: action.payload.name };
+      case Actions.DeleteModel:
+        return service.mutate(state, "models", draft => {
+          const model: Model = action.payload.model;
+          if (draft !== undefined) {
+            const index: number = draft.indexOf(model);
+            if (index >= 0 && index < draft.length) {
+              draft.splice(index, 1);
+            }
           }
         });
     }

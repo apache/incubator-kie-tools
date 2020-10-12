@@ -19,3 +19,5 @@ export * from "./DataDictionaryReducer";
 export * from "./DataFieldReducer";
 export * from "./HeaderReducer";
 export * from "./PMMLReducer";
+export * from "./ModelReducer";
+export * from "./ScorecardReducer";
