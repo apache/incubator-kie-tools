@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { GenericSelector } from "../atoms";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
 import {
@@ -61,62 +61,70 @@ const GenericSelectorEditor = (
   return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} />;
 };
 
-const NumericEditor = (id: string, value: number, onChange: (_value: number) => void) => {
-  return <NumericInput id={id} value={value} onChange={onChange} />;
+const NumericEditor = (id: string, value: number, valid: boolean, onChange: (_value: number) => void) => {
+  return <NumericInput id={id} value={value} valid={valid} onChange={onChange} />;
+};
+
+const ValidateBaselineScore = (value: number) => {
+  return value > 0;
+};
+
+const ValidateInitialScore = (value: number) => {
+  return value > 0;
 };
 
 export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   const [dispatch] = useDispatch();
   const [isEditing, setEditing] = useState(false);
-  const [state, setState] = useState(props);
+  const [isScorable, setScorable] = useState(props.isScorable);
+  const [functionName, setFunctionName] = useState(props.functionName);
+  const [baselineScore, setBaselineScore] = useState({
+    valid: ValidateBaselineScore(props.baselineScore),
+    value: props.baselineScore
+  });
+  const [baselineMethod, setBaselineMethod] = useState(props.baselineMethod);
+  const [initialScore, setInitialScore] = useState({
+    valid: ValidateInitialScore(props.initialScore),
+    value: props.initialScore
+  });
+  const [useReasonCodes, setUseReasonCodes] = useState(props.useReasonCodes);
+  const [reasonCodeAlgorithm, setReasonCodeAlgorithm] = useState(props.reasonCodeAlgorithm);
 
-  const isScorableEditor = BooleanFieldEditor("is-scorable-id", state.isScorable, checked =>
-    setState({
-      ...state,
-      isScorable: checked
-    })
-  );
+  const isScorableEditor = BooleanFieldEditor("is-scorable-id", isScorable, checked => setScorable(checked));
   const functionNameEditor = GenericSelectorEditor(
     "function-name-selector-id",
     ["associationRules", "sequences", "classification", "regression", "clustering", "timeSeries", "mixed"],
-    state.functionName,
-    _selection =>
-      setState({
-        ...state,
-        functionName: _selection as MiningFunction
-      })
+    functionName,
+    _selection => setFunctionName(_selection as MiningFunction)
   );
-  const baselineScoreEditor = NumericEditor("baseline-score-id", state.baselineScore, _value => {
-    setState({ ...state, baselineScore: _value });
-  });
+  const baselineScoreEditor = useMemo(
+    () =>
+      NumericEditor("baseline-score-id", baselineScore.value, baselineScore.valid, _value => {
+        setBaselineScore({ ...baselineScore, value: _value, valid: ValidateBaselineScore(_value) });
+      }),
+    [baselineScore.value]
+  );
   const baselineMethodEditor = GenericSelectorEditor(
     "baseline-method-selector-id",
     ["max", "min", "mean", "neutral", "other"],
-    state.baselineMethod,
-    _selection =>
-      setState({
-        ...state,
-        baselineMethod: _selection as BaselineMethod
-      })
+    baselineMethod,
+    _selection => setBaselineMethod(_selection as BaselineMethod)
   );
-  const initialScoreEditor = NumericEditor("initial-score-id", state.initialScore, _value => {
-    setState({ ...state, initialScore: _value });
-  });
-  const useReasonCodesEditor = BooleanFieldEditor("use-reason-codes-id", state.useReasonCodes, checked =>
-    setState({
-      ...state,
-      useReasonCodes: checked
-    })
+  const initialScoreEditor = useMemo(
+    () =>
+      NumericEditor("initial-score-id", initialScore.value, initialScore.valid, _value => {
+        setInitialScore({ ...initialScore, value: _value, valid: ValidateInitialScore(_value) });
+      }),
+    [initialScore.value]
+  );
+  const useReasonCodesEditor = BooleanFieldEditor("use-reason-codes-id", useReasonCodes, checked =>
+    setUseReasonCodes(checked)
   );
   const reasonCodeAlgorithmEditor = GenericSelectorEditor(
     "reason-code-algorithm-selector-id",
     ["pointsAbove", "pointsBelow"],
-    state.reasonCodeAlgorithm,
-    _selection =>
-      setState({
-        ...state,
-        reasonCodeAlgorithm: _selection as ReasonCodeAlgorithm
-      })
+    reasonCodeAlgorithm,
+    _selection => setReasonCodeAlgorithm(_selection as ReasonCodeAlgorithm)
   );
 
   const onEdit = () => {

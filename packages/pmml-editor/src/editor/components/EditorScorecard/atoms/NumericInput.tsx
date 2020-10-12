@@ -21,11 +21,12 @@ import "./NumericInput.scss";
 interface NumericInputProps {
   id: string;
   value: number;
+  valid: boolean;
   onChange: (_value: number) => void;
 }
 
 const toNumber = (value: string): number => {
-  return 0;
+  return Number(value);
 };
 
 export const NumericInput = (props: NumericInputProps) => {
@@ -41,6 +42,7 @@ export const NumericInput = (props: NumericInputProps) => {
       id={props.id}
       value={state.value}
       onChange={onChange}
+      validated={props.valid ? "default" : "error"}
       isRequired={true}
       className="numeric-input"
       type="number"
