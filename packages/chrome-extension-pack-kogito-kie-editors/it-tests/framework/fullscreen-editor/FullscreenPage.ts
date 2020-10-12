@@ -19,7 +19,7 @@ export default class FullScreenPage extends EditorPage {
         await this.tools.by(FullScreenPage.EXIT_BUTTON_LOCATOR).wait(10000).untilPresent();
     }
 
-    public async getExitFullscreenUrl(): Promise<string> {
+    public async getExitFullScreenUrl(): Promise<string> {
         const exitButton: Element = await this.tools.by(FullScreenPage.EXIT_BUTTON_LOCATOR).getElement();
         return await exitButton.getAttribute("href");
     }

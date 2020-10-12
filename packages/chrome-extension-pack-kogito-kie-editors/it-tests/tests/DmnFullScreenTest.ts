@@ -34,7 +34,7 @@ test(TEST_NAME, async () => {
         ].sort());
     await fullScreenEditor.leave();
 
-    expect(await fullScreenPage.getExitFullscreenUrl()).toBe(dmnUrl + "#");
+    expect(await fullScreenPage.getExitFullScreenUrl()).toBe(dmnUrl + "#");
 
     await fullScreenPage.scrollToTop();
     dmnPage = await fullScreenPage.exitFullscreen();

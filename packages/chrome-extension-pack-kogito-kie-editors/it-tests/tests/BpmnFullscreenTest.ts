@@ -33,7 +33,7 @@ test(TEST_NAME, async () => {
         ].sort());
     await fullScreenEditor.leave();
 
-    expect(await fullScreenPage.getExitFullscreenUrl()).toBe(processUrl + "#");
+    expect(await fullScreenPage.getExitFullScreenUrl()).toBe(processUrl + "#");
 
     await fullScreenPage.scrollToTop();
     bpmnPage = await fullScreenPage.exitFullscreen();
