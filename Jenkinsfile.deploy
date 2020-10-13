@@ -216,6 +216,13 @@ pipeline {
                     launchParallelForEachImage("Build", {img -> buildImage(img)})
                 }
             }
+            post {
+                always {
+                    script {
+                        cleanWorkspaces()
+                    }
+                }
+            }
         }
         stage('Test Images') {
             when {
@@ -223,7 +230,17 @@ pipeline {
             }
             steps {
                 script {
+                    // Init workspaces before test
+                    getImages().each{ image -> initWorkspace(image) }
+                    // Test images
                     launchParallelForEachImage("Test", {img -> testImage(img)})
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanWorkspaces()
+                    }
                 }
             }
         }
