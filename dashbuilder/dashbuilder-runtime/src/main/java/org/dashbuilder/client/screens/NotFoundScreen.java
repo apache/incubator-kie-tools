@@ -22,6 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
+import org.dashbuilder.client.RuntimeEntryPoint;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -38,13 +39,12 @@ import org.uberfire.lifecycle.OnOpen;
 public class NotFoundScreen {
 
     public static final String ID = "NotFoundScreen";
-    public static final String TARGET_PARAM = "_perspective";
     
     private static AppConstants i18n = AppConstants.INSTANCE;
 
     public interface View extends UberElemental<NotFoundScreen> {
 
-        void setNotFoundPerspective(String perspectiveName);
+        void setNotFoundDashboard(String perspectiveName);
     }
 
     @Inject
@@ -52,10 +52,10 @@ public class NotFoundScreen {
     
     @OnOpen
     public void onOpen() {
-        List<String> targetParams = Window.Location.getParameterMap().get(TARGET_PARAM);
+        List<String> targetParams = Window.Location.getParameterMap().get(RuntimeEntryPoint.DASHBOARD_PARAM);
         if (targetParams != null && !targetParams.isEmpty()) {
-            String perspectiveName = targetParams.get(0);
-            view.setNotFoundPerspective(perspectiveName);
+            String dashboardName = targetParams.get(0);
+            view.setNotFoundDashboard(dashboardName);
         }
     }
 

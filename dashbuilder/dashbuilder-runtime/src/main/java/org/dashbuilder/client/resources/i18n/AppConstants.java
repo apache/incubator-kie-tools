@@ -62,5 +62,7 @@ public interface AppConstants extends Messages {
     String sessionTimeout();
 
     String invalidBusResponseProbablySessionTimeout();
+    
+    String dashboardOpenTooltip();
 
 }

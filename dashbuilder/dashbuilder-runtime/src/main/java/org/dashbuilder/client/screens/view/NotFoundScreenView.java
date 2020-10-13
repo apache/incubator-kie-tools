@@ -52,7 +52,7 @@ public class NotFoundScreenView implements NotFoundScreen.View {
     }
     
     @Override
-    public void setNotFoundPerspective(String perspectiveName) {
+    public void setNotFoundDashboard(String perspectiveName) {
         subTitle.textContent = i18n.notFoundDashboard(perspectiveName);
     }
     

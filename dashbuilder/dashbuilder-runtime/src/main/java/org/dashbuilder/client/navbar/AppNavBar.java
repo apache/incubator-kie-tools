@@ -42,9 +42,14 @@ public class AppNavBar implements Header {
     LogoutMenuBuilder logoutMenu;
     
     @Inject
+    GoToDashboardMenuBuilder goToDashboardMenu;
+    
+    @Inject
     DashboardListMenuBuilder dashboardsListMenu;
     
     private boolean isDashboardListEnabled = false;
+    
+    private boolean isGoToDashboardMenuEnabled = false;
 
     @AfterInitialization
     public void setup() {
@@ -69,10 +74,18 @@ public class AppNavBar implements Header {
     public void setDashboardListEnabled(boolean isDashboardListEnabled) {
         this.isDashboardListEnabled = isDashboardListEnabled;
     }
+    
+    
+    public void setExternalMenuEnabled(boolean isExternalMenuEnabled) {
+        this.isGoToDashboardMenuEnabled = isExternalMenuEnabled;
+    }
 
-    private void setupMenus() {
+    public void setupMenus() {
         menuBarPresenter.clear();
         menuBarPresenter.clearContextMenu();
+        if (isGoToDashboardMenuEnabled) {
+            menuBarPresenter.addMenus(MenuFactory.newTopLevelCustomMenu(goToDashboardMenu).endMenu().build());
+        }
         if (isDashboardListEnabled) {
             menuBarPresenter.addMenus(MenuFactory.newTopLevelCustomMenu(dashboardsListMenu).endMenu().build());
         }

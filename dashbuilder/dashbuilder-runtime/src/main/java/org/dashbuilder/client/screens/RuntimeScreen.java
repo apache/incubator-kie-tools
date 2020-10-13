@@ -19,8 +19,10 @@ package org.dashbuilder.client.screens;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.dashbuilder.client.navbar.AppNavBar;
 import org.dashbuilder.client.navbar.NavBarHelper;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.navigation.NavTree;
@@ -30,6 +32,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -61,6 +64,11 @@ public class RuntimeScreen {
 
     @Inject
     PlaceManager placeManager;
+    
+    @Inject
+    AppNavBar appNavBar;
+
+    private RuntimeModel currentRuntimeModel;
 
     @WorkbenchPartTitle
     public String getScreenTitle() {
@@ -73,7 +81,12 @@ public class RuntimeScreen {
     }
 
     public void loadDashboards(RuntimeModel runtimeModel) {
-        NavTree navTree = runtimeModel.getNavTree();
+        this.currentRuntimeModel = runtimeModel;
+        refreshMenus();
+    }
+
+    private void refreshMenus() {
+        NavTree navTree = currentRuntimeModel.getNavTree();
         Menus menus = menusHelper.buildMenusFromNavTree(navTree).build();
         view.addMenus(menus);
     }
@@ -87,6 +100,19 @@ public class RuntimeScreen {
                      .filter(INDEX_PAGE_NAME::equals)
                      .findFirst()
                      .ifPresent(placeManager::goTo);
+        }
+    }
+
+    void onPerspectiveChange(@Observes PerspectiveChange perspectiveChange) {
+        if (currentRuntimeModel != null) {
+            String perspective = perspectiveChange.getIdentifier();
+            boolean externalMenuEnabled = currentRuntimeModel.getLayoutTemplates()
+                                                             .stream()
+                                                             .anyMatch(lt -> lt.getName().equals(perspective));
+            appNavBar.setExternalMenuEnabled(externalMenuEnabled);
+            refreshMenus();
+        } else {
+            appNavBar.setupMenus();
         }
     }
 
