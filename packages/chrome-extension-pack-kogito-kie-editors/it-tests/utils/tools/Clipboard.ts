@@ -20,11 +20,7 @@ import { platform } from "os";
 
 export default class Clipboard {
 
-    private readonly driver: WebDriver;
-
-    public constructor(driver: WebDriver) {
-        this.driver = driver;
-    }
+    public constructor(private readonly driver: WebDriver) { }
 
     /**
      * Get content of clipboard.

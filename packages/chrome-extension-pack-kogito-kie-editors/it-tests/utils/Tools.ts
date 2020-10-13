@@ -28,16 +28,10 @@ export default class Tools {
 
     private static readonly SCREENSHOTS_DIR: string = "screenshots";
 
-    private readonly driver: WebDriver;
-
     private readonly screenShot: Screenshot;
 
-    private readonly testName: string;
-
-    private constructor(driver: WebDriver, testName: string) {
-        this.driver = driver;
+    private constructor(private readonly driver: WebDriver, private readonly testName: string) {
         this.screenShot = new Screenshot(this.driver, Tools.SCREENSHOTS_DIR);
-        this.testName = testName;
     }
 
     public async finishTest(): Promise<void> {

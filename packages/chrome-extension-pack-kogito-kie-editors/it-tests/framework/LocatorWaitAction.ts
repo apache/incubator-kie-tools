@@ -22,15 +22,10 @@ export default class LocatorWaitAction {
 
     private static readonly DEFAULT_TIMEOUT: number = 100;
 
-    private readonly driver: WebDriver;
-    private readonly by: By;
-    private readonly timeout: number;
-
-    public constructor(driver: WebDriver, by: By, timeout?: number) {
-        this.driver = driver;
-        this.by = by;
-        this.timeout = timeout ?? LocatorWaitAction.DEFAULT_TIMEOUT;;
-    }
+    public constructor(
+        private readonly driver: WebDriver,
+        private readonly by: By,
+        private readonly timeout: number = timeout ?? LocatorWaitAction.DEFAULT_TIMEOUT) { }
 
     private async absent(): Promise<void> {
         await this.driver.wait(async () => (await this.driver.findElements(this.by)).length === 0, this.timeout);

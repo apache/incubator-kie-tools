@@ -19,11 +19,8 @@ import ErrorProcessor from "../utils/tools/ErrorProcessor";
 
 export default class Element {
 
-    private readonly webElement: WebElement;
 
-    constructor(webElement: WebElement) {
-        this.webElement = webElement;
-    }
+    constructor(private readonly webElement: WebElement) { }
 
     public async dragAndDrop(x: number, y: number): Promise<void> {
         await ErrorProcessor.run(

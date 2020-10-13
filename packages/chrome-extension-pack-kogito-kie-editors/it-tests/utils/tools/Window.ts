@@ -19,11 +19,7 @@ import { WebDriver } from "selenium-webdriver";
 
 export default class Window {
 
-    private readonly driver: WebDriver;
-
-    public constructor(driver: WebDriver) {
-        this.driver = driver;
-    }
+    public constructor(private readonly driver: WebDriver) { }
 
     public async leaveFrame(): Promise<void> {
         await ErrorProcessor.run(

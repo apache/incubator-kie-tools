@@ -21,13 +21,7 @@ import LocatorWaitAction from "./LocatorWaitAction";
 
 export default class Locator {
 
-    private readonly driver: WebDriver
-    private readonly by: By;
-
-    constructor(driver: WebDriver, by: By) {
-        this.driver = driver;
-        this.by = by;
-    }
+    constructor(private readonly driver: WebDriver, private readonly by: By) { }
 
     public wait(timeout?: number): LocatorWaitAction {
         return new LocatorWaitAction(this.driver, this.by, timeout);

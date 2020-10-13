@@ -21,13 +21,7 @@ import { join } from "path";
 
 export default class Screenshots {
 
-    private readonly driver: WebDriver;
-    private readonly screenshotsDir: string;
-
-    constructor(driver: WebDriver, screenshotsDir: string) {
-        this.driver = driver;
-        this.screenshotsDir = screenshotsDir;
-
+    constructor(private readonly driver: WebDriver, private readonly screenshotsDir: string) {
         if (!existsSync(screenshotsDir)) {
             mkdirSync(screenshotsDir);
         }
