@@ -20,6 +20,9 @@ import { EditorToolbar } from "../../editor/EditorToolbar";
 import { StateControl } from "@kogito-tooling/editor/dist/embedded";
 import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
 import { GithubService } from "../../common/GithubService";
+import {EditorPage} from "../../editor/EditorPage";
+
+jest.clearAllMocks();
 
 const onFileNameChanged = jest.fn((file: string) => null);
 const enterFullscreen = jest.fn(() => null);
@@ -36,7 +39,7 @@ function mockFunctions() {
   const original = require.requireActual("../../common/utils");
   return {
     ...original,
-    getFileUrl: jest.fn().mockImplementationOnce(() => "gist.githubusercontent.com/?file=something")
+    getFileUrl: jest.fn().mockImplementation(() => "gist.githubusercontent.com/?file=something")
   };
 }
 jest.mock("../../common/utils", () => mockFunctions());
@@ -51,10 +54,6 @@ describe("EditorToolbar", () => {
     requestDownload = jest.fn().mockImplementation(() => {
       stateControl.setSavedCommand();
     });
-  });
-
-  afterAll(() => {
-    jest.resetAllMocks();
   });
 
   describe("is dirty indicator", () => {
@@ -121,7 +120,7 @@ describe("EditorToolbar", () => {
       jest.spyOn(githubService, "getLogin").mockImplementation(() => "user1");
       jest.spyOn(githubService, "extractUserLoginFromGistRawUrl").mockImplementation(() => "user2");
 
-      const { getByTestId, findByTestId } = render(
+      const { getByTestId } = render(
         usingTestingOnlineI18nContext(
           usingTestingGlobalContext(
             <EditorToolbar
@@ -146,10 +145,6 @@ describe("EditorToolbar", () => {
       fireEvent.click(getByTestId("file-actions"));
       expect(getByTestId("update-gist-button")).toBeVisible();
       expect(getByTestId("update-gist-button")).toBeDisabled();
-
-      // fireEvent.mouseOver(getByTestId("update-gist-button"));
-      // expect(await findByTestId("update-gist-tooltip")).toBeVisible();
-
       expect(getByTestId("file-actions")).toMatchSnapshot();
     });
 
@@ -186,32 +181,19 @@ describe("EditorToolbar", () => {
       expect(getByTestId("file-actions")).toMatchSnapshot();
     });
 
-    test("Set GitHub token button should open a GitHubTokenModal", () => {
-      const { container, getByTestId } = render(
+    test("Set GitHub token button should open a GitHubTokenModal", async () => {
+      const { getByTestId } = render(
         usingTestingOnlineI18nContext(
           usingTestingGlobalContext(
-            <EditorToolbar
-              onFullScreen={enterFullscreen}
-              onSave={requestSave}
-              onDownload={requestDownload}
-              onClose={close}
-              onFileNameChanged={onFileNameChanged}
-              onCopyContentToClipboard={requestCopyContentToClipboard}
-              isPageFullscreen={fullscreen}
-              onPreview={requestPreview}
-              onSetGitHubToken={requestSetGitHubToken}
-              onExportGist={requestExportGist}
-              onUpdateGist={requestUpdateGist}
-              isEdited={false}
-            />
+            <EditorPage onFileNameChanged={onFileNameChanged} />
           ).wrapper
         ).wrapper
       );
 
       fireEvent.click(getByTestId("file-actions"));
       fireEvent.click(getByTestId("set-github-token"));
-      // expect(getByTestId("github-token-modal")).toBeVisible();
-      expect(container).toMatchSnapshot();
+      expect(getByTestId("github-token-modal")).toBeVisible();
+      expect(getByTestId("github-token-modal")).toMatchSnapshot();
     });
   });
 });

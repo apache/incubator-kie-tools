@@ -67,6 +67,7 @@ export function GithubTokenModal(props: Props) {
       variant={ModalVariant.small}
       isOpen={props.isOpen}
       onClose={props.onClose}
+      aria-label={"Set GitHub token modal"}
       title=""
       header={
         <>
@@ -127,8 +128,8 @@ export function GithubTokenModal(props: Props) {
           <b>
             <u>{i18n.terms.note.toUpperCase()}:</u>&nbsp;
           </b>
-          <I18nHtml>{i18n.githubTokenModal.body.note}</I18nHtml>
         </p>
+        <I18nHtml>{i18n.githubTokenModal.body.note}</I18nHtml>
       </>
     </Modal>
   );

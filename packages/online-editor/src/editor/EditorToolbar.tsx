@@ -96,9 +96,6 @@ export function EditorToolbar(props: Props) {
   useEffect(() => {
     if (fileUrl) {
       const userLogin = context.githubService.extractUserLoginFromGistRawUrl(fileUrl);
-      console.log(userLogin)
-      console.log(context.githubService.getLogin())
-
       if (userLogin === context.githubService.getLogin()) {
         setUpdateGist(true);
       } else {
