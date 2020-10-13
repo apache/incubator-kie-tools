@@ -34,7 +34,7 @@ describe("PMMLUtils::getModelIconUrl", () => {
 
 describe("PMMLUtils::getModelName", () => {
   test("getModelName::No Model Name", () => {
-    expect(getModelName({})).toBeUndefined();
+    expect(getModelName({})).toBe("<Undefined>");
   });
 
   test("getModelName::With Model Name", () => {

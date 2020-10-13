@@ -115,8 +115,8 @@ export const isCollection = <T>(collection: T[] | undefined): boolean => {
   return collection.length !== 0;
 };
 
-export const getModelName = (model: Model): string | undefined => {
-  return get(model, "modelName");
+export const getModelName = (model: Model): string => {
+  return get(model, "modelName") ?? "<Undefined>";
 };
 
 export const getModelType = (model: Model): ModelType => {

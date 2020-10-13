@@ -18,20 +18,22 @@ import * as React from "react";
 import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { ModelCard } from "../../../../../editor/components/LandingPage/molecules";
 
-const model: Model = new Scorecard({
-  modelName: "Name",
-  Characteristics: { Characteristic: [] },
-  MiningSchema: { MiningField: [] },
-  baselineMethod: "max",
-  functionName: "regression"
-});
+// const model: Model = new Scorecard({
+//   modelName: "Name",
+//   Characteristics: { Characteristic: [] },
+//   MiningSchema: { MiningField: [] },
+//   baselineMethod: "max",
+//   functionName: "regression"
+// });
 
 describe("ModelCard", () => {
   test("render::Basics", () => {
-    const onClick = jest.fn((_model: Model) => null);
-    const onDelete = jest.fn((_model: Model) => null);
+    const onClick = jest.fn((index: number) => null);
+    const onDelete = jest.fn((index: number) => null);
 
-    const { getByTestId } = render(<ModelCard model={model} onClick={onClick} onDelete={onDelete} />);
+    const { getByTestId } = render(
+      <ModelCard index={0} modelName={"Name"} modelType={"Scorecard"} onClick={onClick} onDelete={onDelete} />
+    );
     expect(getByTestId("model-card")).toMatchSnapshot();
 
     const element: HTMLElement = getByTestId("model-card__model-type");
@@ -40,32 +42,36 @@ describe("ModelCard", () => {
   });
 
   test("Delete::click", () => {
-    const onClick = jest.fn((_model: Model) => null);
-    const onDelete = jest.fn((_model: Model) => null);
+    const onClick = jest.fn((index: number) => null);
+    const onDelete = jest.fn((index: number) => null);
 
-    const { getByTestId } = render(<ModelCard model={model} onClick={onClick} onDelete={onDelete} />);
+    const { getByTestId } = render(
+      <ModelCard index={0} modelName={"Name"} modelType={"Scorecard"} onClick={onClick} onDelete={onDelete} />
+    );
     const element: HTMLElement = getByTestId("model-card__delete");
     expect(element).toBeInTheDocument();
     expect(element).toBeInstanceOf(HTMLButtonElement);
 
     (element as HTMLButtonElement).click();
     expect(onDelete).toBeCalledTimes(1);
-    expect(onDelete).toBeCalledWith(model);
+    expect(onDelete).toBeCalledWith(0);
     expect(onClick).not.toBeCalled();
   });
 
   test("Click::click", () => {
-    const onClick = jest.fn((_model: Model) => null);
-    const onDelete = jest.fn((_model: Model) => null);
+    const onClick = jest.fn((index: number) => null);
+    const onDelete = jest.fn((index: number) => null);
 
-    const { getByTestId } = render(<ModelCard model={model} onClick={onClick} onDelete={onDelete} />);
+    const { getByTestId } = render(
+      <ModelCard index={0} modelName={"Name"} modelType={"Scorecard"} onClick={onClick} onDelete={onDelete} />
+    );
     const element: HTMLElement = getByTestId("model-card");
     expect(element).toBeInTheDocument();
     expect(element).toBeInstanceOf(HTMLElement);
 
     (element as HTMLElement).click();
     expect(onClick).toBeCalledTimes(1);
-    expect(onClick).toBeCalledWith(model);
+    expect(onClick).toBeCalledWith(0);
     expect(onDelete).not.toBeCalled();
   });
 });

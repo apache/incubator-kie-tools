@@ -13,6 +13,7 @@ exports[`LandingPage render::No Models 1`] = `
       <div
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         class="pf-l-split__item pf-m-fill"
 =======
         class="pf-l-split__item"
@@ -20,6 +21,9 @@ exports[`LandingPage render::No Models 1`] = `
 =======
         class="pf-l-split__item pf-m-fill"
 >>>>>>> Simple updates following peer review.
+=======
+        class="pf-l-split__item"
+>>>>>>> Tidy-up following rebase with FAI-183
       >
         <div
           class="pf-c-content"
@@ -34,15 +38,21 @@ exports[`LandingPage render::No Models 1`] = `
       <div
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> Tidy-up following rebase with FAI-183
         class="pf-l-split__item pf-m-fill"
       >
          
       </div>
       <div
+<<<<<<< HEAD
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
 =======
 >>>>>>> Simple updates following peer review.
+=======
+>>>>>>> Tidy-up following rebase with FAI-183
         class="pf-l-split__item"
       >
         <div
@@ -336,6 +346,7 @@ exports[`LandingPage render::With Supported Model 1`] = `
       <div
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         class="pf-l-split__item pf-m-fill"
 =======
         class="pf-l-split__item"
@@ -343,6 +354,9 @@ exports[`LandingPage render::With Supported Model 1`] = `
 =======
         class="pf-l-split__item pf-m-fill"
 >>>>>>> Simple updates following peer review.
+=======
+        class="pf-l-split__item"
+>>>>>>> Tidy-up following rebase with FAI-183
       >
         <div
           class="pf-c-content"
@@ -357,15 +371,21 @@ exports[`LandingPage render::With Supported Model 1`] = `
       <div
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> Tidy-up following rebase with FAI-183
         class="pf-l-split__item pf-m-fill"
       >
          
       </div>
       <div
+<<<<<<< HEAD
 >>>>>>> FAI-183: Score Cards: Opening a PMML file story
 =======
 >>>>>>> Simple updates following peer review.
+=======
+>>>>>>> Tidy-up following rebase with FAI-183
         class="pf-l-split__item"
       >
         <div
