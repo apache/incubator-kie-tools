@@ -34,9 +34,7 @@ jobs:
         run: yarn run init
 
       - name: Build repository
-        run: |
-          yarn run build
-          yarn run build:fast
+        run: yarn run build:fast
 
       - name: Increase inotify watches
         if: matrix.os == 'ubuntu-latest'
