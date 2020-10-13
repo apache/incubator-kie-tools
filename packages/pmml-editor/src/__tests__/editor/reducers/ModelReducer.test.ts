@@ -37,7 +37,7 @@ describe("ModelReducer::Valid actions", () => {
     const updated: Model[] = reducer(models, {
       type: Actions.DeleteModel,
       payload: {
-        model: scorecard1
+        index: 0
       }
     });
     expect(updated).not.toEqual(models);
@@ -64,7 +64,7 @@ describe("ModelReducer::Valid actions", () => {
     const updated: Model[] = reducer(models, {
       type: Actions.DeleteModel,
       payload: {
-        model: scorecard2
+        index: 1
       }
     });
     expect(updated).toEqual(models);

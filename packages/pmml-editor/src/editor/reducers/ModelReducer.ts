@@ -18,14 +18,10 @@ import { HistoryAwareReducer, HistoryService } from "../history";
 import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { ScorecardActions, ScorecardReducer } from "./ScorecardReducer";
-import { immerable } from "immer";
-
-// @ts-ignore
-Scorecard[immerable] = true;
 
 interface ModelPayload {
   [Actions.DeleteModel]: {
-    readonly model: Model;
+    readonly index: number;
   };
 }
 
@@ -40,9 +36,8 @@ export const ModelReducer: HistoryAwareReducer<Model[], ModelActions | Scorecard
     switch (action.type) {
       case Actions.DeleteModel:
         return service.mutate(state, "models", draft => {
-          const model: Model = action.payload.model;
           if (draft !== undefined) {
-            const index: number = draft.indexOf(model);
+            const index: number = action.payload.index;
             if (index >= 0 && index < draft.length) {
               draft.splice(index, 1);
             }

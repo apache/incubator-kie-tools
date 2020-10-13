@@ -17,6 +17,10 @@ import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import { immerable } from "immer";
+
+// @ts-ignore
+Scorecard[immerable] = true;
 
 interface ScorecardPayload {
   [Actions.Scorecard_SetCoreProperties]: {

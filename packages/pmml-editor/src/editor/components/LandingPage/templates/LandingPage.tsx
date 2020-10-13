@@ -60,9 +60,9 @@ export const LandingPage = (props: LandingPageProps) => {
   const filteredModels: Model[] = useMemo(() => filterModels(), [filter, showUnsupportedModels, models]);
 
   const goToModel = useCallback(
-    (_model: Model) => {
+    (index: number) => {
       history.push({
-        pathname: "editor/" + models?.indexOf(_model)
+        pathname: "editor/" + index
       });
     },
     [history]
@@ -74,6 +74,7 @@ export const LandingPage = (props: LandingPageProps) => {
         <Header title={props.path} />
         <LandingPageToolbar
           setFilter={setFilter}
+          hasUnsupportedModels={hasUnsupportedModels}
           showUnsupportedModels={showUnsupportedModels}
           setShowUnsupportedModels={setShowUnsupportedModels}
         />
