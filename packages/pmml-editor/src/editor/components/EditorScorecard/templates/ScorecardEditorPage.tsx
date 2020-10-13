@@ -17,8 +17,8 @@ import * as React from "react";
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { Header } from "../../Header/molecules";
 import { Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
-import { coalesce } from "../../../utils";
 import { CorePropertiesTable } from "../organisms";
+import { getModelName } from "../../../utils";
 
 interface EditorPageProps {
   path: string;
@@ -30,7 +30,7 @@ export const ScorecardEditorPage = (props: EditorPageProps) => {
   return (
     <div data-testid="editor-page">
       <PageSection variant={PageSectionVariants.light} isFilled={false}>
-        <Header title={coalesce(props.model.modelName, "<Unnamed>")} />
+        <Header title={getModelName(props.model)} />
       </PageSection>
 
       <PageSection isFilled={false}>
