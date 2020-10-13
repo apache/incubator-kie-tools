@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 import BpmnPalette from "./BpmnPalette";
 import { By } from "selenium-webdriver";
@@ -30,7 +30,7 @@ export default class BpmnEditor extends Editor {
     public async dragAndDropStartEventToCanvas(): Promise<void> {
         const bpmnPalette: BpmnPalette = await this.getBpmnPalette();
         await bpmnPalette.dragAndDropStartEventToCanvas();
-        await this.clickToCanvas();
+        return await this.clickToCanvas();
     }
 
     private async getBpmnPalette(): Promise<BpmnPalette> {
@@ -40,7 +40,7 @@ export default class BpmnEditor extends Editor {
 
     private async clickToCanvas(): Promise<void> {
         const canvas: Element = await this.tools.by(BpmnEditor.CANVAS_LOCATOR).getElement();
-        await canvas.click();
+        return await canvas.click();
     }
 
     public async getSideBar(): Promise<SideBar> {

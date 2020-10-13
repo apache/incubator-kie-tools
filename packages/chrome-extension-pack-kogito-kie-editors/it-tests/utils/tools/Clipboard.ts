@@ -40,18 +40,14 @@ export default class Clipboard {
             "return text;";
 
         return await ErrorProcessor.run(
-            async () => {
-                return await this.driver.executeScript(GET_TEXT_FROM_INPUT_CMD);
-            },
+            async () => await this.driver.executeScript(GET_TEXT_FROM_INPUT_CMD),
             "Error while getting text from helper input."
         );
     }
 
     private async pasteContentToHelperInput(input: WebElement): Promise<void> {
         await ErrorProcessor.run(
-            async () => {
-                await input.sendKeys(this.getCtrvKeys());
-            },
+            async () => await input.sendKeys(this.getCtrvKeys()),
             "Error while pasting contenct from clipboard to helper input by keys: " + this.getCtrvKeys()
         );
     }

@@ -26,7 +26,7 @@ export default class BpmnPalette extends PageFragment {
     private static readonly CLOSE_LOCATOR = By.className("kie-palette-flyout__btn-link--close");
 
     public async waitUntilLoaded(): Promise<void> {
-        await this.tools.by(BpmnPalette.START_EVENTS_LOCATOR).wait(1000).untilPresent();
+        return await this.tools.by(BpmnPalette.START_EVENTS_LOCATOR).wait(1000).untilPresent();
     }
 
     public async dragAndDropStartEventToCanvas(): Promise<void> {
@@ -42,6 +42,6 @@ export default class BpmnPalette extends PageFragment {
 
         // close start events palette
         const closeButton: Element = await this.tools.by(BpmnPalette.CLOSE_LOCATOR).getElement();
-        await closeButton.click();
+        return await closeButton.click();
     }
 }

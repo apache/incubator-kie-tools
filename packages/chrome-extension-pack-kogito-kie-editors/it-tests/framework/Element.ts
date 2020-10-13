@@ -23,14 +23,14 @@ export default class Element {
     constructor(private readonly webElement: WebElement) { }
 
     public async dragAndDrop(x: number, y: number): Promise<void> {
-        await ErrorProcessor.run(
+        return await ErrorProcessor.run(
             async () => {
                 await this.click();
 
                 // no other way of drag and drop works
                 const actions = this.webElement.getDriver().actions();
                 await actions.move({ origin: this.webElement, x, y }).perform();
-                await actions.click().perform();
+                return await actions.click().perform();
             },
             "Error while drag and drop element to: x=" + x + " y=" + y
         );
@@ -38,86 +38,72 @@ export default class Element {
 
     public async sendKeys(keys: string): Promise<void> {
         return await ErrorProcessor.run(
-            async () => {
-                await this.webElement.sendKeys(keys);
-            },
+            async () => await this.webElement.sendKeys(keys),
             "Error while sending keys " + keys
         );
     }
 
     public async getText(): Promise<string> {
         return await ErrorProcessor.run(
-            async () => {
-                return await this.webElement.getText();
-            },
+            async () => await this.webElement.getText(),
             "Error while getting text from element."
         );
     }
 
     // do not use, it might break tests, regular click sometimes does not work then 
     public async clickJs(): Promise<void> {
-        await ErrorProcessor.run(
-            async () => {
-                // there is an issue that after using js click, sometimes regular click does not work
-                await this.webElement.getDriver().executeScript("arguments[0].click();", this.webElement);
-            },
+        return await ErrorProcessor.run(
+            // there is an issue that after using js click, sometimes regular click does not work
+            async () => await this.webElement.getDriver().executeScript("arguments[0].click();", this.webElement),
             "Error while clicking by JavaScript on element."
         );
     }
 
     public async click(): Promise<void> {
-        await ErrorProcessor.run(
-            async () => {
-                await this.webElement.click();
-            },
+        return await ErrorProcessor.run(
+            async () => await this.webElement.click(),
             "Error while clicking on element."
         );
     }
 
     public async offsetClick(x: number, y: number): Promise<void> {
-        await ErrorProcessor.run(
+        return await ErrorProcessor.run(
             async () => {
                 const actions = this.webElement.getDriver().actions();
                 await actions.move({ origin: this.webElement, x, y }).perform();
-                await actions.click().perform();
+                return await actions.click().perform();
             },
             "Error while clicking on element by offset: x=" + x + " ,y=" + y
         );
     }
 
     public async offsetMove(x: number, y: number): Promise<void> {
-        await ErrorProcessor.run(
+        return await ErrorProcessor.run(
             async () => {
                 const actions = this.webElement.getDriver().actions();
-                await actions.move({ origin: this.webElement, x, y }).perform();
+                return await actions.move({ origin: this.webElement, x, y }).perform();
             },
             "Error while moving from element by offset: x=" + x + " ,y=" + y
         );
     }
 
     public async scroll(): Promise<void> {
-        await ErrorProcessor.run(
-            async () => {
-                await this.webElement.getDriver().executeScript("arguments[0].scrollIntoView(true);", this.webElement);
-            },
+        return await ErrorProcessor.run(
+            async () => await this.webElement.getDriver().executeScript("arguments[0].scrollIntoView(true);", this.webElement),
             "Error while scrolling to element."
         );
     }
 
     public async getAttribute(attributeName: string): Promise<string> {
         return await ErrorProcessor.run(
-            async () => {
-                return await this.webElement.getAttribute(attributeName);
-            },
+            async () => await this.webElement.getAttribute(attributeName),
             "Error while getting attribute: " + attributeName
         );
     }
 
     public async findElement(by: By): Promise<Element> {
         return await ErrorProcessor.run(
-            async () => {
-                return new Element(await this.webElement.findElement(by));
-            },
+            async () => new Element(await this.webElement.findElement(by)),
             "Error while finding element: " + by
         );
     }
@@ -133,19 +119,17 @@ export default class Element {
     }
 
     public async enterFrame(): Promise<void> {
-        await ErrorProcessor.run(
-            async () => {
-                await this.webElement.getDriver().switchTo().frame(this.webElement);
-            },
+        return await ErrorProcessor.run(
+            async () => await this.webElement.getDriver().switchTo().frame(this.webElement),
             "Error while entering element frame."
         );
     }
 
     public async markWithRedColor(): Promise<void> {
-        await ErrorProcessor.run(
-            async () => {
-                await this.webElement.getDriver().executeScript("arguments[0].style.backgroundColor = '#ff0000';", this.webElement);
-            },
+        return await ErrorProcessor.run(
+            async () =>
+                await this.webElement.getDriver()
+                    .executeScript("arguments[0].style.backgroundColor = '#ff0000';", this.webElement),
             "Error while coloring element."
         );
     }

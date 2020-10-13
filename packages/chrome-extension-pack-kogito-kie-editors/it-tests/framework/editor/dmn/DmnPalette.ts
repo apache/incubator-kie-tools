@@ -22,7 +22,7 @@ export default class DmnPalette extends PageFragment {
     private static readonly ANNOTATION_LOCATOR: By = By.xpath("//button[@title='DMN Text Annotation']");
 
     public async waitUntilLoaded(): Promise<void> {
-        await this.tools.by(DmnPalette.ANNOTATION_LOCATOR).wait(1000).untilPresent();
+        return await this.tools.by(DmnPalette.ANNOTATION_LOCATOR).wait(1000).untilPresent();
     }
 
     public async dragAndDropAnnotationToCanvas(): Promise<void> {
@@ -34,6 +34,6 @@ export default class DmnPalette extends PageFragment {
         await annotation.dragAndDrop(200, 0);
 
         // click to canvas
-        await annotation.offsetClick(100, 0);
+        return await annotation.offsetClick(100, 0);
     }
 }

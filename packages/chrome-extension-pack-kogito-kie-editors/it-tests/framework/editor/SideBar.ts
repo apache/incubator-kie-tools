@@ -29,7 +29,7 @@ export default class SideBar extends PageFragment {
     private static readonly TITLE_LOCATOR = By.xpath("./div/h3");
 
     public async waitUntilLoaded(): Promise<void> {
-        await this.tools.by(SideBar.EXPLORER_BUTTON_LOCATOR).wait(1000).untilPresent();
+        return await this.tools.by(SideBar.EXPLORER_BUTTON_LOCATOR).wait(1000).untilPresent();
     }
 
     protected async openSideBar(byIcon: Element, sideBarTitle: string): Promise<Element> {
@@ -60,7 +60,9 @@ export default class SideBar extends PageFragment {
     }
 
     public async openExplorer(): Promise<Explorer> {
-        const diagramButton: Element = await this.tools.by(SideBar.EXPLORER_BUTTON_LOCATOR).wait(2000).untilPresent();
+        const explorerButtonLocator: Locator = this.tools.by(SideBar.EXPLORER_BUTTON_LOCATOR)
+        await explorerButtonLocator.wait(2000).untilPresent();
+        const diagramButton: Element = await explorerButtonLocator.getElement();
         const sideBar = await this.openSideBar(diagramButton, "Explore Diagram");
         return await this.tools.createPageFragment(Explorer, sideBar);
     }

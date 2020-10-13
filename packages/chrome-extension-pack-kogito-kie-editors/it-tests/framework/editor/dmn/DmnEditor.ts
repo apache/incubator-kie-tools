@@ -39,6 +39,6 @@ export default class DmnEditor extends Editor {
 
     public async dragAndDropAnnotationToCanvas(): Promise<void> {
         const dmnPalette: DmnPalette = await this.getDmnPalette();
-        await dmnPalette.dragAndDropAnnotationToCanvas();
+        return await dmnPalette.dragAndDropAnnotationToCanvas();
     }
 }

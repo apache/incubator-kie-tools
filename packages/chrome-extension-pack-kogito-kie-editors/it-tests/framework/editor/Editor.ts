@@ -28,14 +28,14 @@ export default abstract class Editor extends PageFragment {
             await this.tools.by(Editor.LOADING_POPUP_LOCATOR).wait(15000).untilAbsent();
         }
         await this.tools.by(Editor.EXPLORE_ICON_LOCATOR).wait(5000).untilPresent();
-        await this.leave();
+        return await this.leave();
     }
 
     public async enter(): Promise<void> {
-        await this.root.enterFrame();
+        return await this.root.enterFrame();
     }
 
     public async leave(): Promise<void> {
-        await this.tools.window().leaveFrame();
+        return await this.tools.window().leaveFrame();
     }
 }

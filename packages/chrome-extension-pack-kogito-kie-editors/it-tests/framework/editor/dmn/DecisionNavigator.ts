@@ -24,7 +24,7 @@ export default class DecisionNavigator extends PageFragment {
     private static readonly ITEM_LOCATOR: By = By.xpath("//li[@data-field='item']");
 
     public async waitUntilLoaded(): Promise<void> {
-        await this.tools.by(DecisionNavigator.DECISION_GRAPH_LOCATOR).wait(5000).untilPresent();
+        return await this.tools.by(DecisionNavigator.DECISION_GRAPH_LOCATOR).wait(5000).untilPresent();
     }
 
     private async getItems(): Promise<Element[]> {
@@ -49,6 +49,6 @@ export default class DecisionNavigator extends PageFragment {
 
     public async selectNode(name: string): Promise<void> {
         const node: Element = await this.tools.by(By.xpath(`//li[@data-field='item'][@title='${name}']/div`)).getElement();
-        await node.click();
+        return await node.click();
     }
 }

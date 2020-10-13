@@ -32,7 +32,7 @@ export default class FullScreenPage extends EditorPage {
     }
 
     public async waitUntilLoaded(): Promise<void> {
-        await this.tools.by(FullScreenPage.EXIT_BUTTON_LOCATOR).wait(10000).untilPresent();
+        return await this.tools.by(FullScreenPage.EXIT_BUTTON_LOCATOR).wait(10000).untilPresent();
     }
 
     public async getExitFullScreenUrl(): Promise<string> {

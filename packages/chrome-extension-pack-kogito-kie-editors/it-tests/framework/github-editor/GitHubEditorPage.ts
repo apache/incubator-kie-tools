@@ -18,6 +18,7 @@ import { By } from "selenium-webdriver";
 import EditorPage from "../editor/EditorPage";
 import Element from "../Element";
 import FullScreenPage from "../fullscreen-editor/FullScreenPage";
+import Locator from "../Locator";
 import OnlineEditorPage from "../online-editor/OnlineEditorPage";
 
 export default class GitHubEditorPage extends EditorPage {
@@ -33,24 +34,24 @@ export default class GitHubEditorPage extends EditorPage {
     private static readonly KOGITO_TOOLBAR_LOCATOR = By.className("kogito-toolbar-container");
 
     public async waitUntilLoaded(): Promise<void> {
-        await this.tools.by(GitHubEditorPage.KOGITO_TOOLBAR_LOCATOR).wait(2000).untilPresent();
+        return await this.tools.by(GitHubEditorPage.KOGITO_TOOLBAR_LOCATOR).wait(2000).untilPresent();
     }
 
     public async copyLinkToOnlineEditor(): Promise<void> {
         const copyLinkButton: Element = await this.tools.by(GitHubEditorPage.COPY_LINK_BUTTON_LOCATOR).getElement();
         await copyLinkButton.click();
         await this.tools.by(GitHubEditorPage.COPY_LINK_ALERT_LOCATOR).wait(1000).untilPresent();
-        await this.tools.by(GitHubEditorPage.COPY_LINK_ALERT_LOCATOR).wait(5000).untilAbsent();
+        return await this.tools.by(GitHubEditorPage.COPY_LINK_ALERT_LOCATOR).wait(5000).untilAbsent();
     }
 
     public async seeAsSource(): Promise<void> {
         const seeAsSourceButton: Element = await this.tools.by(GitHubEditorPage.SEE_AS_SOURCE_BUTTON_LOCATOR).getElement();
-        await seeAsSourceButton.click();
+        return await seeAsSourceButton.click();
     }
 
     public async seeAsDiagram(): Promise<void> {
         const seeAsDiagramButton = await this.tools.by(GitHubEditorPage.SEE_AS_DIAGRAM_BUTTON_LOCATOR).getElement();
-        await seeAsDiagramButton.click();
+        return await seeAsDiagramButton.click();
     }
 
     public async isSourceVisible(): Promise<boolean> {
@@ -62,10 +63,11 @@ export default class GitHubEditorPage extends EditorPage {
     }
 
     public async openOnlineEditor(): Promise<OnlineEditorPage> {
-        const onlineEditorButton: Element = await this.tools.by(GitHubEditorPage.ONLINE_EDITOR_BUTTON_LOCATOR)
-            .wait(2000)
+        const onlineEditorButtonLocator: Locator = this.tools.by(GitHubEditorPage.ONLINE_EDITOR_BUTTON_LOCATOR);
+        await onlineEditorButtonLocator.wait(2000)
             .untilPresent();
-        await onlineEditorButton.click();
+        const onlineEditorButton: Element = await onlineEditorButtonLocator.getElement();
+        onlineEditorButton.click();
 
         await this.tools.window().switchToSecondWindow();
 

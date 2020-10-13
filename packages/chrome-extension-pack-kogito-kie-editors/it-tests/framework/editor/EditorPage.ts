@@ -19,14 +19,15 @@ import { By } from "selenium-webdriver";
 import DmnEditor from "./dmn/DmnEditor";
 import Element from "../Element";
 import Page from "../Page";
+import Locator from "../Locator";
 
 export default abstract class EditorPage extends Page {
     protected static readonly FRAME_LOCATOR = By.xpath("//iframe[contains(@class,'kogito-iframe') or contains(@id,'kogito-iframe')]");
 
     private async getEditor(): Promise<Element> {
-        const frame: Element = await this.tools.by(EditorPage.FRAME_LOCATOR)
-            .wait(2000)
-            .untilPresent();
+        const frameLocator: Locator = this.tools.by(EditorPage.FRAME_LOCATOR);
+        await frameLocator.wait(2000).untilPresent();
+        const frame: Element = await frameLocator.getElement();
         await frame.scroll();
         return frame;
     }

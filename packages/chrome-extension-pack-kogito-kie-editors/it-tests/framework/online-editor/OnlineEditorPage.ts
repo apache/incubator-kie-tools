@@ -24,7 +24,7 @@ export default class OnlineEditorPage extends EditorPage {
     private static readonly FILE_NAME_LOCATOR: By = By.xpath("//input[@aria-label='Edit file name']")
 
     public async waitUntilLoaded(): Promise<void> {
-        await this.tools.by(OnlineEditorPage.TOOLBAR_LOCATOR).wait(2000).untilPresent();
+        return await this.tools.by(OnlineEditorPage.TOOLBAR_LOCATOR).wait(2000).untilPresent();
     }
 
     public async getFileName(): Promise<string> {

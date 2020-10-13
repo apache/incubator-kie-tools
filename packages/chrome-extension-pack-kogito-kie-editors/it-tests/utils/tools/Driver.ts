@@ -56,9 +56,7 @@ export default class Driver {
 
         // maximize chrome browser window
         await ErrorProcessor.run(
-            async () => {
-                await driver.manage().window().maximize();
-            },
+            async () => await driver.manage().window().maximize(),
             "Error while maximizing browser window."
         );
 
@@ -66,19 +64,15 @@ export default class Driver {
     }
 
     public static async openUrl(driver: WebDriver, url: string): Promise<void> {
-        await ErrorProcessor.run(
-            async () => {
-                await driver.get(url);
-            },
+        return await ErrorProcessor.run(
+            async () => await driver.get(url),
             "Error while opening url: " + url
         );
     }
 
     public static async quit(driver: WebDriver): Promise<void> {
         return await ErrorProcessor.run(
-            async () => {
-                await driver.quit();
-            },
+            async () => await driver.quit(),
             "Error while quiting driver."
         );
     }

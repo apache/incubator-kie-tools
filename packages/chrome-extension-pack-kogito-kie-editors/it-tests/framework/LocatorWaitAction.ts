@@ -29,13 +29,12 @@ export default class LocatorWaitAction {
 
     private async absent(): Promise<void> {
         await this.driver.wait(async () => (await this.driver.findElements(this.by)).length === 0, this.timeout);
+        return Promise.resolve();
     }
 
     public async untilAbsent(): Promise<void> {
-        await ErrorProcessor.run(
-            async () => {
-                await this.absent();
-            },
+        return await ErrorProcessor.run(
+            async () => await this.absent(),
             "Error while waiting until absent " + this.by
         );
     }
@@ -57,11 +56,12 @@ export default class LocatorWaitAction {
         return new Element(await this.driver.wait(until.elementLocated(this.by), this.timeout));
     }
 
-    public async untilPresent(): Promise<Element> {
-        return await ErrorProcessor.run(
+    public async untilPresent(): Promise<void> {
+        await ErrorProcessor.run(
             async () => await this.present(),
             "Error while waiting until present: " + this.by
         );
+        return Promise.resolve();
     }
 
     public async isPresent(): Promise<boolean> {
@@ -80,13 +80,12 @@ export default class LocatorWaitAction {
     private async visible(): Promise<void> {
         const webElement = await this.driver.findElement(this.by);
         await this.driver.wait(until.elementIsVisible(webElement), this.timeout);
+        return Promise.resolve();
     }
 
     public async untilVisible(): Promise<void> {
-        await ErrorProcessor.run(
-            async () => {
-                await this.visible();
-            },
+        return await ErrorProcessor.run(
+            async () => await this.visible(),
             "Error while waiting until visible: " + this.by
         );
     }
@@ -112,9 +111,7 @@ export default class LocatorWaitAction {
 
     public async untilHasValue(): Promise<string> {
         return await ErrorProcessor.run(
-            async () => {
-                return await this.value();
-            },
+            async () => await this.value(),
             "Error while waiting until has value: " + this.by
         );
     }
@@ -137,12 +134,11 @@ export default class LocatorWaitAction {
         return new Element(await this.driver.wait(until.elementIsEnabled(webElement), this.timeout));
     }
 
-    public async untilEnabled(): Promise<Element> {
-        return await ErrorProcessor.run(
-            async () => {
-                return await this.enabled();
-            },
+    public async untilEnabled(): Promise<void> {
+        await ErrorProcessor.run(
+            async () => await this.enabled(),
             "Error while waiting until enabled: " + this.by
         );
+        return Promise.resolve();
     }
 }

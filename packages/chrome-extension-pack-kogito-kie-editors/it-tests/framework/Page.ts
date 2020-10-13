@@ -23,7 +23,7 @@ export default abstract class Page {
     public abstract async waitUntilLoaded(): Promise<void>;
 
     public async scrollToTop(): Promise<void> {
-        await this.tools.window().scrollToTop();
+        return await this.tools.window().scrollToTop();
     }
 
     public static async create<T extends Page>(type: new (tools: Tools) => T, tools: Tools): Promise<T> {
