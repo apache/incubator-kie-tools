@@ -53,7 +53,7 @@ test(TEST_NAME, async () => {
     expect(await fullScreenPage.getExitFullScreenUrl()).toBe(dmnUrl + "#");
 
     await fullScreenPage.scrollToTop();
-    dmnPage = await fullScreenPage.exitFullscreen();
+    dmnPage = await fullScreenPage.exitFullScreen();
     expect(await dmnPage.isEditorVisible()).toBe(true);
     expect(await dmnPage.isSourceVisible()).toBe(false);
 });
