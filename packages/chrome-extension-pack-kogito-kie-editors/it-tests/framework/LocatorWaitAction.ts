@@ -29,7 +29,7 @@ export default class LocatorWaitAction {
     public constructor(driver: WebDriver, by: By, timeout?: number) {
         this.driver = driver;
         this.by = by;
-        this.timeout = timeout !== undefined ? timeout : LocatorWaitAction.DEFAULT_TIMEOUT;
+        this.timeout = timeout ?? LocatorWaitAction.DEFAULT_TIMEOUT;;
     }
 
     private async absent(): Promise<void> {
