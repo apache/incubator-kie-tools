@@ -206,8 +206,8 @@ export function EditorToolbar(props: Props) {
           className={"kogito--editor__toolbar-edited"}
           data-testid="is-dirty-indicator"
         >
-              {` - ${i18n.terms.edited}`}
-            </span>
+          {` - ${i18n.terms.edited}`}
+        </span>
       )}
     </>
   );
@@ -225,12 +225,7 @@ export function EditorToolbar(props: Props) {
             sm: "hidden"
           }}
         >
-          <Button
-            data-testid="save-button"
-            variant={"tertiary"}
-            onClick={props.onDownload}
-            aria-label={"Save button"}
-          >
+          <Button data-testid="save-button" variant={"tertiary"} onClick={props.onDownload} aria-label={"Save button"}>
             {i18n.terms.save}
           </Button>
         </PageHeaderToolsItem>
@@ -251,6 +246,7 @@ export function EditorToolbar(props: Props) {
             toggle={
               <DropdownToggle
                 id={"toggle-id-lg"}
+                data-testid={"file-actions"}
                 className={"kogito--editor__toolbar-toggle-icon-button"}
                 onToggle={isOpen => setMenuOpen(isOpen)}
               >
