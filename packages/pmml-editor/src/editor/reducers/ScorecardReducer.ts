@@ -27,6 +27,7 @@ interface ScorecardPayload {
     readonly index: number;
     readonly isScorable: boolean;
     readonly functionName: MiningFunction;
+    readonly algorithmName: string;
     readonly baselineScore: number;
     readonly baselineMethod: BaselineMethod;
     readonly initialScore: number;
@@ -46,6 +47,7 @@ export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> 
         return service.mutate(state, `models[${action.payload.index}]`, draft => {
           draft.isScorable = action.payload.isScorable;
           draft.functionName = action.payload.functionName;
+          draft.algorithmName = action.payload.algorithmName;
           draft.baselineScore = action.payload.baselineScore;
           draft.baselineMethod = action.payload.baselineMethod;
           draft.initialScore = action.payload.initialScore;

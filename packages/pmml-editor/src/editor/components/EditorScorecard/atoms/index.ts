@@ -15,3 +15,5 @@
  */
 
 export * from "./GenericSelector";
+export * from "./GenericNumericInput";
+export * from "./GenericTextInput";

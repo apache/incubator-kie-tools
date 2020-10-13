@@ -19,6 +19,8 @@ import { Header } from "../../Header/molecules";
 import { Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { CorePropertiesTable } from "../organisms";
 import { getModelName } from "../../../utils";
+import { Actions } from "../../../reducers";
+import { useDispatch } from "react-redux";
 
 interface EditorPageProps {
   path: string;
@@ -27,6 +29,8 @@ interface EditorPageProps {
 }
 
 export const ScorecardEditorPage = (props: EditorPageProps) => {
+  const dispatch = useDispatch();
+
   return (
     <div data-testid="editor-page">
       <PageSection variant={PageSectionVariants.light} isFilled={false}>
@@ -37,11 +41,28 @@ export const ScorecardEditorPage = (props: EditorPageProps) => {
         <CorePropertiesTable
           isScorable={props.model.isScorable ?? true}
           functionName={props.model.functionName}
+          algorithmName={props.model.algorithmName ?? ""}
           baselineScore={props.model.baselineScore ?? 0}
           baselineMethod={props.model.baselineMethod ?? "other"}
           initialScore={props.model.initialScore ?? 0}
           useReasonCodes={props.model.useReasonCodes ?? true}
           reasonCodeAlgorithm={props.model.reasonCodeAlgorithm ?? "pointsBelow"}
+          commit={_props => {
+            dispatch({
+              type: Actions.Scorecard_SetCoreProperties,
+              payload: {
+                index: props.index,
+                isScorable: _props.isScorable,
+                functionName: _props.functionName,
+                algorithmName: _props.algorithmName,
+                baselineScore: _props.baselineScore,
+                baselineMethod: _props.baselineMethod,
+                initialScore: _props.initialScore,
+                useReasonCodes: _props.useReasonCodes,
+                reasonCodeAlgorithm: _props.reasonCodeAlgorithm
+              }
+            });
+          }}
         />
       </PageSection>
 

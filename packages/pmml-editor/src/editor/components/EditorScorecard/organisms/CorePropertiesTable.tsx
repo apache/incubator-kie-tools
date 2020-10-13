@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useMemo, useState } from "react";
-import { GenericSelector } from "../atoms";
+import { GenericNumericInput, GenericSelector, GenericTextInput } from "../atoms";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
 import {
   Button,
@@ -30,19 +30,21 @@ import {
   Title
 } from "@patternfly/react-core";
 import { PencilAltIcon } from "@patternfly/react-icons";
-import { useDispatch } from "react-redux";
 import "./CorePropertiesTable.scss";
-import { NumericInput } from "../atoms/NumericInput";
-import { Actions } from "../../../reducers";
 
-interface CorePropertiesTableProps {
+interface CoreProperties {
   isScorable: boolean;
   functionName: MiningFunction;
+  algorithmName: string;
   baselineScore: number;
   baselineMethod: BaselineMethod;
   initialScore: number;
   useReasonCodes: boolean;
   reasonCodeAlgorithm: ReasonCodeAlgorithm;
+}
+
+interface CorePropertiesTableProps extends CoreProperties {
+  commit: (props: CoreProperties) => void;
 }
 
 const BooleanFieldEditor = (
@@ -62,8 +64,12 @@ const GenericSelectorEditor = (
   return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} />;
 };
 
-const NumericEditor = (id: string, value: number, valid: boolean, onChange: (_value: number) => void) => {
-  return <NumericInput id={id} value={value} valid={valid} onChange={onChange} />;
+const GenericNumericEditor = (id: string, value: number, valid: boolean, onChange: (_value: number) => void) => {
+  return <GenericNumericInput id={id} value={value} valid={valid} onChange={onChange} />;
+};
+
+const GenericTextEditor = (id: string, value: string, valid: boolean, onChange: (_value: string) => void) => {
+  return <GenericTextInput id={id} value={value} valid={valid} onChange={onChange} />;
 };
 
 const ValidateBaselineScore = (value: number) => {
@@ -75,10 +81,10 @@ const ValidateInitialScore = (value: number) => {
 };
 
 export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
-  const dispatch = useDispatch();
   const [isEditing, setEditing] = useState(false);
   const [isScorable, setScorable] = useState(props.isScorable);
   const [functionName, setFunctionName] = useState(props.functionName);
+  const [algorithmName, setAlgorithmName] = useState(props.algorithmName);
   const [baselineScore, setBaselineScore] = useState({
     valid: ValidateBaselineScore(props.baselineScore),
     value: props.baselineScore
@@ -98,9 +104,16 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     functionName,
     _selection => setFunctionName(_selection as MiningFunction)
   );
+  const algorithmNameEditor = useMemo(
+    () =>
+      GenericTextEditor("algorithm-name-id", algorithmName, true, _value => {
+        setAlgorithmName(_value);
+      }),
+    [algorithmName]
+  );
   const baselineScoreEditor = useMemo(
     () =>
-      NumericEditor("baseline-score-id", baselineScore.value, baselineScore.valid, _value => {
+      GenericNumericEditor("baseline-score-id", baselineScore.value, baselineScore.valid, _value => {
         setBaselineScore({ ...baselineScore, value: _value, valid: ValidateBaselineScore(_value) });
       }),
     [baselineScore.value]
@@ -113,7 +126,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   );
   const initialScoreEditor = useMemo(
     () =>
-      NumericEditor("initial-score-id", initialScore.value, initialScore.valid, _value => {
+      GenericNumericEditor("initial-score-id", initialScore.value, initialScore.valid, _value => {
         setInitialScore({ ...initialScore, value: _value, valid: ValidateInitialScore(_value) });
       }),
     [initialScore.value]
@@ -131,19 +144,17 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   const onEdit = () => {
     setEditing(true);
   };
+
   const commitEdit = () => {
-    dispatch({
-      type: Actions.Scorecard_SetCoreProperties,
-      payload: {
-        index: 0,
-        isScorable: isScorable,
-        functionName: functionName,
-        baselineScore: baselineScore.value,
-        baselineMethod: baselineMethod,
-        initialScore: initialScore.value,
-        useReasonCodes: useReasonCodes,
-        reasonCodeAlgorithm: reasonCodeAlgorithm
-      }
+    props.commit({
+      isScorable: isScorable,
+      functionName: functionName,
+      algorithmName: algorithmName,
+      baselineScore: baselineScore.value,
+      baselineMethod: baselineMethod,
+      initialScore: initialScore.value,
+      useReasonCodes: useReasonCodes,
+      reasonCodeAlgorithm: reasonCodeAlgorithm
     });
     setEditing(false);
   };
@@ -184,6 +195,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
               <tr>
                 <th>Is Scorable</th>
                 <th>Function Name</th>
+                <th>Algorithm Name</th>
                 <th>Baseline Score</th>
                 <th>Baseline Method</th>
                 <th>Initial Score</th>
@@ -200,6 +212,10 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                 <td>
                   {!isEditing && props.functionName}
                   {isEditing && functionNameEditor}
+                </td>
+                <td>
+                  {!isEditing && props.algorithmName}
+                  {isEditing && algorithmNameEditor}
                 </td>
                 <td>
                   {!isEditing && props.baselineScore.toString()}

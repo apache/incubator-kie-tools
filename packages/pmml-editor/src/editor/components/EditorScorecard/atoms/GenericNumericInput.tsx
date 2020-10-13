@@ -16,9 +16,8 @@
 import * as React from "react";
 import { useState } from "react";
 import { TextInput } from "@patternfly/react-core";
-import "./NumericInput.scss";
 
-interface NumericInputProps {
+interface GenericNumericInputProps {
   id: string;
   value: number;
   valid: boolean;
@@ -29,7 +28,7 @@ const toNumber = (value: string): number => {
   return Number(value);
 };
 
-export const NumericInput = (props: NumericInputProps) => {
+export const GenericNumericInput = (props: GenericNumericInputProps) => {
   const [state, setState] = useState({ value: props.value.toString() });
 
   const onChange = (_value: string) => {
