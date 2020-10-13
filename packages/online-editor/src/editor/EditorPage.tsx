@@ -147,7 +147,7 @@ export function EditorPage(props: Props) {
         })
         .catch(() => setGithubTokenModalVisible(true));
     });
-  }, [context.file.fileName]);
+  }, [context.file.fileName, editor]);
 
   const fileExtension = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
