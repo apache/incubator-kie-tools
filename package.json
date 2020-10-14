@@ -27,7 +27,7 @@
     "@types/vscode": "^1.46.0",
     "ts-loader": "6.2.1",
     "typescript": "3.8.3",
-    "vsce": "1.75.0",
+    "vsce": "1.81.1",
     "style-loader": "1.0.0",
     "css-loader": "3.2.0",
     "url-loader": "4.0.0",

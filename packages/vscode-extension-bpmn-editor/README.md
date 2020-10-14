@@ -1,26 +1,20 @@
-# 0.7.0 (alpha)
+BPMN Editor
+---
+![vs-code-support](https://img.shields.io/badge/Visual%20Studio%20Code-1.46.0+-blue.svg) ![github-ci](https://github.com/kiegroup/kie-tooling-store/workflows/CI/badge.svg)
 
-## New features
+Create and edit DMN and SceSim files.
 
-VS Code
-*   [[KOGITO-1508](https://issues.redhat.com/browse/KOGITO-1508)] - Implement selenium test for kogito-bpmn in community
-*   [[KOGITO-1517](https://issues.redhat.com/browse/KOGITO-1517)] - Improve accessibility on file with unsupported extension error
-*   [[KOGITO-2210](https://issues.redhat.com/browse/KOGITO-2210)] - Define Integration API for Java Backend Services
-*   [[KOGITO-2863](https://issues.redhat.com/browse/KOGITO-2863)] - Think about removing a default Envelope from `embedded-editor`
-*   [[KOGITO-2887](https://issues.redhat.com/browse/KOGITO-2887)] - Implement a sample service
-*   [[KOGITO-3042](https://issues.redhat.com/browse/KOGITO-3042)] - Replace MessageBusClient with proxified version of ApiToConsume
-*   [[KOGITO-3043](https://issues.redhat.com/browse/KOGITO-3043)] - Provide locale information in a way that GWT can read
-*   [[KOGITO-3056](https://issues.redhat.com/browse/KOGITO-3056)] - Move I18nService and and its Envelope/Channel APIs to its own module
-*   [[KOGITO-3057](https://issues.redhat.com/browse/KOGITO-3057)] - Add a initialLocale prop on I18nDictionariesProvider
-*   [[KOGITO-3096](https://issues.redhat.com/browse/KOGITO-3096)] - CI for kogito-tooling-java
-*   [[KOGITO-3100](https://issues.redhat.com/browse/KOGITO-3100)] - Documentation for backend services
-*   [[KOGITO-2984](https://issues.redhat.com/browse/KOGITO-2984)] - Use i18n dictionaries on VS Code extension backend
-*   [[KOGITO-3205](https://issues.redhat.com/browse/KOGITO-3205)] - Create test runner service running on the backend infra
+Features
+---
+- Create and edit BPMN (`.bpmn`) and BPMN2 (`.bpmn2`) files.
+- Native keyboard shortcuts (Press `shift+/` to display available combinations).
+- Export diagram to SVG (use the SVG icon on the top-right corner).
 
-## Fixed issues
+#### Editing a new BPMN file
 
-VS Code
-*   [[KOGITO-3313](https://issues.redhat.com/browse/KOGITO-3313)] - Fix on filename change
-*   [[KOGITO-3326](https://issues.redhat.com/browse/KOGITO-3326)] - Enable EmbeddedEditor to support an update on the StateControl instance
-*   [[KOGITO-3417](https://issues.redhat.com/browse/KOGITO-3417)] - EditorEnvelopeView reference should be get with a function to be updated
-*   [[KOGITO-3314](https://issues.redhat.com/browse/KOGITO-3314)] - Broken link on popup due to circular dependency issue
+![alt](./gifs/bpmn.gif?raw=true)
+
+Release notes
+---
+See the [release notes](./CHANGELOG.md).
+ 
