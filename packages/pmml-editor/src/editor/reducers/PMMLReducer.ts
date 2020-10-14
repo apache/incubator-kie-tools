@@ -49,10 +49,10 @@ export const PMMLReducer: HistoryAwareReducer<PMML, AllActions> = (
 
       case Actions.DeleteModel:
         return service.mutate(state, null, draft => {
-          const model: Model = action.payload.model;
-          if (draft.models !== undefined) {
-            const models: Model[] = draft.models;
-            const index: number = models.indexOf(model);
+          const model = action.payload.model;
+          if (draft.models) {
+            const models = draft.models;
+            const index = models.indexOf(model);
             if (index >= 0 && index < models.length) {
               models.splice(index, 1);
             }

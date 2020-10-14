@@ -56,10 +56,19 @@ export const LandingPage = (props: LandingPageProps) => {
       const _supportMatch = showUnsupportedModels || _isSupportedModelType;
       return _nameMatch && _supportMatch;
     });
-    return _filteredModels ? _filteredModels : [];
+    return _filteredModels ?? [];
   }, [filter, showUnsupportedModels, models]);
 
   const filteredModels: Model[] = useMemo(() => filterModels(), [filter, showUnsupportedModels, models]);
+
+  const onDelete = useCallback((_model: Model) => {
+    dispatch({
+      type: Actions.DeleteModel,
+      payload: {
+        model: _model
+      }
+    });
+  }, []);
 
   return (
     <div data-testid="landing-page">
@@ -90,17 +99,7 @@ export const LandingPage = (props: LandingPageProps) => {
             <Gallery hasGutter={true}>
               {filteredModels.map(model => (
                 <GalleryItem key={uuid()} data-testid="landing-page__model-card">
-                  <ModelCard
-                    model={model}
-                    onDelete={(_model: Model) => {
-                      dispatch({
-                        type: Actions.DeleteModel,
-                        payload: {
-                          model: _model
-                        }
-                      });
-                    }}
-                  />
+                  <ModelCard model={model} onDelete={onDelete} />
                 </GalleryItem>
               ))}
             </Gallery>

@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Dropdown, DropdownItem, DropdownPosition, DropdownToggle } from "@patternfly/react-core";
+
+const dropdownItems = [
+  <DropdownItem key="createModel" isDisabled={true}>
+    Create model
+  </DropdownItem>,
+  <DropdownItem key="viewDataDictionary" isDisabled={true}>
+    View Data Dictionary
+  </DropdownItem>
+];
 
 export const ActionSelector = () => {
   const [isOpen, setOpen] = useState(false);
 
-  const onToggle = (_isOpen: boolean) => {
+  const onToggle = useCallback((_isOpen: boolean) => {
     setOpen(_isOpen);
-  };
-  const onSelect = (event: React.SyntheticEvent<HTMLDivElement>) => {
+  }, []);
+  const onSelect = useCallback((event: React.SyntheticEvent<HTMLDivElement>) => {
     setOpen(!isOpen);
     onFocus();
-  };
-  const onFocus = () => {
+  }, []);
+  const onFocus = useCallback(() => {
     document.getElementById("action-selector-id")?.focus();
-  };
-
-  const dropdownItems = [
-    <DropdownItem key="createModel" isDisabled={true}>
-      Create model
-    </DropdownItem>,
-    <DropdownItem key="viewDataDictionary" isDisabled={true}>
-      View Data Dictionary
-    </DropdownItem>
-  ];
+  }, []);
 
   return (
     <Dropdown

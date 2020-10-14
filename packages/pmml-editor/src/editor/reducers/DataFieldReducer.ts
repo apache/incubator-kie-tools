@@ -35,7 +35,7 @@ export const DataFieldReducer: HistoryAwareReducer<DataField[], DataFieldActions
     switch (action.type) {
       case Actions.SetDataFieldName:
         return service.mutate(state, `DataDictionary.DataField`, draft => {
-          const index: number = action.payload.index;
+          const index = action.payload.index;
           if (index >= 0 && index < draft.length) {
             draft[index] = { ...draft[index], name: action.payload.name };
           }

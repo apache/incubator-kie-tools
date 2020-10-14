@@ -47,7 +47,7 @@ export const DataDictionaryReducer: HistoryAwareReducer<DataDictionary, DataDict
 
       case Actions.DeleteDataField:
         return service.mutate(state, "DataDictionary", draft => {
-          const index: number = action.payload.index;
+          const index = action.payload.index;
           if (index >= 0 && index < draft.DataField.length) {
             draft.DataField.splice(index, 1);
           }
