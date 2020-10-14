@@ -1,0 +1,29 @@
+{
+  "name": "webapp",
+  "version": "0.7.0",
+  "license": "Apache-2.0",
+  "scripts": {
+    "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
+    "test": "echo no tests",
+    "build:fast": "rm -rf dist && webpack",
+    "build": "yarn run lint && yarn test && yarn run build:fast",
+    "build:prod": "yarn run build --mode production --devtool none",
+    "start": "webpack-dev-server -d --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@kogito-tooling/envelope-bus": "0.7.0",
+    "@kogito-tooling/kie-bc-editors": "0.7.0",
+    "@kogito-tooling/patternfly-base": "0.7.0",
+    "base64png-editor": "0.7.0",
+    "ping-pong-view": "0.7.0",
+    "ping-pong-view-react": "0.7.0",
+    "todo-list-view": "0.7.0"
+  },
+  "resolutions": {
+    "@patternfly/react-styles": "4.4.2"
+  },
+  "devDependencies": {
+    "@types/react-router-dom": "^5.1.5",
+    "react-router-dom": "^5.2.0"
+  }
+}
