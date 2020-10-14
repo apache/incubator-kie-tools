@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 import * as React from "react";
+import { useCallback, useMemo, useState } from "react";
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { Header } from "../../Header/molecules";
-import { Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
-import { CorePropertiesTable } from "../organisms";
+import { Characteristic, Characteristics, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { CharacteristicsTable, CorePropertiesTable } from "../organisms";
 import { getModelName } from "../../../utils";
 import { Actions } from "../../../reducers";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { CharacteristicsToolbar } from "../molecules";
 
 interface EditorPageProps {
   path: string;
@@ -30,6 +32,29 @@ interface EditorPageProps {
 
 export const ScorecardEditorPage = (props: EditorPageProps) => {
   const dispatch = useDispatch();
+
+  const [filter, setFilter] = useState("");
+
+  const onAddCharacteristic = useCallback(() => window.alert("Add Characteristic"), []);
+
+  const characteristics: Characteristics | undefined = useSelector<PMML, Characteristics | undefined>((state: PMML) => {
+    const model: Model | undefined = state.models ? state.models[props.index] : undefined;
+    if (model && model instanceof Scorecard) {
+      return (model as Scorecard).Characteristics;
+    }
+    return undefined;
+  });
+
+  const filterCharacteristics = useCallback((): Characteristic[] => {
+    const _lowerCaseFilter = filter.toLowerCase();
+    const _filteredCharacteristics = characteristics?.Characteristic.filter((_characteristic: Characteristic) => {
+      const _characteristicName = _characteristic.name;
+      return _characteristicName?.toLowerCase().includes(_lowerCaseFilter);
+    });
+    return _filteredCharacteristics ?? [];
+  }, [filter, characteristics]);
+
+  const filteredCharacteristics: Characteristic[] = useMemo(() => filterCharacteristics(), [filter, characteristics]);
 
   return (
     <div data-testid="editor-page">
@@ -66,9 +91,14 @@ export const ScorecardEditorPage = (props: EditorPageProps) => {
         />
       </PageSection>
 
-      <PageSection isFilled={true}>
+      <PageSection isFilled={true} style={{ paddingTop: "0px" }}>
         <PageSection variant={PageSectionVariants.light}>
-          <h1>Here lives the Characteristics</h1>
+          <CharacteristicsToolbar onFilter={setFilter} onAddCharacteristic={onAddCharacteristic} />
+          <CharacteristicsTable
+            characteristics={filteredCharacteristics}
+            onRowClick={index => null}
+            onAddCharacteristic={onAddCharacteristic}
+          />
         </PageSection>
       </PageSection>
     </div>
