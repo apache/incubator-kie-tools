@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getModelIconUrlByType, ModelType } from "../../../utils";
+import { getModelIconUrlByType, ModelType } from "../../..";
 import * as React from "react";
 import "./ModelCardIcon.scss";
 

@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  getModelIconUrlByType,
-  getModelName,
-  getModelType,
-  isCollection,
-  isSupportedModelType
-} from "../../../editor/utils";
+import { getModelIconUrlByType, getModelName, getModelType, isCollection, isSupportedModelType } from "../../editor";
 import { Scorecard, TreeModel } from "@kogito-tooling/pmml-editor-marshaller";
 
 describe("PMMLUtils::getModelIconUrl", () => {

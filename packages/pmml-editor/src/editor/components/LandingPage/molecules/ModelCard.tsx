@@ -23,7 +23,7 @@ import {
   CardTitle,
   Tooltip
 } from "@patternfly/react-core";
-import { getModelName, getModelType, ModelType } from "../../../utils";
+import { getModelName, getModelType, ModelType } from "../../..";
 import * as React from "react";
 import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 import "./ModelCard.scss";

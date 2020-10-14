@@ -29,7 +29,7 @@ import { EmptyStateNoModels, LandingPageToolbar } from "../organisms";
 import { v4 as uuid } from "uuid";
 import { Model, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useDispatch, useSelector } from "react-redux";
-import { getModelName, isSupportedModelType } from "../../../utils";
+import { getModelName, isSupportedModelType } from "../../..";
 import { ActionSelector, ModelCard } from "../molecules";
 import { Actions } from "../../../reducers";
 
