@@ -256,11 +256,6 @@ function getProcessableKeyboardEvent(
     return null;
   }
 
-  // FIXME: KOGITO-3517
-  if (keyboardEvent.target instanceof Element && keyboardEvent.target.matches(`div.inlineNameEditBoxNameBox`)) {
-    return null;
-  }
-
   if (keyboardEvent.repeat && !opts?.repeat) {
     return null;
   }
