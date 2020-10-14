@@ -86,10 +86,16 @@ describe("LandingPage", () => {
     );
     expect(getAllByTestId("landing-page__model-card").length).toBe(1);
 
-    const input: HTMLInputElement = getByTestId("landing-page-toolbar__model-filter") as HTMLInputElement;
+    const element1: HTMLElement = getByTestId("landing-page-toolbar__model-filter");
+    const element2: HTMLElement = getByTestId("landing-page-toolbar__submit");
+    expect(element1).toBeInstanceOf(HTMLInputElement);
+    expect(element2).toBeInstanceOf(HTMLButtonElement);
+
+    const input: HTMLInputElement = element1 as HTMLInputElement;
+    const submit: HTMLButtonElement = element2 as HTMLButtonElement;
 
     fireEvent.change(input, { target: { value: "spam" } });
-    fireEvent.keyDown(input, { key: "Enter" });
+    submit.click();
 
     expect(getByTestId("empty-state-no-models")).not.toBeUndefined();
   });

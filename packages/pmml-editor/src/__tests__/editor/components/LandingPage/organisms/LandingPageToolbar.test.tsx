@@ -29,9 +29,9 @@ describe("LandingPageToolbar", () => {
   test("render::Has unsupported models", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
-        setFilter={setFilter}
+        onFilter={setFilter}
         hasUnsupportedModels={true}
-        setShowUnsupportedModels={setShowUnsupportedModels}
+        onShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
     );
@@ -41,40 +41,21 @@ describe("LandingPageToolbar", () => {
   test("render::Has no unsupported models", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
-        setFilter={setFilter}
+        onFilter={setFilter}
         hasUnsupportedModels={false}
-        setShowUnsupportedModels={setShowUnsupportedModels}
+        onShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
     );
     expect(getByTestId("landing-page-toolbar")).toMatchSnapshot();
   });
 
-  test("render::setFilter::Enter", () => {
-    const { getByTestId } = render(
-      <LandingPageToolbar
-        setFilter={setFilter}
-        hasUnsupportedModels={false}
-        setShowUnsupportedModels={setShowUnsupportedModels}
-        showUnsupportedModels={true}
-      />
-    );
-    const element: HTMLElement = getByTestId("landing-page-toolbar__model-filter");
-    expect(element).toBeInstanceOf(HTMLInputElement);
-
-    const input: HTMLInputElement = element as HTMLInputElement;
-    fireEvent.change(input, { target: { value: "filter" } });
-    fireEvent.keyDown(input, { key: "Enter" });
-
-    expect(setFilter).toBeCalledWith("filter");
-  });
-
   test("render::setFilter::Submit", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
-        setFilter={setFilter}
+        onFilter={setFilter}
         hasUnsupportedModels={false}
-        setShowUnsupportedModels={setShowUnsupportedModels}
+        onShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
     );
@@ -87,7 +68,6 @@ describe("LandingPageToolbar", () => {
     const submit: HTMLButtonElement = element2 as HTMLButtonElement;
 
     fireEvent.change(input, { target: { value: "filter" } });
-
     submit.click();
 
     expect(setFilter).toBeCalledWith("filter");
@@ -96,9 +76,9 @@ describe("LandingPageToolbar", () => {
   test("render::setShowUnsupportedModels", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
-        setFilter={setFilter}
+        onFilter={setFilter}
         hasUnsupportedModels={true}
-        setShowUnsupportedModels={setShowUnsupportedModels}
+        onShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
     );

@@ -86,10 +86,10 @@ export const LandingPage = (props: LandingPageProps) => {
           </SplitItem>
         </Split>
         <LandingPageToolbar
-          setFilter={setFilter}
+          onFilter={setFilter}
           hasUnsupportedModels={hasUnsupportedModels}
           showUnsupportedModels={showUnsupportedModels}
-          setShowUnsupportedModels={setShowUnsupportedModels}
+          onShowUnsupportedModels={setShowUnsupportedModels}
         />
       </PageSection>
 
