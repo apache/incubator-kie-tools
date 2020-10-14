@@ -20,3 +20,5 @@ export * from "./MockHeaderUI";
 export * from "./MockHistoryUI";
 export * from "./MockSummaryUI";
 export * from "./MockVersionUI";
+export * from "./MockTimestamp";
+export * from "./MockTitle";

@@ -16,7 +16,7 @@
 import * as React from "react";
 import { CSSProperties } from "react";
 import { useSelector } from "react-redux";
-import { Timestamp, Title } from "../../utils";
+import { Timestamp, Title } from ".";
 import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 
 const style: CSSProperties = {

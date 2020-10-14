@@ -22,11 +22,3 @@ export const Timestamp = () => {
     </div>
   );
 };
-
-interface TitleProps {
-  title: string;
-}
-
-export const Title = (props: TitleProps) => {
-  return <h1 className="pf-c-title pf-m-xl">{props.title}</h1>;
-};

@@ -16,7 +16,7 @@
 import * as React from "react";
 import { CSSProperties } from "react";
 import MockDataFieldUI from "./MockDataFieldUI";
-import { Timestamp, Title } from "../../utils";
+import { Timestamp, Title } from ".";
 import { useDispatch, useSelector } from "react-redux";
 import { Actions } from "../../reducers";
 import { DataDictionary, PMML } from "@kogito-tooling/pmml-editor-marshaller";

@@ -17,7 +17,7 @@ import * as React from "react";
 import { CSSProperties, useState } from "react";
 import { HistoryService } from "../../history";
 import { Actions } from "../../reducers";
-import { Title } from "../../utils";
+import { Title } from ".";
 import { useDispatch } from "react-redux";
 
 const style: CSSProperties = {
