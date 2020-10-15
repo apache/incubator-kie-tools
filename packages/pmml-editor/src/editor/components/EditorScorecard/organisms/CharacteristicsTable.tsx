@@ -16,12 +16,20 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
-import { ICell, IComputedData, IExtraRowData, IRow, Table, TableBody, TableHeader } from "@patternfly/react-table";
+import { ICell, IRow, OnRowClick, Table, TableBody, TableHeader } from "@patternfly/react-table";
 import { EmptyStateNoCharacteristics } from "./EmptyStateNoCharacteristics";
+import { Button, Label } from "@patternfly/react-core";
+import { TrashIcon } from "@patternfly/react-icons";
+
+export interface IndexedCharacteristic {
+  index: number;
+  characteristic: Characteristic;
+}
 
 interface CharacteristicsTableProps {
-  characteristics: Characteristic[];
+  characteristics: IndexedCharacteristic[];
   onRowClick: (index: number) => void;
+  onRowDelete: (index: number) => void;
   onAddCharacteristic: () => void;
 }
 
@@ -29,31 +37,48 @@ const columns: ICell[] = [
   { title: "Name" },
   { title: "Attributes" },
   { title: "Reason Code" },
-  { title: "Baseline score" }
+  { title: "Baseline score" },
+  { title: <div>&nbsp;</div> }
 ];
 
 export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
-  const { characteristics, onRowClick, onAddCharacteristic } = props;
+  const { characteristics, onRowClick, onRowDelete, onAddCharacteristic } = props;
 
   const rows: IRow[] = useMemo(() => {
-    return characteristics.map<IRow>((c, index) => {
-      return { cells: [c.name, c.Attribute.length, c.reasonCode, c.baselineScore] };
+    return characteristics.map<IRow>((ic, index) => {
+      const c: Characteristic = ic.characteristic;
+      return {
+        props: { index: ic.index },
+        cells: [
+          c.name,
+          <>
+            <Label key={index}>{c.Attribute.length}</Label>
+          </>,
+          c.reasonCode,
+          c.baselineScore,
+          <>
+            <Button variant="link" icon={<TrashIcon />}>
+              &nbsp;
+            </Button>
+          </>
+        ]
+      };
     });
   }, [characteristics]);
 
-  const rowClickHandler = (
-    event: React.MouseEvent,
-    row: IRow,
-    rowProps: IExtraRowData,
-    computedData: IComputedData
-  ) => {
-    window.alert(JSON.stringify(row, undefined, 2));
-    window.alert(JSON.stringify(rowProps, undefined, 2));
+  const rowClickHandler: OnRowClick = (event, row) => {
+    const index = row.props.index;
+    if (event.target instanceof HTMLButtonElement) {
+      event.stopPropagation();
+      onRowDelete(index);
+      return;
+    }
+    onRowClick(index);
   };
 
   return (
     <React.Fragment>
-      <Table cells={columns} rows={rows}>
+      <Table aria-label="Characteristics" cells={columns} rows={rows}>
         <TableHeader />
         <TableBody onRowClick={rowClickHandler} />
       </Table>

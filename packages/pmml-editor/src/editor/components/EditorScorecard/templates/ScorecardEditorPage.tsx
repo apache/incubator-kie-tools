@@ -17,20 +17,20 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { Header } from "../../Header/molecules";
-import { Characteristic, Characteristics, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
-import { CharacteristicsTable, CorePropertiesTable } from "../organisms";
+import { Characteristics, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { CharacteristicsTable, CorePropertiesTable, IndexedCharacteristic } from "../organisms";
 import { getModelName } from "../../../utils";
 import { Actions } from "../../../reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { CharacteristicsToolbar } from "../molecules";
 
-interface EditorPageProps {
+interface ScorecardEditorPageProps {
   path: string;
-  index: number;
+  modelIndex: number;
   model: Scorecard;
 }
 
-export const ScorecardEditorPage = (props: EditorPageProps) => {
+export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const dispatch = useDispatch();
 
   const [filter, setFilter] = useState("");
@@ -38,23 +38,28 @@ export const ScorecardEditorPage = (props: EditorPageProps) => {
   const onAddCharacteristic = useCallback(() => window.alert("Add Characteristic"), []);
 
   const characteristics: Characteristics | undefined = useSelector<PMML, Characteristics | undefined>((state: PMML) => {
-    const model: Model | undefined = state.models ? state.models[props.index] : undefined;
+    const model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
     if (model && model instanceof Scorecard) {
       return (model as Scorecard).Characteristics;
     }
     return undefined;
   });
 
-  const filterCharacteristics = useCallback((): Characteristic[] => {
+  const filterCharacteristics = useCallback((): IndexedCharacteristic[] => {
     const _lowerCaseFilter = filter.toLowerCase();
-    const _filteredCharacteristics = characteristics?.Characteristic.filter((_characteristic: Characteristic) => {
-      const _characteristicName = _characteristic.name;
+    const _filteredCharacteristics = characteristics?.Characteristic.map<IndexedCharacteristic>(
+      (_characteristic, index) => ({ index: index, characteristic: _characteristic } as IndexedCharacteristic)
+    ).filter(ic => {
+      const _characteristicName = ic.characteristic.name;
       return _characteristicName?.toLowerCase().includes(_lowerCaseFilter);
     });
     return _filteredCharacteristics ?? [];
   }, [filter, characteristics]);
 
-  const filteredCharacteristics: Characteristic[] = useMemo(() => filterCharacteristics(), [filter, characteristics]);
+  const filteredCharacteristics: IndexedCharacteristic[] = useMemo(() => filterCharacteristics(), [
+    filter,
+    characteristics
+  ]);
 
   return (
     <div data-testid="editor-page">
@@ -76,7 +81,7 @@ export const ScorecardEditorPage = (props: EditorPageProps) => {
             dispatch({
               type: Actions.Scorecard_SetCoreProperties,
               payload: {
-                index: props.index,
+                modelIndex: props.modelIndex,
                 isScorable: _props.isScorable,
                 functionName: _props.functionName,
                 algorithmName: _props.algorithmName,
@@ -96,7 +101,18 @@ export const ScorecardEditorPage = (props: EditorPageProps) => {
           <CharacteristicsToolbar onFilter={setFilter} onAddCharacteristic={onAddCharacteristic} />
           <CharacteristicsTable
             characteristics={filteredCharacteristics}
-            onRowClick={index => null}
+            onRowClick={index => window.alert(`row click ${index}`)}
+            onRowDelete={index => {
+              if (window.confirm(`Delete Characteristic "${index}"?`)) {
+                dispatch({
+                  type: Actions.Scorecard_DeleteCharacteristic,
+                  payload: {
+                    modelIndex: props.modelIndex,
+                    characteristicIndex: index
+                  }
+                });
+              }
+            }}
             onAddCharacteristic={onAddCharacteristic}
           />
         </PageSection>

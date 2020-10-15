@@ -18,13 +18,15 @@ import { HistoryAwareReducer, HistoryService } from "../history";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { immerable } from "immer";
+import { CharacteristicsActions } from "./CharacteristicsReducer";
+import { CharacteristicActions } from "./CharacteristicReducer";
 
 // @ts-ignore
 Scorecard[immerable] = true;
 
 interface ScorecardPayload {
   [Actions.Scorecard_SetCoreProperties]: {
-    readonly index: number;
+    readonly modelIndex: number;
     readonly isScorable: boolean;
     readonly functionName: MiningFunction;
     readonly algorithmName: string;
@@ -34,9 +36,15 @@ interface ScorecardPayload {
     readonly useReasonCodes: boolean;
     readonly reasonCodeAlgorithm: ReasonCodeAlgorithm;
   };
+  [Actions.Scorecard_DeleteCharacteristic]: {
+    readonly modelIndex: number;
+    readonly characteristicIndex: number;
+  };
 }
 
 export type ScorecardActions = ActionMap<ScorecardPayload>[keyof ActionMap<ScorecardPayload>];
+
+export type AllScorecardActions = ScorecardActions | CharacteristicsActions | CharacteristicActions;
 
 export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> = (
   service: HistoryService
@@ -44,7 +52,7 @@ export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> 
   return (state: Scorecard, action: ScorecardActions) => {
     switch (action.type) {
       case Actions.Scorecard_SetCoreProperties:
-        return service.mutate(state, `models[${action.payload.index}]`, draft => {
+        return service.mutate(state, `models[${action.payload.modelIndex}]`, draft => {
           draft.isScorable = action.payload.isScorable;
           draft.functionName = action.payload.functionName;
           draft.algorithmName = action.payload.algorithmName;
@@ -53,6 +61,14 @@ export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> 
           draft.initialScore = action.payload.initialScore;
           draft.useReasonCodes = action.payload.useReasonCodes;
           draft.reasonCodeAlgorithm = action.payload.reasonCodeAlgorithm;
+        });
+
+      case Actions.Scorecard_DeleteCharacteristic:
+        return service.mutate(state, `models[${action.payload.modelIndex}].Characteristics.Characteristic`, draft => {
+          const characteristicIndex = action.payload.characteristicIndex;
+          if (characteristicIndex >= 0 && characteristicIndex < draft.Characteristics.Characteristic.length) {
+            draft.Characteristics.Characteristic.splice(characteristicIndex, 1);
+          }
         });
     }
 

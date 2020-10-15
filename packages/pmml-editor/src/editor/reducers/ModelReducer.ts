@@ -17,47 +17,55 @@ import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { Model, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
-import { ScorecardActions, ScorecardReducer } from "./ScorecardReducer";
+import { AllScorecardActions, ScorecardReducer } from "./ScorecardReducer";
+import { DelegatingModelReducer } from "./DelegatingModelReducer";
+import mergeReducers from "combine-reducer";
+import { CharacteristicsReducer } from "./CharacteristicsReducer";
+import { CharacteristicReducer } from "./CharacteristicReducer";
 
 interface ModelPayload {
   [Actions.DeleteModel]: {
-    readonly index: number;
+    readonly modelIndex: number;
   };
 }
 
 export type ModelActions = ActionMap<ModelPayload>[keyof ActionMap<ModelPayload>];
 
-export const ModelReducer: HistoryAwareReducer<Model[], ModelActions | ScorecardActions> = (
+export const ModelReducer: HistoryAwareReducer<Model[], ModelActions | AllScorecardActions> = (
   service: HistoryService
-): Reducer<Model[], ModelActions | ScorecardActions> => {
-  const scorecardReducer = ScorecardReducer(service);
+): Reducer<Model[], ModelActions | AllScorecardActions> => {
+  const scorecardReducer = mergeReducers(ScorecardReducer(service), {
+    Characteristics: mergeReducers(CharacteristicsReducer(service), {
+      Characteristic: CharacteristicReducer(service)
+    })
+  });
 
-  return (state: Model[], action: ModelActions | ScorecardActions) => {
+  const delegate = DelegatingModelReducer(
+    service,
+    new Map([
+      [
+        "Scorecard",
+        {
+          reducer: scorecardReducer,
+          factory: (data: Scorecard) => new Scorecard(data)
+        }
+      ]
+    ])
+  );
+
+  return (state: Model[], action: ModelActions | AllScorecardActions) => {
     switch (action.type) {
       case Actions.DeleteModel:
         return service.mutate(state, "models", draft => {
           if (draft !== undefined) {
-            const index: number = action.payload.index;
-            if (index >= 0 && index < draft.length) {
-              draft.splice(index, 1);
-            }
-          }
-        });
-
-      case Actions.Scorecard_SetCoreProperties:
-        return service.mutate(state, "models", draft => {
-          if (draft !== undefined) {
-            const index: number = action.payload.index;
-            if (index >= 0 && index < draft.length) {
-              if (draft[index] instanceof Scorecard) {
-                const scorecard: Scorecard = draft[index] as Scorecard;
-                draft[index] = scorecardReducer(scorecard, action);
-              }
+            const modelIndex: number = action.payload.modelIndex;
+            if (modelIndex >= 0 && modelIndex < draft.length) {
+              draft.splice(modelIndex, 1);
             }
           }
         });
     }
 
-    return state;
+    return delegate(state, action);
   };
 };

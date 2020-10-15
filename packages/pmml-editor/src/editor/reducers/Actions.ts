@@ -19,6 +19,8 @@ import { DataFieldActions } from "./DataFieldReducer";
 import { HeaderActions } from "./HeaderReducer";
 import { ModelActions } from "./ModelReducer";
 import { ScorecardActions } from "./ScorecardReducer";
+import { CharacteristicsActions } from "./CharacteristicsReducer";
+import { CharacteristicActions } from "./CharacteristicReducer";
 
 export type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined
@@ -41,7 +43,10 @@ export enum Actions {
   SetHeaderDescription = "SET_HEADER_DESCRIPTION",
   Undo = "UNDO",
   Redo = "REDO",
-  Scorecard_SetCoreProperties = "SCORECARD_SET_CORE_PROPERTIES"
+  Scorecard_SetCoreProperties = "SCORECARD_SET_CORE_PROPERTIES",
+  Scorecard_AddCharacteristic = "SCORECARD_ADD_CHARACTERISTIC",
+  Scorecard_DeleteCharacteristic = "SCORECARD_DELETE_CHARACTERISTIC",
+  Scorecard_UpdateCharacteristic = "SCORECARD_UPDATE_CHARACTERISTIC"
 }
 
 export type AllActions =
@@ -51,4 +56,6 @@ export type AllActions =
   | DataDictionaryActions
   | DataFieldActions
   | ModelActions
-  | ScorecardActions;
+  | ScorecardActions
+  | CharacteristicsActions
+  | CharacteristicActions;
