@@ -20,11 +20,6 @@ const DataDictionaryHandler = () => {
         onClose={handleDataDictionaryToggle}
         variant={ModalVariant.large}
         onEscapePress={() => false}
-        actions={[
-          <Button key="confirm" variant="primary" onClick={handleDataDictionaryToggle}>
-            Done
-          </Button>
-        ]}
       >
         <DataDictionaryContainer />
       </Modal>
