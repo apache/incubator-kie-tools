@@ -22,9 +22,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.NotificationOptions;
+import javax.enterprise.util.TypeLiteral;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -391,6 +394,21 @@ public class JobRequestHelper {
             public <U extends TestResultMessage> Event<U> select(Class<U> subtype,
                                                                  Annotation... qualifiers) {
                 // not used
+                return null;
+            }
+
+            @Override
+            public <U extends TestResultMessage> CompletionStage<U> fireAsync(U event) {
+                return null;
+            }
+
+            @Override
+            public <U extends TestResultMessage> CompletionStage<U> fireAsync(U event, NotificationOptions options) {
+                return null;
+            }
+
+            @Override
+            public <U extends TestResultMessage> Event<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
                 return null;
             }
         };

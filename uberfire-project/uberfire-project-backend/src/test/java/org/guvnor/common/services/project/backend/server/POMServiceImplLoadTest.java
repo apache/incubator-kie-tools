@@ -103,7 +103,7 @@ public class POMServiceImplLoadTest {
                                  "compile",
                                  pom.getDependencies());
         assertContainsDependency("org.jboss.weld",
-                                 "weld-core",
+                                 "weld-core-impl",
                                  "test",
                                  pom.getDependencies());
     }

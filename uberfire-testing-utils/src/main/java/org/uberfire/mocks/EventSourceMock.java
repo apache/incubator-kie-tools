@@ -17,7 +17,11 @@
 package org.uberfire.mocks;
 
 import java.lang.annotation.Annotation;
+import java.util.concurrent.CompletionStage;
+
 import javax.enterprise.event.Event;
+import javax.enterprise.event.NotificationOptions;
+import javax.enterprise.util.TypeLiteral;
 
 public class EventSourceMock<T> implements Event<T> {
 
@@ -34,6 +38,21 @@ public class EventSourceMock<T> implements Event<T> {
     @Override
     public <U extends T> Event<U> select(Class<U> subtype,
                                          Annotation... qualifiers) {
+        throw new UnsupportedOperationException("mocking testing class");
+    }
+
+    @Override
+    public <U extends T> CompletionStage<U> fireAsync(U event) {
+        throw new UnsupportedOperationException("mocking testing class");
+    }
+
+    @Override
+    public <U extends T> CompletionStage<U> fireAsync(U event, NotificationOptions options) {
+        throw new UnsupportedOperationException("mocking testing class");
+    }
+
+    @Override
+    public <U extends T> Event<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
         throw new UnsupportedOperationException("mocking testing class");
     }
 }

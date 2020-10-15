@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.cdi.model.WorkspaceImpl;
 import org.uberfire.backend.server.cdi.workspace.WorkspaceManager;
-import org.uberfire.backend.server.cdi.workspace.WorkspaceNameResolver;
 import org.uberfire.backend.server.cdi.workspace.WorkspaceScopedExtension;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.rpc.SessionInfo;
