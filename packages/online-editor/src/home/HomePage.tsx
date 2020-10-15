@@ -190,12 +190,9 @@ export function HomePage(props: Props) {
         urlToOpen: undefined
       });
 
-      let gistId: string;
-      if (context.githubService.isGistDefault(inputFileUrl)) {
-        gistId = context.githubService.extractGistId(inputFileUrl)
-      } else {
-        gistId = context.githubService.extractGistIdFromRawUrl(inputFileUrl);
-      }
+      const gistId = context.githubService.isGistDefault(inputFileUrl)
+        ? context.githubService.extractGistId(inputFileUrl)
+        : context.githubService.extractGistIdFromRawUrl(inputFileUrl);
 
       let rawUrl: string;
       try {

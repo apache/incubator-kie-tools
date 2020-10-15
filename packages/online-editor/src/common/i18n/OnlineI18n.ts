@@ -45,6 +45,7 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
   editorPage: {
     alerts: {
       copy: string;
+      updateGist: string;
       unsaved: {
         title: string;
         message: string;

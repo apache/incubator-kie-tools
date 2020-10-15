@@ -26,7 +26,7 @@ import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
-import { getFileUrl } from "../common/utils";
+import { useFileUrl } from "../common/Hooks";
 
 interface Props {
   onFileNameChanged: (fileName: string, fileExtension: string) => void;
@@ -47,7 +47,7 @@ export function EditorPage(props: Props) {
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
   const isDirty = useDirtyState(editor);
   const { locale, i18n } = useOnlineI18n();
-  const fileUrl = useMemo(() => getFileUrl(), [window.location]);
+  const fileUrl = useFileUrl();
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -100,7 +100,7 @@ export function EditorPage(props: Props) {
 
   const requestSetGitHubToken = useCallback(() => {
     setGithubTokenModalVisible(true);
-  }, [])
+  }, []);
 
   const requestExportGist = useCallback(() => {
     editor?.getContent().then(content => {
@@ -267,7 +267,7 @@ export function EditorPage(props: Props) {
           <div className={"kogito--alert-container"}>
             <Alert
               variant="success"
-              title={"Your gist was updated."}
+              title={i18n.editorPage.alerts.updateGist}
               actionClose={<AlertActionCloseButton onClose={closeUpdateGistSuccessAlert} />}
             />
           </div>

@@ -46,6 +46,7 @@ export const en: OnlineI18n = {
   editorPage: {
     alerts: {
       copy: "Content copied to clipboard",
+      updateGist: "Your gist was updated.",
       unsaved: {
         title: "Unsaved changes will be lost",
         message: "Click Save to download your progress before closing.",
