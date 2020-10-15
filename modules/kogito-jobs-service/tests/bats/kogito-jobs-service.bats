@@ -13,32 +13,6 @@ teardown() {
     rm -rf ${KOGITO_HOME}
 }
 
-@test "check if the backoffRetryMillis is correctly set" {
-    export BACKOFF_RETRY="2000"
-    configure_jobs_service
-    expected=" -Dkogito.jobs-service.backoffRetryMillis=2000"
-    echo "Result is ${KOGITO_JOBS_PROPS} and expected is ${expected}"
-    [ "${KOGITO_JOBS_PROPS}" = "${expected}" ]
-}
-
-
-@test "check if the maxIntervalLimitToRetryMillis is correctly set" {
-    export MAX_INTERVAL_LIMIT_RETRY="8000"
-    configure_jobs_service
-    expected=" -Dkogito.jobs-service.maxIntervalLimitToRetryMillis=8000"
-    echo "Result is ${KOGITO_JOBS_PROPS} and expected is ${expected}"
-    [ "${KOGITO_JOBS_PROPS}" = "${expected}" ]
-}
-
-@test "check if the maxIntervalLimitToRetryMillis and backoffRetryMillis are correctly set" {
-    export MAX_INTERVAL_LIMIT_RETRY="8000"
-    export BACKOFF_RETRY="2000"
-    configure_jobs_service
-    expected=" -Dkogito.jobs-service.backoffRetryMillis=2000 -Dkogito.jobs-service.maxIntervalLimitToRetryMillis=8000"
-    echo "Result is ${KOGITO_JOBS_PROPS} and expected is ${expected}"
-    [ "${KOGITO_JOBS_PROPS}" = "${expected}" ]
-}
-
 @test "check if the persistence is correctly configured with auth" {
     export ENABLE_PERSISTENCE="true"
     configure_jobs_service
