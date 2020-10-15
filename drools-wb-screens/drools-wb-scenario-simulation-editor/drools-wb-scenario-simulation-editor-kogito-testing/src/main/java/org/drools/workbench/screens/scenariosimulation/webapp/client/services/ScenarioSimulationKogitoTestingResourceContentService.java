@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.webapp.client.dmn;
+package org.drools.workbench.screens.scenariosimulation.webapp.client.services;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.AbstractKogitoDMNService;
-import org.drools.workbench.screens.scenariosimulation.webapp.client.services.TestingVFSService;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.services.ScenarioSimulationKogitoResourceContentService;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 
-@ApplicationScoped
-public class KogitoDMNServiceTestingImpl extends AbstractKogitoDMNService {
+public class ScenarioSimulationKogitoTestingResourceContentService implements ScenarioSimulationKogitoResourceContentService {
 
     @Inject
     private TestingVFSService testingVFSService;
 
     @Override
-    public void getDMNContent(final Path path, final RemoteCallback<String> remoteCallback, final ErrorCallback<Object> errorCallback) {
+    public void getFileContent(final Path path,
+                               final RemoteCallback<String> remoteCallback,
+                               final ErrorCallback<Object> errorCallback) {
         testingVFSService.loadFile(path, remoteCallback, errorCallback);
     }
 

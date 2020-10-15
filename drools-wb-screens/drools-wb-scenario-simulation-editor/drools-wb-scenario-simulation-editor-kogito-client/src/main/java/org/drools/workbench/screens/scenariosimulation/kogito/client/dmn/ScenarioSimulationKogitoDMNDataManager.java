@@ -43,18 +43,12 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 
-/**
- * Abstract class to provide methods shared by <b>runtime</b> and <b>testing</b> environments.
- * <p>
- * Most of this code is cloned/adapted from ScenarioSimulation backend and dmn core
- */
-public abstract class AbstractKogitoDMNService implements KogitoDMNService {
+public class ScenarioSimulationKogitoDMNDataManager {
 
-    public static final String URI_FEEL = "http://www.omg.org/spec/DMN/20180521/FEEL/";
-    public static final String WRONG_DMN_MESSAGE = "Wrong DMN Type";
+    protected static final String URI_FEEL = "http://www.omg.org/spec/DMN/20180521/FEEL/";
+    protected static final String WRONG_DMN_MESSAGE = "Wrong DMN Type";
     protected static final QName TYPEREF_QNAME = new QName("", "typeRef", "");
 
-    @Override
     public FactModelTuple getFactModelTuple(final JSITDefinitions jsitDefinitions) {
         SortedMap<String, FactModelTree> visibleFacts = new TreeMap<>();
         SortedMap<String, FactModelTree> hiddenFacts = new TreeMap<>();
@@ -92,7 +86,7 @@ public abstract class AbstractKogitoDMNService implements KogitoDMNService {
      */
     protected ClientDMNType getDMNTypeFromMaps(final Map<String, ClientDMNType> dmnTypesMap,
                                                final Map<QName, String> source) {
-        String typeRef = source.get(TYPEREF_QNAME);
+        String typeRef = getFilteredTypeRef(source.get(TYPEREF_QNAME));
         if (typeRef == null) {
             typeRef = BuiltInType.ANY.getName();
         }
@@ -205,7 +199,7 @@ public abstract class AbstractKogitoDMNService implements KogitoDMNService {
 
         /* Inheriting fields defined from item's typeRef, which represent its "super item" */
         /* This is required to define DMNType fields and isCollection / isComposite fields */
-        String typeRef = itemDefinition.getTypeRef();
+        String typeRef = getFilteredTypeRef(itemDefinition.getTypeRef());
         if (typeRef != null) {
             final ClientDMNType superDmnType = getOrCreateDMNType(allDefinitions,
                                                                   typeRef,
@@ -260,7 +254,7 @@ public abstract class AbstractKogitoDMNService implements KogitoDMNService {
 
             for (int i = 0; i < jsitItemDefinitionFields.size(); i++) {
                 final JSITItemDefinition jsitItemDefinitionField = Js.uncheckedCast(jsitItemDefinitionFields.get(i));
-                final String typeRef = jsitItemDefinitionField.getTypeRef();
+                final String typeRef = getFilteredTypeRef(jsitItemDefinitionField.getTypeRef());
                 final List<JSITItemDefinition> subfields = jsitItemDefinitionField.getItemComponent();
                 final boolean hasSubFields = subfields != null && !subfields.isEmpty();
                 final boolean hasAllowedValues = jsitItemDefinitionField.getAllowedValues() != null
@@ -573,6 +567,21 @@ public abstract class AbstractKogitoDMNService implements KogitoDMNService {
             }
         }
         return toReturn;
+    }
+
+    /**
+     * In case of typeRef which points to an imported DMN model, eg. external.tType, the type is normalized
+     * to remove the prefix, in order to handle a DMNType without a prefix in Test Scenario Editor.
+     * This should be used everywhere a typeRef is retrieved
+     * @param typeRef
+     * @return
+     */
+    private String getFilteredTypeRef(String typeRef) {
+        if (typeRef != null && typeRef.contains(".")) {
+            return typeRef.substring(typeRef.lastIndexOf('.') + 1);
+        } else {
+            return typeRef;
+        }
     }
 
     // Indirection required for tests

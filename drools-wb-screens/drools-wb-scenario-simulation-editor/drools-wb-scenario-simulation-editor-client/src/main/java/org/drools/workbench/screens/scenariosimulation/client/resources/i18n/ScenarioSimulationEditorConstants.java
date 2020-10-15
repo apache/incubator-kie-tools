@@ -276,7 +276,7 @@ public interface ScenarioSimulationEditorConstants
 
     String dmnPathErrorLabel(String dmnPath);
 
-    String dmnPathErrorDetailedLabel(String dmnPath);
+    String dmnPathErrorDetailedLabel(String dmnPath, String message);
 
     String missingSelectedType();
 

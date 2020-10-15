@@ -22,22 +22,30 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioS
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsPresenter;
-import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.KogitoDMNService;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.ScenarioSimulationKogitoDMNDataManager;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.services.ScenarioSimulationKogitoDMNMarshallerService;
+import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.workbench.events.NotificationEvent;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class KogitoDMNDataManagementStrategyTest {
@@ -45,7 +53,9 @@ public class KogitoDMNDataManagementStrategyTest {
     @Mock
     private EventBus eventBusMock;
     @Mock
-    private KogitoDMNService kogitoDMNServiceMock;
+    private ScenarioSimulationKogitoDMNDataManager kogitoDMNDataManagerMock;
+    @Mock
+    private ScenarioSimulationKogitoDMNMarshallerService dmnMarshallerServiceMock;
     @Mock
     private ScenarioSimulationContext scenarioSimulationContextMock;
     @Mock
@@ -53,36 +63,42 @@ public class KogitoDMNDataManagementStrategyTest {
     @Mock
     private GridWidget gridWidgetMock;
     @Mock
-    private RemoteCallback remoteCallbackMock;
+    private JSITDefinitions jsitDefinitionsMock;
+    @Mock
+    private FactModelTuple factModelTupleMock;
+    @Mock
+    private RemoteCallback<FactModelTuple> factModelTupleRemoteCallbackMock;
+    @Captor
+    private ArgumentCaptor<Callback<JSITDefinitions>> callbackArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<ErrorCallback<Object>> errorCallbackArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<ScenarioNotificationEvent> scenarioNotificationEventArgumentCaptor;
 
     private KogitoDMNDataManagementStrategy kogitoDMNDataManagementStrategySpy;
 
     @Before
     public void setup() {
-        kogitoDMNDataManagementStrategySpy = spy(new KogitoDMNDataManagementStrategy(eventBusMock, kogitoDMNServiceMock));
+        kogitoDMNDataManagementStrategySpy = spy(new KogitoDMNDataManagementStrategy(eventBusMock, kogitoDMNDataManagerMock, dmnMarshallerServiceMock));
+        when(kogitoDMNDataManagementStrategySpy.getSuccessCallback(eq(testToolsPresenterMock), eq(scenarioSimulationContextMock), eq(gridWidgetMock))).thenReturn(factModelTupleRemoteCallbackMock);
+        when(kogitoDMNDataManagerMock.getFactModelTuple(eq(jsitDefinitionsMock))).thenReturn(factModelTupleMock);
     }
 
     @Test
     public void retrieveFactModelTuple() {
         kogitoDMNDataManagementStrategySpy.retrieveFactModelTuple(testToolsPresenterMock, scenarioSimulationContextMock, gridWidgetMock, "path/dmnFile.dmn");
         Path expectedPath = new PathFactory.PathImpl("dmnFile.dmn", "path/dmnFile.dmn");
+        verify(dmnMarshallerServiceMock, times(1)).getDMNContent(eq(expectedPath), callbackArgumentCaptor.capture(), errorCallbackArgumentCaptor.capture());
+
+        callbackArgumentCaptor.getValue().callback(jsitDefinitionsMock);
+        verify(kogitoDMNDataManagerMock, times(1)).getFactModelTuple(eq(jsitDefinitionsMock));
         verify(kogitoDMNDataManagementStrategySpy, times(1)).getSuccessCallback(eq(testToolsPresenterMock), eq(scenarioSimulationContextMock), eq(gridWidgetMock));
-        verify(kogitoDMNServiceMock, times(1)).getDMNContent(eq(expectedPath), isA(RemoteCallback.class), isA(ErrorCallback.class));
-    }
+        verify(factModelTupleRemoteCallbackMock, times(1)).callback(eq(factModelTupleMock));
 
-    @Test
-    public void getDMNContentRemoteCallback() {
-        RemoteCallback<String> remoteCallback = kogitoDMNDataManagementStrategySpy.getDMNContentRemoteCallback(remoteCallbackMock);
-        Assert.assertNotNull(remoteCallback);
-        remoteCallback.callback("");
-        verify(kogitoDMNDataManagementStrategySpy, times(1)).getDMN12UnmarshallCallback(eq(remoteCallbackMock));
-    }
+        errorCallbackArgumentCaptor.getValue().error("Error Message", new Exception());
+        verify(eventBusMock, times(1)).fireEvent(scenarioNotificationEventArgumentCaptor.capture());
+        assertEquals(NotificationEvent.NotificationType.ERROR, scenarioNotificationEventArgumentCaptor.getValue().getNotificationType());
+        assertTrue(scenarioNotificationEventArgumentCaptor.getValue().getMessage().contains("Error Message"));
+   }
 
-    @Test
-    public void getDMNContentErrorCallback() {
-        ErrorCallback<Object> remoteCallback = kogitoDMNDataManagementStrategySpy.getDMNContentErrorCallback("dmnpath/");
-        Assert.assertNotNull(remoteCallback);
-        remoteCallback.error("message", new Exception());
-        verify(eventBusMock, times(1)).fireEvent(isA(ScenarioNotificationEvent.class));
-    }
 }

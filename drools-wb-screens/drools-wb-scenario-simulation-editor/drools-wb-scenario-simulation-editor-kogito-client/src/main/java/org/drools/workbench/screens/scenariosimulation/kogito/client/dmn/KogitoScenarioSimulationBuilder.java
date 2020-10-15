@@ -26,8 +26,6 @@ import java.util.function.BiFunction;
 
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import jsinterop.base.Js;
 import org.drools.scenariosimulation.api.model.AbstractScesimData;
 import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.Background;
@@ -44,21 +42,14 @@ import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
-import org.drools.workbench.scenariosimulation.kogito.marshaller.js.SCESIMMainJs;
-import org.drools.workbench.scenariosimulation.kogito.marshaller.js.callbacks.SCESIMMarshallCallback;
-import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.JSIScenarioSimulationModelType;
-import org.drools.workbench.scenariosimulation.kogito.marshaller.js.model.SCESIM;
-import org.drools.workbench.scenariosimulation.kogito.marshaller.mapper.JSIName;
-import org.drools.workbench.scenariosimulation.kogito.marshaller.mapper.JsUtils;
-import org.drools.workbench.screens.scenariosimulation.kogito.client.converters.ApiJSInteropConverter;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.services.ScenarioSimulationKogitoDMNMarshallerService;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.MainJs;
-import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.callbacks.DMN12UnmarshallCallback;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.client.callbacks.Callback;
 
 import static org.drools.scenariosimulation.api.model.FactMappingType.EXPECT;
 import static org.drools.scenariosimulation.api.model.FactMappingType.GIVEN;
@@ -74,7 +65,9 @@ import static org.drools.scenariosimulation.api.utils.ConstantsHolder.VALUE;
 public class KogitoScenarioSimulationBuilder {
 
     @Inject
-    private KogitoDMNService dmnTypeService;
+    private ScenarioSimulationKogitoDMNDataManager dmnDataManager;
+    @Inject
+    private ScenarioSimulationKogitoDMNMarshallerService dmnMarshallerService;
 
     private static FactMappingType convert(final FactModelTree.Type modelTreeType) {
         switch (modelTreeType) {
@@ -87,97 +80,68 @@ public class KogitoScenarioSimulationBuilder {
         }
     }
 
-    /**
-     * Populate the given <code>ScenarioSimulationModel</code> and returns it inn the given <code>callback</code>
-     * @param content
-     * @param type
-     * @param value
-     * @param callback
-     */
-    public void populateScenarioSimulationModel(final ScenarioSimulationModel content, final ScenarioSimulationModel.Type type, final String value, RemoteCallback<String> callback) {
-        switch (type) {
-            case RULE:
-                populateRULE(content, value, callback);
-                break;
-            case DMN:
-                populateDMN(content, value, callback);
-                break;
-            default:
-                throw new IllegalArgumentException("Impossible to map");
-        }
+    public void populateScenarioSimulationModelRULE(final String dmoSession,
+                                                    final Callback<ScenarioSimulationModel> populateEditorCommand) {
+        ScenarioSimulationModel model = new ScenarioSimulationModel();
+        model.setSimulation(createRULESimulation());
+        model.setBackground(createBackground());
+        model.setSettings(createRULESettings(dmoSession));
+        populateEditorCommand.callback(model);
     }
 
-    private void populateRULE(final ScenarioSimulationModel toPopulate, final String dmoSession, final RemoteCallback<String> callback) {
-        toPopulate.setSimulation(createRULESimulation());
-        toPopulate.setBackground(createBackground());
-        toPopulate.setSettings(createRULESettings(dmoSession));
-        convertScenarioSimulationModel(toPopulate, callback);
-    }
-
-    private void populateDMN(final ScenarioSimulationModel toPopulate, final String dmnFilePath, final RemoteCallback<String> callback) {
-        toPopulate.setBackground(createBackground());
-        populateDMNSimulationAndSettings(toPopulate, dmnFilePath, callback);
-    }
-
-    private void convertScenarioSimulationModel(final ScenarioSimulationModel toConvert, final RemoteCallback<String> callback) {
-        JSIScenarioSimulationModelType jsiScenarioSimulationModelType = ApiJSInteropConverter.getJSIScenarioSimulationModelType(toConvert);
-        final SCESIM scesim = Js.uncheckedCast(JsUtils.newWrappedInstance());
-        JsUtils.setNameOnWrapped(scesim, makeJSINameForSCESIM());
-        JsUtils.setValueOnWrapped(scesim, jsiScenarioSimulationModelType);
-        SCESIMMarshallCallback scesimMarshallCallback = getSCESIMMarshallCallback(callback);
-        SCESIMMainJs.marshall(scesim, null, scesimMarshallCallback);
-    }
-
-    private JSIName makeJSINameForSCESIM() {
-        final JSIName jsiName = JSIScenarioSimulationModelType.getJSIName();
-        jsiName.setPrefix("");
-        jsiName.setLocalPart("ScenarioSimulationModel");
-        final String key = "{" + jsiName.getNamespaceURI() + "}" + jsiName.getLocalPart();
-        final String keyString = "{" + jsiName.getNamespaceURI() + "}" + jsiName.getPrefix() + ":" + jsiName.getLocalPart();
-        jsiName.setKey(key);
-        jsiName.setString(keyString);
-        return jsiName;
+    public void populateScenarioSimulationModelDMN(final String dmnFilePath,
+                                                   final Callback<ScenarioSimulationModel> populateEditorCommand,
+                                                   final ErrorCallback<Object> dmnContentErrorCallback) {
+        ScenarioSimulationModel model = new ScenarioSimulationModel();
+        model.setBackground(createBackground());
+        populateDMNSimulationAndSettings(model, dmnFilePath, populateEditorCommand, dmnContentErrorCallback);
     }
 
     protected Simulation createRULESimulation() {
-        Simulation toReturn = new Simulation();
-        ScesimModelDescriptor simulationDescriptor = toReturn.getScesimModelDescriptor();
-        FactMapping indexFactMapping = simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
-        indexFactMapping.setColumnWidth(getColumnWidth(ExpressionIdentifier.INDEX.getName()));
-        FactMapping descriptionFactMapping = simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
-        descriptionFactMapping.setColumnWidth(getColumnWidth(ExpressionIdentifier.DESCRIPTION.getName()));
+        Simulation toReturn = createSimulation();
         ScenarioWithIndex scenarioWithIndex = createScesimDataWithIndex(toReturn, ScenarioWithIndex::new);
 
         // Add GIVEN Fact
-        createEmptyColumn(simulationDescriptor,
+        createEmptyColumn(toReturn.getScesimModelDescriptor(),
                           scenarioWithIndex,
                           1,
                           GIVEN,
-                          simulationDescriptor.getFactMappings().size());
+                          toReturn.getScesimModelDescriptor().getFactMappings().size());
 
         // Add EXPECT Fact
-        createEmptyColumn(simulationDescriptor,
+        createEmptyColumn(toReturn.getScesimModelDescriptor(),
                           scenarioWithIndex,
                           2,
                           EXPECT,
-                          simulationDescriptor.getFactMappings().size());
+                          toReturn.getScesimModelDescriptor().getFactMappings().size());
         return toReturn;
     }
 
-    private void populateDMNSimulationAndSettings(final ScenarioSimulationModel toPopulate, final String dmnFilePath, final RemoteCallback<String> callback) {
+    private void populateDMNSimulationAndSettings(final ScenarioSimulationModel toPopulate,
+                                                  final String dmnFilePath,
+                                                  final Callback<ScenarioSimulationModel> populateEditorCommand,
+                                                  final ErrorCallback<Object> dmnContentErrorCallback) {
         String dmnFileName = dmnFilePath.substring(dmnFilePath.lastIndexOf('/') + 1);
         final Path dmnPath = PathFactory.newPath(dmnFileName, dmnFilePath);
-        dmnTypeService.getDMNContent(dmnPath, dmnContent -> {
-            DMN12UnmarshallCallback dmn12UnmarshallCallback = getDMN12UnmarshallCallback(toPopulate, dmnFilePath, callback);
-            MainJs.unmarshall(dmnContent, "", dmn12UnmarshallCallback);
-        },
-                                     (message, throwable) -> {
-                                         GWT.log("Error " + message.toString(), throwable);
-                                         return false;
-                                     });
+        dmnMarshallerService.getDMNContent(dmnPath,
+                                           getDMNContentCallback(toPopulate, populateEditorCommand, dmnPath),
+                                           dmnContentErrorCallback);
     }
 
-    private Background createBackground() {
+    private Callback<JSITDefinitions> getDMNContentCallback(final ScenarioSimulationModel toPopulate,
+                                                            final Callback<ScenarioSimulationModel> populateEditorCommand,
+                                                            final Path dmnPath) {
+        return jsitDefinitions -> {
+            final FactModelTuple factModelTuple = dmnDataManager.getFactModelTuple(jsitDefinitions);
+            toPopulate.setSimulation(createDMNSimulation(factModelTuple));
+            toPopulate.setSettings(createDMNSettings(jsitDefinitions.getName(),
+                                                     jsitDefinitions.getNamespace(),
+                                                     dmnPath.toURI()));
+            populateEditorCommand.callback(toPopulate);
+        };
+    }
+
+    protected Background createBackground() {
         Background toReturn = new Background();
         ScesimModelDescriptor simulationDescriptor = toReturn.getScesimModelDescriptor();
         int index = toReturn.getUnmodifiableData().size() + 1;
@@ -192,15 +156,14 @@ public class KogitoScenarioSimulationBuilder {
                           simulationDescriptor.getFactMappings().size());
         return toReturn;
     }
-
-    private Settings createRULESettings(final String dmoSession) {
+    protected Settings createRULESettings(final String dmoSession) {
         Settings toReturn = new Settings();
         toReturn.setType(ScenarioSimulationModel.Type.RULE);
         toReturn.setDmoSession(dmoSession);
         return toReturn;
     }
 
-    private Settings createDMNSettings(final String name, final String nameSpace, final String dmnFilePath) {
+    protected Settings createDMNSettings(final String name, final String nameSpace, final String dmnFilePath) {
         Settings toReturn = new Settings();
         toReturn.setType(ScenarioSimulationModel.Type.DMN);
         toReturn.setDmnFilePath(dmnFilePath);
@@ -294,27 +257,8 @@ public class KogitoScenarioSimulationBuilder {
         }
     }
 
-    private SCESIMMarshallCallback getSCESIMMarshallCallback(final RemoteCallback<String> remoteCallback) {
-        return remoteCallback::callback;
-    }
-
-    private DMN12UnmarshallCallback getDMN12UnmarshallCallback(final ScenarioSimulationModel toPopulate, final String dmnFilePath, final RemoteCallback<String> callback) {
-        return dmn12 -> {
-            final JSITDefinitions jsitDefinitions = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn12));
-            final FactModelTuple factModelTuple = dmnTypeService.getFactModelTuple(jsitDefinitions);
-            toPopulate.setSimulation(createDMNSimulation(factModelTuple));
-            toPopulate.setSettings(createDMNSettings(jsitDefinitions.getName(), jsitDefinitions.getNamespace(), dmnFilePath));
-            convertScenarioSimulationModel(toPopulate, callback);
-        };
-    }
-
     protected Simulation createDMNSimulation(final FactModelTuple factModelTuple) {
-        Simulation toReturn = new Simulation();
-        ScesimModelDescriptor simulationDescriptor = toReturn.getScesimModelDescriptor();
-        FactMapping indexFactMapping = simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
-        indexFactMapping.setColumnWidth(getColumnWidth(ExpressionIdentifier.INDEX.getName()));
-        FactMapping descriptionFactMapping = simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
-        descriptionFactMapping.setColumnWidth(getColumnWidth(ExpressionIdentifier.DESCRIPTION.getName()));
+        Simulation toReturn = createSimulation();
         ScenarioWithIndex scenarioWithIndex = createScesimDataWithIndex(toReturn, ScenarioWithIndex::new);
 
         AtomicInteger id = new AtomicInteger(1);
@@ -328,12 +272,27 @@ public class KogitoScenarioSimulationBuilder {
             return aType.equals(bType) ? 0 : inputFirstOrder;
         }).forEach(factModelTree -> {
             FactIdentifier factIdentifier = new FactIdentifier(factModelTree.getFactName(), factModelTree.getFactName());
-            FactMappingExtractor factMappingExtractor = new FactMappingExtractor(factIdentifier, scenarioWithIndex.getIndex(), id, convert(factModelTree.getType()), simulationDescriptor, scenarioWithIndex.getScesimData());
+            FactMappingExtractor factMappingExtractor = new FactMappingExtractor(factIdentifier,
+                                                                                 scenarioWithIndex.getIndex(),
+                                                                                 id,
+                                                                                 convert(factModelTree.getType()),
+                                                                                 toReturn.getScesimModelDescriptor(),
+                                                                                 scenarioWithIndex.getScesimData());
             addFactMapping(factMappingExtractor, factModelTree, new ArrayList<>(), hiddenValues);
         });
 
         addEmptyColumnsIfNeeded(toReturn, scenarioWithIndex);
         return toReturn;
+    }
+
+    protected Simulation createSimulation() {
+        Simulation simulation = new Simulation();
+        ScesimModelDescriptor simulationDescriptor = simulation.getScesimModelDescriptor();
+        FactMapping indexFactMapping = simulationDescriptor.addFactMapping(FactIdentifier.INDEX.getName(), FactIdentifier.INDEX, ExpressionIdentifier.INDEX);
+        indexFactMapping.setColumnWidth(getColumnWidth(ExpressionIdentifier.INDEX.getName()));
+        FactMapping descriptionFactMapping = simulationDescriptor.addFactMapping(FactIdentifier.DESCRIPTION.getName(), FactIdentifier.DESCRIPTION, ExpressionIdentifier.DESCRIPTION);
+        descriptionFactMapping.setColumnWidth(getColumnWidth(ExpressionIdentifier.DESCRIPTION.getName()));
+        return simulation;
     }
 
     /**

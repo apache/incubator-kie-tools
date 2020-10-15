@@ -16,63 +16,65 @@
 package org.drools.workbench.screens.scenariosimulation.kogito.client.editor.strategies;
 
 import com.google.gwt.event.shared.EventBus;
-import jsinterop.base.Js;
-import org.drools.workbench.scenariosimulation.kogito.marshaller.mapper.JsUtils;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.editor.strategies.AbstractDMNDataManagementStrategy;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.events.ScenarioNotificationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.resources.i18n.ScenarioSimulationEditorConstants;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
-import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.KogitoDMNService;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.dmn.ScenarioSimulationKogitoDMNDataManager;
+import org.drools.workbench.screens.scenariosimulation.kogito.client.services.ScenarioSimulationKogitoDMNMarshallerService;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
+
 import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.MainJs;
-import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.callbacks.DMN12UnmarshallCallback;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.workbench.events.NotificationEvent;
 
 public class KogitoDMNDataManagementStrategy extends AbstractDMNDataManagementStrategy {
 
-    private KogitoDMNService dmnTypeService;
+    private ScenarioSimulationKogitoDMNDataManager dmnDataManager;
+    private ScenarioSimulationKogitoDMNMarshallerService dmnMarshallerService;
 
-    public KogitoDMNDataManagementStrategy(EventBus eventBus, KogitoDMNService dmnTypeService) {
+    public KogitoDMNDataManagementStrategy(EventBus eventBus,
+                                           ScenarioSimulationKogitoDMNDataManager dmnDataManager,
+                                           ScenarioSimulationKogitoDMNMarshallerService dmnMarshallerService) {
         super(eventBus);
-        this.dmnTypeService = dmnTypeService;
+        this.dmnDataManager = dmnDataManager;
+        this.dmnMarshallerService = dmnMarshallerService;
     }
 
     @Override
-    protected void retrieveFactModelTuple(TestToolsView.Presenter testToolsPresenter, ScenarioSimulationContext context, GridWidget gridWidget, String dmnFilePath) {
-        RemoteCallback<FactModelTuple> callback = getSuccessCallback(testToolsPresenter, context, gridWidget);
-        String fileName = dmnFilePath.substring(dmnFilePath.lastIndexOf('/') + 1);
-        final Path dmnPath = PathFactory.newPath(fileName, dmnFilePath);
-        dmnTypeService.getDMNContent(dmnPath, getDMNContentRemoteCallback(callback), getDMNContentErrorCallback(dmnFilePath));
-    }
+    protected void retrieveFactModelTuple(final TestToolsView.Presenter testToolsPresenter,
+                                          final ScenarioSimulationContext context,
+                                          final GridWidget gridWidget,
+                                          final String dmnFilePath) {
+        String dmnFileName = dmnFilePath.substring(dmnFilePath.lastIndexOf('/') + 1);
+        final Path dmnPath = PathFactory.newPath(dmnFileName, dmnFilePath);
+        dmnMarshallerService.getDMNContent(dmnPath,
+                                           getDMNContentCallback(testToolsPresenter, context, gridWidget),
+                                           getDMNContentErrorCallback(dmnFilePath));
+   }
 
-    protected RemoteCallback<String> getDMNContentRemoteCallback(RemoteCallback<FactModelTuple> callback) {
-        return dmnContent -> {
-            DMN12UnmarshallCallback dmn12UnmarshallCallback = getDMN12UnmarshallCallback(callback);
-            MainJs.unmarshall(dmnContent, "", dmn12UnmarshallCallback);
-        };
-    }
+   private Callback<JSITDefinitions> getDMNContentCallback(final TestToolsView.Presenter testToolsPresenter,
+                                                           final ScenarioSimulationContext context,
+                                                           final GridWidget gridWidget) {
+       return jsitDefinitions -> {
+           final FactModelTuple factModelTuple = dmnDataManager.getFactModelTuple(jsitDefinitions);
+           getSuccessCallback(testToolsPresenter, context, gridWidget).callback(factModelTuple);
+       };
+   }
 
-
-    protected ErrorCallback<Object> getDMNContentErrorCallback(String dmnFilePath) {
+    private ErrorCallback<Object> getDMNContentErrorCallback(String dmnFilePath) {
         return (message, throwable) -> {
-            eventBus.fireEvent(new ScenarioNotificationEvent(ScenarioSimulationEditorConstants.INSTANCE.dmnPathErrorDetailedLabel(dmnFilePath),
-                                                             NotificationEvent.NotificationType.ERROR));
+            eventBus.fireEvent(new ScenarioNotificationEvent(ScenarioSimulationEditorConstants.INSTANCE.dmnPathErrorDetailedLabel(dmnFilePath,
+                                                                                                                                  message.toString()),
+                                                             NotificationEvent.NotificationType.ERROR,
+                                                             false));
             return false;
         };
     }
 
-    protected DMN12UnmarshallCallback getDMN12UnmarshallCallback(final RemoteCallback<FactModelTuple> callback) {
-        return dmn12 -> {
-            final JSITDefinitions jsitDefinitions = Js.uncheckedCast(JsUtils.getUnwrappedElement(dmn12));
-            final FactModelTuple factModelTuple = dmnTypeService.getFactModelTuple(jsitDefinitions);
-            callback.callback(factModelTuple);
-        };
-    }
 }

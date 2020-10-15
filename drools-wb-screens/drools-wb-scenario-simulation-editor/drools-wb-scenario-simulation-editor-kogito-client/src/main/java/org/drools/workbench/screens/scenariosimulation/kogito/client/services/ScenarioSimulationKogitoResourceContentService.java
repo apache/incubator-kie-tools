@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.screens.scenariosimulation.kogito.client.dmn;
+package org.drools.workbench.screens.scenariosimulation.kogito.client.services;
 
-import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITDefinitions;
 import org.uberfire.backend.vfs.Path;
 
-/**
- * Interface required because <b>runtime</b> and <b>testing</b> environments would
- * need/provide different implementations
- */
-public interface KogitoDMNService {
+public interface ScenarioSimulationKogitoResourceContentService {
 
-    void getDMNContent(final Path path, final RemoteCallback<String> remoteCallback, final ErrorCallback<Object> errorCallback);
-
-    FactModelTuple getFactModelTuple(final JSITDefinitions jsitDefinitions);
+    void getFileContent(final Path path,
+                        final RemoteCallback<String> remoteCallback,
+                        final ErrorCallback<Object> errorCallback);
 }

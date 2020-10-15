@@ -37,7 +37,7 @@ import org.drools.workbench.screens.scenariosimulation.kogito.client.handlers.Sc
 import org.drools.workbench.screens.scenariosimulation.kogito.client.popup.ScenarioSimulationKogitoCreationPopupPresenter;
 import org.gwtbootstrap3.client.ui.NavTabs;
 import org.gwtbootstrap3.client.ui.TabListItem;
-import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,10 +50,12 @@ import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorViewImpl;
@@ -73,6 +75,7 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -143,7 +146,9 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
     @Captor
     private ArgumentCaptor<Page> pageCaptor;
     @Captor
-    private ArgumentCaptor<RemoteCallback> remoteCallbackArgumentCaptor;
+    private ArgumentCaptor<Callback<ScenarioSimulationModel>> callbackArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<ErrorCallback<Object>> errorCallbackArgumentCaptor;
     @Captor
     private ArgumentCaptor<Path> pathArgumentCaptor;
     @Captor
@@ -408,8 +413,10 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         command.execute();
         verify(scenarioSimulationKogitoCreationPopupPresenterMock, times(1)).getSelectedType();
         verify(scenarioSimulationEditorPresenterMock, times(1)).sendNotification(eq(ScenarioSimulationEditorConstants.INSTANCE.missingSelectedType()),
-                                                                                                      eq(NotificationEvent.NotificationType.ERROR));
-        verify(kogitoScenarioSimulationBuilderMock, never()).populateScenarioSimulationModel(any(), any(), any(), any());
+                                                                                                      eq(NotificationEvent.NotificationType.ERROR),
+                                                                                                      eq(false) );
+        verify(kogitoScenarioSimulationBuilderMock, never()).populateScenarioSimulationModelDMN(any(), any(), any());
+        verify(kogitoScenarioSimulationBuilderMock, never()).populateScenarioSimulationModelRULE(any(), any());
     }
 
     @Test
@@ -420,38 +427,45 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
         command.execute();
         verify(scenarioSimulationKogitoCreationPopupPresenterMock, times(1)).getSelectedType();
         verify(scenarioSimulationEditorPresenterMock, times(1)).sendNotification(eq(ScenarioSimulationEditorConstants.INSTANCE.missingDmnPath()),
-                                                                                                      eq(NotificationEvent.NotificationType.ERROR));
-        verify(kogitoScenarioSimulationBuilderMock, never()).populateScenarioSimulationModel(any(), any(), any(), any());
+                                                                                                      eq(NotificationEvent.NotificationType.ERROR),
+                                                                                                      eq(false));
+        verify(kogitoScenarioSimulationBuilderMock, never()).populateScenarioSimulationModelDMN(any(), any(), any());
+        verify(kogitoScenarioSimulationBuilderMock, never()).populateScenarioSimulationModelRULE(any(), any());
     }
 
     @Test
     public void newFileRule() {
+        ScenarioSimulationModel model = mock(ScenarioSimulationModel.class);
         when(scenarioSimulationKogitoCreationPopupPresenterMock.getSelectedType()).thenReturn(ScenarioSimulationModel.Type.RULE);
+        Mockito.doNothing().when(scenarioSimulationEditorKogitoWrapperSpy).onModelSuccessCallbackMethod(eq(model));
         Command command = scenarioSimulationEditorKogitoWrapperSpy.createNewFileCommand(path);
         command.execute();
         verify(scenarioSimulationKogitoCreationPopupPresenterMock, times(1)).getSelectedType();
-        verify(kogitoScenarioSimulationBuilderMock, times(1)).populateScenarioSimulationModel(isA(ScenarioSimulationModel.class),
-                                                                                                                   eq(ScenarioSimulationModel.Type.RULE),
-                                                                                                                   eq(""),
-                                                                                                                   remoteCallbackArgumentCaptor.capture());
-        remoteCallbackArgumentCaptor.getValue().callback("");
         verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).gotoPath(eq(path));
-        verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).unmarshallContent(isA(String.class));
+        verify(kogitoScenarioSimulationBuilderMock, times(1)).populateScenarioSimulationModelRULE(eq(""),
+                                                                                                                        callbackArgumentCaptor.capture());
+        callbackArgumentCaptor.getValue().callback(model);
+        verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).onModelSuccessCallbackMethod(eq(model));
     }
 
     @Test
     public void newFileDMN() {
+        ScenarioSimulationModel model = mock(ScenarioSimulationModel.class);
         when(scenarioSimulationKogitoCreationPopupPresenterMock.getSelectedType()).thenReturn(ScenarioSimulationModel.Type.DMN);
+        Mockito.doNothing().when(scenarioSimulationEditorKogitoWrapperSpy).onModelSuccessCallbackMethod(eq(model));
         Command command = scenarioSimulationEditorKogitoWrapperSpy.createNewFileCommand(path);
         command.execute();
         verify(scenarioSimulationKogitoCreationPopupPresenterMock, times(1)).getSelectedType();
-        verify(kogitoScenarioSimulationBuilderMock, times(1)).populateScenarioSimulationModel(isA(ScenarioSimulationModel.class),
-                                                                                                                   eq(ScenarioSimulationModel.Type.DMN),
-                                                                                                                   eq("selected"),
-                                                                                                                   remoteCallbackArgumentCaptor.capture());
-        remoteCallbackArgumentCaptor.getValue().callback("");
         verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).gotoPath(eq(path));
-        verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).unmarshallContent(isA(String.class));
+        verify(kogitoScenarioSimulationBuilderMock, times(1)).populateScenarioSimulationModelDMN(eq("selected"),
+                                                                                                                       callbackArgumentCaptor.capture(),
+                                                                                                                       errorCallbackArgumentCaptor.capture());
+        callbackArgumentCaptor.getValue().callback(model);
+        verify(scenarioSimulationEditorKogitoWrapperSpy, times(1)).onModelSuccessCallbackMethod(eq(model));
+        errorCallbackArgumentCaptor.getValue().error("message", new Exception());
+        verify(scenarioSimulationEditorPresenterMock, times(1)).sendNotification(eq(ScenarioSimulationEditorConstants.INSTANCE.dmnPathErrorDetailedLabel("selected", "message")),
+                                                                                                       eq(NotificationEvent.NotificationType.ERROR),
+                                                                                                       eq(false));
     }
 
     @Test
