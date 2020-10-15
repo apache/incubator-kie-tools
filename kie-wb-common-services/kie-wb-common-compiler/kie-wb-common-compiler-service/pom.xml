@@ -134,6 +134,11 @@
           <groupId>org.jboss.spec.javax.interceptor</groupId>
           <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
         </exclusion>
+        <!-- collides with javax.inject:javax.inject:jar:1:compile -->
+        <exclusion>
+          <groupId>jakarta.enterprise</groupId>
+          <artifactId>jakarta.enterprise.cdi-api</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
   </dependencies>

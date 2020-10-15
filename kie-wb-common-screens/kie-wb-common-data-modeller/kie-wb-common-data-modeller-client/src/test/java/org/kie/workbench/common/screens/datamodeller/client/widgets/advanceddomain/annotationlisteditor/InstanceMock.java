@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.advanceddom
 import java.lang.annotation.Annotation;
 import java.util.Iterator;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.util.TypeLiteral;
 
 public class InstanceMock<T> implements Instance<T> {
 
@@ -54,6 +55,12 @@ public class InstanceMock<T> implements Instance<T> {
 
     @Override
     public T get( ) {
+        return null;
+    }
+
+    @Override
+    public <U extends T> Instance<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+        // TODO Auto-generated method stub
         return null;
     }
 }

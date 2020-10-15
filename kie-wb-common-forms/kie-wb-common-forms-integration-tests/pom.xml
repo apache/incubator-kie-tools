@@ -20,6 +20,13 @@
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <!-- collides with javax.inject:javax.inject:jar:1:compile -->
+        <exclusion>
+          <groupId>jakarta.enterprise</groupId>
+          <artifactId>jakarta.enterprise.cdi-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -43,6 +50,12 @@
       <groupId>org.kie.workbench.forms</groupId>
       <artifactId>kie-wb-common-forms-fields</artifactId>
       <type>test-jar</type>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.errai</groupId>
+          <artifactId>errai-javax-enterprise</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -75,6 +88,12 @@
     <dependency>
       <groupId>org.kie.workbench.forms</groupId>
       <artifactId>kie-wb-common-forms-editor-client</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.errai</groupId>
+          <artifactId>errai-javax-enterprise</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

@@ -33,6 +33,12 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-project-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.errai</groupId>
+          <artifactId>errai-javax-enterprise</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -77,6 +83,10 @@
         <exclusion>
           <groupId>org.uberfire</groupId>
           <artifactId>uberfire-servlet-security</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.errai</groupId>
+          <artifactId>errai-javax-enterprise</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -123,6 +133,13 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
+      <exclusions>
+        <!-- collides with javax.inject:javax.inject:jar:1:compile -->
+        <exclusion>
+          <groupId>jakarta.enterprise</groupId>
+          <artifactId>jakarta.enterprise.cdi-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
@@ -190,6 +207,12 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-layout-editor-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.errai</groupId>
+          <artifactId>errai-javax-enterprise</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- test -->
