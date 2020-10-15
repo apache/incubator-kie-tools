@@ -19,9 +19,12 @@ package org.drools.workbench.screens.testscenario.client;
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.event.NotificationOptions;
+import javax.enterprise.util.TypeLiteral;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
@@ -468,6 +471,24 @@ public class ScenarioEditorPresenterTest {
             @Override
             public <U extends NotificationEvent> Event<U> select(Class<U> aClass,
                                                                  Annotation... annotations) {
+                return null;
+            }
+
+            @Override
+            public <U extends NotificationEvent> CompletionStage<U> fireAsync(U event) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public <U extends NotificationEvent> CompletionStage<U> fireAsync(U event, NotificationOptions options) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public <U extends NotificationEvent> Event<U> select(TypeLiteral<U> subtype, Annotation... qualifiers) {
+                // TODO Auto-generated method stub
                 return null;
             }
         };
