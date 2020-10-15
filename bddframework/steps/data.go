@@ -17,6 +17,7 @@ package steps
 import (
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/cucumber/godog"
@@ -24,6 +25,10 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	imgv1 "github.com/openshift/api/image/v1"
+)
+
+var (
+	namespacesCreated sync.Map
 )
 
 // Data contains all data needed by Gherkin steps to run
@@ -87,7 +92,21 @@ func getNamespaceName() string {
 	if namespaceName := config.GetNamespaceName(); len(namespaceName) > 0 {
 		return namespaceName
 	}
-	return framework.GenerateNamespaceName("cucumber")
+	return generateNamespaceName()
+}
+
+func generateNamespaceName() string {
+	ns := framework.GenerateNamespaceName("cucumber")
+	for isNamespaceAlreadyCreated(ns) {
+		ns = framework.GenerateNamespaceName("cucumber")
+	}
+	namespacesCreated.Store(ns, true)
+	return ns
+}
+
+func isNamespaceAlreadyCreated(namespace string) bool {
+	_, exists := namespacesCreated.Load(namespace)
+	return exists
 }
 
 func createTemporaryFolder() string {
