@@ -33,7 +33,7 @@ exports[`LandingPageToolbar render::Has no unsupported models 1`] = `
             data-testid="landing-page-toolbar__model-filter"
             id="model-filter-input"
             name="model-filter-input"
-            placeholder="Filter models by name"
+            placeholder="Filter by name"
             type="search"
             value=""
           />
@@ -242,7 +242,7 @@ exports[`LandingPageToolbar render::Has unsupported models 1`] = `
             data-testid="landing-page-toolbar__model-filter"
             id="model-filter-input"
             name="model-filter-input"
-            placeholder="Filter models by name"
+            placeholder="Filter by name"
             type="search"
             value=""
           />
