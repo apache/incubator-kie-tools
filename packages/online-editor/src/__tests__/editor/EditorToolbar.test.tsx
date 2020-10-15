@@ -23,6 +23,7 @@ import { GithubService } from "../../common/GithubService";
 import { EditorPage } from "../../editor/EditorPage";
 
 jest.clearAllMocks();
+
 const onFileNameChanged = jest.fn((file: string) => null);
 const enterFullscreen = jest.fn(() => null);
 const requestSave = jest.fn(() => null);
@@ -35,13 +36,13 @@ const requestSetGitHubToken = jest.fn(() => null);
 const requestUpdateGist = jest.fn(() => null);
 
 function mockFunctions() {
-  const original = require.requireActual("../../common/utils");
+  const original = require.requireActual("../../common/Hooks");
   return {
     ...original,
-    getFileUrl: jest.fn().mockImplementation(() => "gist.githubusercontent.com/?file=something")
+    useFileUrl: jest.fn().mockImplementation(() => "gist.githubusercontent.com/?file=something")
   };
 }
-jest.mock("../../common/utils", () => mockFunctions());
+jest.mock("../../common/Hooks", () => mockFunctions());
 
 afterAll(() => {
   jest.clearAllMocks();
