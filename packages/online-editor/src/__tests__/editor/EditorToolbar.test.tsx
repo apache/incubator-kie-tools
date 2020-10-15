@@ -20,10 +20,9 @@ import { EditorToolbar } from "../../editor/EditorToolbar";
 import { StateControl } from "@kogito-tooling/editor/dist/embedded";
 import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../testing_utils";
 import { GithubService } from "../../common/GithubService";
-import {EditorPage} from "../../editor/EditorPage";
+import { EditorPage } from "../../editor/EditorPage";
 
 jest.clearAllMocks();
-
 const onFileNameChanged = jest.fn((file: string) => null);
 const enterFullscreen = jest.fn(() => null);
 const requestSave = jest.fn(() => null);
@@ -44,6 +43,9 @@ function mockFunctions() {
 }
 jest.mock("../../common/utils", () => mockFunctions());
 
+afterAll(() => {
+  jest.clearAllMocks();
+})
 
 describe("EditorToolbar", () => {
   let stateControl: StateControl;
@@ -184,9 +186,7 @@ describe("EditorToolbar", () => {
     test("Set GitHub token button should open a GitHubTokenModal", async () => {
       const { getByTestId } = render(
         usingTestingOnlineI18nContext(
-          usingTestingGlobalContext(
-            <EditorPage onFileNameChanged={onFileNameChanged} />
-          ).wrapper
+          usingTestingGlobalContext(<EditorPage onFileNameChanged={onFileNameChanged} />).wrapper
         ).wrapper
       );
 

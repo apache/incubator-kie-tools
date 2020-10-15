@@ -84,7 +84,9 @@ function waitForEventWithFileData() {
 
 function openFileByUrl() {
   const filePath = urlParams.get("file")!;
-  if (githubService.isGithub(filePath)) {
+  if (githubService.isGist(filePath)) {
+    githubService.fetchGistFile(filePath).then(content => openFile(filePath, Promise.resolve(content)));
+  } else if (githubService.isGithub(filePath)) {
     githubService
       .fetchGithubFile(filePath)
       .then(response => {

@@ -187,6 +187,15 @@ export class GithubService {
       });
   }
 
+  public fetchGistFile(fileUrl: string): Promise<string> {
+    const gistId = this.isGistDefault(fileUrl) ? this.extractGistId(fileUrl) : this.extractGistIdFromRawUrl(fileUrl);
+
+    return this.octokit.gists.get({ gist_id: gistId }).then(response => {
+      const filename = Object.keys(response.data.files)[0];
+      return (response.data as any).files[filename].content;
+    });
+  }
+
   public checkFileExistence(fileUrl: string): Thenable<boolean> {
     const fileInfo = this.retrieveFileInfo(fileUrl);
 
