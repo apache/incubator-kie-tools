@@ -22,7 +22,7 @@ import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../tes
 import { GithubService } from "../../common/GithubService";
 import { EditorPage } from "../../editor/EditorPage";
 
-jest.clearAllMocks();
+jest.resetAllMocks();
 
 const onFileNameChanged = jest.fn((file: string) => null);
 const enterFullscreen = jest.fn(() => null);
@@ -45,7 +45,7 @@ function mockFunctions() {
 jest.mock("../../common/Hooks", () => mockFunctions());
 
 afterAll(() => {
-  jest.clearAllMocks();
+  jest.resetAllMocks();
 })
 
 describe("EditorToolbar", () => {
