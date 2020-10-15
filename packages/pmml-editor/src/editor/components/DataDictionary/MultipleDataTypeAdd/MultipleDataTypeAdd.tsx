@@ -70,7 +70,6 @@ const MultipleDataTypeAdd = ({ onAdd, onCancel }: MultipleDataTypeAddProps) => {
                 className="data-dictionary__multiple-data-types"
                 value={input}
                 onChange={handleInputChange}
-                onBlur={validateInput}
                 name="data-types"
                 isRequired={true}
                 id="data-types"

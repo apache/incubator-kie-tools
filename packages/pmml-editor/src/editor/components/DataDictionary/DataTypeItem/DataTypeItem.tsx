@@ -35,14 +35,14 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   const [name, setName] = useState(dataType.name);
   const [typeSelection, setTypeSelection] = useState<string>(dataType.type);
   const [isTypeSelectOpen, setIsTypeSelectOpen] = useState(false);
-  const [isList, setIsList] = useState(false);
+  const [isList, setIsList] = useState(dataType.list);
   const [showConstraints, setShowConstraints] = useState(false);
   const typeOptions = [{ value: "String" }, { value: "Number" }, { value: "Boolean" }];
 
   const ref = useOnclickOutside(() => {
     // this should be split with some kind of validation
     if (editing === index && (index === -1 || name.trim().length > 0)) {
-      onSave({ name, type: typeSelection }, index);
+      onSave({ name, type: typeSelection, list: isList }, index);
     }
   });
 
@@ -78,7 +78,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   };
 
   const handleSave = () => {
-    onSave({ name, type: typeSelection }, index);
+    onSave({ name, type: typeSelection, list: isList }, index);
   };
 
   const handleDelete = () => {
@@ -173,12 +173,19 @@ const DataTypeItem = (props: DataTypeItemProps) => {
         </Form>
       )}
       {editing !== index && (
+        // Change Split to Flex
         <Split hasGutter={true}>
           <SplitItem>
             <strong>{name}</strong>
           </SplitItem>
           <SplitItem isFilled={true}>
             <Label color="blue">{typeSelection}</Label>
+            {isList && (
+              <>
+                {" "}
+                <Label color="cyan">List</Label>
+              </>
+            )}
           </SplitItem>
           <SplitItem>
             <Button variant="plain" onClick={handleEditStatus} isDisabled={editing !== false}>

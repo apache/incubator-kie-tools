@@ -11,7 +11,8 @@ const DataDictionaryContainer = () => {
   const [dataTypes, setDataTypes] = useState<DataType[]>([
     {
       name: "Name",
-      type: "String"
+      type: "String",
+      list: false
     }
   ]);
   const [newType, setNewType] = useState(false);
@@ -55,7 +56,7 @@ const DataDictionaryContainer = () => {
   const handleMultipleAdd = (types: string) => {
     const typesNames = types.split("\n").filter(item => item.trim().length > 0);
     const newDataTypes = typesNames.map(name => {
-      return { name: name.trim(), type: "String" };
+      return { name: name.trim(), type: "String", list: false };
     });
     console.log("new data types following");
     console.log(newDataTypes);
@@ -111,7 +112,12 @@ const DataDictionaryContainer = () => {
                 />
               ))}
               {newType && (
-                <DataTypeItem dataType={{ name: "", type: "String" }} index={-1} key={uuid()} onSave={handleSave} />
+                <DataTypeItem
+                  dataType={{ name: "", type: "String", list: false }}
+                  index={-1}
+                  key={uuid()}
+                  onSave={handleSave}
+                />
               )}
             </StackItem>
           </Stack>
@@ -143,4 +149,5 @@ export default DataDictionaryContainer;
 export interface DataType {
   name: string;
   type: string;
+  list: boolean;
 }
