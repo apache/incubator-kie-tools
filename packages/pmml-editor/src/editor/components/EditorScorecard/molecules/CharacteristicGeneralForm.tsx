@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useState } from "react";
+import { createRef, useEffect } from "react";
 import { Form, FormGroup, TextInput } from "@patternfly/react-core";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 
@@ -24,9 +24,22 @@ interface CharacteristicGeneralFormProps {
 
 export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps) => {
   const { characteristic } = props;
-  const [name, setName] = useState(characteristic?.name);
-  const [reasonCode, setReasonCode] = useState(characteristic?.reasonCode);
-  const [baselineScore, setBaselineScore] = useState(characteristic?.baselineScore);
+
+  const nameRef = createRef<HTMLInputElement>();
+  const reasonCodeRef = createRef<HTMLInputElement>();
+  const baselineScoreRef = createRef<HTMLInputElement>();
+
+  useEffect(() => {
+    if (nameRef.current) {
+      nameRef.current.value = characteristic?.name ?? "";
+    }
+    if (reasonCodeRef.current) {
+      reasonCodeRef.current.value = characteristic?.reasonCode ?? "";
+    }
+    if (baselineScoreRef.current) {
+      baselineScoreRef.current.value = characteristic?.baselineScore?.toString() ?? "";
+    }
+  });
 
   const toNumber = (value: string): number | undefined => {
     if (value === "") {
@@ -43,42 +56,41 @@ export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps)
     <Form>
       <FormGroup
         label="Name"
-        fieldId="characteristic-form-name"
+        fieldId="characteristic-form-name-helper"
         helperText="Please provide a name for the Characteristic."
       >
         <TextInput
           type="text"
           id="characteristic-form-name"
+          ref={nameRef}
           name="characteristic-form-name"
           aria-describedby="characteristic-form-name-helper"
-          value={props.characteristic?.name}
-          onChange={setName}
         />
       </FormGroup>
       <FormGroup
         label="Reason Code"
-        fieldId="characteristic-form-reason-code"
+        fieldId="characteristic-form-reason-code-helper"
         helperText="A Reason Code is mapped to a Business reason."
       >
         <TextInput
           type="text"
           id="characteristic-form-reason-code"
+          ref={reasonCodeRef}
           name="characteristic-form-reason-code"
-          value={props.characteristic?.reasonCode}
-          onChange={setReasonCode}
+          aria-describedby="characteristic-form-reason-code-helper"
         />
       </FormGroup>
       <FormGroup
         label="Baseline score"
-        fieldId="simple-form-number"
+        fieldId="characteristic-form-baseline-score-helper"
         helperText="Helps to determine the ranking of Reason Codes."
       >
         <TextInput
           type="number"
           id="characteristic-form-baseline-score"
+          ref={baselineScoreRef}
           name="characteristic-form-baseline-score"
-          value={props.characteristic?.baselineScore}
-          onChange={value => setBaselineScore(toNumber(value))}
+          aria-describedby="characteristic-form-baseline-score-helper"
         />
       </FormGroup>
     </Form>

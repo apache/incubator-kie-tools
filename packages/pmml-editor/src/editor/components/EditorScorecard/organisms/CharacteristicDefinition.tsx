@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Button,
@@ -8,7 +8,6 @@ import {
   Split,
   SplitItem,
   Tab,
-  TabContent,
   Tabs,
   TabTitleText,
   TextContent,
@@ -27,14 +26,11 @@ interface CharacteristicDefinitionProps {
 
 export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) => {
   const { characteristic, showPanel, hideCharacteristicPanel } = props;
-  const [activeTab, setActiveTab] = useState<React.ReactText>(0);
+  const [activeTabKey, setActiveTabKey] = useState(0);
 
-  const handleTabClick = (event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: React.ReactText) => {
-    setActiveTab(tabIndex);
+  const handleTabClick = (event: React.MouseEvent<HTMLElement, MouseEvent>, index: number) => {
+    setActiveTabKey(index);
   };
-
-  const testTab = useRef(null);
-  const deployTab = useRef(null);
 
   return (
     <div className={`side-panel side-panel--from-right ${showPanel ? "side-panel--is-visible" : ""}`}>
@@ -64,46 +60,14 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
               </Split>
             </PageSection>
             <PageSection variant="light">
-              <Tabs isFilled={true} activeKey={activeTab} onSelect={handleTabClick} isBox={true}>
-                <Tab
-                  eventKey={0}
-                  id="test-tab"
-                  title={
-                    <TabTitleText>
-                      <span>General</span>
-                    </TabTitleText>
-                  }
-                  tabContentRef={testTab}
-                  tabContentId="test-tab-content"
-                />
-                <Tab
-                  eventKey={1}
-                  id="deploy-tab"
-                  title={<TabTitleText>Attributes</TabTitleText>}
-                  tabContentRef={deployTab}
-                  tabContentId="deploy-tab-content"
-                />
+              <Tabs activeKey={activeTabKey} onSelect={handleTabClick} mountOnEnter={true} unmountOnExit={true}>
+                <Tab eventKey={0} title={<TabTitleText>General</TabTitleText>}>
+                  <CharacteristicGeneralForm characteristic={characteristic} />
+                </Tab>
+                <Tab eventKey={1} title={<TabTitleText>Attributes</TabTitleText>}>
+                  <div>More stuff</div>
+                </Tab>
               </Tabs>
-              <div className="test-and-deploy__tabs-content">
-                <div className="test-and-deploy__tabs-scroll">
-                  <TabContent eventKey={0} id="test-tab-content" ref={testTab} aria-label="Test Tab Content">
-                    <PageSection variant={"light"}>
-                      <CharacteristicGeneralForm characteristic={characteristic} />
-                    </PageSection>
-                  </TabContent>
-                  <TabContent
-                    eventKey={1}
-                    id="deploy-tab-content"
-                    ref={deployTab}
-                    aria-label="Deploy Tab Content"
-                    hidden={true}
-                  >
-                    <PageSection variant={"light"}>
-                      <div>Goodbye</div>
-                    </PageSection>
-                  </TabContent>
-                </div>
-              </div>
             </PageSection>
           </Page>
         </div>
