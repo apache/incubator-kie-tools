@@ -27,21 +27,24 @@ interface HistoryButtonsProps {
 
 export const HistoryButtons = (props: HistoryButtonsProps) => {
   return (
-    <Split hasGutter={true} className="history-buttons">
-      <SplitItem>
-        <Button variant="primary" onClick={props.undo}>
-          Undo
-        </Button>
-      </SplitItem>
-      <SplitItem>
-        <Button variant="secondary" onClick={props.redo}>
-          Redo
-        </Button>
-      </SplitItem>
-      <SplitItem>
-        <PMMLModal get={props.get} />
-      </SplitItem>
-    </Split>
+    <div className="history-buttons">
+      <Split hasGutter={true}>
+        <SplitItem>
+          <Button variant="primary" onClick={props.undo}>
+            Undo
+          </Button>
+        </SplitItem>
+        <SplitItem>
+          <Button variant="secondary" onClick={props.redo}>
+            Redo
+          </Button>
+        </SplitItem>
+        <SplitItem>
+          <PMMLModal get={props.get} />
+        </SplitItem>
+      </Split>
+      <hr className="history-buttons__divider" />
+    </div>
   );
 };
 

@@ -68,7 +68,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   ]);
 
   return (
-    <div data-testid="editor-page">
+    <div data-testid="editor-page" style={{ position: "relative" }}>
       <PageSection variant={PageSectionVariants.light} isFilled={false}>
         <Header title={getModelName(props.model)} />
       </PageSection>
