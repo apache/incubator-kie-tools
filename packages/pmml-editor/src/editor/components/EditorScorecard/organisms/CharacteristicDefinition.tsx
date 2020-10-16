@@ -17,6 +17,7 @@ import {
 import { CloseIcon } from "@patternfly/react-icons";
 import "./CharacteristicDefinition.scss";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
+import { CharacteristicGeneralForm } from "../molecules/CharacteristicGeneralForm";
 
 interface CharacteristicDefinitionProps {
   characteristic: Characteristic | undefined;
@@ -87,8 +88,7 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
                 <div className="test-and-deploy__tabs-scroll">
                   <TabContent eventKey={0} id="test-tab-content" ref={testTab} aria-label="Test Tab Content">
                     <PageSection variant={"light"}>
-                      <div>Hello</div>
-                      <div>{characteristic?.name}</div>
+                      <CharacteristicGeneralForm characteristic={characteristic} />
                     </PageSection>
                   </TabContent>
                   <TabContent
