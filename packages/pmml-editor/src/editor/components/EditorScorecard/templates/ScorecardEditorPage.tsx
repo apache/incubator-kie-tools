@@ -23,6 +23,7 @@ import { getModelName } from "../../../utils";
 import { Actions } from "../../../reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { CharacteristicsToolbar } from "../molecules";
+import { CharacteristicDefinition } from "../organisms/CharacteristicDefinition";
 
 interface ScorecardEditorPageProps {
   path: string;
@@ -34,6 +35,11 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const dispatch = useDispatch();
 
   const [filter, setFilter] = useState("");
+  const [showCharacteristicPanel, setShowCharacteristicPanel] = useState(false);
+
+  const characteristicsPanelToggle = useCallback(() => {
+    setShowCharacteristicPanel(!showCharacteristicPanel);
+  }, [showCharacteristicPanel]);
 
   const onAddCharacteristic = useCallback(() => window.alert("Add Characteristic"), []);
 
@@ -101,7 +107,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
           <CharacteristicsToolbar onFilter={setFilter} onAddCharacteristic={onAddCharacteristic} />
           <CharacteristicsTable
             characteristics={filteredCharacteristics}
-            onRowClick={index => window.alert(`row click ${index}`)}
+            onRowClick={index => characteristicsPanelToggle()}
             onRowDelete={index => {
               if (window.confirm(`Delete Characteristic "${index}"?`)) {
                 dispatch({
@@ -116,6 +122,13 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
             onAddCharacteristic={onAddCharacteristic}
           />
         </PageSection>
+      </PageSection>
+
+      <PageSection isFilled={true} style={{ padding: 0 }}>
+        <CharacteristicDefinition
+          showPanel={showCharacteristicPanel}
+          characteristicsPanelToggle={characteristicsPanelToggle}
+        />
       </PageSection>
     </div>
   );
