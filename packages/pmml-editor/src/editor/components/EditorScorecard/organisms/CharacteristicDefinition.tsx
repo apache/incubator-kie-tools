@@ -16,14 +16,16 @@ import {
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
 import "./CharacteristicDefinition.scss";
+import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface CharacteristicDefinitionProps {
+  characteristic: Characteristic | undefined;
   showPanel: boolean;
   hideCharacteristicPanel: () => void;
 }
 
 export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) => {
-  const { showPanel, hideCharacteristicPanel } = props;
+  const { characteristic, showPanel, hideCharacteristicPanel } = props;
   const [activeTab, setActiveTab] = useState<React.ReactText>(0);
 
   const handleTabClick = (event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: React.ReactText) => {
@@ -86,6 +88,7 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
                   <TabContent eventKey={0} id="test-tab-content" ref={testTab} aria-label="Test Tab Content">
                     <PageSection variant={"light"}>
                       <div>Hello</div>
+                      <div>{characteristic?.name}</div>
                     </PageSection>
                   </TabContent>
                   <TabContent

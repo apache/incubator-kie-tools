@@ -17,7 +17,7 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { Header } from "../../Header/molecules";
-import { Characteristics, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Characteristic, Characteristics, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicsTable, CorePropertiesTable, IndexedCharacteristic } from "../organisms";
 import { getModelName } from "../../../utils";
 import { Actions } from "../../../reducers";
@@ -36,8 +36,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
   const [filter, setFilter] = useState("");
   const [showCharacteristicPanel, setShowCharacteristicPanel] = useState(false);
-
-  const onAddCharacteristic = useCallback(() => window.alert("Add Characteristic"), []);
+  const [selectedCharacteristic, setSelectedCharacteristic] = useState<Characteristic | undefined>(undefined);
 
   const characteristics: Characteristics | undefined = useSelector<PMML, Characteristics | undefined>((state: PMML) => {
     const model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
@@ -46,6 +45,15 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     }
     return undefined;
   });
+
+  const onAddCharacteristic = useCallback(() => window.alert("Add Characteristic"), []);
+  const selectCharacteristic = useCallback(
+    index => {
+      setShowCharacteristicPanel(true);
+      setSelectedCharacteristic(characteristics?.Characteristic[index]);
+    },
+    [characteristics]
+  );
 
   const filterCharacteristics = useCallback((): IndexedCharacteristic[] => {
     const _lowerCaseFilter = filter.toLowerCase();
@@ -103,7 +111,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
           <CharacteristicsToolbar onFilter={setFilter} onAddCharacteristic={onAddCharacteristic} />
           <CharacteristicsTable
             characteristics={filteredCharacteristics}
-            onRowClick={index => setShowCharacteristicPanel(true)}
+            onRowClick={index => selectCharacteristic(index)}
             onRowDelete={index => {
               if (window.confirm(`Delete Characteristic "${index}"?`)) {
                 dispatch({
@@ -122,6 +130,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
       <PageSection isFilled={true} style={{ padding: 0 }}>
         <CharacteristicDefinition
+          characteristic={selectedCharacteristic}
           showPanel={showCharacteristicPanel}
           hideCharacteristicPanel={() => setShowCharacteristicPanel(false)}
         />
