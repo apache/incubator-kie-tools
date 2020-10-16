@@ -37,10 +37,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const [filter, setFilter] = useState("");
   const [showCharacteristicPanel, setShowCharacteristicPanel] = useState(false);
 
-  const characteristicsPanelToggle = useCallback(() => {
-    setShowCharacteristicPanel(!showCharacteristicPanel);
-  }, [showCharacteristicPanel]);
-
   const onAddCharacteristic = useCallback(() => window.alert("Add Characteristic"), []);
 
   const characteristics: Characteristics | undefined = useSelector<PMML, Characteristics | undefined>((state: PMML) => {
@@ -107,7 +103,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
           <CharacteristicsToolbar onFilter={setFilter} onAddCharacteristic={onAddCharacteristic} />
           <CharacteristicsTable
             characteristics={filteredCharacteristics}
-            onRowClick={index => characteristicsPanelToggle()}
+            onRowClick={index => setShowCharacteristicPanel(true)}
             onRowDelete={index => {
               if (window.confirm(`Delete Characteristic "${index}"?`)) {
                 dispatch({
@@ -127,7 +123,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
       <PageSection isFilled={true} style={{ padding: 0 }}>
         <CharacteristicDefinition
           showPanel={showCharacteristicPanel}
-          characteristicsPanelToggle={characteristicsPanelToggle}
+          hideCharacteristicPanel={() => setShowCharacteristicPanel(false)}
         />
       </PageSection>
     </div>

@@ -62,14 +62,6 @@ export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> 
           draft.useReasonCodes = action.payload.useReasonCodes;
           draft.reasonCodeAlgorithm = action.payload.reasonCodeAlgorithm;
         });
-
-      case Actions.Scorecard_DeleteCharacteristic:
-        return service.mutate(state, `models[${action.payload.modelIndex}].Characteristics.Characteristic`, draft => {
-          const characteristicIndex = action.payload.characteristicIndex;
-          if (characteristicIndex >= 0 && characteristicIndex < draft.Characteristics.Characteristic.length) {
-            draft.Characteristics.Characteristic.splice(characteristicIndex, 1);
-          }
-        });
     }
 
     return state;

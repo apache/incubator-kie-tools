@@ -19,11 +19,11 @@ import "./CharacteristicDefinition.scss";
 
 interface CharacteristicDefinitionProps {
   showPanel: boolean;
-  characteristicsPanelToggle: () => void;
+  hideCharacteristicPanel: () => void;
 }
 
 export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) => {
-  const { showPanel, characteristicsPanelToggle } = props;
+  const { showPanel, hideCharacteristicPanel } = props;
   const [activeTab, setActiveTab] = useState<React.ReactText>(0);
 
   const handleTabClick = (event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: React.ReactText) => {
@@ -38,7 +38,7 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
       <div className="side-panel__container">
         <div className="side-panel__content">
           <Page>
-            <PageSection>
+            <PageSection variant="light">
               <Split hasGutter={true} style={{ width: "100%" }}>
                 <SplitItem>
                   <TextContent>
@@ -53,14 +53,14 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
                     id="close-characteristic-panel-button"
                     data-testid="characteristic-panel__close-panel"
                     variant="link"
-                    onClick={e => characteristicsPanelToggle()}
+                    onClick={e => hideCharacteristicPanel()}
                   >
                     <CloseIcon />
                   </Button>
                 </SplitItem>
               </Split>
             </PageSection>
-            <PageSection>
+            <PageSection variant="light">
               <Tabs isFilled={true} activeKey={activeTab} onSelect={handleTabClick} isBox={true}>
                 <Tab
                   eventKey={0}
