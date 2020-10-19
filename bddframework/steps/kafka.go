@@ -16,7 +16,6 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoinfra/kafka"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
@@ -44,5 +43,5 @@ func (data *Data) kafkaInstanceIsDeployed(name string) error {
 }
 
 func (data *Data) kafkaTopicIsDeployed(name string) error {
-	return framework.DeployKafkaTopic(data.Namespace, name, kafka.InstanceName)
+	return framework.DeployKafkaTopic(data.Namespace, name, infrastructure.KafkaInstanceName)
 }

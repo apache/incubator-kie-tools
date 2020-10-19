@@ -21,7 +21,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	kogitores "github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitobuild/build"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 )
 
 const (
@@ -44,19 +44,19 @@ type kogitoApplicationDockerfileProviderStruct struct {
 }
 
 var quarkusNonNativeKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               kogitores.KogitoQuarkusJVMUbi8Image,
+	imageName:               infrastructure.KogitoQuarkusJVMUbi8Image,
 	applicationBinarySuffix: quarkusJVMApplicationBinarySuffix,
 	libFolderNeeded:         true,
 }
 
 var quarkusNativeKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               kogitores.KogitoQuarkusUbi8Image,
+	imageName:               infrastructure.KogitoQuarkusUbi8Image,
 	applicationBinarySuffix: quarkusNativeApplicationBinarySuffix,
 	libFolderNeeded:         false,
 }
 
 var springbootKogitoApplicationDockerfileProvider = kogitoApplicationDockerfileProviderStruct{
-	imageName:               kogitores.KogitoSpringBootUbi8Image,
+	imageName:               infrastructure.KogitoSpringBootUbi8Image,
 	applicationBinarySuffix: springBootApplicationBinarySuffix,
 	libFolderNeeded:         false,
 }

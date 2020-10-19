@@ -19,9 +19,7 @@ import (
 
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoinfra/infinispan"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoinfra/kafka"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitoinfra/keycloak"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
@@ -74,12 +72,12 @@ func GetKogitoInfraResourceStub(namespace, name, targetResourceType string) (*v1
 // Converts infra resource from name to Resource struct
 func parseKogitoInfraResource(targetResourceType string) (*v1alpha1.Resource, error) {
 	switch targetResourceType {
-	case infinispan.Kind:
-		return &v1alpha1.Resource{APIVersion: infinispan.APIVersion, Kind: infinispan.Kind}, nil
-	case kafka.Kind:
-		return &v1alpha1.Resource{APIVersion: kafka.APIVersion, Kind: kafka.Kind}, nil
-	case keycloak.Kind:
-		return &v1alpha1.Resource{APIVersion: keycloak.APIVersion, Kind: keycloak.Kind}, nil
+	case infrastructure.InfinispanKind:
+		return &v1alpha1.Resource{APIVersion: infrastructure.InfinispanAPIVersion, Kind: infrastructure.InfinispanKind}, nil
+	case infrastructure.KafkaKind:
+		return &v1alpha1.Resource{APIVersion: infrastructure.KafkaAPIVersion, Kind: infrastructure.KafkaKind}, nil
+	case infrastructure.KeycloakKind:
+		return &v1alpha1.Resource{APIVersion: infrastructure.KeycloakAPIVersion, Kind: infrastructure.KeycloakKind}, nil
 	default:
 		return nil, fmt.Errorf("Unknown KogitoInfra target resource type %s", targetResourceType)
 	}

@@ -17,11 +17,10 @@ package framework
 import (
 	"fmt"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/controller/kogitobuild/build"
-
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
@@ -117,16 +116,16 @@ func getKogitoBuildS2IImage(kogitoBuild *v1alpha1.KogitoBuild) string {
 		return config.GetBuildS2IImageStreamTag()
 	}
 
-	return getKogitoBuildImage(build.KogitoImages[kogitoBuild.Spec.Runtime][true])
+	return getKogitoBuildImage(infrastructure.KogitoImages[kogitoBuild.Spec.Runtime][true])
 }
 
 func getKogitoBuildRuntimeImage(kogitoBuild *v1alpha1.KogitoBuild) string {
 	if len(config.GetBuildRuntimeImageStreamTag()) > 0 {
 		return config.GetBuildRuntimeImageStreamTag()
 	}
-	imageName := build.KogitoImages[kogitoBuild.Spec.Runtime][false]
+	imageName := infrastructure.KogitoImages[kogitoBuild.Spec.Runtime][false]
 	if kogitoBuild.Spec.Native {
-		imageName = build.KogitoQuarkusUbi8Image
+		imageName = infrastructure.KogitoQuarkusUbi8Image
 	}
 	return getKogitoBuildImage(imageName)
 }
