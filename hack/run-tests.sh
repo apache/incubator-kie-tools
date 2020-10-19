@@ -79,6 +79,7 @@ function usage(){
   # build
   printf "\n--custom_maven_repo {URI}\n\tSet a custom Maven repository url for S2I builds, in case your artifacts are in a specific repository. See https://github.com/kiegroup/kogito-images/README.md for more information."
   printf "\n--maven_mirror {URI}\n\tMaven mirror url to be used when building app in the tests."
+  printf "\n--maven_ignore_self_signed_certificate\n\tSet to true if maven build need to ignore self-signed certificate. This could happen when using internal maven mirror url."
   printf "\n--build_image_registry {REGISTRY}\n\tSet the build image registry."
   printf "\n--build_image_namespace {NAMESPACE}\n\tSet the build image namespace."
   printf "\n--build_image_name_suffix {NAMESPACE}\n\tSet the build image name suffix to append to usual image names."
@@ -313,6 +314,10 @@ case $1 in
   --maven_mirror)
     shift
     if addParamKeyValueIfAccepted "--tests.maven-mirror-url" ${1}; then shift; fi
+  ;;
+  --maven_ignore_self_signed_certificate)
+    addParam "--tests.maven-ignore-self-signed-certificate"
+    shift
   ;;
   --build_image_registry)
     shift

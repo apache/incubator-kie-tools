@@ -647,6 +647,18 @@ setup() {
     [[ "${output}" != *"--tests.maven-mirror-url"* ]]
 }
 
+@test "invoke run-tests with maven_ignore_self_signed_certificate" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --maven_ignore_self_signed_certificate --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.maven-ignore-self-signed-certificate" ]]
+}
+
+@test "invoke run-tests without maven_ignore_self_signed_certificate" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.maven-ignore-self-signed-certificate"* ]]
+}
+
 @test "invoke run-tests with build_image_registry" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --build_image_registry registry --dry_run
     [ "$status" -eq 0 ]
