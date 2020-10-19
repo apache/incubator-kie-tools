@@ -62,6 +62,7 @@ type TestConfig struct {
 	// build
 	customMavenRepoURL                 string
 	mavenMirrorURL                     string
+	mavenIgnoreSelfSignedCertificate   bool
 	buildImageRegistry                 string
 	buildImageNamespace                string
 	buildImageNameSuffix               string
@@ -147,6 +148,7 @@ func BindFlags(set *flag.FlagSet) {
 	// build
 	set.StringVar(&env.customMavenRepoURL, prefix+"custom-maven-repo-url", "", "Set a custom Maven repository url for S2I builds, in case your artifacts are in a specific repository. See https://github.com/kiegroup/kogito-images/README.md for more information")
 	set.StringVar(&env.mavenMirrorURL, prefix+"maven-mirror-url", "", "Maven mirror url to be used when building app in the tests")
+	set.BoolVar(&env.mavenIgnoreSelfSignedCertificate, prefix+"maven-ignore-self-signed-certificate", false, "Set to true if maven build need to ignore self-signed certificate. This could happen when using internal maven mirror url.")
 	set.StringVar(&env.buildImageRegistry, prefix+"build-image-registry", "", "Set the build image registry")
 	set.StringVar(&env.buildImageNamespace, prefix+"build-image-namespace", "", "Set the build image namespace")
 	set.StringVar(&env.buildImageNameSuffix, prefix+"build-image-name-suffix", "", "Set the build image name suffix")
@@ -326,6 +328,11 @@ func GetCustomMavenRepoURL() string {
 // GetMavenMirrorURL return the maven mirror url used for building applications
 func GetMavenMirrorURL() string {
 	return env.mavenMirrorURL
+}
+
+// IsMavenIgnoreSelfSignedCertificate return whether self-signed certficate should be ignored
+func IsMavenIgnoreSelfSignedCertificate() bool {
+	return env.mavenIgnoreSelfSignedCertificate
 }
 
 // GetBuildImageRegistry return the registry for the build images

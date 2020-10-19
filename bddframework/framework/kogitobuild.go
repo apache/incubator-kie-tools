@@ -91,6 +91,10 @@ func GetKogitoBuildStub(namespace, runtimeType, name string) *v1alpha1.KogitoBui
 		kogitoBuild.Spec.Env = framework.EnvOverride(kogitoBuild.Spec.Env, corev1.EnvVar{Name: "MAVEN_REPO_URL", Value: config.GetCustomMavenRepoURL()})
 	}
 
+	if config.IsMavenIgnoreSelfSignedCertificate() {
+		kogitoBuild.Spec.Env = framework.EnvOverride(kogitoBuild.Spec.Env, corev1.EnvVar{Name: "MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE", Value: "true"})
+	}
+
 	return kogitoBuild
 }
 
