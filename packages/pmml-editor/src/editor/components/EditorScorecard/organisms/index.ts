@@ -16,4 +16,5 @@
 
 export * from "./CorePropertiesTable";
 export * from "./CharacteristicsTable";
+export * from "./CharacteristicDefinition";
 export * from "./EmptyStateNoCharacteristics";

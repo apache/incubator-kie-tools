@@ -23,12 +23,11 @@ import {
   CardTitle,
   Tooltip
 } from "@patternfly/react-core";
-import { getModelName, getModelType, ModelType } from "../../..";
+import { ModelType } from "../../..";
 import * as React from "react";
-import { Model } from "@kogito-tooling/pmml-editor-marshaller";
+import { useCallback } from "react";
 import "./ModelCard.scss";
 import { ModelCardIcon } from "../atoms";
-import { useCallback } from "react";
 
 interface ModelCardProps {
   index: number | undefined;

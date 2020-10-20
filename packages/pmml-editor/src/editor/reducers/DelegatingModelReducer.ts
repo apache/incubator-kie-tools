@@ -17,7 +17,7 @@ import { HistoryAwareModelReducer, HistoryService, ModelReducerBinding } from ".
 import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 import { AllScorecardActions } from "./ScorecardReducer";
-import { getModelType, ModelType } from "../utils";
+import { getModelType, ModelType } from "..";
 
 export const DelegatingModelReducer: HistoryAwareModelReducer<AllScorecardActions> = (
   service: HistoryService,

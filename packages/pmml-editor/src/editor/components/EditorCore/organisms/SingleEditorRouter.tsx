@@ -16,7 +16,7 @@
 import * as React from "react";
 import { useParams } from "react-router-dom";
 import { ScorecardEditorPage } from "../../EditorScorecard/templates";
-import { getModelType, isSupportedModelType } from "../../../utils";
+import { getModelType, isSupportedModelType } from "../../..";
 import { Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { useSelector } from "react-redux";
 import { EmptyStateModelNotFound } from ".";

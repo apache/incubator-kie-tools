@@ -15,3 +15,4 @@
  */
 
 export * from "./CharacteristicsToolbar";
+export * from "./CharacteristicGeneralForm";

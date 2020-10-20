@@ -15,7 +15,7 @@
  */
 import { Reducer } from "react";
 import { HistoryService } from "./HistoryProvider";
-import { ModelType } from "../utils";
+import { ModelType } from "..";
 import { Model } from "@kogito-tooling/pmml-editor-marshaller";
 
 export type HistoryAwareReducer<S, A> = (service: HistoryService) => Reducer<S, A>;

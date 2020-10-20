@@ -19,7 +19,7 @@ import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { Header } from "../../Header/molecules";
 import { Characteristic, Characteristics, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicsTable, CorePropertiesTable, IndexedCharacteristic } from "../organisms";
-import { getModelName } from "../../../utils";
+import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { CharacteristicsToolbar } from "../molecules";

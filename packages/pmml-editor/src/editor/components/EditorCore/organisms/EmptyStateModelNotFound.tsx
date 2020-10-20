@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
-import ExclamationTriangleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons";
 
 export const EmptyStateModelNotFound = () => (
   <EmptyState data-testid="empty-state-model-not-found" variant={EmptyStateVariant.small}>

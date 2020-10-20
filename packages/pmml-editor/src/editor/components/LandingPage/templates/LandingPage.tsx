@@ -20,8 +20,8 @@ import { EmptyStateNoModels } from "../organisms";
 import { v4 as uuid } from "uuid";
 import { Model, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useDispatch, useSelector } from "react-redux";
-import { getModelName, isSupportedModelType } from "../../..";
-import { ActionSelector, ModelCard } from "../molecules";
+import { getModelName, getModelType, isSupportedModelType, ModelType } from "../../..";
+import { LandingPageToolbar, ModelCard } from "../molecules";
 import { Actions } from "../../../reducers";
 import { Header } from "../../Header/molecules";
 import { useHistory } from "react-router";
@@ -36,11 +36,6 @@ export const LandingPage = (props: LandingPageProps) => {
 
   const [filter, setFilter] = useState("");
   const [showUnsupportedModels, setShowUnsupportedModels] = useState(true);
-
-  const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>((state: PMML) => state.models);
-  const hasUnsupportedModels = useMemo(() => (models ?? []).find(model => !isSupportedModelType(model)) !== undefined, [
-    models
-  ]);
 
   const models: Model[] | undefined = useSelector<PMML, Model[] | undefined>((state: PMML) => state.models);
   const hasUnsupportedModels = useMemo(() => (models ?? []).find(model => !isSupportedModelType(model)) !== undefined, [
@@ -70,15 +65,26 @@ export const LandingPage = (props: LandingPageProps) => {
     [history]
   );
 
+  const onDelete = useCallback((index: number, modelName: string) => {
+    if (window.confirm(`Delete Model "${modelName}"?`)) {
+      dispatch({
+        type: Actions.DeleteModel,
+        payload: {
+          modelIndex: index
+        }
+      });
+    }
+  }, []);
+
   return (
     <div data-testid="landing-page">
       <PageSection variant={PageSectionVariants.light}>
         <Header title={props.path} />
         <LandingPageToolbar
-          setFilter={setFilter}
+          onFilter={setFilter}
           hasUnsupportedModels={hasUnsupportedModels}
           showUnsupportedModels={showUnsupportedModels}
-          setShowUnsupportedModels={setShowUnsupportedModels}
+          onShowUnsupportedModels={setShowUnsupportedModels}
         />
       </PageSection>
 
@@ -99,16 +105,7 @@ export const LandingPage = (props: LandingPageProps) => {
                       modelName={modelName}
                       modelType={modelType}
                       onClick={goToModel}
-                      onDelete={(_model: Model) => {
-                        if (window.confirm(`Delete Model "${modelName}"?`)) {
-                          dispatch({
-                            type: Actions.DeleteModel,
-                            payload: {
-                              modelIndex: index
-                            }
-                          });
-                        }
-                      }}
+                      onDelete={_index => onDelete(_index, modelName)}
                     />
                   </GalleryItem>
                 );

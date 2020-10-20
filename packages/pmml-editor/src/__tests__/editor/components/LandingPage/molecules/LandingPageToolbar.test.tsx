@@ -29,9 +29,9 @@ describe("LandingPageToolbar", () => {
   test("render::Has unsupported models", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
-        setFilter={setFilter}
+        onFilter={setFilter}
         hasUnsupportedModels={true}
-        setShowUnsupportedModels={setShowUnsupportedModels}
+        onShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
     );
@@ -41,9 +41,9 @@ describe("LandingPageToolbar", () => {
   test("render::Has no unsupported models", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
-        setFilter={setFilter}
+        onFilter={setFilter}
         hasUnsupportedModels={false}
-        setShowUnsupportedModels={setShowUnsupportedModels}
+        onShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
     );
@@ -53,9 +53,9 @@ describe("LandingPageToolbar", () => {
   test("render::Has no unsupported models", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
-        setFilter={setFilter}
+        onFilter={setFilter}
         hasUnsupportedModels={false}
-        setShowUnsupportedModels={setShowUnsupportedModels}
+        onShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
     );
@@ -65,9 +65,9 @@ describe("LandingPageToolbar", () => {
   test("render::setFilter::Submit", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
-        setFilter={setFilter}
+        onFilter={setFilter}
         hasUnsupportedModels={false}
-        setShowUnsupportedModels={setShowUnsupportedModels}
+        onShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
     );
@@ -88,9 +88,9 @@ describe("LandingPageToolbar", () => {
   test("render::setShowUnsupportedModels", () => {
     const { getByTestId } = render(
       <LandingPageToolbar
-        setFilter={setFilter}
+        onFilter={setFilter}
         hasUnsupportedModels={true}
-        setShowUnsupportedModels={setShowUnsupportedModels}
+        onShowUnsupportedModels={setShowUnsupportedModels}
         showUnsupportedModels={true}
       />
     );
