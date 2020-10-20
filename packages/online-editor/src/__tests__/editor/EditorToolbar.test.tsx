@@ -22,8 +22,6 @@ import { usingTestingGlobalContext, usingTestingOnlineI18nContext } from "../tes
 import { GithubService } from "../../common/GithubService";
 import { EditorPage } from "../../editor/EditorPage";
 
-jest.resetAllMocks();
-
 const onFileNameChanged = jest.fn((file: string) => null);
 const enterFullscreen = jest.fn(() => null);
 const requestSave = jest.fn(() => null);
