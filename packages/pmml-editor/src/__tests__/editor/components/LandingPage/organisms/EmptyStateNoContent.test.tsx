@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { render } from "@testing-library/react";
+import * as React from "react";
+import { EmptyStateNoContent } from "../../../../../editor/components/LandingPage/organisms";
 
-import "@patternfly/patternfly/patternfly.css";
-
-export * from "./PMMLEditor";
-export * from "./PMMLEditorFactory";
-export * from "./PMMLEditorInterface";
-export * from "./PMMLModelHelper";
+describe("EmptyStateNoContent", () => {
+  test("render", () => {
+    const { getByTestId } = render(<EmptyStateNoContent />);
+    expect(getByTestId("empty-state-no-content")).toMatchSnapshot();
+  });
+});

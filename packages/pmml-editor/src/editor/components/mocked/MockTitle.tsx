@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as React from "react";
 
-import "@patternfly/patternfly/patternfly.css";
+interface TitleProps {
+  title: string;
+}
 
-export * from "./PMMLEditor";
-export * from "./PMMLEditorFactory";
-export * from "./PMMLEditorInterface";
-export * from "./PMMLModelHelper";
+export const Title = (props: TitleProps) => {
+  return <h1 className="pf-c-title pf-m-xl">{props.title}</h1>;
+};

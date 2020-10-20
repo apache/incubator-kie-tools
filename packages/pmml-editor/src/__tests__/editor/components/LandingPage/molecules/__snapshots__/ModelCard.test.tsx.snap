@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ModelCard render::Basics 1`] = `
+<article
+  class="pf-c-card pf-m-hoverable model-card"
+  data-testid="model-card"
+>
+  <div
+    class="pf-c-card__header"
+  >
+    <div
+      class=""
+    >
+      <img
+        alt="Scorecard"
+        class="model-card__icon"
+        data-testid="model-card__icon"
+        src="images/card-icon-scorecard.svg"
+      />
+    </div>
+  </div>
+  <div
+    class="pf-c-card__title model-card__title"
+  >
+    <span
+      data-testid="model-card__title"
+    >
+      Name
+    </span>
+  </div>
+   
+  <div
+    class="pf-c-card__body"
+  >
+    <div
+      data-testid="model-card__model-type"
+    >
+      Scorecard
+    </div>
+  </div>
+  <div
+    class="pf-c-card__footer"
+  >
+    <button
+      aria-disabled="false"
+      class="pf-c-button pf-m-primary"
+      data-ouia-component-id="0"
+      data-ouia-component-type="PF4/Button"
+      data-ouia-safe="true"
+      data-testid="model-card__delete"
+      type="button"
+    >
+      Delete
+    </button>
+  </div>
+</article>
+`;

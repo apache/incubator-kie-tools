@@ -13,10 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { getModelIconUrlByType, ModelType } from "../../..";
+import * as React from "react";
+import "./ModelCardIcon.scss";
 
-import "@patternfly/patternfly/patternfly.css";
+interface ModelIconProps {
+  type: ModelType;
+}
 
-export * from "./PMMLEditor";
-export * from "./PMMLEditorFactory";
-export * from "./PMMLEditorInterface";
-export * from "./PMMLModelHelper";
+export const ModelCardIcon = (props: ModelIconProps) => {
+  const { type } = props;
+  const modelIconUrl: string = getModelIconUrlByType(type);
+
+  return <img data-testid="model-card__icon" src={modelIconUrl} alt={type} className="model-card__icon" />;
+};

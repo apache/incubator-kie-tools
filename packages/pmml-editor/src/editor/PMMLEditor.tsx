@@ -17,22 +17,18 @@ import { KogitoEditorChannelApi } from "@kogito-tooling/editor/dist/api";
 import { MessageBusClientApi } from "@kogito-tooling/envelope-bus/dist/api";
 import * as React from "react";
 import { Reducer } from "react";
-import { HistoryLog, StateButtons } from "./MockHistoryUI";
 import { enableAllPlugins } from "immer";
-import MockVersionUI from "./MockVersionUI";
-import MockDataFieldsUI from "./MockDataFieldsUI";
-import MockSummaryUI from "./MockSummaryUI";
-import MockHeaderUI from "./MockHeaderUI";
 import { createStore, Store } from "redux";
-import { PMMLReducer } from "./reducers/PMMLReducer";
-import { AllActions } from "./reducers/Actions";
-import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { Actions, AllActions, DataDictionaryReducer, DataFieldReducer, HeaderReducer, PMMLReducer } from "./reducers";
+import { PMML, PMML2XML, XML2PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { Provider } from "react-redux";
 import mergeReducers from "combine-reducer";
-import { HeaderReducer } from "./reducers/HeaderReducer";
-import { DataDictionaryReducer } from "./reducers/DataDictionaryReducer";
-import { DataFieldReducer } from "./reducers/DataFieldReducer";
-import { HistoryService } from "./history/HistoryProvider";
+import { HistoryService } from "./history";
+import { LandingPage } from "./components/LandingPage/templates";
+import { Page } from "@patternfly/react-core";
+import { HashRouter } from "react-router-dom";
+import { Route, Switch } from "react-router";
+import { EmptyStateNoContent } from "./components/LandingPage/organisms";
 
 export interface Props {
   exposing: (s: PMMLEditor) => void;
@@ -46,7 +42,7 @@ export interface State {
 }
 
 export class PMMLEditor extends React.Component<Props, State> {
-  private readonly store: Store<PMML, AllActions>;
+  private store: Store<PMML, AllActions> | undefined;
   private readonly service: HistoryService = new HistoryService();
   private readonly reducer: Reducer<PMML, AllActions>;
 
@@ -65,14 +61,6 @@ export class PMMLEditor extends React.Component<Props, State> {
       Header: HeaderReducer(this.service),
       DataDictionary: mergeReducers(DataDictionaryReducer(this.service), { DataField: DataFieldReducer(this.service) })
     });
-
-    this.store = createStore(this.reducer, {
-      Header: { description: "" },
-      DataDictionary: {
-        DataField: []
-      },
-      version: "1.0"
-    });
   }
 
   public componentDidMount(): void {
@@ -80,44 +68,68 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   public setContent(path: string, content: string): Promise<void> {
-    return new Promise<void>(res => this.setState({ path: path, content: content, originalContent: content }, res));
+    return Promise.resolve(this.doSetContent(path, content));
+  }
+
+  private doSetContent(path: string, content: string): void {
+    this.store = createStore(this.reducer, XML2PMML(content));
+    this.setState({ path: path, content: content, originalContent: content });
   }
 
   public getContent(): Promise<string> {
-    return new Promise<string>(res => this.state.content);
+    return Promise.resolve(this.doGetContent());
+  }
+
+  private doGetContent(): string {
+    const pmml: PMML | undefined = this.store?.getState();
+    return pmml ? PMML2XML(pmml) : "";
+  }
+
+  public async undo(): Promise<void> {
+    return Promise.resolve(this.doUndo());
+  }
+
+  private doUndo(): void {
+    const pmml: PMML | undefined = this.store?.getState();
+    if (pmml !== undefined) {
+      this.store?.dispatch({
+        type: Actions.Undo,
+        payload: undefined
+      });
+    }
+  }
+
+  public async redo(): Promise<void> {
+    return Promise.resolve(this.doRedo());
+  }
+
+  private doRedo(): void {
+    const pmml: PMML | undefined = this.store?.getState();
+    if (pmml !== undefined) {
+      this.store?.dispatch({
+        type: Actions.Redo,
+        payload: undefined
+      });
+    }
   }
 
   public render() {
-    return (
-      <Provider store={this.store}>
-        <StateButtons />
-        <hr />
-        <MockVersionUI />
-        <hr />
-        <MockHeaderUI />
-        <hr />
-        <MockDataFieldsUI />
-        <hr />
-        <MockSummaryUI />
-        <hr />
-        <HistoryLog service={this.service} />
-      </Provider>
-    );
+    if (this.store) {
+      return (
+        <HashRouter>
+          <Page>
+            <Provider store={this.store}>
+              <Switch>
+                <Route exact={true} path={"/"}>
+                  <LandingPage path={this.state.path} />
+                </Route>
+              </Switch>
+            </Provider>
+          </Page>
+        </HashRouter>
+      );
+    } else {
+      return <EmptyStateNoContent />;
+    }
   }
 }
-
-export const Timestamp = () => {
-  return (
-    <div>
-      <sub>Rendered: {new Date().getTime()}</sub>
-    </div>
-  );
-};
-
-interface TitleProps {
-  title: string;
-}
-
-export const Title = (props: TitleProps) => {
-  return <h1 className="pf-c-title pf-m-xl">{props.title}</h1>;
-};

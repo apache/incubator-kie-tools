@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as React from "react";
 
-import "@patternfly/patternfly/patternfly.css";
-
-export * from "./PMMLEditor";
-export * from "./PMMLEditorFactory";
-export * from "./PMMLEditorInterface";
-export * from "./PMMLModelHelper";
+export const Timestamp = () => {
+  return (
+    <div>
+      <sub>Rendered: {new Date().getTime()}</sub>
+    </div>
+  );
+};

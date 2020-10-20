@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+.model-card {
 
-import "@patternfly/patternfly/patternfly.css";
+  &__icon {
+    height: 32px;
+    width: 32px;
+  }
 
-export * from "./PMMLEditor";
-export * from "./PMMLEditorFactory";
-export * from "./PMMLEditorInterface";
-export * from "./PMMLModelHelper";
+}

@@ -16,7 +16,6 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
@@ -25,16 +24,20 @@ let config = merge(common, {
   entry: {
     "editor/index": "./src/editor/index.ts"
   },
-  output: {
-    libraryTarget: "umd",
-    globalObject: "this"
-  },
+  plugins: [new CopyPlugin([{ from: "./static/images", to: "./images" }])],
   module: {
     rules: [...pfWebpackOptions.patternflyRules]
   }
 });
 
 module.exports = (env, argv) => {
+  if (argv.mode === "production") {
+    config = merge(config, {
+      mode: "production",
+      devtool: "none"
+    });
+  }
+
   if (argv.mode === "development") {
     config = merge(config, {
       entry: {
@@ -44,10 +47,10 @@ module.exports = (env, argv) => {
         new CopyPlugin([
           { from: "./src/showcase/static/resources", to: "./showcase/resources" },
           { from: "./src/showcase/static/index.html", to: "./showcase/index.html" },
-          { from: "./src/showcase/static/favicon.ico", to: "./showcase/favicon.ico" }
+          { from: "./src/showcase/static/favicon.ico", to: "./showcase/favicon.ico" },
+          { from: "./static/images", to: "./showcase/images" }
         ])
       ],
-      devtool: "source-map",
       devServer: {
         historyApiFallback: true,
         disableHostCheck: true,
@@ -60,12 +63,6 @@ module.exports = (env, argv) => {
         hot: true,
         overlay: true
       }
-    });
-  }
-
-  if (argv.mode === "production") {
-    config = merge(config, {
-      externals: [nodeExternals({ modulesDir: "../../node_modules" })]
     });
   }
 

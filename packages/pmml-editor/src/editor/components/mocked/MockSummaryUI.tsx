@@ -13,10 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as React from "react";
+import { CSSProperties } from "react";
+import { useSelector } from "react-redux";
+import { Timestamp, Title } from ".";
+import { PMML } from "@kogito-tooling/pmml-editor-marshaller";
 
-import "@patternfly/patternfly/patternfly.css";
+const style: CSSProperties = {
+  padding: "5px 5px 5px 5px"
+};
 
-export * from "./PMMLEditor";
-export * from "./PMMLEditorFactory";
-export * from "./PMMLEditorInterface";
-export * from "./PMMLModelHelper";
+const MockSummaryUI = () => {
+  const pmml: PMML = useSelector<PMML, PMML>((state: PMML) => state);
+
+  return (
+    <div style={style}>
+      <Title title="JSON" />
+      <pre>{`${JSON.stringify(pmml, undefined, 2)}`}</pre>
+      <Timestamp />
+    </div>
+  );
+};
+
+export default MockSummaryUI;
