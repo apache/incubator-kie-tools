@@ -20,6 +20,7 @@ import { ICell, IRow, OnRowClick, Table, TableBody, TableHeader } from "@pattern
 import { EmptyStateNoCharacteristics } from "./EmptyStateNoCharacteristics";
 import { Button, Label } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
+import "./CharacteristicsTable.scss";
 
 export interface IndexedCharacteristic {
   index: number;
@@ -78,7 +79,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   return (
     <React.Fragment>
-      <Table aria-label="Characteristics" cells={columns} rows={rows}>
+      <Table aria-label="Characteristics" cells={columns} rows={rows} className="characteristics__table">
         <TableHeader />
         <TableBody onRowClick={rowClickHandler} />
       </Table>
