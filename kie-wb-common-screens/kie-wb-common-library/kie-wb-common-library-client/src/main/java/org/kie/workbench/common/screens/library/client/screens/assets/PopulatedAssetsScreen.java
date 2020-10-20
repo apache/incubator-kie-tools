@@ -349,7 +349,7 @@ public class PopulatedAssetsScreen {
         this.getAssets(this.filter,
                        this.filterType,
                        getOffset(),
-                       this.currentPage * this.pageSize,
+                       this.pageSize,
                        this.addAssetsToView(runnable));
         this.view.setCurrentPage(this.currentPage);
         this.checkPaginationButtons();
