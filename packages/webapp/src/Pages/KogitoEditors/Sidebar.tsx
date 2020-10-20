@@ -54,18 +54,23 @@ interface Props {
  * @constructor
  */
 export function Sidebar(props: Props) {
-  const [fileBlob, setFileBlob] = useState(new Blob());
   /**
    * A state which indicates the Editor dirty state
    */
   const isDirty = useDirtyState(props.editor!);
 
+  const downloadRef = useRef<HTMLAnchorElement>(null);
   const onDownload = useCallback(() => {
     props.editor?.getStateControl().setSavedCommand();
     props.editor?.getContent().then((content) => {
-      setFileBlob(new Blob([content], { type: "text/plain" }));
+      if (downloadRef.current) {
+        const fileBlob = new Blob([content], { type: "text/plain" });
+        downloadRef.current.href = URL.createObjectURL(fileBlob)!;
+        downloadRef.current.download = `${props.file.fileName}.${props.fileExtension}`;
+        downloadRef.current.click();
+      }
     });
-  }, [props.file]);
+  }, [props.editor]);
 
   const [fileName, setFileName] = useState(props.file.fileName);
   const onChangeName = useCallback(() => {
@@ -171,12 +176,7 @@ export function Sidebar(props: Props) {
           </NavItem>
           <NavItem className={"webapp--page-kogito-editors-sidebar--navigation-nav-item"}>
             <div className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-div"}>
-              <a
-                className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-a"}
-                download={`${props.file.fileName}.${props.fileExtension}`}
-                href={URL.createObjectURL(fileBlob)}
-                onClick={onDownload}
-              >
+              <a className={"webapp--page-kogito-editors-sidebar--navigation-nav-item-a"} onClick={onDownload}>
                 Download
               </a>
             </div>
@@ -188,6 +188,7 @@ export function Sidebar(props: Props) {
           )}
         </NavList>
       </Nav>
+      <a ref={downloadRef} />
     </div>
   );
 }
