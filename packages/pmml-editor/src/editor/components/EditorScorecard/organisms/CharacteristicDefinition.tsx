@@ -60,7 +60,7 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
               </Split>
             </PageSection>
             <PageSection variant="light">
-              <Tabs activeKey={activeTabKey} onSelect={handleTabClick} mountOnEnter={true} unmountOnExit={true}>
+              <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
                 <Tab eventKey={0} title={<TabTitleText>General</TabTitleText>}>
                   <CharacteristicGeneralForm characteristic={characteristic} />
                 </Tab>
