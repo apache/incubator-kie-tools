@@ -135,15 +135,17 @@ public class KieModuleServiceImpl
                                      PackageItem.DEFAULT_PACKAGE_NAME));
 
         for (final String packageName : packageServiceLoader.find(activeModule.getRootPath())) {
-            final StringBuilder packageBuilder = new StringBuilder();
-            for (final String token : packageName.split("\\.")) {
-                if (packageBuilder.length() != 0) {
-                    packageBuilder.append(".");
-                }
-                packageBuilder.append(token);
+            if (!packageName.trim().isEmpty()) {
+                final StringBuilder packageBuilder = new StringBuilder();
+                for (final String token : packageName.split("\\.")) {
+                    if (packageBuilder.length() != 0) {
+                        packageBuilder.append(".");
+                    }
+                    packageBuilder.append(token);
 
-                packages.add(new PackageItem(packageBuilder.toString(),
-                                             packageBuilder.toString()));
+                    packages.add(new PackageItem(packageBuilder.toString(),
+                                                 packageBuilder.toString()));
+                }
             }
         }
 

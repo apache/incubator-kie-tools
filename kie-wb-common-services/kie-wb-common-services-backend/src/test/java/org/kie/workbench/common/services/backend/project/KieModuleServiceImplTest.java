@@ -114,6 +114,7 @@ public class KieModuleServiceImplTest {
     @Test
     public void testPackages() {
         final HashSet<Object> packages = new HashSet<>();
+        packages.add("");
         packages.add("org.test");
 
         doReturn(packages).when(packageServiceLoader).find(rootPath);
