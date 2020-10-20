@@ -119,6 +119,8 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And s2i build log should contain [persistence] Generated checksum for /home/kogito/data/protobufs/persons.proto with the name: /home/kogito/data/protobufs/persons-md5.txt
     And s2i build log should contain [persistence] Generated checksum for /home/kogito/data/protobufs/demo.orders.proto with the name: /home/kogito/data/protobufs/demo.orders-md5.txt
 
+  #ignore until https://issues.redhat.com/browse/KOGITO-3638 is resolved
+  @ignore
   Scenario: Verify if the s2i build is finished as expected performing a native build with persistence enabled
     Given s2i build https://github.com/kiegroup/kogito-examples.git from process-quarkus-example using master and runtime-image quay.io/kiegroup/kogito-quarkus-ubi8:latest
       | variable | value |
