@@ -2,10 +2,11 @@ import * as React from "react";
 import { useState } from "react";
 import { Breadcrumb, BreadcrumbItem, Button, Flex, FlexItem, Stack, StackItem } from "@patternfly/react-core";
 import { v4 as uuid } from "uuid";
-import { BoltIcon, PlusCircleIcon, SortIcon } from "@patternfly/react-icons";
+import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
 import "./DataDictionaryContainer.scss";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
 import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
+import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 
 const DataDictionaryContainer = () => {
   const [dataTypes, setDataTypes] = useState<DataType[]>([
@@ -18,13 +19,16 @@ const DataDictionaryContainer = () => {
   const [newType, setNewType] = useState(false);
   const [editing, setEditing] = useState<number | boolean>(false);
   const [showBatchAdd, setShowBatchAdd] = useState(false);
+  const [constrainsEdit, setConstraintsEdit] = useState<{ show: true; dataType: DataType } | { show: false }>({
+    show: false
+  });
 
   const addDataType = () => {
     setNewType(true);
     setEditing(-1);
   };
 
-  const handleSave = (dataType: DataType, index: number) => {
+  const saveDataType = (dataType: DataType, index: number) => {
     if (index === -1) {
       if (dataType.name.length > 0) {
         setDataTypes([...dataTypes, dataType]);
@@ -33,9 +37,13 @@ const DataDictionaryContainer = () => {
       }
     } else {
       const newTypes = [...dataTypes];
-      newTypes[index] = dataType;
+      newTypes[index] = { ...newTypes[index], ...dataType };
       setDataTypes(newTypes);
     }
+  };
+
+  const handleSave = (dataType: DataType, index: number) => {
+    saveDataType(dataType, index);
     setNewType(false);
     setEditing(false);
   };
@@ -58,26 +66,45 @@ const DataDictionaryContainer = () => {
     const newDataTypes = typesNames.map(name => {
       return { name: name.trim(), type: "String", list: false };
     });
-    console.log("new data types following");
-    console.log(newDataTypes);
     setDataTypes([...dataTypes, ...newDataTypes]);
     setShowBatchAdd(false);
+  };
+
+  const handleConstraintsEdit = (dataType: DataType) => {
+    if (typeof editing === "number") {
+      saveDataType(dataType, editing);
+      if (editing === -1) {
+        setNewType(false);
+        setEditing(dataTypes.length);
+      }
+      // not sure about the following. passing around dataType instead of waiting for the dataTypes to update
+      setConstraintsEdit({ show: true, dataType: dataType });
+    }
+  };
+
+  const handleConstraintsSave = (payload: Constraints) => {
+    setConstraintsEdit({ show: false });
+    if (typeof editing === "number") {
+      const newTypes = [...dataTypes];
+      newTypes[editing] = { ...newTypes[editing], constraints: payload };
+      setDataTypes(newTypes);
+    }
   };
 
   return (
     <div className="data-dictionary">
       <StatusContext.Provider value={editing}>
-        {!showBatchAdd && (
+        {!showBatchAdd && !constrainsEdit.show && (
           <Stack hasGutter={true}>
-            <StackItem style={{ margin: "1em 1em 2em 0" }}>
+            <StackItem style={{ margin: "1em 0 2em 0" }}>
               <Flex>
                 <FlexItem>
                   <Button
                     variant="secondary"
                     onClick={addDataType}
                     isDisabled={editing !== false}
-                    icon={<PlusCircleIcon />}
-                    iconPosition="right"
+                    icon={<PlusIcon />}
+                    iconPosition="left"
                   >
                     Add Data Type
                   </Button>
@@ -88,7 +115,7 @@ const DataDictionaryContainer = () => {
                     onClick={() => setShowBatchAdd(true)}
                     isDisabled={editing !== false}
                     icon={<BoltIcon />}
-                    iconPosition="right"
+                    iconPosition="left"
                   >
                     Add Multiple Data Types
                   </Button>
@@ -109,6 +136,7 @@ const DataDictionaryContainer = () => {
                   onSave={handleSave}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
+                  onConstraintsEdit={handleConstraintsEdit}
                 />
               ))}
               {newType && (
@@ -117,6 +145,7 @@ const DataDictionaryContainer = () => {
                   index={-1}
                   key={uuid()}
                   onSave={handleSave}
+                  onConstraintsEdit={handleConstraintsEdit}
                 />
               )}
             </StackItem>
@@ -137,6 +166,25 @@ const DataDictionaryContainer = () => {
             </StackItem>
           </Stack>
         )}
+        {constrainsEdit.show && (
+          <Stack hasGutter={true}>
+            <StackItem>
+              <Breadcrumb>
+                <BreadcrumbItem to="#" onClick={() => setConstraintsEdit({ show: false })}>
+                  Data Dictionary
+                </BreadcrumbItem>
+                <BreadcrumbItem isActive={true}>Constraints</BreadcrumbItem>
+              </Breadcrumb>
+            </StackItem>
+            <StackItem>
+              <ConstraintsEdit
+                dataType={constrainsEdit!.dataType}
+                onAdd={handleConstraintsSave}
+                onCancel={() => setConstraintsEdit({ show: false })}
+              />
+            </StackItem>
+          </Stack>
+        )}
       </StatusContext.Provider>
     </div>
   );
@@ -150,4 +198,19 @@ export interface DataType {
   name: string;
   type: string;
   list: boolean;
+  constraints?: Constraints;
 }
+
+export type Constraints =
+  | {
+      type: "Range";
+      start: {
+        value: "";
+        included: false;
+      };
+      end: {
+        value: "";
+        included: false;
+      };
+    }
+  | { type: "Enumeration"; value: string };

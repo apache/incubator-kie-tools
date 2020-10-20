@@ -3,6 +3,7 @@
   &__types-list {
     height: calc(100% - 52px);
     overflow-y: auto;
-    padding-right: 1em;
+    padding: 1em;
+    background-color: var(--pf-global--BackgroundColor--200);
   }
 }

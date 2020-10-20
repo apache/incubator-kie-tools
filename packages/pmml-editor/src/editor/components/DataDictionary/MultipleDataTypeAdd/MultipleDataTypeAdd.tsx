@@ -32,13 +32,13 @@ const MultipleDataTypeAdd = ({ onAdd, onCancel }: MultipleDataTypeAddProps) => {
   };
 
   const validateInput = () => {
-    setInputValidation(input.trim().length > 0 ? "success" : "error");
+    const validation = input.trim().length > 0 ? "success" : "error";
+    setInputValidation(validation);
+    return validation;
   };
 
   const handleSubmit = (event: React.FormEvent) => {
-    validateInput();
-    if (inputValidation === "success") {
-      console.log(input.split("\n"));
+    if (validateInput() === "success") {
       onAdd(input);
     }
     event.preventDefault();

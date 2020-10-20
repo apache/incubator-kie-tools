@@ -3,14 +3,12 @@ import { useContext, useEffect, useState } from "react";
 import useOnclickOutside from "react-cool-onclickoutside";
 import {
   Button,
-  Divider,
   Label,
   Select,
   SelectOption,
   SelectVariant,
   Switch,
   Form,
-  Radio,
   Split,
   SplitItem,
   Stack,
@@ -18,7 +16,7 @@ import {
   TextInput
 } from "@patternfly/react-core";
 import { AngleRightIcon, CheckIcon, EditAltIcon, TrashIcon } from "@patternfly/react-icons";
-import { DataType, StatusContext } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { Constraints, DataType, StatusContext } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 
 interface DataTypeItemProps {
@@ -27,16 +25,16 @@ interface DataTypeItemProps {
   onSave: (dataType: DataType, index: number | null) => void;
   onEdit?: (index: number) => void;
   onDelete?: (index: number) => void;
+  onConstraintsEdit: (dataType: DataType) => void;
 }
 
 const DataTypeItem = (props: DataTypeItemProps) => {
-  const { dataType, index, onSave, onEdit, onDelete } = props;
+  const { dataType, index, onSave, onEdit, onDelete, onConstraintsEdit } = props;
   const editing = useContext(StatusContext);
   const [name, setName] = useState(dataType.name);
   const [typeSelection, setTypeSelection] = useState<string>(dataType.type);
   const [isTypeSelectOpen, setIsTypeSelectOpen] = useState(false);
   const [isList, setIsList] = useState(dataType.list);
-  const [showConstraints, setShowConstraints] = useState(false);
   const typeOptions = [{ value: "String" }, { value: "Number" }, { value: "Boolean" }];
 
   const ref = useOnclickOutside(() => {
@@ -67,10 +65,6 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     }
   };
 
-  const toggleConstraintsSection = () => {
-    setShowConstraints(!showConstraints);
-  };
-
   const handleEditStatus = () => {
     if (onEdit) {
       onEdit(index);
@@ -87,6 +81,10 @@ const DataTypeItem = (props: DataTypeItemProps) => {
     }
   };
 
+  const handleConstraints = () => {
+    onConstraintsEdit({ ...dataType, name, type: typeSelection, list: isList });
+  };
+
   useEffect(() => {
     if (editing === index) {
       document.querySelector<HTMLInputElement>(`.data-type-item-n${index} #name`)?.focus();
@@ -99,6 +97,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
         <Form onSubmit={handleSave}>
           <Stack hasGutter={true}>
             <StackItem>
+              {/* Change Split to Flexbox */}
               <Split hasGutter={true}>
                 <SplitItem>
                   <TextInput
@@ -120,11 +119,18 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                     isOpen={isTypeSelectOpen}
                     placeholder="Type"
                     menuAppendTo={"parent"}
+                    width={130}
                   >
                     {typeOptions.map((option, optionIndex) => (
                       <SelectOption key={optionIndex} value={option.value} />
                     ))}
                   </Select>
+                </SplitItem>
+                <SplitItem style={{ padding: "5px 0 0 20px" }}>
+                  <label className="pf-c-form__label" htmlFor="list-type" style={{ marginRight: "1em" }}>
+                    <span className="pf-c-form__label-text">It's a list</span>
+                  </label>
+                  <Switch id="list-type" aria-label="Yes" isChecked={isList} onChange={() => setIsList(!isList)} />
                 </SplitItem>
                 <SplitItem isFilled={true}>&nbsp;</SplitItem>
                 <SplitItem>
@@ -137,43 +143,38 @@ const DataTypeItem = (props: DataTypeItemProps) => {
             <StackItem>
               <Split hasGutter={true}>
                 <SplitItem>
-                  <Button
-                    variant={"link"}
-                    isInline={true}
-                    onClick={toggleConstraintsSection}
-                    className={
-                      showConstraints
-                        ? "data-type-item__constraints-toggle--on"
-                        : "data-type-item__constraints-toggle--off"
-                    }
-                  >
-                    Constraints <AngleRightIcon className="data-type-item__constraints-toggle__icon" />
-                  </Button>
-                </SplitItem>
-                <Divider isVertical={true} />
-                <SplitItem>
-                  {/*a bit of PF hate here*/}
-                  <label className="pf-c-form__label" htmlFor="list-type" style={{ marginRight: "1em" }}>
-                    <span className="pf-c-form__label-text">Is a List</span>
-                  </label>
-                  <Switch id="list-type" aria-label="Yes" isChecked={isList} onChange={() => setIsList(!isList)} />
+                  {dataType.constraints === undefined && (
+                    <Button
+                      variant="link"
+                      icon={<AngleRightIcon />}
+                      isInline={true}
+                      iconPosition="right"
+                      onClick={handleConstraints}
+                      isDisabled={name.trim().length === 0 || isList || typeSelection === "Boolean"}
+                    >
+                      <span>Add Constraints</span>
+                    </Button>
+                  )}
+                  {dataType.constraints !== undefined && (
+                    <>
+                      <span>Constraints</span>
+                      <Button
+                        variant="link"
+                        onClick={handleConstraints}
+                        isDisabled={name.trim().length === 0 || isList || typeSelection === "Boolean"}
+                      >
+                        <ConstraintsLabel constraints={dataType.constraints} />
+                      </Button>
+                    </>
+                  )}
                 </SplitItem>
               </Split>
             </StackItem>
-            {showConstraints && (
-              <StackItem>
-                <Split>
-                  <SplitItem>
-                    <ConstraintsTypeSelector />
-                  </SplitItem>
-                </Split>
-              </StackItem>
-            )}
           </Stack>
         </Form>
       )}
       {editing !== index && (
-        // Change Split to Flex
+        // Change Split to Flexbox
         <Split hasGutter={true}>
           <SplitItem>
             <strong>{name}</strong>
@@ -184,6 +185,12 @@ const DataTypeItem = (props: DataTypeItemProps) => {
               <>
                 {" "}
                 <Label color="cyan">List</Label>
+              </>
+            )}
+            {dataType.constraints !== undefined && (
+              <>
+                {" "}
+                <ConstraintsLabel constraints={dataType.constraints} />
               </>
             )}
           </SplitItem>
@@ -203,28 +210,14 @@ const DataTypeItem = (props: DataTypeItemProps) => {
 
 export default DataTypeItem;
 
-const ConstraintsTypeSelector = () => {
-  const [typeSelection, setTypeSelection] = useState<string>("");
-  const constraintsOptions = [{ value: "Enumeration" }, { value: "Expression" }, { value: "Range" }];
-
-  const handleChange = (checked: boolean, event: React.FormEvent<HTMLInputElement>) => {
-    const { value } = event.currentTarget;
-    console.log(value);
-    setTypeSelection(value);
-  };
-
-  return (
-    <>
-      {constraintsOptions.map(option => (
-        <Radio
-          isChecked={typeSelection === option.value}
-          name={`constraint-type-${option.value.toLowerCase()}`}
-          onChange={handleChange}
-          label={option.value}
-          id={`constraint-type-${option.value.toLowerCase()}`}
-          value={option.value}
-        />
-      ))}
-    </>
-  );
+interface ConstraintsLabelProps {
+  constraints: Constraints;
+}
+const ConstraintsLabel = ({ constraints }: ConstraintsLabelProps) => {
+  let constraintValue;
+  switch (constraints.type) {
+    case "Range":
+      constraintValue = `(${constraints.start.value},${constraints.end.value})`;
+  }
+  return <Label color="orange">{`${constraints.type} ${constraintValue}`}</Label>;
 };

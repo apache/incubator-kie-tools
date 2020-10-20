@@ -1,19 +1,8 @@
 .data-type-item {
   border: 1px solid gray;
   padding: 1em;
-  transition: all 0.23ms ease-in-out;
+  background-color: #ffffff;
   & + & {
     margin-top: 1em;
-  }
-  &__constraints-toggle {
-    &__icon {
-      vertical-align: middle;
-      transition: all 0.23s ease-in-out;
-    }
-    &--on {
-      .data-type-item__constraints-toggle__icon {
-        transform: rotate(90deg);
-      }
-    }
   }
 }
