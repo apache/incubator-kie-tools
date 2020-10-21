@@ -58,6 +58,11 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     [characteristics]
   );
 
+  const hideCharacteristicPanel = useCallback(() => {
+    setSelectedCharacteristic(undefined);
+    setShowCharacteristicPanel(false);
+  }, [characteristics]);
+
   const filterCharacteristics = useCallback((): IndexedCharacteristic[] => {
     const _lowerCaseFilter = filter.toLowerCase();
     const _filteredCharacteristics = characteristics?.Characteristic.map<IndexedCharacteristic>(
@@ -136,7 +141,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
         <CharacteristicDefinition
           characteristic={selectedCharacteristic}
           showPanel={showCharacteristicPanel}
-          hideCharacteristicPanel={() => setShowCharacteristicPanel(false)}
+          hideCharacteristicPanel={hideCharacteristicPanel}
         />
       </PageSection>
     </div>

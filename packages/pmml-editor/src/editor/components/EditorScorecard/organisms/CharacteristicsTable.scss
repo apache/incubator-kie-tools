@@ -19,8 +19,21 @@
 
   &__table {
 
+    table-layout: fixed;
+    width: 100%;
+
     &__row__selected {
       background-color: var(--pf-global--link--Color--light);
+    }
+
+    td {
+      width: calc(100% / 5);
+      padding-right: 32px;
+    }
+
+    tr {
+      height: 64px;
+      padding-right: 32px;
     }
 
     tbody tr:hover {
