@@ -16,28 +16,29 @@
 import * as React from "react";
 import { useState } from "react";
 import { TextInput } from "@patternfly/react-core";
+import { Validated } from "../../../types";
 
 interface GenericTextInputProps {
   id: string;
   value: string;
-  valid: boolean;
+  validated: Validated;
   onChange: (_value: string) => void;
 }
 
 export const GenericTextInput = (props: GenericTextInputProps) => {
-  const [state, setState] = useState({ value: props.value });
+  const [state, setState] = useState(props.value);
 
   const onChange = (_value: string) => {
     props.onChange(_value);
-    setState({ value: _value });
+    setState(_value);
   };
 
   return (
     <TextInput
       id={props.id}
-      value={state.value}
+      value={state}
       onChange={onChange}
-      validated={props.valid ? "default" : "error"}
+      validated={props.validated}
       isRequired={true}
       className="text-input"
       type="text"

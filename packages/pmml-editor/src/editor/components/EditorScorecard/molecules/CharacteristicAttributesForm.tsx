@@ -13,7 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as React from "react";
+import { PageSection } from "@patternfly/react-core";
 
-export * from "./CharacteristicsToolbar";
-export * from "./CharacteristicGeneralForm";
-export * from "./CharacteristicAttributesForm";
+interface CharacteristicAttributesFormProps {
+  index: number | undefined;
+}
+
+export const CharacteristicAttributesForm = (props: CharacteristicAttributesFormProps) => {
+  const { index } = props;
+
+  return (
+    <PageSection>
+      <div>More stuff to follow</div>
+    </PageSection>
+  );
+};

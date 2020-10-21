@@ -15,7 +15,7 @@ import {
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
 import "./CharacteristicDefinition.scss";
-import { CharacteristicGeneralForm } from "../molecules";
+import { CharacteristicAttributesForm, CharacteristicGeneralForm } from "../molecules";
 import { IndexedCharacteristic } from "./CharacteristicsTable";
 
 interface CharacteristicDefinitionProps {
@@ -72,7 +72,7 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
                   />
                 </Tab>
                 <Tab eventKey={1} title={<TabTitleText>Attributes</TabTitleText>}>
-                  <div>More stuff</div>
+                  <CharacteristicAttributesForm index={characteristic?.index} />
                 </Tab>
               </Tabs>
             </PageSection>

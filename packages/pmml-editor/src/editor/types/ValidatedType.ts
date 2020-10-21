@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
-export * from "./CharacteristicsToolbar";
-export * from "./CharacteristicGeneralForm";
-export * from "./CharacteristicAttributesForm";
+export interface ValidatedType<T> {
+  value: T;
+  valid: boolean;
+}
+
+export type Validated = "success" | "error" | "default";

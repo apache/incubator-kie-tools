@@ -31,6 +31,7 @@ import {
 } from "@patternfly/react-core";
 import { PencilAltIcon } from "@patternfly/react-icons";
 import "./CorePropertiesTable.scss";
+import { ValidatedType } from "../../../types";
 
 interface CoreProperties {
   isScorable: boolean;
@@ -65,11 +66,11 @@ const GenericSelectorEditor = (
 };
 
 const GenericNumericEditor = (id: string, value: number, valid: boolean, onChange: (_value: number) => void) => {
-  return <GenericNumericInput id={id} value={value} valid={valid} onChange={onChange} />;
+  return <GenericNumericInput id={id} value={value} validated={valid ? "default" : "error"} onChange={onChange} />;
 };
 
 const GenericTextEditor = (id: string, value: string, valid: boolean, onChange: (_value: string) => void) => {
-  return <GenericTextInput id={id} value={value} valid={valid} onChange={onChange} />;
+  return <GenericTextInput id={id} value={value} validated={valid ? "default" : "error"} onChange={onChange} />;
 };
 
 const ValidateBaselineScore = (value: number) => {
@@ -85,14 +86,14 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   const [isScorable, setScorable] = useState(props.isScorable);
   const [functionName, setFunctionName] = useState(props.functionName);
   const [algorithmName, setAlgorithmName] = useState(props.algorithmName);
-  const [baselineScore, setBaselineScore] = useState({
-    valid: ValidateBaselineScore(props.baselineScore),
-    value: props.baselineScore
+  const [baselineScore, setBaselineScore] = useState<ValidatedType<number>>({
+    value: props.baselineScore,
+    valid: ValidateBaselineScore(props.baselineScore)
   });
   const [baselineMethod, setBaselineMethod] = useState(props.baselineMethod);
-  const [initialScore, setInitialScore] = useState({
-    valid: ValidateInitialScore(props.initialScore),
-    value: props.initialScore
+  const [initialScore, setInitialScore] = useState<ValidatedType<number>>({
+    value: props.initialScore,
+    valid: ValidateInitialScore(props.initialScore)
   });
   const [useReasonCodes, setUseReasonCodes] = useState(props.useReasonCodes);
   const [reasonCodeAlgorithm, setReasonCodeAlgorithm] = useState(props.reasonCodeAlgorithm);

@@ -16,11 +16,12 @@
 import * as React from "react";
 import { useState } from "react";
 import { TextInput } from "@patternfly/react-core";
+import { Validated } from "../../../types";
 
 interface GenericNumericInputProps {
   id: string;
   value: number;
-  valid: boolean;
+  validated: Validated;
   onChange: (_value: number) => void;
 }
 
@@ -29,19 +30,19 @@ const toNumber = (value: string): number => {
 };
 
 export const GenericNumericInput = (props: GenericNumericInputProps) => {
-  const [state, setState] = useState({ value: props.value.toString() });
+  const [state, setState] = useState(props.value.toString());
 
   const onChange = (_value: string) => {
     props.onChange(toNumber(_value));
-    setState({ value: _value });
+    setState(_value);
   };
 
   return (
     <TextInput
       id={props.id}
-      value={state.value}
+      value={state}
       onChange={onChange}
-      validated={props.valid ? "default" : "error"}
+      validated={props.validated}
       isRequired={true}
       className="numeric-input"
       type="number"

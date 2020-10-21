@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./CharacteristicsToolbar";
-export * from "./CharacteristicGeneralForm";
-export * from "./CharacteristicAttributesForm";
+export * from "./ValidatedType";
