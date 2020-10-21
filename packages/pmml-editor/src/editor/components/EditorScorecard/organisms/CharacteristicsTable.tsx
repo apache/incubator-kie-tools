@@ -19,6 +19,7 @@ import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { Button, Label } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTable.scss";
+import { EmptyStateNoCharacteristics } from "./EmptyStateNoCharacteristics";
 
 export interface IndexedCharacteristic {
   index: number;
@@ -45,38 +46,41 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   );
 
   return (
-    <table className="characteristics__table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Attributes</th>
-          <th>Reason Code</th>
-          <th>Baseline score</th>
-          <th>&nbsp;</th>
-        </tr>
-      </thead>
-      <tbody>
-        {characteristics.map((ic, index) => {
-          const c: Characteristic = ic.characteristic;
-          const additionalClassName =
-            selectedCharacteristic?.index === index ? "characteristics__table__row__selected" : "";
-          return (
-            <tr key={index} className={additionalClassName} onClick={e => onRowClick(index)}>
-              <td>{c.name}</td>
-              <td>
-                <Label>{c.Attribute.length}</Label>
-              </td>
-              <td>{c.reasonCode}</td>
-              <td>{c.baselineScore}</td>
-              <td>
-                <Button variant="link" icon={<TrashIcon />} onClick={e => onDeleteCharacteristic(e, index)}>
-                  &nbsp;
-                </Button>
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <div>
+      <table className="characteristics__table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Attributes</th>
+            <th>Reason Code</th>
+            <th>Baseline score</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          {characteristics.map((ic, index) => {
+            const c: Characteristic = ic.characteristic;
+            const additionalClassName =
+              selectedCharacteristic?.index === index ? "characteristics__table__row__selected" : "";
+            return (
+              <tr key={index} className={additionalClassName} onClick={e => onRowClick(index)}>
+                <td>{c.name}</td>
+                <td>
+                  <Label>{c.Attribute.length}</Label>
+                </td>
+                <td>{c.reasonCode}</td>
+                <td>{c.baselineScore}</td>
+                <td>
+                  <Button variant="link" icon={<TrashIcon />} onClick={e => onDeleteCharacteristic(e, index)}>
+                    &nbsp;
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      {characteristics.length === 0 && <EmptyStateNoCharacteristics createCharacteristic={onAddCharacteristic} />}
+    </div>
   );
 };

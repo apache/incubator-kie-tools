@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   Button,
@@ -15,8 +15,7 @@ import {
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
 import "./CharacteristicDefinition.scss";
-import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
-import { CharacteristicGeneralForm } from "../molecules/CharacteristicGeneralForm";
+import { CharacteristicGeneralForm } from "../molecules";
 import { IndexedCharacteristic } from "./CharacteristicsTable";
 
 interface CharacteristicDefinitionProps {

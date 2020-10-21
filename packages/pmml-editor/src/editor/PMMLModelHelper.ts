@@ -64,49 +64,142 @@ export type ModelType =
   | "Tree Model"
   | "<Unknown>";
 
-interface PMMLModelMapping {
-  model: any;
+export interface PMMLModelMapping<M> {
+  model: M;
   type: ModelType;
   iconUrl: string;
   isSupported: boolean;
+  factory: (() => M) | undefined;
 }
 
-export const PMMLModels: PMMLModelMapping[] = [
+export const PMMLModels: Array<PMMLModelMapping<any>> = new Array<PMMLModelMapping<any>>(
   {
     model: AnomalyDetectionModel,
     type: "Anomaly Detection Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false
+    isSupported: false,
+    factory: undefined
   },
-  { model: AssociationModel, type: "Association Model", iconUrl: "card-icon-default.svg", isSupported: false },
-  { model: BayesianNetworkModel, type: "Bayesian Network Model", iconUrl: "card-icon-default.svg", isSupported: false },
-  { model: BaselineModel, type: "Baseline Model", iconUrl: "card-icon-default.svg", isSupported: false },
-  { model: ClusteringModel, type: "Clustering Model", iconUrl: "card-icon-default.svg", isSupported: false },
-  { model: GaussianProcessModel, type: "Gaussian Process Model", iconUrl: "card-icon-default.svg", isSupported: false },
+  {
+    model: AssociationModel,
+    type: "Association Model",
+    iconUrl: "card-icon-default.svg",
+    isSupported: false,
+    factory: undefined
+  },
+  {
+    model: BayesianNetworkModel,
+    type: "Bayesian Network Model",
+    iconUrl: "card-icon-default.svg",
+    isSupported: false,
+    factory: undefined
+  },
+  {
+    model: BaselineModel,
+    type: "Baseline Model",
+    iconUrl: "card-icon-default.svg",
+    isSupported: false,
+    factory: undefined
+  },
+  {
+    model: ClusteringModel,
+    type: "Clustering Model",
+    iconUrl: "card-icon-default.svg",
+    isSupported: false,
+    factory: undefined
+  },
+  {
+    model: GaussianProcessModel,
+    type: "Gaussian Process Model",
+    iconUrl: "card-icon-default.svg",
+    isSupported: false,
+    factory: undefined
+  },
   {
     model: GeneralRegressionModel,
     type: "General Regression Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false
+    isSupported: false,
+    factory: undefined
   },
-  { model: MiningModel, type: "Mining Model", iconUrl: "card-icon-default.svg", isSupported: false },
-  { model: NaiveBayesModel, type: "Naive Bayes Model", iconUrl: "card-icon-default.svg", isSupported: false },
-  { model: NearestNeighborModel, type: "Nearest Neighbor Model", iconUrl: "card-icon-default.svg", isSupported: false },
-  { model: NeuralNetwork, type: "Neural Network", iconUrl: "card-icon-default.svg", isSupported: false },
-  { model: RegressionModel, type: "Regression Model", iconUrl: "card-icon-default.svg", isSupported: false },
-  { model: RuleSetModel, type: "RuleSet Model", iconUrl: "card-icon-default.svg", isSupported: false },
-  { model: SequenceModel, type: "Sequence Model", iconUrl: "card-icon-default.svg", isSupported: false },
-  { model: Scorecard, type: "Scorecard", iconUrl: "card-icon-scorecard.svg", isSupported: true },
+  {
+    model: MiningModel,
+    type: "Mining Model",
+    iconUrl: "card-icon-default.svg",
+    isSupported: false,
+    factory: undefined
+  },
+  {
+    model: NaiveBayesModel,
+    type: "Naive Bayes Model",
+    iconUrl: "card-icon-default.svg",
+    isSupported: false,
+    factory: undefined
+  },
+  {
+    model: NearestNeighborModel,
+    type: "Nearest Neighbor Model",
+    iconUrl: "card-icon-default.svg",
+    isSupported: false,
+    factory: undefined
+  },
+  {
+    model: NeuralNetwork,
+    type: "Neural Network",
+    iconUrl: "card-icon-default.svg",
+    isSupported: false,
+    factory: undefined
+  },
+  {
+    model: RegressionModel,
+    type: "Regression Model",
+    iconUrl: "card-icon-default.svg",
+    isSupported: false,
+    factory: undefined
+  },
+  {
+    model: RuleSetModel,
+    type: "RuleSet Model",
+    iconUrl: "card-icon-default.svg",
+    isSupported: false,
+    factory: undefined
+  },
+  {
+    model: SequenceModel,
+    type: "Sequence Model",
+    iconUrl: "card-icon-default.svg",
+    isSupported: false,
+    factory: undefined
+  },
+  {
+    model: Scorecard,
+    type: "Scorecard",
+    iconUrl: "card-icon-scorecard.svg",
+    isSupported: true,
+    factory: () =>
+      new Scorecard({
+        MiningSchema: { MiningField: [] },
+        Characteristics: { Characteristic: [] },
+        functionName: "regression"
+      })
+  },
   {
     model: SupportVectorMachineModel,
     type: "Support Vector Machine Model",
     iconUrl: "card-icon-default.svg",
-    isSupported: false
+    isSupported: false,
+    factory: undefined
   },
-  { model: TextModel, type: "Text Model", iconUrl: "card-icon-default.svg", isSupported: false },
-  { model: TimeSeriesModel, type: "Time Series Model", iconUrl: "card-icon-default.svg", isSupported: false },
-  { model: TreeModel, type: "Tree Model", iconUrl: "card-icon-default.svg", isSupported: false }
-];
+  { model: TextModel, type: "Text Model", iconUrl: "card-icon-default.svg", isSupported: false, factory: undefined },
+  {
+    model: TimeSeriesModel,
+    type: "Time Series Model",
+    iconUrl: "card-icon-default.svg",
+    isSupported: false,
+    factory: undefined
+  },
+  { model: TreeModel, type: "Tree Model", iconUrl: "card-icon-default.svg", isSupported: false, factory: undefined }
+);
 
 export const isCollection = <T>(collection: T[] | undefined): boolean => {
   if (collection === undefined) {

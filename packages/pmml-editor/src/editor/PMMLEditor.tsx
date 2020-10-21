@@ -38,6 +38,7 @@ import { HashRouter } from "react-router-dom";
 import { Redirect, Route, Switch } from "react-router";
 import { EmptyStateNoContent } from "./components/LandingPage/organisms";
 import { SingleEditorRouter } from "./components/EditorCore/organisms";
+import { PMMLModelMapping, PMMLModels } from "./PMMLModelHelper";
 
 const EMPTY_PMML: string = `<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"><Header /><DataDictionary/></PMML>`;
 
@@ -84,11 +85,26 @@ export class PMMLEditor extends React.Component<Props, State> {
   }
 
   private doSetContent(path: string, content: string): void {
+    let pmml: PMML;
     let _content: string = content;
+
     if (content === "") {
       _content = EMPTY_PMML;
+      pmml = XML2PMML(_content);
+
+      //If there is only one supported type of model then create a default entry
+      const supportedModelTypes: Array<PMMLModelMapping<any>> = PMMLModels.filter(m => m.isSupported);
+      if (content === "" && supportedModelTypes.length === 1) {
+        const factory = supportedModelTypes[0].factory;
+        if (factory) {
+          pmml.models = [factory()];
+        }
+      }
+    } else {
+      pmml = XML2PMML(_content);
     }
-    this.store = createStore(this.reducer, XML2PMML(_content));
+
+    this.store = createStore(this.reducer, pmml);
     this.setState({ path: path, content: _content, originalContent: _content });
   }
 
