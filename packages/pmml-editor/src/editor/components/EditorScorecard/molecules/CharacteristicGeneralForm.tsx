@@ -14,32 +14,46 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { createRef, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { Form, FormGroup, TextInput } from "@patternfly/react-core";
-import { IndexedCharacteristic } from "../organisms";
+import { GenericTextInput } from "../atoms";
 
 interface CharacteristicGeneralFormProps {
-  characteristic: IndexedCharacteristic | undefined;
+  index: number | undefined;
+  name: string | undefined;
+  reasonCode: string | undefined;
+  baselineScore: number | undefined;
+  validateCharacteristicName: (index: number | undefined, name: string | undefined) => boolean;
 }
 
 export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps) => {
-  const { characteristic } = props;
+  const { index } = props;
 
-  const nameRef = createRef<HTMLInputElement>();
-  const reasonCodeRef = createRef<HTMLInputElement>();
-  const baselineScoreRef = createRef<HTMLInputElement>();
-
-  useEffect(() => {
-    if (nameRef.current) {
-      nameRef.current.value = characteristic?.characteristic.name ?? "";
-    }
-    if (reasonCodeRef.current) {
-      reasonCodeRef.current.value = characteristic?.characteristic.reasonCode ?? "";
-    }
-    if (baselineScoreRef.current) {
-      baselineScoreRef.current.value = characteristic?.characteristic.baselineScore?.toString() ?? "";
-    }
+  const _name = props.name;
+  const [name, setName] = useState({
+    valid: props.validateCharacteristicName(index, _name),
+    value: props.name
   });
+  const [reasonCode, setReasonCode] = useState(props.reasonCode);
+  const [baselineScore, setBaselineScore] = useState(props.baselineScore);
+
+  const nameEditor = useMemo(
+    () => (
+      <GenericTextInput
+        id="characteristic-form-name"
+        aria-describedby="characteristic-form-name-helper"
+        value={name.value ?? ""}
+        valid={name.valid}
+        onChange={_value =>
+          setName({
+            value: _value,
+            valid: props.validateCharacteristicName(index, _value)
+          })
+        }
+      />
+    ),
+    [name]
+  );
 
   const toNumber = (value: string): number | undefined => {
     if (value === "") {
@@ -59,13 +73,7 @@ export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps)
         fieldId="characteristic-form-name-helper"
         helperText="Please provide a name for the Characteristic."
       >
-        <TextInput
-          type="text"
-          id="characteristic-form-name"
-          ref={nameRef}
-          name="characteristic-form-name"
-          aria-describedby="characteristic-form-name-helper"
-        />
+        {nameEditor}
       </FormGroup>
       <FormGroup
         label="Reason Code"
@@ -75,9 +83,10 @@ export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps)
         <TextInput
           type="text"
           id="characteristic-form-reason-code"
-          ref={reasonCodeRef}
           name="characteristic-form-reason-code"
           aria-describedby="characteristic-form-reason-code-helper"
+          value={reasonCode}
+          onChange={e => setReasonCode(e)}
         />
       </FormGroup>
       <FormGroup
@@ -88,9 +97,10 @@ export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps)
         <TextInput
           type="number"
           id="characteristic-form-baseline-score"
-          ref={baselineScoreRef}
           name="characteristic-form-baseline-score"
           aria-describedby="characteristic-form-baseline-score-helper"
+          value={baselineScore}
+          onChange={e => setBaselineScore(toNumber(e))}
         />
       </FormGroup>
     </Form>

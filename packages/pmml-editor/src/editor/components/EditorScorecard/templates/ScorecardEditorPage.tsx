@@ -83,6 +83,21 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     characteristics
   ]);
 
+  const validateCharacteristicName = useCallback(
+    (index: number | undefined, name: string): boolean => {
+      if (index === undefined) {
+        return false;
+      }
+      if (name === undefined || name === "") {
+        return false;
+      }
+      const existing: Characteristic[] = characteristics?.Characteristic ?? [];
+      const matching = existing.filter((c, _index) => _index !== index && c.name === name);
+      return matching.length === 0;
+    },
+    [characteristics]
+  );
+
   return (
     <div data-testid="editor-page" style={{ position: "relative" }}>
       <PageSection variant={PageSectionVariants.light} isFilled={false}>
@@ -144,8 +159,9 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
       <PageSection isFilled={true} style={{ padding: 0 }}>
         <CharacteristicDefinition
           characteristic={selectedCharacteristic}
-          showPanel={showCharacteristicPanel}
+          showCharacteristicPanel={showCharacteristicPanel}
           hideCharacteristicPanel={hideCharacteristicPanel}
+          validateCharacteristicName={validateCharacteristicName}
         />
       </PageSection>
     </div>

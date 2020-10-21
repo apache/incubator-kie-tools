@@ -20,12 +20,13 @@ import { IndexedCharacteristic } from "./CharacteristicsTable";
 
 interface CharacteristicDefinitionProps {
   characteristic: IndexedCharacteristic | undefined;
-  showPanel: boolean;
+  showCharacteristicPanel: boolean;
   hideCharacteristicPanel: () => void;
+  validateCharacteristicName: (index: number | undefined, name: string | undefined) => boolean;
 }
 
 export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) => {
-  const { characteristic, showPanel, hideCharacteristicPanel } = props;
+  const { characteristic, showCharacteristicPanel, hideCharacteristicPanel, validateCharacteristicName } = props;
   const [activeTabKey, setActiveTabKey] = useState(0);
 
   const handleTabClick = (event: React.MouseEvent<HTMLElement, MouseEvent>, index: number) => {
@@ -33,10 +34,10 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
   };
 
   return (
-    <div className={`side-panel side-panel--from-right ${showPanel ? "side-panel--is-visible" : ""}`}>
+    <div className={`side-panel side-panel--from-right ${showCharacteristicPanel ? "side-panel--is-visible" : ""}`}>
       <div className="side-panel__container">
         <div className="side-panel__content">
-          <Page>
+          <Page key={characteristic?.index}>
             <PageSection variant="light">
               <Split hasGutter={true} style={{ width: "100%" }}>
                 <SplitItem>
@@ -62,7 +63,13 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
             <PageSection variant="light">
               <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
                 <Tab eventKey={0} title={<TabTitleText>General</TabTitleText>}>
-                  <CharacteristicGeneralForm characteristic={characteristic} />
+                  <CharacteristicGeneralForm
+                    index={characteristic?.index}
+                    name={characteristic?.characteristic.name}
+                    reasonCode={characteristic?.characteristic.reasonCode}
+                    baselineScore={characteristic?.characteristic.baselineScore}
+                    validateCharacteristicName={validateCharacteristicName}
+                  />
                 </Tab>
                 <Tab eventKey={1} title={<TabTitleText>Attributes</TabTitleText>}>
                   <div>More stuff</div>

@@ -104,13 +104,9 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     functionName,
     _selection => setFunctionName(_selection as MiningFunction)
   );
-  const algorithmNameEditor = useMemo(
-    () =>
-      GenericTextEditor("algorithm-name-id", algorithmName, true, _value => {
-        setAlgorithmName(_value);
-      }),
-    [algorithmName]
-  );
+  const algorithmNameEditor = GenericTextEditor("algorithm-name-id", algorithmName, true, _value => {
+    setAlgorithmName(_value);
+  });
   const baselineScoreEditor = useMemo(
     () =>
       GenericNumericEditor("baseline-score-id", baselineScore.value, baselineScore.valid, _value => {
