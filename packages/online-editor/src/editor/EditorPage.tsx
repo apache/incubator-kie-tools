@@ -132,18 +132,18 @@ export function EditorPage(props: Props) {
         return;
       }
 
+      const filename = `${context.file.fileName}.${context.file.fileExtension}`;
       context.githubService
-        .updateGist({
-          gistId: context.githubService.extractGistIdFromRawUrl(fileUrl!),
-          filename: `${context.file.fileName}.${context.file.fileExtension}`,
-          content: content,
-          description: `${context.file.fileName}.${context.file.fileExtension}`,
-          isPublic: true
-        })
-        .then(() => {
+        .updateGist({ filename, content })
+        .then(gistUrl => {
           editor?.getStateControl().setSavedCommand();
-          closeAllSuccessAlerts();
-          setUpdateGistSuccessAlertVisible(true);
+          if (filename !== context.githubService.getCurrentGist()?.filename) {
+            // FIXME: KOGITO-1202
+            window.location.href = `?file=${gistUrl}#/editor/${fileExtension}`;
+          } else {
+            closeAllSuccessAlerts();
+            setUpdateGistSuccessAlertVisible(true);
+          }
         })
         .catch(() => setGithubTokenModalVisible(true));
     });
@@ -257,6 +257,7 @@ export function EditorPage(props: Props) {
         {!fullscreen && copySuccessAlertVisible && (
           <div className={"kogito--alert-container"}>
             <Alert
+              className={"kogito--alert"}
               variant="success"
               title={i18n.editorPage.alerts.copy}
               actionClose={<AlertActionCloseButton onClose={closeCopySuccessAlert} />}
@@ -266,6 +267,7 @@ export function EditorPage(props: Props) {
         {!fullscreen && updateGistSuccessAlertVisible && (
           <div className={"kogito--alert-container"}>
             <Alert
+              className={"kogito--alert"}
               variant="success"
               title={i18n.editorPage.alerts.updateGist}
               actionClose={<AlertActionCloseButton onClose={closeUpdateGistSuccessAlert} />}
@@ -275,6 +277,7 @@ export function EditorPage(props: Props) {
         {!fullscreen && showUnsavedAlert && (
           <div className={"kogito--alert-container-unsaved"} data-testid="unsaved-alert">
             <Alert
+              className={"kogito--alert"}
               variant="warning"
               title={i18n.editorPage.alerts.unsaved.title}
               actionClose={

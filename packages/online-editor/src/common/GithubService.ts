@@ -40,14 +40,21 @@ export interface CreateGistArgs {
   isPublic: boolean;
 }
 
-export interface UpdateGistArgs extends CreateGistArgs {
-  gistId: string;
+interface UpdateGistArgs {
+  filename: string;
+  content: string;
+}
+
+interface CurrentGist {
+  id: string;
+  filename: string;
 }
 
 export class GithubService {
   private octokit: Octokit;
   private authenticated: boolean;
   private userLogin: string;
+  private currentGist: CurrentGist | undefined;
 
   constructor() {
     this.init(false);
@@ -116,6 +123,10 @@ export class GithubService {
     return this.userLogin;
   }
 
+  public getCurrentGist(): CurrentGist | undefined {
+    return this.currentGist;
+  }
+
   public isGithub(url: string): boolean {
     return /^(http:\/\/|https:\/\/)?(www\.)?github.com.*$/.test(url);
   }
@@ -144,7 +155,7 @@ export class GithubService {
     return url.split(GIST_RAW_URL)[1].split("/")[0];
   }
 
-  public extractCommitHashFromGistRawUrl(rawUrl: string): string {
+  public removeCommitHashFromGistRawUrl(rawUrl: string): string {
     const gistRawUrlElements = rawUrl.split(GIST_RAW_URL)[1].split("/");
     gistRawUrlElements.splice(3, 1);
     return `https://${GIST_RAW_URL}${gistRawUrlElements.join("/")}`;
@@ -188,10 +199,11 @@ export class GithubService {
   }
 
   public fetchGistFile(fileUrl: string): Promise<string> {
-    const gistId = this.isGistDefault(fileUrl) ? this.extractGistId(fileUrl) : this.extractGistIdFromRawUrl(fileUrl);
+    const gistId = this.extractGistIdFromRawUrl(fileUrl);
 
     return this.octokit.gists.get({ gist_id: gistId }).then(response => {
       const filename = Object.keys(response.data.files)[0];
+      this.currentGist = { filename, id: gistId };
       return (response.data as any).files[filename].content;
     });
   }
@@ -227,23 +239,23 @@ export class GithubService {
 
     return this.octokit.gists
       .create(gistContent)
-      .then(response => this.extractCommitHashFromGistRawUrl((response.data as any).files[args.filename].raw_url))
+      .then(response => this.removeCommitHashFromGistRawUrl((response.data as any).files[args.filename].raw_url))
       .catch(e => Promise.reject("Not able to create gist on Github."));
   }
 
   public updateGist(args: UpdateGistArgs) {
-    const gistContent: any = {
-      gist_id: args.gistId,
-      description: args.description,
-      public: args.isPublic,
-      files: {
-        [args.filename]: {
-          content: args.content
+    return this.octokit.gists
+      .update({
+        gist_id: this.currentGist!.id,
+        files: {
+          [this.currentGist!.filename]: {
+            content: args.content,
+            filename: args.filename
+          }
         }
-      }
-    };
-
-    return this.octokit.gists.update(gistContent);
+      })
+      .then(response => this.removeCommitHashFromGistRawUrl((response.data as any).files[args.filename].raw_url))
+      .catch(e => Promise.reject("Not able to create gist on Github."));
   }
 
   public getGistRawUrlFromId(gistId: string): Promise<string> {
@@ -251,7 +263,7 @@ export class GithubService {
       .get({ gist_id: gistId })
       .then(response => {
         const filename = Object.keys(response.data.files)[0];
-        return this.extractCommitHashFromGistRawUrl((response.data as any).files[filename].raw_url);
+        return this.removeCommitHashFromGistRawUrl((response.data as any).files[filename].raw_url);
       })
       .catch(e => Promise.reject("Not able to get gist from Github."));
   }

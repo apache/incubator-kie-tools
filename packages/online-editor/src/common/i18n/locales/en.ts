@@ -58,7 +58,7 @@ export const en: OnlineI18n = {
     sendChangesToGitHub: `Send changes to ${en_common.names.github}`,
     copySource: "Copy Source",
     downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
-    setGitHubToken: `Set up you ${en_common.names.github} token`,
+    setGitHubToken: `Set up your ${en_common.names.github} token`,
     gistIt: "Gist it!",
     fileActions: "File actions",
     updateGist: "Update Gist",
