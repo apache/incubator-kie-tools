@@ -18,7 +18,6 @@ coverage=$1
 . ./hack/go-mod-env.sh
 
 if [[ -z ${CI} ]]; then
-    ./hack/go-vet.sh
     ./hack/go-fmt.sh
     ./hack/go-lint.sh
     ./hack/addheaders.sh
