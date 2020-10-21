@@ -32,13 +32,13 @@ func InstallKogitoInfraComponent(namespace string, installerType InstallerType, 
 	case CLIInstallerType:
 		return cliInstallKogitoInfraComponent(namespace, infra)
 	case CRInstallerType:
-		return crInstallKogitoInfraComponent(namespace, infra)
+		return crInstallKogitoInfraComponent(infra)
 	default:
 		panic(fmt.Errorf("Unknown installer type %s", installerType))
 	}
 }
 
-func crInstallKogitoInfraComponent(namespace string, infra *v1alpha1.KogitoInfra) error {
+func crInstallKogitoInfraComponent(infra *v1alpha1.KogitoInfra) error {
 	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(infra); err != nil {
 		return fmt.Errorf("Error creating KogitoInfra: %v", err)
 	}
