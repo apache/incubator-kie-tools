@@ -21,6 +21,8 @@ import {
   Button,
   Flex,
   FlexItem,
+  Form,
+  FormGroup,
   PageSection,
   PageSectionVariants,
   Stack,
@@ -29,7 +31,7 @@ import {
   TextContent,
   Title
 } from "@patternfly/react-core";
-import { PencilAltIcon } from "@patternfly/react-icons";
+import { ExclamationCircleIcon, PencilAltIcon } from "@patternfly/react-icons";
 import "./CorePropertiesTable.scss";
 import { ValidatedType } from "../../../types";
 
@@ -111,7 +113,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   const baselineScoreEditor = useMemo(
     () =>
       GenericNumericEditor("baseline-score-id", baselineScore.value, baselineScore.valid, _value => {
-        setBaselineScore({ ...baselineScore, value: _value, valid: ValidateBaselineScore(_value) });
+        setBaselineScore({ value: _value, valid: ValidateBaselineScore(_value) });
       }),
     [baselineScore.value]
   );
@@ -124,7 +126,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   const initialScoreEditor = useMemo(
     () =>
       GenericNumericEditor("initial-score-id", initialScore.value, initialScore.valid, _value => {
-        setInitialScore({ ...initialScore, value: _value, valid: ValidateInitialScore(_value) });
+        setInitialScore({ value: _value, valid: ValidateInitialScore(_value) });
       }),
     [initialScore.value]
   );
@@ -187,56 +189,86 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
           </Flex>
         </StackItem>
         <StackItem>
-          <table className="core-properties__table">
-            <thead>
-              <tr>
-                <th>Is Scorable</th>
-                <th>Function Name</th>
-                <th>Algorithm Name</th>
-                <th>Baseline Score</th>
-                <th>Baseline Method</th>
-                <th>Initial Score</th>
-                <th>Use Reason Codes</th>
-                <th>Reason Code Algorithm</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  {!isEditing && props.isScorable.toString()}
-                  {isEditing && isScorableEditor}
-                </td>
-                <td>
-                  {!isEditing && props.functionName}
-                  {isEditing && functionNameEditor}
-                </td>
-                <td>
-                  {!isEditing && props.algorithmName}
-                  {isEditing && algorithmNameEditor}
-                </td>
-                <td>
-                  {!isEditing && props.baselineScore.toString()}
-                  {isEditing && baselineScoreEditor}
-                </td>
-                <td>
-                  {!isEditing && props.baselineMethod}
-                  {isEditing && baselineMethodEditor}
-                </td>
-                <td>
-                  {!isEditing && props.initialScore.toString()}
-                  {isEditing && initialScoreEditor}
-                </td>
-                <td>
-                  {!isEditing && props.useReasonCodes.toString()}
-                  {isEditing && useReasonCodesEditor}
-                </td>
-                <td>
-                  {!isEditing && props.reasonCodeAlgorithm.toString()}
-                  {isEditing && reasonCodeAlgorithmEditor}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <Form>
+            <table className="core-properties__table">
+              <thead>
+                <tr>
+                  <th>Is Scorable</th>
+                  <th>Function Name</th>
+                  <th>Algorithm Name</th>
+                  <th>Baseline Score</th>
+                  <th>Baseline Method</th>
+                  <th>Initial Score</th>
+                  <th>Use Reason Codes</th>
+                  <th>Reason Code Algorithm</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    {!isEditing && props.isScorable.toString()}
+                    {isEditing && isScorableEditor}
+                  </td>
+                  <td>
+                    {!isEditing && props.functionName}
+                    {isEditing && functionNameEditor}
+                  </td>
+                  <td>
+                    {!isEditing && props.algorithmName}
+                    {isEditing && algorithmNameEditor}
+                  </td>
+                  <td>
+                    {!isEditing && props.baselineScore.toString()}
+                    {isEditing && baselineScoreEditor}
+                  </td>
+                  <td>
+                    {!isEditing && props.baselineMethod}
+                    {isEditing && baselineMethodEditor}
+                  </td>
+                  <td>
+                    {!isEditing && props.initialScore.toString()}
+                    {isEditing && initialScoreEditor}
+                  </td>
+                  <td>
+                    {!isEditing && props.useReasonCodes.toString()}
+                    {isEditing && useReasonCodesEditor}
+                  </td>
+                  <td>
+                    {!isEditing && props.reasonCodeAlgorithm.toString()}
+                    {isEditing && reasonCodeAlgorithmEditor}
+                  </td>
+                </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>
+                    {isEditing && !baselineScore.valid && (
+                      <FormGroup
+                        helperTextInvalid="Must be greater than zero"
+                        helperTextInvalidIcon={<ExclamationCircleIcon />}
+                        fieldId="characteristic-baselineScore-validation"
+                        validated="error"
+                      />
+                    )}
+                  </td>
+                  <td>&nbsp;</td>
+                  <td>
+                    {isEditing && !initialScore.valid && (
+                      <FormGroup
+                        helperTextInvalid="Must be greater than zero"
+                        helperTextInvalidIcon={<ExclamationCircleIcon />}
+                        fieldId="characteristic-initialScore-validation"
+                        validated="error"
+                      />
+                    )}
+                  </td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                </tr>
+              </tbody>
+            </table>
+          </Form>
           {isEditing && (
             <Flex className="core-properties__edit_buttons">
               <FlexItem>
