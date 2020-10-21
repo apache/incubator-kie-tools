@@ -44,7 +44,7 @@ jest.mock("../../common/Hooks", () => mockFunctions());
 
 afterAll(() => {
   jest.resetAllMocks();
-})
+});
 
 describe("EditorToolbar", () => {
   let stateControl: StateControl;

@@ -76,3 +76,37 @@ describe("githubService::extractGistId", () => {
     expect(gistId).toEqual("gist_id");
   });
 });
+
+describe("githubService::extractGistIdFromRawUrl", () => {
+  test("extract gist id from raw url", () => {
+    const rawUrl = "https://gist.githubusercontent.com/test/gist-id/raw/commit-hash/test.bpmn";
+    const gistId = githubService.extractGistIdFromRawUrl(rawUrl);
+    expect(gistId).toEqual("gist-id");
+  });
+});
+
+describe("githubService::extractUserLoginFromGistRawUrl", () => {
+  test("extract user login from raw url", () => {
+    const rawUrl = "https://gist.githubusercontent.com/test/gist-id/raw/commit-hash/test.bpmn";
+    const userLogin = githubService.extractUserLoginFromGistRawUrl(rawUrl);
+    expect(userLogin).toEqual("test");
+  });
+});
+
+describe("githubService::removeCommitHashFromGistRawUrl", () => {
+  test("should remove commit has from raw url", () => {
+    const rawUrl = "https://gist.githubusercontent.com/test/gist-id/raw/commit-hash/test.bpmn";
+    const urlWithoutCommitHash = githubService.removeCommitHashFromGistRawUrl(rawUrl);
+    expect(urlWithoutCommitHash).toEqual("https://gist.githubusercontent.com/test/gist-id/raw/test.bpmn");
+  });
+});
+
+describe("githubService::isGistRaw", () => {
+  test("should be a raw url", () => {
+    expect(githubService.isGistRaw("gist.githubusercontent.com/")).toBeTruthy();
+  });
+
+  test("shouldn't be a raw url", () => {
+    expect(githubService.isGistRaw("github.com/")).toBeFalsy();
+  });
+});
