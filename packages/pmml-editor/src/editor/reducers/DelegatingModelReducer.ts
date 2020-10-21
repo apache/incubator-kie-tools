@@ -38,7 +38,7 @@ export const DelegatingModelReducer: HistoryAwareModelReducer<AllScorecardAction
       if (reducer) {
         const newState = reducer.reducer(model, action);
         //The sub-reducer may have created new instances of the model components however
-        //this reducer needs to return a new Model[] instance in order for a state change
+        //this reducer needs to return a *new* Model[] instance in order for a state change
         //to be correctly detected.
         if (newState !== model) {
           const newModels: Model[] = [];

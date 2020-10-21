@@ -71,7 +71,6 @@ export class PMMLEditor extends React.Component<Props, State> {
     this.reducer = mergeReducers(PMMLReducer(this.service), {
       Header: HeaderReducer(this.service),
       DataDictionary: mergeReducers(DataDictionaryReducer(this.service), { DataField: DataFieldReducer(this.service) }),
-      //TODO {manstis} Need to make this a specialised reducer that will also iterate model types and their merged reducers
       models: ModelReducer(this.service)
     });
   }
