@@ -16,10 +16,10 @@
 import * as React from "react";
 import { createRef, useEffect } from "react";
 import { Form, FormGroup, TextInput } from "@patternfly/react-core";
-import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
+import { IndexedCharacteristic } from "../organisms";
 
 interface CharacteristicGeneralFormProps {
-  characteristic: Characteristic | undefined;
+  characteristic: IndexedCharacteristic | undefined;
 }
 
 export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps) => {
@@ -31,13 +31,13 @@ export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps)
 
   useEffect(() => {
     if (nameRef.current) {
-      nameRef.current.value = characteristic?.name ?? "";
+      nameRef.current.value = characteristic?.characteristic.name ?? "";
     }
     if (reasonCodeRef.current) {
-      reasonCodeRef.current.value = characteristic?.reasonCode ?? "";
+      reasonCodeRef.current.value = characteristic?.characteristic.reasonCode ?? "";
     }
     if (baselineScoreRef.current) {
-      baselineScoreRef.current.value = characteristic?.baselineScore?.toString() ?? "";
+      baselineScoreRef.current.value = characteristic?.characteristic.baselineScore?.toString() ?? "";
     }
   });
 

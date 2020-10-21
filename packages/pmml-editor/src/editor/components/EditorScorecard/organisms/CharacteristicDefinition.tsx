@@ -17,9 +17,10 @@ import { CloseIcon } from "@patternfly/react-icons";
 import "./CharacteristicDefinition.scss";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicGeneralForm } from "../molecules/CharacteristicGeneralForm";
+import { IndexedCharacteristic } from "./CharacteristicsTable";
 
 interface CharacteristicDefinitionProps {
-  characteristic: Characteristic | undefined;
+  characteristic: IndexedCharacteristic | undefined;
   showPanel: boolean;
   hideCharacteristicPanel: () => void;
 }

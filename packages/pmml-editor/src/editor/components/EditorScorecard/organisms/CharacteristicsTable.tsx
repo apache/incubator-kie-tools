@@ -14,13 +14,26 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
-import { ICell, IRow, OnRowClick, Table, TableBody, TableHeader } from "@patternfly/react-table";
+import {
+  ICell,
+  IRow,
+  OnRowClick,
+  RowWrapperProps,
+  RowWrapperRow,
+  Table,
+  TableBody,
+  TableHeader
+} from "@patternfly/react-table";
 import { EmptyStateNoCharacteristics } from "./EmptyStateNoCharacteristics";
 import { Button, Label } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTable.scss";
+import styles from "@patternfly/react-styles/css/components/Table/table";
+import inlineStyles from "@patternfly/react-styles/css/components/InlineEdit/inline-edit";
+import { css } from "@patternfly/react-styles";
+import { getOUIAProps } from "@patternfly/react-core/dist/js/helpers/ouia";
 
 export interface IndexedCharacteristic {
   index: number;
@@ -29,6 +42,7 @@ export interface IndexedCharacteristic {
 
 interface CharacteristicsTableProps {
   characteristics: IndexedCharacteristic[];
+  selectedCharacteristic: IndexedCharacteristic | undefined;
   onRowClick: (index: number) => void;
   onRowDelete: (index: number) => void;
   onAddCharacteristic: () => void;
@@ -43,7 +57,7 @@ const columns: ICell[] = [
 ];
 
 export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
-  const { characteristics, onRowClick, onRowDelete, onAddCharacteristic } = props;
+  const { characteristics, selectedCharacteristic, onRowClick, onRowDelete, onAddCharacteristic } = props;
 
   const rows: IRow[] = useMemo(() => {
     return characteristics.map<IRow>((ic, index) => {
@@ -67,19 +81,54 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     });
   }, [characteristics]);
 
-  const rowClickHandler: OnRowClick = (event, row) => {
-    const index = row.props.index;
-    if (event.target instanceof HTMLButtonElement) {
-      event.stopPropagation();
-      onRowDelete(index);
-      return;
-    }
-    onRowClick(index);
-  };
+  const rowClickHandler: OnRowClick = useCallback(
+    (event, row) => {
+      const index = row.props.index;
+      if (event.target instanceof HTMLButtonElement) {
+        event.stopPropagation();
+        onRowDelete(index);
+        return;
+      }
+      onRowClick(index);
+    },
+    [characteristics]
+  );
+
+  const rowWrapper = useCallback(
+    (rowWrapperProps: RowWrapperProps) => {
+      const { row, rowProps, trRef, className, ouiaId, ...additionalProps } = rowWrapperProps;
+      const { isExpanded, isEditable } = row as RowWrapperRow;
+      const isSelectedRow = rowProps?.rowIndex === selectedCharacteristic?.index;
+
+      return (
+        <tr
+          {...additionalProps}
+          ref={trRef as React.Ref<any>}
+          className={css(
+            className,
+            isExpanded !== undefined && styles.tableExpandableRow,
+            isExpanded && styles.modifiers.expanded,
+            isEditable && inlineStyles.modifiers.inlineEditable,
+            isSelectedRow && "characteristics__table__row__selected"
+          )}
+          hidden={isExpanded !== undefined && !isExpanded}
+          {...getOUIAProps("TableRow", ouiaId)}
+          style={{ backgroundColor: isSelectedRow ? "red" : "white" }}
+        />
+      );
+    },
+    [selectedCharacteristic]
+  );
 
   return (
     <React.Fragment>
-      <Table aria-label="Characteristics" cells={columns} rows={rows} className="characteristics__table">
+      <Table
+        aria-label="Characteristics"
+        cells={columns}
+        rows={rows}
+        className="characteristics__table"
+        rowWrapper={rowWrapper}
+      >
         <TableHeader />
         <TableBody onRowClick={rowClickHandler} />
       </Table>

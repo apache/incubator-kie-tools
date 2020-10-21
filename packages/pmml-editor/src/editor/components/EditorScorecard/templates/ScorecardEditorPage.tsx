@@ -36,7 +36,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
   const [filter, setFilter] = useState("");
   const [showCharacteristicPanel, setShowCharacteristicPanel] = useState(false);
-  const [selectedCharacteristic, setSelectedCharacteristic] = useState<Characteristic | undefined>(undefined);
+  const [selectedCharacteristic, setSelectedCharacteristic] = useState<IndexedCharacteristic | undefined>(undefined);
 
   const characteristics: Characteristics | undefined = useSelector<PMML, Characteristics | undefined>((state: PMML) => {
     const model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
@@ -50,7 +50,10 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const selectCharacteristic = useCallback(
     index => {
       setShowCharacteristicPanel(true);
-      setSelectedCharacteristic(characteristics?.Characteristic[index]);
+      setSelectedCharacteristic({
+        index: index,
+        characteristic: characteristics?.Characteristic[index] as Characteristic
+      });
     },
     [characteristics]
   );
@@ -111,6 +114,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
           <CharacteristicsToolbar onFilter={setFilter} onAddCharacteristic={onAddCharacteristic} />
           <CharacteristicsTable
             characteristics={filteredCharacteristics}
+            selectedCharacteristic={selectedCharacteristic}
             onRowClick={index => selectCharacteristic(index)}
             onRowDelete={index => {
               if (window.confirm(`Delete Characteristic "${index}"?`)) {
