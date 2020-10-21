@@ -47,7 +47,11 @@ export const ModelReducer: HistoryAwareReducer<Model[], ModelActions | AllScorec
         "Scorecard",
         {
           reducer: scorecardReducer,
-          factory: (data: Scorecard) => new Scorecard(data)
+          factory: (data: Scorecard) => {
+            const model: Scorecard = new Scorecard(data);
+            (model as any)._type = "Scorecard";
+            return model;
+          }
         }
       ]
     ])

@@ -82,6 +82,7 @@ const PMMLModal = (props: { get: () => Promise<string> }) => {
             OK
           </Button>
         ]}
+        style={{ overflowX: "scroll" }}
       >
         <pre>
           <div ref={textRef} />

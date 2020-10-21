@@ -176,12 +176,15 @@ export const PMMLModels: Array<PMMLModelMapping<any>> = new Array<PMMLModelMappi
     type: "Scorecard",
     iconUrl: "card-icon-scorecard.svg",
     isSupported: true,
-    factory: () =>
-      new Scorecard({
+    factory: () => {
+      const model: Scorecard = new Scorecard({
         MiningSchema: { MiningField: [] },
         Characteristics: { Characteristic: [] },
         functionName: "regression"
-      })
+      });
+      (model as any)._type = "Scorecard";
+      return model;
+    }
   },
   {
     model: SupportVectorMachineModel,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { GenericNumericInput, GenericSelector, GenericTextInput } from "../atoms";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
 import {
@@ -110,12 +110,13 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   const algorithmNameEditor = GenericTextEditor("algorithm-name-id", algorithmName, true, _value => {
     setAlgorithmName(_value);
   });
-  const baselineScoreEditor = useMemo(
-    () =>
-      GenericNumericEditor("baseline-score-id", baselineScore.value, baselineScore.valid, _value => {
-        setBaselineScore({ value: _value, valid: ValidateBaselineScore(_value) });
-      }),
-    [baselineScore.value]
+  const baselineScoreEditor = GenericNumericEditor(
+    "baseline-score-id",
+    baselineScore.value,
+    baselineScore.valid,
+    _value => {
+      setBaselineScore({ value: _value, valid: ValidateBaselineScore(_value) });
+    }
   );
   const baselineMethodEditor = GenericSelectorEditor(
     "baseline-method-selector-id",
@@ -123,12 +124,13 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     baselineMethod,
     _selection => setBaselineMethod(_selection as BaselineMethod)
   );
-  const initialScoreEditor = useMemo(
-    () =>
-      GenericNumericEditor("initial-score-id", initialScore.value, initialScore.valid, _value => {
-        setInitialScore({ value: _value, valid: ValidateInitialScore(_value) });
-      }),
-    [initialScore.value]
+  const initialScoreEditor = GenericNumericEditor(
+    "initial-score-id",
+    initialScore.value,
+    initialScore.valid,
+    _value => {
+      setInitialScore({ value: _value, valid: ValidateInitialScore(_value) });
+    }
   );
   const useReasonCodesEditor = BooleanFieldEditor("use-reason-codes-id", useReasonCodes, checked =>
     setUseReasonCodes(checked)
