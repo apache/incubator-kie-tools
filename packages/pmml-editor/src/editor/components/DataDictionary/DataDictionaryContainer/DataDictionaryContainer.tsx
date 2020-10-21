@@ -7,6 +7,7 @@ import "./DataDictionaryContainer.scss";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
 import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
+import DataTypesSort from "../DataTypesSort/DataTypesSort";
 
 const DataDictionaryContainer = () => {
   const [dataTypes, setDataTypes] = useState<DataType[]>([
@@ -22,6 +23,7 @@ const DataDictionaryContainer = () => {
   const [constrainsEdit, setConstraintsEdit] = useState<{ show: true; dataType: DataType } | { show: false }>({
     show: false
   });
+  const [sorting, setSorting] = useState(false);
 
   const addDataType = () => {
     setNewType(true);
@@ -91,6 +93,14 @@ const DataDictionaryContainer = () => {
     }
   };
 
+  const toggleSorting = () => {
+    setSorting(!sorting);
+  };
+
+  const handleSorting = (sortedDataTypes: DataType[]) => {
+    setDataTypes(sortedDataTypes);
+  };
+
   return (
     <div className="data-dictionary">
       <StatusContext.Provider value={editing}>
@@ -102,7 +112,7 @@ const DataDictionaryContainer = () => {
                   <Button
                     variant="secondary"
                     onClick={addDataType}
-                    isDisabled={editing !== false}
+                    isDisabled={editing !== false || sorting}
                     icon={<PlusIcon />}
                     iconPosition="left"
                   >
@@ -113,7 +123,7 @@ const DataDictionaryContainer = () => {
                   <Button
                     variant="secondary"
                     onClick={() => setShowBatchAdd(true)}
-                    isDisabled={editing !== false}
+                    isDisabled={editing !== false || sorting}
                     icon={<BoltIcon />}
                     iconPosition="left"
                   >
@@ -121,34 +131,47 @@ const DataDictionaryContainer = () => {
                   </Button>
                 </FlexItem>
                 <FlexItem align={{ default: "alignRight" }}>
-                  <Button variant="secondary" isDisabled={editing !== false} icon={<SortIcon />} iconPosition="right">
-                    Sort
+                  <Button
+                    variant="secondary"
+                    onClick={toggleSorting}
+                    isDisabled={editing !== false || dataTypes.length < 2}
+                    icon={<SortIcon />}
+                    iconPosition="left"
+                  >
+                    {sorting ? "End Sorting" : "Sort"}
                   </Button>
                 </FlexItem>
               </Flex>
             </StackItem>
-            <StackItem className="data-dictionary__types-list">
-              {dataTypes.map((item, index) => (
-                <DataTypeItem
-                  dataType={item}
-                  index={index}
-                  key={uuid()}
-                  onSave={handleSave}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  onConstraintsEdit={handleConstraintsEdit}
-                />
-              ))}
-              {newType && (
-                <DataTypeItem
-                  dataType={{ name: "", type: "String", list: false }}
-                  index={-1}
-                  key={uuid()}
-                  onSave={handleSave}
-                  onConstraintsEdit={handleConstraintsEdit}
-                />
-              )}
-            </StackItem>
+            {!sorting && (
+              <StackItem className="data-dictionary__types-list">
+                {dataTypes.map((item, index) => (
+                  <DataTypeItem
+                    dataType={item}
+                    index={index}
+                    key={uuid()}
+                    onSave={handleSave}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    onConstraintsEdit={handleConstraintsEdit}
+                  />
+                ))}
+                {newType && (
+                  <DataTypeItem
+                    dataType={{ name: "", type: "String", list: false }}
+                    index={-1}
+                    key={uuid()}
+                    onSave={handleSave}
+                    onConstraintsEdit={handleConstraintsEdit}
+                  />
+                )}
+              </StackItem>
+            )}
+            {sorting && (
+              <StackItem className="data-dictionary__types-list">
+                <DataTypesSort dataTypes={dataTypes} onSort={handleSorting} />
+              </StackItem>
+            )}
           </Stack>
         )}
         {showBatchAdd && (

@@ -3,6 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import useOnclickOutside from "react-cool-onclickoutside";
 import {
   Button,
+  Flex,
+  FlexItem,
   Label,
   Select,
   SelectOption,
@@ -16,8 +18,9 @@ import {
   TextInput
 } from "@patternfly/react-core";
 import { AngleRightIcon, CheckIcon, EditAltIcon, TrashIcon } from "@patternfly/react-icons";
-import { Constraints, DataType, StatusContext } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { DataType, StatusContext } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
+import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
 
 interface DataTypeItemProps {
   dataType: DataType;
@@ -92,132 +95,122 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   }, [editing]);
 
   return (
-    <article className={`data-type-item data-type-item-n${index}`} ref={ref}>
+    <>
       {editing === index && (
-        <Form onSubmit={handleSave}>
-          <Stack hasGutter={true}>
-            <StackItem>
-              {/* Change Split to Flexbox */}
-              <Split hasGutter={true}>
-                <SplitItem>
-                  <TextInput
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={name}
-                    onChange={handleNameChange}
-                    placeholder="Name"
-                  />
-                </SplitItem>
-                <SplitItem>
-                  <Select
-                    variant={SelectVariant.single}
-                    aria-label="Select Input"
-                    onToggle={typeToggle}
-                    onSelect={typeSelect}
-                    selections={typeSelection}
-                    isOpen={isTypeSelectOpen}
-                    placeholder="Type"
-                    menuAppendTo={"parent"}
-                    width={130}
-                  >
-                    {typeOptions.map((option, optionIndex) => (
-                      <SelectOption key={optionIndex} value={option.value} />
-                    ))}
-                  </Select>
-                </SplitItem>
-                <SplitItem style={{ padding: "5px 0 0 20px" }}>
-                  <label className="pf-c-form__label" htmlFor="list-type" style={{ marginRight: "1em" }}>
-                    <span className="pf-c-form__label-text">It's a list</span>
-                  </label>
-                  <Switch id="list-type" aria-label="Yes" isChecked={isList} onChange={() => setIsList(!isList)} />
-                </SplitItem>
-                <SplitItem isFilled={true}>&nbsp;</SplitItem>
-                <SplitItem>
-                  <Button variant="plain" onClick={handleSave} isDisabled={name.trim().length === 0}>
-                    <CheckIcon />
-                  </Button>
-                </SplitItem>
-              </Split>
-            </StackItem>
-            <StackItem>
-              <Split hasGutter={true}>
-                <SplitItem>
-                  {dataType.constraints === undefined && (
-                    <Button
-                      variant="link"
-                      icon={<AngleRightIcon />}
-                      isInline={true}
-                      iconPosition="right"
-                      onClick={handleConstraints}
-                      isDisabled={name.trim().length === 0 || isList || typeSelection === "Boolean"}
+        <article className={`data-type-item data-type-item-n${index}`} ref={ref}>
+          <Form onSubmit={handleSave}>
+            <Stack hasGutter={true}>
+              <StackItem>
+                {/* Change Split to Flexbox */}
+                <Split hasGutter={true}>
+                  <SplitItem>
+                    <TextInput
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={name}
+                      onChange={handleNameChange}
+                      placeholder="Name"
+                    />
+                  </SplitItem>
+                  <SplitItem>
+                    <Select
+                      variant={SelectVariant.single}
+                      aria-label="Select Input"
+                      onToggle={typeToggle}
+                      onSelect={typeSelect}
+                      selections={typeSelection}
+                      isOpen={isTypeSelectOpen}
+                      placeholder="Type"
+                      menuAppendTo={"parent"}
                     >
-                      <span>Add Constraints</span>
+                      {typeOptions.map((option, optionIndex) => (
+                        <SelectOption key={optionIndex} value={option.value} />
+                      ))}
+                    </Select>
+                  </SplitItem>
+                  <SplitItem style={{ padding: "5px 0 0 20px" }}>
+                    <label className="pf-c-form__label" htmlFor="list-type" style={{ marginRight: "1em" }}>
+                      <span className="pf-c-form__label-text">It's a list</span>
+                    </label>
+                    <Switch id="list-type" aria-label="Yes" isChecked={isList} onChange={() => setIsList(!isList)} />
+                  </SplitItem>
+                  <SplitItem isFilled={true}>&nbsp;</SplitItem>
+                  <SplitItem>
+                    <Button variant="plain" onClick={handleSave} isDisabled={name.trim().length === 0}>
+                      <CheckIcon />
                     </Button>
-                  )}
-                  {dataType.constraints !== undefined && (
-                    <>
-                      <span>Constraints</span>
+                  </SplitItem>
+                </Split>
+              </StackItem>
+              <StackItem>
+                <Split hasGutter={true}>
+                  <SplitItem>
+                    {dataType.constraints === undefined && (
                       <Button
                         variant="link"
+                        icon={<AngleRightIcon />}
+                        isInline={true}
+                        iconPosition="right"
                         onClick={handleConstraints}
                         isDisabled={name.trim().length === 0 || isList || typeSelection === "Boolean"}
                       >
-                        <ConstraintsLabel constraints={dataType.constraints} />
+                        <span>Add Constraints</span>
                       </Button>
-                    </>
-                  )}
-                </SplitItem>
-              </Split>
-            </StackItem>
-          </Stack>
-        </Form>
+                    )}
+                    {dataType.constraints !== undefined && (
+                      <>
+                        <span>Constraints</span>
+                        <Button
+                          variant="link"
+                          onClick={handleConstraints}
+                          isDisabled={name.trim().length === 0 || isList || typeSelection === "Boolean"}
+                        >
+                          <ConstraintsLabel constraints={dataType.constraints} />
+                        </Button>
+                      </>
+                    )}
+                  </SplitItem>
+                </Split>
+              </StackItem>
+            </Stack>
+          </Form>
+        </article>
       )}
       {editing !== index && (
-        // Change Split to Flexbox
-        <Split hasGutter={true}>
-          <SplitItem>
-            <strong>{name}</strong>
-          </SplitItem>
-          <SplitItem isFilled={true}>
-            <Label color="blue">{typeSelection}</Label>
-            {isList && (
-              <>
-                {" "}
-                <Label color="cyan">List</Label>
-              </>
-            )}
-            {dataType.constraints !== undefined && (
-              <>
-                {" "}
-                <ConstraintsLabel constraints={dataType.constraints} />
-              </>
-            )}
-          </SplitItem>
-          <SplitItem>
-            <Button variant="plain" onClick={handleEditStatus} isDisabled={editing !== false}>
-              <EditAltIcon />
-            </Button>
-            <Button variant="plain" onClick={handleDelete} isDisabled={editing !== false}>
-              <TrashIcon />
-            </Button>
-          </SplitItem>
-        </Split>
+        <article className={`data-type-item data-type-item-n${index}`} onDoubleClick={handleEditStatus}>
+          <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
+            <FlexItem>
+              <strong>{name}</strong>
+            </FlexItem>
+            <FlexItem>
+              <Label color="blue">{typeSelection}</Label>
+              {isList && (
+                <>
+                  {" "}
+                  <Label color="cyan">List</Label>
+                </>
+              )}
+              {dataType.constraints !== undefined && (
+                <>
+                  {" "}
+                  <ConstraintsLabel constraints={dataType.constraints} />
+                </>
+              )}
+            </FlexItem>
+            <FlexItem align={{ default: "alignRight" }}>
+              <Button variant="plain" onClick={handleEditStatus} isDisabled={editing !== false}>
+                <EditAltIcon />
+              </Button>
+              <Button variant="plain" onClick={handleDelete} isDisabled={editing !== false}>
+                <TrashIcon />
+              </Button>
+            </FlexItem>
+          </Flex>
+        </article>
       )}
-    </article>
+    </>
   );
 };
 
 export default DataTypeItem;
-
-interface ConstraintsLabelProps {
-  constraints: Constraints;
-}
-const ConstraintsLabel = ({ constraints }: ConstraintsLabelProps) => {
-  let constraintValue;
-  switch (constraints.type) {
-    case "Range":
-      constraintValue = `(${constraints.start.value},${constraints.end.value})`;
-  }
-  return <Label color="orange">{`${constraints.type} ${constraintValue}`}</Label>;
-};
