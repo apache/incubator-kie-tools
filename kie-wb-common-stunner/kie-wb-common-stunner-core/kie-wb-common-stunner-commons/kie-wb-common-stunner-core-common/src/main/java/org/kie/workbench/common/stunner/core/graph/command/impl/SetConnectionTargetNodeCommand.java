@@ -40,7 +40,7 @@ import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext
  * - if connector is not view based, no need to provide magnet index.
  */
 @Portable
-public final class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
+public class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
 
     private final String targetNodeUUID;
     private final String edgeUUID;
@@ -160,7 +160,7 @@ public final class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
         return undoCommand.execute(context);
     }
 
-    private Edge<? extends View, Node> getEdge(final GraphCommandExecutionContext context) {
+    protected Edge<? extends View, Node> getEdge(final GraphCommandExecutionContext context) {
         if (null == this.edge) {
             this.edge = getViewEdge(context,
                                     edgeUUID);
@@ -177,7 +177,7 @@ public final class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
     }
 
     @SuppressWarnings("unchecked")
-    private Node<? extends View<?>, Edge> getTargetNode(final GraphCommandExecutionContext context) {
+    protected Node<? extends View<?>, Edge> getTargetNode(final GraphCommandExecutionContext context) {
         if (null == targetNode) {
             targetNode = (Node<? extends View<?>, Edge>) getNode(context,
                                                                  targetNodeUUID);
@@ -199,6 +199,18 @@ public final class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
 
     public Node<? extends View<?>, Edge> getSourceNode() {
         return sourceNode;
+    }
+
+    public String getTargetNodeUUID(){
+        return targetNodeUUID;
+    }
+
+    public Connection getLastConnection() {
+        return lastConnection;
+    }
+
+    public String getLastTargetNodeUUID() {
+        return lastTargetNodeUUID;
     }
 
     @Override

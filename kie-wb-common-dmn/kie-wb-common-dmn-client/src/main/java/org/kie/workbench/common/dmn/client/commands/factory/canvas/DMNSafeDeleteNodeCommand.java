@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.commands.factory.canvas;
 
 import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
+import org.kie.workbench.common.dmn.client.commands.factory.graph.DMNDeleteConnectorCommand;
 import org.kie.workbench.common.dmn.client.commands.factory.graph.DMNDeregisterNodeCommand;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
@@ -24,9 +25,11 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.impl.DeleteConnectorCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.DeregisterNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.NodeDefinitionHelper;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
@@ -74,5 +77,10 @@ public class DMNSafeDeleteNodeCommand extends SafeDeleteNodeCommand {
     @Override
     protected DeregisterNodeCommand createDeregisterNodeCommand(final Node node) {
         return new DMNDeregisterNodeCommand(getGraph(node), node.getUUID());
+    }
+
+    @Override
+    protected DeleteConnectorCommand getDeleteConnectorCommand(final Edge<? extends View<?>, Node> edge) {
+        return new DMNDeleteConnectorCommand(edge, graphsProvider);
     }
 }

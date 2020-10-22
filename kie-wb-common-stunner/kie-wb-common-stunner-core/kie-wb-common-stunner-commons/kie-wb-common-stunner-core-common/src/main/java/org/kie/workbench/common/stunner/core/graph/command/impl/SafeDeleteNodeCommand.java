@@ -236,7 +236,7 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                                   final Edge<? extends ViewConnector<?>, Node> out) {
                 final ViewConnector<?> outContent = out.getContent();
                 final Node targetNode = out.getTargetNode();
-                addCommand(new DeleteConnectorCommand(out));
+                addCommand(getDeleteConnectorCommand(out));
                 safeDeleteCallback.ifPresent(c -> c.deleteCandidateConnector(out));
                 addCommand(new SetConnectionTargetNodeCommand(targetNode,
                                                               in,
@@ -249,7 +249,7 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
 
             private boolean doDeleteConnector(final Edge<? extends View<?>, Node> edge) {
                 if (!isElementExcluded(edge) && !processedConnectors.contains(edge.getUUID())) {
-                    addCommand(new DeleteConnectorCommand(edge));
+                    addCommand(getDeleteConnectorCommand(edge));
                     safeDeleteCallback.ifPresent(c -> c.deleteConnector(edge));
                     processedConnectors.add(edge.getUUID());
                     return true;
@@ -257,6 +257,10 @@ public class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
                 return false;
             }
         };
+    }
+
+    protected DeleteConnectorCommand getDeleteConnectorCommand(final Edge<? extends View<?>, Node> edge) {
+        return new DeleteConnectorCommand(edge);
     }
 
     void createChangeParentCommands(final Element<?> canvas,

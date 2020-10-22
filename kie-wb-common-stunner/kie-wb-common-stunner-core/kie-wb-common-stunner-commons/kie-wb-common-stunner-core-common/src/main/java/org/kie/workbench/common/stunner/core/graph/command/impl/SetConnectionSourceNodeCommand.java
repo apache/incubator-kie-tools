@@ -40,7 +40,7 @@ import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext
  * - if connector is not view based, no need to provide magnet index.
  */
 @Portable
-public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
+public class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
 
     private final String sourceNodeUUID;
     private final String edgeUUID;
@@ -199,6 +199,18 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
 
     public Connection getConnection() {
         return connection;
+    }
+
+    public String getSourceNodeUUID() {
+        return sourceNodeUUID;
+    }
+
+    public Connection getLastConnection() {
+        return lastConnection;
+    }
+
+    public String getLastSourceNodeUUID() {
+        return lastSourceNodeUUID;
     }
 
     @Override

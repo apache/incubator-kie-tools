@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
  * A Command to delete an edge from a graph
  */
 @Portable
-public final class DeleteConnectorCommand extends AbstractGraphCompositeCommand {
+public class DeleteConnectorCommand extends AbstractGraphCompositeCommand {
 
     private final String edgeUUID;
     private transient Edge<? extends View, Node> edge;
@@ -54,14 +54,22 @@ public final class DeleteConnectorCommand extends AbstractGraphCompositeCommand 
         final Node<View<?>, Edge> targetNode = edge.getTargetNode();
         final Node<View<?>, Edge> sourceNode = edge.getSourceNode();
         if (null != sourceNode) {
-            commands.add(new SetConnectionSourceNodeCommand(null,
-                                                            edge));
+            commands.add(getSetConnectionSourceCommand(edge));
         }
         if (null != targetNode) {
-            commands.add(new SetConnectionTargetNodeCommand(null,
-                                                            edge));
+            commands.add(getSetConnectionTargetCommand(edge));
         }
         return this;
+    }
+
+    protected SetConnectionTargetNodeCommand getSetConnectionTargetCommand(final Edge<? extends ViewConnector, Node> edge) {
+        return new SetConnectionTargetNodeCommand(null,
+                                                  edge);
+    }
+
+    protected SetConnectionSourceNodeCommand getSetConnectionSourceCommand(final Edge<? extends ViewConnector, Node> edge) {
+        return new SetConnectionSourceNodeCommand(null,
+                                                  edge);
     }
 
     @Override

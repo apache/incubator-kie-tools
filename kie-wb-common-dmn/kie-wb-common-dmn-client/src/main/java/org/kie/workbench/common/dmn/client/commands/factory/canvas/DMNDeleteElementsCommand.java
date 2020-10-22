@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.diagram.GraphsProvider;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class DMNDeleteElementsCommand extends DeleteElementsCommand {
@@ -44,7 +45,15 @@ public class DMNDeleteElementsCommand extends DeleteElementsCommand {
     @Override
     protected Command<GraphCommandExecutionContext, RuleViolation> newGraphCommand(final AbstractCanvasHandler context) {
         return new DMNDeleteElementsGraphCommand(() -> elements,
-                                                 new CanvasMultipleDeleteProcessor(),
+                                                 new DMNCanvasMultipleDeleteProcessor(),
                                                  getGraphsProvider());
+    }
+
+    private class DMNCanvasMultipleDeleteProcessor extends CanvasMultipleDeleteProcessor {
+
+        @Override
+        protected DMNDeleteNodeCommand.DMNCanvasDeleteProcessor createProcessor(SafeDeleteNodeCommand.Options options) {
+            return new DMNDeleteNodeCommand.DMNCanvasDeleteProcessor(options, getGraphsProvider());
+        }
     }
 }

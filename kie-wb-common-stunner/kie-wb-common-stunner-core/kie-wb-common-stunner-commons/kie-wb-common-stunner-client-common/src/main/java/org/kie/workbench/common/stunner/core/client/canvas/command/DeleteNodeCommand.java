@@ -187,10 +187,14 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
 
         private boolean doDeleteConnector(final Edge<? extends View<?>, Node> connector) {
             if (!options.getExclusions().contains(connector.getUUID())) {
-                getCommand().addCommand(new DeleteCanvasConnectorCommand(connector));
+                getCommand().addCommand(createDeleteCanvasConnectorNodeCommand(connector));
                 return true;
             }
             return false;
+        }
+
+        protected DeleteCanvasConnectorCommand createDeleteCanvasConnectorNodeCommand(final Edge<? extends View<?>, Node> connector) {
+            return new DeleteCanvasConnectorCommand(connector);
         }
 
         protected DeleteCanvasNodeCommand createDeleteCanvasNodeCommand(final Node<?, Edge> node) {

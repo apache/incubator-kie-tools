@@ -122,4 +122,3 @@ public class DMNCanvasHandler<D extends Diagram, C extends AbstractCanvas> exten
         super.addChild(parent, child);
     }
 }
-
