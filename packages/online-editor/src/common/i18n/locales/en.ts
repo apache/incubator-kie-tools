@@ -52,6 +52,9 @@ export const en: OnlineI18n = {
         message: `Your Gist filename was updated, and can take a few seconds until the new ${en_common.names.url} is available to be used.`,
         yourUrl: `Your new ${en_common.names.url}`
       },
+      invalidCurrentGist: `Your current Gist ${en_common.names.url} is invalid. Maybe you've updated its filename, and it's necessary to update your ${en_common.names.url} as well.`,
+      invalidGistFilename: "Invalid filename. This Gist already has a file with this name.",
+      error: "An error occurred trying to perform the last operation. Try again later.",
       unsaved: {
         title: "Unsaved changes will be lost",
         message: "Click Save to download your progress before closing.",

@@ -51,6 +51,9 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
         message: string;
         yourUrl: string;
       };
+      invalidCurrentGist: string;
+      invalidGistFilename: string;
+      error: string;
       unsaved: {
         title: string;
         message: string;
