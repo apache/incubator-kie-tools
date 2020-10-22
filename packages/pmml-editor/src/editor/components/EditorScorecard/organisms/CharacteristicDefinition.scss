@@ -4,10 +4,10 @@
   width: 100%;
   height: 100%;
   position: absolute;
-  pointer-events: none;
   visibility: hidden;
   -webkit-transition: visibility 0s 0.6s;
   transition: visibility 0s 0.6s;
+  z-index: 101;
 }
 
 .side-panel::after {
@@ -18,6 +18,7 @@
   position: absolute;
   content: "";
   cursor: pointer;
+  background: transparent;
   -webkit-transition: background 0.3s 0.3s;
   transition: background 0.3s 0.3s;
 }
@@ -28,15 +29,21 @@
   transition: visibility 0s 0s;
 }
 
+.side-panel.side-panel--is-visible::after {
+  background: rgba(0, 0, 0, 0.6);
+  -webkit-transition: background 0.3s 0s;
+  transition: background 0.3s 0s;
+}
+
 .side-panel__container {
   width: 50%;
   height: 100%;
   position: fixed;
   background: #ffffff;
   pointer-events: auto;
-  box-shadow: -10px 0 20px lightgrey;
-  border-left: 1px solid lightgrey;
-  z-index: 1;
+  box-shadow: -10px 0 20px #404040;
+  border-left: 1px solid #303030;
+  z-index: 102;
   -webkit-transition: -webkit-transform 0.3s 0s;
   transition: -webkit-transform 0.3s 0s;
   transition: transform 0.3s 0s;

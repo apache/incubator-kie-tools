@@ -22,8 +22,8 @@
     table-layout: fixed;
     width: 100%;
 
-    &__row__selected {
-      background-color: var(--pf-global--link--Color--light);
+    th:first-of-type {
+      padding-left: 24px;
     }
 
     td {
@@ -33,12 +33,7 @@
 
     tr {
       height: 64px;
-      padding-right: 32px;
-    }
-
-    tbody tr:hover {
-      background-color: var(--pf-global--link--Color--light--hover);
-      cursor: pointer;
+      padding-right: 24px;
     }
 
   }

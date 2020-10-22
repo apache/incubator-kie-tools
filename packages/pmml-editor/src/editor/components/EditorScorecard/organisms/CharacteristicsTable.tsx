@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
-import { Button, Label } from "@patternfly/react-core";
+import {
+  Button,
+  DataList,
+  DataListCell,
+  DataListItem,
+  DataListItemCells,
+  DataListItemRow,
+  Label
+} from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTable.scss";
 import { EmptyStateNoCharacteristics } from "./EmptyStateNoCharacteristics";
@@ -36,6 +44,13 @@ interface CharacteristicsTableProps {
 
 export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   const { characteristics, selectedCharacteristic, onRowClick, onRowDelete, onAddCharacteristic } = props;
+
+  const [selectedDataListItemId, setSelectedDataListItemId] = useState("");
+
+  const onSelectDataListItem = (id: string) => {
+    setSelectedDataListItemId(id);
+    onRowClick(Number(id));
+  };
 
   const onDeleteCharacteristic = useCallback(
     (event, index) => {
@@ -57,29 +72,50 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
             <th>&nbsp;</th>
           </tr>
         </thead>
-        <tbody>
+      </table>
+      <React.Fragment>
+        <DataList
+          aria-label="selectable data list example"
+          selectedDataListItemId={selectedDataListItemId}
+          onSelectDataListItem={onSelectDataListItem}
+        >
           {characteristics.map((ic, index) => {
             const c: Characteristic = ic.characteristic;
-            const additionalClassName =
-              selectedCharacteristic?.index === index ? "characteristics__table__row__selected" : "";
             return (
-              <tr key={index} className={additionalClassName} onClick={e => onRowClick(index)}>
-                <td>{c.name}</td>
-                <td>
-                  <Label>{c.Attribute.length}</Label>
-                </td>
-                <td>{c.reasonCode}</td>
-                <td>{c.baselineScore}</td>
-                <td>
-                  <Button variant="link" icon={<TrashIcon />} onClick={e => onDeleteCharacteristic(e, index)}>
-                    &nbsp;
-                  </Button>
-                </td>
-              </tr>
+              <DataListItem
+                key={index}
+                id={index.toString()}
+                style={{ outline: "none" }}
+                aria-labelledby={"selectable-item" + index}
+              >
+                <DataListItemRow>
+                  <DataListItemCells
+                    dataListCells={[
+                      <DataListCell key="0">
+                        <div>{c.name}</div>
+                      </DataListCell>,
+                      <DataListCell key="1">
+                        <Label>{c.Attribute.length}</Label>
+                      </DataListCell>,
+                      <DataListCell key="2">
+                        <div>{c.reasonCode}</div>
+                      </DataListCell>,
+                      <DataListCell key="3">
+                        <div>{c.baselineScore}</div>
+                      </DataListCell>,
+                      <DataListCell key="4">
+                        <Button variant="link" icon={<TrashIcon />} onClick={e => onDeleteCharacteristic(e, index)}>
+                          &nbsp;
+                        </Button>
+                      </DataListCell>
+                    ]}
+                  />
+                </DataListItemRow>
+              </DataListItem>
             );
           })}
-        </tbody>
-      </table>
+        </DataList>
+      </React.Fragment>
       {characteristics.length === 0 && <EmptyStateNoCharacteristics createCharacteristic={onAddCharacteristic} />}
     </div>
   );
