@@ -90,4 +90,13 @@ public class FindPackageNamesQueryTest {
         final Query query = new FindPackageNamesQuery().toQuery(terms);
         assertEquals("-packageName:*", query.toString());
     }
+
+    @Test
+    public void testToQueryValuePackageAnyExistingValueTerm() {
+        final HashSet<ValueIndexTerm> terms = new HashSet<>();
+        terms.add(new ValuePackageNameIndexTerm("*"));
+
+        final Query query = new FindPackageNamesQuery().toQuery(terms);
+        assertEquals("+packageName:*", query.toString());
+    }
 }

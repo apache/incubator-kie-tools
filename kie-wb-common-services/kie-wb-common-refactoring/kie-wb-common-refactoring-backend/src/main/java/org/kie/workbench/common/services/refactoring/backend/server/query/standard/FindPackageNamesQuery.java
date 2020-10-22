@@ -59,9 +59,14 @@ public class FindPackageNamesQuery extends AbstractFindQuery implements NamedQue
         final SearchEmptyQueryBuilder queryBuilder = new SearchEmptyQueryBuilder();
 
         for (ValueIndexTerm term : terms) {
-            if (term instanceof ValueModuleRootPathIndexTerm
-                    || term instanceof ValuePackageNameIndexTerm) {
+            if (term instanceof ValueModuleRootPathIndexTerm) {
                 queryBuilder.addTerm(term);
+            } else if (term instanceof ValuePackageNameIndexTerm) {
+                if (Objects.equals("*", term.getValue())) {
+                    queryBuilder.addAnyValueWildCardTerm(term);
+                } else {
+                    queryBuilder.addTerm(term);
+                }
             }
         }
 

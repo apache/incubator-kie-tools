@@ -38,6 +38,10 @@ public class SearchEmptyQueryBuilder extends AbstractQueryBuilder
         return query;
     }
 
+    /**
+     * Empty term value will search for every value that does not match "*" = any value
+     * Using "*" will match "*" = any value and empty values.
+     */
     public SearchEmptyQueryBuilder addTerm( final ValueIndexTerm term ) {
         if ( term.getValue().trim().isEmpty() ) {
             queryBuilder.add( new WildcardQuery( new Term( term.getTerm(), "*" ) ), MUST_NOT );
@@ -47,6 +51,14 @@ public class SearchEmptyQueryBuilder extends AbstractQueryBuilder
             Query query = getQuery(term);
             queryBuilder.add( query, MUST );
         }
+        return this;
+    }
+
+    /**
+     * For all the searches the value has to have an value. Regular addTerm(..) with "*" also includes empty.
+     */
+    public SearchEmptyQueryBuilder addAnyValueWildCardTerm( final ValueIndexTerm term) {
+        queryBuilder.add( new WildcardQuery( new Term(term.getTerm(), "*") ), MUST );
         return this;
     }
 
