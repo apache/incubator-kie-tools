@@ -14,7 +14,7 @@
     "@kogito-tooling/patternfly-base": "0.7.1"
   },
   "scripts": {
-    "lint": "tslint -c ../../tslint.json '{src,it-tests}/**/*.{ts,tsx,js,jsx}'",	
+    "lint": "tslint -c ../../tslint.json '{src,it-tests}/**/*.{ts,tsx,js,jsx}'",
     "test": "echo 'No tests to run.'",
     "build:fast": "rm -rf dist && webpack",
     "build": "yarn run lint && yarn test && yarn run build:fast",
