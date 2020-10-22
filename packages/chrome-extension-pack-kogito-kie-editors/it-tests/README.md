@@ -19,7 +19,8 @@ Use `yarn run test:it` command to run the tests.
 
 | File / directory     | Description                                       |
 | -------------------- | ------------------------------------------------- |
-| `framework/`         | Test framework contains pages and page fragments. |  
+| `framework/`         | Test framework contains pages and page fragments. |
+| `samples/`           | Test BPMN and DMN files.                          | 
 | `tests/`             | Test directory contains only test classes.        |
 | `utils/`             | Test utils contains other testing tools.          |
 | `README.md`          | This README file                                  |
