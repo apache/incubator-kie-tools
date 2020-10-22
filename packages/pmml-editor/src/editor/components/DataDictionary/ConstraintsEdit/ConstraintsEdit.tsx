@@ -27,25 +27,23 @@ import "./ConstraintsEdit.scss";
 interface ConstraintsEditProps {
   dataType: DataType;
   onAdd: (payload: Constraints) => void;
-  onCancel: () => void;
+  onDelete: () => void;
 }
 
 const ConstraintsEdit = (props: ConstraintsEditProps) => {
-  const { dataType, onAdd, onCancel } = props;
+  const { dataType, onAdd, onDelete } = props;
   const [constraintType, setConstraintType] = useState<string>(dataType.constraints?.type ?? "");
-  const rangeInitialValue =
-    dataType.constraints?.type === "Range"
-      ? dataType.constraints
-      : {
-          start: {
-            value: "",
-            included: false
-          },
-          end: {
-            value: "",
-            included: false
-          }
-        };
+  const rangeEmptyValue = {
+    start: {
+      value: "",
+      included: false
+    },
+    end: {
+      value: "",
+      included: false
+    }
+  };
+  const rangeInitialValue = dataType.constraints?.type === "Range" ? dataType.constraints : rangeEmptyValue;
   const [range, setRange] = useState(rangeInitialValue);
   const [enums, setEnums] = useState("");
   const [validation, setValidation] = useState<"success" | "error" | "default">("default");
@@ -78,7 +76,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     if (validateConstraints() === "success") {
       switch (constraintType) {
         case "":
-          onCancel();
+          onDelete();
           break;
         case "Range":
           const data = { ...range, type: "Range" };
@@ -87,6 +85,13 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
       }
     }
   };
+
+  const clearConstraints = () => {
+    setRange(rangeEmptyValue);
+    setConstraintType("");
+    setEnums("");
+  };
+
   return (
     <section>
       <Stack hasGutter={true}>
@@ -102,11 +107,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
           </StackItem>
         )}
         <StackItem>
-          <Form onSubmit={handleSubmit}>
-            <Grid hasGutter={true}>
-              <GridItem span={3}>Constraint Type</GridItem>
-              <GridItem span={8}>Details</GridItem>
-            </Grid>
+          <Form onSubmit={handleSubmit} autoComplete="off">
             <Card>
               <CardBody>
                 <Grid>
@@ -199,40 +200,13 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
               <Button variant="primary" type="submit">
                 Done
               </Button>
+              <Button variant="secondary" type="button" onClick={clearConstraints}>
+                Clear Constraints
+              </Button>
             </ActionGroup>
           </Form>
-          {/*<Form onSubmit={handleSubmit} style={{ gridGap: 0 }}>*/}
-          {/*  <FormGroup*/}
-          {/*    label="Data Types"*/}
-          {/*    fieldId="data-types"*/}
-          {/*    isRequired={true}*/}
-          {/*    validated={inputValidation}*/}
-          {/*    helperTextInvalid={"Please enter at least one Data Type Name"}*/}
-          {/*  >*/}
-          {/*    <TextArea*/}
-          {/*      className="data-dictionary__multiple-data-types"*/}
-          {/*      value={input}*/}
-          {/*      onChange={handleInputChange}*/}
-          {/*      name="data-types"*/}
-          {/*      isRequired={true}*/}
-          {/*      id="data-types"*/}
-          {/*      placeholder={"First Data Type\nSecond Data Type\n..."}*/}
-          {/*    />*/}
-          {/*  </FormGroup>*/}
-          {/*  <ActionGroup>*/}
-          {/*    <Button variant="primary" type="submit">*/}
-          {/*      Add Them*/}
-          {/*    </Button>*/}
-          {/*    <Button variant="link" onClick={() => onCancel()}>*/}
-          {/*      Cancel*/}
-          {/*    </Button>*/}
-          {/*  </ActionGroup>*/}
-          {/*</Form>*/}
         </StackItem>
       </Stack>
-      {/*<Button variant="link" iconPosition="right" onClick={onAdd}>*/}
-      {/*  Done*/}
-      {/*</Button>*/}
     </section>
   );
 };

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   ActionGroup,
   Button,
@@ -11,7 +12,7 @@ import {
   TextContent,
   TextVariants
 } from "@patternfly/react-core";
-import { useEffect, useState } from "react";
+import { AngleLeftIcon } from "@patternfly/react-icons";
 import "./MultipleDataTypesAdd.scss";
 
 interface MultipleDataTypeAddProps {
@@ -80,8 +81,8 @@ const MultipleDataTypeAdd = ({ onAdd, onCancel }: MultipleDataTypeAddProps) => {
               <Button variant="primary" type="submit">
                 Add Them
               </Button>
-              <Button variant="link" onClick={() => onCancel()}>
-                Cancel
+              <Button variant="link" onClick={() => onCancel()} icon={<AngleLeftIcon />} iconPosition="left">
+                Back
               </Button>
             </ActionGroup>
           </Form>

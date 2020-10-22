@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Breadcrumb, BreadcrumbItem, Button, Flex, FlexItem, Stack, StackItem } from "@patternfly/react-core";
 import { v4 as uuid } from "uuid";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
@@ -9,14 +9,16 @@ import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import DataTypesSort from "../DataTypesSort/DataTypesSort";
 
+let dataDictionary = [
+  {
+    name: "Name",
+    type: "String",
+    list: false
+  }
+];
+
 const DataDictionaryContainer = () => {
-  const [dataTypes, setDataTypes] = useState<DataType[]>([
-    {
-      name: "Name",
-      type: "String",
-      list: false
-    }
-  ]);
+  const [dataTypes, setDataTypes] = useState<DataType[]>(dataDictionary);
   const [newType, setNewType] = useState(false);
   const [editing, setEditing] = useState<number | boolean>(false);
   const [showBatchAdd, setShowBatchAdd] = useState(false);
@@ -24,6 +26,10 @@ const DataDictionaryContainer = () => {
     show: false
   });
   const [sorting, setSorting] = useState(false);
+
+  useEffect(() => {
+    dataDictionary = dataTypes;
+  }, [dataTypes]);
 
   const addDataType = () => {
     setNewType(true);
@@ -92,6 +98,15 @@ const DataDictionaryContainer = () => {
       setDataTypes(newTypes);
     }
   };
+  const handleConstraintsDelete = () => {
+    setConstraintsEdit({ show: false });
+    if (typeof editing === "number") {
+      const newTypes = [...dataTypes];
+      newTypes[editing] = { ...newTypes[editing] };
+      delete newTypes[editing].constraints;
+      setDataTypes(newTypes);
+    }
+  };
 
   const toggleSorting = () => {
     setSorting(!sorting);
@@ -132,7 +147,7 @@ const DataDictionaryContainer = () => {
                 </FlexItem>
                 <FlexItem align={{ default: "alignRight" }}>
                   <Button
-                    variant="secondary"
+                    variant={sorting ? "primary" : "secondary"}
                     onClick={toggleSorting}
                     isDisabled={editing !== false || dataTypes.length < 2}
                     icon={<SortIcon />}
@@ -178,8 +193,10 @@ const DataDictionaryContainer = () => {
           <Stack hasGutter={true}>
             <StackItem>
               <Breadcrumb>
-                <BreadcrumbItem to="#" onClick={() => setShowBatchAdd(false)}>
-                  Data Dictionary
+                <BreadcrumbItem component="span" onClick={() => setShowBatchAdd(false)}>
+                  <Button variant={"link"} isInline={true}>
+                    Data Dictionary
+                  </Button>
                 </BreadcrumbItem>
                 <BreadcrumbItem isActive={true}>Add Multiple Data Types</BreadcrumbItem>
               </Breadcrumb>
@@ -193,8 +210,10 @@ const DataDictionaryContainer = () => {
           <Stack hasGutter={true}>
             <StackItem>
               <Breadcrumb>
-                <BreadcrumbItem to="#" onClick={() => setConstraintsEdit({ show: false })}>
-                  Data Dictionary
+                <BreadcrumbItem component="span" onClick={() => setConstraintsEdit({ show: false })}>
+                  <Button variant={"link"} isInline={true}>
+                    Data Dictionary
+                  </Button>
                 </BreadcrumbItem>
                 <BreadcrumbItem isActive={true}>Constraints</BreadcrumbItem>
               </Breadcrumb>
@@ -203,7 +222,7 @@ const DataDictionaryContainer = () => {
               <ConstraintsEdit
                 dataType={constrainsEdit!.dataType}
                 onAdd={handleConstraintsSave}
-                onCancel={() => setConstraintsEdit({ show: false })}
+                onDelete={handleConstraintsDelete}
               />
             </StackItem>
           </Stack>
