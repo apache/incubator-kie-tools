@@ -62,60 +62,72 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   return (
     <div>
-      <table className="characteristics__table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Attributes</th>
-            <th>Reason Code</th>
-            <th>Baseline score</th>
-            <th>&nbsp;</th>
-          </tr>
-        </thead>
-      </table>
-      <React.Fragment>
-        <DataList
-          aria-label="selectable data list example"
-          selectedDataListItemId={selectedDataListItemId}
-          onSelectDataListItem={onSelectDataListItem}
-        >
-          {characteristics.map((ic, index) => {
-            const c: Characteristic = ic.characteristic;
-            return (
-              <DataListItem
-                key={index}
-                id={index.toString()}
-                style={{ outline: "none" }}
-                aria-labelledby={"selectable-item" + index}
-              >
-                <DataListItemRow>
-                  <DataListItemCells
-                    dataListCells={[
-                      <DataListCell key="0">
-                        <div>{c.name}</div>
-                      </DataListCell>,
-                      <DataListCell key="1">
-                        <Label>{c.Attribute.length}</Label>
-                      </DataListCell>,
-                      <DataListCell key="2">
-                        <div>{c.reasonCode}</div>
-                      </DataListCell>,
-                      <DataListCell key="3">
-                        <div>{c.baselineScore}</div>
-                      </DataListCell>,
-                      <DataListCell key="4">
-                        <Button variant="link" icon={<TrashIcon />} onClick={e => onDeleteCharacteristic(e, index)}>
-                          &nbsp;
-                        </Button>
-                      </DataListCell>
-                    ]}
-                  />
-                </DataListItemRow>
-              </DataListItem>
-            );
-          })}
-        </DataList>
-      </React.Fragment>
+      <DataList className="characteristics__header" aria-label="characteristics header">
+        <DataListItem className="characteristics__header__row" key={"none"} aria-labelledby="characteristics-header">
+          <DataListItemRow>
+            <DataListItemCells
+              dataListCells={[
+                <DataListCell key="0">
+                  <div>Name</div>
+                </DataListCell>,
+                <DataListCell key="1">
+                  <div>Attributes</div>
+                </DataListCell>,
+                <DataListCell key="2">
+                  <div>Reason Code</div>
+                </DataListCell>,
+                <DataListCell key="3">
+                  <div>Baseline Score</div>
+                </DataListCell>,
+                <DataListCell key="4">
+                  <div>&nbsp;</div>
+                </DataListCell>
+              ]}
+            />
+          </DataListItemRow>
+        </DataListItem>
+      </DataList>
+      <DataList
+        aria-label="characteristics list"
+        selectedDataListItemId={selectedDataListItemId}
+        onSelectDataListItem={onSelectDataListItem}
+      >
+        {characteristics.map((ic, index) => {
+          const c: Characteristic = ic.characteristic;
+          return (
+            <DataListItem
+              key={index}
+              id={index.toString()}
+              className="characteristics__list-item"
+              aria-labelledby={"characteristic-" + index}
+            >
+              <DataListItemRow>
+                <DataListItemCells
+                  dataListCells={[
+                    <DataListCell key="0">
+                      <div>{c.name}</div>
+                    </DataListCell>,
+                    <DataListCell key="1">
+                      <Label>{c.Attribute.length}</Label>
+                    </DataListCell>,
+                    <DataListCell key="2">
+                      <div>{c.reasonCode}</div>
+                    </DataListCell>,
+                    <DataListCell key="3">
+                      <div>{c.baselineScore}</div>
+                    </DataListCell>,
+                    <DataListCell key="4">
+                      <Button variant="link" icon={<TrashIcon />} onClick={e => onDeleteCharacteristic(e, index)}>
+                        &nbsp;
+                      </Button>
+                    </DataListCell>
+                  ]}
+                />
+              </DataListItemRow>
+            </DataListItem>
+          );
+        })}
+      </DataList>
       {characteristics.length === 0 && <EmptyStateNoCharacteristics createCharacteristic={onAddCharacteristic} />}
     </div>
   );

@@ -7,6 +7,8 @@ import {
   PageSection,
   Split,
   SplitItem,
+  Stack,
+  StackItem,
   Tab,
   Tabs,
   TabTitleText,
@@ -38,44 +40,62 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
       <div className="side-panel__container">
         <div className="side-panel__content">
           <Page key={characteristic?.index}>
-            <PageSection variant="light">
-              <Split hasGutter={true} style={{ width: "100%" }}>
-                <SplitItem>
-                  <TextContent>
-                    <Title size="lg" headingLevel={"h1"}>
-                      Characteristic Properties
-                    </Title>
-                  </TextContent>
-                </SplitItem>
-                <SplitItem isFilled={true} />
-                <SplitItem>
-                  <Button
-                    id="close-characteristic-panel-button"
-                    data-testid="characteristic-panel__close-panel"
-                    variant="link"
-                    onClick={e => hideCharacteristicPanel()}
-                  >
-                    <CloseIcon />
-                  </Button>
-                </SplitItem>
-              </Split>
-            </PageSection>
-            <PageSection variant="light">
-              <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
-                <Tab eventKey={0} title={<TabTitleText>General</TabTitleText>}>
-                  <CharacteristicGeneralForm
-                    index={characteristic?.index}
-                    name={characteristic?.characteristic.name}
-                    reasonCode={characteristic?.characteristic.reasonCode}
-                    baselineScore={characteristic?.characteristic.baselineScore}
-                    validateCharacteristicName={validateCharacteristicName}
-                  />
-                </Tab>
-                <Tab eventKey={1} title={<TabTitleText>Attributes</TabTitleText>}>
-                  <CharacteristicAttributesForm index={characteristic?.index} />
-                </Tab>
-              </Tabs>
-            </PageSection>
+            <Stack>
+              <StackItem>
+                <PageSection variant="light">
+                  <Split hasGutter={true} style={{ width: "100%" }}>
+                    <SplitItem>
+                      <TextContent>
+                        <Title size="lg" headingLevel={"h1"}>
+                          Characteristic Properties
+                        </Title>
+                      </TextContent>
+                    </SplitItem>
+                    <SplitItem isFilled={true} />
+                    <SplitItem>
+                      <Button
+                        id="close-characteristic-panel-button"
+                        data-testid="characteristic-panel__close-panel"
+                        variant="link"
+                        onClick={e => hideCharacteristicPanel()}
+                      >
+                        <CloseIcon />
+                      </Button>
+                    </SplitItem>
+                  </Split>
+                </PageSection>
+              </StackItem>
+              <StackItem>
+                <PageSection variant="light">
+                  <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
+                    <Tab eventKey={0} title={<TabTitleText>General</TabTitleText>}>
+                      <CharacteristicGeneralForm
+                        index={characteristic?.index}
+                        name={characteristic?.characteristic.name}
+                        reasonCode={characteristic?.characteristic.reasonCode}
+                        baselineScore={characteristic?.characteristic.baselineScore}
+                        validateCharacteristicName={validateCharacteristicName}
+                      />
+                    </Tab>
+                    <Tab eventKey={1} title={<TabTitleText>Attributes</TabTitleText>}>
+                      <CharacteristicAttributesForm index={characteristic?.index} />
+                    </Tab>
+                  </Tabs>
+                </PageSection>{" "}
+              </StackItem>
+              <StackItem>
+                <PageSection variant="light">
+                  <Split hasGutter={true}>
+                    <SplitItem>
+                      <Button variant={"primary"}>OK</Button>
+                    </SplitItem>
+                    <SplitItem>
+                      <Button variant={"secondary"}>Cancel</Button>
+                    </SplitItem>
+                  </Split>
+                </PageSection>
+              </StackItem>
+            </Stack>
           </Page>
         </div>
       </div>

@@ -17,24 +17,19 @@
 
 .characteristics {
 
-  &__table {
+  &__header {
 
-    table-layout: fixed;
-    width: 100%;
+    border-top: none;
+    font-weight: bold;
+    outline: none;
 
-    th:first-of-type {
-      padding-left: 24px;
+    &__row {
+      border-bottom: none;
     }
-
-    td {
-      width: calc(100% / 5);
-      padding-right: 32px;
-    }
-
-    tr {
-      height: 64px;
-      padding-right: 24px;
-    }
-
   }
+
+  &__list-item {
+    outline: none;
+  }
+
 }
