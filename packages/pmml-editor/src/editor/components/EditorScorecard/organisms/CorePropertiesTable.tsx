@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GenericNumericInput, GenericSelector, GenericTextInput } from "../atoms";
 import { BaselineMethod, MiningFunction, ReasonCodeAlgorithm } from "@kogito-tooling/pmml-editor-marshaller";
 import {
@@ -90,15 +90,32 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
   const [algorithmName, setAlgorithmName] = useState(props.algorithmName);
   const [baselineScore, setBaselineScore] = useState<ValidatedType<number>>({
     value: props.baselineScore,
-    valid: ValidateBaselineScore(props.baselineScore)
+    valid: true
   });
   const [baselineMethod, setBaselineMethod] = useState(props.baselineMethod);
   const [initialScore, setInitialScore] = useState<ValidatedType<number>>({
     value: props.initialScore,
-    valid: ValidateInitialScore(props.initialScore)
+    valid: true
   });
   const [useReasonCodes, setUseReasonCodes] = useState(props.useReasonCodes);
   const [reasonCodeAlgorithm, setReasonCodeAlgorithm] = useState(props.reasonCodeAlgorithm);
+
+  useEffect(() => {
+    setScorable(props.isScorable);
+    setFunctionName(props.functionName);
+    setAlgorithmName(props.algorithmName);
+    setBaselineScore({
+      value: props.baselineScore,
+      valid: ValidateBaselineScore(props.baselineScore)
+    });
+    setBaselineMethod(props.baselineMethod);
+    setInitialScore({
+      value: props.initialScore,
+      valid: ValidateInitialScore(props.initialScore)
+    });
+    setUseReasonCodes(props.useReasonCodes);
+    setReasonCodeAlgorithm(props.reasonCodeAlgorithm);
+  }, [props]);
 
   const isScorableEditor = BooleanFieldEditor("is-scorable-id", isScorable, checked => setScorable(checked));
   const functionNameEditor = GenericSelectorEditor(

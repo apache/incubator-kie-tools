@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, FormGroup, PageSection, TextInput } from "@patternfly/react-core";
 import { GenericTextInput } from "../atoms";
 import { ValidatedType } from "../../../types/ValidatedType";
@@ -29,16 +29,18 @@ interface CharacteristicGeneralFormProps {
 }
 
 export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps) => {
-  const { index } = props;
-
-  const _name = props.name;
-  const _validator = props.validateCharacteristicName;
   const [name, setName] = useState<ValidatedType<string | undefined>>({
-    value: _name,
-    valid: _validator(index, _name)
+    value: props.name,
+    valid: true
   });
   const [reasonCode, setReasonCode] = useState(props.reasonCode);
   const [baselineScore, setBaselineScore] = useState(props.baselineScore);
+
+  useEffect(() => {
+    setName({ value: props.name, valid: props.validateCharacteristicName(props.index, props.name) });
+    setReasonCode(props.reasonCode);
+    setBaselineScore(props.baselineScore);
+  }, [props]);
 
   const toNumber = (value: string): number | undefined => {
     if (value === "") {
@@ -71,7 +73,7 @@ export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps)
             onChange={_value =>
               setName({
                 value: _value,
-                valid: _validator(index, _value)
+                valid: props.validateCharacteristicName(props.index, _value)
               })
             }
           />
