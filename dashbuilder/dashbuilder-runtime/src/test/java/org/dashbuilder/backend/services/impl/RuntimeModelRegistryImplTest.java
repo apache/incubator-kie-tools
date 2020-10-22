@@ -19,10 +19,16 @@ package org.dashbuilder.backend.services.impl;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import javax.enterprise.event.Event;
 
 import org.dashbuilder.backend.RuntimeOptions;
+import org.dashbuilder.shared.event.RemovedRuntimeModelEvent;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.service.ImportValidationService;
@@ -38,10 +44,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.apache.commons.io.FilenameUtils;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.AdditionalMatchers.or;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -53,9 +62,15 @@ public class RuntimeModelRegistryImplTest {
 
     @Mock
     Map<String, RuntimeModel> runtimeModels;
-    
+
     @Mock
     RuntimeModelParser parser;
+
+    @Mock
+    RuntimeOptions options;
+
+    @Mock
+    Event<RemovedRuntimeModelEvent> removedRuntimeModelEvent;
 
     @InjectMocks
     RuntimeModelRegistryImpl registry;
@@ -67,6 +82,7 @@ public class RuntimeModelRegistryImplTest {
     public void init() throws IOException {
         tempFile = Files.createTempFile("test", RuntimeOptions.DASHBOARD_EXTENSION);
         tempFile2 = Files.createTempFile("test", RuntimeOptions.DASHBOARD_EXTENSION);
+        registry.setRemovedRuntimeModelEvent(removedRuntimeModelEvent);
     }
 
     @After
@@ -93,20 +109,20 @@ public class RuntimeModelRegistryImplTest {
     @Test(expected = IllegalArgumentException.class)
     public void testRegisterFileInvalid() throws IOException {
         String file = tempFile.toString();
-        
+
         when(importValidationService.validate(file)).thenReturn(false);
-        
+
         registry.registerFile(file);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testRegisterFileNotAcceptingImports() throws IOException {
         String file = tempFile.toString();
-        
+
         when(importValidationService.validate(file)).thenReturn(true);
         // to make sure that it is not accepting new imports
         registry.setMode(DashbuilderRuntimeMode.STATIC);
-        
+
         registry.registerFile(file);
     }
 
@@ -114,62 +130,62 @@ public class RuntimeModelRegistryImplTest {
     public void testRegisterFileParsingError() throws IOException {
         String file = tempFile.toString();
         String importId = FilenameUtils.getBaseName(tempFile.toFile().getPath());
-        
+
         when(runtimeModels.isEmpty()).thenReturn(true);
         when(importValidationService.validate(file)).thenReturn(true);
         when(parser.parse(eq(importId), any())).thenThrow(new RuntimeException());
-        
+
         registry.registerFile(file);
     }
-    
+
     @Test
     public void testRegisterFileSuccess() throws IOException {
         String file = tempFile.toString();
         String importId = FilenameUtils.getBaseName(tempFile.toFile().getPath());
         RuntimeModel runtimeModel = mock(RuntimeModel.class);
-        
+
         when(runtimeModels.isEmpty()).thenReturn(true);
         when(importValidationService.validate(file)).thenReturn(true);
         when(parser.parse(eq(importId), any())).thenReturn(runtimeModel);
-        
+
         registry.registerFile(file);
-        
+
         verify(runtimeModels).put(eq(importId), eq(runtimeModel));
     }
-    
+
     @Test
     public void testRegisterFileSuccessMultiMode() throws IOException {
-        
+
         String file1 = tempFile.toString();
         String file2 = tempFile2.toString();
-        
+
         String importId1 = FilenameUtils.getBaseName(tempFile.toFile().getPath());
         String importId2 = FilenameUtils.getBaseName(tempFile2.toFile().getPath());
-        
+
         RuntimeModel runtimeModel1 = mock(RuntimeModel.class);
         RuntimeModel runtimeModel2 = mock(RuntimeModel.class);
-        
+
         when(runtimeModels.isEmpty()).thenReturn(true);
         when(importValidationService.validate(or(eq(file1), eq(file2)))).thenReturn(true);
         when(parser.parse(eq(importId1), any())).thenReturn(runtimeModel1);
         when(parser.parse(eq(importId2), any())).thenReturn(runtimeModel2);
-        
+
         registry.setMode(DashbuilderRuntimeMode.MULTIPLE_IMPORT);
-        
+
         registry.registerFile(file1);
         verify(runtimeModels).put(eq(importId1), eq(runtimeModel1));
-        
+
         registry.registerFile(file2);
         verify(runtimeModels).put(eq(importId2), eq(runtimeModel2));
     }
-    
+
     @Test
     public void testSingle() {
         RuntimeModel model1 = mock(RuntimeModel.class);
         when(runtimeModels.values()).thenReturn(Collections.singleton(model1));
         assertEquals(model1, registry.single().get());
     }
-    
+
     @Test
     public void testGetInMultipleMode() {
         registry.setMode(DashbuilderRuntimeMode.MULTIPLE_IMPORT);
@@ -177,7 +193,7 @@ public class RuntimeModelRegistryImplTest {
         registry.get(id);
         verify(runtimeModels).get(eq(id));
     }
-    
+
     @Test
     public void testGetWithSingleMode() {
         registry.setMode(DashbuilderRuntimeMode.SINGLE_IMPORT);
@@ -185,11 +201,85 @@ public class RuntimeModelRegistryImplTest {
         RuntimeModel model1 = mock(RuntimeModel.class);
 
         when(runtimeModels.values()).thenReturn(Collections.singleton(model1));
-        
+
         assertEquals(model1, registry.single().get());
-        
+
         verify(runtimeModels, Mockito.times(0)).get(eq(id));
         verify(runtimeModels).values();
+    }
+
+    @Test
+    public void testRemoveExistingModel() throws IOException {
+        String file = tempFile.toString();
+        
+        String importId = FilenameUtils.getBaseName(tempFile.toFile().getPath());
+        RuntimeModel runtimeModel = mock(RuntimeModel.class);
+
+        when(options.buildFilePath(eq(importId))).thenReturn(tempFile.toFile().getPath());
+        when(runtimeModels.remove(eq(importId))).thenReturn(runtimeModel);
+        
+        when(options.isRemoveModelFile()).thenReturn(true);
+
+        registry.remove(importId);
+        
+        verify(runtimeModels).remove(eq(importId));
+        verify(removedRuntimeModelEvent).fire(any());
+        assertFalse(Files.exists(Paths.get(file)));
+    }
+    
+    @Test
+    public void testRemoveWithoutDeletingFile() throws IOException {
+        String file = tempFile.toString();
+        String importId = FilenameUtils.getBaseName(tempFile.toFile().getPath());
+        RuntimeModel runtimeModel = mock(RuntimeModel.class);
+
+        when(options.buildFilePath(eq(importId))).thenReturn(tempFile.toFile().getPath());
+        when(runtimeModels.remove(eq(importId))).thenReturn(runtimeModel);
+        
+        when(options.isRemoveModelFile()).thenReturn(false);
+
+        registry.remove(importId);
+        
+        verify(runtimeModels).remove(eq(importId));
+        verify(removedRuntimeModelEvent).fire(any());
+        assertTrue(Files.exists(Paths.get(file)));
+    }
+    
+    @Test
+    public void testRemoveNotExistingModel() throws IOException {
+        String file = tempFile.toString();
+        String importId = FilenameUtils.getBaseName(tempFile.toFile().getPath());
+
+        when(options.isRemoveModelFile()).thenReturn(true);
+
+        registry.remove(importId);
+        
+        verify(runtimeModels).remove(eq(importId));
+        verify(removedRuntimeModelEvent, times(0)).fire(any());
+        assertTrue(Files.exists(Paths.get(file)));
+    }
+
+    @Test
+    public void testClear() throws IOException {
+        String importId1 = FilenameUtils.getBaseName(tempFile.toFile().getPath());
+        String importId2 = FilenameUtils.getBaseName(tempFile2.toFile().getPath());
+        
+        when(options.buildFilePath(eq(importId1))).thenReturn(tempFile.toFile().getPath());
+        when(options.buildFilePath(eq(importId2))).thenReturn(tempFile2.toFile().getPath());
+        when(options.isRemoveModelFile()).thenReturn(true);
+
+        Set<String> keys = new HashSet<>();
+        keys.add(importId1);
+        keys.add(importId2);
+        when(runtimeModels.keySet()).thenReturn(keys);
+        
+        registry.clear();
+        
+        verify(removedRuntimeModelEvent, times(2)).fire(any());
+        verify(runtimeModels).clear();
+        assertFalse(Files.exists(Paths.get(tempFile.toString())));
+        assertFalse(Files.exists(Paths.get(tempFile2.toString())));
+
     }
 
 }

@@ -17,9 +17,11 @@
 package org.dashbuilder.backend.resources.api;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -32,7 +34,9 @@ import javax.ws.rs.core.Response.Status;
 import org.dashbuilder.backend.resources.FileUploadModel;
 import org.dashbuilder.backend.resources.UploadResourceImpl;
 import org.dashbuilder.backend.services.RuntimeInfoService;
+import org.dashbuilder.shared.model.DashboardInfo;
 import org.dashbuilder.shared.model.DashbuilderRuntimeInfo;
+import org.dashbuilder.shared.service.RuntimeModelRegistry;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 @Path("api/")
@@ -47,6 +51,9 @@ public class DashbuilderRuntimeResource {
 
     @Inject
     UploadResourceImpl uploadResourceImpl;
+
+    @Inject
+    RuntimeModelRegistry registry;
 
     @GET
     public DashbuilderRuntimeInfo info() {
@@ -66,6 +73,24 @@ public class DashbuilderRuntimeResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadResource(@MultipartForm FileUploadModel form) throws IOException {
         return uploadResourceImpl.uploadFile(form);
+    }
+
+    @DELETE
+    @Path(DASHBOARD_BASE_URI)
+    public void removeAll() {
+        registry.clear();
+    }
+
+    @DELETE
+    @Path(DASHBOARD_ID_URI)
+    public Response remove(@PathParam("id") String id) {
+        Optional<DashboardInfo> dashboardInfo = runtimeInfoService.dashboardInfo(id);
+        if (dashboardInfo.isPresent()) {
+            registry.remove(id);
+            return Response.ok().build();
+        } else {
+            return Response.status(Status.NOT_FOUND).build();
+        }
     }
 
 }

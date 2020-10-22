@@ -16,6 +16,7 @@
 
 package org.dashbuilder.backend;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class RuntimeOptions {
 
     private static final String DEFAULT_MODEL_DIR = "/tmp/dashbuilder/models";
 
-    private static final int DEFAULT_UPLOAD_SIZE_KB =  10 * 1024 * 1024;
+    private static final int DEFAULT_UPLOAD_SIZE_KB = 10 * 1024 * 1024;
 
     /**
      * Base Directory where dashboards ZIPs are stored
@@ -70,22 +71,28 @@ public class RuntimeOptions {
      * If true datasets IDs will partitioned by the Runtime Model ID.
      */
     private static final String DATASET_PARTITION_PROP = "dashbuilder.dataset.partition";
-    
+
     /**
      * If true components will be partitioned by the Runtime Model ID.
      */
     private static final String COMPONENT_PARTITION_PROP = "dashbuilder.components.partition";
-    
+
     /**
      * Boolean property that allows Runtime to check model last update in FS to update its content.
      */
     private static final String MODEL_UPDATE_PROP = "dashbuilder.model.update";
+
+    /**
+     * Boolean property when true will also remove actual model file from file system.
+     */
+    private static final String MODEL_FILE_REMOVAL_PROP = "dashbuilder.removeModelFile";
 
     private boolean multipleImport;
     private boolean datasetPartition;
     private boolean componentPartition;
     private boolean allowExternal;
     private boolean modelUpdate;
+    private boolean removeModelFile;
     private String importFileLocation;
     private String importsBaseDir;
     private int uploadSize;
@@ -95,13 +102,14 @@ public class RuntimeOptions {
 
         importFileLocation = System.getProperty(IMPORT_FILE_LOCATION_PROP);
         importsBaseDir = System.getProperty(IMPORTS_BASE_DIR_PROP, DEFAULT_MODEL_DIR);
-        
+
         multipleImport = booleanProp(DASHBUILDER_RUNTIME_MULTIPLE_IMPORT_PROP, Boolean.FALSE);
         allowExternal = booleanProp(ALLOW_EXTERNAL_FILE_REGISTER_PROP, Boolean.FALSE);
         datasetPartition = booleanProp(DATASET_PARTITION_PROP, Boolean.TRUE);
         componentPartition = booleanProp(COMPONENT_PARTITION_PROP, Boolean.TRUE);
         modelUpdate = booleanProp(MODEL_UPDATE_PROP, Boolean.TRUE);
-        
+        removeModelFile = booleanProp(MODEL_FILE_REMOVAL_PROP, Boolean.FALSE);
+
         uploadSize = DEFAULT_UPLOAD_SIZE_KB;
 
         String uploadSizeStr = System.getProperty(UPLOAD_SIZE_PROP);
@@ -171,19 +179,24 @@ public class RuntimeOptions {
     public boolean isDatasetPartition() {
         return datasetPartition;
     }
-    
+
     public boolean isComponentPartition() {
         return componentPartition;
     }
-    
+
     public boolean isModelUpdate() {
         return modelUpdate;
     }
 
-    public String buildFilePath(String fileId) {
-        return String.join("/", getImportsBaseDir(), fileId).concat(DASHBOARD_EXTENSION);
+    public boolean isRemoveModelFile() {
+        return removeModelFile;
     }
-    
+
+    public String buildFilePath(String fileId) {
+        Path modelFile = Paths.get(fileId + DASHBOARD_EXTENSION);
+        return Paths.get(getImportsBaseDir()).resolve(modelFile).toString();
+    }
+
     private boolean booleanProp(String prop, Boolean defaultValue) {
         String propStr = System.getProperty(prop, defaultValue.toString());
         return Boolean.parseBoolean(propStr);

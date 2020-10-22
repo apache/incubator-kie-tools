@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +32,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.apache.commons.io.FileUtils;
+import org.dashbuilder.backend.RuntimeOptions;
 import org.dashbuilder.shared.event.NewDataSetContentEvent;
 import org.dashbuilder.shared.event.RemovedRuntimeModelEvent;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
@@ -62,6 +65,9 @@ public class RuntimeModelRegistryImpl implements RuntimeModelRegistry {
 
     @Inject
     Event<RemovedRuntimeModelEvent> removedRuntimeModelEvent;
+
+    @Inject
+    RuntimeOptions options;
 
     @PostConstruct
     public void init() {
@@ -126,8 +132,9 @@ public class RuntimeModelRegistryImpl implements RuntimeModelRegistry {
 
     @Override
     public void remove(String modelId) {
-        runtimeModels.remove(modelId);
-        removedRuntimeModelEvent.fire(new RemovedRuntimeModelEvent(modelId));
+        if (runtimeModels.remove(modelId) != null) {
+            removeModelReferences(modelId);
+        }
     }
 
     public Optional<RuntimeModel> register(String id, InputStream fileStream) {
@@ -148,7 +155,29 @@ public class RuntimeModelRegistryImpl implements RuntimeModelRegistry {
 
     @Override
     public Collection<String> availableModels() {
-        return runtimeModels.keySet();
+        return Collections.unmodifiableCollection(runtimeModels.keySet());
+    }
+
+    @Override
+    public void clear() {
+        availableModels().forEach(this::removeModelReferences);
+        runtimeModels.clear();
+    }
+
+    private void removeModelReferences(String modelId) {
+        removedRuntimeModelEvent.fire(new RemovedRuntimeModelEvent(modelId));
+        if (options.isRemoveModelFile()) {
+            removeModelFile(modelId);
+        }
+    }
+
+    private void removeModelFile(String modelId) {
+        String modelPath = options.buildFilePath(modelId);
+        FileUtils.deleteQuietly(new File(modelPath));
+    }
+
+    void setRemovedRuntimeModelEvent(Event<RemovedRuntimeModelEvent> removedRuntimeModelEvent) {
+        this.removedRuntimeModelEvent = removedRuntimeModelEvent;
     }
 
 }

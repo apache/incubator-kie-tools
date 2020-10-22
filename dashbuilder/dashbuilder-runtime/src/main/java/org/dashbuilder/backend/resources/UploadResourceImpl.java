@@ -71,24 +71,14 @@ public class UploadResourceImpl {
         if (dashboardOp.isPresent()) {
             String dashboardName = dashboardOp.get();
             logger.info("Found existing file with same contents: {}", dashboardName);
-            return Response.status(Status.CONFLICT).entity(dashboardName).build();
+            if (runtimeModelRegistry.get(dashboardName).isPresent()) {
+                return Response.status(Status.CONFLICT).entity(dashboardName).build();
+            } else {
+                return registerExistingFile(dashboardName);
+            }
         }
 
-        Pair<String, String> newImportInfo = runtimeOptions.newFilePath(form.getFileName());
-        java.nio.file.Path path = Paths.get(newImportInfo.getK2());
-        Files.write(path, inputBytes);
-
-        try {
-            runtimeModelRegistry.registerFile(newImportInfo.getK2());
-        } catch (Exception e) {
-            Files.delete(path);
-            logger.error("Error uploading file", e);
-            return Response.status(Response.Status.BAD_REQUEST)
-                           .entity(e.getMessage())
-                           .build();
-        }
-
-        return Response.ok(newImportInfo.getK1()).build();
+        return registerNewFile(form.getFileName(), inputBytes);
     }
 
     /**
@@ -138,6 +128,30 @@ public class UploadResourceImpl {
             logger.debug("Error checking file {}. Skipping from verification.", p, e);
         }
         return false;
+    }
+
+    private Response registerNewFile(String fileName, byte[] inputBytes) throws IOException {
+        Pair<String, String> newImportInfo = runtimeOptions.newFilePath(fileName);
+        java.nio.file.Path path = Paths.get(newImportInfo.getK2());
+        Files.write(path, inputBytes);
+
+        try {
+            runtimeModelRegistry.registerFile(newImportInfo.getK2());
+        } catch (Exception e) {
+            Files.delete(path);
+            logger.error("Error uploading file", e);
+            return Response.status(Response.Status.BAD_REQUEST)
+                           .entity(e.getMessage())
+                           .build();
+        }
+
+        return Response.ok(newImportInfo.getK1()).build();
+    }
+
+    private Response registerExistingFile(String dashboardName) {
+        String filePath = runtimeOptions.buildFilePath(dashboardName);
+        runtimeModelRegistry.registerFile(filePath);
+        return Response.ok(dashboardName).build();
     }
 
 }

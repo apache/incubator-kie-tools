@@ -27,37 +27,36 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class RuntimeModelRegistryTest {
-    
+
     @Test
     public void testAcceptingNewImportsMultiple() {
         RuntimeModelRegistry registry = new RuntimeModelRegistryMock(DashbuilderRuntimeMode.MULTIPLE_IMPORT, false);
         assertTrue(registry.acceptingNewImports());
     }
-    
+
     @Test
     public void testNotAcceptingNewImportsStatic() {
         RuntimeModelRegistry registry = new RuntimeModelRegistryMock(DashbuilderRuntimeMode.STATIC, false);
         assertFalse(registry.acceptingNewImports());
     }
-    
+
     @Test
     public void testNotAcceptingNewImportsSingleAndNotEmpty() {
         RuntimeModelRegistry registry = new RuntimeModelRegistryMock(DashbuilderRuntimeMode.SINGLE_IMPORT, false);
         assertFalse(registry.acceptingNewImports());
     }
-    
+
     @Test
     public void testNotAcceptingNewImportsSingleAndEmpty() {
         RuntimeModelRegistry registry = new RuntimeModelRegistryMock(DashbuilderRuntimeMode.SINGLE_IMPORT, true);
         assertTrue(registry.acceptingNewImports());
     }
-    
+
     // Having classloading issues with Mockito, hence having to create this
     public class RuntimeModelRegistryMock implements RuntimeModelRegistry {
 
         private DashbuilderRuntimeMode mode;
-        
-        
+
         public RuntimeModelRegistryMock(DashbuilderRuntimeMode mode, boolean b) {
             super();
             this.mode = mode;
@@ -87,8 +86,7 @@ public class RuntimeModelRegistryTest {
         }
 
         @Override
-        public void setMode(DashbuilderRuntimeMode mode) {
-        }
+        public void setMode(DashbuilderRuntimeMode mode) {}
 
         @Override
         public Optional<RuntimeModel> registerFile(String filePath) {
@@ -97,12 +95,18 @@ public class RuntimeModelRegistryTest {
 
         @Override
         public void remove(String runtimeModelid) {
-            
+
         }
 
         @Override
         public Collection<String> availableModels() {
             return null;
-        }}
+        }
+
+        @Override
+        public void clear() {
+
+        }
+    }
 
 }
