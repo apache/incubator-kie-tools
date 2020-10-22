@@ -161,6 +161,19 @@ export class GithubService {
     return `https://${GIST_RAW_URL}${gistRawUrlElements.join("/")}`;
   }
 
+  public extractGistFilename(url: string): string | undefined {
+    if (url.lastIndexOf("#")) {
+      const gistFilename = url.substr(url.lastIndexOf("#") + 1).split("-");
+      gistFilename.splice(0, 1);
+      return gistFilename.join(".");
+    }
+    return;
+  }
+
+  public extractGistFilenameFromRawUrl(url: string): string {
+    return url.substr(url.lastIndexOf("/") + 1);
+  }
+
   public retrieveFileInfo(fileUrl: string): FileInfo {
     const split = new URL(fileUrl).pathname.split("/");
     return {
@@ -200,9 +213,9 @@ export class GithubService {
 
   public fetchGistFile(fileUrl: string): Promise<string> {
     const gistId = this.extractGistIdFromRawUrl(fileUrl);
+    const filename = this.extractGistFilenameFromRawUrl(fileUrl);
 
     return this.octokit.gists.get({ gist_id: gistId }).then(response => {
-      const filename = Object.keys(response.data.files)[0];
       this.currentGist = { filename, id: gistId };
       return (response.data as any).files[filename].content;
     });
@@ -258,11 +271,12 @@ export class GithubService {
       .catch(e => Promise.reject("Not able to create gist on Github."));
   }
 
-  public getGistRawUrlFromId(gistId: string): Promise<string> {
+  public getGistRawUrlFromId(gistId: string, gistFilename: string | undefined): Promise<string> {
     return this.octokit.gists
       .get({ gist_id: gistId })
       .then(response => {
-        const filename = Object.keys(response.data.files)[0];
+        const filename = gistFilename ? gistFilename : Object.keys(response.data.files)[0];
+
         return this.removeCommitHashFromGistRawUrl((response.data as any).files[filename].raw_url);
       })
       .catch(e => Promise.reject("Not able to get gist from Github."));

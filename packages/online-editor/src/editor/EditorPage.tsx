@@ -43,6 +43,8 @@ export function EditorPage(props: Props) {
   const [fullscreen, setFullscreen] = useState(false);
   const [copySuccessAlertVisible, setCopySuccessAlertVisible] = useState(false);
   const [updateGistSuccessAlertVisible, setUpdateGistSuccessAlertVisible] = useState(false);
+  const [updateGistFilenameWarningAlertVisible, setUpdateGistFilenameWarningAlertVisible] = useState(false);
+  const [updateGistFilenameUrl, setUpdateGistFilenameUrl] = useState("");
   const [githubTokenModalVisible, setGithubTokenModalVisible] = useState(false);
   const [showUnsavedAlert, setShowUnsavedAlert] = useState(false);
   const isDirty = useDirtyState(editor);
@@ -138,8 +140,8 @@ export function EditorPage(props: Props) {
         .then(gistUrl => {
           editor?.getStateControl().setSavedCommand();
           if (filename !== context.githubService.getCurrentGist()?.filename) {
-            // FIXME: KOGITO-1202
-            window.location.href = `?file=${gistUrl}#/editor/${fileExtension}`;
+            setUpdateGistFilenameUrl(`${window.location.origin}/?file=${gistUrl}#/editor/${fileExtension}`);
+            setUpdateGistFilenameWarningAlertVisible(true);
           } else {
             closeAllSuccessAlerts();
             setUpdateGistSuccessAlertVisible(true);
@@ -183,6 +185,8 @@ export function EditorPage(props: Props) {
   const closeCopySuccessAlert = useCallback(() => setCopySuccessAlertVisible(false), []);
 
   const closeUpdateGistSuccessAlert = useCallback(() => setUpdateGistSuccessAlertVisible(false), []);
+
+  const closeUpdateGistFilenameWarningAlert = useCallback(() => setUpdateGistFilenameWarningAlertVisible(false), []);
 
   const closeGithubTokenModal = useCallback(() => setGithubTokenModalVisible(false), []);
 
@@ -272,6 +276,22 @@ export function EditorPage(props: Props) {
               title={i18n.editorPage.alerts.updateGist}
               actionClose={<AlertActionCloseButton onClose={closeUpdateGistSuccessAlert} />}
             />
+          </div>
+        )}
+        {!fullscreen && updateGistFilenameWarningAlertVisible && (
+          <div className={"kogito--alert-container"}>
+            <Alert
+              className={"kogito--alert"}
+              variant="warning"
+              title={"Your Gist content and filename was updated!"}
+              actionClose={<AlertActionCloseButton onClose={closeUpdateGistFilenameWarningAlert} />}
+            >
+              <p>
+                Your Gist filename was updated, and can take a few seconds until the new URL is available to be used.
+              </p>
+              <p>Your new URL:</p>
+              <p>{updateGistFilenameUrl}</p>
+            </Alert>
           </div>
         )}
         {!fullscreen && showUnsavedAlert && (
