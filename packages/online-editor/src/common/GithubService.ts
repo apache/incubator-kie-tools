@@ -162,7 +162,7 @@ export class GithubService {
   }
 
   public extractGistFilename(url: string): string | undefined {
-    if (url.lastIndexOf("#")) {
+    if (url.lastIndexOf("#") > -1) {
       const gistFilename = url.substr(url.lastIndexOf("#") + 1).split("-");
       gistFilename.splice(0, 1);
       return gistFilename.join(".");

@@ -110,3 +110,25 @@ describe("githubService::isGistRaw", () => {
     expect(githubService.isGistRaw("github.com/")).toBeFalsy();
   });
 });
+
+describe("githubService::extractGistFilename", () => {
+  test("should extract the file name from the gist url", () => {
+    const rawUrl = "https://gist.github.com/ljmotta/gist-id#file-test-bpmn";
+    const urlWithoutCommitHash = githubService.extractGistFilename(rawUrl);
+    expect(urlWithoutCommitHash).toEqual("test.bpmn");
+  });
+
+  test("shouldn't extract the file name from the gist url", () => {
+    const rawUrl = "https://gist.github.com/ljmotta/db1c79d9919ffa3eb40ad8b7cada5b7f";
+    const urlWithoutCommitHash = githubService.extractGistFilename(rawUrl);
+    expect(urlWithoutCommitHash).toBeUndefined()
+  });
+});
+
+describe("githubService::extractGistFilenameFromRawUrl", () => {
+  test("should extract the file name from the gist raw url", () => {
+    const rawUrl = "https://gist.githubusercontent.com/test/gist-id/raw/commit-hash/test.bpmn";
+    const urlWithoutCommitHash = githubService.extractGistFilenameFromRawUrl(rawUrl);
+    expect(urlWithoutCommitHash).toEqual("test.bpmn");
+  });
+});
