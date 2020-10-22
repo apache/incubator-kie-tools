@@ -283,13 +283,11 @@ export function EditorPage(props: Props) {
             <Alert
               className={"kogito--alert"}
               variant="warning"
-              title={"Your Gist content and filename was updated!"}
+              title={i18n.editorPage.alerts.updateGistFilename.title}
               actionClose={<AlertActionCloseButton onClose={closeUpdateGistFilenameWarningAlert} />}
             >
-              <p>
-                Your Gist filename was updated, and can take a few seconds until the new URL is available to be used.
-              </p>
-              <p>Your new URL:</p>
+              <p>{i18n.editorPage.alerts.updateGistFilename.message}</p>
+              <p>{i18n.editorPage.alerts.updateGistFilename.yourUrl}:</p>
               <p>{updateGistFilenameUrl}</p>
             </Alert>
           </div>

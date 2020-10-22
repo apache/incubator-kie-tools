@@ -47,6 +47,11 @@ export const en: OnlineI18n = {
     alerts: {
       copy: "Content copied to clipboard",
       updateGist: "Your gist was updated.",
+      updateGistFilename: {
+        title: "Your Gist content and filename was updated!",
+        message: `Your Gist filename was updated, and can take a few seconds until the new ${en_common.names.url} is available to be used.`,
+        yourUrl: `Your new ${en_common.names.url}`
+      },
       unsaved: {
         title: "Unsaved changes will be lost",
         message: "Click Save to download your progress before closing.",

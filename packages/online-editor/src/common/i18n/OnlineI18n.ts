@@ -46,6 +46,11 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
     alerts: {
       copy: string;
       updateGist: string;
+      updateGistFilename: {
+        title: string;
+        message: string;
+        yourUrl: string;
+      };
       unsaved: {
         title: string;
         message: string;
