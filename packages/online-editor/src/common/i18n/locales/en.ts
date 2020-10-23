@@ -48,12 +48,12 @@ export const en: OnlineI18n = {
       copy: "Content copied to clipboard",
       updateGist: "Your gist was updated.",
       updateGistFilename: {
-        title: "Your Gist content and filename was updated!",
-        message: `Your Gist filename was updated, and can take a few seconds until the new ${en_common.names.url} is available to be used.`,
-        yourUrl: `Your new ${en_common.names.url}`
+        title: "Your gist and its filename were updated!",
+        message: `Your gists filename was updated, and it can take a few seconds until the new ${en_common.names.url} is available.`,
+        yourNewUrl: `Your new ${en_common.names.url}`
       },
-      invalidCurrentGist: `Your current Gist ${en_common.names.url} is invalid. Maybe you've updated its filename, and it's necessary to update your ${en_common.names.url} as well.`,
-      invalidGistFilename: "Invalid filename. This Gist already has a file with this name.",
+      invalidCurrentGist: `Your current gist ${en_common.names.url} is invalid. If you've updated its filename, it's necessary to update your ${en_common.names.url} as well.`,
+      invalidGistFilename: "Invalid filename. This gist already has a file with this name.",
       error: "An error occurred trying to perform the last operation. Try again later.",
       unsaved: {
         title: "Unsaved changes will be lost",
@@ -69,13 +69,13 @@ export const en: OnlineI18n = {
     setGitHubToken: `Set up your ${en_common.names.github} token`,
     gistIt: "Gist it!",
     fileActions: "File actions",
-    updateGist: "Update Gist",
+    updateGist: "Update gist",
     updateGistTooltip: `To be able to update a gist you need to have access to it through your ${en_common.names.github} token.`
   },
   githubTokenModal: {
     header: {
       title: `${en_common.names.github} ${en_common.names.oauth} ${en_common.terms.token}`,
-      subtitle: `Set your ${en_common.names.github} token so you can export your current file to a Gist or update it.`
+      subtitle: `Set up your ${en_common.names.github} token so you can create and update gist.`
     },
     footer: {
       createNewToken: "Create a new token",

@@ -159,6 +159,7 @@ export function EditorPage(props: Props) {
 
           editor?.getStateControl().setSavedCommand();
           if (filename !== context.githubService.getCurrentGist()?.filename) {
+            // FIXME: KOGITO-1202
             setUpdateGistFilenameUrl(`${window.location.origin}/?file=${response}#/editor/${fileExtension}`);
             setAlert(Alerts.SUCCESS_UPDATE_GIST_FILENAME);
             return;
@@ -298,7 +299,7 @@ export function EditorPage(props: Props) {
               actionClose={<AlertActionCloseButton onClose={closeAlert} />}
             >
               <p>{i18n.editorPage.alerts.updateGistFilename.message}</p>
-              <p>{i18n.editorPage.alerts.updateGistFilename.yourUrl}:</p>
+              <p>{i18n.editorPage.alerts.updateGistFilename.yourNewUrl}:</p>
               <p>{updateGistFilenameUrl}</p>
             </Alert>
           </div>

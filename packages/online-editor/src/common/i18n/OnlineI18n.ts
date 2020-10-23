@@ -49,7 +49,7 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
       updateGistFilename: {
         title: string;
         message: string;
-        yourUrl: string;
+        yourNewUrl: string;
       };
       invalidCurrentGist: string;
       invalidGistFilename: string;
