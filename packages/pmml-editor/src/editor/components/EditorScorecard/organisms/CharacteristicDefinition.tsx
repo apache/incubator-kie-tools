@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 
 import {
   Button,
@@ -19,6 +19,7 @@ import { CloseIcon } from "@patternfly/react-icons";
 import "./CharacteristicDefinition.scss";
 import { CharacteristicAttributesForm, CharacteristicGeneralForm } from "../molecules";
 import { IndexedCharacteristic } from "./CharacteristicsTable";
+import { ValidatedType } from "../../../types";
 
 interface CharacteristicDefinitionProps {
   characteristic: IndexedCharacteristic | undefined;
@@ -31,8 +32,28 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
   const { characteristic, showCharacteristicPanel, hideCharacteristicPanel, validateCharacteristicName } = props;
   const [activeTabKey, setActiveTabKey] = useState(0);
 
-  const handleTabClick = (event: React.MouseEvent<HTMLElement, MouseEvent>, index: number) => {
-    setActiveTabKey(index);
+  const [name, setName] = useState<ValidatedType<string | undefined>>({
+    value: characteristic?.characteristic.name,
+    valid: true
+  });
+  const [reasonCode, setReasonCode] = useState(characteristic?.characteristic.reasonCode);
+  const [baselineScore, setBaselineScore] = useState(characteristic?.characteristic.baselineScore);
+
+  useEffect(() => {
+    setName({
+      value: characteristic?.characteristic.name,
+      valid: props.validateCharacteristicName(characteristic?.index, characteristic?.characteristic.name)
+    });
+    setReasonCode(characteristic?.characteristic.reasonCode);
+    setBaselineScore(characteristic?.characteristic.baselineScore);
+  }, [props]);
+
+  const handleTabClick = (event: React.MouseEvent<HTMLElement, MouseEvent>, eventKey: number) => {
+    setActiveTabKey(eventKey);
+  };
+
+  const handleOKClick: MouseEventHandler<HTMLButtonElement> = event => {
+    hideCharacteristicPanel();
   };
 
   return (
@@ -71,26 +92,38 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
                     <Tab eventKey={0} title={<TabTitleText>General</TabTitleText>}>
                       <CharacteristicGeneralForm
                         index={characteristic?.index}
-                        name={characteristic?.characteristic.name}
-                        reasonCode={characteristic?.characteristic.reasonCode}
-                        baselineScore={characteristic?.characteristic.baselineScore}
-                        validateCharacteristicName={validateCharacteristicName}
+                        name={name.value}
+                        isNameValid={name.valid}
+                        reasonCode={reasonCode}
+                        baselineScore={baselineScore}
+                        setName={_name => {
+                          setName({
+                            value: _name,
+                            valid: props.validateCharacteristicName(characteristic?.index, _name)
+                          });
+                        }}
+                        setReasonCode={setReasonCode}
+                        setBaselineScore={setBaselineScore}
                       />
                     </Tab>
                     <Tab eventKey={1} title={<TabTitleText>Attributes</TabTitleText>}>
                       <CharacteristicAttributesForm index={characteristic?.index} />
                     </Tab>
                   </Tabs>
-                </PageSection>{" "}
+                </PageSection>
               </StackItem>
               <StackItem>
                 <PageSection variant="light">
                   <Split hasGutter={true}>
                     <SplitItem>
-                      <Button variant={"primary"}>OK</Button>
+                      <Button variant={"primary"} isDisabled={!name.valid} onClick={handleOKClick}>
+                        OK
+                      </Button>
                     </SplitItem>
                     <SplitItem>
-                      <Button variant={"secondary"}>Cancel</Button>
+                      <Button variant={"secondary"} onClick={e => hideCharacteristicPanel()}>
+                        Cancel
+                      </Button>
                     </SplitItem>
                   </Split>
                 </PageSection>

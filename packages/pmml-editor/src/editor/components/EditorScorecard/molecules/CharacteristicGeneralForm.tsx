@@ -14,44 +14,33 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useState } from "react";
 import { Form, FormGroup, PageSection, TextInput } from "@patternfly/react-core";
-import { GenericTextInput } from "../atoms";
-import { ValidatedType } from "../../../types/ValidatedType";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 
 interface CharacteristicGeneralFormProps {
   index: number | undefined;
   name: string | undefined;
+  isNameValid: boolean;
   reasonCode: string | undefined;
   baselineScore: number | undefined;
-  validateCharacteristicName: (index: number | undefined, name: string | undefined) => boolean;
+  setName: (name: string) => void;
+  setReasonCode: (reasonCode: string) => void;
+  setBaselineScore: (baselineScore: number | undefined) => void;
 }
 
+const toNumber = (value: string): number | undefined => {
+  if (value === "") {
+    return undefined;
+  }
+  const n = Number(value);
+  if (isNaN(n)) {
+    return undefined;
+  }
+  return n;
+};
+
 export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps) => {
-  const [name, setName] = useState<ValidatedType<string | undefined>>({
-    value: props.name,
-    valid: true
-  });
-  const [reasonCode, setReasonCode] = useState(props.reasonCode);
-  const [baselineScore, setBaselineScore] = useState(props.baselineScore);
-
-  useEffect(() => {
-    setName({ value: props.name, valid: props.validateCharacteristicName(props.index, props.name) });
-    setReasonCode(props.reasonCode);
-    setBaselineScore(props.baselineScore);
-  }, [props]);
-
-  const toNumber = (value: string): number | undefined => {
-    if (value === "") {
-      return undefined;
-    }
-    const n = Number(value);
-    if (isNaN(n)) {
-      return undefined;
-    }
-    return n;
-  };
+  const { name, isNameValid, reasonCode, baselineScore, setName, setReasonCode, setBaselineScore } = props;
 
   return (
     <PageSection>
@@ -62,20 +51,17 @@ export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps)
           helperText="Please provide a name for the Characteristic."
           helperTextInvalid="Name must be unique and present"
           helperTextInvalidIcon={<ExclamationCircleIcon />}
-          validated={name.valid ? "default" : "error"}
+          validated={isNameValid ? "default" : "error"}
           isRequired={true}
         >
-          <GenericTextInput
+          <TextInput
+            type="text"
             id="characteristic-form-name"
+            name="characteristic-form-name"
             aria-describedby="characteristic-form-name-helper"
-            value={name.value ?? ""}
-            validated={name.valid ? "default" : "error"}
-            onChange={_value =>
-              setName({
-                value: _value,
-                valid: props.validateCharacteristicName(props.index, _value)
-              })
-            }
+            value={name}
+            validated={isNameValid ? "default" : "error"}
+            onChange={e => setName(e)}
           />
         </FormGroup>
         <FormGroup

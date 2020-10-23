@@ -20,7 +20,7 @@ import { Validated } from "../../../types";
 
 interface GenericTextInputProps {
   id: string;
-  value: string;
+  value: string | undefined;
   validated: Validated;
   onChange: (_value: string) => void;
 }

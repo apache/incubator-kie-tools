@@ -28,6 +28,7 @@ import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { CharacteristicsToolbar } from "../molecules";
+import "./ScorecardEditorPage.scss";
 
 interface ScorecardEditorPageProps {
   path: string;
@@ -98,7 +99,14 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   );
 
   return (
-    <div data-testid="editor-page" style={{ position: "relative" }}>
+    <div data-testid="editor-page" className={"editor"}>
+      <CharacteristicDefinition
+        characteristic={selectedCharacteristic}
+        showCharacteristicPanel={showCharacteristicPanel}
+        hideCharacteristicPanel={hideCharacteristicPanel}
+        validateCharacteristicName={validateCharacteristicName}
+      />
+
       <PageSection variant={PageSectionVariants.light} isFilled={false}>
         <Header title={getModelName(props.model)} />
       </PageSection>
@@ -153,15 +161,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
             onAddCharacteristic={onAddCharacteristic}
           />
         </PageSection>
-      </PageSection>
-
-      <PageSection isFilled={true} style={{ padding: 0 }}>
-        <CharacteristicDefinition
-          characteristic={selectedCharacteristic}
-          showCharacteristicPanel={showCharacteristicPanel}
-          hideCharacteristicPanel={hideCharacteristicPanel}
-          validateCharacteristicName={validateCharacteristicName}
-        />
       </PageSection>
     </div>
   );
