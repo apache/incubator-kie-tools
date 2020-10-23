@@ -190,11 +190,17 @@ export function HomePage(props: Props) {
         urlToOpen: undefined
       });
 
-      const gistId = context.githubService.extractGistId(inputFileUrl);
+      const gistId = context.githubService.isGistDefault(inputFileUrl)
+        ? context.githubService.extractGistId(inputFileUrl)
+        : context.githubService.extractGistIdFromRawUrl(inputFileUrl);
+
+      const gistFileName = context.githubService.isGistDefault(inputFileUrl)
+        ? context.githubService.extractGistFilename(inputFileUrl)
+        : context.githubService.extractGistFilenameFromRawUrl(inputFileUrl);
 
       let rawUrl: string;
       try {
-        rawUrl = await context.githubService.getGistRawUrlFromId(gistId);
+        rawUrl = await context.githubService.getGistRawUrlFromId(gistId, gistFileName);
       } catch (e) {
         setInputFileUrlState({
           urlValidation: InputFileUrlState.INVALID_GIST,
