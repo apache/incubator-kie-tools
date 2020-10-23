@@ -392,8 +392,8 @@ public class DefaultMavenCompilerTest {
         assertThat(pomAsAstring).doesNotContain("<artifactId>kie-takari-lifecycle-plugin</artifactId>")
                 .doesNotContain("<packaging>kjar</packaging>")
                 .doesNotContain("<compilerId>jdt</compilerId>")
-                .doesNotContain("<source>11</source>")
-                .doesNotContain("<target>11</target>");
+                .doesNotContain("<source>1.8</source>")
+                .doesNotContain("<target>1.8</target>");
 
         WorkspaceCompilationInfo info = new WorkspaceCompilationInfo(tmp);
         CompilationRequest req = new DefaultCompilationRequest(mavenRepoPath,
