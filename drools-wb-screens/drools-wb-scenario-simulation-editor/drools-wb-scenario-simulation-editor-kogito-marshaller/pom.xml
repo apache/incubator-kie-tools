@@ -18,16 +18,6 @@
 
   <properties>
     <js.destination>${project.basedir}/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/js</js.destination>
-    <!--
-     AF-1799: This project needs to be compiled with 1.8
-     because Java9+ does not allow having the same package
-     declaration in more than one module, like the way
-     it's done on drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/jre/javax/xml/XMLConstants.java.
-     The error is: "package exists in another module: java.xml".
-     Once this issue is fixed, the source/target override can be removed.
-    -->
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
   <dependencies>
