@@ -1,8 +1,10 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Breadcrumb, BreadcrumbItem, Button, Flex, FlexItem, Stack, StackItem } from "@patternfly/react-core";
+import { Button, Flex, FlexItem } from "@patternfly/react-core";
 import { v4 as uuid } from "uuid";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
+
 import "./DataDictionaryContainer.scss";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
 import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
@@ -17,14 +19,14 @@ let dataDictionary = [
   }
 ];
 
+type dataDictionarySection = "main" | "batch-add" | "constraints";
+
 const DataDictionaryContainer = () => {
   const [dataTypes, setDataTypes] = useState<DataType[]>(dataDictionary);
   const [newType, setNewType] = useState(false);
   const [editing, setEditing] = useState<number | boolean>(false);
-  const [showBatchAdd, setShowBatchAdd] = useState(false);
-  const [constrainsEdit, setConstraintsEdit] = useState<{ show: true; dataType: DataType } | { show: false }>({
-    show: false
-  });
+  const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
+  const [constrainsEdit, setConstraintsEdit] = useState<DataType>();
   const [sorting, setSorting] = useState(false);
 
   useEffect(() => {
@@ -75,7 +77,7 @@ const DataDictionaryContainer = () => {
       return { name: name.trim(), type: "String", list: false };
     });
     setDataTypes([...dataTypes, ...newDataTypes]);
-    setShowBatchAdd(false);
+    setViewSection("main");
   };
 
   const handleConstraintsEdit = (dataType: DataType) => {
@@ -86,12 +88,13 @@ const DataDictionaryContainer = () => {
         setEditing(dataTypes.length);
       }
       // not sure about the following. passing around dataType instead of waiting for the dataTypes to update
-      setConstraintsEdit({ show: true, dataType: dataType });
+      setConstraintsEdit(dataType);
+      setViewSection("constraints");
     }
   };
 
   const handleConstraintsSave = (payload: Constraints) => {
-    setConstraintsEdit({ show: false });
+    setViewSection("main");
     if (typeof editing === "number") {
       const newTypes = [...dataTypes];
       newTypes[editing] = { ...newTypes[editing], constraints: payload };
@@ -99,7 +102,7 @@ const DataDictionaryContainer = () => {
     }
   };
   const handleConstraintsDelete = () => {
-    setConstraintsEdit({ show: false });
+    setViewSection("main");
     if (typeof editing === "number") {
       const newTypes = [...dataTypes];
       newTypes[editing] = { ...newTypes[editing] };
@@ -128,116 +131,101 @@ const DataDictionaryContainer = () => {
   return (
     <div className="data-dictionary">
       <StatusContext.Provider value={editing}>
-        {!showBatchAdd && !constrainsEdit.show && (
-          <Stack hasGutter={true}>
-            <StackItem style={{ margin: "1em 0 2em 0" }}>
-              <Flex>
-                <FlexItem>
-                  <Button
-                    variant="secondary"
-                    onClick={addDataType}
-                    isDisabled={editing !== false || sorting}
-                    icon={<PlusIcon />}
-                    iconPosition="left"
-                  >
-                    Add Data Type
-                  </Button>
-                </FlexItem>
-                <FlexItem>
-                  <Button
-                    variant="secondary"
-                    onClick={() => setShowBatchAdd(true)}
-                    isDisabled={editing !== false || sorting}
-                    icon={<BoltIcon />}
-                    iconPosition="left"
-                  >
-                    Add Multiple Data Types
-                  </Button>
-                </FlexItem>
-                <FlexItem align={{ default: "alignRight" }}>
-                  <Button
-                    variant={sorting ? "primary" : "secondary"}
-                    onClick={toggleSorting}
-                    isDisabled={editing !== false || dataTypes.length < 2}
-                    icon={<SortIcon />}
-                    iconPosition="left"
-                  >
-                    {sorting ? "End Sorting" : "Sort"}
-                  </Button>
-                </FlexItem>
-              </Flex>
-            </StackItem>
-            {!sorting && (
-              <StackItem className="data-dictionary__types-list">
-                {dataTypes.map((item, index) => (
-                  <DataTypeItem
-                    dataType={item}
-                    index={index}
-                    key={uuid()}
-                    onSave={handleSave}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                    onConstraintsEdit={handleConstraintsEdit}
-                    onValidate={dataTypeNameValidation}
-                  />
-                ))}
-                {newType && (
-                  <DataTypeItem
-                    dataType={{ name: "", type: "String", list: false }}
-                    index={-1}
-                    key={uuid()}
-                    onSave={handleSave}
-                    onConstraintsEdit={handleConstraintsEdit}
-                    onValidate={dataTypeNameValidation}
-                  />
-                )}
-              </StackItem>
-            )}
-            {sorting && (
-              <StackItem className="data-dictionary__types-list">
-                <DataTypesSort dataTypes={dataTypes} onSort={handleSorting} />
-              </StackItem>
-            )}
-          </Stack>
-        )}
-        {showBatchAdd && (
-          <Stack hasGutter={true}>
-            <StackItem>
-              <Breadcrumb>
-                <BreadcrumbItem component="span" onClick={() => setShowBatchAdd(false)}>
-                  <Button variant={"link"} isInline={true}>
-                    Data Dictionary
-                  </Button>
-                </BreadcrumbItem>
-                <BreadcrumbItem isActive={true}>Add Multiple Data Types</BreadcrumbItem>
-              </Breadcrumb>
-            </StackItem>
-            <StackItem>
-              <MultipleDataTypeAdd onAdd={handleMultipleAdd} onCancel={() => setShowBatchAdd(false)} />
-            </StackItem>
-          </Stack>
-        )}
-        {constrainsEdit.show && (
-          <Stack hasGutter={true}>
-            <StackItem>
-              <Breadcrumb>
-                <BreadcrumbItem component="span" onClick={() => setConstraintsEdit({ show: false })}>
-                  <Button variant={"link"} isInline={true}>
-                    Data Dictionary
-                  </Button>
-                </BreadcrumbItem>
-                <BreadcrumbItem isActive={true}>Constraints</BreadcrumbItem>
-              </Breadcrumb>
-            </StackItem>
-            <StackItem>
-              <ConstraintsEdit
-                dataType={constrainsEdit!.dataType}
-                onAdd={handleConstraintsSave}
-                onDelete={handleConstraintsDelete}
-              />
-            </StackItem>
-          </Stack>
-        )}
+        <Flex style={{ margin: "1em 0 2em 0" }}>
+          <FlexItem>
+            <Button
+              variant="secondary"
+              onClick={addDataType}
+              isDisabled={editing !== false || sorting || viewSection !== "main"}
+              icon={<PlusIcon />}
+              iconPosition="left"
+            >
+              Add Data Type
+            </Button>
+          </FlexItem>
+          <FlexItem>
+            <Button
+              variant="secondary"
+              onClick={() => setViewSection("batch-add")}
+              isDisabled={editing !== false || sorting || viewSection !== "main"}
+              icon={<BoltIcon />}
+              iconPosition="left"
+            >
+              Add Multiple Data Types
+            </Button>
+          </FlexItem>
+          <FlexItem align={{ default: "alignRight" }}>
+            <Button
+              variant={sorting ? "primary" : "secondary"}
+              onClick={toggleSorting}
+              isDisabled={editing !== false || dataTypes.length < 2 || viewSection !== "main"}
+              icon={<SortIcon />}
+              iconPosition="left"
+            >
+              {sorting ? "End Sorting" : "Sort"}
+            </Button>
+          </FlexItem>
+        </Flex>
+        <SwitchTransition mode={"out-in"}>
+          <CSSTransition
+            timeout={{
+              enter: 230,
+              exit: 100
+            }}
+            classNames="data-dictionary__overview"
+            key={viewSection}
+          >
+            <>
+              {viewSection === "main" && (
+                <>
+                  {!sorting && (
+                    <section className="data-dictionary__types-list">
+                      {dataTypes.map((item, index) => (
+                        <DataTypeItem
+                          dataType={item}
+                          index={index}
+                          key={uuid()}
+                          onSave={handleSave}
+                          onEdit={handleEdit}
+                          onDelete={handleDelete}
+                          onConstraintsEdit={handleConstraintsEdit}
+                          onValidate={dataTypeNameValidation}
+                        />
+                      ))}
+                      {newType && (
+                        <DataTypeItem
+                          dataType={{ name: "", type: "String", list: false }}
+                          index={-1}
+                          key={uuid()}
+                          onSave={handleSave}
+                          onConstraintsEdit={handleConstraintsEdit}
+                          onValidate={dataTypeNameValidation}
+                        />
+                      )}
+                    </section>
+                  )}
+                  {sorting && (
+                    <section className="data-dictionary__types-list">
+                      <DataTypesSort dataTypes={dataTypes} onSort={handleSorting} />
+                    </section>
+                  )}
+                </>
+              )}
+              {viewSection === "batch-add" && (
+                <>
+                  <MultipleDataTypeAdd onAdd={handleMultipleAdd} onCancel={() => setViewSection("main")} />
+                </>
+              )}
+              {viewSection === "constraints" && (
+                <ConstraintsEdit
+                  dataType={constrainsEdit!}
+                  onAdd={handleConstraintsSave}
+                  onDelete={handleConstraintsDelete}
+                />
+              )}
+            </>
+          </CSSTransition>
+        </SwitchTransition>
       </StatusContext.Provider>
     </div>
   );

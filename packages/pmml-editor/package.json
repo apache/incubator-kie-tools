@@ -19,6 +19,7 @@
     "@types/lodash": "^4.14.161",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "5.1.1",
+    "@types/react-transition-group": "^4.4.0",
     "@types/uuid": "^8.3.0",
     "combine-reducer": "^1.0.2",
     "immer": "^7.0.8",
@@ -27,6 +28,7 @@
     "react-redux": "^7.2.1",
     "react-router-dom": "5.1.1",
     "react-sortable-hoc": "^1.11.0",
+    "react-transition-group": "^4.4.1",
     "redux": "^4.0.5",
     "uuid": "^8.3.0"
   },
