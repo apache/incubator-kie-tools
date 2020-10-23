@@ -1,5 +1,7 @@
 # 'To do' list View
 
+You can read [here](https://blog.kie.org/2020/10/kogito-tooling-examples-how-to-create-a-custom-view.html) a step-by-step tutorial of how this custom View was built.
+
 This package exposes the necessary files for you to create a 'To do' list Envelope.
 
 It's divided in the following submodules:

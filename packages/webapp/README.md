@@ -1,5 +1,7 @@
 ## Webapp Example
 
+You can read [here](https://blog.kie.org/2020/10/kogito-tooling-examples%e2%80%8a-%e2%80%8ahow-to-integrate-a-custom-editor-an-existing-editors-and-custom-views.html) a step-by-step tutorial of how create this WebApp.
+
 This is a Web application example that shows how to integrate an Embedded Editor [1] or an Embedded Envelope [2]
 
 1. The Embedded Editor enables you to use your Custom Editors or even to use the available Kogito Editor (BPMN and DMN)

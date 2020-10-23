@@ -1,5 +1,7 @@
 ## Base64 PNG Editor - Chrome Extension
 
+You can read [here](https://blog.kie.org/2020/10/kogito-tooling-examples%e2%80%8a-%e2%80%8ahow-to-create-a-chrome-extension-for-a-custom-editor.html) a step-by-step tutorial of how this Chrome Extension was built.
+
 This package is the Chrome Extension, which runs the Base64 PNG Editor.
 
 ### Running

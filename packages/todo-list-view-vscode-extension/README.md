@@ -1,5 +1,7 @@
 # 'To do' list View :: VS Code Extension
 
+You can read [here](https://blog.kie.org/2020/10/kogito-tooling-examples%e2%80%8a-%e2%80%8ahow-to-create-a-vs-code-extension-for-a-custom-view.html) a step-by-step tutorial of how this VS Code Extension was built.
+
 This package provides a VS Code Extension containing a 'To do' list View.
 
 ### Pre requisites
