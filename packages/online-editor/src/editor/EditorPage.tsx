@@ -27,6 +27,7 @@ import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
 import { useFileUrl } from "../common/Hooks";
+import { UpdateGistErrors } from "../common/GithubService";
 
 interface Props {
   onFileNameChanged: (fileName: string, fileExtension: string) => void;
@@ -145,17 +146,30 @@ export function EditorPage(props: Props) {
       const filename = `${context.file.fileName}.${context.file.fileExtension}`;
       context.githubService
         .updateGist({ filename, content })
-        .then(gistUrl => {
+        .then((response: string | UpdateGistErrors) => {
+          if (response === UpdateGistErrors.INVALID_CURRENT_GIST) {
+            setAlert(Alerts.INVALID_CURRENT_GIST);
+            return;
+          }
+
+          if (response === UpdateGistErrors.INVALID_GIST_FILENAME) {
+            setAlert(Alerts.INVALID_GIST_FILENAME);
+            return;
+          }
+
           editor?.getStateControl().setSavedCommand();
           if (filename !== context.githubService.getCurrentGist()?.filename) {
-            setUpdateGistFilenameUrl(`${window.location.origin}/?file=${gistUrl}#/editor/${fileExtension}`);
+            setUpdateGistFilenameUrl(`${window.location.origin}/?file=${response}#/editor/${fileExtension}`);
             setAlert(Alerts.SUCCESS_UPDATE_GIST_FILENAME);
-          } else {
-            setAlert(Alerts.SUCCESS_UPDATE_GIST);
+            return;
           }
+
+          setAlert(Alerts.SUCCESS_UPDATE_GIST);
+          return;
         })
-        .catch((err: Alerts) => {
-          setAlert(err);
+        .catch(err => {
+          console.error(err);
+          setAlert(Alerts.ERROR);
         });
     });
   }, [context.file.fileName, editor]);

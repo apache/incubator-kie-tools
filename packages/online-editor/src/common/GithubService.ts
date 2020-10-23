@@ -16,7 +16,6 @@
 
 import * as Octokit from "@octokit/rest";
 import { getCookie, setCookie } from "./utils";
-import { Alerts } from "../editor/EditorPage";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const GITHUB_TOKENS_URL = "https://github.com/settings/tokens";
@@ -49,6 +48,11 @@ interface UpdateGistArgs {
 interface CurrentGist {
   id: string;
   filename: string;
+}
+
+export enum UpdateGistErrors {
+  INVALID_CURRENT_GIST,
+  INVALID_GIST_FILENAME
 }
 
 export class GithubService {
@@ -261,30 +265,27 @@ export class GithubService {
     const getResponse = await this.octokit.gists.get({ gist_id: this.currentGist!.id });
 
     if (!Object.keys((getResponse.data as any).files).includes(this.currentGist!.filename)) {
-      throw Alerts.INVALID_CURRENT_GIST;
+      return UpdateGistErrors.INVALID_CURRENT_GIST;
     }
 
     if (
       args.filename !== this.currentGist!.filename &&
       Object.keys((getResponse.data as any).files).includes(args.filename)
     ) {
-      throw Alerts.INVALID_GIST_FILENAME;
+      return UpdateGistErrors.INVALID_GIST_FILENAME;
     }
 
-    try {
-      const updateResponse = await this.octokit.gists.update({
-        gist_id: this.currentGist!.id,
-        files: {
-          [this.currentGist!.filename]: {
-            content: args.content,
-            filename: args.filename
-          }
+    const updateResponse = await this.octokit.gists.update({
+      gist_id: this.currentGist!.id,
+      files: {
+        [this.currentGist!.filename]: {
+          content: args.content,
+          filename: args.filename
         }
-      });
-      return this.removeCommitHashFromGistRawUrl((updateResponse.data as any).files[args.filename].raw_url);
-    } catch (err) {
-      throw Alerts.ERROR;
-    }
+      }
+    });
+
+    return this.removeCommitHashFromGistRawUrl((updateResponse.data as any).files[args.filename].raw_url);
   }
 
   public getGistRawUrlFromId(gistId: string, gistFilename: string | undefined): Promise<string> {
