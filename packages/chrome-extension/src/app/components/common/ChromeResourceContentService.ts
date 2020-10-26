@@ -68,9 +68,6 @@ class ChromeResourceContentService implements ResourceContentService {
   public list(pattern: string, opts?: ResourceListOptions): Promise<ResourcesList> {
     return this.octokit.git
       .getTree({
-        headers: {
-          "cache-control": "no-cache"
-        },
         recursive: "1",
         tree_sha: this.repoInfo.gitref,
         ...this.repoInfo
