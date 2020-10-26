@@ -293,6 +293,11 @@ public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
                 .name();
     }
 
+    @Override
+    public void batch() {
+        text.batch();
+    }
+
     public WiresTextDecorator setTitleStrokeAlpha(final double strokeAlpha) {
         text.setStrokeAlpha(strokeAlpha);
         return this;

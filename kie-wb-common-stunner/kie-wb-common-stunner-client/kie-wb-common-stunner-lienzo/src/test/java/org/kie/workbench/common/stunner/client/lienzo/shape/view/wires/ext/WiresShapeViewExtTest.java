@@ -68,6 +68,13 @@ public class WiresShapeViewExtTest extends AbstractWiresShapeViewText {
     }
 
     @Test
+    public void testBatch() {
+        tested.getTextViewDecorator().batch();
+
+        verify(textDecorator).batch();
+    }
+
+    @Test
     public void testSetTextWrapperBounds() {
         testSetTextWrapperStrategy(TextWrapperStrategy.BOUNDS);
     }

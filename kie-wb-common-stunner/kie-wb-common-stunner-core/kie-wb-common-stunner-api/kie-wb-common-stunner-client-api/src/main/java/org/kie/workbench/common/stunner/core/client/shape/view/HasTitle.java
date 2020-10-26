@@ -136,6 +136,8 @@ public interface HasTitle<T> {
 
     String getFontAlignment();
 
+    void batch();
+
     default T setTitleStrokeAlpha(final double alpha) {
         return (T) this;
     }

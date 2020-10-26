@@ -278,6 +278,11 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
     }
 
     @Override
+    public void batch() {
+        textViewDecorator.getView().batch();
+    }
+
+    @Override
     public void refresh() {
         getTextViewDecorator().update();
         super.refresh();

@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor;
 
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.junit.Before;
@@ -202,11 +201,6 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
         when(session.getKeyboardControl()).thenReturn(keyboardControl);
 
         this.control = spy(getControl());
-
-        doAnswer(i -> {
-            ((Scheduler.ScheduledCommand) i.getArguments()[0]).execute();
-            return null;
-        }).when(control).scheduleDeferredCommand(any(Scheduler.ScheduledCommand.class));
 
         doReturn(textEditBoxWidget).when(control).wrapTextEditorBoxElement(eq(textEditBoxElement));
         doAnswer(i -> abstractCanvas).when(control).getAbstractCanvas();
@@ -497,6 +491,8 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
     }
 
     private void assertShow(final boolean multiline, final String textBoxAlignment, final String position) {
+        final HasTitle hasTitle = (HasTitle) testShapeView;
+
         verify(testShapeView).setFillAlpha(eq(AbstractCanvasInlineTextEditorControl.SHAPE_EDIT_ALPHA));
         verify(testShapeView).setTitleAlpha(eq(AbstractCanvasInlineTextEditorControl.TITLE_EDIT_ALPHA));
         verify(textEditorBox).show(eq(element), anyDouble(), anyDouble());
@@ -521,6 +517,9 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
             verify(floatingView).setX(eq(25d));
             verify(floatingView).setY(eq(350d));
         }
+
+        // Update Shape UI
+        verify(hasTitle).batch();
     }
 
     private void assertHide(final int t) {

@@ -239,6 +239,11 @@ public class WiresConnectorViewExt<T>
     }
 
     @Override
+    public void batch() {
+        label.ifPresent(l -> l.configure(Shape::batch));
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public T moveTitleToTop() {
         label.ifPresent(l -> l.configure(Shape::moveToTop));

@@ -177,6 +177,10 @@ public class ShapeViewExtStub
     }
 
     @Override
+    public void batch() {
+    }
+
+    @Override
     public Object moveTitleToTop() {
         return this;
     }

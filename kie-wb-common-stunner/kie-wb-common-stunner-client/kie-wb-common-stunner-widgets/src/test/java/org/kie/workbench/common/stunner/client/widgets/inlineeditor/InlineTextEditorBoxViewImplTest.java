@@ -123,7 +123,7 @@ public class InlineTextEditorBoxViewImplTest {
         tested.onChangeName(event);
 
         verify(presenter,
-               never()).onClose();
+               never()).onSave();
     }
 
     @Test
@@ -135,7 +135,7 @@ public class InlineTextEditorBoxViewImplTest {
         tested.onChangeName(event);
 
         verify(presenter,
-               times(1)).onSave();
+               times(1)).onClose();
     }
 
     @Test
@@ -147,6 +147,45 @@ public class InlineTextEditorBoxViewImplTest {
         verify(presenter, never()).onSave();
         verify(presenter, never()).onClose();
         verify(presenter, never()).onChangeName(anyString());
+    }
+
+    @Test
+    public void testNonKeyDownEventPropagation() {
+        when(event.getTypeInt()).thenReturn(Event.ONKEYDOWN);
+        when(event.getKeyCode()).thenReturn(KeyCodes.KEY_A);
+        when(event.getShiftKey()).thenReturn(false);
+        when(nameField.getInnerHTML()).thenReturn(NAME);
+        doAnswer(i -> true).when(tested).isVisible();
+        tested.onChangeName(event);
+
+        verify(event,
+               times(1)).stopPropagation();
+    }
+
+    @Test
+    public void testNonKeyUpEventPropagation() {
+        when(event.getTypeInt()).thenReturn(Event.ONKEYUP);
+        when(event.getKeyCode()).thenReturn(KeyCodes.KEY_A);
+        when(event.getShiftKey()).thenReturn(false);
+        when(nameField.getInnerHTML()).thenReturn(NAME);
+        doAnswer(i -> true).when(tested).isVisible();
+        tested.onChangeName(event);
+
+        verify(event,
+               times(1)).stopPropagation();
+    }
+
+    @Test
+    public void testNonKeyPressEventPropagation() {
+        when(event.getTypeInt()).thenReturn(Event.ONKEYPRESS);
+        when(event.getKeyCode()).thenReturn(KeyCodes.KEY_A);
+        when(event.getShiftKey()).thenReturn(false);
+        when(nameField.getInnerHTML()).thenReturn(NAME);
+        doAnswer(i -> true).when(tested).isVisible();
+        tested.onChangeName(event);
+
+        verify(event,
+               times(1)).stopPropagation();
     }
 
     @Test

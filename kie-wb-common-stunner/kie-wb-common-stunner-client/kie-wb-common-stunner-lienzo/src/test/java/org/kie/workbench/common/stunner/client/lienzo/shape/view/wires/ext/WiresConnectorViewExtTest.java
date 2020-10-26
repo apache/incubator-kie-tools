@@ -43,6 +43,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -112,6 +113,8 @@ public class WiresConnectorViewExtTest {
         verify(labelText, times(1)).setFontSize(eq(0.3d));
         tested.moveTitleToTop();
         verify(labelText, times(1)).moveToTop();
+        tested.batch();
+        verify(labelText, times(1)).batch();
         assertNull(tested.getTitlePosition());
         assertNull(tested.getOrientation());
         assertEquals(0.0, tested.getMarginX(), 0.0001);
@@ -124,5 +127,23 @@ public class WiresConnectorViewExtTest {
         verify(label, times(1)).destroy();
         assertFalse(tested.label.isPresent());
         verify(connectorControl, times(1)).destroy();
+    }
+
+    @Test
+    public void testLabelNotPresent() {
+        tested = spy(new WiresConnectorViewExt(ShapeViewSupportedEvents.DESKTOP_CONNECTOR_EVENT_TYPES,
+                                               line,
+                                               HEAD_DECORATOR,
+                                               TAIL_DECORATOR) {
+            @Override
+            protected Optional<WiresConnectorLabel> createLabel(String title) {
+                return Optional.empty();
+            }
+        });
+
+        assertNotNull(tested.label);
+        assertFalse(tested.label.isPresent());
+        tested.batch();
+        verify(labelText, never()).batch();
     }
 }

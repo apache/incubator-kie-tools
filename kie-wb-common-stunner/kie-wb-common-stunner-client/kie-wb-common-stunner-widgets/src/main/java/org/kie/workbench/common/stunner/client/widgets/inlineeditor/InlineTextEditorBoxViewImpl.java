@@ -160,19 +160,18 @@ public class InlineTextEditorBoxViewImpl
     }
 
     @EventHandler("nameField")
-    @SinkNative(Event.ONKEYDOWN | Event.ONBLUR)
+    @SinkNative(Event.ONKEYDOWN | Event.ONKEYUP | Event.ONKEYPRESS | Event.ONBLUR)
     void onChangeName(Event e) {
         if (isVisible()) {
+            e.stopPropagation();
             if (e.getTypeInt() == Event.ONBLUR) {
                 saveChanges();
             } else if (e.getTypeInt() == Event.ONKEYDOWN) {
                 if (e.getKeyCode() == KeyCodes.KEY_ENTER && !e.getShiftKey()) {
-                    e.stopPropagation();
                     e.preventDefault();
                     saveChanges();
                 } else if ((!isMultiline && e.getKeyCode() == KeyCodes.KEY_ENTER && e.getShiftKey()) ||
                         e.getKeyCode() == KeyCodes.KEY_TAB) {
-                    e.stopPropagation();
                     e.preventDefault();
                 } else if (e.getKeyCode() == KeyCodes.KEY_ESCAPE) {
                     rollback();
@@ -182,8 +181,8 @@ public class InlineTextEditorBoxViewImpl
     }
 
     private void saveChanges() {
-        scheduleDeferredCommand(() -> presenter.onChangeName(getTextContent()));
-        scheduleDeferredCommand(() -> presenter.onSave());
+        presenter.onChangeName(getTextContent());
+        presenter.onSave();
     }
 
     private String getTextContent() {
@@ -201,6 +200,6 @@ public class InlineTextEditorBoxViewImpl
 
     @Override
     public void rollback() {
-        scheduleDeferredCommand(() -> presenter.onSave());
+        presenter.onClose();
     }
 }

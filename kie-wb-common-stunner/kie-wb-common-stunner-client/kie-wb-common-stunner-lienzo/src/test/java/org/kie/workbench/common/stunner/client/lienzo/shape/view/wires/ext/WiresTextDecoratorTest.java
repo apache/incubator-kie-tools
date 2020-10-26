@@ -236,4 +236,14 @@ public class WiresTextDecoratorTest {
     public void testGetFontAlignment() {
         assertEquals("MIDDLE", decorator.getFontAlignment());
     }
+
+    @Test
+    public void testBatch() {
+        Text text = spy(new Text(""));
+        Whitebox.setInternalState(decorator, "text", text);
+
+        decorator.batch();
+
+        verify(text).batch();
+    }
 }
