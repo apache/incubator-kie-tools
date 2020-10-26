@@ -298,14 +298,14 @@ jobs:
         run: cd kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors && yarn run test:it
 
       - name: Archive it test screenshots	
-        if: always()	
+        if: success() || failure()	
         uses: actions/upload-artifact@v1	
         with:	
           name: chrome-extension-it-tests-screenshots-${{ matrix.os }}	
           path: kogito-tooling/packages/chrome-extension-pack-kogito-kie-editors/screenshots	
 
       - name: Archive it test logs	
-        if: always()	
+        if: success() || failure()	
         uses: actions/upload-artifact@v1	
         with:	
           name: chrome-extension-it-tests-logs-${{ matrix.os }}	
