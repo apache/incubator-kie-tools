@@ -30,8 +30,7 @@ export function fetchFile(
       repo: repo,
       owner: org,
       ref: ref,
-      path: path,
-      headers: { "cache-control": "no-cache" }
+      path: path
     })
     .then(res => (contentType === ContentType.BINARY ? (res.data as any).content : atob((res.data as any).content)))
     .catch(e => {
