@@ -46,15 +46,6 @@ export const en: OnlineI18n = {
   editorPage: {
     alerts: {
       copy: "Content copied to clipboard",
-      updateGist: "Your gist was updated.",
-      updateGistFilename: {
-        title: "Your gist and its filename were updated!",
-        message: `Your gists filename was updated, and it can take a few seconds until the new ${en_common.names.url} is available.`,
-        yourNewUrl: `Your new ${en_common.names.url}`
-      },
-      invalidCurrentGist: `Your current gist ${en_common.names.url} is invalid. If you've updated its filename, it's necessary to update your ${en_common.names.url} as well.`,
-      invalidGistFilename: "Invalid filename. This gist already has a file with this name.",
-      error: "An error occurred trying to perform the last operation. Try again later.",
       unsaved: {
         title: "Unsaved changes will be lost",
         message: "Click Save to download your progress before closing.",
@@ -66,16 +57,13 @@ export const en: OnlineI18n = {
     sendChangesToGitHub: `Send changes to ${en_common.names.github}`,
     copySource: "Copy Source",
     downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
-    setGitHubToken: `Set up your ${en_common.names.github} token`,
     gistIt: "Gist it!",
-    fileActions: "File actions",
-    updateGist: "Update gist",
-    updateGistTooltip: `To be able to update a gist you need to have access to it through your ${en_common.names.github} token.`
+    fileActions: "File actions"
   },
   githubTokenModal: {
     header: {
       title: `${en_common.names.github} ${en_common.names.oauth} ${en_common.terms.token}`,
-      subtitle: `Set up your ${en_common.names.github} token so you can create and update gist.`
+      subtitle: `Authentication required for exporting to ${en_common.names.github} gist.`
     },
     footer: {
       createNewToken: "Create a new token",

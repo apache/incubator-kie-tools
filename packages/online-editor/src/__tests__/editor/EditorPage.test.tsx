@@ -30,10 +30,6 @@ function mockFunctions() {
 }
 jest.mock("@kogito-tooling/editor/dist/embedded", () => mockFunctions());
 
-afterAll(() => {
-  jest.resetAllMocks();
-});
-
 describe("EditorPage", () => {
   describe("Unsaved Alert", () => {
     test("should not appear by default with isDirty equal to false", () => {
