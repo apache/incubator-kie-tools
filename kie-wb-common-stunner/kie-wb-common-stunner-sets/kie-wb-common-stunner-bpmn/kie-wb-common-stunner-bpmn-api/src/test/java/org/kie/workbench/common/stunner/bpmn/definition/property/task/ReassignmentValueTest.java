@@ -41,12 +41,12 @@ public class ReassignmentValueTest {
 
                 .addTrueCase(new ReassignmentValue("AAA",
                                                    "1h",
-                                                   Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                                   Collections.EMPTY_LIST),
+                                                   Collections.EMPTY_LIST,
+                                                   Arrays.asList(new String[]{"foo", "bar", "baz"})),
                              new ReassignmentValue("AAA",
                                                    "1h",
-                                                   Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                                   Collections.EMPTY_LIST))
+                                                   Collections.EMPTY_LIST,
+                                                   Arrays.asList(new String[]{"foo", "bar", "baz"})))
                 .addTrueCase(new ReassignmentValue("AAA",
                                                    "1h",
                                                    Arrays.asList(new String[]{"foo", "bar", "baz"}),
@@ -67,12 +67,12 @@ public class ReassignmentValueTest {
 
                 .addFalseCase(new ReassignmentValue("AAA",
                                                     "1h",
-                                                    Arrays.asList(new String[]{"foo1", "bar", "baz"}),
-                                                    Collections.EMPTY_LIST),
+                                                    Collections.EMPTY_LIST,
+                                                    Arrays.asList(new String[]{"foo1", "bar", "baz"})),
                               new ReassignmentValue("AAA",
                                                     "1h",
-                                                    Arrays.asList(new String[]{"foo", "bar", "baz"}),
-                                                    Collections.EMPTY_LIST))
+                                                    Collections.EMPTY_LIST,
+                                                    Arrays.asList(new String[]{"foo", "bar", "baz"})))
                 .addFalseCase(new ReassignmentValue("AAA",
                                                     "1h",
                                                     Arrays.asList(new String[]{"foo", "bar", "baz"}),

@@ -45,8 +45,8 @@ public class ReassignmentValue {
 
     public ReassignmentValue(@MapsTo("type") String type,
                              @MapsTo("duration") String duration,
-                             @MapsTo("users") List<String> groups,
-                             @MapsTo("groups") List<String> users) {
+                             @MapsTo("users") List<String> users,
+                             @MapsTo("groups") List<String> groups) {
         this.type = type;
         this.duration = duration;
         this.groups = groups;
