@@ -16,6 +16,7 @@
 
 package org.dashbuilder.displayer.client.widgets;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -25,6 +26,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
+import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
 import org.uberfire.client.mvp.UberView;
 
 @Dependent
@@ -42,6 +44,9 @@ public class ExternalComponentEditor implements IsWidget {
 
     @Inject
     ExternalComponentPresenter externalComponentPresenter;
+    
+    @Inject
+    ExternalComponentMessageHelper messageHelper;
 
     private Map<String, String> newProperties;
 
@@ -58,7 +63,8 @@ public class ExternalComponentEditor implements IsWidget {
 
     public void propertiesChange(Map<String, String> propertiesChange) {
         this.newProperties = propertiesChange;
-        ExternalComponentMessage message = ExternalComponentMessage.create(propertiesChange);
+        Map<String, Object> props = new HashMap<>(propertiesChange);
+        ExternalComponentMessage message = messageHelper.newInitMessage(props);
         externalComponentPresenter.sendMessage(message);
     }
 

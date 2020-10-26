@@ -74,28 +74,28 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
     }
 
     @Override
-    public IsWidget getPreviewWidget( final RenderingContext ctx ) {
-        return getShowWidget( ctx );
+    public IsWidget getPreviewWidget(final RenderingContext ctx) {
+        return getShowWidget(ctx);
     }
 
     @Override
-    public IsWidget getShowWidget( final RenderingContext ctx ) {
+    public IsWidget getShowWidget(final RenderingContext ctx) {
         Map<String, String> properties = ctx.getComponent().getProperties();
-        String json = properties.get( "json" );
-        if ( json == null ) {
+        String json = properties.get("json");
+        if (json == null) {
             return null;
         }
 
-        final DisplayerSettings settings = marshaller.fromJsonString( json );
+        final DisplayerSettings settings = marshaller.fromJsonString(json);
         viewer.removeFromParent();
-        viewer.init( settings );
+        viewer.init(settings);
         viewer.addAttachHandler(attachEvent -> {
             if (attachEvent.isAttached()) {
                 final int offsetWidth = ctx.getContainer().getOffsetWidth();
-                int containerWidth = offsetWidth > 40 ?  offsetWidth - 40 : 0;
-                adjustSize( settings, containerWidth );
+                int containerWidth = offsetWidth > 40 ? offsetWidth - 40 : 0;
+                adjustSize(settings, containerWidth);
                 Displayer displayer = viewer.draw();
-                perspectiveCoordinator.addDisplayer( displayer );
+                perspectiveCoordinator.addDisplayer(displayer);
             }
         });
         int containerWidth = ctx.getContainer().getOffsetWidth() - 40;
@@ -106,15 +106,24 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
     }
 
     @Override
-    public Modal getConfigurationModal( final ModalConfigurationContext ctx ) {
+    public Modal getConfigurationModal(final ModalConfigurationContext ctx) {
         return buildEditorPopUp(ctx);
+    }
+
+    @Override
+    public void removeCurrentWidget(RenderingContext ctx) {
+        Displayer displayer = viewer.getDisplayer();
+        if (displayer != null) {
+            perspectiveCoordinator.removeDisplayer(displayer);
+            displayer.close();
+        }
     }
 
     protected DisplayerEditorPopup buildEditorPopUp(final ModalConfigurationContext ctx) {
         Map<String, String> properties = ctx.getComponentProperties();
-        String json = properties.get( "json" );
-        DisplayerSettings settings = json != null ? marshaller.fromJsonString( json ) : initialSettings(ctx);
-        DisplayerEditorPopup editor = beanManager.lookupBean( DisplayerEditorPopup.class ).newInstance();
+        String json = properties.get("json");
+        DisplayerSettings settings = json != null ? marshaller.fromJsonString(json) : initialSettings(ctx);
+        DisplayerEditorPopup editor = beanManager.lookupBean(DisplayerEditorPopup.class).newInstance();
 
         // For brand new components set the default type/subtype to create
         if (settings == null) {
@@ -126,9 +135,9 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
             }
         }
 
-        editor.init( settings );
-        editor.setOnSaveCommand( getSaveCommand( editor, ctx ) );
-        editor.setOnCloseCommand( getCloseCommand( editor, ctx ) );
+        editor.init(settings);
+        editor.setOnSaveCommand(getSaveCommand(editor, ctx));
+        editor.setOnCloseCommand(getCloseCommand(editor, ctx));
         return editor;
     }
 
@@ -136,32 +145,32 @@ public class DisplayerDragComponent implements LayoutDragComponent, HasModalConf
         return null;
     }
 
-    protected Command getSaveCommand( final DisplayerEditorPopup editor, final ModalConfigurationContext ctx ) {
+    protected Command getSaveCommand(final DisplayerEditorPopup editor, final ModalConfigurationContext ctx) {
         return () -> {
-            String json = marshaller.toJsonString( editor.getDisplayerSettings() );
-            ctx.setComponentProperty( "json", json );
+            String json = marshaller.toJsonString(editor.getDisplayerSettings());
+            ctx.setComponentProperty("json", json);
             ctx.configurationFinished();
-            beanManager.destroyBean( editor );
+            beanManager.destroyBean(editor);
         };
     }
 
-    protected Command getCloseCommand( final DisplayerEditorPopup editor, final ModalConfigurationContext ctx ) {
+    protected Command getCloseCommand(final DisplayerEditorPopup editor, final ModalConfigurationContext ctx) {
         return () -> {
             ctx.configurationCancelled();
-            beanManager.destroyBean( editor );
+            beanManager.destroyBean(editor);
         };
     }
 
-    protected void adjustSize( DisplayerSettings settings, int containerWidth ) {
+    protected void adjustSize(DisplayerSettings settings, int containerWidth) {
         int displayerWidth = settings.getChartWidth();
         int tableWidth = settings.getTableWidth();
-        if ( containerWidth > 0 && displayerWidth > containerWidth ) {
+        if (containerWidth > 0 && displayerWidth > containerWidth) {
             int ratio = containerWidth * 100 / displayerWidth;
-            settings.setChartWidth( containerWidth );
-            settings.setChartHeight( settings.getChartHeight() * ratio / 100 );
+            settings.setChartWidth(containerWidth);
+            settings.setChartHeight(settings.getChartHeight() * ratio / 100);
         }
-        if ( tableWidth == 0 || tableWidth > containerWidth ) {
-            settings.setTableWidth( containerWidth > 20 ? containerWidth - 20 : 0 );
+        if (tableWidth == 0 || tableWidth > containerWidth) {
+            settings.setTableWidth(containerWidth > 20 ? containerWidth - 20 : 0);
         }
     }
 }

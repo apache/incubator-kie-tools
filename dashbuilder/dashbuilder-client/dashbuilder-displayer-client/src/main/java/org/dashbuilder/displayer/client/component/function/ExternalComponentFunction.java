@@ -1,11 +1,11 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dashbuilder.dataset.client.resources.i18n;
+package org.dashbuilder.displayer.client.component.function;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import java.util.function.Consumer;
 
-public interface CommonConstants extends Messages {
+import elemental2.core.JsMap;
 
-    public static final CommonConstants INSTANCE = GWT.create( CommonConstants.class );
+public interface ExternalComponentFunction {
 
-    String weeks();
+    default String getName() {
+        return this.getClass().getSimpleName();
+    }
 
-    String exc_text_columns_no_grouping();
-
-    String exc_no_client_side_data_export();
-
+    void exec(JsMap<String, Object> params, Consumer<Object> onFinish);
 }

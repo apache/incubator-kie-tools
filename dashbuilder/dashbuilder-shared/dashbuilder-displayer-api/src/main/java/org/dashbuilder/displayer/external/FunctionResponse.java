@@ -16,43 +16,29 @@
 
 package org.dashbuilder.displayer.external;
 
-import java.util.Map;
-
-import elemental2.core.JsMap;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class ExternalComponentMessage {
+public class FunctionResponse {
 
-    JsMap<String, Object> properties;
+    FunctionCallRequest request;
 
-    // Change this when @JsEnum is supported.
-    String type;
+    String resultType;
 
-    @JsOverlay
-    static ExternalComponentMessage create(String messageType, Map<String, Object> properties) {
-        ExternalComponentMessage message = new ExternalComponentMessage();
-        message.properties = new JsMap<>();
-        message.type = messageType;
-        properties.forEach(message::setProperty);
-        return message;
-    }
+    String message;
+
+    Object result;
 
     @JsOverlay
-    public final void setProperty(String key, Object value) {
-        properties.set(key, value);
-    }
-
-    @JsOverlay
-    public final Object getProperty(String key) {
-        return properties != null ? properties.get(key) : null;
-    }
-
-    @JsOverlay
-    public final String getType() {
-        return type;
+    public static FunctionResponse create(FunctionCallRequest request, String resultType, String message, Object result) {
+        FunctionResponse response = new FunctionResponse();
+        response.request = request;
+        response.resultType = resultType;
+        response.message = message;
+        response.result = result;
+        return response;
     }
 
 }

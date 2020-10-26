@@ -14,6 +14,16 @@
   limitations under the License.
 -->
 <div id="componentRoot" style="width: 100%; height: 100%">
-    <iframe id="externalComponentIFrame" width=""
-        height="" title="External Component Container"></iframe>
+    <div data-field="configurationIssueRoot" class="configuration-issue-message-box">
+        <div class="card-pf-heading">
+            <span
+                class="pficon pficon-warning-triangle-o configuration-error-title-icon"></span><span
+                class="card-pf-title"
+                data-i18n-key="configurationIssueTitle"></span>
+        </div>
+        <p data-i18n-key="configurationIssueDescription" class="externalConfigurationIssueDetails"></p>
+        <p data-field="configurationDetails" class="externalConfigurationIssueDetails"></p>
+    </div>
+    <iframe id="externalComponentIFrame" width="" height=""
+        title="External Component Container"></iframe>
 </div>

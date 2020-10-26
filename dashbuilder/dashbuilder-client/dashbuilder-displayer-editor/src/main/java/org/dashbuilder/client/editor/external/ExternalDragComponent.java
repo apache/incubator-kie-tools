@@ -1,5 +1,6 @@
 package org.dashbuilder.client.editor.external;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.Dependent;
@@ -9,6 +10,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.dashbuilder.displayer.client.widgets.ExternalComponentEditorPopUp;
 import org.dashbuilder.displayer.client.widgets.ExternalComponentPresenter;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
+import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -28,6 +30,8 @@ public class ExternalDragComponent implements ExternalComponentDragDef, HasModal
     SyncBeanManager beanManager;
     @Inject
     ExternalComponentPresenter externalComponentPresenter;
+    @Inject
+    ExternalComponentMessageHelper messageHelper;
 
     private String componentId;
     private String componentName;
@@ -53,8 +57,8 @@ public class ExternalDragComponent implements ExternalComponentDragDef, HasModal
             externalComponentPresenter.withComponent(storedComponentId);
         }
         
-        Map<String, String> componentProperties = retrieveComponentProperties(storedComponentId, ltProps);
-        ExternalComponentMessage message = ExternalComponentMessage.create(componentProperties);
+        Map<String, Object> componentProperties = new HashMap<>(retrieveComponentProperties(storedComponentId, ltProps));
+        ExternalComponentMessage message = messageHelper.newInitMessage(componentProperties);
         externalComponentPresenter.sendMessage(message);
         
         return externalComponentPresenter.getView();

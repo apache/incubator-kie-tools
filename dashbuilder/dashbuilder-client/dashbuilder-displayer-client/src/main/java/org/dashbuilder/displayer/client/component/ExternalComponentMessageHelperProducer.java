@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#externalComponentIFrame {
-    border: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-}
 
-.configuration-error-title-icon {
-    margin-right: 10px;
-}
+package org.dashbuilder.displayer.client.component;
 
-.configuration-issue-message-box {
-    margin: 10px;
-}
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
 
-.externalConfigurationIssueDetails {
-    overflow-wrap: break-word;
-    overflow: auto;
-    max-height: 110px;
+import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
+
+/**
+ * Produce the helper for messages.
+ *
+ */
+@ApplicationScoped
+public class ExternalComponentMessageHelperProducer {
+
+    @Produces
+    public ExternalComponentMessageHelper produce() {
+        return new ExternalComponentMessageHelper();
+    }
+
 }

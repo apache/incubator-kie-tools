@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#externalComponentIFrame {
-    border: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-}
 
-.configuration-error-title-icon {
-    margin-right: 10px;
-}
+package org.dashbuilder.displayer.client.component;
 
-.configuration-issue-message-box {
-    margin: 10px;
-}
+import org.dashbuilder.displayer.external.ExternalComponentMessage;
+import org.dashbuilder.displayer.external.ExternalFilterRequest;
 
-.externalConfigurationIssueDetails {
-    overflow-wrap: break-word;
-    overflow: auto;
-    max-height: 110px;
+/**
+ * Defines a contract for classes that want to listen for components messages.
+ *
+ */
+public interface ExternalComponentListener {
+
+    String getId();
+
+    void sendMessage(ExternalComponentMessage message);
+    
+    void onFilter(ExternalFilterRequest filterRequest);
+    
+    void onConfigurationIssue(String message);
+    
+    void prepare();
+
+    void configurationOk();
+
 }

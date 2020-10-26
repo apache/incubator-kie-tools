@@ -19,15 +19,13 @@ package org.dashbuilder.displayer.client.widgets;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLIFrameElement;
-import elemental2.dom.MessageEvent;
-import jsinterop.base.Js;
+import elemental2.dom.HTMLParagraphElement;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
+import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
@@ -43,31 +41,36 @@ public class ExternalComponentView extends Composite implements ExternalComponen
     @DataField
     HTMLIFrameElement externalComponentIFrame;
 
-    private boolean componentReady = false;
+    @Inject
+    @DataField
+    HTMLDivElement configurationIssueRoot;
 
-    private JavaScriptObject lastProps;
+    @Inject
+    @DataField
+    HTMLParagraphElement configurationDetails;
+
+    @Inject
+    ExternalComponentMessageHelper messageHelper;
+
+    private boolean componentLoaded = false;
 
     private ExternalComponentMessage lastMessage;
 
+    private ExternalComponentMessage initMessage;
+
     @Override
     public void init(ExternalComponentPresenter presenter) {
-        DomGlobal.window.addEventListener("message", e -> {
-            MessageEvent<Object> event = Js.cast(e);
-            if (event.data instanceof ExternalComponentMessage) {
-                ExternalComponentMessage message = Js.cast(event.data);
-                presenter.receiveMessage(message);
-            }
-        });
+        showComponent();
     }
 
     @Override
     public void setComponentURL(String url) {
         externalComponentIFrame.src = url;
-        componentReady = false;
+        componentLoaded = false;
         externalComponentIFrame.onload = e -> {
-            componentReady = true;
-            if (lastProps != null) {
-                postMessageToComponent(lastProps);
+            componentLoaded = true;
+            if (initMessage != null) {
+                postMessageToComponent(initMessage);
             }
             if (lastMessage != null) {
                 postMessageToComponent(lastMessage);
@@ -78,17 +81,47 @@ public class ExternalComponentView extends Composite implements ExternalComponen
 
     @Override
     public void postMessage(ExternalComponentMessage message) {
-        this.lastMessage = message;
-        if (componentReady) {
+        if (componentLoaded) {
             postMessageToComponent(message);
+        } else {
+            if (messageHelper.isInit(message)) {
+                this.initMessage = message;
+            } else {
+                this.lastMessage = message;
+            }
         }
-
     }
 
     private void postMessageToComponent(Object message) {
         if (externalComponentIFrame != null && externalComponentIFrame.contentWindow != null) {
             externalComponentIFrame.contentWindow.postMessage(message, Window.Location.getHref());
         }
+    }
+
+    @Override
+    public void makeReady() {
+        // ready not supported at the moment.
+    }
+
+    @Override
+    public void configurationIssue(String message) {
+        configurationDetails.textContent = message;
+        showConfigurationIssue();
+    }
+
+    @Override
+    public void configurationOk() {
+        showComponent();
+    }
+
+    private void showConfigurationIssue() {
+        configurationIssueRoot.style.display = "block";
+        externalComponentIFrame.style.display = "none";
+    }
+
+    private void showComponent() {
+        configurationIssueRoot.style.display = "none";
+        externalComponentIFrame.style.display = "block";
     }
 
 }

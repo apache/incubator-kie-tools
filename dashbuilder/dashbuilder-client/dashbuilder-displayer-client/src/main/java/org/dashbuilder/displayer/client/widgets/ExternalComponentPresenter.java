@@ -19,45 +19,91 @@ package org.dashbuilder.displayer.client.widgets;
 import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
+import org.dashbuilder.displayer.client.component.ExternalComponentDispatcher;
+import org.dashbuilder.displayer.client.component.ExternalComponentListener;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
+import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
+import org.dashbuilder.displayer.external.ExternalFilterRequest;
 import org.uberfire.client.mvp.UberView;
 
 @Dependent
-public class ExternalComponentPresenter {
+public class ExternalComponentPresenter implements ExternalComponentListener {
 
     /**
      * The base URL for components server. It should match the 
      */
     private static final String COMPONENT_SERVER_PATH = "dashbuilder/component";
     /**
-     * The property that should be used by components to find its unique ID during Runtime.
-     */
-    private static final String COMPONENT_RUNTIME_ID_PROP = "component_id";
-    /**
      * Unique Runtime ID for the component. It is used to identify messages coming from the component.
      */
     final String componentRuntimeId = DOM.createUniqueId();
 
-    private Consumer<ExternalComponentMessage> messageConsumer;
+    private Consumer<ExternalFilterRequest> filterConsumer;
 
     public interface View extends UberView<ExternalComponentPresenter> {
 
         void setComponentURL(String url);
 
         void postMessage(ExternalComponentMessage message);
+
+        void makeReady();
+
+        void configurationIssue(String message);
+
+        void configurationOk();
     }
 
     @Inject
     View view;
 
+    @Inject
+    ExternalComponentDispatcher dispatcher;
+
+    @Inject
+    ExternalComponentMessageHelper messageHelper;
+
     @PostConstruct
     public void init() {
         view.init(this);
+        dispatcher.register(this);
+    }
+
+    @PreDestroy
+    public void destroy() {
+        dispatcher.unregister(this);
+    }
+
+    @Override
+    public String getId() {
+        return componentRuntimeId;
+    }
+
+    @Override
+    public void onFilter(ExternalFilterRequest filterRequest) {
+        if (filterConsumer != null) {
+            filterConsumer.accept(filterRequest);
+        }
+    }
+
+    @Override
+    public void prepare() {
+        view.makeReady();
+    }
+    
+    @Override
+    public void onConfigurationIssue(String message) {
+        view.configurationIssue(message);
+    }
+    
+    @Override
+    public void configurationOk() {
+        view.configurationOk();
     }
 
     public void withComponent(String componentId) {
@@ -71,32 +117,22 @@ public class ExternalComponentPresenter {
     }
 
     public void sendMessage(ExternalComponentMessage message) {
-        message.setProperty(COMPONENT_RUNTIME_ID_PROP, componentRuntimeId);
+        messageHelper.withId(message, componentRuntimeId);
         view.postMessage(message);
-    }
-
-    public void receiveMessage(ExternalComponentMessage message) {
-        Object destinationId = message.getProperty(COMPONENT_RUNTIME_ID_PROP);
-        if (!componentRuntimeId.equals(destinationId)) {
-            return;
-        }
-        if (messageConsumer != null) {
-            messageConsumer.accept(message);
-        }
     }
 
     public View getView() {
         return view;
     }
 
-    public void setMessageConsumer(Consumer<ExternalComponentMessage> messageConsumer) {
-        this.messageConsumer = messageConsumer;
+    public void setFilterConsumer(Consumer<ExternalFilterRequest> filterConsumer) {
+        this.filterConsumer = filterConsumer;
     }
 
     public String getComponentId() {
         return componentRuntimeId;
     }
-    
+
     private String buildUrl(String componentId) {
         return buildUrl(componentId, "");
     }
@@ -105,8 +141,8 @@ public class ExternalComponentPresenter {
         return String.join("/",
                            GWT.getHostPageBaseURL(),
                            COMPONENT_SERVER_PATH,
-                           partition, 
-                           componentId, 
+                           partition,
+                           componentId,
                            "index.html");
     }
 

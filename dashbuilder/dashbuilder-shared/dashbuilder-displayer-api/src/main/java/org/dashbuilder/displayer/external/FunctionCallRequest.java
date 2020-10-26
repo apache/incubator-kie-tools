@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#externalComponentIFrame {
-    border: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-}
 
-.configuration-error-title-icon {
-    margin-right: 10px;
-}
+package org.dashbuilder.displayer.external;
 
-.configuration-issue-message-box {
-    margin: 10px;
-}
+import elemental2.core.JsMap;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
-.externalConfigurationIssueDetails {
-    overflow-wrap: break-word;
-    overflow: auto;
-    max-height: 110px;
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
+public class FunctionCallRequest {
+
+    @JsProperty
+    public native String getFunctionName();
+
+    @JsProperty
+    public native JsMap<String, Object> getParameters();
+
 }

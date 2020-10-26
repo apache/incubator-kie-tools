@@ -279,4 +279,6 @@ public interface CommonConstants extends Messages {
     String componentNotFound();
 
     String noPropertiesComponent();
+
+    String componentConfigDefaultMessage();
 }

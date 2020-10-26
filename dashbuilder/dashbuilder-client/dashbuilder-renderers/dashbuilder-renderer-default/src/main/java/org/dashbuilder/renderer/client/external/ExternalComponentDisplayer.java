@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.renderer.client.external;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +24,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import jsinterop.base.Js;
 import org.dashbuilder.common.client.widgets.FilterLabel;
 import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.DataColumn;
@@ -39,6 +39,7 @@ import org.dashbuilder.displayer.client.widgets.ExternalComponentPresenter;
 import org.dashbuilder.displayer.external.ExternalColumn;
 import org.dashbuilder.displayer.external.ExternalColumnSettings;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
+import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
 import org.dashbuilder.displayer.external.ExternalDataSet;
 import org.dashbuilder.displayer.external.ExternalFilterRequest;
 
@@ -64,6 +65,9 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
     @Inject
     FilterLabelSet filterLabelSet;
 
+    @Inject
+    ExternalComponentMessageHelper messageHelper;
+
     private String componentId;
 
     @Override
@@ -76,7 +80,7 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
         view.init(this);
         view.setFilterLabelSet(filterLabelSet);
         this.filterLabelSet.setOnClearAllCommand(this::onFilterClearAll);
-        externalComponentPresenter.setMessageConsumer(this::receiveMessage);
+        externalComponentPresenter.setFilterConsumer(this::receiveFilterRequest);
     }
 
     @Override
@@ -99,6 +103,8 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
 
     @Override
     protected void createVisualization() {
+        ExternalComponentMessage init = initMessage();
+        externalComponentPresenter.sendMessage(init);
         updateVisualization();
     }
 
@@ -115,7 +121,7 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
             }
         }
 
-        ExternalComponentMessage message = retrieveComponentMessage();
+        ExternalComponentMessage message = dataSetMessage();
         externalComponentPresenter.sendMessage(message);
 
         view.setSize(displayerSettings.getChartWidth(), displayerSettings.getChartHeight());
@@ -126,13 +132,16 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
         updateFilterStatus();
     }
 
-    private ExternalComponentMessage retrieveComponentMessage() {
-        Map<String, String> componentProperties = displayerSettings.getComponentProperties();
-        ExternalComponentMessage message = ExternalComponentMessage.create(componentProperties);
+    private ExternalComponentMessage dataSetMessage() {
+        Map<String, Object> componentProperties = new HashMap<>(displayerSettings.getComponentProperties());
         ExternalDataSet ds = ExternalDataSet.of(buildColumns(),
                                                 buildData(dataSet));
-        message.setProperty("dataSet", ds);
-        return message;
+        return messageHelper.newDataSetMessage(ds, componentProperties);
+    }
+
+    private ExternalComponentMessage initMessage() {
+        Map<String, Object> componentProperties = new HashMap<>(displayerSettings.getComponentProperties());
+        return messageHelper.newInitMessage(componentProperties);
     }
 
     private ExternalColumn[] buildColumns() {
@@ -159,6 +168,12 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
             result[i] = line;
         }
         return result;
+    }
+
+    @Override
+    protected void afterClose() {
+        super.afterClose();
+        externalComponentPresenter.destroy();
     }
 
     protected String columnValueToString(Object mightBeNull) {
@@ -209,10 +224,8 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
         }
     }
 
-    private void receiveMessage(ExternalComponentMessage message) {
-        Object filterProp = message.getProperty("filter");
-        if (displayerSettings.isFilterEnabled() && filterProp != null) {
-            ExternalFilterRequest filterRequest = Js.cast(filterProp);
+    private void receiveFilterRequest(ExternalFilterRequest filterRequest) {
+        if (displayerSettings.isFilterEnabled()) {
             if (filterRequest.isReset()) {
                 super.filterReset();
             } else {
