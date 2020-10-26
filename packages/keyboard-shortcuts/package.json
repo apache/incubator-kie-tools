@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/keyboard-shortcuts",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "",
   "license": "Apache-2.0",
   "files": [
@@ -11,8 +11,8 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kogito-tooling/channel-common-api": "0.7.1",
-    "@kogito-tooling/envelope-bus": "0.7.1"
+    "@kogito-tooling/channel-common-api": "0.7.2",
+    "@kogito-tooling/envelope-bus": "0.7.2"
   },
   "scripts": {
     "lint": "tslint -c ../../tslint.json 'src/**/*.{ts,tsx,js,jsx}'",
