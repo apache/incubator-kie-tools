@@ -63,11 +63,9 @@ export function GithubTokenModal(props: Props) {
 
   return (
     <Modal
-      data-testid={"github-token-modal"}
       variant={ModalVariant.small}
       isOpen={props.isOpen}
       onClose={props.onClose}
-      aria-label={"Set GitHub token modal"}
       title=""
       header={
         <>
@@ -93,7 +91,7 @@ export function GithubTokenModal(props: Props) {
               placeholder={i18n.githubTokenModal.footer.placeHolder}
               maxLength={GITHUB_OAUTH_TOKEN_SIZE}
               isDisabled={authenticated}
-              validated={!authenticated ? "error" : "default"}
+              validated={!!authenticated ? "error" : "default"}
               value={tokenToDisplay}
               onPaste={onPasteHandler}
               autoFocus={true}
@@ -128,8 +126,8 @@ export function GithubTokenModal(props: Props) {
           <b>
             <u>{i18n.terms.note.toUpperCase()}:</u>&nbsp;
           </b>
+          <I18nHtml>{i18n.githubTokenModal.body.note}</I18nHtml>
         </p>
-        <I18nHtml>{i18n.githubTokenModal.body.note}</I18nHtml>
       </>
     </Modal>
   );

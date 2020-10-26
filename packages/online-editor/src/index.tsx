@@ -84,16 +84,7 @@ function waitForEventWithFileData() {
 
 function openFileByUrl() {
   const filePath = urlParams.get("file")!;
-  if (githubService.isGist(filePath)) {
-    githubService
-      .fetchGistFile(filePath)
-      .then(content => openFile(filePath, Promise.resolve(content)))
-      .catch(error => {
-        showFetchError(
-          `Not able to open this Gist. If you have updated your Gist filename it can take a few seconds until the URL is available to be used.`
-        );
-      });
-  } else if (githubService.isGithub(filePath)) {
+  if (githubService.isGithub(filePath)) {
     githubService
       .fetchGithubFile(filePath)
       .then(response => {

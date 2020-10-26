@@ -45,15 +45,6 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
   editorPage: {
     alerts: {
       copy: string;
-      updateGist: string;
-      updateGistFilename: {
-        title: string;
-        message: string;
-        yourNewUrl: string;
-      };
-      invalidCurrentGist: string;
-      invalidGistFilename: string;
-      error: string;
       unsaved: {
         title: string;
         message: string;
@@ -65,11 +56,8 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
     sendChangesToGitHub: string;
     copySource: string;
     downloadSVG: string;
-    setGitHubToken: string;
     gistIt: string;
     fileActions: string;
-    updateGist: string;
-    updateGistTooltip: string;
   };
   githubTokenModal: {
     header: {
