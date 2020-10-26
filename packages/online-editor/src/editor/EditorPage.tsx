@@ -160,7 +160,9 @@ export function EditorPage(props: Props) {
           editor?.getStateControl().setSavedCommand();
           if (filename !== context.githubService.getCurrentGist()?.filename) {
             // FIXME: KOGITO-1202
-            setUpdateGistFilenameUrl(`${window.location.origin}/?file=${response}#/editor/${fileExtension}`);
+            setUpdateGistFilenameUrl(
+              `${window.location.origin}${window.location.pathname}?file=${response}#/editor/${fileExtension}`
+            );
             setAlert(Alerts.SUCCESS_UPDATE_GIST_FILENAME);
             return;
           }
