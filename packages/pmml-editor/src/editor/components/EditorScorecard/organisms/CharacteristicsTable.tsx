@@ -30,7 +30,7 @@ import "./CharacteristicsTable.scss";
 import { EmptyStateNoCharacteristics } from "./EmptyStateNoCharacteristics";
 
 export interface IndexedCharacteristic {
-  index: number;
+  index: number | undefined;
   characteristic: Characteristic;
 }
 

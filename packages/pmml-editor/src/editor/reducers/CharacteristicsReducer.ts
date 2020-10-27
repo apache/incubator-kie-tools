@@ -21,6 +21,9 @@ import { Reducer } from "react";
 interface CharacteristicsPayload {
   [Actions.Scorecard_AddCharacteristic]: {
     readonly modelIndex: number;
+    readonly name: string;
+    readonly reasonCode: string;
+    readonly baselineScore: number;
   };
   [Actions.Scorecard_DeleteCharacteristic]: {
     readonly modelIndex: number;
@@ -38,9 +41,9 @@ export const CharacteristicsReducer: HistoryAwareReducer<Characteristics, Charac
       case Actions.Scorecard_AddCharacteristic:
         return service.mutate(state, `models[${action.payload.modelIndex}].Characteristics`, draft => {
           draft.Characteristic.push({
-            name: undefined,
-            reasonCode: undefined,
-            baselineScore: undefined,
+            name: action.payload.name,
+            reasonCode: action.payload.reasonCode,
+            baselineScore: action.payload.baselineScore,
             Attribute: []
           });
         });

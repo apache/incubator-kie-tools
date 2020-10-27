@@ -20,12 +20,17 @@ import "./CharacteristicDefinition.scss";
 import { CharacteristicAttributesForm, CharacteristicGeneralForm } from "../molecules";
 import { IndexedCharacteristic } from "./CharacteristicsTable";
 import { ValidatedType } from "../../../types";
+import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 
-interface CharacteristicDefinitionProps {
+interface CharacteristicDefinition {
   characteristic: IndexedCharacteristic | undefined;
+}
+
+interface CharacteristicDefinitionProps extends CharacteristicDefinition {
   showCharacteristicPanel: boolean;
   hideCharacteristicPanel: () => void;
   validateCharacteristicName: (index: number | undefined, name: string | undefined) => boolean;
+  commit: (props: CharacteristicDefinition) => void;
 }
 
 export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) => {
@@ -52,7 +57,17 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
     setActiveTabKey(eventKey);
   };
 
-  const handleOKClick: MouseEventHandler<HTMLButtonElement> = event => {
+  const commitEdit = () => {
+    const _characteristic: Characteristic = Object.assign({}, characteristic?.characteristic, {
+      name: name.value,
+      baselineScore: baselineScore,
+      reasonCode: reasonCode
+    });
+    const _indexedCharacteristic: IndexedCharacteristic = {
+      index: characteristic?.index,
+      characteristic: _characteristic
+    };
+    props.commit({ characteristic: _indexedCharacteristic });
     hideCharacteristicPanel();
   };
 
@@ -92,17 +107,16 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
                     <Tab eventKey={0} title={<TabTitleText>General</TabTitleText>}>
                       <CharacteristicGeneralForm
                         index={characteristic?.index}
-                        name={name.value}
-                        isNameValid={name.valid}
-                        reasonCode={reasonCode}
-                        baselineScore={baselineScore}
+                        name={name}
                         setName={_name => {
                           setName({
                             value: _name,
                             valid: props.validateCharacteristicName(characteristic?.index, _name)
                           });
                         }}
+                        reasonCode={reasonCode}
                         setReasonCode={setReasonCode}
+                        baselineScore={baselineScore}
                         setBaselineScore={setBaselineScore}
                       />
                     </Tab>
@@ -116,7 +130,7 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
                 <PageSection variant="light">
                   <Split hasGutter={true}>
                     <SplitItem>
-                      <Button variant={"primary"} isDisabled={!name.valid} onClick={handleOKClick}>
+                      <Button variant={"primary"} isDisabled={!name.valid} onClick={e => commitEdit()}>
                         OK
                       </Button>
                     </SplitItem>

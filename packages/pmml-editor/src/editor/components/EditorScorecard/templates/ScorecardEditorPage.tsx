@@ -51,7 +51,14 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     return undefined;
   });
 
-  const onAddCharacteristic = useCallback(() => window.alert("Add Characteristic"), []);
+  const onAddCharacteristic = useCallback(() => {
+    setShowCharacteristicPanel(true);
+    setSelectedCharacteristic({
+      index: undefined,
+      characteristic: { name: undefined, baselineScore: undefined, reasonCode: undefined, Attribute: [] }
+    });
+  }, [characteristics]);
+
   const selectCharacteristic = useCallback(
     index => {
       setShowCharacteristicPanel(true);
@@ -59,6 +66,18 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
         index: index,
         characteristic: characteristics?.Characteristic[index] as Characteristic
       });
+    },
+    [characteristics]
+  );
+
+  const validateCharacteristicName = useCallback(
+    (index: number | undefined, name: string): boolean => {
+      if (name === undefined || name === "") {
+        return false;
+      }
+      const existing: Characteristic[] = characteristics?.Characteristic ?? [];
+      const matching = existing.filter((c, _index) => _index !== index && c.name === name);
+      return matching.length === 0;
     },
     [characteristics]
   );
@@ -83,21 +102,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     characteristics
   ]);
 
-  const validateCharacteristicName = useCallback(
-    (index: number | undefined, name: string): boolean => {
-      if (index === undefined) {
-        return false;
-      }
-      if (name === undefined || name === "") {
-        return false;
-      }
-      const existing: Characteristic[] = characteristics?.Characteristic ?? [];
-      const matching = existing.filter((c, _index) => _index !== index && c.name === name);
-      return matching.length === 0;
-    },
-    [characteristics]
-  );
-
   return (
     <div data-testid="editor-page" className={"editor"}>
       <CharacteristicDefinition
@@ -105,6 +109,30 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
         showCharacteristicPanel={showCharacteristicPanel}
         hideCharacteristicPanel={hideCharacteristicPanel}
         validateCharacteristicName={validateCharacteristicName}
+        commit={_props => {
+          if (_props.characteristic?.index === undefined) {
+            dispatch({
+              type: Actions.Scorecard_AddCharacteristic,
+              payload: {
+                modelIndex: props.modelIndex,
+                name: _props.characteristic?.characteristic.name,
+                reasonCode: _props.characteristic?.characteristic.reasonCode,
+                baselineScore: _props.characteristic?.characteristic.baselineScore
+              }
+            });
+          } else {
+            dispatch({
+              type: Actions.Scorecard_UpdateCharacteristic,
+              payload: {
+                modelIndex: props.modelIndex,
+                characteristicIndex: _props.characteristic?.index,
+                name: _props.characteristic?.characteristic.name,
+                reasonCode: _props.characteristic?.characteristic.reasonCode,
+                baselineScore: _props.characteristic?.characteristic.baselineScore
+              }
+            });
+          }
+        }}
       />
 
       <PageSection variant={PageSectionVariants.light} isFilled={false}>

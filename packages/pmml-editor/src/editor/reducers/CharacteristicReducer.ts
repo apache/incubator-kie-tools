@@ -36,7 +36,7 @@ export const CharacteristicReducer: HistoryAwareReducer<Characteristic[], Charac
   return (state: Characteristic[], action: CharacteristicActions) => {
     switch (action.type) {
       case Actions.Scorecard_UpdateCharacteristic:
-        return service.mutate(state, `models[${action.payload.modelIndex}].Characteristics.Characteristics`, draft => {
+        return service.mutate(state, `models[${action.payload.modelIndex}].Characteristics.Characteristic`, draft => {
           const characteristicIndex: number = action.payload.characteristicIndex;
           if (characteristicIndex >= 0 && characteristicIndex < draft.length) {
             draft[characteristicIndex] = {

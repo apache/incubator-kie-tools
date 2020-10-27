@@ -16,15 +16,16 @@
 import * as React from "react";
 import { Form, FormGroup, PageSection, TextInput } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
+import { ValidatedType } from "../../../types";
+import { useEffect, useState } from "react";
 
 interface CharacteristicGeneralFormProps {
   index: number | undefined;
-  name: string | undefined;
-  isNameValid: boolean;
-  reasonCode: string | undefined;
-  baselineScore: number | undefined;
+  name: ValidatedType<string | undefined>;
   setName: (name: string) => void;
+  reasonCode: string | undefined;
   setReasonCode: (reasonCode: string) => void;
+  baselineScore: number | undefined;
   setBaselineScore: (baselineScore: number | undefined) => void;
 }
 
@@ -40,7 +41,7 @@ const toNumber = (value: string): number | undefined => {
 };
 
 export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps) => {
-  const { name, isNameValid, reasonCode, baselineScore, setName, setReasonCode, setBaselineScore } = props;
+  const { name, reasonCode, baselineScore, setName, setReasonCode, setBaselineScore } = props;
 
   return (
     <PageSection>
@@ -51,7 +52,7 @@ export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps)
           helperText="Please provide a name for the Characteristic."
           helperTextInvalid="Name must be unique and present"
           helperTextInvalidIcon={<ExclamationCircleIcon />}
-          validated={isNameValid ? "default" : "error"}
+          validated={name.valid ? "default" : "error"}
           isRequired={true}
         >
           <TextInput
@@ -59,8 +60,8 @@ export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps)
             id="characteristic-form-name"
             name="characteristic-form-name"
             aria-describedby="characteristic-form-name-helper"
-            value={name}
-            validated={isNameValid ? "default" : "error"}
+            value={name.value ?? ""}
+            validated={name.valid ? "default" : "error"}
             onChange={e => setName(e)}
           />
         </FormGroup>
@@ -74,7 +75,7 @@ export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps)
             id="characteristic-form-reason-code"
             name="characteristic-form-reason-code"
             aria-describedby="characteristic-form-reason-code-helper"
-            value={reasonCode}
+            value={reasonCode ?? ""}
             onChange={e => setReasonCode(e)}
           />
         </FormGroup>
@@ -88,7 +89,7 @@ export const CharacteristicGeneralForm = (props: CharacteristicGeneralFormProps)
             id="characteristic-form-baseline-score"
             name="characteristic-form-baseline-score"
             aria-describedby="characteristic-form-baseline-score-helper"
-            value={baselineScore}
+            value={baselineScore ?? ""}
             onChange={e => setBaselineScore(toNumber(e))}
           />
         </FormGroup>
