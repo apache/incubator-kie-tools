@@ -13,9 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@import "~@patternfly/patternfly/patternfly.css";
 
-export * from "./CharacteristicsToolbar";
-export * from "./CharacteristicGeneralForm";
-export * from "./CharacteristicAttributesForm";
-export * from "./EmptyStateNoAttributes";
-export * from "./EmptyStateNoCharacteristics";
+.attributes {
+
+  &__header {
+
+    border-top: none;
+    font-weight: bold;
+    outline: none;
+
+    &__row {
+      border-bottom: none;
+    }
+  }
+
+  &__list-item {
+    outline: none;
+  }
+
+}

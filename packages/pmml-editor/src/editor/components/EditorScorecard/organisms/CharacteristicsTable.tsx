@@ -19,6 +19,7 @@ import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import {
   Button,
   DataList,
+  DataListAction,
   DataListCell,
   DataListItem,
   DataListItemCells,
@@ -27,7 +28,7 @@ import {
 } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTable.scss";
-import { EmptyStateNoCharacteristics } from "./EmptyStateNoCharacteristics";
+import { EmptyStateNoCharacteristics } from "../molecules";
 
 export interface IndexedCharacteristic {
   index: number | undefined;
@@ -36,14 +37,13 @@ export interface IndexedCharacteristic {
 
 interface CharacteristicsTableProps {
   characteristics: IndexedCharacteristic[];
-  selectedCharacteristic: IndexedCharacteristic | undefined;
   onRowClick: (index: number) => void;
   onRowDelete: (index: number) => void;
   onAddCharacteristic: () => void;
 }
 
 export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
-  const { characteristics, selectedCharacteristic, onRowClick, onRowDelete, onAddCharacteristic } = props;
+  const { characteristics, onRowClick, onRowDelete, onAddCharacteristic } = props;
 
   const [selectedDataListItemId, setSelectedDataListItemId] = useState("");
 
@@ -67,21 +67,30 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
           <DataListItemRow>
             <DataListItemCells
               dataListCells={[
-                <DataListCell key="0">
+                <DataListCell key="0" width={2}>
                   <div>Name</div>
                 </DataListCell>,
-                <DataListCell key="1">
+                <DataListCell key="1" width={2}>
                   <div>Attributes</div>
                 </DataListCell>,
-                <DataListCell key="2">
+                <DataListCell key="2" width={2}>
                   <div>Reason Code</div>
                 </DataListCell>,
-                <DataListCell key="3">
+                <DataListCell key="3" width={2}>
                   <div>Baseline Score</div>
                 </DataListCell>,
-                <DataListCell key="4">
-                  <div>&nbsp;</div>
-                </DataListCell>
+                <DataListAction
+                  id="delete-characteristic-header"
+                  aria-label="delete header"
+                  aria-labelledby="delete-characteristic-header"
+                  key="4"
+                  width={1}
+                >
+                  {/*This is a hack to ensure the column layout is correct*/}
+                  <Button variant="link" icon={<TrashIcon />} isDisabled={true} style={{ visibility: "hidden" }}>
+                    &nbsp;
+                  </Button>
+                </DataListAction>
               ]}
             />
           </DataListItemRow>
@@ -104,23 +113,29 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
               <DataListItemRow>
                 <DataListItemCells
                   dataListCells={[
-                    <DataListCell key="0">
+                    <DataListCell key="0" width={2}>
                       <div>{c.name}</div>
                     </DataListCell>,
-                    <DataListCell key="1">
+                    <DataListCell key="1" width={2}>
                       <Label>{c.Attribute.length}</Label>
                     </DataListCell>,
-                    <DataListCell key="2">
+                    <DataListCell key="2" width={2}>
                       <div>{c.reasonCode}</div>
                     </DataListCell>,
-                    <DataListCell key="3">
+                    <DataListCell key="3" width={2}>
                       <div>{c.baselineScore}</div>
                     </DataListCell>,
-                    <DataListCell key="4">
+                    <DataListAction
+                      id="delete-characteristic"
+                      aria-label="delete"
+                      aria-labelledby="delete-characteristic"
+                      key="4"
+                      width={1}
+                    >
                       <Button variant="link" icon={<TrashIcon />} onClick={e => onDeleteCharacteristic(e, index)}>
                         &nbsp;
                       </Button>
-                    </DataListCell>
+                    </DataListAction>
                   ]}
                 />
               </DataListItemRow>

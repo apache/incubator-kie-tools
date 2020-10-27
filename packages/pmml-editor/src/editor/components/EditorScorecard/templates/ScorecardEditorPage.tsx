@@ -173,7 +173,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
           <CharacteristicsToolbar onFilter={setFilter} onAddCharacteristic={onAddCharacteristic} />
           <CharacteristicsTable
             characteristics={filteredCharacteristics}
-            selectedCharacteristic={selectedCharacteristic}
             onRowClick={index => selectCharacteristic(index)}
             onRowDelete={index => {
               if (window.confirm(`Delete Characteristic "${index}"?`)) {

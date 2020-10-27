@@ -17,7 +17,6 @@ import * as React from "react";
 import { Form, FormGroup, PageSection, TextInput } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { ValidatedType } from "../../../types";
-import { useEffect, useState } from "react";
 
 interface CharacteristicGeneralFormProps {
   index: number | undefined;

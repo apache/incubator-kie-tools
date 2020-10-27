@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MouseEventHandler, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Button,
@@ -121,7 +121,12 @@ export const CharacteristicDefinition = (props: CharacteristicDefinitionProps) =
                       />
                     </Tab>
                     <Tab eventKey={1} title={<TabTitleText>Attributes</TabTitleText>}>
-                      <CharacteristicAttributesForm index={characteristic?.index} />
+                      <CharacteristicAttributesForm
+                        index={characteristic?.index}
+                        attributes={characteristic?.characteristic.Attribute ?? []}
+                        onAddAttribute={() => window.alert("Add Attribute")}
+                        onRowDelete={index => window.alert("Delete Attribute")}
+                      />
                     </Tab>
                   </Tabs>
                 </PageSection>

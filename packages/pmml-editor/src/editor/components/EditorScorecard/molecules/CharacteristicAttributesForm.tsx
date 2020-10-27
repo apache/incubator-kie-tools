@@ -14,18 +14,113 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { PageSection } from "@patternfly/react-core";
+import { useCallback } from "react";
+import {
+  Button,
+  DataList,
+  DataListAction,
+  DataListCell,
+  DataListItem,
+  DataListItemCells,
+  DataListItemRow
+} from "@patternfly/react-core";
+import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
+import { EmptyStateNoAttributes } from ".";
+import "./CharacteristicAttributesForm.scss";
+
+import { TrashIcon } from "@patternfly/react-icons";
 
 interface CharacteristicAttributesFormProps {
   index: number | undefined;
+  attributes: Attribute[];
+  onRowDelete: (index: number) => void;
+  onAddAttribute: () => void;
 }
 
 export const CharacteristicAttributesForm = (props: CharacteristicAttributesFormProps) => {
-  const { index } = props;
+  const { attributes, onAddAttribute, onRowDelete } = props;
+
+  const onDeleteAttribute = useCallback(
+    (event, index) => {
+      event.stopPropagation();
+      onRowDelete(index);
+    },
+    [attributes]
+  );
 
   return (
-    <PageSection>
-      <div>More stuff to follow</div>
-    </PageSection>
+    <div>
+      <DataList className="attributes__header" aria-label="attributes header">
+        <DataListItem className="attributes__header__row" key={"none"} aria-labelledby="attributes-header">
+          <DataListItemRow>
+            <DataListItemCells
+              dataListCells={[
+                <DataListCell key="0" width={4}>
+                  <div>Attribute</div>
+                </DataListCell>,
+                <DataListCell key="1" width={2}>
+                  <div>Partial Score</div>
+                </DataListCell>,
+                <DataListCell key="2" width={2}>
+                  <div>Reason Code</div>
+                </DataListCell>,
+                <DataListAction
+                  id="delete-attribute-header"
+                  aria-label="delete header"
+                  aria-labelledby="delete-attribute-header"
+                  key="3"
+                  width={1}
+                >
+                  {/*This is a hack to ensure the column layout is correct*/}
+                  <Button variant="link" icon={<TrashIcon />} isDisabled={true} style={{ visibility: "hidden" }}>
+                    &nbsp;
+                  </Button>
+                </DataListAction>
+              ]}
+            />
+          </DataListItemRow>
+        </DataListItem>
+      </DataList>
+      <DataList aria-label="attributes list">
+        {attributes.map((attribute, index) => {
+          return (
+            <DataListItem
+              key={index}
+              id={index.toString()}
+              className="attributes__list-item"
+              aria-labelledby={"attribute-" + index}
+            >
+              <DataListItemRow>
+                <DataListItemCells
+                  dataListCells={[
+                    <DataListCell key="0" width={4}>
+                      <div>{JSON.stringify(attribute.predicate, undefined, 2)}</div>
+                    </DataListCell>,
+                    <DataListCell key="1" width={2}>
+                      <div>{attribute.partialScore}</div>
+                    </DataListCell>,
+                    <DataListCell key="2" width={2}>
+                      <div>{attribute.reasonCode}</div>
+                    </DataListCell>,
+                    <DataListAction
+                      id="delete-attribute"
+                      aria-label="delete"
+                      aria-labelledby="delete-attribute"
+                      key="4"
+                      width={1}
+                    >
+                      <Button variant="link" icon={<TrashIcon />} onClick={e => onDeleteAttribute(e, index)}>
+                        &nbsp;
+                      </Button>
+                    </DataListAction>
+                  ]}
+                />
+              </DataListItemRow>
+            </DataListItem>
+          );
+        })}
+      </DataList>
+      {attributes.length === 0 && <EmptyStateNoAttributes createAttribute={onAddAttribute} />}
+    </div>
   );
 };
