@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.backend.service.diagram.marshalling.tasks;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import org.junit.Test;
@@ -31,6 +32,8 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
+import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -39,6 +42,7 @@ import static org.junit.Assert.assertTrue;
 public class UserTaskTest extends TaskTest<UserTask> {
 
     private static final String BPMN_TASK_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/userTasks.bpmn";
+    private static final String MULTIPLE_DEFINITIONS_BPMN_TASK_FILE_PATH = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/multipleDefinitionsUserTask.bpmn";
 
     private static final String EMPTY_TOP_LEVEL_TASK_ID = "B740EDEB-E4EE-472C-BEF2-E3C01A7B1949";
     private static final String FILLED_TOP_LEVEL_TASK_JAVA_ID = "7799D66F-5754-4850-AF35-D60E78105D88";
@@ -100,6 +104,40 @@ public class UserTaskTest extends TaskTest<UserTask> {
         ProcessVariables processVariables = processData.getProcessVariables();
         DeclarationList declarationList = DeclarationList.fromString(processVariables.getValue());
         assertTrue(declarationList.getDeclarations().isEmpty());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testMultipleDefinitions() throws Exception {
+        super.init();
+
+        Diagram<Graph, Metadata> diagramBefore = unmarshall(marshaller, MULTIPLE_DEFINITIONS_BPMN_TASK_FILE_PATH);
+        String beforeReSave = getAssignmentsInfoValueOfTheFirstUserTask(diagramBefore.getGraph().nodes());
+
+        Diagram<Graph, Metadata> diagramAfter = unmarshall(marshaller, new ByteArrayInputStream(marshaller.marshall(diagramBefore).getBytes()));
+        String afterReSave = getAssignmentsInfoValueOfTheFirstUserTask(diagramAfter.getGraph().nodes());
+
+        String declaration = "inputVar:String";
+        String association = "[dout]inputVar->processVar";
+
+        assertEquals(2, countMatches(beforeReSave, declaration));
+        assertEquals(2, countMatches(beforeReSave, association));
+        assertEquals(1, countMatches(afterReSave, declaration));
+        assertEquals(1, countMatches(afterReSave, association));
+    }
+
+    private int countMatches(String str, String subString) {
+        return (str.length() - str.replace(subString, "").length()) / subString.length();
+    }
+
+    private String getAssignmentsInfoValueOfTheFirstUserTask(Iterable nodes) {
+        for (Object node : nodes) {
+            if (((ViewImpl) ((NodeImpl) node).getContent()).getDefinition() instanceof UserTask) {
+                return ((UserTask) (((ViewImpl) ((NodeImpl) node).getContent()).getDefinition())).getExecutionSet().getAssignmentsinfo().getValue();
+            }
+        }
+
+        return "";
     }
 
     @Test

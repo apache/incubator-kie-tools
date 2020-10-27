@@ -80,6 +80,25 @@ public class AssociationDeclaration {
                         : (source + type.op() + target));
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof AssociationDeclaration)) {
+            return false;
+        }
+
+        AssociationDeclaration otherDeclaration = (AssociationDeclaration) other;
+
+        return Objects.equals(type, otherDeclaration.type)
+                && Objects.equals(source, otherDeclaration.source)
+                && Objects.equals(target, otherDeclaration.target)
+                && Objects.equals(direction, otherDeclaration.direction);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, source, target, direction);
+    }
+
     public enum Direction {
         Input("[din]"),
         Output("[dout]");

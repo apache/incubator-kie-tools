@@ -123,24 +123,24 @@ public class ParsedAssignmentsInfoTest {
         InitializedVariable.InitializedOutputVariable initializedOutputVariable =
                 initializedOutputVariables.get(0);
 
-        DataOutput dataOuput = initializedOutputVariable.getDataOutput();
+        DataOutput dataOutput = initializedOutputVariable.getDataOutput();
 
         DataOutputAssociation dataOutputAssociation = initializedOutputVariable.getDataOutputAssociation();
         List<ItemAwareElement> sourceRef = dataOutputAssociation.getSourceRef();
         DataOutput source = (DataOutput) sourceRef.get(0);
         PropertyImpl target = (PropertyImpl) dataOutputAssociation.getTargetRef();
 
-        String dataOuputID = dataOuput.getId();
-        String dataOutputName = dataOuput.getName();
+        String dataOutputID = dataOutput.getId();
+        String dataOutputName = dataOutput.getName();
         String dataOutputAssociationID = source.getName();
-        String dataOutputAssocationValue = target.getId();
+        String dataOutputAssociationValue = target.getId();
         String initVarID = initializedOutputVariable.getIdentifier();
         String initVarType = initializedOutputVariable.getType();
 
-        assertEquals(dataOuputID, DATA_OUTPUT_ID);
+        assertEquals(dataOutputID, DATA_OUTPUT_ID);
         assertEquals(dataOutputName, DATA_OUTPUT_NAME);
         assertEquals(dataOutputAssociationID, DATA_OUTPUT_ASSOCIATION_ID);
-        assertEquals(dataOutputAssocationValue, DATA_OUTPUT_ASSOCIATION_VALUE);
+        assertEquals(dataOutputAssociationValue, DATA_OUTPUT_ASSOCIATION_VALUE);
         assertEquals(initVarID, INIT_OUTPUT_VAR_ID);
         assertEquals(initVarType, INIT_OUTPUT_VAR_TYPE);
     }
@@ -159,14 +159,14 @@ public class ParsedAssignmentsInfoTest {
 
         InitializedVariable.InitializedOutputVariable initializedOutputVariable =
                 initializedOutputVariables.get(0);
-        DataOutput dataOuput = initializedOutputVariable.getDataOutput();
+        DataOutput dataOutput = initializedOutputVariable.getDataOutput();
         DataOutputAssociation dataOutputAssociation = initializedOutputVariable.getDataOutputAssociation();
-        String dataOuputID = dataOuput.getId();
-        String dataOutputName = dataOuput.getName();
+        String dataOutputID = dataOutput.getId();
+        String dataOutputName = dataOutput.getName();
         String initVarID = initializedOutputVariable.getIdentifier();
 
         assertNull(dataOutputAssociation);
-        assertEquals(dataOuputID, DATA_OUTPUT_ID);
+        assertEquals(dataOutputID, DATA_OUTPUT_ID);
         assertEquals(dataOutputName, DATA_OUTPUT_NAME);
         assertEquals(initVarID, INIT_OUTPUT_VAR_ID);
     }
@@ -194,24 +194,24 @@ public class ParsedAssignmentsInfoTest {
         InitializedVariable.InitializedOutputVariable initializedOutputVariable1 =
                 initializedOutputVariables.get(0);
 
-        DataOutput dataOuput1 = initializedOutputVariable1.getDataOutput();
+        DataOutput dataOutput1 = initializedOutputVariable1.getDataOutput();
 
         DataOutputAssociation dataOutputAssociation1 = initializedOutputVariable1.getDataOutputAssociation();
         List<ItemAwareElement> sourceRef1 = dataOutputAssociation1.getSourceRef();
         DataOutput source1 = (DataOutput) sourceRef1.get(0);
         PropertyImpl target1 = (PropertyImpl) dataOutputAssociation1.getTargetRef();
 
-        String dataOuputID1 = dataOuput1.getId();
-        String dataOutputName1 = dataOuput1.getName();
+        String dataOutputID1 = dataOutput1.getId();
+        String dataOutputName1 = dataOutput1.getName();
         String dataOutputAssociationID1 = source1.getName();
-        String dataOutputAssocationValue1 = target1.getId();
+        String dataOutputAssociationValue1 = target1.getId();
         String initVarID1 = initializedOutputVariable1.getIdentifier();
         String initVarType1 = initializedOutputVariable1.getType();
 
-        assertEquals(dataOuputID1, DATA_OUTPUT_ID);
+        assertEquals(dataOutputID1, DATA_OUTPUT_ID);
         assertEquals(dataOutputName1, DATA_OUTPUT_NAME);
         assertEquals(dataOutputAssociationID1, DATA_OUTPUT_ASSOCIATION_ID);
-        assertEquals(dataOutputAssocationValue1, DATA_OUTPUT_ASSOCIATION_VALUE_1);
+        assertEquals(dataOutputAssociationValue1, DATA_OUTPUT_ASSOCIATION_VALUE_1);
         assertEquals(initVarID1, INIT_OUTPUT_VAR_ID);
         assertEquals(initVarType1, INIT_OUTPUT_VAR_TYPE);
 
@@ -219,43 +219,43 @@ public class ParsedAssignmentsInfoTest {
         InitializedVariable.InitializedOutputVariable initializedOutputVariable2 =
                 initializedOutputVariables.get(1);
 
-        DataOutput dataOuput2 = initializedOutputVariable2.getDataOutput();
+        DataOutput dataOutput2 = initializedOutputVariable2.getDataOutput();
 
         DataOutputAssociation dataOutputAssociation2 = initializedOutputVariable2.getDataOutputAssociation();
         List<ItemAwareElement> sourceRef2 = dataOutputAssociation2.getSourceRef();
         DataOutput source2 = (DataOutput) sourceRef2.get(0);
         PropertyImpl target2 = (PropertyImpl) dataOutputAssociation2.getTargetRef();
 
-        String dataOuputID2 = dataOuput2.getId();
-        String dataOutputName2 = dataOuput2.getName();
+        String dataOutputID2 = dataOutput2.getId();
+        String dataOutputName2 = dataOutput2.getName();
         String dataOutputAssociationID2 = source2.getName();
-        String dataOutputAssocationValue2 = target2.getId();
+        String dataOutputAssociationValue2 = target2.getId();
         String initVarID2 = initializedOutputVariable2.getIdentifier();
         String initVarType2 = initializedOutputVariable2.getType();
 
-        assertEquals(dataOuputID2, DATA_OUTPUT_ID);
+        assertEquals(dataOutputID2, DATA_OUTPUT_ID);
         assertEquals(dataOutputName2, DATA_OUTPUT_NAME);
         assertEquals(dataOutputAssociationID2, DATA_OUTPUT_ASSOCIATION_ID);
-        assertEquals(dataOutputAssocationValue2, DATA_OUTPUT_ASSOCIATION_VALUE_2);
+        assertEquals(dataOutputAssociationValue2, DATA_OUTPUT_ASSOCIATION_VALUE_2);
         assertEquals(initVarID2, INIT_OUTPUT_VAR_ID);
         assertEquals(initVarType2, INIT_OUTPUT_VAR_TYPE);
     }
 
     @Test
-    public void fromString() {
+    public void testFromString() {
         String original =
                 "|input1:String,input2:String||output1:String,output2:String|[din]pv1->input1,[din]pv2->input2,[dout]output1->pv2,[dout]output2->pv2";
-        assertParseUnparse(original);
+        testAssertParseUnparse(original);
     }
 
     @Test
-    public void fromString2() {
+    public void testFromString2() {
         String original =
                 "||IntermediateMessageEventCatchingOutputVar1:String||[dout]IntermediateMessageEventCatchingOutputVar1->var1";
-        assertParseUnparse(original);
+        testAssertParseUnparse(original);
     }
 
-    private void assertParseUnparse(String original) {
+    private void testAssertParseUnparse(String original) {
         ParsedAssignmentsInfo assignmentsInfo =
                 ParsedAssignmentsInfo.fromString(original);
 

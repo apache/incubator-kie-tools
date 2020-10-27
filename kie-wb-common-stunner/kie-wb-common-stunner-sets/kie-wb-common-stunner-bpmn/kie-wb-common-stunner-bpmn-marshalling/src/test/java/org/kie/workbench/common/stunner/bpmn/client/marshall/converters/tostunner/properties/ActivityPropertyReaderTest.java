@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunn
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.bpmn2.Activity;
@@ -30,7 +31,9 @@ import org.eclipse.bpmn2.ExtensionAttributeValue;
 import org.eclipse.bpmn2.InputOutputSpecification;
 import org.eclipse.bpmn2.ItemAwareElement;
 import org.eclipse.bpmn2.ItemDefinition;
+import org.eclipse.bpmn2.OutputSet;
 import org.eclipse.bpmn2.Property;
+import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.di.BPMNDiagram;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
@@ -42,6 +45,9 @@ import org.jboss.drools.OnExitScriptType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.ActivityPropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.FlatVariableScope;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.DefinitionResolver;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
@@ -157,6 +163,19 @@ public class ActivityPropertyReaderTest {
 
         AssignmentsInfo result = reader.getAssignmentsInfo();
         assertEquals("||||", result.getValue());
+    }
+
+
+    @Test
+    public void testDuplicatedOutputsShouldBeRemoved() {
+        Task task = Factories.bpmn2.createTask();
+        ActivityPropertyWriter activityPropertyWriter =
+                new ActivityPropertyWriter(task, new FlatVariableScope(), new HashSet<>());
+        activityPropertyWriter.setAssignmentsInfo(new AssignmentsInfo(
+                "|NotCompletedNotify:Object,Skippable:Object||outcome_:String,outcome_:String,outcome_:String,outcome_:String,assignedUser_:String,email_:String,emailBody_:String|[dout]outcome_->outcome,[dout]outcome_->firResult,[dout]outcome_->outcome,[dout]outcome_->firResult,[dout]assignedUser_->assignedUser,[dout]email_->email,[dout]emailBody_->emailBody"
+        ));
+        List<OutputSet> outputSets = task.getIoSpecification().getOutputSets();
+        assertEquals(5, outputSets.get(0).getDataOutputRefs().size());
     }
 
     private static void assertScript(String expectedLanguage, String expectedScript, ScriptTypeListValue value) {

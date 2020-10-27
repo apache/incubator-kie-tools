@@ -19,8 +19,10 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customp
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.AssociationDeclaration.Direction.Input;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.AssociationDeclaration.Direction.Output;
+import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.AssociationDeclaration.Type.FromTo;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.AssociationDeclaration.Type.SourceTarget;
 
 public class AssociationDeclarationTest {
@@ -74,5 +76,34 @@ public class AssociationDeclarationTest {
         assertEquals(associationDeclaration.getTarget(), "");
         assertEquals(associationDeclaration.getType(), SourceTarget);
         assertEquals(associationDeclaration.getDirection(), Output);
+    }
+
+    @Test
+    public void testEquals() {
+        String source = "source";
+        String target = "target";
+        AssociationDeclaration declaration = new AssociationDeclaration(Input, FromTo, source, target);
+        assertFalse(declaration.equals(source));
+
+        AssociationDeclaration declaration2 = new AssociationDeclaration(Input, FromTo, source, target);
+        assertEquals(declaration, declaration2);
+
+        declaration2.setDirection(Output);
+        assertFalse(declaration.equals(declaration2));
+
+        declaration2.setDirection(Input);
+        assertEquals(declaration, declaration2);
+        declaration2.setType(SourceTarget);
+        assertFalse(declaration.equals(declaration2));
+
+        declaration2.setType(FromTo);
+        assertEquals(declaration, declaration2);
+        declaration2.setTarget(source);
+        assertFalse(declaration.equals(declaration2));
+
+        declaration2.setTarget(target);
+        assertEquals(declaration, declaration2);
+        declaration2.setSource(target);
+        assertFalse(declaration.equals(declaration2));
     }
 }

@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import org.kie.workbench.common.stunner.core.util.StringUtils;
+
 public class DeclarationList {
 
     private final List<VariableDeclaration> declarations;
@@ -38,7 +40,7 @@ public class DeclarationList {
     public static DeclarationList fromString(String encoded) {
         return new DeclarationList(
                 Arrays.stream(encoded.split(","))
-                        .filter(s -> !s.isEmpty()) // "" makes no sense
+                        .filter(StringUtils::nonEmpty) // "" makes no sense
                         .map(VariableDeclaration::fromString)
                         .collect(Collectors.toList()));
     }

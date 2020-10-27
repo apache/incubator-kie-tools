@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.bpmn.backend.converters.customproperties;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -201,31 +202,48 @@ public class ParsedAssignmentsInfo {
 
     public List<InitializedOutputVariable> createInitializedOutputVariables(String parentId, VariableScope variableScope, Set<DataObject> dataObjects) {
         List<InitializedOutputVariable> initializedOutputVariables = new ArrayList<>();
-
+        Set<String> processedVariables = new HashSet<>();
         getOutputs()
                 .getDeclarations()
                 .forEach(varDecl -> {
-                    if (associations.lookupOutputs(varDecl.getTypedIdentifier().getName()).isEmpty()) {
-                        initializedOutputVariables.add(InitializedVariable.outputOf(
-                                parentId,
-                                variableScope,
-                                varDecl,
-                                null,
-                                dataObjects));
+                    String varName = varDecl.getTypedIdentifier().getName();
+
+                    if (processedVariables.contains(varName)) {
+                        return;
+                    }
+                    processedVariables.add(varName);
+
+                    List<AssociationDeclaration> associationDeclarations = associations.lookupOutputs(varName);
+                    if (associationDeclarations.isEmpty()) {
+                        addUnassociatedVariable(parentId, variableScope, dataObjects, initializedOutputVariables, varDecl);
                     } else {
-                        initializedOutputVariables.addAll(associations.lookupOutputs(varDecl.getTypedIdentifier().getName())
-                                                                  .stream()
-                                                                  .map(outputDec -> InitializedVariable.outputOf(
-                                                                          parentId,
-                                                                          variableScope,
-                                                                          getOutputs().lookup(outputDec.getSource().replace(" ", "-")),
-                                                                          outputDec,
-                                                                          dataObjects))
-                                                                  .collect(Collectors.toList()));
+                        addVariable(parentId, variableScope, dataObjects, initializedOutputVariables, associationDeclarations);
                     }
                 });
 
         return initializedOutputVariables;
+    }
+
+    private void addVariable(String parentId, VariableScope variableScope, Set<DataObject> dataObjects, List<InitializedOutputVariable> initializedOutputVariables, List<AssociationDeclaration> declarations) {
+        initializedOutputVariables.addAll(declarations
+                                                  .stream()
+                                                  .distinct()
+                                                  .map(outputDec -> InitializedVariable.outputOf(
+                                                          parentId,
+                                                          variableScope,
+                                                          getOutputs().lookup(outputDec.getSource().replace(" ", "-")),
+                                                          outputDec,
+                                                          dataObjects))
+                                                  .collect(Collectors.toList()));
+    }
+
+    private void addUnassociatedVariable(String parentId, VariableScope variableScope, Set<DataObject> dataObjects, List<InitializedOutputVariable> initializedOutputVariables, VariableDeclaration varDecl) {
+        initializedOutputVariables.add(InitializedVariable.outputOf(
+                parentId,
+                variableScope,
+                varDecl,
+                null,
+                dataObjects));
     }
 
     public boolean isEmpty() {
