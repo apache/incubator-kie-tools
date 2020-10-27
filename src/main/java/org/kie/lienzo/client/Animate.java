@@ -226,23 +226,12 @@ public class Animate extends BaseExample implements Example
 
             layer.add(c);
         }
-        final Layer space = new Layer();
 
-        space.add(sun);
+        layer.add(sun);
 
-        space.add(earth);
+        layer.add(earth);
 
-        space.add(moon);
-
-        panel.add(space);
-
-//        getLienzoPanel().add(layer);
-//
-//        getLienzoPanel().add(space);
-//
-//        getLienzoPanel().setBackgroundLayer(getBackgroundLayer());
-//
-//        getWorkingContainer().add(getLienzoPanel());
+        layer.add(moon);
     }
 
     private Group m_shadey = null;
