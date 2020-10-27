@@ -23,9 +23,7 @@ Execution and demonstration of the various Stunner-based components can be achie
 
   - [**Stunner BPMN Kogito Showcase**](./kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/README.md) The lightest and fastest one. Just packaged as a client side standalone application, no backend services at all 
   
-  - [**Stunner Standalone Showcase**](./kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-standalone/README.md) focuses on presenting basic UberFire (Appformer)/Errai components, such as Process Designer, skipping over the more involved & resource-intensive integration of KIE Workbench/Library and Guvnor project components.
-
-  - [**Stunner Project Showcase**](./kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project/README.md) is built atop the KIE Workbench, Commons, Guvnor and Library components. This more complex showcase demonstrates integration with different KIE Workbench assets and editors. However, for day-to-day development, it is strongly suggested that the Standalone Showcase be utilized over this more complex showcase when working with Stunner components.
+  - [**Stunner BPMN Business Central Showcase**](./kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-project-showcase/README.md) is built atop the KIE Workbench, Commons, Guvnor and Library components. This more complex showcase demonstrates integration with different KIE Workbench assets and editors. However, for day-to-day development, it is strongly suggested that the Kogito Standalone Showcase be utilized over this more complex showcase when working with Stunner components.
 
 PR process
 -----------

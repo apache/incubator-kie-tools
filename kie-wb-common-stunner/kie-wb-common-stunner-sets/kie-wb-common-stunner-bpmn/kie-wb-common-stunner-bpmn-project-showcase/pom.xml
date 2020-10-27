@@ -21,16 +21,16 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>kie-wb-common-stunner-showcase</artifactId>
+    <artifactId>kie-wb-common-stunner-bpmn</artifactId>
     <groupId>org.kie.workbench.stunner</groupId>
     <version>7.46.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kie-wb-common-stunner-showcase-project</artifactId>
+  <artifactId>kie-wb-common-stunner-bpmn-project-showcase</artifactId>
   <packaging>war</packaging>
 
-  <name>Kie Workbench - Common - Stunner - Project Showcase</name>
-  <description>Kie Workbench - Common - Stunner - Project Showcase</description>
+  <name>Kie Workbench - Common - Stunner - BPMN Definition Set - Project integration - Showcase</name>
+  <description>Kie Workbench - Common - Stunner - BPMN Definition Set - Project integration - Showcase</description>
 
   <properties>
     <!-- Add the absolute path for $JBOSS_HOME below to manage another instance -->

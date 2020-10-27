@@ -1,7 +1,5 @@
-Stunner Showcase - Project
-==========================
-
-Stunner Showcase built on top of KIE workbench, commons and guvnor services and screens. It shows the integration with different assets and editors for the KIE workbench with Stunner.                                            
+BPMN Editor Showcase on Business Central 
+========================================
 
 Running the application
 -----------------------
@@ -20,12 +18,12 @@ Disadvantages:
 
 To compile showcase project with source map execute following commands:
     
-    cd kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project
+    cd kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-project-showcase
     mvn clean package -Psourcemaps
 
 **SuperDevMove - Running from command line**                                          
 
-    cd kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project
+    cd kie-wb-common/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-project-showcase
     mvn clean gwt:run
 
 **SuperDevMove - Running from IntelliJ IDEA**                                          
@@ -36,7 +34,7 @@ To compile showcase project with source map execute following commands:
   - *Type*: GWT configuration                  
   - *Name*: Stunner Showcase Project                     
   - *Use SDM*: true                  
-  - *Module*: stunner-showcase-project             
+  - *Module*: stunner-bpmn-project-showcase             
   - *GWT Modules to load*: org.kie.workbench.common.stunner.project.FastCompiledStunnerProjectShowcase             
   - *VM options*: 
         
@@ -44,8 +42,8 @@ To compile showcase project with source map execute following commands:
         -Xms1g
         -Xss1M
         -XX:CompileThreshold=7000
-        -Derrai.jboss.home=$PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project/target/wildfly-14.0.1.Final
-        -Derrai.marshalling.server.classOutput=$PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project/target
+        -Derrai.jboss.home=$PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-project-showcase/target/wildfly-14.0.1.Final
+        -Derrai.marshalling.server.classOutput=$PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-project-showcase/target
         -Derrai.dynamic_validation.enabled=true
                       
   - *Dev mode parameters*: 
@@ -57,18 +55,10 @@ To compile showcase project with source map execute following commands:
   - On before launch section - Add a new "Run Maven Goal" BEFORE the existing "Make" item as:                
     - *Working directory*: 
         
-            $PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-showcase/kie-wb-common-stunner-showcase-project
+            $PATH_OF_YOUR_CLONED_KIE_WB_COMMON_REPO/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-project-showcase
                           
     - *Goal*: 
         
             clean process-resources                 
   
-3.- Once done, you can run or debug the application using this recently created configuration.                   
-  
-*TIP*: While coding it's a good practice to remove application's old artifacts the GWT idea plugin working's directory. It is usually present on your home directory as `$HOME/.IntelliJIdeaXXX/system/gwt/`. On Macs you can find this under ~//Library/Caches/IntelliJIdeaXXX/gwt.
-
-Requirements
-------------
-* Java8+          
-* Maven 3.3.9+       
-* Git 1.8+        
+3.- Once done, you can run or debug the application using this recently created configuration.     
