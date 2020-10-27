@@ -37,13 +37,14 @@ func getExplainabilityServiceName() string {
 }
 
 // GetKogitoExplainabilityResourceStub Get basic KogitoExplainability stub with all needed fields initialized
-func GetKogitoExplainabilityResourceStub(namespace string, replicas int) *v1alpha1.KogitoExplainability {
-	return &v1alpha1.KogitoExplainability{
+func GetKogitoExplainabilityResourceStub(namespace string, replicas int) *v1alpha1.KogitoSupportingService {
+	return &v1alpha1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getExplainabilityServiceName()),
-		Spec: v1alpha1.KogitoExplainabilitySpec{
+		Spec: v1alpha1.KogitoSupportingServiceSpec{
+			ServiceType:       v1alpha1.Explainablity,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetExplainabilityImageTag(), infrastructure.DefaultExplainabilityImageName),
 		},
-		Status: v1alpha1.KogitoExplainabilityStatus{
+		Status: v1alpha1.KogitoSupportingServiceStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),
 		},
 	}

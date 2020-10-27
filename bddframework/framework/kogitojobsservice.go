@@ -50,8 +50,8 @@ func SetKogitoJobsServiceReplicas(namespace string, nbPods int32) error {
 }
 
 // GetKogitoJobsService retrieves the running jobs service
-func GetKogitoJobsService(namespace string) (*v1alpha1.KogitoJobsService, error) {
-	service := &v1alpha1.KogitoJobsService{}
+func GetKogitoJobsService(namespace string) (*v1alpha1.KogitoSupportingService, error) {
+	service := &v1alpha1.KogitoSupportingService{}
 	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: getJobsServiceName(), Namespace: namespace}, service); err != nil && !errors.IsNotFound(err) {
 		return nil, fmt.Errorf("Error while trying to look for Kogito jobs service: %v ", err)
 	} else if !exists {
@@ -70,13 +70,14 @@ func getJobsServiceName() string {
 }
 
 // GetKogitoJobsServiceResourceStub Get basic KogitoJobsService stub with all needed fields initialized
-func GetKogitoJobsServiceResourceStub(namespace string, replicas int) *v1alpha1.KogitoJobsService {
-	return &v1alpha1.KogitoJobsService{
+func GetKogitoJobsServiceResourceStub(namespace string, replicas int) *v1alpha1.KogitoSupportingService {
+	return &v1alpha1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getJobsServiceName()),
-		Spec: v1alpha1.KogitoJobsServiceSpec{
+		Spec: v1alpha1.KogitoSupportingServiceSpec{
+			ServiceType:       v1alpha1.JobsService,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetJobsServiceImageTag(), infrastructure.DefaultJobsServiceImageName),
 		},
-		Status: v1alpha1.KogitoJobsServiceStatus{
+		Status: v1alpha1.KogitoSupportingServiceStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),
 		},
 	}

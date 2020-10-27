@@ -37,13 +37,14 @@ func getDataIndexServiceName() string {
 }
 
 // GetKogitoDataIndexResourceStub Get basic KogitoDataIndex stub with all needed fields initialized
-func GetKogitoDataIndexResourceStub(namespace string, replicas int) *v1alpha1.KogitoDataIndex {
-	return &v1alpha1.KogitoDataIndex{
+func GetKogitoDataIndexResourceStub(namespace string, replicas int) *v1alpha1.KogitoSupportingService {
+	return &v1alpha1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getDataIndexServiceName()),
-		Spec: v1alpha1.KogitoDataIndexSpec{
+		Spec: v1alpha1.KogitoSupportingServiceSpec{
+			ServiceType:       v1alpha1.DataIndex,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetDataIndexImageTag(), infrastructure.DefaultDataIndexImageName),
 		},
-		Status: v1alpha1.KogitoDataIndexStatus{
+		Status: v1alpha1.KogitoSupportingServiceStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),
 		},
 	}

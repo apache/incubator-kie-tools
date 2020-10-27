@@ -36,13 +36,14 @@ func getManagementConsoleServiceName() string {
 }
 
 // GetKogitoManagementConsoleResourceStub Get basic KogitoManagementConsole stub with all needed fields initialized
-func GetKogitoManagementConsoleResourceStub(namespace string, replicas int) *v1alpha1.KogitoMgmtConsole {
-	return &v1alpha1.KogitoMgmtConsole{
+func GetKogitoManagementConsoleResourceStub(namespace string, replicas int) *v1alpha1.KogitoSupportingService {
+	return &v1alpha1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getManagementConsoleServiceName()),
-		Spec: v1alpha1.KogitoMgmtConsoleSpec{
+		Spec: v1alpha1.KogitoSupportingServiceSpec{
+			ServiceType:       v1alpha1.MgmtConsole,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetManagementConsoleImageTag(), infrastructure.DefaultMgmtConsoleImageName),
 		},
-		Status: v1alpha1.KogitoMgmtConsoleStatus{
+		Status: v1alpha1.KogitoSupportingServiceStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),
 		},
 	}

@@ -36,13 +36,14 @@ func getTrustyUIServiceName() string {
 }
 
 // GetKogitoTrustyUIResourceStub Get basic KogitoTrustyUI stub with all needed fields initialized
-func GetKogitoTrustyUIResourceStub(namespace string, replicas int) *v1alpha1.KogitoTrustyUI {
-	return &v1alpha1.KogitoTrustyUI{
+func GetKogitoTrustyUIResourceStub(namespace string, replicas int) *v1alpha1.KogitoSupportingService {
+	return &v1alpha1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getTrustyUIServiceName()),
-		Spec: v1alpha1.KogitoTrustyUISpec{
+		Spec: v1alpha1.KogitoSupportingServiceSpec{
+			ServiceType:       v1alpha1.TrustyUI,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetTrustyUIImageTag(), infrastructure.DefaultTrustyUIImageName),
 		},
-		Status: v1alpha1.KogitoTrustyUIStatus{
+		Status: v1alpha1.KogitoSupportingServiceStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),
 		},
 	}
