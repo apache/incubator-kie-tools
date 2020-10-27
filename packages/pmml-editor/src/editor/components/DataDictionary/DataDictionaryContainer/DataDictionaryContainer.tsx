@@ -128,6 +128,16 @@ const DataDictionaryContainer = () => {
     return isValid;
   };
 
+  const getTransition = (currentState: dataDictionarySection) => {
+    if (currentState === "main") {
+      return "data-dictionary__overview";
+    } else if (currentState === "batch-add") {
+      return "enter-from-above";
+    } else {
+      return "enter-from-right";
+    }
+  };
+
   return (
     <div className="data-dictionary">
       <StatusContext.Provider value={editing}>
@@ -172,7 +182,7 @@ const DataDictionaryContainer = () => {
               enter: 230,
               exit: 100
             }}
-            classNames="data-dictionary__overview"
+            classNames={getTransition(viewSection)}
             key={viewSection}
           >
             <>

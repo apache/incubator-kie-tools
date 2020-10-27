@@ -23,3 +23,45 @@
     }
   }
 }
+
+.enter-from-above {
+  &-enter {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  &-enter-active {
+    transform: translateY(0);
+    opacity: 1;
+    transition: all 230ms;
+  }
+  &-exit {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  &-exit-active {
+    opacity: 0;
+    transform: translateY(-21px);
+    transition: all 100ms;
+  }
+}
+
+.enter-from-right {
+  &-enter {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  &-enter-active {
+    transform: translateX(0);
+    opacity: 1;
+    transition: all 230ms;
+  }
+  &-exit {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  &-exit-active {
+    opacity: 0;
+    transform: translateX(44px);
+    transition: all 100ms;
+  }
+}
