@@ -1,3 +1,11 @@
+# 0.7.1 (alpha)
+
+## New features
+
+Editors
+*   [[KOGITO-1886](https://issues.redhat.com/browse/KOGITO-1886)] - [BPMN] Reuse Data Types across the process
+
+
 # 0.7.0 (alpha)
 
 ## New features

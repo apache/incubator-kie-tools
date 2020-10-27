@@ -1,3 +1,20 @@
+# 0.7.1 (alpha)
+
+## New features
+
+Editors
+*   [[KOGITO-1886](https://issues.redhat.com/browse/KOGITO-1886)] - [BPMN] Reuse Data Types across the process
+*   [[KOGITO-2664](https://issues.redhat.com/browse/KOGITO-2664)] - [DMN Designer] Multiple DRDs support
+
+## Fixed issues
+
+Editors
+*   [[KOGITO-2348](https://issues.redhat.com/browse/KOGITO-2348)] - Scenario fails if model includes another one
+*   [[KOGITO-2773](https://issues.redhat.com/browse/KOGITO-2773)] - [Test Scenario Editor] BC - Kogito generated scesim file are in same cases not compatible
+*   [[KOGITO-3152](https://issues.redhat.com/browse/KOGITO-3152)] - [DMN Designer] PMML support - function parameters generation
+*   [[KOGITO-3571](https://issues.redhat.com/browse/KOGITO-3571)] - [DMN Designer] Multiple DRDs support - Information requirements are duplicated into the DMN XML
+
+
 # 0.7.0 (alpha)
 
 ## New features
