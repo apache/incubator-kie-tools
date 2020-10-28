@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import {
   Button,
@@ -29,6 +29,7 @@ import {
 import { TrashIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTable.scss";
 import { EmptyStateNoCharacteristics } from "../molecules";
+import { CharacteristicsTableAction } from "../atoms";
 
 export interface IndexedCharacteristic {
   index: number | undefined;
@@ -51,14 +52,6 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     setSelectedDataListItemId(id);
     onRowClick(Number(id));
   };
-
-  const onDeleteCharacteristic = useCallback(
-    (event, index) => {
-      event.stopPropagation();
-      onRowDelete(index);
-    },
-    [characteristics]
-  );
 
   return (
     <div>
@@ -132,9 +125,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                       key="4"
                       width={1}
                     >
-                      <Button variant="link" icon={<TrashIcon />} onClick={e => onDeleteCharacteristic(e, index)}>
-                        &nbsp;
-                      </Button>
+                      <CharacteristicsTableAction onEdit={() => null} onDelete={() => onRowDelete(index)} />
                     </DataListAction>
                   ]}
                 />

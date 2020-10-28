@@ -31,6 +31,7 @@ import { EmptyStateNoAttributes } from ".";
 import "./CharacteristicAttributesForm.scss";
 
 import { InfoCircleIcon, TrashIcon } from "@patternfly/react-icons";
+import { AttributesTableAction } from "../atoms";
 
 interface CharacteristicAttributesFormProps {
   index: number | undefined;
@@ -129,9 +130,7 @@ export const CharacteristicAttributesForm = (props: CharacteristicAttributesForm
                       key="4"
                       width={1}
                     >
-                      <Button variant="link" icon={<TrashIcon />} onClick={e => onDeleteAttribute(e, index)}>
-                        &nbsp;
-                      </Button>
+                      <AttributesTableAction onEdit={() => null} onDelete={() => onRowDelete(index)} />
                     </DataListAction>
                   ]}
                 />

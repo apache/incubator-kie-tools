@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+export * from "./AttributesTableAction";
+export * from "./CharacteristicsTableAction";
 export * from "./GenericSelector";
 export * from "./GenericNumericInput";
 export * from "./GenericTextInput";
