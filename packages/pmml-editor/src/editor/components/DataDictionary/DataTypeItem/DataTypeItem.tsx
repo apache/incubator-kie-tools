@@ -5,6 +5,7 @@ import {
   Button,
   Flex,
   FlexItem,
+  FormGroup,
   Label,
   Select,
   SelectOption,
@@ -21,6 +22,7 @@ import { AngleRightIcon, CheckIcon, EditAltIcon, TrashIcon } from "@patternfly/r
 import { DataType, StatusContext } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
+import { Validated } from "../../../types";
 
 interface DataTypeItemProps {
   dataType: DataType;
@@ -29,26 +31,29 @@ interface DataTypeItemProps {
   onEdit?: (index: number) => void;
   onDelete?: (index: number) => void;
   onConstraintsEdit: (dataType: DataType) => void;
+  onValidate: (dataTypeName: string) => boolean;
 }
 
 const DataTypeItem = (props: DataTypeItemProps) => {
-  const { dataType, index, onSave, onEdit, onDelete, onConstraintsEdit } = props;
+  const { dataType, index, onSave, onEdit, onDelete, onConstraintsEdit, onValidate } = props;
   const editing = useContext(StatusContext);
   const [name, setName] = useState(dataType.name);
   const [typeSelection, setTypeSelection] = useState<string>(dataType.type);
   const [isTypeSelectOpen, setIsTypeSelectOpen] = useState(false);
   const [isList, setIsList] = useState(dataType.list);
   const typeOptions = [{ value: "String" }, { value: "Number" }, { value: "Boolean" }];
+  const [validation, setValidation] = useState<Validated>("default");
 
   const ref = useOnclickOutside(() => {
     // this should be split with some kind of validation
     if (editing === index && (index === -1 || name.trim().length > 0)) {
-      onSave({ name, type: typeSelection, list: isList }, index);
+      handleSave();
     }
   });
 
   const handleNameChange = (value: string) => {
     setName(value);
+    setValidation(onValidate(value) ? "default" : "error");
   };
   const typeToggle = (isOpen: boolean) => {
     setIsTypeSelectOpen(isOpen);
@@ -75,7 +80,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   };
 
   const handleSave = () => {
-    onSave({ name, type: typeSelection, list: isList }, index);
+    if (validation !== "error") {
+      onSave({ name: name.trim(), type: typeSelection, list: isList }, index);
+    }
   };
 
   const handleDelete = () => {
@@ -104,14 +111,22 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                 {/* Change Split to Flexbox */}
                 <Split hasGutter={true}>
                   <SplitItem>
-                    <TextInput
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={name}
-                      onChange={handleNameChange}
-                      placeholder="Name"
-                    />
+                    <FormGroup
+                      fieldId="name"
+                      helperTextInvalid="Name already used by another Data Type"
+                      validated={validation}
+                      style={{ width: 280 }}
+                    >
+                      <TextInput
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={name}
+                        onChange={handleNameChange}
+                        placeholder="Name"
+                        validated={validation}
+                      />
+                    </FormGroup>
                   </SplitItem>
                   <SplitItem>
                     <Select

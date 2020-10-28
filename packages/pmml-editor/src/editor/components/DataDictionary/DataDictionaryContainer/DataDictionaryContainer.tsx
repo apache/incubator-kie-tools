@@ -116,6 +116,15 @@ const DataDictionaryContainer = () => {
     setDataTypes(sortedDataTypes);
   };
 
+  const dataTypeNameValidation = (dataTypeName: string) => {
+    let isValid = true;
+    const match = dataTypes.find((item, index) => item.name === dataTypeName.trim() && index !== editing);
+    if (match !== undefined) {
+      isValid = false;
+    }
+    return isValid;
+  };
+
   return (
     <div className="data-dictionary">
       <StatusContext.Provider value={editing}>
@@ -169,6 +178,7 @@ const DataDictionaryContainer = () => {
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onConstraintsEdit={handleConstraintsEdit}
+                    onValidate={dataTypeNameValidation}
                   />
                 ))}
                 {newType && (
@@ -178,6 +188,7 @@ const DataDictionaryContainer = () => {
                     key={uuid()}
                     onSave={handleSave}
                     onConstraintsEdit={handleConstraintsEdit}
+                    onValidate={dataTypeNameValidation}
                   />
                 )}
               </StackItem>
