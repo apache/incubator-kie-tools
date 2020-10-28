@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   CardBody,
+  CardTitle,
   Checkbox,
   Form,
   FormGroup,
@@ -23,7 +24,7 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import { Constraints, DataType } from "../DataDictionaryContainer/DataDictionaryContainer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./ConstraintsEdit.scss";
 import { Validated } from "../../../types";
 
@@ -41,11 +42,11 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const rangeEmptyValue = {
     start: {
       value: "",
-      included: false
+      included: true
     },
     end: {
       value: "",
-      included: false
+      included: true
     }
   };
   const rangeInitialValue = dataType.constraints?.type === "Range" ? dataType.constraints : rangeEmptyValue;
@@ -91,7 +92,6 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   };
 
   const validateConstraints = () => {
-    // const isValid = constraintType.length > 0 ? "success" : "error";
     const isValid = { ...validation };
     isValid.form = "success";
     if (constraintType === "Range") {
@@ -122,6 +122,12 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     }
   };
 
+  useEffect(() => {
+    if (constraintType === "Range") {
+      document.querySelector<HTMLInputElement>(`#start-value`)?.focus();
+    }
+  }, [constraintType]);
+
   const clearConstraints = () => {
     setRange(rangeEmptyValue);
     setConstraintType("");
@@ -140,7 +146,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
 
         <StackItem>
           <Form onSubmit={handleSubmit} autoComplete="off" className="constraints-form">
-            <section style={{ width: 200 }}>
+            <FormGroup fieldId="constraints-type" label="Constraints Type" style={{ width: 200 }}>
               <Select
                 id="constraints-type"
                 variant={SelectVariant.single}
@@ -157,19 +163,30 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
                   </SelectOption>
                 ))}
               </Select>
-            </section>
+            </FormGroup>
             {validation.form === "error" && (
               <StackItem>
-                <Alert variant="warning" isInline={true} title="Please check the highlighted fields content" />
+                <Alert variant="warning" isInline={true} title="Please check the highlighted fields." />
               </StackItem>
             )}
             {constraintType === "Range" && (
-              <Card>
+              <Card isCompact={true}>
+                <CardTitle>Range Constraint</CardTitle>
                 <CardBody>
-                  <Grid>
-                    <GridItem span={8}>
+                  <Stack hasGutter={true}>
+                    <StackItem>
+                      <TextContent>
+                        <Text component={TextVariants.p}>
+                          A range has a start and an end value, both field values are required (*). <br />
+                          The value at each end of the range may be included or excluded from the range definition.
+                          <br />
+                          If the check box is cleared, the start or end value is excluded.
+                        </Text>
+                      </TextContent>
+                    </StackItem>
+                    <StackItem>
                       <Split hasGutter={true}>
-                        <SplitItem isFilled={true}>
+                        <SplitItem style={{ width: 320 }}>
                           <FormGroup label="Start Value*" fieldId="start-value">
                             <TextInput
                               type="text"
@@ -192,7 +209,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
                             />
                           </FormGroup>
                         </SplitItem>
-                        <SplitItem isFilled={true}>
+                        <SplitItem style={{ width: 320 }}>
                           <FormGroup label="End Value*" fieldId="end-value">
                             <TextInput
                               type="text"
@@ -216,8 +233,8 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
                           </FormGroup>
                         </SplitItem>
                       </Split>
-                    </GridItem>
-                  </Grid>
+                    </StackItem>
+                  </Stack>
                 </CardBody>
               </Card>
             )}
