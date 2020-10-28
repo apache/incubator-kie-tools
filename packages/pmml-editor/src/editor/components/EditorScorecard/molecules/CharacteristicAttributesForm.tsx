@@ -22,13 +22,15 @@ import {
   DataListCell,
   DataListItem,
   DataListItemCells,
-  DataListItemRow
+  DataListItemRow,
+  Tooltip,
+  TooltipPosition
 } from "@patternfly/react-core";
 import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
 import { EmptyStateNoAttributes } from ".";
 import "./CharacteristicAttributesForm.scss";
 
-import { TrashIcon } from "@patternfly/react-icons";
+import { InfoCircleIcon, TrashIcon } from "@patternfly/react-icons";
 
 interface CharacteristicAttributesFormProps {
   index: number | undefined;
@@ -59,10 +61,28 @@ export const CharacteristicAttributesForm = (props: CharacteristicAttributesForm
                   <div>Attribute</div>
                 </DataListCell>,
                 <DataListCell key="1" width={2}>
-                  <div>Partial Score</div>
+                  <div>
+                    <span className={"attributes__header__text"}>Partial Score</span>
+                    <Tooltip position={TooltipPosition.top} content={<div>Score points awarded to the Attribute</div>}>
+                      <InfoCircleIcon className={"attributes__header__icon"} />
+                    </Tooltip>
+                  </div>
                 </DataListCell>,
                 <DataListCell key="2" width={2}>
-                  <div>Reason Code</div>
+                  <div>
+                    <span className={"attributes__header__text"}>Reason Code</span>
+                    <Tooltip
+                      position={TooltipPosition.top}
+                      content={
+                        <div>
+                          Attribute's reason code. If the reason code is used at this level, it takes precedence over
+                          the reason code attribute associated with the Characteristic
+                        </div>
+                      }
+                    >
+                      <InfoCircleIcon className={"attributes__header__icon"} />
+                    </Tooltip>
+                  </div>
                 </DataListCell>,
                 <DataListAction
                   id="delete-attribute-header"

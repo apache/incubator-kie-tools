@@ -25,6 +25,15 @@
 
     &__row {
       border-bottom: none;
+      //height: 64px;
+    }
+
+    &__text {
+      padding-right: var(--pf-global--spacer--sm);
+    }
+
+    &__icon {
+      color: var(--pf-global--info-color--100);
     }
   }
 
