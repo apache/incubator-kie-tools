@@ -18,7 +18,7 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And file /home/kogito/bin/rules-quarkus-helloworld-runner should exist
     And file /home/kogito/ssl-libs/libsunec.so should exist
     And file /home/kogito/cacerts should exist
-    And s2i build log should contain -J-Xmx2576980377
+    And s2i build log should contain -J-Xmx4g
 
   Scenario: Verify if the s2i build is finished as expected using native build and no runtime image
     Given s2i build https://github.com/kiegroup/kogito-examples.git from rules-quarkus-helloworld using master
@@ -37,7 +37,7 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And file /home/kogito/bin/rules-quarkus-helloworld-runner should exist
     And file /home/kogito/ssl-libs/libsunec.so should exist
     And file /home/kogito/cacerts should exist
-    And s2i build log should contain -J-Xmx2576980377
+    And s2i build log should contain -J-Xmx4g
 
   Scenario: Verify if the s2i build is finished as expected with non native build and no runtime image
     Given s2i build https://github.com/kiegroup/kogito-examples.git from rules-quarkus-helloworld using master
