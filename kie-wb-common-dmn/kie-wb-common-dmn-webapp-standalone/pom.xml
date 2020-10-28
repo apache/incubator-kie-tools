@@ -180,7 +180,7 @@
       <exclusions>
         <exclusion>
           <groupId>org.powermock</groupId>
-          <artifactId>powermock-api-mockito</artifactId>
+          <artifactId>powermock-api-mockito2<</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.powermock</groupId>
