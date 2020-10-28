@@ -35,7 +35,12 @@ import { I18nHtml } from "@kogito-tooling/i18n/dist/react-components";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onContinue: () => void;
+}
+
+enum ValidationStatus {
+  INITIAL,
+  SUCCESS,
+  ERROR
 }
 
 export function GithubTokenModal(props: Props) {
@@ -44,6 +49,7 @@ export function GithubTokenModal(props: Props) {
 
   const [potentialToken, setPotentialToken] = useState(context.githubService.resolveToken());
   const [authenticated, setAuthenticated] = useState(context.githubService.isAuthenticated());
+  const [errorStatus, setErrorStatus] = useState(false);
 
   const tokenToDisplay = useMemo(() => {
     return obfuscate(context.githubService.resolveToken() || potentialToken);
@@ -52,14 +58,25 @@ export function GithubTokenModal(props: Props) {
   const onPasteHandler = useCallback(e => {
     const token = e.clipboardData.getData("text/plain").slice(0, GITHUB_OAUTH_TOKEN_SIZE);
     setPotentialToken(token);
-    context.githubService.authenticate(token).then(isAuthenticated => setAuthenticated(isAuthenticated));
+    context.githubService.authenticate(token).then(isAuthenticated => {
+      setAuthenticated(isAuthenticated);
+      setErrorStatus(!isAuthenticated);
+    });
   }, []);
 
   const onResetHandler = useCallback(() => {
     context.githubService.reset();
     setPotentialToken("");
     setAuthenticated(false);
+    setErrorStatus(false);
   }, []);
+
+  const validated = useMemo(() => {
+    if (errorStatus) {
+      return "error";
+    }
+    return "default";
+  }, [errorStatus]);
 
   return (
     <Modal
@@ -93,7 +110,7 @@ export function GithubTokenModal(props: Props) {
               placeholder={i18n.githubTokenModal.footer.placeHolder}
               maxLength={GITHUB_OAUTH_TOKEN_SIZE}
               isDisabled={authenticated}
-              validated={!authenticated ? "error" : "default"}
+              validated={validated}
               value={tokenToDisplay}
               onPaste={onPasteHandler}
               autoFocus={true}
@@ -108,8 +125,8 @@ export function GithubTokenModal(props: Props) {
             <Button variant="danger" onClick={onResetHandler}>
               {i18n.terms.reset}
             </Button>
-            <Button className="pf-u-ml-sm" variant="primary" isDisabled={!authenticated} onClick={props.onContinue}>
-              {i18n.terms.continue}
+            <Button className="pf-u-ml-sm" variant="primary" onClick={props.onClose}>
+              {i18n.terms.close}
             </Button>
           </div>
         </div>

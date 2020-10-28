@@ -68,6 +68,7 @@ export const en: OnlineI18n = {
     downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
     setGitHubToken: `Set up your ${en_common.names.github} token`,
     gistIt: "Gist it!",
+    gistItTooltip: `Set up your ${en_common.names.github} token to be able to create gists!`,
     fileActions: "File actions",
     updateGist: "Update gist",
     updateGistTooltip: `To be able to update a gist you need to have access to it through your ${en_common.names.github} token.`

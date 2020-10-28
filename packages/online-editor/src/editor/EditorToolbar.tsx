@@ -145,9 +145,20 @@ export function EditorToolbar(props: Props) {
       >
         {i18n.editorToolbar.setGitHubToken}
       </DropdownItem>,
-      <DropdownItem key={`dropdown-${dropdownId}-export-gist`} component="button" onClick={props.onExportGist}>
-        {i18n.editorToolbar.gistIt}
-      </DropdownItem>,
+      <Tooltip
+        data-testid={"gist-it-tooltip"}
+        key={`dropdown-${dropdownId}-export-gist`}
+        content={<div>{i18n.editorToolbar.gistItTooltip}</div>}
+        trigger={!context.githubService.isAuthenticated() ? "mouseenter click" : ""}
+      >
+        <DropdownItem
+          component="button"
+          onClick={props.onExportGist}
+          isDisabled={!context.githubService.isAuthenticated()}
+        >
+          {i18n.editorToolbar.gistIt}
+        </DropdownItem>
+      </Tooltip>,
       <Tooltip
         data-testid={"update-gist-tooltip"}
         key={`dropdown-${dropdownId}-update-gist`}

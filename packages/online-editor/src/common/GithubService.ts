@@ -90,7 +90,12 @@ export class GithubService {
     const testOctokit = new Octokit({ auth: token });
     return testOctokit.users
       .getAuthenticated()
-      .then(res => Promise.resolve(res.data.login))
+      .then(res => {
+        if ((res.headers as any)["x-oauth-scopes"].split(", ").indexOf("gist") > -1) {
+          return Promise.resolve(res.data.login);
+        }
+        return Promise.resolve(undefined);
+      })
       .catch(() => Promise.resolve(undefined));
   }
 

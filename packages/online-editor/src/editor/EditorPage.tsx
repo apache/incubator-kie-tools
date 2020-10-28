@@ -113,13 +113,12 @@ export function EditorPage(props: Props) {
     setAlert(Alerts.GITHUB_TOKEN_MODAL);
   }, []);
 
+  const closeSetGitHubToken = useCallback(() => {
+    setAlert(Alerts.NONE);
+  }, []);
+
   const requestExportGist = useCallback(() => {
     editor?.getContent().then(content => {
-      if (!context.githubService.isAuthenticated()) {
-        setAlert(Alerts.GITHUB_TOKEN_MODAL);
-        return;
-      }
-
       context.githubService
         .createGist({
           filename: `${context.file.fileName}.${context.file.fileExtension}`,
@@ -138,11 +137,6 @@ export function EditorPage(props: Props) {
 
   const requestUpdateGist = useCallback(() => {
     editor?.getContent().then(content => {
-      if (!context.githubService.isAuthenticated()) {
-        setAlert(Alerts.GITHUB_TOKEN_MODAL);
-        return;
-      }
-
       const filename = `${context.file.fileName}.${context.file.fileExtension}`;
       context.githubService
         .updateGist({ filename, content })
@@ -206,13 +200,6 @@ export function EditorPage(props: Props) {
   const toggleFullScreen = useCallback(() => {
     setFullscreen(!fullscreen);
   }, [fullscreen]);
-
-  const continueExport = useCallback(() => {
-    setAlert(Alerts.NONE);
-    if (fileUrl && !context.githubService.isGistRaw(fileUrl)) {
-      requestExportGist();
-    }
-  }, [requestExportGist, window.location]);
 
   const onReady = useCallback(() => setIsEditorReady(true), []);
 
@@ -362,7 +349,6 @@ export function EditorPage(props: Props) {
           <GithubTokenModal
             isOpen={alert === Alerts.GITHUB_TOKEN_MODAL}
             onClose={closeAlert}
-            onContinue={continueExport}
           />
         )}
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
