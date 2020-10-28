@@ -50,6 +50,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -174,58 +175,38 @@ public class GuvnorM2RepositoryTest {
 
         verify(repositorySystem,
                times(1)).deploy(any(RepositorySystemSession.class),
-                                argThat(new BaseMatcher<DeployRequest>() {
-
-                                    @Override
-                                    public void describeTo(Description description) {
-                                    }
-
-                                    @Override
-                                    public boolean matches(Object item) {
-                                        DeployRequest request = (DeployRequest) item;
-                                        return "global-m2-repo".equals(request.getRepository().getId());
-                                    }
-                                }));
+                                argThat(request -> "global-m2-repo".equals(request.getRepository().getId())));
         verify(repositorySystem,
                times(1)).deploy(any(RepositorySystemSession.class),
-                                argThat(new BaseMatcher<DeployRequest>() {
-
-                                    @Override
-                                    public void describeTo(Description description) {
+                                argThat(request -> {
+                                    String string = "example.project.http";
+                                    RemoteRepository repo = request.getRepository();
+                                    boolean equals = string.equals(repo.getId());
+                                    if (!equals) {
+                                        return false;
                                     }
-
-                                    @Override
-                                    public boolean matches(Object item) {
-                                        DeployRequest request = (DeployRequest) item;
-                                        String string = "example.project.http";
-                                        RemoteRepository repo = request.getRepository();
-                                        boolean equals = string.equals(repo.getId());
-                                        if (!equals) {
-                                            return false;
+                                    Authentication auth = repo.getAuthentication();
+                                    Class<? extends Authentication> class1 = auth.getClass();
+                                    try {
+                                        Field declaredField = class1.getDeclaredField("authentications");
+                                        declaredField.setAccessible(true);
+                                        Authentication[] object = (Authentication[]) declaredField.get(auth);
+                                        Authentication authentication = object[1];
+                                        Class<? extends Authentication> class2 = authentication.getClass();
+                                        boolean equals3 = "SecretAuthentication".equals(class2.getSimpleName());
+                                        if (equals3) {
+                                            Field valueField = class2.getDeclaredField("value");
+                                            valueField.setAccessible(true);
+                                            // length of plaintext password, obviously not
+                                            // length of encrypted password
+                                            assertEquals("Plaintext pw (repopw) length expected.",
+                                                         6,
+                                                         ((char[]) valueField.get(authentication)).length);
                                         }
-                                        Authentication auth = repo.getAuthentication();
-                                        Class<? extends Authentication> class1 = auth.getClass();
-                                        try {
-                                            Field declaredField = class1.getDeclaredField("authentications");
-                                            declaredField.setAccessible(true);
-                                            Authentication[] object = (Authentication[]) declaredField.get(auth);
-                                            Authentication authentication = object[1];
-                                            Class<? extends Authentication> class2 = authentication.getClass();
-                                            boolean equals3 = "SecretAuthentication".equals(class2.getSimpleName());
-                                            if (equals3) {
-                                                Field valueField = class2.getDeclaredField("value");
-                                                valueField.setAccessible(true);
-                                                // length of plaintext password, obviously not
-                                                // length of encrypted password
-                                                assertEquals("Plaintext pw (repopw) length expected.",
-                                                             6,
-                                                             ((char[]) valueField.get(authentication)).length);
-                                            }
-                                            return "StringAuthentication".equals(object[0].getClass().getSimpleName()) && equals3;
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                            throw new RuntimeException(e);
-                                        }
+                                        return "StringAuthentication".equals(object[0].getClass().getSimpleName()) && equals3;
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        throw new RuntimeException(e);
                                     }
                                 }));
     }

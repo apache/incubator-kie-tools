@@ -36,7 +36,7 @@ public class DataSetDefRefreshAttributesEditorTest {
         presenter.init();
         verify(refreshTime, times(1)).addHelpContent(anyString(), anyString(), any(Placement.class));
         verify(view, times(1)).init(presenter);
-        verify(view, times(1)).initWidgets(any(IsWidget.class), any(DataSetDefRefreshIntervalEditor.View.class));
+        verify(view, times(1)).initWidgets(any(), any());
         verify(view, times(1)).addRefreshEnabledButtonHandler(any(Command.class));
         verify(view, times(0)).setEnabled(anyBoolean());
     }

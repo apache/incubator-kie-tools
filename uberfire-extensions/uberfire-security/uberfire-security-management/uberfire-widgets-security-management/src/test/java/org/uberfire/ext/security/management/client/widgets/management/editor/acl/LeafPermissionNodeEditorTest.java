@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.node.LeafPermissionNodeEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.node.PermissionSwitch;
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.node.PermissionWidgetFactory;
@@ -128,7 +128,6 @@ public class LeafPermissionNodeEditorTest {
     @Test
     public void testSwitchInitDependencies() {
         when(permissionSwitchView1.isOn()).thenReturn(false);
-        when(permissionSwitchView2.isOn()).thenReturn(true);
 
         reset(permission2);
         permissionNode.addDependencies(permission1,

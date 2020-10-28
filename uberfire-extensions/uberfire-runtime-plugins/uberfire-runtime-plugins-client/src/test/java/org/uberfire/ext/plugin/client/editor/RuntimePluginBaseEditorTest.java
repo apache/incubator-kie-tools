@@ -100,28 +100,28 @@ public class RuntimePluginBaseEditorTest {
     @Test
     public void pluginSavedTest() {
         editor.onPluginSaved(mock(PluginSaved.class));
-        verify(editor).registerPlugin(any(Plugin.class));
+        verify(editor).registerPlugin(any());
     }
 
     @Test
     public void pluginAddedTest() {
         editor.onPluginAdded(mock(PluginAdded.class));
-        verify(editor).registerPlugin(any(Plugin.class));
+        verify(editor).registerPlugin(any());
     }
 
     @Test
     public void pluginDeletedTest() {
         editor.onPluginDeleted(mock(PluginDeleted.class));
-        verify(editor).unregisterPlugin(any(String.class),
-                                        any(PluginType.class));
+        verify(editor).unregisterPlugin(any(),
+                                        any());
     }
 
     @Test
     public void pluginRenamedTest() {
         editor.onPluginRenamed(mock(PluginRenamed.class));
-        verify(editor).unregisterPlugin(any(String.class),
-                                        any(PluginType.class));
-        verify(editor).registerPlugin(any(Plugin.class));
+        verify(editor).unregisterPlugin(any(),
+                                        any());
+        verify(editor).registerPlugin(any());
     }
 
     @Test

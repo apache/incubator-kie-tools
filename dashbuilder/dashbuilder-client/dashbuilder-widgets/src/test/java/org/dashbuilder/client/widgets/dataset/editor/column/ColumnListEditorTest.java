@@ -104,7 +104,7 @@ public class ColumnListEditorTest {
         verify(dataColumnDefDriver, times(1)).initialize(dataColumnDefEditor);
         verify(dataColumnDefDriver, times(1)).edit(col1);
         verify(view, times(1)).clear();
-        verify(view, times(1)).insert(anyInt(), any(DataColumnDefEditor.View.class), anyBoolean(), anyBoolean(), anyString());
+        verify(view, times(1)).insert(anyInt(), any(), anyBoolean(), anyBoolean(), any());
         verify(view, times(0)).init(presenter);
         verify(view, times(0)).remove(anyInt());
     }
@@ -117,7 +117,7 @@ public class ColumnListEditorTest {
         assertEquals(1, presenter.restrictedColumns.size());
         assertEquals("col1", presenter.restrictedColumns.get(0));
         verify(dataColumnDefEditor, times(1)).isEditMode(false);
-        verify(view, times(1)).insert(anyInt(), any(DataColumnDefEditor.View.class), anyBoolean(), anyBoolean(), anyString());
+        verify(view, times(1)).insert(anyInt(), any(), anyBoolean(), anyBoolean(), anyString());
         verify(view, times(1)).remove(anyInt());
         verify(view, times(0)).init(presenter);
         verify(view, times(0)).clear();
@@ -133,7 +133,7 @@ public class ColumnListEditorTest {
         presenter.onValueUnRestricted(value);
         assertTrue(presenter.restrictedColumns.isEmpty());
         verify(dataColumnDefEditor, times(1)).isEditMode(false);
-        verify(view, times(1)).insert(anyInt(), any(DataColumnDefEditor.View.class), anyBoolean(), anyBoolean(), anyString());
+        verify(view, times(1)).insert(anyInt(), any(), anyBoolean(), anyBoolean(), anyString());
         verify(view, times(1)).remove(anyInt());
         verify(view, times(0)).init(presenter);
         verify(view, times(0)).clear();
@@ -153,7 +153,7 @@ public class ColumnListEditorTest {
         presenter.onValueUnRestricted(value);
         assertTrue(presenter.restrictedColumns.isEmpty());
         verify(dataColumnDefEditor, times(1)).isEditMode(true);
-        verify(view, times(1)).insert(anyInt(), any(DataColumnDefEditor.View.class), anyBoolean(), anyBoolean(), anyString());
+        verify(view, times(1)).insert(anyInt(), any(), anyBoolean(), anyBoolean(), any());
         verify(view, times(1)).remove(anyInt());
         verify(view, times(0)).init(presenter);
         verify(view, times(0)).clear();
@@ -281,9 +281,9 @@ public class ColumnListEditorTest {
         ColumnListEditor.DataColumnDefEditorSource source = presenter.createDataColumnDefEditorSource();
         org.dashbuilder.dataset.client.editor.DataColumnDefEditor e = source.create(0);
         verify(dataColumnDefEditor, times(2)).isEditMode(false);
-        verify(dataColumnDefEditor, times(1)).setProviderType(any(DataSetProviderType.class));
+        verify(dataColumnDefEditor, times(1)).setProviderType(any());
         verify(dataColumnDefEditor, times(1)).setOriginalColumnType(any(ColumnType.class));
-        verify(view, times(2)).insert(anyInt(), any(DataColumnDefEditor.View.class), anyBoolean(), anyBoolean(), anyString());
+        verify(view, times(2)).insert(anyInt(), any(), anyBoolean(), anyBoolean(), anyString());
         verify(view, times(2)).remove(anyInt());
         verify(view, times(0)).init(presenter);
         verify(view, times(0)).clear();
@@ -304,8 +304,8 @@ public class ColumnListEditorTest {
         org.dashbuilder.dataset.client.editor.DataColumnDefEditor e = source.create(0);
         verify(dataColumnDefEditor, times(2)).isEditMode(true);
         verify(dataColumnDefEditor, times(1)).setOriginalColumnType(any(ColumnType.class));
-        verify(dataColumnDefEditor, times(1)).setProviderType(any(DataSetProviderType.class));
-        verify(view, times(2)).insert(anyInt(), any(DataColumnDefEditor.View.class), anyBoolean(), anyBoolean(), anyString());
+        verify(dataColumnDefEditor, times(1)).setProviderType(any());
+        verify(view, times(2)).insert(anyInt(), any(), anyBoolean(), anyBoolean(), any());
         verify(view, times(2)).remove(anyInt());
         verify(view, times(0)).init(presenter);
         verify(view, times(0)).clear();
@@ -327,8 +327,8 @@ public class ColumnListEditorTest {
         org.dashbuilder.dataset.client.editor.DataColumnDefEditor e = source.create(0);
         verify(dataColumnDefEditor, times(1)).isEditMode(true);
         verify(dataColumnDefEditor, times(1)).setOriginalColumnType(any(ColumnType.class));
-        verify(dataColumnDefEditor, times(1)).setProviderType(any(DataSetProviderType.class));
-        verify(view, times(1)).insert(anyInt(), any(DataColumnDefEditor.View.class), anyBoolean(), anyBoolean(), anyString());
+        verify(dataColumnDefEditor, times(1)).setProviderType(any());
+        verify(view, times(1)).insert(anyInt(), any(), anyBoolean(), anyBoolean(), any());
         verify(view, times(1)).remove(anyInt());
         verify(view, times(0)).init(presenter);
         verify(view, times(0)).clear();
@@ -351,8 +351,8 @@ public class ColumnListEditorTest {
         org.dashbuilder.dataset.client.editor.DataColumnDefEditor e = source.create(0);
         verify(dataColumnDefEditor, times(1)).isEditMode(false);
         verify(dataColumnDefEditor, times(1)).setOriginalColumnType(any(ColumnType.class));
-        verify(dataColumnDefEditor, times(1)).setProviderType(any(DataSetProviderType.class));
-        verify(view, times(1)).insert(anyInt(), any(DataColumnDefEditor.View.class), anyBoolean(), anyBoolean(), anyString());
+        verify(dataColumnDefEditor, times(1)).setProviderType(any());
+        verify(view, times(1)).insert(anyInt(), any(), anyBoolean(), anyBoolean(), anyString());
         verify(view, times(1)).remove(anyInt());
         verify(view, times(0)).init(presenter);
         verify(view, times(0)).clear();
@@ -369,7 +369,7 @@ public class ColumnListEditorTest {
         verify(dataColumnDefEditor, times(3)).isEditMode(false);
         verify(dataColumnDefDriver, times(1)).initialize(dataColumnDefEditor);
         verify(dataColumnDefDriver, times(1)).edit(col1);
-        verify(view, times(2)).insert(anyInt(), any(DataColumnDefEditor.View.class), anyBoolean(), anyBoolean(), anyString());
+        verify(view, times(2)).insert(anyInt(), any(), anyBoolean(), anyBoolean(), any());
         verify(view, times(2)).remove(anyInt());
         verify(view, times(0)).init(presenter);
         verify(view, times(0)).clear();
@@ -408,7 +408,7 @@ public class ColumnListEditorTest {
         
         verify(dataColumnDefDriver, times(1)).initialize(col2Editor);
         verify(dataColumnDefDriver, times(1)).edit(col2);
-        verify(view, times(1)).insert(anyInt(), any(DataColumnDefEditor.View.class), anyBoolean(), anyBoolean(), anyString());
+        verify(view, times(1)).insert(anyInt(), any(), anyBoolean(), anyBoolean(), any());
         verify(view, times(1)).remove(anyInt());
         verify(view, times(0)).init(presenter);
         verify(view, times(0)).clear();

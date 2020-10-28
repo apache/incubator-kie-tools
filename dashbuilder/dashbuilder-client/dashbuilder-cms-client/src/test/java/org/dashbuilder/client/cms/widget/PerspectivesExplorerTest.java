@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.plugin.client.security.PluginController;
 import org.uberfire.ext.plugin.model.Plugin;
@@ -67,7 +67,7 @@ public class PerspectivesExplorerTest {
     @Before
     public void setUp() {
         doAnswer(invocationOnMock -> {
-            ParameterizedCommand<Collection<Plugin>> callback = invocationOnMock.getArgumentAt(0, ParameterizedCommand.class);
+            ParameterizedCommand<Collection<Plugin>> callback = invocationOnMock.getArgument(0, ParameterizedCommand.class);
             callback.execute(pluginList);
             return null;
         }).when(perspectivePluginManagerM).getPerspectivePlugins(any());
@@ -81,7 +81,7 @@ public class PerspectivesExplorerTest {
         perspectivesExplorer.show();
 
         verify(viewM).clear();
-        verify(viewM).showEmpty(anyString());
+        verify(viewM).showEmpty(any());
     }
 
     @Test

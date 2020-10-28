@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,8 +66,6 @@ public class DataSetDefColumnsEditorTest {
     @Test
     public void testSetValueBeanType() {
         final DataSetDef dataSetDef = mock(DataSetDef.class);
-        when(dataSetDef.getUUID()).thenReturn("uuid1");
-        when(dataSetDef.getName()).thenReturn("name1");
         when(dataSetDef.getProvider()).thenReturn(DataSetProviderType.BEAN);
         when(dataSetDef.isAllColumnsEnabled()).thenReturn(false);
         presenter.acceptableValues = buildAcceptableValues();
@@ -83,8 +81,6 @@ public class DataSetDefColumnsEditorTest {
     @Test
     public void testSetValueWithNotAllColumns() {
         final DataSetDef dataSetDef = mock(DataSetDef.class);
-        when(dataSetDef.getUUID()).thenReturn("uuid1");
-        when(dataSetDef.getName()).thenReturn("name1");
         when(dataSetDef.getProvider()).thenReturn(DataSetProviderType.SQL);
         when(dataSetDef.isAllColumnsEnabled()).thenReturn(false);
         presenter.acceptableValues = buildAcceptableValues();
@@ -100,8 +96,6 @@ public class DataSetDefColumnsEditorTest {
     @Test
     public void testSetValueWithAllColumns() {
         final DataSetDef dataSetDef = mock(DataSetDef.class);
-        when(dataSetDef.getUUID()).thenReturn("uuid1");
-        when(dataSetDef.getName()).thenReturn("name1");
         when(dataSetDef.getProvider()).thenReturn(DataSetProviderType.SQL);
         when(dataSetDef.isAllColumnsEnabled()).thenReturn(true);
         presenter.acceptableValues = buildAcceptableValues();
@@ -116,8 +110,6 @@ public class DataSetDefColumnsEditorTest {
     
     private List<DataColumnDef> buildAcceptableValues() {
         final DataColumnDef col1 = mock(DataColumnDef.class);
-        when(col1.getId()).thenReturn("col1");
-        when(col1.getColumnType()).thenReturn(ColumnType.LABEL);
         final List<DataColumnDef> acceptableValues = new ArrayList<DataColumnDef>();
         acceptableValues.add(col1);
         return acceptableValues;

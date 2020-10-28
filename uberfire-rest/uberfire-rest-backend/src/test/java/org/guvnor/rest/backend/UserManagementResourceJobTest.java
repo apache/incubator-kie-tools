@@ -37,7 +37,7 @@ import org.kie.soup.commons.util.Lists;
 import org.kie.soup.commons.util.Sets;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.api.service.GroupManagerService;
 import org.uberfire.ext.security.management.api.service.RoleManagerService;
 import org.uberfire.ext.security.management.api.service.UserManagerService;

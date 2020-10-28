@@ -93,7 +93,7 @@ public class OrganizationalUnitTreeProviderTest {
     @Test
     public void testChildrenNodes() {
         rootNode.expand(children -> {
-            verify(searchService).searchByName(anyString(),
+            verify(searchService).searchByName(any(),
                                                anyInt(),
                                                anyBoolean());
             for (PermissionNode child : children) {

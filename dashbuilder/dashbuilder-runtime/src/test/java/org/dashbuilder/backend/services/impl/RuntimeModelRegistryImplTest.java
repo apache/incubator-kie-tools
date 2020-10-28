@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.apache.commons.io.FilenameUtils;
 
 import static org.junit.Assert.assertEquals;
@@ -165,7 +165,7 @@ public class RuntimeModelRegistryImplTest {
         RuntimeModel runtimeModel1 = mock(RuntimeModel.class);
         RuntimeModel runtimeModel2 = mock(RuntimeModel.class);
 
-        when(runtimeModels.isEmpty()).thenReturn(true);
+
         when(importValidationService.validate(or(eq(file1), eq(file2)))).thenReturn(true);
         when(parser.parse(eq(importId1), any())).thenReturn(runtimeModel1);
         when(parser.parse(eq(importId2), any())).thenReturn(runtimeModel2);
@@ -211,22 +211,22 @@ public class RuntimeModelRegistryImplTest {
     @Test
     public void testRemoveExistingModel() throws IOException {
         String file = tempFile.toString();
-        
+
         String importId = FilenameUtils.getBaseName(tempFile.toFile().getPath());
         RuntimeModel runtimeModel = mock(RuntimeModel.class);
 
         when(options.buildFilePath(eq(importId))).thenReturn(tempFile.toFile().getPath());
         when(runtimeModels.remove(eq(importId))).thenReturn(runtimeModel);
-        
+
         when(options.isRemoveModelFile()).thenReturn(true);
 
         registry.remove(importId);
-        
+
         verify(runtimeModels).remove(eq(importId));
         verify(removedRuntimeModelEvent).fire(any());
         assertFalse(Files.exists(Paths.get(file)));
     }
-    
+
     @Test
     public void testRemoveWithoutDeletingFile() throws IOException {
         String file = tempFile.toString();
@@ -235,16 +235,16 @@ public class RuntimeModelRegistryImplTest {
 
         when(options.buildFilePath(eq(importId))).thenReturn(tempFile.toFile().getPath());
         when(runtimeModels.remove(eq(importId))).thenReturn(runtimeModel);
-        
+
         when(options.isRemoveModelFile()).thenReturn(false);
 
         registry.remove(importId);
-        
+
         verify(runtimeModels).remove(eq(importId));
         verify(removedRuntimeModelEvent).fire(any());
         assertTrue(Files.exists(Paths.get(file)));
     }
-    
+
     @Test
     public void testRemoveNotExistingModel() throws IOException {
         String file = tempFile.toString();
@@ -253,7 +253,7 @@ public class RuntimeModelRegistryImplTest {
         when(options.isRemoveModelFile()).thenReturn(true);
 
         registry.remove(importId);
-        
+
         verify(runtimeModels).remove(eq(importId));
         verify(removedRuntimeModelEvent, times(0)).fire(any());
         assertTrue(Files.exists(Paths.get(file)));
@@ -263,7 +263,7 @@ public class RuntimeModelRegistryImplTest {
     public void testClear() throws IOException {
         String importId1 = FilenameUtils.getBaseName(tempFile.toFile().getPath());
         String importId2 = FilenameUtils.getBaseName(tempFile2.toFile().getPath());
-        
+
         when(options.buildFilePath(eq(importId1))).thenReturn(tempFile.toFile().getPath());
         when(options.buildFilePath(eq(importId2))).thenReturn(tempFile2.toFile().getPath());
         when(options.isRemoveModelFile()).thenReturn(true);
@@ -272,9 +272,9 @@ public class RuntimeModelRegistryImplTest {
         keys.add(importId1);
         keys.add(importId2);
         when(runtimeModels.keySet()).thenReturn(keys);
-        
+
         registry.clear();
-        
+
         verify(removedRuntimeModelEvent, times(2)).fire(any());
         verify(runtimeModels).clear();
         assertFalse(Files.exists(Paths.get(tempFile.toString())));

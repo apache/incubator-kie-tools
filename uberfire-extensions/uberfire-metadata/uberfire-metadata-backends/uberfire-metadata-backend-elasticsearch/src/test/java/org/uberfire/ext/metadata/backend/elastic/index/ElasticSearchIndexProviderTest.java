@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.metadata.backend.elastic.metamodel.ElasticMetaObject;
 import org.uberfire.ext.metadata.backend.elastic.metamodel.ElasticMetaProperty;
 import org.uberfire.ext.metadata.backend.elastic.provider.ElasticSearchContext;

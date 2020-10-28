@@ -96,8 +96,8 @@ public class UserAssignedGroupsExplorerTest {
         verify(groupList,
                times(1)).setEmptyEntitiesText(anyString());
         verify(view,
-               times(1)).configure(anyString(),
-                                   any(EntitiesList.View.class));
+               times(1)).configure(any(),
+                                   any());
         verify(view,
                times(0)).clear();
     }

@@ -33,7 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.mocks.FileSystemTestingUtils;
@@ -305,8 +305,6 @@ public class ConfigurationServiceImplTest {
 
         doNothing().when(ioService).startBatch(any(FileSystem.class));
         doNothing().when(ioService).endBatch();
-        doReturn(fileSystemTestingUtils.getFileSystem()).when(ioService).newFileSystem(any(URI.class),
-                                                                                       anyMap());
 
         return ioService;
     }

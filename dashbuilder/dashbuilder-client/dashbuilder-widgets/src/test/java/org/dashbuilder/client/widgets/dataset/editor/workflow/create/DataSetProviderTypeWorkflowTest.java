@@ -97,7 +97,7 @@ public class DataSetProviderTypeWorkflowTest extends AbstractDataSetWorkflowTest
         verify( dataSetDefProviderTypeDriver, times( 1 ) ).initialize( providerTypeEditor );
         verify( dataSetDefProviderTypeDriver, times( 1 ) ).edit( any( DataSetDef.class ) );
         verify( view, times( 2 ) ).clearView();
-        verify( view, times( 1 ) ).add( any( IsWidget.class ) );
+        verify( view, times( 1 ) ).add( any() );
         verify( view, times( 0 ) ).init( presenter );
         verify( view, times( 0 ) ).addButton( anyString(), anyString(), anyBoolean(), any( Command.class ) );
         verify( view, times( 0 ) ).clearButtons();

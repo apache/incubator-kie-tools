@@ -70,7 +70,6 @@ public abstract class AbstractExperimentalFeaturesStorageTest<STORAGE extends Ab
 
         doNothing().when(ioService).startBatch(any(FileSystem.class));
         doNothing().when(ioService).endBatch();
-        doReturn(fileSystem).when(ioService).newFileSystem(any(URI.class), anyMap());
 
         defRegistry = TestUtils.getRegistry();
 

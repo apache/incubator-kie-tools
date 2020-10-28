@@ -54,7 +54,7 @@ public class DataSetPanelTest {
     public void testInit() throws Exception {
         presenter.init();
         verify(view, times(1)).init(presenter);
-        verify(view, times(1)).configure(any(DataSetSummary.View.class));
+        verify(view, times(1)).configure(any());
         verify(view, times(0)).showHeader(anyString(), anyString(), any(SafeUri.class), anyString(), anyString());
         verify(view, times(0)).showSummary();
         verify(view, times(0)).hideSummary();

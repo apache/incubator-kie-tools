@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.util.GWTEditorNativeRegister;
@@ -140,7 +140,6 @@ public class ResourceTypeManagerCacheTest {
 
     private EditorDef registerResourceType(String categoryName, Class<?> editorActivityClass, String type, String priority) {
         Category category = mock(Category.class);
-        when(category.getName()).thenReturn(categoryName);
 
         ClientResourceType resourceType = mock(ClientResourceType.class);
         when(resourceType.getCategory()).thenReturn(category);
@@ -156,8 +155,6 @@ public class ResourceTypeManagerCacheTest {
     @Test
     public void testGetResourceTypeDefinitions() {
         Category process = mock(Category.class);
-
-        when(process.getName()).thenReturn("PROCESS");
 
         Assertions.assertThat(resourceTypeManagerCache.getResourceTypeDefinitionsByCategory(process))
                 .isEmpty();

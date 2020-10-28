@@ -93,7 +93,7 @@ public class RepositoryTreeProviderTest {
     @Test
     public void testChildrenNodes() {
         rootNode.expand(children -> {
-            verify(searchService).searchByAlias(anyString(),
+            verify(searchService).searchByAlias(any(),
                                                 anyInt(),
                                                 anyBoolean());
             for (PermissionNode child : children) {

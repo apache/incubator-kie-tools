@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Filter;
 import org.uberfire.commons.async.DescriptiveThreadFactory;
 import org.uberfire.java.nio.IOException;

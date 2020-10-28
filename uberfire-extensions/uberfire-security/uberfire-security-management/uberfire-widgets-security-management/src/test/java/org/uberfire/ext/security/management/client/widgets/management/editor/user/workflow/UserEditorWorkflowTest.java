@@ -190,7 +190,7 @@ public class UserEditorWorkflowTest extends AbstractSecurityManagementTest {
         tested.onChangeUserPasswordEvent(onChangePasswordEvent);
         verify(changePassword,
                times(1)).show(anyString(),
-                              any(ChangePassword.ChangePasswordCallback.class));
+                              any());
     }
 
     @Test

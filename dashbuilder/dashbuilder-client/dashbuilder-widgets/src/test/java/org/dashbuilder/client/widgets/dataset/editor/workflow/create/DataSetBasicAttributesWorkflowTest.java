@@ -108,7 +108,7 @@ public class DataSetBasicAttributesWorkflowTest extends AbstractDataSetWorkflowT
         verify( dataSetDefBasicAttributesDriver, times( 2 ) ).initialize( basicAttributesEditor );
         verify( dataSetDefBasicAttributesDriver, times( 2 ) ).edit( def );
         verify( view, times( 2 ) ).clearView();
-        verify( view, times( 2 ) ).add( any( IsWidget.class ) );
+        verify( view, times( 2 ) ).add( any() );
         verify( view, times( 0 ) ).init( presenter );
         verify( view, times( 0 ) ).addButton( anyString(), anyString(), anyBoolean(), any( Command.class ) );
         verify( view, times( 0 ) ).clearButtons();

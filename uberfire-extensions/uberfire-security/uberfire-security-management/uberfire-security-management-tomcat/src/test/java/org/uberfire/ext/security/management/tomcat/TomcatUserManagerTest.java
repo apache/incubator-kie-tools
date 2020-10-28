@@ -42,7 +42,7 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.server.security.RoleRegistry;
 import org.uberfire.commons.config.ConfigProperties;
@@ -223,7 +223,6 @@ public class TomcatUserManagerTest extends BaseTest {
         properties.put(BaseTomcatManager.ATTRIBUTE_USER_FULLNAME,
                        "user1 Full Name");
         when(user.getProperty(BaseTomcatManager.ATTRIBUTE_USER_FULLNAME)).thenReturn("user1 Full Name");
-        when(user.getProperties()).thenReturn(properties);
         User userUpdated = usersManager.update(user);
         assertNotNull(userUpdated);
         assertEquals("user1 Full Name",
@@ -239,7 +238,6 @@ public class TomcatUserManagerTest extends BaseTest {
     @Test
     public void testAssignGroups() {
         final User user = mock(User.class);
-        when(user.getIdentifier()).thenReturn("user1");
         when(user.getRoles()).thenReturn(new HashSet<Role>());
         UserManager userManagerMock = mock(UserManager.class);
         doAnswer(new Answer<User>() {
@@ -265,7 +263,6 @@ public class TomcatUserManagerTest extends BaseTest {
         RoleRegistry.get().registerRole("role1");
         RoleRegistry.get().registerRole("role3");
         final User user = mock(User.class);
-        when(user.getIdentifier()).thenReturn("user1");
         when(user.getGroups()).thenReturn(new HashSet<Group>());
         UserManager userManagerMock = mock(UserManager.class);
         doAnswer(new Answer<User>() {
@@ -291,7 +288,6 @@ public class TomcatUserManagerTest extends BaseTest {
     public void testAssignRolesNotAllRegistered() {
         RoleRegistry.get().registerRole("role1");
         final User user = mock(User.class);
-        when(user.getIdentifier()).thenReturn("user1");
         when(user.getGroups()).thenReturn(new HashSet<Group>());
         UserManager userManagerMock = mock(UserManager.class);
         doAnswer(new Answer<User>() {

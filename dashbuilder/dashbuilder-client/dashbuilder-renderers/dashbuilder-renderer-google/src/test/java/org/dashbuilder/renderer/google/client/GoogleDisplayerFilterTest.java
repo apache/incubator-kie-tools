@@ -22,7 +22,7 @@ import org.dashbuilder.displayer.DisplayerSettingsFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.dashbuilder.dataset.ExpenseReportsData.*;
 import static org.dashbuilder.dataset.group.AggregateFunctionType.*;
@@ -45,7 +45,6 @@ public class GoogleDisplayerFilterTest extends GoogleDisplayerTest {
 
     public void resetFilterLabelSet(FilterLabelSet filterLabelSet) {
         reset(filterLabelSet);
-        doAnswer(invocationOnMock -> filterLabel).when(filterLabelSet).addLabel(anyString());
     }
 
     @Test

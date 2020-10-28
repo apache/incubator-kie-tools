@@ -47,7 +47,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.io.IOService;
@@ -142,11 +142,6 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
         doReturn(Optional.of(branch)).when(repository).getDefaultBranch();
         doReturn(repositoryRoot).when(branch).getPath();
 
-        doReturn(repository).when(repositoryService).createRepository(eq(ou),
-                                                                      eq("git"),
-                                                                      eq("myproject"),
-                                                                      any(RepositoryEnvironmentConfigurations.class));
-
         pom = createPOM("my project");
 
         when(ou.getSpace()).thenReturn(space);
@@ -160,9 +155,7 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
 
         doReturn(moduleService).when(moduleServices).get();
 
-        when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
         when(spaceConfigStorageRegistry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
-        when(spaceConfigStorageRegistry.exist(anyString())).thenReturn(true);
 
         workspaceProjectService = new WorkspaceProjectServiceImpl(mock(OrganizationalUnitService.class),
                                                                   repositoryService,
@@ -364,7 +357,7 @@ public class WorkspaceProjectServiceImplNewWorkspaceWorkspaceProjectTest {
                 .isInstanceOf(expectedExceptionType)
                 .hasMessage(expectedMessage);
 
-        verify(repositoryService).removeRepository(any(), anyString());
+        verify(repositoryService).removeRepository(any(), any());
         verify(newProjectEvent, never()).fire(any());
     }
 

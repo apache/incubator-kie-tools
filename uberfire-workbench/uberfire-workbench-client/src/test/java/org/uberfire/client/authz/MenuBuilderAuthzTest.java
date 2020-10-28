@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.menu.AuthFilterMenuVisitor;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.PermissionManager;

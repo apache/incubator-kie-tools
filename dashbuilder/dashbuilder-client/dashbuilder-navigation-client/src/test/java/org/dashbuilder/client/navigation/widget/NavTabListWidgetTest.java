@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 
 import static org.junit.Assert.*;
@@ -104,21 +104,21 @@ public class NavTabListWidgetTest {
         assertEquals(presenter.getItemSelected(), tree.getItemById(ITEM_ID_HOME));
 
         verify(view).init(presenter);
-        verify(view).addItem(eq(ITEM_ID_HOME), anyString(), anyString(), any());
-        verify(view).addItem(eq(ITEM_ID_GALLERY), anyString(), anyString(), any());
-        verify(view).addGroupItem(eq(ITEM_ID_ADMIN), anyString(), anyString(), eq(tabsAdmin));
-        verify(view).addGroupItem(eq(ITEM_ID_DASHBOARDS), anyString(), anyString(), eq(tabsDashboards));
+        verify(view).addItem(eq(ITEM_ID_HOME), anyString(), any(), any());
+        verify(view).addItem(eq(ITEM_ID_GALLERY), anyString(), any(), any());
+        verify(view).addGroupItem(eq(ITEM_ID_ADMIN), anyString(), any(), eq(tabsAdmin));
+        verify(view).addGroupItem(eq(ITEM_ID_DASHBOARDS), anyString(), any(), eq(tabsDashboards));
         verify(view).setSelectedItem(ITEM_ID_HOME);
 
         verify(viewAdmin).showAsSubmenu(true);
         verify(viewAdmin, never()).showChildrenTabs(any());
-        verify(viewAdmin).addItem(eq(ITEM_ID_DATASETS), anyString(), anyString(), any());
-        verify(viewAdmin).addItem(eq(ITEM_ID_CONTENTMGMT), anyString(), anyString(), any());
+        verify(viewAdmin).addItem(eq(ITEM_ID_DATASETS), anyString(), any(), any());
+        verify(viewAdmin).addItem(eq(ITEM_ID_CONTENTMGMT), anyString(), any(), any());
 
         verify(viewDashboards).showAsSubmenu(true);
         verify(viewDashboards, never()).showChildrenTabs(any());
-        verify(viewDashboards).addItem(eq(ITEM_ID_DASHBOARD1), anyString(), anyString(), any());
-        verify(viewDashboards).addItem(eq(ITEM_ID_DASHBOARD2), anyString(), anyString(), any());
+        verify(viewDashboards).addItem(eq(ITEM_ID_DASHBOARD1), anyString(), any(), any());
+        verify(viewDashboards).addItem(eq(ITEM_ID_DASHBOARD2), anyString(), any(), any());
     }
 
     @Test

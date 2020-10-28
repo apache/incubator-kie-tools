@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.dashbuilder.dataset.ExpenseReportsData.*;
 import static org.mockito.Mockito.*;
@@ -60,7 +60,7 @@ public class DisplayerExportTest extends AbstractDisplayerTest {
         displayer.draw();
         displayer.export(ExportFormat.CSV, -1, exportCallback);
 
-        verify(exportCallback).exportFileUrl(anyString());
+        verify(exportCallback).exportFileUrl(any());
     }
 
     @Test
@@ -96,7 +96,7 @@ public class DisplayerExportTest extends AbstractDisplayerTest {
         displayer.export(ExportFormat.CSV, 0, exportCallback);
 
         verify(exportCallback, never()).tooManyRows(anyInt());
-        verify(exportCallback).exportFileUrl(anyString());
+        verify(exportCallback).exportFileUrl(any());
     }
 
     @Test

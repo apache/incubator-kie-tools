@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.server.security.RoleRegistry;
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleMappingResource;

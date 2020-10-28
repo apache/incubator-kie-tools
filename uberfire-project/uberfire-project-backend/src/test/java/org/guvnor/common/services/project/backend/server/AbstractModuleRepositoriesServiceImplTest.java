@@ -32,7 +32,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -120,7 +120,7 @@ public class AbstractModuleRepositoriesServiceImplTest {
 
         verify(ioService,
                times(1)).startBatch(any(FileSystem.class),
-                                    any(CommentedOption.class));
+                                    any());
         verify(ioService,
                times(1)).write(eq(nioPath),
                                eq(xml));
@@ -164,8 +164,8 @@ public class AbstractModuleRepositoriesServiceImplTest {
                times(1)).getRemoteRepositoriesMetaData(eq(module));
 
         verify(ioService,
-               times(1)).startBatch(any(FileSystem.class),
-                                    any(CommentedOption.class));
+               times(1)).startBatch(any(),
+                                    any());
         verify(ioService,
                times(1)).write(eq(nioPath),
                                eq(xml));
@@ -258,7 +258,7 @@ public class AbstractModuleRepositoriesServiceImplTest {
 
         verify(ioService,
                times(1)).startBatch(any(FileSystem.class),
-                                    any(CommentedOption.class));
+                                    any());
         verify(ioService,
                times(1)).write(eq(nioPath),
                                eq(xml));

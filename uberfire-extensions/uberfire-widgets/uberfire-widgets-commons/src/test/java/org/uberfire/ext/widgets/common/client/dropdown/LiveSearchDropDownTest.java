@@ -222,7 +222,7 @@ public class LiveSearchDropDownTest {
                      "");
 
         verify(view,
-               times(2)).searchInProgress(anyString());
+               times(2)).searchInProgress(any());
         verify(searchService).search(eq("a"),
                                      anyInt(),
                                      any());
@@ -237,7 +237,7 @@ public class LiveSearchDropDownTest {
         verify(view,
                times(3)).addItem(any());
         verify(view,
-               times(3)).noItems(anyString());
+               times(3)).noItems(any());
     }
 
     @Test
@@ -256,7 +256,7 @@ public class LiveSearchDropDownTest {
                      "");
 
         verify(view,
-               times(6)).searchInProgress(anyString());
+               times(6)).searchInProgress(any());
         verify(searchService,
                times(3)).search(eq("a"),
                                 anyInt(),
@@ -273,7 +273,7 @@ public class LiveSearchDropDownTest {
         verify(view,
                times(3)).addItem(any());
         verify(view,
-               times(3)).noItems(anyString());
+               times(3)).noItems(any());
     }
 
     @Test

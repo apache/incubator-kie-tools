@@ -103,12 +103,12 @@ public class CompassDropControllerTest {
         compassDropController.onDrop(dragContext);
 
         verify(panelManager,
-               never()).addWorkbenchPanel(any(PanelDefinition.class),
-                                          any(Position.class),
-                                          any(Integer.class),
-                                          any(Integer.class),
-                                          any(Integer.class),
-                                          any(Integer.class));
+               never()).addWorkbenchPanel(any(),
+                                          any(),
+                                          any(),
+                                          any(),
+                                          any(),
+                                          any());
     }
 
     @Test
@@ -121,20 +121,20 @@ public class CompassDropControllerTest {
 
         compassDropController.onDrop(dragContext);
 
-        verify(panelManager).addWorkbenchPanel(any(PanelDefinition.class),
-                                               any(Position.class),
-                                               any(Integer.class),
-                                               any(Integer.class),
-                                               any(Integer.class),
-                                               any(Integer.class));
+        verify(panelManager).addWorkbenchPanel(any(),
+                                               any(),
+                                               any(),
+                                               any(),
+                                               any(),
+                                               any());
 
-        verify(panelManager).addWorkbenchPart(any(PlaceRequest.class),
-                                              any(PartDefinition.class),
-                                              any(PanelDefinition.class),
-                                              any(Menus.class),
-                                              any(UIPart.class),
-                                              any(String.class),
-                                              isNull(Integer.class),
-                                              isNull(Integer.class));
+        verify(panelManager).addWorkbenchPart(any(),
+                                              any(),
+                                              any(),
+                                              any(),
+                                              any(),
+                                              any(),
+                                              isNull(),
+                                              isNull());
     }
 }

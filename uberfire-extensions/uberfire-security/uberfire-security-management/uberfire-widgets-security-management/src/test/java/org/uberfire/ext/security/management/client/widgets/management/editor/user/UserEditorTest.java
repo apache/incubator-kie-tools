@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.widgets.management.editor.AssignedEntitiesEditor;
@@ -109,12 +109,12 @@ public class UserEditorTest {
         verify(view,
                times(1)).init(presenter);
         verify(view,
-               times(1)).initWidgets(any(UserAttributesEditor.View.class),
-                                     any(AssignedEntitiesExplorer.class),
-                                     any(AssignedEntitiesEditor.class),
-                                     any(AssignedEntitiesExplorer.class),
-                                     any(AssignedEntitiesEditor.class),
-                                     any(ACLViewer.class));
+               times(1)).initWidgets(any(),
+                                     any(),
+                                     any(),
+                                     any(),
+                                     any(),
+                                     any());
         verify(view,
                times(0)).setAddToGroupsButtonVisible(anyBoolean());
         verify(view,

@@ -25,7 +25,7 @@ import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
 
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

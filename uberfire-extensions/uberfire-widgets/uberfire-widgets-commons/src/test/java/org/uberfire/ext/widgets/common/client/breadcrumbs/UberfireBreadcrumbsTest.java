@@ -84,7 +84,7 @@ public class UberfireBreadcrumbsTest {
     public void createBreadcrumbsTest() {
         uberfireBreadcrumbs.createBreadcrumbs();
 
-        verify(uberfireBreadcrumbsContainer).init(any(HTMLElement.class));
+        verify(uberfireBreadcrumbsContainer).init(any());
     }
 
     @Test
@@ -251,9 +251,9 @@ public class UberfireBreadcrumbsTest {
         uberfireBreadcrumbs.getView();
 
         verify(view,
-               times(2)).addBreadcrumb(any(UberElemental.class));
+               times(2)).addBreadcrumb(any());
         verify(view,
-               times(1)).addBreadcrumbToolbar(any(Element.class));
+               times(1)).addBreadcrumbToolbar(any());
     }
 
     @Test

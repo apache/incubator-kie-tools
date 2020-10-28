@@ -19,7 +19,7 @@ package org.uberfire.client.authz;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;

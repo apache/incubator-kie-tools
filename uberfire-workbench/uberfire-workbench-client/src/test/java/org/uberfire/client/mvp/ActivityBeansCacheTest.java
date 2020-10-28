@@ -30,7 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.util.GWTEditorNativeRegister;
 import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
@@ -77,8 +77,6 @@ public class ActivityBeansCacheTest {
                                        resourceTypeManagerCache,
                                        experimentalActivitiesAuthorizationManager,
                                        gwtEditorNativeRegister));
-
-        doNothing().when(cache).registerGwtEditorProvider();
     }
 
     @Test
@@ -212,9 +210,6 @@ public class ActivityBeansCacheTest {
         Collection<SyncBeanDef> resourceTypeBeans1 = createResourceType("MODEL");
         when(iocManager.lookupBeans(eq("resource1"))).thenReturn(resourceTypeBeans1);
 
-        Collection<SyncBeanDef> resourceTypeBeans2 = createResourceType("MODEL");
-        when(iocManager.lookupBeans(eq("resource2"))).thenReturn(resourceTypeBeans2);
-
         SyncBeanDef mock = mock(SyncBeanDef.class);
         when(mock.getName()).thenReturn("resource1");
         cache.addNewEditorActivity(mock,
@@ -233,9 +228,7 @@ public class ActivityBeansCacheTest {
 
     private Collection<SyncBeanDef> createResourceType(String type) {
         Category model = mock(Category.class);
-        when(model.getName()).thenReturn(type);
         ClientResourceType clientResourceType = mock(ClientResourceType.class);
-        when(clientResourceType.getCategory()).thenReturn(model);
         SyncBeanDef<ClientResourceType> syncBeanDef = mock(SyncBeanDef.class);
         when(syncBeanDef.getInstance()).thenReturn(clientResourceType);
         return Arrays.asList(syncBeanDef);

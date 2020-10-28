@@ -37,7 +37,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractDisplayerTest extends AbstractDataSetTest {
@@ -61,22 +61,6 @@ public class AbstractDisplayerTest extends AbstractDataSetTest {
                 clientDataSetManager,
                 rendererManager,
                 formatterRegistry);
-
-        when(rendererManager.getRendererForDisplayer(any(DisplayerSettings.class))).thenReturn(rendererLibrary);
-
-        doAnswer(mock ->  createNewDisplayer((DisplayerSettings) mock.getArguments()[0]))
-                .when(rendererLibrary).lookupDisplayer(any(DisplayerSettings.class));
-
-        doAnswer(mock -> createNewDisplayer((DisplayerSettings) mock.getArguments()[0]))
-                .when(rendererLibrary).lookupDisplayer(any(DisplayerSettings.class));
-
-        doAnswer(mock -> {
-            List<Displayer> displayerList = (List<Displayer>) mock.getArguments()[0];
-            for (Displayer displayer : displayerList) {
-                displayer.draw();
-            }
-            return null;
-        }).when(rendererLibrary).draw(anyListOf(Displayer.class));
     }
 
     public AbstractDisplayer createNewDisplayer(DisplayerSettings settings) {

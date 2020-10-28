@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.server.io.object.ObjectStorage;
 import org.uberfire.io.IOService;
 import org.uberfire.mocks.FileSystemTestingUtils;
@@ -253,9 +253,6 @@ public class SpaceConfigStorageImplTest {
         fileSystemTestingUtils.getIoService().createFile(fileSystemTestingUtils.getIoService().get(URI.create(PATH_PREFIX + "MyProject/change_requests/1/information.cr")));
         fileSystemTestingUtils.getIoService().createFile(fileSystemTestingUtils.getIoService().get(URI.create(PATH_PREFIX + "MyProject/change_requests/2/information.cr")));
 
-        doReturn(true).when(objectStorage).exists("/MyProject/change_requests");
-        doReturn(crsPath).when(objectStorage).getPath("/MyProject/change_requests");
-
         final List<Long> ids = spaceConfigStorage.getChangeRequestIds("MyOtherProject");
 
         assertSame(0, ids.size());
@@ -376,9 +373,6 @@ public class SpaceConfigStorageImplTest {
         fileSystemTestingUtils.getIoService().createFile(fileSystemTestingUtils.getIoService().get(URI.create(PATH_PREFIX + "MyProject/change_requests/1/comments/20.comment")));
         fileSystemTestingUtils.getIoService().createFile(fileSystemTestingUtils.getIoService().get(URI.create(PATH_PREFIX + "MyProject/change_requests/1/comments/30.comment")));
 
-        doReturn(true).when(objectStorage).exists("/MyProject/change_requests/1/comments");
-        doReturn(commentsPath).when(objectStorage).getPath("/MyProject/change_requests/1/comments");
-
         final List<Long> ids = spaceConfigStorage.getChangeRequestCommentIds("MyProject", 2L);
 
         assertSame(0, ids.size());
@@ -391,9 +385,6 @@ public class SpaceConfigStorageImplTest {
         fileSystemTestingUtils.getIoService().createFile(fileSystemTestingUtils.getIoService().get(URI.create(PATH_PREFIX + "MyProject/change_requests/1/comments/1.comment")));
         fileSystemTestingUtils.getIoService().createFile(fileSystemTestingUtils.getIoService().get(URI.create(PATH_PREFIX + "MyProject/change_requests/1/comments/20.comment")));
         fileSystemTestingUtils.getIoService().createFile(fileSystemTestingUtils.getIoService().get(URI.create(PATH_PREFIX + "MyProject/change_requests/1/comments/30.comment")));
-
-        doReturn(true).when(objectStorage).exists("/MyProject/change_requests/1/comments");
-        doReturn(commentsPath).when(objectStorage).getPath("/MyProject/change_requests/1/comments");
 
         final List<Long> ids = spaceConfigStorage.getChangeRequestCommentIds("MyOtherProject", 1L);
 

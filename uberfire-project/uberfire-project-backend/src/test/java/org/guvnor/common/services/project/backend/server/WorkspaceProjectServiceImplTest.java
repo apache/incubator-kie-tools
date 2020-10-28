@@ -53,7 +53,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.ArgumentCaptor;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.file.FileSystem;
@@ -143,11 +143,8 @@ public class WorkspaceProjectServiceImplTest {
         sessionInfo = new SessionInfoMock();
 
         doReturn(moduleService).when(moduleServices).get();
-        doReturn(allRepositories).when(repositoryService).getAllRepositoriesFromAllUserSpaces();
 
-        when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
         when(spaceConfigStorageRegistry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
-        when(spaceConfigStorageRegistry.exist(anyString())).thenReturn(true);
 
         workspaceProjectService = new WorkspaceProjectServiceImpl(organizationalUnitService,
                                                                   repositoryService,
@@ -172,14 +169,10 @@ public class WorkspaceProjectServiceImplTest {
         space1 = spaces.getSpace("ou1");
         space2 = spaces.getSpace("ou2");
 
-        doReturn(ou1).when(organizationalUnitService).getOrganizationalUnit("ou1");
-        doReturn(ou2).when(organizationalUnitService).getOrganizationalUnit("ou2");
-
         final List<OrganizationalUnit> allOUs = new ArrayList<>();
         allOUs.add(ou1);
         allOUs.add(ou2);
         doReturn(allOUs).when(organizationalUnitService).getOrganizationalUnits();
-        doReturn(allOUs).when(organizationalUnitService).getAllOrganizationalUnits();
 
         ou1.getRepositories().add(repository1);
         ou1.getRepositories().add(repository2);
@@ -196,24 +189,17 @@ public class WorkspaceProjectServiceImplTest {
         doReturn("repository-with-same-alias").when(repository2).getAlias();
         doReturn("space1/repository-with-same-alias").when(repository2).getIdentifier();
         doReturn(Optional.of(mock(Branch.class))).when(repository3).getDefaultBranch();
-        doReturn("repository-with-same-alias").when(repository3).getAlias();
-        doReturn("space2/repository-with-same-alias").when(repository3).getIdentifier();
 
         allRepositories = new ArrayList<>();
         allRepositories.add(repository1);
         allRepositories.add(repository2);
         allRepositories.add(repository3);
 
-        doReturn(allRepositories).when(repositoryService).getAllRepositoriesFromAllUserSpaces();
-        doReturn(allRepositories).when(repositoryService).getAllRepositoriesFromAllUserSpaces();
-        doReturn(Arrays.asList(repository1,
-                               repository2)).when(repositoryService).getRepositories(Mockito.eq(space1));
         doReturn(Arrays.asList(repository1,
                                repository2)).when(repositoryService).getAllRepositories(Mockito.eq(space1),
                                                                                         anyBoolean());
         doReturn(Arrays.asList(repository3)).when(repositoryService).getAllRepositories(Mockito.eq(space2),
                                                                                         anyBoolean());
-        doReturn(Collections.singletonList(repository3)).when(repositoryService).getRepositories(Mockito.eq(space2));
     }
 
     @Test
@@ -301,8 +287,6 @@ public class WorkspaceProjectServiceImplTest {
     public void noProjects() {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         doReturn("myOU").when(organizationalUnit).getName();
-
-        doReturn(organizationalUnit).when(organizationalUnitService).getOrganizationalUnit("myOU");
 
         assertTrue(workspaceProjectService.getAllWorkspaceProjects(organizationalUnit).isEmpty());
     }
@@ -401,12 +385,6 @@ public class WorkspaceProjectServiceImplTest {
                           "description",
                           "url",
                           null);
-        when(this.repositoryResolver.getRepositoriesResolvingArtifact(any(GAV.class))).thenReturn(Collections.emptySet());
-        when(this.repositoryService.createRepository(eq(this.ou1),
-                                                     eq("git"),
-                                                     any(),
-                                                     any()))
-                .thenReturn(this.repository1);
 
         when(repositoryService.createRepository(any(), anyString(), anyString(), any(), any())).thenReturn(repository2);
 
@@ -438,7 +416,7 @@ public class WorkspaceProjectServiceImplTest {
                                                          makeBranch("repo1-branch2",
                                                                     repository1.getAlias()));
         when(repository1.getBranches()).thenReturn(repo1Branches);
-        when(repository1.getBranch(anyString())).then(inv -> repo1Branches.stream().filter(b -> b.getName().equals(inv.getArgumentAt(0, String.class))).findFirst());
+        when(repository1.getBranch(anyString())).then(inv -> repo1Branches.stream().filter(b -> b.getName().equals(inv.getArgument(0, String.class))).findFirst());
 
         doReturn(new Space("my-space")).when(project).getSpace();
         doReturn(mock(SpaceConfigStorage.class)).when(spaceConfigStorageRegistry).get("my-space");
@@ -450,13 +428,6 @@ public class WorkspaceProjectServiceImplTest {
         doReturn(fileSystemProvider).when(fileSystem).provider();
         doReturn(fileSystem).when(baseBranchPath).getFileSystem();
         doReturn(baseBranchPath).when(pathUtil).convert(path);
-
-        doReturn(repository1).when(repositoryService).getRepository(any());
-
-        Branch newBranch = makeBranch("new-branch", "repo1");
-        Branch branch1Branch = makeBranch("repo1-branch1", "repo1");
-
-        when(repository1.getBranch(any(Path.class))).thenReturn(Optional.of(newBranch)).thenReturn(Optional.of(branch1Branch));
 
         final org.uberfire.java.nio.file.Path newBranchPath = mock(org.uberfire.java.nio.file.Path.class);
         doReturn(newBranchPath).when(ioService).get(new URI("default://new-branch@repo1/"));
@@ -487,7 +458,6 @@ public class WorkspaceProjectServiceImplTest {
         final org.uberfire.java.nio.file.Path baseBranchPath = mock(org.uberfire.java.nio.file.Path.class);
         final FileSystem fileSystem = mock(FileSystem.class);
         final FileSystemProvider fileSystemProvider = mock(FileSystemProvider.class);
-        doReturn(fileSystemProvider).when(fileSystem).provider();
         doReturn(fileSystem).when(baseBranchPath).getFileSystem();
         doReturn(baseBranchPath).when(pathUtil).convert(any(Path.class));
 
@@ -495,8 +465,7 @@ public class WorkspaceProjectServiceImplTest {
                                                                     repository1.getAlias()),
                                                          makeBranch("repo1-branch2",
                                                                     repository1.getAlias()));
-        when(repository1.getBranches()).thenReturn(repo1Branches);
-        when(repository1.getBranch(anyString())).then(inv -> repo1Branches.stream().filter(b -> b.getName().equals(inv.getArgumentAt(0, String.class))).findFirst());
+        when(repository1.getBranch(anyString())).then(inv -> repo1Branches.stream().filter(b -> b.getName().equals(inv.getArgument(0, String.class))).findFirst());
 
         final WorkspaceProject project = mock(WorkspaceProject.class);
         doReturn(repository1).when(project).getRepository();

@@ -17,6 +17,7 @@
 package org.uberfire.client.docks.view;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.docks.view.bars.DocksCollapsedBar;
 import org.uberfire.client.docks.view.bars.DocksExpandedBar;
 import org.uberfire.client.docks.view.menu.MenuBuilder;
@@ -66,7 +68,7 @@ public class DocksBars_OpenDockTest {
                            getDocksBar());
 
         verify(placeManager).goTo(placeRequestArgumentCaptor.capture(),
-                                  any(FlowPanel.class));
+                                  Mockito.<HasWidgets>any());
 
         final PlaceRequest placeRequest = placeRequestArgumentCaptor.getValue();
         assertEquals("myPlace",

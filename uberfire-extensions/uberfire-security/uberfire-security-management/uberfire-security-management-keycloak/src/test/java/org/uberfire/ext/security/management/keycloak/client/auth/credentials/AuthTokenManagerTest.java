@@ -26,7 +26,7 @@ import org.junit.runner.RunWith;
 import org.keycloak.OAuth2Constants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.keycloak.client.auth.TokenService;
 
 import static org.mockito.Mockito.*;
@@ -48,7 +48,6 @@ public class AuthTokenManagerTest {
         when(config.getClientId()).thenReturn("clientId1");
         when(config.getClientSecret()).thenReturn("clientSecret1");
         when(config.getPassword()).thenReturn("password1");
-        when(config.getServerUrl()).thenReturn("serverUrl1");
         when(config.isPublicClient()).thenReturn(false);
         this.tokenManager = spy(new AuthTokenManager(config));
         this.tokenService = mock(TokenService.class);
@@ -163,7 +162,6 @@ public class AuthTokenManagerTest {
         doThrow(exception).when(tokenService).grantToken(anyString(),
                                                          anyString(),
                                                          any(MultivaluedMap.class));
-        when(response.getExpiresIn()).thenReturn(1000l);
         when(config.isPublicClient()).thenReturn(true);
         this.tokenManager.grantToken();
         Assert.assertNull(this.tokenManager.accessTokenResponse);

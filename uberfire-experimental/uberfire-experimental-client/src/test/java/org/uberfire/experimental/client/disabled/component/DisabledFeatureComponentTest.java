@@ -22,11 +22,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.experimental.client.resources.i18n.UberfireExperimentalConstants;
 import org.uberfire.experimental.service.definition.ExperimentalFeatureDefRegistry;
 import org.uberfire.experimental.service.definition.ExperimentalFeatureDefinition;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -88,6 +89,6 @@ public class DisabledFeatureComponentTest {
 
         verify(translationService).format(eq(i18nConstant), anyString());
 
-        verify(view).show(anyString());
+        verify(view).show(any());
     }
 }

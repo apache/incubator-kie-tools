@@ -153,7 +153,7 @@ public class DataSetDefEditorPresenterTest {
     public void testLoadContentNullified() throws Exception {
         when(dataSetDefVfsServices.load(any(Path.class))).thenReturn(null);
         presenter.loadContent();
-        verify(dataSetDefVfsServices, times(1)).load(any(Path.class));
+        verify(dataSetDefVfsServices, times(1)).load(any());
         verify(errorPopupPresenter, times(1)).showMessage(anyString());
         verify(view, times(1)).hideBusyIndicator();
         verify(view, times(0)).setWidget(any(IsWidget.class));

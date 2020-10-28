@@ -359,7 +359,7 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
         tested.doChangePassword();
         verify(changePassword,
                times(1)).show(anyString(),
-                              any(ChangePassword.ChangePasswordCallback.class));
+                              any());
         assertNoViewCalls();
     }
 

@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.experimental.service.backend.ExperimentalFeaturesSession;
 import org.uberfire.experimental.service.definition.impl.ExperimentalFeatureDefRegistryImpl;

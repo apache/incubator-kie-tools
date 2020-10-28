@@ -36,7 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.FileSystemLock;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
@@ -157,7 +157,6 @@ public class SpaceConfigCleanUpTest {
         final Repository repository = mock(Repository.class);
         final File directory = mock(File.class);
 
-        doReturn(path).when(fs).getPath(anyString());
         doReturn(directory).when(directory).getParentFile();
         doReturn(directory).when(repository).getDirectory();
         doReturn(repository).when(git).getRepository();

@@ -55,8 +55,7 @@ public class CSVDataSetDefAttributesEditorTest {
     public void testInit() {
         presenter.init();
         verify(view, times(1)).init(presenter);
-        verify(view, times(1)).initWidgets(any(ValueBoxEditor.View.class), any(IsWidget.class),any(ValueBoxEditor.View.class), 
-                any(ValueBoxEditor.View.class), any(ValueBoxEditor.View.class), any(ValueBoxEditor.View.class), any(ValueBoxEditor.View.class));
+        verify(view, times(1)).initWidgets(any(), any(),any(), any(), any(), any(), any());
         verify(fileURL, times(1)).addHelpContent(anyString(), anyString(), any(Placement.class));
         verify(filePath, times(1)).addHelpContent(anyString(), anyString(), any(Placement.class));
         verify(separatorChar, times(1)).addHelpContent(anyString(), anyString(), any(Placement.class));

@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.experimental.service.definition.impl.ExperimentalFeatureDefRegistryImpl;
 import org.uberfire.experimental.service.events.PortableExperimentalFeatureModifiedEvent;
 import org.uberfire.experimental.service.registry.impl.ExperimentalFeatureImpl;

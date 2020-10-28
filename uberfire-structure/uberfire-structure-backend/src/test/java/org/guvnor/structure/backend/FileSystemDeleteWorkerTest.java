@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
@@ -80,7 +80,6 @@ public class FileSystemDeleteWorkerTest {
                                                      this.removeOrganizationalUnitEvent,
                                                      this.configurationService));
 
-        doAnswer(invocation -> null).when(ioService).delete(any());
         doAnswer(invocation -> null).when(worker).removeRepository(any());
         doAnswer(invocation -> null).when(worker).delete(any());
         doAnswer(invocation -> null).when(removeOrganizationalUnitEvent).fire(any());
@@ -108,8 +107,6 @@ public class FileSystemDeleteWorkerTest {
                 .when(this.repoService)
                 .getAllRepositories(eq(space),
                                     eq(true));
-
-        doReturn(configPath).when(ioService).get(any());
 
         File spacePathFile = mock(File.class);
         doReturn(spacePathFile).when(worker).getSpacePath(any());
@@ -150,7 +147,6 @@ public class FileSystemDeleteWorkerTest {
     @Test
     public void testRemoveZeroDeletedSpaces() {
 
-        doAnswer(invocation -> null).when(worker).removeSpaceDirectory(any());
         doReturn(new ArrayList<>()).when(this.ouService).getAllDeletedOrganizationalUnit();
         this.worker.removeAllDeletedSpaces();
         verify(this.worker,
@@ -186,7 +182,6 @@ public class FileSystemDeleteWorkerTest {
 
         Branch branch = mock(Branch.class);
         Repository repo = mock(Repository.class);
-        doReturn(Optional.of(branch)).when(repo).getDefaultBranch();
 
         this.worker.removeAllDeletedRepositories();
 

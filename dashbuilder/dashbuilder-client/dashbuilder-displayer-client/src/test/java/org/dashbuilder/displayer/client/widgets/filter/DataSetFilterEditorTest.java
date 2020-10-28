@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -67,7 +67,6 @@ public class DataSetFilterEditorTest {
         when(metadata.getColumnId(1)).thenReturn("column2");
         when(metadata.getColumnId(2)).thenReturn("column3");
         when(metadata.getColumnType(0)).thenReturn(ColumnType.LABEL);
-        when(metadata.getColumnType(1)).thenReturn(ColumnType.NUMBER);
         when(metadata.getColumnType(2)).thenReturn(ColumnType.DATE);
     }
 

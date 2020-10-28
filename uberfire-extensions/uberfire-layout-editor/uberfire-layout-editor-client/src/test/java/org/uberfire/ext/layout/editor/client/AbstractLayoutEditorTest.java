@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -164,7 +164,6 @@ public abstract class AbstractLayoutEditorTest {
             protected ComponentColumn createComponentColumnInstance() {
 
                 ManagedInstance managedInstanceMock = mock(ManagedInstance.class);
-                when(managedInstanceMock.get()).thenReturn(new ComponentColumnPart());
                 ComponentColumn componentColumn = new ComponentColumn(mock(ComponentColumn.View.class),
                                                                       dnDManager,
                                                                       dragHelper,
@@ -247,7 +246,6 @@ public abstract class AbstractLayoutEditorTest {
     public void setup() {
         container = createContainer();
         container.setup();
-        when(dragHelper.getLayoutComponentFromDrop(any())).thenReturn(new LayoutComponent());
     }
 
     protected LayoutTemplate loadLayout(String singleRowComponentLayout) throws Exception {

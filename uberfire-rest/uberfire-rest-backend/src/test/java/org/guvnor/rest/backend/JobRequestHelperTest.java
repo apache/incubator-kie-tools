@@ -49,7 +49,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
@@ -422,7 +422,7 @@ public class JobRequestHelperTest {
                                                        null);
 
         verify(testService).runAllTests(eq("JobRequestHelper"),
-                                        any(Path.class),
+                                        any(),
                                         captor.capture());
 
         captor.getValue().fire(message);

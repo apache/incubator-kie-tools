@@ -37,7 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.spaces.Space;
@@ -122,8 +122,6 @@ public class ConfiguredRepositoriesTest {
             final SpaceConfigStorage spaceConfigStorage = mock(SpaceConfigStorage.class);
             String spaceName = (String) invocationOnMock.getArguments()[0];
             doReturn(spaces.get(spaceName)).when(spaceConfigStorage).loadSpaceInfo();
-            doReturn(true)
-                    .when(spaceConfigStorage).isInitialized();
             return spaceConfigStorage;
         }).when(spaceConfigStorageRegistry).get(any());
 

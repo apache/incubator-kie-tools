@@ -39,7 +39,7 @@ public class DataSetDefClientCacheAttributesEditorTest {
         presenter.init();
         verify(pushMaxSize, times(1)).addHelpContent(anyString(), anyString(), any(Placement.class));
         verify(view, times(1)).init(any(DataSetDefCacheAttributesEditorView.ViewCallback.class));
-        verify(view, times(1)).init(anyString(), anyString(), any(IsWidget.class), any(ValueBoxEditor.View.class));
+        verify(view, times(1)).init(anyString(), anyString(), any(), any());
         verify(view, times(0)).setRange(anyDouble(), anyDouble());
         verify(view, times(0)).setValue(anyDouble());
         verify(view, times(0)).setEnabled(anyBoolean());

@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.authz.AuthorizationPolicyStorage;
 import org.uberfire.backend.events.AuthorizationPolicyDeployedEvent;
 import org.uberfire.backend.vfs.Path;
@@ -105,8 +105,6 @@ public class ACLMigrationToolTest {
         when(repo1.getIdentifier()).thenReturn("repo1");
         final Branch master = new Branch("master",
                                          repo1root);
-        when(repo1.getBranch("master")).thenReturn(Optional.of(master));
-        when(repo1.getDefaultBranch()).thenReturn(Optional.of(master));
 
         when(repo1.getResourceType()).thenReturn(Repository.RESOURCE_TYPE);
         final ArrayList<String> groupList = new ArrayList<>();

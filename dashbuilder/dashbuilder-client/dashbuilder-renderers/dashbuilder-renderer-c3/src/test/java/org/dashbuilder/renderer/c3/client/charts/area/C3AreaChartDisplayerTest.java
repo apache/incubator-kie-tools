@@ -28,7 +28,7 @@ import org.dashbuilder.renderer.c3.client.charts.area.C3AreaChartDisplayer.View;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class C3AreaChartDisplayerTest extends C3BaseTest {

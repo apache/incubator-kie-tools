@@ -44,7 +44,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lesscss.deps.org.apache.commons.io.FileUtils;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.plugin.event.PluginAdded;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
@@ -343,8 +343,7 @@ public class DataTransferServicesTest {
     @SuppressWarnings("serial")
     public void testDoExportIgnoringComponents() throws Exception {
         when(externalComponentLoader.isEnabled()).thenReturn(false);
-        when(externalComponentLoader.load()).thenReturn(asList(component("c1")));
-        
+
         createFile(perspectivesFS, "page1/perspective_layout", "");
         createFile(perspectivesFS, "page1/perspective_layout.plugin", "");
         
@@ -602,7 +601,6 @@ public class DataTransferServicesTest {
         
         DataSetDef dataSetDef = mock(DataSetDef.class);
         when(dataSetDef.isPublic()).thenReturn(false);
-        when(dataSetDef.getName()).thenReturn(DS_NAME);
         when(dataSetDefJSONMarshaller.fromJson(DS_CONTENT)).thenReturn(dataSetDef);
 
         createFile(datasetsFS, DS, DS_CONTENT);

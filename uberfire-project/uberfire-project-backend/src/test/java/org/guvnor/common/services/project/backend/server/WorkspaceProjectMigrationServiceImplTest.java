@@ -45,7 +45,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -138,10 +138,10 @@ public class WorkspaceProjectMigrationServiceImplTest {
                 Paths.convert(PathFactory.newPath("file",
                                                   invocationOnMock.getArguments()[0].toString()))).when(ioService).get(any(URI.class));
 
-        when(pathUtil.normalizePath(any())).then(inv -> inv.getArgumentAt(0,
+        when(pathUtil.normalizePath(any())).then(inv -> inv.getArgument(0,
                                                                           Path.class));
         when(pathUtil.convert(any(Path.class))).then(inv -> {
-            final Path path = inv.getArgumentAt(0,
+            final Path path = inv.getArgument(0,
                                                 Path.class);
 
             final org.uberfire.java.nio.file.Path retVal = mock(org.uberfire.java.nio.file.Path.class);

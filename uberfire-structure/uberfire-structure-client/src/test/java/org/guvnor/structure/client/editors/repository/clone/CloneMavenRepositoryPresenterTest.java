@@ -49,7 +49,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 
 import static org.junit.Assert.*;
@@ -333,7 +333,6 @@ public class CloneMavenRepositoryPresenterTest {
         when(repositoryPreferences.isOUMandatory()).thenReturn(true);
         when(view.isGitUrlEmpty()).thenReturn(false);
         when(view.getGitUrl()).thenReturn(REPO_URL);
-        when(view.getName()).thenReturn(REPO_NAME);
         when(view.getSelectedOrganizationalUnit()).thenReturn("");
 
         presenter = new CloneRepositoryPresenter(repositoryPreferences,
@@ -352,8 +351,6 @@ public class CloneMavenRepositoryPresenterTest {
     public void testCloneNoUrl() {
         when(repositoryPreferences.isOUMandatory()).thenReturn(true);
         when(view.isGitUrlEmpty()).thenReturn(true);
-        when(view.getGitUrl()).thenReturn("");
-        when(view.getName()).thenReturn(REPO_NAME);
         when(view.getSelectedOrganizationalUnit()).thenReturn(ORG_UNIT_ONE);
 
         presenter = new CloneRepositoryPresenter(repositoryPreferences,

@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.util.GWTEditorNativeRegister;
 import org.uberfire.client.workbench.events.NewPerspectiveEvent;
 import org.uberfire.client.workbench.events.NewWorkbenchScreenEvent;
@@ -85,8 +85,6 @@ public class CategoriesManagerCacheTest {
 
         Category process = mock(Category.class);
         Category model = mock(Category.class);
-        when(process.getName()).thenReturn("PROCESS");
-        when(model.getName()).thenReturn("MODEL");
 
         ClientResourceType clientResourceType = mock(ClientResourceType.class);
         when(clientResourceType.getCategory()).thenReturn(model);

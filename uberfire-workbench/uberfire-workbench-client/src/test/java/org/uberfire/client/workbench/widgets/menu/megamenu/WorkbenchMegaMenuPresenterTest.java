@@ -31,7 +31,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -158,7 +158,6 @@ public class WorkbenchMegaMenuPresenterTest {
         doReturn(mock(ChildMenuItemPresenter.class)).when(childMenuItemPresenters).get();
         doReturn(mock(GroupMenuItemPresenter.class)).when(groupMenuItemPresenters).get();
         doReturn(mock(ChildContextMenuItemPresenter.class)).when(childContextMenuItemPresenters).get();
-        doReturn(mock(GroupContextMenuItemPresenter.class)).when(groupContextMenuItemPresenters).get();
     }
 
     @Test
@@ -203,8 +202,6 @@ public class WorkbenchMegaMenuPresenterTest {
                                                                           null,
                                                                           PERSPECTIVE_ID);
 
-        when(perspectiveActivity.getPlace()).thenReturn(placeRequest);
-        when(perspectiveActivity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
         when(authzManager.authorize(any(Resource.class),
                                     eq(identity))).thenReturn(true);
 
@@ -258,7 +255,7 @@ public class WorkbenchMegaMenuPresenterTest {
 
         when(activity.getIdentifier()).thenReturn(PERSPECTIVE_ID);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contextMenus);
+            invocationOnMock.getArgument(0, Consumer.class).accept(contextMenus);
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
@@ -277,8 +274,8 @@ public class WorkbenchMegaMenuPresenterTest {
         verify(presenter).addContextMenuItem(eq(PERSPECTIVE_ID),
                                              anyString(),
                                              eq(NAME),
-                                             isNull(String.class),
-                                             any(Command.class),
+                                             isNull(),
+                                             any(),
                                              eq(position));
     }
 
@@ -290,7 +287,7 @@ public class WorkbenchMegaMenuPresenterTest {
 
         when(activity.getIdentifier()).thenReturn(PERSPECTIVE_ID);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contextMenus);
+            invocationOnMock.getArgument(0, Consumer.class).accept(contextMenus);
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
@@ -383,7 +380,7 @@ public class WorkbenchMegaMenuPresenterTest {
 
         when(activity.getIdentifier()).thenReturn(perspectiveId);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contextMenus);
+            invocationOnMock.getArgument(0, Consumer.class).accept(contextMenus);
             return null;
         }).when(activity).getMenus(any());
         when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
@@ -530,7 +527,6 @@ public class WorkbenchMegaMenuPresenterTest {
     @Test
     public void addMenuItemOnTheRightWithoutParentTest() {
         final ChildMenuItemPresenter childMenuItemPresenter = mock(ChildMenuItemPresenter.class);
-        doReturn(mock(ChildMenuItemPresenter.View.class)).when(childMenuItemPresenter).getView();
         doReturn(childMenuItemPresenter).when(childMenuItemPresenters).get();
 
         presenter.addMenuItem("id",
@@ -551,7 +547,6 @@ public class WorkbenchMegaMenuPresenterTest {
     @Test
     public void addMenuItemOnTheLeftWithoutParentTest() {
         final ChildMenuItemPresenter childMenuItemPresenter = mock(ChildMenuItemPresenter.class);
-        doReturn(mock(ChildMenuItemPresenter.View.class)).when(childMenuItemPresenter).getView();
         doReturn(childMenuItemPresenter).when(childMenuItemPresenters).get();
 
         presenter.addMenuItem("id",
@@ -590,7 +585,6 @@ public class WorkbenchMegaMenuPresenterTest {
     @Test
     public void addGroupMenuItemTest() {
         final GroupMenuItemPresenter groupMenuItemPresenter = mock(GroupMenuItemPresenter.class);
-        doReturn(mock(GroupMenuItemPresenter.View.class)).when(groupMenuItemPresenter).getView();
         doReturn(groupMenuItemPresenter).when(groupMenuItemPresenters).get();
 
         presenter.addGroupMenuItem("id",
@@ -606,7 +600,6 @@ public class WorkbenchMegaMenuPresenterTest {
     @Test
     public void addContextMenuItemTest() {
         final ChildContextMenuItemPresenter childContextMenuItemPresenter = mock(ChildContextMenuItemPresenter.class);
-        doReturn(mock(ChildContextMenuItemPresenter.View.class)).when(childContextMenuItemPresenter).getView();
         doReturn(childContextMenuItemPresenter).when(childContextMenuItemPresenters).get();
         final HasChildren parent = mock(HasChildren.class);
         presenter.hasChildrenMenuItemByIdentifier.put("parentId",
@@ -633,7 +626,6 @@ public class WorkbenchMegaMenuPresenterTest {
     @Test
     public void addContextGroupMenuItemTest() {
         final GroupContextMenuItemPresenter groupContextMenuItemPresenter = mock(GroupContextMenuItemPresenter.class);
-        doReturn(mock(GroupContextMenuItemPresenter.View.class)).when(groupContextMenuItemPresenter).getView();
         doReturn(groupContextMenuItemPresenter).when(groupContextMenuItemPresenters).get();
 
         presenter.addContextGroupMenuItem("menuItemId",
@@ -697,7 +689,6 @@ public class WorkbenchMegaMenuPresenterTest {
     @Test
     public void setupHomeLinkWithNoDefaultPerspective() {
         doReturn(null).when(workbench).getHomePerspectiveActivity();
-        doReturn(true).when(presenter).hasAccessToPerspective(any());
 
         presenter.setupHomeLink();
 

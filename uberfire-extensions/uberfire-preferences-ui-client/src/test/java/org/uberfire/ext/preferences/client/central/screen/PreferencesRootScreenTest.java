@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.preferences.client.central.PreferencesCentralNavBarScreen;
 import org.uberfire.ext.preferences.client.central.actions.PreferencesCentralActionsScreen;
@@ -92,7 +92,7 @@ public class PreferencesRootScreenTest {
         verify(placeManager,
                never()).closePlace(any(PlaceRequest.class));
         verify(placeManager).goTo(any(PlaceRequest.class),
-                                  any(HTMLElement.class));
+                                  Mockito.<HTMLElement>any());
         verify(hierarchyItemFormInitializationEvent).fire(any());
     }
 
@@ -110,7 +110,7 @@ public class PreferencesRootScreenTest {
 
         verify(placeManager).closePlace(any(PlaceRequest.class));
         verify(placeManager).goTo(any(PlaceRequest.class),
-                                  any(HTMLElement.class));
+                                  Mockito.<HTMLElement>any());
         verify(hierarchyItemFormInitializationEvent).fire(any());
     }
 }

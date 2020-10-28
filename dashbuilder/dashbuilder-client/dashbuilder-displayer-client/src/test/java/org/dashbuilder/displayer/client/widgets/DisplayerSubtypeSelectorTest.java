@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.dashbuilder.displayer.DisplayerSubType.*;
@@ -55,7 +55,6 @@ public class DisplayerSubtypeSelectorTest {
     public void init() {
         when(rendererManager.getRendererForType(any(DisplayerType.class))).thenReturn(rendererLibrary);
 
-        when(rendererLibrary.getSupportedTypes()).thenReturn(Arrays.asList(BARCHART, LINECHART, BUBBLECHART, MAP));
         when(rendererLibrary.getSupportedSubtypes(BARCHART)).thenReturn(Arrays.asList(BAR, BAR_STACKED));
         when(rendererLibrary.getSupportedSubtypes(LINECHART)).thenReturn(Arrays.asList(LINE, SMOOTH));
         when(rendererLibrary.getSupportedSubtypes(BUBBLECHART)).thenReturn(null);

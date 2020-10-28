@@ -19,7 +19,7 @@ package org.uberfire.ext.security.management.keycloak;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.BaseTest;
 import org.uberfire.ext.security.management.keycloak.client.Keycloak;
 import org.uberfire.ext.security.management.keycloak.client.resource.RealmResource;

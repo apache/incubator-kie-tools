@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 import static org.mockito.Mockito.*;
@@ -43,7 +43,6 @@ public class ModuleScopedResolutionStrategySupplierTest {
         projectScopedResolutionStrategySupplier = spy(new ProjectScopedResolutionStrategySupplier(scopeResolutionStrategies));
 
         module = mock(Module.class);
-        doReturn("projectIdentifier").when(module).getIdentifier();
         doReturn("projectIdentifierEncoded").when(module).getEncodedIdentifier();
     }
 

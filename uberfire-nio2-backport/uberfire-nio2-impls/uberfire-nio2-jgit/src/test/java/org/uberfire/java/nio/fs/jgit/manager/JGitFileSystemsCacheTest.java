@@ -26,7 +26,7 @@ import org.eclipse.jgit.transport.CredentialsProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.java.nio.fs.jgit.AbstractTestInfra;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemImpl;
@@ -227,7 +227,6 @@ public class JGitFileSystemsCacheTest extends AbstractTestInfra {
 
         JGitFileSystem fs3 = mock(JGitFileSystem.class);
         Supplier<JGitFileSystem> fsSupplier = getSupplierSpy(fs3);
-        when(fs3.hasBeenInUse()).thenReturn(false);
         cache.addSupplier("fs3",
                           fsSupplier);
 
@@ -262,8 +261,6 @@ public class JGitFileSystemsCacheTest extends AbstractTestInfra {
                           fs3Supplier);
 
         JGitFileSystem fs4 = mock(JGitFileSystem.class);
-        Supplier<JGitFileSystem> fs4Supplier = getSupplierSpy(fs4);
-        when(fs4.hasBeenInUse()).thenReturn(true);
         cache.addSupplier("fs4",
                           fs3Supplier);
 
@@ -275,7 +272,6 @@ public class JGitFileSystemsCacheTest extends AbstractTestInfra {
 
         when(fs1.hasBeenInUse()).thenReturn(false);
         when(fs2.hasBeenInUse()).thenReturn(false);
-        when(fs4.hasBeenInUse()).thenReturn(false);
 
         JGitFileSystem fs5 = mock(JGitFileSystem.class);
         Supplier<JGitFileSystem> fs5Supplier = getSupplierSpy(fs5);
@@ -328,13 +324,11 @@ public class JGitFileSystemsCacheTest extends AbstractTestInfra {
 
         JGitFileSystem fs2 = mock(JGitFileSystem.class);
         Supplier<JGitFileSystem> fs2Supplier = getSupplierSpy(fs2);
-        when(fs2.hasBeenInUse()).thenReturn(true);
         cache.addSupplier("fs2",
                           fs2Supplier);
 
         JGitFileSystem fs3 = mock(JGitFileSystem.class);
         Supplier<JGitFileSystem> fs3Supplier = getSupplierSpy(fs3);
-        when(fs3.hasBeenInUse()).thenReturn(true);
         cache.addSupplier("fs5",
                           fs3Supplier);
 

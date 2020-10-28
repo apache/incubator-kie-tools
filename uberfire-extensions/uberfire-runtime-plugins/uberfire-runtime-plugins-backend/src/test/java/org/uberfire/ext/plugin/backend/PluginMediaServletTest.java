@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
@@ -65,9 +65,6 @@ public class PluginMediaServletTest {
         when(iterable.iterator()).thenReturn(iterator);
         when(fileSystem.getRootDirectories()).thenReturn(iterable);
         when(config.getInitParameter(anyString())).thenReturn("/fake");
-        when(ioService.newFileSystem(any(URI.class),
-                                     anyMapOf(String.class,
-                                              Class.class))).thenReturn(fileSystem);
 
         servlet.init(config);
 

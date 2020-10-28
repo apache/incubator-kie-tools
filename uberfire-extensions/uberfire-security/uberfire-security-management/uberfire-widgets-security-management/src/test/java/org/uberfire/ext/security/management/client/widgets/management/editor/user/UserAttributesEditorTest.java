@@ -94,7 +94,7 @@ public class UserAttributesEditorTest {
         verify(view,
                times(1)).init(presenter);
         verify(view,
-               times(1)).initWidgets(any(NewUserAttributeEditor.View.class));
+               times(1)).initWidgets(any());
         verify(view,
                times(1)).getColumnCount();
         verify(view,

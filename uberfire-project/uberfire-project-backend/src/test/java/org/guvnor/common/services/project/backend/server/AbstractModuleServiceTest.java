@@ -33,7 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Paths;
@@ -110,7 +110,6 @@ public class AbstractModuleServiceTest {
 
     @Test
     public void testReImport() throws Exception {
-        when(path.getFileName()).thenReturn("pom.xml");
         when(path.toURI()).thenReturn("file://project1/pom.xml");
         when(resourceResolver.resolveModule(any(Path.class))).thenReturn(module);
 
@@ -121,10 +120,8 @@ public class AbstractModuleServiceTest {
 
     @Test
     public void testUseRepoServiceToDeleteRootModule() {
-        when(path.getFileName()).thenReturn("pom.xml");
         when(path.toURI()).thenReturn("file:///space/project1/pom.xml");
         when(resourceResolver.resolveModule(any(Path.class))).thenReturn(module);
-        when(pomService.load(any())).thenReturn(mock(POM.class));
         Repository repo = mock(Repository.class);
         when(repoService.getRepository(eq(org.uberfire.backend.server.util.Paths.convert(Paths.get("file:///space/project1"))))).thenReturn(repo);
         String alias = "repo-alias";
@@ -140,17 +137,10 @@ public class AbstractModuleServiceTest {
 
     @Test
     public void testUseIOServiceToDeleteSubModule() {
-        when(path.getFileName()).thenReturn("pom.xml");
         when(path.toURI()).thenReturn("file://space/project1/subproject/pom.xml");
         when(ioService.exists(any())).thenReturn(true);
         when(resourceResolver.resolveModule(any(Path.class))).thenReturn(module);
         when(pomService.load(any())).thenReturn(mock(POM.class));
-        Repository repo = mock(Repository.class);
-        when(repoService.getRepository(path)).thenReturn(repo);
-        String alias = "repo-alias";
-        when(repo.getAlias()).thenReturn(alias);
-        Space space = new Space("space");
-        when(repo.getSpace()).thenReturn(space);
 
         abstractProjectService.delete(path, "");
 

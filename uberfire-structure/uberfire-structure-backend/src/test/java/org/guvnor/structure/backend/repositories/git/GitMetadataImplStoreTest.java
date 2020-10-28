@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.server.io.object.ObjectStorage;
 import org.uberfire.backend.server.spaces.SpacesAPIImpl;
 
@@ -52,9 +52,9 @@ public class GitMetadataImplStoreTest {
         metadatas = new HashMap<>();
 
         doAnswer(invocationOnMock -> {
-            String key = invocationOnMock.getArgumentAt(0,
+            String key = invocationOnMock.getArgument(0,
                                                         String.class);
-            GitMetadataImpl metadata = invocationOnMock.getArgumentAt(1,
+            GitMetadataImpl metadata = invocationOnMock.getArgument(1,
                                                                       GitMetadataImpl.class);
             storage.write(key, metadata, true);
 
@@ -62,9 +62,9 @@ public class GitMetadataImplStoreTest {
         }).when(storage).write(anyString(), any());
 
         doAnswer(invocationOnMock -> {
-            String key = invocationOnMock.getArgumentAt(0,
+            String key = invocationOnMock.getArgument(0,
                                                         String.class);
-            GitMetadataImpl metadata = invocationOnMock.getArgumentAt(1,
+            GitMetadataImpl metadata = invocationOnMock.getArgument(1,
                                                                       GitMetadataImpl.class);
             metadatas.put(key,
                           metadata);
@@ -74,13 +74,13 @@ public class GitMetadataImplStoreTest {
                                anyBoolean());
 
         doAnswer(invocationOnMock -> {
-            String key = invocationOnMock.getArgumentAt(0,
+            String key = invocationOnMock.getArgument(0,
                                                         String.class);
             return metadatas.get(key);
         }).when(storage).read(anyString());
 
         doAnswer(invocationOnMock -> {
-            String key = invocationOnMock.getArgumentAt(0,
+            String key = invocationOnMock.getArgument(0,
                                                         String.class);
             return metadatas.remove(key);
         }).when(storage).delete(anyString());

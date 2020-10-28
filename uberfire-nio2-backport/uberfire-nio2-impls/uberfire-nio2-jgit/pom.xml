@@ -187,8 +187,9 @@
           <useSystemClassLoader>true</useSystemClassLoader>
           <useManifestOnlyJar>true</useManifestOnlyJar>
           <forkMode>once</forkMode>
+          <argLine>-Djdk.attach.allowAttachSelf=true</argLine>
           <!--<parallel>false</parallel>-->
-          <!-- ensure we don't inherit a byteman jar from any env settings -->
+          <!-- ensure we don't inherit a byteman jar from any env senattings -->
           <environmentVariables>
             <BYTEMAN_HOME></BYTEMAN_HOME>
           </environmentVariables>

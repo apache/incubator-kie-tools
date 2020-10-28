@@ -92,13 +92,13 @@ public class DataSetEditorTest {
         presenter.init();
         verify(view, times(1)).init(presenter);
         verify(view, times(1)).initWidgets(
-                any(DataSetDefBasicAttributesEditor.View.class),
-                any(IsWidget.class),
-                any(DataSetDefColumnsFilterEditor.View.class),
-                any(DataSetDefPreviewTable.View.class),
-                any(DataSetDefCacheAttributesEditorView.class),
-                any(DataSetDefCacheAttributesEditorView.class),
-                any(DataSetDefRefreshAttributesEditor.View.class)
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
         );
         verify(view, times(1)).addConfigurationTabItemClickHandler(any(Command.class));
         verify(view, times(1)).addPreviewTabItemClickHandler(any(Command.class));
@@ -269,7 +269,7 @@ public class DataSetEditorTest {
         verify(loadingBox, times(1)).show();
         verify(loadingBox, times(1)).hide();
         verify(view, times(1)).clearErrorNotification();
-        verify(filterEditor, times(1)).init(any(DataSetMetadata.class));
+        verify(filterEditor, times(1)).init(any());
         verify(afterPreviewCommand, times(1)).execute();
         verify(view, times(0)).init(any(DataSetEditor.class));
         verify(view, times(0)).initWidgets(

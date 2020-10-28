@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.client.widgets.management.AbstractSecurityManagementTest;
@@ -263,7 +263,7 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
 
         // Verify view configuration.
         verify(view,
-               times(1)).configure(anyString(),
+               times(1)).configure(any(),
                                    any(EntitiesList.PaginationConstraints.class));
 
         // Verify adding entities to the view. 
@@ -289,7 +289,6 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
                                                                      boolean canRemove,
                                                                      boolean canSelect) {
         EntitiesList.Callback<User> callback = mock(EntitiesList.Callback.class);
-        when(callback.getEntityType()).thenReturn("User");
         when(callback.canRead()).thenReturn(canRead);
         when(callback.canRemove()).thenReturn(canRemove);
         when(callback.canSelect()).thenReturn(canSelect);
@@ -320,8 +319,6 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
         AbstractEntityManager.SearchResponse<User> response = mock(AbstractEntityManager.SearchResponse.class);
         when(response.getResults()).thenReturn(users);
         when(response.getTotal()).thenReturn(total);
-        when(response.hasNextPage()).thenReturn(hasNextPage);
-        when(response.getSearchPattern()).thenReturn(searchPattern);
         when(response.getPage()).thenReturn(page);
         when(response.getPageSize()).thenReturn(pageSize);
         return response;

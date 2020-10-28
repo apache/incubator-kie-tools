@@ -69,7 +69,7 @@ public class UberfireColumnPickerTest {
     @Test
     public void testOnlyAddHeaderStringColumnPickerPopup() {
         uberfireColumnPicker.showColumnPickerPopup(0, 0);
-        verify(popupContent, times(2)).add(any(Widget.class));
+        verify(popupContent, times(2)).add(any());
     }
 
     private ColumnMeta createColumnMeta(final String value,

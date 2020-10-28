@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.api.CapabilityStatus;
@@ -130,7 +130,7 @@ public class ClientUserSystemManagerTest {
     public void testShowError() {
         tested.showError(new RuntimeException());
         verify(errorPopupPresenter,
-               times(1)).showMessage(anyString());
+               times(1)).showMessage(any());
     }
 
     private UserManagerSettings getUserSettings() {
@@ -186,37 +186,22 @@ public class ClientUserSystemManagerTest {
 
         final UserManager.UserAttribute USER_ID = mock(UserManager.UserAttribute.class);
         when(USER_ID.getName()).thenReturn(ATTRIBUTE_USER_ID);
-        when(USER_ID.isMandatory()).thenReturn(true);
-        when(USER_ID.isEditable()).thenReturn(false);
-        when(USER_ID.getDefaultValue()).thenReturn(null);
         attributes.add(USER_ID);
 
         final UserManager.UserAttribute USER_FIST_NAME = mock(UserManager.UserAttribute.class);
         when(USER_FIST_NAME.getName()).thenReturn(ATTRIBUTE_USER_FIRST_NAME);
-        when(USER_FIST_NAME.isMandatory()).thenReturn(true);
-        when(USER_FIST_NAME.isEditable()).thenReturn(true);
-        when(USER_FIST_NAME.getDefaultValue()).thenReturn("First name");
         attributes.add(USER_FIST_NAME);
 
         final UserManager.UserAttribute USER_LAST_NAME = mock(UserManager.UserAttribute.class);
         when(USER_LAST_NAME.getName()).thenReturn(ATTRIBUTE_USER_LAST_NAME);
-        when(USER_LAST_NAME.isMandatory()).thenReturn(true);
-        when(USER_LAST_NAME.isEditable()).thenReturn(true);
-        when(USER_LAST_NAME.getDefaultValue()).thenReturn("Last name");
         attributes.add(USER_LAST_NAME);
 
         final UserManager.UserAttribute USER_ENABLED = mock(UserManager.UserAttribute.class);
         when(USER_ENABLED.getName()).thenReturn(ATTRIBUTE_USER_ENABLED);
-        when(USER_ENABLED.isMandatory()).thenReturn(true);
-        when(USER_ENABLED.isEditable()).thenReturn(true);
-        when(USER_ENABLED.getDefaultValue()).thenReturn("true");
         attributes.add(USER_ENABLED);
 
         final UserManager.UserAttribute USER_EMAIL = mock(UserManager.UserAttribute.class);
         when(USER_EMAIL.getName()).thenReturn(ATTRIBUTE_USER_EMAIL);
-        when(USER_EMAIL.isMandatory()).thenReturn(false);
-        when(USER_EMAIL.isEditable()).thenReturn(true);
-        when(USER_EMAIL.getDefaultValue()).thenReturn("");
         attributes.add(USER_EMAIL);
 
         return attributes;
