@@ -22,4 +22,4 @@ source ${KOGITO_HOME}/launch/configure.sh
 exec java ${SHOW_JVM_SETTINGS} ${JAVA_OPTIONS} ${KOGITO_DATA_INDEX_PROPS} \
         -Djava.library.path=$KOGITO_HOME/lib \
         -Dquarkus.http.host=0.0.0.0 \
-        -jar $KOGITO_HOME/bin/${KOGITO_DATA_INDEX_SERVICE_JAR}
+        -jar $KOGITO_HOME/bin/data-index-service-mongodb.jar

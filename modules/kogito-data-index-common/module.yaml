@@ -1,0 +1,8 @@
+schema_version: 1
+name: org.kie.kogito.dataindex.common
+version: "1.0.0-snapshot"
+description: "Common modules for data-index persistence provider images, any addition that is common must be added in this module"
+
+execute:
+  - script: configure
+

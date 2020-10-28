@@ -51,7 +51,7 @@ Table of Contents
         - [Kogito Spring Boot Runtime Image usage](#kogito-spring-boot-runtime-image-usage)
         - [Kogito Spring Boot Runtime Image example](#kogito-spring-boot-runtime-image-example)
   - [Kogito Component Images](#kogito-component-images)
-    - [Kogito Data Index Component Image](#kogito-data-index-component-image)
+    - [Kogito Data Index Component Images](#kogito-data-index-component-images)
     - [Kogito Trusty Component Image](#kogito-trusty-component-image)
     - [Kogito Explainability Component Image](#kogito-explainability-component-image)
     - [Kogito Jobs Service Component Image](#kogito-jobs-service-component-image)
@@ -567,7 +567,8 @@ The Kogito Component Images can be considered as lightweight images that will co
 by providing extra capabilities, like managing the processes on a web UI or providing persistence layer to the Kogito applications.
 Today we have 3 Kogito Component Images:
 
-* [quay.io/kiegroup/kogito-data-index](https://quay.io/kiegroup/kogito-data-index)
+* [quay.io/kiegroup/kogito-data-index-infinispan](https://quay.io/kiegroup/kogito-data-index-infinispan)
+* [quay.io/kiegroup/kogito-data-index-mongodb](https://quay.io/kiegroup/kogito-data-index-mongodb)
 * [quay.io/kiegroup/kogito-trusty](https://quay.io/kiegroup/kogito-trusty)
 * [quay.io/kiegroup/kogito-explainability](https://quay.io/kiegroup/kogito-explainability)
 * [quay.io/kiegroup/kogito-jobs-service](htps://quay.io/kiegroup/kogito-jobs-service)
@@ -575,34 +576,36 @@ Today we have 3 Kogito Component Images:
 * [quay.io/kiegroup/kogito-trusty-ui](https://quay.io/kiegroup/kogito-trusty-ui)
 
 
-### Kogito Data Index Component Image
+### Kogito Data Index Component Images
 
 The Data Index Service aims at capturing and indexing data produced by one more Kogito runtime services. 
-For more information please visit this (link)(https://docs.jboss.org/kogito/release/latest/html_single/#proc_kogito-travel-agency-enable-data-index). 
+For more information please visit this (link)(https://docs.jboss.org/kogito/release/latest/html_single/#proc-kogito-travel-agency-enable-data-index_kogito-deploying-on-openshift). 
 The Data Index Service depends on a running Infinispan or MongoDB Server.
-The Persistence service can be switched by setting the following variable:
+The Persistence service can be switched by using its corresponding image
 
+- Infinispan: quay.io/kiegroup/kogito-data-index-infinispan
+    [image.yaml](kogito-data-index-infinispan-overrides.yaml)
+- Mongodb: quay.io/kiegroup/kogito-data-index-mongodb
+    [image.yaml](kogito-data-index-mongodb-overrides.yaml)
+
+
+Basic usage with Infinispan:
 ```bash
-DATA_INDEX_PERSISTENCE
+$ docker run -it --env QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index-infinispan:latest
 ```
 
-The supported values are: `infinispan` and `mongodb`. If the environment variable above is empty, then `infinispan` will be used.
-
-
-
-Basic usage
+Basic usage with Mongodb:
 ```bash
-$ docker run -it --env QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index:latest
+$ docker run -it --env QUARKUS_MONGODB_CONNECTION_STRING=mongodb://localhost:27017 quay.io/kiegroup/kogito-data-index-mongodb:latest
 ```
 
 To enable debug just use this env while running this image:
 
 ```bash
-docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index:latest
+docker run -it --env SCRIPT_DEBUG=true --env QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=my-infinispan-server:11222 quay.io/kiegroup/kogito-data-index-infinispan:latest
 ```
-You should notice a few debug messages being printed in the system output.
+You should notice a few debug messages present in the system output.
 
-To know what configurations this image accepts please take a look [here](kogito-data-index-overrides.yaml) on the **envs** section.
 
 The [Kogito Operator](https://github.com/kiegroup/kogito-cloud-operator) can be used to deploy the Kogito Data Index Service 
 to your Kogito infrastructure on a Kubernetes cluster and provide its capabilities to your Kogito applications.
@@ -758,13 +761,14 @@ You can add applications to this project with the 'new-app' command. For example
 to build a new example application in Ruby.
 
 # installing the imagestream on the current namespace
-$ oc create -f https://raw.githubusercontent.com/kiegroup/kogito-images/0.9.0/kogito-imagestream.yaml
+$ oc create -f https://raw.githubusercontent.com/kiegroup/kogito-images/0.16.0/kogito-imagestream.yaml
 imagestream.image.openshift.io/kogito-quarkus-ubi8 created
 imagestream.image.openshift.io/kogito-quarkus-jvm-ubi8 created
 imagestream.image.openshift.io/kogito-quarkus-ubi8-s2i created
 imagestream.image.openshift.io/kogito-springboot-ubi8 created
 imagestream.image.openshift.io/kogito-springboot-ubi8-s2i created
-imagestream.image.openshift.io/kogito-data-index created
+imagestream.image.openshift.io/kogito-data-index-infinispan created
+imagestream.image.openshift.io/kogito-data-index-mongodb created
 imagestream.image.openshift.io/kogito-trusty created
 imagestream.image.openshift.io/kogito-jobs-service created
 imagestream.image.openshift.io/kogito-management-console created
@@ -946,28 +950,29 @@ With this Makefile you can:
  
 - Build images individually, by default it will build and test each image
      ```bash
-     $ make kogito-quarkus-ubi8
-     $ make kogito-quarkus-jvm-ubi8
-     $ make kogito-quarkus-ubi8-s2i
-     $ make kogito-springboot-ubi8 
-     $ make kogito-springboot-ubi8-s2i
-     $ make kogito-data-index
-     $ make kogito-trusty
-     $ make kogito-explainability
-     $ make kogito-jobs-service 
-     $ make kogito-management-console
-     $ make kogito-trusty-ui
+     $ make build-image image_name=kogito-quarkus-ubi8
+     $ make build-image image_name=kogito-quarkus-jvm-ubi8
+     $ make build-image image_name=kogito-quarkus-ubi8-s2i
+     $ make build-image image_name=kogito-springboot-ubi8 
+     $ make build-image image_name=kogito-springboot-ubi8-s2i
+     $ make build-image image_name=kogito-data-index-infinispan
+     $ make build-image image_name=kogito-data-index-mongodb
+     $ make build-image image_name=kogito-trusty
+     $ make build-image image_name=kogito-explainability
+     $ make build-image image_name=kogito-jobs-service 
+     $ make build-image image_name=kogito-management-console
+     $ make build-image image_name=kogito-trusty-ui
      ```
   
      We can ignore the build or the tests while interacting with a specific image as well, to build only:
      ```bash
-     $ make ignore_test=true {image_name}
+     $ make ignore_test=true image_name={image_name}
 
      ```
      
      Or to test only:
      ```bash
-     $ make ignore_build=true {image_name}
+     $ make ignore_build=true image_name={image_name}
      ```      
      
 - Build and Push the Images to quay or a repo for you preference, for this you need to edit the Makefile accordingly: 
@@ -978,6 +983,11 @@ With this Makefile you can:
         - X.Y
         - X.Y.z
         - latest
+        
+      to push a single image:
+      ```bash
+      $ make push-image image_name={image_name}
+      ```     
         
 - Push staging images (release candidates, a.k.a rcX tags), the following command will build and push RC images to quay. 
       ```bash
@@ -1006,7 +1016,9 @@ To better understand the CeKit Modules, please visit this [link](https://docs.ce
 
 Below you can find all modules used to build the Kogito Images
 
-- [kogito-data-index](modules/kogito-data-index): Installs and Configure the data-index jar inside the image.
+- [kogito-data-index-common](modules/kogito-data-index-common): Data Index common module.
+- [kogito-data-index-infinispan](modules/kogito-data-index-infinispan): Installs and Configure the infinispan data-index jar inside the image.
+- [kogito-data-index-mongodb](modules/kogito-data-index-mongodb): Installs and Configure the mongodb data-index jar inside the image.
 - [kogito-trusty](modules/kogito-trusty): Installs and Configure the trusty jar inside the image.
 - [kogito-explainability](modules/kogito-explainability): Installs and Configure the explainability jar inside the image.
 - [kogito-epel](modules/kogito-epel): Configures the epel repository on the target image.
@@ -1032,9 +1044,10 @@ Below you can find all modules used to build the Kogito Images
 
 
 For each image, we use a specific *-overrides.yaml file which will specific the modules needed.
-Please inspect the images overrides files to learn which modules are being installed:
+Please inspect the images overrides files to learn which modules are installed on each image:
 
-- [quay.io/kiegroup/kogito-data-index](kogito-data-index-overrides.yaml)
+- [quay.io/kiegroup/kogito-data-index-infinispan](kogito-data-index-infinispan-overrides.yaml)
+- [quay.io/kiegroup/kogito-data-index-mongodb](kogito-data-index-mongodb-overrides.yaml)
 - [quay.io/kiegroup/kogito-trusty](kogito-trusty-overrides.yaml)
 - [quay.io/kiegroup/kogito-explainability](kogito-explainability-overrides.yaml)
 - [quay.io/kiegroup/kogito-jobs-service](kogito-jobs-service-overrides.yaml)
@@ -1133,8 +1146,8 @@ For example, if we are creating a new image called quay.io/kiegroup/kogito-moon-
 example:
 
 ```text
-@quay.io/kiegroup/kogito-data-index
-Feature: Kogito-data-index feature.
+@quay.io/kiegroup/kogito-data-index-infinispan
+Feature: Kogito-data-index-infinispan feature.
     ...
     Scenarios......
 ```

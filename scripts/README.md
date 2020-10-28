@@ -135,9 +135,8 @@ If no argument is given, it takes the JBoss repository as the default value.
 
 The command will update the needed files with the new URL:
 
-- kogito-data-index/module.yaml
-    - data-index-service-infinispan
-    - data-index-service-mongodb
+- kogito-data-index-infinispan/module.yaml
+- kogito-data-index-mongodb/module.yaml
 - kogito-jobs-service/module.yaml
 - kogito-management-console/module.yaml
 - kogito-trusty-ui/module.yaml

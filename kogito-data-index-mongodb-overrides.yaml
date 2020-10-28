@@ -1,15 +1,15 @@
 schema_version: 1
 
-name: "quay.io/kiegroup/kogito-data-index"
-description: "Runtime image for Kogito Data Index Service"
+name: "quay.io/kiegroup/kogito-data-index-mongodb"
+description: "Runtime image for Kogito Data Index Service for Mongodb persistence provider"
 
 labels:
 - name: "io.k8s.description"
-  value: "Runtime image for Kogito Data Index Service"
+  value: "Runtime image for Kogito Data Index Service for Mongodb persistence provider"
 - name: "io.k8s.display-name"
-  value: "Kogito Data Index Service"
+  value: "Kogito Data Index Service - Mongodb"
 - name: "io.openshift.tags"
-  value: "kogito,data-index"
+  value: "kogito,data-index,data-index-mongodb"
 - name: "io.openshift.expose-services"
   value: "8080:http"
 
@@ -20,9 +20,6 @@ envs:
   - name: "HTTP_PORT"
     example: "9090"
     description: "Defines which port the Data Index Container Image will listen on."
-  - name: "DATA_INDEX_PERSISTENCE"
-    example: "mongodb"
-    description: "Defines which Data Index Service persistence implementation will be used. If empty defaults to 'infinispan'. Allowed types are 'infinispan' and 'mongodb'."
 
 ports:
 - value: 8080
@@ -35,7 +32,8 @@ modules:
   - name: org.kie.kogito.openjdk
     version: "11-headless"
   - name: org.kie.kogito.launch.scripts
-  - name: org.kie.kogito.dataindex
+  - name: org.kie.kogito.dataindex.mongodb
+  - name: org.kie.kogito.dataindex.common
 
 run:
   workdir: "/home/kogito"

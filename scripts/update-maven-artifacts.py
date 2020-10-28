@@ -24,8 +24,8 @@ KOGITO_ARTIFACT_PATH = "org/kie/kogito"
 Modules = {
     #service-name: module-name(directory in which module's module.yaml file is present)
     #Note: Service name should be same as given in the repository
-    "data-index-service-infinispan": "kogito-data-index",
-    "data-index-service-mongodb": "kogito-data-index",
+    "data-index-service-infinispan": "kogito-data-index-infinispan",
+    "data-index-service-mongodb": "kogito-data-index-mongodb",
     "trusty-service": "kogito-trusty",
     "explainability-service-rest": "kogito-explainability",
     "explainability-service-messaging": "kogito-explainability",

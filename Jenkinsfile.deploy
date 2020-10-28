@@ -130,7 +130,8 @@ pipeline {
                     sh updateArtifactCmd
 
                     // Debug purpose in case of issue
-                    sh 'cat modules/kogito-data-index/module.yaml'
+                    sh 'cat modules/kogito-data-index-infinispan/module.yaml'
+                    sh 'cat modules/kogito-data-index-mongodb/module.yaml'
                     sh 'cat modules/kogito-trusty/module.yaml'
                     sh 'cat modules/kogito-explainability/module.yaml'
                     sh 'cat modules/kogito-jobs-service/module.yaml'

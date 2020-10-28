@@ -17,7 +17,6 @@ sys.dont_write_bytecode = True
 import argparse
 import common
 import re
-import os
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Kogito Version Manager')

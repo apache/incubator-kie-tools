@@ -9,7 +9,7 @@ sys.dont_write_bytecode = True
 import common
 
 if __name__ == "__main__":
-    images = common.get_all_images()
+    images = sorted(common.get_all_images())
 
     for img in images:
         print(img)

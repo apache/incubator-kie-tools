@@ -8,7 +8,8 @@ import re
 from ruamel.yaml import YAML
 
 # All kogito-image modules that have the kogito version.
-MODULES = {"kogito-data-index", "kogito-trusty", 
+MODULES = {"kogito-data-index-common", "kogito-data-index-mongodb",
+           "kogito-data-index-infinispan", "kogito-trusty",
            "kogito-explainability", "kogito-image-dependencies",
            "kogito-jobs-service", "kogito-trusty-ui",
            "kogito-jq", "kogito-kubernetes-client",
@@ -115,6 +116,7 @@ def get_kogito_module_dirs():
 
     return modules
 
+
 def get_all_images():
     """
     Retrieve the Kogito images' names
@@ -129,6 +131,7 @@ def get_all_images():
 
     return images
 
+
 def update_modules_version(target_version):
     """
     Update every Kogito module.yaml to the given version.
@@ -136,6 +139,7 @@ def update_modules_version(target_version):
     """
     for module_dir in get_kogito_module_dirs():
         update_module_version(module_dir, target_version)
+
 
 def update_module_version(moduleDir, target_version):
     """
@@ -171,6 +175,7 @@ def retrieve_artifacts_version():
     except TypeError:
         raise
 
+
 def update_artifacts_version_env_in_image(artifacts_version):
     """
     Update `KOGITO_VERSION` env var in image.yaml.
@@ -190,6 +195,7 @@ def update_artifacts_version_env_in_image(artifacts_version):
     except TypeError:
         raise
 
+
 def update_examples_ref_in_behave_tests(examples_ref):
     """
     Update examples git reference into behave tests
@@ -200,6 +206,7 @@ def update_examples_ref_in_behave_tests(examples_ref):
     pattern = re.compile(r'(using master)|(using \s*([\d.]+.x))|(using \s*([\d.]+))')
     replacement = 'using {}'.format(examples_ref)
     update_in_behave_tests(pattern, replacement)
+
 
 def update_examples_uri_in_behave_tests(examples_uri):
     """
@@ -212,6 +219,7 @@ def update_examples_uri_in_behave_tests(examples_uri):
     replacement = examples_uri
     update_in_behave_tests(pattern, replacement)
 
+
 def update_artifacts_version_in_behave_tests(artifacts_version):
     """
     Update artifacts version into behave tests
@@ -222,6 +230,7 @@ def update_artifacts_version_in_behave_tests(artifacts_version):
     pattern = re.compile('\|[\s]*KOGITO_VERSION[\s]*\|[\s]*(([\d.]+.x)|([\d.]+)[\s]*|([\d.]+-SNAPSHOT))[\s]*\|')
     replacement = '| KOGITO_VERSION | {} | '.format(artifacts_version)
     update_in_behave_tests(pattern, replacement)
+
 
 def update_maven_repo_in_behave_tests(repo_url, replaceJbossRepository):
     """
@@ -236,6 +245,8 @@ def update_maven_repo_in_behave_tests(repo_url, replaceJbossRepository):
         envVarKey = "JBOSS_MAVEN_REPO_URL"
     replacement = "| variable | value |\n      | {} | {} |\n      | MAVEN_DOWNLOAD_OUTPUT | true |".format(envVarKey, repo_url)
     update_in_behave_tests(pattern, replacement)
+
+
 def ignore_maven_self_signed_certificate_in_behave_tests():
     """
     Sets the environment variable to ignore the self-signed certificates in maven
@@ -244,7 +255,8 @@ def ignore_maven_self_signed_certificate_in_behave_tests():
     pattern = re.compile('\|\s*variable[\s]*\|[\s]*value[\s]*\|')
     replacement = "| variable | value |\n      | MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE | true |"
     update_in_behave_tests(pattern, replacement)
-    
+
+
 def update_in_behave_tests(pattern, replacement):
     """
     Update all behave tests files
@@ -253,6 +265,7 @@ def update_in_behave_tests(pattern, replacement):
     """
     for feature in BEHAVE_TESTS:
         update_in_file(os.path.join(BEHAVE_BASE_DIR, feature), pattern, replacement)
+
 
 def update_examples_ref_in_clone_repo(examples_ref):
     """
@@ -266,6 +279,7 @@ def update_examples_ref_in_clone_repo(examples_ref):
         replacement = "git checkout -b {0} origin/{1}".format(examples_ref, examples_ref)
     update_in_file(CLONE_REPO_SCRIPT, pattern, replacement)
 
+
 def update_examples_uri_in_clone_repo(examples_uri):
     """
     Update examples uri into clone-repo.sh script
@@ -275,6 +289,7 @@ def update_examples_uri_in_clone_repo(examples_uri):
     pattern = re.compile(r'(git clone.*)')
     replacement = "git clone {}".format(examples_uri)
     update_in_file(CLONE_REPO_SCRIPT, pattern, replacement)
+
 
 def update_maven_repo_in_clone_repo(repo_url, replaceJbossRepository):
     """
@@ -293,6 +308,7 @@ def update_maven_repo_in_clone_repo(repo_url, replaceJbossRepository):
         replacement = 'export MAVEN_REPO_URL="{}"'.format(repo_url)
     update_in_file(CLONE_REPO_SCRIPT, pattern, replacement)
 
+
 def update_in_file(file, pattern, replacement):
     """
     Update in given file
@@ -304,7 +320,8 @@ def update_in_file(file, pattern, replacement):
         updated_value = pattern.sub(replacement, fe.read())
     with open(file, 'w') as fe:
         fe.write(updated_value)
-    
+
+
 if __name__ == "__main__":
     for m in get_kogito_module_dirs():
         print("module {}".format(m))
