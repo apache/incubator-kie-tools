@@ -15,6 +15,7 @@
  */
 
 export * from "./AttributesTableAction";
+export * from "./CharacteristicsTableEditModeAction";
 export * from "./CharacteristicsTableAction";
 export * from "./GenericSelector";
 export * from "./GenericNumericInput";

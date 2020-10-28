@@ -29,7 +29,7 @@ import {
 import { TrashIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTable.scss";
 import { EmptyStateNoCharacteristics } from "../molecules";
-import { CharacteristicsTableAction } from "../atoms";
+import { CharacteristicsTableAction, CharacteristicsTableEditModeAction } from "../atoms";
 
 export interface IndexedCharacteristic {
   index: number | undefined;
@@ -46,11 +46,23 @@ interface CharacteristicsTableProps {
 export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   const { characteristics, onRowClick, onRowDelete, onAddCharacteristic } = props;
 
-  const [selectedDataListItemId, setSelectedDataListItemId] = useState("");
+  const [selectedItemIndex, setSelectedItemIndex] = useState<number | undefined>(undefined);
+  const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
 
   const onSelectDataListItem = (id: string) => {
-    setSelectedDataListItemId(id);
-    onRowClick(Number(id));
+    const index: number | undefined = Number(id);
+    setSelectedItemIndex(index);
+    onRowClick(index);
+  };
+
+  const onEdit = (index: number | undefined) => {
+    setEditItemIndex(index);
+  };
+
+  const onDelete = (index: number | undefined) => {
+    if (index) {
+      onRowDelete(index);
+    }
   };
 
   return (
@@ -73,9 +85,9 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                   <div>Baseline Score</div>
                 </DataListCell>,
                 <DataListAction
-                  id="delete-characteristic-header"
-                  aria-label="delete header"
-                  aria-labelledby="delete-characteristic-header"
+                  id="characteristic-actions-header"
+                  aria-label="actions header"
+                  aria-labelledby="characteristic-actions-header"
                   key="4"
                   width={1}
                 >
@@ -91,7 +103,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
       </DataList>
       <DataList
         aria-label="characteristics list"
-        selectedDataListItemId={selectedDataListItemId}
+        selectedDataListItemId={selectedItemIndex?.toString()}
         onSelectDataListItem={onSelectDataListItem}
       >
         {characteristics.map((ic, index) => {
@@ -99,7 +111,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
           return (
             <DataListItem
               key={index}
-              id={index.toString()}
+              id={ic.index?.toString()}
               className="characteristics__list-item"
               aria-labelledby={"characteristic-" + index}
             >
@@ -119,13 +131,22 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                       <div>{c.baselineScore}</div>
                     </DataListCell>,
                     <DataListAction
-                      id="delete-characteristic"
-                      aria-label="delete"
-                      aria-labelledby="delete-characteristic"
+                      id="characteristic-actions"
+                      aria-label="actions"
+                      aria-labelledby="characteristic-actions"
                       key="4"
                       width={1}
                     >
-                      <CharacteristicsTableAction onEdit={() => null} onDelete={() => onRowDelete(index)} />
+                      {editItemIndex === ic.index && (
+                        <CharacteristicsTableEditModeAction onCommit={() => null} onCancel={() => null} />
+                      )}
+                      {editItemIndex !== ic.index && (
+                        <CharacteristicsTableAction
+                          onEdit={() => onEdit(ic.index)}
+                          onDelete={() => onDelete(ic.index)}
+                          disabled={!(editItemIndex === undefined || editItemIndex === ic.index)}
+                        />
+                      )}
                     </DataListAction>
                   ]}
                 />

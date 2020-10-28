@@ -18,12 +18,13 @@ import { useState } from "react";
 import { Dropdown, DropdownItem, DropdownPosition, KebabToggle } from "@patternfly/react-core";
 
 interface CharacteristicsTableActionProps {
+  disabled: boolean;
   onEdit: () => void;
   onDelete: () => void;
 }
 
 export const CharacteristicsTableAction = (props: CharacteristicsTableActionProps) => {
-  const { onEdit, onDelete } = props;
+  const { disabled, onEdit, onDelete } = props;
 
   const [isOpen, setOpen] = useState(false);
 
@@ -41,7 +42,7 @@ export const CharacteristicsTableAction = (props: CharacteristicsTableActionProp
       position={DropdownPosition.right}
       isOpen={isOpen}
       onSelect={onSelect}
-      toggle={<KebabToggle onToggle={onToggle} />}
+      toggle={<KebabToggle isDisabled={disabled} onToggle={onToggle} />}
       dropdownItems={[
         <DropdownItem key="edit" onClick={e => onEdit()}>
           Edit
