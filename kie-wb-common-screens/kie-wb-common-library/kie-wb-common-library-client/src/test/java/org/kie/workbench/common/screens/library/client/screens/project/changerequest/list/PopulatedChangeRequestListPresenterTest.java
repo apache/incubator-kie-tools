@@ -138,9 +138,8 @@ public class PopulatedChangeRequestListPresenterTest {
                                                                      busyIndicatorView,
                                                                      dateUtils));
 
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
     }
 
     @Test
@@ -207,15 +206,12 @@ public class PopulatedChangeRequestListPresenterTest {
 
     @Test
     public void nextPageTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"))
-                .set(1);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"))
-                .set("ALL");
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"), 1);
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"), 10);
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"), "ALL");
 
         presenter.nextPage();
 
@@ -224,15 +220,12 @@ public class PopulatedChangeRequestListPresenterTest {
 
     @Test
     public void nextPageDoNothingTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"))
-                .set("ALL");
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"), 10);
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"), 10);
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"), "ALL");
 
         presenter.nextPage();
 
@@ -241,15 +234,12 @@ public class PopulatedChangeRequestListPresenterTest {
 
     @Test
     public void prevPageTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"))
-                .set(5);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"))
-                .set("ALL");
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"), 5);
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"), 10);
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"), "ALL");
 
         presenter.prevPage();
 
@@ -258,15 +248,12 @@ public class PopulatedChangeRequestListPresenterTest {
 
     @Test
     public void prevPageDoNothingTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"))
-                .set(1);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"))
-                .set("ALL");
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"), 1);
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"), 10);
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"), "ALL");
 
         presenter.prevPage();
 
@@ -275,12 +262,10 @@ public class PopulatedChangeRequestListPresenterTest {
 
     @Test
     public void setCurrentPageTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"))
-                .set("ALL");
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"), 10);
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"), "ALL");
 
         presenter.setCurrentPage(5);
 
@@ -290,12 +275,10 @@ public class PopulatedChangeRequestListPresenterTest {
 
     @Test
     public void setCurrentPageOutRangeTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"))
-                .set(10);
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"))
-                .set(10);
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("currentPage"), 10);
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("totalPages"), 10);
 
         presenter.setCurrentPage(50);
 
@@ -331,9 +314,8 @@ public class PopulatedChangeRequestListPresenterTest {
 
     @Test
     public void searchTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"))
-                .set("ALL");
+        FieldSetter.setField(presenter,
+                        PopulatedChangeRequestListPresenter.class.getDeclaredField("filterType"), "ALL");
 
         presenter.search("value");
 

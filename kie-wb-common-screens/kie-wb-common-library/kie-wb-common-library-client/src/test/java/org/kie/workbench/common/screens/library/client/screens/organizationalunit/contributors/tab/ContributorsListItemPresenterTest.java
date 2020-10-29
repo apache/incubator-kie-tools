@@ -76,7 +76,7 @@ public class ContributorsListItemPresenterTest {
         doAnswer(invocationOnMock -> {
             final List<Contributor> contributors = new ArrayList<>();
             contributors.add(persistedContributor);
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contributors);
+            invocationOnMock.getArgument(0, Consumer.class).accept(contributors);
             return null;
         }).when(contributorsListService).getContributors(any());
     }
@@ -228,7 +228,7 @@ public class ContributorsListItemPresenterTest {
             final List<Contributor> contributors = new ArrayList<>();
             contributors.add(contributor1);
             contributors.add(contributor2);
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(contributors);
+            invocationOnMock.getArgument(0, Consumer.class).accept(contributors);
             return null;
         }).when(contributorsListService).getContributors(any());
 
@@ -250,7 +250,7 @@ public class ContributorsListItemPresenterTest {
         final ContributorsListService contributorsListService = mock(ContributorsListService.class);
 
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(Collections.singletonList(contributor));
+            invocationOnMock.getArgument(0, Consumer.class).accept(Collections.singletonList(contributor));
             return null;
         }).when(contributorsListService).getContributors(any());
 

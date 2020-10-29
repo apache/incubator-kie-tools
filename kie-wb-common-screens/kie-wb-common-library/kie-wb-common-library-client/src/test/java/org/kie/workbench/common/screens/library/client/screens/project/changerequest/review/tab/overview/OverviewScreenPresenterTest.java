@@ -127,8 +127,8 @@ public class OverviewScreenPresenterTest {
 
     @Test
     public void addCommentInvalidTextTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("changeRequestAuthorId")).set("admin");
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("changeRequestAuthorId"), "admin");
 
         doReturn("").when(view).getCommentText();
 
@@ -142,8 +142,8 @@ public class OverviewScreenPresenterTest {
 
     @Test
     public void addCommentSuccessTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject")).set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         doReturn("my comment").when(view).getCommentText();
 
@@ -164,8 +164,8 @@ public class OverviewScreenPresenterTest {
 
     @Test
     public void setupNotAuthorTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject")).set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         ChangeRequest changeRequest = mock(ChangeRequest.class);
         doReturn("user").when(changeRequest).getAuthorId();
@@ -178,8 +178,8 @@ public class OverviewScreenPresenterTest {
 
     @Test
     public void setupIsAuthorTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject")).set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         ChangeRequest changeRequest = mock(ChangeRequest.class);
         doReturn("admin").when(changeRequest).getAuthorId();
@@ -225,8 +225,8 @@ public class OverviewScreenPresenterTest {
 
     @Test
     public void setupCommentsTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject")).set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         ChangeRequest changeRequest = mock(ChangeRequest.class);
         doReturn("user").when(changeRequest).getAuthorId();
@@ -272,10 +272,10 @@ public class OverviewScreenPresenterTest {
 
     @Test
     public void saveSummaryEditionTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject")).set(workspaceProject);
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("changeRequestAuthorId")).set("admin");
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("changeRequestAuthorId"), "admin");
 
         doReturn("my updated summary").when(view).getSummaryInputText();
 
@@ -303,10 +303,10 @@ public class OverviewScreenPresenterTest {
 
     @Test
     public void saveDescriptionEditionTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject")).set(workspaceProject);
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("changeRequestAuthorId")).set("admin");
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("changeRequestAuthorId"), "admin");
 
         doReturn("my updated description").when(view).getDescriptionInputText();
 
@@ -320,14 +320,12 @@ public class OverviewScreenPresenterTest {
 
     @Test
     public void nextCommentPageTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject")).set(workspaceProject);
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("commentCurrentPage"))
-                .set(1);
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("commentTotalPages"))
-                .set(10);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("commentCurrentPage"), 1);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("commentTotalPages"), 10);
 
         presenter.nextCommentPage();
 
@@ -336,14 +334,12 @@ public class OverviewScreenPresenterTest {
 
     @Test
     public void nextCommentPageDoNothingTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject")).set(workspaceProject);
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("commentCurrentPage"))
-                .set(10);
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("commentTotalPages"))
-                .set(10);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("commentCurrentPage"), 10);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("commentTotalPages"), 10);
 
         presenter.nextCommentPage();
 
@@ -352,14 +348,12 @@ public class OverviewScreenPresenterTest {
 
     @Test
     public void prevCommentPageTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject")).set(workspaceProject);
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("commentCurrentPage"))
-                .set(5);
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("commentTotalPages"))
-                .set(10);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("commentCurrentPage"), 5);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("commentTotalPages"), 10);
 
         presenter.prevCommentPage();
 
@@ -368,14 +362,12 @@ public class OverviewScreenPresenterTest {
 
     @Test
     public void prevCommentPageDoNothingTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject")).set(workspaceProject);
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("commentCurrentPage"))
-                .set(1);
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("commentTotalPages"))
-                .set(10);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("commentCurrentPage"), 1);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("commentTotalPages"), 10);
 
         presenter.prevCommentPage();
 
@@ -384,11 +376,10 @@ public class OverviewScreenPresenterTest {
 
     @Test
     public void setCommentCurrentPageTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject")).set(workspaceProject);
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("commentTotalPages"))
-                .set(10);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("commentTotalPages"), 10);
 
         presenter.setCommentCurrentPage(5);
 
@@ -398,14 +389,12 @@ public class OverviewScreenPresenterTest {
 
     @Test
     public void setCommentCurrentOutRangeTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject")).set(workspaceProject);
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("commentCurrentPage"))
-                .set(10);
-        new FieldSetter(presenter,
-                        OverviewScreenPresenter.class.getDeclaredField("commentTotalPages"))
-                .set(10);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("commentCurrentPage"), 10);
+        FieldSetter.setField(presenter,
+                        OverviewScreenPresenter.class.getDeclaredField("commentTotalPages"), 10);
 
         presenter.setCommentCurrentPage(50);
 

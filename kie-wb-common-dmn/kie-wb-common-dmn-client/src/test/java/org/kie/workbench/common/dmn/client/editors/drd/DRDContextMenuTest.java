@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.drd;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +43,6 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.mockito.Mock;
-import org.powermock.reflect.Whitebox;
 import org.uberfire.mvp.Command;
 
 import static java.util.Arrays.asList;
@@ -134,11 +134,20 @@ public class DRDContextMenuTest {
     }
 
     @Test
-    public void testAppendContextMenuToTheDOM() {
+    public void testAppendContextMenuToTheDOM() throws NoSuchFieldException, IllegalAccessException {
         when(contextMenu.getElement()).thenReturn(element);
-        Whitebox.setInternalState(element, "style", styleDeclaration);
-        Whitebox.setInternalState(DomGlobal.class, "document", htmlDocument);
-        Whitebox.setInternalState(htmlDocument, "body", body);
+
+        final Field field = element.getClass().getDeclaredField("style");
+        field.setAccessible(true);
+        field.set(element, styleDeclaration);
+
+        final Field field2 = DomGlobal.class.getDeclaredField("document");
+        field2.setAccessible(true);
+        field2.set(DomGlobal.class, htmlDocument);
+
+        final Field field3 = htmlDocument.getClass().getDeclaredField("body");
+        field3.setAccessible(true);
+        field3.set(DomGlobal.class, body);
 
         drdContextMenu.appendContextMenuToTheDOM(10, 10);
 

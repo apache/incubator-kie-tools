@@ -105,8 +105,7 @@ public class ChangedFilesScreenPresenterTest {
 
     @Test
     public void setupWhenEmptyDiffListTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, ChangedFilesScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter, ChangedFilesScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         doReturn(Collections.emptyList()).when(changeRequestService).getDiff(anyString(),
                                                                              anyString(),
@@ -125,8 +124,7 @@ public class ChangedFilesScreenPresenterTest {
 
     @Test
     public void setupWhenPopulatedDiffListTest() throws NoSuchFieldException {
-        new FieldSetter(presenter, ChangedFilesScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter, ChangedFilesScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         List<ChangeRequestDiff> diffs = Collections.nCopies(5, mock(ChangeRequestDiff.class));
         doReturn(diffs).when(changeRequestService).getDiff(anyString(),

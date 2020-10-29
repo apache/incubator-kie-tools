@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -39,7 +40,6 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandle
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.Whitebox;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -190,9 +190,11 @@ public class WiresTextDecoratorTest {
     }
 
     @Test
-    public void testMoveTitleToFront() {
+    public void testMoveTitleToFront() throws NoSuchFieldException, IllegalAccessException {
         Text text = spy(new Text(""));
-        Whitebox.setInternalState(decorator, "text", text);
+        final Field field = decorator.getClass().getDeclaredField("text");
+        field.setAccessible(true);
+        field.set(decorator, text);
 
         decorator.moveTitleToTop();
 
@@ -238,9 +240,11 @@ public class WiresTextDecoratorTest {
     }
 
     @Test
-    public void testBatch() {
+    public void testBatch() throws IllegalAccessException, NoSuchFieldException {
         Text text = spy(new Text(""));
-        Whitebox.setInternalState(decorator, "text", text);
+        final Field field = decorator.getClass().getDeclaredField("text");
+        field.setAccessible(true);
+        field.set(decorator, text);
 
         decorator.batch();
 

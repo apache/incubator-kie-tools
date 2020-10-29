@@ -300,7 +300,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
 
         //apply callbacks mocks
         when(sessionCommandManager.execute(eq(canvasHandler), any())).thenAnswer(param -> {
-            CompositeCommand argument = param.getArgumentAt(1, CompositeCommand.class);
+            CompositeCommand argument = param.getArgument(1, CompositeCommand.class);
             //callback to nodes
             argument.getCommands().stream().filter(c -> c instanceof CloneNodeCommand).forEach(c -> {
                 CloneNodeCommand cloneNodeCommand = (CloneNodeCommand) c;
@@ -379,7 +379,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
 
         //apply callbacks mocks
         when(sessionCommandManager.execute(eq(canvasHandler), any())).thenAnswer(param -> {
-            CompositeCommand argument = param.getArgumentAt(1, CompositeCommand.class);
+            CompositeCommand argument = param.getArgument(1, CompositeCommand.class);
             //callback to nodes
             argument.getCommands().stream().filter(c -> c instanceof CloneNodeCommand).forEach(c -> {
                 CloneNodeCommand cloneNodeCommand = (CloneNodeCommand) c;

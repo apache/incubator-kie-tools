@@ -172,12 +172,10 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void refreshOnFocusGoToScreenCanReadTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"))
-                .set(repository);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
 
         PlaceRequest place = mock(PlaceRequest.class);
         SelectPlaceEvent event = new SelectPlaceEvent(place);
@@ -216,12 +214,10 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void refreshOnFocusGoToScreenCanUpdateTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"))
-                .set(repository);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
 
         PlaceRequest place = mock(PlaceRequest.class);
         SelectPlaceEvent event = new SelectPlaceEvent(place);
@@ -279,9 +275,8 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void cancelTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         presenter.cancel();
 
@@ -290,16 +285,13 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void rejectWhenHasPermissionTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"))
-                .set(repository);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
 
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"))
-                .set(branch);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"), branch);
 
         doReturn(promises.resolve(true)).when(projectController)
                 .canUpdateBranch(workspaceProject,
@@ -315,13 +307,11 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void rejectWhenNotAllowedTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"))
-                .set(branch);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"), branch);
 
         doReturn(promises.resolve(false)).when(projectController)
                 .canUpdateBranch(workspaceProject,
@@ -336,14 +326,12 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void closeWhenIsAuthorTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"))
-                .set(repository);
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("authorId")).set("admin");
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("authorId"), "admin");
 
         presenter.close();
 
@@ -354,14 +342,12 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void closeWhenIsNotAuthorTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"))
-                .set(repository);
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("authorId")).set("developer");
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("authorId"), "developer");
 
         presenter.close();
 
@@ -372,14 +358,12 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void reopenWhenIsAuthorTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"))
-                .set(repository);
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("authorId")).set("admin");
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("authorId"), "admin");
 
         presenter.reopen();
 
@@ -390,14 +374,12 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void reopenWhenIsNotAuthorTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"))
-                .set(repository);
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("authorId")).set("developer");
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("authorId"), "developer");
 
         presenter.reopen();
 
@@ -408,16 +390,13 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void mergeWhenHasPermissionTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"))
-                .set(repository);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
 
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"))
-                .set(branch);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"), branch);
 
         doReturn(promises.resolve(true)).when(projectController)
                 .canUpdateBranch(workspaceProject,
@@ -438,13 +417,11 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void mergeWhenNotAllowedTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"))
-                .set(branch);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"), branch);
 
         doReturn(promises.resolve(false)).when(projectController)
                 .canUpdateBranch(workspaceProject,
@@ -459,16 +436,13 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void revertWhenHasPermissionTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"))
-                .set(repository);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
 
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"))
-                .set(branch);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"), branch);
 
         doReturn(promises.resolve(true)).when(projectController)
                 .canUpdateBranch(workspaceProject,
@@ -489,13 +463,11 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void revertWhenNotAllowedTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"))
-                .set(branch);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"), branch);
 
         doReturn(promises.resolve(false)).when(projectController)
                 .canUpdateBranch(workspaceProject,
@@ -510,13 +482,11 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void squashWhenHasPermissionTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"))
-                .set(repository);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
 
         doReturn(promises.resolve(true))
                 .when(projectController)
@@ -539,13 +509,11 @@ public class ChangeRequestReviewScreenPresenterTest {
 
     @Test
     public void squashWhenNotAllowedTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
-        new FieldSetter(presenter,
-                ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"))
-        .set(repository);
+        FieldSetter.setField(presenter,
+                ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
 
         doReturn(promises.resolve(false))
                 .when(projectController)

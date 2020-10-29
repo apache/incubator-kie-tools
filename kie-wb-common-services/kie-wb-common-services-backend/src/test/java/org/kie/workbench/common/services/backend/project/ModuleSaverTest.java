@@ -308,7 +308,7 @@ public class ModuleSaverTest
         kieModule.setPom(pom);
         when(resourceResolver.resolveModule(any(Path.class))).thenReturn(kieModule);
 
-        stub(ioService.createDirectory(any(org.uberfire.java.nio.file.Path.class))).toAnswer(new Answer<org.uberfire.java.nio.file.Path>() {
+        when(ioService.createDirectory(any(org.uberfire.java.nio.file.Path.class))).thenAnswer(new Answer<org.uberfire.java.nio.file.Path>() {
             @Override
             public org.uberfire.java.nio.file.Path answer(final InvocationOnMock invocationOnMock) throws Throwable {
                 org.uberfire.java.nio.file.Path path = (org.uberfire.java.nio.file.Path) invocationOnMock.getArguments()[0];

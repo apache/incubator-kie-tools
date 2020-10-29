@@ -783,7 +783,7 @@ public class LibraryPlacesTest {
     @Test
     public void goToExternalImportProjectsTest() {
         doAnswer(inv -> {
-            final Command command = inv.getArgumentAt(0,
+            final Command command = inv.getArgument(0,
                                                       Command.class);
             command.execute();
             return null;

@@ -188,7 +188,7 @@ public class MigrateAllProjectsTest {
 
         service.migrateAllProjects(niogitDir);
 
-        PowerMockito.verifyStatic(times(NUMBER_OF_REPOS));
+        PowerMockito.verifyStatic(Files.class, times(NUMBER_OF_REPOS));
         Files.move(any(Path.class),
                    any(Path.class));
 

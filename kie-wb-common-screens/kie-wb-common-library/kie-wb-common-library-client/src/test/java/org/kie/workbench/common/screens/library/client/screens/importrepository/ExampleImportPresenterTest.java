@@ -141,7 +141,7 @@ public class ExampleImportPresenterTest {
         doReturn(organizationalUnit).when(importPresenter).activeOrganizationalUnit();
         doReturn(false).when(libraryService).isClustered();
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0,
+            invocationOnMock.getArgument(0,
                                            ParameterizedCommand.class).execute(importProjectsPreferences);
             return null;
         }).when(importProjectsPreferences).load(any(ParameterizedCommand.class),
@@ -162,7 +162,7 @@ public class ExampleImportPresenterTest {
     public void filterProjectsTest() {
         doReturn(false).when(libraryService).isClustered();
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0,
+            invocationOnMock.getArgument(0,
                                            ParameterizedCommand.class).execute(importProjectsPreferences);
             return null;
         }).when(importProjectsPreferences).load(any(ParameterizedCommand.class),

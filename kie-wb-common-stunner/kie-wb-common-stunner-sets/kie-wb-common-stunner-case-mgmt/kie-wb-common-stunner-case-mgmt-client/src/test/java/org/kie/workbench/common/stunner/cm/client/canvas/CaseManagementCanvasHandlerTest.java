@@ -160,7 +160,7 @@ public class CaseManagementCanvasHandlerTest {
 
         when((canvas.getTransform())).thenReturn(transform);
         when(transform.transform(anyDouble(), anyDouble())).thenAnswer(
-                invocation -> new Point2D(invocation.getArgumentAt(0, Double.class), invocation.getArgumentAt(1, Double.class)));
+                invocation -> new Point2D(invocation.getArgument(0, Double.class), invocation.getArgument(1, Double.class)));
     }
 
     @Test

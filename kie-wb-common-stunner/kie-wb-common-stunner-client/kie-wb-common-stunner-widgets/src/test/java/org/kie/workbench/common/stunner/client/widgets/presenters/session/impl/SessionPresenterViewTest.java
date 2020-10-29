@@ -148,7 +148,7 @@ public class SessionPresenterViewTest extends AbstractCanvasHandlerViewerTest {
 
         when(tested.addDomHandler(any(),
                                   any())).thenAnswer((invocation -> {
-            handler = invocation.getArgumentAt(0,
+            handler = invocation.getArgument(0,
                                                ContextMenuHandler.class);
             return null;
         }));

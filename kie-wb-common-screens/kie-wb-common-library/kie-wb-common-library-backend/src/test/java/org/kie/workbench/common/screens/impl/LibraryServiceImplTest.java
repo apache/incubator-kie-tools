@@ -208,7 +208,7 @@ public class LibraryServiceImplTest {
                                                          makeBranch("repo1-branch2",
                                                                     repo1.getAlias()));
         when(repo1.getBranches()).thenReturn(repo1Branches);
-        when(repo1.getBranch(anyString())).then(inv -> repo1Branches.stream().filter(b -> b.getName().equals(inv.getArgumentAt(0, String.class))).findFirst());
+        when(repo1.getBranch(anyString())).then(inv -> repo1Branches.stream().filter(b -> b.getName().equals(inv.getArgument(0, String.class))).findFirst());
         when(repo2Default.getAlias()).thenReturn("ou2-repo-alias");
         final List<Branch> repo2Branches = Collections.singletonList(makeBranch("repo2-branch1",
                                                                                 repo2Default.getAlias()));

@@ -114,7 +114,7 @@ public class CaseManagementDiagramEditorTest extends AbstractProjectDiagramEdito
         RemoteCallback[] remoteCallback = new RemoteCallback[1];
 
         when(caseManagementSwitchViewServiceCaller.call(any(RemoteCallback.class))).thenAnswer(invocation -> {
-            remoteCallback[0] = invocation.getArgumentAt(0, RemoteCallback.class);
+            remoteCallback[0] = invocation.getArgument(0, RemoteCallback.class);
             return caseManagementSwitchViewService;
         });
 

@@ -150,7 +150,7 @@ public class PopulatedLibraryScreenTest {
             doReturn(mock(TileWidget.View.class)).when(tile).getView();
 
             doAnswer((Answer<Void>) invocationOnMock1 -> {
-                when(tile.getContent()).thenReturn(invocationOnMock1.getArgumentAt(0, WorkspaceProject.class));
+                when(tile.getContent()).thenReturn(invocationOnMock1.getArgument(0, WorkspaceProject.class));
                 return null;
             }).when(tile).setContent(any());
 

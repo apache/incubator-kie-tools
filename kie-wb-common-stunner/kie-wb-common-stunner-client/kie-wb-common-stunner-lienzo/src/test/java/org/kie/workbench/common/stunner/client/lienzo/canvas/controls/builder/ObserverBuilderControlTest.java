@@ -331,7 +331,7 @@ public class ObserverBuilderControlTest {
 
     @Test
     public void testTransformedLocationWithPan() {
-        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D(invocation.getArgumentAt(0, Double.class) + 5, invocation.getArgumentAt(1, Double.class) - 10)));
+        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D(invocation.getArgument(0, Double.class) + 5, invocation.getArgument(1, Double.class) - 10)));
         Point2D location1 = tested.getTransformedLocation(0d, 0d);
         assertEquals(5d, location1.getX(), 0d);
         assertEquals(-10d, location1.getY(), 0d);
@@ -342,7 +342,7 @@ public class ObserverBuilderControlTest {
 
     @Test
     public void testTransformedLocationWithZoom() {
-        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D(invocation.getArgumentAt(0, Double.class) * 0.5, invocation.getArgumentAt(1, Double.class) * 2)));
+        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D(invocation.getArgument(0, Double.class) * 0.5, invocation.getArgument(1, Double.class) * 2)));
         Point2D location1 = tested.getTransformedLocation(0d, 0d);
         assertEquals(0d, location1.getX(), 0d);
         assertEquals(0d, location1.getY(), 0d);
@@ -353,7 +353,7 @@ public class ObserverBuilderControlTest {
 
     @Test
     public void testTransformedLocationWithPanAndZoom() {
-        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D((invocation.getArgumentAt(0, Double.class) + 5) * 0.5, (invocation.getArgumentAt(1, Double.class) - 5) * 2)));
+        when(canvasTransform.inverse(anyDouble(), anyDouble())).thenAnswer((invocation -> new Point2D((invocation.getArgument(0, Double.class) + 5) * 0.5, (invocation.getArgument(1, Double.class) - 5) * 2)));
         Point2D location1 = tested.getTransformedLocation(0d, 0d);
         assertEquals(2.5d, location1.getX(), 0d);
         assertEquals(-10d, location1.getY(), 0d);

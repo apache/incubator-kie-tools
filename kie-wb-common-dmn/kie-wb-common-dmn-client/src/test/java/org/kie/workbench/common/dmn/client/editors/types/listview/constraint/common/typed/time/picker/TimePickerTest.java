@@ -25,7 +25,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.uberfire.client.views.pfly.widgets.Moment;
@@ -126,11 +125,6 @@ public class TimePickerTest {
         picker.onDateChanged(moment);
 
         assertEquals(expected, input.value);
-        verify(consumer).accept(argThat(new ArgumentMatcher<Moment>() {
-            @Override
-            public boolean matches(Object argument) {
-                return Objects.equals(argument, moment);
-            }
-        }));
+        verify(consumer).accept(argThat(argument -> Objects.equals(argument, moment)));
     }
 }

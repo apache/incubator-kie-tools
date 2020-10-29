@@ -683,13 +683,13 @@ public class ProjectImportServiceImplTest {
         final org.uberfire.java.nio.file.Path repoRoot = exampleRootNioPath.getParent();
         when(fs.getRootDirectories()).thenReturn(() -> Stream.of(repoRoot).iterator());
         when(pathUtil.convert(exampleRoot)).thenReturn(exampleRootNioPath);
-        when(pathUtil.stripProtocolAndBranch(any())).then(inv -> realPathUtil.stripProtocolAndBranch(inv.getArgumentAt(0,
+        when(pathUtil.stripProtocolAndBranch(any())).then(inv -> realPathUtil.stripProtocolAndBranch(inv.getArgument(0,
                                                                                                                        String.class)));
-        when(pathUtil.stripRepoNameAndSpace(any())).then(inv -> realPathUtil.stripRepoNameAndSpace(inv.getArgumentAt(0,
+        when(pathUtil.stripRepoNameAndSpace(any())).then(inv -> realPathUtil.stripRepoNameAndSpace(inv.getArgument(0,
                                                                                                                      String.class)));
-        when(pathUtil.convert(any(org.uberfire.java.nio.file.Path.class))).then(inv -> realPathUtil.convert(inv.getArgumentAt(0,
+        when(pathUtil.convert(any(org.uberfire.java.nio.file.Path.class))).then(inv -> realPathUtil.convert(inv.getArgument(0,
                                                                                                                               org.uberfire.java.nio.file.Path.class)));
-        when(pathUtil.extractBranch(any())).then(inv -> realPathUtil.extractBranch(inv.getArgumentAt(0,
+        when(pathUtil.extractBranch(any())).then(inv -> realPathUtil.extractBranch(inv.getArgument(0,
                                                                                                      String.class)));
 
         String repoURL = "file:///some/repo/url";

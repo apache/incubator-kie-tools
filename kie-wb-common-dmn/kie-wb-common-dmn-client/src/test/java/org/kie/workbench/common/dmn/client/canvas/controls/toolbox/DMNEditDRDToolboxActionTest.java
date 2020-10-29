@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -35,7 +36,6 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.Mock;
-import org.powermock.reflect.Whitebox;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -90,12 +90,16 @@ public class DMNEditDRDToolboxActionTest {
     }
 
     @Test
-    public void testOnMouseClick() {
+    public void testOnMouseClick() throws NoSuchFieldException, IllegalAccessException {
         final HTMLElement htmlElement = new HTMLElement();
         htmlElement.style = new CSSStyleDeclaration();
         final HTMLDocument htmlDocument = new HTMLDocument();
         htmlDocument.body = new HTMLBodyElement();
-        Whitebox.setInternalState(DomGlobal.class, "document", htmlDocument);
+
+        final Field field = DomGlobal.class.getDeclaredField("document");
+        field.setAccessible(true);
+        field.set(DomGlobal.class, htmlDocument);
+
         when(drdContextMenu.getElement()).thenReturn(htmlElement);
 
         dmnEditDRDToolboxAction.onMouseClick(canvasHandler, UUID, mouseClickEvent);

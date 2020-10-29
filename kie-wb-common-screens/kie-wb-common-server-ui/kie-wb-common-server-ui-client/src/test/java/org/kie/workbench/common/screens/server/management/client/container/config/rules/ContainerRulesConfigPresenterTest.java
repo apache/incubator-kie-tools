@@ -89,7 +89,7 @@ public class ContainerRulesConfigPresenterTest {
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                releaseId.setVersion(invocation.getArgumentAt(1,
+                releaseId.setVersion(invocation.getArgument(1,
                                                               ReleaseId.class).getVersion());
                 return null;
             }

@@ -114,8 +114,8 @@ public class CommentItemPresenterTest {
 
     @Test
     public void deleteWhenAuthorTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        CommentItemPresenter.class.getDeclaredField("authorId")).set("admin");
+        FieldSetter.setField(presenter,
+                        CommentItemPresenter.class.getDeclaredField("authorId"), "admin");
 
         presenter.delete();
 
@@ -127,8 +127,8 @@ public class CommentItemPresenterTest {
 
     @Test
     public void deleteWhenNotAuthorTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        CommentItemPresenter.class.getDeclaredField("authorId")).set("user");
+        FieldSetter.setField(presenter,
+                        CommentItemPresenter.class.getDeclaredField("authorId"), "user");
 
         presenter.delete();
 

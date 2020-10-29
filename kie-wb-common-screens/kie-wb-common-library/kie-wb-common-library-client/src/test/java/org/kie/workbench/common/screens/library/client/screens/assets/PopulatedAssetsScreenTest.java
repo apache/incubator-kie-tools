@@ -498,7 +498,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     public void testInitializeAcceptContentSuccess() {
         doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
         doAnswer(invocation -> {
-            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+            Callback<Boolean, Void> callback = invocation.getArgument(0,
                                                                         Callback.class);
             callback.onSuccess(false);
             return null;
@@ -512,7 +512,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     public void testInitializeAcceptContentSuccessWithPermission() {
         doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
         doAnswer(invocation -> {
-            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+            Callback<Boolean, Void> callback = invocation.getArgument(0,
                                                                         Callback.class);
             callback.onSuccess(true);
             return null;
@@ -525,7 +525,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     public void testInitializeAcceptContentSuccessWithoutPermission() {
         doReturn(promises.resolve(false)).when(this.projectController).canUpdateProject(any());
         doAnswer(invocation -> {
-            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+            Callback<Boolean, Void> callback = invocation.getArgument(0,
                                                                         Callback.class);
             callback.onSuccess(true);
             return null;
@@ -538,7 +538,7 @@ public class PopulatedAssetsScreenTest extends ProjectScreenTestBase {
     public void testInitializeAcceptContentFailure() {
         doReturn(promises.resolve(true)).when(this.projectController).canUpdateProject(any());
         doAnswer(invocation -> {
-            Callback<Boolean, Void> callback = invocation.getArgumentAt(0,
+            Callback<Boolean, Void> callback = invocation.getArgument(0,
                                                                         Callback.class);
             callback.onFailure(null);
             return null;

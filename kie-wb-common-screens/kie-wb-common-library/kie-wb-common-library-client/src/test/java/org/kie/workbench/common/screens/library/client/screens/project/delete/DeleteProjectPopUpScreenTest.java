@@ -51,7 +51,7 @@ public class DeleteProjectPopUpScreenTest {
     @Before
     public void setUp() {
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Command.class).execute();
+            invocationOnMock.getArgument(0, Command.class).execute();
             return null;
         }).when(libraryPlaces).closeAllPlacesOrNothing(any());
 

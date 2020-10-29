@@ -459,7 +459,7 @@ public class DMNDiagramEditorTest {
         when(menus.getItems()).thenReturn(items);
         when(event.isEditModeEnabled()).thenReturn(true);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(menus);
+            invocationOnMock.getArgument(0, Consumer.class).accept(menus);
             return null;
         }).when(editor).getMenu(any());
 
@@ -480,7 +480,7 @@ public class DMNDiagramEditorTest {
         when(menus.getItems()).thenReturn(items);
         when(event.isEditModeEnabled()).thenReturn(false);
         doAnswer(invocationOnMock -> {
-            invocationOnMock.getArgumentAt(0, Consumer.class).accept(menus);
+            invocationOnMock.getArgument(0, Consumer.class).accept(menus);
             return null;
         }).when(editor).getMenu(any());
 

@@ -80,7 +80,7 @@ public class CaseManagementSwitchViewServiceImplTest {
 
         when(definitionSetServiceInstances.iterator()).thenReturn(definitionSetServices.iterator());
         doAnswer(invocation -> {
-            final Consumer consumer = invocation.getArgumentAt(0, Consumer.class);
+            final Consumer consumer = invocation.getArgument(0, Consumer.class);
 
             Iterator var2 = definitionSetServiceInstances.iterator();
 

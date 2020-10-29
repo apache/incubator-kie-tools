@@ -30,6 +30,8 @@ import org.guvnor.ala.pipeline.execution.PipelineExecutorTask;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskDef;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTaskManager;
 import org.guvnor.ala.pipeline.execution.PipelineExecutorTrace;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,10 +40,15 @@ import org.junit.runner.RunWith;
 import org.mockito.internal.matchers.StartsWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PipelineExecutorTaskManagerImplExecutionTest
@@ -213,8 +220,18 @@ public class PipelineExecutorTaskManagerImplExecutionTest
                                      taskEntry);
 
         taskManager.init();
-        expectedException.expectMessage(new StartsWith("A PipelineExecutorTask in status: " + notStopeableStatus.name() +
-                                                               " can not be stopped. Stop operation is available for the following status set:"));
+        expectedException.expectMessage(new BaseMatcher<String>() {
+            @Override
+            public void describeTo(Description description) {
+
+            }
+
+            @Override
+            public boolean matches(Object item) {
+                return item instanceof String && new StartsWith("A PipelineExecutorTask in status: " + notStopeableStatus.name() +
+                                                                        " can not be stopped. Stop operation is available for the following status set:").matches((String) item);
+            }
+        });
         taskManager.stop(TASK_ID);
     }
 
@@ -271,7 +288,17 @@ public class PipelineExecutorTaskManagerImplExecutionTest
         PipelineExecutorTaskManagerImpl.TaskEntry taskEntry = mock(PipelineExecutorTaskManagerImpl.TaskEntry.class);
         taskManager.currentTasks.put(TASK_ID,
                                      taskEntry);
-        expectedException.expectMessage(new StartsWith("An active PipelineExecutorTask was found for taskId: " + TASK_ID));
+        expectedException.expectMessage(new BaseMatcher<String>() {
+            @Override
+            public void describeTo(Description description) {
+
+            }
+
+            @Override
+            public boolean matches(Object item) {
+                return item instanceof String && new StartsWith("An active PipelineExecutorTask was found for taskId: " + TASK_ID).matches((String) item);
+            }
+        });
         taskManager.delete(TASK_ID);
     }
 
@@ -292,9 +319,19 @@ public class PipelineExecutorTaskManagerImplExecutionTest
         when(trace.getTask()).thenReturn(task);
         when(pipelineExecutorRegistry.getExecutorTrace(TASK_ID)).thenReturn(trace);
 
-        expectedException.expectMessage(new StartsWith("A PipelineExecutorTask in status: "
-                                                               + nonStopeableStatus + " can not" +
-                                                               " be deleted. Delete operation is available for the following status set:"));
+        expectedException.expectMessage(new BaseMatcher<String>() {
+            @Override
+            public void describeTo(Description description) {
+
+            }
+
+            @Override
+            public boolean matches(Object item) {
+                return item instanceof String && new StartsWith("A PipelineExecutorTask in status: "
+                                                                        + nonStopeableStatus + " can not" +
+                                                                        " be deleted. Delete operation is available for the following status set:").matches((String) item);
+            }
+        });
         taskManager.delete(TASK_ID);
     }
 

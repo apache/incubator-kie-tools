@@ -142,9 +142,8 @@ public class SubmitChangeRequestScreenPresenterTest {
 
     @Test
     public void refreshOnFocusTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         PlaceRequest place = mock(PlaceRequest.class);
         doReturn(LibraryPlaces.SUBMIT_CHANGE_REQUEST).when(place).getIdentifier();
@@ -160,9 +159,8 @@ public class SubmitChangeRequestScreenPresenterTest {
 
     @Test
     public void refreshOnFocusWhenOtherPlaceTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         PlaceRequest place = mock(PlaceRequest.class);
         doReturn(LibraryPlaces.PROJECT_SCREEN).when(place).getIdentifier();
@@ -174,9 +172,8 @@ public class SubmitChangeRequestScreenPresenterTest {
 
     @Test
     public void cancelTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         presenter.cancel();
 
@@ -241,12 +238,10 @@ public class SubmitChangeRequestScreenPresenterTest {
     public void submitWhenCannotUpdateBranchTest() throws NoSuchFieldException {
         final String destinationBranch = "destinationBranch";
 
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("selectedBranch"))
-                .set(destinationBranch);
+        FieldSetter.setField(presenter,
+                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("selectedBranch"), destinationBranch);
 
         doReturn("summary").when(view).getSummary();
         doReturn("description").when(view).getDescription();
@@ -268,12 +263,10 @@ public class SubmitChangeRequestScreenPresenterTest {
     public void submitSuccessTest() throws NoSuchFieldException {
         final String destinationBranch = "destinationBranch";
 
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("selectedBranch"))
-                .set(destinationBranch);
+        FieldSetter.setField(presenter,
+                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+        FieldSetter.setField(presenter,
+                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("selectedBranch"), destinationBranch);
 
         doReturn("summary").when(view).getSummary();
         doReturn("description").when(view).getDescription();
@@ -305,9 +298,8 @@ public class SubmitChangeRequestScreenPresenterTest {
 
     @Test
     public void updateDiffListWhenEmptyTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         doReturn(Collections.emptyList()).when(changeRequestService).getDiff(anyString(),
                                                                              anyString(),
@@ -328,9 +320,8 @@ public class SubmitChangeRequestScreenPresenterTest {
 
     @Test
     public void updateDiffListWhenPopulatedTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        SubmitChangeRequestScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         ChangeRequestDiff crDiff = mock(ChangeRequestDiff.class);
         doReturn(10).when(crDiff).getDeletedLinesCount();

@@ -342,7 +342,7 @@ public abstract class AbstractVFSDiagramServiceTest<M extends Metadata, D extend
         when(ioService.exists(root)).thenReturn(true);
         diagramService.getDiagramsByPath(root);
 
-        verifyStatic();
+        verifyStatic(Files.class);
         Files.walkFileTree(eq(root),
                            visitorArgumentCaptor.capture());
 

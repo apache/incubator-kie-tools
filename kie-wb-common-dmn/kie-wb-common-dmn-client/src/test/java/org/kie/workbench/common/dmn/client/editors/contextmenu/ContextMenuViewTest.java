@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.client.editors.contextmenu;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +32,6 @@ import org.junit.Test;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorTextItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
-import org.powermock.reflect.Whitebox;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,10 +51,12 @@ public class ContextMenuViewTest {
     private ListSelector listSelector;
 
     @Before
-    public void setUp() {
+    public void setUp() throws NoSuchFieldException, IllegalAccessException {
         presenter = mock(ContextMenu.class);
         listSelector = mock(ListSelector.class);
-        Whitebox.setInternalState(DomGlobal.class, "document", mock(HTMLDocument.class));
+        final Field field = DomGlobal.class.getDeclaredField("document");
+        field.setAccessible(true);
+        field.set(DomGlobal.class, mock(HTMLDocument.class));
 
         contextMenuView = new ContextMenuView(listSelector);
         contextMenuView.init(presenter);

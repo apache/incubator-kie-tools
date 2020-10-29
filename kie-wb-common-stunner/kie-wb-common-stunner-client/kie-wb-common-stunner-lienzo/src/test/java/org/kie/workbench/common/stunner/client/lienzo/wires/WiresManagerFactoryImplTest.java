@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.wires;
 
+import java.lang.reflect.Field;
+
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.decorator.MagnetDecorator;
@@ -26,7 +28,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.wires.decorator.StunnerMagnetDecorator;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.Whitebox;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -50,12 +51,18 @@ public class WiresManagerFactoryImplTest {
     }
 
     @Test
-    public void newWiresManager() {
+    public void newWiresManager() throws NoSuchFieldException, IllegalAccessException {
         WiresManager wiresManager = wiresManagerFactory.newWiresManager(layer);
         assertEquals(wiresManager.getControlFactory(), wiresControlFactory);
         assertEquals(wiresManager.getWiresHandlerFactory(), wiresHandlerFactory);
-        MagnetDecorator magnetDecorator = (MagnetDecorator) Whitebox.getInternalState(wiresManager.getMagnetManager(),
-                                                                                      "m_magnetDecorator");
+
+        final Field m_magnetDecoratorField = wiresManager.getMagnetManager().getClass().getDeclaredField("m_magnetDecorator");
+        m_magnetDecoratorField.setAccessible(true);
+        MagnetDecorator magnetDecorator = (MagnetDecorator) m_magnetDecoratorField.get(wiresManager.getMagnetManager());
+
         assertTrue(magnetDecorator instanceof StunnerMagnetDecorator);
     }
+
+
+
 }

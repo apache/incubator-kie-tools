@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.cm.roles;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -32,7 +33,6 @@ import org.kie.workbench.common.stunner.bpmn.forms.model.cm.RolesEditorFieldDefi
 import org.kie.workbench.common.stunner.bpmn.forms.serializer.cm.CaseRoleSerializer;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,7 +70,11 @@ public class RolesEditorFieldRendererTest {
         caseRoleSerializer = spy(new CaseRoleSerializer());
         tested = spy(new RolesEditorFieldRenderer(view, caseRoleSerializer));
         formGroupsInstance = new ManagedInstanceStub<>(formGroup);
-        Whitebox.setInternalState(tested, "formGroupsInstance", formGroupsInstance);
+
+        final Field formGroupsInstanceField = tested.getClass().getDeclaredField("formGroupsInstance");
+        formGroupsInstanceField.setAccessible(true);
+        formGroupsInstanceField.set(tested, formGroupsInstance);
+
         when(view.getRows()).thenReturn(rows);
     }
 

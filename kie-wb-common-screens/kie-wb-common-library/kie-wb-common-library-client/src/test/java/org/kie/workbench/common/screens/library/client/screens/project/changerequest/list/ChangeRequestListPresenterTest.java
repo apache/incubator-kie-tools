@@ -114,9 +114,8 @@ public class ChangeRequestListPresenterTest {
 
     @Test
     public void showEmptyListTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestListPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestListPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         doReturn(mock(ChangeRequestCountSummary.class)).when(changeRequestService).countChangeRequests(anyString(),
                                                                                                        anyString());
@@ -134,9 +133,8 @@ public class ChangeRequestListPresenterTest {
 
     @Test
     public void showPopulatedListTest() throws NoSuchFieldException {
-        new FieldSetter(presenter,
-                        ChangeRequestListPresenter.class.getDeclaredField("workspaceProject"))
-                .set(workspaceProject);
+        FieldSetter.setField(presenter,
+                        ChangeRequestListPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
 
         ChangeRequestCountSummary countSummary = new ChangeRequestCountSummary(10, 10);
         doReturn(countSummary).when(changeRequestService).countChangeRequests(anyString(), anyString());

@@ -76,7 +76,7 @@ public class AbstractProcessEditorSessionCommandsTest {
         };
 
         when(commands.register(any(Class.class))).thenAnswer(invocation -> {
-            final Class commandClass = invocation.getArgumentAt(0, Class.class);
+            final Class commandClass = invocation.getArgument(0, Class.class);
 
             if (GenerateProcessFormsSessionCommand.class.isAssignableFrom(commandClass)) {
                 commandList.set(0, generateProcessFormsSessionCommand);
