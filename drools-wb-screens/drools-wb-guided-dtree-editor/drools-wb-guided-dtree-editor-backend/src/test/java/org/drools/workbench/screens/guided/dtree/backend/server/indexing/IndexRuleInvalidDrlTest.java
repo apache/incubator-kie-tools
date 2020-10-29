@@ -33,7 +33,6 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.builde
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm.TermSearchType;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueResourceIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.io.KObjectUtil;
 import org.uberfire.java.nio.file.Path;
@@ -68,14 +67,7 @@ public class IndexRuleInvalidDrlTest extends BaseIndexingTest<GuidedDTreeResourc
                     .build();
             searchFor(index, query, 0);
 
-            verify( mockAppender ).doAppend( argThat( new ArgumentMatcher<ILoggingEvent>() {
-
-                @Override
-                public boolean matches( final Object argument ) {
-                    return ( (ILoggingEvent) argument ).getMessage().startsWith( "Unable to parse DRL" );
-                }
-
-            } ) );
+            verify( mockAppender ).doAppend( argThat(argument -> argument.getMessage().startsWith("Unable to parse DRL" )) );
         }
     }
 

@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.scenariosimulation.kogito.client.editor;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -51,7 +52,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.internal.util.reflection.Whitebox;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -323,8 +323,11 @@ public class ScenarioSimulationEditorKogitoWrapperTest {
     }
 
     @Test
-    public void onStartup() {
-        Whitebox.setInternalState(scenarioSimulationEditorKogitoWrapperSpy, "multiPageEditorContainerView", multiPageEditorContainerViewMock);
+    public void onStartup() throws IllegalAccessException, NoSuchFieldException {
+        final Field field = scenarioSimulationEditorKogitoWrapperSpy.getClass().getDeclaredField("multiPageEditorContainerView");
+        field.setAccessible(true);
+        field.set(scenarioSimulationEditorKogitoWrapperSpy, multiPageEditorContainerViewMock);
+
         scenarioSimulationEditorKogitoWrapperSpy.onStartup(placeRequestMock);
         verify(authoringEditorDockMock, times(1)).setup(eq("AuthoringPerspective"), eq(placeRequestMock));
         verify(scenarioSimulationEditorPresenterMock, times(1)).setWrapper(eq(scenarioSimulationEditorKogitoWrapperSpy));

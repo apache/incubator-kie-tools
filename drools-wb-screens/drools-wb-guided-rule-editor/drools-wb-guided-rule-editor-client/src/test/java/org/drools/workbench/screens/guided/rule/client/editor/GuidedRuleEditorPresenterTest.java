@@ -154,7 +154,7 @@ public class GuidedRuleEditorPresenterTest {
         final RuleModellerActionPlugin pluginTwo = mock(RuleModellerActionPlugin.class);
 
         doAnswer(invocationOnMock -> {
-            final Consumer<RuleModellerActionPlugin> consumer = invocationOnMock.getArgumentAt(0, Consumer.class);
+            final Consumer<RuleModellerActionPlugin> consumer = invocationOnMock.getArgument(0, Consumer.class);
             consumer.accept(pluginOne);
             consumer.accept(pluginTwo);
             return null;

@@ -36,7 +36,6 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.builde
 import org.kie.workbench.common.services.refactoring.model.index.terms.ModuleRootPathIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueReferenceIndexTerm;
 import org.kie.workbench.common.services.refactoring.service.ResourceType;
-import org.mockito.ArgumentMatcher;
 import org.slf4j.LoggerFactory;
 import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.ext.metadata.io.KObjectUtil;
@@ -74,13 +73,7 @@ public class IndexRuleInvalidDrlTest extends BaseIndexingTest<DRLResourceTypeDef
             // should be 1, but parsing fails (see verify line below) so that 0 is returned..
             searchFor(index, query, 0);
 
-            verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
-
-                @Override
-                public boolean matches(final Object argument) {
-                    return ((ILoggingEvent) argument).getMessage().startsWith("Unable to parse DRL");
-                }
-            }));
+            verify(mockAppender).doAppend(argThat(argument -> argument.getMessage().startsWith("Unable to parse DRL")));
         }
     }
 

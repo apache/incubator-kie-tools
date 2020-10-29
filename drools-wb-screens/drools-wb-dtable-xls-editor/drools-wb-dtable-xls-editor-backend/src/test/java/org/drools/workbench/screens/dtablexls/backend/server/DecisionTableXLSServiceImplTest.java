@@ -188,7 +188,7 @@ public class DecisionTableXLSServiceImplTest {
                                         any(CommentedOption.class));
         inOrder.verify(ioService).endBatch();
 
-        verifyStatic(times(1));
+        verifyStatic(IOUtils.class, times(1));
         IOUtils.copy(eq(inputstream),
                      any(OutputStream.class));
     }
@@ -238,7 +238,7 @@ public class DecisionTableXLSServiceImplTest {
             // this is expected correct behavior
         }
         verify(ioService, never()).newOutputStream(any(org.uberfire.java.nio.file.Path.class), any(CommentedOption.class));
-        verifyStatic(never());
+        verifyStatic(IOUtils.class, never());
     }
 
     @Test(expected = DecisionTableParseException.class)
