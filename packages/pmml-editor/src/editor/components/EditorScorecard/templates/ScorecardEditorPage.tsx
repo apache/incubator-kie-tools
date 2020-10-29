@@ -186,6 +186,31 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               }
             }}
             onAddCharacteristic={onAddCharacteristic}
+            validateCharacteristicName={validateCharacteristicName}
+            commitCharacteristicUpdate={_props => {
+              if (_props.index === undefined) {
+                dispatch({
+                  type: Actions.Scorecard_AddCharacteristic,
+                  payload: {
+                    modelIndex: props.modelIndex,
+                    name: _props.characteristic.name,
+                    reasonCode: _props.characteristic.reasonCode,
+                    baselineScore: _props.characteristic.baselineScore
+                  }
+                });
+              } else {
+                dispatch({
+                  type: Actions.Scorecard_UpdateCharacteristic,
+                  payload: {
+                    modelIndex: props.modelIndex,
+                    characteristicIndex: _props.index,
+                    name: _props.characteristic.name,
+                    reasonCode: _props.characteristic.reasonCode,
+                    baselineScore: _props.characteristic.baselineScore
+                  }
+                });
+              }
+            }}
           />
         </PageSection>
       </PageSection>

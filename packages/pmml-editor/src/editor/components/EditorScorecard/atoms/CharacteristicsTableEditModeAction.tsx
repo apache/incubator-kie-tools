@@ -20,15 +20,19 @@ import { CheckIcon, TimesIcon } from "@patternfly/react-icons";
 interface CharacteristicsTableEditModeActionProps {
   onCommit: () => void;
   onCancel: () => void;
+  disableCommit: boolean;
 }
 
 export const CharacteristicsTableEditModeAction = (props: CharacteristicsTableEditModeActionProps) => {
-  const { onCommit, onCancel } = props;
+  const { onCommit, onCancel, disableCommit } = props;
 
   return (
     <Level hasGutter={true}>
       <LevelItem>
-        <CheckIcon style={{ color: "var(--pf-global--success-color--100)" }} onClick={e => onCommit()} />
+        {!disableCommit && (
+          <CheckIcon style={{ color: "var(--pf-global--success-color--100)" }} onClick={e => onCommit()} />
+        )}
+        {disableCommit && <CheckIcon style={{ color: "var(--pf-global--disabled-color--200)" }} />}
       </LevelItem>
       <LevelItem>
         <TimesIcon style={{ color: "var(--pf-global--danger-color--100)" }} onClick={e => onCancel()} />

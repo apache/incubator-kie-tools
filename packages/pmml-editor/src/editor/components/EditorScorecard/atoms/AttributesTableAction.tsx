@@ -31,13 +31,13 @@ export const AttributesTableAction = (props: AttributesTableActionProps) => {
     setOpen(false);
   };
 
-  const onToggle = (isOpen: boolean) => {
-    setOpen(isOpen);
+  const onToggle = (_isOpen: boolean) => {
+    setOpen(_isOpen);
   };
 
   return (
     <Dropdown
-      isPlain
+      isPlain={true}
       position={DropdownPosition.right}
       isOpen={isOpen}
       onSelect={onSelect}
