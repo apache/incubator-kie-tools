@@ -32,10 +32,6 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 		cmd = append(cmd, "--env", fmt.Sprintf("%s=%s", envVar.Name, envVar.Value))
 	}
 
-	if httpPort := serviceHolder.GetSpec().GetHTTPPort(); httpPort > 0 {
-		cmd = append(cmd, "--http-port", strconv.Itoa(int(httpPort)))
-	}
-
 	image := serviceHolder.GetSpec().GetImage()
 	if len(image) > 0 {
 		cmd = append(cmd, "--image", image)

@@ -407,10 +407,8 @@ func ExposeServiceOnKubernetes(namespace string, service v1alpha1.KogitoService)
 	if !config.IsLocalCluster() {
 		host += fmt.Sprintf(".%s.%s", namespace, config.GetDomainSuffix())
 	}
-	port := int(service.GetSpec().GetHTTPPort())
-	if port <= 0 {
-		port = framework.DefaultExposedPort
-	}
+
+	port := framework.DefaultExposedPort
 
 	ingress := v1beta1.Ingress{
 		ObjectMeta: metav1.ObjectMeta{

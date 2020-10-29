@@ -16,8 +16,6 @@ package mappers
 
 import (
 	"fmt"
-	"strconv"
-
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/types"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
@@ -35,8 +33,7 @@ const (
 	kogitoServiceDeploymentLabelKey = "deployment-label"
 
 	// DataTable second column
-	kogitoServiceHTTPPortKey = "httpPort"
-	kogitoServiceInfraKey    = "infra"
+	kogitoServiceInfraKey = "infra"
 )
 
 // MapKogitoServiceTable maps Cucumber table to KogitoServiceHolder
@@ -90,14 +87,6 @@ func mapKogitoServiceConfigTableRow(row *TableRow, kogitoService *bddtypes.Kogit
 	secondColumn := getSecondColumn(row)
 
 	switch secondColumn {
-	case kogitoServiceHTTPPortKey:
-		httpPort, err := strconv.ParseInt(getThirdColumn(row), 10, 32)
-		if err != nil {
-			return false, err
-		}
-
-		kogitoService.KogitoService.GetSpec().SetHTTPPort(int32(httpPort))
-
 	case kogitoServiceInfraKey:
 		kogitoService.KogitoService.GetSpec().AddInfra(getThirdColumn(row))
 
