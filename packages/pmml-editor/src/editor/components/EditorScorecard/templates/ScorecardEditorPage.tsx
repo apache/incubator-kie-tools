@@ -42,6 +42,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const [filter, setFilter] = useState("");
   const [showCharacteristicPanel, setShowCharacteristicPanel] = useState(false);
   const [selectedCharacteristic, setSelectedCharacteristic] = useState<IndexedCharacteristic | undefined>(undefined);
+  const [isEditActive, setEditActive] = useState(false);
 
   const characteristics: Characteristics | undefined = useSelector<PMML, Characteristics | undefined>((state: PMML) => {
     const model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
@@ -141,6 +142,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
       <PageSection isFilled={false}>
         <CorePropertiesTable
+          isEditActive={isEditActive}
+          setEditActive={setEditActive}
           isScorable={props.model.isScorable ?? true}
           functionName={props.model.functionName}
           algorithmName={props.model.algorithmName ?? ""}
@@ -170,8 +173,14 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
       <PageSection isFilled={true} style={{ paddingTop: "0px" }}>
         <PageSection variant={PageSectionVariants.light}>
-          <CharacteristicsToolbar onFilter={setFilter} onAddCharacteristic={onAddCharacteristic} />
+          <CharacteristicsToolbar
+            isEditActive={isEditActive}
+            onFilter={setFilter}
+            onAddCharacteristic={onAddCharacteristic}
+          />
           <CharacteristicsTable
+            isEditActive={isEditActive}
+            setEditActive={setEditActive}
             characteristics={filteredCharacteristics}
             onRowClick={index => selectCharacteristic(index)}
             onRowDelete={index => {

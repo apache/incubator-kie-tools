@@ -31,11 +31,14 @@ import {
 import { SearchIcon } from "@patternfly/react-icons";
 
 interface CharacteristicsToolbarProps {
+  isEditActive: boolean;
   onFilter: (filter: string) => void;
   onAddCharacteristic: () => void;
 }
 
 export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
+  const { isEditActive } = props;
+
   const [filter, setFilter] = useState("");
   const { onFilter, onAddCharacteristic } = props;
 
@@ -87,6 +90,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                 data-testid="characteristics-toolbar__add-characteristic"
                 variant="primary"
                 onClick={e => onAddCharacteristic()}
+                isDisabled={isEditActive}
               >
                 Add Characteristic
               </Button>

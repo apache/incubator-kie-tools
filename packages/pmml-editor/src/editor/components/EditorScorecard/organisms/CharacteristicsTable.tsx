@@ -41,6 +41,8 @@ export interface IndexedCharacteristic {
 }
 
 interface CharacteristicsTableProps {
+  isEditActive: boolean;
+  setEditActive: (active: boolean) => void;
   characteristics: IndexedCharacteristic[];
   onRowClick: (index: number) => void;
   onRowDelete: (index: number) => void;
@@ -50,7 +52,7 @@ interface CharacteristicsTableProps {
 }
 
 export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
-  const { characteristics, onRowClick, onRowDelete, onAddCharacteristic } = props;
+  const { isEditActive, setEditActive, characteristics, onRowClick, onRowDelete, onAddCharacteristic } = props;
 
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | undefined>(undefined);
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
@@ -89,6 +91,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
       setBaselineScore(undefined);
     }
     setEditItemIndex(index);
+    setEditActive(true);
   };
 
   const onDelete = (index: number | undefined) => {
@@ -126,10 +129,12 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     props.commitCharacteristicUpdate(_indexedCharacteristic);
 
     setEditItemIndex(undefined);
+    setEditActive(false);
   };
 
   const onCancel = (index: number | undefined) => {
     setEditItemIndex(undefined);
+    setEditActive(false);
   };
 
   const toNumber = (value: string): number | undefined => {
@@ -296,7 +301,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                           <CharacteristicsTableAction
                             onEdit={() => onEdit(ic.index)}
                             onDelete={() => onDelete(ic.index)}
-                            disabled={!(editItemIndex === undefined || editItemIndex === ic.index)}
+                            disabled={!(editItemIndex === undefined || editItemIndex === ic.index) || isEditActive}
                           />
                         </DataListAction>
                       ]}

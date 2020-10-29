@@ -47,6 +47,8 @@ interface CoreProperties {
 }
 
 interface CorePropertiesTableProps extends CoreProperties {
+  isEditActive: boolean;
+  setEditActive: (active: boolean) => void;
   commit: (props: CoreProperties) => void;
 }
 
@@ -84,6 +86,8 @@ const ValidateInitialScore = (value: number) => {
 };
 
 export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
+  const { isEditActive, setEditActive } = props;
+
   const [isEditing, setEditing] = useState(false);
   const [isScorable, setScorable] = useState(props.isScorable);
   const [functionName, setFunctionName] = useState(props.functionName);
@@ -161,6 +165,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
 
   const onEdit = () => {
     setEditing(true);
+    setEditActive(true);
   };
 
   const commitEdit = () => {
@@ -175,9 +180,11 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
       reasonCodeAlgorithm: reasonCodeAlgorithm
     });
     setEditing(false);
+    setEditActive(false);
   };
   const cancelEdit = () => {
     setEditing(false);
+    setEditActive(false);
   };
 
   return (
@@ -194,7 +201,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
             </FlexItem>
             <FlexItem>
               {!isEditing && (
-                <Button variant="link" icon={<PencilAltIcon />} onClick={onEdit}>
+                <Button isDisabled={isEditActive} variant="link" icon={<PencilAltIcon />} onClick={onEdit}>
                   Edit
                 </Button>
               )}
@@ -292,7 +299,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
             <Flex className="core-properties__edit_buttons">
               <FlexItem>
                 <Button variant="primary" onClick={commitEdit}>
-                  Save
+                  Done
                 </Button>
               </FlexItem>
               <FlexItem>
