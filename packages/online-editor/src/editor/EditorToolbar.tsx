@@ -98,6 +98,8 @@ export function EditorToolbar(props: Props) {
       const userLogin = context.githubService.extractUserLoginFromFileUrl(fileUrl);
       if (userLogin === context.githubService.getLogin() && isGist) {
         setUserCanUpdateGist(true);
+      } else {
+        setUserCanUpdateGist(false);
       }
     }
   }, [fileUrl, context.githubService.getLogin(), isGist]);
