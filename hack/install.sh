@@ -13,6 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source ./hack/install-manifests.sh
 
-kubectl apply -f deploy/operator.yaml -n "${NAMESPACE}";
+VERSION=$1
+
+if [ -z "${VERSION}" ]; then
+    VERSION=$(curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/kiegroup/kogito-cloud-operator/releases | python -c "import sys, json; print(json.load(sys.stdin)[0]['tag_name'])")
+fi
+
+echo "....... Installing Kogito Operator ${VERSION} ......."
+
+declare url="https://github.com/kiegroup/kogito-cloud-operator/releases/download/${VERSION}/kogito-operator.yaml"
+
+if [ -z "${NAMESPACE}" ]; then
+  kubectl apply -f "${url}" -n "${NAMESPACE}"
+else
+  kubectl apply -f "${url}"
+fi

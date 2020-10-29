@@ -38,3 +38,8 @@ olm_versioned_folder="${OLM_FOLDER}/${OP_VERSION}"
 mkdir -p "${olm_versioned_folder}"
 cp ${OLM_FOLDER}/manifests/* "${olm_versioned_folder}"/
 mv "${olm_versioned_folder}/kogito-operator.clusterserviceversion.yaml" "${olm_versioned_folder}/kogito-operator.v${OP_VERSION}.clusterserviceversion.yaml"
+
+# Generate kogito-operator.yaml
+rm ./kogito-operator.yaml
+for yaml in deploy/crds/*_crd.yaml; do cat "${yaml}" >> ./kogito-operator.yaml; printf "\n---\n" >> ./kogito-operator.yaml; done
+for yaml in deploy/*.yaml; do cat "${yaml}" >> ./kogito-operator.yaml; printf "\n---\n" >> ./kogito-operator.yaml; done
