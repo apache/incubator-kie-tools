@@ -91,14 +91,16 @@ export function EditorToolbar(props: Props) {
     [saveNewName, cancelNewName]
   );
 
+  const isGist = useMemo(() => context.githubService.isGist(fileUrl), [fileUrl, context]);
+
   useEffect(() => {
     if (fileUrl) {
       const userLogin = context.githubService.extractUserLoginFromFileUrl(fileUrl);
-      if (userLogin === context.githubService.getLogin() && context.githubService.isGist(fileUrl)) {
+      if (userLogin === context.githubService.getLogin() && isGist) {
         setUserCanUpdateGist(true);
       }
     }
-  }, [fileUrl, context.githubService.getLogin()]);
+  }, [fileUrl, context.githubService.getLogin(), isGist]);
 
   const kebabItems = useCallback(
     (dropdownId: string) => [
@@ -161,21 +163,24 @@ export function EditorToolbar(props: Props) {
           {i18n.editorToolbar.gistIt}
         </DropdownItem>
       </Tooltip>,
-      <Tooltip
-        data-testid={"update-gist-tooltip"}
-        key={`dropdown-${dropdownId}-update-gist`}
-        content={<div>{i18n.editorToolbar.updateGistTooltip}</div>}
-        trigger={!userCanUpdateGist ? "mouseenter click" : ""}
-      >
-        <DropdownItem
-          data-testid={"update-gist-button"}
-          component="button"
-          onClick={props.onUpdateGist}
-          isDisabled={!userCanUpdateGist}
-        >
-          {i18n.editorToolbar.updateGist}
-        </DropdownItem>
-      </Tooltip>
+      <React.Fragment key={`dropdown-${dropdownId}-update-gist`}>
+        {isGist && (
+          <Tooltip
+            data-testid={"update-gist-tooltip"}
+            content={<div>{i18n.editorToolbar.updateGistTooltip}</div>}
+            trigger={!userCanUpdateGist ? "mouseenter click" : ""}
+          >
+            <DropdownItem
+              data-testid={"update-gist-button"}
+              component="button"
+              onClick={props.onUpdateGist}
+              isDisabled={!userCanUpdateGist}
+            >
+              {i18n.editorToolbar.updateGist}
+            </DropdownItem>
+          </Tooltip>
+        )}
+      </React.Fragment>
     ],
     [
       context.external,
