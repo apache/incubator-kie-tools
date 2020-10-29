@@ -15,9 +15,9 @@ fi
 # Configuration scripts
 # Any configuration script that needs to run on image startup must be added here.
 CONFIGURE_SCRIPTS=(
-  ${KOGITO_HOME}/launch/kogito-springboot.sh
+
 )
 source ${KOGITO_HOME}/launch/configure.sh
 #############################################
 
-exec java ${JAVA_OPTIONS} ${KOGITO_SPRINGBOOT_PROPS} -jar $KOGITO_HOME/bin/*.jar
+exec java ${JAVA_OPTIONS} ${KOGITO_SPRINGBOOT_PROPS} -Dserver.address=0.0.0.0 -Dserver.port=8080 -jar $KOGITO_HOME/bin/*.jar

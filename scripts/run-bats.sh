@@ -10,9 +10,6 @@ else
     rm -rf bats-core
 fi 
 
-echo "----> running bats on kogito-data-index-common"
-./bats/bin/bats modules/kogito-data-index-common/tests/bats
-
 echo  "----> running bats on kogito-trusty"
 ./bats/bin/bats modules/kogito-trusty/tests/bats
 

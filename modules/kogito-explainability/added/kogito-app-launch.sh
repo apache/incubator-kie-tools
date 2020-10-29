@@ -23,4 +23,5 @@ source ${KOGITO_HOME}/launch/configure.sh
 exec java ${SHOW_JVM_SETTINGS} ${JAVA_OPTIONS} ${KOGITO_EXPLAINABILITY_PROPS} \
         -Djava.library.path=$KOGITO_HOME/lib \
         -Dquarkus.http.host=0.0.0.0 \
+        -Dquarkus.http.port=8080 \
         -jar $KOGITO_HOME/bin/$EXPLAINABILITY_SERVICE_JAR

@@ -19,16 +19,9 @@ Feature: Kogito-jobs-service feature.
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=8080 -jar /home/kogito/bin/kogito-jobs-service-runner.jar
+    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/kogito-jobs-service-runner.jar
     And container log should contain started in
     And container log should not contain Application failed to start
-
-  Scenario: Verify if the debug is correctly enabled and test custom http port
-    When container is started with env
-      | variable      | value |
-      | SCRIPT_DEBUG  | true  |
-      | HTTP_PORT     | 9090  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -jar /home/kogito/bin/kogito-jobs-service-runner.jar
 
   Scenario: verify if the events is correctly enabled
     When container is started with env

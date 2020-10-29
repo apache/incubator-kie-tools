@@ -25,22 +25,14 @@ Feature: Kogito-explainability feature.
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=8080 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-explainability-messaging-runner.jar
-
-  Scenario: Verify if the debug is correctly enabled and test custom http port
-    When container is started with env
-      | variable      | value |
-      | SCRIPT_DEBUG  | true  |
-      | HTTP_PORT     | 9090  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-explainability-messaging-runner.jar
+    Then container log should contain + exec java -XshowSettings:properties -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/kogito-explainability-messaging-runner.jar
 
   Scenario: Verify if the explainability rest binary is selected by the enviroment variable EXPLAINABILITY_COMMUNICATION
     When container is started with env
       | variable      | value |
       | EXPLAINABILITY_COMMUNICATION  | rest |
       | SCRIPT_DEBUG  | true  |
-      | HTTP_PORT     | 9090  |
-    Then container log should contain + exec java -XshowSettings:properties -Dquarkus.http.port=9090 -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -jar /home/kogito/bin/kogito-explainability-rest-runner.jar
+    Then container log should contain + exec java -XshowSettings:properties -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/kogito-explainability-rest-runner.jar
 
   Scenario: Verify if the communication is correctly set to its default value if a wrong communication type is set
     When container is started with env

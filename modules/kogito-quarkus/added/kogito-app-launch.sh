@@ -15,11 +15,12 @@ fi
 # Configuration scripts
 # Any configuration script that needs to run on image startup must be added here.
 CONFIGURE_SCRIPTS=(
-  ${KOGITO_HOME}/launch/kogito-quarkus-native.sh
+
 )
 source ${KOGITO_HOME}/launch/configure.sh
 #############################################
 
 exec $KOGITO_HOME/bin/*-runner ${JAVA_OPTIONS} ${KOGITO_QUARKUS_NATIVE_PROPS} \
     -Dquarkus.http.host=0.0.0.0 -Djava.library.path=$KOGITO_HOME/ssl-libs \
+    -Dquarkus.http.port=8080 \
     -Djavax.net.ssl.trustStore=$KOGITO_HOME/cacerts

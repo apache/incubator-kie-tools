@@ -13,21 +13,6 @@ teardown() {
 }
 
 
-@test "http port configuration default value" {
-    configure_explainability_http_port
-    expected=" -Dquarkus.http.port=8080"
-    echo "Result is ${KOGITO_EXPLAINABILITY_PROPS} and expected is ${expected}"
-    [ "${KOGITO_EXPLAINABILITY_PROPS}" = "${expected}" ]
-}
-
-@test "http port configuration custom value" {
-    export HTTP_PORT="9090"
-    configure_explainability_http_port
-    expected=" -Dquarkus.http.port=9090"
-    echo "Result is ${KOGITO_EXPLAINABILITY_PROPS} and expected is ${expected}"
-    [ "${KOGITO_EXPLAINABILITY_PROPS}" = "${expected}" ]
-}
-
 @test "test if the default explainability communication type is correctly set" {
     configure_explainability_jar
     expected="kogito-explainability-messaging-runner.jar"

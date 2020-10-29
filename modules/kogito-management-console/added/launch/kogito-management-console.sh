@@ -5,13 +5,11 @@ source ${KOGITO_HOME}/launch/logging.sh
 
 function prepareEnv() {
     # keep it on alphabetical order
-    unset HTTP_PORT
     unset KOGITO_DATAINDEX_HTTP_URL
 }
 
 function configure() {
     configure_data_index_url
-    configure_mgmt_console_http_port
 }
 
 # Exit codes:
@@ -29,9 +27,4 @@ function configure_data_index_url {
         dataIndexURL="http://localhost:8180"
     fi
     KOGITO_MANAGEMENT_CONSOLE_PROPS="${KOGITO_DATA_INDEX_PROPS} -Dkogito.dataindex.http.url=${dataIndexURL}"
-}
-
-function configure_mgmt_console_http_port {
-    local httpPort=${HTTP_PORT:-8080}
-    KOGITO_MANAGEMENT_CONSOLE_PROPS="${KOGITO_MANAGEMENT_CONSOLE_PROPS} -Dquarkus.http.port=${httpPort}"
 }

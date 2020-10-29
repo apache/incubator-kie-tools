@@ -33,25 +33,4 @@ teardown() {
     [ "${status}" == "10" ]
 }
 
-@test "check if default http port is correctly set" {
-    configure_trusty_ui_http_port
-
-    result="${KOGITO_TRUSTY_UI_PROPS}"
-    expected=" -Dquarkus.http.port=8080"
-
-    echo "Result is ${result} and expected is ${expected}"
-    [ "${result}" = "${expected}" ]
-}
-
-@test "check if custom http port is correctly set" {
-    export HTTP_PORT="9090"
-
-    configure_trusty_ui_http_port
-
-    result="${KOGITO_TRUSTY_UI_PROPS}"
-    expected=" -Dquarkus.http.port=9090"
-
-    echo "Result is ${result} and expected is ${expected}"
-    [ "${result}" = "${expected}" ]
-}
 

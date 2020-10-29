@@ -15,9 +15,12 @@ fi
 # Configuration scripts
 # Any configuration script that needs to run on image startup must be added here.
 CONFIGURE_SCRIPTS=(
-  ${KOGITO_HOME}/launch/kogito-quarkus-jvm.sh
+
 )
 source ${KOGITO_HOME}/launch/configure.sh
 #############################################
 
-exec java ${JAVA_OPTIONS} ${KOGITO_QUARKUS_JVM_PROPS} -Dquarkus.http.host=0.0.0.0 -jar $KOGITO_HOME/bin/*runner.jar
+exec java ${JAVA_OPTIONS}  ${KOGITO_QUARKUS_JVM_PROPS} \
+      -Dquarkus.http.host=0.0.0.0 \
+      -Dquarkus.http.port=8080 \
+      -jar $KOGITO_HOME/bin/*runner.jar

@@ -17,9 +17,6 @@ envs:
   - name: "SCRIPT_DEBUG"
     example: "true"
     description: "If set to true, ensures that the bash scripts are executed with the -x option, printing the commands and their arguments as they are executed. Also debug JVM initialization."
-  - name: "HTTP_PORT"
-    example: "9090"
-    description: "Defines which port the Data Index Container Image will listen on."
 
 ports:
 - value: 8080
