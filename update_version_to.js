@@ -17,9 +17,10 @@
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 const prettier = require("prettier");
+const fs = require("fs")
 
 const LERNA_JSON = "./lerna.json";
-const CHROME_EXTENSION_MANIFEST_JSON = "./packages/chrome-extension-pack-simple-react/static/manifest.json";
+const CHROME_EXTENSION_MANIFEST_JSON = "./packages/base64png-editor-chrome-extension/static/manifest.json";
 //
 
 async function updatePackages(lernaVersionArg) {

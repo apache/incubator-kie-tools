@@ -1,6 +1,6 @@
 {
   "name": "Kogito Base64 PNG Editor",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "manifest_version": 2,
   "description": "Kogito Base64 PNG Editor",
   "content_scripts": [
@@ -11,12 +11,7 @@
       "all_frames": true
     }
   ],
-  "icons": {
-    "128": "resources/icon_128.png"
-  },
+  "icons": { "128": "resources/icon_128.png" },
   "web_accessible_resources": ["envelope/*", "resources/*"],
-  "permissions": [
-    "https://*.github.com/*",
-    "http://*.github.com/*"
-  ]
+  "permissions": ["https://*.github.com/*", "http://*.github.com/*"]
 }
