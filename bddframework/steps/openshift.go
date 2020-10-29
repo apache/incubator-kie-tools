@@ -15,11 +15,15 @@
 package steps
 
 import (
+	"fmt"
+
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
 	v1 "k8s.io/api/core/v1"
 )
+
+const defaultTimeoutToStartBuildInMin = 5
 
 /*
 	DataTable for BuildConfig build resources:
@@ -42,14 +46,20 @@ func registerOpenShiftSteps(ctx *godog.ScenarioContext, data *Data) {
 // Build steps
 func (data *Data) startBuildFromExampleServicePath(buildName, localExamplePath string) error {
 	examplesRepositoryPath := data.KogitoExamplesLocation
-	_, err := framework.CreateCommand("oc", "start-build", buildName, "--from-dir="+examplesRepositoryPath+"/"+localExamplePath, "-n", data.Namespace).WithLoggerContext(data.Namespace).Execute()
-	return err
+	return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("Build '%s' to start", buildName), defaultTimeoutToStartBuildInMin,
+		func() (bool, error) {
+			_, err := framework.CreateCommand("oc", "start-build", buildName, "--from-dir="+examplesRepositoryPath+"/"+localExamplePath, "-n", data.Namespace).WithLoggerContext(data.Namespace).Execute()
+			return err == nil, err
+		})
 }
 
 func (data *Data) startBuildFromExampleServiceFile(buildName, localExampleFilePath string) error {
 	examplesRepositoryPath := data.KogitoExamplesLocation
-	_, err := framework.CreateCommand("oc", "start-build", buildName, "--from-file="+examplesRepositoryPath+"/"+localExampleFilePath, "-n", data.Namespace).WithLoggerContext(data.Namespace).Execute()
-	return err
+	return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("Build '%s' to start", buildName), defaultTimeoutToStartBuildInMin,
+		func() (bool, error) {
+			_, err := framework.CreateCommand("oc", "start-build", buildName, "--from-file="+examplesRepositoryPath+"/"+localExampleFilePath, "-n", data.Namespace).WithLoggerContext(data.Namespace).Execute()
+			return err == nil, err
+		})
 }
 
 func (data *Data) buildIsCompleteAfterMinutes(buildName string, timeoutInMin int) error {
