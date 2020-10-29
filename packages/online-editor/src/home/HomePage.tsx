@@ -239,8 +239,8 @@ export function HomePage(props: Props) {
       urlToOpen: undefined
     });
     if (context.githubService.isGithub(inputFileUrl)) {
-      const rawUrl = await context.githubService.getGithubRawUrl(inputFileUrl);
       try {
+        const rawUrl = await context.githubService.getGithubRawUrl(inputFileUrl);
         setInputFileUrlState({
           urlValidation: InputFileUrlState.VALID,
           urlToOpen: rawUrl

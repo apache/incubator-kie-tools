@@ -80,7 +80,7 @@ describe("HomePage", () => {
 
       test("should show a not found url - github", async () => {
         const githubService = new GithubService();
-        jest.spyOn(githubService, "checkFileExistence").mockImplementation((url: string) => Promise.resolve(false));
+        jest.spyOn(githubService, "getGithubRawUrl").mockImplementation((url: string) => Promise.reject());
 
         const { findByText, getByTestId } = render(
           usingTestingOnlineI18nContext(
@@ -196,7 +196,11 @@ describe("HomePage", () => {
 
       test("should enable the open from source button - github", async () => {
         const githubService = new GithubService();
-        jest.spyOn(githubService, "checkFileExistence").mockImplementation((url: string) => Promise.resolve(true));
+        jest
+          .spyOn(githubService, "getGithubRawUrl")
+          .mockImplementation((url: string) =>
+            Promise.resolve("https://raw.githubusercontent.com/test-owner/test-repo/hash/test.txt")
+          );
 
         const { getByTestId } = render(
           usingTestingOnlineI18nContext(
