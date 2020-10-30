@@ -28,10 +28,23 @@ import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
 import { useFileUrl } from "../common/Hooks";
 import { UpdateGistErrors } from "../common/GithubService";
+import {
+  EmbeddableClass,
+  FileExtension,
+  getEmbeddableEditorFromContent,
+  getEmbeddableEditorFromGist,
+  getEmbeddableEditorSrcdoc
+} from "../common/utils";
 
 interface Props {
   onFileNameChanged: (fileName: string, fileExtension: string) => void;
 }
+
+const editorEmbeddableClassMapping = new Map<FileExtension, EmbeddableClass>([
+  ["bpmn", "BpmnEditor"],
+  ["bpmn2", "BpmnEditor"],
+  ["dmn", "DmnEditor"]
+]);
 
 export enum Alerts {
   NONE,
@@ -171,8 +184,55 @@ export function EditorPage(props: Props) {
   }, [context.file.fileName, editor]);
 
   const fileExtension = useMemo(() => {
-    return context.routes.editor.args(location.pathname).type;
+    return context.routes.editor.args(location.pathname).type as FileExtension;
   }, [location.pathname]);
+
+  const getEmbeddableScript = useCallback(
+    (content?: string, gistId?: string) => {
+      const embeddableClass = editorEmbeddableClassMapping.get(fileExtension)!;
+      if (content) {
+        return getEmbeddableEditorFromContent(embeddableClass, content);
+      }
+
+      if (gistId) {
+        return getEmbeddableEditorFromGist(embeddableClass, gistId, context.githubService.getLogin());
+      }
+      throw new Error("It's not possible to generate a script without a content or a gistId!");
+    },
+    [editorEmbeddableClassMapping, fileExtension]
+  );
+
+  const requestExportIframeGist = useCallback(() => {
+    const gistId = context.githubService.extractGistIdFromRawUrl(fileUrl!);
+    const script = getEmbeddableScript(undefined, gistId);
+
+    const iframe = document.createElement("iframe");
+    iframe.width = "100%";
+    iframe.height = "100%";
+    iframe.srcdoc = getEmbeddableEditorSrcdoc(script, fileExtension);
+
+    copyContentTextArea.current!.value = iframe.outerHTML;
+    copyContentTextArea.current!.select();
+    if (document.execCommand("copy")) {
+      setAlert(Alerts.COPY);
+    }
+  }, []);
+
+  const requestExportIframeContent = useCallback(async () => {
+    const content = ((await editor?.getContent()) ?? "").replace(/(\r\n|\n|\r)/gm, "");
+    const script = getEmbeddableScript(content);
+
+    const iframe = document.createElement("iframe");
+    iframe.width = "100%";
+    iframe.height = "100%";
+    iframe.srcdoc = getEmbeddableEditorSrcdoc(script, fileExtension);
+
+    copyContentTextArea.current!.value = iframe.outerHTML;
+    copyContentTextArea.current!.select();
+    if (document.execCommand("copy")) {
+      setAlert(Alerts.COPY);
+    }
+  }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
     editor?.getContent().then(content => {
@@ -253,6 +313,8 @@ export function EditorPage(props: Props) {
           onSetGitHubToken={requestSetGitHubToken}
           onExportGist={requestExportGist}
           onUpdateGist={requestUpdateGist}
+          onExportIframeGist={requestExportIframeGist}
+          onExportIframeContent={requestExportIframeContent}
           isEdited={isDirty}
         />
       }

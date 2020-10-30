@@ -46,6 +46,8 @@ interface Props {
   onSetGitHubToken: () => void;
   onExportGist: () => void;
   onUpdateGist: () => void;
+  onExportIframeGist: () => void;
+  onExportIframeContent: () => void;
   onClose: () => void;
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
@@ -182,7 +184,21 @@ export function EditorToolbar(props: Props) {
             </DropdownItem>
           </Tooltip>
         )}
-      </React.Fragment>
+      </React.Fragment>,
+      <React.Fragment key={`dropdown-${dropdownId}-export-iframe-gist`}>
+        {fileUrl && context.githubService.isGistRaw(fileUrl) && (
+          <DropdownItem component="button" onClick={props.onExportIframeGist}>
+            Copy an Iframe from Gist
+          </DropdownItem>
+        )}
+      </React.Fragment>,
+      <DropdownItem
+        key={`dropdown-${dropdownId}-export-iframe-content`}
+        component="button"
+        onClick={props.onExportIframeContent}
+      >
+        Copy an Iframe from Content
+      </DropdownItem>
     ],
     [
       context.external,

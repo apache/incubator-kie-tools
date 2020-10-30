@@ -95,3 +95,53 @@ export function setCookie(name: string, value: string) {
 
   document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
 }
+
+export type FileExtension = "bpmn" | "bpmn2" | "dmn";
+export type EmbeddableClass = "BpmnEditor" | "DmnEditor";
+
+export function getEmbeddableEditorFromGist(editor: EmbeddableClass, gistId: string, userLogin: string) {
+  return `
+    <script>
+      // You can manually change the readOnly property.
+      const readOnly = true;
+      fetch("https://gist.githubusercontent.com/${userLogin}/${gistId}/raw")
+        .then(response => response.text())
+        .then(content => ${editor}.open({container: document.body, initialContent: content, readOnly, origin: "*" }))        
+    </script>`;
+}
+
+export function getEmbeddableEditorFromContent(editor: EmbeddableClass, content: string) {
+  return `
+    <script>
+      // You can manually change the readOnly property.
+      const readOnly = true;
+      ${editor}.open({container: document.body, initialContent: '${content}', readOnly, origin: "*" })
+    </script>`;
+}
+
+const BPMN_SOURCE = "https://paulovmr.github.io/kogito-online/bpmn/index.js";
+const DMN_SOURCE = "https://paulovmr.github.io/kogito-online/dmn/index.js";
+
+export function getEmbeddableEditorSrcdoc(script: string, type: FileExtension) {
+  return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <script src="${type === "dmn" ? DMN_SOURCE : BPMN_SOURCE}"></script>
+      <title></title>
+      <style>
+        html,
+        body,
+        iframe {
+          margin: 0;
+          border: 0;
+          padding: 0;
+          height: 100%;
+          width: 100%;
+        }
+      </style>
+    </head>
+    <body>
+      ${script}
+    </body>
+    </html>`;
+}
