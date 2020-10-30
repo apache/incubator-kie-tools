@@ -24,16 +24,13 @@ import {
   DataListItem,
   DataListItemCells,
   DataListItemRow,
-  Form,
-  FormGroup,
-  Label,
-  TextInput
+  Form
 } from "@patternfly/react-core";
-import { ExclamationCircleIcon, TrashIcon } from "@patternfly/react-icons";
+import { TrashIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTable.scss";
 import { EmptyStateNoCharacteristics } from "../molecules";
-import { CharacteristicsTableAction, CharacteristicsTableEditModeAction } from "../atoms";
-import { ValidatedType } from "../../../types";
+import { CharacteristicsTableEditRow } from "./CharacteristicsTableEditRow";
+import { CharacteristicsTableRow } from "./CharacteristicsTableRow";
 
 export interface IndexedCharacteristic {
   index: number | undefined;
@@ -57,13 +54,6 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | undefined>(undefined);
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
 
-  const [name, setName] = useState<ValidatedType<string | undefined>>({
-    value: undefined,
-    valid: true
-  });
-  const [reasonCode, setReasonCode] = useState<string | undefined>();
-  const [baselineScore, setBaselineScore] = useState<number | undefined>();
-
   const onSelectDataListItem = (id: string) => {
     if (editItemIndex !== undefined) {
       return;
@@ -74,33 +64,26 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   };
 
   const onEdit = (index: number | undefined) => {
-    if (index !== undefined) {
-      const characteristic = characteristics[index].characteristic;
-      setName({
-        value: characteristic.name,
-        valid: props.validateCharacteristicName(index, characteristic.name)
-      });
-      setReasonCode(characteristic.reasonCode);
-      setBaselineScore(characteristic.baselineScore);
-    } else {
-      setName({
-        value: undefined,
-        valid: props.validateCharacteristicName(index, undefined)
-      });
-      setReasonCode(undefined);
-      setBaselineScore(undefined);
-    }
     setEditItemIndex(index);
     setEditActive(true);
   };
 
   const onDelete = (index: number | undefined) => {
-    if (index) {
+    if (index !== undefined) {
       onRowDelete(index);
     }
   };
 
-  const onCommit = (index: number | undefined) => {
+  const onValidateCharacteristicName = (index: number | undefined, name: string | undefined): boolean => {
+    return props.validateCharacteristicName(index, name);
+  };
+
+  const onCommit = (
+    index: number | undefined,
+    name: string | undefined,
+    reasonCode: string | undefined,
+    baselineScore: number | undefined
+  ) => {
     let characteristic: Characteristic;
     if (index === undefined) {
       characteristic = { Attribute: [] };
@@ -110,42 +93,28 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
     //Avoid commits with no change
     if (
-      characteristic.name === name.value &&
-      characteristic.baselineScore === baselineScore &&
-      characteristic.reasonCode === reasonCode
+      characteristic.name !== name ||
+      characteristic.baselineScore !== baselineScore ||
+      characteristic.reasonCode !== reasonCode
     ) {
-      return;
+      const _characteristic: Characteristic = Object.assign({}, characteristic, {
+        name: name,
+        baselineScore: baselineScore,
+        reasonCode: reasonCode
+      });
+      const _indexedCharacteristic: IndexedCharacteristic = {
+        index: index,
+        characteristic: _characteristic
+      };
+      props.commitCharacteristicUpdate(_indexedCharacteristic);
     }
 
-    const _characteristic: Characteristic = Object.assign({}, characteristic, {
-      name: name.value,
-      baselineScore: baselineScore,
-      reasonCode: reasonCode
-    });
-    const _indexedCharacteristic: IndexedCharacteristic = {
-      index: index,
-      characteristic: _characteristic
-    };
-    props.commitCharacteristicUpdate(_indexedCharacteristic);
-
-    setEditItemIndex(undefined);
-    setEditActive(false);
+    onCancel();
   };
 
-  const onCancel = (index: number | undefined) => {
+  const onCancel = () => {
     setEditItemIndex(undefined);
     setEditActive(false);
-  };
-
-  const toNumber = (value: string): number | undefined => {
-    if (value === "") {
-      return undefined;
-    }
-    const n = Number(value);
-    if (isNaN(n)) {
-      return undefined;
-    }
-    return n;
   };
 
   return (
@@ -191,125 +160,29 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
           onSelectDataListItem={onSelectDataListItem}
         >
           {characteristics.map((ic, index) => {
-            const c: Characteristic = ic.characteristic;
-            return (
-              <DataListItem
-                key={index}
-                id={ic.index?.toString()}
-                className="characteristics__list-item"
-                aria-labelledby={"characteristic-" + index}
-              >
-                <DataListItemRow style={{ minHeight: "64 px" }}>
-                  {editItemIndex === ic.index && (
-                    <DataListItemCells
-                      dataListCells={[
-                        <DataListCell key="0" width={2}>
-                          <FormGroup
-                            fieldId="characteristic-form-name-helper"
-                            helperText="Please provide a name for the Characteristic."
-                            helperTextInvalid="Name must be unique and present"
-                            helperTextInvalidIcon={<ExclamationCircleIcon />}
-                            validated={name.valid ? "default" : "error"}
-                          >
-                            <TextInput
-                              type="text"
-                              id="characteristic-name"
-                              name="characteristic-name"
-                              aria-describedby="characteristic-name-helper"
-                              value={name.value ?? ""}
-                              validated={name.valid ? "default" : "error"}
-                              onChange={e =>
-                                setName({
-                                  value: e,
-                                  valid: props.validateCharacteristicName(index, e)
-                                })
-                              }
-                            />
-                          </FormGroup>
-                        </DataListCell>,
-                        <DataListCell key="1" width={2}>
-                          <Label>{c.Attribute.length}</Label>
-                        </DataListCell>,
-                        <DataListCell key="2" width={2}>
-                          <FormGroup
-                            fieldId="characteristic-reason-code-helper"
-                            helperText="A Reason Code is mapped to a Business reason."
-                          >
-                            <TextInput
-                              type="text"
-                              id="characteristic-reason-code"
-                              name="characteristic-reason-code"
-                              aria-describedby="characteristic-reason-code-helper"
-                              value={reasonCode ?? ""}
-                              onChange={e => setReasonCode(e)}
-                            />
-                          </FormGroup>
-                        </DataListCell>,
-                        <DataListCell key="3" width={2}>
-                          <FormGroup
-                            fieldId="characteristic-baseline-score-helper"
-                            helperText="Helps to determine the ranking of Reason Codes."
-                          >
-                            <TextInput
-                              type="number"
-                              id="characteristic-baseline-score"
-                              name="characteristic-baseline-score"
-                              aria-describedby="characteristic-baseline-score-helper"
-                              value={baselineScore ?? ""}
-                              onChange={e => setBaselineScore(toNumber(e))}
-                            />
-                          </FormGroup>
-                        </DataListCell>,
-                        <DataListAction
-                          id="characteristic-actions"
-                          aria-label="actions"
-                          aria-labelledby="characteristic-actions"
-                          key="4"
-                          width={1}
-                        >
-                          <CharacteristicsTableEditModeAction
-                            onCommit={() => onCommit(ic.index)}
-                            onCancel={() => onCancel(ic.index)}
-                            disableCommit={!name.valid}
-                          />
-                        </DataListAction>
-                      ]}
-                    />
-                  )}
-                  {editItemIndex !== ic.index && (
-                    <DataListItemCells
-                      dataListCells={[
-                        <DataListCell key="0" width={2}>
-                          <div>{c.name}</div>
-                        </DataListCell>,
-                        <DataListCell key="1" width={2}>
-                          <Label>{c.Attribute.length}</Label>
-                        </DataListCell>,
-                        <DataListCell key="2" width={2}>
-                          <div>{c.reasonCode}</div>
-                        </DataListCell>,
-                        <DataListCell key="3" width={2}>
-                          <div>{c.baselineScore}</div>
-                        </DataListCell>,
-                        <DataListAction
-                          id="characteristic-actions"
-                          aria-label="actions"
-                          aria-labelledby="characteristic-actions"
-                          key="4"
-                          width={1}
-                        >
-                          <CharacteristicsTableAction
-                            onEdit={() => onEdit(ic.index)}
-                            onDelete={() => onDelete(ic.index)}
-                            disabled={!(editItemIndex === undefined || editItemIndex === ic.index) || isEditActive}
-                          />
-                        </DataListAction>
-                      ]}
-                    />
-                  )}
-                </DataListItemRow>
-              </DataListItem>
-            );
+            if (editItemIndex === ic.index) {
+              return (
+                <CharacteristicsTableEditRow
+                  key={index}
+                  characteristic={ic}
+                  validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
+                  onCommit={(_name, _reasonCode, _baselineScore) =>
+                    onCommit(ic.index, _name, _reasonCode, _baselineScore)
+                  }
+                  onCancel={() => onCancel()}
+                />
+              );
+            } else {
+              return (
+                <CharacteristicsTableRow
+                  key={index}
+                  characteristic={ic}
+                  onEdit={() => onEdit(ic.index)}
+                  onDelete={() => onDelete(ic.index)}
+                  isDisabled={!(editItemIndex === undefined || editItemIndex === ic.index) || isEditActive}
+                />
+              );
+            }
           })}
         </DataList>
       </Form>

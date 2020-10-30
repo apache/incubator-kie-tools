@@ -67,6 +67,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                       aria-label="filter characteristics"
                       placeholder="Filter by name"
                       onChange={e => setFilter(e)}
+                      isDisabled={isEditActive}
                     />
                     <Button
                       id="characteristics-filter"
@@ -75,6 +76,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                       variant={ButtonVariant.control}
                       aria-label="filter button for filter input"
                       onClick={e => onFilter(filter)}
+                      isDisabled={isEditActive}
                     >
                       <SearchIcon />
                     </Button>
