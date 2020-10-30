@@ -99,6 +99,10 @@ export function setCookie(name: string, value: string) {
 export type FileExtension = "bpmn" | "bpmn2" | "dmn";
 export type EmbeddableClass = "BpmnEditor" | "DmnEditor";
 
+export function isFileExtension(toBeDetermined: string): toBeDetermined is FileExtension {
+  return toBeDetermined === "bpmn" || toBeDetermined === "bpmn2" || toBeDetermined === "dmn";
+}
+
 export function getEmbeddableEditorFromGist(editor: EmbeddableClass, gistId: string, userLogin: string) {
   return `
     <script>

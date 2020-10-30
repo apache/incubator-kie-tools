@@ -33,8 +33,10 @@ import {
   FileExtension,
   getEmbeddableEditorFromContent,
   getEmbeddableEditorFromGist,
-  getEmbeddableEditorSrcdoc
+  getEmbeddableEditorSrcdoc,
+  isFileExtension
 } from "../common/utils";
+import { isFileExcluded } from "tslint/lib/configuration";
 
 interface Props {
   onFileNameChanged: (fileName: string, fileExtension: string) => void;
@@ -184,55 +186,64 @@ export function EditorPage(props: Props) {
   }, [context.file.fileName, editor]);
 
   const fileExtension = useMemo(() => {
-    return context.routes.editor.args(location.pathname).type as FileExtension;
+    const type = context.routes.editor.args(location.pathname).type;
+    if (isFileExtension(type)) {
+      return type;
+    }
   }, [location.pathname]);
 
   const getEmbeddableScript = useCallback(
     (content?: string, gistId?: string) => {
-      const embeddableClass = editorEmbeddableClassMapping.get(fileExtension)!;
-      if (content) {
-        return getEmbeddableEditorFromContent(embeddableClass, content);
-      }
+      if (fileExtension) {
+        const embeddableClass = editorEmbeddableClassMapping.get(fileExtension)!;
+        if (content) {
+          return getEmbeddableEditorFromContent(embeddableClass, content);
+        }
 
-      if (gistId) {
-        return getEmbeddableEditorFromGist(embeddableClass, gistId, context.githubService.getLogin());
+        if (gistId) {
+          return getEmbeddableEditorFromGist(embeddableClass, gistId, context.githubService.getLogin());
+        }
       }
-      throw new Error("It's not possible to generate a script without a content or a gistId!");
     },
-    [editorEmbeddableClassMapping, fileExtension]
+    [editorEmbeddableClassMapping, fileExtension, context]
   );
 
   const requestExportIframeGist = useCallback(() => {
-    const gistId = context.githubService.extractGistIdFromRawUrl(fileUrl!);
-    const script = getEmbeddableScript(undefined, gistId);
+    if (fileExtension) {
+      const gistId = context.githubService.extractGistIdFromRawUrl(fileUrl!);
+      // handle specif gist filename
+      const script = getEmbeddableScript(undefined, gistId);
 
-    const iframe = document.createElement("iframe");
-    iframe.width = "100%";
-    iframe.height = "100%";
-    iframe.srcdoc = getEmbeddableEditorSrcdoc(script, fileExtension);
+      const iframe = document.createElement("iframe");
+      iframe.width = "100%";
+      iframe.height = "100%";
+      iframe.srcdoc = getEmbeddableEditorSrcdoc(script!, fileExtension);
 
-    copyContentTextArea.current!.value = iframe.outerHTML;
-    copyContentTextArea.current!.select();
-    if (document.execCommand("copy")) {
-      setAlert(Alerts.COPY);
+      copyContentTextArea.current!.value = iframe.outerHTML;
+      copyContentTextArea.current!.select();
+      if (document.execCommand("copy")) {
+        setAlert(Alerts.COPY);
+      }
     }
-  }, []);
+  }, [fileUrl, fileExtension]);
 
   const requestExportIframeContent = useCallback(async () => {
-    const content = ((await editor?.getContent()) ?? "").replace(/(\r\n|\n|\r)/gm, "");
-    const script = getEmbeddableScript(content);
+    if (fileExtension) {
+      const content = ((await editor?.getContent()) ?? "").replace(/(\r\n|\n|\r)/gm, "");
+      const script = getEmbeddableScript(content);
 
-    const iframe = document.createElement("iframe");
-    iframe.width = "100%";
-    iframe.height = "100%";
-    iframe.srcdoc = getEmbeddableEditorSrcdoc(script, fileExtension);
+      const iframe = document.createElement("iframe");
+      iframe.width = "100%";
+      iframe.height = "100%";
+      iframe.srcdoc = getEmbeddableEditorSrcdoc(script!, fileExtension);
 
-    copyContentTextArea.current!.value = iframe.outerHTML;
-    copyContentTextArea.current!.select();
-    if (document.execCommand("copy")) {
-      setAlert(Alerts.COPY);
+      copyContentTextArea.current!.value = iframe.outerHTML;
+      copyContentTextArea.current!.select();
+      if (document.execCommand("copy")) {
+        setAlert(Alerts.COPY);
+      }
     }
-  }, []);
+  }, [editor, fileExtension]);
 
   const requestCopyContentToClipboard = useCallback(() => {
     editor?.getContent().then(content => {
