@@ -31,6 +31,7 @@ import org.kie.workbench.common.screens.archetype.mgmt.shared.model.PaginatedArc
 import org.kie.workbench.common.screens.archetype.mgmt.shared.preferences.ArchetypePreferences;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.services.ArchetypeService;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -46,7 +47,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
@@ -158,7 +158,7 @@ public class GlobalArchetypeTablePresenterTest {
             return promises.resolve();
         });
 
-        verify(archetypePreferences, never()).setDefaultSelection(anyString());
+        verify(archetypePreferences, never()).setDefaultSelection(Mockito.<String>any());
         verify(presenter, never()).savePreferences(anyBoolean());
     }
 

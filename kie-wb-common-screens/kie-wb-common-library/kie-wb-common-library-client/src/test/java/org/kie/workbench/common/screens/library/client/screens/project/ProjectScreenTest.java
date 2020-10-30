@@ -51,7 +51,8 @@ import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenServi
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
@@ -62,7 +63,6 @@ import org.uberfire.promise.SyncPromises;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -73,7 +73,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ProjectScreenTest extends ProjectScreenTestBase {
 
     private ProjectScreen presenter;
@@ -448,7 +448,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
                                                                                   "commitMessage"));
 
         verify(copyPopUpView).hide();
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(projectScreenService).copy(presenter.workspaceProject,
                                           "newFileName");
         verify(view).hideBusyIndicator();
@@ -472,7 +472,7 @@ public class ProjectScreenTest extends ProjectScreenTestBase {
             CommandWithFileNameAndCommitMessage duplicateCommand = mock(CommandWithFileNameAndCommitMessage.class);
             doReturn(duplicateCommand).when(presenter).getDuplicateCommand();
             this.presenter.reimport();
-            verify(view).showBusyIndicator(anyString());
+            verify(view).showBusyIndicator(Mockito.<String> any());
             verify(projectScreenService).reImport(presenter.workspaceProject.getMainModule().getPomXMLPath());
             verify(view).hideBusyIndicator();
             verify(notificationEvent).fire(any());

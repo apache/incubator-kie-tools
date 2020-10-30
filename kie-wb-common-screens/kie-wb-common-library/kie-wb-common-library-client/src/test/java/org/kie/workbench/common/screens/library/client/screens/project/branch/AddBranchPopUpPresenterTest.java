@@ -17,6 +17,7 @@ package org.kie.workbench.common.screens.library.client.screens.project.branch;
 
 import java.util.Arrays;
 import java.util.List;
+
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.model.POM;
@@ -31,7 +32,8 @@ import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
@@ -39,9 +41,16 @@ import org.uberfire.mocks.CallerMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.jgroups.util.Util.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class AddBranchPopUpPresenterTest {
 
     @Mock
@@ -90,7 +99,7 @@ public class AddBranchPopUpPresenterTest {
         doReturn("invalidNameMessage").when(view).getInvalidNameMessage();
         doReturn("duplicatedBranchMessage").when(view).getDuplicatedBranchMessage();
 
-        doReturn(true).when(validationService).isBranchNameValid(anyString());
+        doReturn(true).when(validationService).isBranchNameValid(Mockito.<String> any());
 
         when(repository.getAlias()).thenReturn("repository");
         final List<Branch> repositoryBranches = Arrays.asList(makeBranch("branch1", repository.getAlias()),
@@ -126,7 +135,7 @@ public class AddBranchPopUpPresenterTest {
         final ArgumentCaptor<POM> pomArgumentCaptor = ArgumentCaptor.forClass(POM.class);
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(libraryService).addBranch("new-branch", "master",
                                           project);
         verify(view).setAddButtonEnabled(true);
@@ -143,10 +152,10 @@ public class AddBranchPopUpPresenterTest {
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(view).hideBusyIndicator();
         verify(view, never()).hide();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
         verify(view).setAddButtonEnabled(true);
     }
 
@@ -158,10 +167,10 @@ public class AddBranchPopUpPresenterTest {
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(view).hideBusyIndicator();
         verify(view, never()).hide();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
         verify(view).setAddButtonEnabled(true);
     }
 
@@ -174,10 +183,10 @@ public class AddBranchPopUpPresenterTest {
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(view).hideBusyIndicator();
         verify(view, never()).hide();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
         verify(view).setAddButtonEnabled(true);
     }
 

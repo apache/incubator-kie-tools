@@ -19,12 +19,14 @@ package org.kie.workbench.common.screens.library.client.screens.project.changere
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.changerequest.ChangeRequestService;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequest;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestDiff;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,14 +35,13 @@ import org.kie.workbench.common.screens.library.client.screens.project.changereq
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.FieldSetter;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.spaces.Space;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -48,7 +49,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ChangedFilesScreenPresenterTest {
 
     private ChangedFilesScreenPresenter presenter;
@@ -104,13 +105,13 @@ public class ChangedFilesScreenPresenterTest {
     }
 
     @Test
-    public void setupWhenEmptyDiffListTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter, ChangedFilesScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+    public void setupWhenEmptyDiffListTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
 
-        doReturn(Collections.emptyList()).when(changeRequestService).getDiff(anyString(),
-                                                                             anyString(),
-                                                                             anyString(),
-                                                                             anyString());
+        doReturn(Collections.emptyList()).when(changeRequestService).getDiff(Mockito.<String> any(),
+                                                                             Mockito.<String> any(),
+                                                                             Mockito.<String> any(),
+                                                                             Mockito.<String> any());
 
         presenter.setup(changeRequest,
                         b -> {
@@ -118,17 +119,17 @@ public class ChangedFilesScreenPresenterTest {
                         i -> {
                         });
 
-        verify(view).setFilesSummary(anyString());
+        verify(view).setFilesSummary(Mockito.<String>any());
         verify(view, never()).addDiffItem(any(), any());
     }
 
     @Test
-    public void setupWhenPopulatedDiffListTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter, ChangedFilesScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+    public void setupWhenPopulatedDiffListTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
 
         List<ChangeRequestDiff> diffs = Collections.nCopies(5, mock(ChangeRequestDiff.class));
-        doReturn(diffs).when(changeRequestService).getDiff(anyString(),
-                                                           anyString(),
+        doReturn(diffs).when(changeRequestService).getDiff(Mockito.<String> any(),
+                                                           Mockito.<String> any(),
                                                            anyLong());
 
         presenter.setup(changeRequest,
@@ -137,7 +138,15 @@ public class ChangedFilesScreenPresenterTest {
                         i -> {
                         });
 
-        verify(view).setFilesSummary(anyString());
+        verify(view).setFilesSummary(Mockito.<String>any());
         verify(view, times(5)).addDiffItem(any(), any());
+    }
+
+    private void setPresenterPrivateField(final String fieldName, final Object value) {
+        try {
+            FieldUtils.writeField(ChangedFilesScreenPresenter.class.getDeclaredField(fieldName), presenter, value, true);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            Assert.fail();
+        }
     }
 }

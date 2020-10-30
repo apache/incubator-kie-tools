@@ -34,6 +34,7 @@ import org.kie.workbench.common.screens.archetype.mgmt.shared.model.PaginatedArc
 import org.kie.workbench.common.screens.archetype.mgmt.shared.preferences.ArchetypePreferences;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.services.ArchetypeService;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -116,7 +117,7 @@ public class SpaceArchetypeTablePresenterTest {
     public void loadPreferencesTest() {
         presenter.loadPreferences(any(PaginatedArchetypeList.class));
 
-        verify(archetypePreferences).load(any(PreferenceScopeResolutionStrategyInfo.class),
+        verify(archetypePreferences).load(Mockito.<PreferenceScopeResolutionStrategyInfo>any(),
                                           any(),
                                           any());
     }

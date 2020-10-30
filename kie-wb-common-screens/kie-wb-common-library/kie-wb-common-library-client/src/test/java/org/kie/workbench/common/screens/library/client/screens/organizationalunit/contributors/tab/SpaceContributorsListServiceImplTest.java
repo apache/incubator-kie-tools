@@ -33,8 +33,9 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
@@ -43,11 +44,15 @@ import org.uberfire.promise.SyncPromises;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.spaces.Space;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class SpaceContributorsListServiceImplTest {
 
     @Mock
@@ -107,7 +112,7 @@ public class SpaceContributorsListServiceImplTest {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         doReturn(contributors).when(organizationalUnit).getContributors();
 
-        doReturn(organizationalUnit).when(organizationalUnitService).getOrganizationalUnit(anyString());
+        doReturn(organizationalUnit).when(organizationalUnitService).getOrganizationalUnit(Mockito.<String>any());
 
         service.getContributors(repositoryContributors -> {
             assertEquals(3, repositoryContributors.size());
@@ -118,7 +123,7 @@ public class SpaceContributorsListServiceImplTest {
     public void saveContributorsTest() {
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         doReturn("ou").when(organizationalUnit).getName();
-        doReturn(organizationalUnit).when(organizationalUnitService).getOrganizationalUnit(anyString());
+        doReturn(organizationalUnit).when(organizationalUnitService).getOrganizationalUnit(Mockito.<String>any());
         doReturn(organizationalUnit).when(organizationalUnitService).updateOrganizationalUnit(any(), any(), any());
 
         final List<Contributor> contributors = new ArrayList<>();

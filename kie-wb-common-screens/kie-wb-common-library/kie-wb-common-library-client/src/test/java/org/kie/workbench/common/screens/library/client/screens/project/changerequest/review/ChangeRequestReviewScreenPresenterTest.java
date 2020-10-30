@@ -22,6 +22,7 @@ import java.util.Optional;
 import javax.enterprise.event.Event;
 
 import elemental2.dom.HTMLElement;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.structure.repositories.Branch;
@@ -32,6 +33,7 @@ import org.guvnor.structure.repositories.changerequest.portable.ChangeRequest;
 import org.guvnor.structure.repositories.changerequest.portable.ChangeRequestStatus;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,8 +43,8 @@ import org.kie.workbench.common.screens.library.client.screens.project.changereq
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.FieldSetter;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -55,14 +57,13 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ChangeRequestReviewScreenPresenterTest {
 
     private ChangeRequestReviewScreenPresenter presenter;
@@ -125,7 +126,7 @@ public class ChangeRequestReviewScreenPresenterTest {
         doReturn(mock(KieModule.class)).when(workspaceProject).getMainModule();
         doReturn(repository).when(workspaceProject).getRepository();
         doReturn(repository).when(repositoryService).getRepositoryFromSpace(any(Space.class),
-                                                                            anyString());
+                                                                            Mockito.<String>any());
         doReturn(mock(Space.class)).when(workspaceProject).getSpace();
         doReturn(Optional.of(branch)).when(repository).getBranch("branch");
 
@@ -153,7 +154,7 @@ public class ChangeRequestReviewScreenPresenterTest {
         presenter.postConstruct();
 
         verify(view).init(presenter);
-        verify(view).setTitle(anyString());
+        verify(view).setTitle(Mockito.<String>any());
     }
 
     @Test
@@ -165,17 +166,15 @@ public class ChangeRequestReviewScreenPresenterTest {
 
         presenter.refreshOnFocus(event);
 
-        verify(changeRequestService, never()).getChangeRequest(anyString(),
-                                                               anyString(),
+        verify(changeRequestService, never()).getChangeRequest(Mockito.<String>any(),
+                                                               Mockito.<String>any(),
                                                                anyLong());
     }
 
     @Test
-    public void refreshOnFocusGoToScreenCanReadTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
+    public void refreshOnFocusGoToScreenCanReadTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("repository", repository);
 
         PlaceRequest place = mock(PlaceRequest.class);
         SelectPlaceEvent event = new SelectPlaceEvent(place);
@@ -183,8 +182,8 @@ public class ChangeRequestReviewScreenPresenterTest {
         doReturn(LibraryPlaces.CHANGE_REQUEST_REVIEW).when(place).getIdentifier();
         doReturn("1").when(place).getParameter(ChangeRequestUtils.CHANGE_REQUEST_ID_KEY, null);
 
-        doReturn(changeRequest).when(changeRequestService).getChangeRequest(anyString(),
-                                                                            anyString(),
+        doReturn(changeRequest).when(changeRequestService).getChangeRequest(Mockito.<String>any(),
+                                                                            Mockito.<String>any(),
                                                                             anyLong());
         doReturn("branch").when(changeRequest).getSourceBranch();
         doReturn("branch").when(changeRequest).getTargetBranch();
@@ -203,8 +202,8 @@ public class ChangeRequestReviewScreenPresenterTest {
 
         verify(overviewScreen).reset();
         verify(changedFilesScreen).reset();
-        verify(changeRequestService).getChangeRequest(anyString(),
-                                                      anyString(),
+        verify(changeRequestService).getChangeRequest(Mockito.<String>any(),
+                                                      Mockito.<String>any(),
                                                       anyLong());
         verify(view).activateOverviewTab();
         verify(view, never()).showAcceptButton(true);
@@ -213,11 +212,9 @@ public class ChangeRequestReviewScreenPresenterTest {
     }
 
     @Test
-    public void refreshOnFocusGoToScreenCanUpdateTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
+    public void refreshOnFocusGoToScreenCanUpdateTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("repository", repository);
 
         PlaceRequest place = mock(PlaceRequest.class);
         SelectPlaceEvent event = new SelectPlaceEvent(place);
@@ -227,8 +224,8 @@ public class ChangeRequestReviewScreenPresenterTest {
         doReturn(LibraryPlaces.CHANGE_REQUEST_REVIEW).when(place).getIdentifier();
         doReturn("1").when(place).getParameter(ChangeRequestUtils.CHANGE_REQUEST_ID_KEY, null);
 
-        doReturn(changeRequest).when(changeRequestService).getChangeRequest(anyString(),
-                                                                            anyString(),
+        doReturn(changeRequest).when(changeRequestService).getChangeRequest(Mockito.<String>any(),
+                                                                            Mockito.<String>any(),
                                                                             anyLong());
         doReturn("branch").when(changeRequest).getSourceBranch();
         doReturn("branch").when(changeRequest).getTargetBranch();
@@ -247,8 +244,8 @@ public class ChangeRequestReviewScreenPresenterTest {
 
         verify(overviewScreen).reset();
         verify(changedFilesScreen).reset();
-        verify(changeRequestService).getChangeRequest(anyString(),
-                                                      anyString(),
+        verify(changeRequestService).getChangeRequest(Mockito.<String>any(),
+                                                      Mockito.<String>any(),
                                                       anyLong());
         verify(view).activateOverviewTab();
         verify(overviewScreen).reset();
@@ -261,7 +258,7 @@ public class ChangeRequestReviewScreenPresenterTest {
 
         presenter.showOverviewContent();
 
-        verify(view).setContent(any(HTMLElement.class));
+        verify(view).setContent(Mockito.<HTMLElement> any());
     }
 
     @Test
@@ -270,13 +267,12 @@ public class ChangeRequestReviewScreenPresenterTest {
 
         presenter.showChangedFilesContent();
 
-        verify(view).setContent(any(HTMLElement.class));
+        verify(view).setContent(Mockito.<HTMLElement>any());
     }
 
     @Test
-    public void cancelTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
+    public void cancelTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
 
         presenter.cancel();
 
@@ -284,14 +280,10 @@ public class ChangeRequestReviewScreenPresenterTest {
     }
 
     @Test
-    public void rejectWhenHasPermissionTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
-
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"), branch);
+    public void rejectWhenHasPermissionTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("repository", repository);
+        setPresenterPrivateField("currentTargetBranch", branch);
 
         doReturn(promises.resolve(true)).when(projectController)
                 .canUpdateBranch(workspaceProject,
@@ -299,19 +291,16 @@ public class ChangeRequestReviewScreenPresenterTest {
 
         presenter.reject();
 
-        verify(changeRequestService).rejectChangeRequest(anyString(),
-                                                         anyString(),
+        verify(changeRequestService).rejectChangeRequest(Mockito.<String>any(),
+                                                         Mockito.<String>any(),
                                                          anyLong());
         verify(notificationEvent).fire(any(NotificationEvent.class));
     }
 
     @Test
-    public void rejectWhenNotAllowedTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"), branch);
+    public void rejectWhenNotAllowedTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("currentTargetBranch", branch);
 
         doReturn(promises.resolve(false)).when(projectController)
                 .canUpdateBranch(workspaceProject,
@@ -319,109 +308,90 @@ public class ChangeRequestReviewScreenPresenterTest {
 
         presenter.reject();
 
-        verify(changeRequestService, never()).rejectChangeRequest(anyString(),
-                                                                  anyString(),
+        verify(changeRequestService, never()).rejectChangeRequest(Mockito.<String>any(),
+                                                                  Mockito.<String>any(),
                                                                   anyLong());
     }
 
     @Test
-    public void closeWhenIsAuthorTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("authorId"), "admin");
+    public void closeWhenIsAuthorTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("repository", repository);
+        setPresenterPrivateField("authorId", "admin");
 
         presenter.close();
 
-        verify(changeRequestService).closeChangeRequest(anyString(),
-                                                        anyString(),
+        verify(changeRequestService).closeChangeRequest(Mockito.<String>any(),
+                                                        Mockito.<String>any(),
                                                         anyLong());
     }
 
     @Test
-    public void closeWhenIsNotAuthorTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("authorId"), "developer");
+    public void closeWhenIsNotAuthorTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("repository", repository);
+        setPresenterPrivateField("authorId", "developer");
 
         presenter.close();
 
-        verify(changeRequestService, never()).closeChangeRequest(anyString(),
-                                                                 anyString(),
+        verify(changeRequestService, never()).closeChangeRequest(Mockito.<String>any(),
+                                                                 Mockito.<String>any(),
                                                                  anyLong());
     }
 
     @Test
-    public void reopenWhenIsAuthorTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("authorId"), "admin");
+    public void reopenWhenIsAuthorTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("repository", repository);
+        setPresenterPrivateField("authorId", "admin");
 
         presenter.reopen();
 
-        verify(changeRequestService).reopenChangeRequest(anyString(),
-                                                         anyString(),
+        verify(changeRequestService).reopenChangeRequest(Mockito.<String>any(),
+                                                         Mockito.<String>any(),
                                                          anyLong());
     }
 
     @Test
-    public void reopenWhenIsNotAuthorTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("authorId"), "developer");
+    public void reopenWhenIsNotAuthorTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("repository", repository);
+        setPresenterPrivateField("authorId", "developer");
 
         presenter.reopen();
 
-        verify(changeRequestService, never()).reopenChangeRequest(anyString(),
-                                                                  anyString(),
+        verify(changeRequestService, never()).reopenChangeRequest(Mockito.<String>any(),
+                                                                  Mockito.<String>any(),
                                                                   anyLong());
     }
 
     @Test
-    public void mergeWhenHasPermissionTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
-
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"), branch);
+    public void mergeWhenHasPermissionTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("repository", repository);
+        setPresenterPrivateField("currentTargetBranch", branch);
 
         doReturn(promises.resolve(true)).when(projectController)
                 .canUpdateBranch(workspaceProject,
                                  branch);
 
         doReturn(true).when(changeRequestService)
-                .mergeChangeRequest(anyString(),
-                                    anyString(),
+                .mergeChangeRequest(Mockito.<String>any(),
+                                    Mockito.<String>any(),
                                     anyLong());
 
         presenter.merge();
 
-        verify(changeRequestService).mergeChangeRequest(anyString(),
-                                                        anyString(),
+        verify(changeRequestService).mergeChangeRequest(Mockito.<String>any(),
+                                                        Mockito.<String>any(),
                                                         anyLong());
         verify(notificationEvent).fire(any(NotificationEvent.class));
     }
 
     @Test
-    public void mergeWhenNotAllowedTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"), branch);
+    public void mergeWhenNotAllowedTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("currentTargetBranch", branch);
 
         doReturn(promises.resolve(false)).when(projectController)
                 .canUpdateBranch(workspaceProject,
@@ -429,45 +399,38 @@ public class ChangeRequestReviewScreenPresenterTest {
 
         presenter.merge();
 
-        verify(changeRequestService, never()).mergeChangeRequest(anyString(),
-                                                                 anyString(),
+        verify(changeRequestService, never()).mergeChangeRequest(Mockito.<String>any(),
+                                                                 Mockito.<String>any(),
                                                                  anyLong());
     }
 
     @Test
-    public void revertWhenHasPermissionTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
-
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"), branch);
+    public void revertWhenHasPermissionTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("repository", repository);
+        setPresenterPrivateField("currentTargetBranch", branch);
 
         doReturn(promises.resolve(true)).when(projectController)
                 .canUpdateBranch(workspaceProject,
                                  branch);
 
         doReturn(true).when(changeRequestService)
-                .revertChangeRequest(anyString(),
-                                     anyString(),
+                .revertChangeRequest(Mockito.<String>any(),
+                                     Mockito.<String>any(),
                                      anyLong());
 
         presenter.revert();
 
-        verify(changeRequestService).revertChangeRequest(anyString(),
-                                                         anyString(),
+        verify(changeRequestService).revertChangeRequest(Mockito.<String>any(),
+                                                         Mockito.<String>any(),
                                                          anyLong());
         verify(notificationEvent).fire(any(NotificationEvent.class));
     }
 
     @Test
-    public void revertWhenNotAllowedTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("currentTargetBranch"), branch);
+    public void revertWhenNotAllowedTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("currentTargetBranch", branch);
 
         doReturn(promises.resolve(false)).when(projectController)
                 .canUpdateBranch(workspaceProject,
@@ -475,18 +438,15 @@ public class ChangeRequestReviewScreenPresenterTest {
 
         presenter.revert();
 
-        verify(changeRequestService, never()).revertChangeRequest(anyString(),
-                                                                  anyString(),
+        verify(changeRequestService, never()).revertChangeRequest(Mockito.<String>any(),
+                                                                  Mockito.<String>any(),
                                                                   anyLong());
     }
 
     @Test
-    public void squashWhenHasPermissionTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
+    public void squashWhenHasPermissionTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("repository", repository);
 
         doReturn(promises.resolve(true))
                 .when(projectController)
@@ -495,10 +455,10 @@ public class ChangeRequestReviewScreenPresenterTest {
 
         doReturn(true)
                 .when(changeRequestService)
-                .squashChangeRequest(anyString(),
-                                     anyString(),
+                .squashChangeRequest(Mockito.<String>any(),
+                                     Mockito.<String>any(),
                                      anyLong(),
-                                     anyString());
+                                     Mockito.<String>any());
 
         presenter.squash();
 
@@ -508,12 +468,9 @@ public class ChangeRequestReviewScreenPresenterTest {
     }
 
     @Test
-    public void squashWhenNotAllowedTest() throws NoSuchFieldException {
-        FieldSetter.setField(presenter,
-                        ChangeRequestReviewScreenPresenter.class.getDeclaredField("workspaceProject"), workspaceProject);
-
-        FieldSetter.setField(presenter,
-                ChangeRequestReviewScreenPresenter.class.getDeclaredField("repository"), repository);
+    public void squashWhenNotAllowedTest() {
+        setPresenterPrivateField("workspaceProject", workspaceProject);
+        setPresenterPrivateField("repository", repository);
 
         doReturn(promises.resolve(false))
                 .when(projectController)
@@ -529,9 +486,17 @@ public class ChangeRequestReviewScreenPresenterTest {
         presenter.squash();
 
         verify(changeRequestService, never())
-                .squashChangeRequest(anyString(),
-                                     anyString(),
+                .squashChangeRequest(Mockito.<String>any(),
+                                     Mockito.<String>any(),
                                      anyLong(),
-                                     anyString());
+                                     Mockito.<String>any());
+    }
+
+    private void setPresenterPrivateField(final String fieldName, final Object value) {
+        try {
+            FieldUtils.writeField(ChangeRequestReviewScreenPresenter.class.getDeclaredField(fieldName), presenter, value, true);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            Assert.fail();
+        }
     }
 }

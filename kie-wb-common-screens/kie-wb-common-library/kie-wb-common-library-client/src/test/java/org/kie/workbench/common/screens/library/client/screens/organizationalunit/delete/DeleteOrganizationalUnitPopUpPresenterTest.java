@@ -26,17 +26,23 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DeleteOrganizationalUnitPopUpPresenterTest {
 
     @Mock
@@ -109,7 +115,7 @@ public class DeleteOrganizationalUnitPopUpPresenterTest {
         presenter.delete();
 
         verify(view).getWrongConfirmedNameValidationMessage();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
 
         verify(organizationalUnitService,
                never()).removeOrganizationalUnit(anyString());
@@ -123,7 +129,7 @@ public class DeleteOrganizationalUnitPopUpPresenterTest {
 
         presenter.delete();
 
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(view).hideBusyIndicator();
         verify(notificationEvent).fire(any());
         verify(view).hide();

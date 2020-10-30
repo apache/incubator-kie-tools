@@ -30,6 +30,7 @@ import org.kie.workbench.common.screens.archetype.mgmt.shared.model.Archetype;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.model.ArchetypeStatus;
 import org.kie.workbench.common.screens.archetype.mgmt.shared.services.ArchetypeService;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
@@ -37,7 +38,6 @@ import org.uberfire.mvp.Command;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -102,7 +102,7 @@ public class ArchetypeItemPresenterTest {
         verify(view).enableIncludeCheckbox(true);
         verify(view).enableSetDefault(true);
         verify(view).setDeleteCommand(any());
-        verify(view).setDefaultBadgeTooltip(anyString());
+        verify(view).setDefaultBadgeTooltip(Mockito.<String>any());
     }
 
     @Test
@@ -120,8 +120,8 @@ public class ArchetypeItemPresenterTest {
 
         verify(view).showValidStatus(false);
         verify(view).showInvalidStatus(true);
-        verify(view).setInvalidTooltip(anyString());
-        verify(view, never()).setValidTooltip(anyString());
+        verify(view).setInvalidTooltip(Mockito.<String>any());
+        verify(view, never()).setValidTooltip(Mockito.<String>any());
     }
 
     @Test
@@ -134,8 +134,8 @@ public class ArchetypeItemPresenterTest {
 
         verify(view).showValidStatus(true);
         verify(view).showInvalidStatus(false);
-        verify(view, never()).setInvalidTooltip(anyString());
-        verify(view).setValidTooltip(anyString());
+        verify(view, never()).setInvalidTooltip(Mockito.<String>any());
+        verify(view).setValidTooltip(Mockito.<String>any());
     }
 
     @Test
@@ -437,7 +437,7 @@ public class ArchetypeItemPresenterTest {
 
         presenter.validate();
 
-        verify(archetypeService, never()).validate(anyString());
+        verify(archetypeService, never()).validate(Mockito.<String>any());
     }
 
     @Test
@@ -463,7 +463,7 @@ public class ArchetypeItemPresenterTest {
 
         deleteCommand.execute();
 
-        verify(archetypeService, never()).delete(anyString());
+        verify(archetypeService, never()).delete(Mockito.<String>any());
     }
 
     @Test

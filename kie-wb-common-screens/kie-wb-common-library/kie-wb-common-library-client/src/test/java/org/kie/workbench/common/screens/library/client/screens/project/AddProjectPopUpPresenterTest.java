@@ -50,7 +50,8 @@ import org.kie.workbench.common.services.refactoring.model.index.events.Indexing
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.views.pfly.widgets.ErrorPopup;
@@ -64,7 +65,6 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.jgroups.util.Util.assertEquals;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -76,7 +76,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.uberfire.mocks.ParametrizedCommandMock.executeParametrizedCommandWith;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class AddProjectPopUpPresenterTest {
 
     @Mock
@@ -185,7 +185,7 @@ public class AddProjectPopUpPresenterTest {
         doReturn(true).when(validationService).validateArtifactId(any());
         doReturn(true).when(validationService).validateGAVVersion(any());
 
-        doReturn(mock(WorkspaceProject.class)).when(libraryService).createProject(any(), any(), any(), anyString());
+        doReturn(mock(WorkspaceProject.class)).when(libraryService).createProject(any(), any(), any(), Mockito.<String> any());
 
         presenter.setup();
     }
@@ -219,7 +219,7 @@ public class AddProjectPopUpPresenterTest {
         verify(libraryService).createProject(eq(organizationalUnit),
                                              pomArgumentCaptor.capture(),
                                              eq(DeploymentMode.VALIDATED),
-                                             anyString());
+                                             Mockito.<String> any());
         verify(view).setAddButtonEnabled(true);
     }
 
@@ -243,7 +243,7 @@ public class AddProjectPopUpPresenterTest {
         verify(libraryService).createProject(eq(organizationalUnit),
                                              pomArgumentCaptor.capture(),
                                              eq(DeploymentMode.VALIDATED),
-                                             anyString());
+                                             Mockito.<String> any());
         verify(view).setAddButtonEnabled(true);
 
         final POM pom = pomArgumentCaptor.getValue();
@@ -280,7 +280,7 @@ public class AddProjectPopUpPresenterTest {
         verify(libraryService).createProject(eq(organizationalUnit),
                                              pomArgumentCaptor.capture(),
                                              eq(DeploymentMode.VALIDATED),
-                                             anyString());
+                                             Mockito.<String> any());
         verify(view).setAddButtonEnabled(true);
         
         final POM pom = pomArgumentCaptor.getValue();
@@ -305,7 +305,7 @@ public class AddProjectPopUpPresenterTest {
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(view).setAddButtonEnabled(true);
         verify(view).hide();
         verify(notificationEvent).fire(any(NotificationEvent.class));
@@ -335,20 +335,20 @@ public class AddProjectPopUpPresenterTest {
         doThrow(new FileAlreadyExistsException()).when(libraryService).createProject(any(),
                                                                                      any(),
                                                                                      any(),
-                                                                                     anyString());
+                                                                                     Mockito.<String> any());
         doAnswer(invocationOnMock -> ((Throwable) invocationOnMock.getArguments()[0]).getCause() instanceof FileAlreadyExistsException)
                 .when(presenter).isDuplicatedProjectName(any());
 
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
         verify(view).hideBusyIndicator();
         verify(view,
                never()).hide();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
         verify(view).setAddButtonEnabled(true);
@@ -360,7 +360,7 @@ public class AddProjectPopUpPresenterTest {
         doReturn("description").when(view).getDescription();
 
         doThrow(new IllegalStateException("New repository should always have a branch."))
-                .when(libraryService).createProject(any(), any(), any(), anyString());
+                .when(libraryService).createProject(any(), any(), any(), Mockito.<String> any());
 
         presenter.add();
 
@@ -370,9 +370,9 @@ public class AddProjectPopUpPresenterTest {
 
         verify(busyIndicatorView).hideBusyIndicator();
 
-        verify(errorPopup).showError(anyString(), anyString());
+        verify(errorPopup).showError(Mockito.<String> any(), Mockito.<String> any());
 
-        verify(translationService).format(anyString(), anyString());
+        verify(translationService).format(Mockito.<String> any(), Mockito.<String> any());
     }
 
     @Test
@@ -387,13 +387,13 @@ public class AddProjectPopUpPresenterTest {
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
         verify(view).hideBusyIndicator();
         verify(view,
                never()).hide();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
         verify(view).setAddButtonEnabled(true);
@@ -411,13 +411,13 @@ public class AddProjectPopUpPresenterTest {
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
         verify(view).hideBusyIndicator();
         verify(view,
                never()).hide();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
         verify(view).setAddButtonEnabled(true);
@@ -435,13 +435,13 @@ public class AddProjectPopUpPresenterTest {
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
         verify(view).hideBusyIndicator();
         verify(view,
                never()).hide();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
         verify(view).setAddButtonEnabled(true);
@@ -459,13 +459,13 @@ public class AddProjectPopUpPresenterTest {
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
         verify(view).hideBusyIndicator();
         verify(view,
                never()).hide();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
         verify(view).setAddButtonEnabled(true);
@@ -485,13 +485,13 @@ public class AddProjectPopUpPresenterTest {
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
         verify(view).hideBusyIndicator();
         verify(view,
                never()).hide();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
         verify(view).setAddButtonEnabled(true);
@@ -506,18 +506,18 @@ public class AddProjectPopUpPresenterTest {
         doReturn("version").when(view).getVersion();
         doReturn(true).when(view).isAdvancedOptionsSelected();
 
-        doReturn(false).when(validationService).validateGroupId(anyString());
+        doReturn(false).when(validationService).validateGroupId(Mockito.<String> any());
 
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
         verify(view).hideBusyIndicator();
         verify(view,
                never()).hide();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
         verify(view).setAddButtonEnabled(true);
@@ -532,18 +532,18 @@ public class AddProjectPopUpPresenterTest {
         doReturn("version").when(view).getVersion();
         doReturn(true).when(view).isAdvancedOptionsSelected();
 
-        doReturn(false).when(validationService).validateArtifactId(anyString());
+        doReturn(false).when(validationService).validateArtifactId(Mockito.<String> any());
 
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
         verify(view).hideBusyIndicator();
         verify(view,
                never()).hide();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
         verify(view).setAddButtonEnabled(true);
@@ -558,18 +558,18 @@ public class AddProjectPopUpPresenterTest {
         doReturn("version").when(view).getVersion();
         doReturn(true).when(view).isAdvancedOptionsSelected();
 
-        doReturn(false).when(validationService).validateGAVVersion(anyString());
+        doReturn(false).when(validationService).validateGAVVersion(Mockito.<String> any());
 
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(newProjectEvent,
                never()).fire(any(NewProjectEvent.class));
         verify(view).hideBusyIndicator();
         verify(view,
                never()).hide();
-        verify(view).showError(anyString());
+        verify(view).showError(Mockito.<String> any());
         verify(libraryPlaces,
                never()).goToProject(any(WorkspaceProject.class));
         verify(view).setAddButtonEnabled(true);
@@ -586,7 +586,7 @@ public class AddProjectPopUpPresenterTest {
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(view).setAddButtonEnabled(true);
         verify(command, never()).execute(any());
     }
@@ -597,7 +597,7 @@ public class AddProjectPopUpPresenterTest {
         final Path projectRootPath = mock(Path.class);
         doReturn(projectRootPath).when(project).getRootPath();
         doReturn(project).when(projectService).resolveProject(any(Path.class));
-        doReturn(project).when(libraryService).createProject(any(), any(), any(), anyString());
+        doReturn(project).when(libraryService).createProject(any(), any(), any(), Mockito.<String> any());
         doReturn("test").when(view).getName();
         doReturn("description").when(view).getDescription();
 
@@ -606,7 +606,7 @@ public class AddProjectPopUpPresenterTest {
         presenter.add();
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(view).setAddButtonEnabled(true);
         verify(view).hide();
         verify(notificationEvent).fire(any(NotificationEvent.class));
@@ -619,7 +619,7 @@ public class AddProjectPopUpPresenterTest {
         final Path projectRootPath = mock(Path.class);
         doReturn(projectRootPath).when(project).getRootPath();
         doReturn(project).when(projectService).resolveProject(any(Path.class));
-        doReturn(project).when(libraryService).createProject(any(), any(), any(), anyString());
+        doReturn(project).when(libraryService).createProject(any(), any(), any(), Mockito.<String> any());
         doReturn("test").when(view).getName();
         doReturn("description").when(view).getDescription();
 
@@ -628,7 +628,7 @@ public class AddProjectPopUpPresenterTest {
                                                                            projectRootPath));
 
         verify(view).setAddButtonEnabled(false);
-        verify(view).showBusyIndicator(anyString());
+        verify(view).showBusyIndicator(Mockito.<String> any());
         verify(view).setAddButtonEnabled(true);
         verify(view).hide();
         verify(notificationEvent).fire(any(NotificationEvent.class));

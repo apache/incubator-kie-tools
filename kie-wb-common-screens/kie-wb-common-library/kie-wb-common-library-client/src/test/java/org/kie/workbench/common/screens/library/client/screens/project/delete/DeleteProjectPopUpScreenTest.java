@@ -18,21 +18,23 @@
 package org.kie.workbench.common.screens.library.client.screens.project.delete;
 
 import org.guvnor.common.services.project.model.WorkspaceProject;
-import org.guvnor.structure.repositories.RepositoryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeleteProjectPopUpScreenTest {
@@ -75,7 +77,7 @@ public class DeleteProjectPopUpScreenTest {
         this.presenter.show(project);
         this.presenter.delete();
 
-        verify(this.view).showError(anyString());
+        verify(this.view).showError(Mockito.<String> any());
         verify(this.libraryPlaces, never()).deleteProject(any(), any());
     }
 
@@ -85,7 +87,7 @@ public class DeleteProjectPopUpScreenTest {
         this.presenter.show(project);
         this.presenter.delete();
 
-        verify(this.view, never()).showError(anyString());
+        verify(this.view, never()).showError(Mockito.<String> any());
         verify(this.libraryPlaces).closeAllPlacesOrNothing(any());
         verify(this.libraryPlaces).deleteProject(project, view);
     }
