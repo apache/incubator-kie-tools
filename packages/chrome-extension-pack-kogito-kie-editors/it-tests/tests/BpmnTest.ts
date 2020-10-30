@@ -32,11 +32,11 @@ beforeEach(async () => {
 });
 
 test(TEST_NAME, async () => {
-    const WEB_PAGE = "https://github.com/kiegroup/kogito-examples/blob/stable/process-business-rules-quarkus/src/main/resources/org/acme/travels/";
-    const EXPECTED_LINK = "kiegroup/kogito-examples/stable/process-business-rules-quarkus/src/main/resources/org/acme/travels/persons.bpmn";
-    const PROCESS_NAME = "persons";
-    const FILE_NAME = PROCESS_NAME + ".bpmn";
-    const EVALUATE_NODE_NAME = "Evaluate Person";
+    const WEB_PAGE = "https://github.com/kiegroup/kogito-tooling/tree/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples";
+    const EXPECTED_LINK = "kiegroup/kogito-tooling/master/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.bpmn";
+    const PROCESS_NAME = "myProcess";
+    const FILE_NAME = "test.bpmn";
+    const TASK_NODE_NAME = "MyTask";
 
     // check link to online editor in the list
     const gitHubListPage: GitHubListPage = await tools.openPage(GitHubListPage, WEB_PAGE);
@@ -60,13 +60,18 @@ test(TEST_NAME, async () => {
     // check process nodes in explorer
     const explorer: Explorer = await sideBar.openExplorer();
     expect((await explorer.getNodeNames()).sort())
-        .toEqual(["StartProcess", "End Event 1", "End Event 2", "Evaluate Person", "Exclusive Gateway 1", "Special handling for children", "Start"].sort());
+        .toEqual([
+            "Start",
+            "MyStart",
+            "MyTask",
+            "MyEnd"
+        ].sort());
     expect(await explorer.getProcessName()).toEqual(PROCESS_NAME);
 
     // check task properties
-    await explorer.selectNode(EVALUATE_NODE_NAME);
+    await explorer.selectNode(TASK_NODE_NAME);
     const nodeProps: Properties = await sideBar.openProperties();
-    expect(await nodeProps.getNameFromTextArea()).toEqual(EVALUATE_NODE_NAME);
+    expect(await nodeProps.getNameFromTextArea()).toEqual(TASK_NODE_NAME);
 
     await bpmnEditor.leave();
 
