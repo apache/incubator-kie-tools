@@ -114,8 +114,8 @@ Feature: kogito-quarkus-ubi8-s2i image tests
     And s2i build log should contain '/home/kogito/bin/demo.orders.proto' -> '/home/kogito/data/protobufs/demo.orders.proto'
     And s2i build log should contain '/home/kogito/bin/persons.proto' -> '/home/kogito/data/protobufs/persons.proto'
     And s2i build log should contain ---> [persistence] generating md5 for persistence files
-    And run sh -c 'cat /home/kogito/data/protobufs/persons-md5.txt' in container and immediately check its output for b19f6d73a0a1fea0bfbd8e2e30701d78
-    And run sh -c 'cat /home/kogito/data/protobufs/demo.orders-md5.txt' in container and immediately check its output for 02b40df868ebda3acb3b318b6ebcc055
+    And run sh -c 'cat /home/kogito/data/protobufs/persons-md5.txt' in container and immediately check its output for 29ff4ac73aaeace2e0b35bbfd10b8df9
+    And run sh -c 'cat /home/kogito/data/protobufs/demo.orders-md5.txt' in container and immediately check its output for cad0e594b6c80f0e284ec271f122b47b
     And s2i build log should contain [persistence] Generated checksum for /home/kogito/data/protobufs/persons.proto with the name: /home/kogito/data/protobufs/persons-md5.txt
     And s2i build log should contain [persistence] Generated checksum for /home/kogito/data/protobufs/demo.orders.proto with the name: /home/kogito/data/protobufs/demo.orders-md5.txt
 
