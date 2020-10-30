@@ -30,12 +30,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ColumnFilterEditorTest {
@@ -117,7 +121,7 @@ public class ColumnFilterEditorTest {
 
         int n = CoreFunctionType.getSupportedTypes(ColumnType.LABEL).size()-1;
         verify(view).clearFunctionSelector();
-        verify(view, times(n)).addFunctionItem(any(CoreFunctionType.class));
+        verify(view, times(n)).addFunctionItem(Mockito.<CoreFunctionType> any());
         verify(view, never()).addFunctionItem(CoreFunctionType.TIME_FRAME);
 
         verify(view).clearFilterConfig();
@@ -134,7 +138,7 @@ public class ColumnFilterEditorTest {
 
         int n = CoreFunctionType.getSupportedTypes(ColumnType.NUMBER).size()-1;
         verify(view).clearFunctionSelector();
-        verify(view, times(n)).addFunctionItem(any(CoreFunctionType.class));
+        verify(view, times(n)).addFunctionItem(Mockito.<CoreFunctionType> any());
         verify(view, never()).addFunctionItem(CoreFunctionType.TIME_FRAME);
         verify(view, never()).addFunctionItem(CoreFunctionType.LIKE_TO);
 
@@ -153,7 +157,7 @@ public class ColumnFilterEditorTest {
 
         int n = CoreFunctionType.getSupportedTypes(ColumnType.DATE).size()-1;
         verify(view).clearFunctionSelector();
-        verify(view, times(n)).addFunctionItem(any(CoreFunctionType.class));
+        verify(view, times(n)).addFunctionItem(Mockito.<CoreFunctionType> any());
         verify(view).addFunctionItem(CoreFunctionType.TIME_FRAME);
         verify(view, never()).addFunctionItem(CoreFunctionType.LIKE_TO);
 
@@ -236,7 +240,7 @@ public class ColumnFilterEditorTest {
         presenter.onSelectFilterFunction();
 
         assertEquals(presenter.getCoreFilter().getType(), CoreFunctionType.NOT_EQUALS_TO);
-        verify(changedEvent).fire(any(ColumnFilterChangedEvent.class));
+        verify(changedEvent).fire(Mockito.<ColumnFilterChangedEvent>any());
         verify(view).clearFilterConfig();
         verify(view).setFunctionSelected("col != value1");
     }
