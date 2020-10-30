@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   DataListAction,
   DataListCell,
@@ -26,10 +26,10 @@ import {
   TextInput
 } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
-import "./CharacteristicsTable.scss";
+import "../organisms/CharacteristicsTable.scss";
 import { CharacteristicsTableEditModeAction } from "../atoms";
 import { ValidatedType } from "../../../types";
-import { IndexedCharacteristic } from "./CharacteristicsTable";
+import { IndexedCharacteristic } from "../organisms";
 
 interface CharacteristicsTableEditRowProps {
   characteristic: IndexedCharacteristic;
@@ -50,6 +50,8 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   const [reasonCode, setReasonCode] = useState<string | undefined>();
   const [baselineScore, setBaselineScore] = useState<number | undefined>();
 
+  const nameFieldRef = useRef<HTMLInputElement | null>(null);
+
   useEffect(() => {
     setName({
       value: characteristic?.characteristic.name,
@@ -57,6 +59,10 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
     });
     setReasonCode(characteristic?.characteristic.reasonCode);
     setBaselineScore(characteristic?.characteristic.baselineScore);
+
+    if (nameFieldRef.current) {
+      nameFieldRef.current.focus();
+    }
   }, [props]);
 
   const toNumber = (value: string): number | undefined => {
@@ -91,6 +97,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   type="text"
                   id="characteristic-name"
                   name="characteristic-name"
+                  ref={nameFieldRef}
                   aria-describedby="characteristic-name-helper"
                   value={name.value ?? ""}
                   validated={name.valid ? "default" : "error"}

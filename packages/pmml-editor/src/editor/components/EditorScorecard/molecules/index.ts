@@ -15,7 +15,8 @@
  */
 
 export * from "./CharacteristicsToolbar";
-export * from "./CharacteristicGeneralForm";
 export * from "./CharacteristicAttributesForm";
+export * from "./CharacteristicsTableRow";
+export * from "./CharacteristicsTableEditRow";
 export * from "./EmptyStateNoAttributes";
 export * from "./EmptyStateNoCharacteristics";

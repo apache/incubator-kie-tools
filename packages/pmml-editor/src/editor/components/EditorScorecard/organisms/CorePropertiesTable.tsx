@@ -34,6 +34,7 @@ import {
 import { ExclamationCircleIcon, PencilAltIcon } from "@patternfly/react-icons";
 import "./CorePropertiesTable.scss";
 import { ValidatedType } from "../../../types";
+import { Operation } from "../../../types/Operation";
 
 interface CoreProperties {
   isScorable: boolean;
@@ -47,8 +48,8 @@ interface CoreProperties {
 }
 
 interface CorePropertiesTableProps extends CoreProperties {
-  isEditActive: boolean;
-  setEditActive: (active: boolean) => void;
+  activeOperation: Operation;
+  setActiveOperation: (operation: Operation) => void;
   commit: (props: CoreProperties) => void;
 }
 
@@ -86,7 +87,7 @@ const ValidateInitialScore = (value: number) => {
 };
 
 export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
-  const { isEditActive, setEditActive } = props;
+  const { activeOperation, setActiveOperation } = props;
 
   const [isEditing, setEditing] = useState(false);
   const [isScorable, setScorable] = useState(props.isScorable);
@@ -165,7 +166,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
 
   const onEdit = () => {
     setEditing(true);
-    setEditActive(true);
+    setActiveOperation(Operation.UPDATE);
   };
 
   const commitEdit = () => {
@@ -179,12 +180,12 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
       useReasonCodes: useReasonCodes,
       reasonCodeAlgorithm: reasonCodeAlgorithm
     });
-    setEditing(false);
-    setEditActive(false);
+
+    cancelEdit();
   };
   const cancelEdit = () => {
     setEditing(false);
-    setEditActive(false);
+    setActiveOperation(Operation.NONE);
   };
 
   return (
@@ -201,7 +202,12 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
             </FlexItem>
             <FlexItem>
               {!isEditing && (
-                <Button isDisabled={isEditActive} variant="link" icon={<PencilAltIcon />} onClick={onEdit}>
+                <Button
+                  isDisabled={activeOperation !== Operation.NONE}
+                  variant="link"
+                  icon={<PencilAltIcon />}
+                  onClick={onEdit}
+                >
                   Edit
                 </Button>
               )}

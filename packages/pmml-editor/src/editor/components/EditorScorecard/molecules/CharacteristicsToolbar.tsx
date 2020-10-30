@@ -29,15 +29,16 @@ import {
   ToolbarItem
 } from "@patternfly/react-core";
 import { SearchIcon } from "@patternfly/react-icons";
+import { Operation } from "../../../types/Operation";
 
 interface CharacteristicsToolbarProps {
-  isEditActive: boolean;
+  activeOperation: Operation;
   onFilter: (filter: string) => void;
   onAddCharacteristic: () => void;
 }
 
 export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
-  const { isEditActive } = props;
+  const { activeOperation } = props;
 
   const [filter, setFilter] = useState("");
   const { onFilter, onAddCharacteristic } = props;
@@ -67,7 +68,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                       aria-label="filter characteristics"
                       placeholder="Filter by name"
                       onChange={e => setFilter(e)}
-                      isDisabled={isEditActive}
+                      isDisabled={activeOperation !== Operation.NONE}
                     />
                     <Button
                       id="characteristics-filter"
@@ -76,7 +77,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                       variant={ButtonVariant.control}
                       aria-label="filter button for filter input"
                       onClick={e => onFilter(filter)}
-                      isDisabled={isEditActive}
+                      isDisabled={activeOperation !== Operation.NONE}
                     >
                       <SearchIcon />
                     </Button>
@@ -92,7 +93,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
                 data-testid="characteristics-toolbar__add-characteristic"
                 variant="primary"
                 onClick={e => onAddCharacteristic()}
-                isDisabled={isEditActive}
+                isDisabled={activeOperation !== Operation.NONE}
               >
                 Add Characteristic
               </Button>

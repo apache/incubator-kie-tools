@@ -18,17 +18,13 @@ import { useCallback, useMemo, useState } from "react";
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { Header } from "../../Header/molecules";
 import { Characteristic, Characteristics, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
-import {
-  CharacteristicDefinition,
-  CharacteristicsTable,
-  CorePropertiesTable,
-  IndexedCharacteristic
-} from "../organisms";
+import { CharacteristicPanel, CharacteristicsTable, CorePropertiesTable, IndexedCharacteristic } from "../organisms";
 import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { CharacteristicsToolbar } from "../molecules";
 import "./ScorecardEditorPage.scss";
+import { Operation } from "../../../types/Operation";
 
 interface ScorecardEditorPageProps {
   path: string;
@@ -42,7 +38,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const [filter, setFilter] = useState("");
   const [showCharacteristicPanel, setShowCharacteristicPanel] = useState(false);
   const [selectedCharacteristic, setSelectedCharacteristic] = useState<IndexedCharacteristic | undefined>(undefined);
-  const [isEditActive, setEditActive] = useState(false);
+  const [activeOperation, setActiveOperation] = useState(Operation.NONE);
 
   const characteristics: Characteristics | undefined = useSelector<PMML, Characteristics | undefined>((state: PMML) => {
     const model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
@@ -53,22 +49,21 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   });
 
   const onAddCharacteristic = useCallback(() => {
-    setShowCharacteristicPanel(true);
-    setSelectedCharacteristic({
-      index: undefined,
-      characteristic: { name: undefined, baselineScore: undefined, reasonCode: undefined, Attribute: [] }
-    });
+    setActiveOperation(Operation.CREATE);
   }, [characteristics]);
 
   const selectCharacteristic = useCallback(
     index => {
+      if (activeOperation !== Operation.NONE) {
+        return;
+      }
       setShowCharacteristicPanel(true);
       setSelectedCharacteristic({
         index: index,
         characteristic: characteristics?.Characteristic[index] as Characteristic
       });
     },
-    [characteristics]
+    [characteristics, activeOperation]
   );
 
   const validateCharacteristicName = useCallback(
@@ -105,11 +100,10 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
   return (
     <div data-testid="editor-page" className={"editor"}>
-      <CharacteristicDefinition
+      <CharacteristicPanel
         characteristic={selectedCharacteristic}
         showCharacteristicPanel={showCharacteristicPanel}
         hideCharacteristicPanel={hideCharacteristicPanel}
-        validateCharacteristicName={validateCharacteristicName}
         commit={_props => {
           if (_props.characteristic?.index === undefined) {
             dispatch({
@@ -142,8 +136,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
       <PageSection isFilled={false}>
         <CorePropertiesTable
-          isEditActive={isEditActive}
-          setEditActive={setEditActive}
+          activeOperation={activeOperation}
+          setActiveOperation={setActiveOperation}
           isScorable={props.model.isScorable ?? true}
           functionName={props.model.functionName}
           algorithmName={props.model.algorithmName ?? ""}
@@ -174,13 +168,13 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
       <PageSection isFilled={true} style={{ paddingTop: "0px" }}>
         <PageSection variant={PageSectionVariants.light}>
           <CharacteristicsToolbar
-            isEditActive={isEditActive}
+            activeOperation={activeOperation}
             onFilter={setFilter}
             onAddCharacteristic={onAddCharacteristic}
           />
           <CharacteristicsTable
-            isEditActive={isEditActive}
-            setEditActive={setEditActive}
+            activeOperation={activeOperation}
+            setActiveOperation={setActiveOperation}
             characteristics={filteredCharacteristics}
             onRowClick={index => selectCharacteristic(index)}
             onRowDelete={index => {
@@ -196,15 +190,15 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
             }}
             onAddCharacteristic={onAddCharacteristic}
             validateCharacteristicName={validateCharacteristicName}
-            commitCharacteristicUpdate={_props => {
-              if (_props.index === undefined) {
+            commit={(_index, _name, _reasonCode, _baselineScore) => {
+              if (_index === undefined) {
                 dispatch({
                   type: Actions.Scorecard_AddCharacteristic,
                   payload: {
                     modelIndex: props.modelIndex,
-                    name: _props.characteristic.name,
-                    reasonCode: _props.characteristic.reasonCode,
-                    baselineScore: _props.characteristic.baselineScore
+                    name: _name,
+                    reasonCode: _reasonCode,
+                    baselineScore: _baselineScore
                   }
                 });
               } else {
@@ -212,10 +206,10 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                   type: Actions.Scorecard_UpdateCharacteristic,
                   payload: {
                     modelIndex: props.modelIndex,
-                    characteristicIndex: _props.index,
-                    name: _props.characteristic.name,
-                    reasonCode: _props.characteristic.reasonCode,
-                    baselineScore: _props.characteristic.baselineScore
+                    characteristicIndex: _index,
+                    name: _name,
+                    reasonCode: _reasonCode,
+                    baselineScore: _baselineScore
                   }
                 });
               }

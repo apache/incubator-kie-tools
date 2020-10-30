@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import {
   Button,
@@ -29,8 +29,9 @@ import {
 import { TrashIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTable.scss";
 import { EmptyStateNoCharacteristics } from "../molecules";
-import { CharacteristicsTableEditRow } from "./CharacteristicsTableEditRow";
-import { CharacteristicsTableRow } from "./CharacteristicsTableRow";
+import { CharacteristicsTableEditRow } from "../molecules/CharacteristicsTableEditRow";
+import { CharacteristicsTableRow } from "../molecules/CharacteristicsTableRow";
+import { Operation } from "../../../types/Operation";
 
 export interface IndexedCharacteristic {
   index: number | undefined;
@@ -38,21 +39,34 @@ export interface IndexedCharacteristic {
 }
 
 interface CharacteristicsTableProps {
-  isEditActive: boolean;
-  setEditActive: (active: boolean) => void;
+  activeOperation: Operation;
+  setActiveOperation: (operation: Operation) => void;
   characteristics: IndexedCharacteristic[];
   onRowClick: (index: number) => void;
   onRowDelete: (index: number) => void;
   onAddCharacteristic: () => void;
   validateCharacteristicName: (index: number | undefined, name: string | undefined) => boolean;
-  commitCharacteristicUpdate: (props: IndexedCharacteristic) => void;
+  commit: (
+    index: number | undefined,
+    name: string | undefined,
+    reasonCode: string | undefined,
+    baselineScore: number | undefined
+  ) => void;
 }
 
 export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
-  const { isEditActive, setEditActive, characteristics, onRowClick, onRowDelete, onAddCharacteristic } = props;
+  const { activeOperation, setActiveOperation, characteristics, onRowClick, onRowDelete, onAddCharacteristic } = props;
 
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | undefined>(undefined);
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
+
+  const addCharacteristicRowRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (activeOperation === Operation.CREATE && addCharacteristicRowRef.current) {
+      addCharacteristicRowRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [activeOperation]);
 
   const onSelectDataListItem = (id: string) => {
     if (editItemIndex !== undefined) {
@@ -65,7 +79,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   const onEdit = (index: number | undefined) => {
     setEditItemIndex(index);
-    setEditActive(true);
+    setActiveOperation(Operation.UPDATE);
   };
 
   const onDelete = (index: number | undefined) => {
@@ -84,29 +98,19 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     reasonCode: string | undefined,
     baselineScore: number | undefined
   ) => {
+    //Avoid commits with no change
     let characteristic: Characteristic;
     if (index === undefined) {
       characteristic = { Attribute: [] };
     } else {
       characteristic = characteristics[index].characteristic;
     }
-
-    //Avoid commits with no change
     if (
       characteristic.name !== name ||
       characteristic.baselineScore !== baselineScore ||
       characteristic.reasonCode !== reasonCode
     ) {
-      const _characteristic: Characteristic = Object.assign({}, characteristic, {
-        name: name,
-        baselineScore: baselineScore,
-        reasonCode: reasonCode
-      });
-      const _indexedCharacteristic: IndexedCharacteristic = {
-        index: index,
-        characteristic: _characteristic
-      };
-      props.commitCharacteristicUpdate(_indexedCharacteristic);
+      props.commit(index, name, reasonCode, baselineScore);
     }
 
     onCancel();
@@ -114,7 +118,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   const onCancel = () => {
     setEditItemIndex(undefined);
-    setEditActive(false);
+    setActiveOperation(Operation.NONE);
   };
 
   return (
@@ -174,16 +178,28 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
               );
             } else {
               return (
-                <CharacteristicsTableRow
-                  key={index}
-                  characteristic={ic}
-                  onEdit={() => onEdit(ic.index)}
-                  onDelete={() => onDelete(ic.index)}
-                  isDisabled={!(editItemIndex === undefined || editItemIndex === ic.index) || isEditActive}
-                />
+                <div key={index} ref={addCharacteristicRowRef}>
+                  <CharacteristicsTableRow
+                    characteristic={ic}
+                    onEdit={() => onEdit(ic.index)}
+                    onDelete={() => onDelete(ic.index)}
+                    isDisabled={
+                      !(editItemIndex === undefined || editItemIndex === ic.index) || activeOperation !== Operation.NONE
+                    }
+                  />
+                </div>
               );
             }
           })}
+          {activeOperation === Operation.CREATE && (
+            <CharacteristicsTableEditRow
+              key={undefined}
+              characteristic={{ index: undefined, characteristic: { Attribute: [] } }}
+              validateCharacteristicName={_name => onValidateCharacteristicName(undefined, _name)}
+              onCommit={(_name, _reasonCode, _baselineScore) => onCommit(undefined, _name, _reasonCode, _baselineScore)}
+              onCancel={() => onCancel()}
+            />
+          )}
         </DataList>
       </Form>
       {characteristics.length === 0 && <EmptyStateNoCharacteristics createCharacteristic={onAddCharacteristic} />}

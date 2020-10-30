@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
-export * from "./CorePropertiesTable";
-export * from "./CharacteristicsTable";
-export * from "./CharacteristicPanel";
+export enum Operation {
+  NONE,
+  CREATE,
+  UPDATE
+}

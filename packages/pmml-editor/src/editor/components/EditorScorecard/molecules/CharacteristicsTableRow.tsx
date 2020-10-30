@@ -22,9 +22,9 @@ import {
   DataListItemRow,
   Label
 } from "@patternfly/react-core";
-import "./CharacteristicsTable.scss";
+import "../organisms/CharacteristicsTable.scss";
 import { CharacteristicsTableAction } from "../atoms";
-import { IndexedCharacteristic } from "./CharacteristicsTable";
+import { IndexedCharacteristic } from "../organisms";
 
 interface CharacteristicsTableRowProps {
   characteristic: IndexedCharacteristic;
