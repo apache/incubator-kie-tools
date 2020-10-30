@@ -18,12 +18,13 @@ import { useState } from "react";
 import { Dropdown, DropdownItem, DropdownPosition, KebabToggle } from "@patternfly/react-core";
 
 interface AttributesTableActionProps {
+  disabled: boolean;
   onEdit: () => void;
   onDelete: () => void;
 }
 
 export const AttributesTableAction = (props: AttributesTableActionProps) => {
-  const { onEdit, onDelete } = props;
+  const { disabled, onEdit, onDelete } = props;
 
   const [isOpen, setOpen] = useState(false);
 
@@ -36,20 +37,23 @@ export const AttributesTableAction = (props: AttributesTableActionProps) => {
   };
 
   return (
-    <Dropdown
-      isPlain={true}
-      position={DropdownPosition.right}
-      isOpen={isOpen}
-      onSelect={onSelect}
-      toggle={<KebabToggle onToggle={onToggle} />}
-      dropdownItems={[
-        <DropdownItem key="edit" onClick={e => onEdit()}>
-          Edit
-        </DropdownItem>,
-        <DropdownItem key="delete" onClick={e => onDelete()}>
-          Delete
-        </DropdownItem>
-      ]}
-    />
+    // These sizes are a hack to ensure the Kebab occupies the same space as the commit/cancel icons in CharacteristicsTableEditModeAction
+    <div style={{ width: "48px", height: "24px" }}>
+      <Dropdown
+        isPlain={true}
+        position={DropdownPosition.right}
+        isOpen={isOpen}
+        onSelect={onSelect}
+        toggle={<KebabToggle isDisabled={disabled} onToggle={onToggle} />}
+        dropdownItems={[
+          <DropdownItem key="edit" onClick={e => onEdit()}>
+            Edit
+          </DropdownItem>,
+          <DropdownItem key="delete" onClick={e => onDelete()}>
+            Delete
+          </DropdownItem>
+        ]}
+      />
+    </div>
   );
 };

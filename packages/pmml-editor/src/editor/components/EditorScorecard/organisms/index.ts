@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
-export * from "./CorePropertiesTable";
-export * from "./CharacteristicsTable";
+export * from "./AttributesTable";
 export * from "./CharacteristicPanel";
+export * from "./CharacteristicsTable";
+export * from "./CorePropertiesTable";

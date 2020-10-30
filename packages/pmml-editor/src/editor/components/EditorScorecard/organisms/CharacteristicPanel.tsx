@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useCallback } from "react";
 
 import {
   Button,
@@ -13,21 +14,33 @@ import {
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
 import "./CharacteristicPanel.scss";
-import { CharacteristicAttributesForm } from "../molecules";
+import { AttributesTable } from ".";
 import { IndexedCharacteristic } from "./CharacteristicsTable";
+import { Operation } from "../Operation";
 
 interface CharacteristicPanel {
   characteristic: IndexedCharacteristic | undefined;
 }
 
 interface CharacteristicPanelProps extends CharacteristicPanel {
+  activeOperation: Operation;
+  setActiveOperation: (operation: Operation) => void;
   showCharacteristicPanel: boolean;
   hideCharacteristicPanel: () => void;
-  commit: (props: CharacteristicPanel) => void;
 }
 
 export const CharacteristicPanel = (props: CharacteristicPanelProps) => {
-  const { characteristic, showCharacteristicPanel, hideCharacteristicPanel } = props;
+  const {
+    characteristic,
+    activeOperation,
+    setActiveOperation,
+    showCharacteristicPanel,
+    hideCharacteristicPanel
+  } = props;
+
+  const onAddAttribute = useCallback(() => {
+    setActiveOperation(Operation.CREATE_ATTRIBUTE);
+  }, [characteristic]);
 
   return (
     <div className={`side-panel side-panel--from-right ${showCharacteristicPanel ? "side-panel--is-visible" : ""}`}>
@@ -61,11 +74,23 @@ export const CharacteristicPanel = (props: CharacteristicPanelProps) => {
               </StackItem>
               <StackItem>
                 <PageSection variant="light">
-                  <CharacteristicAttributesForm
+                  <Button
+                    id="add-attribute-button"
+                    data-testid="characteristic-panel__add-attribute"
+                    variant="primary"
+                    onClick={e => onAddAttribute()}
+                    isDisabled={activeOperation !== Operation.NONE}
+                  >
+                    Add Attribute
+                  </Button>
+                  <AttributesTable
                     index={characteristic?.index}
+                    activeOperation={activeOperation}
+                    setActiveOperation={setActiveOperation}
                     attributes={characteristic?.characteristic.Attribute ?? []}
                     onAddAttribute={() => window.alert("Add Attribute")}
                     onRowDelete={index => window.alert("Delete Attribute")}
+                    commit={index => null}
                   />
                 </PageSection>
               </StackItem>

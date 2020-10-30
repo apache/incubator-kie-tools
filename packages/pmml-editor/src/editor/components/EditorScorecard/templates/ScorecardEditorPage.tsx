@@ -24,7 +24,7 @@ import { Actions } from "../../../reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { CharacteristicsToolbar } from "../molecules";
 import "./ScorecardEditorPage.scss";
-import { Operation } from "../../../types/Operation";
+import { Operation } from "../Operation";
 
 interface ScorecardEditorPageProps {
   path: string;
@@ -49,7 +49,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   });
 
   const onAddCharacteristic = useCallback(() => {
-    setActiveOperation(Operation.CREATE);
+    setActiveOperation(Operation.CREATE_CHARACTERISTIC);
   }, [characteristics]);
 
   const selectCharacteristic = useCallback(
@@ -102,32 +102,10 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     <div data-testid="editor-page" className={"editor"}>
       <CharacteristicPanel
         characteristic={selectedCharacteristic}
+        activeOperation={activeOperation}
+        setActiveOperation={setActiveOperation}
         showCharacteristicPanel={showCharacteristicPanel}
         hideCharacteristicPanel={hideCharacteristicPanel}
-        commit={_props => {
-          if (_props.characteristic?.index === undefined) {
-            dispatch({
-              type: Actions.Scorecard_AddCharacteristic,
-              payload: {
-                modelIndex: props.modelIndex,
-                name: _props.characteristic?.characteristic.name,
-                reasonCode: _props.characteristic?.characteristic.reasonCode,
-                baselineScore: _props.characteristic?.characteristic.baselineScore
-              }
-            });
-          } else {
-            dispatch({
-              type: Actions.Scorecard_UpdateCharacteristic,
-              payload: {
-                modelIndex: props.modelIndex,
-                characteristicIndex: _props.characteristic?.index,
-                name: _props.characteristic?.characteristic.name,
-                reasonCode: _props.characteristic?.characteristic.reasonCode,
-                baselineScore: _props.characteristic?.characteristic.baselineScore
-              }
-            });
-          }
-        }}
       />
 
       <PageSection variant={PageSectionVariants.light} isFilled={false}>

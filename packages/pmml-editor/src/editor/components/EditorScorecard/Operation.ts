@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-export * from "./AttributesTableRow";
-export * from "./AttributesTableEditRow";
-export * from "./CharacteristicsToolbar";
-export * from "./CharacteristicsTableRow";
-export * from "./CharacteristicsTableEditRow";
-export * from "./EmptyStateNoAttributes";
-export * from "./EmptyStateNoCharacteristics";
+export enum Operation {
+  NONE,
+  CREATE_ATTRIBUTE,
+  CREATE_CHARACTERISTIC,
+  UPDATE
+}

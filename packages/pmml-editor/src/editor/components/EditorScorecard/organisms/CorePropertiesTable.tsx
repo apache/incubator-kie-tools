@@ -34,7 +34,7 @@ import {
 import { ExclamationCircleIcon, PencilAltIcon } from "@patternfly/react-icons";
 import "./CorePropertiesTable.scss";
 import { ValidatedType } from "../../../types";
-import { Operation } from "../../../types/Operation";
+import { Operation } from "../Operation";
 
 interface CoreProperties {
   isScorable: boolean;

@@ -29,7 +29,7 @@ import {
   ToolbarItem
 } from "@patternfly/react-core";
 import { SearchIcon } from "@patternfly/react-icons";
-import { Operation } from "../../../types/Operation";
+import { Operation } from "../Operation";
 
 interface CharacteristicsToolbarProps {
   activeOperation: Operation;
@@ -44,7 +44,7 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
   const { onFilter, onAddCharacteristic } = props;
 
   return (
-    <Toolbar id="landing-characteristics-toolbar" data-testid="characteristics-toolbar">
+    <Toolbar id="characteristics-toolbar" data-testid="characteristics-toolbar">
       <ToolbarContent>
         <Split hasGutter={true} style={{ width: "100%" }}>
           <SplitItem>

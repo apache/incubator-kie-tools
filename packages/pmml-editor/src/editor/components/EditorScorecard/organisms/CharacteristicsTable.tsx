@@ -28,10 +28,8 @@ import {
 } from "@patternfly/react-core";
 import { TrashIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTable.scss";
-import { EmptyStateNoCharacteristics } from "../molecules";
-import { CharacteristicsTableEditRow } from "../molecules/CharacteristicsTableEditRow";
-import { CharacteristicsTableRow } from "../molecules/CharacteristicsTableRow";
-import { Operation } from "../../../types/Operation";
+import { CharacteristicsTableEditRow, CharacteristicsTableRow, EmptyStateNoCharacteristics } from "../molecules";
+import { Operation } from "../Operation";
 
 export interface IndexedCharacteristic {
   index: number | undefined;
@@ -63,7 +61,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   const addCharacteristicRowRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (activeOperation === Operation.CREATE && addCharacteristicRowRef.current) {
+    if (activeOperation === Operation.CREATE_CHARACTERISTIC && addCharacteristicRowRef.current) {
       addCharacteristicRowRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [activeOperation]);
@@ -178,27 +176,29 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
               );
             } else {
               return (
-                <div key={index} ref={addCharacteristicRowRef}>
-                  <CharacteristicsTableRow
-                    characteristic={ic}
-                    onEdit={() => onEdit(ic.index)}
-                    onDelete={() => onDelete(ic.index)}
-                    isDisabled={
-                      !(editItemIndex === undefined || editItemIndex === ic.index) || activeOperation !== Operation.NONE
-                    }
-                  />
-                </div>
+                <CharacteristicsTableRow
+                  key={ic.index}
+                  characteristic={ic}
+                  onEdit={() => onEdit(ic.index)}
+                  onDelete={() => onDelete(ic.index)}
+                  isDisabled={
+                    !(editItemIndex === undefined || editItemIndex === ic.index) || activeOperation !== Operation.NONE
+                  }
+                />
               );
             }
           })}
-          {activeOperation === Operation.CREATE && (
-            <CharacteristicsTableEditRow
-              key={undefined}
-              characteristic={{ index: undefined, characteristic: { Attribute: [] } }}
-              validateCharacteristicName={_name => onValidateCharacteristicName(undefined, _name)}
-              onCommit={(_name, _reasonCode, _baselineScore) => onCommit(undefined, _name, _reasonCode, _baselineScore)}
-              onCancel={() => onCancel()}
-            />
+          {activeOperation === Operation.CREATE_CHARACTERISTIC && (
+            <div key={undefined} ref={addCharacteristicRowRef}>
+              <CharacteristicsTableEditRow
+                characteristic={{ index: undefined, characteristic: { Attribute: [] } }}
+                validateCharacteristicName={_name => onValidateCharacteristicName(undefined, _name)}
+                onCommit={(_name, _reasonCode, _baselineScore) =>
+                  onCommit(undefined, _name, _reasonCode, _baselineScore)
+                }
+                onCancel={() => onCancel()}
+              />
+            </div>
           )}
         </DataList>
       </Form>

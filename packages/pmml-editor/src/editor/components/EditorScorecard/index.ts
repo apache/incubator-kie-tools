@@ -13,32 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@import "~@patternfly/patternfly/patternfly.css";
 
-.attributes {
-
-  &__header {
-
-    border-top: none;
-    font-weight: bold;
-    outline: none;
-
-    &__row {
-      border-bottom: none;
-      height: 64px;
-    }
-
-    &__text {
-      padding-right: var(--pf-global--spacer--sm);
-    }
-
-    &__icon {
-      color: var(--pf-global--info-color--100);
-    }
-  }
-
-  &__list-item {
-    outline: none;
-  }
-
-}
+export * from "./Operation";

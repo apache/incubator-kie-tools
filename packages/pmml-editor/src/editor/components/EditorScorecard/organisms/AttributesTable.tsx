@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Button,
   DataList,
@@ -27,29 +27,72 @@ import {
   TooltipPosition
 } from "@patternfly/react-core";
 import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
-import { EmptyStateNoAttributes } from ".";
-import "./CharacteristicAttributesForm.scss";
+import { AttributesTableEditRow, AttributesTableRow, EmptyStateNoAttributes } from "../molecules";
+import "./AttributesTable.scss";
 
 import { InfoCircleIcon, TrashIcon } from "@patternfly/react-icons";
-import { AttributesTableAction } from "../atoms";
+import { Operation } from "../Operation";
 
-interface CharacteristicAttributesFormProps {
+interface AttributesTableProps {
   index: number | undefined;
+  activeOperation: Operation;
+  setActiveOperation: (operation: Operation) => void;
   attributes: Attribute[];
   onRowDelete: (index: number) => void;
   onAddAttribute: () => void;
+  commit: (index: number | undefined) => void;
 }
 
-export const CharacteristicAttributesForm = (props: CharacteristicAttributesFormProps) => {
-  const { attributes, onAddAttribute, onRowDelete } = props;
+export const AttributesTable = (props: AttributesTableProps) => {
+  const { activeOperation, setActiveOperation, attributes, onRowDelete, onAddAttribute } = props;
 
-  const onDeleteAttribute = useCallback(
-    (event, index) => {
-      event.stopPropagation();
+  const [selectedItemIndex, setSelectedItemIndex] = useState<number | undefined>(undefined);
+  const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
+
+  const addAttributeRowRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (activeOperation === Operation.CREATE_ATTRIBUTE && addAttributeRowRef.current) {
+      addAttributeRowRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [activeOperation]);
+
+  const onEdit = (index: number | undefined) => {
+    setEditItemIndex(index);
+    setActiveOperation(Operation.UPDATE);
+  };
+
+  const onDelete = (index: number | undefined) => {
+    if (index !== undefined) {
       onRowDelete(index);
-    },
-    [attributes]
-  );
+    }
+  };
+
+  const onCommit = (
+    index: number | undefined,
+    text: string | undefined,
+    partialScore: number | undefined,
+    reasonCode: string | undefined
+  ) => {
+    //Avoid commits with no change
+    let attribute: Attribute;
+    if (index === undefined) {
+      attribute = {};
+    } else {
+      attribute = attributes[index];
+    }
+    if (attribute.partialScore !== partialScore || attribute.reasonCode !== reasonCode) {
+      //TODO {manstis} Commit changes!
+      props.commit(index);
+    }
+
+    onCancel();
+  };
+
+  const onCancel = () => {
+    setEditItemIndex(undefined);
+    setActiveOperation(Operation.NONE);
+  };
 
   return (
     <div>
@@ -104,40 +147,40 @@ export const CharacteristicAttributesForm = (props: CharacteristicAttributesForm
       </DataList>
       <DataList aria-label="attributes list">
         {attributes.map((attribute, index) => {
-          return (
-            <DataListItem
-              key={index}
-              id={index.toString()}
-              className="attributes__list-item"
-              aria-labelledby={"attribute-" + index}
-            >
-              <DataListItemRow>
-                <DataListItemCells
-                  dataListCells={[
-                    <DataListCell key="0" width={4}>
-                      <div>{JSON.stringify(attribute.predicate, undefined, 2)}</div>
-                    </DataListCell>,
-                    <DataListCell key="1" width={2}>
-                      <div>{attribute.partialScore}</div>
-                    </DataListCell>,
-                    <DataListCell key="2" width={2}>
-                      <div>{attribute.reasonCode}</div>
-                    </DataListCell>,
-                    <DataListAction
-                      id="delete-attribute"
-                      aria-label="delete"
-                      aria-labelledby="delete-attribute"
-                      key="4"
-                      width={1}
-                    >
-                      <AttributesTableAction onEdit={() => null} onDelete={() => onRowDelete(index)} />
-                    </DataListAction>
-                  ]}
-                />
-              </DataListItemRow>
-            </DataListItem>
-          );
+          if (editItemIndex === index) {
+            return (
+              <AttributesTableEditRow
+                key={index}
+                index={index}
+                attribute={attribute}
+                onCommit={(_text, _partialScore, _reasonCode) => onCommit(index, _text, _partialScore, _reasonCode)}
+                onCancel={() => onCancel()}
+              />
+            );
+          } else {
+            return (
+              <AttributesTableRow
+                index={index}
+                attribute={attribute}
+                onEdit={() => onEdit(index)}
+                onDelete={() => onDelete(index)}
+                isDisabled={
+                  !(editItemIndex === undefined || editItemIndex === index) || activeOperation !== Operation.NONE
+                }
+              />
+            );
+          }
         })}
+        {activeOperation === Operation.CREATE_ATTRIBUTE && (
+          <div key={undefined} ref={addAttributeRowRef}>
+            <AttributesTableEditRow
+              index={undefined}
+              attribute={{}}
+              onCommit={(_text, _partialScore, _reasonCode) => onCommit(undefined, _text, _partialScore, _reasonCode)}
+              onCancel={() => onCancel()}
+            />
+          </div>
+        )}
       </DataList>
       {attributes.length === 0 && <EmptyStateNoAttributes createAttribute={onAddAttribute} />}
     </div>
