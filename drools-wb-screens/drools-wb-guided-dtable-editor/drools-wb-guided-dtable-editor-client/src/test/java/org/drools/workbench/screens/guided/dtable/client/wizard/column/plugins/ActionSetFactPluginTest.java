@@ -56,6 +56,7 @@ import org.kie.soup.project.datamodel.oracle.FieldAccessorsAndMutators;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.EventSourceMock;
@@ -165,8 +166,8 @@ public class ActionSetFactPluginTest {
     @Test
     public void testGenerateColumnWhenColumnIsNotNewAndVetoed() throws Exception {
         doReturn(false).when(plugin).isNewColumn();
-        doThrow(VetoException.class).when(presenter).updateColumn(any(ActionCol52.class),
-                                                                  any(ActionCol52.class));
+        doThrow(VetoException.class).when(presenter).updateColumn(Mockito.<ActionCol52>any(),
+                                                                  Mockito.<ActionCol52>any());
 
         assertFalse(plugin.generateColumn());
 

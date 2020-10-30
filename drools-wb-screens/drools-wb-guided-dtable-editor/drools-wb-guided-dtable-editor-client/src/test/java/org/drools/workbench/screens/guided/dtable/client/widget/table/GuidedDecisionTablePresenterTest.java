@@ -70,7 +70,6 @@ import org.kie.workbench.common.widgets.client.search.common.SearchPerformedEven
 import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.UpdatedLockStatusEvent;
@@ -226,7 +225,7 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
         verify(renderer,
                never()).clearHighlights();
         verify(renderer,
-               times(1)).highlightRows(any(Severity.class),
+               times(1)).highlightRows(any(),
                                        any(Set.class));
         verify(view,
                times(1)).draw();
@@ -790,8 +789,8 @@ public class GuidedDecisionTablePresenterTest extends BaseGuidedDecisionTablePre
 
         final ParameterizedCommand<Collection<String>> parentRuleNamesCommand = mock(ParameterizedCommand.class);
 
-        when(ruleNameService.getRuleNames(any(ObservablePath.class),
-                                          any(String.class))).thenReturn(parentRuleNames);
+        when(ruleNameService.getRuleNames(any(),
+                                          any())).thenReturn(parentRuleNames);
 
         dtPresenter.getPackageParentRuleNames(parentRuleNamesCommand);
 

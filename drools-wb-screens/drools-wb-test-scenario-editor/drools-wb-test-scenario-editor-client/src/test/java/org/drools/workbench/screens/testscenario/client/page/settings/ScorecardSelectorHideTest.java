@@ -17,11 +17,11 @@ package org.drools.workbench.screens.testscenario.client.page.settings;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.refactoring.service.ScoreCardServiceLoader;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.ResourceAction;
@@ -51,9 +51,9 @@ public class ScorecardSelectorHideTest {
 
     @Test
     public void show() {
-        doReturn(false).when(authorizationManager).authorize(any(ResourceRef.class),
+        doReturn(false).when(authorizationManager).authorize(Mockito.<ResourceRef>any(),
                                                              eq(ResourceAction.READ),
-                                                             any(User.class));
+                                                             any());
         new ScorecardSelector(new CallerMock<>(scoreCardServiceLoader),
                               authorizationManager,
                               sessionInfo,
@@ -63,9 +63,9 @@ public class ScorecardSelectorHideTest {
 
     @Test
     public void hide() {
-        doReturn(true).when(authorizationManager).authorize(any(ResourceRef.class),
+        doReturn(true).when(authorizationManager).authorize(Mockito.<ResourceRef>any(),
                                                             eq(ResourceAction.READ),
-                                                            any(User.class));
+                                                            any());
         new ScorecardSelector(new CallerMock<>(scoreCardServiceLoader),
                               authorizationManager,
                               sessionInfo,

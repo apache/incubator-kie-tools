@@ -64,6 +64,7 @@ import org.kie.workbench.common.workbench.client.docks.AuthoringWorkbenchDocks;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.ObservablePath.OnConcurrentUpdateEvent;
 import org.uberfire.backend.vfs.Path;
@@ -1457,7 +1458,7 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         final GuidedDecisionTableGraphEditorPresenter presenter = makePresenter();
 
         doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addPathSupplier(any());
-        doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addValidator(any(Validator.class));
+        doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addValidator(Mockito.<Validator>any());
         doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addValidator(any(Supplier.class));
         doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addRenameService(any());
         doReturn(saveAndRenameCommandBuilder).when(saveAndRenameCommandBuilder).addMetadataSupplier(any());

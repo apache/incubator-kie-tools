@@ -80,7 +80,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
@@ -843,7 +842,7 @@ public class ColumnsPagePresenterTest {
 
         verify(ruleSelector).addValueChangeHandler(valueChangeHandlerCaptor.capture());
         valueChangeHandlerCaptor.getValue().onValueChange(mock(ValueChangeEvent.class));
-        verify(dtPresenter).setParentRuleName(anyString());
+        verify(dtPresenter).setParentRuleName(any());
         verify(presenter).setupRuleSelector(eq(dtPresenter));
 
         verify(dtPresenter).getPackageParentRuleNames(commandCaptor.capture());

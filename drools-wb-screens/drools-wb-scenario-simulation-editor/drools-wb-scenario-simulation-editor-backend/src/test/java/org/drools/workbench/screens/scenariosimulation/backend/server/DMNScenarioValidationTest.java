@@ -217,7 +217,6 @@ public class DMNScenarioValidationTest {
         } else {
             decisionNodeMock = mock(DecisionNode.class);
             mapOfMockDecisions.put(decisionName, decisionNodeMock);
-            when(decisionNodeMock.getName()).thenReturn(decisionName);
             DMNType initDMNType = initDMNType(typeName);
             when(decisionNodeMock.getResultType()).thenReturn(initDMNType);
         }
@@ -235,8 +234,6 @@ public class DMNScenarioValidationTest {
         when(dmnTypeMock.getFields()).thenReturn(new HashMap<>());
         String type = createDMNTypeName(name);
         when(dmnTypeMock.getName()).thenReturn(type);
-        when(dmnTypeMock.isComposite())
-                .thenAnswer(invocation -> ((DMNType) invocation.getMock()).getFields().size() != 0);
         return dmnTypeMock;
     }
 

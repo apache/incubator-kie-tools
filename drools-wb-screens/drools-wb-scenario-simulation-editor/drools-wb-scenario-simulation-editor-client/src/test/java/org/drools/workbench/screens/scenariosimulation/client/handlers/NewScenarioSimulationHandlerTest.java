@@ -30,6 +30,7 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -156,8 +157,8 @@ public class NewScenarioSimulationHandlerTest extends AbstractNewScenarioTest {
         verify(busyIndicatorViewMock).showBusyIndicator("Saving");
         verify(busyIndicatorViewMock).hideBusyIndicator();
         verify(notificationEventMock).fire(any(NotificationEvent.class));
-        verify(newResourceSuccessEventMock).fire(any(NewResourcePresenter.class));
-        verify(placeManagerMock).goTo(any(Path.class));
+        verify(newResourceSuccessEventMock).fire(any());
+        verify(placeManagerMock).goTo(Mockito.<Path>any());
     }
 
     @Test

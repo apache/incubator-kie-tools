@@ -36,11 +36,9 @@ import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.project.datamodel.oracle.DataType;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.mocks.CallerMock;
 
@@ -86,10 +84,8 @@ public class ColumnDefinitionFactoryTest {
 
         when(dtPresenter.getModel()).thenReturn(model);
         when(dtPresenter.getDataModelOracle()).thenReturn(dmo);
-        when(service.toSource(any(Path.class),
+        when(service.toSource(any(),
                               any(GuidedDecisionTable52.class))).thenReturn("source");
-        when(dmo.getFieldType(any(String.class),
-                              any(String.class))).thenReturn(DataType.TYPE_STRING);
 
         final Instance<ColumnDefinitionBuilder> buildersInstance = makeBuildersInstance();
         this.columnDefinitionFactory = new ColumnDefinitionFactory(buildersInstance);

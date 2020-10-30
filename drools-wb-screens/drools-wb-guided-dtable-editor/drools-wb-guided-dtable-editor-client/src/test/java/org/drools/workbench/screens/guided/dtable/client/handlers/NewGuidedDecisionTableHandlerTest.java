@@ -33,7 +33,6 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
@@ -160,7 +159,7 @@ public class NewGuidedDecisionTableHandlerTest {
                                     fileNameCaptor.capture(),
                                     eq(TableFormat.EXTENDED_ENTRY),
                                     eq(GuidedDecisionTable52.HitPolicy.FIRST_HIT),
-                                    any(AsyncPackageDataModelOracle.class),
+                                    any(),
                                     any(NewGuidedDecisionTableWizard.GuidedDecisionTableWizardHandler.class));
     }
 

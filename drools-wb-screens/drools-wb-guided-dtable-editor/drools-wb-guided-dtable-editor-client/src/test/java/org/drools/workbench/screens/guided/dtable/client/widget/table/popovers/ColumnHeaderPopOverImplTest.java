@@ -46,7 +46,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -147,7 +146,7 @@ public class ColumnHeaderPopOverImplTest {
         uiModel.appendColumn( uiColumn3 );
 
         serviceCaller = new CallerMock<>( service );
-        when( service.toSource( any( Path.class ),
+        when( service.toSource( any(),
                                 any( GuidedDecisionTable52.class ) ) ).thenReturn( "source" );
 
         final Instance<ColumnDefinitionBuilder> buildersInstance = makeBuildersInstance();
@@ -350,7 +349,7 @@ public class ColumnHeaderPopOverImplTest {
                                     }
                                   );
         verify( service,
-                times( 1 ) ).toSource( any( Path.class ),
+                times( 1 ) ).toSource( any(),
                                        any( GuidedDecisionTable52.class ) );
     }
 

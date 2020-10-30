@@ -42,7 +42,6 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doReturn;
@@ -108,7 +107,7 @@ public class ScenarioSimulationServiceImplLoadContentTest {
         assertNotNull(scenarioSimulationModelContent.getOverview());
 
         verify(serviceSpy, times(1)).constructContent(eq(path), isA(Overview.class));
-        verify(dmnTypeServiceMock, times(1)).initializeNameAndNamespace(isA(Settings.class), eq(path), anyString());
+        verify(dmnTypeServiceMock, times(1)).initializeNameAndNamespace(isA(Settings.class), eq(path), any());
         verify(resourceOpenedEvent).fire(any(ResourceOpenedEvent.class));
     }
 }

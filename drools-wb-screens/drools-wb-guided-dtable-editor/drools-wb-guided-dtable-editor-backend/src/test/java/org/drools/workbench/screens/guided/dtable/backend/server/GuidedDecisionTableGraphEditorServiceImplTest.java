@@ -53,7 +53,6 @@ import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.Paths;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.rpc.SessionInfo;
@@ -173,7 +172,7 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
         verify(ioService,
                times(1)).write(any(org.uberfire.java.nio.file.Path.class),
                                any(String.class),
-                               any(CommentedOption.class));
+                               any());
 
         assertTrue(p.toURI().contains("src/main/resources/mypackage/filename." + dtGraphResourceType.getSuffix()));
     }
@@ -227,7 +226,7 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
                times(1)).write(any(org.uberfire.java.nio.file.Path.class),
                                any(String.class),
                                any(Map.class),
-                               any(CommentedOption.class));
+                               any());
     }
 
     @Test
@@ -297,7 +296,6 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
     @Test
     public void testListDecisionTablesInPackage() {
         final Path path = mock(Path.class);
-        when(path.toURI()).thenReturn("file://project/src/main/resources/dtable1.gdst");
 
         resolvedPaths.add(makeNioPath("file://project/src/main/resources/dtable1.gdst"));
         resolvedPaths.add(makeNioPath("file://project/src/main/resources/dtable2.gdst"));
@@ -320,7 +318,6 @@ public class GuidedDecisionTableGraphEditorServiceImplTest {
     @Test
     public void testListDecisionTablesInPackageExcludesDotFiles() {
         final Path path = mock(Path.class);
-        when(path.toURI()).thenReturn("file://project/src/main/resources/dtable1.gdst");
 
         resolvedPaths.add(makeNioPath("file://project/src/main/resources/dtable1.gdst"));
         resolvedPaths.add(makeNioPath("file://project/src/main/resources/.dtable1.gdst"));

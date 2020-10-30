@@ -23,13 +23,8 @@ import java.util.Set;
 
 import javax.enterprise.event.Event;
 
-import com.ait.lienzo.client.core.event.NodeMouseMoveHandler;
-import com.ait.lienzo.client.core.event.NodeMouseOutHandler;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.event.dom.client.ContextMenuHandler;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
@@ -126,11 +121,11 @@ public class GuidedDecisionTableModellerPresenterTest {
 
     @Before
     public void setup() {
-        when(gridLayer.addNodeMouseMoveHandler(any(NodeMouseMoveHandler.class))).thenReturn(mock(HandlerRegistration.class));
-        when(gridLayer.addNodeMouseOutHandler(any(NodeMouseOutHandler.class))).thenReturn(mock(HandlerRegistration.class));
-        when(view.addKeyDownHandler(any(KeyDownHandler.class))).thenReturn(mock(HandlerRegistration.class));
-        when(view.addContextMenuHandler(any(ContextMenuHandler.class))).thenReturn(mock(HandlerRegistration.class));
-        when(view.addMouseDownHandler(any(MouseDownHandler.class))).thenReturn(mock(HandlerRegistration.class));
+        when(gridLayer.addNodeMouseMoveHandler(any())).thenReturn(mock(HandlerRegistration.class));
+        when(gridLayer.addNodeMouseOutHandler(any())).thenReturn(mock(HandlerRegistration.class));
+        when(view.addKeyDownHandler(any())).thenReturn(mock(HandlerRegistration.class));
+        when(view.addContextMenuHandler(any())).thenReturn(mock(HandlerRegistration.class));
+        when(view.addMouseDownHandler(any())).thenReturn(mock(HandlerRegistration.class));
         when(view.getGridLayerView()).thenReturn(gridLayer);
         when(view.getBounds()).thenReturn(bounds);
 

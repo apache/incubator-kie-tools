@@ -77,7 +77,6 @@ public class RowContextMenuTest {
         clipboard = new DefaultClipboard();
 
         when(dtPresenter.getView()).thenReturn(dtPresenterView);
-        when(dtPresenter.getModel()).thenReturn(model);
         when(dtPresenter.getAccess()).thenReturn(access);
         when(dtPresenterView.getModel()).thenReturn(uiModel);
 

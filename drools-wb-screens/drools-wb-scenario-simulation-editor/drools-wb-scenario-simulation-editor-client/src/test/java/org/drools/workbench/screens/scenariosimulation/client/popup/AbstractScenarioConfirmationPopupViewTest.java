@@ -33,7 +33,6 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -70,7 +69,7 @@ public abstract class AbstractScenarioConfirmationPopupViewTest extends Abstract
     @Test
     public void init() {
         popupView.init();
-        verify(cancelButtonMock, times(1)).setText(anyString());
+        verify(cancelButtonMock, times(1)).setText(any());
     }
 
     @Test

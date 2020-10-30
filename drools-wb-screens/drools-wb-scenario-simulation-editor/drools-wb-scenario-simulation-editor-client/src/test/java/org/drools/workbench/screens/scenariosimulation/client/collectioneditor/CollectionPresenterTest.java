@@ -208,10 +208,10 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
             }
         });
         instancePropertiesMapLocal.clear();
-        when(listElementPresenterMock.getItemContainer(anyString(), anyMap(), anyMap())).thenReturn(itemElementMock);
-        when(mapElementPresenterMock.getKeyValueContainer(anyString(), anyMap(), anyMap())).thenReturn(itemElementMock);
-        when(listEditingBoxPresenterMock.getEditingBox(anyString(), anyMap(), anyMap())).thenReturn(listEditingBoxMock);
-        when(mapEditingBoxPresenterMock.getEditingBox(anyString(), anyMap(), anyMap())).thenReturn(mapEditingBoxMock);
+        when(listElementPresenterMock.getItemContainer(any(), any(), any())).thenReturn(itemElementMock);
+        when(mapElementPresenterMock.getKeyValueContainer(any(), any(), any())).thenReturn(itemElementMock);
+        when(listEditingBoxPresenterMock.getEditingBox(any(), any(), any())).thenReturn(listEditingBoxMock);
+        when(mapEditingBoxPresenterMock.getEditingBox(any(), any(), any())).thenReturn(mapEditingBoxMock);
     }
 
     @Test

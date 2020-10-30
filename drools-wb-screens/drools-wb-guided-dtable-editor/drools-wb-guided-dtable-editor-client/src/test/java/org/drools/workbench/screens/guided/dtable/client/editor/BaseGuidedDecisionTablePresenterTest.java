@@ -105,6 +105,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
 
 import static org.junit.Assert.fail;
 import static org.kie.workbench.common.services.shared.preferences.ApplicationPreferences.DATE_FORMAT;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
@@ -386,9 +387,9 @@ public abstract class BaseGuidedDecisionTablePresenterTest<P extends BaseGuidedD
         when(modeller.addDecisionTable(eq(path),
                                        eq(placeRequest),
                                        eq(content),
-                                       any(Boolean.class),
-                                       any(Double.class),
-                                       any(Double.class))).thenReturn(dtPresenter);
+                                       anyBoolean(),
+                                       any(),
+                                       any())).thenReturn(dtPresenter);
         when(path.getOriginal()).thenReturn(originalPath);
         when(dtPresenter.getLatestPath()).thenReturn(path);
         when(dtPresenter.getCurrentPath()).thenReturn(path);

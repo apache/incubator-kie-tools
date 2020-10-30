@@ -94,8 +94,8 @@ public class ScenarioWidgetComponentCreatorTest {
         this.ruleNamesServiceCaller = new CallerMock<>(ruleNamesService);
         this.creator = spy(new ScenarioWidgetComponentCreator(ruleNamesServiceCaller));
 
-        when(ruleNamesService.getRuleNames(any(Path.class),
-                                           anyString())).thenReturn(ruleNames);
+        when(ruleNamesService.getRuleNames(any(),
+                                           any())).thenReturn(ruleNames);
         doReturn(button).when(creator).newOkButton();
         doNothing().when(creator).showSelectRuleNameWarning();
         GwtMockito.useProviderForType(HorizontalPanel.class, fakeProvider -> horizontalPanel);

@@ -24,14 +24,11 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryAction
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.project.datamodel.oracle.DataType;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LimitedEntryActionInsertFactCol52DefinitionBuilderTest extends BaseColumnDefinitionBuilderTest {
@@ -66,9 +63,6 @@ public class LimitedEntryActionInsertFactCol52DefinitionBuilderTest extends Base
         aif.setFactField("name");
         aif.setValue(new DTCellValue52("Michael"));
         model.getActionCols().add(aif);
-
-        when(dmo.getFieldType(eq("Person"),
-                              eq("name"))).thenReturn(DataType.TYPE_STRING);
 
         builder.generateDefinition(dtPresenter,
                                    aif,
