@@ -21,7 +21,7 @@ const DataTypesSort = ({ dataTypes, onSort }: DataTypesSortProps) => {
     onSort(newOrder);
   };
 
-  return <SortableList items={state} onSortEnd={onSortEnd} />;
+  return <SortableList items={state} onSortEnd={onSortEnd} lockAxis="y" />;
 };
 
 export default DataTypesSort;

@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
+import { v4 as uuid } from "uuid";
 import {
   ActionGroup,
   Alert,
@@ -9,8 +11,6 @@ import {
   Checkbox,
   Form,
   FormGroup,
-  Grid,
-  GridItem,
   Select,
   SelectOption,
   SelectVariant,
@@ -23,10 +23,10 @@ import {
   TextInput,
   TextVariants
 } from "@patternfly/react-core";
-import { Constraints, DataType } from "../DataDictionaryContainer/DataDictionaryContainer";
-import { useEffect, useState } from "react";
-import "./ConstraintsEdit.scss";
+import ConstraintsEnumEdit from "../ConstraintsEnumEdit/ConstraintsEnumEdit";
+import { Constraints, DataType, EnumConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { Validated } from "../../../types";
+import "./ConstraintsEdit.scss";
 
 interface ConstraintsEditProps {
   dataType: DataType;
@@ -51,15 +51,18 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   };
   const rangeInitialValue = dataType.constraints?.type === "Range" ? dataType.constraints : rangeEmptyValue;
   const [range, setRange] = useState(rangeInitialValue);
-  const [enums, setEnums] = useState("");
-  const [validation, setValidation] = useState<{ form: Validated; fields: { [key: string]: Validated } }>({
+  const [enums, setEnums] = useState(
+    dataType.constraints?.type === "Enumeration" ? dataType.constraints.value : [{ value: "", id: uuid() }]
+  );
+  const [validation, setValidation] = useState<FormValidation>({
     form: "default",
-    fields: { start: "default", end: "default" }
+    fields: { start: "default", end: "default", enums: "default" }
   });
 
   const handleTypeChange = (event: React.MouseEvent | React.ChangeEvent, value: string) => {
     if (value !== constraintType) {
       setConstraintType(value);
+      setValidation({ form: "default", fields: { start: "default", end: "default", enums: "default" } });
     }
     setTypeIsOpen(false);
   };
@@ -87,8 +90,27 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     }
   };
 
-  const handleEnumsChange = (value: string) => {
-    setEnums(value);
+  const handleEnumsChange = (value: string, index: number) => {
+    const updatedEnums = [...enums];
+    updatedEnums[index].value = value;
+    setEnums(updatedEnums);
+  };
+
+  const handleEnumsDelete = (index: number) => {
+    const updatedEnums = [...enums];
+    updatedEnums.splice(index, 1);
+    setEnums(updatedEnums);
+  };
+
+  const handleAddEnum = () => {
+    const updatedEnums = [...enums];
+    updatedEnums.push({ value: "", id: uuid() });
+    setEnums(updatedEnums);
+  };
+
+  const handleEnumSort = (oldIndex: number, newIndex: number) => {
+    const newOrder = reorderArray(enums, oldIndex, newIndex);
+    setEnums(newOrder);
   };
 
   const validateConstraints = () => {
@@ -97,6 +119,10 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     if (constraintType === "Range") {
       isValid.fields.start = range.start.value.trim().length === 0 ? "error" : "success";
       isValid.fields.end = range.end.value.trim().length === 0 ? "error" : "success";
+    }
+    if (constraintType === "Enumeration") {
+      const oneEnum = enums.find(item => item.value.trim().length > 0);
+      isValid.fields.enums = oneEnum === undefined ? "error" : "success";
     }
     for (const fieldsKey in isValid.fields) {
       if (isValid.fields[fieldsKey] === "error") {
@@ -115,8 +141,11 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
           onDelete();
           break;
         case "Range":
-          const data = { ...range, type: "Range" };
-          onAdd(data as Constraints);
+          const rangeData = { ...range, type: "Range" };
+          onAdd(rangeData as Constraints);
+          break;
+        case "Enumeration":
+          onAdd({ type: "Enumeration", value: enums } as Constraints);
           break;
       }
     }
@@ -131,7 +160,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
   const clearConstraints = () => {
     setRange(rangeEmptyValue);
     setConstraintType("");
-    setEnums("");
+    setEnums([]);
   };
 
   return (
@@ -140,40 +169,46 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
         <StackItem>
           <TextContent>
             <Text component={TextVariants.h3}>Constraints for {dataType.name}</Text>
-            <Text component={TextVariants.p}>Select the type of constraint and then fill in the required fields.</Text>
           </TextContent>
         </StackItem>
 
         <StackItem>
           <Form onSubmit={handleSubmit} autoComplete="off" className="constraints-form">
-            <FormGroup fieldId="constraints-type" label="Constraints Type" style={{ width: 200 }}>
-              <Select
-                id="constraints-type"
-                variant={SelectVariant.single}
-                aria-label="Select Constraint Type"
-                onToggle={handleTypeOpening}
-                onSelect={handleTypeChange}
-                selections={constraintType}
-                isOpen={typeIsOpen}
-                placeholderText={"Select a type"}
-              >
-                {constraintsTypes.map((item, index) => (
-                  <SelectOption key={index} value={item.value}>
-                    {item.isPlaceholder ? "Select a type" : item.value}
-                  </SelectOption>
-                ))}
-              </Select>
+            <FormGroup
+              fieldId="constraints-type"
+              label="Constraints Type"
+              helperText="Select the type of constraint and then fill in the required fields."
+            >
+              {/*PF 2020.08 has a bug setting width of a Select*/}
+              <div style={{ width: 300 }}>
+                <Select
+                  id="constraints-type"
+                  variant={SelectVariant.single}
+                  aria-label="Select Constraint Type"
+                  onToggle={handleTypeOpening}
+                  onSelect={handleTypeChange}
+                  selections={constraintType}
+                  isOpen={typeIsOpen}
+                  placeholderText={"Select a type"}
+                >
+                  {constraintsTypes.map((item, index) => (
+                    <SelectOption key={index} value={item.value}>
+                      {item.isPlaceholder ? "Select a type" : item.value}
+                    </SelectOption>
+                  ))}
+                </Select>
+              </div>
             </FormGroup>
-            {validation.form === "error" && (
-              <StackItem>
-                <Alert variant="warning" isInline={true} title="Please check the highlighted fields." />
-              </StackItem>
-            )}
             {constraintType === "Range" && (
               <Card isCompact={true}>
                 <CardTitle>Range Constraint</CardTitle>
                 <CardBody>
                   <Stack hasGutter={true}>
+                    {validation.form === "error" && (
+                      <StackItem>
+                        <Alert variant="danger" isInline={true} title="Please enter both start and end value." />
+                      </StackItem>
+                    )}
                     <StackItem>
                       <TextContent>
                         <Text component={TextVariants.p}>
@@ -187,7 +222,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
                     <StackItem>
                       <Split hasGutter={true}>
                         <SplitItem style={{ width: 320 }}>
-                          <FormGroup label="Start Value*" fieldId="start-value">
+                          <FormGroup label="Start Value" fieldId="start-value" isRequired={true}>
                             <TextInput
                               type="text"
                               id="start-value"
@@ -210,7 +245,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
                           </FormGroup>
                         </SplitItem>
                         <SplitItem style={{ width: 320 }}>
-                          <FormGroup label="End Value*" fieldId="end-value">
+                          <FormGroup label="End Value" fieldId="end-value" isRequired={true}>
                             <TextInput
                               type="text"
                               id="end-value"
@@ -241,20 +276,14 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
             {constraintType === "Enumeration" && (
               <Card>
                 <CardBody>
-                  <Grid>
-                    <GridItem span={8}>
-                      <FormGroup label="Values" fieldId="enum-values">
-                        <TextInput
-                          type="text"
-                          id="enum-values"
-                          name="enum-values"
-                          value={enums}
-                          onChange={handleEnumsChange}
-                          isDisabled={constraintType !== "Enumeration"}
-                        />
-                      </FormGroup>
-                    </GridItem>
-                  </Grid>
+                  <ConstraintsEnumEdit
+                    enumerations={enums}
+                    onChange={handleEnumsChange}
+                    onDelete={handleEnumsDelete}
+                    onAdd={handleAddEnum}
+                    onSort={handleEnumSort}
+                    validation={validation}
+                  />
                 </CardBody>
               </Card>
             )}
@@ -274,3 +303,16 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
 };
 
 export default ConstraintsEdit;
+
+export interface FormValidation {
+  form: Validated;
+  fields: { [key: string]: Validated };
+}
+
+const reorderArray = (list: EnumConstraint[], startIndex: number, endIndex: number) => {
+  const result = [...list];
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};

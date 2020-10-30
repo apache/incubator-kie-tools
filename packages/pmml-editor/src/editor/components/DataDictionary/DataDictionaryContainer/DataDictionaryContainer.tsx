@@ -87,7 +87,7 @@ const DataDictionaryContainer = () => {
         setNewType(false);
         setEditing(dataTypes.length);
       }
-      // not sure about the following. passing around dataType instead of waiting for the dataTypes to update
+      // to be improved. waiting for the dataTypes to update instead of passing around dataType
       setConstraintsEdit(dataType);
       setViewSection("constraints");
     }
@@ -264,4 +264,9 @@ export type Constraints =
         included: false;
       };
     }
-  | { type: "Enumeration"; value: string };
+  | { type: "Enumeration"; value: EnumConstraint[] };
+
+export interface EnumConstraint {
+  value: string;
+  id: string;
+}
