@@ -112,12 +112,12 @@ public class DataSetDefEditorPresenterTest {
         final EditDataSetDef editDataSetDef = mock(EditDataSetDef.class);
         when(editDataSetDef.getDefinition()).thenReturn(dataSetDef);
         when(editDataSetDef.getColumns()).thenReturn(columns);
-        when(dataSetDefVfsServices.load(any(Path.class))).thenReturn(editDataSetDef);
-        when(dataSetDefVfsServices.get(any(Path.class))).thenReturn(dataSetDef);
-        when(workflowFactory.edit(any(DataSetProviderType.class))).thenReturn(editWorkflow);
+        when(dataSetDefVfsServices.load(any())).thenReturn(editDataSetDef);
+        when(dataSetDefVfsServices.get(any())).thenReturn(dataSetDef);
+        when(workflowFactory.edit(any())).thenReturn(editWorkflow);
         when(editWorkflow.getDataSetDef()).thenReturn(dataSetDef);
         when(editWorkflow.getEditor()).thenReturn(dataSetDefEditor);
-        when(editWorkflow.edit(any(DataSetDef.class), any(List.class))).thenReturn(editWorkflow);
+        when(editWorkflow.edit(any(), any())).thenReturn(editWorkflow);
         assertEquals(view.asWidget(), presenter.getWidget());
     }
 
@@ -141,7 +141,7 @@ public class DataSetDefEditorPresenterTest {
     public void testLoadContent() throws Exception {
         presenter.loadContent();
         assertFalse(presenter.isDirty(presenter.getCurrentModelHash()));
-        verify(dataSetDefVfsServices, times(1)).load(any(Path.class));
+        verify(dataSetDefVfsServices, times(1)).load(any());
         verify(changeTitleNotification, times(1)).fire(any(ChangeTitleWidgetEvent.class));
         verify(view, times(1)).hideBusyIndicator();
         verify(view, times(1)).setWidget(editWorkflow);
@@ -151,10 +151,10 @@ public class DataSetDefEditorPresenterTest {
 
     @Test
     public void testLoadContentNullified() throws Exception {
-        when(dataSetDefVfsServices.load(any(Path.class))).thenReturn(null);
+        when(dataSetDefVfsServices.load(any())).thenReturn(null);
         presenter.loadContent();
         verify(dataSetDefVfsServices, times(1)).load(any());
-        verify(errorPopupPresenter, times(1)).showMessage(anyString());
+        verify(errorPopupPresenter, times(1)).showMessage(any());
         verify(view, times(1)).hideBusyIndicator();
         verify(view, times(0)).setWidget(any(IsWidget.class));
     }
@@ -162,10 +162,10 @@ public class DataSetDefEditorPresenterTest {
     @Test
     public void testLoadDefinition() throws Exception {
         final Exception loadContentException = mock(Exception.class);
-        doThrow(loadContentException).when(dataSetDefVfsServices).load(any(Path.class));
+        doThrow(loadContentException).when(dataSetDefVfsServices).load(any());
         presenter.loadContent();
         assertFalse(presenter.isDirty(presenter.getCurrentModelHash()));
-        verify(dataSetDefVfsServices, times(1)).get(any(Path.class));
+        verify(dataSetDefVfsServices, times(1)).get(any());
         verify(view, times(1)).hideBusyIndicator();
         verify(view, times(1)).setWidget(editWorkflow);
         verify(editWorkflow, times(1)).edit(dataSetDef, columns);

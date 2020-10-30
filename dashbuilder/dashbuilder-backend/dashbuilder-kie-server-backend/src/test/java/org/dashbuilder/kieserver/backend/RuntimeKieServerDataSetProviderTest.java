@@ -191,8 +191,6 @@ public class RuntimeKieServerDataSetProviderTest {
         filter.addFilterColumn(testFilter);
         lookup.addOperation(filter);
         
-        when(queryClient.replaceQuery(eq(connectionInfo), any())).thenReturn(definition);
-
         when(queryClient.getQuery(eq(connectionInfo), any())).thenReturn(definition);
         
         kieServerDataSetProvider.lookupDataSet(dataSetDef,
@@ -345,7 +343,6 @@ public class RuntimeKieServerDataSetProviderTest {
         when(dataSetLookup.getRowOffset()).thenReturn(1);
         when(dataSetLookup.getDataSetUUID()).thenReturn("");
         
-        when(queryClient.replaceQuery(eq(connectionInfo), any())).thenReturn(definition);
         when(queryClient.getQuery(eq(connectionInfo), any())).thenReturn(definition);
 
         when(kieServerConnectionInfoProvider.verifiedConnectionInfo(dataSetDef)).thenReturn(connectionInfo);
@@ -369,14 +366,13 @@ public class RuntimeKieServerDataSetProviderTest {
 
 
         when(dataSetDef.getColumns()).thenReturn(null, new ArrayList<>());
-        when(dataSetDef.getServerTemplateId()).thenReturn(SERVER_TEMPLATE);
-        when(queryClient.getQuery(eq(connectionInfo), anyString())).thenReturn(definition);
+        when(queryClient.getQuery(eq(connectionInfo), any())).thenReturn(definition);
 
         kieServerDataSetProvider.getDataSetMetadata(dataSetDef);
 
         verify(dataSetDef, times(1)).addColumn(eq("test"), eq(ColumnType.NUMBER));
 
-        verify(queryClient).getQuery(eq(connectionInfo), anyString());
+        verify(queryClient).getQuery(eq(connectionInfo), any());
     }
 
     @Test
@@ -393,7 +389,6 @@ public class RuntimeKieServerDataSetProviderTest {
         DataSetLookup dataSetLookup = Mockito.mock(DataSetLookup.class);
         when(dataSetDef.getDataSetFilter()).thenReturn(Mockito.mock(DataSetFilter.class));
         when(dataSetDef.getServerTemplateId()).thenReturn("servereTemplateId");
-        when(dataSetLookup.cloneInstance()).thenReturn(dataSetLookup);
 
         ConsoleDataSetLookup adopted = kieServerDataSetProvider.adoptLookup(dataSetDef, dataSetLookup);
 

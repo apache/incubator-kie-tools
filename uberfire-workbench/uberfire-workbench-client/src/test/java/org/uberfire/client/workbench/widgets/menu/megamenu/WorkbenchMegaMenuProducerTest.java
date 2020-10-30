@@ -205,9 +205,9 @@ public class WorkbenchMegaMenuProducerTest {
     }
 
     private String extractContainingClassName(final String className) {
-        if (className.contains("$$")) {
+        if (className.contains("$")) {
             return className.substring(0,
-                                       className.indexOf("$$"));
+                                       className.indexOf("$"));
         }
         return className;
     }

@@ -36,7 +36,7 @@ import org.uberfire.client.workbench.panels.DockingWorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.workbench.model.PartDefinition;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class SimpleNoExpandWorkbenchPanelPresenterTest extends AbstractDockingWorkbenchPanelPresenterTest {
 
     

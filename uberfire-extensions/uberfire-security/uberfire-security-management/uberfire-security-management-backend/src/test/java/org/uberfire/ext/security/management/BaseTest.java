@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 /**
  * <p>Base test class for users/groups/roles manager based services.</p>
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public abstract class BaseTest {
 
     @Mock

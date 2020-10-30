@@ -88,11 +88,11 @@ public class SystemConfigProducerTest {
         when(bm.getBeans("configIO")).thenReturn(configIOBeans);
         when(bm.getReference(eq(ioServiceBean),
                              eq(IOService.class),
-                             any(CreationalContext.class)))
+                             any()))
                 .thenReturn(ioServiceMock);
 
-        when(ioServiceMock.newFileSystem(any(URI.class),
-                                         any(Map.class)))
+        when(ioServiceMock.newFileSystem(any(),
+                                         any()))
                 .thenReturn(fs);
 
         final Bean fileSystemBean = producer.createFileSystemBean(bm,

@@ -112,14 +112,14 @@ public class UserCreationWorkflowTest extends AbstractSecurityManagementTest {
         groups.add(group1);
         when(user.getIdentifier()).thenReturn("user1");
         when(user.getGroups()).thenReturn(groups);
-        when(view.setWidget(any(IsWidget.class))).thenReturn(view);
+        when(view.setWidget(any())).thenReturn(view);
         when(view.clearNotifications()).thenReturn(view);
-        when(view.setCallback(any(EntityWorkflowView.Callback.class))).thenReturn(view);
+        when(view.setCallback(any())).thenReturn(view);
         when(view.setCancelButtonVisible(anyBoolean())).thenReturn(view);
         when(view.setSaveButtonEnabled(anyBoolean())).thenReturn(view);
         when(view.setSaveButtonVisible(anyBoolean())).thenReturn(view);
-        when(view.setSaveButtonText(anyString())).thenReturn(view);
-        when(view.showNotification(anyString())).thenReturn(view);
+        when(view.setSaveButtonText(any())).thenReturn(view);
+        when(view.showNotification(any())).thenReturn(view);
         when(userEditor.setEditButtonVisible(anyBoolean())).thenReturn(userEditor);
         when(userEditor.setChangePasswordButtonVisible(anyBoolean())).thenReturn(userEditor);
         when(userEditor.setDeleteButtonVisible(anyBoolean())).thenReturn(userEditor);
@@ -159,7 +159,7 @@ public class UserCreationWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(1)).setSaveButtonText(anyString());
         verify(view,
-               times(1)).setWidget(any(IsWidget.class));
+               times(1)).setWidget(any());
         verify(view,
                times(1)).setSaveButtonVisible(true);
         verify(view,
@@ -195,7 +195,7 @@ public class UserCreationWorkflowTest extends AbstractSecurityManagementTest {
         verify(view,
                times(2)).setSaveButtonText(anyString());
         verify(view,
-               times(1)).setWidget(any(IsWidget.class));
+               times(1)).setWidget(any());
         verify(view,
                times(3)).setSaveButtonVisible(true);
         verify(view,

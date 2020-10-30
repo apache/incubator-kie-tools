@@ -25,17 +25,19 @@ public class MultipleLiveSearchSelectionHandlerTest {
 
     private String SELECTED_ITEM_TEXT = "selectedItem";
 
-    @GwtMock
-    private CommonConstants constants;
 
     @Mock
     private Command callback;
 
     @Spy
-    private MultipleLiveSearchSelectionHandler<String> handler = new MultipleLiveSearchSelectionHandler<>();
+    private MultipleLiveSearchSelectionHandler<String> handler;
+
+    @GwtMock
+    private CommonConstants constants;
 
     @Before
     public void init() {
+        System.out.println(CommonConstants.INSTANCE.liveSearchElementsSelected(2));
         handler.setLiveSearchSelectionCallback(callback);
     }
 

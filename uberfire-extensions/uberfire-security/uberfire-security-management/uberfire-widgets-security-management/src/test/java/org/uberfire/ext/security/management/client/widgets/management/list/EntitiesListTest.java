@@ -40,7 +40,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class EntitiesListTest extends AbstractSecurityManagementTest {
 
     protected EntitiesList<User> presenter;

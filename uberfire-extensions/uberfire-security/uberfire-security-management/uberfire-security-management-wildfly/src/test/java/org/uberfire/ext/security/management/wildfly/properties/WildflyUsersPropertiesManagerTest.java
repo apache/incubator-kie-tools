@@ -70,7 +70,7 @@ import static org.mockito.Mockito.when;
 /**
  * This tests create temporary working copy of the "application-users.properties" file as the tests are run using the real wildfly admin api for realm management.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class WildflyUsersPropertiesManagerTest extends BaseTest {
 
     protected static final String ADMIN = "admin";

@@ -100,8 +100,8 @@ public class BoundaryMousePanMediatorTest {
     @Test
     public void testMouseDownEvent() {
         final MouseDownEvent md0 = mock(MouseDownEvent.class);
-        when(md0.getRelativeX(any(Element.class))).thenReturn(0);
-        when(md0.getRelativeY(any(Element.class))).thenReturn(0);
+        when(md0.getRelativeX(any())).thenReturn(0);
+        when(md0.getRelativeY(any())).thenReturn(0);
         final NodeMouseDownEvent nmd0 = new NodeMouseDownEvent(md0);
 
         mediator.handleEvent(nmd0);
@@ -113,8 +113,8 @@ public class BoundaryMousePanMediatorTest {
     @Test
     public void testMouseUpEvent() {
         final MouseDownEvent md0 = mock(MouseDownEvent.class);
-        when(md0.getRelativeX(any(Element.class))).thenReturn(0);
-        when(md0.getRelativeY(any(Element.class))).thenReturn(0);
+        when(md0.getRelativeX(any())).thenReturn(0);
+        when(md0.getRelativeY(any())).thenReturn(0);
         final NodeMouseDownEvent nmd0 = new NodeMouseDownEvent(md0);
 
         final MouseUpEvent mu0 = mock(MouseUpEvent.class);
@@ -132,13 +132,13 @@ public class BoundaryMousePanMediatorTest {
     @Test
     public void testMouseMoveEvent_LeftEdge() {
         final MouseDownEvent md0 = mock(MouseDownEvent.class);
-        when(md0.getRelativeX(any(Element.class))).thenReturn(0);
-        when(md0.getRelativeY(any(Element.class))).thenReturn(0);
+        when(md0.getRelativeX(any())).thenReturn(0);
+        when(md0.getRelativeY(any())).thenReturn(0);
         final NodeMouseDownEvent nmd0 = new NodeMouseDownEvent(md0);
 
         final MouseMoveEvent mm1 = mock(MouseMoveEvent.class);
-        when(mm1.getRelativeX(any(Element.class))).thenReturn(1200);
-        when(mm1.getRelativeY(any(Element.class))).thenReturn(0);
+        when(mm1.getRelativeX(any())).thenReturn(1200);
+        when(mm1.getRelativeY(any())).thenReturn(0);
         final NodeMouseMoveEvent nmm1 = new NodeMouseMoveEvent(mm1);
 
         final ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass(Transform.class);
@@ -161,13 +161,13 @@ public class BoundaryMousePanMediatorTest {
     @Test
     public void testMouseMoveEvent_RightEdge() {
         final MouseDownEvent md0 = mock(MouseDownEvent.class);
-        when(md0.getRelativeX(any(Element.class))).thenReturn(0);
-        when(md0.getRelativeY(any(Element.class))).thenReturn(0);
+        when(md0.getRelativeX(any())).thenReturn(0);
+        when(md0.getRelativeY(any())).thenReturn(0);
         final NodeMouseDownEvent nmd0 = new NodeMouseDownEvent(md0);
 
         final MouseMoveEvent mm1 = mock(MouseMoveEvent.class);
-        when(mm1.getRelativeX(any(Element.class))).thenReturn(-200);
-        when(mm1.getRelativeY(any(Element.class))).thenReturn(0);
+        when(mm1.getRelativeX(any())).thenReturn(-200);
+        when(mm1.getRelativeY(any())).thenReturn(0);
         final NodeMouseMoveEvent nmm1 = new NodeMouseMoveEvent(mm1);
 
         final ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass(Transform.class);
@@ -190,13 +190,13 @@ public class BoundaryMousePanMediatorTest {
     @Test
     public void testMouseMoveEvent_TopEdge() {
         final MouseDownEvent md0 = mock(MouseDownEvent.class);
-        when(md0.getRelativeX(any(Element.class))).thenReturn(0);
-        when(md0.getRelativeY(any(Element.class))).thenReturn(0);
+        when(md0.getRelativeX(any())).thenReturn(0);
+        when(md0.getRelativeY(any())).thenReturn(0);
         final NodeMouseDownEvent nmd0 = new NodeMouseDownEvent(md0);
 
         final MouseMoveEvent mm1 = mock(MouseMoveEvent.class);
-        when(mm1.getRelativeX(any(Element.class))).thenReturn(0);
-        when(mm1.getRelativeY(any(Element.class))).thenReturn(1200);
+        when(mm1.getRelativeX(any())).thenReturn(0);
+        when(mm1.getRelativeY(any())).thenReturn(1200);
         final NodeMouseMoveEvent nmm1 = new NodeMouseMoveEvent(mm1);
 
         final ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass(Transform.class);
@@ -219,13 +219,13 @@ public class BoundaryMousePanMediatorTest {
     @Test
     public void testMouseMoveEvent_BottomEdge() {
         final MouseDownEvent md0 = mock(MouseDownEvent.class);
-        when(md0.getRelativeX(any(Element.class))).thenReturn(0);
-        when(md0.getRelativeY(any(Element.class))).thenReturn(0);
+        when(md0.getRelativeX(any())).thenReturn(0);
+        when(md0.getRelativeY(any())).thenReturn(0);
         final NodeMouseDownEvent nmd0 = new NodeMouseDownEvent(md0);
 
         final MouseMoveEvent mm1 = mock(MouseMoveEvent.class);
-        when(mm1.getRelativeX(any(Element.class))).thenReturn(0);
-        when(mm1.getRelativeY(any(Element.class))).thenReturn(-200);
+        when(mm1.getRelativeX(any())).thenReturn(0);
+        when(mm1.getRelativeY(any())).thenReturn(-200);
         final NodeMouseMoveEvent nmm1 = new NodeMouseMoveEvent(mm1);
 
         final ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass(Transform.class);
@@ -248,13 +248,13 @@ public class BoundaryMousePanMediatorTest {
     @Test
     public void testMouseMoveEvent_LeftEdge_Scaled50pct() {
         final MouseDownEvent md0 = mock(MouseDownEvent.class);
-        when(md0.getRelativeX(any(Element.class))).thenReturn(0);
-        when(md0.getRelativeY(any(Element.class))).thenReturn(0);
+        when(md0.getRelativeX(any())).thenReturn(0);
+        when(md0.getRelativeY(any())).thenReturn(0);
         final NodeMouseDownEvent nmd0 = new NodeMouseDownEvent(md0);
 
         final MouseMoveEvent mm1 = mock(MouseMoveEvent.class);
-        when(mm1.getRelativeX(any(Element.class))).thenReturn(1200);
-        when(mm1.getRelativeY(any(Element.class))).thenReturn(0);
+        when(mm1.getRelativeX(any())).thenReturn(1200);
+        when(mm1.getRelativeY(any())).thenReturn(0);
         final NodeMouseMoveEvent nmm1 = new NodeMouseMoveEvent(mm1);
 
         final ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass(Transform.class);
@@ -279,13 +279,13 @@ public class BoundaryMousePanMediatorTest {
     @Test
     public void testMouseMoveEvent_RightEdge_Scaled50pct() {
         final MouseDownEvent md0 = mock(MouseDownEvent.class);
-        when(md0.getRelativeX(any(Element.class))).thenReturn(0);
-        when(md0.getRelativeY(any(Element.class))).thenReturn(0);
+        when(md0.getRelativeX(any())).thenReturn(0);
+        when(md0.getRelativeY(any())).thenReturn(0);
         final NodeMouseDownEvent nmd0 = new NodeMouseDownEvent(md0);
 
         final MouseMoveEvent mm1 = mock(MouseMoveEvent.class);
-        when(mm1.getRelativeX(any(Element.class))).thenReturn(-200);
-        when(mm1.getRelativeY(any(Element.class))).thenReturn(0);
+        when(mm1.getRelativeX(any())).thenReturn(-200);
+        when(mm1.getRelativeY(any())).thenReturn(0);
         final NodeMouseMoveEvent nmm1 = new NodeMouseMoveEvent(mm1);
 
         final ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass(Transform.class);
@@ -310,13 +310,13 @@ public class BoundaryMousePanMediatorTest {
     @Test
     public void testMouseMoveEvent_TopEdge_Scaled50pct() {
         final MouseDownEvent md0 = mock(MouseDownEvent.class);
-        when(md0.getRelativeX(any(Element.class))).thenReturn(0);
-        when(md0.getRelativeY(any(Element.class))).thenReturn(0);
+        when(md0.getRelativeX(any())).thenReturn(0);
+        when(md0.getRelativeY(any())).thenReturn(0);
         final NodeMouseDownEvent nmd0 = new NodeMouseDownEvent(md0);
 
         final MouseMoveEvent mm1 = mock(MouseMoveEvent.class);
-        when(mm1.getRelativeX(any(Element.class))).thenReturn(0);
-        when(mm1.getRelativeY(any(Element.class))).thenReturn(1200);
+        when(mm1.getRelativeX(any())).thenReturn(0);
+        when(mm1.getRelativeY(any())).thenReturn(1200);
         final NodeMouseMoveEvent nmm1 = new NodeMouseMoveEvent(mm1);
 
         final ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass(Transform.class);
@@ -341,13 +341,13 @@ public class BoundaryMousePanMediatorTest {
     @Test
     public void testMouseMoveEvent_BottomEdge_Scaled50pct() {
         final MouseDownEvent md0 = mock(MouseDownEvent.class);
-        when(md0.getRelativeX(any(Element.class))).thenReturn(0);
-        when(md0.getRelativeY(any(Element.class))).thenReturn(0);
+        when(md0.getRelativeX(any())).thenReturn(0);
+        when(md0.getRelativeY(any())).thenReturn(0);
         final NodeMouseDownEvent nmd0 = new NodeMouseDownEvent(md0);
 
         final MouseMoveEvent mm1 = mock(MouseMoveEvent.class);
-        when(mm1.getRelativeX(any(Element.class))).thenReturn(0);
-        when(mm1.getRelativeY(any(Element.class))).thenReturn(-200);
+        when(mm1.getRelativeX(any())).thenReturn(0);
+        when(mm1.getRelativeY(any())).thenReturn(-200);
         final NodeMouseMoveEvent nmm1 = new NodeMouseMoveEvent(mm1);
 
         final ArgumentCaptor<Transform> transformArgumentCaptor = ArgumentCaptor.forClass(Transform.class);

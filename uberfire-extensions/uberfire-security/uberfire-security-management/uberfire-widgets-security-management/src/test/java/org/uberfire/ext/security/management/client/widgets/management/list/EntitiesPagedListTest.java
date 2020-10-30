@@ -29,7 +29,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class EntitiesPagedListTest extends EntitiesListTest {
 
     private final static int PAGE_SIZE = 5;

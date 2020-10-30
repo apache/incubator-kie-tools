@@ -320,8 +320,8 @@ public class M2MavenRepositoryServiceImplTest {
         }
         // Create a mock repository to make the test independent on any project deployment
         GuvnorM2Repository mockRepo = mock(GuvnorM2Repository.class);
-        Mockito.when(mockRepo.listArtifacts(Mockito.anyString(),
-                                            Matchers.<List<String>>any()))
+        Mockito.when(mockRepo.listArtifacts(Mockito.any(),
+                                            Mockito.any()))
                 .thenReturn(artifacts);
         when(mockRepo.getM2RepositoryDir(any())).thenReturn(repo.getM2RepositoryDir(ArtifactRepositoryService.GLOBAL_M2_REPO_NAME));
 

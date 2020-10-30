@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
  * <p>Base test class for KeyCloak based services.</p>
  * <p>It provides a mocked service for the remote KeyCloak Admin API for version <code>1.2.0.Final</code>.</p>
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public abstract class BaseKeyCloakTest extends BaseTest {
 
     public static final String REALM = "testRealm";

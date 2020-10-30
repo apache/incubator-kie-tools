@@ -53,6 +53,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.base.TextualDiff;
@@ -85,7 +86,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ChangeRequestServiceTest {
 
     private ChangeRequestServiceImpl service;
@@ -182,11 +183,11 @@ public class ChangeRequestServiceTest {
 
         doReturn(lastCommit).when(git).getLastCommit(anyString());
 
-        doReturn(true).when(branchAccessAuthorizer).authorize(anyString(),
-                                                              anyString(),
-                                                              anyString(),
-                                                              anyString(),
-                                                              anyString(),
+        doReturn(true).when(branchAccessAuthorizer).authorize(any(),
+                                                              any(),
+                                                              any(),
+                                                              any(),
+                                                              any(),
                                                               any());
 
         this.service = spy(new ChangeRequestServiceImpl(spaceConfigStorageRegistry,
@@ -205,16 +206,16 @@ public class ChangeRequestServiceTest {
         doNothing().when(provider).executePostCommitHook(any());
         doReturn(provider).when(fs).provider();
 
-        doReturn(mock(PathInfo.class)).when(git).getPathInfo(anyString(),
-                                                             anyString());
+        doReturn(mock(PathInfo.class)).when(git).getPathInfo(any(),
+                                                             any());
 
         doReturn(mock(JGitPathImpl.class)).when(service).createJGitPathImpl(eq(fs),
-                                                                            anyString(),
-                                                                            anyString(),
-                                                                            any(ObjectId.class),
+                                                                            any(),
+                                                                            any(),
+                                                                            any(),
                                                                             anyBoolean());
 
-        doReturn("commit message").when(service).getFullCommitMessage(any(RevCommit.class));
+        doReturn("commit message").when(service).getFullCommitMessage(any());
     }
 
     @Test
@@ -308,17 +309,17 @@ public class ChangeRequestServiceTest {
 
     @Test
     public void getChangeRequestUserCanAccessSomeBranchesTest() {
-        doReturn(false).when(branchAccessAuthorizer).authorize(anyString(),
-                                                               anyString(),
-                                                               anyString(),
-                                                               anyString(),
+        doReturn(false).when(branchAccessAuthorizer).authorize(any(),
+                                                               any(),
+                                                               any(),
+                                                               any(),
                                                                eq("hiddenBranch"),
                                                                any());
 
-        doReturn(true).when(branchAccessAuthorizer).authorize(anyString(),
-                                                              anyString(),
-                                                              anyString(),
-                                                              anyString(),
+        doReturn(true).when(branchAccessAuthorizer).authorize(any(),
+                                                              any(),
+                                                              any(),
+                                                              any(),
                                                               eq("branch"),
                                                               any());
 
@@ -585,12 +586,12 @@ public class ChangeRequestServiceTest {
 
         List<TextualDiff> diffList = Collections.nCopies(10, textualDiff);
 
-        doReturn(Collections.emptyList()).when(git).conflictBranchesChecker(anyString(),
-                                                                            anyString());
-        doReturn(diffList).when(git).textualDiffRefs(anyString(),
-                                                     anyString(),
-                                                     anyString(),
-                                                     anyString());
+        doReturn(Collections.emptyList()).when(git).conflictBranchesChecker(any(),
+                                                                            any());
+        doReturn(diffList).when(git).textualDiffRefs(any(),
+                                                     any(),
+                                                     any(),
+                                                     any());
         List<ChangeRequestDiff> diffs = service.getDiff("mySpace",
                                                         "myRepository",
                                                         "sourceBranch",
@@ -618,12 +619,12 @@ public class ChangeRequestServiceTest {
 
         List<TextualDiff> diffList = Collections.nCopies(10, textualDiff);
 
-        doReturn(Collections.emptyList()).when(git).conflictBranchesChecker(anyString(),
-                                                                            anyString());
-        doReturn(diffList).when(git).textualDiffRefs(anyString(),
-                                                     anyString(),
-                                                     anyString(),
-                                                     anyString());
+        doReturn(Collections.emptyList()).when(git).conflictBranchesChecker(any(),
+                                                                            any());
+        doReturn(diffList).when(git).textualDiffRefs(any(),
+                                                     any(),
+                                                     any(),
+                                                     any());
         List<ChangeRequestDiff> diffs = service.getDiff("mySpace",
                                                         "myRepository",
                                                         1L);
@@ -929,10 +930,10 @@ public class ChangeRequestServiceTest {
         doReturn(commit).when(git).getLastCommit("targetBranch");
 
         doReturn(true).when(git).commit(eq("targetBranch"),
-                                        any(CommitInfo.class),
+                                        any(),
                                         eq(false),
-                                        any(RevCommit.class),
-                                        any(RevertCommitContent.class));
+                                        any(),
+                                        any());
 
         DiffEntry diffEntry = mock(DiffEntry.class);
         doReturn("old/file/path").when(diffEntry).getOldPath();
@@ -940,15 +941,15 @@ public class ChangeRequestServiceTest {
         doReturn(DiffEntry.ChangeType.MODIFY).when(diffEntry).getChangeType();
         List<DiffEntry> diffList = Collections.nCopies(10, diffEntry);
 
-        doReturn(Collections.emptyList()).when(git).conflictBranchesChecker(anyString(),
-                                                                            anyString());
-        doReturn(diffList).when(git).listDiffs(anyString(),
-                                               anyString());
+        doReturn(Collections.emptyList()).when(git).conflictBranchesChecker(any(),
+                                                                            any());
+        doReturn(diffList).when(git).listDiffs(Mockito.<String>any(),
+                                               any());
 
-        doReturn(true).when(git).revertMerge(anyString(),
-                                             anyString(),
-                                             anyString(),
-                                             anyString());
+        doReturn(true).when(git).revertMerge(any(),
+                                             any(),
+                                             any(),
+                                             any());
 
         boolean result = service.revertChangeRequest("mySpace",
                                                      "myRepository",

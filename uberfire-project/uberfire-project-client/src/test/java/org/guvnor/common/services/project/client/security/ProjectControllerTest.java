@@ -138,9 +138,6 @@ public class ProjectControllerTest {
     @Test
     public void userCanNotReadProjectTest() {
         final WorkspaceProject project = getProject();
-        when(authorizationManager.authorize(project.getRepository(),
-                                            RepositoryAction.READ,
-                                            user)).thenReturn(false);
         doReturn(false).when(projectController).userIsAtLeast(any(),
                                                               any());
         assertFalse(projectController.canCreateProjects(project.getOrganizationalUnit()));
@@ -708,7 +705,7 @@ public class ProjectControllerTest {
         branchPermissions.put("branch2", new BranchPermissions("branch2", branch2PermissionsByRole));
 
         doReturn(Optional.of(new Contributor("contributor", ContributorType.CONTRIBUTOR))).when(projectController).getUserContributor(any());
-        doReturn(branchPermissions).when(projectPermissionsService).loadBranchPermissions(anyString(), anyString(), anyList());
+        doReturn(branchPermissions).when(projectPermissionsService).loadBranchPermissions(any(), any(), anyList());
 
         projectController.getUpdatableBranches(project).then(branches -> {
             assertEquals(0, branches.size());
@@ -734,7 +731,7 @@ public class ProjectControllerTest {
         branchPermissions.put("branch2", new BranchPermissions("branch2", branch2PermissionsByRole));
 
         doReturn(Optional.of(new Contributor("contributor", ContributorType.CONTRIBUTOR))).when(projectController).getUserContributor(any());
-        doReturn(branchPermissions).when(projectPermissionsService).loadBranchPermissions(anyString(), anyString(), anyList());
+        doReturn(branchPermissions).when(projectPermissionsService).loadBranchPermissions(any(), any(), anyList());
 
         projectController.getUpdatableBranches(project).then(branches -> {
             assertEquals(1, branches.size());
@@ -761,7 +758,7 @@ public class ProjectControllerTest {
         branchPermissions.put("branch2", new BranchPermissions("branch2", branch2PermissionsByRole));
 
         doReturn(Optional.of(new Contributor("contributor", ContributorType.CONTRIBUTOR))).when(projectController).getUserContributor(any());
-        doReturn(branchPermissions).when(projectPermissionsService).loadBranchPermissions(anyString(), anyString(), anyList());
+        doReturn(branchPermissions).when(projectPermissionsService).loadBranchPermissions(any(), any(), anyList());
 
         projectController.getReadableBranches(project).then(branches -> {
             assertEquals(2, branches.size());
@@ -789,7 +786,7 @@ public class ProjectControllerTest {
         branchPermissions.put("branch2", new BranchPermissions("branch2", branch2PermissionsByRole));
 
         doReturn(Optional.of(new Contributor("contributor", ContributorType.CONTRIBUTOR))).when(projectController).getUserContributor(any());
-        doReturn(branchPermissions).when(projectPermissionsService).loadBranchPermissions(anyString(), anyString(), anyList());
+        doReturn(branchPermissions).when(projectPermissionsService).loadBranchPermissions(any(), any(), anyList());
 
         projectController.getReadableBranches(project).then(branches -> {
             assertEquals(1, branches.size());
@@ -816,7 +813,7 @@ public class ProjectControllerTest {
         branchPermissions.put("branch2", new BranchPermissions("branch2", branch2PermissionsByRole));
 
         doReturn(Optional.of(new Contributor("contributor", ContributorType.CONTRIBUTOR))).when(projectController).getUserContributor(any());
-        doReturn(branchPermissions).when(projectPermissionsService).loadBranchPermissions(anyString(), anyString(), anyList());
+        doReturn(branchPermissions).when(projectPermissionsService).loadBranchPermissions(any(), any(), anyList());
 
         projectController.getReadableBranches(project).then(branches -> {
             assertEquals(0, branches.size());
@@ -848,7 +845,6 @@ public class ProjectControllerTest {
         doReturn(organizationalUnit).when(project).getOrganizationalUnit();
         doReturn(space).when(project).getSpace();
         doReturn(branch).when(project).getBranch();
-        doReturn(Optional.of(branch)).when(repository).getBranch("branch");
         doReturn(Optional.of(branch2)).when(repository).getBranch("branch2");
         doReturn(Arrays.asList(branch, branch2)).when(repository).getBranches();
         doReturn(mock(Module.class)).when(project).getMainModule();

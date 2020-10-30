@@ -28,7 +28,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class CreateEntityTest extends AbstractSecurityManagementTest {
 
     @Mock

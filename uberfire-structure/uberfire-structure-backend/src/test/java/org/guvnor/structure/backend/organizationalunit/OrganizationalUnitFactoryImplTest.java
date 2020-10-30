@@ -65,10 +65,9 @@ public class OrganizationalUnitFactoryImplTest {
     public void setup() {
         doAnswer(invocationOnMock -> {
             final Repository repository = mock(Repository.class);
-            doReturn(invocationOnMock.getArgument(0, Space.class)).when(repository).getSpace();
             doReturn(invocationOnMock.getArgument(1, String.class)).when(repository).getAlias();
             return repository;
-        }).when(repositoryService).getRepositoryFromSpace(any(Space.class), anyString());
+        }).when(repositoryService).getRepositoryFromSpace(any(), any());
 
         factory = spy(new OrganizationalUnitFactoryImpl(repositoryService,
                                                         spacesAPI));

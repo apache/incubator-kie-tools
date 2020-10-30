@@ -113,9 +113,9 @@ public class ExperimentalFeaturesStorageImplTest {
         fileSystem = fileSystemTestingUtils.getFileSystem();
         ioService = spy(fileSystemTestingUtils.getIoService());
 
-        doNothing().when(ioService).startBatch(any(FileSystem.class));
+        doNothing().when(ioService).startBatch(any());
         doNothing().when(ioService).endBatch();
-        doReturn(fileSystem).when(ioService).newFileSystem(any(URI.class), anyMap());
+        doReturn(fileSystem).when(ioService).newFileSystem(any(), anyMap());
 
         defRegistry = TestUtils.getRegistry();
 

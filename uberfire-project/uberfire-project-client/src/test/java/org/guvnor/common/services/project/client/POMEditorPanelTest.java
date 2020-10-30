@@ -67,9 +67,9 @@ public class POMEditorPanelTest {
         doAnswer(invocationOnMock -> {
             ((ParameterizedCommand<GAVPreferences>) invocationOnMock.getArguments()[1]).execute(gavPreferences);
             return null;
-        }).when(gavPreferences).load(any(PreferenceScopeResolutionStrategyInfo.class),
-                                     any(ParameterizedCommand.class),
-                                     any(ParameterizedCommand.class));
+        }).when(gavPreferences).load(any(),
+                                     any(),
+                                     any());
     }
 
     @Test

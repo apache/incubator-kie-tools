@@ -71,7 +71,7 @@ public abstract class AbstractSecurityManagementTest {
     protected ClientUserSystemManager userSystemManager;
 
     protected void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         usersManagerServiceCaller = new CallerMock<UserManagerService>(userManagerService);
         groupsManagerServiceCaller = new CallerMock<GroupManagerService>(groupsManagerService);
         rolesManagerServiceCaller = new CallerMock<RoleManagerService>(rolesManagerService);
@@ -80,10 +80,55 @@ public abstract class AbstractSecurityManagementTest {
                                                             rolesManagerServiceCaller,
                                                             exceptionMessageResolver,
                                                             errorPopupPresenter));
-
+        doAnswer(new Answer<User>() {
+            @Override
+            public User answer(InvocationOnMock invocationOnMock) throws Throwable {
+                final String _id = (String) invocationOnMock.getArguments()[0];
+                final User user = mockUser(_id);
+                return user;
+            }
+        }).when(userSystemManager).createUser(anyString());
+        doAnswer(new Answer<Group>() {
+            @Override
+            public Group answer(InvocationOnMock invocationOnMock) throws Throwable {
+                final String _name = (String) invocationOnMock.getArguments()[0];
+                final Group group = mock(Group.class);
+                when(group.getName()).thenReturn(_name);
+                return group;
+            }
+        }).when(userSystemManager).createGroup(anyString());
+        doAnswer(new Answer<UserManager.UserAttribute>() {
+            @Override
+            public UserManager.UserAttribute answer(InvocationOnMock invocationOnMock) throws Throwable {
+                final String _name = (String) invocationOnMock.getArguments()[0];
+                final Boolean _isMandatory = (Boolean) invocationOnMock.getArguments()[1];
+                final Boolean _isEditable = (Boolean) invocationOnMock.getArguments()[2];
+                final String _defaultValue = (String) invocationOnMock.getArguments()[3];
+                final UserManager.UserAttribute attribute = mock(UserManager.UserAttribute.class);
+                when(attribute.getName()).thenReturn(_name);
+                when(attribute.isMandatory()).thenReturn(_isMandatory);
+                when(attribute.isEditable()).thenReturn(_isEditable);
+                when(attribute.getDefaultValue()).thenReturn(_defaultValue);
+                return attribute;
+            }
+        }).when(userSystemManager).createUserAttribute(anyString(),
+                                                       anyBoolean(),
+                                                       anyBoolean(),
+                                                       anyString());
         // final Map<Capability, CapabilityStatus> usersCapabilities = getUserCapabilities();
         // final Map<Capability, CapabilityStatus> groupsCapabilities = getGroupCapabilities();
         final Collection<UserManager.UserAttribute> userAttributes = getUserAttributes();
+        ;
+        doReturn(true).when(userSystemManager).isUserCapabilityEnabled(any(Capability.class));
+        doReturn(userAttributes).when(userSystemManager).getUserSupportedAttributes();
+        doReturn(userAttributes).when(userSystemManager).getUserSupportedAttributes();
+        doAnswer(new Answer<UserManager.UserAttribute>() {
+            @Override
+            public UserManager.UserAttribute answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return null;
+            }
+        }).when(userSystemManager).getUserSupportedAttribute(anyString());
+        doReturn(true).when(userSystemManager).isGroupCapabilityEnabled(any(Capability.class));
     }
 
     protected Map<Capability, CapabilityStatus> getUserCapabilities() {
@@ -128,18 +173,38 @@ public abstract class AbstractSecurityManagementTest {
         Collection<UserManager.UserAttribute> attributes = new ArrayList<UserManager.UserAttribute>();
 
         final UserManager.UserAttribute USER_ID = mock(UserManager.UserAttribute.class);
+        when(USER_ID.getName()).thenReturn(ATTRIBUTE_USER_ID);
+        when(USER_ID.isMandatory()).thenReturn(true);
+        when(USER_ID.isEditable()).thenReturn(false);
+        when(USER_ID.getDefaultValue()).thenReturn(null);
         attributes.add(USER_ID);
 
         final UserManager.UserAttribute USER_FIST_NAME = mock(UserManager.UserAttribute.class);
+        when(USER_FIST_NAME.getName()).thenReturn(ATTRIBUTE_USER_FIRST_NAME);
+        when(USER_FIST_NAME.isMandatory()).thenReturn(true);
+        when(USER_FIST_NAME.isEditable()).thenReturn(true);
+        when(USER_FIST_NAME.getDefaultValue()).thenReturn("First name");
         attributes.add(USER_FIST_NAME);
 
         final UserManager.UserAttribute USER_LAST_NAME = mock(UserManager.UserAttribute.class);
+        when(USER_LAST_NAME.getName()).thenReturn(ATTRIBUTE_USER_LAST_NAME);
+        when(USER_LAST_NAME.isMandatory()).thenReturn(true);
+        when(USER_LAST_NAME.isEditable()).thenReturn(true);
+        when(USER_LAST_NAME.getDefaultValue()).thenReturn("Last name");
         attributes.add(USER_LAST_NAME);
 
         final UserManager.UserAttribute USER_ENABLED = mock(UserManager.UserAttribute.class);
+        when(USER_ENABLED.getName()).thenReturn(ATTRIBUTE_USER_ENABLED);
+        when(USER_ENABLED.isMandatory()).thenReturn(true);
+        when(USER_ENABLED.isEditable()).thenReturn(true);
+        when(USER_ENABLED.getDefaultValue()).thenReturn("true");
         attributes.add(USER_ENABLED);
 
         final UserManager.UserAttribute USER_EMAIL = mock(UserManager.UserAttribute.class);
+        when(USER_EMAIL.getName()).thenReturn(ATTRIBUTE_USER_EMAIL);
+        when(USER_EMAIL.isMandatory()).thenReturn(false);
+        when(USER_EMAIL.isEditable()).thenReturn(true);
+        when(USER_EMAIL.getDefaultValue()).thenReturn("");
         attributes.add(USER_EMAIL);
 
         return attributes;

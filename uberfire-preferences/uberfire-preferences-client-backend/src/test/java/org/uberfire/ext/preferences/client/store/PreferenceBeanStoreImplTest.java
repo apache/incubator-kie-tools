@@ -68,7 +68,7 @@ public class PreferenceBeanStoreImplTest {
                                      errorParameterizedCommand);
 
         verify(store).load(any(MyPreferencePortable.class));
-        verify(successParameterizedCommand).execute(any(MyPreferencePortable.class));
+        verify(successParameterizedCommand).execute(any());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class PreferenceBeanStoreImplTest {
                                      errorParameterizedCommand);
 
         verify(store).load(any(MyPreferencePortable.class));
-        verify(errorParameterizedCommand).execute(any(Throwable.class));
+        verify(errorParameterizedCommand).execute(any());
     }
 
     @Test

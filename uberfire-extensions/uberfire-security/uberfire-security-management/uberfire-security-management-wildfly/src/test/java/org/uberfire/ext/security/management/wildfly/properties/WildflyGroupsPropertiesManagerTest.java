@@ -48,7 +48,7 @@ import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class WildflyGroupsPropertiesManagerTest extends BaseTest {
 
     protected static final String ADMIN = "admin";

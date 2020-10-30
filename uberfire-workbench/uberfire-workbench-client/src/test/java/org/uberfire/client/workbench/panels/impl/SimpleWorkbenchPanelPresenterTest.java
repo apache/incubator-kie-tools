@@ -31,7 +31,7 @@ import org.uberfire.workbench.model.PartDefinition;
 
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class SimpleWorkbenchPanelPresenterTest extends AbstractDockingWorkbenchPanelPresenterTest {
 
     @Mock(name = "view")

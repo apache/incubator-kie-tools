@@ -129,9 +129,9 @@ public class PerspectiveManagerTest {
                 callback.execute();
                 return null;
             }
-        }).when(wbServices).save(any(String.class),
-                                 any(PerspectiveDefinition.class),
-                                 any(Command.class));
+        }).when(wbServices).save(any(),
+                                 any(),
+                                 any());
 
         // simulate "no saved state found" result on wbServices.loadPerspective()
         doAnswer(new Answer<Void>() {
@@ -141,14 +141,14 @@ public class PerspectiveManagerTest {
                 callback.execute(null);
                 return null;
             }
-        }).when(wbServices).loadPerspective(anyString(),
-                                            any(ParameterizedCommand.class));
+        }).when(wbServices).loadPerspective(any(),
+                                            any());
 
         // XXX should look at why PanelManager needs to return an alternative panel sometimes.
         // would be better if addWorkbenchPanel returned void.
-        when(panelManager.addWorkbenchPanel(any(PanelDefinition.class),
-                                            any(PanelDefinition.class),
-                                            any(Position.class))).thenAnswer(new Answer<PanelDefinition>() {
+        when(panelManager.addWorkbenchPanel(any(),
+                                            any(),
+                                            any())).thenAnswer(new Answer<PanelDefinition>() {
             @Override
             public PanelDefinition answer(InvocationOnMock invocation) {
                 return (PanelDefinition) invocation.getArguments()[1];
@@ -196,7 +196,6 @@ public class PerspectiveManagerTest {
 
         PerspectiveActivity kansas = mock(PerspectiveActivity.class);
         when(kansas.getDefaultPerspectiveLayout()).thenReturn(kansasDefinition);
-        when(kansas.getIdentifier()).thenReturn("kansas_perspective");
         when(kansas.isTransient()).thenReturn(true);
 
         perspectiveManager.switchToPerspective(pr,
@@ -278,8 +277,6 @@ public class PerspectiveManagerTest {
                                southWestPanel);
 
         // we assume this will be set correctly (verified elsewhere)
-        when(panelManager.getRoot()).thenReturn(ozDefinition.getRoot());
-
         perspectiveManager.switchToPerspective(pr,
                                                oz,
                                                doWhenFinished);
@@ -351,7 +348,6 @@ public class PerspectiveManagerTest {
     @Test
     public void fetchPerspectivesForTransientPerspectivesShouldAlwaysLoadDefaultLayoutTest() throws Exception {
 
-        when(fetchCommand.isAValidDefinition(any())).thenReturn(true);
         fetchCommand.execute();
 
         assertEquals(oz,
@@ -372,8 +368,6 @@ public class PerspectiveManagerTest {
 
     @Test
     public void isAnInvalidPerspectiveDefinitionTest() throws Exception {
-        when(activityBeansCache.hasActivity(any())).thenReturn(true);
-
         assertFalse(fetchCommand.isAValidDefinition(null));
     }
 

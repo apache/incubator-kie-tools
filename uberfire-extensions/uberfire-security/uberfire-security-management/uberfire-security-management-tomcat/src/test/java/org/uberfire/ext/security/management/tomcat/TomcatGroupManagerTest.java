@@ -50,7 +50,7 @@ import static org.mockito.Mockito.*;
 /**
  * This tests create temporary working copy of the "tomcat-users.xml" file as the tests are run using the real tomcat admin api for realm management.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class TomcatGroupManagerTest extends BaseTest {
 
     protected static final String ADMIN = "admin";

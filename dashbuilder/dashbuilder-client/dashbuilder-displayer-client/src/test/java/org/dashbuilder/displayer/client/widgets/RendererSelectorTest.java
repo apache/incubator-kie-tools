@@ -107,7 +107,6 @@ public class RendererSelectorTest {
     @Test
     public void testSingleRenderer() {
         List<RendererLibrary> rendererLibs = Arrays.asList((RendererLibrary) d3Lib);
-        when(rendererManager.getRenderersForType(any(DisplayerType.class), any(DisplayerSubType.class))).thenReturn(rendererLibs);
         when(rendererManager.getRendererForDisplayer(settings)).thenReturn(d3Lib);
 
         presenter.init(settings, RendererSelector.SelectorType.TAB, 300, selectCommand);
@@ -124,7 +123,7 @@ public class RendererSelectorTest {
     @Test
     public void testMultipleRenderers() {
         List<RendererLibrary> rendererLibs = Arrays.asList((RendererLibrary) gwtLib, d3Lib, lienzoLib);
-        when(rendererManager.getRenderersForType(any(DisplayerType.class), any(DisplayerSubType.class))).thenReturn(rendererLibs);
+        when(rendererManager.getRenderersForType(any(), any())).thenReturn(rendererLibs);
         when(rendererManager.getRendererForDisplayer(settings)).thenReturn(d3Lib);
 
         presenter.init(settings, RendererSelector.SelectorType.LIST, 300, selectCommand);
@@ -143,7 +142,6 @@ public class RendererSelectorTest {
     @Test
     public void testOnSelect() {
         List<RendererLibrary> rendererLibs = Arrays.asList((RendererLibrary) gwtLib, d3Lib);
-        when(rendererManager.getRenderersForType(any(DisplayerType.class), any(DisplayerSubType.class))).thenReturn(rendererLibs);
         when(rendererManager.getRendererForDisplayer(settings)).thenReturn(d3Lib);
         when(rendererManager.getRendererByName(gwtLib.getName())).thenReturn(gwtLib);
         when(tabListView.getRendererSelected()).thenReturn(gwtLib.getName());

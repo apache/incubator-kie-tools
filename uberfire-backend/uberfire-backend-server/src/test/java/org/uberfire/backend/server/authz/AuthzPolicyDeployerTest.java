@@ -94,9 +94,8 @@ public class AuthzPolicyDeployerTest {
         fileSystemTestingUtils.setup();
         fileSystem = fileSystemTestingUtils.getFileSystem();
         ioService = spy(fileSystemTestingUtils.getIoService());
-        doNothing().when(ioService).startBatch(any(FileSystem.class));
         doNothing().when(ioService).endBatch();
-        doReturn(fileSystem).when(ioService).newFileSystem(any(URI.class), anyMap());
+        doReturn(fileSystem).when(ioService).newFileSystem(any(), anyMap());
         PermissionTypeRegistry permissionTypeRegistry = new DefaultPermissionTypeRegistry();
         permissionManager = spy(new DefaultPermissionManager(permissionTypeRegistry));
 

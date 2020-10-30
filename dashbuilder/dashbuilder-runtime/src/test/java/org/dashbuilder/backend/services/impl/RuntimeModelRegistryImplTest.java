@@ -233,7 +233,6 @@ public class RuntimeModelRegistryImplTest {
         String importId = FilenameUtils.getBaseName(tempFile.toFile().getPath());
         RuntimeModel runtimeModel = mock(RuntimeModel.class);
 
-        when(options.buildFilePath(eq(importId))).thenReturn(tempFile.toFile().getPath());
         when(runtimeModels.remove(eq(importId))).thenReturn(runtimeModel);
 
         when(options.isRemoveModelFile()).thenReturn(false);
@@ -249,8 +248,6 @@ public class RuntimeModelRegistryImplTest {
     public void testRemoveNotExistingModel() throws IOException {
         String file = tempFile.toString();
         String importId = FilenameUtils.getBaseName(tempFile.toFile().getPath());
-
-        when(options.isRemoveModelFile()).thenReturn(true);
 
         registry.remove(importId);
 

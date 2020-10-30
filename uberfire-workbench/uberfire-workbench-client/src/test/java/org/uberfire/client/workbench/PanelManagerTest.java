@@ -128,20 +128,20 @@ public class PanelManagerTest {
         testPerspectiveDef = new PerspectiveDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
         testPerspectiveRootPanelPresenter = mock(WorkbenchPanelPresenter.class);
 
-        when(beanFactory.newRootPanel(any(PerspectiveActivity.class),
+        when(beanFactory.newRootPanel(any(),
                                       eq(testPerspectiveDef.getRoot()))).thenReturn(testPerspectiveRootPanelPresenter);
         when(testPerspectiveRootPanelPresenter.getDefinition()).thenReturn(testPerspectiveDef.getRoot());
         when(testPerspectiveRootPanelPresenter.getPanelView()).thenReturn(mock(WorkbenchPanelView.class));
         when(testPerspectiveRootPanelPresenter.getDefaultChildType()).thenReturn(SimpleWorkbenchPanelPresenter.class.getName());
 
         partPresenter = mock(WorkbenchPartPresenter.class);
-        when(beanFactory.newWorkbenchPart(any(Menus.class),
-                                          any(String.class),
-                                          any(IsWidget.class),
-                                          any(PartDefinition.class),
-                                          any(Class.class))).thenReturn(partPresenter);
+        when(beanFactory.newWorkbenchPart(any(),
+                                          any(),
+                                          any(),
+                                          any(),
+                                          any())).thenReturn(partPresenter);
 
-        when(beanFactory.newWorkbenchPanel(any(PanelDefinition.class))).thenAnswer(new Answer<WorkbenchPanelPresenter>() {
+        when(beanFactory.newWorkbenchPanel(any())).thenAnswer(new Answer<WorkbenchPanelPresenter>() {
             @Override
             public WorkbenchPanelPresenter answer(InvocationOnMock invocation) throws Throwable {
                 WorkbenchPanelPresenter newPanelPresenter = mock(WorkbenchPanelPresenter.class,

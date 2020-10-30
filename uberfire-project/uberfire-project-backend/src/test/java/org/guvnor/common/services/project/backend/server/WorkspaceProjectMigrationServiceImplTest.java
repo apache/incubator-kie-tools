@@ -44,6 +44,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -61,7 +62,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class WorkspaceProjectMigrationServiceImplTest {
 
     private static final String NIOGIT_PATH = "/home/someone/somehwere/.niogit";
@@ -130,17 +131,17 @@ public class WorkspaceProjectMigrationServiceImplTest {
         doAnswer(invocation -> null).when(spaceInfo).removeRepository(any());
         doAnswer(invocation -> null).when(spaceInfo).getRepositories(any());
         doReturn(spaceInfo).when(spaceConfigStorage).loadSpaceInfo();
-        when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
+        when(spaceConfigStorageRegistry.get(any())).thenReturn(spaceConfigStorage);
 
-        doReturn(mock(WorkspaceProject.class)).when(workspaceProjectService).resolveProject(any(Repository.class));
+        doReturn(mock(WorkspaceProject.class)).when(workspaceProjectService).resolveProject(Mockito.<Repository>any());
 
         doAnswer((Answer<org.uberfire.java.nio.file.Path>) invocationOnMock ->
                 Paths.convert(PathFactory.newPath("file",
-                                                  invocationOnMock.getArguments()[0].toString()))).when(ioService).get(any(URI.class));
+                                                  invocationOnMock.getArguments()[0].toString()))).when(ioService).get(any());
 
         when(pathUtil.normalizePath(any())).then(inv -> inv.getArgument(0,
                                                                           Path.class));
-        when(pathUtil.convert(any(Path.class))).then(inv -> {
+        when(pathUtil.convert(Mockito.<Path>any())).then(inv -> {
             final Path path = inv.getArgument(0,
                                                 Path.class);
 
@@ -159,7 +160,7 @@ public class WorkspaceProjectMigrationServiceImplTest {
                                                                moduleService,
                                                                spaceConfigStorageRegistry));
 
-        doAnswer(invocation -> null).when(service).cleanupOrigin(any(Repository.class));
+        doAnswer(invocation -> null).when(service).cleanupOrigin(any());
 
         legacyMasterBranch = mockBranch("legacyMasterBranch");
         legacyDevBranch = mockBranch("legacyDevBranch");

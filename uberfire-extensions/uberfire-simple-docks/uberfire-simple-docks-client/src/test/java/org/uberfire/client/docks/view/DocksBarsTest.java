@@ -145,7 +145,7 @@ public class DocksBarsTest {
         verify(dock2).clearAll();
         //2 for each dock(collapsed/expanded/resize)
         verify(uberfireDocksContainer,
-               times(6)).hide(any(Widget.class));
+               times(6)).hide(Mockito.<Widget>any());
     }
 
     @Test
@@ -161,7 +161,7 @@ public class DocksBarsTest {
         verify(dock1).clearAll();
         verify(docksBarsSpy).resizeDeferred();
         verify(uberfireDocksContainer,
-               times(3)).hide(any(Widget.class));
+               times(3)).hide(Mockito.<Widget>any());
     }
 
     @Test

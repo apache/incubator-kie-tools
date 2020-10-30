@@ -91,7 +91,7 @@ public class CallerMockTest {
         callerSample.targetCallWithSuccessAndErrorCallBackCheckedException();
 
         verify(sampleTarget).targetCallWithCheckedException();
-        verify(errorCallBack).error(anyString(),
+        verify(errorCallBack).error(any(),
                                     any(SampleException.class));
         verify(successCallBack,
                never()).callback(anyString());
@@ -109,7 +109,7 @@ public class CallerMockTest {
         callerSample.targetPrimitiveType();
 
         verify(sampleTarget).targetPrimitiveType();
-        verify(errorCallBack).error(anyString(),
+        verify(errorCallBack).error(any(),
                                     any(SampleException.class));
         verify(successCallBack,
                never()).callback(anyString());
@@ -143,7 +143,7 @@ public class CallerMockTest {
 
         verify(successCallBack,
                never()).callback(anyString());
-        verify(errorCallBack).error(anyString(),
+        verify(errorCallBack).error(any(),
                                     any(RuntimeException.class));
     }
 
@@ -162,7 +162,7 @@ public class CallerMockTest {
 
         verify(successCallBack,
                never()).callback(anyString());
-        verify(errorCallBack).error(anyString(),
+        verify(errorCallBack).error(any(),
                                     any(RuntimeException.class));
     }
 
@@ -219,7 +219,7 @@ public class CallerMockTest {
         }
     }
 
-    private class SampleException extends Exception {
+    private class SampleException extends RuntimeException {
 
     }
 }

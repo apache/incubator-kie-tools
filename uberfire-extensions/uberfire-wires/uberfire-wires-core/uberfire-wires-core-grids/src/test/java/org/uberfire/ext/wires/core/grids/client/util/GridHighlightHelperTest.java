@@ -32,6 +32,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLay
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPanel;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -128,7 +129,7 @@ public class GridHighlightHelperTest {
     @Test
     public void testHighlight() {
 
-        doNothing().when(highlightHelper).moveCanvasTo(anyInt(), anyInt());
+        doNothing().when(highlightHelper).moveCanvasTo(anyDouble(), anyDouble());
         doNothing().when(highlightHelper).highlightCell(row, column);
 
         highlightHelper.highlight(row, column);
@@ -141,7 +142,7 @@ public class GridHighlightHelperTest {
     @Test
     public void testHighlightWithPinnedGrid() {
 
-        doNothing().when(highlightHelper).moveCanvasTo(anyInt(), anyInt());
+        doNothing().when(highlightHelper).moveCanvasTo(anyDouble(), anyDouble());
 
         highlightHelper.withPinnedGrid().highlight(row, column);
 
@@ -153,7 +154,7 @@ public class GridHighlightHelperTest {
     @Test
     public void testHighlightWithPadding() {
 
-        doNothing().when(highlightHelper).moveCanvasTo(anyInt(), anyInt());
+        doNothing().when(highlightHelper).moveCanvasTo(anyDouble(), anyDouble());
 
         highlightHelper
                 .withPaddingX(128)
@@ -174,7 +175,7 @@ public class GridHighlightHelperTest {
         final Transform newTransform = mock(Transform.class);
 
         when(transform.copy()).thenReturn(copy);
-        when(copy.translate(anyInt(), anyInt())).thenReturn(newTransform);
+        when(copy.translate(anyDouble(), anyDouble())).thenReturn(newTransform);
 
         highlightHelper.moveCanvasTo(x, y);
 
@@ -193,7 +194,7 @@ public class GridHighlightHelperTest {
         final Transform newTransform = mock(Transform.class);
 
         when(transform.copy()).thenReturn(copy);
-        when(copy.translate(anyInt(), anyInt())).thenReturn(newTransform);
+        when(copy.translate(anyDouble(), anyDouble())).thenReturn(newTransform);
 
         highlightHelper.moveCanvasTo(x - visibleBoundsWidth, y);
 
@@ -212,7 +213,7 @@ public class GridHighlightHelperTest {
         final Transform newTransform = mock(Transform.class);
 
         when(transform.copy()).thenReturn(copy);
-        when(copy.translate(anyInt(), anyInt())).thenReturn(newTransform);
+        when(copy.translate(anyDouble(), anyDouble())).thenReturn(newTransform);
 
         highlightHelper.moveCanvasTo(x, y - visibleBoundsHeight);
 
