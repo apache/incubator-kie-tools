@@ -90,13 +90,8 @@ export class GithubService {
     const testOctokit = new Octokit({ auth: token });
     return testOctokit.users
       .getAuthenticated()
-      .then(res => {
-        if ((res.headers as any)["x-oauth-scopes"].split(", ").indexOf("gist") > -1) {
-          return Promise.resolve(res.data.login);
-        }
-        return Promise.resolve(undefined);
-      })
-      .catch(() => Promise.resolve(undefined));
+      .then(res => this.hasGistScope(res.headers) ? res.data.login : undefined)
+      .catch(() => undefined);
   }
 
   public reset(): void {
@@ -182,6 +177,10 @@ export class GithubService {
 
   public extractGistFilenameFromRawUrl(url: string): string {
     return url.substr(url.lastIndexOf("/") + 1);
+  }
+
+  public hasGistScope(headers: any) {
+    return headers["x-oauth-scopes"].split(", ").indexOf("gist") > -1
   }
 
   public retrieveFileInfo(fileUrl: string): FileInfo {

@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useContext, useState, useMemo } from "react";
+import { useCallback, useContext, useState, useMemo, useEffect } from "react";
 import { GlobalContext } from "./GlobalContext";
 import {
   Modal,
@@ -37,19 +37,13 @@ interface Props {
   onClose: () => void;
 }
 
-enum ValidationStatus {
-  INITIAL,
-  SUCCESS,
-  ERROR
-}
-
 export function GithubTokenModal(props: Props) {
   const context = useContext(GlobalContext);
   const { i18n } = useOnlineI18n();
 
   const [potentialToken, setPotentialToken] = useState(context.githubService.resolveToken());
   const [authenticated, setAuthenticated] = useState(context.githubService.isAuthenticated());
-  const [errorStatus, setErrorStatus] = useState(false);
+  const [isTokenInvalid, setIsTokenInvalid] = useState(!context.githubService.isAuthenticated());
 
   const tokenToDisplay = useMemo(() => {
     return obfuscate(context.githubService.resolveToken() || potentialToken);
@@ -60,7 +54,7 @@ export function GithubTokenModal(props: Props) {
     setPotentialToken(token);
     context.githubService.authenticate(token).then(isAuthenticated => {
       setAuthenticated(isAuthenticated);
-      setErrorStatus(!isAuthenticated);
+      setIsTokenInvalid(!isAuthenticated);
     });
   }, []);
 
@@ -68,15 +62,17 @@ export function GithubTokenModal(props: Props) {
     context.githubService.reset();
     setPotentialToken("");
     setAuthenticated(false);
-    setErrorStatus(false);
+    setIsTokenInvalid(false);
   }, []);
 
-  const validated = useMemo(() => {
-    if (errorStatus) {
-      return "error";
-    }
-    return "default";
-  }, [errorStatus]);
+  const validated = useMemo(() => (isTokenInvalid ? "error" : "default"), [isTokenInvalid]);
+
+  useEffect(() => {
+    context.githubService.authenticate().then(isAuthenticated => {
+      setAuthenticated(isAuthenticated);
+      potentialToken.length === 0 ? setIsTokenInvalid(false) : setIsTokenInvalid(!isAuthenticated)
+    });
+  }, []);
 
   return (
     <Modal

@@ -113,10 +113,6 @@ export function EditorPage(props: Props) {
     setAlert(Alerts.GITHUB_TOKEN_MODAL);
   }, []);
 
-  const closeSetGitHubToken = useCallback(() => {
-    setAlert(Alerts.NONE);
-  }, []);
-
   const requestExportGist = useCallback(() => {
     editor?.getContent().then(content => {
       context.githubService
@@ -131,7 +127,10 @@ export function EditorPage(props: Props) {
           // FIXME: KOGITO-1202
           window.location.href = `?file=${gistUrl}#/editor/${fileExtension}`;
         })
-        .catch(() => setAlert(Alerts.GITHUB_TOKEN_MODAL));
+        .catch(err => {
+          console.error(err);
+          setAlert(Alerts.ERROR);
+        });
     });
   }, [context.file.fileName, editor]);
 
