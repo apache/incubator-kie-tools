@@ -54,6 +54,36 @@ export const SCORE_CARD_SIMPLE_PREDICATE: string = `
 </PMML>
 `;
 
+export const SCORE_CARD_SIMPLE_PREDICATE_SINGLE: string = `
+<PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
+  <Header/>
+  <DataDictionary numberOfFields="3">
+    <DataField name="input1" optype="continuous" dataType="double"/>
+    <DataField name="input2" optype="continuous" dataType="double"/>
+    <DataField name="score" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <Scorecard modelName="SimpleScorecard" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineScore="6" baselineMethod="other">
+    <MiningSchema>
+      <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="score" usageType="target"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Score" feature="predictedValue" dataType="double" optype="continuous"/>
+      <OutputField name="Reason Code 1" rank="1" feature="reasonCode" dataType="string" optype="categorical"/>
+      <OutputField name="Reason Code 2" rank="2" feature="reasonCode" dataType="string" optype="categorical"/>
+    </Output>
+    <Characteristics>
+      <Characteristic name="input1Score" baselineScore="4" reasonCode="Input1ReasonCode">
+        <Attribute partialScore="-12">
+          <SimplePredicate field="input1" operator="lessOrEqual" value="10"/>
+        </Attribute>
+      </Characteristic>
+    </Characteristics>
+  </Scorecard>
+</PMML>
+`;
+
 export const SCORE_CARD_COMPOUND_PREDICATE: string = `
 <PMML xmlns="http://www.dmg.org/PMML-4_4" version="4.4"> 
   <Header/>

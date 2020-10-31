@@ -15,6 +15,8 @@
  */
 
 export * from "./Actions";
+export * from "./AttributesReducer";
+export * from "./AttributePredicateConverter";
 export * from "./CharacteristicReducer";
 export * from "./CharacteristicsReducer";
 export * from "./DataDictionaryReducer";

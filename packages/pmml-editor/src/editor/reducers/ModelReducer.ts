@@ -49,6 +49,7 @@ export const ModelReducer: HistoryAwareReducer<Model[], ModelActions | AllScorec
           reducer: scorecardReducer,
           factory: (data: Scorecard) => {
             const model: Scorecard = new Scorecard(data);
+            //TODO {manstis} This is vitally important to ensure marshalling to XML works OK!
             (model as any)._type = "Scorecard";
             return model;
           }

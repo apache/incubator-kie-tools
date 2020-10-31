@@ -20,6 +20,7 @@ import { Reducer } from "react";
 import { immerable } from "immer";
 import { CharacteristicsActions } from "./CharacteristicsReducer";
 import { CharacteristicActions } from "./CharacteristicReducer";
+import { AttributesActions } from "./AttributesReducer";
 
 // @ts-ignore
 Scorecard[immerable] = true;
@@ -36,15 +37,11 @@ interface ScorecardPayload {
     readonly useReasonCodes: boolean;
     readonly reasonCodeAlgorithm: ReasonCodeAlgorithm;
   };
-  [Actions.Scorecard_DeleteCharacteristic]: {
-    readonly modelIndex: number;
-    readonly characteristicIndex: number;
-  };
 }
 
 export type ScorecardActions = ActionMap<ScorecardPayload>[keyof ActionMap<ScorecardPayload>];
 
-export type AllScorecardActions = ScorecardActions | CharacteristicsActions | CharacteristicActions;
+export type AllScorecardActions = ScorecardActions | CharacteristicsActions | CharacteristicActions | AttributesActions;
 
 export const ScorecardReducer: HistoryAwareReducer<Scorecard, ScorecardActions> = (
   service: HistoryService

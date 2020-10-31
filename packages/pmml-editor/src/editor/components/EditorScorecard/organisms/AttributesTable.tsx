@@ -23,32 +23,56 @@ import {
   DataListItem,
   DataListItemCells,
   DataListItemRow,
+  Form,
   Tooltip,
   TooltipPosition
 } from "@patternfly/react-core";
-import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { AttributesTableEditRow, AttributesTableRow, EmptyStateNoAttributes } from "../molecules";
 import "./AttributesTable.scss";
 
 import { InfoCircleIcon, TrashIcon } from "@patternfly/react-icons";
 import { Operation } from "../Operation";
+import { useSelector } from "react-redux";
 
 interface AttributesTableProps {
-  index: number | undefined;
+  modelIndex: number;
+  characteristicIndex: number | undefined;
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
-  attributes: Attribute[];
-  onRowDelete: (index: number) => void;
-  onAddAttribute: () => void;
-  commit: (index: number | undefined) => void;
+  validateText: (text: string | undefined) => boolean;
+  addAttribute: () => void;
+  deleteAttribute: (index: number) => void;
+  commit: (
+    index: number | undefined,
+    text: string | undefined,
+    partialScore: number | undefined,
+    reasonCode: string | undefined
+  ) => void;
 }
 
 export const AttributesTable = (props: AttributesTableProps) => {
-  const { activeOperation, setActiveOperation, attributes, onRowDelete, onAddAttribute } = props;
+  const {
+    modelIndex,
+    characteristicIndex,
+    activeOperation,
+    setActiveOperation,
+    addAttribute,
+    deleteAttribute,
+    validateText,
+    commit
+  } = props;
 
-  const [selectedItemIndex, setSelectedItemIndex] = useState<number | undefined>(undefined);
+  const attributes: Attribute[] | undefined = useSelector<PMML, Attribute[]>((state: PMML) => {
+    const model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
+    if (model !== undefined && characteristicIndex !== undefined && model instanceof Scorecard) {
+      const scorecard: Scorecard = model as Scorecard;
+      return scorecard.Characteristics.Characteristic[characteristicIndex].Attribute;
+    }
+    return [];
+  });
+
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
-
   const addAttributeRowRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -64,7 +88,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
 
   const onDelete = (index: number | undefined) => {
     if (index !== undefined) {
-      onRowDelete(index);
+      deleteAttribute(index);
     }
   };
 
@@ -82,8 +106,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
       attribute = attributes[index];
     }
     if (attribute.partialScore !== partialScore || attribute.reasonCode !== reasonCode) {
-      //TODO {manstis} Commit changes!
-      props.commit(index);
+      commit(index, text, partialScore, reasonCode);
     }
 
     onCancel();
@@ -145,44 +168,50 @@ export const AttributesTable = (props: AttributesTableProps) => {
           </DataListItemRow>
         </DataListItem>
       </DataList>
-      <DataList aria-label="attributes list">
-        {attributes.map((attribute, index) => {
-          if (editItemIndex === index) {
-            return (
+      <Form>
+        <DataList aria-label="attributes list">
+          {attributes.map((attribute, index) => {
+            if (editItemIndex === index) {
+              return (
+                <AttributesTableEditRow
+                  key={index}
+                  index={index}
+                  attribute={attribute}
+                  validateText={validateText}
+                  onCommit={(_text, _partialScore, _reasonCode) => onCommit(index, _text, _partialScore, _reasonCode)}
+                  onCancel={() => onCancel()}
+                />
+              );
+            } else {
+              return (
+                <AttributesTableRow
+                  key={index}
+                  index={index}
+                  attribute={attribute}
+                  onEdit={() => onEdit(index)}
+                  onDelete={() => onDelete(index)}
+                  isDisabled={
+                    !(editItemIndex === undefined || editItemIndex === index) || activeOperation !== Operation.NONE
+                  }
+                />
+              );
+            }
+          })}
+          {activeOperation === Operation.CREATE_ATTRIBUTE && (
+            <div key={undefined} ref={addAttributeRowRef}>
               <AttributesTableEditRow
-                key={index}
-                index={index}
-                attribute={attribute}
-                onCommit={(_text, _partialScore, _reasonCode) => onCommit(index, _text, _partialScore, _reasonCode)}
+                key={"add"}
+                index={undefined}
+                attribute={{}}
+                validateText={validateText}
+                onCommit={(_text, _partialScore, _reasonCode) => onCommit(undefined, _text, _partialScore, _reasonCode)}
                 onCancel={() => onCancel()}
               />
-            );
-          } else {
-            return (
-              <AttributesTableRow
-                index={index}
-                attribute={attribute}
-                onEdit={() => onEdit(index)}
-                onDelete={() => onDelete(index)}
-                isDisabled={
-                  !(editItemIndex === undefined || editItemIndex === index) || activeOperation !== Operation.NONE
-                }
-              />
-            );
-          }
-        })}
-        {activeOperation === Operation.CREATE_ATTRIBUTE && (
-          <div key={undefined} ref={addAttributeRowRef}>
-            <AttributesTableEditRow
-              index={undefined}
-              attribute={{}}
-              onCommit={(_text, _partialScore, _reasonCode) => onCommit(undefined, _text, _partialScore, _reasonCode)}
-              onCancel={() => onCancel()}
-            />
-          </div>
-        )}
-      </DataList>
-      {attributes.length === 0 && <EmptyStateNoAttributes createAttribute={onAddAttribute} />}
+            </div>
+          )}
+        </DataList>
+      </Form>
+      {attributes.length === 0 && <EmptyStateNoAttributes createAttribute={addAttribute} />}
     </div>
   );
 };

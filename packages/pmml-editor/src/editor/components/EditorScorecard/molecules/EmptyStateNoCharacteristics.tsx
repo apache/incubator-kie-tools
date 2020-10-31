@@ -17,7 +17,7 @@ import * as React from "react";
 import { Button, EmptyState, EmptyStateBody, EmptyStateVariant, Title } from "@patternfly/react-core";
 
 interface EmptyStateNoCharacteristicsProps {
-  createCharacteristic: () => void;
+  addCharacteristic: () => void;
 }
 
 export const EmptyStateNoCharacteristics = (props: EmptyStateNoCharacteristicsProps) => (
@@ -33,7 +33,7 @@ export const EmptyStateNoCharacteristics = (props: EmptyStateNoCharacteristicsPr
     <Button
       data-testid="empty-state-no-characteristics__create-characteristic"
       variant="primary"
-      onClick={props.createCharacteristic}
+      onClick={props.addCharacteristic}
     >
       Add Characteristic
     </Button>

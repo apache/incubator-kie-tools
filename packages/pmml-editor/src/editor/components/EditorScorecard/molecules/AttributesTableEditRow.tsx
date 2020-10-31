@@ -26,11 +26,15 @@ import {
 } from "@patternfly/react-core";
 import "../organisms/CharacteristicsTable.scss";
 import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
-import { AttributesTableEditModeAction } from "../atoms/AttributesTableEditModeAction";
+import { AttributesTableEditModeAction } from "../atoms";
+import { ValidatedType } from "../../../types";
+import { ExclamationCircleIcon } from "@patternfly/react-icons";
+import { toText } from "../../../reducers";
 
 interface AttributesTableEditRowProps {
   index: number | undefined;
   attribute: Attribute;
+  validateText: (text: string | undefined) => boolean;
   onCommit: (text: string | undefined, partialScore: number | undefined, reasonCode: string | undefined) => void;
   onCancel: () => void;
 }
@@ -38,14 +42,21 @@ interface AttributesTableEditRowProps {
 export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
   const { index, attribute, onCommit, onCancel } = props;
 
-  const [text, setText] = useState<string | undefined>(undefined);
+  const [text, setText] = useState<ValidatedType<string | undefined>>({
+    value: undefined,
+    valid: true
+  });
   const [partialScore, setPartialScore] = useState<number | undefined>();
   const [reasonCode, setReasonCode] = useState<string | undefined>();
 
   const textFieldRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    setText(JSON.stringify(attribute.predicate, undefined, 2));
+    const _text = toText(attribute.predicate);
+    setText({
+      value: _text,
+      valid: props.validateText(_text)
+    });
     setPartialScore(attribute.partialScore);
     setReasonCode(attribute.reasonCode);
 
@@ -66,25 +77,32 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
   };
 
   return (
-    <DataListItem
-      key={index}
-      id={index?.toString()}
-      className="attributes__list-item"
-      aria-labelledby={"attribute-" + index}
-    >
+    <DataListItem id={index?.toString()} className="attributes__list-item" aria-labelledby={"attribute-" + index}>
       <DataListItemRow>
         <DataListItemCells
           dataListCells={[
             <DataListCell key="0" width={4}>
-              <FormGroup fieldId="attribute-text-helper" helperText="This will be Monaco and predicate definition.">
+              <FormGroup
+                fieldId="attribute-text-helper"
+                helperText="This will be Monaco and predicate definition."
+                helperTextInvalid="Text must be present"
+                helperTextInvalidIcon={<ExclamationCircleIcon />}
+                validated={text.valid ? "default" : "error"}
+              >
                 <TextInput
                   type="text"
                   id="attribute-text"
                   name="attribute-text"
                   ref={textFieldRef}
                   aria-describedby="attribute-text-helper"
-                  value={JSON.stringify(attribute.predicate, undefined, 2)}
-                  onChange={e => setText(e)}
+                  value={text.value ?? ""}
+                  validated={text.valid ? "default" : "error"}
+                  onChange={e =>
+                    setText({
+                      value: e,
+                      valid: props.validateText(e)
+                    })
+                  }
                 />
               </FormGroup>
             </DataListCell>,
@@ -126,9 +144,9 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
               width={1}
             >
               <AttributesTableEditModeAction
-                onCommit={() => onCommit(text, partialScore, reasonCode)}
+                onCommit={() => onCommit(text.value, partialScore, reasonCode)}
                 onCancel={() => onCancel()}
-                disableCommit={false}
+                disableCommit={!text.valid}
               />
             </DataListAction>
           ]}

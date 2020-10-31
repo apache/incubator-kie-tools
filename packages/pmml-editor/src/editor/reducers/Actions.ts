@@ -21,6 +21,7 @@ import { ModelActions } from "./ModelReducer";
 import { ScorecardActions } from "./ScorecardReducer";
 import { CharacteristicsActions } from "./CharacteristicsReducer";
 import { CharacteristicActions } from "./CharacteristicReducer";
+import { AttributesActions } from "./AttributesReducer";
 
 export type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined
@@ -46,7 +47,10 @@ export enum Actions {
   Scorecard_SetCoreProperties = "SCORECARD_SET_CORE_PROPERTIES",
   Scorecard_AddCharacteristic = "SCORECARD_ADD_CHARACTERISTIC",
   Scorecard_DeleteCharacteristic = "SCORECARD_DELETE_CHARACTERISTIC",
-  Scorecard_UpdateCharacteristic = "SCORECARD_UPDATE_CHARACTERISTIC"
+  Scorecard_UpdateCharacteristic = "SCORECARD_UPDATE_CHARACTERISTIC",
+  Scorecard_AddAttribute = "SCORECARD_ADD_ATTRIBUTE",
+  Scorecard_DeleteAttribute = "SCORECARD_DELETE_ATTRIBUTE",
+  Scorecard_UpdateAttribute = "SCORECARD_UPDATE_ATTRIBUTE"
 }
 
 export type AllActions =
@@ -58,4 +62,5 @@ export type AllActions =
   | ModelActions
   | ScorecardActions
   | CharacteristicsActions
-  | CharacteristicActions;
+  | CharacteristicActions
+  | AttributesActions;

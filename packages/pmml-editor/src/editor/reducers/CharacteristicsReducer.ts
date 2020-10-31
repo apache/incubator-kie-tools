@@ -17,6 +17,10 @@ import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
 import { Characteristics } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
+import { immerable } from "immer";
+
+// @ts-ignore
+Characteristics[immerable] = true;
 
 interface CharacteristicsPayload {
   [Actions.Scorecard_AddCharacteristic]: {

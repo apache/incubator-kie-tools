@@ -48,6 +48,10 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     return undefined;
   });
 
+  const onAddAttribute = useCallback(() => {
+    setActiveOperation(Operation.CREATE_ATTRIBUTE);
+  }, [characteristics]);
+
   const onAddCharacteristic = useCallback(() => {
     setActiveOperation(Operation.CREATE_CHARACTERISTIC);
   }, [characteristics]);
@@ -78,6 +82,10 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     [characteristics]
   );
 
+  const validateText = (text: string | undefined) => {
+    return text !== undefined && text !== "";
+  };
+
   const hideCharacteristicPanel = useCallback(() => {
     setShowCharacteristicPanel(false);
   }, [characteristics]);
@@ -101,11 +109,52 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   return (
     <div data-testid="editor-page" className={"editor"}>
       <CharacteristicPanel
+        modelIndex={props.modelIndex}
         characteristic={selectedCharacteristic}
         activeOperation={activeOperation}
         setActiveOperation={setActiveOperation}
         showCharacteristicPanel={showCharacteristicPanel}
         hideCharacteristicPanel={hideCharacteristicPanel}
+        validateText={validateText}
+        addAttribute={onAddAttribute}
+        deleteAttribute={index => {
+          if (window.confirm(`Delete Attribute "${index}"?`)) {
+            dispatch({
+              type: Actions.Scorecard_DeleteAttribute,
+              payload: {
+                modelIndex: props.modelIndex,
+                characteristicIndex: selectedCharacteristic?.index,
+                attributeIndex: index
+              }
+            });
+          }
+        }}
+        commit={(_index, _text, _partialScore, _reasonCode) => {
+          if (_index === undefined) {
+            dispatch({
+              type: Actions.Scorecard_AddAttribute,
+              payload: {
+                modelIndex: props.modelIndex,
+                characteristicIndex: selectedCharacteristic?.index,
+                text: _text,
+                partialScore: _partialScore,
+                reasonCode: _reasonCode
+              }
+            });
+          } else {
+            dispatch({
+              type: Actions.Scorecard_UpdateAttribute,
+              payload: {
+                modelIndex: props.modelIndex,
+                characteristicIndex: selectedCharacteristic?.index,
+                attributeIndex: _index,
+                text: _text,
+                partialScore: _partialScore,
+                reasonCode: _reasonCode
+              }
+            });
+          }
+        }}
       />
 
       <PageSection variant={PageSectionVariants.light} isFilled={false}>
@@ -154,8 +203,10 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
             activeOperation={activeOperation}
             setActiveOperation={setActiveOperation}
             characteristics={filteredCharacteristics}
-            onRowClick={index => selectCharacteristic(index)}
-            onRowDelete={index => {
+            validateCharacteristicName={validateCharacteristicName}
+            selectCharacteristic={index => selectCharacteristic(index)}
+            addCharacteristic={onAddCharacteristic}
+            deleteCharacteristic={index => {
               if (window.confirm(`Delete Characteristic "${index}"?`)) {
                 dispatch({
                   type: Actions.Scorecard_DeleteCharacteristic,
@@ -166,8 +217,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                 });
               }
             }}
-            onAddCharacteristic={onAddCharacteristic}
-            validateCharacteristicName={validateCharacteristicName}
             commit={(_index, _name, _reasonCode, _baselineScore) => {
               if (_index === undefined) {
                 dispatch({

@@ -18,6 +18,7 @@ import { DataListAction, DataListCell, DataListItem, DataListItemCells, DataList
 import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
 import "../organisms/AttributesTable.scss";
 import { AttributesTableAction } from "../atoms";
+import { toText } from "../../../reducers";
 
 interface AttributesTableRowProps {
   index: number;
@@ -41,7 +42,7 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
         <DataListItemCells
           dataListCells={[
             <DataListCell key="0" width={4}>
-              <div>{JSON.stringify(attribute.predicate, undefined, 2)}</div>
+              <div>{toText(attribute.predicate)}</div>
             </DataListCell>,
             <DataListCell key="1" width={2}>
               <div>{attribute.partialScore}</div>

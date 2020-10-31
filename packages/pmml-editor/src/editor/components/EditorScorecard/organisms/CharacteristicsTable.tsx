@@ -40,10 +40,10 @@ interface CharacteristicsTableProps {
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   characteristics: IndexedCharacteristic[];
-  onRowClick: (index: number) => void;
-  onRowDelete: (index: number) => void;
-  onAddCharacteristic: () => void;
   validateCharacteristicName: (index: number | undefined, name: string | undefined) => boolean;
+  selectCharacteristic: (index: number) => void;
+  addCharacteristic: () => void;
+  deleteCharacteristic: (index: number) => void;
   commit: (
     index: number | undefined,
     name: string | undefined,
@@ -53,11 +53,17 @@ interface CharacteristicsTableProps {
 }
 
 export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
-  const { activeOperation, setActiveOperation, characteristics, onRowClick, onRowDelete, onAddCharacteristic } = props;
+  const {
+    activeOperation,
+    setActiveOperation,
+    characteristics,
+    selectCharacteristic,
+    addCharacteristic,
+    deleteCharacteristic
+  } = props;
 
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | undefined>(undefined);
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
-
   const addCharacteristicRowRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -72,7 +78,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     }
     const index: number | undefined = Number(id);
     setSelectedItemIndex(index);
-    onRowClick(index);
+    selectCharacteristic(index);
   };
 
   const onEdit = (index: number | undefined) => {
@@ -82,7 +88,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   const onDelete = (index: number | undefined) => {
     if (index !== undefined) {
-      onRowDelete(index);
+      deleteCharacteristic(index);
     }
   };
 
@@ -161,11 +167,11 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
           selectedDataListItemId={selectedItemIndex?.toString()}
           onSelectDataListItem={onSelectDataListItem}
         >
-          {characteristics.map((ic, index) => {
+          {characteristics.map(ic => {
             if (editItemIndex === ic.index) {
               return (
                 <CharacteristicsTableEditRow
-                  key={index}
+                  key={ic.index}
                   characteristic={ic}
                   validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
                   onCommit={(_name, _reasonCode, _baselineScore) =>
@@ -191,6 +197,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
           {activeOperation === Operation.CREATE_CHARACTERISTIC && (
             <div key={undefined} ref={addCharacteristicRowRef}>
               <CharacteristicsTableEditRow
+                key={"add"}
                 characteristic={{ index: undefined, characteristic: { Attribute: [] } }}
                 validateCharacteristicName={_name => onValidateCharacteristicName(undefined, _name)}
                 onCommit={(_name, _reasonCode, _baselineScore) =>
@@ -202,7 +209,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
           )}
         </DataList>
       </Form>
-      {characteristics.length === 0 && <EmptyStateNoCharacteristics createCharacteristic={onAddCharacteristic} />}
+      {characteristics.length === 0 && <EmptyStateNoCharacteristics addCharacteristic={addCharacteristic} />}
     </div>
   );
 };

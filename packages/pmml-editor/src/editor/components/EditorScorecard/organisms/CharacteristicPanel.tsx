@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useCallback } from "react";
 
 import {
   Button,
@@ -23,24 +22,35 @@ interface CharacteristicPanel {
 }
 
 interface CharacteristicPanelProps extends CharacteristicPanel {
+  modelIndex: number;
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   showCharacteristicPanel: boolean;
   hideCharacteristicPanel: () => void;
+  validateText: (text: string | undefined) => boolean;
+  addAttribute: () => void;
+  deleteAttribute: (index: number) => void;
+  commit: (
+    index: number | undefined,
+    text: string | undefined,
+    partialScore: number | undefined,
+    reasonCode: string | undefined
+  ) => void;
 }
 
 export const CharacteristicPanel = (props: CharacteristicPanelProps) => {
   const {
+    modelIndex,
     characteristic,
     activeOperation,
     setActiveOperation,
     showCharacteristicPanel,
-    hideCharacteristicPanel
+    hideCharacteristicPanel,
+    validateText,
+    addAttribute,
+    deleteAttribute,
+    commit
   } = props;
-
-  const onAddAttribute = useCallback(() => {
-    setActiveOperation(Operation.CREATE_ATTRIBUTE);
-  }, [characteristic]);
 
   return (
     <div className={`side-panel side-panel--from-right ${showCharacteristicPanel ? "side-panel--is-visible" : ""}`}>
@@ -78,19 +88,20 @@ export const CharacteristicPanel = (props: CharacteristicPanelProps) => {
                     id="add-attribute-button"
                     data-testid="characteristic-panel__add-attribute"
                     variant="primary"
-                    onClick={e => onAddAttribute()}
+                    onClick={addAttribute}
                     isDisabled={activeOperation !== Operation.NONE}
                   >
                     Add Attribute
                   </Button>
                   <AttributesTable
-                    index={characteristic?.index}
+                    modelIndex={modelIndex}
+                    characteristicIndex={characteristic?.index}
                     activeOperation={activeOperation}
                     setActiveOperation={setActiveOperation}
-                    attributes={characteristic?.characteristic.Attribute ?? []}
-                    onAddAttribute={() => window.alert("Add Attribute")}
-                    onRowDelete={index => window.alert("Delete Attribute")}
-                    commit={index => null}
+                    validateText={validateText}
+                    addAttribute={addAttribute}
+                    deleteAttribute={deleteAttribute}
+                    commit={commit}
                   />
                 </PageSection>
               </StackItem>
