@@ -37,7 +37,9 @@ import static org.drools.workbench.screens.scenariosimulation.client.TestPropert
 import static org.drools.workbench.screens.scenariosimulation.client.TestProperties.PLACEHOLDER;
 import static org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy.SIMPLE_CLASSES_MAP;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.DMN_DATE;
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.LOCALDATETIME_CANONICAL_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.LOCALDATE_CANONICAL_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.LOCALTIME_CANONICAL_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -150,6 +152,10 @@ public class ScenarioSimulationUtilsTest extends AbstractUtilsTest {
         assertEquals(ScenarioSimulationEditorConstants.INSTANCE.insertValue(), placeholder);
         placeholder = ScenarioSimulationUtils.getPlaceHolder(true, true, FactMappingValueType.NOT_EXPRESSION, LOCALDATE_CANONICAL_NAME);
         assertEquals(ScenarioSimulationEditorConstants.INSTANCE.dateFormatPlaceholder(), placeholder);
+        placeholder = ScenarioSimulationUtils.getPlaceHolder(true, true, FactMappingValueType.NOT_EXPRESSION, LOCALDATETIME_CANONICAL_NAME);
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.dateTimeFormatPlaceholder(), placeholder);
+        placeholder = ScenarioSimulationUtils.getPlaceHolder(true, true, FactMappingValueType.NOT_EXPRESSION, LOCALTIME_CANONICAL_NAME);
+        assertEquals(ScenarioSimulationEditorConstants.INSTANCE.timeFormatPlaceholder(), placeholder);
         placeholder = ScenarioSimulationUtils.getPlaceHolder(true, true, FactMappingValueType.NOT_EXPRESSION, DMN_DATE);
         assertEquals(ScenarioSimulationEditorConstants.INSTANCE.dmnDateFormatPlaceholder(), placeholder);
     }

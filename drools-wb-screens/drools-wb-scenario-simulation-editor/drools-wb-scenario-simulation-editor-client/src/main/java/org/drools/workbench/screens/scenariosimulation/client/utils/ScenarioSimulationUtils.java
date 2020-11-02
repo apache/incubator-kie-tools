@@ -39,7 +39,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 import static org.drools.workbench.screens.scenariosimulation.client.editor.strategies.DataManagementStrategy.SIMPLE_CLASSES_MAP;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.DMN_DATE;
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.LOCALDATETIME_CANONICAL_NAME;
 import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.LOCALDATE_CANONICAL_NAME;
+import static org.drools.workbench.screens.scenariosimulation.client.utils.ConstantHolder.LOCALTIME_CANONICAL_NAME;
 
 public class ScenarioSimulationUtils {
 
@@ -65,7 +67,7 @@ public class ScenarioSimulationUtils {
      * @return
      */
     public static String getOriginalColumnGroup(String columnGroup) {
-        return columnGroup.contains("-") ? columnGroup.substring(0, columnGroup.indexOf("-")) : columnGroup;
+        return columnGroup.contains("-") ? columnGroup.substring(0, columnGroup.indexOf('-')) : columnGroup;
     }
 
     /**
@@ -103,6 +105,12 @@ public class ScenarioSimulationUtils {
             if (Objects.equals(LOCALDATE_CANONICAL_NAME, className)) {
                 return ScenarioSimulationEditorConstants.INSTANCE.dateFormatPlaceholder();
             }
+            if (Objects.equals(LOCALDATETIME_CANONICAL_NAME, className)) {
+                return ScenarioSimulationEditorConstants.INSTANCE.dateTimeFormatPlaceholder();
+            }
+            if (Objects.equals(LOCALTIME_CANONICAL_NAME, className)) {
+                return ScenarioSimulationEditorConstants.INSTANCE.timeFormatPlaceholder();
+            }
             if (Objects.equals(DMN_DATE, className)) {
                 return ScenarioSimulationEditorConstants.INSTANCE.dmnDateFormatPlaceholder();
             }
@@ -121,7 +129,7 @@ public class ScenarioSimulationUtils {
     public static List<String> getPropertyNameElementsWithoutAlias(List<String> propertyNameElements, FactIdentifier factIdentifier) {
         String actualClassName = factIdentifier.getClassName();
         if (actualClassName.contains(".")) {
-            actualClassName = actualClassName.substring(actualClassName.lastIndexOf(".") + 1);
+            actualClassName = actualClassName.substring(actualClassName.lastIndexOf('.') + 1);
         }
         List<String> toReturn = new ArrayList<>(); // We have to keep the original List unmodified
         toReturn.addAll(propertyNameElements);

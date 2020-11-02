@@ -38,8 +38,14 @@ public class ConstantHolder {
     public static final String EXPRESSION_INSTANCE_PLACEHOLDER = EXPRESSION + " </>";
     public static final String EXPRESSION_VALUE_PREFIX = MVEL_ESCAPE_SYMBOL + " ";
 
-    // GWT doesn't support Java 8 LocalDate
+    // java.time (JSR-310) is not supported by GWT, therefore LocalDate and LocaleDateTime are not native
     public static final String LOCALDATE_SIMPLE_NAME = "LocalDate";
     public static final String LOCALDATE_CANONICAL_NAME = "java.time.LocalDate";
+    public static final String LOCALTIME_SIMPLE_NAME = "LocalTime";
+    public static final String LOCALTIME_CANONICAL_NAME = "java.time.LocalTime";
+    public static final String LOCALDATETIME_SIMPLE_NAME = "LocalDateTime";
+    public static final String LOCALDATETIME_CANONICAL_NAME = "java.time.LocalDateTime";
+    public static final String OFFSETDATETIME_SIMPLE_NAME = "OffsetDateTime";
+    public static final String OFFSETDATETIME_CANONICAL_NAME = "java.time.OffsetDateTime";
     public static final String DMN_DATE = "date";
 }
