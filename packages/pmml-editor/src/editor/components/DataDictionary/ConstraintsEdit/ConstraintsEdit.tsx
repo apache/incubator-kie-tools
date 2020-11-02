@@ -145,7 +145,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
           onAdd(rangeData as Constraints);
           break;
         case "Enumeration":
-          onAdd({ type: "Enumeration", value: enums } as Constraints);
+          onAdd({ type: "Enumeration", value: enums.filter(item => item.value.trim().length > 0) } as Constraints);
           break;
       }
     }
@@ -161,6 +161,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
     setRange(rangeEmptyValue);
     setConstraintType("");
     setEnums([]);
+    setValidation({ form: "default", fields: {} });
   };
 
   return (
@@ -274,7 +275,8 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
               </Card>
             )}
             {constraintType === "Enumeration" && (
-              <Card>
+              <Card isCompact={true}>
+                <CardTitle>Enumerations List</CardTitle>
                 <CardBody>
                   <ConstraintsEnumEdit
                     enumerations={enums}

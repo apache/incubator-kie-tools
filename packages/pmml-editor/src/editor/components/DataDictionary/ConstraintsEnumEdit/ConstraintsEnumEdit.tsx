@@ -64,19 +64,18 @@ const ConstraintsEnumEdit = ({
   return (
     <section className="constraints-enum">
       <Stack hasGutter={true}>
-        <StackItem>
-          <TextContent>
-            <Text component={TextVariants.h5}>Enumerations List</Text>
-            <Text component={TextVariants.p}>
-              Add constraints values to limit and define valid inputs for the data type.
-            </Text>
-          </TextContent>
-        </StackItem>
         {validation.form === "error" && (
           <StackItem>
             <Alert variant="danger" isInline={true} title="Please enter at least one enumeration." />
           </StackItem>
         )}
+        <StackItem>
+          <TextContent>
+            <Text component={TextVariants.p}>
+              Add constraints values to limit and define valid inputs for the data type.
+            </Text>
+          </TextContent>
+        </StackItem>
         <StackItem>
           <EnumsList
             items={enums}
@@ -158,10 +157,6 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
       onTab();
     }
   };
-
-  // useEffect(() => {
-  //   document.querySelector<HTMLInputElement>(`#enum-value-${position}`)?.focus();
-  // }, []);
 
   return (
     <li
