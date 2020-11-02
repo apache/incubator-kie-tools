@@ -26,7 +26,6 @@ import org.uberfire.client.authz.EditorTreeProvider;
 import org.uberfire.client.authz.PerspectiveTreeProvider;
 import org.uberfire.mocks.MockInstanceImpl;
 
-import static org.kie.workbench.common.services.shared.resources.EditorIds.CASE_MODELLER;
 import static org.kie.workbench.common.services.shared.resources.EditorIds.GUIDED_DECISION_TREE;
 import static org.kie.workbench.common.services.shared.resources.EditorIds.GUIDED_SCORE_CARD;
 import static org.kie.workbench.common.services.shared.resources.EditorIds.SCENARIO_SIMULATION_DESIGNER;
@@ -164,8 +163,6 @@ public class PermissionTreeSetupTest {
                                                   eq("XLSScoreCard"));
         verify(editorTreeProvider).registerEditor(eq(STUNNER_DESIGNER),
                                                   eq("StunnerDesigner"));
-        verify(editorTreeProvider).registerEditor(eq(CASE_MODELLER),
-                                                  eq("CaseModeller"));
         verify(editorTreeProvider).registerEditor(eq(SCENARIO_SIMULATION_DESIGNER),
                                                   eq("ScenarioSimulationEditor"));
     }

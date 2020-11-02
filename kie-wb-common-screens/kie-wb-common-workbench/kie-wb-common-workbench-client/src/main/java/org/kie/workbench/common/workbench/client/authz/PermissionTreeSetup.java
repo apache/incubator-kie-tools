@@ -26,7 +26,6 @@ import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbench
 import org.uberfire.client.authz.EditorTreeProvider;
 import org.uberfire.client.authz.PerspectiveTreeProvider;
 
-import static org.kie.workbench.common.services.shared.resources.EditorIds.CASE_MODELLER;
 import static org.kie.workbench.common.services.shared.resources.EditorIds.GUIDED_DECISION_TREE;
 import static org.kie.workbench.common.services.shared.resources.EditorIds.GUIDED_SCORE_CARD;
 import static org.kie.workbench.common.services.shared.resources.EditorIds.SCENARIO_SIMULATION_DESIGNER;
@@ -128,8 +127,6 @@ public class PermissionTreeSetup {
                                           i18n.XLSScoreCard());
         editorTreeProvider.registerEditor(STUNNER_DESIGNER,
                                           i18n.StunnerDesigner());
-        editorTreeProvider.registerEditor(CASE_MODELLER,
-                                          i18n.CaseModeller());
         editorTreeProvider.registerEditor(SCENARIO_SIMULATION_DESIGNER,
                                           i18n.ScenarioSimulationEditor());
 

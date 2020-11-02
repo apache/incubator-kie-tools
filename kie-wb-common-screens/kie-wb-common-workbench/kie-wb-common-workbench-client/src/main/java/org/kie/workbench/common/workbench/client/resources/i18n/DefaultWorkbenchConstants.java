@@ -157,8 +157,6 @@ public interface DefaultWorkbenchConstants
 
     String ErrorDetailsFailedToBeCopiedToClipboard();
 
-    String CaseModeller();
-
     String ScenarioSimulationEditor();
 
     String ExperimentalSettings();
