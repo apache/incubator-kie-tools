@@ -186,6 +186,9 @@ function _add_maven_repo() {
                 <!-- ### configured plugin repositories ### -->"
 
     sed -i "s|<!-- ### configured plugin repositories ### -->|${pluginRepo}|" $HOME/.m2/settings.xml
+
+    # new repo should be skipped by mirror if exists
+    sed -i "s|</mirrorOf>|,!${repo_id}</mirrorOf>|g" $HOME/.m2/settings.xml
 }
 
 # Finds the environment variable  and returns its value if found.

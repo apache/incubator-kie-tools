@@ -69,9 +69,7 @@ pipeline {
                     }
 
                     // Set the mirror url only if no artifact repository is given
-                    if (getMavenArtifactRepository() == '' 
-                            && env.MAVEN_MIRROR_REPOSITORY != null
-                            && env.MAVEN_MIRROR_REPOSITORY != ''){
+                    if (env.MAVEN_MIRROR_REPOSITORY){
                         echo 'Set Maven mirror url'
                         env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
                     }
@@ -178,21 +176,21 @@ pipeline {
             steps {
                 script {
                     updateTestsCommand = 'python3 scripts/update-tests.py'
-                    if(getMavenArtifactRepository() != ''){
+                    if(getMavenArtifactRepository()){
                         // Update repo in tests
                         updateTestsCommand += " --repo-url ${getMavenArtifactRepository()}"
                     }
 
                     // Set kogito-examples to bot author/branch if release
-                    if(params.EXAMPLES_REF != ''){
+                    if(params.EXAMPLES_REF){
                         updateTestsCommand += " --examples-ref ${params.EXAMPLES_REF}"
                     }
                     if(params.EXAMPLES_URI){
                         updateTestsCommand += " --examples-uri ${params.EXAMPLES_URI}"
                     }
 
-                    //Ignore self-signed certificates if MAVEN_MIRROR_URL is defined
-                    if(env.MAVEN_MIRROR_URL != ''){
+                    //Ignore self-signed certificates if MAVEN_MIRROR_URL and/or artifact repo is defined
+                    if(env.MAVEN_MIRROR_URL || getMavenArtifactRepository()){
                         updateTestsCommand += ' --ignore-self-signed-cert'
                     }
                     // Launch update tests
