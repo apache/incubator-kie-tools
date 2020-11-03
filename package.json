@@ -12,7 +12,9 @@
     "build:fast": "npx lerna run build:fast --stream",
     "build:prod": "npx lerna run build:prod --stream",
     "test:clearCache": "npx lerna run test:clearCache --stream",
-    "update-version-to": "node ./update_version_to.js"
+    "update-version-to": "node ./update_version_to.js",
+    "locktt": "locktt",
+    "install-locktt": "npm install lock-treatment-tool --global-style --no-package-lock --no-save"
   },
   "dependencies": {
     "react": "16.12.0",
@@ -50,11 +52,13 @@
     "jest-junit": "9.0.0",
     "jest-webextension-mock": "^3.5.0",
     "lerna": "3.18.3",
+    "lock-treatment-tool": "^0.4.1",
     "mocha": "6.1.4",
     "mocha-jenkins-reporter": "0.4.2",
     "node-sass": "4.12.0",
     "null-loader": "3.0.0",
     "prettier": "1.19.1",
+    "react-test-renderer": "^16.13.1",
     "run-script-os": "1.1.1",
     "sass-loader": "7.3.1",
     "selenium-webdriver": "^4.0.0-alpha.7",
@@ -75,7 +79,6 @@
     "webpack-dev-server": "3.9.0",
     "webpack-merge": "^5.0.9",
     "webpack-node-externals": "1.7.2",
-    "zip-webpack-plugin": "3.0.0",
-    "react-test-renderer": "^16.13.1"
+    "zip-webpack-plugin": "3.0.0"
   }
 }
