@@ -49,6 +49,7 @@ import org.kie.workbench.common.screens.server.management.client.util.State;
 import org.kie.workbench.common.screens.server.management.model.ContainerRuntimeOperation;
 import org.kie.workbench.common.screens.server.management.model.ContainerSpecData;
 import org.kie.workbench.common.screens.server.management.model.ContainerUpdateEvent;
+import org.kie.workbench.common.screens.server.management.service.ContainerService;
 import org.kie.workbench.common.screens.server.management.service.RuntimeManagementService;
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.slf4j.Logger;
@@ -73,6 +74,7 @@ public class ContainerPresenter {
     private final Event<ServerTemplateSelected> serverTemplateSelectedEvent;
     private final Event<NotificationEvent> notification;
     private ContainerSpec containerSpec;
+    private final Caller<ContainerService> containerService;
 
     @Inject
     public ContainerPresenter(final Logger logger,
@@ -84,7 +86,8 @@ public class ContainerPresenter {
                               final Caller<RuntimeManagementService> runtimeManagementService,
                               final Caller<SpecManagementService> specManagementService,
                               final Event<ServerTemplateSelected> serverTemplateSelectedEvent,
-                              final Event<NotificationEvent> notification) {
+                              final Event<NotificationEvent> notification,
+                              final Caller<ContainerService> containerService) {
         this.logger = logger;
         this.view = view;
         this.containerRemoteStatusPresenter = containerRemoteStatusPresenter;
@@ -95,6 +98,7 @@ public class ContainerPresenter {
         this.specManagementService = specManagementService;
         this.serverTemplateSelectedEvent = serverTemplateSelectedEvent;
         this.notification = notification;
+        this.containerService = containerService;
     }
 
     @PostConstruct
@@ -286,22 +290,28 @@ public class ContainerPresenter {
     }
 
     public void stopContainer() {
-        specManagementService.call(new RemoteCallback<Void>() {
-                                       @Override
-                                       public void callback(final Void response) {
-                                           updateStatus(KieContainerStatus.STOPPED);
-                                       }
-                                   },
-                                   new ErrorCallback<Object>() {
-                                       @Override
-                                       public boolean error(final Object o,
-                                                            final Throwable throwable) {
-                                           notification.fire(new NotificationEvent(view.getStopContainerErrorMessage(),
-                                                                                   NotificationEvent.NotificationType.ERROR));
-                                           updateStatus(KieContainerStatus.STARTED);
-                                           return false;
-                                       }
-                                   }).stopContainer(containerSpec);
+        containerService.call(response -> {
+            if (Boolean.FALSE.equals((Boolean) response)) {
+                specManagementService.call(new RemoteCallback<Void>() {
+                                               @Override
+                                               public void callback(final Void response) {
+                                                   updateStatus(KieContainerStatus.STOPPED);
+                                               }
+                                           },
+                                           new ErrorCallback<Object>() {
+                                               @Override
+                                               public boolean error(final Object o,
+                                                                    final Throwable throwable) {
+                                                   notification.fire(new NotificationEvent(view.getStopContainerErrorMessage(),
+                                                                                           NotificationEvent.NotificationType.ERROR));
+                                                   updateStatus(KieContainerStatus.STARTED);
+                                                   return false;
+                                               }
+                                           }).stopContainer(containerSpec);
+            } else {
+                notification.fire(new NotificationEvent(view.getCanNotStopContainerMessage(), NotificationEvent.NotificationType.WARNING));
+            }
+        }).isRunningContainer(containerSpec);
     }
 
     public void startContainer() {
@@ -401,5 +411,7 @@ public class ContainerPresenter {
         String getStopContainerErrorMessage();
 
         String getStartContainerErrorMessage();
+
+        String getCanNotStopContainerMessage();
     }
 }
