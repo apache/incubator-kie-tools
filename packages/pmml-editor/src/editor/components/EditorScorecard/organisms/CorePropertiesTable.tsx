@@ -56,9 +56,10 @@ interface CorePropertiesTableProps extends CoreProperties {
 const BooleanFieldEditor = (
   id: string,
   isChecked: boolean,
-  onChange: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => void
+  onChange: (checked: boolean, event: React.FormEvent<HTMLInputElement>) => void,
+  autoFocus?: boolean
 ) => {
-  return <Switch id={id} isChecked={isChecked} onChange={onChange} />;
+  return <Switch id={id} isChecked={isChecked} onChange={onChange} autoFocus={autoFocus === true} />;
 };
 
 const GenericSelectorEditor = (
@@ -122,7 +123,7 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
     setReasonCodeAlgorithm(props.reasonCodeAlgorithm);
   }, [props]);
 
-  const isScorableEditor = BooleanFieldEditor("is-scorable-id", isScorable, checked => setScorable(checked));
+  const isScorableEditor = BooleanFieldEditor("is-scorable-id", isScorable, checked => setScorable(checked), true);
   const functionNameEditor = GenericSelectorEditor(
     "function-name-selector-id",
     ["associationRules", "sequences", "classification", "regression", "clustering", "timeSeries", "mixed"],

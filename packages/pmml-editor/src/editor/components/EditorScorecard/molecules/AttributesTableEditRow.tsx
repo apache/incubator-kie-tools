@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DataListAction,
   DataListCell,
@@ -22,6 +22,7 @@ import {
   DataListItemCells,
   DataListItemRow,
   FormGroup,
+  TextArea,
   TextInput
 } from "@patternfly/react-core";
 import "../organisms/CharacteristicsTable.scss";
@@ -49,8 +50,6 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
   const [partialScore, setPartialScore] = useState<number | undefined>();
   const [reasonCode, setReasonCode] = useState<string | undefined>();
 
-  const textFieldRef = useRef<HTMLInputElement | null>(null);
-
   useEffect(() => {
     const _text = toText(attribute.predicate);
     setText({
@@ -59,10 +58,6 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
     });
     setPartialScore(attribute.partialScore);
     setReasonCode(attribute.reasonCode);
-
-    if (textFieldRef.current) {
-      textFieldRef.current.focus();
-    }
   }, [props]);
 
   const toNumber = (value: string): number | undefined => {
@@ -89,14 +84,16 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
                 helperTextInvalidIcon={<ExclamationCircleIcon />}
                 validated={text.valid ? "default" : "error"}
               >
-                <TextInput
+                <TextArea
                   type="text"
                   id="attribute-text"
                   name="attribute-text"
-                  ref={textFieldRef}
                   aria-describedby="attribute-text-helper"
                   value={text.value ?? ""}
                   validated={text.valid ? "default" : "error"}
+                  autoFocus={true}
+                  style={{ resize: "vertical" }}
+                  rows={text?.value?.split("\n").length ?? 1}
                   onChange={e =>
                     setText({
                       value: e,
