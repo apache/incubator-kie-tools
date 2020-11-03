@@ -112,6 +112,7 @@ public class KeyCloakGroupManagerTest extends DefaultKeyCloakTest {
     @Test
     public void testGetAllGroups() {
         List<Group> groups = groupsManager.getAll();
+        assertEquals(52, roleResources.size());
         assertEquals(50, groups.size());
     }
 

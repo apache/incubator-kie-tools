@@ -1,12 +1,12 @@
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,6 +33,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.uberfire.backend.server.security.RoleRegistry;
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleMappingResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RoleScopeResource;
@@ -63,15 +64,18 @@ public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
     @Before
     public void setup() throws Exception {
         super.setup();
-        // Roles.
+        // register roles
+        RoleRegistry.get().clear();
+        RoleRegistry.get().registerRole("admin");
+        RoleRegistry.get().registerRole("developer");
+
+        // Groups.
         for (int x = 0; x < rolesCount; x++) {
             String name = ROLE + x;
-            RoleResource roleResource = mock(RoleResource.class);
-            mockRoleResource(roleResource,
-                             name);
-            roleResources.add(roleResource);
-            roleRepresentations.add(roleResource.toRepresentation());
+            addRole(name);
         }
+        addRole("admin");
+        addRole("developer");
         when(rolesResource.get(anyString())).thenAnswer(new Answer<RoleResource>() {
             @Override
             public RoleResource answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -265,5 +269,13 @@ public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
             }
         }
         return null;
+    }
+
+    private void addRole(String name) {
+        RoleResource roleResource = mock(RoleResource.class);
+        mockRoleResource(roleResource,
+                         name);
+        roleResources.add(roleResource);
+        roleRepresentations.add(roleResource.toRepresentation());
     }
 }

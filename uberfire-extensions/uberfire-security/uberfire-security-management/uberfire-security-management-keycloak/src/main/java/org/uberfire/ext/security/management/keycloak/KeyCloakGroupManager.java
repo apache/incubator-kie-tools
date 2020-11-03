@@ -1,12 +1,12 @@
 /*
  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *  
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *    http://www.apache.org/licenses/LICENSE-2.0
- *  
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.resteasy.client.ClientResponse;
@@ -52,6 +53,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 /**
  * <p>GroupsManager Service Provider Implementation for KeyCloak.</p>
  * <p>Note that roles (in keycloak server) are mapped as groups (in the workbench) for the keycloak users management provider impl.</p>
+ *
  * @since 0.8.0
  */
 public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupManager,
@@ -105,11 +107,14 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
         consumeRealm(realmResource -> {
             final RolesResource rolesResource = realmResource.roles();
             final List<RoleRepresentation> roleRepresentations = rolesResource.list();
+            final Set<String> registeredRoles = SecurityManagementUtils.getRegisteredRoleNames();
             if (roleRepresentations != null && !roleRepresentations.isEmpty()) {
                 for (RoleRepresentation role : roleRepresentations) {
                     final String name = role.getName();
-                    final Group group = createGroup(name);
-                    roles.add(group);
+                    if (!registeredRoles.contains(name)) {
+                        final Group group = createGroup(name);
+                        roles.add(group);
+                    }
                 }
             }
         });
