@@ -41,6 +41,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.uberfire.backend.vfs.Path;
@@ -65,6 +67,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 @PrepareForTest(IOUtils.class)
+@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "javax.management.*"})
 @RunWith(PowerMockRunner.class)
 public class DecisionTableXLSServiceImplTest {
 
@@ -120,7 +123,7 @@ public class DecisionTableXLSServiceImplTest {
         when(user.getIdentifier()).thenReturn("user");
 
         when(path.toURI()).thenReturn("file://p0/src/main/resources/dtable.xls");
-        when(inputstream.read(anyObject())).thenReturn(-1);
+        when(inputstream.read(any())).thenReturn(-1);
     }
 
     @Test
@@ -167,7 +170,7 @@ public class DecisionTableXLSServiceImplTest {
 
         when(ioService.write(any(org.uberfire.java.nio.file.Path.class),
                              any(byte[].class),
-                             commentedOptionArgumentCaptor.capture())).thenReturn(null);
+                             any())).thenReturn(null);
 
         this.service = getServiceWithValidationOverride((tempFile) -> {
             //Do nothing; tests do not use a *real* XLS file
@@ -184,7 +187,7 @@ public class DecisionTableXLSServiceImplTest {
 
         inOrder.verify(ioService).startBatch(any());
         inOrder.verify(ioService).write(any(org.uberfire.java.nio.file.Path.class),
-                                        any(byte[].class),
+                                        Mockito.<byte[]>any(),
                                         any(CommentedOption.class));
         inOrder.verify(ioService).endBatch();
 
@@ -239,6 +242,7 @@ public class DecisionTableXLSServiceImplTest {
         }
         verify(ioService, never()).newOutputStream(any(org.uberfire.java.nio.file.Path.class), any(CommentedOption.class));
         verifyStatic(IOUtils.class, never());
+        IOUtils.toByteArray(Mockito.<InputStream>any());
     }
 
     @Test(expected = DecisionTableParseException.class)

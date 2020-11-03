@@ -261,7 +261,7 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         when(collectionViewMock.isListWidget()).thenReturn(true);
         collectionEditorPresenterSpy.showEditingBox();
         verify(collectionViewMock, times(1)).getElementsContainer();
-        verify(listEditingBoxPresenterMock, times(1)).getEditingBox(eq(TEST_KEY), anyMap(), anyMap());
+        verify(listEditingBoxPresenterMock, times(1)).getEditingBox(eq(TEST_KEY), any(), any());
         verify(elementsContainerMock, times(1)).appendChild(eq(listEditingBoxMock));
         verify(listEditingBoxMock, times(1)).scrollIntoView();
         verify(mapEditingBoxMock, never()).scrollIntoView();
@@ -272,7 +272,7 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
         when(collectionViewMock.isListWidget()).thenReturn(false);
         collectionEditorPresenterSpy.showEditingBox();
         verify(collectionViewMock, times(1)).getElementsContainer();
-        verify(mapEditingBoxPresenterMock, times(1)).getEditingBox(eq(TEST_KEY), anyMap(), anyMap());
+        verify(mapEditingBoxPresenterMock, times(1)).getEditingBox(eq(TEST_KEY), any(), any());
         verify(elementsContainerMock, times(1)).appendChild(eq(mapEditingBoxMock));
         verify(collectionEditorPresenterSpy, times(1)).toggleEditingStatus(eq(true));
         verify(listElementPresenterMock, times(1)).toggleEditingStatus(eq(true));
@@ -493,7 +493,7 @@ public class CollectionPresenterTest extends AbstractCollectionEditorTest {
             }
         }
         if (throwException) {
-            verify(confirmPopupPresenterMock, times(1)).show(eq(ScenarioSimulationEditorConstants.INSTANCE.collectionError()), anyString());
+            verify(confirmPopupPresenterMock, times(1)).show(eq(ScenarioSimulationEditorConstants.INSTANCE.collectionError()), any());
             verify(collectionViewMock, never()).updateValue(anyString());
         } else {
             verify(confirmPopupPresenterMock, never()).show(eq(ScenarioSimulationEditorConstants.INSTANCE.collectionError()), anyString());

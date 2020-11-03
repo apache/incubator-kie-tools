@@ -52,6 +52,7 @@ import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateVa
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -200,7 +201,7 @@ public class DecisionTableXLSEditorPresenterTest {
 
         verify(view).init(presenter);
         verify(view).setupUploadWidget(decisionTableXLSResourceType);
-        verify(view).setPath(any(Path.class));
+        verify(view).setPath(any());
         verify(view).setReadOnly(false);
     }
 
@@ -211,7 +212,7 @@ public class DecisionTableXLSEditorPresenterTest {
 
         verify(view).init(presenter);
         verify(view).setupUploadWidget(decisionTableXLSXResourceType);
-        verify(view).setPath(any(Path.class));
+        verify(view).setPath(any());
         verify(view).setReadOnly(false);
     }
 
@@ -267,12 +268,12 @@ public class DecisionTableXLSEditorPresenterTest {
 
         presenter.makeMenuBar();
 
-        verify(fileMenuBuilder).addCopy(any(Path.class),
-                                        any(AssetUpdateValidator.class));
-        verify(fileMenuBuilder).addRename(any(Path.class),
-                                          any(AssetUpdateValidator.class));
-        verify(fileMenuBuilder).addDelete(any(Path.class),
-                                          any(AssetUpdateValidator.class));
+        verify(fileMenuBuilder).addCopy(Mockito.<Path>any(),
+                                        any());
+        verify(fileMenuBuilder).addRename(Mockito.<Path>any(),
+                                          any());
+        verify(fileMenuBuilder).addDelete(Mockito.<Path>any(),
+                                          any());
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
         verify(presenter).addDownloadMenuItem(fileMenuBuilder);
 

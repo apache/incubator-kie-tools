@@ -83,8 +83,8 @@ public class ConstraintValueEditorTest {
         ApplicationPreferences.setUp(map);
 
         when(ruleModeller.getDataModelOracle()).thenReturn(oracle);
-        when(oracle.getFieldType(anyString(),
-                                 anyString())).thenReturn(DataType.TYPE_STRING);
+        when(oracle.getFieldType(any(),
+                                 any())).thenReturn(DataType.TYPE_STRING);
         when(constraint.getConstraintValueType()).thenReturn(SingleFieldConstraint.TYPE_LITERAL);
     }
 
@@ -119,7 +119,7 @@ public class ConstraintValueEditorTest {
         editor.getNewTextBox(DataType.TYPE_STRING);
 
         inOrder.verify(editor).setUpTextBoxStyleAndHandlers(eq(defaultTextBox),
-                                                            any(Command.class));
+                                                            any());
         verify(defaultTextBox,
                times(1)).setText(any(String.class));
         inOrder.verify(editor).attachDisplayLengthHandler(eq(defaultTextBox));
@@ -134,7 +134,7 @@ public class ConstraintValueEditorTest {
         editor.templateKeyEditor();
 
         inOrder.verify(editor).setUpTextBoxStyleAndHandlers(eq(templateKeyTextBox),
-                                                            any(Command.class));
+                                                            any());
         verify(templateKeyTextBox,
                times(1)).setValue(any(String.class),
                                   any(Boolean.class));
