@@ -1,1 +1,0 @@
-[ { "op": "replace", "path": "/metadata/annotations", "value": {  } }, { "op": "replace", "path": "/data", "value": {  } } ]

@@ -58,9 +58,6 @@ Feature: kogito-springboot-ubi8-s2i image tests
     Then file /home/kogito/bin/process-springboot-example.jar should exist
     And s2i build log should contain '/home/kogito/bin/demo.orders.proto' -> '/home/kogito/data/protobufs/demo.orders.proto'
     And s2i build log should contain '/home/kogito/bin/persons.proto' -> '/home/kogito/data/protobufs/persons.proto'
-    And s2i build log should contain ---> [persistence] generating md5 for persistence files
-    And run sh -c 'cat /home/kogito/data/protobufs/persons-md5.txt' in container and immediately check its output for 29ff4ac73aaeace2e0b35bbfd10b8df9
-    And run sh -c 'cat /home/kogito/data/protobufs/demo.orders-md5.txt' in container and immediately check its output for cad0e594b6c80f0e284ec271f122b47b
 
   Scenario: Verify if the s2i build is finished as expected using multi-module build with debug enabled
     Given s2i build https://github.com/kiegroup/kogito-examples.git from . using master and runtime-image quay.io/kiegroup/kogito-springboot-ubi8:latest

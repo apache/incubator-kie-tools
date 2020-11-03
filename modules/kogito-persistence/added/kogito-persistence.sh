@@ -32,76 +32,7 @@ function move_persistence_files() {
     if ls $KOGITO_HOME/bin/*.proto &>/dev/null; then
         # copy to the final dir, so we keep bin clean
         cp -v $KOGITO_HOME/bin/*.proto $KOGITO_HOME/data/protobufs/
-        generate_md5_persistence_files
     else
         log_info "---> [persistence] Skip copying files, $KOGITO_HOME/bin directory does not have proto files!"
     fi
-}
-
-# generate_md5_persistence_files generates md5 files for each *.proto file found in $KOGITO_HOME/data/protobufs/
-function generate_md5_persistence_files() {
-    if ls $KOGITO_HOME/data/protobufs/*.proto &>/dev/null; then
-        log_info "---> [persistence] generating md5 for persistence files"
-        for entry in "$KOGITO_HOME/data/protobufs"/*.proto; do
-            md5sum ${entry} | awk '{ print $1 }' >${entry%.*}-md5.txt
-            log_info "----> [persistence] Generated checksum for ${entry} with the name: ${entry%.*}-md5.txt"
-        done
-    fi
-}
-
-# Updates the configMap for this Kogito Runtime instance 
-# with the generated proto files mounted in the file system.
-# Can be called multiple times or outside of a k8s cluster.
-# If outside the cluster, just skips the update
-function update_configmap() {
-    if ! is_running_on_kubernetes; then
-        log_info "---> [persistence] Not running on kubernetes cluster, skipping config map update"
-        return 0
-    fi
-
-    local config_map=$(cat $KOGITO_HOME/podinfo/protobufcm)
-    local file_contents=""
-    local file_name=""
-    local md5=""
-    local annotation=""
-    local data=""
-    local metadata=""
-    local body=""
-
-    if ls $KOGITO_HOME/data/protobufs/*.proto &>/dev/null; then
-        for entry in "$KOGITO_HOME/data/protobufs"/*.proto; do
-            # sanitize input
-            file_contents=$(jq -aRs . <<<$(cat $entry))
-            file_name=$(basename $entry)
-            md5=$(cat ${entry%.*}-md5.txt)
-            annotation="org.kie.kogito.protobuf.hash/${file_name%.*}"
-            metadata="${metadata} \"${annotation}\": \"${md5}\","
-            # doesn't need quotes since jq already added
-            data="${data} \"${file_name}\": ${file_contents},"
-        done
-    fi
-
-    if [ "${metadata}" != "" ]; then
-        metadata="${metadata%,}" # cut last comma
-    fi
-
-    if [ "${data}" != "" ]; then
-        data="${data%,}"
-    fi
-
-    body="[ { \"op\": \"replace\", \"path\": \"/metadata/annotations\", \"value\": { ${metadata} } }, { \"op\": \"replace\", \"path\": \"/data\", \"value\": { ${data} } } ]"
-    log_info "---> [persistence] About to patch configMap ${config_map}"
-    # prints the raw data
-    echo "Body: ${body}"
-    printf "%s" "${body}" >$KOGITO_HOME/data/protobufs/configmap_patched.json
-    response=$(patch_json_k8s_resource "api" "configmaps/${config_map}" $KOGITO_HOME/data/protobufs/configmap_patched.json)
-    if [ "${response: -3}" != "200" ]; then
-        log_warning "---> [persistence] Fail to patch configMap ${config_map}, the Service Account might not have the necessary privileges"
-        if [ ! -z "${response}" ]; then
-            log_warning "---> [persistence] Response message: ${response::-3} - HTTP Status code: ${response: -3}"
-        fi
-        return 1
-    fi
-
-    return 0
 }
