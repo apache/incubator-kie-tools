@@ -31,9 +31,9 @@ import { UpdateGistErrors } from "../common/GithubService";
 import {
   EmbeddableClass,
   FileExtension,
-  getEmbeddableEditorFromContent,
-  getEmbeddableEditorFromGist,
-  getEmbeddableEditorSrcdoc,
+  getStandaloneEditorFromContent,
+  getStandaloneEditorFromGist,
+  getStandaloneEditorSrcdoc,
   isFileExtension
 } from "../common/utils";
 import { isFileExcluded } from "tslint/lib/configuration";
@@ -192,32 +192,30 @@ export function EditorPage(props: Props) {
     }
   }, [location.pathname]);
 
-  const getEmbeddableScript = useCallback(
-    (content?: string, gistId?: string) => {
+  const getStandaloneEditorScript = useCallback(
+    (content?: string, isGist?: boolean) => {
       if (fileExtension) {
         const embeddableClass = editorEmbeddableClassMapping.get(fileExtension)!;
         if (content) {
-          return getEmbeddableEditorFromContent(embeddableClass, content);
+          return getStandaloneEditorFromContent(embeddableClass, content);
         }
 
-        if (gistId) {
-          return getEmbeddableEditorFromGist(embeddableClass, gistId, context.githubService.getLogin());
+        if (isGist) {
+          return getStandaloneEditorFromGist(embeddableClass, fileUrl);
         }
       }
     },
-    [editorEmbeddableClassMapping, fileExtension, context]
+    [editorEmbeddableClassMapping, fileExtension, fileUrl]
   );
 
   const requestExportIframeGist = useCallback(() => {
     if (fileExtension) {
-      const gistId = context.githubService.extractGistIdFromRawUrl(fileUrl!);
-      // handle specif gist filename
-      const script = getEmbeddableScript(undefined, gistId);
+      const script = getStandaloneEditorScript(undefined, true);
 
       const iframe = document.createElement("iframe");
       iframe.width = "100%";
       iframe.height = "100%";
-      iframe.srcdoc = getEmbeddableEditorSrcdoc(script!, fileExtension);
+      iframe.srcdoc = getStandaloneEditorSrcdoc(script!, fileExtension);
 
       copyContentTextArea.current!.value = iframe.outerHTML;
       copyContentTextArea.current!.select();
@@ -225,17 +223,17 @@ export function EditorPage(props: Props) {
         setAlert(Alerts.COPY);
       }
     }
-  }, [fileUrl, fileExtension]);
+  }, [fileExtension, getStandaloneEditorScript]);
 
   const requestExportIframeContent = useCallback(async () => {
     if (fileExtension) {
       const content = ((await editor?.getContent()) ?? "").replace(/(\r\n|\n|\r)/gm, "");
-      const script = getEmbeddableScript(content);
+      const script = getStandaloneEditorScript(content);
 
       const iframe = document.createElement("iframe");
       iframe.width = "100%";
       iframe.height = "100%";
-      iframe.srcdoc = getEmbeddableEditorSrcdoc(script!, fileExtension);
+      iframe.srcdoc = getStandaloneEditorSrcdoc(script!, fileExtension);
 
       copyContentTextArea.current!.value = iframe.outerHTML;
       copyContentTextArea.current!.select();
@@ -243,7 +241,7 @@ export function EditorPage(props: Props) {
         setAlert(Alerts.COPY);
       }
     }
-  }, [editor, fileExtension]);
+  }, [editor, fileExtension, getStandaloneEditorScript]);
 
   const requestCopyContentToClipboard = useCallback(() => {
     editor?.getContent().then(content => {

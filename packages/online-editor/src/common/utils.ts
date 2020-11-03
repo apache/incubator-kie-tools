@@ -103,18 +103,18 @@ export function isFileExtension(toBeDetermined: string): toBeDetermined is FileE
   return toBeDetermined === "bpmn" || toBeDetermined === "bpmn2" || toBeDetermined === "dmn";
 }
 
-export function getEmbeddableEditorFromGist(editor: EmbeddableClass, gistId: string, userLogin: string) {
+export function getStandaloneEditorFromGist(editor: EmbeddableClass, gistUrl: string) {
   return `
     <script>
       // You can manually change the readOnly property.
       const readOnly = true;
-      fetch("https://gist.githubusercontent.com/${userLogin}/${gistId}/raw")
+      fetch("${gistUrl}")
         .then(response => response.text())
         .then(content => ${editor}.open({container: document.body, initialContent: content, readOnly, origin: "*" }))        
     </script>`;
 }
 
-export function getEmbeddableEditorFromContent(editor: EmbeddableClass, content: string) {
+export function getStandaloneEditorFromContent(editor: EmbeddableClass, content: string) {
   return `
     <script>
       // You can manually change the readOnly property.
@@ -123,10 +123,10 @@ export function getEmbeddableEditorFromContent(editor: EmbeddableClass, content:
     </script>`;
 }
 
-const BPMN_SOURCE = "https://paulovmr.github.io/kogito-online/bpmn/index.js";
-const DMN_SOURCE = "https://paulovmr.github.io/kogito-online/dmn/index.js";
+const BPMN_SOURCE = "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js";
+const DMN_SOURCE = "https://kiegroup.github.io/kogito-online/standalone/dmn/index.js";
 
-export function getEmbeddableEditorSrcdoc(script: string, type: FileExtension) {
+export function getStandaloneEditorSrcdoc(script: string, type: FileExtension) {
   return `<!DOCTYPE html>
     <html lang="en">
     <head>
