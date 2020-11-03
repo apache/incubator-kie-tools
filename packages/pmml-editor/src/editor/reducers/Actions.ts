@@ -40,6 +40,7 @@ export enum Actions {
   DeleteModel = "DELETE_MODEL",
   CreateDataField = "CREATE_DATA_FIELD",
   DeleteDataField = "DELETE_DATA_FIELD",
+  SetDataFields = "SET_DATA_FIELDS",
   SetDataFieldName = "SET_DATA_FIELD_NAME",
   SetHeaderDescription = "SET_HEADER_DESCRIPTION",
   Undo = "UNDO",

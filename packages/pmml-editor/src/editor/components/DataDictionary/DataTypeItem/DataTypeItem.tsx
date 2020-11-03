@@ -19,18 +19,18 @@ import {
   TextInput
 } from "@patternfly/react-core";
 import { AngleRightIcon, CheckIcon, EditAltIcon, TrashIcon } from "@patternfly/react-icons";
-import { DataType, StatusContext } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { DataField, StatusContext } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
 import { Validated } from "../../../types";
 
 interface DataTypeItemProps {
-  dataType: DataType;
+  dataType: DataField;
   index: number;
-  onSave: (dataType: DataType, index: number | null) => void;
+  onSave: (dataType: DataField, index: number | null) => void;
   onEdit?: (index: number) => void;
   onDelete?: (index: number) => void;
-  onConstraintsEdit: (dataType: DataType) => void;
+  onConstraintsEdit: (dataType: DataField) => void;
   onValidate: (dataTypeName: string) => boolean;
 }
 
@@ -38,10 +38,10 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   const { dataType, index, onSave, onEdit, onDelete, onConstraintsEdit, onValidate } = props;
   const editing = useContext(StatusContext);
   const [name, setName] = useState(dataType.name);
-  const [typeSelection, setTypeSelection] = useState<string>(dataType.type);
+  const [typeSelection, setTypeSelection] = useState<DataField["type"]>(dataType.type);
   const [isTypeSelectOpen, setIsTypeSelectOpen] = useState(false);
   const [isList, setIsList] = useState(dataType.list);
-  const typeOptions = [{ value: "String" }, { value: "Number" }, { value: "Boolean" }];
+  const typeOptions = [{ value: "string" }, { value: "number" }, { value: "boolean" }];
   const [validation, setValidation] = useState<Validated>("default");
 
   const ref = useOnclickOutside(() => {
@@ -61,7 +61,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
 
   const clearTypeSelection = () => {
     setIsTypeSelectOpen(false);
-    setTypeSelection("String");
+    setTypeSelection("string");
   };
 
   const typeSelect = (event: any, selection: any, isPlaceholder: boolean) => {
@@ -168,7 +168,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         isInline={true}
                         iconPosition="right"
                         onClick={handleConstraints}
-                        isDisabled={name.trim().length === 0 || isList || typeSelection === "Boolean"}
+                        isDisabled={name.trim().length === 0 || isList || typeSelection === "boolean"}
                       >
                         <span>Add Constraints</span>
                       </Button>
@@ -179,7 +179,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         <Button
                           variant="link"
                           onClick={handleConstraints}
-                          isDisabled={name.trim().length === 0 || isList || typeSelection === "Boolean"}
+                          isDisabled={name.trim().length === 0 || isList || typeSelection === "boolean"}
                         >
                           <ConstraintsLabel constraints={dataType.constraints} />
                         </Button>

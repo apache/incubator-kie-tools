@@ -24,12 +24,12 @@ import {
   TextVariants
 } from "@patternfly/react-core";
 import ConstraintsEnumEdit from "../ConstraintsEnumEdit/ConstraintsEnumEdit";
-import { Constraints, DataType, EnumConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
+import { Constraints, DataField, EnumConstraint } from "../DataDictionaryContainer/DataDictionaryContainer";
 import { Validated } from "../../../types";
 import "./ConstraintsEdit.scss";
 
 interface ConstraintsEditProps {
-  dataType: DataType;
+  dataType: DataField;
   onAdd: (payload: Constraints) => void;
   onDelete: () => void;
 }
@@ -200,6 +200,7 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
                 </Select>
               </div>
             </FormGroup>
+            {/*range constraints editing to be moved to a dedicated component*/}
             {constraintType === "Range" && (
               <Card isCompact={true}>
                 <CardTitle>Range Constraint</CardTitle>

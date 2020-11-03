@@ -1,36 +1,31 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Button, Flex, FlexItem } from "@patternfly/react-core";
-import { v4 as uuid } from "uuid";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
+import { v4 as uuid } from "uuid";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 
-import "./DataDictionaryContainer.scss";
 import DataTypeItem from "../DataTypeItem/DataTypeItem";
 import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import DataTypesSort from "../DataTypesSort/DataTypesSort";
+import "./DataDictionaryContainer.scss";
 
-let dataDictionary = [
-  {
-    name: "Name",
-    type: "String",
-    list: false
-  }
-];
+interface DataDictionaryContainerProps {
+  dataDictionary: DataField[];
+  onUpdate: (updatedDictionary: DataField[]) => void;
+}
 
-type dataDictionarySection = "main" | "batch-add" | "constraints";
-
-const DataDictionaryContainer = () => {
-  const [dataTypes, setDataTypes] = useState<DataType[]>(dataDictionary);
+const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryContainerProps) => {
+  const [dataTypes, setDataTypes] = useState<DataField[]>(dataDictionary);
   const [newType, setNewType] = useState(false);
   const [editing, setEditing] = useState<number | boolean>(false);
   const [viewSection, setViewSection] = useState<dataDictionarySection>("main");
-  const [constrainsEdit, setConstraintsEdit] = useState<DataType>();
+  const [constrainsEdit, setConstraintsEdit] = useState<DataField>();
   const [sorting, setSorting] = useState(false);
 
   useEffect(() => {
-    dataDictionary = dataTypes;
+    onUpdate(dataTypes);
   }, [dataTypes]);
 
   const addDataType = () => {
@@ -38,7 +33,7 @@ const DataDictionaryContainer = () => {
     setEditing(-1);
   };
 
-  const saveDataType = (dataType: DataType, index: number) => {
+  const saveDataType = (dataType: DataField, index: number) => {
     if (index === -1) {
       if (dataType.name.length > 0) {
         setDataTypes([...dataTypes, dataType]);
@@ -52,7 +47,7 @@ const DataDictionaryContainer = () => {
     }
   };
 
-  const handleSave = (dataType: DataType, index: number) => {
+  const handleSave = (dataType: DataField, index: number) => {
     saveDataType(dataType, index);
     setNewType(false);
     setEditing(false);
@@ -73,14 +68,14 @@ const DataDictionaryContainer = () => {
 
   const handleMultipleAdd = (types: string) => {
     const typesNames = types.split("\n").filter(item => item.trim().length > 0);
-    const newDataTypes = typesNames.map(name => {
-      return { name: name.trim(), type: "String", list: false };
+    const newDataTypes: DataField[] = typesNames.map(name => {
+      return { name: name.trim(), type: "string", list: false };
     });
     setDataTypes([...dataTypes, ...newDataTypes]);
     setViewSection("main");
   };
 
-  const handleConstraintsEdit = (dataType: DataType) => {
+  const handleConstraintsEdit = (dataType: DataField) => {
     if (typeof editing === "number") {
       saveDataType(dataType, editing);
       if (editing === -1) {
@@ -115,7 +110,7 @@ const DataDictionaryContainer = () => {
     setSorting(!sorting);
   };
 
-  const handleSorting = (sortedDataTypes: DataType[]) => {
+  const handleSorting = (sortedDataTypes: DataField[]) => {
     setDataTypes(sortedDataTypes);
   };
 
@@ -204,7 +199,7 @@ const DataDictionaryContainer = () => {
                       ))}
                       {newType && (
                         <DataTypeItem
-                          dataType={{ name: "", type: "String", list: false }}
+                          dataType={{ name: "", type: "string", list: false }}
                           index={-1}
                           key={uuid()}
                           onSave={handleSave}
@@ -245,12 +240,14 @@ export const StatusContext = React.createContext<number | boolean>(false);
 
 export default DataDictionaryContainer;
 
-export interface DataType {
+export interface DataField {
   name: string;
-  type: string;
+  type: "number" | "string" | "boolean";
   list: boolean;
   constraints?: Constraints;
 }
+
+type dataDictionarySection = "main" | "batch-add" | "constraints";
 
 export type Constraints =
   | {
