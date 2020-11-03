@@ -34,8 +34,11 @@ import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartConf;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartData;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Tick;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class C3BaseTest extends AbstractDisplayerTest {
 
     @Mock

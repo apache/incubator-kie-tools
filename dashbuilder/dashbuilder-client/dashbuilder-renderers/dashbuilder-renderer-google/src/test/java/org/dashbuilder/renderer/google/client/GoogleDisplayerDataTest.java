@@ -28,7 +28,7 @@ import static org.dashbuilder.dataset.group.AggregateFunctionType.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class GoogleDisplayerDataTest extends GoogleDisplayerTest {
 
     DisplayerSettings byYear = DisplayerSettingsFactory.newBarChartSettings()

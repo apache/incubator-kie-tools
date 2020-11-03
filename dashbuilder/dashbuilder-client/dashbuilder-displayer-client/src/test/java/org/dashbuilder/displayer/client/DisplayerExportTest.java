@@ -30,7 +30,7 @@ import static org.dashbuilder.dataset.ExpenseReportsData.*;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DisplayerExportTest extends AbstractDisplayerTest {
 
     DisplayerSettings EMPTY = DisplayerSettingsFactory.newTableSettings()

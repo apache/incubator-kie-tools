@@ -29,7 +29,7 @@ import static org.dashbuilder.dataset.group.AggregateFunctionType.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DisplayerFilterTest extends AbstractDisplayerTest {
 
     DisplayerSettings byDepartment = DisplayerSettingsFactory.newPieChartSettings()

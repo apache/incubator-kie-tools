@@ -32,7 +32,7 @@ import static org.dashbuilder.dataset.ExpenseReportsData.*;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class SelectorDisplayerTest extends AbstractDisplayerTest {
 
     public SelectorDisplayer createSelectorDisplayer(DisplayerSettings settings) {

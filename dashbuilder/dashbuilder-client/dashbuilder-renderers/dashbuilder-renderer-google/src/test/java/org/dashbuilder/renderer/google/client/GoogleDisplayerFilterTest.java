@@ -28,7 +28,7 @@ import static org.dashbuilder.dataset.ExpenseReportsData.*;
 import static org.dashbuilder.dataset.group.AggregateFunctionType.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class GoogleDisplayerFilterTest extends GoogleDisplayerTest {
 
     DisplayerSettings byYear = DisplayerSettingsFactory.newBarChartSettings()
@@ -45,6 +45,7 @@ public class GoogleDisplayerFilterTest extends GoogleDisplayerTest {
 
     public void resetFilterLabelSet(FilterLabelSet filterLabelSet) {
         reset(filterLabelSet);
+        doAnswer(invocationOnMock -> filterLabel).when(filterLabelSet).addLabel(anyString());
     }
 
     @Test

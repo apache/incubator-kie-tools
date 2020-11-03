@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DataSetDefPreviewTableTest extends AbstractDisplayerTest {
     
     @Mock DataSetDefPreviewTable.View view;

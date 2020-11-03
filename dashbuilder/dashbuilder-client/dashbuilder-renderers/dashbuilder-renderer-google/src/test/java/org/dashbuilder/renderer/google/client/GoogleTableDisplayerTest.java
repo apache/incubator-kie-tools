@@ -26,7 +26,7 @@ import static org.dashbuilder.dataset.ExpenseReportsData.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class GoogleTableDisplayerTest extends GoogleDisplayerTest {
 
     @Test

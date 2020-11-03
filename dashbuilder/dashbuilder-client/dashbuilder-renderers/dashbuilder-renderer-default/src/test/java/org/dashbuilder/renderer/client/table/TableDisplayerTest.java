@@ -42,7 +42,7 @@ import static org.dashbuilder.dataset.sort.SortOrder.DESCENDING;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class TableDisplayerTest extends AbstractDisplayerTest {
 
     public TableDisplayer createTableDisplayer(DisplayerSettings settings) {

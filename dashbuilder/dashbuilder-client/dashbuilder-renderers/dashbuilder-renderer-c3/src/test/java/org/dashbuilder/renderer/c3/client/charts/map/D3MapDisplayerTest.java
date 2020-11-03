@@ -36,7 +36,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class D3MapDisplayerTest extends C3BaseTest {
     
     private static final String COUNTRY_1= "Country1";

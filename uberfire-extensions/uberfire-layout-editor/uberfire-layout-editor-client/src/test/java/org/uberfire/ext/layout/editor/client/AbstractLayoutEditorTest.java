@@ -164,6 +164,7 @@ public abstract class AbstractLayoutEditorTest {
             protected ComponentColumn createComponentColumnInstance() {
 
                 ManagedInstance managedInstanceMock = mock(ManagedInstance.class);
+                when(managedInstanceMock.get()).thenReturn(new ComponentColumnPart());
                 ComponentColumn componentColumn = new ComponentColumn(mock(ComponentColumn.View.class),
                                                                       dnDManager,
                                                                       dragHelper,
@@ -246,6 +247,7 @@ public abstract class AbstractLayoutEditorTest {
     public void setup() {
         container = createContainer();
         container.setup();
+        when(dragHelper.getLayoutComponentFromDrop(any())).thenReturn(new LayoutComponent());
     }
 
     protected LayoutTemplate loadLayout(String singleRowComponentLayout) throws Exception {

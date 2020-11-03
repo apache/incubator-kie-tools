@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
 import static org.dashbuilder.dataset.ExpenseReportsData.*;
 import static org.dashbuilder.dataset.Assertions.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DisplayerLifecycleTest extends AbstractDisplayerTest {
 
     DisplayerSettings settings = DisplayerSettingsFactory.newPieChartSettings()

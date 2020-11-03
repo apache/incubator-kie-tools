@@ -17,6 +17,8 @@
 package org.uberfire.ext.layout.editor.client.components;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.AbstractLayoutEditorTest;
@@ -31,6 +33,7 @@ import org.uberfire.ext.plugin.type.TagsConverterUtil;
 
 import static org.junit.Assert.*;
 
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class FullLayoutTest extends AbstractLayoutEditorTest {
 
     @Test

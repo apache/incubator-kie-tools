@@ -19,7 +19,9 @@ package org.uberfire.ext.layout.editor.client.components.rows;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.AbstractLayoutEditorTest;
 import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
@@ -40,6 +42,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class RowTest extends AbstractLayoutEditorTest {
 
     @Test
