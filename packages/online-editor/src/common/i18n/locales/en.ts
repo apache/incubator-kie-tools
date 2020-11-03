@@ -54,7 +54,7 @@ export const en: OnlineI18n = {
       },
       invalidCurrentGist: `Your current gist ${en_common.names.url} is invalid. If you've updated its filename, it's necessary to update your ${en_common.names.url} as well.`,
       invalidGistFilename: "Invalid filename. This gist already has a file with this name.",
-      error: "An error occurred trying to perform the last operation. Try again later.",
+      error: `An error occurred trying to perform the last operation. Check if your ${en_common.names.github} token is still valid and try again later.`,
       unsaved: {
         title: "Unsaved changes will be lost",
         message: "Click Save to download your progress before closing.",
@@ -68,6 +68,7 @@ export const en: OnlineI18n = {
     downloadSVG: `${en_common.terms.download} ${en_common.names.svg}`,
     setGitHubToken: `Set up your ${en_common.names.github} token`,
     gistIt: "Gist it!",
+    gistItTooltip: `Set up your ${en_common.names.github} token to be able to create gists!`,
     fileActions: "File actions",
     updateGist: "Update gist",
     updateGistTooltip: `To be able to update a gist you need to have access to it through your ${en_common.names.github} token.`

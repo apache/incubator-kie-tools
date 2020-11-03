@@ -239,19 +239,20 @@ export function HomePage(props: Props) {
       urlToOpen: undefined
     });
     if (context.githubService.isGithub(inputFileUrl)) {
-      if (await context.githubService.checkFileExistence(inputFileUrl)) {
+      try {
+        const rawUrl = await context.githubService.getGithubRawUrl(inputFileUrl);
         setInputFileUrlState({
           urlValidation: InputFileUrlState.VALID,
-          urlToOpen: inputFileUrl
+          urlToOpen: rawUrl
+        });
+        return;
+      } catch (err) {
+        setInputFileUrlState({
+          urlValidation: InputFileUrlState.NOT_FOUND_URL,
+          urlToOpen: undefined
         });
         return;
       }
-
-      setInputFileUrlState({
-        urlValidation: InputFileUrlState.NOT_FOUND_URL,
-        urlToOpen: undefined
-      });
-      return;
     }
 
     try {
