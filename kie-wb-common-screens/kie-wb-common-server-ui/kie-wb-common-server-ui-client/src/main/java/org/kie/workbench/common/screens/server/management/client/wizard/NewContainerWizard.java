@@ -184,6 +184,7 @@ public class NewContainerWizard extends AbstractMultiPageWizard {
     @Override
     public void pageSelected(final int pageNumber) {
         if (this.getSelectedPage() == pageNumber) {
+            super.pageSelected(pageNumber);
             return;
         }
 

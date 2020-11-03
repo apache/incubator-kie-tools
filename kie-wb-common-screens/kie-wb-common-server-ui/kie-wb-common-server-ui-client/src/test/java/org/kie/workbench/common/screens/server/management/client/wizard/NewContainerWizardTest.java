@@ -293,6 +293,16 @@ public class NewContainerWizardTest {
     }
 
     @Test
+    public void testPageSelectedInSamePage() {
+        preparePageSelected();
+        newContainerWizard.setCurrentPageIndex(0);
+        newContainerWizard.pageSelected(0);
+        verify(view, times(2)).setBodyWidget(any());
+        verify(dependencyPathSelectedEvent, never()).fire(any());
+        verify(notification, never()).fire(any());
+    }
+
+    @Test
     public void testPageSelectedIsSelected() {
         preparePageSelected();
         newContainerWizard.isSelected = true;
