@@ -19,6 +19,7 @@ package org.dashbuilder.kieserver.backend;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -45,6 +46,7 @@ public class KieServerConnectionInfoProviderImpl implements KieServerConnectionI
                                                "You should provide user/password or token authentication";
 
     private static final String SERVER_TEMPLATE_SEPARATOR = ",";
+    static final String DEFAULT_SERVER_TEMPLATE_PROPERTY = "dashbuilder.kieserver.defaultServerTemplate";
     static final String SERVER_TEMPLATE_LIST_PROPERTY = "dashbuilder.kieserver.serverTemplates";
     static final String SERVER_TEMPLATE_PROP_PREFFIX = "dashbuilder.kieserver.serverTemplate";
     static final String DATASET_PROP_PREFFIX = "dashbuilder.kieserver.dataset";
@@ -130,6 +132,15 @@ public class KieServerConnectionInfoProviderImpl implements KieServerConnectionI
         return filteredProperty(property);
     }
 
+    @Override
+    public Optional<KieServerConnectionInfo> getDefault() {
+        String defaultTemplate = System.getProperty(DEFAULT_SERVER_TEMPLATE_PROPERTY);
+        if (defaultTemplate != null) {
+            return this.get(null, defaultTemplate);
+        }
+        return findFirstServerTemplateConf().flatMap(template -> get(null, template));
+    }
+
     private Optional<String> filteredProperty(String property) {
         return Optional.ofNullable(System.getProperty(property)).filter(v -> !v.trim().isEmpty());
     }
@@ -155,4 +166,23 @@ public class KieServerConnectionInfoProviderImpl implements KieServerConnectionI
         return Optional.of(new KieServerConnectionInfo(url, user, password, token, replaceQuery));
     }
 
+    Optional<String> findFirstServerTemplateConf() {
+        return Collections.list(System.getProperties().keys())
+                          .stream()
+                          .map(Object::toString)
+                          .filter(key -> key.startsWith(SERVER_TEMPLATE_PROP_PREFFIX))
+                          .map(this::retrieveTemplateId)
+                          .filter(Objects::nonNull)
+                          .findFirst();
+
+    }
+
+    String retrieveTemplateId(String property) {
+        String[] parts = property.replaceAll(SERVER_TEMPLATE_PROP_PREFFIX, "")
+                                 .split("\\.");
+        if (parts.length > 1) {
+            return parts[1];
+        }
+        return null;
+    }
 }

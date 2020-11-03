@@ -22,8 +22,8 @@ import java.util.function.Consumer;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.displayer.client.component.function.ComponentFunctionLocator;
-import org.dashbuilder.displayer.client.component.function.ExternalComponentFunction;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
+import org.dashbuilder.displayer.external.ExternalComponentFunction;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
 import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
 import org.dashbuilder.displayer.external.ExternalComponentMessageType;
@@ -160,9 +160,9 @@ public class ExternalComponentDispatcherTest {
         ExternalComponentMessage message = functionCallMessage(callRequestOp);
         ExternalComponentMessage functionErrorMessage = mock(ExternalComponentMessage.class);
         String functionName = "f1";
-        RuntimeException functionError = new RuntimeException();
+        String functionError = "error";
 
-        Mockito.doThrow(functionError).when(function).exec(any(), any());
+        Mockito.doThrow(new RuntimeException(functionError)).when(function).exec(any(), any(), any());
         when(callRequest.getFunctionName()).thenReturn(functionName);
         when(messageHelper.newFunctionError(eq(callRequest), eq(functionError))).thenReturn(functionErrorMessage);
         when(functionLocator.findFunctionByName(eq(functionName))).thenReturn(Optional.of(function));
@@ -173,7 +173,7 @@ public class ExternalComponentDispatcherTest {
 
         verify(messageHelper).functionCallRequest(eq(message));
         verify(functionLocator).findFunctionByName(eq(functionName));
-        verify(function).exec(any(), any());
+        verify(function).exec(any(), any(), any());
         verify(listener).sendMessage(functionErrorMessage);
     }
 
@@ -197,7 +197,7 @@ public class ExternalComponentDispatcherTest {
 
         verify(messageHelper).functionCallRequest(eq(message));
         verify(functionLocator).findFunctionByName(eq(functionName));
-        verify(function).exec(any(), functionExecutionCaptor.capture());
+        verify(function).exec(any(), functionExecutionCaptor.capture(), any());
 
         functionExecutionCaptor.getValue().accept(result);
 

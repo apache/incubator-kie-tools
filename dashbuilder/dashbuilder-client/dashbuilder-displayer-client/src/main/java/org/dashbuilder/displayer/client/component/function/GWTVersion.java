@@ -1,11 +1,12 @@
 package org.dashbuilder.displayer.client.component.function;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.core.client.GWT;
-import elemental2.core.JsMap;
+import org.dashbuilder.displayer.external.ExternalComponentFunction;
 
 /**
  * Returns GWT Version
@@ -15,8 +16,8 @@ import elemental2.core.JsMap;
 public class GWTVersion implements ExternalComponentFunction {
 
     @Override
-    public void exec(JsMap<String, Object> params, Consumer<Object> onResult) {
-        onResult.accept(GWT.getVersion());
+    public void exec(Map<String, Object> params, Consumer<Object> onFinish, Consumer<String> onError) {
+        onFinish.accept(GWT.getVersion());
     }
 
 }

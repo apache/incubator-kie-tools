@@ -23,7 +23,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import elemental2.core.JsArray;
 import elemental2.dom.DomGlobal;
+import org.dashbuilder.displayer.external.ExternalComponentFunction;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
@@ -50,6 +52,16 @@ public class ComponentFunctionLocator {
 
     public Optional<ExternalComponentFunction> findFunctionByName(String name) {
         return functions.stream().filter(f -> name.equals(f.getName())).findAny();
+    }
+
+    public void registerFunction(ExternalComponentFunction function) {
+        functions.add(function);
+    }
+    
+    public JsArray<String> listFunctions() {
+        JsArray<String> array = new JsArray<>();
+        functions.stream().map(ExternalComponentFunction::getName).forEach(array::push);
+        return array;
     }
 
 }

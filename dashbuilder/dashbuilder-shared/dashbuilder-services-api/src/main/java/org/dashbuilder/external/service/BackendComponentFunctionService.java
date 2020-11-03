@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.dashbuilder.kieserver;
+package org.dashbuilder.external.service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 
+/**
+ * List and calls functions available on backend.
+ *
+ */
 @Remote
-public interface KieServerConnectionInfoProvider {
+public interface BackendComponentFunctionService {
 
-    Optional<KieServerConnectionInfo> get(String name, String serverTemplate);
+    List<String> listFunctions();
 
-    List<String> serverTemplates();
-
-    KieServerConnectionInfo verifiedConnectionInfo(RemoteDataSetDef def);
-    
-    Optional<KieServerConnectionInfo> getDefault();
+    Object callFunction(String name, Map<String, Object> params);
 
 }

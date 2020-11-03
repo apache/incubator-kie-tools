@@ -136,12 +136,12 @@ public class ExternalComponentMessageHelper {
         return ExternalComponentMessage.create(ExternalComponentMessageType.INIT.name(), componentProperties);
     }
 
-    public ExternalComponentMessage newFunctionError(FunctionCallRequest functionCallRequest, Exception exception) {
+    public ExternalComponentMessage newFunctionError(FunctionCallRequest functionCallRequest, String errorMessage) {
         Map<String, Object> props = Collections.singletonMap(FUNCTION_RESPONSE_PROP,
                                                              FunctionResponse.create(functionCallRequest,
                                                                                      FunctionResultType.ERROR.name(),
                                                                                      FUNCTION_EXECUTION_ERROR_FOUND,
-                                                                                     exception.getMessage()));
+                                                                                     errorMessage));
         return ExternalComponentMessage.create(ExternalComponentMessageType.FUNCTION_RESPONSE.name(), props);
     }
 

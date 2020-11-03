@@ -13,17 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dashbuilder.displayer.client.component.function;
 
-import java.util.function.Consumer;
+package org.dashbuilder.external.impl;
 
-import elemental2.core.JsMap;
+import java.util.Map;
 
-public interface ExternalComponentFunction {
+/**
+ * Server side component functions contract.
+ *
+ * @param <T>
+ * The function return type.
+ */
+public interface BackendComponentFunction<T> {
 
     default String getName() {
         return this.getClass().getSimpleName();
     }
 
-    void exec(JsMap<String, Object> params, Consumer<Object> onFinish);
+    /**
+     * 
+     * The function execution. Must return an object that can be used in browser windows communication. 
+     * @param params
+     * Params set by user when configuring the component.
+     * @return
+     * The result
+     * 
+     */
+    T exec(Map<String, Object> params);
+
 }

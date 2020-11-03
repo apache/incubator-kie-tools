@@ -13,23 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.dashbuilder.displayer.client.component.function;
 
-package org.dashbuilder.kieserver;
+import java.util.Map;
+import java.util.function.Consumer;
 
-import java.util.List;
-import java.util.Optional;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+import org.dashbuilder.displayer.external.ExternalComponentFunction;
 
-@Remote
-public interface KieServerConnectionInfoProvider {
+/**
+ * A meta function to list available functions.
+ *
+ */
+@Dependent
+public class ListFunctions implements ExternalComponentFunction {
 
-    Optional<KieServerConnectionInfo> get(String name, String serverTemplate);
+    @Inject
+    ComponentFunctionLocator locator;
 
-    List<String> serverTemplates();
-
-    KieServerConnectionInfo verifiedConnectionInfo(RemoteDataSetDef def);
-    
-    Optional<KieServerConnectionInfo> getDefault();
+    @Override
+    public void exec(Map<String, Object> params, Consumer<Object> onFinish, Consumer<String> onError) {
+        onFinish.accept(locator.listFunctions());
+    }
 
 }

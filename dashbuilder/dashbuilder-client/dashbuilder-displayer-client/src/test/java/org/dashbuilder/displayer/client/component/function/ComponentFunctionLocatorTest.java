@@ -18,6 +18,7 @@ package org.dashbuilder.displayer.client.component.function;
 import java.util.Collections;
 import java.util.Optional;
 
+import org.dashbuilder.displayer.external.ExternalComponentFunction;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -18,6 +18,7 @@ package org.dashbuilder.kieserver.backend;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.dashbuilder.kieserver.KieServerConnectionInfo;
 import org.dashbuilder.kieserver.RemoteDataSetDef;
@@ -29,6 +30,7 @@ import static org.dashbuilder.kieserver.backend.KieServerConnectionInfoProviderI
 import static org.dashbuilder.kieserver.backend.KieServerConnectionInfoProviderImpl.SERVER_TEMPLATE_PROP_PREFFIX;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class KieServerConnectionInfoProviderImplTest {
@@ -166,6 +168,35 @@ public class KieServerConnectionInfoProviderImplTest {
         KieServerConnectionInfo connectionInfo = kieServerConnectionInfoProvider.verifiedConnectionInfo(def);
         assertFalse(connectionInfo.isReplaceQuery());
     }
+    
+    @Test
+    public void testRetrieveServerTemplateId() {
+        String serverTemplate = kieServerConnectionInfoProvider.retrieveTemplateId(SERVER_TEMPLATE_PROP_PREFFIX + ".myServerTemplate.url");
+        assertEquals("myServerTemplate", serverTemplate);
+    }
+    
+    @Test
+    public void testRetrieveServerTemplateIdBadString() {
+        String serverTemplate = kieServerConnectionInfoProvider.retrieveTemplateId("test");
+        assertNull(serverTemplate);
+    }
+    
+    @Test
+    public void testFindFirstServerTemplateConf() {
+        setServerProp(KieServerConfigurationKey.LOCATION, SERVER_LOCATION);
+        setServerProp(KieServerConfigurationKey.USER, SERVER_USER);
+        setServerProp(KieServerConfigurationKey.PASSWORD, SERVER_PASSWORD);
+        
+        Optional<String> conf = kieServerConnectionInfoProvider.findFirstServerTemplateConf();
+        assertTrue(conf.isPresent());
+    }
+    
+    @Test
+    public void testFindFirstServerTemplateConfNotFound() {
+        clearProperties();
+        Optional<String> conf = kieServerConnectionInfoProvider.findFirstServerTemplateConf();
+        assertFalse(conf.isPresent());
+    }
 
     private void setDataSetProp(KieServerConfigurationKey key, String value) {
         System.setProperty(DATASET_PROP + key.getValue(), value);
@@ -178,8 +209,8 @@ public class KieServerConnectionInfoProviderImplTest {
     private void clearProperties() {
         System.setProperty(KieServerConnectionInfoProviderImpl.SERVER_TEMPLATE_LIST_PROPERTY, "");
         for (KieServerConfigurationKey key : KieServerConfigurationKey.values()) {
-            System.setProperty(DATASET_PROP + key.getValue(), "");
-            System.setProperty(SERVER_TEMPLATE_PROP + key.getValue(), "");
+            System.clearProperty(DATASET_PROP + key.getValue());
+            System.clearProperty(SERVER_TEMPLATE_PROP + key.getValue());
         }
     }
 

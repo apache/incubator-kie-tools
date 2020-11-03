@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.dashbuilder.displayer.external;
 
-package org.dashbuilder.kieserver;
+import java.util.Map;
+import java.util.function.Consumer;
 
-import java.util.List;
-import java.util.Optional;
+public interface ExternalComponentFunction {
 
-import org.jboss.errai.bus.server.annotations.Remote;
+    default String getName() {
+        return this.getClass().getSimpleName();
+    }
 
-@Remote
-public interface KieServerConnectionInfoProvider {
-
-    Optional<KieServerConnectionInfo> get(String name, String serverTemplate);
-
-    List<String> serverTemplates();
-
-    KieServerConnectionInfo verifiedConnectionInfo(RemoteDataSetDef def);
-    
-    Optional<KieServerConnectionInfo> getDefault();
+    void exec(Map<String, Object> params, Consumer<Object> onFinish, Consumer<String> onError);
 
 }
