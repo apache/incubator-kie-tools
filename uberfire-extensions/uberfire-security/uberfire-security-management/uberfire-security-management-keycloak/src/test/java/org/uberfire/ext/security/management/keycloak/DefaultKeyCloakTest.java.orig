@@ -40,6 +40,8 @@ import org.uberfire.ext.security.management.keycloak.client.resource.RoleScopeRe
 import org.uberfire.ext.security.management.keycloak.client.resource.UserResource;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -72,9 +74,13 @@ public abstract class DefaultKeyCloakTest extends BaseKeyCloakTest {
             String name = ROLE + x;
             addRole(name);
         }
+<<<<<<< HEAD
         addRole("admin");
         addRole("developer");
+        when(rolesResource.get(anyString())).thenAnswer(new Answer<RoleResource>() {
+=======
         when(rolesResource.get(any())).thenAnswer(new Answer<RoleResource>() {
+>>>>>>> Fix a bunch of tests
             @Override
             public RoleResource answer(InvocationOnMock invocationOnMock) throws Throwable {
                 String name = (String) invocationOnMock.getArguments()[0];
