@@ -267,7 +267,7 @@ func CreateOperatorGroupIfNotExists(namespace, operatorGroupName string) (*olmap
 			TargetNamespaces: []string{namespace},
 		},
 	}
-	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(operatorGroup); err != nil {
+	if err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(operatorGroup); err != nil {
 		return nil, fmt.Errorf("Error creating OperatorGroup %s: %v", operatorGroupName, err)
 	}
 	return operatorGroup, nil
@@ -288,7 +288,7 @@ func CreateNamespacedSubscriptionIfNotExist(namespace string, subscriptionName s
 		},
 	}
 
-	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(subscription); err != nil {
+	if err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(subscription); err != nil {
 		return nil, fmt.Errorf("Error creating Subscription %s: %v", subscriptionName, err)
 	}
 

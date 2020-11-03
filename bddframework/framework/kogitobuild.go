@@ -45,10 +45,10 @@ func DeployKogitoBuild(namespace string, installerType InstallerType, buildHolde
 }
 
 func crDeployKogitoBuild(buildHolder *bddtypes.KogitoBuildHolder) error {
-	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(buildHolder.KogitoBuild); err != nil {
+	if err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(buildHolder.KogitoBuild); err != nil {
 		return fmt.Errorf("Error creating example build %s: %v", buildHolder.KogitoBuild.Name, err)
 	}
-	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(buildHolder.KogitoService); err != nil {
+	if err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(buildHolder.KogitoService); err != nil {
 		return fmt.Errorf("Error creating example service %s: %v", buildHolder.KogitoService.GetName(), err)
 	}
 	return nil

@@ -41,7 +41,7 @@ func GetKogitoExplainabilityResourceStub(namespace string, replicas int) *v1alph
 	return &v1alpha1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getExplainabilityServiceName()),
 		Spec: v1alpha1.KogitoSupportingServiceSpec{
-			ServiceType:       v1alpha1.Explainablity,
+			ServiceType:       v1alpha1.Explainability,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetExplainabilityImageTag(), infrastructure.DefaultExplainabilityImageName),
 		},
 		Status: v1alpha1.KogitoSupportingServiceStatus{

@@ -141,7 +141,7 @@ func isRuntimeImageInformationSet() bool {
 }
 
 func crInstall(serviceHolder *bddtypes.KogitoServiceHolder) error {
-	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(serviceHolder.KogitoService); err != nil {
+	if err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(serviceHolder.KogitoService); err != nil {
 		return fmt.Errorf("Error creating service: %v", err)
 	}
 	return nil

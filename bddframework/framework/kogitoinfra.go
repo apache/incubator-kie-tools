@@ -39,7 +39,7 @@ func InstallKogitoInfraComponent(namespace string, installerType InstallerType, 
 }
 
 func crInstallKogitoInfraComponent(infra *v1alpha1.KogitoInfra) error {
-	if _, err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(infra); err != nil {
+	if err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(infra); err != nil {
 		return fmt.Errorf("Error creating KogitoInfra: %v", err)
 	}
 	return nil
