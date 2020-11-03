@@ -41,20 +41,20 @@ import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ExamplesServiceImplCheckNoIndexConfigTest {
 
     @Mock
@@ -108,9 +108,9 @@ public class ExamplesServiceImplCheckNoIndexConfigTest {
 
     @Before
     public void setup() {
-        when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
-        when(spaceConfigStorageRegistry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
-        when(spaceConfigStorageRegistry.exist(anyString())).thenReturn(true);
+        when(spaceConfigStorageRegistry.get(Mockito.<String>any())).thenReturn(spaceConfigStorage);
+        when(spaceConfigStorageRegistry.getBatch(Mockito.<String>any())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
+        when(spaceConfigStorageRegistry.exist(Mockito.<String>any())).thenReturn(true);
 
         service = spy(new ExamplesServiceImpl(ioService,
                                               repositoryFactory,

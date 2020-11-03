@@ -31,11 +31,14 @@ import org.kie.workbench.common.services.shared.dependencies.EnhancedDependencie
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
 import org.uberfire.promise.SyncPromises;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith( GwtMockitoTestRunner.class )
 public class DependencyLoaderLoadFailureTest {
@@ -64,7 +67,7 @@ public class DependencyLoaderLoadFailureTest {
                                                  dependencyServiceCaller );
         dependencyLoader.init( manager );
 
-        when( dependencyServiceCaller.call( any( RemoteCallback.class ),
+        when( dependencyServiceCaller.call( Mockito.<RemoteCallback>any(),
                                             any( ErrorCallback.class ) ) ).thenReturn( dependencyService );
     }
 
@@ -88,8 +91,8 @@ public class DependencyLoaderLoadFailureTest {
 
     private void failLoad() {
         ArgumentCaptor<ErrorCallback> errorCallbackArgumentCaptor = ArgumentCaptor.forClass( ErrorCallback.class );
-        verify( dependencyServiceCaller ).call( any( RemoteCallback.class ),
-                                                errorCallbackArgumentCaptor.capture() );
+        verify( dependencyServiceCaller ).call(Mockito.<RemoteCallback>any(),
+                                               errorCallbackArgumentCaptor.capture() );
 
         errorCallbackArgumentCaptor.getValue().error( null, null );
     }

@@ -17,9 +17,9 @@
 package org.kie.workbench.common.screens.datasource.management.backend.service.handler;
 
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class StandaloneModeChangeHandlerTest
         extends AbstractDefChangeHandlerTest {
 

@@ -67,8 +67,9 @@ import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
@@ -85,7 +86,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.screens.examples.backend.server.ImportUtils.makeGitRepository;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
@@ -96,7 +96,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ExamplesServiceImplTest {
 
     @Mock
@@ -167,9 +167,9 @@ public class ExamplesServiceImplTest {
     @Before
     public void setup() throws Exception {
 
-        when(spaceConfigStorageRegistry.get(anyString())).thenReturn(spaceConfigStorage);
-        when(spaceConfigStorageRegistry.getBatch(anyString())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
-        when(spaceConfigStorageRegistry.exist(anyString())).thenReturn(true);
+        when(spaceConfigStorageRegistry.get(Mockito.<String>any())).thenReturn(spaceConfigStorage);
+        when(spaceConfigStorageRegistry.getBatch(Mockito.<String>any())).thenReturn(new SpaceConfigStorageRegistryImpl.SpaceStorageBatchImpl(spaceConfigStorage));
+        when(spaceConfigStorageRegistry.exist(Mockito.<String>any())).thenReturn(true);
 
         when(ou.getSpace()).thenReturn(space);
         when(space.getName()).thenReturn("ou");
@@ -198,10 +198,10 @@ public class ExamplesServiceImplTest {
             OrganizationalUnitImpl o = new OrganizationalUnitImpl(spaceName, defaultGroupId);
             organizationalUnits.put(spaceName, o);
             return o;
-        }).when(ouService).createOrganizationalUnit(anyString(), anyString());
+        }).when(ouService).createOrganizationalUnit(Mockito.<String>any(), Mockito.<String>any());
 
         doAnswer(invocationOnMock -> organizationalUnits.get(invocationOnMock.getArguments()[0]))
-                .when(ouService).getOrganizationalUnit(anyString());
+                .when(ouService).getOrganizationalUnit(Mockito.<String>any());
 
         when(ouService.getOrganizationalUnits()).thenReturn(new HashSet<OrganizationalUnit>() {{
             add(new OrganizationalUnitImpl("ou1Name",
@@ -209,7 +209,7 @@ public class ExamplesServiceImplTest {
             add(new OrganizationalUnitImpl("ou2Name",
                                            "ou2GroupId"));
         }});
-        when(moduleService.resolveModule(any(Path.class))).thenAnswer((Answer<KieModule>) invocationOnMock -> {
+        when(moduleService.resolveModule(Mockito.<Path>any())).thenAnswer((Answer<KieModule>) invocationOnMock -> {
             final Path path = (Path) invocationOnMock.getArguments()[0];
             final KieModule module = new KieModule(path,
                                                    path,
@@ -302,12 +302,12 @@ public class ExamplesServiceImplTest {
         when(module.getRootPath()).thenReturn(moduleRoot);
         when(module.getModuleName()).thenReturn("module1");
         when(moduleRoot.toURI()).thenReturn("default:///module1");
-        when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
-                                                                                "tag2"));
+        when(metadataService.getTags(Mockito.<Path>any())).thenReturn(Arrays.asList("tag1",
+                                                                                    "tag2"));
 
         final GitRepository repository = makeGitRepository();
-        when(repositoryFactory.newRepository(any(RepositoryInfo.class))).thenReturn(repository);
-        when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
+        when(repositoryFactory.newRepository(Mockito.<RepositoryInfo>any())).thenReturn(repository);
+        when(moduleService.getAllModules(Mockito.<Branch>any())).thenReturn(new HashSet<Module>() {{
             add(module);
         }});
 
@@ -336,14 +336,14 @@ public class ExamplesServiceImplTest {
         when(module.getRootPath()).thenReturn(moduleRoot);
         when(module.getModuleName()).thenReturn("module1");
         when(moduleRoot.toURI()).thenReturn("default:///module1");
-        when(ioService.exists(any(org.uberfire.java.nio.file.Path.class))).thenReturn(true);
-        when(ioService.readAllString(any(org.uberfire.java.nio.file.Path.class))).thenReturn("This is custom description.\n\n This is a new line.");
-        when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
-                                                                                "tag2"));
+        when(ioService.exists(Mockito.<org.uberfire.java.nio.file.Path>any())).thenReturn(true);
+        when(ioService.readAllString(Mockito.<org.uberfire.java.nio.file.Path>any())).thenReturn("This is custom description.\n\n This is a new line.");
+        when(metadataService.getTags(Mockito.<Path>any())).thenReturn(Arrays.asList("tag1",
+                                                                                    "tag2"));
 
         final GitRepository repository = makeGitRepository();
-        when(repositoryFactory.newRepository(any(RepositoryInfo.class))).thenReturn(repository);
-        when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
+        when(repositoryFactory.newRepository(Mockito.<RepositoryInfo>any())).thenReturn(repository);
+        when(moduleService.getAllModules(Mockito.<Branch>any())).thenReturn(new HashSet<Module>() {{
             add(module);
         }});
 
@@ -373,12 +373,12 @@ public class ExamplesServiceImplTest {
         when(module.getModuleName()).thenReturn("module1");
         when(module.getPom()).thenReturn(pom);
         when(moduleRoot.toURI()).thenReturn("default:///module1");
-        when(metadataService.getTags(any(Path.class))).thenReturn(Arrays.asList("tag1",
-                                                                                "tag2"));
+        when(metadataService.getTags(Mockito.<Path>any())).thenReturn(Arrays.asList("tag1",
+                                                                                    "tag2"));
 
         final GitRepository repository = makeGitRepository();
-        when(repositoryFactory.newRepository(any(RepositoryInfo.class))).thenReturn(repository);
-        when(moduleService.getAllModules(any(Branch.class))).thenReturn(new HashSet<Module>() {{
+        when(repositoryFactory.newRepository(Mockito.<RepositoryInfo>any())).thenReturn(repository);
+        when(moduleService.getAllModules(Mockito.<Branch>any())).thenReturn(new HashSet<Module>() {{
             add(module);
         }});
 
@@ -460,7 +460,7 @@ public class ExamplesServiceImplTest {
                times(1)).importProject(eq(ou),
                                        eq(exModule));
         verify(newProjectEvent,
-               times(1)).fire(any(NewProjectEvent.class));
+               times(1)).fire(Mockito.<NewProjectEvent>any());
     }
 
     @Test
@@ -519,10 +519,10 @@ public class ExamplesServiceImplTest {
                                                  eq(""));
         verify(service,
                times(2)).importProject(eq(ou),
-                                       any(ImportProject.class));
+                                       Mockito.<ImportProject>any());
 
         verify(newProjectEvent,
-               times(2)).fire(any(NewProjectEvent.class));
+               times(2)).fire(Mockito.<NewProjectEvent>any());
     }
 
     @Test

@@ -26,6 +26,7 @@ import org.kie.workbench.common.workbench.client.entrypoint.GenericErrorPopup;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceHistoryHandler;
 
@@ -128,10 +129,10 @@ public class DefaultWorkbenchErrorCallbackTest {
 
         InOrder inOrder = inOrder(genericErrorPopup);
         inOrder.verify(genericErrorPopup).show();
-        inOrder.verify(genericErrorPopup).setup(any(), any(), anyString());
-        verify(genericErrorLoggerProxy).log(anyString(),
-                                            anyString(),
-                                            anyString());
+        inOrder.verify(genericErrorPopup).setup(any(), any(), Mockito.<String>any());
+        verify(genericErrorLoggerProxy).log(Mockito.<String>any(),
+                                            Mockito.<String>any(),
+                                            Mockito.<String>any());
     }
 
     @Test
@@ -143,10 +144,10 @@ public class DefaultWorkbenchErrorCallbackTest {
         callback.processQueue();
 
         verify(genericErrorPopup, never()).show();
-        verify(genericErrorPopup, never()).setup(any(), any(), anyString());
-        verify(genericErrorLoggerProxy).log(anyString(),
-                                            anyString(),
-                                            anyString());
+        verify(genericErrorPopup, never()).setup(any(), any(), Mockito.<String>any());
+        verify(genericErrorLoggerProxy).log(Mockito.<String>any(),
+                                            Mockito.<String>any(),
+                                            Mockito.<String>any());
     }
 
     @Test
@@ -161,18 +162,18 @@ public class DefaultWorkbenchErrorCallbackTest {
 
         InOrder inOrder = inOrder(genericErrorPopup);
         inOrder.verify(genericErrorPopup, times(1)).show();
-        inOrder.verify(genericErrorPopup).setup(eq("Uncaught exception: a"), any(), anyString());
+        inOrder.verify(genericErrorPopup).setup(eq("Uncaught exception: a"), any(), Mockito.<String>any());
 
         callback.dequeue();
         callback.processQueue();
 
         inOrder.verify(genericErrorPopup, times(1)).show();
-        inOrder.verify(genericErrorPopup).setup(eq("Uncaught exception: b"), any(), anyString());
+        inOrder.verify(genericErrorPopup).setup(eq("Uncaught exception: b"), any(), Mockito.<String>any());
 
         callback.dequeue();
         callback.processQueue();
 
         inOrder.verify(genericErrorPopup, times(1)).show();
-        inOrder.verify(genericErrorPopup).setup(eq("Uncaught exception: c"), any(), anyString());
+        inOrder.verify(genericErrorPopup).setup(eq("Uncaught exception: c"), any(), Mockito.<String>any());
     }
 }

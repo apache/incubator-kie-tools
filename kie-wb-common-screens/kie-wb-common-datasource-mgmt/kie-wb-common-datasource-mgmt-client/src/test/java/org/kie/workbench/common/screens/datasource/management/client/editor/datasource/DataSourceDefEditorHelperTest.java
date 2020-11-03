@@ -36,7 +36,7 @@ import org.kie.workbench.common.screens.datasource.management.model.TestResult;
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceDefEditorService;
 import org.kie.workbench.common.screens.datasource.management.service.DataSourceDefQueryService;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
@@ -45,7 +45,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DataSourceDefEditorHelperTest
         implements DataSourceManagementTestConstants {
 

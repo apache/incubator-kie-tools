@@ -44,9 +44,10 @@ import org.kie.workbench.common.screens.server.management.client.navigation.temp
 import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 import org.uberfire.mocks.CallerMock;
@@ -58,7 +59,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ServerTemplatePresenterTest {
 
     @Mock
@@ -176,9 +177,9 @@ public class ServerTemplatePresenterTest {
         presenter.onServerInstanceUpdated( new ServerInstanceUpdated( serverInstance ) );
 
         verify(view, never()).addServerInstance(
-                anyString(),
-                anyString(),
-                anyString(),
+                Mockito.<String>any(),
+                Mockito.<String>any(),
+                Mockito.<String>any(),
                 any(Command.class));
     }
 
@@ -249,7 +250,7 @@ public class ServerTemplatePresenterTest {
         presenter.copyTemplate();
 
         verify( specManagementService, times( 2 ) ).copyServerTemplate( serverTemplate.getId(), newTemplateName, newTemplateName );
-        verify( copyPresenter ).errorDuringProcessing( anyString() );
+        verify( copyPresenter ).errorDuringProcessing(Mockito.<String>any() );
     }
 
     @Test

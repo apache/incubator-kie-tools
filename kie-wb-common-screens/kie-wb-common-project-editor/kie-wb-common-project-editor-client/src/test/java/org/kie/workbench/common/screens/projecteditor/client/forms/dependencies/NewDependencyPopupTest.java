@@ -27,9 +27,12 @@ import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.Proj
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.callbacks.Callback;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith( GwtMockitoTestRunner.class )
 public class NewDependencyPopupTest {
@@ -83,7 +86,7 @@ public class NewDependencyPopupTest {
 
         newDependencyPopup.onOkClicked();
 
-        verify( callback ).callback( any( Dependency.class ) );
+        verify( callback ).callback(Mockito.<Dependency>any() );
         verify( view ).hide();
     }
 
@@ -106,7 +109,7 @@ public class NewDependencyPopupTest {
         newDependencyPopup.show( callback );
 
         newDependencyPopup.onOkClicked();
-        verify( callback, never() ).callback( any( Dependency.class ) );
+        verify( callback, never() ).callback( Mockito.<Dependency>any() );
     }
 
     private void fillInValidGAV() {

@@ -43,8 +43,9 @@ import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -56,7 +57,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ProjectExplorerContentResolverTest {
 
     protected final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
@@ -117,10 +118,10 @@ public class ProjectExplorerContentResolverTest {
         });
         when(helper.loadUserContent()).thenReturn(userExplorerData);
         when(
-                helper.getFolderListing(any(FolderItem.class),
-                                        any(Module.class),
-                                        any(Package.class),
-                                        any(ActiveOptions.class))
+                helper.getFolderListing(Mockito.<FolderItem>any(),
+                                        Mockito.<Module>any(),
+                                        Mockito.<Package>any(),
+                                        Mockito.<ActiveOptions>any())
         ).thenReturn(
                 new FolderListing(getFileItem(),
                                   Collections.EMPTY_LIST,
@@ -129,7 +130,7 @@ public class ProjectExplorerContentResolverTest {
 
         when(moduleService.getAllModules(masterBranch)).thenReturn(masterModules);
         when(moduleService.getAllModules(devBranch)).thenReturn(devModules);
-        when(moduleService.resolveDefaultPackage(any(Module.class))).thenReturn(new Package());
+        when(moduleService.resolveDefaultPackage(Mockito.<Module>any())).thenReturn(new Package());
 
         resolver = spy(new ProjectExplorerContentResolver(
                 moduleService,

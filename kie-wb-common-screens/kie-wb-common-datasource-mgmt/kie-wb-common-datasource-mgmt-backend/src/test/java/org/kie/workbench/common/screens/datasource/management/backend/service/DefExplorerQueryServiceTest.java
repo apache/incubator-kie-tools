@@ -44,7 +44,7 @@ import org.kie.workbench.common.screens.datasource.management.service.DefExplore
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.spaces.Space;
@@ -53,7 +53,7 @@ import org.uberfire.spaces.SpacesAPI;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DefExplorerQueryServiceTest {
 
     @Mock

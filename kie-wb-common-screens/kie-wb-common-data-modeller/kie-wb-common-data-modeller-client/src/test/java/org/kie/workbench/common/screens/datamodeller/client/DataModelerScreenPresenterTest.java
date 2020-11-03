@@ -37,6 +37,7 @@ import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.widgets.metadata.client.validation.JavaAssetUpdateValidator;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
@@ -54,7 +55,6 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyListOf;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -310,9 +310,9 @@ public class DataModelerScreenPresenterTest
                times(1)).fire(any(PublishBatchMessagesEvent.class));
         //parse errors dialog should have been raised.
         verify(view,
-               times(1)).showParseErrorsDialog(anyString(),
-                                               anyString(),
-                                               any(Command.class));
+               times(1)).showParseErrorsDialog(Mockito.<String>any(),
+                                               Mockito.<String>any(),
+                                               Mockito.<Command>any());
 
         //at this point the parse errors popup is raised and waiting for the user to press the ok button.
         //emulate the user click on the button.
@@ -362,42 +362,42 @@ public class DataModelerScreenPresenterTest
 
     @Test
     public void onSaveValidationFailedTest() {
-        when(validationService.validateForSave(any(Path.class),
-                                               any(DataObject.class))).thenReturn(Arrays.asList(new ValidationMessage()));
+        when(validationService.validateForSave(Mockito.<Path>any(),
+                                               Mockito.<DataObject>any())).thenReturn(Arrays.asList(new ValidationMessage()));
         presenter.context = mock(DataModelerContext.class);
 
         presenter.save();
 
         verify(savePopUpPresenter,
-               never()).show(any(Path.class),
+               never()).show(Mockito.<Path>any(),
                              any(ParameterizedCommand.class));
         verify(validationPopup,
-               times(1)).showSaveValidationMessages(any(Command.class),
-                                                    any(Command.class),
+               times(1)).showSaveValidationMessages(Mockito.<Command>any(),
+                                                    Mockito.<Command>any(),
                                                     anyListOf(ValidationMessage.class));
     }
 
     @Test
     public void onSaveValidationSucceededTest() {
-        when(validationService.validateForSave(any(Path.class),
-                                               any(DataObject.class))).thenReturn(Collections.emptyList());
+        when(validationService.validateForSave(Mockito.<Path>any(),
+                                               Mockito.<DataObject>any())).thenReturn(Collections.emptyList());
         presenter.context = mock(DataModelerContext.class);
 
         presenter.save();
 
         verify(savePopUpPresenter,
-               times(1)).show(any(Path.class),
+               times(1)).show(Mockito.<Path>any(),
                               any(ParameterizedCommand.class));
         verify(validationPopup,
-               never()).showCopyValidationMessages(any(Command.class),
-                                                   any(Command.class),
+               never()).showCopyValidationMessages(Mockito.<Command>any(),
+                                                   Mockito.<Command>any(),
                                                    anyListOf(ValidationMessage.class));
     }
 
     @Test
     public void onSaveWithPackageChangeTest() {
-        when(validationService.validateForSave(any(Path.class),
-                                               any(DataObject.class))).thenReturn(Collections.emptyList());
+        when(validationService.validateForSave(Mockito.<Path>any(),
+                                               Mockito.<DataObject>any())).thenReturn(Collections.emptyList());
 
         presenter.context = mock(DataModelerContext.class);
 
@@ -408,13 +408,13 @@ public class DataModelerScreenPresenterTest
 
         presenter.save();
 
-        verify(view).showYesNoCancelPopup(anyString(),
-                                          anyString(),
-                                          any(Command.class),
-                                          anyString(),
+        verify(view).showYesNoCancelPopup(Mockito.<String>any(),
+                                          Mockito.<String>any(),
+                                          Mockito.<Command>any(),
+                                          Mockito.<String>any(),
                                           eq(ButtonType.PRIMARY),
-                                          any(Command.class),
-                                          anyString(),
+                                          Mockito.<Command>any(),
+                                          Mockito.<String>any(),
                                           eq(ButtonType.DANGER));
     }
 
@@ -422,8 +422,8 @@ public class DataModelerScreenPresenterTest
     public void onSaveWithRenameTest() {
         presenter.context = mock(DataModelerContext.class);
 
-        when(validationService.validateForSave(any(Path.class),
-                                               any(DataObject.class))).thenReturn(Collections.emptyList());
+        when(validationService.validateForSave(Mockito.<Path>any(),
+                                               Mockito.<DataObject>any())).thenReturn(Collections.emptyList());
 
         when(presenter.context.getDataObject()).thenReturn(testObject1);
         when(presenter.context.isEditorChanged()).thenReturn(true);
@@ -435,13 +435,13 @@ public class DataModelerScreenPresenterTest
 
         presenter.save();
 
-        verify(view).showYesNoCancelPopup(anyString(),
-                                          anyString(),
-                                          any(Command.class),
-                                          anyString(),
+        verify(view).showYesNoCancelPopup(Mockito.<String>any(),
+                                          Mockito.<String>any(),
+                                          Mockito.<Command>any(),
+                                          Mockito.<String>any(),
                                           eq(ButtonType.PRIMARY),
-                                          any(Command.class),
-                                          anyString(),
+                                          Mockito.<Command>any(),
+                                          Mockito.<String>any(),
                                           eq(ButtonType.DANGER));
     }
     
@@ -450,38 +450,38 @@ public class DataModelerScreenPresenterTest
         final String commitMessage = "testCommitMessage";
         final GenerationResult result = setupSave();
         when(modelerService.saveSource(eq("testSource"),
-                                       any(Path.class),
+                                       Mockito.<Path>any(),
                                        eq(testObject1),
-                                       any(Metadata.class),
+                                       Mockito.<Metadata>any(),
                                        eq(commitMessage),
-                                       any(String.class),
-                                       any(String.class))).thenReturn(result);
-        
+                                       Mockito.<String>any(),
+                                       Mockito.<String>any())).thenReturn(result);
+
         presenter.save();
-        
+
         /* when package or file name is changed YesNoCancel Popup should show up
          */
-        verify(view).showYesNoCancelPopup(anyString(),
-                                          anyString(),
+        verify(view).showYesNoCancelPopup(Mockito.<String>any(),
+                                          Mockito.<String>any(),
                                           yesCommandCaptor.capture(),
-                                          anyString(),
+                                          Mockito.<String>any(),
                                           eq(ButtonType.PRIMARY),
-                                          any(Command.class),
-                                          anyString(),
+                                          Mockito.<Command>any(),
+                                          Mockito.<String>any(),
                                           eq(ButtonType.DANGER));
-        
+
         /* Execute command when package or file name changed
          */
         yesCommandCaptor.getValue().execute();
-        verify(savePopUpPresenter).show(any(Path.class),
+        verify(savePopUpPresenter).show(Mockito.<Path>any(),
                                         parameterizedCommandCaptor.capture());
-        
+
         /* Execute saveCommand at save with comment pop up
          */
         parameterizedCommandCaptor.getValue().execute(commitMessage);
         verify(dataModelerEvent, times(2))
-                .fire(any(DataModelStatusChangeEvent.class));
-        verify(versionRecordManager).reloadVersions(any(Path.class));
+                .fire(Mockito.<DataModelStatusChangeEvent>any());
+        verify(versionRecordManager).reloadVersions(Mockito.<Path>any());
     }
     
     @Test
@@ -489,49 +489,49 @@ public class DataModelerScreenPresenterTest
         final String commitMessage = "testCommitMessage";
         final GenerationResult result = setupSave();
         when(modelerService.saveSource(eq("testSource"),
-                                       any(Path.class),
+                                       Mockito.<Path>any(),
                                        eq(testObject1),
-                                       any(Metadata.class),
+                                       Mockito.<Metadata>any(),
                                        eq(commitMessage))).thenReturn(result);
-        
+
         presenter.save();
-        
+
         /* when package or file name is changed YesNoCancel Popup should show up
          */
-        verify(view).showYesNoCancelPopup(anyString(),
-                                          anyString(),
-                                          any(Command.class),
-                                          anyString(),
+        verify(view).showYesNoCancelPopup(Mockito.<String>any(),
+                                          Mockito.<String>any(),
+                                          Mockito.<Command>any(),
+                                          Mockito.<String>any(),
                                           eq(ButtonType.PRIMARY),
                                           noCommandCaptor.capture(),
-                                          anyString(),
+                                          Mockito.<String>any(),
                                           eq(ButtonType.DANGER));
- 
+
         /* Execute command when package or file name change rejected
          */
         noCommandCaptor.getValue().execute();
-        verify(savePopUpPresenter).show(any(Path.class),
+        verify(savePopUpPresenter).show(Mockito.<Path>any(),
                                         parameterizedCommandCaptor.capture());
-        
+
         /* Execute saveCommand at save with comment pop up
          */
         parameterizedCommandCaptor.getValue().execute(commitMessage);
         verify(dataModelerEvent, times(2))
-                .fire(any(DataModelStatusChangeEvent.class));
-        verify(versionRecordManager).reloadVersions(any(Path.class));
+                .fire(Mockito.<DataModelStatusChangeEvent>any());
+        verify(versionRecordManager).reloadVersions(Mockito.<Path>any());
     }
     
     private GenerationResult setupSave() {
         presenter.context = mock(DataModelerContext.class);
-        
-        when(validationService.validateForSave(any(Path.class),
-                                               any(DataObject.class))).thenReturn(Collections.emptyList());
-        
+
+        when(validationService.validateForSave(Mockito.<Path>any(),
+                                               Mockito.<DataObject>any())).thenReturn(Collections.emptyList());
+
         when(presenter.context.getDataObject()).thenReturn(testObject1);
         when(presenter.context.isEditorChanged()).thenReturn(true);
         when(presenter.context.getEditorModelContent()).thenReturn(mock(EditorModelContent.class));
         when(presenter.context.getEditorModelContent().getOriginalPackageName()).thenReturn(testObject1.getPackageName());
-        
+
         final ObservablePath mockPath = mock(ObservablePath.class);
         when(versionRecordManager.getPathToLatest()).thenReturn(mockPath);
         when(mockPath.getFileName()).thenReturn("testCurrentFile.java");
@@ -549,9 +549,9 @@ public class DataModelerScreenPresenterTest
 
         presenter.onSafeDelete();
 
-        verify(showAssetUsages).showAssetUsages(anyString(),
+        verify(showAssetUsages).showAssetUsages(Mockito.<String>any(),
                                                 any(),
-                                                anyString(),
+                                                Mockito.<String>any(),
                                                 any(),
                                                 any(),
                                                 any());
@@ -571,15 +571,15 @@ public class DataModelerScreenPresenterTest
         presenter.onSafeDelete();
 
         verify(showAssetUsages,
-               never()).showAssetUsages(anyString(),
+               never()).showAssetUsages(Mockito.<String>any(),
                                         any(),
-                                        anyString(),
+                                        Mockito.<String>any(),
                                         any(),
                                         any(),
                                         any());
         verify(validationService).validateForDelete(any(),
                                                     any());
-        verify(deletePopUpPresenter).show(any(JavaAssetUpdateValidator.class),
+        verify(deletePopUpPresenter).show(Mockito.<JavaAssetUpdateValidator>any(),
                                           any());
     }
 
@@ -589,17 +589,17 @@ public class DataModelerScreenPresenterTest
 
         presenter.onSafeRename();
 
-        verify(showAssetUsages).showAssetUsages(anyString(),
+        verify(showAssetUsages).showAssetUsages(Mockito.<String>any(),
                                                 any(),
-                                                anyString(),
+                                                Mockito.<String>any(),
                                                 any(),
                                                 any(),
                                                 any());
 
         verify(renamePopUpPresenter,
-               never()).show(any(Path.class),
-                             any(JavaAssetUpdateValidator.class),
-                             any(CommandWithFileNameAndCommitMessage.class));
+               never()).show(Mockito.<Path>any(),
+                             Mockito.<JavaAssetUpdateValidator>any(),
+                             Mockito.<CommandWithFileNameAndCommitMessage>any());
     }
 
     @Test
@@ -611,16 +611,16 @@ public class DataModelerScreenPresenterTest
         presenter.onSafeRename();
 
         verify(showAssetUsages,
-               never()).showAssetUsages(anyString(),
+               never()).showAssetUsages(Mockito.<String>any(),
                                         any(),
-                                        anyString(),
+                                        Mockito.<String>any(),
                                         any(),
                                         any(),
                                         any());
 
-        verify(renamePopUpPresenter).show(any(Path.class),
-                                          any(JavaAssetUpdateValidator.class),
-                                          any(CommandWithFileNameAndCommitMessage.class));
+        verify(renamePopUpPresenter).show(Mockito.<Path>any(),
+                                          Mockito.<JavaAssetUpdateValidator>any(),
+                                          Mockito.<CommandWithFileNameAndCommitMessage>any());
     }
 
     @Test
@@ -632,21 +632,21 @@ public class DataModelerScreenPresenterTest
         presenter.rename();
 
         verify(view,
-               times(1)).showYesNoCancelPopup(anyString(),
-                                              anyString(),
-                                              any(Command.class),
-                                              any(Command.class));
+               times(1)).showYesNoCancelPopup(Mockito.<String>any(),
+                                              Mockito.<String>any(),
+                                              Mockito.<Command>any(),
+                                              Mockito.<Command>any());
 
         // Simulate "yes" action in YesNoCancelPopup, with no validation issues detected
         presenter.getRenameValidationCallback().callback(Collections.emptyList());
 
         verify(renamePopUpPresenter,
-               times(1)).show(any(Path.class),
-                              any(JavaAssetUpdateValidator.class),
-                              any(CommandWithFileNameAndCommitMessage.class));
+               times(1)).show(Mockito.<Path>any(),
+                              Mockito.<JavaAssetUpdateValidator>any(),
+                              Mockito.<CommandWithFileNameAndCommitMessage>any());
         verify(validationPopup,
-               never()).showSaveValidationMessages(any(Command.class),
-                                                   any(Command.class),
+               never()).showSaveValidationMessages(Mockito.<Command>any(),
+                                                   Mockito.<Command>any(),
                                                    anyListOf(ValidationMessage.class));
     }
 
@@ -659,57 +659,57 @@ public class DataModelerScreenPresenterTest
         presenter.rename();
 
         verify(view,
-               times(1)).showYesNoCancelPopup(anyString(),
-                                              anyString(),
-                                              any(Command.class),
-                                              any(Command.class));
+               times(1)).showYesNoCancelPopup(Mockito.<String>any(),
+                                              Mockito.<String>any(),
+                                              Mockito.<Command>any(),
+                                              Mockito.<Command>any());
 
         // Simulate "yes" action in YesNoCancelPopup, with validation issues detected
         presenter.getRenameValidationCallback().callback(Arrays.asList(new ValidationMessage()));
 
         verify(renamePopUpPresenter,
-               never()).show(any(Path.class),
-                             any(JavaAssetUpdateValidator.class),
-                             any(CommandWithFileNameAndCommitMessage.class));
+               never()).show(Mockito.<Path>any(),
+                             Mockito.<JavaAssetUpdateValidator>any(),
+                             Mockito.<CommandWithFileNameAndCommitMessage>any());
         verify(validationPopup,
-               times(1)).showSaveValidationMessages(any(Command.class),
-                                                    any(Command.class),
+               times(1)).showSaveValidationMessages(Mockito.<Command>any(),
+                                                    Mockito.<Command>any(),
                                                     anyListOf(ValidationMessage.class));
     }
 
     @Test
     public void onCopyValidationSucceededTest() {
-        when(validationService.validateForCopy(any(Path.class),
-                                               any(DataObject.class))).thenReturn(Collections.emptyList());
+        when(validationService.validateForCopy(Mockito.<Path>any(),
+                                               Mockito.<DataObject>any())).thenReturn(Collections.emptyList());
         presenter.context = mock(DataModelerContext.class);
 
         presenter.onCopy();
 
         verify(copyPopUpPresenter,
-               times(1)).show(any(Path.class),
-                              any(JavaAssetUpdateValidator.class),
-                              any(CommandWithFileNameAndCommitMessage.class));
+               times(1)).show(Mockito.<Path>any(),
+                              Mockito.<JavaAssetUpdateValidator>any(),
+                              Mockito.<CommandWithFileNameAndCommitMessage>any());
         verify(validationPopup,
-               never()).showCopyValidationMessages(any(Command.class),
-                                                   any(Command.class),
+               never()).showCopyValidationMessages(Mockito.<Command>any(),
+                                                   Mockito.<Command>any(),
                                                    anyListOf(ValidationMessage.class));
     }
 
     @Test
     public void onCopyValidationFailedTest() {
-        when(validationService.validateForCopy(any(Path.class),
-                                               any(DataObject.class))).thenReturn(Arrays.asList(new ValidationMessage()));
+        when(validationService.validateForCopy(Mockito.<Path>any(),
+                                               Mockito.<DataObject>any())).thenReturn(Arrays.asList(new ValidationMessage()));
         presenter.context = mock(DataModelerContext.class);
 
         presenter.onCopy();
 
         verify(copyPopUpPresenter,
-               never()).show(any(Path.class),
-                             any(JavaAssetUpdateValidator.class),
-                             any(CommandWithFileNameAndCommitMessage.class));
+               never()).show(Mockito.<Path>any(),
+                             Mockito.<JavaAssetUpdateValidator>any(),
+                             Mockito.<CommandWithFileNameAndCommitMessage>any());
         verify(validationPopup,
-               times(1)).showCopyValidationMessages(any(Command.class),
-                                                    any(Command.class),
+               times(1)).showCopyValidationMessages(Mockito.<Command>any(),
+                                                    Mockito.<Command>any(),
                                                     anyListOf(ValidationMessage.class));
     }
 
@@ -755,8 +755,8 @@ public class DataModelerScreenPresenterTest
     }
 
     private void prepareOnCopyTest() {
-        when(validationService.validateForCopy(any(Path.class),
-                                               any(DataObject.class))).thenReturn(Collections.emptyList());
+        when(validationService.validateForCopy(Mockito.<Path>any(),
+                                               Mockito.<DataObject>any())).thenReturn(Collections.emptyList());
         presenter.context = mock(DataModelerContext.class);
 
         when(commitMessage.getCommitMessage()).thenReturn(COMMIT_MESSAGE);
@@ -774,10 +774,10 @@ public class DataModelerScreenPresenterTest
 
         presenter.makeMenuBar();
 
-        verify(fileMenuBuilder).addSave(any(MenuItem.class));
-        verify(fileMenuBuilder).addCopy(any(Command.class));
-        verify(fileMenuBuilder).addRename(any(Command.class));
-        verify(fileMenuBuilder).addDelete(any(Command.class));
+        verify(fileMenuBuilder).addSave(Mockito.<MenuItem>any());
+        verify(fileMenuBuilder).addCopy(Mockito.<Command>any());
+        verify(fileMenuBuilder).addRename(Mockito.<Command>any());
+        verify(fileMenuBuilder).addDelete(Mockito.<Command>any());
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
         verify(presenter).addDownloadMenuItem(fileMenuBuilder);
     }
@@ -790,13 +790,13 @@ public class DataModelerScreenPresenterTest
         presenter.makeMenuBar();
 
         verify(fileMenuBuilder,
-               never()).addSave(any(MenuItem.class));
+               never()).addSave(Mockito.<MenuItem>any());
         verify(fileMenuBuilder,
-               never()).addCopy(any(Command.class));
+               never()).addCopy(Mockito.<Command>any());
         verify(fileMenuBuilder,
-               never()).addRename(any(Command.class));
+               never()).addRename(Mockito.<Command>any());
         verify(fileMenuBuilder,
-               never()).addDelete(any(Command.class));
+               never()).addDelete(Mockito.<Command>any());
         verify(fileMenuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
@@ -869,7 +869,7 @@ public class DataModelerScreenPresenterTest
     }
 
     public void testReadonlyForUpdatableProject(boolean isUpdatable) {
-        when(authorizationManager.authorize(anyString(), anyObject())).thenReturn(true);
+        when(authorizationManager.authorize(Mockito.<String>any(), anyObject())).thenReturn(true);
         WorkspaceProject workspaceProject = mock(WorkspaceProject.class);
 
         Optional<WorkspaceProject> workspaceProjectOptional = Optional.of(workspaceProject);

@@ -22,11 +22,11 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.datasource.management.backend.core.DriverProviderBaseTest;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDef;
 import org.kie.workbench.common.screens.datasource.management.model.DriverDeploymentInfo;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DBCPDriverProviderTest
         extends DriverProviderBaseTest {
 

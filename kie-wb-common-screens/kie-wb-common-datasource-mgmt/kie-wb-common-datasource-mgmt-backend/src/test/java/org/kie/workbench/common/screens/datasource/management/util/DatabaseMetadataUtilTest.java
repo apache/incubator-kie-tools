@@ -52,10 +52,16 @@ import org.kie.workbench.common.screens.datasource.management.metadata.DatabaseM
 import org.kie.workbench.common.screens.datasource.management.metadata.SchemaMetadata;
 import org.kie.workbench.common.screens.datasource.management.metadata.TableMetadata;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.anyObject;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith( MockitoJUnitRunner.class )
 public class DatabaseMetadataUtilTest {
@@ -226,8 +232,8 @@ public class DatabaseMetadataUtilTest {
                                  String tableNamePattern,
                                  DatabaseMetadata.TableType... types ) throws Exception {
         when( conn.getMetaData( ) ).thenReturn( sqlDatabaseMetaData );
-        tablesRs = createTablesResultSet( schema, tableNamePattern, types );
-        when( sqlDatabaseMetaData.getTables( eq( null ), anyString( ), anyString( ), anyObject( ) ) ).thenReturn( tablesRs );
+        tablesRs = createTablesResultSet(schema, tableNamePattern, types);
+        when(sqlDatabaseMetaData.getTables(eq(null), Mockito.<String>any(), Mockito.<String>any(), anyObject())).thenReturn(tablesRs);
         List< TableMetadata > result = DatabaseMetadataUtil.findTables( conn, schema, tableNamePattern, types );
         assertEquals( expectedResult, result );
         assertTrue( tablesRs.isClosed( ) );

@@ -16,21 +16,11 @@
 
 package org.kie.workbench.common.screens.server.management.client.container.status;
 
-import static org.junit.Assert.assertEquals;
-import static org.kie.workbench.common.screens.server.management.client.util.Convert.toKey;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,12 +40,21 @@ import org.kie.server.controller.api.model.spec.ServerTemplateKey;
 import org.kie.workbench.common.screens.server.management.client.container.status.card.ContainerCardPresenter;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.screens.server.management.client.util.Convert.toKey;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ContainerRemoteStatusPresenterTest {
 
     @Mock
@@ -95,7 +94,7 @@ public class ContainerRemoteStatusPresenterTest {
 
         verify( view ).clear();
         verify( cardPresenter ).setup( container.getServerInstanceKey(), container );
-        verify( view ).addCard( any( IsWidget.class ) );
+        verify( view ).addCard(Mockito.<IsWidget>any() );
 
         presenter.onDelete( new ServerInstanceDeleted( serverInstanceKey.getServerInstanceId() ) );
 

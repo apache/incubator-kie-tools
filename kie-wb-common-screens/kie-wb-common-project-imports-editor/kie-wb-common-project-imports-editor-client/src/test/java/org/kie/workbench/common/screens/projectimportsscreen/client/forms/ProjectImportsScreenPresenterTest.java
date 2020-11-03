@@ -17,13 +17,12 @@
 package org.kie.workbench.common.screens.projectimportsscreen.client.forms;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.guvnor.common.services.project.client.context.WorkspaceProjectContext;
 import org.guvnor.common.services.project.client.security.ProjectController;
-import org.guvnor.common.services.project.model.WorkspaceProject;
-import java.util.function.Supplier;
-
 import org.guvnor.common.services.project.model.ProjectImports;
+import org.guvnor.common.services.project.model.WorkspaceProject;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.messageconsole.client.console.widget.button.AlertsButtonMenuItemBuilder;
@@ -43,7 +42,8 @@ import org.kie.workbench.common.widgets.metadata.client.validation.AssetUpdateVa
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.promise.Promises;
@@ -67,7 +67,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ProjectImportsScreenPresenterTest {
 
     @Mock
@@ -137,12 +137,12 @@ public class ProjectImportsScreenPresenterTest {
         when(importsContent.getOverview()).thenReturn(overview);
         when(recordManager.getCurrentPath()).thenReturn(path);
 
-        when(menuBuilder.addSave(any(MenuItem.class))).thenReturn(menuBuilder);
-        when(menuBuilder.addCopy(any(Path.class),
-                                 any(Validator.class))).thenReturn(menuBuilder);
-        when(menuBuilder.addRename(any(Command.class))).thenReturn(menuBuilder);
-        when(menuBuilder.addDelete(any(Path.class))).thenReturn(menuBuilder);
-        when(menuBuilder.addNewTopLevelMenu(any(MenuItem.class))).thenReturn(menuBuilder);
+        when(menuBuilder.addSave(Mockito.<MenuItem>any())).thenReturn(menuBuilder);
+        when(menuBuilder.addCopy(Mockito.<Path>any(),
+                                 Mockito.<Validator>any())).thenReturn(menuBuilder);
+        when(menuBuilder.addRename(Mockito.<Command>any())).thenReturn(menuBuilder);
+        when(menuBuilder.addDelete(Mockito.<Path>any())).thenReturn(menuBuilder);
+        when(menuBuilder.addNewTopLevelMenu(Mockito.<MenuItem>any())).thenReturn(menuBuilder);
 
         when(workbenchContext.getActiveOrganizationalUnit()).thenReturn(Optional.empty());
         when(workbenchContext.getActiveWorkspaceProject()).thenReturn(Optional.empty());
@@ -164,8 +164,8 @@ public class ProjectImportsScreenPresenterTest {
     }
 
     private void verifyShowHide(boolean positive) {
-        when(serviceCaller.call(any(RemoteCallback.class),
-                                any(ErrorCallback.class)))
+        when(serviceCaller.call(Mockito.<RemoteCallback>any(),
+                                Mockito.<ErrorCallback>any()))
                 .thenAnswer(new LoadContentAnswer(importsService,
                                                   importsContent,
                                                   positive ? null : errorCallback));
@@ -177,8 +177,8 @@ public class ProjectImportsScreenPresenterTest {
         if (positive) {
             verify(view).hideBusyIndicator();
         } else {
-            verify(errorCallback).error(any(Message.class),
-                                        any(Throwable.class));
+            verify(errorCallback).error(Mockito.<Message>any(),
+                                        Mockito.<Throwable>any());
         }
     }
 
@@ -189,10 +189,10 @@ public class ProjectImportsScreenPresenterTest {
 
         presenter.makeMenuBar();
 
-        verify(menuBuilder).addSave(any(MenuItem.class));
-        verify(menuBuilder).addCopy(any(Path.class), any(AssetUpdateValidator.class));
-        verify(menuBuilder).addRename(any(Command.class));
-        verify(menuBuilder).addDelete(any(Path.class), any(AssetUpdateValidator.class));
+        verify(menuBuilder).addSave(Mockito.<MenuItem>any());
+        verify(menuBuilder).addCopy(Mockito.<Path>any(), Mockito.<AssetUpdateValidator>any());
+        verify(menuBuilder).addRename(Mockito.<Command>any());
+        verify(menuBuilder).addDelete(Mockito.<Path>any(), Mockito.<AssetUpdateValidator>any());
         verify(menuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
         verify(presenter).addDownloadMenuItem(menuBuilder);
     }
@@ -204,10 +204,10 @@ public class ProjectImportsScreenPresenterTest {
 
         presenter.makeMenuBar();
 
-        verify(menuBuilder, never()).addSave(any(MenuItem.class));
-        verify(menuBuilder, never()).addCopy(any(Path.class), any(AssetUpdateValidator.class));
-        verify(menuBuilder, never()).addRename(any(Command.class));
-        verify(menuBuilder, never()).addDelete(any(Path.class), any(AssetUpdateValidator.class));
+        verify(menuBuilder, never()).addSave(Mockito.<MenuItem>any());
+        verify(menuBuilder, never()).addCopy(Mockito.<Path>any(), Mockito.<AssetUpdateValidator>any());
+        verify(menuBuilder, never()).addRename(Mockito.<Command>any());
+        verify(menuBuilder, never()).addDelete(Mockito.<Path>any(), Mockito.<AssetUpdateValidator>any());
         verify(menuBuilder).addNewTopLevelMenu(alertsButtonMenuItem);
     }
 
