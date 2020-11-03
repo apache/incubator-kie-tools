@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.rule.client.editor;
 import java.util.HashMap;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -45,7 +44,6 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.services.shared.preferences.ApplicationPreferences.DATE_FORMAT;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
