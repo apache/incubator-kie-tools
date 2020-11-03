@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorHeaderItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorTextItem;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;

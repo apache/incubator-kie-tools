@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
@@ -57,7 +58,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.listview.common.ListItemViewCssHelper.RIGHT_ARROW_CSS_CLASS;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSuccessfullyImportedMessage_StrongMessage;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -265,7 +265,7 @@ public class DataTypeListViewTest {
         final DataType dataType = mock(DataType.class);
         final String uuid = "uuid";
 
-        doNothing().when(view).cleanSubTypes(anyString());
+        doNothing().when(view).cleanSubTypes(Mockito.<String>any());
         when(dataType.getUUID()).thenReturn(uuid);
 
         view.cleanSubTypes(dataType);
@@ -323,7 +323,7 @@ public class DataTypeListViewTest {
         when(listItem1.getDragAndDropElement()).thenReturn(listItemElement1);
         when(listItem2.getDragAndDropElement()).thenReturn(listItemElement2);
 
-        doNothing().when(view).cleanSubTypes(anyString());
+        doNothing().when(view).cleanSubTypes(Mockito.<String>any());
         doNothing().when(view).hideItemElementIfParentIsCollapsed(any(), any());
         doNothing().when(view).showArrowIconIfDataTypeHasChildren(any());
 
@@ -486,7 +486,7 @@ public class DataTypeListViewTest {
 
         when(dataType.getUUID()).thenReturn(uuid);
         doReturn(dataTypeElement).when(view).getDataTypeRow(dataType);
-        doNothing().when(view).cleanSubTypes(anyString());
+        doNothing().when(view).cleanSubTypes(Mockito.<String>any());
         dataTypeElement.parentNode = parentNode;
 
         view.removeItem(dataType);

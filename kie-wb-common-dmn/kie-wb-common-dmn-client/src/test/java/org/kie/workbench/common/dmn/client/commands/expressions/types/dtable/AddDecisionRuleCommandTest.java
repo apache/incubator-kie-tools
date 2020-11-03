@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridRow;

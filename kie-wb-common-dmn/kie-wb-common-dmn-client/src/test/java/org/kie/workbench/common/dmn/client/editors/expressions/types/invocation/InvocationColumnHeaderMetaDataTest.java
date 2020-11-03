@@ -23,9 +23,9 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseColumnHeaderMetaDataContextMenuTest;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class InvocationColumnHeaderMetaDataTest extends BaseColumnHeaderMetaDataContextMenuTest<InvocationColumnHeaderMetaData, Name, HasName> {
 
     @Mock

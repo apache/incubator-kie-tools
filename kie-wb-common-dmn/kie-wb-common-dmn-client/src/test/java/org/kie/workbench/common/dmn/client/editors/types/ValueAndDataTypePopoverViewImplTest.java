@@ -42,6 +42,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.views.pfly.widgets.JQueryProducer;
 import org.uberfire.client.views.pfly.widgets.Popover;
 
@@ -55,7 +56,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataType
 import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.TAB_KEY;
 import static org.kie.workbench.common.dmn.client.editors.types.ValueAndDataTypePopoverViewImpl.TYPE_SELECTOR_BUTTON_SELECTOR;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
@@ -179,7 +179,7 @@ public class ValueAndDataTypePopoverViewImplTest {
         when(valueChangeEvent.getValue()).thenReturn(typeRef);
         when(jQueryProducer.wrap(element)).thenReturn(popover);
 
-        doAnswer(i -> i.getArguments()[0]).when(translationService).getTranslation(anyString());
+        doAnswer(i -> i.getArguments()[0]).when(translationService).getTranslation(Mockito.<String>any());
     }
 
     @Test
@@ -604,7 +604,7 @@ public class ValueAndDataTypePopoverViewImplTest {
 
     @Test
     public void testOnValueChange() {
-        when(presenter.normaliseValue(anyString())).thenAnswer(i -> i.getArguments()[0]);
+        when(presenter.normaliseValue(Mockito.<String>any())).thenAnswer(i -> i.getArguments()[0]);
         when(valueEditor.getValue()).thenReturn(VALUE);
 
         view.onValueChange(blurEvent);
@@ -616,7 +616,7 @@ public class ValueAndDataTypePopoverViewImplTest {
     @Test
     public void testOnValueChangeWithNormalisedValue() {
         final String normalisedValue = "normalised";
-        when(presenter.normaliseValue(anyString())).thenAnswer(i -> normalisedValue);
+        when(presenter.normaliseValue(Mockito.<String>any())).thenAnswer(i -> normalisedValue);
         when(valueEditor.getValue()).thenReturn(VALUE);
 
         view.onValueChange(blurEvent);
@@ -631,7 +631,7 @@ public class ValueAndDataTypePopoverViewImplTest {
         view.initValue(VALUE);
 
         final String newValue = "new_value";
-        when(presenter.normaliseValue(anyString())).thenAnswer(i -> i.getArguments()[0]);
+        when(presenter.normaliseValue(Mockito.<String>any())).thenAnswer(i -> i.getArguments()[0]);
         when(valueEditor.getValue()).thenReturn(newValue);
 
         view.onValueChange(blurEvent);

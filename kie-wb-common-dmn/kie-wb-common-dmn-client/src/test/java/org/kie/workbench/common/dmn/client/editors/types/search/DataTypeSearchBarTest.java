@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDListComponent;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -41,7 +42,6 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -325,7 +325,7 @@ public class DataTypeSearchBarTest {
 
         searchBar.storeDataTypeListPositions();
 
-        verify(store, never()).put(anyString(), any());
+        verify(store, never()).put(Mockito.<String>any(), any());
     }
 
     @Test

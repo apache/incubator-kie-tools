@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;

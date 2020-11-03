@@ -42,12 +42,12 @@ import org.kie.workbench.common.stunner.core.validation.DomainViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelValidator;
 import org.kie.workbench.common.stunner.core.validation.impl.ElementViolationImpl;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mocks.CallerMock;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -164,7 +164,7 @@ public class DMNClientDiagramValidatorTest {
 
     @Test
     public void testOnValidatorError() {
-        doNothing().when(validator).logError(anyString());
+        doNothing().when(validator).logError(Mockito.<String>any());
 
         validator.onValidatorError().error(null, null);
 
@@ -176,11 +176,11 @@ public class DMNClientDiagramValidatorTest {
 
         final ClientRuntimeError error = mock(ClientRuntimeError.class);
 
-        doNothing().when(validator).logError(anyString());
+        doNothing().when(validator).logError(Mockito.<String>any());
 
         validator.getContentServiceCallback(diagram, violationsConsumer, violations).onError(error);
 
-        verify(dmnDomainValidator, never()).validate(any(), anyString());
+        verify(dmnDomainValidator, never()).validate(any(), Mockito.<String>any());
         verify(validator).logError("Marshaller service error");
     }
 }

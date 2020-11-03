@@ -27,7 +27,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;

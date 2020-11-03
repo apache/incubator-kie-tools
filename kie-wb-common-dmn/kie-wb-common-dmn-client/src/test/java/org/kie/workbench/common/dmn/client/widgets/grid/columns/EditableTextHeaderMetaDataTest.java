@@ -28,7 +28,7 @@ import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom.TextBoxDOMElement;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellEditContext;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.single.SingletonDOMElementFactory;

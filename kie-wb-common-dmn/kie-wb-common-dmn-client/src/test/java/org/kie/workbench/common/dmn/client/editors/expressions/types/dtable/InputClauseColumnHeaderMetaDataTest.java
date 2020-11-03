@@ -22,7 +22,7 @@ import org.kie.workbench.common.dmn.api.property.dmn.Text;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.BaseColumnHeaderMetaDataContextMenuTest;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;

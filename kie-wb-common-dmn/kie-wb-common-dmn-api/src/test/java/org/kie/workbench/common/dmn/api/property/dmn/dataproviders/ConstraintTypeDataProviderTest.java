@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertTrue;
 

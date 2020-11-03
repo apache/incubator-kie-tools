@@ -25,10 +25,10 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -43,7 +43,7 @@ public class BuiltinAggregatorUtilsTest {
     public void setup() {
         this.builtinAggregatorUtils = new BuiltinAggregatorUtils(translationService);
 
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(Mockito.<String>any());
     }
 
     @Test

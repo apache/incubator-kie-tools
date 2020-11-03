@@ -45,12 +45,12 @@ import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.dmn.client.canvas.controls.resize.DecisionServiceMoveDividerControl.DIVIDER_Y_PROPERTY_ID;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -123,7 +123,7 @@ public class DecisionServiceMoveDividerControlTest {
 
         control.register(element);
 
-        verify(control).registerHandler(anyString(), any(ViewHandler.class));
+        verify(control).registerHandler(Mockito.<String>any(), any(ViewHandler.class));
     }
 
     @Test
@@ -173,6 +173,6 @@ public class DecisionServiceMoveDividerControlTest {
 
         control.register(element);
 
-        verify(control, never()).registerHandler(anyString(), any(ViewHandler.class));
+        verify(control, never()).registerHandler(Mockito.<String>any(), any(ViewHandler.class));
     }
 }

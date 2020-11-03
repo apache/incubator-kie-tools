@@ -29,11 +29,11 @@ import org.kie.workbench.common.dmn.api.definition.model.HitPolicy;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
@@ -81,7 +81,7 @@ public class HitPolicyPopoverImplTest {
         when(control.getHitPolicy()).thenReturn(null);
         when(control.getBuiltinAggregator()).thenReturn(null);
 
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(Mockito.<String>any());
     }
 
     @Test

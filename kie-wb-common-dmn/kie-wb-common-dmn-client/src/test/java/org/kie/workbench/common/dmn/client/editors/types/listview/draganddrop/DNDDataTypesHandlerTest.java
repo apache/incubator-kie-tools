@@ -31,6 +31,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListIt
 import org.kie.workbench.common.dmn.client.editors.types.persistence.DataTypeStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertFalse;
@@ -42,7 +43,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.dragand
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDDataTypesHandlerShiftStrategy.INSERT_TOP_LEVEL_DATA_TYPE;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DNDDataTypesHandlerShiftStrategy.INSERT_TOP_LEVEL_DATA_TYPE_AT_THE_TOP;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -90,7 +90,7 @@ public class DNDDataTypesHandlerTest {
         final DNDDataTypesHandlerContext context = mock(DNDDataTypesHandlerContext.class);
         final DNDDataTypesHandlerShiftStrategy strategy = INSERT_INTO_HOVERED_DATA_TYPE;
 
-        doNothing().when(handler).logError(anyString());
+        doNothing().when(handler).logError(Mockito.<String>any());
         doReturn(context).when(handler).makeDndContext(currentElement, hoverElement);
         when(context.getCurrentDataType()).thenReturn(Optional.of(current));
         when(context.getReference()).thenReturn(Optional.of(reference));
@@ -109,7 +109,7 @@ public class DNDDataTypesHandlerTest {
         final DataType reference = mock(DataType.class);
         final DNDDataTypesHandlerContext context = mock(DNDDataTypesHandlerContext.class);
 
-        doNothing().when(handler).logError(anyString());
+        doNothing().when(handler).logError(Mockito.<String>any());
         doReturn(context).when(handler).makeDndContext(currentElement, hoverElement);
         when(context.getCurrentDataType()).thenReturn(Optional.empty());
         when(context.getReference()).thenReturn(Optional.of(reference));
@@ -127,7 +127,7 @@ public class DNDDataTypesHandlerTest {
         final DataType current = mock(DataType.class);
         final DNDDataTypesHandlerContext context = mock(DNDDataTypesHandlerContext.class);
 
-        doNothing().when(handler).logError(anyString());
+        doNothing().when(handler).logError(Mockito.<String>any());
         doReturn(context).when(handler).makeDndContext(currentElement, hoverElement);
         when(context.getCurrentDataType()).thenReturn(Optional.of(current));
         when(context.getReference()).thenReturn(Optional.empty());
@@ -143,7 +143,7 @@ public class DNDDataTypesHandlerTest {
         final Element currentElement = mock(Element.class);
         final Element hoverElement = mock(Element.class);
 
-        doNothing().when(handler).logError(anyString());
+        doNothing().when(handler).logError(Mockito.<String>any());
         doThrow(new UnsupportedOperationException("Error")).when(handler).makeDndContext(any(), any());
 
         handler.onDropDataType(currentElement, hoverElement);

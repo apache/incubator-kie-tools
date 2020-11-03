@@ -43,17 +43,17 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.lookup.domain.CommonDomainLookups;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DMNFlowActionsToolboxFactoryTest {
 
     private static final String DS_ID = "defSetId1";
@@ -115,17 +115,17 @@ public class DMNFlowActionsToolboxFactoryTest {
         when(adapters.forDefinition()).thenReturn(definitionAdapter);
         when(definitionAdapter.getId(eq(allowedNodeDefinition))).thenReturn(DefinitionId.build(NODE_ID));
         createConnectorAction = new ManagedInstanceStub<>(createConnectorActionInstance);
-        when(createConnectorActionInstance.setEdgeId(anyString())).thenReturn(createConnectorActionInstance);
+        when(createConnectorActionInstance.setEdgeId(Mockito.<String>any())).thenReturn(createConnectorActionInstance);
         createNodeAction = new ManagedInstanceStub<>(createNodeActionInstance);
-        when(createNodeActionInstance.setEdgeId(anyString())).thenReturn(createNodeActionInstance);
-        when(createNodeActionInstance.setNodeId(anyString())).thenReturn(createNodeActionInstance);
+        when(createNodeActionInstance.setEdgeId(Mockito.<String>any())).thenReturn(createNodeActionInstance);
+        when(createNodeActionInstance.setNodeId(Mockito.<String>any())).thenReturn(createNodeActionInstance);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getGraph()).thenReturn(graph);
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getDefinitionSetId()).thenReturn(DS_ID);
         when(element.getUUID()).thenReturn(E_UUID);
         when(element.asNode()).thenReturn(element);
-        when(toolboxLookups.get(anyString())).thenReturn(domainLookups);
+        when(toolboxLookups.get(Mockito.<String>any())).thenReturn(domainLookups);
         when(domainLookups.lookupTargetConnectors(eq(element)))
                 .thenReturn(Collections.singleton(EDGE_ID));
         when(domainLookups.lookupTargetNodes(eq(graph),

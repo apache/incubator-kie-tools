@@ -52,7 +52,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.dragand
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -218,7 +217,7 @@ public class DNDListComponentViewTest {
 
         verify(element0).setAttribute(DATA_X_POSITION, 0);
         verify(element2).setAttribute(DATA_X_POSITION, 1);
-        verify(element1, never()).setAttribute(anyString(), anyString());
+        verify(element1, never()).setAttribute(Mockito.<String>any(), Mockito.<String>any());
     }
 
     @Test
@@ -256,7 +255,7 @@ public class DNDListComponentViewTest {
 
         verify(element0, never()).setAttribute(DATA_X_POSITION, 0);
         verify(element2).setAttribute(DATA_X_POSITION, 1);
-        verify(element1, never()).setAttribute(anyString(), anyString());
+        verify(element1, never()).setAttribute(Mockito.<String>any(), Mockito.<String>any());
     }
 
     @Test
@@ -292,7 +291,7 @@ public class DNDListComponentViewTest {
 
         view.consolidateHierarchicalLevel(true);
 
-        verify(element, never()).setAttribute(anyString(), anyString());
+        verify(element, never()).setAttribute(Mockito.<String>any(), Mockito.<String>any());
     }
 
     @Test

@@ -32,12 +32,12 @@ import org.junit.Test;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl.ListSelectorTextItem;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.ListSelector;
+import org.mockito.Mockito;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -118,7 +118,7 @@ public class ContextMenuViewTest {
 
         doReturn(pathArray).when(event.path).asList();
 
-        when(element.getAttribute(anyString())).thenReturn(value);
+        when(element.getAttribute(Mockito.<String>any())).thenReturn(value);
 
         final List<Element> eventPath = contextMenuView.getEventPath(event);
 
@@ -140,7 +140,7 @@ public class ContextMenuViewTest {
 
         doReturn(composedPathAsList).when(composedPath).asList();
         when(event.composedPath()).thenReturn(composedPath);
-        when(element.getAttribute(anyString())).thenReturn(value);
+        when(element.getAttribute(Mockito.<String>any())).thenReturn(value);
 
         final List<Element> eventPath = contextMenuView.getEventPath(event);
 

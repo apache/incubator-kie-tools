@@ -33,6 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.types.shortcuts.DataTypeShort
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
@@ -44,7 +45,6 @@ import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.N
 import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.RANGE;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraintModal.CONSTRAINT_INITIAL_VALUE;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.constraint.DataTypeConstraintModal.WIDTH;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
@@ -102,7 +102,7 @@ public class DataTypeConstraintModalTest {
         final DataTypeConstraintComponent constrainComponent = mock(DataTypeConstraintComponent.class);
         final String value = "value";
 
-        doNothing().when(modal).doSave(anyString());
+        doNothing().when(modal).doSave(Mockito.<String>any());
         doReturn(constrainComponent).when(modal).getCurrentComponent();
         when(constrainComponent.getValue()).thenReturn(value);
 
@@ -114,7 +114,7 @@ public class DataTypeConstraintModalTest {
     @Test
     public void testClearAll() {
 
-        doNothing().when(modal).doSave(anyString());
+        doNothing().when(modal).doSave(Mockito.<String>any());
 
         modal.clearAll();
 

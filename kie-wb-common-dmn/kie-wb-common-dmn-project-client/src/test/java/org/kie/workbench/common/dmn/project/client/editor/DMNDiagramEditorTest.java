@@ -81,6 +81,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.views.pfly.multipage.MultiPageEditorSelectedPageEvent;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
@@ -96,7 +97,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.project.client.editor.DMNDiagramEditor.DATA_TYPES_PAGE_INDEX;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
@@ -342,7 +342,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         errorConsumerCaptor.getValue().accept("ERROR");
 
         verify(view).hideBusyIndicator();
-        verify(errorPopupPresenter, never()).showMessage(anyString());
+        verify(errorPopupPresenter, never()).showMessage(Mockito.<String>any());
         verify(editorSearchIndex).setIsDataTypesTabActiveSupplier(isDataTypesTabActiveSupplier);
         verify(editorSearchIndex).setCurrentAssetHashcodeSupplier(currentContentHashSupplier);
     }
@@ -532,7 +532,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testParsingErrorMessage() {
-        doAnswer(i -> i.getArguments()[0]).when(translationService).getValue(anyString());
+        doAnswer(i -> i.getArguments()[0]).when(translationService).getValue(Mockito.<String>any());
 
         final String xml = "xml";
 

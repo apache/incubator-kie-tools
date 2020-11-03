@@ -30,9 +30,9 @@ import org.kie.workbench.common.dmn.api.definition.model.ContextEntry;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItem;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +58,7 @@ public class BaseSupplementaryFunctionEditorDefinitionTest {
         nodeUUID = Optional.of("uuid");
 
         expression = Optional.of(new Context());
-        doCallRealMethod().when(baseSupplementaryFunctionEditorDefinition).createVariable(anyString());
+        doCallRealMethod().when(baseSupplementaryFunctionEditorDefinition).createVariable(Mockito.<String>any());
         doCallRealMethod().when(baseSupplementaryFunctionEditorDefinition).enrich(nodeUUID,
                                                                                   hasExpression,
                                                                                   expression);

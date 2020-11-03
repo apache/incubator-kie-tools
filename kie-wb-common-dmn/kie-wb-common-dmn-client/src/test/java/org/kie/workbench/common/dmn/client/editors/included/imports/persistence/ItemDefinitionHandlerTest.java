@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUt
 import org.kie.workbench.common.dmn.client.editors.types.common.events.RefreshDataTypesListEvent;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.common.PropertiesPanelNotifier;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mocks.EventSourceMock;
 
 import static java.util.Arrays.asList;
@@ -38,7 +39,6 @@ import static org.junit.Assert.assertNull;
 import static org.kie.workbench.common.dmn.api.property.dmn.QName.DEFAULT_NS_PREFIX;
 import static org.kie.workbench.common.dmn.api.property.dmn.QName.NULL_NS_URI;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
@@ -73,7 +73,7 @@ public class ItemDefinitionHandlerTest {
         final ItemDefinition item4 = makeItemDefinition("person", "model1.tPerson", false);
         final List<ItemDefinition> itemDefinitions = asList(item1, item2, item3, item4);
 
-        doNothing().when(handler).notifyPropertiesPanel(anyString(), anyString());
+        doNothing().when(handler).notifyPropertiesPanel(Mockito.<String>any(), Mockito.<String>any());
         when(itemDefinitionUtils.all()).thenReturn(itemDefinitions);
 
         handler.update("model1", "model2");

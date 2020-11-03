@@ -96,6 +96,7 @@ import org.kie.workbench.common.stunner.forms.client.event.RefreshFormProperties
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
@@ -115,7 +116,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -367,15 +367,15 @@ public class InvocationGridTest {
         when(graph.nodes()).thenReturn(Collections.singletonList(node));
 
         when(canvasHandler.getGraphIndex()).thenReturn(index);
-        when(index.get(anyString())).thenReturn(element);
+        when(index.get(Mockito.<String>any())).thenReturn(element);
         when(element.getContent()).thenReturn(mock(Definition.class));
         when(definitionUtils.getNameIdentifier(any())).thenReturn("name");
         when(canvasCommandFactory.updatePropertyValue(any(Element.class),
-                                                      anyString(),
+                                                      Mockito.<String>any(),
                                                       any())).thenReturn(mock(UpdateElementPropertyCommand.class));
 
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(Mockito.<String>any());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(Mockito.<String>any());
     }
 
     private void setupGrid(final int nesting) {

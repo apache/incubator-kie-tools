@@ -33,7 +33,7 @@ import org.kie.workbench.common.dmn.client.editors.included.PMMLIncludedModelAct
 import org.kie.workbench.common.dmn.client.editors.included.imports.persistence.ImportRecordEngine;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import static java.util.Arrays.asList;

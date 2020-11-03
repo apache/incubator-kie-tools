@@ -41,7 +41,8 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -52,13 +53,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ExpressionContainerUIModelMapperTest {
 
     private static final double MINIMUM_COLUMN_WIDTH = 200.0;
@@ -244,7 +244,7 @@ public class ExpressionContainerUIModelMapperTest {
                                                             any(Optional.class),
                                                             anyBoolean(),
                                                             anyInt());
-        verify(expressionGridCache).putExpressionGrid(anyString(),
+        verify(expressionGridCache).putExpressionGrid(Mockito.<String>any(),
                                                       any(Optional.class));
     }
 

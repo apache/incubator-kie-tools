@@ -60,7 +60,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
@@ -431,7 +430,7 @@ public class DataTypeListTest {
         final DataType dataType = mock(DataType.class);
         final String uuid = "uuid";
 
-        doNothing().when(dataTypeList).removeItem(anyString());
+        doNothing().when(dataTypeList).removeItem(Mockito.<String>any());
         when(dataType.getUUID()).thenReturn(uuid);
 
         dataTypeList.removeItem(dataType);

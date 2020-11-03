@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.promise.SyncPromises;
 
@@ -45,7 +46,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes.PMML;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -145,9 +145,9 @@ public class DMNMarshallerImportsClientHelperTest {
 
         importsHelper.loadModels(includedModelServiceCallback);
 
-        verify(dmnImportsContentService, never()).loadFile(anyString());
-        verify(dmnImportsContentService, never()).getPMMLDocumentMetadata(anyString());
-        verify(dmnImportsService, never()).getWbDefinitions(anyString(), any());
+        verify(dmnImportsContentService, never()).loadFile(Mockito.<String>any());
+        verify(dmnImportsContentService, never()).getPMMLDocumentMetadata(Mockito.<String>any());
+        verify(dmnImportsService, never()).getWbDefinitions(Mockito.<String>any(), any());
     }
 
     @Test

@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.BaseContextUIModelMapperTest;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.InformationItemCell;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.RowSelectionStrategy;
 
 import static org.junit.Assert.assertEquals;

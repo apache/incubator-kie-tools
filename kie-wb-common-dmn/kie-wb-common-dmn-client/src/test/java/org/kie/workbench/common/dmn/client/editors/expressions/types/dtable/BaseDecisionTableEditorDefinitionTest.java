@@ -61,10 +61,10 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
@@ -176,8 +176,8 @@ public abstract class BaseDecisionTableEditorDefinitionTest {
 
         when(headerEditors.get()).thenReturn(headerEditor);
 
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(anyString());
-        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(anyString());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).format(Mockito.<String>any());
+        doAnswer((i) -> i.getArguments()[0].toString()).when(translationService).getTranslation(Mockito.<String>any());
     }
 
     protected void assertBasicEnrichment(final DecisionTable model) {

@@ -23,7 +23,7 @@ import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNEditorToolbar;
 import org.kie.workbench.common.dmn.showcase.client.editor.DMNStandaloneToolbarStateHandler;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeast;

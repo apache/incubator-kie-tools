@@ -38,7 +38,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -83,7 +82,7 @@ public class DataTypeUpdateHandlerTest {
         handler.update(dataType);
 
         verify(dataTypeManager, never()).from(any(DataType.class));
-        verify(dataTypeManager, never()).withRefreshedSubDataTypes(anyString());
+        verify(dataTypeManager, never()).withRefreshedSubDataTypes(Mockito.<String>any());
     }
 
     @Test
@@ -96,7 +95,7 @@ public class DataTypeUpdateHandlerTest {
         when(dataType.getName()).thenReturn(name);
         when(dataType.getType()).thenReturn(type);
         when(dataTypeManager.from(any(DataType.class))).thenReturn(dataTypeManager);
-        when(dataTypeManager.withRefreshedSubDataTypes(anyString())).thenReturn(dataTypeManager);
+        when(dataTypeManager.withRefreshedSubDataTypes(Mockito.<String>any())).thenReturn(dataTypeManager);
 
         handler.update(dataType);
 
@@ -156,7 +155,7 @@ public class DataTypeUpdateHandlerTest {
         doReturn(Optional.of(topLevelDataType)).when(handler).getClosestTopLevelDataType(dataType);
         doReturn(dependentDataTypes).when(handler).handleTopLevelDataTypeUpdate(topLevelDataType, name);
         doReturn(true).when(handler).isStructure(dataType);
-        doNothing().when(handler).refreshSubDataTypes(any(), anyString());
+        doNothing().when(handler).refreshSubDataTypes(any(), Mockito.<String>any());
 
         final List<DataType> expectedDataTypes = asList(dataType0, dataType1, dataType2, topLevelDataType);
         final List<DataType> actualDataTypes = handler.handleNestedDataTypeFieldUpdate(dataType);
@@ -184,7 +183,7 @@ public class DataTypeUpdateHandlerTest {
         when(dataTypeStore.getTopLevelDataTypes()).thenReturn(asList(dataType0, dataType1, dataType2));
         doReturn(Optional.of(topLevelDataType)).when(handler).getClosestTopLevelDataType(dataType);
         doReturn(false).when(handler).isStructure(dataType);
-        doNothing().when(handler).refreshSubDataTypes(any(), anyString());
+        doNothing().when(handler).refreshSubDataTypes(any(), Mockito.<String>any());
 
         final List<DataType> expectedDataTypes = asList(dataType1, dataType2, topLevelDataType);
         final List<DataType> actualDataTypes = handler.handleNestedDataTypeFieldUpdate(dataType);
@@ -206,8 +205,8 @@ public class DataTypeUpdateHandlerTest {
         final List<DataType> expectedDependentDataTypes = emptyList();
         final List<DataType> actualDependentDataTypes = handler.updateAllChildrenWithTheNewTypeName(topLevelDataType, oldItemDefinitionName);
 
-        verify(handler, never()).refreshSubDataTypes(any(), anyString());
-        verify(handler, never()).refreshSubDataType(any(), anyString());
+        verify(handler, never()).refreshSubDataTypes(any(), Mockito.<String>any());
+        verify(handler, never()).refreshSubDataType(any(), Mockito.<String>any());
 
         assertEquals(expectedDependentDataTypes, actualDependentDataTypes);
     }
@@ -230,8 +229,8 @@ public class DataTypeUpdateHandlerTest {
         when(dataType2.getType()).thenReturn(oldItemDefinitionName);
         when(dataType3.getType()).thenReturn(oldItemDefinitionName);
         when(topLevelDataType.isTopLevel()).thenReturn(true);
-        doNothing().when(handler).refreshSubDataTypes(any(), anyString());
-        doNothing().when(handler).refreshSubDataType(any(), anyString());
+        doNothing().when(handler).refreshSubDataTypes(any(), Mockito.<String>any());
+        doNothing().when(handler).refreshSubDataType(any(), Mockito.<String>any());
 
         final List<DataType> expectedDependentDataTypes = asList(dataType0, dataType1, dataType2, dataType3, topLevelDataType);
         final List<DataType> actualDependentDataTypes = handler.updateAllChildrenWithTheNewTypeName(topLevelDataType, oldItemDefinitionName);

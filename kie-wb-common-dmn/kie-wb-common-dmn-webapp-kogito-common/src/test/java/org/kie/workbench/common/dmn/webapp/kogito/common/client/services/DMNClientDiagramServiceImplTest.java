@@ -34,13 +34,13 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.kogito.api.editor.impl.KogitoDiagramResourceImpl;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.promise.SyncPromises;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.kogito.api.editor.DiagramType.PROJECT_DIAGRAM;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -80,7 +80,7 @@ public class DMNClientDiagramServiceImplTest {
         final String fileName = "file.dmn";
         final String xml = "";
 
-        doNothing().when(service).doNewDiagram(anyString(), any());
+        doNothing().when(service).doNewDiagram(Mockito.<String>any(), any());
 
         service.transform(fileName, xml, callback);
 
@@ -93,7 +93,7 @@ public class DMNClientDiagramServiceImplTest {
         final String fileName = "file.dmn";
         final String xml = "<dmn />";
 
-        doNothing().when(service).doTransformation(anyString(), anyString(), any());
+        doNothing().when(service).doTransformation(Mockito.<String>any(), Mockito.<String>any(), any());
 
         service.transform(fileName, xml, callback);
 

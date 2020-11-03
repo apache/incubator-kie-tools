@@ -19,7 +19,7 @@ package org.kie.workbench.common.dmn.client.widgets.grid;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;

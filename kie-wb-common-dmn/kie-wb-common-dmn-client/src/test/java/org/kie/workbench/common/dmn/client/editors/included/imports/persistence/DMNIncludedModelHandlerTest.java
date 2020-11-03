@@ -46,13 +46,13 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.dmn.api.property.dmn.QName.DEFAULT_NS_PREFIX;
 import static org.kie.workbench.common.dmn.api.property.dmn.QName.NULL_NS_URI;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -100,7 +100,7 @@ public class DMNIncludedModelHandlerTest {
 
         final List<DRGElement> drgElements = asList(drgElement1, drgElement2, drgElement3, drgElement4);
 
-        doNothing().when(handler).updateDRGElementName(any(), anyString());
+        doNothing().when(handler).updateDRGElementName(any(), Mockito.<String>any());
         when(dmnGraphUtils.getModelDRGElements()).thenReturn(drgElements);
 
         handler.update("model1", "model2");

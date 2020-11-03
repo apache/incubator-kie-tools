@@ -22,14 +22,14 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly.ReadOnly.FALSE;
 import static org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly.ReadOnly.NOT_SET;
 import static org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly.ReadOnly.TRUE;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -51,10 +51,10 @@ public class DRGElementTest {
 
     @Before
     public void setup() {
-        doCallRealMethod().when(drgElement).getReadOnly(anyString());
+        doCallRealMethod().when(drgElement).getReadOnly(Mockito.<String>any());
         doCallRealMethod().when(drgElement).setAllowOnlyVisualChange(anyBoolean());
         doCallRealMethod().when(drgElement).isAllowOnlyVisualChange();
-        doCallRealMethod().when(drgElement).isReadonlyField(anyString());
+        doCallRealMethod().when(drgElement).isReadonlyField(Mockito.<String>any());
         doCallRealMethod().when(drgElement).getContentDefinitionId();
     }
 

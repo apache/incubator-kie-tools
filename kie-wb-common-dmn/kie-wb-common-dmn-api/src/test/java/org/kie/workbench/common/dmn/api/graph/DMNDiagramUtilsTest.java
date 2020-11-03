@@ -41,7 +41,7 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 import org.kie.workbench.common.stunner.project.diagram.impl.ProjectDiagramImpl;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;

@@ -31,14 +31,14 @@ import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -46,7 +46,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ParametersPopoverImplTest {
 
     private static final int ROW_INDEX = 0;
@@ -118,7 +118,7 @@ public class ParametersPopoverImplTest {
     public void setup() {
         this.presenter = new ParametersPopoverImpl(view, translationService);
 
-        when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
+        when(translationService.getTranslation(Mockito.<String>any())).thenAnswer(i -> i.getArguments()[0]);
     }
 
     @Test
@@ -335,7 +335,7 @@ public class ParametersPopoverImplTest {
                                       PARAMETER_NAME);
 
         verify(control, never()).updateParameterName(any(InformationItem.class),
-                                                     anyString(),
+                                                     Mockito.<String>any(),
                                                      any(Command.class));
     }
 

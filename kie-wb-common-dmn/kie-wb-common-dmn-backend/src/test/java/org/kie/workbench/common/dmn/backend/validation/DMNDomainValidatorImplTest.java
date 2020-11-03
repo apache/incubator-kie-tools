@@ -56,7 +56,8 @@ import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,7 +66,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -74,7 +74,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DMNDomainValidatorImplTest {
 
     private static final String DMN_XML = "<Some XML/>";
@@ -200,7 +200,7 @@ public class DMNDomainValidatorImplTest {
 
         doReturn(resolver).when(domainValidator).getValidatorImportReaderResolver(metadata);
 
-        when(domainValidator.getStringReader(anyString())).thenReturn(stringReader);
+        when(domainValidator.getStringReader(Mockito.<String>any())).thenReturn(stringReader);
 
         domainValidator.validate(diagram,
                                  resultConsumer);
@@ -226,7 +226,7 @@ public class DMNDomainValidatorImplTest {
 
         doReturn(resolver).when(domainValidator).getValidatorImportReaderResolver(metadata);
 
-        when(domainValidator.getStringReader(anyString())).thenReturn(stringReader1, stringReader2);
+        when(domainValidator.getStringReader(Mockito.<String>any())).thenReturn(stringReader1, stringReader2);
 
         definitions.getImport().add(new Import());
 

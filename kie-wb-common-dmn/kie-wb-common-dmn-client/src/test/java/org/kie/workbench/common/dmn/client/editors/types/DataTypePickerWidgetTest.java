@@ -51,6 +51,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,7 +61,6 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.DataTypePickerWidget.READ_ONLY_CSS_CLASS;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -155,10 +155,10 @@ public class DataTypePickerWidgetTest {
         when(typeSelector.getElement()).thenReturn(typeSelectorElement);
         when(option.getElement()).thenReturn(optionElement);
         when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
-        when(dmnModel.getPrefixForNamespaceURI(anyString())).thenReturn(Optional.empty());
+        when(dmnModel.getPrefixForNamespaceURI(Mockito.<String>any())).thenReturn(Optional.empty());
         when(manageContainer.getStyle()).thenReturn(manageContainerStyle);
 
-        when(translationService.getTranslation(anyString())).thenAnswer(i -> i.getArguments()[0]);
+        when(translationService.getTranslation(Mockito.<String>any())).thenAnswer(i -> i.getArguments()[0]);
 
         when(typeButton.getClassList()).thenReturn(typeButtonClassList);
         this.picker = spy(new DataTypePickerWidget(typeButton,
@@ -303,8 +303,8 @@ public class DataTypePickerWidgetTest {
         final ItemDefinition itemDefinition = mock(ItemDefinition.class);
         doReturn(null).when(itemDefinition).getName();
         assertFalse(picker.makeTypeSelector(itemDefinition).isPresent());
-        verify(option, never()).setText(anyString());
-        verify(option, never()).setValue(anyString());
+        verify(option, never()).setText(Mockito.<String>any());
+        verify(option, never()).setValue(Mockito.<String>any());
         verify(qNameConverter, never()).toWidgetValue(any(QName.class));
     }
 

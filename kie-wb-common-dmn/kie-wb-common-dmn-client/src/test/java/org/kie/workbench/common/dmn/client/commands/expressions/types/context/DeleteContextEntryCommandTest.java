@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
@@ -47,7 +47,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DeleteContextEntryCommandTest {
 
     @Mock

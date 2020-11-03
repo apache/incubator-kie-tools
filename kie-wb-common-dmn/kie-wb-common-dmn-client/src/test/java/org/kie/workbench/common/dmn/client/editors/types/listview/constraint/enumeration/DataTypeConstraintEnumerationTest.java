@@ -44,7 +44,6 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -128,7 +127,7 @@ public class DataTypeConstraintEnumerationTest {
     public void testRefreshView() {
         final String value = "1, 2, 3";
 
-        doNothing().when(constraintEnumeration).setValue(anyString());
+        doNothing().when(constraintEnumeration).setValue(Mockito.<String>any());
         doReturn(value).when(constraintEnumeration).getValue();
 
         constraintEnumeration.refreshView();
@@ -141,7 +140,7 @@ public class DataTypeConstraintEnumerationTest {
         final String value = "1, 2, 3";
         final Command command = mock(Command.class);
 
-        doNothing().when(constraintEnumeration).setValue(anyString());
+        doNothing().when(constraintEnumeration).setValue(Mockito.<String>any());
         doReturn(value).when(constraintEnumeration).getValue();
 
         constraintEnumeration.refreshView(command);

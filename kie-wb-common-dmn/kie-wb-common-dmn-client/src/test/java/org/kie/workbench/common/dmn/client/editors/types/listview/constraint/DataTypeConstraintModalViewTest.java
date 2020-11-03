@@ -32,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.model.ConstraintType;
 import org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.DataTypeConstraintComponent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.views.pfly.selectpicker.JQuery;
 import org.uberfire.client.views.pfly.selectpicker.JQuery.CallbackFunction;
 import org.uberfire.client.views.pfly.selectpicker.JQueryEvent;
@@ -44,7 +45,6 @@ import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.E
 import static org.kie.workbench.common.dmn.api.definition.model.ConstraintType.EXPRESSION;
 import static org.kie.workbench.common.dmn.client.editors.types.common.HiddenHelper.HIDDEN_CSS_CLASS;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -237,7 +237,7 @@ public class DataTypeConstraintModalViewTest {
         when(presenter.getConstraintValue()).thenReturn(null);
         when(presenter.inferComponentType(any())).thenCallRealMethod();
         doReturn(selectPicker).when(view).getSelectPicker();
-        doNothing().when(view).setPickerValue(any(), anyString());
+        doNothing().when(view).setPickerValue(any(), Mockito.<String>any());
 
         view.onShow();
 
@@ -253,7 +253,7 @@ public class DataTypeConstraintModalViewTest {
         when(presenter.getConstraintValue()).thenReturn(constraint);
         when(presenter.inferComponentType(constraint)).thenReturn(ENUMERATION);
         doReturn(selectPicker).when(view).getSelectPicker();
-        doNothing().when(view).setPickerValue(any(), anyString());
+        doNothing().when(view).setPickerValue(any(), Mockito.<String>any());
 
         view.onShow();
 
@@ -265,7 +265,7 @@ public class DataTypeConstraintModalViewTest {
 
         final Element element = mock(Element.class);
         doReturn(element).when(view).getSelectPicker();
-        doNothing().when(view).triggerPickerAction(any(), anyString());
+        doNothing().when(view).triggerPickerAction(any(), Mockito.<String>any());
 
         view.setupSelectPicker();
 

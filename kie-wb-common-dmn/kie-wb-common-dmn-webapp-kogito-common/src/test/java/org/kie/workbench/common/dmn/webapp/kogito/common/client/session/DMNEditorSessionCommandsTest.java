@@ -37,7 +37,7 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSes
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;

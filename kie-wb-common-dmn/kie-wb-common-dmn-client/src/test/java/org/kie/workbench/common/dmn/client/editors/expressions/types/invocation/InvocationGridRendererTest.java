@@ -18,7 +18,7 @@ package org.kie.workbench.common.dmn.client.editors.expressions.types.invocation
 
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderingTest;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 
 import static org.mockito.Mockito.mock;

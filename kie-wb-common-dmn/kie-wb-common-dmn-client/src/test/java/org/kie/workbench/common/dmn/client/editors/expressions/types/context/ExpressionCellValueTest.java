@@ -24,7 +24,7 @@ import org.kie.workbench.common.dmn.api.definition.model.Expression;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.BaseUIModelMapper;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 
 import static org.junit.Assert.assertEquals;

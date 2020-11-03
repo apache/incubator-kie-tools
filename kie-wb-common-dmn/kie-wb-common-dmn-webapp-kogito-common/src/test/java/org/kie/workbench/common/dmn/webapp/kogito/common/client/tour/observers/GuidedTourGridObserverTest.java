@@ -31,7 +31,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorCh
 import org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.common.GuidedTourUtils;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.common.GuidedTourActions.CREATED;
 import static org.kie.workbench.common.dmn.webapp.kogito.common.client.tour.common.GuidedTourActions.UPDATED;

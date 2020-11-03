@@ -30,6 +30,7 @@ import org.kie.workbench.common.dmn.client.editors.types.common.ScrollHelper;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeList;
 import org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItem;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.views.pfly.selectpicker.JQueryList;
 
 import static java.util.Arrays.asList;
@@ -40,7 +41,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTypeListItemView.UUID_ATTR;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -243,7 +243,7 @@ public class DataTypeListShortcutsViewTest {
         final Element element = fakeDataTypeRow(uuid);
 
         doNothing().when(view).cleanCurrentHighlight();
-        doNothing().when(view).setCurrentUUID(anyString());
+        doNothing().when(view).setCurrentUUID(Mockito.<String>any());
         doNothing().when(view).addHighlightClass(any());
         doNothing().when(view).scrollTo(any());
         doNothing().when(view).highlightLevel(any());
@@ -260,7 +260,7 @@ public class DataTypeListShortcutsViewTest {
     public void testReset() {
 
         doNothing().when(view).cleanCurrentHighlight();
-        doNothing().when(view).setCurrentUUID(anyString());
+        doNothing().when(view).setCurrentUUID(Mockito.<String>any());
 
         view.reset();
 

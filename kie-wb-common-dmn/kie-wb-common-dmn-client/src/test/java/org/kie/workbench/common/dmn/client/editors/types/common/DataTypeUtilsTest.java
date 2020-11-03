@@ -28,7 +28,7 @@ import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinit
 import org.kie.workbench.common.dmn.client.editors.types.persistence.ItemDefinitionStore;
 import org.kie.workbench.common.dmn.client.editors.types.persistence.validation.DataTypeNameValidator;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DataTypeUtilsTest {
 
     @Mock

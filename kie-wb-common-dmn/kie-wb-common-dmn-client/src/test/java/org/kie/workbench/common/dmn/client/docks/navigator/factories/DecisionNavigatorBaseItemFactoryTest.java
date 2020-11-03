@@ -53,6 +53,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
@@ -63,7 +64,6 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorItem.Type.ITEM;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DecisionNavigatorBaseItemFactory_NoName;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -191,7 +191,7 @@ public class DecisionNavigatorBaseItemFactoryTest {
         factory.makeOnClickCommand(node).execute();
 
         verify(canvasFocusUtils).focus(nodeUUID);
-        verify(lazyCanvasFocusUtils, never()).lazyFocus(anyString());
+        verify(lazyCanvasFocusUtils, never()).lazyFocus(Mockito.<String>any());
         verify(selectedEvent, never()).fire(any());
     }
 
@@ -216,7 +216,7 @@ public class DecisionNavigatorBaseItemFactoryTest {
 
         factory.makeOnClickCommand(node).execute();
 
-        verify(canvasFocusUtils, never()).focus(anyString());
+        verify(canvasFocusUtils, never()).focus(Mockito.<String>any());
         verify(lazyCanvasFocusUtils).lazyFocus(nodeUUID);
         verify(selectedEvent).fire(diagramSelectedArgumentCaptor.capture());
         assertEquals(otherDiagramElement, diagramSelectedArgumentCaptor.getValue().getDiagramElement());

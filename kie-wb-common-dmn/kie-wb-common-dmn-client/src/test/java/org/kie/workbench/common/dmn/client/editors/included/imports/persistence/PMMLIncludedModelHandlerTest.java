@@ -40,10 +40,10 @@ import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -96,7 +96,7 @@ public class PMMLIncludedModelHandlerTest {
     public void setup() {
         when(sessionManager.getCurrentSession()).thenReturn(dmnSession);
         when(dmnSession.getExpressionGridCache()).thenReturn(expressionGridCache);
-        when(expressionGridCache.getExpressionGrid(anyString())).thenReturn(Optional.empty());
+        when(expressionGridCache.getExpressionGrid(Mockito.<String>any())).thenReturn(Optional.empty());
         when(expressionGridCache.getExpressionGrid(eq(NODE1_UUID))).thenReturn(Optional.of(expressionGrid1));
         when(expressionGridCache.getExpressionGrid(eq(NODE2_UUID))).thenReturn(Optional.of(expressionGrid2));
         when(expressionGridCache.getExpressionGrid(eq(NODE3_UUID))).thenReturn(Optional.of(expressionGrid3));

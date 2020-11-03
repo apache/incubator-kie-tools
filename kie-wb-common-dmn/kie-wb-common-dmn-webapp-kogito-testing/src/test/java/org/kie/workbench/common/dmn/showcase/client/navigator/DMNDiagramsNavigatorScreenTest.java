@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.client.widgets.event.LoadDiagramEvent;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.diagrams.DiagramsNavigator;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.ShapeSetsMenuItemsBuilder;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.mockito.Matchers.eq;

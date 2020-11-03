@@ -48,12 +48,12 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -183,7 +183,7 @@ public class DRDContextMenuServiceTest {
         when(content.getBounds()).thenReturn(bounds);
         when(bounds.getUpperLeft()).thenReturn(upperLeft);
         when(bounds.getLowerRight()).thenReturn(lowerRight);
-        when(factoryManager.newElement(anyString(), anyString())).thenReturn(clonedNode);
+        when(factoryManager.newElement(Mockito.<String>any(), Mockito.<String>any())).thenReturn(clonedNode);
         when(clonedNode.asNode()).thenReturn(clonedNode);
         when(clonedNode.getContent()).thenReturn(clonedContent);
         when(clonedContent.getDefinition()).thenReturn(clonedInputData);

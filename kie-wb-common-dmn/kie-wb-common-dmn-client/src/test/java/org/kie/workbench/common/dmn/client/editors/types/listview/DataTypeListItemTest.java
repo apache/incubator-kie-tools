@@ -43,6 +43,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
@@ -60,7 +61,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.persistence.Crea
 import static org.kie.workbench.common.dmn.client.editors.types.persistence.CreationType.NESTED;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -526,7 +526,7 @@ public class DataTypeListItemTest {
 
         listItem.insertNewFieldIfDataTypeIsStructure(hash);
 
-        verify(dataTypeList, never()).insertNestedField(anyString());
+        verify(dataTypeList, never()).insertNestedField(Mockito.<String>any());
     }
 
     @Test
@@ -543,7 +543,7 @@ public class DataTypeListItemTest {
 
         listItem.insertNewFieldIfDataTypeIsStructure(hash);
 
-        verify(dataTypeList, never()).insertNestedField(anyString());
+        verify(dataTypeList, never()).insertNestedField(Mockito.<String>any());
     }
 
     @Test
