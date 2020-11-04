@@ -65,7 +65,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -137,9 +136,9 @@ public class DMNDomainValidatorImplTest {
 
         when(dmnMarshaller.marshall(diagram)).thenReturn(DMN_XML);
         when(dmnDiagramUtils.getDefinitions(diagram)).thenReturn(definitions);
-        when(dmnValidator.validateUsing(anyVararg())).thenReturn(dmnValidatorBuilder);
+        when(dmnValidator.validateUsing(any())).thenReturn(dmnValidatorBuilder);
         when(dmnValidatorBuilder.usingImports(resolver)).thenReturn(dmnValidatorBuilder);
-        when(dmnValidatorBuilder.theseModels(any(Reader.class))).thenReturn(validationMessages);
+        when(dmnValidatorBuilder.theseModels(Mockito.<Reader>any())).thenReturn(validationMessages);
         when(diagram.getMetadata()).thenReturn(metadata);
     }
 

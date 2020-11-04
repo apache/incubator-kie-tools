@@ -58,6 +58,7 @@ import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 
@@ -168,7 +169,7 @@ public class NodeProxyTest {
         CanvasCommand<AbstractCanvasHandler> setTargetNode = mock(CanvasCommand.class);
         doReturn(addConnector).when(commandFactory).addConnector(eq(sourceNode),
                                                                  eq(edge),
-                                                                 any(MagnetConnection.class),
+                                                                 Mockito.<MagnetConnection>any(),
                                                                  eq(SHAPE_SET_ID));
         doReturn(addNode).when(commandFactory).addNode(eq(targetNode),
                                                        eq(SHAPE_SET_ID));
@@ -194,7 +195,7 @@ public class NodeProxyTest {
         CanvasCommand<AbstractCanvasHandler> setTargetNode = mock(CanvasCommand.class);
         doReturn(addConnector).when(commandFactory).addConnector(eq(sourceNode),
                                                                  eq(edge),
-                                                                 any(MagnetConnection.class),
+                                                                 Mockito.<MagnetConnection>any(),
                                                                  eq(SHAPE_SET_ID));
         doReturn(addNode).when(commandFactory).addChildNode(eq(parentNode),
                                                             eq(targetNode),

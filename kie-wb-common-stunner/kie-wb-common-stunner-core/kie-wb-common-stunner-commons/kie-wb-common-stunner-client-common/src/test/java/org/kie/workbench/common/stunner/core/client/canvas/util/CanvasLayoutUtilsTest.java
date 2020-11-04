@@ -52,13 +52,13 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -282,7 +282,7 @@ public class CanvasLayoutUtilsTest {
     @SuppressWarnings("unchecked")
     public void getNextOutOfCanvas() {
         when(ruleManager.evaluate(eq(ruleSet),
-                                  any(RuleEvaluationContext.class))).thenReturn(ruleViolations);
+                                  Mockito.<RuleEvaluationContext>any())).thenReturn(ruleViolations);
 
         when(ruleViolations.violations(Violation.Type.ERROR)).thenReturn(ruleViolationIterable);
         when(ruleViolations.violations(Violation.Type.ERROR).iterator()).thenReturn(ruleViolationIterator);
@@ -332,7 +332,7 @@ public class CanvasLayoutUtilsTest {
     @SuppressWarnings("unchecked")
     public void getNextFromNewTaskWithNonEmptyPositionWithParent() {
         when(ruleManager.evaluate(eq(ruleSet),
-                                  any(RuleEvaluationContext.class))).thenReturn(ruleViolations);
+                                  Mockito.<RuleEvaluationContext>any())).thenReturn(ruleViolations);
 
         when(ruleViolations.violations(Violation.Type.ERROR)).thenReturn(ruleViolationIterable);
         when(ruleViolations.violations(Violation.Type.ERROR).iterator()).thenReturn(ruleViolationIterator);
@@ -372,7 +372,7 @@ public class CanvasLayoutUtilsTest {
     public void getNextNewTaskWithNonEmptyPosition() {
 
         when(ruleManager.evaluate(eq(ruleSet),
-                                  any(RuleEvaluationContext.class))).thenReturn(ruleViolations);
+                                  Mockito.<RuleEvaluationContext>any())).thenReturn(ruleViolations);
 
         when(ruleViolations.violations(Violation.Type.ERROR)).thenReturn(ruleViolationIterable);
         when(ruleViolations.violations(Violation.Type.ERROR).iterator()).thenReturn(ruleViolationIterator);

@@ -64,13 +64,13 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand.DEFAULT_PADDING;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -80,7 +80,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboardTest {
 
     public static final double NODE_SIZE = 10d;
@@ -296,7 +296,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
 
         //Mock the callback of CloneConnectorCommand
         ArgumentCaptor<Consumer> consumerEdge = ArgumentCaptor.forClass(Consumer.class);
-        when(canvasCommandFactory.cloneConnector(any(), anyString(), anyString(), anyString(), consumerEdge.capture())).thenReturn(cloneConnectorCommand);
+        when(canvasCommandFactory.cloneConnector(any(), Mockito.<String>any(), Mockito.<String>any(), Mockito.<String>any(), consumerEdge.capture())).thenReturn(cloneConnectorCommand);
 
         //apply callbacks mocks
         when(sessionCommandManager.execute(eq(canvasHandler), any())).thenAnswer(param -> {
@@ -326,7 +326,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
                 .cloneNode(eq(graphInstance.startNode), eq(graphInstance.parentNode.getUUID()), eq(new Point2D(X, DEFAULT_PADDING + Y + NODE_SIZE)), any());
 
         verify(canvasCommandFactory, times(1))
-                .cloneConnector(eq(graphInstance.edge1), anyString(), anyString(), anyString(), any());
+                .cloneConnector(eq(graphInstance.edge1), Mockito.<String>any(), Mockito.<String>any(), Mockito.<String>any(), any());
 
         //check command registry update after execution to allow a single undo/redo
         verify(commandRegistry, times(2)).pop();
@@ -375,7 +375,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
 
         //Mock the callback of CloneConnectorCommand
         ArgumentCaptor<Consumer> consumerEdge = ArgumentCaptor.forClass(Consumer.class);
-        when(canvasCommandFactory.cloneConnector(any(), anyString(), anyString(), anyString(), consumerEdge.capture())).thenReturn(cloneConnectorCommand);
+        when(canvasCommandFactory.cloneConnector(any(), Mockito.<String>any(), Mockito.<String>any(), Mockito.<String>any(), consumerEdge.capture())).thenReturn(cloneConnectorCommand);
 
         //apply callbacks mocks
         when(sessionCommandManager.execute(eq(canvasHandler), any())).thenAnswer(param -> {
@@ -403,7 +403,7 @@ public class PasteSelectionSessionCommandTest extends BaseSessionCommandKeyboard
                 .cloneNode(eq(graphInstance.startNode), eq(graphInstance.parentNode.getUUID()), eq(new Point2D(X, DEFAULT_PADDING + Y + NODE_SIZE)), any());
 
         verify(canvasCommandFactory, times(1))
-                .cloneConnector(eq(graphInstance.edge1), anyString(), anyString(), anyString(), any());
+                .cloneConnector(eq(graphInstance.edge1), Mockito.<String>any(), Mockito.<String>any(), Mockito.<String>any(), any());
 
         //check command registry update after execution to allow a single undo/redo
         verify(commandRegistry, times(2)).pop();
