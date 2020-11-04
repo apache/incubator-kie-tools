@@ -15,7 +15,7 @@
  */
 import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { DataDictionary, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataDictionary, DataField, FieldName } from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
 interface DataDictionaryPayload {
@@ -24,6 +24,9 @@ interface DataDictionaryPayload {
   };
   [Actions.DeleteDataField]: {
     readonly index: number;
+  };
+  [Actions.SetDataFields]: {
+    readonly dataFields: DataField[];
   };
 }
 
@@ -50,6 +53,12 @@ export const DataDictionaryReducer: HistoryAwareReducer<DataDictionary, DataDict
           if (index >= 0 && index < draft.DataField.length) {
             draft.DataField.splice(index, 1);
           }
+        });
+
+      case Actions.SetDataFields:
+        return service.mutate(state, "DataDictionary", draft => {
+          draft.DataField = [...action.payload.dataFields];
+          draft.numberOfFields = action.payload.dataFields.length;
         });
     }
 

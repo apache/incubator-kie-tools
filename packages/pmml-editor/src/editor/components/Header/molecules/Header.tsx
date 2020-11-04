@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ActionSelector, HeaderTitle } from "../atoms";
+import { HeaderTitle } from "../atoms";
 import * as React from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
+import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
 
 interface HeaderProps {
   title: string;
@@ -24,12 +25,11 @@ interface HeaderProps {
 export const Header = (props: HeaderProps) => {
   return (
     <Split>
-      <SplitItem>
+      <SplitItem isFilled={true}>
         <HeaderTitle title={props.title} />
       </SplitItem>
-      <SplitItem isFilled={true}>&nbsp;</SplitItem>
       <SplitItem>
-        <ActionSelector />
+        <DataDictionaryHandler />
       </SplitItem>
     </Split>
   );

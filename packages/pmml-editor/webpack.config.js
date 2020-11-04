@@ -22,7 +22,7 @@ const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebp
 
 let config = merge(common, {
   entry: {
-    "editor/index": "./src/editor/index.ts"
+    index: "./src/editor/index.ts"
   },
   plugins: [new CopyPlugin([{ from: "./static/images", to: "./images" }])],
   module: {
@@ -41,7 +41,7 @@ module.exports = (env, argv) => {
   if (argv.mode === "development") {
     config = merge(config, {
       entry: {
-        "showcase/index": "./src/showcase/index.tsx"
+        index: "./src/showcase/index.tsx"
       },
       plugins: [
         new CopyPlugin([
