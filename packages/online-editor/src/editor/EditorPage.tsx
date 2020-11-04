@@ -28,25 +28,12 @@ import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
 import { useFileUrl } from "../common/Hooks";
 import { UpdateGistErrors } from "../common/GithubService";
-import {
-  EmbeddableClass,
-  FileExtension,
-  getStandaloneEditorFromContent,
-  getStandaloneEditorFromGist,
-  getStandaloneEditorSrcdoc,
-  isFileExtension
-} from "../common/utils";
-import { isFileExcluded } from "tslint/lib/configuration";
+import { isFileExtension } from "../common/utils";
+import { ExportStandaloneEditorModal } from "./ExportStandaloneEditorModal";
 
 interface Props {
   onFileNameChanged: (fileName: string, fileExtension: string) => void;
 }
-
-const editorEmbeddableClassMapping = new Map<FileExtension, EmbeddableClass>([
-  ["bpmn", "BpmnEditor"],
-  ["bpmn2", "BpmnEditor"],
-  ["dmn", "DmnEditor"]
-]);
 
 export enum Alerts {
   NONE,
@@ -56,6 +43,7 @@ export enum Alerts {
   INVALID_CURRENT_GIST,
   INVALID_GIST_FILENAME,
   GITHUB_TOKEN_MODAL,
+  EXPORT_IFRAME,
   UNSAVED,
   ERROR
 }
@@ -73,7 +61,6 @@ export function EditorPage(props: Props) {
   const [alert, setAlert] = useState(Alerts.NONE);
   const isDirty = useDirtyState(editor);
   const { locale, i18n } = useOnlineI18n();
-  const fileUrl = useFileUrl();
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -192,56 +179,9 @@ export function EditorPage(props: Props) {
     }
   }, [location.pathname]);
 
-  const getStandaloneEditorScript = useCallback(
-    (content?: string, isGist?: boolean) => {
-      if (fileExtension) {
-        const embeddableClass = editorEmbeddableClassMapping.get(fileExtension)!;
-        if (content) {
-          return getStandaloneEditorFromContent(embeddableClass, content);
-        }
-
-        if (isGist) {
-          return getStandaloneEditorFromGist(embeddableClass, fileUrl);
-        }
-      }
-    },
-    [editorEmbeddableClassMapping, fileExtension, fileUrl]
-  );
-
-  const requestExportIframeGist = useCallback(() => {
-    if (fileExtension) {
-      const script = getStandaloneEditorScript(undefined, true);
-
-      const iframe = document.createElement("iframe");
-      iframe.width = "100%";
-      iframe.height = "100%";
-      iframe.srcdoc = getStandaloneEditorSrcdoc(script!, fileExtension);
-
-      copyContentTextArea.current!.value = iframe.outerHTML;
-      copyContentTextArea.current!.select();
-      if (document.execCommand("copy")) {
-        setAlert(Alerts.COPY);
-      }
-    }
-  }, [fileExtension, getStandaloneEditorScript]);
-
-  const requestExportIframeContent = useCallback(async () => {
-    if (fileExtension) {
-      const content = ((await editor?.getContent()) ?? "").replace(/(\r\n|\n|\r)/gm, "");
-      const script = getStandaloneEditorScript(content);
-
-      const iframe = document.createElement("iframe");
-      iframe.width = "100%";
-      iframe.height = "100%";
-      iframe.srcdoc = getStandaloneEditorSrcdoc(script!, fileExtension);
-
-      copyContentTextArea.current!.value = iframe.outerHTML;
-      copyContentTextArea.current!.select();
-      if (document.execCommand("copy")) {
-        setAlert(Alerts.COPY);
-      }
-    }
-  }, [editor, fileExtension, getStandaloneEditorScript]);
+  const requestExportIframe = useCallback(() => {
+    setAlert(Alerts.EXPORT_IFRAME);
+  }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
     editor?.getContent().then(content => {
@@ -322,8 +262,7 @@ export function EditorPage(props: Props) {
           onSetGitHubToken={requestSetGitHubToken}
           onExportGist={requestExportGist}
           onUpdateGist={requestUpdateGist}
-          onExportIframeGist={requestExportIframeGist}
-          onExportIframeContent={requestExportIframeContent}
+          onExportIframe={requestExportIframe}
           isEdited={isDirty}
         />
       }
@@ -416,8 +355,13 @@ export function EditorPage(props: Props) {
           </div>
         )}
         {!fullscreen && alert === Alerts.GITHUB_TOKEN_MODAL && (
-          <GithubTokenModal
-            isOpen={alert === Alerts.GITHUB_TOKEN_MODAL}
+          <GithubTokenModal isOpen={alert === Alerts.GITHUB_TOKEN_MODAL} onClose={closeAlert} />
+        )}
+        {!fullscreen && alert === Alerts.EXPORT_IFRAME && (
+          <ExportStandaloneEditorModal
+            isOpen={alert === Alerts.EXPORT_IFRAME}
+            fileExtension={fileExtension}
+            editor={editor}
             onClose={closeAlert}
           />
         )}
