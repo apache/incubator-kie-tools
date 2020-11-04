@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { Button, Checkbox, Divider, Modal, ModalVariant, Radio } from "@patternfly/react-core";
+import { Alert, Button, Checkbox, Modal, ModalVariant, Radio, Tooltip } from "@patternfly/react-core";
 import { EmbeddableClass, FileExtension } from "../common/utils";
 import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { useFileUrl } from "../common/Hooks";
@@ -141,10 +141,8 @@ export function ExportStandaloneEditorModal(props: Props) {
         aria-label={"Export to Iframe"}
         isOpen={props.isOpen}
         onClose={props.onClose}
-        title={"Export to Iframe"}
-        description={
-          "Export your content using the Standalone Editor. Copy to your clip board an iframe element where you can embed on your applications."
-        }
+        title={"Embed"}
+        description={"Embed an Editor in your page."}
         actions={[
           <Button key="confirm" variant="primary" onClick={onCopy}>
             Copy
@@ -156,12 +154,12 @@ export function ExportStandaloneEditorModal(props: Props) {
       >
         <div>
           <div>
-            <p>Choose if the generate Standalone Editor is read only:</p>
+            <p>Choose the options below and copy the embed code to your clipboard:</p>
             <Checkbox
               id={"is-readOnly"}
               label="Read only"
               aria-label="Read only checkbox"
-              description={"New edits made on top of the standalone editor aren't saved."}
+              description={"Read only Editors cannot be edited, but you can navigate normally through the diagram."}
               isChecked={readOnly}
               onChange={setReadonly}
             />
@@ -169,33 +167,43 @@ export function ExportStandaloneEditorModal(props: Props) {
           <br />
 
           <div>
-            <p>Choose your source:</p>
+            <p>Content source:</p>
             <Radio
               aria-label="Export from current content option"
               id={"export-content"}
               defaultChecked={true}
               isChecked={copyFromSource === Source.CURRENT}
-              name={"Export from current content"}
-              label={"Export from current content"}
-              description={"This option will export a static version of the current content"}
+              name={"Current content"}
+              label={"Current content"}
+              description={"The embedded Editor will contain the current content, so it cannot be changed externally."}
               onChange={() => setCopyFromSource(Source.CURRENT)}
             />
-            <Radio
-              aria-label="Export from gist option - Only available if a gist is being used"
-              id={"export-gist"}
-              isDisabled={!isGist}
-              name={"Export from gist"}
-              label={"Export from gist"}
-              isChecked={copyFromSource === Source.GIST}
-              description={
-                "This option will export a dynamic version based on your gist. If the gist content changes the editor content will also be changed."
-              }
-              onChange={() => setCopyFromSource(Source.GIST)}
-            />
+            <Tooltip
+              data-testid={"gist-tooltip"}
+              content={<p>Only available when editing a file from a GitHub gist.</p>}
+              trigger={!isGist ? "mouseenter click" : ""}
+            >
+              <Radio
+                aria-label="Export from gist option - Only available if a gist is being used"
+                id={"export-gist"}
+                isDisabled={!isGist}
+                name={"GitHub gist"}
+                label={"GitHub gist"}
+                isChecked={copyFromSource === Source.GIST}
+                description={
+                  "The embedded Editor will fetch the content from the open gist (URL). Changes made to this gist will be reflected in the Editor."
+                }
+                onChange={() => setCopyFromSource(Source.GIST)}
+              />
+            </Tooltip>
           </div>
         </div>
         <br />
-        {copied ? <p>Copied to the clip board</p> : <br />}
+        {copied ? (
+          <Alert style={{ height: "50px" }} variant="success" title="Copied to clipboard" isInline={true} />
+        ) : (
+          <div style={{ height: "50px" }} />
+        )}
         <textarea ref={copyContentTextArea} style={{ height: 0, width: 0, position: "absolute", zIndex: -1 }} />
       </Modal>
     </>
