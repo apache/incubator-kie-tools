@@ -61,7 +61,7 @@ var (
 		kogitoInfinispanDependencyName: {
 			operatorPackageName: "infinispan",
 			timeoutInMin:        10,
-			channel:             "stable",
+			channel:             "2.0.x",
 		},
 		kogitoKafkaDependencyName: {
 			operatorPackageName: "strimzi-kafka-operator",
