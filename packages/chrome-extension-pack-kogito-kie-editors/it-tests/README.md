@@ -54,7 +54,7 @@ afterEach(async () => {
 
 ## Framework
 
-- `Tools` class shoud be inicialized before every test by `let tools = await Tools.init(TEST_NAME)`. It creates selenium driver and it servers as basic entry point for the framework. 
+- `Tools` class shoud be inicialized before every test by `let tools = await Tools.init(TEST_NAME)`. It creates selenium driver and it serves as basic entry point for the framework. 
 After every test `finishTest()` method should be called to quit the driver and create screenshots.
 - `Page` class represents single browser page. Page can be created by `await tools.openPage(PageClass, url)` or `await tools.createPage(PageClass)`.
 - `PageFragment` class represent part of Page defined by root `Element`. PageFragment can be created by `await tools.createPageFragment(PageFragmentClass, rootElement)`.
