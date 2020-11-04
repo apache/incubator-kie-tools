@@ -29,7 +29,7 @@ beforeEach(async () => {
 });
 
 test.skip(TEST_NAME, async () => {
-    const PR_WEB_PAGE = "https://github.com/tomasdavidorg/chrome-extension-pr-test/pull/3/files";
+    const PR_WEB_PAGE = "https://github.com/kiegroup/kogito-tooling/pull/306/files";
 
     // open PR and check that source is opened
     const gitHubPrPage: GitHubPrPage = await tools.openPage(GitHubPrPage, PR_WEB_PAGE);
@@ -47,7 +47,7 @@ test.skip(TEST_NAME, async () => {
     await changesEditor.enter();
     const sideBar: DmnSideBar = await changesEditor.getSideBar();
     const navigator: DecisionNavigator = await sideBar.openDecisionNavigator();
-    expect((await navigator.getNodeNames()).sort()).toEqual(["Annotation", "Decision", "InputData", "Model", "Function"].sort());
+    expect((await navigator.getNodeNames()).sort()).toEqual(["MyAnnotation", "MyDecision", "MyInputData", "MyModel", "Function"].sort());
     await changesEditor.leave();
 
     // check editor with original
@@ -57,7 +57,7 @@ test.skip(TEST_NAME, async () => {
     await originalEditor.enter();
     const originalSideBar: DmnSideBar = await originalEditor.getSideBar();
     const originalNavigator: DecisionNavigator = await originalSideBar.openDecisionNavigator();
-    expect((await originalNavigator.getNodeNames()).sort()).toEqual(["Decision", "InputData", "Model", "Function"].sort());
+    expect((await originalNavigator.getNodeNames()).sort()).toEqual(["MyDecision", "MyInputData", "MyModel", "Function"].sort());
     await originalEditor.leave();
 
     // close diagram and check that source is opened 

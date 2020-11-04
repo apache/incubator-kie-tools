@@ -29,7 +29,7 @@ beforeEach(async () => {
 });
 
 test.skip(TEST_NAME, async () => {
-    const PR_WEB_PAGE = "https://github.com/tomasdavidorg/chrome-extension-pr-test/pull/2/files";
+    const PR_WEB_PAGE = "https://github.com/kiegroup/kogito-tooling/pull/307/files";
 
     // open PR and check that source is opened
     const gitHubPrPage: GitHubPrPage = await tools.openPage(GitHubPrPage, PR_WEB_PAGE);
@@ -47,7 +47,7 @@ test.skip(TEST_NAME, async () => {
     await changesEditor.enter();
     const sideBar: SideBar = await changesEditor.getSideBar();
     const exlorer: Explorer = await sideBar.openExplorer();
-    expect((await exlorer.getNodeNames()).sort()).toEqual(["Start", "Task", "End", "Intermediate Timer"].sort());
+    expect((await exlorer.getNodeNames()).sort()).toEqual(["MyStart", "MyTask", "MyEnd", "MyTimer"].sort());
     await changesEditor.leave();
 
     // check editor with original
@@ -57,7 +57,7 @@ test.skip(TEST_NAME, async () => {
     await originalEditor.enter();
     const originalSideBar: SideBar = await originalEditor.getSideBar();
     const originalExlorer: Explorer = await originalSideBar.openExplorer();
-    expect((await originalExlorer.getNodeNames()).sort()).toEqual(["Start", "Task", "End"].sort());
+    expect((await originalExlorer.getNodeNames()).sort()).toEqual(["MyStart", "MyTask", "MyEnd"].sort());
     await originalEditor.leave();
 
     // close diagram and check that source is opened 
