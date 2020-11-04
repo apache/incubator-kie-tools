@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { Model } from "@kogito-tooling/pmml-editor-marshaller";
-import { Header } from "../../Header/molecules";
+import { LandingPageHeader } from "../../LandingPage/molecules";
 import { Level, PageSection, PageSectionVariants } from "@patternfly/react-core";
 
 interface UnsupportedModelPageProps {
@@ -28,7 +28,7 @@ export const UnsupportedModelPage = (props: UnsupportedModelPageProps) => {
     <>
       <div data-testid="unsupported-model-page">
         <PageSection variant={PageSectionVariants.light}>
-          <Header title={props.path} />
+          <LandingPageHeader title={props.path} />
         </PageSection>
 
         <PageSection isFilled={true}>

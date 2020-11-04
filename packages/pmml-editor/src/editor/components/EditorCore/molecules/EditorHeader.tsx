@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { HeaderTitle } from "../atoms";
+import { HeaderTitle } from "../../Header/atoms";
 import * as React from "react";
-import { Split, SplitItem } from "@patternfly/react-core";
+import { Button, Split, SplitItem } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
 
-interface HeaderProps {
+interface EditorHeaderProps {
   title: string;
 }
 
-export const Header = (props: HeaderProps) => {
+export const EditorHeader = (props: EditorHeaderProps) => {
   return (
-    <Split>
+    <Split hasGutter={true}>
       <SplitItem isFilled={true}>
         <HeaderTitle title={props.title} />
+      </SplitItem>
+      <SplitItem>
+        <Button>Hello</Button>
       </SplitItem>
       <SplitItem>
         <DataDictionaryHandler />

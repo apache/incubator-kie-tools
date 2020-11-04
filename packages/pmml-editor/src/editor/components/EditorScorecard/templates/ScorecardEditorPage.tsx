@@ -16,7 +16,7 @@
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
-import { Header } from "../../Header/molecules";
+import { EditorHeader } from "../../EditorCore/molecules";
 import { Characteristic, Characteristics, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicPanel, CharacteristicsTable, CorePropertiesTable, IndexedCharacteristic } from "../organisms";
 import { getModelName } from "../../..";
@@ -158,7 +158,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
       />
 
       <PageSection variant={PageSectionVariants.light} isFilled={false}>
-        <Header title={getModelName(props.model)} />
+        <EditorHeader title={getModelName(props.model)} />
       </PageSection>
 
       <PageSection isFilled={false}>

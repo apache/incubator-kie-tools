@@ -21,9 +21,8 @@ import { v4 as uuid } from "uuid";
 import { Model, PMML } from "@kogito-tooling/pmml-editor-marshaller";
 import { useDispatch, useSelector } from "react-redux";
 import { getModelName, getModelType, isSupportedModelType, ModelType } from "../../..";
-import { LandingPageToolbar, ModelCard } from "../molecules";
+import { LandingPageHeader, LandingPageToolbar, ModelCard } from "../molecules";
 import { Actions } from "../../../reducers";
-import { Header } from "../../Header/molecules";
 import { useHistory } from "react-router";
 
 interface LandingPageProps {
@@ -79,7 +78,7 @@ export const LandingPage = (props: LandingPageProps) => {
   return (
     <div data-testid="landing-page">
       <PageSection variant={PageSectionVariants.light}>
-        <Header title={props.path} />
+        <LandingPageHeader title={props.path} />
         <LandingPageToolbar
           onFilter={setFilter}
           hasUnsupportedModels={hasUnsupportedModels}

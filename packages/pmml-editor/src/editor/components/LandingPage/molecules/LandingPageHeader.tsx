@@ -13,5 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { HeaderTitle } from "../../Header/atoms";
+import * as React from "react";
+import { Split, SplitItem } from "@patternfly/react-core";
+import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
 
-export * from "./Header";
+interface LandingPageHeaderProps {
+  title: string;
+}
+
+export const LandingPageHeader = (props: LandingPageHeaderProps) => {
+  return (
+    <Split hasGutter={true}>
+      <SplitItem isFilled={true}>
+        <HeaderTitle title={props.title} />
+      </SplitItem>
+      <SplitItem>
+        <DataDictionaryHandler />
+      </SplitItem>
+    </Split>
+  );
+};
