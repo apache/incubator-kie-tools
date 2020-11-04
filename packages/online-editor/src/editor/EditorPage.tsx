@@ -26,7 +26,6 @@ import { FullScreenToolbar } from "./EditorFullScreenToolbar";
 import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
-import { useFileUrl } from "../common/Hooks";
 import { UpdateGistErrors } from "../common/GithubService";
 import { isFileExtension } from "../common/utils";
 import { ExportStandaloneEditorModal } from "./ExportStandaloneEditorModal";
