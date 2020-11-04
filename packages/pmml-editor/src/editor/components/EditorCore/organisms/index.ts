@@ -15,4 +15,5 @@
  */
 
 export * from "./EmptyStateModelNotFound";
+export * from "./OutputsHandler";
 export * from "./SingleEditorRouter";

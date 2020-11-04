@@ -15,8 +15,9 @@
  */
 import { HeaderTitle } from "../../Header/atoms";
 import * as React from "react";
-import { Button, Split, SplitItem } from "@patternfly/react-core";
+import { Split, SplitItem } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
+import { OutputsHandler } from "../organisms";
 
 interface EditorHeaderProps {
   title: string;
@@ -29,10 +30,10 @@ export const EditorHeader = (props: EditorHeaderProps) => {
         <HeaderTitle title={props.title} />
       </SplitItem>
       <SplitItem>
-        <Button>Hello</Button>
+        <DataDictionaryHandler />
       </SplitItem>
       <SplitItem>
-        <DataDictionaryHandler />
+        <OutputsHandler />
       </SplitItem>
     </Split>
   );
