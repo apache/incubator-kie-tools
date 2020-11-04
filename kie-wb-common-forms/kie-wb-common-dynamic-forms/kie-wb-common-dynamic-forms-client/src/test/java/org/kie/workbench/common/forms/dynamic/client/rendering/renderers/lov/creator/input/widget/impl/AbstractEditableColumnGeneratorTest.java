@@ -26,11 +26,11 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.lov.cre
 import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.widgets.table.client.UberfirePagedTable;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -88,7 +88,7 @@ public abstract class AbstractEditableColumnGeneratorTest<TYPE, GENERATOR extend
 
         ArgumentCaptor<Column> columnArgumentCaptor = ArgumentCaptor.forClass(Column.class);
 
-        verify(pagedTable).addColumn(columnArgumentCaptor.capture(), anyString());
+        verify(pagedTable).addColumn(columnArgumentCaptor.capture(), Mockito.<String>any());
 
         Column column = columnArgumentCaptor.getValue();
 

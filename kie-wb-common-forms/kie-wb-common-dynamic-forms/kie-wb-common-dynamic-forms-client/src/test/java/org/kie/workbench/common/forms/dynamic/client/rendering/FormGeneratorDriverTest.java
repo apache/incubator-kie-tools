@@ -36,6 +36,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
@@ -46,7 +47,6 @@ import org.uberfire.ext.layout.editor.client.infra.ColumnSizeBuilder;
 import static org.kie.workbench.common.forms.dynamic.client.rendering.FormGeneratorDriver.CONTAINER_TAG;
 import static org.kie.workbench.common.forms.dynamic.client.rendering.FormGeneratorDriver.ROW_CLASS;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -76,7 +76,7 @@ public class FormGeneratorDriverTest {
 
     @Before
     public void init() {
-        when(beanManager.lookupBeans(anyString())).thenAnswer(invocationOnMock -> {
+        when(beanManager.lookupBeans(Mockito.<String>any())).thenAnswer(invocationOnMock -> {
             SyncBeanDef beanDef = mock(SyncBeanDef.class);
             when(beanDef.getBeanClass()).thenReturn(FieldLayoutComponent.class);
             return Collections.singletonList(beanDef);
@@ -90,7 +90,7 @@ public class FormGeneratorDriverTest {
             return nestedInstance;
         });
 
-        when(document.createElement(anyString())).thenAnswer(invocationOnMock -> mock(HTMLElement.class));
+        when(document.createElement(Mockito.<String>any())).thenAnswer(invocationOnMock -> mock(HTMLElement.class));
 
         driver = new FormGeneratorDriver(beanManager, instance, wrapperWidgetUtil, document) {
             @Override
@@ -134,7 +134,7 @@ public class FormGeneratorDriverTest {
 
         driver.createComponent(column, layoutComponent);
 
-        verify(beanManager).lookupBeans(anyString());
+        verify(beanManager).lookupBeans(Mockito.<String>any());
         verify(instance).select(eq(FieldLayoutComponent.class));
         verify(wrapperWidgetUtil).getWidget(same(driver), any(HTMLElement.class));
 
@@ -151,7 +151,7 @@ public class FormGeneratorDriverTest {
 
         driver.createComponent(column, layoutComponent);
 
-        verify(beanManager, times(1)).lookupBeans(anyString());
+        verify(beanManager, times(1)).lookupBeans(Mockito.<String>any());
         verify(instance, times(2)).select(eq(FieldLayoutComponent.class));
         verify(wrapperWidgetUtil, times(2)).getWidget(same(driver), any(HTMLElement.class));
 

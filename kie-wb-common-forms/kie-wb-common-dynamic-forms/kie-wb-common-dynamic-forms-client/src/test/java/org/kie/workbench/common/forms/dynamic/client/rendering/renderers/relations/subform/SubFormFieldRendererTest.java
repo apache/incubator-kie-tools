@@ -37,10 +37,10 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -78,7 +78,7 @@ public class SubFormFieldRendererTest extends AbstractFieldRendererTest<SubFormF
         availableForms.put(NESTED_FORM, mock(FormDefinition.class));
 
         when(context.getAvailableForms()).thenReturn(availableForms);
-        when(context.getCopyFor(anyString(), any(), any())).thenReturn(context);
+        when(context.getCopyFor(Mockito.<String>any(), any(), any())).thenReturn(context);
 
         when(collapsibleFormGroupManagedInstance.get()).thenReturn(collapsibleFormGroup);
 
@@ -111,7 +111,7 @@ public class SubFormFieldRendererTest extends AbstractFieldRendererTest<SubFormF
                 .isNotNull()
                 .isInstanceOf(expectedGroupType);
 
-        verify(context).getCopyFor(anyString(), any(), any());
+        verify(context).getCopyFor(Mockito.<String>any(), any(), any());
 
         verify(formGroupsInstance).get();
 

@@ -77,6 +77,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mocks.EventSourceMock;
 
 import static org.junit.Assert.assertEquals;
@@ -202,7 +203,7 @@ public class LocationControlImplTest {
         when(canvasView.getPanel()).thenReturn(canvasPanel);
         when(shape.getUUID()).thenReturn(ELEMENT_UUID);
         when(shape.getShapeView()).thenReturn(shapeView);
-        when(shapeEventHandler.supports(any(ViewEventType.class))).thenReturn(true);
+        when(shapeEventHandler.supports(Mockito.<ViewEventType>any())).thenReturn(true);
         when(wiresManager.getSelectionManager()).thenReturn(selectionManager);
         when(selectionManager.getControl()).thenReturn(wiresCompositeControl);
 
@@ -229,13 +230,13 @@ public class LocationControlImplTest {
                times(1)).supports(eq(ViewEventType.MOUSE_ENTER));
         verify(shapeEventHandler,
                times(1)).addHandler(eq(ViewEventType.MOUSE_ENTER),
-                                    any(MouseEnterHandler.class));
+                                    Mockito.<MouseEnterHandler>any());
         verify(shapeEventHandler,
                times(1)).supports(eq(ViewEventType.MOUSE_EXIT));
         verify(shapeEventHandler,
                times(1)).addHandler(eq(ViewEventType.MOUSE_EXIT),
 
-                                    any(MouseEnterHandler.class));
+                                    Mockito.<MouseEnterHandler>any());
 
         //testing drag handler to select the moving element
         ArgumentCaptor<DragHandler> dragHandlerArgumentCaptor = forClass(DragHandler.class);
@@ -364,7 +365,7 @@ public class LocationControlImplTest {
         tested.init(canvasHandler);
         tested.register(element);
         tested.deregister(element);
-        verify(shapeEventHandler, atLeastOnce()).removeHandler(any(ViewHandler.class));
+        verify(shapeEventHandler, atLeastOnce()).removeHandler(Mockito.<ViewHandler>any());
         assertFalse(tested.isRegistered(element));
     }
 

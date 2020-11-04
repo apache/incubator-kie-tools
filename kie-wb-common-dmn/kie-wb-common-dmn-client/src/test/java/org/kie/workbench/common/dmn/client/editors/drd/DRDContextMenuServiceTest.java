@@ -53,7 +53,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -120,9 +119,9 @@ public class DRDContextMenuServiceTest {
 
         drdContextMenuService.addToNewDRD(nodes);
 
-        verify(diagramElements, times(1)).add(any(DMNDiagramElement.class));
-        verify(dmnDiagramsSession, times(1)).add(any(DMNDiagramElement.class), any(Diagram.class));
-        verify(selectedEvent, times(1)).fire(any(DMNDiagramSelected.class));
+        verify(diagramElements, times(1)).add(Mockito.<DMNDiagramElement>any());
+        verify(dmnDiagramsSession, times(1)).add(Mockito.<DMNDiagramElement>any(), Mockito.<Diagram>any());
+        verify(selectedEvent, times(1)).fire(Mockito.<DMNDiagramSelected>any());
     }
 
     @Test
@@ -144,8 +143,8 @@ public class DRDContextMenuServiceTest {
 
         drdContextMenuService.addToExistingDRD(diagramTuple, selectedNodes);
 
-        verify(graph).addNode(any(Node.class));
-        verify(selectedEvent, times(1)).fire(any(DMNDiagramSelected.class));
+        verify(graph).addNode(Mockito.<Node>any());
+        verify(selectedEvent, times(1)).fire(Mockito.<DMNDiagramSelected>any());
     }
 
     @Test
@@ -162,7 +161,7 @@ public class DRDContextMenuServiceTest {
         drdContextMenuService.removeFromCurrentDRD(singleton(node));
 
         verify(graph, times(1)).removeNode(nodeUUID);
-        verify(selectedEvent, times(1)).fire(any(DMNDiagramSelected.class));
+        verify(selectedEvent, times(1)).fire(Mockito.<DMNDiagramSelected>any());
     }
 
     private Collection<Node<? extends Definition<?>, Edge>> mockNodes() {

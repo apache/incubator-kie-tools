@@ -32,13 +32,13 @@ import org.kie.workbench.common.forms.services.backend.serialization.impl.FieldS
 import org.kie.workbench.common.forms.services.backend.serialization.impl.FormDefinitionSerializerImpl;
 import org.kie.workbench.common.forms.services.backend.serialization.impl.FormModelSerializer;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -97,7 +97,7 @@ public abstract class AbstractFormDefinitionHelperTest<HELPER extends AbstractFo
             FormDefinition formDefinition = (FormDefinition) invocationOnMock.callRealMethod();
             beforeProcess(formDefinition);
             return formDefinition;
-        }).when(serializer).deserialize(anyString());
+        }).when(serializer).deserialize(Mockito.<String>any());
 
         helper = getHelper(ioService, serializer, commentedOptionFactory);
     }
@@ -127,15 +127,15 @@ public abstract class AbstractFormDefinitionHelperTest<HELPER extends AbstractFo
 
         verify(ioService).readAllString(any());
 
-        verify(serializer).deserialize(anyString());
+        verify(serializer).deserialize(Mockito.<String>any());
 
         verify(serializer).serialize(eq(formDefinition));
 
         verifyForm(formDefinition);
 
-        verify(commentedOptionFactory).makeCommentedOption(anyString());
+        verify(commentedOptionFactory).makeCommentedOption(Mockito.<String>any());
 
-        ioService.write(any(), anyString(), any());
+        ioService.write(any(), Mockito.<String>any(), any());
     }
 
     protected void verifyForm(FormDefinition formDefinition) {

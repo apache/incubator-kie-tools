@@ -36,7 +36,8 @@ import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.assertEquals;
@@ -46,10 +47,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class BPMNFormModelGeneratorImplTest {
 
     private static final String
@@ -136,7 +136,7 @@ public class BPMNFormModelGeneratorImplTest {
         when(projectService.resolveModule(any())).thenReturn(module);
         when(module.getRootPath()).thenReturn(path);
         when(projectClassLoaderHelper.getModuleClassLoader(module)).thenReturn(projectClassLoader);
-        when(projectClassLoader.loadClass(anyString())).thenAnswer(invocation -> Object.class);
+        when(projectClassLoader.loadClass(Mockito.<String>any())).thenAnswer(invocation -> Object.class);
 
         generator = new BPMNFormModelGeneratorImpl(projectService,
                                                    projectClassLoaderHelper);
@@ -378,7 +378,7 @@ public class BPMNFormModelGeneratorImplTest {
 
     @Test
     public void testGenerateAllWithWrongTypes() throws Exception {
-        when(projectClassLoader.loadClass(anyString())).thenAnswer(invocationOnMock -> getClass().getClassLoader().loadClass(invocationOnMock.getArguments()[0].toString()));
+        when(projectClassLoader.loadClass(Mockito.<String>any())).thenAnswer(invocationOnMock -> getClass().getClassLoader().loadClass(invocationOnMock.getArguments()[0].toString()));
 
         final Map<String, String> EXPECTED_PROPERTIES = new HashMap<String, String>() {{
             put("name", String.class.getName());

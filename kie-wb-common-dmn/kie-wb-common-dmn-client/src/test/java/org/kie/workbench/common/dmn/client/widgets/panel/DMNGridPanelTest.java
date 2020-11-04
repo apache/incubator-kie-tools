@@ -32,12 +32,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.widgets.layer.DMNGridLayer;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.TransformMediator;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.RestrictedMousePanMediator;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
@@ -106,7 +106,7 @@ public class DMNGridPanelTest {
         doAnswer((o) -> {
             ((Scheduler.ScheduledCommand) o.getArguments()[0]).execute();
             return null;
-        }).when(gridPanel).doResize(any(Scheduler.ScheduledCommand.class));
+        }).when(gridPanel).doResize(Mockito.<Scheduler.ScheduledCommand>any());
 
         doNothing().when(gridPanel).updatePanelSize();
         doNothing().when(gridPanel).refreshScrollPosition();
@@ -114,7 +114,7 @@ public class DMNGridPanelTest {
         when(gridLayer.getViewport()).thenReturn(viewport);
         when(viewport.getTransform()).thenReturn(transform);
         when(mousePanMediator.getTransformMediator()).thenReturn(transformMediator);
-        when(transformMediator.adjust(eq(transform), any(Bounds.class))).thenReturn(newTransform);
+        when(transformMediator.adjust(eq(transform), Mockito.<Bounds>any())).thenReturn(newTransform);
     }
 
     @Test

@@ -37,6 +37,7 @@ import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
@@ -47,7 +48,6 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -164,18 +164,18 @@ public class NewFormDefinitionlHandlerTest {
     @Test
     public void testAssetNameValidationWithValidationServiceFailure() {
         when(formModelsPresenter.isValid()).thenReturn(true);
-        when(validationService.isFileNameValid(anyString())).thenReturn(false);
+        when(validationService.isFileNameValid(Mockito.<String>any())).thenReturn(false);
 
         handler.validate(NEW_FORM_NAME, validatorCallback);
 
         verify(formModelsPresenter, times(1)).isValid();
-        verify(validatorCallback, times(1)).onFailure(anyString());
+        verify(validatorCallback, times(1)).onFailure(Mockito.<String>any());
     }
 
     @Test
     public void testAssetNameValidationSuccessful() {
         when(formModelsPresenter.isValid()).thenReturn(true);
-        when(validationService.isFileNameValid(anyString())).thenReturn(true);
+        when(validationService.isFileNameValid(Mockito.<String>any())).thenReturn(true);
 
         handler.validate(NEW_FORM_NAME, validatorCallback);
 
@@ -188,23 +188,23 @@ public class NewFormDefinitionlHandlerTest {
         handler.create(pkg, NEW_FORM_NAME, newResourcePresenter);
 
         verify(translationService).getTranslation(FormEditorConstants.NewFormDefinitionlHandlerSelectFormUse);
-        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(busyIndicatorView).showBusyIndicator(Mockito.<String>any());
         verify(busyIndicatorView).hideBusyIndicator();
 
         verify(newResourcePresenter).complete();
         verify(notificationEvent).fire(any());
         verify(newResourceSuccessEvent).fire(any());
-        verify(placeManager).goTo(any(Path.class));
+        verify(placeManager).goTo(Mockito.<Path>any());
     }
 
     @Test
     public void testFailedCreation() {
-        when(formEditorService.createForm(any(), anyString(), any())).thenThrow(new IllegalStateException("Something wrong happened"));
+        when(formEditorService.createForm(any(), Mockito.<String>any(), any())).thenThrow(new IllegalStateException("Something wrong happened"));
 
         handler.create(pkg, NEW_FORM_NAME, newResourcePresenter);
 
         verify(translationService).getTranslation(FormEditorConstants.NewFormDefinitionlHandlerSelectFormUse);
-        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(busyIndicatorView).showBusyIndicator(Mockito.<String>any());
         verify(errorCallback).error(any(), any());
     }
 }

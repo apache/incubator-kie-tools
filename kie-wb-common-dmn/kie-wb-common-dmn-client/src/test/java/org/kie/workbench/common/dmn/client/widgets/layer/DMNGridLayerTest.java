@@ -47,6 +47,7 @@ import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridData;
@@ -56,8 +57,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedra
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -164,7 +163,7 @@ public class DMNGridLayerTest {
     public void testNoGhostAddedWhenNoContainerFound() {
         gridLayer.doBatch();
 
-        verify(gridLayer, never()).addGhost(any(ExpressionContainerGrid.class), any(GridWidget.class));
+        verify(gridLayer, never()).addGhost(Mockito.<ExpressionContainerGrid>any(), Mockito.<GridWidget>any());
     }
 
     @Test
@@ -174,7 +173,7 @@ public class DMNGridLayerTest {
 
         gridLayer.doBatch();
 
-        verify(gridLayer, never()).addGhost(any(ExpressionContainerGrid.class), any(GridWidget.class));
+        verify(gridLayer, never()).addGhost(Mockito.<ExpressionContainerGrid>any(), Mockito.<GridWidget>any());
     }
 
     @Test
@@ -242,9 +241,9 @@ public class DMNGridLayerTest {
 
         verify(ghostGroup).setX(CONTAINER_X + VIEWPORT_TRANSLATE_X);
         verify(ghostGroup).setY(CONTAINER_Y + VIEWPORT_TRANSLATE_Y);
-        verify(ghostGroup).setPathClipper(any(InverseGridWidgetClipper.class));
+        verify(ghostGroup).setPathClipper(Mockito.<InverseGridWidgetClipper>any());
         verify(ghostGroup).add(ghostRectangle);
-        verify(ghostGroup).drawWithTransforms(eq(context2D), anyDouble(), any(BoundingBox.class));
+        verify(ghostGroup).drawWithTransforms(eq(context2D), Mockito.<Double>any(), Mockito.<BoundingBox>any());
     }
 
     @Test

@@ -34,20 +34,20 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.model.TypeKind;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class NestedFormsBPMNVFSFormDefinitionGeneratorServiceTest extends BPMNVFSFormDefinitionGeneratorServiceTest {
 
     static final String EMPTY_FORM_ID = "empty";
@@ -57,8 +57,8 @@ public class NestedFormsBPMNVFSFormDefinitionGeneratorServiceTest extends BPMNVF
     public void setup() throws IOException {
         super.setup();
 
-        when(modelFinderService.getModel(anyString(), any())).then(this::getModel);
-        when(modelReader.readFormModel(anyString())).then(this::getModel);
+        when(modelFinderService.getModel(Mockito.<String>any(), any())).then(this::getModel);
+        when(modelReader.readFormModel(Mockito.<String>any())).then(this::getModel);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class NestedFormsBPMNVFSFormDefinitionGeneratorServiceTest extends BPMNVF
 
         launchNestedFormTestWithGeneratedFormsValidation();
 
-        verify(ioService, times(3)).write(any(), anyString(), any());
+        verify(ioService, times(3)).write(any(), Mockito.<String>any(), any());
     }
 
     @Test
@@ -104,7 +104,7 @@ public class NestedFormsBPMNVFSFormDefinitionGeneratorServiceTest extends BPMNVF
         // since the nested forms exist on VFS it shouldn't be any write operation on the VFS
         verify(ioService,
                never()).write(any(),
-                              anyString(),
+                              Mockito.<String>any(),
                               any());
     }
 

@@ -49,8 +49,6 @@ import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.dmn.client.canvas.controls.resize.DecisionServiceMoveDividerControl.DIVIDER_Y_PROPERTY_ID;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -123,7 +121,7 @@ public class DecisionServiceMoveDividerControlTest {
 
         control.register(element);
 
-        verify(control).registerHandler(Mockito.<String>any(), any(ViewHandler.class));
+        verify(control).registerHandler(Mockito.<String>any(), Mockito.<ViewHandler>any());
     }
 
     @Test
@@ -146,10 +144,10 @@ public class DecisionServiceMoveDividerControlTest {
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.registry()).thenReturn(adapterRegistry);
         when(adapterManager.forProperty()).thenReturn(propertyAdapter);
-        when(adapterRegistry.getDefinitionAdapter(any(Class.class))).thenReturn(definitionAdapter);
+        when(adapterRegistry.getDefinitionAdapter(Mockito.<Class>any())).thenReturn(definitionAdapter);
         when(definitionAdapter.getProperty(decisionService, DIVIDER_Y_PROPERTY_ID)).thenReturn(dividerYProperty);
         when(propertyAdapter.getId(dividerLineY)).thenReturn(DIVIDER_Y_PROPERTY_ID);
-        when(canvasCommandFactory.updatePropertyValue(eq(element), eq(DIVIDER_Y_PROPERTY_ID), anyObject())).thenReturn(updateElementPropertyCommand);
+        when(canvasCommandFactory.updatePropertyValue(eq(element), eq(DIVIDER_Y_PROPERTY_ID), Mockito.<Object>any())).thenReturn(updateElementPropertyCommand);
 
         when(definition.getDefinition()).thenReturn(decisionService);
         when(shape.getShapeView()).thenReturn(decisionServiceShapeView);
@@ -173,6 +171,6 @@ public class DecisionServiceMoveDividerControlTest {
 
         control.register(element);
 
-        verify(control, never()).registerHandler(Mockito.<String>any(), any(ViewHandler.class));
+        verify(control, never()).registerHandler(Mockito.<String>any(), Mockito.<ViewHandler>any());
     }
 }

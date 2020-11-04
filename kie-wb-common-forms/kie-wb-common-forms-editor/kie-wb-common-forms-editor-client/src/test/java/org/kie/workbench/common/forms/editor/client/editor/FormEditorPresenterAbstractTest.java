@@ -53,6 +53,7 @@ import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.kie.workbench.common.workbench.client.events.LayoutEditorFocusEvent;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.promise.Promises;
@@ -79,7 +80,6 @@ import org.uberfire.workbench.model.menu.Menus;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -250,29 +250,29 @@ public class FormEditorPresenterAbstractTest {
 
         when(layoutEditorMock.getLayout()).thenReturn(new LayoutTemplate());
 
-        when(menuBuilderMock.addSave(any(MenuItem.class))).thenReturn(menuBuilderMock);
+        when(menuBuilderMock.addSave(Mockito.<MenuItem>any())).thenReturn(menuBuilderMock);
 
-        when(menuBuilderMock.addCopy(any(Command.class))).thenReturn(menuBuilderMock);
+        when(menuBuilderMock.addCopy(Mockito.<Command>any())).thenReturn(menuBuilderMock);
 
-        when(menuBuilderMock.addRename(any(Command.class))).thenReturn(menuBuilderMock);
+        when(menuBuilderMock.addRename(Mockito.<Command>any())).thenReturn(menuBuilderMock);
 
-        when(menuBuilderMock.addDelete(any(ObservablePath.class))).thenReturn(menuBuilderMock);
+        when(menuBuilderMock.addDelete(Mockito.<ObservablePath>any())).thenReturn(menuBuilderMock);
 
-        when(menuBuilderMock.addNewTopLevelMenu(any(MenuItem.class))).thenReturn(menuBuilderMock);
+        when(menuBuilderMock.addNewTopLevelMenu(Mockito.<MenuItem>any())).thenReturn(menuBuilderMock);
 
         when(menuBuilderMock.build()).thenReturn(mock(Menus.class));
 
         when(versionRecordManager.getCurrentPath()).thenReturn(path);
 
-        when(translationService.format(anyString(),
-                                       anyString())).thenReturn("");
+        when(translationService.format(Mockito.<String>any(),
+                                       Mockito.<String>any())).thenReturn("");
 
         showAssetUsagesDisplayer = spy(new ShowAssetUsagesDisplayer(assetUsagesDisplayerView,
                                                                     translationService,
                                                                     new CallerMock<>(assetsUsagService)));
 
         when(assetUsagesDisplayerView.getDefaultMessageContainer()).thenReturn(mock(HTMLElement.class));
-        when(assetsUsagService.getAssetUsages(anyString(),
+        when(assetsUsagService.getAssetUsages(Mockito.<String>any(),
                                               any(),
                                               any())).thenReturn(assetUsages);
 

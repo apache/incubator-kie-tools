@@ -45,9 +45,9 @@ import org.kie.workbench.common.forms.model.TypeKind;
 import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.kie.workbench.common.forms.model.impl.PortableJavaModel;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
+import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 public class ProcessableModelBackendFormRenderingContextManagerTest extends AbstractBackendFormRenderingContextManagerTest {
@@ -74,7 +74,7 @@ public class ProcessableModelBackendFormRenderingContextManagerTest extends Abst
         super.initTest();
 
         try {
-            when(classLoader.loadClass(anyString())).thenAnswer((Answer<Class>) invocationOnMock -> ProcessableModel.class);
+            when(classLoader.loadClass(Mockito.<String>any())).thenAnswer((Answer<Class>) invocationOnMock -> ProcessableModel.class);
         } catch (ClassNotFoundException e) {
 
         }

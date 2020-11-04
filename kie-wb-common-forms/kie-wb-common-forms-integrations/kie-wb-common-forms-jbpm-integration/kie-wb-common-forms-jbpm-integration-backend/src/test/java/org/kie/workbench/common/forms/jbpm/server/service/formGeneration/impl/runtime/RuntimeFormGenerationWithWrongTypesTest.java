@@ -36,14 +36,14 @@ import org.kie.workbench.common.forms.model.TypeKind;
 import org.kie.workbench.common.forms.model.impl.ModelPropertyImpl;
 import org.kie.workbench.common.forms.model.impl.TypeInfoImpl;
 import org.kie.workbench.common.forms.model.impl.meta.entries.FieldTypeEntry;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class RuntimeFormGenerationWithWrongTypesTest extends BPMNRuntimeFormDefinitionGeneratorServiceTest {
 
     public static final String TASK_NAME = "task";
@@ -62,7 +62,7 @@ public class RuntimeFormGenerationWithWrongTypesTest extends BPMNRuntimeFormDefi
 
     @Test
     public void testGeneratedForms() throws ClassNotFoundException {
-        when(source.loadClass(anyString())).then(invocationOnMock -> getClass().getClassLoader().loadClass(invocationOnMock.getArguments()[0].toString()));
+        when(source.loadClass(Mockito.<String>any())).then(invocationOnMock -> getClass().getClassLoader().loadClass(invocationOnMock.getArguments()[0].toString()));
 
         List<ModelProperty> modelProperties = new ArrayList<>();
 

@@ -25,6 +25,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.events.RefreshDecisio
 import org.kie.workbench.common.dmn.client.editors.included.BaseIncludedModelActiveRecord;
 import org.kie.workbench.common.dmn.client.editors.included.DMNIncludedModelActiveRecord;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mocks.EventSourceMock;
 
 import static java.util.Collections.emptyList;
@@ -32,7 +33,6 @@ import static org.gwtbootstrap3.client.ui.constants.IconType.DOWNLOAD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -220,7 +220,7 @@ public abstract class BaseCardComponentTest<C extends BaseCardComponent<R, V>, V
 
         verify(includedModel).destroy();
         verify(grid).refresh();
-        verify(refreshDecisionComponentsEvent).fire(any(RefreshDecisionComponents.class));
+        verify(refreshDecisionComponentsEvent).fire(Mockito.<RefreshDecisionComponents>any());
     }
 
     @Test

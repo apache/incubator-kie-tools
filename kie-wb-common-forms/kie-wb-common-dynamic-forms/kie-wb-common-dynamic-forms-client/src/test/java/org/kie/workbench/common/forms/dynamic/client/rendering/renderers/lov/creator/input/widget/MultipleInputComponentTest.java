@@ -26,7 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.mvp.Command;
 
@@ -34,14 +35,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class MultipleInputComponentTest {
 
     public static final Integer PAGE_SIZE = 10;
@@ -72,7 +72,7 @@ public class MultipleInputComponentTest {
 
         when(displayer.getVisibleRange()).thenAnswer((Answer<Range>) invocation -> new Range(0, 0));
 
-        when(editableColumnGeneratorManager.getGenerator(anyString())).thenReturn(columnGenerator);
+        when(editableColumnGeneratorManager.getGenerator(Mockito.<String>any())).thenReturn(columnGenerator);
 
         component = spy(new TestMultipleInputComponent(view, editableColumnGeneratorManager));
 
@@ -392,7 +392,7 @@ public class MultipleInputComponentTest {
                 .containsAll(values);
 
         verify(component, times(2)).doInit();
-        verify(component, times(2)).init(anyString());
+        verify(component, times(2)).init(Mockito.<String>any());
 
     }
 }

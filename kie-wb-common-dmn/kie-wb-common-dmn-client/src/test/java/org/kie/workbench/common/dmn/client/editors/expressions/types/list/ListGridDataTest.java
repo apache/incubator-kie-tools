@@ -30,10 +30,10 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -85,7 +85,7 @@ public class ListGridDataTest {
                           gridRow);
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              any(MoveRowsCommand.class));
+                                              Mockito.<MoveRowsCommand>any());
     }
 
     @Test
@@ -94,6 +94,6 @@ public class ListGridDataTest {
                            Collections.singletonList(gridRow));
 
         verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              any(MoveRowsCommand.class));
+                                              Mockito.<MoveRowsCommand>any());
     }
 }

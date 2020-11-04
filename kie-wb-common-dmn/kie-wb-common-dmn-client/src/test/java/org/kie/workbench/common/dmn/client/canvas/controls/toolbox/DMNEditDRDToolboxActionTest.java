@@ -36,9 +36,9 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -104,7 +104,7 @@ public class DMNEditDRDToolboxActionTest {
 
         dmnEditDRDToolboxAction.onMouseClick(canvasHandler, UUID, mouseClickEvent);
 
-        verify(drdContextMenu, times(1)).show(any(Collection.class));
+        verify(drdContextMenu, times(1)).show(Mockito.<Collection>any());
     }
 
 }

@@ -207,7 +207,7 @@ public abstract class BaseDMNSessionTest<S extends AbstractSession<AbstractCanva
         session.init(metadata, callback);
 
         canvasControlRegistrations.values().forEach(c -> verify(managedSession).registerCanvasControl(eq(c)));
-        canvasHandlerControlRegistrations.values().forEach(c -> verify(managedSession).registerCanvasHandlerControl(eq(c), any(Class.class)));
+        canvasHandlerControlRegistrations.values().forEach(c -> verify(managedSession).registerCanvasHandlerControl(eq(c), Mockito.<Class>any()));
         assertInitQualifiers();
 
         verify(managedSession).init(eq(metadata), eq(callback));

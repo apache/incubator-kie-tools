@@ -27,10 +27,10 @@ import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -63,7 +63,7 @@ public class CheckBoxFieldRendererTest extends AbstractFieldRendererTest<CheckBo
 
         verify(formGroupsInstance).get();
         verify(checkBox).setId(any());
-        verify(checkBox).setName(anyString());
+        verify(checkBox).setName(Mockito.<String>any());
         verify(checkBox).setEnabled(eq(!fieldDefinition.getReadOnly()));
 
         verify(formGroup).render(eq(checkBox), eq(fieldDefinition));

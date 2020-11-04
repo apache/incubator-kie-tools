@@ -48,8 +48,6 @@ import org.uberfire.mvp.Command;
 
 import static java.util.Arrays.asList;
 import static org.kie.workbench.common.dmn.client.editors.drd.DRDContextMenu.DRDACTIONS_CONTEXT_MENU_TITLE;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -111,7 +109,7 @@ public class DRDContextMenuTest {
     public void testShow() {
         drdContextMenu.show(new ArrayList<>());
 
-        verify(contextMenu).show(any(Consumer.class));
+        verify(contextMenu).show(Mockito.<Consumer>any());
     }
 
     @Test
@@ -130,7 +128,7 @@ public class DRDContextMenuTest {
         drdContextMenu.setDRDContextMenuHandler(contextMenu, Collections.singletonList(node));
 
         verify(contextMenu).setHeaderMenu(Mockito.<String>any(), Mockito.<String>any());
-        verify(contextMenu, times(4)).addTextMenuItem(Mockito.<String>any(), anyBoolean(), any(Command.class));
+        verify(contextMenu, times(4)).addTextMenuItem(Mockito.<String>any(), Mockito.<Boolean>any(), Mockito.<Command>any());
     }
 
     @Test
@@ -151,6 +149,6 @@ public class DRDContextMenuTest {
 
         drdContextMenu.appendContextMenuToTheDOM(10, 10);
 
-        verify(body).appendChild(any(HTMLElement.class));
+        verify(body).appendChild(Mockito.<HTMLElement>any());
     }
 }

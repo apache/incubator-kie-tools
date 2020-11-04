@@ -44,7 +44,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class MoveColumnsCommandTest extends BaseMoveCommandsTest<MoveColumnsCommand> {
 
     @Before

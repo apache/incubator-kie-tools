@@ -33,12 +33,12 @@ import org.kie.workbench.common.forms.jbpm.model.document.DocumentStatus;
 import org.kie.workbench.common.forms.jbpm.server.service.impl.documents.storage.UploadedDocumentStorage;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -67,7 +67,7 @@ public class DocumentFieldValueMarshallerTest {
 
     @Before
     public void initTest() {
-        when(documentStorage.getContent(anyString())).thenReturn(new byte[]{});
+        when(documentStorage.getContent(Mockito.<String>any())).thenReturn(new byte[]{});
 
         field = new DocumentFieldDefinition();
         field.setBinding("document");
@@ -152,9 +152,9 @@ public class DocumentFieldValueMarshallerTest {
 
         Document doc = marshaller.toRawValue(data);
 
-        verify(documentStorage).getContent(anyString());
+        verify(documentStorage).getContent(Mockito.<String>any());
 
-        verify(documentStorage).removeContent(anyString());
+        verify(documentStorage).removeContent(Mockito.<String>any());
 
         assertNotNull("Document cannot be null!", doc);
 
@@ -177,8 +177,8 @@ public class DocumentFieldValueMarshallerTest {
 
         assertEquals("Documents must be equal!", doc, rawDoc);
 
-        verify(documentStorage, never()).getContent(anyString());
+        verify(documentStorage, never()).getContent(Mockito.<String>any());
 
-        verify(documentStorage, never()).removeContent(anyString());
+        verify(documentStorage, never()).removeContent(Mockito.<String>any());
     }
 }

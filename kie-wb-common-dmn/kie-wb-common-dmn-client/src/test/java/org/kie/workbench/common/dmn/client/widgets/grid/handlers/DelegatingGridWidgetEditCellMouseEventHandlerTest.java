@@ -29,13 +29,13 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.literal.LiteralExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.GridCellTuple;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellEditAction;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
@@ -113,7 +113,7 @@ public class DelegatingGridWidgetEditCellMouseEventHandlerTest {
                                             uiColumnIndex,
                                             event)).isFalse();
 
-        verify(gridWidget, never()).startEditingCell(any(Point2D.class));
+        verify(gridWidget, never()).startEditingCell(Mockito.<Point2D>any());
     }
 
     @Test
@@ -193,7 +193,7 @@ public class DelegatingGridWidgetEditCellMouseEventHandlerTest {
         when(event.isControlKeyDown()).thenReturn(true);
         when(parentGridData.getSelectedCells()).thenReturn(Collections.singletonList(selectedCell));
         when(gridData.getCell(eq(0), eq(1))).thenReturn(gridCell);
-        when(gridWidget.startEditingCell(any(Point2D.class))).thenReturn(true);
+        when(gridWidget.startEditingCell(Mockito.<Point2D>any())).thenReturn(true);
 
         setupGrid(() -> parent, () -> 1);
 
@@ -202,7 +202,7 @@ public class DelegatingGridWidgetEditCellMouseEventHandlerTest {
         uiRowIndex = Optional.of(0);
         uiColumnIndex = Optional.of(1);
 
-        doReturn(true).when(handler).isEventHandled(any(GridCellEditAction.class), any(AbstractNodeMouseEvent.class));
+        doReturn(true).when(handler).isEventHandled(Mockito.<GridCellEditAction>any(), Mockito.<AbstractNodeMouseEvent>any());
 
         assertThat(handler.onNodeMouseEvent(gridWidget,
                                             relativeLocation,

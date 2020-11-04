@@ -27,10 +27,10 @@ import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -63,12 +63,12 @@ public class TextAreaFieldRendererTest extends AbstractFieldRendererTest<TextAre
 
         verify(formGroupsInstance).get();
         verify(textArea).setId(any());
-        verify(textArea).setName(anyString());
+        verify(textArea).setName(Mockito.<String>any());
         verify(textArea).setPlaceholder(eq(fieldDefinition.getPlaceHolder()));
         verify(textArea).setVisibleLines(eq(fieldDefinition.getRows()));
         verify(textArea).setEnabled(eq(!fieldDefinition.getReadOnly()));
 
-        verify(formGroup).render(anyString(), eq(textArea), eq(fieldDefinition));
+        verify(formGroup).render(Mockito.<String>any(), eq(textArea), eq(fieldDefinition));
     }
 
     @Override

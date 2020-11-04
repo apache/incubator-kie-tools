@@ -41,6 +41,7 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop.DN
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -52,7 +53,6 @@ import static org.kie.workbench.common.dmn.client.editors.types.listview.DataTyp
 import static org.kie.workbench.common.dmn.client.editors.types.search.DataTypeSearchBarView.ENABLED_SEARCH;
 import static org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants.DataTypeSearchBarView_Search;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -447,7 +447,7 @@ public class DataTypeSearchBarViewTest {
 
         final String keyword = "keyword";
 
-        doNothing().when(view).setTimeout(any(), anyInt());
+        doNothing().when(view).setTimeout(any(), Mockito.<Integer>any());
         searchBar.value = keyword;
 
         view.search();

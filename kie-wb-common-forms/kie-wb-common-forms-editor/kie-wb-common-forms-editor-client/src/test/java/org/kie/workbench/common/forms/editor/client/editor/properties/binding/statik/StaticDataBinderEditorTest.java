@@ -20,11 +20,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.editor.client.editor.properties.binding.DataBinderEditorTest;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,7 +59,7 @@ public class StaticDataBinderEditorTest extends DataBinderEditorTest<StaticDataB
         verify(bindingsSupplier).get();
 
         verify(view,
-               times(fields.size() + 1)).addModelField(anyString(),
+               times(fields.size() + 1)).addModelField(Mockito.<String>any(),
                                                        anyBoolean());
 
         fields.forEach(field -> {

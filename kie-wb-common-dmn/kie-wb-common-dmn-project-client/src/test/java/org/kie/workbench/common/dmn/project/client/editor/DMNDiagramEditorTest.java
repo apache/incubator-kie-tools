@@ -604,10 +604,10 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         final InOrder inOrder = inOrder(kieView, multiPage);
         inOrder.verify(kieView).addMainEditorPage(view);
-        inOrder.verify(kieView).addPage(any(DocumentationPage.class));
+        inOrder.verify(kieView).addPage(Mockito.<DocumentationPage>any());
         inOrder.verify(multiPage).addPage(dataTypesPage);
         inOrder.verify(multiPage).addPage(includedModelsPage);
-        inOrder.verify(kieView).addOverviewPage(eq(overviewWidget), any(Command.class));
+        inOrder.verify(kieView).addOverviewPage(eq(overviewWidget), Mockito.<Command>any());
     }
 
     @Test
