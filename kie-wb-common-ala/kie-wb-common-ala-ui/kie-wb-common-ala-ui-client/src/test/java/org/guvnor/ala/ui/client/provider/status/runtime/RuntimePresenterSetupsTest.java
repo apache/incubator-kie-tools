@@ -28,9 +28,11 @@ import org.guvnor.ala.ui.model.RuntimeListItem;
 import org.guvnor.ala.ui.model.Stage;
 import org.jboss.errai.common.client.api.IsElement;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Common and setups tests.
@@ -57,7 +59,7 @@ public class RuntimePresenterSetupsTest
         verify(view,
                times(1)).setEndpoint(ENDPOINT);
         verify(pipelinePresenter,
-               never()).addStage(any(IsElement.class));
+               never()).addStage(Mockito.<IsElement>any());
     }
 
     /**
@@ -218,6 +220,6 @@ public class RuntimePresenterSetupsTest
                times(transitionsSize)).get();
 
         verify(pipelinePresenter,
-               times(stagesSize + transitionsSize)).addStage(any(IsElement.class));
+               times(stagesSize + transitionsSize)).addStage(Mockito.<IsElement>any());
     }
 }

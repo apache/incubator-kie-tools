@@ -36,19 +36,18 @@ import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext
 import org.kie.workbench.common.stunner.core.rule.context.impl.StatefulGraphEvaluationState;
 import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRuleHandlerTest {
 
     private final static String EDGE_ID = "edgeId1";
@@ -128,8 +127,8 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
     @Test
     @SuppressWarnings("unchecked")
     public void testEvaluateInNoLimit() {
-        when(evalUtils.countEdges(anyString(),
-                                  any(List.class))).thenReturn(0);
+        when(evalUtils.countEdges(Mockito.<String>any(),
+                                  Mockito.<List>any())).thenReturn(0);
         when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_IN_NO_LIMIT,
@@ -141,8 +140,8 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
     @Test
     @SuppressWarnings("unchecked")
     public void testEvaluateInMaxOneSucess() {
-        when(evalUtils.countEdges(anyString(),
-                                  any(List.class))).thenReturn(0);
+        when(evalUtils.countEdges(Mockito.<String>any(),
+                                  Mockito.<List>any())).thenReturn(0);
         when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_IN_MAX_1,
@@ -154,8 +153,8 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
     @Test
     @SuppressWarnings("unchecked")
     public void testEvaluateInMaxOneFailed() {
-        when(evalUtils.countEdges(anyString(),
-                                  any(List.class))).thenReturn(1);
+        when(evalUtils.countEdges(Mockito.<String>any(),
+                                  Mockito.<List>any())).thenReturn(1);
         when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_IN_MAX_1,
@@ -166,9 +165,9 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testEvaluateInMinOneSucess() {
-        when(evalUtils.countEdges(anyString(),
-                                  any(List.class))).thenReturn(0);
+    public void testEvaluateInMinOneSuccess() {
+        when(evalUtils.countEdges(Mockito.<String>any(),
+                                  Mockito.<List>any())).thenReturn(0);
         when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_IN_MIN_1,
@@ -180,8 +179,8 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
     @Test
     @SuppressWarnings("unchecked")
     public void testEvaluateInMinOneFailed() {
-        when(evalUtils.countEdges(anyString(),
-                                  any(List.class))).thenReturn(1);
+        when(evalUtils.countEdges(Mockito.<String>any(),
+                                  Mockito.<List>any())).thenReturn(1);
         when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.DELETE));
         RuleViolations violations = tested.evaluate(RULE_IN_MIN_1,

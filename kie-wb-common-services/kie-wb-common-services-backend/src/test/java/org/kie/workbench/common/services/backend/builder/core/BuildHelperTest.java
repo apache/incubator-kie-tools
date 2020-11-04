@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
 import javax.enterprise.inject.Instance;
 
 import com.google.common.base.Charsets;
@@ -47,12 +48,21 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BuildHelperTest {
@@ -278,17 +288,17 @@ public class BuildHelperTest {
         when(moduleRepositoriesService.load(module.getRepositoriesPath())).thenReturn(moduleRepositories);
         when(repositoryResolver.getRepositoriesResolvingArtifact(eq(gav),
                                                                  eq(module),
-                                                                 any(MavenRepositoryMetadata[].class))).thenReturn(repositories);
+                                                                 Mockito.<MavenRepositoryMetadata[]>any())).thenReturn(repositories);
     }
 
     private void verifyBuildAndDeploy(KieModule module,
                                       GAV gav) {
         verify(moduleRepositoriesService,
-               times(1)).load(any(Path.class));
+               times(1)).load(Mockito.<Path>any());
         verify(repositoryResolver,
                times(1)).getRepositoriesResolvingArtifact(eq(gav),
                                                           eq(module),
-                                                          any(MavenRepositoryMetadata[].class));
+                                                          Mockito.<MavenRepositoryMetadata[]>any());
         verifyBuilder(module,
                       gav);
     }
@@ -296,7 +306,7 @@ public class BuildHelperTest {
     private void verifyBuildAndDeploySnapshot(KieModule module,
                                               GAV gav) {
         verify(moduleRepositoriesService,
-               never()).load(any(Path.class));
+               never()).load(Mockito.<Path>any());
         verify(repositoryResolver,
                never()).getRepositoriesResolvingArtifact(eq(gav),
                                                          eq(module));
@@ -310,7 +320,7 @@ public class BuildHelperTest {
         assertNotNull(builder);
         assertTrue(builder.isBuilt());
         verify(m2RepoService,
-               times(1)).deployJar(any(InputStream.class),
+               times(1)).deployJar(Mockito.<InputStream>any(),
                                    eq(gav));
     }
 

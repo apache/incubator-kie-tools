@@ -38,7 +38,7 @@ import org.kie.workbench.common.stunner.core.validation.ModelValidator;
 import org.kie.workbench.common.stunner.core.validation.impl.ElementViolationImpl;
 import org.kie.workbench.common.stunner.project.service.ProjectValidationService;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.CallerMock;
 
 import static org.junit.Assert.assertTrue;

@@ -31,10 +31,10 @@ import org.kie.workbench.common.stunner.forms.service.FormGeneratedEvent;
 import org.kie.workbench.common.stunner.forms.service.FormGenerationFailureEvent;
 import org.kie.workbench.common.stunner.forms.service.FormGenerationService;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -84,8 +84,8 @@ public class ClientFormGenerationManagerTest {
         tested.onFormGeneratedEvent(event);
         verify(translationService, times(1)).getValue(eq(FormsClientConstants.FormsGenerationSuccess),
                                                       eq("name1"));
-        verify(formGenerationNotifier, times(1)).showNotification(anyString());
-        verify(formGenerationNotifier, never()).showError(anyString());
+        verify(formGenerationNotifier, times(1)).showNotification(Mockito.<String>any());
+        verify(formGenerationNotifier, never()).showError(Mockito.<String>any());
     }
 
     @Test
@@ -95,7 +95,7 @@ public class ClientFormGenerationManagerTest {
         tested.onFormGenerationFailureEvent(event);
         verify(translationService, times(1)).getValue(eq(FormsClientConstants.FormsGenerationFailure),
                                                       eq("name1"));
-        verify(formGenerationNotifier, times(1)).showError(anyString());
-        verify(formGenerationNotifier, never()).showNotification(anyString());
+        verify(formGenerationNotifier, times(1)).showError(Mockito.<String>any());
+        verify(formGenerationNotifier, never()).showNotification(Mockito.<String>any());
     }
 }

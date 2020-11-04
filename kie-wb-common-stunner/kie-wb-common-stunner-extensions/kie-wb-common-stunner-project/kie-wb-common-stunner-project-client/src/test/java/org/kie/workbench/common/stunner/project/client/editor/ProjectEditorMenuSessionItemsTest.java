@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.kogito.client.editor.AbstractDiagramEdit
 import org.kie.workbench.common.stunner.kogito.client.session.EditorSessionCommands;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -34,7 +35,6 @@ import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 import static com.ibm.icu.impl.Assert.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -66,34 +66,34 @@ public class ProjectEditorMenuSessionItemsTest {
     public void setup() {
         editorMenuSessionItems = new TestAbstractProjectEditorMenuSessionItems(itemsBuilder,
                                                                                sessionCommands);
-        when(fileMenuBuilder.addNewTopLevelMenu(any(MenuItem.class))).thenReturn(fileMenuBuilder);
+        when(fileMenuBuilder.addNewTopLevelMenu(Mockito.<MenuItem>any())).thenReturn(fileMenuBuilder);
     }
 
     @Test
     public void testFileMenuBuilder() {
         editorMenuSessionItems.populateMenu(fileMenuBuilder);
 
-        verify(itemsBuilder).newClearItem(any(Command.class));
-        verify(itemsBuilder).newVisitGraphItem(any(Command.class));
-        verify(itemsBuilder).newSwitchGridItem(any(Command.class));
-        verify(itemsBuilder).newDeleteSelectionItem(any(Command.class));
-        verify(itemsBuilder).newUndoItem(any(Command.class));
-        verify(itemsBuilder).newRedoItem(any(Command.class));
-        verify(itemsBuilder).newValidateItem(any(Command.class));
-        verify(itemsBuilder).newExportsItem(any(Command.class),
-                                            any(Command.class),
-                                            any(Command.class),
-                                            any(Command.class),
-                                            any(Command.class));
-        verify(itemsBuilder).newPasteItem(any(Command.class));
-        verify(itemsBuilder).newCopyItem(any(Command.class));
-        verify(itemsBuilder).newCutItem(any(Command.class));
+        verify(itemsBuilder).newClearItem(Mockito.<Command>any());
+        verify(itemsBuilder).newVisitGraphItem(Mockito.<Command>any());
+        verify(itemsBuilder).newSwitchGridItem(Mockito.<Command>any());
+        verify(itemsBuilder).newDeleteSelectionItem(Mockito.<Command>any());
+        verify(itemsBuilder).newUndoItem(Mockito.<Command>any());
+        verify(itemsBuilder).newRedoItem(Mockito.<Command>any());
+        verify(itemsBuilder).newValidateItem(Mockito.<Command>any());
+        verify(itemsBuilder).newExportsItem(Mockito.<Command>any(),
+                                            Mockito.<Command>any(),
+                                            Mockito.<Command>any(),
+                                            Mockito.<Command>any(),
+                                            Mockito.<Command>any());
+        verify(itemsBuilder).newPasteItem(Mockito.<Command>any());
+        verify(itemsBuilder).newCopyItem(Mockito.<Command>any());
+        verify(itemsBuilder).newCutItem(Mockito.<Command>any());
     }
 
     @Test
     public void testEnableItemWithRegisteredMenuItem() {
         final MenuItem clearMenuItem = mock(MenuItem.class);
-        when(itemsBuilder.newClearItem(any(Command.class))).thenReturn(clearMenuItem);
+        when(itemsBuilder.newClearItem(Mockito.<Command>any())).thenReturn(clearMenuItem);
 
         editorMenuSessionItems.populateMenu(fileMenuBuilder);
 
@@ -126,7 +126,7 @@ public class ProjectEditorMenuSessionItemsTest {
                 return "";
             }
         };
-        when(itemsBuilder.newClearItem(any(Command.class))).thenReturn(menuItem);
+        when(itemsBuilder.newClearItem(Mockito.<Command>any())).thenReturn(menuItem);
 
         editorMenuSessionItems.populateMenu(fileMenuBuilder);
 
@@ -142,7 +142,7 @@ public class ProjectEditorMenuSessionItemsTest {
     @Test
     public void testIsEnabledWithUnknownMenuItem() {
         final MenuItem menuItem = mock(MenuItem.class);
-        when(itemsBuilder.newClearItem(any(Command.class))).thenReturn(menuItem);
+        when(itemsBuilder.newClearItem(Mockito.<Command>any())).thenReturn(menuItem);
 
         editorMenuSessionItems.populateMenu(fileMenuBuilder);
 

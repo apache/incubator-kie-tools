@@ -40,7 +40,7 @@ import org.kie.workbench.common.stunner.core.rule.violations.ContainmentRuleViol
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyConnection;
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DeleteConnectorCommandTest extends AbstractGraphCommandTest {
 
     private static final String SOURCE_UUID = "sourceUUID";

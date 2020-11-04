@@ -31,6 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
@@ -152,7 +153,7 @@ public class RuntimePresenterActionsTest
         presenter.onRuntimeChangeEvent(new RuntimeChangeEvent(RuntimeChange.STARTED,
                                                               otherKey));
         verify(presenter,
-               never()).refresh(any(RuntimeKey.class));
+               never()).refresh(Mockito.<RuntimeKey>any());
     }
 
     @Test
@@ -172,7 +173,7 @@ public class RuntimePresenterActionsTest
         presenter.onRuntimeChangeEvent(new RuntimeChangeEvent(RuntimeChange.STOPPED,
                                                               otherKey));
         verify(presenter,
-               never()).refresh(any(RuntimeKey.class));
+               never()).refresh(Mockito.<RuntimeKey>any());
     }
 
     @Test
@@ -213,7 +214,7 @@ public class RuntimePresenterActionsTest
         verify(notificationEvent,
                times(0)).fire(any(NotificationEvent.class));
         verify(defaultErrorCallback,
-               times(1)).error(any(Message.class),
+               times(1)).error(Mockito.<Message>any(),
                                exceptionCaptor.capture());
         assertEquals(ERROR_MESSAGE,
                      exceptionCaptor.getValue().getMessage());
@@ -224,7 +225,7 @@ public class RuntimePresenterActionsTest
         prepareRuntimeStop();
         noCommandCaptor.getValue().execute();
         verify(runtimeService,
-               never()).stopRuntime(any(RuntimeKey.class));
+               never()).stopRuntime(Mockito.<RuntimeKey>any());
     }
 
     @Test
@@ -262,7 +263,7 @@ public class RuntimePresenterActionsTest
         verify(runtimeService,
                times(1)).stopRuntime(currentKey);
         verify(defaultErrorCallback,
-               times(1)).error(any(Message.class),
+               times(1)).error(Mockito.<Message>any(),
                                exceptionCaptor.capture());
         assertEquals(ERROR_MESSAGE,
                      exceptionCaptor.getValue().getMessage());
@@ -290,7 +291,7 @@ public class RuntimePresenterActionsTest
         prepareRuntimeDelete();
         noCommandCaptor.getValue().execute();
         verify(runtimeService,
-               never()).deleteRuntime(any(RuntimeKey.class),
+               never()).deleteRuntime(Mockito.<RuntimeKey>any(),
                                       anyBoolean());
     }
 
@@ -417,7 +418,7 @@ public class RuntimePresenterActionsTest
         prepareRuntimeForceDelete();
         noCommandCaptor.getValue().execute();
         verify(runtimeService,
-               never()).deleteRuntime(any(RuntimeKey.class),
+               never()).deleteRuntime(Mockito.<RuntimeKey>any(),
                                       anyBoolean());
     }
 
@@ -460,7 +461,7 @@ public class RuntimePresenterActionsTest
                times(1)).deleteRuntime(currentKey,
                                        true);
         verify(defaultErrorCallback,
-               times(1)).error(any(Message.class),
+               times(1)).error(Mockito.<Message>any(),
                                exceptionCaptor.capture());
         assertEquals(ERROR_MESSAGE,
                      exceptionCaptor.getValue().getMessage());
@@ -533,7 +534,7 @@ public class RuntimePresenterActionsTest
         verify(runtimeService,
                times(1)).stopPipelineExecution(currentKey);
         verify(defaultErrorCallback,
-               times(1)).error(any(Message.class),
+               times(1)).error(Mockito.<Message>any(),
                                exceptionCaptor.capture());
         assertEquals(ERROR_MESSAGE,
                      exceptionCaptor.getValue().getMessage());
@@ -612,7 +613,7 @@ public class RuntimePresenterActionsTest
         verify(runtimeService,
                times(1)).deletePipelineExecution(currentKey);
         verify(defaultErrorCallback,
-               times(1)).error(any(Message.class),
+               times(1)).error(Mockito.<Message>any(),
                                exceptionCaptor.capture());
         assertEquals(ERROR_MESSAGE,
                      exceptionCaptor.getValue().getMessage());

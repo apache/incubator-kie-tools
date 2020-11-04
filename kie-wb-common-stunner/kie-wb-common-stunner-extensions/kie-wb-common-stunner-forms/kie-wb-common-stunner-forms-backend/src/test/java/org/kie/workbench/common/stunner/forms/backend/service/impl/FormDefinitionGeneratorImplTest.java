@@ -63,7 +63,8 @@ import org.kie.workbench.common.stunner.forms.backend.gen.FormGenerationModelPro
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -71,13 +72,12 @@ import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class FormDefinitionGeneratorImplTest extends BPMNDiagramMarshallerBaseTest {
 
     private static final String PROCESS_NAME = "simple_process_generation";
@@ -210,7 +210,7 @@ public class FormDefinitionGeneratorImplTest extends BPMNDiagramMarshallerBaseTe
 
     private void loadClass() {
         try {
-            when(moduleClassLoader.loadClass(anyString())).thenAnswer(invocation -> Object.class);
+            when(moduleClassLoader.loadClass(Mockito.<String>any())).thenAnswer(invocation -> Object.class);
         } catch (ClassNotFoundException e) {
             // Do nothing.
         }
@@ -232,7 +232,7 @@ public class FormDefinitionGeneratorImplTest extends BPMNDiagramMarshallerBaseTe
         verify(formDefinitionSerializer, times(1)).serialize(formDefinitionArgumentCaptor.capture());
 
         verify(ioService, times(1)).createFile(any());
-        verify(ioService, times(1)).write(any(), anyString());
+        verify(ioService, times(1)).write(any(), Mockito.<String>any());
 
         JBPMFormModel formModel = formModelArgumentCaptor.getValue();
 
@@ -268,7 +268,7 @@ public class FormDefinitionGeneratorImplTest extends BPMNDiagramMarshallerBaseTe
         verify(ioService, times(1)).startBatch(any());
         verify(ioService, times(1)).getFileSystem(any());
         verify(ioService, times(1)).createFile(any());
-        verify(ioService, times(1)).write(any(), anyString());
+        verify(ioService, times(1)).write(any(), Mockito.<String>any());
         verify(ioService, times(1)).endBatch();
 
         JBPMFormModel formModel = formModelArgumentCaptor.getValue();
@@ -292,7 +292,7 @@ public class FormDefinitionGeneratorImplTest extends BPMNDiagramMarshallerBaseTe
         verify(ioService, times(1)).startBatch(any());
         verify(ioService, times(1)).getFileSystem(any());
         verify(ioService, times(3)).createFile(any());
-        verify(ioService, times(3)).write(any(), anyString());
+        verify(ioService, times(3)).write(any(), Mockito.<String>any());
         verify(ioService, times(1)).endBatch();
 
         List<JBPMFormModel> formModels = formModelArgumentCaptor.getAllValues();
@@ -322,7 +322,7 @@ public class FormDefinitionGeneratorImplTest extends BPMNDiagramMarshallerBaseTe
         verify(ioService, times(1)).startBatch(any());
         verify(ioService, times(1)).getFileSystem(any());
         verify(ioService, times(4)).createFile(any());
-        verify(ioService, times(4)).write(any(), anyString());
+        verify(ioService, times(4)).write(any(), Mockito.<String>any());
         verify(ioService, times(1)).endBatch();
 
         List<JBPMFormModel> formModels = formModelArgumentCaptor.getAllValues();

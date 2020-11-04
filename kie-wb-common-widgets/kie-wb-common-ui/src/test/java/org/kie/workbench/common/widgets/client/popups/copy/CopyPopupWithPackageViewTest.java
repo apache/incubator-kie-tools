@@ -27,11 +27,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.widgets.client.handlers.PackageListBox;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.ext.editor.commons.client.file.popups.CopyPopUpPresenter;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 @WithClassesToStub(Button.class)
 @RunWith(GwtMockitoTestRunner.class)
@@ -52,8 +60,8 @@ public class CopyPopupWithPackageViewTest {
         copyView.packageListBox = mock(PackageListBox.class);
         copyView.translationService = mock(TranslationService.class);
         doReturn(mock(Package.class)).when(copyView.packageListBox).getSelectedPackage();
-        doReturn(mock(Button.class)).when(copyView).button(anyString(),
-                                                           any(Command.class),
+        doReturn(mock(Button.class)).when(copyView).button(Mockito.<String>any(),
+                                                           Mockito.<Command>any(),
                                                            any(ButtonType.class));
 
         packageLoadedCommandCaptor = ArgumentCaptor.forClass(Command.class);
@@ -70,7 +78,7 @@ public class CopyPopupWithPackageViewTest {
 
         verify(copyView.copyButton()).setEnabled(false);
         verify(copyView.packageListBox).setUp(eq(true),
-                                              any(Command.class));
+                                              Mockito.<Command>any());
 
         packageLoadedCommandCaptor.getValue().execute();
 
@@ -92,7 +100,7 @@ public class CopyPopupWithPackageViewTest {
                never()).setEnabled(false);
         verify(copyView.packageListBox,
                never()).setUp(eq(true),
-                              any(Command.class));
+                              Mockito.<Command>any());
 
         copyView.getTargetPath();
 
@@ -111,7 +119,7 @@ public class CopyPopupWithPackageViewTest {
                never()).setEnabled(false);
         verify(copyView.packageListBox,
                never()).setUp(eq(true),
-                              any(Command.class));
+                              Mockito.<Command>any());
 
         copyView.getTargetPath();
 
@@ -129,7 +137,7 @@ public class CopyPopupWithPackageViewTest {
                never()).setEnabled(false);
         verify(copyView.packageListBox,
                never()).setUp(eq(true),
-                              any(Command.class));
+                              Mockito.<Command>any());
 
         copyView.getTargetPath();
 
@@ -158,6 +166,6 @@ public class CopyPopupWithPackageViewTest {
     }
 
     private void changeProjectResourceStatus(boolean isAProjectResource) {
-        doReturn(isAProjectResource).when(copyView).isAProjectResource(anyString());
+        doReturn(isAProjectResource).when(copyView).isAProjectResource(Mockito.<String>any());
     }
 }

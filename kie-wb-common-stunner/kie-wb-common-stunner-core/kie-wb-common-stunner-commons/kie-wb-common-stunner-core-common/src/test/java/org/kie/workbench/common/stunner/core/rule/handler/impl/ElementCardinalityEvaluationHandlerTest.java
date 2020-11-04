@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,18 +33,17 @@ import org.kie.workbench.common.stunner.core.rule.context.ElementCardinalityCont
 import org.kie.workbench.common.stunner.core.rule.context.GraphEvaluationState;
 import org.kie.workbench.common.stunner.core.rule.impl.Occurrences;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anySet;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHandlerTest {
 
     private final static Occurrences RULE_NO_LIMIT = new Occurrences("r1",
@@ -109,8 +109,8 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE2,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
-                                                 anySet());
+        doReturn(count).when(tested).countLabels(Mockito.<GraphEvaluationState>any(),
+                                                 Mockito.<Set>any());
         when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         final RuleViolations violations = tested.evaluate(RULE_NO_LIMIT,
@@ -128,8 +128,8 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE2,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
-                                                 anySet());
+        doReturn(count).when(tested).countLabels(Mockito.<GraphEvaluationState>any(),
+                                                 Mockito.<Set>any());
         when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         final RuleViolations violations = tested.evaluate(RULE_NO_LIMIT,
@@ -145,8 +145,8 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE1,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
-                                                 anySet());
+        doReturn(count).when(tested).countLabels(Mockito.<GraphEvaluationState>any(),
+                                                 Mockito.<Set>any());
         when(context.getCandidates()).thenReturn(Collections.emptyList());
         when(context.getOperation()).thenReturn(Optional.empty());
         final RuleViolations violations = tested.evaluate(RULE_MIN_1,
@@ -162,8 +162,8 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE1,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
-                                                 anySet());
+        doReturn(count).when(tested).countLabels(Mockito.<GraphEvaluationState>any(),
+                                                 Mockito.<Set>any());
         when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         final RuleViolations violations = tested.evaluate(RULE_MIN_1,
@@ -179,8 +179,8 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE1,
                 2);
         }};
-        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
-                                                 anySet());
+        doReturn(count).when(tested).countLabels(Mockito.<GraphEvaluationState>any(),
+                                                 Mockito.<Set>any());
         when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.DELETE));
         final RuleViolations violations = tested.evaluate(RULE_MIN_1,
@@ -198,8 +198,8 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE2,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
-                                                 anySet());
+        doReturn(count).when(tested).countLabels(Mockito.<GraphEvaluationState>any(),
+                                                 Mockito.<Set>any());
         when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.DELETE));
         final RuleViolations violations = tested.evaluate(RULE_MIN_1,
@@ -217,8 +217,8 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE2,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
-                                                 anySet());
+        doReturn(count).when(tested).countLabels(Mockito.<GraphEvaluationState>any(),
+                                                 Mockito.<Set>any());
         when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         final RuleViolations violations = tested.evaluate(RULE_MAX_1,
@@ -236,8 +236,8 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE2,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
-                                                 anySet());
+        doReturn(count).when(tested).countLabels(Mockito.<GraphEvaluationState>any(),
+                                                 Mockito.<Set>any());
         when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         final RuleViolations violations = tested.evaluate(RULE_MAX_1,
@@ -253,8 +253,8 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE1,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
-                                                 anySet());
+        doReturn(count).when(tested).countLabels(Mockito.<GraphEvaluationState>any(),
+                                                 Mockito.<Set>any());
         when(context.getCandidates()).thenReturn(candidates);
         when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         final RuleViolations violations = tested.evaluate(RULE_MAX_0,
@@ -270,8 +270,8 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE1,
                 0);
         }};
-        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
-                                                 anySet());
+        doReturn(count).when(tested).countLabels(Mockito.<GraphEvaluationState>any(),
+                                                 Mockito.<Set>any());
         when(context.getCandidates()).thenReturn(Collections.emptyList());
         when(context.getOperation()).thenReturn(Optional.empty());
         final RuleViolations violations = tested.evaluate(RULE_MAX_0,
@@ -287,8 +287,8 @@ public class ElementCardinalityEvaluationHandlerTest extends AbstractGraphRuleHa
             put(CANDIDATE_ROLE1,
                 1);
         }};
-        doReturn(count).when(tested).countLabels(any(GraphEvaluationState.class),
-                                                 anySet());
+        doReturn(count).when(tested).countLabels(Mockito.<GraphEvaluationState>any(),
+                                                 Mockito.<Set>any());
         when(context.getCandidates()).thenReturn(Collections.emptyList());
         when(context.getOperation()).thenReturn(Optional.empty());
         final RuleViolations violations = tested.evaluate(RULE_MAX_0,

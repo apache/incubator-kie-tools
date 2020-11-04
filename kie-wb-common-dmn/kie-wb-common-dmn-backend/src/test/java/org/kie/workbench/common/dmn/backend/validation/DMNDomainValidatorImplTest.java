@@ -65,7 +65,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -230,7 +229,7 @@ public class DMNDomainValidatorImplTest {
 
         definitions.getImport().add(new Import());
 
-        when(importsHelper.getImportXML(eq(metadata), anyList())).thenAnswer(i -> {
+        when(importsHelper.getImportXML(eq(metadata), Mockito.<List>any())).thenAnswer(i -> {
             final Map<org.kie.dmn.model.api.Import, String> importedModels = new HashMap<>();
             final List<org.kie.dmn.model.api.Import> imports = (List) i.getArguments()[1];
             importedModels.put(imports.get(0), IMPORTED_DMN_XML);

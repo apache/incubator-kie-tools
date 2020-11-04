@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Optional;
+
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.Bean;
@@ -49,8 +50,9 @@ import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -59,11 +61,19 @@ import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ModuleSaverTest
         extends WeldModuleTestBase {
 
@@ -106,7 +116,7 @@ public class ModuleSaverTest
 
         final Event<NewModuleEvent> newModuleEvent = mock(Event.class);
 
-        when(ioService.createDirectory(any(org.uberfire.java.nio.file.Path.class))).thenAnswer(new Answer<Object>() {
+        when(ioService.createDirectory(Mockito.<org.uberfire.java.nio.file.Path>any())).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(final InvocationOnMock invocation) throws Throwable {
                 return invocation.getArguments()[0];
@@ -218,9 +228,9 @@ public class ModuleSaverTest
         //And also the parent pom must have never been updated/modified.
         verify(pomService,
                never()).save(eq(parentPomVFSPath),
-                             any(POM.class),
-                             any(Metadata.class),
-                             any(String.class));
+                             Mockito.<POM>any(),
+                             Mockito.<Metadata>any(),
+                             Mockito.<String>any());
     }
 
     @Test
@@ -237,9 +247,9 @@ public class ModuleSaverTest
         ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
 
         doNothing().when(newPackageEvent).fire((NewPackageEvent) eventCaptor.capture());
-        when(resourceResolver.newPackage(any(org.guvnor.common.services.project.model.Package.class),
-                                         anyString(),
-                                         anyBoolean()))
+        when(resourceResolver.newPackage(Mockito.<org.guvnor.common.services.project.model.Package>any(),
+                                         Mockito.<String>any(),
+                                         Mockito.<Boolean>any()))
                 .thenAnswer(new Answer<Object>() {
                     @Override
                     public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -298,17 +308,17 @@ public class ModuleSaverTest
 
         when(repository.getDefaultBranch()).thenReturn(Optional.of(new Branch("master", repositoryRootPath)));
 
-        when(pomService.load(any(Path.class))).thenReturn(pom);
+        when(pomService.load(Mockito.<Path>any())).thenReturn(pom);
 
         final ArrayList<String> directories = new ArrayList<String>();
 
-        when(resourceResolver.simpleModuleInstance(any(org.uberfire.java.nio.file.Path.class))).thenReturn(mock(KieModule.class));
+        when(resourceResolver.simpleModuleInstance(Mockito.<org.uberfire.java.nio.file.Path>any())).thenReturn(mock(KieModule.class));
 
         final KieModule kieModule = new KieModule();
         kieModule.setPom(pom);
-        when(resourceResolver.resolveModule(any(Path.class))).thenReturn(kieModule);
+        when(resourceResolver.resolveModule(Mockito.<Path>any())).thenReturn(kieModule);
 
-        when(ioService.createDirectory(any(org.uberfire.java.nio.file.Path.class))).thenAnswer(new Answer<org.uberfire.java.nio.file.Path>() {
+        when(ioService.createDirectory(Mockito.<org.uberfire.java.nio.file.Path>any())).thenAnswer(new Answer<org.uberfire.java.nio.file.Path>() {
             @Override
             public org.uberfire.java.nio.file.Path answer(final InvocationOnMock invocationOnMock) throws Throwable {
                 org.uberfire.java.nio.file.Path path = (org.uberfire.java.nio.file.Path) invocationOnMock.getArguments()[0];

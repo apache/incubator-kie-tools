@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.forms.client.event.RefreshFormPropertiesEvent;
 import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Matchers.any;
@@ -176,7 +177,7 @@ public class FormsCanvasSessionHandlerTest {
 
         verify(formRenderer).render(eq(GRAPH_UUID),
                                     eq(element),
-                                    any(Command.class));
+                                    Mockito.<Command>any());
     }
 
     @Test
@@ -189,7 +190,7 @@ public class FormsCanvasSessionHandlerTest {
 
         verify(formRenderer).render(eq(GRAPH_UUID),
                                     eq(domainObject),
-                                    any(Command.class));
+                                    Mockito.<Command>any());
     }
 
     @Test
@@ -198,7 +199,7 @@ public class FormsCanvasSessionHandlerTest {
 
         handler.onRefreshFormPropertiesEvent(refreshFormPropertiesEvent);
 
-        verify(formRenderer).render(anyString(), eq(element), any(Command.class));
+        verify(formRenderer).render(anyString(), eq(element), Mockito.<Command>any());
     }
 
     @Test
@@ -207,7 +208,7 @@ public class FormsCanvasSessionHandlerTest {
 
         handler.onRefreshFormPropertiesEvent(refreshFormPropertiesEvent);
 
-        verify(formRenderer, never()).render(anyString(), any(Element.class), any(Command.class));
+        verify(formRenderer, never()).render(anyString(), any(Element.class), Mockito.<Command>any());
     }
 
     @Test
@@ -222,7 +223,7 @@ public class FormsCanvasSessionHandlerTest {
         canvasSelectionEvent = new CanvasSelectionEvent(abstractCanvasHandler, UUID);
         handler.onCanvasSelectionEvent(canvasSelectionEvent);
 
-        verify(formRenderer, times(1)).render(anyString(), eq(element), any(Command.class));
+        verify(formRenderer, times(1)).render(anyString(), eq(element), Mockito.<Command>any());
     }
 
     @Test
@@ -236,7 +237,7 @@ public class FormsCanvasSessionHandlerTest {
 
         handler.getFormsCanvasListener().update(element);
 
-        verify(formRenderer, times(1)).render(anyString(), eq(element), any(Command.class));
+        verify(formRenderer, times(1)).render(anyString(), eq(element), Mockito.<Command>any());
     }
 
     @Test
@@ -247,7 +248,7 @@ public class FormsCanvasSessionHandlerTest {
 
         handler.onCanvasSelectionEvent(canvasSelectionEvent);
 
-        verify(formRenderer, never()).render(anyString(), any(Element.class), any(Command.class));
+        verify(formRenderer, never()).render(anyString(), any(Element.class), Mockito.<Command>any());
     }
 
     @Test
@@ -304,7 +305,7 @@ public class FormsCanvasSessionHandlerTest {
 
         handler.onCanvasSelectionEvent(canvasSelectionEvent);
 
-        verify(formRenderer, never()).render(anyString(), any(DomainObject.class), any(Command.class));
+        verify(formRenderer, never()).render(anyString(), any(DomainObject.class), Mockito.<Command>any());
     }
 
     @Test
@@ -315,7 +316,7 @@ public class FormsCanvasSessionHandlerTest {
 
         handler.onDomainObjectSelectionEvent(domainObjectSelectionEvent);
 
-        verify(formRenderer).render(anyString(), eq(domainObject), any(Command.class));
+        verify(formRenderer).render(anyString(), eq(domainObject), Mockito.<Command>any());
     }
 
     @Test
@@ -326,7 +327,7 @@ public class FormsCanvasSessionHandlerTest {
 
         handler.onDomainObjectSelectionEvent(domainObjectSelectionEvent);
 
-        verify(formRenderer, never()).render(anyString(), any(Element.class), any(Command.class));
+        verify(formRenderer, never()).render(anyString(), any(Element.class), Mockito.<Command>any());
     }
 
     @Test

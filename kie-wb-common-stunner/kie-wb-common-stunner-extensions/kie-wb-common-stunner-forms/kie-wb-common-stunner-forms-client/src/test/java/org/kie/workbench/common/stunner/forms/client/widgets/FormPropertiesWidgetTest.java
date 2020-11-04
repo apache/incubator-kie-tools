@@ -56,7 +56,8 @@ import org.kie.workbench.common.stunner.forms.client.widgets.container.FormsCont
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 
@@ -75,7 +76,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class FormPropertiesWidgetTest {
 
     private static final String GRAPH_UUID = "graph1";
@@ -290,7 +291,7 @@ public class FormPropertiesWidgetTest {
         verify(formsContainer).render(eq(GRAPH_UUID),
                                       eq(DOMAIN_OBJECT_UUID),
                                       eq(domainObject),
-                                      any(Path.class),
+                                      Mockito.<Path>any(),
                                       fieldChangeHandlerArgumentCaptor.capture(),
                                       eq(RenderMode.EDIT_MODE));
         final FieldChangeHandler fieldChangeHandler = fieldChangeHandlerArgumentCaptor.getValue();

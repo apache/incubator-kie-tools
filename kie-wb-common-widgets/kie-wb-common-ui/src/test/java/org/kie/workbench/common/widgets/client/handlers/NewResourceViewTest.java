@@ -41,12 +41,12 @@ import org.kie.workbench.common.widgets.client.resources.i18n.KieWorkbenchWidget
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.mock;
@@ -170,7 +170,7 @@ public class NewResourceViewTest {
         verify(view.handlerExtensions, never()).add(extensionLabel);
         verify(view.handlerExtensions).add(extension);
         verify(extensionLabel, never()).setText(eq(extensionName));
-        verify(extensionLabel, never()).setText(anyString());
+        verify(extensionLabel, never()).setText(Mockito.<String>any());
     }
 
     @Test
@@ -183,7 +183,7 @@ public class NewResourceViewTest {
 
         validateClearErrors();
 
-        verify(presenter).validate(anyString(),
+        verify(presenter).validate(Mockito.<String>any(),
                                    any(ValidatorWithReasonCallback.class));
     }
 
@@ -210,7 +210,7 @@ public class NewResourceViewTest {
         validateClearErrors();
 
         verify(view.fileNameGroup).addClassName(ValidationState.ERROR.getCssName());
-        verify(view.fileNameHelpInline).setText(anyString());
+        verify(view.fileNameHelpInline).setText(Mockito.<String>any());
         verify(view.translationService).getTranslation(KieWorkbenchWidgetsConstants.NewResourceViewFileNameIsMandatory);
 
         verify(packageListBox,
@@ -219,12 +219,12 @@ public class NewResourceViewTest {
         verify(view.packageGroup,
                never()).addClassName(ValidationState.ERROR.getCssName());
         verify(view.packageHelpInline,
-               never()).setText(anyString());
+               never()).setText(Mockito.<String>any());
         verify(view.translationService,
                never()).getTranslation(KieWorkbenchWidgetsConstants.NewResourceViewMissingPath);
 
         verify(presenter,
-               never()).validate(anyString(),
+               never()).validate(Mockito.<String>any(),
                                  any(ValidatorWithReasonCallback.class));
     }
 
@@ -241,18 +241,18 @@ public class NewResourceViewTest {
         verify(view.fileNameGroup,
                never()).addClassName(ValidationState.ERROR.getCssName());
         verify(view.fileNameHelpInline,
-               never()).setText(anyString());
+               never()).setText(Mockito.<String>any());
         verify(view.translationService,
                never()).getTranslation(KieWorkbenchWidgetsConstants.NewResourceViewFileNameIsMandatory);
 
         verify(packageListBox).getSelectedPackage();
 
         verify(view.packageGroup).addClassName(ValidationState.ERROR.getCssName());
-        verify(view.packageHelpInline).setText(anyString());
+        verify(view.packageHelpInline).setText(Mockito.<String>any());
         verify(view.translationService).getTranslation(KieWorkbenchWidgetsConstants.NewResourceViewMissingPath);
 
         verify(presenter,
-               never()).validate(anyString(),
+               never()).validate(Mockito.<String>any(),
                                  any(ValidatorWithReasonCallback.class));
     }
 
@@ -271,7 +271,7 @@ public class NewResourceViewTest {
         verify(view.fileNameGroup,
                never()).addClassName(ValidationState.ERROR.getCssName());
         verify(presenter,
-               never()).makeItem(anyString());
+               never()).makeItem(Mockito.<String>any());
     }
 
     /* and show any reason given. */
@@ -282,7 +282,7 @@ public class NewResourceViewTest {
         verify(view.fileNameGroup).addClassName(ValidationState.ERROR.getCssName());
         verify(view.fileNameHelpInline).setText("mock reason");
         verify(presenter,
-               never()).makeItem(anyString());
+               never()).makeItem(Mockito.<String>any());
     }
 
     /* Whereas successful validation results in item being created. */
@@ -292,7 +292,7 @@ public class NewResourceViewTest {
         when(packageListBox.getSelectedPackage()).thenReturn(mock(Package.class));
         getCallback().onSuccess();
         verify(view.fileNameGroup).removeClassName(ValidationState.ERROR.getCssName());
-        verify(presenter).makeItem(anyString());
+        verify(presenter).makeItem(Mockito.<String>any());
     }
 
     private ValidatorWithReasonCallback getCallback() {
@@ -300,7 +300,7 @@ public class NewResourceViewTest {
         when(packageListBox.getSelectedPackage()).thenReturn(mock(Package.class));
 
         view.onOKButtonClick();
-        verify(presenter).validate(anyString(),
+        verify(presenter).validate(Mockito.<String>any(),
                                    callbackCaptor.capture());
 
         return callbackCaptor.getValue();

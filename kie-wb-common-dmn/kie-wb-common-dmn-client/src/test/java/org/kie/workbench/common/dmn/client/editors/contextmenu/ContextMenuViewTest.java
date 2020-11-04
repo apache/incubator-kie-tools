@@ -37,7 +37,6 @@ import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -66,7 +65,7 @@ public class ContextMenuViewTest {
     public void testWhenShowingContextMenuViewThenAlsoListSelectorIsShown() {
         contextMenuView.show();
 
-        verify(listSelector).bind(any(), anyInt(), anyInt());
+        verify(listSelector).bind(any(), Mockito.<Integer>any(), Mockito.<Integer>any());
         verify(listSelector).show();
     }
 

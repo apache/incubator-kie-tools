@@ -420,7 +420,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
         open();
 
         verify(decisionNavigatorDock, atLeast(1)).reload();
-        verify(expressionEditor, atLeast(1)).setToolbarStateHandler(any(DMNProjectToolbarStateHandler.class));
+        verify(expressionEditor, atLeast(1)).setToolbarStateHandler(Mockito.<DMNProjectToolbarStateHandler>any());
         verify(dataTypesPage, atLeast(1)).reload();
         verify(layoutHelper).applyLayout(diagram, layoutExecutor);
         verify(includedModelsPage, atLeast(1)).reload();
@@ -432,7 +432,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     public void testOnDiagramLoadWhenCanvasHandlerIsNull() {
         diagramEditor.onDiagramLoad();
 
-        verify(expressionEditor, never()).setToolbarStateHandler(any(DMNProjectToolbarStateHandler.class));
+        verify(expressionEditor, never()).setToolbarStateHandler(Mockito.<DMNProjectToolbarStateHandler>any());
         verify(decisionNavigatorDock, never()).reload();
         verify(decisionNavigatorDock, never()).open();
         verify(dataTypesPage, never()).reload();
@@ -471,7 +471,7 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         verify(searchBarComponent).disableSearch();
         verify(sessionCommandManager).execute(eq(canvasHandler),
-                                              any(NavigateToExpressionEditorCommand.class));
+                                              Mockito.<NavigateToExpressionEditorCommand>any());
     }
 
     @Test

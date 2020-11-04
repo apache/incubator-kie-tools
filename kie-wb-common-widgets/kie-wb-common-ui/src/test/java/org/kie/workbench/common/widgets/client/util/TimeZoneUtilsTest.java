@@ -26,13 +26,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.services.shared.preferences.ApplicationPreferences.KIE_TIMEZONE_OFFSET;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -55,7 +54,7 @@ public class TimeZoneUtilsTest {
         dateTimeFormat = mock(DateTimeFormat.class);
 
         mockStatic(DateTimeFormat.class);
-        when(DateTimeFormat.getFormat(anyString())).thenReturn(dateTimeFormat);
+        when(DateTimeFormat.getFormat(Mockito.<String>any())).thenReturn(dateTimeFormat);
     }
 
     @Test
@@ -80,7 +79,7 @@ public class TimeZoneUtilsTest {
 
         mockStatic(TimeZoneUtils.class);
         when(TimeZoneUtils.getTimeZone()).thenReturn(timeZone);
-        when(TimeZoneUtils.formatWithServerTimeZone(any(Date.class))).thenCallRealMethod();
+        when(TimeZoneUtils.formatWithServerTimeZone(Mockito.<Date>any())).thenCallRealMethod();
 
         when(dateTimeFormat.format(eq(date), eq(timeZone))).thenReturn(expectedFormat);
 
@@ -99,7 +98,7 @@ public class TimeZoneUtilsTest {
 
         mockStatic(TimeZoneUtils.class);
         when(TimeZoneUtils.formatWithServerTimeZone(date)).thenReturn(parsedDate);
-        when(TimeZoneUtils.convertFromServerTimeZone(any(Date.class))).thenCallRealMethod();
+        when(TimeZoneUtils.convertFromServerTimeZone(Mockito.<Date>any())).thenCallRealMethod();
 
         when(dateTimeFormat.parse(parsedDate)).thenReturn(expectedDate);
 
@@ -124,7 +123,7 @@ public class TimeZoneUtilsTest {
         when(TimeZoneUtils.getTimeZone()).thenReturn(timeZone);
         when(TimeZoneUtils.internalFormatter()).thenReturn(internalFormat);
         when(TimeZoneUtils.getClientOffset(date)).thenReturn(expectedClientOffset);
-        when(TimeZoneUtils.convertToServerTimeZone(any(Date.class))).thenCallRealMethod();
+        when(TimeZoneUtils.convertToServerTimeZone(Mockito.<Date>any())).thenCallRealMethod();
 
         when(internalFormat.format(eq(date), captorTimeZone.capture())).thenReturn(convertedDate);
         when(internalFormat.parse(convertedDate)).thenReturn(expectedDate);
@@ -147,7 +146,7 @@ public class TimeZoneUtilsTest {
 
         mockStatic(TimeZoneUtils.class);
         when(TimeZoneUtils.getTimeZone()).thenReturn(timeZone);
-        when(TimeZoneUtils.getClientOffset(any(Date.class))).thenCallRealMethod();
+        when(TimeZoneUtils.getClientOffset(Mockito.<Date>any())).thenCallRealMethod();
 
         when(timeZone.getStandardOffset()).thenReturn(serverSideOffSet);
         when(date.getTimezoneOffset()).thenReturn(dateOffSet);

@@ -34,12 +34,10 @@ import org.kie.workbench.common.stunner.forms.client.notifications.FormGeneratio
 import org.kie.workbench.common.stunner.forms.client.resources.i18n.FormsClientConstants;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -89,7 +87,7 @@ public class GenerateSelectedFormsSessionCommandTest
         when(index.get(eq(ID2))).thenReturn(element2);
         when(session.getSelectionControl()).thenReturn(selectionControl);
         when(selectionControl.getSelectedItems()).thenReturn(SELECTED_ITEMS);
-        when(acceptor.test(any(Element.class))).thenReturn(true);
+        when(acceptor.test(Mockito.<Element>any())).thenReturn(true);
         tested = new GenerateSelectedFormsSessionCommand(formGenerationManager, formGenerationNotifier, translationService);
         tested.setElementAcceptor(acceptor);
         tested.bind(session);
@@ -102,12 +100,12 @@ public class GenerateSelectedFormsSessionCommandTest
         final ClientSessionCommand.Callback callback = mock(ClientSessionCommand.Callback.class);
         tested.execute(callback);
         verify(formGenerationService, never()).generateSelectedForms(eq(diagram),
-                                                                     anyObject());
+                                                                     Mockito.<String[]>any());
         verify(callback, times(1)).onSuccess();
-        verify(callback, never()).onError(anyObject());
-        verify(acceptor, never()).test(any(Element.class));
+        verify(callback, never()).onError(Mockito.<Object>any());
+        verify(acceptor, never()).test(Mockito.<Element>any());
         verify(translationService).getValue(FormsClientConstants.FormsNoItemsSelectedForGeneration);
-        verify(formGenerationNotifier).showNotification(anyString());
+        verify(formGenerationNotifier).showNotification(Mockito.<String>any());
     }
 
     @Test
@@ -124,9 +122,9 @@ public class GenerateSelectedFormsSessionCommandTest
         verify(acceptor, times(1)).test(eq(element1));
         verify(acceptor, times(1)).test(eq(element2));
         verify(callback, times(1)).onSuccess();
-        verify(callback, never()).onError(anyObject());
+        verify(callback, never()).onError(Mockito.<Object>any());
         verify(translationService, never()).getValue(FormsClientConstants.FormsNoItemsSelectedForGeneration);
-        verify(formGenerationNotifier, never()).showNotification(anyString());
+        verify(formGenerationNotifier, never()).showNotification(Mockito.<String>any());
     }
 
     @Override

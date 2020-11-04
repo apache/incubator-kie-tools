@@ -25,12 +25,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileSystem;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -94,10 +94,10 @@ public class BackendFileSystemManagerTest {
         verify(ioService, times(1)).startBatch(eq(fileSystem));
         verify(ioService, times(1)).write(eq(asset1Path),
                                           bytesCaptor1.capture(),
-                                          any(CommentedOption.class));
+                                          Mockito.<CommentedOption>any());
         verify(ioService, times(1)).write(eq(asset2Path),
                                           bytesCaptor2.capture(),
-                                          any(CommentedOption.class));
+                                          Mockito.<CommentedOption>any());
         verify(optionFactory, times(2)).makeCommentedOption(eq(message));
         verify(ioService, times(1)).endBatch();
         final byte[] bytes1 = bytesCaptor1.getValue();
