@@ -392,6 +392,17 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
     }
 
     @Test
+    public void testInitialiseKieEditorForSessionWhenInitializingKieEditorForSessionThenDiagramAlreadyLoaded() {
+        doNothing().when(diagramEditor).superInitialiseKieEditorForSession(any());
+        final InOrder inOrder = inOrder(diagramEditor);
+
+        diagramEditor.initialiseKieEditorForSession(diagram);
+
+        inOrder.verify(diagramEditor).onDiagramLoad();
+        inOrder.verify(diagramEditor).superInitialiseKieEditorForSession(any());
+    }
+
+    @Test
     public void testSetupSearchComponent() {
 
         diagramEditor.setupSearchComponent();
@@ -408,12 +419,12 @@ public class DMNDiagramEditorTest extends AbstractProjectDiagramEditorTest {
 
         open();
 
-        verify(decisionNavigatorDock).reload();
-        verify(expressionEditor).setToolbarStateHandler(any(DMNProjectToolbarStateHandler.class));
-        verify(dataTypesPage).reload();
+        verify(decisionNavigatorDock, atLeast(1)).reload();
+        verify(expressionEditor, atLeast(1)).setToolbarStateHandler(any(DMNProjectToolbarStateHandler.class));
+        verify(dataTypesPage, atLeast(1)).reload();
         verify(layoutHelper).applyLayout(diagram, layoutExecutor);
-        verify(includedModelsPage).reload();
-        verify(lazyCanvasFocusUtils).releaseFocus();
+        verify(includedModelsPage, atLeast(1)).reload();
+        verify(lazyCanvasFocusUtils, atLeast(1)).releaseFocus();
     }
 
     @Test

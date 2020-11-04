@@ -274,6 +274,13 @@ public class DMNDiagramEditor extends AbstractProjectDiagramEditor<DMNDiagramRes
 
     @Override
     public void initialiseKieEditorForSession(final ProjectDiagram diagram) {
+        onDiagramLoad();
+
+        /*
+            Method below is doing a lot of things: title, documentation page, etc.
+            It also sets the original hash (used for detecting Diagram's changes)
+            It is recommended to set the original hash after onDiagramLoad, that may have modified the Diagram
+         */
         superInitialiseKieEditorForSession(diagram);
 
         kieView.getMultiPage().addPage(dataTypesPage);
