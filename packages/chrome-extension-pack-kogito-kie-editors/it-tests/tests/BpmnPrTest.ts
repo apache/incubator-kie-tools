@@ -29,7 +29,6 @@ beforeEach(async () => {
 });
 
 test.skip(TEST_NAME, async () => {
-    // TODO create PR in kiegroup
     const PR_WEB_PAGE = "https://github.com/tomasdavidorg/chrome-extension-pr-test/pull/2/files";
 
     // open PR and check that source is opened
