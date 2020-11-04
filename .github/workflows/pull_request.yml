@@ -28,6 +28,13 @@ jobs:
           (New-Object System.Net.WebClient).DownloadFile("https://repo1.maven.org/maven2/io/takari/aether/takari-local-repository/0.11.3/takari-local-repository-0.11.3.jar", "$Env:M2_HOME\lib\ext\takari-local-repository-0.11.3.jar")
           (New-Object System.Net.WebClient).DownloadFile("https://repo1.maven.org/maven2/io/takari/takari-filemanager/0.8.3/takari-filemanager-0.8.3.jar", "$Env:M2_HOME\lib\ext\takari-filemanager-0.8.3.jar")
           (New-Object System.Net.WebClient).DownloadFile("https://repo1.maven.org/maven2/io/takari/maven/takari-smart-builder/0.6.1/takari-smart-builder-0.6.1.jar", "$Env:M2_HOME\lib\ext\takari-smart-builder-0.6.1.jar")
+      # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
       - name: Build Chain ${{ matrix.java-version }}
         id: build-chain
         uses: kiegroup/github-action-build-chain@v2.1
