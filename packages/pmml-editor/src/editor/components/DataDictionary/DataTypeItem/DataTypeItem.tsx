@@ -10,7 +10,6 @@ import {
   Select,
   SelectOption,
   SelectVariant,
-  Switch,
   Form,
   Split,
   SplitItem,
@@ -40,8 +39,13 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   const [name, setName] = useState(dataType.name);
   const [typeSelection, setTypeSelection] = useState<DataField["type"]>(dataType.type);
   const [isTypeSelectOpen, setIsTypeSelectOpen] = useState(false);
-  const [isList, setIsList] = useState(dataType.list);
-  const typeOptions = [{ value: "string" }, { value: "number" }, { value: "boolean" }];
+  const typeOptions = [
+    { value: "string" },
+    { value: "integer" },
+    { value: "float" },
+    { value: "double" },
+    { value: "boolean" }
+  ];
   const [validation, setValidation] = useState<Validated>("default");
 
   const ref = useOnclickOutside(() => {
@@ -81,7 +85,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
 
   const handleSave = () => {
     if (validation !== "error") {
-      onSave({ name: name.trim(), type: typeSelection, list: isList }, index);
+      onSave({ name: name.trim(), type: typeSelection }, index);
     }
   };
 
@@ -92,7 +96,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
   };
 
   const handleConstraints = () => {
-    onConstraintsEdit({ ...dataType, name, type: typeSelection, list: isList });
+    onConstraintsEdit({ ...dataType, name, type: typeSelection });
   };
 
   useEffect(() => {
@@ -138,17 +142,16 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                       isOpen={isTypeSelectOpen}
                       placeholder="Type"
                       menuAppendTo={"parent"}
+                      className="data-type-item__type-select"
                     >
                       {typeOptions.map((option, optionIndex) => (
-                        <SelectOption key={optionIndex} value={option.value} />
+                        <SelectOption
+                          key={optionIndex}
+                          value={option.value}
+                          className="data-type-item__type-select__option"
+                        />
                       ))}
                     </Select>
-                  </SplitItem>
-                  <SplitItem style={{ padding: "5px 0 0 20px" }}>
-                    <label className="pf-c-form__label" htmlFor="list-type" style={{ marginRight: "1em" }}>
-                      <span className="pf-c-form__label-text">It's a list</span>
-                    </label>
-                    <Switch id="list-type" aria-label="Yes" isChecked={isList} onChange={() => setIsList(!isList)} />
                   </SplitItem>
                   <SplitItem isFilled={true}>&nbsp;</SplitItem>
                   <SplitItem>
@@ -168,7 +171,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         isInline={true}
                         iconPosition="right"
                         onClick={handleConstraints}
-                        isDisabled={name.trim().length === 0 || isList || typeSelection === "boolean"}
+                        isDisabled={name.trim().length === 0 || typeSelection === "boolean"}
                       >
                         <span>Add Constraints</span>
                       </Button>
@@ -179,7 +182,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         <Button
                           variant="link"
                           onClick={handleConstraints}
-                          isDisabled={name.trim().length === 0 || isList || typeSelection === "boolean"}
+                          isDisabled={name.trim().length === 0 || typeSelection === "boolean"}
                         >
                           <ConstraintsLabel constraints={dataType.constraints} />
                         </Button>
@@ -199,13 +202,9 @@ const DataTypeItem = (props: DataTypeItemProps) => {
               <strong>{name}</strong>
             </FlexItem>
             <FlexItem>
-              <Label color="blue">{typeSelection}</Label>
-              {isList && (
-                <>
-                  {" "}
-                  <Label color="cyan">List</Label>
-                </>
-              )}
+              <Label color="blue" className="data-type-item__type-label">
+                {typeSelection}
+              </Label>
               {dataType.constraints !== undefined && (
                 <>
                   {" "}

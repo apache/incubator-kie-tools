@@ -69,7 +69,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
   const handleMultipleAdd = (types: string) => {
     const typesNames = types.split("\n").filter(item => item.trim().length > 0);
     const newDataTypes: DataField[] = typesNames.map(name => {
-      return { name: name.trim(), type: "string", list: false };
+      return { name: name.trim(), type: "string" };
     });
     setDataTypes([...dataTypes, ...newDataTypes]);
     setViewSection("main");
@@ -199,7 +199,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                       ))}
                       {newType && (
                         <DataTypeItem
-                          dataType={{ name: "", type: "string", list: false }}
+                          dataType={{ name: "", type: "string" }}
                           index={-1}
                           key={uuid()}
                           onSave={handleSave}
@@ -242,8 +242,7 @@ export default DataDictionaryContainer;
 
 export interface DataField {
   name: string;
-  type: "number" | "string" | "boolean";
-  list: boolean;
+  type: "string" | "integer" | "float" | "double" | "boolean";
   constraints?: Constraints;
 }
 

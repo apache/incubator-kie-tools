@@ -12,24 +12,18 @@ export const convertPMML2DD = (PMMLDataDictionary: DataDictionary | undefined): 
   } else {
     return PMMLDataDictionary.DataField.filter(item => item.dataType !== undefined).map(item => {
       let type: DataField["type"];
-
-      switch (item.dataType) {
-        case "integer":
-        case "float":
-        case "double":
-          type = "number";
-          break;
-        case "string":
-          type = "string";
-          break;
-        case "boolean":
-          type = "boolean";
-          break;
-        default:
-          type = "string";
-          break;
+      // supporting a few types only for now
+      if (
+        item.dataType === "string" ||
+        item.dataType === "integer" ||
+        item.dataType === "float" ||
+        item.dataType === "double" ||
+        item.dataType === "boolean"
+      ) {
+        type = item.dataType;
+      } else {
+        type = "string";
       }
-
       return {
         name: item.name as string,
         type: type,
@@ -43,8 +37,8 @@ export const convertDD2PMML = (dataDictionary: DataField[]): PMMLDataField[] => 
   return dataDictionary.map(item => {
     const dataField: PMMLDataField = {
       name: item.name as FieldName,
-      dataType: item.type === "number" ? "double" : (item.type as DataType),
-      optype: item.type === "number" ? "continuous" : "categorical",
+      dataType: item.type as DataType,
+      optype: item.type === "integer" || item.type === "float" || item.type === "double" ? "continuous" : "categorical",
       Interval: [],
       Value: []
     };

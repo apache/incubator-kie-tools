@@ -38,6 +38,7 @@ const SortableList = SortableContainer(({ items }: { items: DataField[] }) => {
 
 const SortableItem = SortableElement(({ item }: { item: DataField }) => (
   <li className="data-type-item data-type-item__sortable">
+    {/*abstract data field component from DataDictionaryContainer and reuse it here*/}
     <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
       <FlexItem spacer={{ default: "spacerXs" }}>
         <Button variant="plain" aria-label="Drag to sort" component={"span"}>
@@ -49,12 +50,6 @@ const SortableItem = SortableElement(({ item }: { item: DataField }) => (
       </FlexItem>
       <FlexItem>
         <Label color="blue">{item.type}</Label>
-        {item.list && (
-          <>
-            {" "}
-            <Label color="cyan">List</Label>
-          </>
-        )}
         {item.constraints !== undefined && (
           <>
             {" "}
