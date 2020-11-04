@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-export * from "./EmptyStateModelNotFound";
-export * from "./EmptyStateNoOutput";
-export * from "./Outputs";
-export * from "./OutputsContainer";
-export * from "./OutputsHandler";
-export * from "./SingleEditorRouter";
+.outputs-container {
+  height: 60vh;
+  &__list {
+    height: calc(100% - 68px);
+    overflow-y: auto;
+    padding: 1em;
+    background-color: var(--pf-global--BackgroundColor--200);
+  }
+}

@@ -27,7 +27,7 @@ import {
   Tooltip,
   TooltipPosition
 } from "@patternfly/react-core";
-import { Attribute, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { AttributesTableEditRow, AttributesTableRow, EmptyStateNoAttributes } from "../molecules";
 import "./AttributesTable.scss";
 
@@ -67,7 +67,10 @@ export const AttributesTable = (props: AttributesTableProps) => {
     const model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
     if (model !== undefined && characteristicIndex !== undefined && model instanceof Scorecard) {
       const scorecard: Scorecard = model as Scorecard;
-      return scorecard.Characteristics.Characteristic[characteristicIndex].Attribute;
+      const characteristic: Characteristic | undefined = scorecard.Characteristics.Characteristic[characteristicIndex];
+      if (characteristic) {
+        return characteristic.Attribute;
+      }
     }
     return [];
   });

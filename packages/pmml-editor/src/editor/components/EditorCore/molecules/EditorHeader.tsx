@@ -18,22 +18,26 @@ import * as React from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
 import { OutputsHandler } from "../organisms";
+import { Operation } from "../../EditorScorecard";
 
 interface EditorHeaderProps {
   title: string;
+  activeOperation: Operation;
+  setActiveOperation: (operation: Operation) => void;
 }
 
 export const EditorHeader = (props: EditorHeaderProps) => {
+  const { activeOperation } = props;
   return (
     <Split hasGutter={true}>
       <SplitItem isFilled={true}>
         <HeaderTitle title={props.title} />
       </SplitItem>
       <SplitItem>
-        <DataDictionaryHandler />
+        <DataDictionaryHandler activeOperation={activeOperation} />
       </SplitItem>
       <SplitItem>
-        <OutputsHandler />
+        <OutputsHandler activeOperation={activeOperation} />
       </SplitItem>
     </Split>
   );

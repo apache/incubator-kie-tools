@@ -26,8 +26,19 @@ import {
   TitleSizes
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
+import { Output } from "@kogito-tooling/pmml-editor-marshaller";
+import { OutputsContainer } from "./OutputsContainer";
+import { Operation } from "../../EditorScorecard";
 
-export const OutputsHandler = () => {
+interface OutputsHandlerProps {
+  activeOperation: Operation;
+  setActiveOperation?: (operation: Operation) => void;
+  output?: Output;
+}
+
+export const OutputsHandler = (props: OutputsHandlerProps) => {
+  const { activeOperation, output } = props;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => {
@@ -51,7 +62,7 @@ export const OutputsHandler = () => {
 
   return (
     <>
-      <Button variant="secondary" onClick={toggleModal}>
+      <Button variant="secondary" isDisabled={activeOperation !== Operation.NONE} onClick={toggleModal}>
         Set Outputs
       </Button>
       <Modal
@@ -63,7 +74,7 @@ export const OutputsHandler = () => {
         variant={ModalVariant.large}
         onEscapePress={() => false}
       >
-        <p>Hello</p>
+        <OutputsContainer output={output} />
       </Modal>
     </>
   );

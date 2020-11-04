@@ -158,7 +158,11 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
       />
 
       <PageSection variant={PageSectionVariants.light} isFilled={false}>
-        <EditorHeader title={getModelName(props.model)} />
+        <EditorHeader
+          title={getModelName(props.model)}
+          activeOperation={activeOperation}
+          setActiveOperation={setActiveOperation}
+        />
       </PageSection>
 
       <PageSection isFilled={false}>
