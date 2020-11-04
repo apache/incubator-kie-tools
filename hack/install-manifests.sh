@@ -13,26 +13,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-EXIT=0
-FILE_FOUND=0
-
-if [ -z "${NAMESPACE}" ]; then
-  NAMESPACE="kogito"
-fi
+declare exit_status=0
+declare file_found=0
 
 shopt -s nullglob
-for file in deploy/{crds/*_crd.yaml,role*.yaml,service_account.yaml}; do
-  FILE_FOUND=1
-  if ! kubectl apply -f "$file" -n "${NAMESPACE}"; then
-    EXIT=1
+for yaml in deploy/{crds/*_crd.yaml,role*.yaml,service_account.yaml}; do
+  file_found=1
+  if [ -z "${NAMESPACE}" ]; then
+    kubectl apply -f "./${yaml}"
+    exit_status=$?
+  else
+    kubectl apply -f "./${yaml}" -n "${NAMESPACE}"
+    exit_status=$?
+  fi
+  if [ $exit_status -gt 0 ]; then
     break # Don't try other files if one fails
   fi
 done
 shopt -u nullglob
 
-if [[ FILE_FOUND -eq 0 ]]; then
+if [[ file_found -eq 0 ]]; then
   echo "No deployment files found" >&2
-  EXIT=3
+  exit_status=3
 fi
 
-exit ${EXIT}
+exit ${exit_status}
