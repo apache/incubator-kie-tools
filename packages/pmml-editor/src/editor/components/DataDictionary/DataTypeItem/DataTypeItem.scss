@@ -13,4 +13,13 @@
   &:last-child {
     margin-bottom: 0;
   }
+  &__type-label {
+    text-transform: capitalize;
+  }
+  &__type-select {
+    &__option,
+    .pf-c-select__toggle {
+      text-transform: capitalize;
+    }
+  }
 }
