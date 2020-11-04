@@ -23,6 +23,13 @@
       </dmn:literalExpression>
     </dmn:encapsulatedLogic>
   </dmn:businessKnowledgeModel>
+  <dmn:association id="_80D9AC89-7580-403A-AFE2-781992E3CFD4" associationDirection="None">
+    <dmn:sourceRef href="#_5A588D65-6E03-4CFE-B08C-91C66BA40684"/>
+    <dmn:targetRef href="#_5DC07C07-A029-4F89-AC42-F41F54A7A6CF"/>
+  </dmn:association>
+  <dmn:textAnnotation id="_5DC07C07-A029-4F89-AC42-F41F54A7A6CF" textFormat="text/plain">
+    <dmn:text>MyAnnotation</dmn:text>
+  </dmn:textAnnotation>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_3A5EF1D8-CDD9-46C3-AAFE-5C952B7CD2D2" name="DRG">
       <di:extension>
@@ -58,6 +65,15 @@
         <dc:Bounds x="377" y="460" width="100" height="50"/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_5DC07C07-A029-4F89-AC42-F41F54A7A6CF" dmnElementRef="_5DC07C07-A029-4F89-AC42-F41F54A7A6CF" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="812" y="296" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
       <dmndi:DMNEdge id="dmnedge-drg-_E4FBAD0D-4982-4C1B-B224-31FB1FE7BFBA" dmnElementRef="_E4FBAD0D-4982-4C1B-B224-31FB1FE7BFBA">
         <di:waypoint x="644" y="485"/>
         <di:waypoint x="645" y="296"/>
@@ -65,6 +81,10 @@
       <dmndi:DMNEdge id="dmnedge-drg-_6C2C5DDE-0F1F-4FC7-A166-A5F488A0D2A8" dmnElementRef="_6C2C5DDE-0F1F-4FC7-A166-A5F488A0D2A8">
         <di:waypoint x="427" y="485"/>
         <di:waypoint x="645" y="321"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_80D9AC89-7580-403A-AFE2-781992E3CFD4" dmnElementRef="_80D9AC89-7580-403A-AFE2-781992E3CFD4">
+        <di:waypoint x="695" y="321"/>
+        <di:waypoint x="812" y="321"/>
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
