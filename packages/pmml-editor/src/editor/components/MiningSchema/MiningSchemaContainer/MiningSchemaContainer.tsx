@@ -33,6 +33,16 @@ const MiningSchemaContainer = () => {
     setFields(updatedFields);
   };
 
+  const handleDeleteField = (index: number) => {
+    const updatedFields = [...fields];
+    updatedFields[index].isSelected = false;
+    setFields(updatedFields);
+  };
+
+  const goToProperties = (index: number) => {
+    console.log(index);
+  };
+
   useEffect(() => {
     const count = fields.filter(field => field.isSelected).length;
     setSelectedFieldsCount(count);
@@ -86,7 +96,9 @@ const MiningSchemaContainer = () => {
                 <EmptyMiningSchema />
               </Bullseye>
             )}
-            {selectedFieldsCount > 0 && <MiningSchemaFields fields={fields} />}
+            {selectedFieldsCount > 0 && (
+              <MiningSchemaFields fields={fields} onAddProperties={goToProperties} onDelete={handleDeleteField} />
+            )}
           </section>
         </StackItem>
       </Stack>

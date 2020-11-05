@@ -1,8 +1,7 @@
 .mining-schema-list {
-  min-height: 40vh;
+  min-height: 30vh;
   margin: 1rem 0;
   &__item {
-    min-height: 70px;
     border: 1px solid var(--pf-global--BorderColor--100);
     padding: 1em;
     background-color: #ffffff;
