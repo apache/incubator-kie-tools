@@ -32,8 +32,8 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
 
   return (
     <div className="outputs-container">
-      {output && <OutputsContainer output={output} />}
-      {(!output || output.OutputField.length === 0) && (
+      {(output?.OutputField ?? []).length > 0 && <p>OutputsContainer output=${output?.OutputField.length}</p>}
+      {(output?.OutputField ?? []).length === 0 && (
         <Bullseye>
           <EmptyStateNoOutput addOutput={addOutput} />
         </Bullseye>

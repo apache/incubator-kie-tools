@@ -8,7 +8,7 @@ exports[`LandingPage render::No Models 1`] = `
     class="pf-c-page__main-section pf-m-light"
   >
     <div
-      class="pf-l-split"
+      class="pf-l-split pf-m-gutter"
     >
       <div
         class="pf-l-split__item pf-m-fill"
@@ -182,7 +182,7 @@ exports[`LandingPage render::With Supported Model 1`] = `
     class="pf-c-page__main-section pf-m-light"
   >
     <div
-      class="pf-l-split"
+      class="pf-l-split pf-m-gutter"
     >
       <div
         class="pf-l-split__item pf-m-fill"

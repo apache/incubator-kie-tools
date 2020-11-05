@@ -19,15 +19,17 @@ import { Split, SplitItem } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
 import { OutputsHandler } from "../organisms";
 import { Operation } from "../../EditorScorecard";
+import { Output } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface EditorHeaderProps {
   title: string;
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
+  output?: Output;
 }
 
 export const EditorHeader = (props: EditorHeaderProps) => {
-  const { activeOperation } = props;
+  const { activeOperation, setActiveOperation, output } = props;
   return (
     <Split hasGutter={true}>
       <SplitItem isFilled={true}>
@@ -37,7 +39,7 @@ export const EditorHeader = (props: EditorHeaderProps) => {
         <DataDictionaryHandler activeOperation={activeOperation} />
       </SplitItem>
       <SplitItem>
-        <OutputsHandler activeOperation={activeOperation} />
+        <OutputsHandler activeOperation={activeOperation} setActiveOperation={setActiveOperation} output={output} />
       </SplitItem>
     </Split>
   );
