@@ -629,6 +629,18 @@ setup() {
     [[ "${output}" != *"--tests.custom-maven-repo-url"* ]]
 }
 
+@test "invoke run-tests with custom_maven_repo_replace_default" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --custom_maven_repo_replace_default --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" =~ "--tests.custom-maven-repo-replace-default" ]]
+}
+
+@test "invoke run-tests without custom_maven_repo_replace_default" {
+    run ${BATS_TEST_DIRNAME}/run-tests.sh --dry_run
+    [ "$status" -eq 0 ]
+    [[ "${output}" != *"--tests.custom-maven-repo-replace-default"* ]]
+}
+
 @test "invoke run-tests with maven_mirror" {
     run ${BATS_TEST_DIRNAME}/run-tests.sh --maven_mirror maven --dry_run
     [ "$status" -eq 0 ]
