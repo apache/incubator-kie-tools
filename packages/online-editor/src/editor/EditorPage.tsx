@@ -28,7 +28,7 @@ import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
 import { UpdateGistErrors } from "../common/GithubService";
 import { isFileExtension } from "../common/utils";
-import { ExportStandaloneEditorModal } from "./ExportStandaloneEditorModal";
+import { EmbedEditorModal } from "./EmbedEditorModal";
 
 interface Props {
   onFileNameChanged: (fileName: string, fileExtension: string) => void;
@@ -357,7 +357,7 @@ export function EditorPage(props: Props) {
           <GithubTokenModal isOpen={alert === Alerts.GITHUB_TOKEN_MODAL} onClose={closeAlert} />
         )}
         {!fullscreen && alert === Alerts.EXPORT_IFRAME && (
-          <ExportStandaloneEditorModal
+          <EmbedEditorModal
             isOpen={alert === Alerts.EXPORT_IFRAME}
             fileExtension={fileExtension}
             editor={editor}

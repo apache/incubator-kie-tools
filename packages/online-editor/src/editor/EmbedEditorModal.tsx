@@ -15,11 +15,24 @@
  */
 
 import * as React from "react";
-import { Alert, Button, Checkbox, Modal, ModalVariant, Radio, Tooltip } from "@patternfly/react-core";
+import {
+  Alert,
+  Button,
+  Checkbox,
+  List,
+  ListItem,
+  Modal,
+  ModalVariant,
+  Radio,
+  TextInput,
+  Tooltip
+} from "@patternfly/react-core";
 import { EmbeddableClass, FileExtension } from "../common/utils";
-import { useCallback, useContext, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useMemo, useEffect, useState, useRef } from "react";
 import { useFileUrl } from "../common/Hooks";
 import { GlobalContext } from "../common/GlobalContext";
+import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
+import { useOnlineI18n } from "../common/i18n";
 
 const BPMN_SOURCE = "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js";
 const DMN_SOURCE = "https://kiegroup.github.io/kogito-online/standalone/dmn/index.js";
@@ -32,7 +45,7 @@ const editorEmbeddableClassMapping = new Map<FileExtension, EmbeddableClass>([
 
 interface Props {
   fileExtension?: FileExtension;
-  editor: any;
+  editor: EmbeddedEditorRef | undefined;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -42,13 +55,15 @@ enum Source {
   GIST
 }
 
-export function ExportStandaloneEditorModal(props: Props) {
+export function EmbedEditorModal(props: Props) {
   const fileUrl = useFileUrl();
   const context = useContext(GlobalContext);
   const [readOnly, setReadonly] = useState(true);
   const [copyFromSource, setCopyFromSource] = useState(Source.CURRENT);
-  const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
   const [copied, setCopied] = useState(false);
+  const [embedCode, setEmbedCode] = useState("");
+  const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
+  const { i18n } = useOnlineI18n();
 
   const isGist = useMemo(() => context.githubService.isGist(fileUrl), [fileUrl, context]);
 
@@ -98,7 +113,7 @@ export function ExportStandaloneEditorModal(props: Props) {
     </html>`;
   }, []);
 
-  const onCopy = useCallback(async () => {
+  useEffect(() => {
     if (props.fileExtension) {
       const iframe = document.createElement("iframe");
       iframe.width = "100%";
@@ -106,39 +121,42 @@ export function ExportStandaloneEditorModal(props: Props) {
       const embeddableClass = editorEmbeddableClassMapping.get(props.fileExtension)!;
 
       if (copyFromSource === Source.CURRENT) {
-        const content = ((await props.editor?.getContent()) ?? "").replace(/(\r\n|\n|\r)/gm, "");
-        const script = getStandaloneEditorFromCurrentContent(embeddableClass, content);
-        iframe.srcdoc = getStandaloneEditorSrcdoc(script, props.fileExtension);
+        props.editor?.getContent().then(editorContent => {
+          const clearContent = editorContent.replace(/(\r\n|\n|\r)/gm, "");
+          const script = getStandaloneEditorFromCurrentContent(embeddableClass, clearContent);
+          iframe.srcdoc = getStandaloneEditorSrcdoc(script, props.fileExtension!);
+          setEmbedCode(iframe.outerHTML);
+        });
       }
 
       if (copyFromSource === Source.GIST) {
         const script = getStandaloneEditorFromGist(embeddableClass, fileUrl);
         iframe.srcdoc = getStandaloneEditorSrcdoc(script, props.fileExtension);
-      }
-
-      copyContentTextArea.current!.value = iframe.outerHTML;
-      copyContentTextArea.current!.select();
-
-      if (document.execCommand("copy")) {
-        setCopied(true);
+        setEmbedCode(iframe.outerHTML);
       }
     }
   }, [
     props.editor,
     props.fileExtension,
-    copyContentTextArea,
     copyFromSource,
     getStandaloneEditorSrcdoc,
     getStandaloneEditorFromCurrentContent,
     getStandaloneEditorFromGist
   ]);
 
+  const onCopy = useCallback(() => {
+    copyContentTextArea.current!.value = embedCode;
+    copyContentTextArea.current!.select();
+    if (document.execCommand("copy")) {
+      setCopied(true);
+    }
+  }, [embedCode, copyContentTextArea]);
+
   return (
     <>
       <Modal
-        data-testid={"export-iframe-modal"}
         variant={ModalVariant.small}
-        aria-label={"Export to Iframe"}
+        aria-label={"Embed and Editor in your page"}
         isOpen={props.isOpen}
         onClose={props.onClose}
         title={"Embed"}
@@ -148,13 +166,14 @@ export function ExportStandaloneEditorModal(props: Props) {
             Copy
           </Button>,
           <Button key="cancel" variant="link" onClick={props.onClose}>
-            Close
+            {i18n.terms.close}
           </Button>
         ]}
       >
         <div>
-          <div>
-            <p>Choose the options below and copy the embed code to your clipboard:</p>
+          <p>Choose the options below and copy the embed code to your clipboard:</p>
+          <List>
+            <ListItem>Is read only</ListItem>
             <Checkbox
               id={"is-readOnly"}
               label="Read only"
@@ -163,40 +182,44 @@ export function ExportStandaloneEditorModal(props: Props) {
               isChecked={readOnly}
               onChange={setReadonly}
             />
-          </div>
-          <br />
-
-          <div>
-            <p>Content source:</p>
-            <Radio
-              aria-label="Export from current content option"
-              id={"export-content"}
-              defaultChecked={true}
-              isChecked={copyFromSource === Source.CURRENT}
-              name={"Current content"}
-              label={"Current content"}
-              description={"The embedded Editor will contain the current content, so it cannot be changed externally."}
-              onChange={() => setCopyFromSource(Source.CURRENT)}
-            />
-            <Tooltip
-              data-testid={"gist-tooltip"}
-              content={<p>Only available when editing a file from a GitHub gist.</p>}
-              trigger={!isGist ? "mouseenter click" : ""}
-            >
+            <ListItem>Content source</ListItem>
+            <div>
               <Radio
-                aria-label="Export from gist option - Only available if a gist is being used"
-                id={"export-gist"}
-                isDisabled={!isGist}
-                name={"GitHub gist"}
-                label={"GitHub gist"}
-                isChecked={copyFromSource === Source.GIST}
+                aria-label="Current content source option"
+                id={"export-content"}
+                isChecked={copyFromSource === Source.CURRENT}
+                name={"Current content"}
+                label={"Current content"}
                 description={
-                  "The embedded Editor will fetch the content from the open gist (URL). Changes made to this gist will be reflected in the Editor."
+                  "The embedded Editor will contain the current content, so it cannot be changed externally."
                 }
-                onChange={() => setCopyFromSource(Source.GIST)}
+                onChange={() => setCopyFromSource(Source.CURRENT)}
               />
-            </Tooltip>
-          </div>
+              <Tooltip
+                aria-label={"Only available when editing a file from a GitHub gist"}
+                content={<p>Only available when editing a file from a GitHub gist.</p>}
+                trigger={!isGist ? "mouseenter click" : ""}
+              >
+                <Radio
+                  aria-label="GitHub gist source option"
+                  id={"export-gist"}
+                  isDisabled={!isGist}
+                  name={"GitHub gist"}
+                  label={"GitHub gist"}
+                  isChecked={copyFromSource === Source.GIST}
+                  description={
+                    "The embedded Editor will fetch the content from the open gist (URL). Changes made to this gist will be reflected in the Editor."
+                  }
+                  onChange={() => setCopyFromSource(Source.GIST)}
+                />
+              </Tooltip>
+            </div>
+          </List>
+        </div>
+        <br />
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <p style={{ width: "150px" }}>Embed code</p>
+          <TextInput aria-label={"Embed code"} value={embedCode} type={"text"} isReadOnly={true} />
         </div>
         <br />
         {copied ? (
