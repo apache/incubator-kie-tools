@@ -18,9 +18,9 @@ package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processi
 
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class MultipleSubFormFieldInitializerTest extends AbstractEmbeddedFormsInitializerTest<MultipleSubFormFieldDefinition, MultipleSubFormFieldInitializer> {
 
     @Override

@@ -243,7 +243,7 @@ public class DMNGridLayerTest {
         verify(ghostGroup).setY(CONTAINER_Y + VIEWPORT_TRANSLATE_Y);
         verify(ghostGroup).setPathClipper(Mockito.<InverseGridWidgetClipper>any());
         verify(ghostGroup).add(ghostRectangle);
-        verify(ghostGroup).drawWithTransforms(eq(context2D), Mockito.<Double>any(), Mockito.<BoundingBox>any());
+        verify(ghostGroup).drawWithTransforms(eq(context2D), Mockito.anyDouble(), Mockito.<BoundingBox>any());
     }
 
     @Test

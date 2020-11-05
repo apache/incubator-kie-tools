@@ -228,8 +228,6 @@ public class TemplateParamsFormPresenterTest {
 
     @Test
     public void testInitializeFailed() {
-        when(openShiftClientService.getTemplateModel(DEFAULT_OPEN_SHIFT_TEMPLATE_VALUE)).thenReturn(templateDescriptorModel);
-
         prepareServiceCallerError(openShiftClientService,
                                   openshiftClientServiceCaller);
         presenter.initialise();

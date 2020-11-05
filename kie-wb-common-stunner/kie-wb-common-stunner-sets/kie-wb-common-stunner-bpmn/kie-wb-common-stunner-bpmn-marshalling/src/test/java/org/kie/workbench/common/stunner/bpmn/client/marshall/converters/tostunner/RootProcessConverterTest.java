@@ -39,6 +39,7 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.di;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -68,7 +69,7 @@ public class RootProcessConverterTest {
         node.setContent(content);
 
         FactoryManager factoryManager = mock(FactoryManager.class);
-        when(factoryManager.newElement(anyString(), eq(getDefinitionId(BPMNDiagramImpl.class)))).thenReturn(node);
+        when(factoryManager.newElement(any(), eq(getDefinitionId(BPMNDiagramImpl.class)))).thenReturn(node);
 
         TypedFactoryManager typedFactoryManager = new TypedFactoryManager(factoryManager);
 

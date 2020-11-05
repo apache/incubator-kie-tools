@@ -56,8 +56,6 @@ public class DataObjectPropertyWriterTest {
 
     @Before
     public void setUp() {
-        when(extensionAttributeValue.getValue()).thenReturn(valueMap);
-        when(metaDataType.getName()).thenReturn(CustomElement.name.name());
         tested = new DataObjectPropertyWriter(reference, variableScope, new HashSet<>());
     }
 

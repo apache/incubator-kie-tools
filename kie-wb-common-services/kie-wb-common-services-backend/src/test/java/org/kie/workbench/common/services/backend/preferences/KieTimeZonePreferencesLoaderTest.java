@@ -68,7 +68,7 @@ public class KieTimeZonePreferencesLoaderTest {
 
         mockStatic(TimeZone.class);
         when(TimeZone.getDefault()).thenReturn(timeZone);
-        when(timeZone.getOffset(Mockito.<Integer>any())).thenReturn(expectedOffset);
+        when(timeZone.getOffset(Mockito.anyLong())).thenReturn(expectedOffset);
 
         assertEquals(String.valueOf(expectedOffset), getLoaderOffset());
     }

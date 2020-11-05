@@ -54,8 +54,6 @@ public class BasePropertyReaderTest {
     @Before
     public void setup() {
         FeatureMap featureMap = mock(FeatureMap.class);
-        when(featureMap.isEmpty()).thenReturn(true);
-        when(element.getAnyAttribute()).thenReturn(featureMap);
         org.eclipse.dd.dc.Bounds shapeBounds = mock(org.eclipse.dd.dc.Bounds.class);
         when(shapeBounds.getX()).thenReturn(1.1f);
         when(shapeBounds.getY()).thenReturn(2.2f);

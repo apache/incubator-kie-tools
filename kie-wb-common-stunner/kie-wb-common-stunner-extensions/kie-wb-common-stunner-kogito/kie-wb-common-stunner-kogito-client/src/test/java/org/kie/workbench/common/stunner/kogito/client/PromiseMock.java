@@ -45,8 +45,6 @@ public class PromiseMock<T> {
     @SuppressWarnings("unchecked")
     public PromiseMock() {
         this.promise = mock(Promise.class);
-        doReturn(promise).when(promise).then(any(IThenable.ThenOnFulfilledCallbackFn.class));
-        doReturn(promise).when(promise).catch_(any(Promise.CatchOnRejectedCallbackFn.class));
     }
 
     @SuppressWarnings("unchecked")

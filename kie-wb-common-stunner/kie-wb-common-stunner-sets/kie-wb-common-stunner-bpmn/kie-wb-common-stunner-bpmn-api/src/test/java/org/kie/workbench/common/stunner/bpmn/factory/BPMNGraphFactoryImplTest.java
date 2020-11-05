@@ -95,8 +95,6 @@ public class BPMNGraphFactoryImplTest {
         final Node startEventNode = mock(Node.class);
         when(factoryManager.newElement(anyString(),
                                        eq(getDefinitionId(BPMNDiagramImpl.class)))).thenReturn(diagramNode);
-        when(factoryManager.newElement(anyString(),
-                                       eq(getDefinitionId(StartNoneEvent.class)))).thenReturn(startEventNode);
         final Graph<DefinitionSet, Node> graph = tested.build("uuid1",
                                                               "defSetId");
         assertNotNull(graph);

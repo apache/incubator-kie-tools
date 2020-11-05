@@ -29,7 +29,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.converters.tostunner.Defini
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class FixedBoundsPropertyReadersTest {
 
     private static final double RESOLUTION_FACTOR = 1d;

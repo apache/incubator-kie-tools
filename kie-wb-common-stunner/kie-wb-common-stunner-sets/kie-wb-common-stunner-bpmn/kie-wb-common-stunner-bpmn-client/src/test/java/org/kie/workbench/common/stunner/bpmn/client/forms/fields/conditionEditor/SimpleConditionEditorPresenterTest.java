@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
 import org.uberfire.ext.widgets.common.client.dropdown.SingleLiveSearchSelectionHandler;
 import org.uberfire.mvp.Command;
@@ -53,7 +53,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class SimpleConditionEditorPresenterTest {
 
     private static final String TRANSLATED_MESSAGE = "TRANSLATED_MESSAGE";

@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import org.junit.Test;
 import org.kie.workbench.common.migration.cli.MigrationConstants;
 import org.kie.workbench.common.migration.cli.SystemAccess;
+import org.mockito.Mockito;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -35,6 +36,6 @@ public class ExternalMigrationServiceTest {
         service.moveSystemRepos(niogitDir);
 
         verify(systemAccess, never()).createDirectory(any(Path.class));
-        verify(systemAccess, times(MigrationConstants.systemRepos.length)).move(any(Path.class), any(Path.class));
+        verify(systemAccess, times(MigrationConstants.systemRepos.length)).move(any(Path.class), any());
     }
 }

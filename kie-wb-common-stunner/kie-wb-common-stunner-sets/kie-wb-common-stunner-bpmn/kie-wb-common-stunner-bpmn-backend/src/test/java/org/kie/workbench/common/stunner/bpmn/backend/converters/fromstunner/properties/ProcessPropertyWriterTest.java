@@ -91,7 +91,6 @@ public class ProcessPropertyWriterTest {
         dataObject.getItemSubjectRef();
 
         ItemDefinition itemDefinition = mock(ItemDefinition.class);
-        when(itemDefinition.getId()).thenReturn("someId");
         dataObject.setItemSubjectRef(itemDefinition);
 
         dataObject.getItemSubjectRef();

@@ -22,12 +22,12 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.command.impl.CloneNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.CloneNodeCommandTest;
 import org.kie.workbench.common.stunner.core.graph.command.impl.RegisterNodeCommand;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class CaseManagementCloneNodeCommandTest extends CloneNodeCommandTest {
 
     private CaseManagementCloneNodeCommand tested;

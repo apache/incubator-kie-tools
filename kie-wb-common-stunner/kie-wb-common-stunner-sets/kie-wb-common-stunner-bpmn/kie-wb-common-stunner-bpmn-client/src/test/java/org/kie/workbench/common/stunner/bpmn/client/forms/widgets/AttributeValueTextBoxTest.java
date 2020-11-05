@@ -84,19 +84,19 @@ public class AttributeValueTextBoxTest {
     public void init() {
         GwtMockito.initMocks(this);
         textBox = GWT.create(AttributeValueTextBox.class);
-        doCallRealMethod().when(textBox).setRegExp(anyString(),
-                                                   anyString(),
-                                                   anyString());
+        doCallRealMethod().when(textBox).setRegExp(any(),
+                                                   any(),
+                                                   any());
         doCallRealMethod().when(textBox).setInvalidValues(anySet(),
                                                           anyBoolean(),
-                                                          anyString());
-        doCallRealMethod().when(textBox).isValidValue(anyString(),
+                                                          any());
+        doCallRealMethod().when(textBox).isValidValue(any(),
                                                       anyBoolean());
-        doCallRealMethod().when(textBox).setText(anyString());
-        doCallRealMethod().when(textBox).makeValidValue(anyString());
+        doCallRealMethod().when(textBox).setText(any());
+        doCallRealMethod().when(textBox).makeValidValue(any());
         doCallRealMethod().when(textBox).setup();
-        doCallRealMethod().when(textBox).addBlurHandler(any(BlurHandler.class));
-        doCallRealMethod().when(textBox).addKeyPressHandler(any(KeyPressHandler.class));
+        doCallRealMethod().when(textBox).addBlurHandler(any());
+        doCallRealMethod().when(textBox).addKeyPressHandler(any());
         textBox.setRegExp(StringUtils.ALPHA_NUM_REGEXP,
                           ERROR_REMOVED,
                           ERROR_TYPED);

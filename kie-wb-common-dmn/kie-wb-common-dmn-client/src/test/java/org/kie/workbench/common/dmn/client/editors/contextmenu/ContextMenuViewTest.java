@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.contextmenu;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +37,8 @@ import org.mockito.Mockito;
 import org.uberfire.mvp.Command;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -55,6 +57,11 @@ public class ContextMenuViewTest {
         listSelector = mock(ListSelector.class);
         final Field field = DomGlobal.class.getDeclaredField("document");
         field.setAccessible(true);
+
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
         field.set(DomGlobal.class, mock(HTMLDocument.class));
 
         contextMenuView = new ContextMenuView(listSelector);
@@ -65,7 +72,7 @@ public class ContextMenuViewTest {
     public void testWhenShowingContextMenuViewThenAlsoListSelectorIsShown() {
         contextMenuView.show();
 
-        verify(listSelector).bind(any(), Mockito.<Integer>any(), Mockito.<Integer>any());
+        verify(listSelector).bind(any(), anyInt(), anyInt());
         verify(listSelector).show();
     }
 

@@ -142,7 +142,6 @@ public class LanePropertyReaderTest {
     @Test
     public void testGetNameFromExtensionElement() {
         List<ExtensionAttributeValue> extensionValues = mockExtensionValues(DroolsPackage.Literals.DOCUMENT_ROOT__META_DATA, METADATA_ELEMENT_NAME, NAME);
-        when(lane.getName()).thenReturn(null);
         when(lane.getExtensionValues()).thenReturn(extensionValues);
         LanePropertyReader propertyReader = new LanePropertyReader(lane, diagram, shape, RESOLUTION_FACTOR);
         assertEquals(NAME, propertyReader.getName());

@@ -49,12 +49,12 @@ import org.kie.workbench.common.stunner.core.validation.ModelBeanViolation;
 import org.kie.workbench.common.stunner.core.validation.ModelValidator;
 import org.kie.workbench.common.stunner.core.validation.Violation;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -136,22 +136,22 @@ public class DiagramValidatorTest {
                         this::assertNoErrors);
         verify(modelValidator,
                times(1)).validate(eq(graph1.startNode),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.intermNode),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.endNode),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.edge1),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.edge2),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graphTestHandler.graph),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
     }
 
     @Test
@@ -189,36 +189,36 @@ public class DiagramValidatorTest {
             validationsConsumer.accept(Collections.singleton(beanViolation));
             return null;
         }).when(modelValidator).validate(eq(graph1.intermNode),
-                                         Mockito.<Consumer>any());
+                                         any());
 
         //graph violation
         RuleViolation ruleViolation = mock(RuleViolation.class);
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
         when(ruleViolation.getMessage()).thenReturn(RULE_VIOLATION);
-        when(graphTestHandler.getRuleManager().evaluate(Mockito.<RuleSet>any(),
-                                                        Mockito.<RuleEvaluationContext>any())).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
+        when(graphTestHandler.getRuleManager().evaluate(any(),
+                                                        any())).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
 
         tested.validate(diagram,
                         violations -> assertElementError(violations,
                                                          TestingGraphInstanceBuilder.INTERM_NODE_UUID));
         verify(modelValidator,
                times(1)).validate(eq(graph1.startNode),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.intermNode),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.endNode),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.edge1),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.edge2),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graphTestHandler.graph),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
     }
 
     @Test
@@ -234,14 +234,14 @@ public class DiagramValidatorTest {
             validationsConsumer.accept(Collections.emptyList());
             return null;
         }).when(modelValidator).validate(eq(graph1.intermNode),
-                                         Mockito.<Consumer>any());
+                                         any(Consumer.class));
 
         //graph violation
         RuleViolation ruleViolation = mock(RuleViolation.class);
         when(ruleViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
         when(ruleViolation.getMessage()).thenReturn(RULE_VIOLATION);
-        when(graphTestHandler.getRuleManager().evaluate(Mockito.<RuleSet>any(),
-                                                        Mockito.<RuleEvaluationContext>any())).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
+        when(graphTestHandler.getRuleManager().evaluate(any(RuleSet.class),
+                                                        any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations().addViolation(ruleViolation));
 
         tested.validate(diagram,
                         violations -> assertElementError(violations,
@@ -249,22 +249,22 @@ public class DiagramValidatorTest {
 
         verify(modelValidator,
                times(1)).validate(eq(graph1.startNode),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.intermNode),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.endNode),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.edge1),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.edge2),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graphTestHandler.graph),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
     }
 
     @Test
@@ -280,29 +280,29 @@ public class DiagramValidatorTest {
             validationsConsumer.accept(Collections.emptyList());
             return null;
         }).when(modelValidator).validate(eq(graph1.intermNode),
-                                         Mockito.<Consumer>any());
+                                         any(Consumer.class));
 
         tested.validate(diagram,
                         violations -> assertTrue(violations.isEmpty()));
 
         verify(modelValidator,
                times(1)).validate(eq(graph1.startNode),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.intermNode),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.endNode),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.edge1),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graph1.edge2),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
         verify(modelValidator,
                times(1)).validate(eq(graphTestHandler.graph),
-                                  Mockito.<Consumer>any());
+                                  any(Consumer.class));
     }
 
     private void assertNoErrors(final

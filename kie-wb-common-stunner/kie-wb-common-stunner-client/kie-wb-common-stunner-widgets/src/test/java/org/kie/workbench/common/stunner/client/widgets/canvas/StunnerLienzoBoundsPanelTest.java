@@ -110,7 +110,7 @@ public class StunnerLienzoBoundsPanelTest {
         verify(view, times(1)).setPresenter(eq(tested));
         verify(lienzoPanel, times(1)).addMouseDownHandler(any(MouseDownHandler.class));
         verify(lienzoPanel, times(1)).addMouseUpHandler(any(MouseUpHandler.class));
-        verify(handlerRegistrationManager, times(2)).register(any(HandlerRegistration.class));
+        verify(handlerRegistrationManager, times(2)).register(any());
     }
 
     @Test

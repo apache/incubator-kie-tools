@@ -447,7 +447,7 @@ public class DataTypeSearchBarViewTest {
 
         final String keyword = "keyword";
 
-        doNothing().when(view).setTimeout(any(), Mockito.<Integer>any());
+        doNothing().when(view).setTimeout(any(), Mockito.anyDouble());
         searchBar.value = keyword;
 
         view.search();

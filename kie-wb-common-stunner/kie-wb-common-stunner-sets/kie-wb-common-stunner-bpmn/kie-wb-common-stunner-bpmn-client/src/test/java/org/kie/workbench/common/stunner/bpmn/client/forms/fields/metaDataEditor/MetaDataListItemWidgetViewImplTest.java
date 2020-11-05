@@ -104,9 +104,9 @@ public class MetaDataListItemWidgetViewImplTest {
         view.deleteButton = deleteButton;
         doCallRealMethod().when(view).init();
         doCallRealMethod().when(view).getModel();
-        doCallRealMethod().when(view).setModel(any(MetaDataRow.class));
-        doCallRealMethod().when(view).setParentWidget(any(MetaDataEditorWidgetView.Presenter.class));
-        doCallRealMethod().when(view).handleDeleteButton(any(ClickEvent.class));
+        doCallRealMethod().when(view).setModel(any());
+        doCallRealMethod().when(view).setParentWidget(any());
+        doCallRealMethod().when(view).handleDeleteButton(any());
         doCallRealMethod().when(view).setReadOnly(anyBoolean());
         doCallRealMethod().when(view).notifyModelChanged();
 
@@ -211,7 +211,6 @@ public class MetaDataListItemWidgetViewImplTest {
 
     @Test
     public void testNotifyModelChanged() {
-        doCallRealMethod().when(view).setValue(anyString());
         doCallRealMethod().when(view).getValue();
         doCallRealMethod().when(view).notifyModelChanged();
         doCallRealMethod().when(view).setParentWidget(parent);

@@ -147,7 +147,6 @@ public class DefaultRouteFormProviderTest
     @Test
     public void testGetSelectorDataWithValues() {
         List<Element> nodes = mockModes();
-        when(graph.nodes()).thenReturn(nodes);
 
         //add the desired edges to the selected node.
         when(selectedNode.getOutEdges()).thenReturn(outEdges);

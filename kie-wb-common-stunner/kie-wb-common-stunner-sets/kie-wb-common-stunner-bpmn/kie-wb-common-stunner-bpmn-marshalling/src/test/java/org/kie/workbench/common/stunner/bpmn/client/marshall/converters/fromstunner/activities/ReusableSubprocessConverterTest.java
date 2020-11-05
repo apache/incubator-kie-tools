@@ -114,10 +114,7 @@ public class ReusableSubprocessConverterTest {
 
     @Before
     public void setUp() {
-        when(propertyWriterFactory.of(any(CallActivity.class))).thenReturn(propertyWriter);
-
         DataIOSet ioSet = mock(DataIOSet.class);
-        when(ioSet.getAssignmentsinfo()).thenReturn(ASSIGNMENTS_INFO);
         final ReusableSubprocess definition = new ReusableSubprocess(new BPMNGeneralSet(NAME, DOCUMENTATION),
                                                                      new ReusableSubprocessTaskExecutionSet(new CalledElement(CALLED_ELEMENT),
                                                                                                             new IsCase(IS_CASE),

@@ -60,7 +60,6 @@ public class DefinitionsConverterTest {
     @Before
     public void setUp() {
         StringUtils.setURL(url);
-        when(url.encode(anyString())).then(returnArgument);
     }
 
     @Test

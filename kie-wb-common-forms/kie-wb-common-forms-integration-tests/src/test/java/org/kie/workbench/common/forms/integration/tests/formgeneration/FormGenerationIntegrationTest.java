@@ -80,7 +80,6 @@ import org.kie.workbench.common.services.backend.project.ModuleClassLoaderHelper
 import org.kie.workbench.common.services.shared.project.KieModule;
 import org.kie.workbench.common.services.shared.project.KieModuleService;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
@@ -94,6 +93,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.forms.jbpm.model.authoring.document.type.DocumentFieldType.DOCUMENT_TYPE;
 import static org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.AbstractBPMNFormGeneratorService.generateNestedFormName;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -193,7 +193,7 @@ public class FormGenerationIntegrationTest {
 
         when(pathModelReaderService.getModelReader(any())).thenReturn(new RuntimeDMOModelReader(moduleClassLoader, new RawMVELEvaluator()));
 
-        when(formFinderService.findFormsForType(Mockito.<String>any(), any())).then((Answer<List<FormDefinition>>) invocationOnMock -> {
+        when(formFinderService.findFormsForType(anyString(), any())).then((Answer<List<FormDefinition>>) invocationOnMock -> {
             String type = invocationOnMock.getArguments()[0].toString();
             return Collections.singletonList(readFormDefinitionForType(type));
         });
@@ -352,7 +352,7 @@ public class FormGenerationIntegrationTest {
 
     @Test
     public void testNestedFormsGeneration() {
-        when(formFinderService.findFormsForType(Mockito.<String>any(), any())).thenReturn(Collections.EMPTY_LIST);
+        when(formFinderService.findFormsForType(anyString(), any())).thenReturn(Collections.EMPTY_LIST);
 
         when(commentedOptionFactory.makeCommentedOption(any())).thenReturn(commentedOption);
 

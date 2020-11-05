@@ -199,7 +199,6 @@ public class DRDContextMenuServiceTest {
         final Id diagramId = new Id("DIAGRAM_ID");
         when(dmnDiagramTuple.getStunnerDiagram()).thenReturn(diagram);
         when(dmnDiagramTuple.getDMNDiagram()).thenReturn(dmnDiagram);
-        when(diagram.getGraph()).thenReturn(graph);
         when(dmnDiagram.getId()).thenReturn(diagramId);
         return dmnDiagramTuple;
     }

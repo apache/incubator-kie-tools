@@ -19,12 +19,12 @@ package org.kie.workbench.common.stunner.cm.client.command.canvas;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class CaseManagementAddChildNodeCanvasCommandTest extends CaseManagementAbstractCanvasCommandTest {
 
     private int index = 2;

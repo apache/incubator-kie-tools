@@ -50,10 +50,6 @@ public class AssignmentBaseTest {
             Object[] args = invocation.getArguments();
             return urlDecode((String) args[0]);
         });
-        when(url.encodeQueryString(anyString())).thenAnswer(invocation -> {
-            Object[] args = invocation.getArguments();
-            return urlEncode((String) args[0]);
-        });
         StringUtils.setURL(url);
     }
 

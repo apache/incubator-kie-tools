@@ -171,21 +171,21 @@ public class VariableListItemWidgetViewImplTest {
         view.tagNamesList = new ArrayList<>();
         doCallRealMethod().when(view).init();
         doCallRealMethod().when(view).getCustomDataType();
-        doCallRealMethod().when(view).setCustomDataType(anyString());
+        doCallRealMethod().when(view).setCustomDataType(any());
         doCallRealMethod().when(view).getModel();
         doCallRealMethod().when(view).setModel(any(VariableRow.class));
-        doCallRealMethod().when(view).getModelValue(any(ValueListBox.class));
+        doCallRealMethod().when(view).getModelValue(any());
         doCallRealMethod().when(view).setTextBoxModelValue(any(TextBox.class),
-                                                           anyString());
-        doCallRealMethod().when(view).setListBoxModelValue(any(ValueListBox.class),
-                                                           anyString());
+                                                           any());
+        doCallRealMethod().when(view).setListBoxModelValue(any(),
+                                                           any());
         doCallRealMethod().when(view).getDataTypeDisplayName();
-        doCallRealMethod().when(view).setDataTypeDisplayName(anyString());
+        doCallRealMethod().when(view).setDataTypeDisplayName(any());
         doCallRealMethod().when(view).getVariableType();
-        doCallRealMethod().when(view).setParentWidget(any(VariablesEditorWidgetView.Presenter.class));
-        doCallRealMethod().when(view).handleDeleteButton(any(ClickEvent.class));
-        doCallRealMethod().when(view).handleCloseButton(any(ClickEvent.class));
-        doCallRealMethod().when(view).handleAcceptButton(any(ClickEvent.class));
+        doCallRealMethod().when(view).setParentWidget(any());
+        doCallRealMethod().when(view).handleDeleteButton(any());
+        doCallRealMethod().when(view).handleCloseButton(any());
+        doCallRealMethod().when(view).handleAcceptButton(any());
         doCallRealMethod().when(view).setReadOnly(anyBoolean());
         doCallRealMethod().when(view).notifyModelChanged();
         doCallRealMethod().when(view).setTagsNotEnabled();

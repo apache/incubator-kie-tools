@@ -132,26 +132,26 @@ public class AssignmentListItemWidgetViewImplTest {
         doCallRealMethod().when(view).getCustomDataType();
         doCallRealMethod().when(view).setCustomDataType(anyString());
         doCallRealMethod().when(view).getModel();
-        doCallRealMethod().when(view).setModel(any(AssignmentRow.class));
-        doCallRealMethod().when(view).getModelValue(any(ValueListBox.class));
-        doCallRealMethod().when(view).setTextBoxModelValue(any(TextBox.class),
-                                                           anyString());
-        doCallRealMethod().when(view).setListBoxModelValue(any(ValueListBox.class),
-                                                           anyString());
+        doCallRealMethod().when(view).setModel(any());
+        doCallRealMethod().when(view).getModelValue(any());
+        doCallRealMethod().when(view).setTextBoxModelValue(any(),
+                                                           any());
+        doCallRealMethod().when(view).setListBoxModelValue(any(),
+                                                           any());
         doCallRealMethod().when(view).getDataType();
-        doCallRealMethod().when(view).setDataType(anyString());
+        doCallRealMethod().when(view).setDataType(any());
         doCallRealMethod().when(view).getProcessVar();
-        doCallRealMethod().when(view).setProcessVar(anyString());
+        doCallRealMethod().when(view).setProcessVar(any());
         doCallRealMethod().when(view).getVariableType();
         doCallRealMethod().when(view).setAllowDuplicateNames(anyBoolean(),
-                                                             anyString());
-        doCallRealMethod().when(view).setParentWidget(any(ActivityDataIOEditorWidget.class));
-        doCallRealMethod().when(view).isDuplicateName(anyString());
-        doCallRealMethod().when(view).isMultipleInstanceVariable(anyString());
+                                                             any());
+        doCallRealMethod().when(view).setParentWidget(any());
+        doCallRealMethod().when(view).isDuplicateName(any());
+        doCallRealMethod().when(view).isMultipleInstanceVariable(any());
         doCallRealMethod().when(view).setShowExpressions(anyBoolean());
         doCallRealMethod().when(view).setDisallowedNames(anySet(),
-                                                         anyString());
-        doCallRealMethod().when(view).handleDeleteButton(any(ClickEvent.class));
+                                                         any());
+        doCallRealMethod().when(view).handleDeleteButton(any());
         doCallRealMethod().when(view).setReadOnly(anyBoolean());
         AssignmentRow row = new AssignmentRow();
         doReturn(row).when(assignment).getModel();

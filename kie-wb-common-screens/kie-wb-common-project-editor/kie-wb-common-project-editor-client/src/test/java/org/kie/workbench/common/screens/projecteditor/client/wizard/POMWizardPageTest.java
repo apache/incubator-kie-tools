@@ -39,30 +39,19 @@ import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@RunWith(MockitoJUnitRunner.class)
 public class POMWizardPageTest {
 
     @Mock
@@ -128,7 +117,7 @@ public class POMWizardPageTest {
                 gavEditor.setArtifactID( artifactId );
                 return null;
             }
-        } ).when( pomEditorView ).setArtifactID( Mockito.<String>any());
+        } ).when( pomEditorView ).setArtifactID( any( String.class ) );
 
         //POMEditorView implementation updates a nested GAVEditor presenter. Mock the implementation to avoid use of real widgets
         doAnswer( new Answer<Void>() {
@@ -138,7 +127,7 @@ public class POMWizardPageTest {
                 gavEditor.setGAV( gav );
                 return null;
             }
-        } ).when( pomEditorView ).setGAV( Mockito.<GAV>any() );
+        } ).when( pomEditorView ).setGAV( any( GAV.class ) );
 
         //POMEditorView implementation updates a nested GAVEditor presenter. Mock the implementation to avoid use of real widgets
         doAnswer( new Answer<Void>() {
@@ -208,13 +197,13 @@ public class POMWizardPageTest {
         page.setPom( pom );
 
         verify( page,
-                times( 1 ) ).validateName( Mockito.<String>any());
+                times( 1 ) ).validateName( any( String.class ) );
         verify( page,
-                times( 1 ) ).validateGroupId( Mockito.<String>any());
+                times( 1 ) ).validateGroupId( any( String.class ) );
         verify( page,
-                times( 1 ) ).validateArtifactId( Mockito.<String>any());
+                times( 1 ) ).validateArtifactId( any( String.class ) );
         verify( page,
-                times( 1 ) ).validateVersion( Mockito.<String>any());
+                times( 1 ) ).validateVersion( any( String.class ) );
 
         verify( pomEditor,
                 times( 1 ) ).setValidName( eq( false ) );
@@ -240,13 +229,13 @@ public class POMWizardPageTest {
         page.setPom( new POM() );
 
         verify( page,
-                times( 1 ) ).validateName( Mockito.<String>any());
+                times( 1 ) ).validateName( any( String.class ) );
         verify( page,
-                times( 1 ) ).validateGroupId( Mockito.<String>any());
+                times( 1 ) ).validateGroupId( any( String.class ) );
         verify( page,
-                times( 1 ) ).validateArtifactId( Mockito.<String>any());
+                times( 1 ) ).validateArtifactId( any( String.class ) );
         verify( page,
-                times( 1 ) ).validateVersion( Mockito.<String>any());
+                times( 1 ) ).validateVersion( any( String.class ) );
 
         verify( pomEditor,
                 times( 1 ) ).setValidName( eq( false ) );
@@ -267,13 +256,13 @@ public class POMWizardPageTest {
         page.setPom( pom );
 
         verify( page,
-                times( 1 ) ).validateName( Mockito.<String>any());
+                times( 1 ) ).validateName( any( String.class ) );
         verify( page,
-                times( 1 ) ).validateGroupId( Mockito.<String>any());
+                times( 1 ) ).validateGroupId( any( String.class ) );
         verify( page,
-                times( 1 ) ).validateArtifactId( Mockito.<String>any());
+                times( 1 ) ).validateArtifactId( any( String.class ) );
         verify( page,
-                times( 1 ) ).validateVersion( Mockito.<String>any());
+                times( 1 ) ).validateVersion( any( String.class ) );
 
         verify( pomEditor,
                 times( 1 ) ).setValidName( eq( true ) );
@@ -291,13 +280,13 @@ public class POMWizardPageTest {
         page.setPom( new POM() );
 
         verify( page,
-                times( 1 ) ).validateName( Mockito.<String>any());
+                times( 1 ) ).validateName( any( String.class ) );
         verify( page,
-                times( 1 ) ).validateGroupId( Mockito.<String>any());
+                times( 1 ) ).validateGroupId( any( String.class ) );
         verify( page,
-                times( 1 ) ).validateArtifactId( Mockito.<String>any());
+                times( 1 ) ).validateArtifactId( any( String.class ) );
         verify( page,
-                times( 1 ) ).validateVersion( Mockito.<String>any());
+                times( 1 ) ).validateVersion( any( String.class ) );
 
         verify( pomEditor,
                 times( 1 ) ).setValidName( eq( true ) );
@@ -321,7 +310,7 @@ public class POMWizardPageTest {
                 gavEditor.setArtifactID( artifactId );
                 return null;
             }
-        } ).when( pomEditorView ).setArtifactID( Mockito.<String>any());
+        } ).when( pomEditorView ).setArtifactID( any( String.class ) );
 
         //POMEditorView implementation updates a nested GAVEditor presenter. Mock the implementation to avoid use of real widgets
         doAnswer( new Answer<Void>() {
@@ -331,7 +320,7 @@ public class POMWizardPageTest {
                 gavEditor.setGAV( gav );
                 return null;
             }
-        } ).when( pomEditorView ).setGAV( Mockito.<GAV>any() );
+        } ).when( pomEditorView ).setGAV( any( GAV.class ) );
 
         final POM pom = new POM();
         page.setPom( pom );
@@ -455,7 +444,7 @@ public class POMWizardPageTest {
 
     @Test
     public void testIsComplete() {
-        when( validationService.validate( Mockito.<POM>any() ) ).thenReturn( true );
+        when( validationService.validate( any( POM.class ) ) ).thenReturn( true );
         Callback<Boolean> callback = mock( Callback.class );
         page.isComplete( callback );
         verify( callback, times( 1 ) ).callback( true );
@@ -463,16 +452,16 @@ public class POMWizardPageTest {
 
     @Test
     public void testIsNotComplete() {
-        when( validationService.validate(Mockito.<POM>any() ) ).thenReturn(false );
+        when( validationService.validate( any( POM.class ) ) ).thenReturn( false );
         Callback<Boolean> callback = mock( Callback.class );
         page.isComplete( callback );
         verify( callback, times( 1 ) ).callback( false );
     }
 
     private void mockValidationOfPom( boolean isValid ) {
-        when( validationService.validateGroupId( Mockito.<String>any()) ).thenReturn( isValid );
-        when( validationService.validateArtifactId( Mockito.<String>any()) ).thenReturn( isValid );
-        when( validationService.validateGAVVersion( Mockito.<String>any()) ).thenReturn( isValid );
-        when( validationService.isProjectNameValid( Mockito.<String>any()) ).thenReturn( isValid );
+        when( validationService.validateGroupId( any( String.class ) ) ).thenReturn( isValid );
+        when( validationService.validateArtifactId( any( String.class ) ) ).thenReturn( isValid );
+        when( validationService.validateGAVVersion( any( String.class ) ) ).thenReturn( isValid );
+        when( validationService.isProjectNameValid( any( String.class ) ) ).thenReturn( isValid );
     }
 }

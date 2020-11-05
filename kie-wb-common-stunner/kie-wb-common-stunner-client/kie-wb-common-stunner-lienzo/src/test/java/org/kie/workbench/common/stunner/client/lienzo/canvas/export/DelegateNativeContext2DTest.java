@@ -442,10 +442,10 @@ public class DelegateNativeContext2DTest {
     @Test
     public void setShadow() {
         delegateNativeContext2D.setShadow(null);
-        verify(context).setShadowColor(Mockito.<String>any());
-        verify(context).setShadowOffsetX(Mockito.<Integer>any());
-        verify(context).setShadowOffsetY(Mockito.<Integer>any());
-        verify(context).setShadowBlur(Mockito.<Integer>any());
+        verify(context).setShadowColor(Mockito.any());
+        verify(context).setShadowOffsetX(Mockito.anyDouble());
+        verify(context).setShadowOffsetY(Mockito.anyDouble());
+        verify(context).setShadowBlur(Mockito.anyInt());
 
         delegateNativeContext2D.setShadow(null);
     }

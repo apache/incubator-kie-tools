@@ -55,6 +55,7 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.bpmn2;
 import static org.kie.workbench.common.stunner.bpmn.backend.converters.fromstunner.Factories.di;
 import static org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils.getDefinitionId;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -99,13 +100,13 @@ public class CaseManagementSubProcessConverterTest {
         eventNode.setContent(eventSubprocess);
 
         FactoryManager factoryManager = mock(FactoryManager.class);
-        when(factoryManager.newElement(anyString(), eq(getDefinitionId(AdHocSubprocess.class))))
+        when(factoryManager.newElement(any(), eq(getDefinitionId(AdHocSubprocess.class))))
                 .thenReturn(adHocNode);
-        when(factoryManager.newElement(anyString(), eq(getDefinitionId(MultipleInstanceSubprocess.class))))
+        when(factoryManager.newElement(any(), eq(getDefinitionId(MultipleInstanceSubprocess.class))))
                 .thenReturn(multipleInstanceNode);
-        when(factoryManager.newElement(anyString(), eq(getDefinitionId(EmbeddedSubprocess.class))))
+        when(factoryManager.newElement(any(), eq(getDefinitionId(EmbeddedSubprocess.class))))
                 .thenReturn(embeddedNode);
-        when(factoryManager.newElement(anyString(), eq(getDefinitionId(EventSubprocess.class))))
+        when(factoryManager.newElement(any(), eq(getDefinitionId(EventSubprocess.class))))
                 .thenReturn(eventNode);
 
         TypedFactoryManager typedFactoryManager = new TypedFactoryManager(factoryManager);

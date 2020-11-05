@@ -84,8 +84,6 @@ public abstract class AbstractProcessFilteredNodeProviderBaseTest {
     public void testGetSelectorDataWithNoValues() {
         @SuppressWarnings("unchecked")
         Iterable<Element> nodes = mock(Iterable.class);
-        when(graph.nodes()).thenReturn(nodes);
-        when(nodes.spliterator()).thenReturn(Spliterators.emptySpliterator());
         SelectorData selectorData = provider.getSelectorData(renderingContext);
         Map values = selectorData.getValues();
         assertTrue(values.isEmpty());

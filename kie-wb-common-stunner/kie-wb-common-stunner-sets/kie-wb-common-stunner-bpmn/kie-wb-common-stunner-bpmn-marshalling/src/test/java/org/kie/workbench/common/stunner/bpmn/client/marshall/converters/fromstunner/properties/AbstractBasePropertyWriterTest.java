@@ -199,7 +199,6 @@ public abstract class AbstractBasePropertyWriterTest<W extends BasePropertyWrite
         View view = mock(View.class);
         when(node.getContent()).thenReturn(view);
         when(view.getBounds()).thenReturn(bounds);
-        when(view.getDefinition()).thenReturn(definition);
         List<Edge> inEdges = new ArrayList<>();
         when(node.getInEdges()).thenReturn(inEdges);
         when(node.asNode()).thenReturn(node);

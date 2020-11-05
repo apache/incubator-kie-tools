@@ -371,7 +371,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
                count).onSyncPalette(formId);
         verify(editorHelper,
                count).removeField(Mockito.<String>any(),
-                                  Mockito.<Boolean>any());
+                                  Mockito.anyBoolean());
     }
 
     @Test
@@ -389,7 +389,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
                never()).onSyncPalette(Mockito.<String>any());
         verify(editorHelper,
                never()).removeField(Mockito.<String>any(),
-                                    Mockito.<Boolean>any());
+                                    Mockito.anyBoolean());
     }
 
     @Test
@@ -413,7 +413,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
                never()).onSyncPalette(Mockito.<String>any());
         verify(editorHelper,
                never()).removeField(Mockito.<String>any(),
-                                    Mockito.<Boolean>any());
+                                    Mockito.anyBoolean());
     }
 
     @Test
@@ -591,7 +591,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
                                                   boolean saving) {
         loadContent();
         FormEditorPresenter presenterSpy = spy(presenter);
-        doNothing().when(presenterSpy).rename(Mockito.<Boolean>any());
+        doNothing().when(presenterSpy).rename(Mockito.anyBoolean());
         doReturn(dirty).when(presenterSpy).isDirty(Mockito.<Integer>any());
 
         presenterSpy.safeRename();
@@ -634,7 +634,7 @@ public class FormEditorPresenterTest extends FormEditorPresenterAbstractTest {
 
         FormEditorPresenter presenterSpy = spy(presenter);
 
-        doNothing().when(presenterSpy).copy(Mockito.<Boolean>any());
+        doNothing().when(presenterSpy).copy(Mockito.anyBoolean());
 
         doReturn(dirty).when(presenterSpy).isDirty(Mockito.<Integer>any());
 

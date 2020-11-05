@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.dmn.backend.editors.common;
 
-import java.nio.file.NoSuchFileException;
-
 import org.guvnor.common.services.project.model.Package;
 import org.junit.Before;
 import org.junit.Test;
@@ -100,11 +98,9 @@ public class IncludedModelFactoryTest {
 
         when(aPackage.getPackageName()).thenReturn(packageName);
         when(includedModelPath.getFileName()).thenReturn(fileName);
-        when(includedModelPath.toURI()).thenReturn(uri);
         when(moduleService.resolvePackage(includedModelPath)).thenReturn(aPackage);
 
         when(importTypesHelper.isDMN(includedModelPath)).thenReturn(true);
-        when(importTypesHelper.isPMML(includedModelPath)).thenReturn(false);
         when(dmnDiagramHelper.getDiagramByPath(includedModelPath)).thenReturn(diagram);
         when(dmnDiagramHelper.getNamespace(diagram)).thenReturn(NAMESPACE);
         when(dmnDiagramHelper.getNodes(diagram)).thenReturn(asList(mock(DRGElement.class), mock(DRGElement.class)));
@@ -136,7 +132,6 @@ public class IncludedModelFactoryTest {
 
         when(aPackage.getPackageName()).thenReturn(packageName);
         when(includedModelPath.getFileName()).thenReturn(fileName);
-        when(includedModelPath.toURI()).thenReturn(uri);
         when(moduleService.resolvePackage(includedModelPath)).thenReturn(aPackage);
 
         when(importTypesHelper.isDMN(includedModelPath)).thenReturn(false);
@@ -159,7 +154,7 @@ public class IncludedModelFactoryTest {
     @Test(expected = DMNIncludeModelCouldNotBeCreatedException.class)
     public void testCreateDMNIncludedModelWhenGetNamespaceRaisesAnError() throws Exception {
         when(importTypesHelper.isDMN(includedModelPath)).thenReturn(true);
-        doThrow(NoSuchFileException.class).when(dmnDiagramHelper).getDiagramByPath(includedModelPath);
+        doThrow(RuntimeException.class).when(dmnDiagramHelper).getDiagramByPath(includedModelPath);
 
         factory.create(dmnModelPath, includedModelPath);
     }

@@ -97,7 +97,6 @@ public class BPMNDiagramFilterProviderTest {
     public void setUp() throws Exception {
         when(formFieldChanged.getName()).thenReturn(ADHOC_FIELD_NAME);
         when(formFieldChanged.getUuid()).thenReturn(UUID);
-        when(formFieldChanged.getValue()).thenReturn(true);
         when(diagramDef.getDiagramSet()).thenReturn(diagramSet);
         when(diagramSet.getAdHoc()).thenReturn(adHoc);
         when(adHoc.getValue()).thenReturn(true);

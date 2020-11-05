@@ -198,7 +198,7 @@ public class DMNDomainValidatorImplTest {
 
         doReturn(resolver).when(domainValidator).getValidatorImportReaderResolver(metadata);
 
-        when(domainValidator.getStringReader(Mockito.<String>any())).thenReturn(stringReader);
+        doReturn(stringReader).when(domainValidator).getStringReader(Mockito.any());
 
         domainValidator.validate(diagram,
                                  resultConsumer);
@@ -224,7 +224,7 @@ public class DMNDomainValidatorImplTest {
 
         doReturn(resolver).when(domainValidator).getValidatorImportReaderResolver(metadata);
 
-        when(domainValidator.getStringReader(Mockito.<String>any())).thenReturn(stringReader1, stringReader2);
+        doReturn(stringReader1, stringReader2).when(domainValidator).getStringReader(Mockito.any());
 
         definitions.getImport().add(new Import());
 

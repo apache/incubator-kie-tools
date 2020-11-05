@@ -92,8 +92,6 @@ public class BPMNValidatorImplTest {
 
     @Test
     public void validateWithException() {
-        when(diagram.getMetadata()).thenThrow(new RuntimeException());
-
         final Collection<BPMNViolation> violations = bpmnValidador.validate(null, PROCESS_UUID);
         assertProcessException(violations);
     }

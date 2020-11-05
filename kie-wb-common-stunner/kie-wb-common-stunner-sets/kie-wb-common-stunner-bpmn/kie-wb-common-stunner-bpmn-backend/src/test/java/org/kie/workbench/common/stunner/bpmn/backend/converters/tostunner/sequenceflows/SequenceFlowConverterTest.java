@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -74,10 +75,10 @@ public class SequenceFlowConverterTest {
 
     @Before
     public void setUp() throws Exception {
-        when(factoryManager.newEdge(anyString(), eq(SequenceFlow.class))).thenReturn(edge);
+        when(factoryManager.newEdge(any(), eq(SequenceFlow.class))).thenReturn(edge);
         when(edge.getContent()).thenReturn(content);
         when(content.getDefinition()).thenReturn(def);
-        when(propertyReaderFactory.of(any(org.eclipse.bpmn2.SequenceFlow.class))).thenReturn(reader);
+        when(propertyReaderFactory.of(Mockito.<org.eclipse.bpmn2.SequenceFlow>any())).thenReturn(reader);
         when(reader.getSourceId()).thenReturn(SOURCE_ID);
         when(reader.getTargetId()).thenReturn(TARGET_ID);
 

@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.DefinitionResolver;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.ActivityPropertyReaderTest.mockDataInput;
@@ -44,7 +44,7 @@ import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.t
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class MultipleInstanceActivityPropertyReaderTest {
 
     private static final String ITEM_ID = "ITEM_ID";

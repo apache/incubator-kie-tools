@@ -19,9 +19,9 @@ package org.kie.workbench.common.stunner.cm.client.command.graph;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommandTest;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class CaseManagementAddNodeCommandTest extends AddNodeCommandTest {
 
     @Before

@@ -45,6 +45,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -101,7 +102,7 @@ public class TaskConverterTest extends BaseTaskConverterTest {
     public void setUp() {
         super.setUp();
         userTaskDefinition = new UserTask();
-        when(factoryManager.newNode(anyString(), eq(UserTask.class))).thenReturn(userTaskNode);
+        when(factoryManager.newNode(any(), eq(UserTask.class))).thenReturn(userTaskNode);
         when(userTaskNode.getContent()).thenReturn(userTaskContent);
         when(userTaskNode.getContent().getDefinition()).thenReturn(userTaskDefinition);
         when(propertyReaderFactory.of(userTask)).thenReturn(userTaskPropertyReader);
@@ -223,7 +224,7 @@ public class TaskConverterTest extends BaseTaskConverterTest {
         when(propertyReaderFactory.of(task)).thenReturn(reader);
 
         Node<View<NoneTask>, Edge> taskNode = mock(Node.class);
-        when(factoryManager.newNode(anyString(), eq(NoneTask.class))).thenReturn(taskNode);
+        when(factoryManager.newNode(any(), eq(NoneTask.class))).thenReturn(taskNode);
 
         View<NoneTask> taskContent = mock(View.class);
         when(taskNode.getContent()).thenReturn(taskContent);
@@ -231,7 +232,7 @@ public class TaskConverterTest extends BaseTaskConverterTest {
         when(taskContent.getDefinition()).thenReturn(taskDef);
 
         Result<BpmnNode> result = tested.convert(task);
-        verify(factoryManager).newNode(anyString(), eq(NoneTask.class));
+        verify(factoryManager).newNode(any(), eq(NoneTask.class));
         assertTrue(result.value().value().getContent().getDefinition() instanceof NoneTask);
     }
 }

@@ -17,7 +17,6 @@
 package com.kie.workbench.common.stunner.cm.service;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +33,6 @@ import org.kie.workbench.common.stunner.core.definition.service.DefinitionSetSer
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
 import org.kie.workbench.common.stunner.core.diagram.AbstractMetadata;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
@@ -106,7 +104,7 @@ public class CaseManagementSwitchViewServiceImplTest {
 
         final DiagramMarshaller diagramMarsaller1 = mock(DiagramMarshaller.class);
         String rawData = "rawData";
-        when(diagramMarsaller1.marshall(any(Diagram.class))).thenReturn(rawData);
+        when(diagramMarsaller1.marshall(any())).thenReturn(rawData);
         when(definitionSetService1.getDiagramMarshaller()).thenReturn(diagramMarsaller1);
 
         final DefinitionSetService definitionSetService2 = mock(DefinitionSetService.class);
@@ -118,18 +116,18 @@ public class CaseManagementSwitchViewServiceImplTest {
         final Graph graph = mock(Graph.class);
         final DefinitionSet content = mock(DefinitionSet.class);
         when(graph.getContent()).thenReturn(content);
-        when(diagramMarsaller2.unmarshall(any(Metadata.class), any(InputStream.class))).thenReturn(graph);
+        when(diagramMarsaller2.unmarshall(any(), any())).thenReturn(graph);
         when(definitionSetService2.getDiagramMarshaller()).thenReturn(diagramMarsaller2);
 
         final FactoryRegistry factoryRegistry = mock(FactoryRegistry.class);
         final DiagramFactory diagramFactory = mock(DiagramFactory.class);
-        when(factoryRegistry.getDiagramFactory(any(String.class), any(Class.class))).thenReturn(diagramFactory);
+        when(factoryRegistry.getDiagramFactory(any(), any())).thenReturn(diagramFactory);
         when(factoryManager.registry()).thenReturn(factoryRegistry);
 
         final ProjectDiagram projectDiagram = mock(ProjectDiagram.class);
         final ProjectMetadata projectMetadata = mock(ProjectMetadata.class);
         when(projectDiagram.getMetadata()).thenReturn(projectMetadata);
-        when(diagramFactory.build(any(String.class), any(Metadata.class), any(Graph.class))).thenReturn(projectDiagram);
+        when(diagramFactory.build(any(), any(), any())).thenReturn(projectDiagram);
 
         final Diagram diagram = mock(Diagram.class);
         final AbstractMetadata metadata = mock(AbstractMetadata.class);

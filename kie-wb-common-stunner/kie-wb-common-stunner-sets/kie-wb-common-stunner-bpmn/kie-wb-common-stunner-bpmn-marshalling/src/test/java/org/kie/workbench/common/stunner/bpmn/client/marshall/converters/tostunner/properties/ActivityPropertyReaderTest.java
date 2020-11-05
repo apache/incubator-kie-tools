@@ -53,13 +53,13 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.Assignme
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeListValue;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ActivityPropertyReaderTest {
 
     private static final String JAVA = "java";

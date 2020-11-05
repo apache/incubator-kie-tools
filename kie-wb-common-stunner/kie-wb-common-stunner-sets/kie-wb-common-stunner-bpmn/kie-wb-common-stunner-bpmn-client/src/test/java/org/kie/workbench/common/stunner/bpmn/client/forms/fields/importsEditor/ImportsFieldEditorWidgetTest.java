@@ -65,20 +65,20 @@ public class ImportsFieldEditorWidgetTest {
         tested.importsTextBox = mock(TextBox.class);
 
         doCallRealMethod().when(tested).getValue();
-        doCallRealMethod().when(tested).setValue(any(ImportsValue.class));
-        doCallRealMethod().when(tested).setValue(any(ImportsValue.class), anyBoolean());
+        doCallRealMethod().when(tested).setValue(any());
+        doCallRealMethod().when(tested).setValue(any(), anyBoolean());
 
-        doCallRealMethod().when(tested).setImportsCount(any(ImportsValue.class));
+        doCallRealMethod().when(tested).setImportsCount(any());
         doCallRealMethod().when(tested).buildImportsCountString(anyInt(), anyInt());
         doCallRealMethod().when(tested).buildDefaultImportsCountString(anyInt());
         doCallRealMethod().when(tested).buildWSDLImportsCountString(anyInt());
 
-        doCallRealMethod().when(tested).copyImportsValue(any(ImportsValue.class));
+        doCallRealMethod().when(tested).copyImportsValue(any());
 
         doCallRealMethod().when(tested).showImportsEditor();
 
-        doCallRealMethod().when(tested).onClickImportsButton(any(ClickEvent.class));
-        doCallRealMethod().when(tested).onClickImportsTextBox(any(ClickEvent.class));
+        doCallRealMethod().when(tested).onClickImportsButton(any());
+        doCallRealMethod().when(tested).onClickImportsTextBox(any());
     }
 
     @Test
@@ -94,7 +94,7 @@ public class ImportsFieldEditorWidgetTest {
         ImportsValue importsValue = createImportsValue(3, 3);
         tested.setValue(importsValue);
 
-        verify(tested, times(1)).copyImportsValue(any(ImportsValue.class));
+        verify(tested, times(1)).copyImportsValue(any());
         assertEquals(tested.importsValue, importsValue);
         verify(tested, times(1)).setImportsCount(importsValue);
     }

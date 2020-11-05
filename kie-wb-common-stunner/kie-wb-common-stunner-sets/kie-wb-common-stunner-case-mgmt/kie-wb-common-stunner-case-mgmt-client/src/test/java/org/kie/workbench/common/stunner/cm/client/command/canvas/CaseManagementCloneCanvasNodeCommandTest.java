@@ -24,11 +24,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanva
 import org.kie.workbench.common.stunner.core.client.canvas.command.CloneCanvasNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.content.ChildrenTraverseProcessor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertTrue;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class CaseManagementCloneCanvasNodeCommandTest extends CaseManagementAbstractCanvasCommandTest {
 
     @Mock

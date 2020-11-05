@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -98,6 +99,11 @@ public class DMNEditDRDToolboxActionTest {
 
         final Field field = DomGlobal.class.getDeclaredField("document");
         field.setAccessible(true);
+
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
         field.set(DomGlobal.class, htmlDocument);
 
         when(drdContextMenu.getElement()).thenReturn(htmlElement);

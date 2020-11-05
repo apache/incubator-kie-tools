@@ -47,9 +47,11 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.marshaller.MarshallingRequest;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -105,7 +107,7 @@ public abstract class BaseTaskConverterTest {
     public void setUp() {
         noneTaskDefinition = new NoneTask();
 
-        when(factoryManager.newNode(anyString(), eq(NoneTask.class))).thenReturn(noneTaskNode);
+        when(factoryManager.newNode(any(), eq(NoneTask.class))).thenReturn(noneTaskNode);
         when(noneTaskNode.getContent()).thenReturn(noneTaskContent);
         when(noneTaskContent.getDefinition()).thenReturn(noneTaskDefinition);
         when(entry.getEStructuralFeature()).thenReturn(mock(EStructuralFeature.class));
@@ -134,7 +136,7 @@ public abstract class BaseTaskConverterTest {
         BusinessRuleTaskPropertyReader propertyReader = mock(BusinessRuleTaskPropertyReader.class);
         BusinessRuleTask businessRuleDefinition = new BusinessRuleTask();
 
-        when(factoryManager.newNode(anyString(), eq(BusinessRuleTask.class))).thenReturn(businessRuleTaskNode);
+        when(factoryManager.newNode(any(), eq(BusinessRuleTask.class))).thenReturn(businessRuleTaskNode);
         when(businessRuleTaskNode.getContent()).thenReturn(businessRuleTaskContent);
         when(businessRuleTaskContent.getDefinition()).thenReturn(businessRuleDefinition);
         when(propertyReaderFactory.of(task)).thenReturn(propertyReader);
@@ -153,7 +155,7 @@ public abstract class BaseTaskConverterTest {
         FeatureMap.Entry ruleAttr = mock(FeatureMap.Entry.class);
         EStructuralFeature ruleFeature = mock(EStructuralFeature.class);
 
-        when(factoryManager.newNode(anyString(), eq(CustomTask.class))).thenReturn(serviceTaskNode);
+        when(factoryManager.newNode(any(), eq(CustomTask.class))).thenReturn(serviceTaskNode);
         when(serviceTaskNode.getContent()).thenReturn(serviceTaskContent);
         when(serviceTaskContent.getDefinition()).thenReturn(definition);
         when(propertyReaderFactory.ofCustom(task)).thenReturn(Optional.of(serviceTaskPropertyReader));
@@ -179,7 +181,7 @@ public abstract class BaseTaskConverterTest {
         FeatureMap.Entry ruleAttr = mock(FeatureMap.Entry.class);
         EStructuralFeature ruleFeature = mock(EStructuralFeature.class);
 
-        when(factoryManager.newNode(anyString(), eq(GenericServiceTask.class))).thenReturn(genericServiceTaskNode);
+        when(factoryManager.newNode(any(), eq(GenericServiceTask.class))).thenReturn(genericServiceTaskNode);
         when(genericServiceTaskNode.getContent()).thenReturn(genericServiceTaskContent);
         when(genericServiceTaskContent.getDefinition()).thenReturn(definition);
         when(propertyReaderFactory.of(task)).thenReturn(genericServiceTaskPropertyReader);

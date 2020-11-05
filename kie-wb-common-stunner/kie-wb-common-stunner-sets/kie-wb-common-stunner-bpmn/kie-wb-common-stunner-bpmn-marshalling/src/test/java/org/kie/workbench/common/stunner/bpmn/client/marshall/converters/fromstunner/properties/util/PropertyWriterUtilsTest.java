@@ -66,12 +66,6 @@ public class PropertyWriterUtilsTest {
     @Mock
     private BaseElement targetElement;
 
-    @Before
-    public void setUp() {
-        when(sourceWriter.getElement()).thenReturn(sourceElement);
-        when(targetWriter.getElement()).thenReturn(targetElement);
-    }
-
     @Test
     public void testCreateBPMNEdge() {
         BPMNShape sourceShape = mockShape(SOURCE_SHAPE_ID, 1, 1, 4, 4);
@@ -125,8 +119,6 @@ public class PropertyWriterUtilsTest {
         Bounds bounds = mock(Bounds.class);
         when(bounds.getX()).thenReturn(x);
         when(bounds.getY()).thenReturn(y);
-        when(bounds.getHeight()).thenReturn(height);
-        when(bounds.getWidth()).thenReturn(width);
         when(shape.getBounds()).thenReturn(bounds);
         return shape;
     }

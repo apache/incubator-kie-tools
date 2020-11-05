@@ -150,7 +150,7 @@ public class ParametersPopoverImplTest {
         presenter.show();
 
         verify(view, never()).show(Mockito.<Optional>any());
-        verify(view, never()).focusParameter(Mockito.<Integer>any());
+        verify(view, never()).focusParameter(Mockito.anyInt());
     }
 
     @Test
@@ -161,7 +161,7 @@ public class ParametersPopoverImplTest {
         presenter.show();
 
         verify(view).show(eq(Optional.ofNullable(presenter.getPopoverTitle())));
-        verify(view, never()).focusParameter(Mockito.<Integer>any());
+        verify(view, never()).focusParameter(Mockito.anyInt());
     }
 
     @Test
@@ -199,7 +199,7 @@ public class ParametersPopoverImplTest {
         presenter.addParameter();
 
         verify(control, never()).addParameter(Mockito.<Command>any());
-        verify(view, never()).focusParameter(Mockito.<Integer>any());
+        verify(view, never()).focusParameter(Mockito.anyInt());
     }
 
     @Test
@@ -226,7 +226,7 @@ public class ParametersPopoverImplTest {
 
         verify(control, never()).removeParameter(Mockito.<InformationItem>any(),
                                                  Mockito.<Command>any());
-        verify(view, never()).focusParameter(Mockito.<Integer>any());
+        verify(view, never()).focusParameter(Mockito.anyInt());
     }
 
     @Test
@@ -247,7 +247,7 @@ public class ParametersPopoverImplTest {
         commandCaptor.getValue().execute();
 
         verify(view).setParameters(eq(parameters));
-        verify(view, never()).focusParameter(Mockito.<Integer>any());
+        verify(view, never()).focusParameter(Mockito.anyInt());
     }
 
     @Test

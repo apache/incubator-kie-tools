@@ -249,7 +249,7 @@ public class ModuleSaverTest
         doNothing().when(newPackageEvent).fire((NewPackageEvent) eventCaptor.capture());
         when(resourceResolver.newPackage(Mockito.<org.guvnor.common.services.project.model.Package>any(),
                                          Mockito.<String>any(),
-                                         Mockito.<Boolean>any()))
+                                         Mockito.anyBoolean()))
                 .thenAnswer(new Answer<Object>() {
                     @Override
                     public Object answer(InvocationOnMock invocation) throws Throwable {

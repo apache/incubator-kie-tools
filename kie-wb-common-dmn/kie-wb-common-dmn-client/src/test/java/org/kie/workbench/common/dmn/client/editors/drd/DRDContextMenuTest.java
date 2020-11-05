@@ -17,6 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.drd;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,11 +45,12 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.uberfire.mvp.Command;
 
 import static java.util.Arrays.asList;
 import static org.kie.workbench.common.dmn.client.editors.drd.DRDContextMenu.DRDACTIONS_CONTEXT_MENU_TITLE;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -127,25 +129,30 @@ public class DRDContextMenuTest {
 
         drdContextMenu.setDRDContextMenuHandler(contextMenu, Collections.singletonList(node));
 
-        verify(contextMenu).setHeaderMenu(Mockito.<String>any(), Mockito.<String>any());
-        verify(contextMenu, times(4)).addTextMenuItem(Mockito.<String>any(), Mockito.<Boolean>any(), Mockito.<Command>any());
+        verify(contextMenu).setHeaderMenu(any(), any());
+        verify(contextMenu, times(4)).addTextMenuItem(any(), anyBoolean(), any());
     }
 
     @Test
     public void testAppendContextMenuToTheDOM() throws NoSuchFieldException, IllegalAccessException {
         when(contextMenu.getElement()).thenReturn(element);
 
-        final Field field = element.getClass().getDeclaredField("style");
+        final Field field = HTMLElement.class.getDeclaredField("style");
         field.setAccessible(true);
         field.set(element, styleDeclaration);
 
         final Field field2 = DomGlobal.class.getDeclaredField("document");
         field2.setAccessible(true);
+
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field2, field2.getModifiers() & ~Modifier.FINAL);
+
         field2.set(DomGlobal.class, htmlDocument);
 
-        final Field field3 = htmlDocument.getClass().getDeclaredField("body");
+        final Field field3 = HTMLDocument.class.getDeclaredField("body");
         field3.setAccessible(true);
-        field3.set(DomGlobal.class, body);
+        field3.set(htmlDocument, body);
 
         drdContextMenu.appendContextMenuToTheDOM(10, 10);
 

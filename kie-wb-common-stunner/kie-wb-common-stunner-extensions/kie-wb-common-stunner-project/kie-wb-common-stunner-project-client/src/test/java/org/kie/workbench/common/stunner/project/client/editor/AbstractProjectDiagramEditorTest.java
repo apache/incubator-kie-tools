@@ -272,8 +272,8 @@ public class AbstractProjectDiagramEditorTest {
         sessionEditorPresenters = new ManagedInstanceStub<>(sessionEditorPresenter);
         sessionViewerPresenters = new ManagedInstanceStub<>(sessionViewerPresenter);
         when(sessionEditorPresenter.getInstance()).thenReturn(editorSession);
-        when(sessionEditorPresenter.withToolbar(Mockito.<Boolean>any())).thenReturn(sessionEditorPresenter);
-        when(sessionEditorPresenter.withPalette(Mockito.<Boolean>any())).thenReturn(sessionEditorPresenter);
+        when(sessionEditorPresenter.withToolbar(Mockito.anyBoolean())).thenReturn(sessionEditorPresenter);
+        when(sessionEditorPresenter.withPalette(Mockito.anyBoolean())).thenReturn(sessionEditorPresenter);
         when(sessionEditorPresenter.displayNotifications(Mockito.<Predicate>any())).thenReturn(sessionEditorPresenter);
         when(sessionEditorPresenter.getView()).thenReturn(sessionPresenterView);
         when(sessionEditorPresenter.getSession()).thenReturn(Optional.of(editorSession));
@@ -289,8 +289,8 @@ public class AbstractProjectDiagramEditorTest {
         }).when(sessionEditorPresenter).open(Mockito.<Diagram>any(),
                                              Mockito.<SessionPresenter.SessionPresenterCallback>any());
         when(sessionViewerPresenter.getInstance()).thenReturn(viewerSession);
-        when(sessionViewerPresenter.withToolbar(Mockito.<Boolean>any())).thenReturn(sessionViewerPresenter);
-        when(sessionViewerPresenter.withPalette(Mockito.<Boolean>any())).thenReturn(sessionViewerPresenter);
+        when(sessionViewerPresenter.withToolbar(Mockito.anyBoolean())).thenReturn(sessionViewerPresenter);
+        when(sessionViewerPresenter.withPalette(Mockito.anyBoolean())).thenReturn(sessionViewerPresenter);
         when(sessionViewerPresenter.displayNotifications(Mockito.<Predicate>any())).thenReturn(sessionViewerPresenter);
         when(sessionViewerPresenter.getView()).thenReturn(sessionPresenterView);
         when(sessionViewerPresenter.getSession()).thenReturn(Optional.of(viewerSession));

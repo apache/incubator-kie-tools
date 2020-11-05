@@ -105,14 +105,14 @@ public class DefaultImportListItemWidgetViewTest {
         doCallRealMethod().when(tested).init();
         doCallRealMethod().when(tested).initListItem();
         doCallRealMethod().when(tested).getModel();
-        doCallRealMethod().when(tested).setModel(any(DefaultImport.class));
-        doCallRealMethod().when(tested).getModelValue(any(ValueListBox.class));
-        doCallRealMethod().when(tested).setTextBoxModelValue(any(TextBox.class),
+        doCallRealMethod().when(tested).setModel(any());
+        doCallRealMethod().when(tested).getModelValue(any());
+        doCallRealMethod().when(tested).setTextBoxModelValue(any(),
                                                              anyString());
-        doCallRealMethod().when(tested).setListBoxModelValue(any(ValueListBox.class),
+        doCallRealMethod().when(tested).setListBoxModelValue(any(),
                                                              anyString());
-        doCallRealMethod().when(tested).setParentWidget(any(DefaultImportsEditorWidget.class));
-        doCallRealMethod().when(tested).handleDeleteButton(any(ClickEvent.class));
+        doCallRealMethod().when(tested).setParentWidget(any());
+        doCallRealMethod().when(tested).handleDeleteButton(any());
 
         DefaultImport defaultImport = new DefaultImport();
         doReturn(defaultImport).when(defaultImportDataBinder).getModel();

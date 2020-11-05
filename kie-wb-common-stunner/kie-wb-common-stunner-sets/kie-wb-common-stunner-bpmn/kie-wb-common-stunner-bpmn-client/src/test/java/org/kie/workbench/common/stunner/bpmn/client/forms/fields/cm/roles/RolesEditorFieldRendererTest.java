@@ -25,6 +25,7 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.FormGroup;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.def.DefaultFormGroup;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
@@ -71,11 +72,9 @@ public class RolesEditorFieldRendererTest {
         tested = spy(new RolesEditorFieldRenderer(view, caseRoleSerializer));
         formGroupsInstance = new ManagedInstanceStub<>(formGroup);
 
-        final Field formGroupsInstanceField = tested.getClass().getDeclaredField("formGroupsInstance");
+        final Field formGroupsInstanceField = FieldRenderer.class.getDeclaredField("formGroupsInstance");
         formGroupsInstanceField.setAccessible(true);
         formGroupsInstanceField.set(tested, formGroupsInstance);
-
-        when(view.getRows()).thenReturn(rows);
     }
 
     @Test

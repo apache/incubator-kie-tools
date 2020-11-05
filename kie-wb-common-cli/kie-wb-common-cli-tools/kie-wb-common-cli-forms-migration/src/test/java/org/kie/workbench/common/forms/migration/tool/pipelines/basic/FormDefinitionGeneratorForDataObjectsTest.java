@@ -28,7 +28,7 @@ import org.kie.workbench.common.forms.migration.tool.Resource;
 import org.kie.workbench.common.forms.migration.tool.pipelines.MigrationContext;
 import org.kie.workbench.common.migration.cli.RealSystemAccess;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.assertTrue;
@@ -37,7 +37,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class FormDefinitionGeneratorForDataObjectsTest extends AbstractFormDefinitionGeneratorTest {
 
     @Mock
