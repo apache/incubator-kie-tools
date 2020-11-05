@@ -61,6 +61,7 @@ type TestConfig struct {
 
 	// build
 	customMavenRepoURL                 string
+	customMavenRepoReplaceDefault      bool
 	mavenMirrorURL                     string
 	mavenIgnoreSelfSignedCertificate   bool
 	buildImageRegistry                 string
@@ -147,6 +148,7 @@ func BindFlags(set *flag.FlagSet) {
 
 	// build
 	set.StringVar(&env.customMavenRepoURL, prefix+"custom-maven-repo-url", "", "Set a custom Maven repository url for S2I builds, in case your artifacts are in a specific repository. See https://github.com/kiegroup/kogito-images/README.md for more information")
+	set.BoolVar(&env.customMavenRepoReplaceDefault, prefix+"custom-maven-repo-replace-default", false, "If you specified the option 'tests.custom-maven-repo-url' and you want that one to replace the main JBoss repository (useful with snapshots).")
 	set.StringVar(&env.mavenMirrorURL, prefix+"maven-mirror-url", "", "Maven mirror url to be used when building app in the tests")
 	set.BoolVar(&env.mavenIgnoreSelfSignedCertificate, prefix+"maven-ignore-self-signed-certificate", false, "Set to true if maven build need to ignore self-signed certificate. This could happen when using internal maven mirror url.")
 	set.StringVar(&env.buildImageRegistry, prefix+"build-image-registry", "", "Set the build image registry")
@@ -323,6 +325,11 @@ func GetRuntimeApplicationImageVersion() string {
 // GetCustomMavenRepoURL return the custom maven repository url used by S2I builds
 func GetCustomMavenRepoURL() string {
 	return env.customMavenRepoURL
+}
+
+// IsCustomMavenRepoReplaceDefault return whether custom maven repo should replace the default JBoss repository
+func IsCustomMavenRepoReplaceDefault() bool {
+	return env.customMavenRepoReplaceDefault
 }
 
 // GetMavenMirrorURL return the maven mirror url used for building applications

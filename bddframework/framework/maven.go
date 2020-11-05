@@ -24,6 +24,10 @@ import (
 
 const (
 	mavenCommandName = "mvn"
+
+	defaultJBossRepository = "https://repository.jboss.org/nexus/content/groups/public/"
+	mainRepositoryID       = "main-repository"
+	stagingRepositoryID    = "staging-repository"
 )
 
 // CreateMavenCommand methods initializes the basic data to run maven commands.
@@ -121,24 +125,25 @@ func (mvnCmd *mavenCommandStruct) Execute(targets ...string) (string, error) {
 
 // setSettingsXML Creates settings.xml with content based on test configuration
 func (mvnCmd *mavenCommandStruct) setSettingsXML() error {
-	settingsContent := settingsMainContent
-
-	// Setup custom Maven repository if defined
-	if customMavenRepoURL := config.GetCustomMavenRepoURL(); len(customMavenRepoURL) > 0 {
-		repository := fmt.Sprintf(repositoryDescription, customMavenRepoURL)
-		pluginRepository := fmt.Sprintf(pluginRepositoryDescription, customMavenRepoURL)
-		profilesContent := fmt.Sprintf(profilesXMLDescription, repository, pluginRepository)
-		settingsContent = strings.ReplaceAll(settingsContent, "<!-- ### profiles ### -->", profilesContent)
-	}
+	settings := &mavenSettings{}
 
 	// Setup Maven mirror if defined
 	if mavenMirrorURL := config.GetMavenMirrorURL(); len(mavenMirrorURL) > 0 {
-		mavenMirrorContent := fmt.Sprintf(mavenMirrorXMLDescription, mavenMirrorURL)
-		settingsContent = strings.ReplaceAll(settingsContent, "<!-- ### mirror settings ### -->", mavenMirrorContent)
+		settings.SetMirrorURL(mavenMirrorURL)
+	}
+
+	// Setup custom Maven repository if defined
+	if customMavenRepoURL := config.GetCustomMavenRepoURL(); len(customMavenRepoURL) > 0 {
+		if !config.IsCustomMavenRepoReplaceDefault() {
+			settings.AddRepository(mainRepositoryID, defaultJBossRepository, false)
+		}
+		settings.AddRepository(stagingRepositoryID, customMavenRepoURL, true)
+	} else {
+		settings.AddRepository(mainRepositoryID, defaultJBossRepository, false)
 	}
 
 	// Create settings.xml in directory
-	if err := ioutil.WriteFile(fmt.Sprintf("%s/settings.xml", mvnCmd.directory), []byte(settingsContent), 0644); err != nil {
+	if err := ioutil.WriteFile(fmt.Sprintf("%s/settings.xml", mvnCmd.directory), []byte(settings.Generate()), 0644); err != nil {
 		return err
 	}
 
@@ -148,45 +153,80 @@ func (mvnCmd *mavenCommandStruct) setSettingsXML() error {
 	return nil
 }
 
+type mavenRepository struct {
+	ID             string
+	URL            string
+	ignoreInMirror bool
+}
+
+type mavenSettings struct {
+	mirrorURL string
+
+	repositories []mavenRepository
+}
+
+func (settings *mavenSettings) SetMirrorURL(mirrorURL string) *mavenSettings {
+	settings.mirrorURL = mirrorURL
+	return settings
+}
+
+func (settings *mavenSettings) AddRepository(repoID, repoURL string, ignoreInMirror bool) *mavenSettings {
+	settings.repositories = append(settings.repositories, mavenRepository{
+		ID:             repoID,
+		URL:            repoURL,
+		ignoreInMirror: ignoreInMirror,
+	})
+	return settings
+}
+
+func (settings *mavenSettings) Generate() string {
+	settingsContent := settingsMainContent
+
+	if len(settings.mirrorURL) > 0 {
+		mavenMirrorContent := fmt.Sprintf(mavenMirrorXMLContentTpl, settings.mirrorURL)
+		settingsContent = strings.ReplaceAll(settingsContent, "<!-- ### mirror settings ### -->", mavenMirrorContent)
+	}
+
+	if len(settings.repositories) > 0 {
+		settingsContent = strings.ReplaceAll(settingsContent, "<!-- ### profiles ### -->", profilesXMLContent)
+	}
+	for _, repo := range settings.repositories {
+		repositoryContent := fmt.Sprintf(repositoryXMLContentTpl, repo.ID, repo.ID, repo.URL)
+		settingsContent = strings.ReplaceAll(settingsContent, "</repositories>", fmt.Sprintf("\n<repository>%s</repository>\n</repositories>", repositoryContent))
+		settingsContent = strings.ReplaceAll(settingsContent, "</pluginRepositories>", fmt.Sprintf("\n<pluginRepository>%s</pluginRepository>\n</pluginRepositories>", repositoryContent))
+
+		if repo.ignoreInMirror {
+			// Ignore repo in mirror if exists
+			settingsContent = strings.ReplaceAll(settingsContent, "</mirrorOf>", fmt.Sprintf(",!%s</mirrorOf>", repo.ID))
+		}
+	}
+
+	return settingsContent
+}
+
 const (
-	repositoryXMLDescription = `
-<id>main-repository</id>
-<name>main-repository</name>
-<url>%s</url>
-<layout>default</layout>
-<releases>
-	<enabled>true</enabled>
-	<updatePolicy>always</updatePolicy>
-</releases>
-<snapshots>
-	<enabled>true</enabled>
-	<updatePolicy>always</updatePolicy>
-</snapshots>`
+	repositoryXMLContentTpl = `
+      <id>%s</id>
+      <name>%s</name>
+      <url>%s</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>`
 
-	profilesXMLDescription = `
-	<profiles>
-		<profile>
-			<id>default</id>
-			<repositories>
-				%s
-			</repositories>
-			<pluginRepositories>
-				%s
-			</pluginRepositories>
-		</profile>
-	</profiles>
-	<activeProfiles>
-		<activeProfile>default</activeProfile>
-	</activeProfiles>`
-
-	mavenMirrorXMLDescription = `
-	<mirrors>
-		<mirror>
-			<id>mirror-central</id>
-			<mirrorOf>external:*</mirrorOf>
-			<url>%s</url>
-		</mirror>
-	</mirrors>`
+	mavenMirrorXMLContentTpl = `
+  <mirrors>
+    <mirror>
+      <id>mirror-central</id>
+      <mirrorOf>external:*</mirrorOf>
+      <url>%s</url>
+    </mirror>
+  </mirrors>`
 
 	settingsMainContent = `
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
@@ -198,9 +238,18 @@ https://maven.apache.org/xsd/settings-1.0.0.xsd">
 
 <!-- ### profiles ### -->
 </settings>`
-)
 
-var (
-	repositoryDescription       = fmt.Sprintf(`<repository>%s</repository><!-- ### configured repositories ### -->`, repositoryXMLDescription)
-	pluginRepositoryDescription = fmt.Sprintf(`<pluginRepository>%s</pluginRepository><!-- ### configured plugin repositories ### -->`, repositoryXMLDescription)
+	profilesXMLContent = `
+  <profiles>
+    <profile>
+      <id>default</id>
+      <repositories>
+      </repositories>
+      <pluginRepositories>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>default</activeProfile>
+  </activeProfiles>`
 )
