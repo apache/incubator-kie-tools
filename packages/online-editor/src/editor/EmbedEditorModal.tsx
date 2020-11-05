@@ -156,14 +156,14 @@ export function EmbedEditorModal(props: Props) {
     <>
       <Modal
         variant={ModalVariant.small}
-        aria-label={"Embed and Editor in your page"}
+        aria-label={"Embed the editor and content in your page"}
         isOpen={props.isOpen}
         onClose={props.onClose}
-        title={"Embed"}
-        description={"Embed an Editor in your page."}
+        title={i18n.embedEditorModal.title}
+        description={i18n.embedEditorModal.description}
         actions={[
           <Button key="confirm" variant="primary" onClick={onCopy}>
-            Copy
+            {i18n.embedEditorModal.copy}
           </Button>,
           <Button key="cancel" variant="link" onClick={props.onClose}>
             {i18n.terms.close}
@@ -171,59 +171,56 @@ export function EmbedEditorModal(props: Props) {
         ]}
       >
         <div>
-          <p>Choose the options below and copy the embed code to your clipboard:</p>
-          <List>
-            <ListItem>Is read only</ListItem>
-            <Checkbox
-              id={"is-readOnly"}
-              label="Read only"
-              aria-label="Read only checkbox"
-              description={"Read only Editors cannot be edited, but you can navigate normally through the diagram."}
-              isChecked={readOnly}
-              onChange={setReadonly}
+          <Checkbox
+            id={"is-readOnly"}
+            label={i18n.embedEditorModal.readOnly.label}
+            aria-label="Read only checkbox"
+            description={i18n.embedEditorModal.readOnly.description}
+            isChecked={readOnly}
+            onChange={setReadonly}
+          />
+          <br />
+          <div>
+            <Radio
+              aria-label="Current content source option"
+              id={"current-content"}
+              isChecked={copyFromSource === Source.CURRENT}
+              name={"Current content"}
+              label={i18n.embedEditorModal.source.current.label}
+              description={i18n.embedEditorModal.source.current.description}
+              onChange={() => setCopyFromSource(Source.CURRENT)}
             />
-            <ListItem>Content source</ListItem>
-            <div>
+            <Tooltip
+              aria-label={"Only available when editing a file from a GitHub gist"}
+              content={<p>{i18n.embedEditorModal.source.gist.tooltip}</p>}
+              trigger={!isGist ? "mouseenter click" : ""}
+            >
               <Radio
-                aria-label="Current content source option"
-                id={"export-content"}
-                isChecked={copyFromSource === Source.CURRENT}
-                name={"Current content"}
-                label={"Current content"}
-                description={
-                  "The embedded Editor will contain the current content, so it cannot be changed externally."
-                }
-                onChange={() => setCopyFromSource(Source.CURRENT)}
+                aria-label="GitHub gist source option"
+                id={"export-gist"}
+                isDisabled={!isGist}
+                name={"GitHub gist"}
+                label={i18n.embedEditorModal.source.gist.label}
+                isChecked={copyFromSource === Source.GIST}
+                description={i18n.embedEditorModal.source.gist.description}
+                onChange={() => setCopyFromSource(Source.GIST)}
               />
-              <Tooltip
-                aria-label={"Only available when editing a file from a GitHub gist"}
-                content={<p>Only available when editing a file from a GitHub gist.</p>}
-                trigger={!isGist ? "mouseenter click" : ""}
-              >
-                <Radio
-                  aria-label="GitHub gist source option"
-                  id={"export-gist"}
-                  isDisabled={!isGist}
-                  name={"GitHub gist"}
-                  label={"GitHub gist"}
-                  isChecked={copyFromSource === Source.GIST}
-                  description={
-                    "The embedded Editor will fetch the content from the open gist (URL). Changes made to this gist will be reflected in the Editor."
-                  }
-                  onChange={() => setCopyFromSource(Source.GIST)}
-                />
-              </Tooltip>
-            </div>
-          </List>
+            </Tooltip>
+          </div>
         </div>
         <br />
         <div style={{ display: "flex", alignItems: "center" }}>
-          <p style={{ width: "150px" }}>Embed code</p>
+          <p style={{ width: "150px" }}>{i18n.embedEditorModal.embedCode}</p>
           <TextInput aria-label={"Embed code"} value={embedCode} type={"text"} isReadOnly={true} />
         </div>
         <br />
         {copied ? (
-          <Alert style={{ height: "50px" }} variant="success" title="Copied to clipboard" isInline={true} />
+          <Alert
+            style={{ height: "50px" }}
+            variant="success"
+            title={i18n.embedEditorModal.copiedToClipboard}
+            isInline={true}
+          />
         ) : (
           <div style={{ height: "50px" }} />
         )}

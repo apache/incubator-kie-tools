@@ -72,6 +72,28 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
     updateGist: string;
     updateGistTooltip: string;
   };
+  embedEditorModal: {
+    title: string;
+    description: string;
+    copy: string;
+    readOnly: {
+      label: string;
+      description: string;
+    };
+    source: {
+      current: {
+        label: string;
+        description: string;
+      };
+      gist: {
+        tooltip: string;
+        label: string;
+        description: string;
+      };
+    };
+    embedCode: string;
+    copiedToClipboard: string;
+  };
   githubTokenModal: {
     header: {
       title: string;

@@ -73,6 +73,30 @@ export const en: OnlineI18n = {
     updateGist: "Update gist",
     updateGistTooltip: `To be able to update a gist you need to have access to it through your ${en_common.names.github} token.`
   },
+  embedEditorModal: {
+    title: "Embed",
+    description:
+      "Embed the editor and content in your page. Choose the options below and copy the embed code to your clipboard:",
+    copy: "Copy",
+    readOnly: {
+      label: "Read-only",
+      description: "Read only Editors cannot be edited, but you can navigate normally through the diagram."
+    },
+    source: {
+      current: {
+        label: "Current content",
+        description: "The embedded Editor will contain the current content, so it cannot be changed externally."
+      },
+      gist: {
+        tooltip: `Only available when editing a file from a ${en_common.names.github} gist.`,
+        label: `${en_common.names.github} gist`,
+        description:
+          "The embedded Editor will fetch the content from the open gist. Changes made to this gist will be reflected in the Editor."
+      }
+    },
+    embedCode: "Embed code",
+    copiedToClipboard: "Copied to clipboard"
+  },
   githubTokenModal: {
     header: {
       title: `${en_common.names.github} ${en_common.names.oauth} ${en_common.terms.token}`,
@@ -141,7 +165,7 @@ export const en: OnlineI18n = {
         title: "As next steps, you can try to",
         firstStep: `Connect the ${"Age".bold()} input with the ${"Can drive?".bold()} decision;`,
         secondStep: `Define the decision logic in the ${"Can drive?".bold()} node to return ${"true".bold()} when ${"Age".bold()} is
-              greater than ${"21".bold()}, otherwise ${"false".bold()};`,
+              greater than ${"21".bold()}, otherwise ${"false".bold()},`,
         thirdStep: "Execute the model."
       },
       findUsefulInfo: "You can find useful information in the",
