@@ -38,34 +38,13 @@ export const OutputsTableRow = (props: OutputsTableRowProps) => {
             <DataListCell key="0" width={4}>
               <div>{output.name}</div>
             </DataListCell>,
-            <DataListCell key="1" width={2}>
-              <div>{output.optype}</div>
-            </DataListCell>,
-            <DataListCell key="2" width={2}>
+            <DataListCell key="1" width={4}>
               <div>{output.dataType}</div>
             </DataListCell>,
-            <DataListCell key="3" width={2}>
-              <div>{output.targetField}</div>
+            <DataListCell key="2" width={5}>
+              <div>Labels here...</div>
             </DataListCell>,
-            <DataListCell key="4" width={2}>
-              <div>{output.feature}</div>
-            </DataListCell>,
-            <DataListCell key="5" width={2}>
-              <div>{output.value}</div>
-            </DataListCell>,
-            <DataListCell key="6" width={2}>
-              <div>{output.rank}</div>
-            </DataListCell>,
-            <DataListCell key="7" width={2}>
-              <div>{output.rankOrder}</div>
-            </DataListCell>,
-            <DataListCell key="8" width={2}>
-              <div>{output.segmentId}</div>
-            </DataListCell>,
-            <DataListCell key="9" width={2}>
-              <div>{output.isFinalResult}</div>
-            </DataListCell>,
-            <DataListAction id="delete-output" aria-label="delete" aria-labelledby="delete-output" key="10" width={1}>
+            <DataListAction id="delete-output" aria-label="delete" aria-labelledby="delete-output" key="3" width={1}>
               <OutputsTableAction onEdit={() => onEdit()} onDelete={() => onDelete()} disabled={isDisabled} />
             </DataListAction>
           ]}

@@ -45,15 +45,7 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
     value: undefined,
     valid: true
   });
-  const [optype, setOptype] = useState<string | undefined>();
   const [dataType, setDataType] = useState<string | undefined>();
-  const [targetField, setTargetField] = useState<string | undefined>();
-  const [feature, setFeature] = useState<string | undefined>();
-  const [value, setValue] = useState<string | undefined>();
-  const [rank, setRank] = useState<number | undefined>();
-  const [rankOrder, setRankOrder] = useState<string | undefined>();
-  const [segmentId, setSegmentId] = useState<string | undefined>();
-  const [isFinalResult, setIsFinalResult] = useState<boolean | undefined>();
 
   useEffect(() => {
     const _name = output.name.toString();
@@ -61,15 +53,7 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
       value: _name,
       valid: validateName(_name)
     });
-    setOptype(output.optype);
     setDataType(output.dataType);
-    setTargetField((output?.targetField ?? "").toString());
-    setFeature(output.feature);
-    setValue(output.value);
-    setRank(output.rank);
-    setRankOrder(output.rankOrder);
-    setSegmentId(output.segmentId);
-    setIsFinalResult(output.isFinalResult);
   }, [props]);
 
   const toNumber = (value: string): number | undefined => {
@@ -113,20 +97,8 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
                 />
               </FormGroup>
             </DataListCell>,
-            <DataListCell key="1" width={2}>
-              <FormGroup fieldId="output-optype-helper" helperText="Indicates the admissible operations on the values.">
-                <TextInput
-                  type="text"
-                  id="output-optype"
-                  name="output-optype"
-                  aria-describedby="output-optype-helper"
-                  value={optype}
-                  onChange={e => setOptype(e)}
-                />
-              </FormGroup>
-            </DataListCell>,
-            <DataListCell key="2" width={2}>
-              <FormGroup fieldId="output-dataType-helper" helperText="A Reason Code is mapped to a Business reason.">
+            <DataListCell key="1" width={4}>
+              <FormGroup fieldId="output-dataType-helper" helperText="Specifies the data type for the output field.">
                 <TextInput
                   type="text"
                   id="output-dataType"
@@ -137,111 +109,10 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
                 />
               </FormGroup>
             </DataListCell>,
-
-            <DataListCell key="3" width={2}>
-              <FormGroup fieldId="output-targetField-helper" helperText="Target field for the Output field.">
-                <TextInput
-                  type="text"
-                  id="output-targetField"
-                  name="output-targetField"
-                  aria-describedby="output-targetField-helper"
-                  value={targetField}
-                  onChange={e => setTargetField(e)}
-                />
-              </FormGroup>
+            <DataListCell key="2" width={5}>
+              <div>Labels here...</div>
             </DataListCell>,
-            <DataListCell key="4" width={2}>
-              <FormGroup
-                fieldId="output-feature-helper"
-                helperText="Specifies the value the output field takes from the computed mining result."
-              >
-                <TextInput
-                  type="text"
-                  id="output-feature"
-                  name="output-v"
-                  aria-describedby="output-feature-helper"
-                  value={feature}
-                  onChange={e => setFeature(e)}
-                />
-              </FormGroup>
-            </DataListCell>,
-            <DataListCell key="5" width={2}>
-              <FormGroup
-                fieldId="output-value-helper"
-                helperText="Used in conjunction with result features referring to specific values."
-              >
-                <TextInput
-                  type="text"
-                  id="output-value"
-                  name="output-value"
-                  aria-describedby="output-value-helper"
-                  value={value}
-                  onChange={e => setValue(e)}
-                />
-              </FormGroup>
-            </DataListCell>,
-            <DataListCell key="6" width={2}>
-              <FormGroup
-                fieldId="output-rank-helper"
-                helperText="Specifies the rank of the feature value from the mining result that should be selected."
-              >
-                <TextInput
-                  type="text"
-                  id="output-rank"
-                  name="output-rank"
-                  aria-describedby="output-rank-helper"
-                  value={rank}
-                  onChange={e => setRank(toNumber(e))}
-                />
-              </FormGroup>
-            </DataListCell>,
-            <DataListCell key="7" width={2}>
-              <FormGroup
-                fieldId="output-rankOrder-helper"
-                helperText="Determines the sorting order when ranking the results."
-              >
-                <TextInput
-                  type="text"
-                  id="output-rankOrder"
-                  name="output-rankOrder"
-                  aria-describedby="output-rankOrder-helper"
-                  value={rankOrder}
-                  onChange={e => setRankOrder(e)}
-                />
-              </FormGroup>
-            </DataListCell>,
-            <DataListCell key="8" width={2}>
-              <FormGroup
-                fieldId="output-segmentId-helper"
-                helperText="Provides an approach to deliver results from Segments."
-              >
-                <TextInput
-                  type="text"
-                  id="output-segmentId"
-                  name="output-segmentId"
-                  aria-describedby="output-segmentId-helper"
-                  value={segmentId}
-                  onChange={e => setSegmentId(e)}
-                />
-              </FormGroup>
-            </DataListCell>,
-            <DataListCell key="9" width={2}>
-              <FormGroup
-                fieldId="output-isFinalResult-helper"
-                helperText="A Reason Code is mapped to a Business reason."
-              >
-                <TextInput
-                  type="text"
-                  id="output-isFinalResult"
-                  name="output-isFinalResult"
-                  aria-describedby="output-isFinalResult-helper"
-                  value={isFinalResult?.toString()}
-                  onChange={e => setIsFinalResult(Boolean(e))}
-                />
-              </FormGroup>
-            </DataListCell>,
-
-            <DataListAction id="delete-output" aria-label="delete" aria-labelledby="delete-output" key="11" width={1}>
+            <DataListAction id="delete-output" aria-label="delete" aria-labelledby="delete-output" key="3" width={1}>
               <OutputsTableEditModeAction
                 onCommit={() => onCommit(name.value, dataType)}
                 onCancel={() => onCancel()}

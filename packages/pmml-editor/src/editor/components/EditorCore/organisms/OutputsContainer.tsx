@@ -18,6 +18,7 @@ import { Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 import { Bullseye } from "@patternfly/react-core";
 import "./OutputsContainer.scss";
+import { OutputsTableHeader } from "./OutputsTableHeader";
 import { OutputsTable } from "./OutputsTable";
 import { Operation } from "../../EditorScorecard";
 
@@ -38,14 +39,19 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   return (
     <div className="outputs-container">
       {(output?.OutputField ?? []).length > 0 && (
-        <OutputsTable
-          activeOperation={activeOperation}
-          setActiveOperation={setActiveOperation}
-          validateName={_name => true}
-          deleteOutput={_index => null}
-          commit={(index, text) => null}
-          outputs={output?.OutputField as OutputField[]}
-        />
+        <div className="outputs-container__list__container">
+          <OutputsTableHeader />
+          <div className="outputs-container__list">
+            <OutputsTable
+              activeOperation={activeOperation}
+              setActiveOperation={setActiveOperation}
+              validateName={_name => true}
+              deleteOutput={_index => null}
+              commit={(index, text) => null}
+              outputs={output?.OutputField as OutputField[]}
+            />
+          </div>
+        </div>
       )}
       {(output?.OutputField ?? []).length === 0 && (
         <Bullseye>
