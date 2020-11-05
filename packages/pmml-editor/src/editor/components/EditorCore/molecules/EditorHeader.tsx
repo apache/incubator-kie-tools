@@ -25,11 +25,13 @@ interface EditorHeaderProps {
   title: string;
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
+  modelIndex: number;
   output?: Output;
 }
 
 export const EditorHeader = (props: EditorHeaderProps) => {
-  const { activeOperation, setActiveOperation, output } = props;
+  const { activeOperation, setActiveOperation, modelIndex, output } = props;
+
   return (
     <Split hasGutter={true}>
       <SplitItem isFilled={true}>
@@ -39,7 +41,12 @@ export const EditorHeader = (props: EditorHeaderProps) => {
         <DataDictionaryHandler activeOperation={activeOperation} />
       </SplitItem>
       <SplitItem>
-        <OutputsHandler activeOperation={activeOperation} setActiveOperation={setActiveOperation} output={output} />
+        <OutputsHandler
+          activeOperation={activeOperation}
+          setActiveOperation={setActiveOperation}
+          modelIndex={modelIndex}
+          output={output}
+        />
       </SplitItem>
     </Split>
   );

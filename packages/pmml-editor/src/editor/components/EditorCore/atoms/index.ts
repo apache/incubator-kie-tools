@@ -14,6 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./EditorHeader";
-export * from "./OutputsTableRow";
-export * from "./OutputsTableEditRow";
+export * from "./OutputsTableAction";
+export * from "./OutputsTableEditModeAction";

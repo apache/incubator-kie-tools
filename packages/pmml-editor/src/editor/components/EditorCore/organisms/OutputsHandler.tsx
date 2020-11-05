@@ -31,13 +31,14 @@ import { OutputsContainer } from "./OutputsContainer";
 import { Operation } from "../../EditorScorecard";
 
 interface OutputsHandlerProps {
+  modelIndex: number;
   activeOperation: Operation;
-  setActiveOperation?: (operation: Operation) => void;
+  setActiveOperation: (operation: Operation) => void;
   output?: Output;
 }
 
 export const OutputsHandler = (props: OutputsHandlerProps) => {
-  const { activeOperation, output } = props;
+  const { modelIndex, activeOperation, setActiveOperation, output } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -74,7 +75,12 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
         variant={ModalVariant.large}
         onEscapePress={() => false}
       >
-        <OutputsContainer output={output} />
+        <OutputsContainer
+          modelIndex={modelIndex}
+          activeOperation={activeOperation}
+          setActiveOperation={setActiveOperation}
+          output={output}
+        />
       </Modal>
     </>
   );

@@ -14,25 +14,39 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Output } from "@kogito-tooling/pmml-editor-marshaller";
+import { Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 import { Bullseye } from "@patternfly/react-core";
 import "./OutputsContainer.scss";
+import { OutputsTable } from "./OutputsTable";
+import { Operation } from "../../EditorScorecard";
 
 interface OutputsContainerProps {
+  modelIndex: number;
+  activeOperation: Operation;
+  setActiveOperation: (operation: Operation) => void;
   output?: Output;
 }
 
 export const OutputsContainer = (props: OutputsContainerProps) => {
-  const { output } = props;
+  const { activeOperation, setActiveOperation, output } = props;
 
   const addOutput = () => {
-    window.alert("Add Output");
+    setActiveOperation(Operation.CREATE_OUTPUT);
   };
 
   return (
     <div className="outputs-container">
-      {(output?.OutputField ?? []).length > 0 && <p>OutputsContainer output=${output?.OutputField.length}</p>}
+      {(output?.OutputField ?? []).length > 0 && (
+        <OutputsTable
+          activeOperation={activeOperation}
+          setActiveOperation={setActiveOperation}
+          validateName={_name => true}
+          deleteOutput={_index => null}
+          commit={(index, text) => null}
+          outputs={output?.OutputField as OutputField[]}
+        />
+      )}
       {(output?.OutputField ?? []).length === 0 && (
         <Bullseye>
           <EmptyStateNoOutput addOutput={addOutput} />

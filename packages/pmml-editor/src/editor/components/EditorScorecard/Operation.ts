@@ -18,5 +18,6 @@ export enum Operation {
   NONE,
   CREATE_ATTRIBUTE,
   CREATE_CHARACTERISTIC,
+  CREATE_OUTPUT,
   UPDATE
 }

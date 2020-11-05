@@ -60,22 +60,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const characteristics: Characteristics | undefined = useMemo(() => model?.Characteristics, [model]);
   const output: Output | undefined = useMemo(() => model?.Output, [model]);
 
-  //   const characteristics: Characteristics | undefined = useSelector<PMML, Characteristics | undefined>((state: PMML) => {
-  //   const model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
-  //   if (model && model instanceof Scorecard) {
-  //     return (model as Scorecard).Characteristics;
-  //   }
-  //   return undefined;
-  // });
-
-  // const output: Output | undefined = useSelector<PMML, Output | undefined>((state: PMML) => {
-  //   const model: Model | undefined = state.models ? state.models[props.modelIndex] : undefined;
-  //   if (model && model instanceof Scorecard) {
-  //     return (model as Scorecard).Output;
-  //   }
-  //   return undefined;
-  // });
-
   const onAddAttribute = useCallback(() => {
     setActiveOperation(Operation.CREATE_ATTRIBUTE);
   }, [characteristics]);
@@ -193,6 +177,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               title={getModelName(model)}
               activeOperation={activeOperation}
               setActiveOperation={setActiveOperation}
+              modelIndex={modelIndex}
               output={output}
             />
           </PageSection>
