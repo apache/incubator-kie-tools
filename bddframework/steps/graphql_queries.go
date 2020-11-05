@@ -22,6 +22,13 @@ var (
 	  }
 	}
   `
+	getProcessInstancesIDByNameQuery = `
+	{
+	  ProcessInstances(where: {processName: {equal: "$name"}}, pagination: {offset: $offset, limit: $limit}) {
+		id
+	  }
+	}
+  `
 	getJobsIDQuery = `
 	{
 	  Jobs{
@@ -35,6 +42,13 @@ var (
 type GraphqlDataIndexProcessInstancesQueryResponse struct {
 	ProcessInstances []struct {
 		ProcessName string `json:"processName,omitempty"`
+	}
+}
+
+// GraphqlDataIndexProcessInstancesIDQueryResponse Query response type of Data Index GraphQL endpoint containing process instance IDs
+type GraphqlDataIndexProcessInstancesIDQueryResponse struct {
+	ProcessInstances []struct {
+		ID string `json:"id,omitempty"`
 	}
 }
 

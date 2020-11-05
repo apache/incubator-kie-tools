@@ -15,6 +15,10 @@
 package steps
 
 import (
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
@@ -24,6 +28,7 @@ func registerGraphQLSteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^GraphQL request on service "([^"]*)" is successful within (\d+) minutes with path "([^"]*)" and query:$`, data.graphqlRequestOnServiceIsSuccessfulWithinMinutesWithPathAndQuery)
 	ctx.Step(`^GraphQL request on service "([^"]*)" is successful using access token "([^"]*)" within (\d+) minutes with path "([^"]*)" and query:$`, data.graphqlRequestOnServiceIsSuccessfulUsingAccessTokenWithinMinutesWithPathAndQuery)
 	ctx.Step(`^GraphQL request on Data Index service returns ProcessInstances processName "([^"]*)" within (\d+) minutes$`, data.graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWithinMinutes)
+	ctx.Step(`^GraphQL request on Data Index service returns (\d+) (?:instance|instances) of process with name "([^"]*)" within (\d+) minutes$`, data.graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWithinMinutes)
 	ctx.Step(`^GraphQL request on Data Index service returns Jobs ID "([^"]*)" within (\d+) minutes$`, data.graphqlRequestOnDataIndexReturnsJobsIDWithinMinutes)
 }
 
@@ -68,6 +73,46 @@ func (data *Data) graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWit
 		}
 		return false, nil
 	})
+}
+
+func (data *Data) graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWithinMinutes(processInstances int, processName string, timeoutInMin int) error {
+	serviceName := infrastructure.DefaultDataIndexName
+	pageSize := 1000
+	preProcessedQuery := strings.ReplaceAll(getProcessInstancesIDByNameQuery, "$name", processName)
+	preProcessedQuery = strings.ReplaceAll(preProcessedQuery, "$limit", strconv.Itoa(pageSize))
+	path := "graphql"
+
+	framework.GetLogger(data.Namespace).Debugf("graphqlRequestOnDataIndexReturnsInstancesOfProcessWithNameWithinMinutes with service %s, path %s, query %s and timeout %d", serviceName, path, preProcessedQuery, timeoutInMin)
+	uri, err := framework.WaitAndRetrieveEndpointURI(data.Namespace, serviceName)
+	if err != nil {
+		return err
+	}
+	response := GraphqlDataIndexProcessInstancesIDQueryResponse{}
+	var allQueriedProcessInstances GraphqlDataIndexProcessInstancesIDQueryResponse
+
+	startTime := time.Now()
+
+	err = framework.WaitForSuccessfulGraphQLRequestUsingPagination(data.Namespace, uri, path, preProcessedQuery, timeoutInMin, pageSize, processInstances, &response,
+		func(response interface{}) (bool, error) {
+			resp := response.(*GraphqlDataIndexProcessInstancesIDQueryResponse)
+			allQueriedProcessInstances.ProcessInstances = append(allQueriedProcessInstances.ProcessInstances, resp.ProcessInstances...)
+			return true, nil
+		},
+		func() (bool, error) {
+			queried := len(allQueriedProcessInstances.ProcessInstances)
+			framework.GetLogger(data.Namespace).Infof("Queried records: %d, expected: %d", queried, processInstances)
+			conditionMet := queried == processInstances
+			if !conditionMet { // delete all results so we can start again
+				allQueriedProcessInstances.ProcessInstances = nil
+			}
+			return conditionMet, nil
+		})
+
+	duration := time.Since(startTime)
+	// TODO include reporting
+	framework.GetLogger(data.Namespace).Infof("%d process instances retrieved from Data Index after %s", processInstances, duration)
+
+	return err
 }
 
 func (data *Data) graphqlRequestOnDataIndexReturnsJobsIDWithinMinutes(id string, timeoutInMin int) error {

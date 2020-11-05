@@ -24,18 +24,38 @@ import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
+	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
 )
+
+/*
+	DataTable for Maven:
+	| -Dproperty=value |
+*/
 
 // registerImageRegistrySteps register all existing image registry steps
 func registerImageRegistrySteps(ctx *godog.ScenarioContext, data *Data) {
 	ctx.Step(`^Local example service "([^"]*)" is built by Maven using profile "([^"]*)" and deployed to runtime registry$`, data.localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistry)
+	ctx.Step(`^Local example service "([^"]*)" is built by Maven using profile "([^"]*)" and deployed to runtime registry with Maven options:$`, data.localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistryWithMavenOptions)
 }
 
 // Build local service and deploy it to registry if the registry doesn't contain such image already
 func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistry(contextDir, profile string) error {
+	return data.localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistryWithMavenOptions(contextDir, profile, nil)
+}
+
+// Build local service and deploy it to registry if the registry doesn't contain such image already
+func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistryWithMavenOptions(contextDir, profile string, table *godog.Table) error {
+	var options []string
+	if table != nil && len(table.Rows) > 0 {
+		err := mappers.MapMavenOptionsTable(table, &options)
+		if err != nil {
+			return err
+		}
+	}
+
 	projectLocation := data.KogitoExamplesLocation + "/" + contextDir
 
-	imageTag, err := getKogitoImageTag(projectLocation, profile)
+	imageTag, err := getKogitoImageTag(projectLocation, profile, options)
 	if err != nil {
 		return err
 	}
@@ -43,7 +63,7 @@ func (data *Data) localServiceBuiltByMavenWithProfileAndDeployedToRuntimeRegistr
 	if needToBuildImage(data.Namespace, imageTag) {
 		// Not found in registry, so we need to build and push the application
 		// Build the application
-		err = data.localServiceBuiltByMavenWithProfile(contextDir, profile)
+		err = data.localServiceBuiltByMavenWithProfileWithOptions(contextDir, profile, options)
 		if err != nil {
 			return err
 		}
@@ -98,7 +118,7 @@ func needToBuildImage(namespace, imageTag string) bool {
 }
 
 // Returns complete Kogito image tag, registry and namespace is retrieved from test configuration
-func getKogitoImageTag(projectLocation, mavenProfiles string) (string, error) {
+func getKogitoImageTag(projectLocation, mavenProfiles string, mavenOptions []string) (string, error) {
 	runtimeApplicationImageRegistry := config.GetRuntimeApplicationImageRegistry()
 	if len(runtimeApplicationImageRegistry) == 0 {
 		return "", errors.New("Runtime application image registry must be set to build the image")
@@ -114,13 +134,13 @@ func getKogitoImageTag(projectLocation, mavenProfiles string) (string, error) {
 		runtimeApplicationImageVersion = "latest"
 	}
 
-	kogitoImageName := getKogitoImageName(projectLocation, mavenProfiles)
+	kogitoImageName := getKogitoImageName(projectLocation, mavenProfiles, mavenOptions)
 	buildImageTag := fmt.Sprintf("%s/%s/%s:%s", runtimeApplicationImageRegistry, runtimeApplicationImageNamespace, kogitoImageName, runtimeApplicationImageVersion)
 	return buildImageTag, nil
 }
 
-// Returns Kogito image name in the form of "<project location base>(-<maven profile>)*"
-func getKogitoImageName(projectLocation, mavenProfiles string) string {
+// Returns Kogito image name in the form of "<project location base>(-<maven profile>)*(-<maven option>)*"
+func getKogitoImageName(projectLocation, mavenProfiles string, mavenOptions []string) string {
 	kogitoApplicationBaseName := filepath.Base(projectLocation)
 	kogitoApplicationNameParts := []string{kogitoApplicationBaseName}
 
@@ -131,6 +151,20 @@ func getKogitoImageName(projectLocation, mavenProfiles string) string {
 		sort.Strings(mavenProfilesSlice)
 
 		kogitoApplicationNameParts = append(kogitoApplicationNameParts, mavenProfilesSlice...)
+	}
+
+	if len(mavenOptions) > 0 {
+		// Sanitize mavenOptions so they can be used in the image name
+		var sanitizedMavenOptions []string
+		for _, option := range mavenOptions {
+			option = strings.ReplaceAll(option, "=", "-")
+			option = strings.ToLower(option)
+			sanitizedMavenOptions = append(sanitizedMavenOptions, option)
+		}
+		// Sort mavenOptions to generate consistent image name
+		sort.Strings(sanitizedMavenOptions)
+
+		kogitoApplicationNameParts = append(kogitoApplicationNameParts, sanitizedMavenOptions...)
 	}
 
 	if runtimeApplicationImageNameSuffix := config.GetRuntimeApplicationImageNameSuffix(); len(runtimeApplicationImageNameSuffix) > 0 {

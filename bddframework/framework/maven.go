@@ -48,6 +48,8 @@ type MavenCommand interface {
 	UpdateArtifacts() MavenCommand
 	// Profiles sets the profiles to execute
 	Profiles(profiles ...string) MavenCommand
+	// Options adds additional command line options for the Maven command
+	Options(options ...string) MavenCommand
 }
 
 type mavenCommandStruct struct {
@@ -82,6 +84,11 @@ func (mvnCmd *mavenCommandStruct) UpdateArtifacts() MavenCommand {
 
 func (mvnCmd *mavenCommandStruct) Profiles(profiles ...string) MavenCommand {
 	mvnCmd.profiles = append(mvnCmd.profiles, profiles...)
+	return mvnCmd
+}
+
+func (mvnCmd *mavenCommandStruct) Options(options ...string) MavenCommand {
+	mvnCmd.otherOptions = append(mvnCmd.otherOptions, options...)
 	return mvnCmd
 }
 

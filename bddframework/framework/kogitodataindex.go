@@ -16,6 +16,7 @@ package framework
 
 import (
 	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	framework2 "github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
@@ -29,7 +30,13 @@ func InstallKogitoDataIndexService(namespace string, installerType InstallerType
 
 // WaitForKogitoDataIndexService wait for Kogito Data Index to be deployed
 func WaitForKogitoDataIndexService(namespace string, replicas int, timeoutInMin int) error {
-	return WaitForService(namespace, getDataIndexServiceName(), replicas, timeoutInMin)
+	if err := WaitForDeploymentRunning(namespace, getDataIndexServiceName(), replicas, timeoutInMin); err != nil {
+		return err
+	}
+
+	// Data Index can be restarted after the deployment of KogitoRuntime, so 2 pods can run in parallel for a while.
+	// We need to wait for only one (wait until the old one is deleted)
+	return WaitForPodsWithLabel(namespace, framework2.LabelAppKey, getDataIndexServiceName(), replicas, timeoutInMin)
 }
 
 func getDataIndexServiceName() string {

@@ -39,11 +39,17 @@ func (data *Data) localServiceBuiltByMaven(serviceName string) error {
 
 // Build local service
 func (data *Data) localServiceBuiltByMavenWithProfile(serviceName, profile string) error {
+	return data.localServiceBuiltByMavenWithProfileWithOptions(serviceName, profile, nil)
+}
+
+// Build local service with additional options
+func (data *Data) localServiceBuiltByMavenWithProfileWithOptions(serviceName, profile string, options []string) error {
 	serviceRepositoryPath := data.KogitoExamplesLocation + "/" + serviceName
 	output, err := framework.CreateMavenCommand(serviceRepositoryPath).
 		SkipTests().
 		UpdateArtifacts().
 		Profiles(profile).
+		Options(options...).
 		WithLoggerContext(data.Namespace).
 		Execute("clean", "package")
 	framework.GetLogger(data.Namespace).Debugf(output)
