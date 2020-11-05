@@ -22,6 +22,7 @@ import {
   Characteristics,
   Model,
   Output,
+  OutputField,
   PMML,
   Scorecard
 } from "@kogito-tooling/pmml-editor-marshaller";
@@ -92,6 +93,18 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
       return matching.length === 0;
     },
     [characteristics]
+  );
+
+  const validateOutputName = useCallback(
+    (index: number | undefined, name: string): boolean => {
+      if (name === undefined || name === "") {
+        return false;
+      }
+      const existing: OutputField[] = output?.OutputField ?? [];
+      const matching = existing.filter((c, _index) => _index !== index && c.name === name);
+      return matching.length === 0;
+    },
+    [output]
   );
 
   const validateText = (text: string | undefined) => {
@@ -179,6 +192,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               setActiveOperation={setActiveOperation}
               modelIndex={modelIndex}
               output={output}
+              validateOutputName={validateOutputName}
             />
           </PageSection>
 

@@ -25,13 +25,13 @@ interface OutputsTableProps {
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   outputs: OutputField[];
-  validateName: (text: string | undefined) => boolean;
+  validateOutputName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutput: (index: number) => void;
   commit: (index: number | undefined, text: string | undefined) => void;
 }
 
 export const OutputsTable = (props: OutputsTableProps) => {
-  const { activeOperation, setActiveOperation, outputs, deleteOutput, validateName, commit } = props;
+  const { activeOperation, setActiveOperation, outputs, deleteOutput, validateOutputName, commit } = props;
 
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
   const addOutputRowRef = useRef<HTMLDivElement | null>(null);
@@ -51,6 +51,10 @@ export const OutputsTable = (props: OutputsTableProps) => {
     if (index !== undefined) {
       deleteOutput(index);
     }
+  };
+
+  const onValidateOutputName = (index: number | undefined, name: string | undefined): boolean => {
+    return validateOutputName(index, name);
   };
 
   const onCommit = (index: number | undefined, name: string | undefined, dataType: string | undefined) => {
@@ -83,7 +87,7 @@ export const OutputsTable = (props: OutputsTableProps) => {
                 key={index}
                 index={index}
                 output={output}
-                validateName={validateName}
+                validateOutputName={_name => onValidateOutputName(index, _name)}
                 onCommit={(_name, _dataType) => onCommit(index, _name, _dataType)}
                 onCancel={() => onCancel()}
               />
@@ -109,7 +113,7 @@ export const OutputsTable = (props: OutputsTableProps) => {
               key={"add"}
               index={undefined}
               output={{ name: "" as FieldName, dataType: "boolean" }}
-              validateName={validateName}
+              validateOutputName={_name => onValidateOutputName(undefined, _name)}
               onCommit={(_name, _dataType) => onCommit(undefined, _name, _dataType)}
               onCancel={() => onCancel()}
             />

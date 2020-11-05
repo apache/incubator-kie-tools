@@ -27,10 +27,11 @@ interface OutputsContainerProps {
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   output?: Output;
+  validateOutputName: (index: number | undefined, name: string | undefined) => boolean;
 }
 
 export const OutputsContainer = (props: OutputsContainerProps) => {
-  const { activeOperation, setActiveOperation, output } = props;
+  const { activeOperation, setActiveOperation, output, validateOutputName } = props;
 
   const addOutput = () => {
     setActiveOperation(Operation.CREATE_OUTPUT);
@@ -45,7 +46,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
             <OutputsTable
               activeOperation={activeOperation}
               setActiveOperation={setActiveOperation}
-              validateName={_name => true}
+              validateOutputName={validateOutputName}
               deleteOutput={_index => null}
               commit={(index, text) => null}
               outputs={output?.OutputField as OutputField[]}

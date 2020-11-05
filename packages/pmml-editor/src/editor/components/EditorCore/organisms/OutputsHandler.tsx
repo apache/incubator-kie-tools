@@ -35,10 +35,11 @@ interface OutputsHandlerProps {
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   output?: Output;
+  validateOutputName: (index: number | undefined, name: string | undefined) => boolean;
 }
 
 export const OutputsHandler = (props: OutputsHandlerProps) => {
-  const { modelIndex, activeOperation, setActiveOperation, output } = props;
+  const { modelIndex, activeOperation, setActiveOperation, output, validateOutputName } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -80,6 +81,7 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
           activeOperation={activeOperation}
           setActiveOperation={setActiveOperation}
           output={output}
+          validateOutputName={validateOutputName}
         />
       </Modal>
     </>

@@ -33,13 +33,13 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons";
 interface OutputsTableEditRowProps {
   index: number | undefined;
   output: OutputField;
-  validateName: (name: string) => boolean;
+  validateOutputName: (name: string | undefined) => boolean;
   onCommit: (text: string | undefined, dataType: string | undefined) => void;
   onCancel: () => void;
 }
 
 export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
-  const { index, output, validateName, onCommit, onCancel } = props;
+  const { index, output, validateOutputName, onCommit, onCancel } = props;
 
   const [name, setName] = useState<ValidatedType<string | undefined>>({
     value: undefined,
@@ -51,21 +51,10 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
     const _name = output.name.toString();
     setName({
       value: _name,
-      valid: validateName(_name)
+      valid: validateOutputName(_name)
     });
     setDataType(output.dataType);
   }, [props]);
-
-  const toNumber = (value: string): number | undefined => {
-    if (value === "") {
-      return undefined;
-    }
-    const n = Number(value);
-    if (isNaN(n)) {
-      return undefined;
-    }
-    return n;
-  };
 
   return (
     <DataListItem id={index?.toString()} className="outputs__list-item" aria-labelledby={"output-" + index}>
@@ -91,7 +80,7 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
                   onChange={e =>
                     setName({
                       value: e,
-                      valid: validateName(e)
+                      valid: validateOutputName(e)
                     })
                   }
                 />
