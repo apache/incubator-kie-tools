@@ -1,0 +1,10 @@
+.mining-schema {
+  &__field-option {
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 0 0.5em 0.5em 0;
+  }
+  &__fields {
+    min-height: 30vh;
+  }
+}

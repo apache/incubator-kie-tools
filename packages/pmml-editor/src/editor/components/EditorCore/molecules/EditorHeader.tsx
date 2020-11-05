@@ -20,6 +20,7 @@ import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/Da
 import { OutputsHandler } from "../organisms";
 import { Operation } from "../../EditorScorecard";
 import { DataType, FieldName, OpType, Output, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
+import MiningSchemaHandler from "../../MiningSchema/MiningSchemaHandler/MiningSchemaHandler";
 
 interface EditorHeaderProps {
   title: string;
@@ -62,6 +63,9 @@ export const EditorHeader = (props: EditorHeaderProps) => {
       </SplitItem>
       <SplitItem>
         <DataDictionaryHandler activeOperation={activeOperation} />
+      </SplitItem>
+      <SplitItem>
+        <MiningSchemaHandler activeOperation={activeOperation} />
       </SplitItem>
       <SplitItem>
         <OutputsHandler
