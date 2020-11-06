@@ -179,7 +179,7 @@ export function EditorPage(props: Props) {
     setModal(Modal.GITHUB_TOKEN);
   }, []);
 
-  const requestExportIframe = useCallback(() => {
+  const requestEmbed = useCallback(() => {
     setModal(Modal.EMBED);
   }, []);
 
@@ -266,7 +266,7 @@ export function EditorPage(props: Props) {
           onSetGitHubToken={requestSetGitHubToken}
           onExportGist={requestExportGist}
           onUpdateGist={requestUpdateGist}
-          onExportIframe={requestExportIframe}
+          onExportIframe={requestEmbed}
           isEdited={isDirty}
         />
       }
@@ -358,10 +358,8 @@ export function EditorPage(props: Props) {
             </Alert>
           </div>
         )}
-        {!fullscreen && modal === Modal.GITHUB_TOKEN && (
-          <GithubTokenModal isOpen={modal === Modal.GITHUB_TOKEN} onClose={closeModal} />
-        )}
-        {!fullscreen && modal === Modal.EMBED && (
+        {!fullscreen && <GithubTokenModal isOpen={modal === Modal.GITHUB_TOKEN} onClose={closeModal} />}
+        {!fullscreen && (
           <EmbedEditorModal
             isOpen={modal === Modal.EMBED}
             fileExtension={fileExtension}

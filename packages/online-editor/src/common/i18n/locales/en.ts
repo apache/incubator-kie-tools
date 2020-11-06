@@ -71,7 +71,8 @@ export const en: OnlineI18n = {
     gistItTooltip: `Set up your ${en_common.names.github} token to be able to create gists!`,
     fileActions: "File actions",
     updateGist: "Update gist",
-    updateGistTooltip: `To be able to update a gist you need to have access to it through your ${en_common.names.github} token.`
+    updateGistTooltip: `To be able to update a gist you need to have access to it through your ${en_common.names.github} token.`,
+    embed: "Embed",
   },
   embedEditorModal: {
     title: "Embed",

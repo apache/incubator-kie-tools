@@ -189,7 +189,7 @@ export function EditorToolbar(props: Props) {
         component="button"
         onClick={props.onExportIframe}
       >
-        Embed
+        {i18n.editorToolbar.embed}
       </DropdownItem>
     ],
     [

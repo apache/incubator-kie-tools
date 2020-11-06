@@ -71,6 +71,7 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
     fileActions: string;
     updateGist: string;
     updateGistTooltip: string;
+    embed: string;
   };
   embedEditorModal: {
     title: string;

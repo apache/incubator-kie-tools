@@ -22,16 +22,24 @@ import { GlobalContext } from "../common/GlobalContext";
 import { EmbeddedEditorRef } from "@kogito-tooling/editor/dist/embedded";
 import { useOnlineI18n } from "../common/i18n";
 
-const BPMN_SOURCE = "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js";
-const DMN_SOURCE = "https://kiegroup.github.io/kogito-online/standalone/dmn/index.js";
+type SupportedStandaloneEditorFileExtensions = "bpmn" | "bpmn2" | "dmn";
+type StandaloneEditorLibraryName = "BpmnEditor" | "DmnEditor";
 
-type FileExtension = "bpmn" | "bpmn2" | "dmn";
-type EmbeddableClass = "BpmnEditor" | "DmnEditor";
+interface StandaloneConfigs {
+  libraryName: StandaloneEditorLibraryName;
+  scriptUrl: string;
+}
 
-const editorStandaloneClassMapping = new Map<FileExtension, EmbeddableClass>([
-  ["bpmn", "BpmnEditor"],
-  ["bpmn2", "BpmnEditor"],
-  ["dmn", "DmnEditor"]
+const editorStandaloneClassMapping = new Map<SupportedStandaloneEditorFileExtensions, StandaloneConfigs>([
+  [
+    "bpmn",
+    { libraryName: "BpmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js" }
+  ],
+  [
+    "bpmn2",
+    { libraryName: "BpmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js" }
+  ],
+  ["dmn", { libraryName: "DmnEditor", scriptUrl: "https://kiegroup.github.io/kogito-online/standalone/dmn/index.js" }]
 ]);
 
 interface Props {
@@ -41,8 +49,8 @@ interface Props {
   onClose: () => void;
 }
 
-enum Source {
-  CURRENT,
+enum ContentSource {
+  CURRENT_CONTENT,
   GIST
 }
 
@@ -50,7 +58,7 @@ export function EmbedEditorModal(props: Props) {
   const fileUrl = useFileUrl();
   const context = useContext(GlobalContext);
   const [readOnly, setReadonly] = useState(true);
-  const [copyFromSource, setCopyFromSource] = useState(Source.CURRENT);
+  const [contentSource, setContentSource] = useState(ContentSource.CURRENT_CONTENT);
   const [copied, setCopied] = useState(false);
   const [embedCode, setEmbedCode] = useState("");
   const copyContentTextArea = useRef<HTMLInputElement>(null);
@@ -58,12 +66,15 @@ export function EmbedEditorModal(props: Props) {
 
   const isGist = useMemo(() => context.githubService.isGist(fileUrl), [fileUrl, context]);
 
-  const isFileExtension = useCallback((toBeDetermined: string): toBeDetermined is FileExtension => {
-    return toBeDetermined === "bpmn" || toBeDetermined === "bpmn2" || toBeDetermined === "dmn";
-  }, []);
+  const isSupportedStandaloneEditorFileExtensions = useCallback(
+    (toBeDetermined: string): toBeDetermined is SupportedStandaloneEditorFileExtensions => {
+      return toBeDetermined === "bpmn" || toBeDetermined === "bpmn2" || toBeDetermined === "dmn";
+    },
+    []
+  );
 
-  const getStandaloneEditorFromGist = useCallback(
-    (editor: EmbeddableClass, gistUrl: string) => {
+  const getStandaloneEditorScriptFromGist = useCallback(
+    (editor: StandaloneEditorLibraryName, gistUrl: string) => {
       return `
     <script>
       fetch("${gistUrl}")
@@ -74,8 +85,8 @@ export function EmbedEditorModal(props: Props) {
     [readOnly]
   );
 
-  const getStandaloneEditorFromCurrentContent = useCallback(
-    (editor: EmbeddableClass, content: string) => {
+  const getStandaloneEditorScriptFromCurrentContent = useCallback(
+    (editor: StandaloneEditorLibraryName, content: string) => {
       return `
     <script>
       ${editor}.open({container: document.body, readOnly: ${readOnly}, initialContent: '${content}', origin: "*" })
@@ -84,11 +95,11 @@ export function EmbedEditorModal(props: Props) {
     [readOnly]
   );
 
-  const getStandaloneEditorSrcdoc = useCallback((script: string, type: FileExtension) => {
+  const getStandaloneEditorIframeSrcdoc = useCallback((script: string, scriptUrl: string) => {
     return `<!DOCTYPE html>
     <html lang="en">
     <head>
-      <script src="${type === "dmn" ? DMN_SOURCE : BPMN_SOURCE}"></script>
+      <script src="${scriptUrl}"></script>
       <title></title>
       <style>
         html,
@@ -108,36 +119,39 @@ export function EmbedEditorModal(props: Props) {
     </html>`;
   }, []);
 
-  useEffect(() => {
-    if (isFileExtension(props.fileExtension)) {
+  const getStandaloneEditorIframeOuterHtml = useCallback(async () => {
+    if (isSupportedStandaloneEditorFileExtensions(props.fileExtension)) {
       const iframe = document.createElement("iframe");
       iframe.width = "100%";
       iframe.height = "100%";
-      const embeddableClass = editorStandaloneClassMapping.get(props.fileExtension)!;
+      const { libraryName, scriptUrl } = editorStandaloneClassMapping.get(props.fileExtension)!;
 
-      if (copyFromSource === Source.CURRENT) {
-        props.editor?.getContent().then(editorContent => {
-          const clearContent = editorContent.replace(/(\r\n|\n|\r)/gm, "");
-          const script = getStandaloneEditorFromCurrentContent(embeddableClass, clearContent);
-          iframe.srcdoc = getStandaloneEditorSrcdoc(script, props.fileExtension as FileExtension);
-          setEmbedCode(iframe.outerHTML);
-        });
+      if (contentSource === ContentSource.CURRENT_CONTENT) {
+        const editorContent = ((await props.editor?.getContent()) ?? "").replace(/(\r\n|\n|\r)/gm, "");
+        const script = getStandaloneEditorScriptFromCurrentContent(libraryName, editorContent);
+        iframe.srcdoc = getStandaloneEditorIframeSrcdoc(script, scriptUrl);
+        return iframe.outerHTML;
       }
 
-      if (copyFromSource === Source.GIST) {
-        const script = getStandaloneEditorFromGist(embeddableClass, fileUrl);
-        iframe.srcdoc = getStandaloneEditorSrcdoc(script, props.fileExtension);
-        setEmbedCode(iframe.outerHTML);
+      if (contentSource === ContentSource.GIST) {
+        const script = getStandaloneEditorScriptFromGist(libraryName, fileUrl);
+        iframe.srcdoc = getStandaloneEditorIframeSrcdoc(script, scriptUrl);
+        return iframe.outerHTML;
       }
     }
+    return "";
   }, [
     props.editor,
     props.fileExtension,
-    copyFromSource,
-    getStandaloneEditorSrcdoc,
-    getStandaloneEditorFromCurrentContent,
-    getStandaloneEditorFromGist
+    contentSource,
+    getStandaloneEditorIframeSrcdoc,
+    getStandaloneEditorScriptFromCurrentContent,
+    getStandaloneEditorScriptFromGist
   ]);
+
+  useEffect(() => {
+    getStandaloneEditorIframeOuterHtml().then(outerHtml => setEmbedCode(outerHtml));
+  }, [getStandaloneEditorIframeOuterHtml]);
 
   const onCopy = useCallback(() => {
     copyContentTextArea.current!.value = embedCode;
@@ -178,11 +192,11 @@ export function EmbedEditorModal(props: Props) {
           <Radio
             aria-label="Current content source option"
             id={"current-content"}
-            isChecked={copyFromSource === Source.CURRENT}
+            isChecked={contentSource === ContentSource.CURRENT_CONTENT}
             name={"Current content"}
             label={i18n.embedEditorModal.source.current.label}
             description={i18n.embedEditorModal.source.current.description}
-            onChange={() => setCopyFromSource(Source.CURRENT)}
+            onChange={() => setContentSource(ContentSource.CURRENT_CONTENT)}
           />
           <Tooltip
             aria-label={"Only available when editing a file from a GitHub gist"}
@@ -195,9 +209,9 @@ export function EmbedEditorModal(props: Props) {
               isDisabled={!isGist}
               name={"GitHub gist"}
               label={i18n.embedEditorModal.source.gist.label}
-              isChecked={copyFromSource === Source.GIST}
+              isChecked={contentSource === ContentSource.GIST}
               description={i18n.embedEditorModal.source.gist.description}
-              onChange={() => setCopyFromSource(Source.GIST)}
+              onChange={() => setContentSource(ContentSource.GIST)}
             />
           </Tooltip>
         </div>
