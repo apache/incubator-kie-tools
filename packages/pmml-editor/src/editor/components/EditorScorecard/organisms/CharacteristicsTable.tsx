@@ -17,7 +17,6 @@ import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import {
-  Button,
   DataList,
   DataListAction,
   DataListCell,
@@ -26,10 +25,10 @@ import {
   DataListItemRow,
   Form
 } from "@patternfly/react-core";
-import { TrashIcon } from "@patternfly/react-icons";
 import "./CharacteristicsTable.scss";
 import { CharacteristicsTableEditRow, CharacteristicsTableRow, EmptyStateNoCharacteristics } from "../molecules";
 import { Operation } from "../Operation";
+import { ActionSpacer } from "../../EditorCore/atoms";
 
 export interface IndexedCharacteristic {
   index: number | undefined;
@@ -151,10 +150,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
                   key="4"
                   width={1}
                 >
-                  {/*This is a hack to ensure the column layout is correct*/}
-                  <Button variant="link" icon={<TrashIcon />} isDisabled={true} style={{ visibility: "hidden" }}>
-                    &nbsp;
-                  </Button>
+                  <ActionSpacer />
                 </DataListAction>
               ]}
             />

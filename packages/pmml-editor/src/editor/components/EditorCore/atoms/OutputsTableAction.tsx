@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useState } from "react";
-import { Dropdown, DropdownItem, DropdownPosition, KebabToggle } from "@patternfly/react-core";
+import { Button, Flex, FlexItem } from "@patternfly/react-core";
+import { EditAltIcon, TrashIcon } from "@patternfly/react-icons";
 
 interface OutputsTableActionProps {
   disabled: boolean;
@@ -26,34 +26,16 @@ interface OutputsTableActionProps {
 export const OutputsTableAction = (props: OutputsTableActionProps) => {
   const { disabled, onEdit, onDelete } = props;
 
-  const [isOpen, setOpen] = useState(false);
-
-  const onSelect = (event?: React.SyntheticEvent<HTMLDivElement>) => {
-    setOpen(false);
-  };
-
-  const onToggle = (_isOpen: boolean) => {
-    setOpen(_isOpen);
-  };
-
   return (
-    // These sizes are a hack to ensure the Kebab occupies the same space as the commit/cancel icons in CharacteristicsTableEditModeAction
-    <div style={{ width: "48px", height: "24px" }}>
-      <Dropdown
-        isPlain={true}
-        position={DropdownPosition.right}
-        isOpen={isOpen}
-        onSelect={onSelect}
-        toggle={<KebabToggle isDisabled={disabled} onToggle={onToggle} />}
-        dropdownItems={[
-          <DropdownItem key="edit" onClick={e => onEdit()}>
-            Edit
-          </DropdownItem>,
-          <DropdownItem key="delete" onClick={e => onDelete()}>
-            Delete
-          </DropdownItem>
-        ]}
-      />
-    </div>
+    <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
+      <FlexItem>
+        <Button variant="plain" onClick={e => onEdit()} isDisabled={disabled}>
+          <EditAltIcon />
+        </Button>
+        <Button variant="plain" onClick={e => onDelete()} isDisabled={disabled}>
+          <TrashIcon />
+        </Button>
+      </FlexItem>
+    </Flex>
   );
 };

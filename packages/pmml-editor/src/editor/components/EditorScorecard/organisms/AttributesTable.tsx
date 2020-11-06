@@ -16,7 +16,6 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import {
-  Button,
   DataList,
   DataListAction,
   DataListCell,
@@ -31,9 +30,10 @@ import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooli
 import { AttributesTableEditRow, AttributesTableRow, EmptyStateNoAttributes } from "../molecules";
 import "./AttributesTable.scss";
 
-import { InfoCircleIcon, TrashIcon } from "@patternfly/react-icons";
+import { InfoCircleIcon } from "@patternfly/react-icons";
 import { Operation } from "../Operation";
 import { useSelector } from "react-redux";
+import { ActionSpacer } from "../../EditorCore/atoms";
 
 interface AttributesTableProps {
   modelIndex: number;
@@ -161,10 +161,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
                   key="3"
                   width={1}
                 >
-                  {/*This is a hack to ensure the column layout is correct*/}
-                  <Button variant="link" icon={<TrashIcon />} isDisabled={true} style={{ visibility: "hidden" }}>
-                    &nbsp;
-                  </Button>
+                  <ActionSpacer />
                 </DataListAction>
               ]}
             />

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Level, LevelItem } from "@patternfly/react-core";
+import { Button, Flex, FlexItem } from "@patternfly/react-core";
 import { CheckIcon, TimesIcon } from "@patternfly/react-icons";
 
 interface OutputsTableEditModeActionProps {
@@ -27,16 +27,15 @@ export const OutputsTableEditModeAction = (props: OutputsTableEditModeActionProp
   const { onCommit, onCancel, disableCommit } = props;
 
   return (
-    <Level hasGutter={true}>
-      <LevelItem>
-        {!disableCommit && (
-          <CheckIcon style={{ color: "var(--pf-global--success-color--100)" }} onClick={e => onCommit()} />
-        )}
-        {disableCommit && <CheckIcon style={{ color: "var(--pf-global--disabled-color--200)" }} />}
-      </LevelItem>
-      <LevelItem>
-        <TimesIcon style={{ color: "var(--pf-global--danger-color--100)" }} onClick={e => onCancel()} />
-      </LevelItem>
-    </Level>
+    <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
+      <FlexItem>
+        <Button variant="plain" onClick={e => onCommit()} isDisabled={disableCommit}>
+          <CheckIcon />
+        </Button>
+        <Button variant="plain" onClick={e => onCancel()}>
+          <TimesIcon />
+        </Button>
+      </FlexItem>
+    </Flex>
   );
 };

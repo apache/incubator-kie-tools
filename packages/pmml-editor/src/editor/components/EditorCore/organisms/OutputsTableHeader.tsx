@@ -15,7 +15,6 @@
  */
 import * as React from "react";
 import {
-  Button,
   DataList,
   DataListAction,
   DataListCell,
@@ -24,8 +23,7 @@ import {
   DataListItemRow
 } from "@patternfly/react-core";
 import "./OutputsTable.scss";
-
-import { TrashIcon } from "@patternfly/react-icons";
+import { ActionSpacer } from "../atoms";
 
 export const OutputsTableHeader = () => {
   return (
@@ -50,10 +48,7 @@ export const OutputsTableHeader = () => {
                 key="103"
                 width={1}
               >
-                {/*This is a hack to ensure the column layout is correct*/}
-                <Button variant="link" icon={<TrashIcon />} isDisabled={true} style={{ visibility: "hidden" }}>
-                  &nbsp;
-                </Button>
+                <ActionSpacer />
               </DataListAction>
             ]}
           />

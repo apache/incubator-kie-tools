@@ -15,24 +15,16 @@
  */
 import * as React from "react";
 import { Button, Flex, FlexItem } from "@patternfly/react-core";
-import { EditAltIcon, TrashIcon } from "@patternfly/react-icons";
+import { TrashIcon } from "@patternfly/react-icons";
 
-interface AttributesTableActionProps {
-  disabled: boolean;
-  onEdit: () => void;
-  onDelete: () => void;
-}
-
-export const AttributesTableAction = (props: AttributesTableActionProps) => {
-  const { disabled, onEdit, onDelete } = props;
-
+export const ActionSpacer = () => {
   return (
-    <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
+    <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%", visibility: "hidden" }}>
       <FlexItem>
-        <Button variant="plain" onClick={e => onEdit()} isDisabled={disabled}>
-          <EditAltIcon />
+        <Button variant="plain" isDisabled={true}>
+          <TrashIcon />
         </Button>
-        <Button variant="plain" onClick={e => onDelete()} isDisabled={disabled}>
+        <Button variant="plain" isDisabled={true}>
           <TrashIcon />
         </Button>
       </FlexItem>
