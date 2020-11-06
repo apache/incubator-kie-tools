@@ -40,10 +40,14 @@ export enum Alerts {
   SUCCESS_UPDATE_GIST_FILENAME,
   INVALID_CURRENT_GIST,
   INVALID_GIST_FILENAME,
-  GITHUB_TOKEN_MODAL,
-  EXPORT_IFRAME,
   UNSAVED,
   ERROR
+}
+
+export enum Modal {
+  NONE,
+  GITHUB_TOKEN,
+  EMBED
 }
 
 export function EditorPage(props: Props) {
@@ -57,6 +61,7 @@ export function EditorPage(props: Props) {
   const [fullscreen, setFullscreen] = useState(false);
   const [updateGistFilenameUrl, setUpdateGistFilenameUrl] = useState("");
   const [alert, setAlert] = useState(Alerts.NONE);
+  const [modal, setModal] = useState(Modal.NONE);
   const isDirty = useDirtyState(editor);
   const { locale, i18n } = useOnlineI18n();
 
@@ -108,10 +113,6 @@ export function EditorPage(props: Props) {
       }
     });
   }, [editor]);
-
-  const requestSetGitHubToken = useCallback(() => {
-    setAlert(Alerts.GITHUB_TOKEN_MODAL);
-  }, []);
 
   const requestExportGist = useCallback(() => {
     editor?.getContent().then(content => {
@@ -174,8 +175,16 @@ export function EditorPage(props: Props) {
     return context.routes.editor.args(location.pathname).type;
   }, [location.pathname]);
 
+  const requestSetGitHubToken = useCallback(() => {
+    setModal(Modal.GITHUB_TOKEN);
+  }, []);
+
   const requestExportIframe = useCallback(() => {
-    setAlert(Alerts.EXPORT_IFRAME);
+    setModal(Modal.EMBED);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setModal(Modal.NONE);
   }, []);
 
   const requestCopyContentToClipboard = useCallback(() => {
@@ -349,15 +358,15 @@ export function EditorPage(props: Props) {
             </Alert>
           </div>
         )}
-        {!fullscreen && alert === Alerts.GITHUB_TOKEN_MODAL && (
-          <GithubTokenModal isOpen={alert === Alerts.GITHUB_TOKEN_MODAL} onClose={closeAlert} />
+        {!fullscreen && modal === Modal.GITHUB_TOKEN && (
+          <GithubTokenModal isOpen={modal === Modal.GITHUB_TOKEN} onClose={closeModal} />
         )}
-        {!fullscreen && alert === Alerts.EXPORT_IFRAME && (
+        {!fullscreen && modal === Modal.EMBED && (
           <EmbedEditorModal
-            isOpen={alert === Alerts.EXPORT_IFRAME}
+            isOpen={modal === Modal.EMBED}
             fileExtension={fileExtension}
             editor={editor}
-            onClose={closeAlert}
+            onClose={closeModal}
           />
         )}
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}
