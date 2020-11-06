@@ -18,7 +18,6 @@ import { Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { PlusIcon } from "@patternfly/react-icons";
-import { OutputsTableHeader } from "./OutputsTableHeader";
 import { OutputsTable } from "./OutputsTable";
 import { Operation } from "../../EditorScorecard";
 import "./OutputsContainer.scss";
@@ -40,7 +39,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
 
   return (
     <div className="outputs-container">
-      <Flex>
+      <Flex style={{ margin: "1em 0 2em 0" }}>
         <FlexItem>
           <Button
             variant="secondary"
@@ -54,11 +53,8 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
         </FlexItem>
       </Flex>
       {(output?.OutputField ?? []).length > 0 && (
-        <div className="outputs-container__list__container">
-          <div className="outputs-container__list__header">
-            <OutputsTableHeader />
-          </div>
-          <div className="outputs-container__list">
+        <div className="outputs-container__list">
+          <div className="outputs-container__list--container">
             <OutputsTable
               activeOperation={activeOperation}
               setActiveOperation={setActiveOperation}

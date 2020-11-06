@@ -1,0 +1,25 @@
+.output-item {
+  min-height: 70px;
+  border: 1px solid var(--pf-global--BorderColor--100);
+  padding: 1em;
+  background-color: #ffffff;
+  margin-bottom: 1em;
+  user-select: none;
+  // write the following better
+  span,
+  strong {
+    user-select: text;
+  }
+  &:last-child {
+    margin-bottom: 0;
+  }
+  &__type-label {
+    text-transform: capitalize;
+  }
+  &__type-select {
+    &__option,
+    .pf-c-select__toggle {
+      text-transform: capitalize;
+    }
+  }
+}

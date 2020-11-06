@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import { DataList, Form } from "@patternfly/react-core";
+import { Form } from "@patternfly/react-core";
 import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputsTableEditRow, OutputsTableRow } from "../molecules";
 import "./OutputsTable.scss";
@@ -79,7 +79,7 @@ export const OutputsTable = (props: OutputsTableProps) => {
 
   return (
     <Form>
-      <DataList aria-label="outputs list">
+      <section>
         {outputs.map((output, index) => {
           if (editItemIndex === index) {
             return (
@@ -119,7 +119,7 @@ export const OutputsTable = (props: OutputsTableProps) => {
             />
           </div>
         )}
-      </DataList>
+      </section>
     </Form>
   );
 };

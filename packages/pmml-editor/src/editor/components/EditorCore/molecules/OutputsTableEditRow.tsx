@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
-import {
-  DataListAction,
-  DataListCell,
-  DataListItem,
-  DataListItemCells,
-  DataListItemRow,
-  FormGroup,
-  TextInput
-} from "@patternfly/react-core";
+import { useEffect, useState } from "react";
+import { Flex, FlexItem, FormGroup, Select, SelectOption, SelectVariant, TextInput } from "@patternfly/react-core";
 import "../organisms/OutputsTable.scss";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputLabelsEditMode, OutputsTableEditModeAction } from "../atoms";
@@ -38,6 +30,26 @@ interface OutputsTableEditRowProps {
   onCancel: () => void;
 }
 
+const dataTypes = [
+  "string",
+  "integer",
+  "float",
+  "double",
+  "boolean",
+  "date",
+  "time",
+  "dateTime",
+  "dateDaysSince[0]",
+  "dateDaysSince[1960]",
+  "dateDaysSince[1970]",
+  "dateDaysSince[1980]",
+  "timeSeconds",
+  "dateTimeSecondsSince[0]",
+  "dateTimeSecondsSince[1960]",
+  "dateTimeSecondsSince[1970]",
+  "dateTimeSecondsSince[1980]"
+];
+
 export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
   const { index, output, validateOutputName, onCommit, onCancel } = props;
 
@@ -46,6 +58,15 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
     valid: true
   });
   const [dataType, setDataType] = useState<string | undefined>();
+
+  const [isTypeSelectOpen, setIsTypeSelectOpen] = useState(false);
+  const typeToggle = (isOpen: boolean) => {
+    setIsTypeSelectOpen(isOpen);
+  };
+  const onSelectType = (event: any, selection: any, isPlaceholder: boolean) => {
+    setDataType(isPlaceholder ? undefined : selection);
+    setIsTypeSelectOpen(false);
+  };
 
   useEffect(() => {
     const _name = output.name.toString();
@@ -57,60 +78,70 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
   }, [props]);
 
   return (
-    <DataListItem id={index?.toString()} className="outputs__list-item" aria-labelledby={"output-" + index}>
-      <DataListItemRow>
-        <DataListItemCells
-          dataListCells={[
-            <DataListCell key="0" width={2}>
-              <FormGroup
-                fieldId="output-name-helper"
-                helperText="Please provide a name for the Output Field."
-                helperTextInvalid="Name must be unique and present."
-                helperTextInvalidIcon={<ExclamationCircleIcon />}
-                validated={name.valid ? "default" : "error"}
-              >
-                <TextInput
-                  type="text"
-                  id="output-name"
-                  name="output-name"
-                  aria-describedby="output-name-helper"
-                  value={(name.value ?? "").toString()}
-                  validated={name.valid ? "default" : "error"}
-                  autoFocus={true}
-                  onChange={e =>
-                    setName({
-                      value: e,
-                      valid: validateOutputName(e)
-                    })
-                  }
-                />
-              </FormGroup>
-            </DataListCell>,
-            <DataListCell key="1" width={1}>
-              <FormGroup fieldId="output-dataType-helper" helperText="Specifies the data type for the output field.">
-                <TextInput
-                  type="text"
-                  id="output-dataType"
-                  name="output-dataType"
-                  aria-describedby="output-dataType-helper"
-                  value={dataType ?? ""}
-                  onChange={e => setDataType(e)}
-                />
-              </FormGroup>
-            </DataListCell>,
-            <DataListCell key="2" width={5}>
-              <OutputLabelsEditMode output={output} />
-            </DataListCell>,
-            <DataListAction id="delete-output" aria-label="delete" aria-labelledby="delete-output" key="3" width={1}>
-              <OutputsTableEditModeAction
-                onCommit={() => onCommit(name.value, dataType)}
-                onCancel={() => onCancel()}
-                disableCommit={!name.valid}
-              />
-            </DataListAction>
-          ]}
-        />
-      </DataListItemRow>
-    </DataListItem>
+    <article className={`output-item output-item-n${index}`}>
+      <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
+        <FlexItem>
+          <FormGroup
+            fieldId="output-name-helper"
+            helperText="Please provide a name for the Output Field."
+            helperTextInvalid="Name must be unique and present."
+            helperTextInvalidIcon={<ExclamationCircleIcon />}
+            validated={name.valid ? "default" : "error"}
+            style={{ width: "12em" }}
+          >
+            <TextInput
+              type="text"
+              id="output-name"
+              name="output-name"
+              aria-describedby="output-name-helper"
+              value={(name.value ?? "").toString()}
+              validated={name.valid ? "default" : "error"}
+              autoFocus={true}
+              onChange={e =>
+                setName({
+                  value: e,
+                  valid: validateOutputName(e)
+                })
+              }
+            />
+          </FormGroup>
+        </FlexItem>
+        <FlexItem>
+          <FormGroup
+            fieldId="output-dataType-helper"
+            helperText="Specifies the data type for the output field."
+            style={{ width: "12em" }}
+          >
+            <Select
+              id="output-dataType"
+              name="output-dataType"
+              aria-label="Select Input"
+              aria-describedby="output-dataType-helper"
+              variant={SelectVariant.single}
+              onToggle={typeToggle}
+              onSelect={onSelectType}
+              selections={dataType}
+              isOpen={isTypeSelectOpen}
+              placeholder="Type"
+              menuAppendTo={"parent"}
+            >
+              {dataTypes.map((dt, index) => (
+                <SelectOption key={index} value={dt} />
+              ))}
+            </Select>
+          </FormGroup>
+        </FlexItem>
+        <FlexItem>
+          <OutputLabelsEditMode output={output} />
+        </FlexItem>
+        <FlexItem align={{ default: "alignRight" }}>
+          <OutputsTableEditModeAction
+            onCommit={() => onCommit(name.value, dataType)}
+            onCancel={() => onCancel()}
+            disableCommit={!name.valid}
+          />
+        </FlexItem>
+      </Flex>
+    </article>
   );
 };

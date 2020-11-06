@@ -17,18 +17,15 @@
 .outputs-container {
   height: 60vh;
 
-  &__list__header {
-    margin-left: 16px;
-  }
-
-  &__list__container {
+  &__list {
     height: calc(100% - 68px);
   }
 
-  &__list {
-    height: calc(100% - 64px);
+  &__list--container {
+    height: 100%;
     overflow-y: auto;
     padding: 1em;
     background-color: var(--pf-global--BackgroundColor--200);
   }
+
 }

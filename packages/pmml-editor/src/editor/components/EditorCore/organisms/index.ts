@@ -19,5 +19,4 @@ export * from "./EmptyStateNoOutput";
 export * from "./OutputsContainer";
 export * from "./OutputsHandler";
 export * from "./OutputsTable";
-export * from "./OutputsTableHeader";
 export * from "./SingleEditorRouter";

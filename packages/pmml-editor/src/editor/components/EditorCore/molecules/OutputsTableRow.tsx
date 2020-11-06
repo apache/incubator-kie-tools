@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { DataListAction, DataListCell, DataListItem, DataListItemCells, DataListItemRow } from "@patternfly/react-core";
+import { Flex, FlexItem, Label } from "@patternfly/react-core";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
-import "../organisms/OutputsTable.scss";
-import { OutputsTableAction } from "../atoms";
-import { OutputLabels } from "../atoms/OutputLabels";
+import { OutputLabels, OutputsTableAction } from "../atoms";
+import "./OutputsTableRow.scss";
 
 interface OutputsTableRowProps {
   index: number;
@@ -32,25 +31,23 @@ export const OutputsTableRow = (props: OutputsTableRowProps) => {
   const { index, output, onEdit, onDelete, isDisabled } = props;
 
   return (
-    <DataListItem key={index} id={index.toString()} className="outputs__list-item" aria-labelledby={"output-" + index}>
-      <DataListItemRow>
-        <DataListItemCells
-          dataListCells={[
-            <DataListCell key="0" width={2}>
-              <div>{output.name}</div>
-            </DataListCell>,
-            <DataListCell key="1" width={1}>
-              <div>{output.dataType}</div>
-            </DataListCell>,
-            <DataListCell key="2" width={5}>
-              <OutputLabels output={output} />
-            </DataListCell>,
-            <DataListAction id="delete-output" aria-label="delete" aria-labelledby="delete-output" key="3" width={1}>
-              <OutputsTableAction onEdit={() => onEdit()} onDelete={() => onDelete()} disabled={isDisabled} />
-            </DataListAction>
-          ]}
-        />
-      </DataListItemRow>
-    </DataListItem>
+    <article className={`output-item output-item-n${index}`}>
+      <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
+        <FlexItem>
+          <strong>{output.name}</strong>
+        </FlexItem>
+        <FlexItem>
+          <Label color="blue" className="output-item__type-label">
+            {output.dataType}
+          </Label>
+        </FlexItem>
+        <FlexItem>
+          <OutputLabels output={output} />
+        </FlexItem>
+        <FlexItem align={{ default: "alignRight" }}>
+          <OutputsTableAction onEdit={() => onEdit()} onDelete={() => onDelete()} disabled={isDisabled} />
+        </FlexItem>
+      </Flex>
+    </article>
   );
 };
