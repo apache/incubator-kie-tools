@@ -16,11 +16,12 @@
 import * as React from "react";
 import { Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
-import { Bullseye } from "@patternfly/react-core";
-import "./OutputsContainer.scss";
+import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
+import { PlusIcon } from "@patternfly/react-icons";
 import { OutputsTableHeader } from "./OutputsTableHeader";
 import { OutputsTable } from "./OutputsTable";
 import { Operation } from "../../EditorScorecard";
+import "./OutputsContainer.scss";
 
 interface OutputsContainerProps {
   modelIndex: number;
@@ -39,9 +40,24 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
 
   return (
     <div className="outputs-container">
+      <Flex>
+        <FlexItem>
+          <Button
+            variant="secondary"
+            onClick={e => addOutput()}
+            isDisabled={activeOperation !== Operation.NONE}
+            icon={<PlusIcon />}
+            iconPosition="left"
+          >
+            Add Output
+          </Button>
+        </FlexItem>
+      </Flex>
       {(output?.OutputField ?? []).length > 0 && (
         <div className="outputs-container__list__container">
-          <OutputsTableHeader />
+          <div className="outputs-container__list__header">
+            <OutputsTableHeader />
+          </div>
           <div className="outputs-container__list">
             <OutputsTable
               activeOperation={activeOperation}

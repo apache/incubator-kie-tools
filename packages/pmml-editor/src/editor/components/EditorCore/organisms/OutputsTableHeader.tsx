@@ -32,10 +32,10 @@ export const OutputsTableHeader = () => {
         <DataListItemRow>
           <DataListItemCells
             dataListCells={[
-              <DataListCell key="0" width={4}>
+              <DataListCell key="0" width={2}>
                 <div>Name</div>
               </DataListCell>,
-              <DataListCell key="1" width={4}>
+              <DataListCell key="1" width={1}>
                 <div>Data Type</div>
               </DataListCell>,
               <DataListCell key="2" width={5}>

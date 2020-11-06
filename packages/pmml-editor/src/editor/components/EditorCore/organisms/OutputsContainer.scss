@@ -17,8 +17,12 @@
 .outputs-container {
   height: 60vh;
 
+  &__list__header {
+    margin-left: 16px;
+  }
+
   &__list__container {
-    height: 100%;
+    height: calc(100% - 68px);
   }
 
   &__list {

@@ -18,6 +18,7 @@ import { DataListAction, DataListCell, DataListItem, DataListItemCells, DataList
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import "../organisms/OutputsTable.scss";
 import { OutputsTableAction } from "../atoms";
+import { OutputLabels } from "../atoms/OutputLabels";
 
 interface OutputsTableRowProps {
   index: number;
@@ -35,14 +36,14 @@ export const OutputsTableRow = (props: OutputsTableRowProps) => {
       <DataListItemRow>
         <DataListItemCells
           dataListCells={[
-            <DataListCell key="0" width={4}>
+            <DataListCell key="0" width={2}>
               <div>{output.name}</div>
             </DataListCell>,
-            <DataListCell key="1" width={4}>
+            <DataListCell key="1" width={1}>
               <div>{output.dataType}</div>
             </DataListCell>,
             <DataListCell key="2" width={5}>
-              <div>Labels here...</div>
+              <OutputLabels output={output} />
             </DataListCell>,
             <DataListAction id="delete-output" aria-label="delete" aria-labelledby="delete-output" key="3" width={1}>
               <OutputsTableAction onEdit={() => onEdit()} onDelete={() => onDelete()} disabled={isDisabled} />

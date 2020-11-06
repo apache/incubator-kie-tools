@@ -26,7 +26,7 @@ import {
 } from "@patternfly/react-core";
 import "../organisms/OutputsTable.scss";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
-import { OutputsTableEditModeAction } from "../atoms";
+import { OutputLabelsEditMode, OutputsTableEditModeAction } from "../atoms";
 import { ValidatedType } from "../../../types";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 
@@ -61,7 +61,7 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
       <DataListItemRow>
         <DataListItemCells
           dataListCells={[
-            <DataListCell key="0" width={4}>
+            <DataListCell key="0" width={2}>
               <FormGroup
                 fieldId="output-name-helper"
                 helperText="Please provide a name for the Output Field."
@@ -86,20 +86,20 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
                 />
               </FormGroup>
             </DataListCell>,
-            <DataListCell key="1" width={4}>
+            <DataListCell key="1" width={1}>
               <FormGroup fieldId="output-dataType-helper" helperText="Specifies the data type for the output field.">
                 <TextInput
                   type="text"
                   id="output-dataType"
                   name="output-dataType"
                   aria-describedby="output-dataType-helper"
-                  value={dataType}
+                  value={dataType ?? ""}
                   onChange={e => setDataType(e)}
                 />
               </FormGroup>
             </DataListCell>,
             <DataListCell key="2" width={5}>
-              <div>Labels here...</div>
+              <OutputLabelsEditMode output={output} />
             </DataListCell>,
             <DataListAction id="delete-output" aria-label="delete" aria-labelledby="delete-output" key="3" width={1}>
               <OutputsTableEditModeAction
