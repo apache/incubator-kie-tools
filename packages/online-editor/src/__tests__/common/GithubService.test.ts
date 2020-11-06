@@ -117,16 +117,12 @@ describe("githubService::isGistRaw", () => {
 });
 
 describe("githubService::extractGistFilename", () => {
-  test("should extract the file name from the specific gist url", () => {
-    const rawUrl = "https://gist.github.com/ljmotta/gist-id#file-test-bpmn";
+  [
+    { rawUrl: "https://gist.github.com/ljmotta/gist-id#file-test-bpmn", expected: "test.bpmn" },
+    { rawUrl: "https://gist.github.com/ljmotta/gist-id#file-test-1-bpmn", expected: "test-1.bpmn" },
+  ].forEach(({ rawUrl, expected }) => {
     const urlWithoutCommitHash = githubService.extractGistFilename(rawUrl);
-    expect(urlWithoutCommitHash).toEqual("test.bpmn");
-  });
-
-  test("should extract the file name from the specific gist url with more than one dash", () => {
-    const rawUrl = "https://gist.github.com/ljmotta/gist-id#file-test-1-bpmn";
-    const urlWithoutCommitHash = githubService.extractGistFilename(rawUrl);
-    expect(urlWithoutCommitHash).toEqual("test-1.bpmn");
+    expect(urlWithoutCommitHash).toEqual(expected);
   });
 
   test("shouldn't extract the file name from the gist url", () => {
@@ -138,15 +134,15 @@ describe("githubService::extractGistFilename", () => {
 
 describe("githubService::extractGistFilenameFromRawUrl", () => {
   test("should extract the file name from the gist raw url", () => {
-    const rawUrl = "https://gist.githubusercontent.com/test/gist-id/raw/commit-hash/test.bpmn";
-    const urlWithoutCommitHash = githubService.extractGistFilenameFromRawUrl(rawUrl);
-    expect(urlWithoutCommitHash).toEqual("test.bpmn");
-  });
-
-  test("should extract the file name from the double encoded raw url", () => {
-    const rawUrl = "https://gist.githubusercontent.com/test/gist-id/raw/commit-hash/test%25201.bpmn";
-    const urlWithoutCommitHash = githubService.extractGistFilenameFromRawUrl(rawUrl);
-    expect(urlWithoutCommitHash).toEqual("test 1.bpmn");
+    [
+      { rawUrl: "https://gist.githubusercontent.com/test/gist-id/raw/commit-hash/test.bpmn", expected: "test.bpmn" },
+      { rawUrl: "https://gist.githubusercontent.com/test/gist-id/raw/commit-hash/test-1.bpmn", expected: "test-1.bpmn" },
+      { rawUrl: "https://gist.githubusercontent.com/test/gist-id/raw/commit-hash/test%25201.dmn", expected: "test 1.dmn" },
+      { rawUrl: "https://gist.githubusercontent.com/test/gist-id/raw/commit-hash/Test%201.dmn", expected: "Test 1.dmn" },
+    ].forEach(({ rawUrl, expected }) => {
+      const urlWithoutCommitHash = githubService.extractGistFilenameFromRawUrl(rawUrl);
+      expect(urlWithoutCommitHash).toEqual(expected);
+    });
   });
 });
 
@@ -161,11 +157,9 @@ describe("githubService::hasGistScope", () => {
   });
 
   test("shouldn't have gist scope", () => {
-    [{ "x-oauth-scopes": "" }, { "x-oauth-scopes": "repo" }, { "x-oauth-scopes": "user, gis" }].forEach(
-      headers => {
-        const hasGistScope = githubService.hasGistScope(headers);
-        expect(hasGistScope).toBeFalsy();
-      }
-    );
+    [{ "x-oauth-scopes": "" }, { "x-oauth-scopes": "repo" }, { "x-oauth-scopes": "user, gis" }].forEach(headers => {
+      const hasGistScope = githubService.hasGistScope(headers);
+      expect(hasGistScope).toBeFalsy();
+    });
   });
 });
