@@ -42,6 +42,7 @@ pipeline {
         // Release information which can override `deployment.properties`
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Override `deployment.properties`. Is this build for a release?')
         string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
+        string(name: 'KOGITO_ARTIFACTS_VERSION', defaultValue: '', description: 'Optional. If artifacts\' version is different from PROJECT_VERSION.')
         string(name: 'GIT_TAG', defaultValue: '', description: 'Git tag to set, if different from PROJECT_VERSION')
         string(name: 'MAVEN_ARTIFACT_REPOSITORY', defaultValue: '', description: 'Maven repository where the released jar artifacts are present. To be set if git author is not `kiegroup` and repository is different from JBoss repository.')
         string(name: 'RELEASE_NOTES', defaultValue: '', description: 'Release notes to be added. If none provided, a default one will be given.')
@@ -229,7 +230,7 @@ pipeline {
                         githubscm.createBranch(getSnapshotBranch())
 
                         // Update version to next snapshot
-                        versionCmd = "python3 scripts/manage-kogito-version.py --bump-to ${nextVersion} --artifacts-version ${getArtifactsNextVersion()} --confirm"
+                        versionCmd = "python3 scripts/manage-kogito-version.py --bump-to ${nextVersion} --artifacts-version ${getKogitoArtifactsNextVersion()} --confirm"
                         if(getBuildBranch() != 'master') {
                             versionCmd += " --examples-ref ${getBuildBranch()}"
                         }
@@ -398,6 +399,11 @@ String getProjectVersion() {
     return getParamOrDeployProperty('PROJECT_VERSION' , 'project.version')
 }
 
+String getKogitoArtifactsVersion() {
+    artifactsVersion = getParamOrDeployProperty('KOGITO_ARTIFACTS_VERSION' , 'kogito_artifacts.version')
+    return artifactsVersion ?: getProjectVersion()
+}
+
 String getGitTag() {
     return params.GIT_TAG != '' ? params.GIT_TAG : getProjectVersion()
 }
@@ -431,8 +437,8 @@ String getNextVersion() {
 }
 
 // To be later changed by artifacts version parameter
-String getArtifactsNextVersion() {
-    return util.getNextVersion(getProjectVersion(), 'micro', 'SNAPSHOT')
+String getKogitoArtifactsNextVersion() {
+    return util.getNextVersion(getKogitoArtifactsVersion(), 'micro', 'SNAPSHOT')
 }
 
 String getSnapshotBranch(){

@@ -41,6 +41,7 @@ pipeline {
         // Release information
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Is this build for a release?')
         string(name: 'PROJECT_VERSION', defaultValue: '', description: 'Optional if not RELEASE. If RELEASE, cannot be empty.')
+        string(name: 'KOGITO_ARTIFACTS_VERSION', defaultValue: '', description: 'Optional. If artifacts\' version is different from PROJECT_VERSION.')
 
         // Bot author information. Set as params for easy testing.
         string(name: 'GIT_AUTHOR_BOT', defaultValue: 'bsig-gh-bot', description: 'From which author should the PR be created ?')
@@ -88,6 +89,7 @@ pipeline {
                         setDeployPropertyIfNeeded('git.author', getGitAuthor())
                         setDeployPropertyIfNeeded('project.version', getProjectVersion())
                         setDeployPropertyIfNeeded('release', isRelease())
+                        setDeployPropertyIfNeeded('kogito_artifacts.version', getKogitoArtifactsVersion())
                     }
                 }
             }
@@ -112,6 +114,9 @@ pipeline {
                     versionCmd = "python3 scripts/manage-kogito-version.py --bump-to ${getProjectVersion()} --confirm"
                     if(getBuildBranch() != 'master'){
                         versionCmd += " --examples-ref ${getBuildBranch()}"
+                    }
+                    if(getKogitoArtifactsVersion()){
+                        versionCmd += " --artifacts-version ${getKogitoArtifactsVersion()}"
                     }
                     sh versionCmd
                 }
@@ -483,6 +488,10 @@ String getBotAuthorCredsID(){
 
 String getProjectVersion() {
     return params.PROJECT_VERSION
+}
+
+String getKogitoArtifactsVersion() {
+    return params.KOGITO_ARTIFACTS_VERSION
 }
 
 String getMavenArtifactRepository() {
