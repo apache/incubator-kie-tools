@@ -50,9 +50,10 @@ type TestConfig struct {
 	servicesImageVersion              string
 	dataIndexImageTag                 string
 	explainabilityImageTag            string
-	trustyImageTag                    string
 	jobsServiceImageTag               string
 	mgmtConsoleImageTag               string
+	taskConsoleImageTag               string
+	trustyImageTag                    string
 	trustyUIImageTag                  string
 	runtimeApplicationImageRegistry   string
 	runtimeApplicationImageNamespace  string
@@ -137,9 +138,10 @@ func BindFlags(set *flag.FlagSet) {
 	set.StringVar(&env.servicesImageVersion, prefix+"services-image-version", "", "Set the services (jobs-service, data-index, trusty, explainability) image version")
 	set.StringVar(&env.dataIndexImageTag, prefix+"data-index-image-tag", "", "Set the Kogito Data Index image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.explainabilityImageTag, prefix+"explainability-image-tag", "", "Set the Kogito Explainability image tag ('services-image-version' is ignored)")
-	set.StringVar(&env.trustyImageTag, prefix+"trusty-image-tag", "", "Set the Kogito Trusty image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.jobsServiceImageTag, prefix+"jobs-service-image-tag", "", "Set the Kogito Jobs Service image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.mgmtConsoleImageTag, prefix+"management-console-image-tag", "", "Set the Kogito Management Console image tag ('services-image-version' is ignored)")
+	set.StringVar(&env.taskConsoleImageTag, prefix+"task-console-image-tag", "", "Set the Kogito Task Console image tag ('services-image-version' is ignored)")
+	set.StringVar(&env.trustyImageTag, prefix+"trusty-image-tag", "", "Set the Kogito Trusty image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.trustyUIImageTag, prefix+"trusty-ui-image-tag", "", "Set the Kogito Trusty UI image tag ('services-image-version' is ignored)")
 	set.StringVar(&env.runtimeApplicationImageRegistry, prefix+"runtime-application-image-registry", "", "Set the runtime application (built Kogito application image) image registry")
 	set.StringVar(&env.runtimeApplicationImageNamespace, prefix+"runtime-application-image-namespace", "", "Set the runtime application (built Kogito application image) image namespace")
@@ -280,11 +282,6 @@ func GetExplainabilityImageTag() string {
 	return env.explainabilityImageTag
 }
 
-// GetTrustyImageTag return the Kogito Trusty image tag
-func GetTrustyImageTag() string {
-	return env.trustyImageTag
-}
-
 // GetJobsServiceImageTag return the Kogito Jobs Service image tag
 func GetJobsServiceImageTag() string {
 	return env.jobsServiceImageTag
@@ -293,6 +290,16 @@ func GetJobsServiceImageTag() string {
 // GetManagementConsoleImageTag return the Kogito Management Console image tag
 func GetManagementConsoleImageTag() string {
 	return env.mgmtConsoleImageTag
+}
+
+// GetTaskConsoleImageTag return the Kogito Management Console image tag
+func GetTaskConsoleImageTag() string {
+	return env.taskConsoleImageTag
+}
+
+// GetTrustyImageTag return the Kogito Trusty image tag
+func GetTrustyImageTag() string {
+	return env.trustyImageTag
 }
 
 // GetTrustyUIImageTag return the Kogito Management Console image tag

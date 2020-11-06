@@ -43,7 +43,7 @@ func (data *Data) installKogitoManagementConsoleWithReplicas(replicas int) error
 
 	// Can be removed once https://issues.redhat.com/browse/KOGITO-1141 is implemented
 	if !framework.IsOpenshift() {
-		if err := addIngressURIEnvVariable(data.Namespace, managementConsole); err != nil {
+		if err := addIngressURIEnvVariableToManagementConsole(data.Namespace, managementConsole); err != nil {
 			return err
 		}
 	}
@@ -62,7 +62,7 @@ func (data *Data) installKogitoManagementConsoleWithReplicasWithConfiguration(re
 
 	// Can be removed once https://issues.redhat.com/browse/KOGITO-1141 is implemented
 	if !framework.IsOpenshift() {
-		if err := addIngressURIEnvVariable(data.Namespace, managementConsole); err != nil {
+		if err := addIngressURIEnvVariableToManagementConsole(data.Namespace, managementConsole); err != nil {
 			return err
 		}
 	}
@@ -74,7 +74,7 @@ func (data *Data) kogitoManagementConsoleHasPodsRunningWithinMinutes(pods, timeo
 	return framework.WaitForKogitoManagementConsoleService(data.Namespace, pods, timeoutInMin)
 }
 
-func addIngressURIEnvVariable(namespace string, managementConsole *bddtypes.KogitoServiceHolder) error {
+func addIngressURIEnvVariableToManagementConsole(namespace string, managementConsole *bddtypes.KogitoServiceHolder) error {
 	dataIndexURI, err := framework.GetIngressURI(namespace, "data-index")
 	if err != nil {
 		return err
