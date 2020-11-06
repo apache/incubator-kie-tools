@@ -117,7 +117,7 @@
 .kogito--editor__toolbar .pf-c-page__header-nav {
   align-self: center;
   justify-content: center;
-  height: 100%
+  height: 100%;
 }
 
 .kogito--editor__toolbar-title {
@@ -155,4 +155,17 @@
   color: var(--pf-global--Color--400);
   font-size: var(--pf-global--FontSize--xl);
   font-weight: var(--pf-global--FontSize--xl);
+}
+
+.kogito--editor__embed-editor-modal-embed-code {
+  display: flex;
+  align-items: center;
+}
+
+.kogito--editor__embed-editor-modal-embed-code-label {
+  width: 150px;
+}
+
+.kogito--editor__embed-editor-modal-copied-alert {
+  height: 50px;
 }

@@ -53,7 +53,7 @@ export function EmbedEditorModal(props: Props) {
   const [copyFromSource, setCopyFromSource] = useState(Source.CURRENT);
   const [copied, setCopied] = useState(false);
   const [embedCode, setEmbedCode] = useState("");
-  const copyContentTextArea = useRef<HTMLTextAreaElement>(null);
+  const copyContentTextArea = useRef<HTMLInputElement>(null);
   const { i18n } = useOnlineI18n();
 
   const isGist = useMemo(() => context.githubService.isGist(fileUrl), [fileUrl, context]);
@@ -203,22 +203,27 @@ export function EmbedEditorModal(props: Props) {
         </div>
       </div>
       <br />
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <p style={{ width: "150px" }}>{i18n.embedEditorModal.embedCode}</p>
-        <TextInput aria-label={"Embed code"} value={embedCode} type={"text"} isReadOnly={true} />
+      <div className={"kogito--editor__embed-editor-modal-embed-code"}>
+        <p className={"kogito--editor__embed-editor-modal-embed-code-label"}>{i18n.embedEditorModal.embedCode}</p>
+        <TextInput
+          ref={copyContentTextArea}
+          aria-label={"Embed code"}
+          value={embedCode}
+          type={"text"}
+          isReadOnly={true}
+        />
       </div>
       <br />
       {copied ? (
         <Alert
-          style={{ height: "50px" }}
+          className={"kogito--editor__embed-editor-modal-copied-alert"}
           variant="success"
           title={i18n.embedEditorModal.copiedToClipboard}
           isInline={true}
         />
       ) : (
-        <div style={{ height: "50px" }} />
+        <div className={"kogito--editor__embed-editor-modal-copied-alert"} />
       )}
-      <textarea ref={copyContentTextArea} style={{ height: 0, width: 0, position: "absolute", zIndex: -1 }} />
     </Modal>
   );
 }
