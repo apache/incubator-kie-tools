@@ -27,7 +27,6 @@ import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
 import { UpdateGistErrors } from "../common/GithubService";
-import { isFileExtension } from "../common/utils";
 import { EmbedEditorModal } from "./EmbedEditorModal";
 
 interface Props {
@@ -172,10 +171,7 @@ export function EditorPage(props: Props) {
   }, [context.file.fileName, editor]);
 
   const fileExtension = useMemo(() => {
-    const type = context.routes.editor.args(location.pathname).type;
-    if (isFileExtension(type)) {
-      return type;
-    }
+    return context.routes.editor.args(location.pathname).type;
   }, [location.pathname]);
 
   const requestExportIframe = useCallback(() => {

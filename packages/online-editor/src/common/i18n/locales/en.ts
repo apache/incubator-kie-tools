@@ -165,7 +165,7 @@ export const en: OnlineI18n = {
         title: "As next steps, you can try to",
         firstStep: `Connect the ${"Age".bold()} input with the ${"Can drive?".bold()} decision;`,
         secondStep: `Define the decision logic in the ${"Can drive?".bold()} node to return ${"true".bold()} when ${"Age".bold()} is
-              greater than ${"21".bold()}, otherwise ${"false".bold()},`,
+              greater than ${"21".bold()}, otherwise ${"false".bold()};`,
         thirdStep: "Execute the model."
       },
       findUsefulInfo: "You can find useful information in the",

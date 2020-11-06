@@ -95,10 +95,3 @@ export function setCookie(name: string, value: string) {
 
   document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
 }
-
-export type FileExtension = "bpmn" | "bpmn2" | "dmn";
-export type EmbeddableClass = "BpmnEditor" | "DmnEditor";
-
-export function isFileExtension(toBeDetermined: string): toBeDetermined is FileExtension {
-  return toBeDetermined === "bpmn" || toBeDetermined === "bpmn2" || toBeDetermined === "dmn";
-}

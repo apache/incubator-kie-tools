@@ -15,19 +15,7 @@
  */
 
 import * as React from "react";
-import {
-  Alert,
-  Button,
-  Checkbox,
-  List,
-  ListItem,
-  Modal,
-  ModalVariant,
-  Radio,
-  TextInput,
-  Tooltip
-} from "@patternfly/react-core";
-import { EmbeddableClass, FileExtension } from "../common/utils";
+import { Alert, Button, Checkbox, Modal, ModalVariant, Radio, TextInput, Tooltip } from "@patternfly/react-core";
 import { useCallback, useContext, useMemo, useEffect, useState, useRef } from "react";
 import { useFileUrl } from "../common/Hooks";
 import { GlobalContext } from "../common/GlobalContext";
@@ -37,15 +25,18 @@ import { useOnlineI18n } from "../common/i18n";
 const BPMN_SOURCE = "https://kiegroup.github.io/kogito-online/standalone/bpmn/index.js";
 const DMN_SOURCE = "https://kiegroup.github.io/kogito-online/standalone/dmn/index.js";
 
-const editorEmbeddableClassMapping = new Map<FileExtension, EmbeddableClass>([
+type FileExtension = "bpmn" | "bpmn2" | "dmn";
+type EmbeddableClass = "BpmnEditor" | "DmnEditor";
+
+const editorStandaloneClassMapping = new Map<FileExtension, EmbeddableClass>([
   ["bpmn", "BpmnEditor"],
   ["bpmn2", "BpmnEditor"],
   ["dmn", "DmnEditor"]
 ]);
 
 interface Props {
-  fileExtension?: FileExtension;
-  editor: EmbeddedEditorRef | undefined;
+  fileExtension: string;
+  editor?: EmbeddedEditorRef;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -66,6 +57,10 @@ export function EmbedEditorModal(props: Props) {
   const { i18n } = useOnlineI18n();
 
   const isGist = useMemo(() => context.githubService.isGist(fileUrl), [fileUrl, context]);
+
+  const isFileExtension = useCallback((toBeDetermined: string): toBeDetermined is FileExtension => {
+    return toBeDetermined === "bpmn" || toBeDetermined === "bpmn2" || toBeDetermined === "dmn";
+  }, []);
 
   const getStandaloneEditorFromGist = useCallback(
     (editor: EmbeddableClass, gistUrl: string) => {
@@ -114,17 +109,17 @@ export function EmbedEditorModal(props: Props) {
   }, []);
 
   useEffect(() => {
-    if (props.fileExtension) {
+    if (isFileExtension(props.fileExtension)) {
       const iframe = document.createElement("iframe");
       iframe.width = "100%";
       iframe.height = "100%";
-      const embeddableClass = editorEmbeddableClassMapping.get(props.fileExtension)!;
+      const embeddableClass = editorStandaloneClassMapping.get(props.fileExtension)!;
 
       if (copyFromSource === Source.CURRENT) {
         props.editor?.getContent().then(editorContent => {
           const clearContent = editorContent.replace(/(\r\n|\n|\r)/gm, "");
           const script = getStandaloneEditorFromCurrentContent(embeddableClass, clearContent);
-          iframe.srcdoc = getStandaloneEditorSrcdoc(script, props.fileExtension!);
+          iframe.srcdoc = getStandaloneEditorSrcdoc(script, props.fileExtension as FileExtension);
           setEmbedCode(iframe.outerHTML);
         });
       }
@@ -153,79 +148,77 @@ export function EmbedEditorModal(props: Props) {
   }, [embedCode, copyContentTextArea]);
 
   return (
-    <>
-      <Modal
-        variant={ModalVariant.small}
-        aria-label={"Embed the editor and content in your page"}
-        isOpen={props.isOpen}
-        onClose={props.onClose}
-        title={i18n.embedEditorModal.title}
-        description={i18n.embedEditorModal.description}
-        actions={[
-          <Button key="confirm" variant="primary" onClick={onCopy}>
-            {i18n.embedEditorModal.copy}
-          </Button>,
-          <Button key="cancel" variant="link" onClick={props.onClose}>
-            {i18n.terms.close}
-          </Button>
-        ]}
-      >
+    <Modal
+      variant={ModalVariant.small}
+      aria-label={"Embed the editor and content in your page"}
+      isOpen={props.isOpen}
+      onClose={props.onClose}
+      title={i18n.embedEditorModal.title}
+      description={i18n.embedEditorModal.description}
+      actions={[
+        <Button key="confirm" variant="primary" onClick={onCopy}>
+          {i18n.embedEditorModal.copy}
+        </Button>,
+        <Button key="cancel" variant="link" onClick={props.onClose}>
+          {i18n.terms.close}
+        </Button>
+      ]}
+    >
+      <div>
+        <Checkbox
+          id={"read-only"}
+          label={i18n.embedEditorModal.readOnly.label}
+          aria-label="Read only checkbox"
+          description={i18n.embedEditorModal.readOnly.description}
+          isChecked={readOnly}
+          onChange={setReadonly}
+        />
+        <br />
         <div>
-          <Checkbox
-            id={"is-readOnly"}
-            label={i18n.embedEditorModal.readOnly.label}
-            aria-label="Read only checkbox"
-            description={i18n.embedEditorModal.readOnly.description}
-            isChecked={readOnly}
-            onChange={setReadonly}
+          <Radio
+            aria-label="Current content source option"
+            id={"current-content"}
+            isChecked={copyFromSource === Source.CURRENT}
+            name={"Current content"}
+            label={i18n.embedEditorModal.source.current.label}
+            description={i18n.embedEditorModal.source.current.description}
+            onChange={() => setCopyFromSource(Source.CURRENT)}
           />
-          <br />
-          <div>
+          <Tooltip
+            aria-label={"Only available when editing a file from a GitHub gist"}
+            content={<p>{i18n.embedEditorModal.source.gist.tooltip}</p>}
+            trigger={!isGist ? "mouseenter click" : ""}
+          >
             <Radio
-              aria-label="Current content source option"
-              id={"current-content"}
-              isChecked={copyFromSource === Source.CURRENT}
-              name={"Current content"}
-              label={i18n.embedEditorModal.source.current.label}
-              description={i18n.embedEditorModal.source.current.description}
-              onChange={() => setCopyFromSource(Source.CURRENT)}
+              aria-label="GitHub gist source option"
+              id={"github-gist"}
+              isDisabled={!isGist}
+              name={"GitHub gist"}
+              label={i18n.embedEditorModal.source.gist.label}
+              isChecked={copyFromSource === Source.GIST}
+              description={i18n.embedEditorModal.source.gist.description}
+              onChange={() => setCopyFromSource(Source.GIST)}
             />
-            <Tooltip
-              aria-label={"Only available when editing a file from a GitHub gist"}
-              content={<p>{i18n.embedEditorModal.source.gist.tooltip}</p>}
-              trigger={!isGist ? "mouseenter click" : ""}
-            >
-              <Radio
-                aria-label="GitHub gist source option"
-                id={"export-gist"}
-                isDisabled={!isGist}
-                name={"GitHub gist"}
-                label={i18n.embedEditorModal.source.gist.label}
-                isChecked={copyFromSource === Source.GIST}
-                description={i18n.embedEditorModal.source.gist.description}
-                onChange={() => setCopyFromSource(Source.GIST)}
-              />
-            </Tooltip>
-          </div>
+          </Tooltip>
         </div>
-        <br />
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <p style={{ width: "150px" }}>{i18n.embedEditorModal.embedCode}</p>
-          <TextInput aria-label={"Embed code"} value={embedCode} type={"text"} isReadOnly={true} />
-        </div>
-        <br />
-        {copied ? (
-          <Alert
-            style={{ height: "50px" }}
-            variant="success"
-            title={i18n.embedEditorModal.copiedToClipboard}
-            isInline={true}
-          />
-        ) : (
-          <div style={{ height: "50px" }} />
-        )}
-        <textarea ref={copyContentTextArea} style={{ height: 0, width: 0, position: "absolute", zIndex: -1 }} />
-      </Modal>
-    </>
+      </div>
+      <br />
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <p style={{ width: "150px" }}>{i18n.embedEditorModal.embedCode}</p>
+        <TextInput aria-label={"Embed code"} value={embedCode} type={"text"} isReadOnly={true} />
+      </div>
+      <br />
+      {copied ? (
+        <Alert
+          style={{ height: "50px" }}
+          variant="success"
+          title={i18n.embedEditorModal.copiedToClipboard}
+          isInline={true}
+        />
+      ) : (
+        <div style={{ height: "50px" }} />
+      )}
+      <textarea ref={copyContentTextArea} style={{ height: 0, width: 0, position: "absolute", zIndex: -1 }} />
+    </Modal>
   );
 }
