@@ -22,6 +22,8 @@ import { DelegatingModelReducer } from "./DelegatingModelReducer";
 import mergeReducers from "combine-reducer";
 import { CharacteristicsReducer } from "./CharacteristicsReducer";
 import { CharacteristicReducer } from "./CharacteristicReducer";
+import { OutputFieldReducer } from "./OutputFieldReducer";
+import { OutputReducer } from "./OutputReducer";
 
 interface ModelPayload {
   [Actions.DeleteModel]: {
@@ -35,6 +37,7 @@ export const ModelReducer: HistoryAwareReducer<Model[], ModelActions | AllScorec
   service: HistoryService
 ): Reducer<Model[], ModelActions | AllScorecardActions> => {
   const scorecardReducer = mergeReducers(ScorecardReducer(service), {
+    Output: mergeReducers(OutputReducer(service), { OutputField: OutputFieldReducer(service) }),
     Characteristics: mergeReducers(CharacteristicsReducer(service), {
       Characteristic: CharacteristicReducer(service)
     })

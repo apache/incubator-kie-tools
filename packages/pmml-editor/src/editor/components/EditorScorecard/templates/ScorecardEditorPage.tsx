@@ -193,6 +193,39 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               modelIndex={modelIndex}
               output={output}
               validateOutputName={validateOutputName}
+              deleteOutput={_index => {
+                if (window.confirm(`Delete Output "${_index}"?`)) {
+                  dispatch({
+                    type: Actions.DeleteOutput,
+                    payload: {
+                      modelIndex: modelIndex,
+                      outputIndex: _index
+                    }
+                  });
+                }
+              }}
+              commit={(_index, _name, _dataType) => {
+                if (_index === undefined) {
+                  dispatch({
+                    type: Actions.AddOutput,
+                    payload: {
+                      modelIndex: modelIndex,
+                      name: _name,
+                      dataType: _dataType
+                    }
+                  });
+                } else {
+                  dispatch({
+                    type: Actions.UpdateOutput,
+                    payload: {
+                      modelIndex: modelIndex,
+                      outputIndex: _index,
+                      name: _name,
+                      dataType: _dataType
+                    }
+                  });
+                }
+              }}
             />
           </PageSection>
 

@@ -16,7 +16,7 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Form } from "@patternfly/react-core";
-import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataType, FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputsTableEditRow, OutputsTableRow } from "../molecules";
 import "./OutputsTable.scss";
 import { Operation } from "../../EditorScorecard";
@@ -27,11 +27,11 @@ interface OutputsTableProps {
   outputs: OutputField[];
   validateOutputName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutput: (index: number) => void;
-  commit: (index: number | undefined, text: string | undefined) => void;
+  commit: (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => void;
 }
 
 export const OutputsTable = (props: OutputsTableProps) => {
-  const { activeOperation, setActiveOperation, outputs, deleteOutput, validateOutputName, commit } = props;
+  const { activeOperation, setActiveOperation, outputs, validateOutputName, deleteOutput, commit } = props;
 
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
   const addOutputRowRef = useRef<HTMLDivElement | null>(null);
@@ -57,7 +57,7 @@ export const OutputsTable = (props: OutputsTableProps) => {
     return validateOutputName(index, name);
   };
 
-  const onCommit = (index: number | undefined, name: string | undefined, dataType: string | undefined) => {
+  const onCommit = (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => {
     //Avoid commits with no change
     let output: OutputField;
     if (index === undefined) {
@@ -66,7 +66,7 @@ export const OutputsTable = (props: OutputsTableProps) => {
       output = outputs[index];
     }
     if (output.name !== name || output.dataType !== dataType) {
-      commit(index, name);
+      commit(index, name, dataType);
     }
 
     onCancel();

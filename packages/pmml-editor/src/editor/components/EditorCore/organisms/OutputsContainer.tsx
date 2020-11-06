@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataType, FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { PlusIcon } from "@patternfly/react-icons";
@@ -28,10 +28,12 @@ interface OutputsContainerProps {
   setActiveOperation: (operation: Operation) => void;
   output?: Output;
   validateOutputName: (index: number | undefined, name: string | undefined) => boolean;
+  deleteOutput: (index: number) => void;
+  commit: (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => void;
 }
 
 export const OutputsContainer = (props: OutputsContainerProps) => {
-  const { activeOperation, setActiveOperation, output, validateOutputName } = props;
+  const { activeOperation, setActiveOperation, output, validateOutputName, deleteOutput, commit } = props;
 
   const addOutput = () => {
     setActiveOperation(Operation.CREATE_OUTPUT);
@@ -59,8 +61,8 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
               activeOperation={activeOperation}
               setActiveOperation={setActiveOperation}
               validateOutputName={validateOutputName}
-              deleteOutput={_index => null}
-              commit={(index, text) => null}
+              deleteOutput={deleteOutput}
+              commit={commit}
               outputs={output?.OutputField as OutputField[]}
             />
           </div>

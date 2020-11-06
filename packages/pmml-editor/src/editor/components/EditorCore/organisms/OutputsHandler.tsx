@@ -26,7 +26,7 @@ import {
   TitleSizes
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
-import { Output } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataType, FieldName, Output } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputsContainer } from "./OutputsContainer";
 import { Operation } from "../../EditorScorecard";
 
@@ -36,10 +36,12 @@ interface OutputsHandlerProps {
   setActiveOperation: (operation: Operation) => void;
   output?: Output;
   validateOutputName: (index: number | undefined, name: string | undefined) => boolean;
+  deleteOutput: (index: number) => void;
+  commit: (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => void;
 }
 
 export const OutputsHandler = (props: OutputsHandlerProps) => {
-  const { modelIndex, activeOperation, setActiveOperation, output, validateOutputName } = props;
+  const { modelIndex, activeOperation, setActiveOperation, output, validateOutputName, deleteOutput, commit } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -82,6 +84,8 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
           setActiveOperation={setActiveOperation}
           output={output}
           validateOutputName={validateOutputName}
+          deleteOutput={deleteOutput}
+          commit={commit}
         />
       </Modal>
     </>

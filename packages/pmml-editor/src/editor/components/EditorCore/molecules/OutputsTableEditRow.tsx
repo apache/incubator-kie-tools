@@ -17,7 +17,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { Flex, FlexItem, FormGroup, Select, SelectOption, SelectVariant, TextInput } from "@patternfly/react-core";
 import "../organisms/OutputsTable.scss";
-import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataType, FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputLabelsEditMode, OutputsTableEditModeAction } from "../atoms";
 import { ValidatedType } from "../../../types";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
@@ -26,7 +26,7 @@ interface OutputsTableEditRowProps {
   index: number | undefined;
   output: OutputField;
   validateOutputName: (name: string | undefined) => boolean;
-  onCommit: (text: string | undefined, dataType: string | undefined) => void;
+  onCommit: (name: FieldName | undefined, dataType: DataType | undefined) => void;
   onCancel: () => void;
 }
 
@@ -63,6 +63,7 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
   const typeToggle = (isOpen: boolean) => {
     setIsTypeSelectOpen(isOpen);
   };
+
   const onSelectType = (event: any, selection: any, isPlaceholder: boolean) => {
     setDataType(isPlaceholder ? undefined : selection);
     setIsTypeSelectOpen(false);
@@ -136,7 +137,7 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>
           <OutputsTableEditModeAction
-            onCommit={() => onCommit(name.value, dataType)}
+            onCommit={() => onCommit(name.value as FieldName, dataType as DataType)}
             onCancel={() => onCancel()}
             disableCommit={!name.valid}
           />
