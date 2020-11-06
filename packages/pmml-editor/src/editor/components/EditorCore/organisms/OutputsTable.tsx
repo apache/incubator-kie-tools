@@ -15,23 +15,25 @@
  */
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import { Form } from "@patternfly/react-core";
+import { Bullseye, Form } from "@patternfly/react-core";
 import { DataType, FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputsTableEditRow, OutputsTableRow } from "../molecules";
 import "./OutputsTable.scss";
 import { Operation } from "../../EditorScorecard";
+import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 
 interface OutputsTableProps {
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   outputs: OutputField[];
+  addOutput: () => void;
   validateOutputName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutput: (index: number) => void;
   commit: (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => void;
 }
 
 export const OutputsTable = (props: OutputsTableProps) => {
-  const { activeOperation, setActiveOperation, outputs, validateOutputName, deleteOutput, commit } = props;
+  const { activeOperation, setActiveOperation, outputs, addOutput, validateOutputName, deleteOutput, commit } = props;
 
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
   const addOutputRowRef = useRef<HTMLDivElement | null>(null);
@@ -120,6 +122,11 @@ export const OutputsTable = (props: OutputsTableProps) => {
           </div>
         )}
       </section>
+      {outputs.length === 0 && activeOperation !== Operation.CREATE_OUTPUT && (
+        <Bullseye>
+          <EmptyStateNoOutput addOutput={addOutput} />
+        </Bullseye>
+      )}
     </Form>
   );
 };

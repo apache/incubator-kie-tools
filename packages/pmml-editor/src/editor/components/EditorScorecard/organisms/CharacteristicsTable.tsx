@@ -205,7 +205,9 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
           )}
         </DataList>
       </Form>
-      {characteristics.length === 0 && <EmptyStateNoCharacteristics addCharacteristic={addCharacteristic} />}
+      {characteristics.length === 0 && activeOperation !== Operation.CREATE_CHARACTERISTIC && (
+        <EmptyStateNoCharacteristics addCharacteristic={addCharacteristic} />
+      )}
     </div>
   );
 };

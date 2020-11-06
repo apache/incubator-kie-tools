@@ -15,8 +15,7 @@
  */
 import * as React from "react";
 import { DataType, FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
-import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
-import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
+import { Button, Flex, FlexItem } from "@patternfly/react-core";
 import { PlusIcon } from "@patternfly/react-icons";
 import { OutputsTable } from "./OutputsTable";
 import { Operation } from "../../EditorScorecard";
@@ -54,25 +53,19 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
           </Button>
         </FlexItem>
       </Flex>
-      {(output?.OutputField ?? []).length > 0 && (
-        <div className="outputs-container__list">
-          <div className="outputs-container__list--container">
-            <OutputsTable
-              activeOperation={activeOperation}
-              setActiveOperation={setActiveOperation}
-              validateOutputName={validateOutputName}
-              deleteOutput={deleteOutput}
-              commit={commit}
-              outputs={output?.OutputField as OutputField[]}
-            />
-          </div>
+      <div className="outputs-container__list">
+        <div className="outputs-container__list--container">
+          <OutputsTable
+            activeOperation={activeOperation}
+            setActiveOperation={setActiveOperation}
+            outputs={output?.OutputField as OutputField[]}
+            addOutput={addOutput}
+            validateOutputName={validateOutputName}
+            deleteOutput={deleteOutput}
+            commit={commit}
+          />
         </div>
-      )}
-      {(output?.OutputField ?? []).length === 0 && (
-        <Bullseye>
-          <EmptyStateNoOutput addOutput={addOutput} />
-        </Bullseye>
-      )}
+      </div>
     </div>
   );
 };

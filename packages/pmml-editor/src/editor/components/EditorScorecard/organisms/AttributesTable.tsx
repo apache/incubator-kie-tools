@@ -211,7 +211,9 @@ export const AttributesTable = (props: AttributesTableProps) => {
           )}
         </DataList>
       </Form>
-      {attributes.length === 0 && <EmptyStateNoAttributes createAttribute={addAttribute} />}
+      {attributes.length === 0 && activeOperation !== Operation.CREATE_ATTRIBUTE && (
+        <EmptyStateNoAttributes createAttribute={addAttribute} />
+      )}
     </div>
   );
 };
