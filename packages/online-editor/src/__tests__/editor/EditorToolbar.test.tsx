@@ -32,6 +32,7 @@ const requestPreview = jest.fn(() => null);
 const requestExportGist = jest.fn(() => null);
 const requestSetGitHubToken = jest.fn(() => null);
 const requestUpdateGist = jest.fn(() => null);
+const requestExportIframe = jest.fn(() => null);
 
 function mockFunctions() {
   const original = require.requireActual("../../common/Hooks");
@@ -76,6 +77,7 @@ describe("EditorToolbar", () => {
               onSetGitHubToken={requestSetGitHubToken}
               onExportGist={requestExportGist}
               onUpdateGist={requestUpdateGist}
+              onExportIframe={requestExportIframe}
               isEdited={isEdited}
             />
           ).wrapper
@@ -104,6 +106,7 @@ describe("EditorToolbar", () => {
               onSetGitHubToken={requestSetGitHubToken}
               onExportGist={requestExportGist}
               onUpdateGist={requestUpdateGist}
+              onExportIframe={requestExportIframe}
               isEdited={isEdited}
             />
           ).wrapper
@@ -136,6 +139,7 @@ describe("EditorToolbar", () => {
               onSetGitHubToken={requestSetGitHubToken}
               onExportGist={requestExportGist}
               onUpdateGist={requestUpdateGist}
+              onExportIframe={requestExportIframe}
               isEdited={false}
             />,
             { githubService }
@@ -169,6 +173,7 @@ describe("EditorToolbar", () => {
               onSetGitHubToken={requestSetGitHubToken}
               onExportGist={requestExportGist}
               onUpdateGist={requestUpdateGist}
+              onExportIframe={requestExportIframe}
               isEdited={false}
             />,
             { githubService }
