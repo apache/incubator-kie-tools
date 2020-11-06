@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { CSSProperties } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { Label, Tooltip, TooltipPosition } from "@patternfly/react-core";
-import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface OutputLabelsEditModeProps {
   output: OutputField;
@@ -27,65 +27,88 @@ const PADDING: CSSProperties = { marginRight: "4px" };
 export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
   const { output } = props;
 
+  const [optype, setOptype] = useState<string | undefined>();
+  const [targetField, setTargetField] = useState<FieldName | undefined>();
+  const [feature, setFeature] = useState<string | undefined>();
+  const [value, setValue] = useState<string | undefined>();
+  const [rank, setRank] = useState<number | undefined>();
+  const [rankOrder, setRankOrder] = useState<string | undefined>();
+  const [segmentId, setSegmentId] = useState<string | undefined>();
+  const [isFinalResult, setIsFinalResult] = useState<boolean | undefined>();
+
+  useEffect(() => {
+    setOptype(output.optype);
+    setTargetField(output.targetField);
+    setFeature(output.feature);
+    setValue(output.value);
+    setRank(output.rank);
+    setRankOrder(output.rankOrder);
+    setSegmentId(output.segmentId);
+    setIsFinalResult(output.isFinalResult);
+  }, [output]);
+
   return (
     <>
-      {output.optype && (
+      {optype && (
         <Tooltip position={TooltipPosition.top} content={<div>Optype</div>}>
-          <Label style={PADDING} color="orange" onClose={e => null}>
-            {output.optype}
+          <Label style={PADDING} color="orange" onClose={e => setOptype(undefined)}>
+            {optype}
           </Label>
         </Tooltip>
       )}
 
-      {output.targetField && (
+      {targetField && (
         <Tooltip position={TooltipPosition.top} content={<div>Target field</div>}>
-          <Label style={PADDING} color="orange" onClose={e => null}>
-            {output.targetField}
+          <Label style={PADDING} color="orange" onClose={e => setTargetField(undefined)}>
+            {targetField}
           </Label>
         </Tooltip>
       )}
-      {output.feature && (
+      {feature && (
         <Tooltip position={TooltipPosition.top} content={<div>Feature</div>}>
-          <Label style={PADDING} color="orange" onClose={e => null}>
-            {output.feature}
+          <Label style={PADDING} color="orange" onClose={e => setFeature(undefined)}>
+            {feature}
           </Label>
         </Tooltip>
       )}
-      {output.value && (
+      {value && (
         <Tooltip position={TooltipPosition.top} content={<div>Value</div>}>
-          <Label style={PADDING} color="orange" onClose={e => null}>
-            {output.value}
+          <Label style={PADDING} color="orange" onClose={e => setValue(undefined)}>
+            {value}
           </Label>
         </Tooltip>
       )}
-      {output.rank && (
+      {rank && (
         <Tooltip position={TooltipPosition.top} content={<div>Rank</div>}>
-          <Label style={PADDING} color="orange" onClose={e => null}>
-            {output.rank}
+          <Label style={PADDING} color="orange" onClose={e => setRank(undefined)}>
+            {rank}
           </Label>
         </Tooltip>
       )}
-      {output.rankOrder && (
+      {rankOrder && (
         <Tooltip position={TooltipPosition.top} content={<div>Rank order</div>}>
-          <Label style={PADDING} color="orange" onClose={e => null}>
-            {output.rankOrder}
+          <Label style={PADDING} color="orange" onClose={e => setRankOrder(undefined)}>
+            {rankOrder}
           </Label>
         </Tooltip>
       )}
-      {output.segmentId && (
+      {segmentId && (
         <Tooltip position={TooltipPosition.top} content={<div>Segment Id</div>}>
-          <Label style={PADDING} color="orange" onClose={e => null}>
-            {output.segmentId}
+          <Label style={PADDING} color="orange" onClose={e => setSegmentId(undefined)}>
+            {segmentId}
           </Label>
         </Tooltip>
       )}
-      {output.isFinalResult && (
+      {isFinalResult && (
         <Tooltip position={TooltipPosition.top} content={<div>Final result?</div>}>
-          <Label style={PADDING} color="orange" onClose={e => null}>
-            {output.isFinalResult}
+          <Label style={PADDING} color="orange" onClose={e => setIsFinalResult(undefined)}>
+            {isFinalResult}
           </Label>
         </Tooltip>
       )}
+      <Label style={PADDING} color="orange">
+        ...
+      </Label>
     </>
   );
 };
