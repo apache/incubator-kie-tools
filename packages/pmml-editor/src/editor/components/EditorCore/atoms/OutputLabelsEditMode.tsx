@@ -17,6 +17,7 @@ import * as React from "react";
 import { CSSProperties } from "react";
 import { Label, Tooltip, TooltipPosition } from "@patternfly/react-core";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { ArrowAltCircleRightIcon } from "@patternfly/react-icons";
 
 interface OutputLabelsEditModeProps {
   activeOutputField: OutputField;
@@ -38,7 +39,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             color="orange"
             onClose={e => setActiveOutputField({ ...activeOutputField, optype: undefined })}
           >
-            {activeOutputField.optype}
+            OpType:{activeOutputField.optype}
           </Label>
         </Tooltip>
       )}
@@ -50,7 +51,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             color="orange"
             onClose={e => setActiveOutputField({ ...activeOutputField, targetField: undefined })}
           >
-            {activeOutputField.targetField}
+            TargetField:{activeOutputField.targetField}
           </Label>
         </Tooltip>
       )}
@@ -61,7 +62,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             color="orange"
             onClose={e => setActiveOutputField({ ...activeOutputField, feature: undefined })}
           >
-            {activeOutputField.feature}
+            Feature:{activeOutputField.feature}
           </Label>
         </Tooltip>
       )}
@@ -72,7 +73,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             color="orange"
             onClose={e => setActiveOutputField({ ...activeOutputField, value: undefined })}
           >
-            {activeOutputField.value}
+            Value:{activeOutputField.value}
           </Label>
         </Tooltip>
       )}
@@ -83,7 +84,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             color="orange"
             onClose={e => setActiveOutputField({ ...activeOutputField, rank: undefined })}
           >
-            {activeOutputField.rank}
+            Rank:{activeOutputField.rank}
           </Label>
         </Tooltip>
       )}
@@ -94,7 +95,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             color="orange"
             onClose={e => setActiveOutputField({ ...activeOutputField, rankOrder: undefined })}
           >
-            {activeOutputField.rankOrder}
+            RankOrder:{activeOutputField.rankOrder}
           </Label>
         </Tooltip>
       )}
@@ -105,7 +106,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             color="orange"
             onClose={e => setActiveOutputField({ ...activeOutputField, segmentId: undefined })}
           >
-            {activeOutputField.segmentId}
+            SegmentId:{activeOutputField.segmentId}
           </Label>
         </Tooltip>
       )}
@@ -116,11 +117,20 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
             color="orange"
             onClose={e => setActiveOutputField({ ...activeOutputField, isFinalResult: undefined })}
           >
-            {activeOutputField.isFinalResult}
+            FinalResult:{activeOutputField.isFinalResult.toString()}
           </Label>
         </Tooltip>
       )}
-      <Label style={PADDING} color="orange" onClick={viewExtendedProperties}>
+      <Label
+        style={PADDING}
+        color="orange"
+        href="#filled"
+        icon={<ArrowAltCircleRightIcon />}
+        onClick={e => {
+          e.preventDefault();
+          viewExtendedProperties();
+        }}
+      >
         More...
       </Label>
     </>

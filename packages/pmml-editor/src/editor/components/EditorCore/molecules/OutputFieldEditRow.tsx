@@ -18,7 +18,7 @@ import { useMemo, useState } from "react";
 import { Flex, FlexItem, FormGroup, Select, SelectOption, SelectVariant, TextInput } from "@patternfly/react-core";
 import "../organisms/OutputFieldsTable.scss";
 import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
-import { OutputLabelsEditMode, OutputFieldRowEditModeAction } from "../atoms";
+import { OutputFieldRowEditModeAction, OutputLabelsEditMode } from "../atoms";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 
 interface OutputFieldEditRowProps {
@@ -82,12 +82,12 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
       <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
         <FlexItem>
           <FormGroup
+            label="Name"
             fieldId="output-name-helper"
-            helperText="Please provide a name for the Output Field."
             helperTextInvalid="Name must be unique and present."
             helperTextInvalidIcon={<ExclamationCircleIcon />}
             validated={isValidName ? "default" : "error"}
-            style={{ width: "12em" }}
+            style={{ width: "16em" }}
           >
             <TextInput
               type="text"
@@ -104,11 +104,7 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
           </FormGroup>
         </FlexItem>
         <FlexItem>
-          <FormGroup
-            fieldId="output-dataType-helper"
-            helperText="Specifies the data type for the output field."
-            style={{ width: "12em" }}
-          >
+          <FormGroup label="Data type" fieldId="output-dataType-helper" style={{ width: "12em" }}>
             <Select
               id="output-dataType"
               name="output-dataType"
@@ -129,14 +125,16 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
           </FormGroup>
         </FlexItem>
         <FlexItem>
-          <OutputLabelsEditMode
-            activeOutputField={activeOutputField}
-            setActiveOutputField={setActiveOutputField}
-            viewExtendedProperties={viewExtendedProperties}
-          />
+          <FormGroup label="Properties" fieldId="output-labels-helper">
+            <OutputLabelsEditMode
+              activeOutputField={activeOutputField}
+              setActiveOutputField={setActiveOutputField}
+              viewExtendedProperties={viewExtendedProperties}
+            />
+          </FormGroup>
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>
-          <OutputFieldRowEditModeAction onCommit={onCommit} onCancel={onCancel} disableCommit={false} />
+          <OutputFieldRowEditModeAction onCommit={onCommit} onCancel={onCancel} disableCommit={!isValidName} />
         </FlexItem>
       </Flex>
     </article>

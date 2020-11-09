@@ -25,7 +25,7 @@ import {
   ResultFeature
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { Button, Flex, FlexItem } from "@patternfly/react-core";
-import { PlusIcon } from "@patternfly/react-icons";
+import { ArrowAltCircleLeftIcon, PlusIcon } from "@patternfly/react-icons";
 import { OutputFieldsTable } from "./OutputFieldsTable";
 import { Operation } from "../../EditorScorecard";
 import "./OutputsContainer.scss";
@@ -190,7 +190,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                     <Button
                       variant="secondary"
                       onClick={e => setViewSection("overview")}
-                      icon={<PlusIcon />}
+                      icon={<ArrowAltCircleLeftIcon />}
                       iconPosition="left"
                     >
                       Done

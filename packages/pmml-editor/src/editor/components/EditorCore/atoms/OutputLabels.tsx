@@ -32,7 +32,7 @@ export const OutputLabels = (props: OutputLabelsProps) => {
       {activeOutputField.optype && (
         <Tooltip position={TooltipPosition.top} content={<div>Optype</div>}>
           <Label style={PADDING} color="orange">
-            {activeOutputField.optype}
+            OpType:{activeOutputField.optype}
           </Label>
         </Tooltip>
       )}
@@ -40,49 +40,49 @@ export const OutputLabels = (props: OutputLabelsProps) => {
       {activeOutputField.targetField && (
         <Tooltip position={TooltipPosition.top} content={<div>Target field</div>}>
           <Label style={PADDING} color="orange">
-            {activeOutputField.targetField}
+            TargetField:{activeOutputField.targetField}
           </Label>
         </Tooltip>
       )}
       {activeOutputField.feature && (
         <Tooltip position={TooltipPosition.top} content={<div>Feature</div>}>
           <Label style={PADDING} color="orange">
-            {activeOutputField.feature}
+            Feature:{activeOutputField.feature}
           </Label>
         </Tooltip>
       )}
       {activeOutputField.value && (
         <Tooltip position={TooltipPosition.top} content={<div>Value</div>}>
           <Label style={PADDING} color="orange">
-            {activeOutputField.value}
+            Value:{activeOutputField.value}
           </Label>
         </Tooltip>
       )}
       {activeOutputField.rank && (
         <Tooltip position={TooltipPosition.top} content={<div>Rank</div>}>
           <Label style={PADDING} color="orange">
-            {activeOutputField.rank}
+            Rank:{activeOutputField.rank}
           </Label>
         </Tooltip>
       )}
       {activeOutputField.rankOrder && (
         <Tooltip position={TooltipPosition.top} content={<div>Rank order</div>}>
           <Label style={PADDING} color="orange">
-            {activeOutputField.rankOrder}
+            RankOrder:{activeOutputField.rankOrder}
           </Label>
         </Tooltip>
       )}
       {activeOutputField.segmentId && (
         <Tooltip position={TooltipPosition.top} content={<div>Segment Id</div>}>
           <Label style={PADDING} color="orange">
-            {activeOutputField.segmentId}
+            SegmentId:{activeOutputField.segmentId}
           </Label>
         </Tooltip>
       )}
       {activeOutputField.isFinalResult && (
         <Tooltip position={TooltipPosition.top} content={<div>Final result?</div>}>
           <Label style={PADDING} color="orange">
-            {activeOutputField.isFinalResult}
+            FinalResult:{activeOutputField.isFinalResult.toString()}
           </Label>
         </Tooltip>
       )}

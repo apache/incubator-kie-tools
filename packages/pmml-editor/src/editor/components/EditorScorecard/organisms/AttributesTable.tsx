@@ -102,14 +102,13 @@ export const AttributesTable = (props: AttributesTableProps) => {
     reasonCode: string | undefined
   ) => {
     //Avoid commits with no change
-    let attribute: Attribute;
     if (index === undefined) {
-      attribute = {};
-    } else {
-      attribute = attributes[index];
-    }
-    if (attribute.partialScore !== partialScore || attribute.reasonCode !== reasonCode) {
       commit(index, text, partialScore, reasonCode);
+    } else {
+      const attribute = attributes[index];
+      if (attribute.partialScore !== partialScore || attribute.reasonCode !== reasonCode) {
+        commit(index, text, partialScore, reasonCode);
+      }
     }
 
     onCancel();
