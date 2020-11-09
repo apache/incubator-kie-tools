@@ -22,6 +22,7 @@ import { OutputsTable } from "./OutputsTable";
 import { Operation } from "../../EditorScorecard";
 import "./OutputsContainer.scss";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
+import { OutputsExtendedProperties } from "./OutputsExtendedProperties";
 
 interface OutputsContainerProps {
   modelIndex: number;
@@ -84,19 +85,6 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
 
   return (
     <div className="outputs-container">
-      <Flex style={{ margin: "1em 0 2em 0" }}>
-        <FlexItem>
-          <Button
-            variant="secondary"
-            onClick={addOutputField}
-            isDisabled={activeOperation !== Operation.NONE}
-            icon={<PlusIcon />}
-            iconPosition="left"
-          >
-            Add Output
-          </Button>
-        </FlexItem>
-      </Flex>
       <SwitchTransition mode={"out-in"}>
         <CSSTransition
           timeout={{
@@ -108,34 +96,56 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
         >
           <>
             {viewSection == "overview" && (
-              <div className="outputs-container__list">
-                <OutputsTable
-                  activeOperation={activeOperation}
-                  onEditOutputField={onEditOutputField}
-                  activeOutputFieldIndex={editItemIndex}
-                  activeOutputField={outputField}
-                  setActiveOutputField={setOutputField}
-                  outputs={output?.OutputField as OutputField[]}
-                  onAddOutputField={addOutputField}
-                  validateOutputFieldName={validateOutputFieldName}
-                  viewExtendedProperties={() => setViewSection("extended-properties")}
-                  onDeleteOutputField={deleteOutputField}
-                  onCommit={onCommit}
-                  onCancel={onCancel}
-                />
+              <div style={{ height: "100%" }}>
+                <Flex style={{ margin: "1em 0 2em 0" }}>
+                  <FlexItem>
+                    <Button
+                      variant="secondary"
+                      onClick={addOutputField}
+                      isDisabled={activeOperation !== Operation.NONE}
+                      icon={<PlusIcon />}
+                      iconPosition="left"
+                    >
+                      Add Output
+                    </Button>
+                  </FlexItem>
+                </Flex>
+                <div className="outputs-container__list">
+                  <OutputsTable
+                    activeOperation={activeOperation}
+                    onEditOutputField={onEditOutputField}
+                    activeOutputFieldIndex={editItemIndex}
+                    activeOutputField={outputField}
+                    setActiveOutputField={setOutputField}
+                    outputs={output?.OutputField as OutputField[]}
+                    onAddOutputField={addOutputField}
+                    validateOutputFieldName={validateOutputFieldName}
+                    viewExtendedProperties={() => setViewSection("extended-properties")}
+                    onDeleteOutputField={deleteOutputField}
+                    onCommit={onCommit}
+                    onCancel={onCancel}
+                  />
+                </div>
               </div>
             )}
             {viewSection == "extended-properties" && (
-              <>
-                <p>Some where else</p>
-                <Button
-                  onClick={e => {
-                    setViewSection("overview");
-                  }}
-                >
-                  Return
-                </Button>{" "}
-              </>
+              <div style={{ height: "100%" }}>
+                <Flex style={{ margin: "1em 0 2em 0" }}>
+                  <FlexItem>
+                    <Button
+                      variant="secondary"
+                      onClick={e => setViewSection("overview")}
+                      icon={<PlusIcon />}
+                      iconPosition="left"
+                    >
+                      Done
+                    </Button>
+                  </FlexItem>
+                </Flex>
+                <div className="outputs-container__list">
+                  <OutputsExtendedProperties activeOutputField={outputField} setActiveOutputField={setOutputField} />
+                </div>
+              </div>
             )}
           </>
         </CSSTransition>
