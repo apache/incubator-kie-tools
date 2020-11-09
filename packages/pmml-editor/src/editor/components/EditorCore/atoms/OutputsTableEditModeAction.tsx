@@ -29,10 +29,10 @@ export const OutputsTableEditModeAction = (props: OutputsTableEditModeActionProp
   return (
     <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
       <FlexItem>
-        <Button variant="plain" onClick={e => onCommit()} isDisabled={disableCommit}>
+        <Button variant="plain" onClick={onCommit} isDisabled={disableCommit}>
           <CheckIcon />
         </Button>
-        <Button variant="plain" onClick={e => onCancel()}>
+        <Button variant="plain" onClick={onCancel}>
           <TimesIcon />
         </Button>
       </FlexItem>

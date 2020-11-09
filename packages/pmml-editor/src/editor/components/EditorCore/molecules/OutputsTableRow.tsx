@@ -20,32 +20,36 @@ import { OutputLabels, OutputsTableAction } from "../atoms";
 import "./OutputsTableRow.scss";
 
 interface OutputsTableRowProps {
-  index: number;
-  output: OutputField;
-  onEdit: () => void;
-  onDelete: () => void;
+  activeOutputFieldIndex: number;
+  activeOutputField: OutputField;
+  onEditOutputField: () => void;
+  onDeleteOutputField: () => void;
   isDisabled: boolean;
 }
 
 export const OutputsTableRow = (props: OutputsTableRowProps) => {
-  const { index, output, onEdit, onDelete, isDisabled } = props;
+  const { activeOutputFieldIndex, activeOutputField, onEditOutputField, onDeleteOutputField, isDisabled } = props;
 
   return (
-    <article className={`output-item output-item-n${index}`}>
+    <article className={`output-item output-item-n${activeOutputFieldIndex}`}>
       <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
         <FlexItem>
-          <strong>{output.name}</strong>
+          <strong>{activeOutputField.name}</strong>
         </FlexItem>
         <FlexItem>
           <Label color="blue" className="output-item__type-label">
-            {output.dataType}
+            {activeOutputField.dataType}
           </Label>
         </FlexItem>
         <FlexItem>
-          <OutputLabels output={output} />
+          <OutputLabels activeOutputField={activeOutputField} />
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>
-          <OutputsTableAction onEdit={() => onEdit()} onDelete={() => onDelete()} disabled={isDisabled} />
+          <OutputsTableAction
+            onEditDataField={onEditOutputField}
+            onDeleteDataField={onDeleteOutputField}
+            disabled={isDisabled}
+          />
         </FlexItem>
       </Flex>
     </article>

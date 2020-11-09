@@ -27,13 +27,21 @@ interface EditorHeaderProps {
   setActiveOperation: (operation: Operation) => void;
   modelIndex: number;
   output?: Output;
-  validateOutputName: (index: number | undefined, name: string | undefined) => boolean;
-  deleteOutput: (index: number) => void;
+  validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
+  deleteOutputField: (index: number) => void;
   commit: (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => void;
 }
 
 export const EditorHeader = (props: EditorHeaderProps) => {
-  const { activeOperation, setActiveOperation, modelIndex, output, validateOutputName, deleteOutput, commit } = props;
+  const {
+    activeOperation,
+    setActiveOperation,
+    modelIndex,
+    output,
+    validateOutputFieldName,
+    deleteOutputField,
+    commit
+  } = props;
 
   return (
     <Split hasGutter={true}>
@@ -49,8 +57,8 @@ export const EditorHeader = (props: EditorHeaderProps) => {
           setActiveOperation={setActiveOperation}
           modelIndex={modelIndex}
           output={output}
-          validateOutputName={validateOutputName}
-          deleteOutput={deleteOutput}
+          validateOutputFieldName={validateOutputFieldName}
+          deleteOutputField={deleteOutputField}
           commit={commit}
         />
       </SplitItem>

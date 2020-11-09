@@ -28,15 +28,18 @@ interface OutputsContainerProps {
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   output?: Output;
-  validateOutputName: (index: number | undefined, name: string | undefined) => boolean;
-  deleteOutput: (index: number) => void;
+  validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
+  deleteOutputField: (index: number) => void;
   commit: (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => void;
 }
 
 type OutputsViewSection = "overview" | "extended-properties";
 
 export const OutputsContainer = (props: OutputsContainerProps) => {
-  const { activeOperation, setActiveOperation, output, validateOutputName, deleteOutput, commit } = props;
+  const { activeOperation, setActiveOperation, output, validateOutputFieldName, deleteOutputField, commit } = props;
+
+  const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
+  const [outputField, setOutputField] = useState<OutputField>({ name: "" as FieldName, dataType: "boolean" });
 
   const [viewSection, setViewSection] = useState<OutputsViewSection>("overview");
 
@@ -48,8 +51,35 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     }
   };
 
-  const addOutput = () => {
+  const onEditOutputField = (index: number) => {
+    setEditItemIndex(index);
+    setOutputField((output?.OutputField as OutputField[])[index]);
+    setActiveOperation(Operation.UPDATE);
+  };
+
+  const addOutputField = () => {
+    setEditItemIndex(undefined);
+    setOutputField({ name: "" as FieldName, dataType: "boolean" });
     setActiveOperation(Operation.CREATE_OUTPUT);
+  };
+
+  const onCommit = () => {
+    let _output: OutputField;
+    if (editItemIndex === undefined) {
+      commit(undefined, outputField.name, outputField.dataType);
+    } else {
+      _output = (output?.OutputField ?? [])[editItemIndex];
+      if (_output.name !== outputField.name || _output.dataType !== outputField.dataType) {
+        commit(editItemIndex, outputField.name, outputField.dataType);
+      }
+    }
+
+    onCancel();
+  };
+
+  const onCancel = () => {
+    setEditItemIndex(undefined);
+    setActiveOperation(Operation.NONE);
   };
 
   return (
@@ -58,7 +88,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
         <FlexItem>
           <Button
             variant="secondary"
-            onClick={addOutput}
+            onClick={addOutputField}
             isDisabled={activeOperation !== Operation.NONE}
             icon={<PlusIcon />}
             iconPosition="left"
@@ -81,13 +111,17 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
               <div className="outputs-container__list">
                 <OutputsTable
                   activeOperation={activeOperation}
-                  setActiveOperation={setActiveOperation}
+                  onEditOutputField={onEditOutputField}
+                  activeOutputFieldIndex={editItemIndex}
+                  activeOutputField={outputField}
+                  setActiveOutputField={setOutputField}
                   outputs={output?.OutputField as OutputField[]}
-                  addOutput={addOutput}
-                  validateOutputName={validateOutputName}
+                  onAddOutputField={addOutputField}
+                  validateOutputFieldName={validateOutputFieldName}
                   viewExtendedProperties={() => setViewSection("extended-properties")}
-                  deleteOutput={deleteOutput}
-                  commit={commit}
+                  onDeleteOutputField={deleteOutputField}
+                  onCommit={onCommit}
+                  onCancel={onCancel}
                 />
               </div>
             )}
@@ -96,7 +130,6 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                 <p>Some where else</p>
                 <Button
                   onClick={e => {
-                    setActiveOperation(Operation.NONE);
                     setViewSection("overview");
                   }}
                 >

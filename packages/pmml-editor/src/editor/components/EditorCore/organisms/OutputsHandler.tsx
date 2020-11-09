@@ -35,13 +35,21 @@ interface OutputsHandlerProps {
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   output?: Output;
-  validateOutputName: (index: number | undefined, name: string | undefined) => boolean;
-  deleteOutput: (index: number) => void;
+  validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
+  deleteOutputField: (index: number) => void;
   commit: (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => void;
 }
 
 export const OutputsHandler = (props: OutputsHandlerProps) => {
-  const { modelIndex, activeOperation, setActiveOperation, output, validateOutputName, deleteOutput, commit } = props;
+  const {
+    modelIndex,
+    activeOperation,
+    setActiveOperation,
+    output,
+    validateOutputFieldName,
+    deleteOutputField,
+    commit
+  } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -57,7 +65,12 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
         </Title>
       </SplitItem>
       <SplitItem>
-        <Button type="button" variant={ButtonVariant.plain} onClick={toggleModal}>
+        <Button
+          type="button"
+          variant={ButtonVariant.plain}
+          isDisabled={activeOperation !== Operation.NONE}
+          onClick={toggleModal}
+        >
           <CloseIcon />
         </Button>
       </SplitItem>
@@ -83,8 +96,8 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
           activeOperation={activeOperation}
           setActiveOperation={setActiveOperation}
           output={output}
-          validateOutputName={validateOutputName}
-          deleteOutput={deleteOutput}
+          validateOutputFieldName={validateOutputFieldName}
+          deleteOutputField={deleteOutputField}
           commit={commit}
         />
       </Modal>

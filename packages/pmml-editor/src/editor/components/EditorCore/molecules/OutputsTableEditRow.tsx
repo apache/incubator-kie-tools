@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { Flex, FlexItem, FormGroup, Select, SelectOption, SelectVariant, TextInput } from "@patternfly/react-core";
 import "../organisms/OutputsTable.scss";
-import { DataType, FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputLabelsEditMode, OutputsTableEditModeAction } from "../atoms";
-import { ValidatedType } from "../../../types";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 
 interface OutputsTableEditRowProps {
-  index: number | undefined;
-  output: OutputField;
+  activeOutputFieldIndex: number | undefined;
+  activeOutputField: OutputField;
+  setActiveOutputField: (_output: OutputField) => void;
   validateOutputName: (name: string | undefined) => boolean;
   viewExtendedProperties: () => void;
-  onCommit: (name: FieldName | undefined, dataType: DataType | undefined) => void;
+  onCommit: () => void;
   onCancel: () => void;
 }
 
@@ -52,13 +52,15 @@ const dataTypes = [
 ];
 
 export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
-  const { index, output, validateOutputName, viewExtendedProperties, onCommit, onCancel } = props;
-
-  const [name, setName] = useState<ValidatedType<string | undefined>>({
-    value: undefined,
-    valid: true
-  });
-  const [dataType, setDataType] = useState<string | undefined>();
+  const {
+    activeOutputFieldIndex,
+    activeOutputField,
+    setActiveOutputField,
+    validateOutputName,
+    viewExtendedProperties,
+    onCommit,
+    onCancel
+  } = props;
 
   const [isTypeSelectOpen, setIsTypeSelectOpen] = useState(false);
   const typeToggle = (isOpen: boolean) => {
@@ -66,21 +68,17 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
   };
 
   const onSelectType = (event: any, selection: any, isPlaceholder: boolean) => {
-    setDataType(isPlaceholder ? undefined : selection);
+    setActiveOutputField({ ...activeOutputField, dataType: isPlaceholder ? undefined : selection });
     setIsTypeSelectOpen(false);
   };
 
-  useEffect(() => {
-    const _name = output.name.toString();
-    setName({
-      value: _name,
-      valid: validateOutputName(_name)
-    });
-    setDataType(output.dataType);
-  }, [props]);
+  const isValidName = useMemo(() => validateOutputName(activeOutputField.name.toString()), [
+    activeOutputFieldIndex,
+    activeOutputField
+  ]);
 
   return (
-    <article className={`output-item output-item-n${index}`}>
+    <article className={`output-item output-item-n${activeOutputFieldIndex}`}>
       <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
         <FlexItem>
           <FormGroup
@@ -88,7 +86,7 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
             helperText="Please provide a name for the Output Field."
             helperTextInvalid="Name must be unique and present."
             helperTextInvalidIcon={<ExclamationCircleIcon />}
-            validated={name.valid ? "default" : "error"}
+            validated={isValidName ? "default" : "error"}
             style={{ width: "12em" }}
           >
             <TextInput
@@ -96,15 +94,12 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
               id="output-name"
               name="output-name"
               aria-describedby="output-name-helper"
-              value={(name.value ?? "").toString()}
-              validated={name.valid ? "default" : "error"}
+              value={activeOutputField.name.toString()}
+              validated={isValidName ? "default" : "error"}
               autoFocus={true}
-              onChange={e =>
-                setName({
-                  value: e,
-                  valid: validateOutputName(e)
-                })
-              }
+              onChange={e => {
+                setActiveOutputField({ ...activeOutputField, name: e as FieldName });
+              }}
             />
           </FormGroup>
         </FlexItem>
@@ -122,7 +117,7 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
               variant={SelectVariant.single}
               onToggle={typeToggle}
               onSelect={onSelectType}
-              selections={dataType}
+              selections={activeOutputField.dataType}
               isOpen={isTypeSelectOpen}
               placeholder="Type"
               menuAppendTo={"parent"}
@@ -134,14 +129,10 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
           </FormGroup>
         </FlexItem>
         <FlexItem>
-          <OutputLabelsEditMode output={output} viewExtendedProperties={viewExtendedProperties} />
+          <OutputLabelsEditMode activeOutputField={activeOutputField} viewExtendedProperties={viewExtendedProperties} />
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>
-          <OutputsTableEditModeAction
-            onCommit={() => onCommit(name.value as FieldName, dataType as DataType)}
-            onCancel={() => onCancel()}
-            disableCommit={!name.valid}
-          />
+          <OutputsTableEditModeAction onCommit={onCommit} onCancel={onCancel} disableCommit={false} />
         </FlexItem>
       </Flex>
     </article>

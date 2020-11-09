@@ -18,7 +18,7 @@ import { Button, EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, 
 import { SignOutAltIcon } from "@patternfly/react-icons";
 
 interface EmptyStateNoOutputProps {
-  addOutput: () => void;
+  onAddOutputField: () => void;
 }
 
 export const EmptyStateNoOutput = (props: EmptyStateNoOutputProps) => (
@@ -30,7 +30,7 @@ export const EmptyStateNoOutput = (props: EmptyStateNoOutputProps) => (
     <EmptyStateBody>
       PMML uses Output elements to describe a set of result values that can be returned from a model.
     </EmptyStateBody>
-    <Button data-testid="empty-state-no-output__add-model" variant="primary" onClick={props.addOutput}>
+    <Button data-testid="empty-state-no-output__add-model" variant="primary" onClick={props.onAddOutputField}>
       Add Output
     </Button>
   </EmptyState>

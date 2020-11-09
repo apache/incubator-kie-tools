@@ -19,14 +19,14 @@ import { Label, Tooltip, TooltipPosition } from "@patternfly/react-core";
 import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface OutputLabelsEditModeProps {
-  output: OutputField;
+  activeOutputField: OutputField;
   viewExtendedProperties: () => void;
 }
 
 const PADDING: CSSProperties = { marginRight: "4px" };
 
 export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
-  const { output, viewExtendedProperties } = props;
+  const { activeOutputField, viewExtendedProperties } = props;
 
   const [optype, setOptype] = useState<string | undefined>();
   const [targetField, setTargetField] = useState<FieldName | undefined>();
@@ -38,15 +38,15 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
   const [isFinalResult, setIsFinalResult] = useState<boolean | undefined>();
 
   useEffect(() => {
-    setOptype(output.optype);
-    setTargetField(output.targetField);
-    setFeature(output.feature);
-    setValue(output.value);
-    setRank(output.rank);
-    setRankOrder(output.rankOrder);
-    setSegmentId(output.segmentId);
-    setIsFinalResult(output.isFinalResult);
-  }, [output]);
+    setOptype(activeOutputField.optype);
+    setTargetField(activeOutputField.targetField);
+    setFeature(activeOutputField.feature);
+    setValue(activeOutputField.value);
+    setRank(activeOutputField.rank);
+    setRankOrder(activeOutputField.rankOrder);
+    setSegmentId(activeOutputField.segmentId);
+    setIsFinalResult(activeOutputField.isFinalResult);
+  }, [activeOutputField]);
 
   return (
     <>

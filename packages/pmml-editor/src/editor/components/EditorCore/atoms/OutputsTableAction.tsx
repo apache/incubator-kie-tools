@@ -19,20 +19,20 @@ import { EditAltIcon, TrashIcon } from "@patternfly/react-icons";
 
 interface OutputsTableActionProps {
   disabled: boolean;
-  onEdit: () => void;
-  onDelete: () => void;
+  onEditDataField: () => void;
+  onDeleteDataField: () => void;
 }
 
 export const OutputsTableAction = (props: OutputsTableActionProps) => {
-  const { disabled, onEdit, onDelete } = props;
+  const { disabled, onEditDataField, onDeleteDataField } = props;
 
   return (
     <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
       <FlexItem>
-        <Button variant="plain" onClick={e => onEdit()} isDisabled={disabled}>
+        <Button variant="plain" onClick={onEditDataField} isDisabled={disabled}>
           <EditAltIcon />
         </Button>
-        <Button variant="plain" onClick={e => onDelete()} isDisabled={disabled}>
+        <Button variant="plain" onClick={onDeleteDataField} isDisabled={disabled}>
           <TrashIcon />
         </Button>
       </FlexItem>

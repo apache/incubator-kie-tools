@@ -192,8 +192,8 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               setActiveOperation={setActiveOperation}
               modelIndex={modelIndex}
               output={output}
-              validateOutputName={validateOutputName}
-              deleteOutput={_index => {
+              validateOutputFieldName={validateOutputName}
+              deleteOutputField={_index => {
                 if (window.confirm(`Delete Output "${_index}"?`)) {
                   dispatch({
                     type: Actions.DeleteOutput,

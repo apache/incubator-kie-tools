@@ -19,70 +19,70 @@ import { Label, Tooltip, TooltipPosition } from "@patternfly/react-core";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface OutputLabelsProps {
-  output: OutputField;
+  activeOutputField: OutputField;
 }
 
 const PADDING: CSSProperties = { marginRight: "4px" };
 
 export const OutputLabels = (props: OutputLabelsProps) => {
-  const { output } = props;
+  const { activeOutputField } = props;
 
   return (
     <>
-      {output.optype && (
+      {activeOutputField.optype && (
         <Tooltip position={TooltipPosition.top} content={<div>Optype</div>}>
           <Label style={PADDING} color="orange">
-            {output.optype}
+            {activeOutputField.optype}
           </Label>
         </Tooltip>
       )}
 
-      {output.targetField && (
+      {activeOutputField.targetField && (
         <Tooltip position={TooltipPosition.top} content={<div>Target field</div>}>
           <Label style={PADDING} color="orange">
-            {output.targetField}
+            {activeOutputField.targetField}
           </Label>
         </Tooltip>
       )}
-      {output.feature && (
+      {activeOutputField.feature && (
         <Tooltip position={TooltipPosition.top} content={<div>Feature</div>}>
           <Label style={PADDING} color="orange">
-            {output.feature}
+            {activeOutputField.feature}
           </Label>
         </Tooltip>
       )}
-      {output.value && (
+      {activeOutputField.value && (
         <Tooltip position={TooltipPosition.top} content={<div>Value</div>}>
           <Label style={PADDING} color="orange">
-            {output.value}
+            {activeOutputField.value}
           </Label>
         </Tooltip>
       )}
-      {output.rank && (
+      {activeOutputField.rank && (
         <Tooltip position={TooltipPosition.top} content={<div>Rank</div>}>
           <Label style={PADDING} color="orange">
-            {output.rank}
+            {activeOutputField.rank}
           </Label>
         </Tooltip>
       )}
-      {output.rankOrder && (
+      {activeOutputField.rankOrder && (
         <Tooltip position={TooltipPosition.top} content={<div>Rank order</div>}>
           <Label style={PADDING} color="orange">
-            {output.rankOrder}
+            {activeOutputField.rankOrder}
           </Label>
         </Tooltip>
       )}
-      {output.segmentId && (
+      {activeOutputField.segmentId && (
         <Tooltip position={TooltipPosition.top} content={<div>Segment Id</div>}>
           <Label style={PADDING} color="orange">
-            {output.segmentId}
+            {activeOutputField.segmentId}
           </Label>
         </Tooltip>
       )}
-      {output.isFinalResult && (
+      {activeOutputField.isFinalResult && (
         <Tooltip position={TooltipPosition.top} content={<div>Final result?</div>}>
           <Label style={PADDING} color="orange">
-            {output.isFinalResult}
+            {activeOutputField.isFinalResult}
           </Label>
         </Tooltip>
       )}

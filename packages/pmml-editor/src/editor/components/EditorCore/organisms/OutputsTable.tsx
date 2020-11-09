@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Bullseye, Form } from "@patternfly/react-core";
-import { DataType, FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputsTableEditRow, OutputsTableRow } from "../molecules";
 import "./OutputsTable.scss";
 import { Operation } from "../../EditorScorecard";
@@ -24,28 +24,35 @@ import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 
 interface OutputsTableProps {
   activeOperation: Operation;
-  setActiveOperation: (operation: Operation) => void;
+  onAddOutputField: () => void;
+  onEditOutputField: (index: number) => void;
+  onDeleteOutputField: (index: number) => void;
+  activeOutputFieldIndex: number | undefined;
+  activeOutputField: OutputField;
+  setActiveOutputField: (_output: OutputField) => void;
   outputs: OutputField[];
-  addOutput: () => void;
-  validateOutputName: (index: number | undefined, name: string | undefined) => boolean;
+  validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   viewExtendedProperties: () => void;
-  deleteOutput: (index: number) => void;
-  commit: (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => void;
+  onCommit: () => void;
+  onCancel: () => void;
 }
 
 export const OutputsTable = (props: OutputsTableProps) => {
   const {
     activeOperation,
-    setActiveOperation,
+    onAddOutputField,
+    onEditOutputField,
+    onDeleteOutputField,
+    activeOutputFieldIndex,
+    activeOutputField,
+    setActiveOutputField,
     outputs,
-    addOutput,
-    validateOutputName,
+    validateOutputFieldName,
     viewExtendedProperties,
-    deleteOutput,
-    commit
+    onCommit,
+    onCancel
   } = props;
 
-  const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
   const addOutputRowRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -54,67 +61,44 @@ export const OutputsTable = (props: OutputsTableProps) => {
     }
   }, [activeOperation]);
 
-  const onEdit = (index: number | undefined) => {
-    setEditItemIndex(index);
-    setActiveOperation(Operation.UPDATE);
-  };
-
   const onDelete = (index: number | undefined) => {
     if (index !== undefined) {
-      deleteOutput(index);
+      onDeleteOutputField(index);
     }
   };
 
-  const onValidateOutputName = (index: number | undefined, name: string | undefined): boolean => {
-    return validateOutputName(index, name);
-  };
-
-  const onCommit = (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => {
-    //Avoid commits with no change
-    let output: OutputField;
-    if (index === undefined) {
-      output = { name: "" as FieldName, dataType: "boolean" };
-    } else {
-      output = outputs[index];
-    }
-    if (output.name !== name || output.dataType !== dataType) {
-      commit(index, name, dataType);
-    }
-
-    onCancel();
-  };
-
-  const onCancel = () => {
-    setEditItemIndex(undefined);
-    setActiveOperation(Operation.NONE);
+  const onValidateOutputFieldName = (index: number | undefined, name: string | undefined): boolean => {
+    return validateOutputFieldName(index, name);
   };
 
   return (
     <Form>
       <section>
-        {outputs.map((output, index) => {
-          if (editItemIndex === index) {
+        {outputs.map((o, index) => {
+          if (activeOutputFieldIndex === index) {
             return (
               <OutputsTableEditRow
                 key={index}
-                index={index}
-                output={output}
-                validateOutputName={_name => onValidateOutputName(index, _name)}
+                activeOutputFieldIndex={index}
+                activeOutputField={activeOutputField}
+                setActiveOutputField={setActiveOutputField}
+                validateOutputName={_name => onValidateOutputFieldName(index, _name)}
                 viewExtendedProperties={viewExtendedProperties}
-                onCommit={(_name, _dataType) => onCommit(index, _name, _dataType)}
-                onCancel={() => onCancel()}
+                onCommit={onCommit}
+                onCancel={onCancel}
               />
             );
           } else {
             return (
               <OutputsTableRow
                 key={index}
-                index={index}
-                output={output}
-                onEdit={() => onEdit(index)}
-                onDelete={() => onDelete(index)}
+                activeOutputFieldIndex={index}
+                activeOutputField={o}
+                onEditOutputField={() => onEditOutputField(index)}
+                onDeleteOutputField={() => onDelete(index)}
                 isDisabled={
-                  !(editItemIndex === undefined || editItemIndex === index) || activeOperation !== Operation.NONE
+                  !(activeOutputFieldIndex === undefined || activeOutputFieldIndex === index) ||
+                  activeOperation !== Operation.NONE
                 }
               />
             );
@@ -124,19 +108,20 @@ export const OutputsTable = (props: OutputsTableProps) => {
           <div key={undefined} ref={addOutputRowRef}>
             <OutputsTableEditRow
               key={"add"}
-              index={undefined}
-              output={{ name: "" as FieldName, dataType: "boolean" }}
-              validateOutputName={_name => onValidateOutputName(undefined, _name)}
+              activeOutputFieldIndex={undefined}
+              activeOutputField={activeOutputField}
+              setActiveOutputField={setActiveOutputField}
+              validateOutputName={_name => onValidateOutputFieldName(undefined, _name)}
               viewExtendedProperties={viewExtendedProperties}
-              onCommit={(_name, _dataType) => onCommit(undefined, _name, _dataType)}
-              onCancel={() => onCancel()}
+              onCommit={onCommit}
+              onCancel={onCancel}
             />
           </div>
         )}
       </section>
       {outputs.length === 0 && activeOperation !== Operation.CREATE_OUTPUT && (
         <Bullseye>
-          <EmptyStateNoOutput addOutput={addOutput} />
+          <EmptyStateNoOutput onAddOutputField={onAddOutputField} />
         </Bullseye>
       )}
     </Form>
