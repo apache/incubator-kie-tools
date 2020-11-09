@@ -20,12 +20,13 @@ import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface OutputLabelsEditModeProps {
   output: OutputField;
+  viewExtendedProperties: () => void;
 }
 
 const PADDING: CSSProperties = { marginRight: "4px" };
 
 export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
-  const { output } = props;
+  const { output, viewExtendedProperties } = props;
 
   const [optype, setOptype] = useState<string | undefined>();
   const [targetField, setTargetField] = useState<FieldName | undefined>();
@@ -106,7 +107,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
           </Label>
         </Tooltip>
       )}
-      <Label style={PADDING} color="orange">
+      <Label style={PADDING} color="orange" onClick={viewExtendedProperties}>
         ...
       </Label>
     </>

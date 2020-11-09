@@ -28,12 +28,22 @@ interface OutputsTableProps {
   outputs: OutputField[];
   addOutput: () => void;
   validateOutputName: (index: number | undefined, name: string | undefined) => boolean;
+  viewExtendedProperties: () => void;
   deleteOutput: (index: number) => void;
   commit: (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => void;
 }
 
 export const OutputsTable = (props: OutputsTableProps) => {
-  const { activeOperation, setActiveOperation, outputs, addOutput, validateOutputName, deleteOutput, commit } = props;
+  const {
+    activeOperation,
+    setActiveOperation,
+    outputs,
+    addOutput,
+    validateOutputName,
+    viewExtendedProperties,
+    deleteOutput,
+    commit
+  } = props;
 
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
   const addOutputRowRef = useRef<HTMLDivElement | null>(null);
@@ -90,6 +100,7 @@ export const OutputsTable = (props: OutputsTableProps) => {
                 index={index}
                 output={output}
                 validateOutputName={_name => onValidateOutputName(index, _name)}
+                viewExtendedProperties={viewExtendedProperties}
                 onCommit={(_name, _dataType) => onCommit(index, _name, _dataType)}
                 onCancel={() => onCancel()}
               />
@@ -116,6 +127,7 @@ export const OutputsTable = (props: OutputsTableProps) => {
               index={undefined}
               output={{ name: "" as FieldName, dataType: "boolean" }}
               validateOutputName={_name => onValidateOutputName(undefined, _name)}
+              viewExtendedProperties={viewExtendedProperties}
               onCommit={(_name, _dataType) => onCommit(undefined, _name, _dataType)}
               onCancel={() => onCancel()}
             />

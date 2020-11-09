@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 import * as React from "react";
+import { useState } from "react";
 import { DataType, FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { Button, Flex, FlexItem } from "@patternfly/react-core";
 import { PlusIcon } from "@patternfly/react-icons";
 import { OutputsTable } from "./OutputsTable";
 import { Operation } from "../../EditorScorecard";
 import "./OutputsContainer.scss";
+import { CSSTransition, SwitchTransition } from "react-transition-group";
 
 interface OutputsContainerProps {
   modelIndex: number;
@@ -31,8 +33,20 @@ interface OutputsContainerProps {
   commit: (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => void;
 }
 
+type OutputsViewSection = "overview" | "extended-properties";
+
 export const OutputsContainer = (props: OutputsContainerProps) => {
   const { activeOperation, setActiveOperation, output, validateOutputName, deleteOutput, commit } = props;
+
+  const [viewSection, setViewSection] = useState<OutputsViewSection>("overview");
+
+  const getTransition = (_viewSection: OutputsViewSection) => {
+    if (_viewSection === "overview") {
+      return "outputs-container__overview";
+    } else {
+      return "enter-from-right";
+    }
+  };
 
   const addOutput = () => {
     setActiveOperation(Operation.CREATE_OUTPUT);
@@ -44,7 +58,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
         <FlexItem>
           <Button
             variant="secondary"
-            onClick={e => addOutput()}
+            onClick={addOutput}
             isDisabled={activeOperation !== Operation.NONE}
             icon={<PlusIcon />}
             iconPosition="left"
@@ -53,19 +67,46 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
           </Button>
         </FlexItem>
       </Flex>
-      <div className="outputs-container__list">
-        <div className="outputs-container__list--container">
-          <OutputsTable
-            activeOperation={activeOperation}
-            setActiveOperation={setActiveOperation}
-            outputs={output?.OutputField as OutputField[]}
-            addOutput={addOutput}
-            validateOutputName={validateOutputName}
-            deleteOutput={deleteOutput}
-            commit={commit}
-          />
-        </div>
-      </div>
+      <SwitchTransition mode={"out-in"}>
+        <CSSTransition
+          timeout={{
+            enter: 230,
+            exit: 100
+          }}
+          classNames={getTransition(viewSection)}
+          key={viewSection}
+        >
+          <>
+            {viewSection == "overview" && (
+              <div className="outputs-container__list">
+                <OutputsTable
+                  activeOperation={activeOperation}
+                  setActiveOperation={setActiveOperation}
+                  outputs={output?.OutputField as OutputField[]}
+                  addOutput={addOutput}
+                  validateOutputName={validateOutputName}
+                  viewExtendedProperties={() => setViewSection("extended-properties")}
+                  deleteOutput={deleteOutput}
+                  commit={commit}
+                />
+              </div>
+            )}
+            {viewSection == "extended-properties" && (
+              <>
+                <p>Some where else</p>
+                <Button
+                  onClick={e => {
+                    setActiveOperation(Operation.NONE);
+                    setViewSection("overview");
+                  }}
+                >
+                  Return
+                </Button>{" "}
+              </>
+            )}
+          </>
+        </CSSTransition>
+      </SwitchTransition>
     </div>
   );
 };

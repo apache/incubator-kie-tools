@@ -26,6 +26,7 @@ interface OutputsTableEditRowProps {
   index: number | undefined;
   output: OutputField;
   validateOutputName: (name: string | undefined) => boolean;
+  viewExtendedProperties: () => void;
   onCommit: (name: FieldName | undefined, dataType: DataType | undefined) => void;
   onCancel: () => void;
 }
@@ -51,7 +52,7 @@ const dataTypes = [
 ];
 
 export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
-  const { index, output, validateOutputName, onCommit, onCancel } = props;
+  const { index, output, validateOutputName, viewExtendedProperties, onCommit, onCancel } = props;
 
   const [name, setName] = useState<ValidatedType<string | undefined>>({
     value: undefined,
@@ -126,14 +127,14 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
               placeholder="Type"
               menuAppendTo={"parent"}
             >
-              {dataTypes.map((dt, index) => (
-                <SelectOption key={index} value={dt} />
+              {dataTypes.map((dt, _index) => (
+                <SelectOption key={_index} value={dt} />
               ))}
             </Select>
           </FormGroup>
         </FlexItem>
         <FlexItem>
-          <OutputLabelsEditMode output={output} />
+          <OutputLabelsEditMode output={output} viewExtendedProperties={viewExtendedProperties} />
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>
           <OutputsTableEditModeAction
