@@ -91,12 +91,18 @@ export function EditorToolbar(props: Props) {
     [saveNewName, cancelNewName]
   );
 
+  const isGist = useMemo(() => context.githubService.isGist(fileUrl), [fileUrl, context]);
+
   useEffect(() => {
     if (fileUrl) {
-      const userLogin = context.githubService.extractUserLoginFromGistRawUrl(fileUrl);
-      setUserCanUpdateGist(userLogin === context.githubService.getLogin());
+      const userLogin = context.githubService.extractUserLoginFromFileUrl(fileUrl);
+      if (userLogin === context.githubService.getLogin() && isGist) {
+        setUserCanUpdateGist(true);
+      } else {
+        setUserCanUpdateGist(false);
+      }
     }
-  }, [fileUrl, context.githubService.getLogin()]);
+  }, [fileUrl, context.githubService.getLogin(), isGist]);
 
   const kebabItems = useCallback(
     (dropdownId: string) => [
@@ -145,24 +151,38 @@ export function EditorToolbar(props: Props) {
       >
         {i18n.editorToolbar.setGitHubToken}
       </DropdownItem>,
-      <DropdownItem key={`dropdown-${dropdownId}-export-gist`} component="button" onClick={props.onExportGist}>
-        {i18n.editorToolbar.gistIt}
-      </DropdownItem>,
       <Tooltip
-        data-testid={"update-gist-tooltip"}
-        key={`dropdown-${dropdownId}-update-gist`}
-        content={<div>{i18n.editorToolbar.updateGistTooltip}</div>}
-        trigger={!userCanUpdateGist ? "mouseenter click" : ""}
+        data-testid={"gist-it-tooltip"}
+        key={`dropdown-${dropdownId}-export-gist`}
+        content={<div>{i18n.editorToolbar.gistItTooltip}</div>}
+        trigger={!context.githubService.isAuthenticated() ? "mouseenter click" : ""}
       >
         <DropdownItem
-          data-testid={"update-gist-button"}
           component="button"
-          onClick={props.onUpdateGist}
-          isDisabled={!userCanUpdateGist}
+          onClick={props.onExportGist}
+          isDisabled={!context.githubService.isAuthenticated()}
         >
-          {i18n.editorToolbar.updateGist}
+          {i18n.editorToolbar.gistIt}
         </DropdownItem>
-      </Tooltip>
+      </Tooltip>,
+      <React.Fragment key={`dropdown-${dropdownId}-update-gist`}>
+        {isGist && (
+          <Tooltip
+            data-testid={"update-gist-tooltip"}
+            content={<div>{i18n.editorToolbar.updateGistTooltip}</div>}
+            trigger={!userCanUpdateGist ? "mouseenter click" : ""}
+          >
+            <DropdownItem
+              data-testid={"update-gist-button"}
+              component="button"
+              onClick={props.onUpdateGist}
+              isDisabled={!userCanUpdateGist}
+            >
+              {i18n.editorToolbar.updateGist}
+            </DropdownItem>
+          </Tooltip>
+        )}
+      </React.Fragment>
     ],
     [
       context.external,

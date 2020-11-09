@@ -119,7 +119,7 @@ describe("EditorToolbar", () => {
     test("Update Gist button should be disable with invalid user", async () => {
       const githubService = new GithubService();
       jest.spyOn(githubService, "getLogin").mockImplementation(() => "user1");
-      jest.spyOn(githubService, "extractUserLoginFromGistRawUrl").mockImplementation(() => "user2");
+      jest.spyOn(githubService, "extractUserLoginFromFileUrl").mockImplementation(() => "user2");
 
       const { getByTestId } = render(
         usingTestingOnlineI18nContext(
@@ -152,7 +152,7 @@ describe("EditorToolbar", () => {
     test("Update Gist button should be enable with valid user", () => {
       const githubService = new GithubService();
       jest.spyOn(githubService, "getLogin").mockImplementation(() => "user1");
-      jest.spyOn(githubService, "extractUserLoginFromGistRawUrl").mockImplementation(() => "user1");
+      jest.spyOn(githubService, "extractUserLoginFromFileUrl").mockImplementation(() => "user1");
 
       const { getByTestId } = render(
         usingTestingOnlineI18nContext(

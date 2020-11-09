@@ -86,9 +86,15 @@ describe("githubService::extractGistIdFromRawUrl", () => {
 });
 
 describe("githubService::extractUserLoginFromGistRawUrl", () => {
-  test("extract user login from raw url", () => {
+  test("extract user login from gist raw url", () => {
     const rawUrl = "https://gist.githubusercontent.com/test/gist-id/raw/commit-hash/test.bpmn";
-    const userLogin = githubService.extractUserLoginFromGistRawUrl(rawUrl);
+    const userLogin = githubService.extractUserLoginFromFileUrl(rawUrl);
+    expect(userLogin).toEqual("test");
+  });
+
+  test("extract user login from repo raw url", () => {
+    const rawUrl = "https://raw.githubusercontent.com/test/gist-id/raw/commit-hash/test.bpmn";
+    const userLogin = githubService.extractUserLoginFromFileUrl(rawUrl);
     expect(userLogin).toEqual("test");
   });
 });

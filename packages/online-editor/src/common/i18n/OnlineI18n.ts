@@ -67,6 +67,7 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
     downloadSVG: string;
     setGitHubToken: string;
     gistIt: string;
+    gistItTooltip: string;
     fileActions: string;
     updateGist: string;
     updateGistTooltip: string;

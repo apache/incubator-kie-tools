@@ -90,8 +90,8 @@ export class GithubService {
     const testOctokit = new Octokit({ auth: token });
     return testOctokit.users
       .getAuthenticated()
-      .then(res => Promise.resolve(res.data.login))
-      .catch(() => Promise.resolve(undefined));
+      .then(res => this.hasGistScope(res.headers) ? res.data.login : undefined)
+      .catch(() => undefined);
   }
 
   public reset(): void {
@@ -156,8 +156,8 @@ export class GithubService {
     return url.split(GIST_RAW_URL)[1].split("/")[1];
   }
 
-  public extractUserLoginFromGistRawUrl(url: string): string {
-    return url.split(GIST_RAW_URL)[1].split("/")[0];
+  public extractUserLoginFromFileUrl(url: string): string {
+    return url.split("githubusercontent.com")[1].split("/")[1];
   }
 
   public removeCommitHashFromGistRawUrl(rawUrl: string): string {
@@ -177,6 +177,10 @@ export class GithubService {
 
   public extractGistFilenameFromRawUrl(url: string): string {
     return url.substr(url.lastIndexOf("/") + 1);
+  }
+
+  public hasGistScope(headers: any) {
+    return headers["x-oauth-scopes"].split(", ").indexOf("gist") > -1
   }
 
   public retrieveFileInfo(fileUrl: string): FileInfo {
@@ -211,7 +215,7 @@ export class GithubService {
         return fetch(
           `https://raw.githubusercontent.com/${fileInfo.org}/${fileInfo.repo}/${fileInfo.gitRef}/${fileInfo.path}`
         ).then(res => {
-          return res.ok ? res.text() : Promise.reject("Not able to retrieve file content from Github.");
+          return res.ok ? res.text() : Promise.reject("Not able to retrieve file content from GitHub.");
         });
       });
   }
@@ -224,20 +228,6 @@ export class GithubService {
       this.currentGist = { filename, id: gistId };
       return (response.data as any).files[filename].content;
     });
-  }
-
-  public checkFileExistence(fileUrl: string): Thenable<boolean> {
-    const fileInfo = this.retrieveFileInfo(fileUrl);
-
-    return this.octokitGet(fileInfo)
-      .then(res => true)
-      .catch(octokitError => {
-        return fetch(
-          `https://raw.githubusercontent.com/${fileInfo.org}/${fileInfo.repo}/${fileInfo.gitRef}/${fileInfo.path}`
-        )
-          .then(res => res.ok)
-          .catch(fetchError => false);
-      });
   }
 
   public createGist(args: CreateGistArgs): Promise<string> {
@@ -258,7 +248,7 @@ export class GithubService {
     return this.octokit.gists
       .create(gistContent)
       .then(response => this.removeCommitHashFromGistRawUrl((response.data as any).files[args.filename].raw_url))
-      .catch(e => Promise.reject("Not able to create gist on Github."));
+      .catch(e => Promise.reject("Not able to create gist on GitHub."));
   }
 
   public async updateGist(args: UpdateGistArgs) {
@@ -293,9 +283,16 @@ export class GithubService {
       .get({ gist_id: gistId })
       .then(response => {
         const filename = gistFilename ? gistFilename : Object.keys(response.data.files)[0];
-
         return this.removeCommitHashFromGistRawUrl((response.data as any).files[filename].raw_url);
       })
-      .catch(e => Promise.reject("Not able to get gist from Github."));
+      .catch(e => Promise.reject("Not able to get gist from GitHub."));
+  }
+
+  public getGithubRawUrl(fileUrl: string): Promise<string> {
+    const fileInfo = this.retrieveFileInfo(fileUrl);
+
+    return this.octokitGet(fileInfo)
+      .then(res => (res.data as any).download_url)
+      .catch(e => Promise.reject("Not able to get raw URL from GitHub."));
   }
 }
