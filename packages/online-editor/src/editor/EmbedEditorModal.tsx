@@ -141,12 +141,14 @@ export function EmbedEditorModal(props: Props) {
     }
     return "";
   }, [
+    props.isOpen,
     props.editor,
     props.fileExtension,
     contentSource,
     getStandaloneEditorIframeSrcdoc,
     getStandaloneEditorScriptFromCurrentContent,
-    getStandaloneEditorScriptFromGist
+    getStandaloneEditorScriptFromGist,
+    isSupportedStandaloneEditorFileExtensions
   ]);
 
   useEffect(() => {
