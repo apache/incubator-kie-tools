@@ -15,7 +15,14 @@
  */
 import { ActionMap, Actions } from "./Actions";
 import { HistoryAwareReducer, HistoryService } from "../history";
-import { DataType, FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  DataType,
+  FieldName,
+  OpType,
+  OutputField,
+  RankOrder,
+  ResultFeature
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { Reducer } from "react";
 
 interface OutputFieldPayload {
@@ -24,6 +31,14 @@ interface OutputFieldPayload {
     readonly outputIndex: number;
     readonly name: FieldName;
     readonly dataType: DataType;
+    readonly optype: OpType | undefined;
+    readonly targetField: FieldName | undefined;
+    readonly feature: ResultFeature | undefined;
+    readonly value: any | undefined;
+    readonly rank: number | undefined;
+    readonly rankOrder: RankOrder | undefined;
+    readonly segmentId: string | undefined;
+    readonly isFinalResult: boolean | undefined;
   };
 }
 
@@ -41,7 +56,15 @@ export const OutputFieldReducer: HistoryAwareReducer<OutputField[], OutputFieldA
             draft[outputIndex] = {
               ...draft[outputIndex],
               name: action.payload.name,
-              dataType: action.payload.dataType
+              dataType: action.payload.dataType,
+              optype: action.payload.optype,
+              targetField: action.payload.targetField,
+              feature: action.payload.feature,
+              value: action.payload.value,
+              rank: action.payload.rank,
+              rankOrder: action.payload.rankOrder,
+              segmentId: action.payload.segmentId,
+              isFinalResult: action.payload.isFinalResult
             };
           }
         });

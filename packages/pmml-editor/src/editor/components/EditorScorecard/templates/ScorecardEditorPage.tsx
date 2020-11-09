@@ -204,14 +204,34 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                   });
                 }
               }}
-              commit={(_index, _name, _dataType) => {
+              commit={(
+                _index,
+                _name,
+                _dataType,
+                _optype,
+                _targetField,
+                _feature,
+                _value,
+                _rank,
+                _rankOrder,
+                _segmentId,
+                _isFinalResult
+              ) => {
                 if (_index === undefined) {
                   dispatch({
                     type: Actions.AddOutput,
                     payload: {
                       modelIndex: modelIndex,
                       name: _name,
-                      dataType: _dataType
+                      dataType: _dataType,
+                      optype: _optype,
+                      targetField: _targetField,
+                      feature: _feature,
+                      value: _value,
+                      rank: _rank,
+                      rankOrder: _rankOrder,
+                      segmentId: _segmentId,
+                      isFinalResult: _isFinalResult
                     }
                   });
                 } else {
@@ -221,7 +241,15 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                       modelIndex: modelIndex,
                       outputIndex: _index,
                       name: _name,
-                      dataType: _dataType
+                      dataType: _dataType,
+                      optype: _optype,
+                      targetField: _targetField,
+                      feature: _feature,
+                      value: _value,
+                      rank: _rank,
+                      rankOrder: _rankOrder,
+                      segmentId: _segmentId,
+                      isFinalResult: _isFinalResult
                     }
                   });
                 }

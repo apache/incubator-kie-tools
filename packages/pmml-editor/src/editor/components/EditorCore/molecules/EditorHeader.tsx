@@ -19,7 +19,7 @@ import { Split, SplitItem } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
 import { OutputsHandler } from "../organisms";
 import { Operation } from "../../EditorScorecard";
-import { DataType, FieldName, Output } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataType, FieldName, OpType, Output, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface EditorHeaderProps {
   title: string;
@@ -29,7 +29,19 @@ interface EditorHeaderProps {
   output?: Output;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutputField: (index: number) => void;
-  commit: (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => void;
+  commit: (
+    index: number | undefined,
+    name: FieldName | undefined,
+    dataType: DataType | undefined,
+    optype: OpType | undefined,
+    targetField: FieldName | undefined,
+    feature: ResultFeature | undefined,
+    value: any | undefined,
+    rank: number | undefined,
+    rankOrder: RankOrder | undefined,
+    segmentId: string | undefined,
+    isFinalResult: boolean | undefined
+  ) => void;
 }
 
 export const EditorHeader = (props: EditorHeaderProps) => {

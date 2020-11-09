@@ -26,7 +26,7 @@ import {
   TitleSizes
 } from "@patternfly/react-core";
 import { CloseIcon } from "@patternfly/react-icons";
-import { DataType, FieldName, Output } from "@kogito-tooling/pmml-editor-marshaller";
+import { DataType, FieldName, OpType, Output, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputsContainer } from "./OutputsContainer";
 import { Operation } from "../../EditorScorecard";
 
@@ -37,7 +37,19 @@ interface OutputsHandlerProps {
   output?: Output;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutputField: (index: number) => void;
-  commit: (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => void;
+  commit: (
+    index: number | undefined,
+    name: FieldName | undefined,
+    dataType: DataType | undefined,
+    optype: OpType | undefined,
+    targetField: FieldName | undefined,
+    feature: ResultFeature | undefined,
+    value: any | undefined,
+    rank: number | undefined,
+    rankOrder: RankOrder | undefined,
+    segmentId: string | undefined,
+    isFinalResult: boolean | undefined
+  ) => void;
 }
 
 export const OutputsHandler = (props: OutputsHandlerProps) => {

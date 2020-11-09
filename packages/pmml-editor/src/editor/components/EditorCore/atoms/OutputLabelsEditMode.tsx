@@ -121,7 +121,7 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
         </Tooltip>
       )}
       <Label style={PADDING} color="orange" onClick={viewExtendedProperties}>
-        ...
+        More...
       </Label>
     </>
   );

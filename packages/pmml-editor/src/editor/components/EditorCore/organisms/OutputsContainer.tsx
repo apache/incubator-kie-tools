@@ -15,7 +15,15 @@
  */
 import * as React from "react";
 import { useState } from "react";
-import { DataType, FieldName, Output, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  DataType,
+  FieldName,
+  OpType,
+  Output,
+  OutputField,
+  RankOrder,
+  ResultFeature
+} from "@kogito-tooling/pmml-editor-marshaller";
 import { Button, Flex, FlexItem } from "@patternfly/react-core";
 import { PlusIcon } from "@patternfly/react-icons";
 import { OutputsTable } from "./OutputsTable";
@@ -31,7 +39,19 @@ interface OutputsContainerProps {
   output?: Output;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutputField: (index: number) => void;
-  commit: (index: number | undefined, name: FieldName | undefined, dataType: DataType | undefined) => void;
+  commit: (
+    index: number | undefined,
+    name: FieldName | undefined,
+    dataType: DataType | undefined,
+    optype: OpType | undefined,
+    targetField: FieldName | undefined,
+    feature: ResultFeature | undefined,
+    value: any | undefined,
+    rank: number | undefined,
+    rankOrder: RankOrder | undefined,
+    segmentId: string | undefined,
+    isFinalResult: boolean | undefined
+  ) => void;
 }
 
 type OutputsViewSection = "overview" | "extended-properties";
@@ -67,11 +87,46 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const onCommit = () => {
     let _output: OutputField;
     if (editItemIndex === undefined) {
-      commit(undefined, outputField.name, outputField.dataType);
+      commit(
+        undefined,
+        outputField.name,
+        outputField.dataType,
+        outputField.optype,
+        outputField.targetField,
+        outputField.feature,
+        outputField.value,
+        outputField.rank,
+        outputField.rankOrder,
+        outputField.segmentId,
+        outputField.isFinalResult
+      );
     } else {
       _output = (output?.OutputField ?? [])[editItemIndex];
-      if (_output.name !== outputField.name || _output.dataType !== outputField.dataType) {
-        commit(editItemIndex, outputField.name, outputField.dataType);
+      if (
+        _output.name !== outputField.name ||
+        _output.dataType !== outputField.dataType ||
+        _output.optype !== outputField.optype ||
+        _output.targetField !== outputField.targetField ||
+        _output.feature !== outputField.feature ||
+        _output.value !== outputField.value ||
+        _output.rank !== outputField.rank ||
+        _output.rankOrder !== outputField.rankOrder ||
+        _output.segmentId !== outputField.segmentId ||
+        _output.isFinalResult !== outputField.isFinalResult
+      ) {
+        commit(
+          editItemIndex,
+          outputField.name,
+          outputField.dataType,
+          outputField.optype,
+          outputField.targetField,
+          outputField.feature,
+          outputField.value,
+          outputField.rank,
+          outputField.rankOrder,
+          outputField.segmentId,
+          outputField.isFinalResult
+        );
       }
     }
 
