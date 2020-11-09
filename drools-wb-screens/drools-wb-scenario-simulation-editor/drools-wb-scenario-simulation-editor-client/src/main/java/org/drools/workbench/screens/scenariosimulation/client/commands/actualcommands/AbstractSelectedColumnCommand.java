@@ -315,7 +315,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
         if (pathElements.size() > 2) {
             for (String step : pathElements.subList(1, pathElements.size() - 1)) {
                 if (nestedFactModelTree.getExpandableProperties().containsKey(step)) {
-                    nestedFactModelTree = dataObjectFieldsMap.get(factModelTree.getExpandableProperties().get(step));
+                    nestedFactModelTree = dataObjectFieldsMap.get(nestedFactModelTree.getExpandableProperties().get(step));
                 }
             }
         }

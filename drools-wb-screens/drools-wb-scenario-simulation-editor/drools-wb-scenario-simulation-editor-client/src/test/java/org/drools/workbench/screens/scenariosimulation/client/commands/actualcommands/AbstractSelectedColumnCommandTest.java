@@ -287,6 +287,20 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
         verify(sortedMap, times(1)).get("Author");
     }
 
+    protected void navigateComplexObject3Levels() {
+        FactModelTree book = new FactModelTree("Book", "com.Book", new HashMap<>(), new HashMap<>());
+        book.addExpandableProperty("author", "Author");
+        FactModelTree author = new FactModelTree("Author", "com.Author", new HashMap<>(), new HashMap<>());
+        author.addExpandableProperty("firstBook", "Book");
+        SortedMap<String, FactModelTree> sortedMap = spy(new TreeMap<>());
+        sortedMap.put("Book", book);
+        sortedMap.put("Author", author);
+        List<String> elements = Arrays.asList("Book", "author", "firstBook", "topics");
+        FactModelTree target = ((AbstractSelectedColumnCommand) commandSpy).navigateComplexObject(book, elements, sortedMap);
+        assertEquals(target, book);
+        verify(sortedMap, times(1)).get("Author");
+    }
+
     /* This test is usable ONLY by <code>SetPropertyCommandTest</code> subclass */
     protected void getPropertyHeaderTitle() {
         Optional<String> emptyMatching = Optional.empty();
