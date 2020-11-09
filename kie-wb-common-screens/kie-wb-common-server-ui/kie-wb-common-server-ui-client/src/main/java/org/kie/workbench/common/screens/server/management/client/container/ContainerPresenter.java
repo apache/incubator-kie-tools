@@ -17,7 +17,9 @@
 package org.kie.workbench.common.screens.server.management.client.container;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -30,6 +32,8 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.server.api.model.KieContainerStatus;
+import org.kie.server.api.model.Message;
+import org.kie.server.api.model.Severity;
 import org.kie.server.controller.api.model.events.ServerInstanceUpdated;
 import org.kie.server.controller.api.model.runtime.Container;
 import org.kie.server.controller.api.model.spec.Capability;
@@ -147,12 +151,27 @@ public class ContainerPresenter {
                 containerSpec != null &&
                 containerSpec.getId() != null &&
                 containerSpec.getId().equals(content.getContainerSpec().getId())) {
+            resetReleaseIdForFailedContainers(content.getContainers(), content.getContainerSpec());
             setup(content.getContainerSpec(),
                   content.getContainers());
         } else {
             logger.warn("Illegal event argument.");
         }
     }
+
+    private void resetReleaseIdForFailedContainers(Collection<Container> containers, ContainerSpec containerSpec) {
+        containers.forEach(container -> {
+            if (KieContainerStatus.FAILED == container.getStatus() || container.getResolvedReleasedId() == null) {
+                container.setResolvedReleasedId(containerSpec.getReleasedId());
+                container.addMessage(new Message(Severity.ERROR, Collections.emptyList()));
+            }
+        });
+        Optional<Container> optionalContainer = containers.stream().filter(container -> KieContainerStatus.FAILED != container.getStatus()).findFirst();
+        if (!optionalContainer.isPresent() && containers.size() > 0) {
+            containerSpec.setStatus(KieContainerStatus.FAILED);
+        }
+    }
+
 
     public void refreshOnContainerUpdateEvent(@Observes final ContainerUpdateEvent updateEvent) {
         final ContainerRuntimeOperation runtimeOperation = updateEvent.getContainerRuntimeOperation();
@@ -242,11 +261,17 @@ public class ContainerPresenter {
                 break;                
             case STOPPED:
                 view.updateToggleActivationButton(false);
+                view.setContainerStartState(State.DISABLED);
+                view.setContainerStopState(State.ENABLED);
+                view.enableRemoveButton();
+                view.disableToggleActivationButton();
+                break;
             case DISPOSING:
             case FAILED:
                 view.enableRemoveButton();
+                view.updateToggleActivationButton(false);
                 view.setContainerStartState(State.DISABLED);
-                view.setContainerStopState(State.ENABLED);
+                view.setContainerStopState(State.DISABLED);
                 view.disableToggleActivationButton();
                 break;
         }
@@ -413,5 +438,7 @@ public class ContainerPresenter {
         String getStartContainerErrorMessage();
 
         String getCanNotStopContainerMessage();
+
+        String getFailedContainerErrrMessage();
     }
 }
