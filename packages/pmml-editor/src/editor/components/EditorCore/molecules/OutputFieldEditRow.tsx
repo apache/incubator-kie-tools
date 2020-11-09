@@ -16,12 +16,12 @@
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { Flex, FlexItem, FormGroup, Select, SelectOption, SelectVariant, TextInput } from "@patternfly/react-core";
-import "../organisms/OutputsTable.scss";
+import "../organisms/OutputFieldsTable.scss";
 import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
-import { OutputLabelsEditMode, OutputsTableEditModeAction } from "../atoms";
+import { OutputLabelsEditMode, OutputFieldRowEditModeAction } from "../atoms";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 
-interface OutputsTableEditRowProps {
+interface OutputFieldEditRowProps {
   activeOutputFieldIndex: number | undefined;
   activeOutputField: OutputField;
   setActiveOutputField: (_output: OutputField) => void;
@@ -51,7 +51,7 @@ const dataTypes = [
   "dateTimeSecondsSince[1980]"
 ];
 
-export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
+export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
   const {
     activeOutputFieldIndex,
     activeOutputField,
@@ -136,7 +136,7 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
           />
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>
-          <OutputsTableEditModeAction onCommit={onCommit} onCancel={onCancel} disableCommit={false} />
+          <OutputFieldRowEditModeAction onCommit={onCommit} onCancel={onCancel} disableCommit={false} />
         </FlexItem>
       </Flex>
     </article>

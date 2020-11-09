@@ -17,12 +17,12 @@ import * as React from "react";
 import { useEffect, useRef } from "react";
 import { Bullseye, Form } from "@patternfly/react-core";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
-import { OutputsTableEditRow, OutputsTableRow } from "../molecules";
-import "./OutputsTable.scss";
+import { OutputFieldEditRow, OutputFieldRow } from "../molecules";
+import "./OutputFieldsTable.scss";
 import { Operation } from "../../EditorScorecard";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
 
-interface OutputsTableProps {
+interface OutputFieldsTableProps {
   activeOperation: Operation;
   onAddOutputField: () => void;
   onEditOutputField: (index: number) => void;
@@ -37,7 +37,7 @@ interface OutputsTableProps {
   onCancel: () => void;
 }
 
-export const OutputsTable = (props: OutputsTableProps) => {
+export const OutputFieldsTable = (props: OutputFieldsTableProps) => {
   const {
     activeOperation,
     onAddOutputField,
@@ -77,7 +77,7 @@ export const OutputsTable = (props: OutputsTableProps) => {
         {outputs.map((o, index) => {
           if (activeOutputFieldIndex === index) {
             return (
-              <OutputsTableEditRow
+              <OutputFieldEditRow
                 key={index}
                 activeOutputFieldIndex={index}
                 activeOutputField={activeOutputField}
@@ -90,7 +90,7 @@ export const OutputsTable = (props: OutputsTableProps) => {
             );
           } else {
             return (
-              <OutputsTableRow
+              <OutputFieldRow
                 key={index}
                 activeOutputFieldIndex={index}
                 activeOutputField={o}
@@ -106,7 +106,7 @@ export const OutputsTable = (props: OutputsTableProps) => {
         })}
         {activeOperation === Operation.CREATE_OUTPUT && (
           <div key={undefined} ref={addOutputRowRef}>
-            <OutputsTableEditRow
+            <OutputFieldEditRow
               key={"add"}
               activeOutputFieldIndex={undefined}
               activeOutputField={activeOutputField}

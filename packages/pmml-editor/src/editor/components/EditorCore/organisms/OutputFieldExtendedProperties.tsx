@@ -16,11 +16,11 @@
 
 import * as React from "react";
 import { Form, FormGroup, TextInput } from "@patternfly/react-core";
-import "../organisms/OutputsTable.scss";
+import "../organisms/OutputFieldsTable.scss";
 import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { GenericSelector } from "../../EditorScorecard/atoms";
 
-interface OutputsExtendedPropertiesProps {
+interface OutputFieldExtendedPropertiesProps {
   activeOutputField: OutputField;
   setActiveOutputField: (_output: OutputField) => void;
 }
@@ -34,7 +34,7 @@ const GenericSelectorEditor = (
   return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} />;
 };
 
-export const OutputsExtendedProperties = (props: OutputsExtendedPropertiesProps) => {
+export const OutputFieldExtendedProperties = (props: OutputFieldExtendedPropertiesProps) => {
   const { activeOutputField, setActiveOutputField } = props;
 
   const toNumber = (value: string): number | undefined => {

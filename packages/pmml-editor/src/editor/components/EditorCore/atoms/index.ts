@@ -17,5 +17,5 @@
 export * from "./ActionSpacer";
 export * from "./OutputLabels";
 export * from "./OutputLabelsEditMode";
-export * from "./OutputsTableAction";
-export * from "./OutputsTableEditModeAction";
+export * from "./OutputFieldRowAction";
+export * from "./OutputFieldRowEditModeAction";

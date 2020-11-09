@@ -16,10 +16,10 @@
 import * as React from "react";
 import { Flex, FlexItem, Label } from "@patternfly/react-core";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
-import { OutputLabels, OutputsTableAction } from "../atoms";
-import "./OutputsTableRow.scss";
+import { OutputLabels, OutputFieldRowAction } from "../atoms";
+import "./OutputFieldRow.scss";
 
-interface OutputsTableRowProps {
+interface OutputFieldRowProps {
   activeOutputFieldIndex: number;
   activeOutputField: OutputField;
   onEditOutputField: () => void;
@@ -27,7 +27,7 @@ interface OutputsTableRowProps {
   isDisabled: boolean;
 }
 
-export const OutputsTableRow = (props: OutputsTableRowProps) => {
+export const OutputFieldRow = (props: OutputFieldRowProps) => {
   const { activeOutputFieldIndex, activeOutputField, onEditOutputField, onDeleteOutputField, isDisabled } = props;
 
   return (
@@ -45,7 +45,7 @@ export const OutputsTableRow = (props: OutputsTableRowProps) => {
           <OutputLabels activeOutputField={activeOutputField} />
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>
-          <OutputsTableAction
+          <OutputFieldRowAction
             onEditDataField={onEditOutputField}
             onDeleteDataField={onDeleteOutputField}
             disabled={isDisabled}

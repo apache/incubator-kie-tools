@@ -23,7 +23,7 @@ interface OutputsTableEditModeActionProps {
   disableCommit: boolean;
 }
 
-export const OutputsTableEditModeAction = (props: OutputsTableEditModeActionProps) => {
+export const OutputFieldRowEditModeAction = (props: OutputsTableEditModeActionProps) => {
   const { onCommit, onCancel, disableCommit } = props;
 
   return (

@@ -15,5 +15,5 @@
  */
 
 export * from "./EditorHeader";
-export * from "./OutputsTableRow";
-export * from "./OutputsTableEditRow";
+export * from "./OutputFieldRow";
+export * from "./OutputFieldEditRow";

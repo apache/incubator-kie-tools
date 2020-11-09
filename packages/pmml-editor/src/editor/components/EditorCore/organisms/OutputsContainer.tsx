@@ -26,11 +26,11 @@ import {
 } from "@kogito-tooling/pmml-editor-marshaller";
 import { Button, Flex, FlexItem } from "@patternfly/react-core";
 import { PlusIcon } from "@patternfly/react-icons";
-import { OutputsTable } from "./OutputsTable";
+import { OutputFieldsTable } from "./OutputFieldsTable";
 import { Operation } from "../../EditorScorecard";
 import "./OutputsContainer.scss";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
-import { OutputsExtendedProperties } from "./OutputsExtendedProperties";
+import { OutputFieldExtendedProperties } from "./OutputFieldExtendedProperties";
 
 interface OutputsContainerProps {
   modelIndex: number;
@@ -150,7 +150,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
           key={viewSection}
         >
           <>
-            {viewSection == "overview" && (
+            {viewSection === "overview" && (
               <div style={{ height: "100%" }}>
                 <Flex style={{ margin: "1em 0 2em 0" }}>
                   <FlexItem>
@@ -166,7 +166,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                   </FlexItem>
                 </Flex>
                 <div className="outputs-container__body">
-                  <OutputsTable
+                  <OutputFieldsTable
                     activeOperation={activeOperation}
                     onEditOutputField={onEditOutputField}
                     activeOutputFieldIndex={editItemIndex}
@@ -183,7 +183,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                 </div>
               </div>
             )}
-            {viewSection == "extended-properties" && (
+            {viewSection === "extended-properties" && (
               <div style={{ height: "100%" }}>
                 <Flex style={{ margin: "1em 0 2em 0" }}>
                   <FlexItem>
@@ -198,7 +198,10 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                   </FlexItem>
                 </Flex>
                 <div className="outputs-container__body">
-                  <OutputsExtendedProperties activeOutputField={outputField} setActiveOutputField={setOutputField} />
+                  <OutputFieldExtendedProperties
+                    activeOutputField={outputField}
+                    setActiveOutputField={setOutputField}
+                  />
                 </div>
               </div>
             )}

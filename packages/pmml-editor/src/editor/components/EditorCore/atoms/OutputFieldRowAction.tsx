@@ -23,7 +23,7 @@ interface OutputsTableActionProps {
   onDeleteDataField: () => void;
 }
 
-export const OutputsTableAction = (props: OutputsTableActionProps) => {
+export const OutputFieldRowAction = (props: OutputsTableActionProps) => {
   const { disabled, onEditDataField, onDeleteDataField } = props;
 
   return (
