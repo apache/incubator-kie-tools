@@ -49,8 +49,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-security-backend</artifactId>
+      <groupId>org.kie.soup</groupId>
+      <artifactId>kie-soup-security-utils</artifactId>
     </dependency>
 
     <dependency>
