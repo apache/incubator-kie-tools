@@ -48,7 +48,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     if (_viewSection === "overview") {
       return "outputs-container__overview";
     } else {
-      return "enter-from-right";
+      return "outputs-container__extended-properties";
     }
   };
 
@@ -110,7 +110,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                     </Button>
                   </FlexItem>
                 </Flex>
-                <div className="outputs-container__list">
+                <div className="outputs-container__body">
                   <OutputsTable
                     activeOperation={activeOperation}
                     onEditOutputField={onEditOutputField}
@@ -142,7 +142,7 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                     </Button>
                   </FlexItem>
                 </Flex>
-                <div className="outputs-container__list">
+                <div className="outputs-container__body">
                   <OutputsExtendedProperties activeOutputField={outputField} setActiveOutputField={setOutputField} />
                 </div>
               </div>

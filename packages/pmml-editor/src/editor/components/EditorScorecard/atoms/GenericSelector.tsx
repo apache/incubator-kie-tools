@@ -45,6 +45,7 @@ export const GenericSelector = (props: GenericSelectorProps) => {
       onSelect={onSelect}
       selections={props.selection}
       isOpen={isOpen}
+      menuAppendTo={() => document.body}
     >
       {props.items.map((item, index) => (
         <SelectOption key={index} value={item} />

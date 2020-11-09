@@ -14,96 +14,109 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties } from "react";
 import { Label, Tooltip, TooltipPosition } from "@patternfly/react-core";
-import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 
 interface OutputLabelsEditModeProps {
   activeOutputField: OutputField;
+  setActiveOutputField: (_output: OutputField) => void;
   viewExtendedProperties: () => void;
 }
 
 const PADDING: CSSProperties = { marginRight: "4px" };
 
 export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
-  const { activeOutputField, viewExtendedProperties } = props;
-
-  const [optype, setOptype] = useState<string | undefined>();
-  const [targetField, setTargetField] = useState<FieldName | undefined>();
-  const [feature, setFeature] = useState<string | undefined>();
-  const [value, setValue] = useState<string | undefined>();
-  const [rank, setRank] = useState<number | undefined>();
-  const [rankOrder, setRankOrder] = useState<string | undefined>();
-  const [segmentId, setSegmentId] = useState<string | undefined>();
-  const [isFinalResult, setIsFinalResult] = useState<boolean | undefined>();
-
-  useEffect(() => {
-    setOptype(activeOutputField.optype);
-    setTargetField(activeOutputField.targetField);
-    setFeature(activeOutputField.feature);
-    setValue(activeOutputField.value);
-    setRank(activeOutputField.rank);
-    setRankOrder(activeOutputField.rankOrder);
-    setSegmentId(activeOutputField.segmentId);
-    setIsFinalResult(activeOutputField.isFinalResult);
-  }, [activeOutputField]);
+  const { activeOutputField, setActiveOutputField, viewExtendedProperties } = props;
 
   return (
     <>
-      {optype && (
+      {activeOutputField.optype && (
         <Tooltip position={TooltipPosition.top} content={<div>Optype</div>}>
-          <Label style={PADDING} color="orange" onClose={e => setOptype(undefined)}>
-            {optype}
+          <Label
+            style={PADDING}
+            color="orange"
+            onClose={e => setActiveOutputField({ ...activeOutputField, optype: undefined })}
+          >
+            {activeOutputField.optype}
           </Label>
         </Tooltip>
       )}
 
-      {targetField && (
+      {activeOutputField.targetField && (
         <Tooltip position={TooltipPosition.top} content={<div>Target field</div>}>
-          <Label style={PADDING} color="orange" onClose={e => setTargetField(undefined)}>
-            {targetField}
+          <Label
+            style={PADDING}
+            color="orange"
+            onClose={e => setActiveOutputField({ ...activeOutputField, targetField: undefined })}
+          >
+            {activeOutputField.targetField}
           </Label>
         </Tooltip>
       )}
-      {feature && (
+      {activeOutputField.feature && (
         <Tooltip position={TooltipPosition.top} content={<div>Feature</div>}>
-          <Label style={PADDING} color="orange" onClose={e => setFeature(undefined)}>
-            {feature}
+          <Label
+            style={PADDING}
+            color="orange"
+            onClose={e => setActiveOutputField({ ...activeOutputField, feature: undefined })}
+          >
+            {activeOutputField.feature}
           </Label>
         </Tooltip>
       )}
-      {value && (
+      {activeOutputField.value && (
         <Tooltip position={TooltipPosition.top} content={<div>Value</div>}>
-          <Label style={PADDING} color="orange" onClose={e => setValue(undefined)}>
-            {value}
+          <Label
+            style={PADDING}
+            color="orange"
+            onClose={e => setActiveOutputField({ ...activeOutputField, value: undefined })}
+          >
+            {activeOutputField.value}
           </Label>
         </Tooltip>
       )}
-      {rank && (
+      {activeOutputField.rank && (
         <Tooltip position={TooltipPosition.top} content={<div>Rank</div>}>
-          <Label style={PADDING} color="orange" onClose={e => setRank(undefined)}>
-            {rank}
+          <Label
+            style={PADDING}
+            color="orange"
+            onClose={e => setActiveOutputField({ ...activeOutputField, rank: undefined })}
+          >
+            {activeOutputField.rank}
           </Label>
         </Tooltip>
       )}
-      {rankOrder && (
+      {activeOutputField.rankOrder && (
         <Tooltip position={TooltipPosition.top} content={<div>Rank order</div>}>
-          <Label style={PADDING} color="orange" onClose={e => setRankOrder(undefined)}>
-            {rankOrder}
+          <Label
+            style={PADDING}
+            color="orange"
+            onClose={e => setActiveOutputField({ ...activeOutputField, rankOrder: undefined })}
+          >
+            {activeOutputField.rankOrder}
           </Label>
         </Tooltip>
       )}
-      {segmentId && (
+      {activeOutputField.segmentId && (
         <Tooltip position={TooltipPosition.top} content={<div>Segment Id</div>}>
-          <Label style={PADDING} color="orange" onClose={e => setSegmentId(undefined)}>
-            {segmentId}
+          <Label
+            style={PADDING}
+            color="orange"
+            onClose={e => setActiveOutputField({ ...activeOutputField, segmentId: undefined })}
+          >
+            {activeOutputField.segmentId}
           </Label>
         </Tooltip>
       )}
-      {isFinalResult && (
+      {activeOutputField.isFinalResult && (
         <Tooltip position={TooltipPosition.top} content={<div>Final result?</div>}>
-          <Label style={PADDING} color="orange" onClose={e => setIsFinalResult(undefined)}>
-            {isFinalResult}
+          <Label
+            style={PADDING}
+            color="orange"
+            onClose={e => setActiveOutputField({ ...activeOutputField, isFinalResult: undefined })}
+          >
+            {activeOutputField.isFinalResult}
           </Label>
         </Tooltip>
       )}

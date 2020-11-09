@@ -17,52 +17,139 @@
 import * as React from "react";
 import { Form, FormGroup, TextInput } from "@patternfly/react-core";
 import "../organisms/OutputsTable.scss";
-import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
+import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
+import { GenericSelector } from "../../EditorScorecard/atoms";
 
 interface OutputsExtendedPropertiesProps {
   activeOutputField: OutputField;
   setActiveOutputField: (_output: OutputField) => void;
 }
 
+const GenericSelectorEditor = (
+  id: string,
+  items: string[],
+  selection: string,
+  onSelect: (_selection: string) => void
+) => {
+  return <GenericSelector id={id} items={items} selection={selection} onSelect={onSelect} />;
+};
+
 export const OutputsExtendedProperties = (props: OutputsExtendedPropertiesProps) => {
-  const { activeOutputField } = props;
+  const { activeOutputField, setActiveOutputField } = props;
+
+  const toNumber = (value: string): number | undefined => {
+    if (value === "") {
+      return undefined;
+    }
+    const n = Number(value);
+    if (isNaN(n)) {
+      return undefined;
+    }
+    return n;
+  };
+
+  const optypeEditor = GenericSelectorEditor(
+    "output-optype",
+    ["", "categorical", "continuous", "ordinal"],
+    (activeOutputField.optype ?? "").toString(),
+    _selection =>
+      setActiveOutputField({
+        ...activeOutputField,
+        optype: _selection === "" ? undefined : (_selection as OpType)
+      })
+  );
+
+  const featureEditor = GenericSelectorEditor(
+    "output-feature",
+    [
+      "",
+      "affinity",
+      "antecedent",
+      "clusterAffinity",
+      "clusterId",
+      "confidence",
+      "consequent",
+      "decision",
+      "entityAffinity",
+      "entityId",
+      "leverage",
+      "lift",
+      "predictedDisplayValue",
+      "predictedValue",
+      "probability",
+      "reasonCode",
+      "residual",
+      "rule",
+      "ruleId",
+      "ruleValue",
+      "standardDeviation",
+      "standardError",
+      "support",
+      "transformedValue",
+      "warning"
+    ],
+    (activeOutputField.feature ?? "").toString(),
+    _selection =>
+      setActiveOutputField({
+        ...activeOutputField,
+        feature: _selection === "" ? undefined : (_selection as ResultFeature)
+      })
+  );
+
+  const rankOrderEditor = GenericSelectorEditor(
+    "output-rankOrder",
+    ["", "ascending", "descending"],
+    (activeOutputField.rankOrder ?? "").toString(),
+    _selection =>
+      setActiveOutputField({
+        ...activeOutputField,
+        rankOrder: _selection === "" ? undefined : (_selection as RankOrder)
+      })
+  );
+
+  const isFinalResultEditor = GenericSelectorEditor(
+    "output-isFinalResult",
+    ["", "true", "false"],
+    (activeOutputField.isFinalResult ?? "").toString(),
+    _selection =>
+      setActiveOutputField({
+        ...activeOutputField,
+        isFinalResult: _selection === "" ? undefined : Boolean(_selection)
+      })
+  );
 
   return (
     <Form>
-      <FormGroup fieldId="output-optype-helper" helperText="Indicates the admissible operations on the values.">
-        <TextInput
-          type="text"
-          id="output-optype"
-          name="output-optype"
-          aria-describedby="output-optype-helper"
-          value={activeOutputField.optype ?? ""}
-          // onChange={e => setOptype(e)}
-        />
+      <FormGroup
+        label="optype"
+        fieldId="output-optype-helper"
+        helperText="Indicates the admissible operations on the values."
+      >
+        {optypeEditor}
       </FormGroup>
-      <FormGroup fieldId="output-targetField-helper" helperText="Target field for the Output field.">
+      <FormGroup
+        label="Target field"
+        fieldId="output-targetField-helper"
+        helperText="Target field for the Output field."
+      >
         <TextInput
           type="text"
           id="output-targetField"
           name="output-targetField"
           aria-describedby="output-targetField-helper"
           value={(activeOutputField.targetField ?? "").toString()}
-          // onChange={e => setTargetField(e)}
+          onChange={e => setActiveOutputField({ ...activeOutputField, targetField: e as FieldName })}
         />
       </FormGroup>
       <FormGroup
+        label="Feature"
         fieldId="output-feature-helper"
         helperText="Specifies the value the output field takes from the computed mining result."
       >
-        <TextInput
-          type="text"
-          id="output-feature"
-          name="output-v"
-          aria-describedby="output-feature-helper"
-          value={activeOutputField.feature}
-          // onChange={e => setFeature(e)}
-        />
+        {featureEditor}
       </FormGroup>
       <FormGroup
+        label="Value"
         fieldId="output-value-helper"
         helperText="Used in conjunction with result features referring to specific values."
       >
@@ -72,10 +159,11 @@ export const OutputsExtendedProperties = (props: OutputsExtendedPropertiesProps)
           name="output-value"
           aria-describedby="output-value-helper"
           value={(activeOutputField.value ?? "").toString()}
-          // onChange={e => setValue(e)}
+          onChange={e => setActiveOutputField({ ...activeOutputField, value: e })}
         />
       </FormGroup>
       <FormGroup
+        label="Rank"
         fieldId="output-rank-helper"
         helperText="Specifies the rank of the feature value from the mining result that should be selected."
       >
@@ -85,38 +173,36 @@ export const OutputsExtendedProperties = (props: OutputsExtendedPropertiesProps)
           name="output-rank"
           aria-describedby="output-rank-helper"
           value={activeOutputField.rank}
-          // onChange={e => setRank(toNumber(e))}
+          onChange={e => setActiveOutputField({ ...activeOutputField, rank: toNumber(e) })}
         />
       </FormGroup>
-      <FormGroup fieldId="output-rankOrder-helper" helperText="Determines the sorting order when ranking the results.">
-        <TextInput
-          type="text"
-          id="output-rankOrder"
-          name="output-rankOrder"
-          aria-describedby="output-rankOrder-helper"
-          value={activeOutputField.rankOrder}
-          // onChange={e => setRankOrder(e)}
-        />
+      <FormGroup
+        label="Rank order"
+        fieldId="output-rankOrder-helper"
+        helperText="Determines the sorting order when ranking the results."
+      >
+        {rankOrderEditor}
       </FormGroup>
-      <FormGroup fieldId="output-segmentId-helper" helperText="Provides an approach to deliver results from Segments.">
+      <FormGroup
+        label="Segment Id"
+        fieldId="output-segmentId-helper"
+        helperText="Provides an approach to deliver results from Segments."
+      >
         <TextInput
           type="text"
           id="output-segmentId"
           name="output-segmentId"
           aria-describedby="output-segmentId-helper"
           value={activeOutputField.segmentId}
-          // onChange={e => setSegmentId(e)}
+          onChange={e => setActiveOutputField({ ...activeOutputField, segmentId: e })}
         />
       </FormGroup>
-      <FormGroup fieldId="output-isFinalResult-helper" helperText="A Reason Code is mapped to a Business reason.">
-        <TextInput
-          type="text"
-          id="output-isFinalResult"
-          name="output-isFinalResult"
-          aria-describedby="output-isFinalResult-helper"
-          value={activeOutputField.isFinalResult?.toString()}
-          // onChange={e => setIsFinalResult(Boolean(e))}
-        />
+      <FormGroup
+        label="Final result?"
+        fieldId="output-isFinalResult-helper"
+        helperText="Should the field be returned to the user or is only used as input."
+      >
+        {isFinalResultEditor}
       </FormGroup>
     </Form>
   );

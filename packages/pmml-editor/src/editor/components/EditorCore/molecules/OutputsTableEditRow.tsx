@@ -129,7 +129,11 @@ export const OutputsTableEditRow = (props: OutputsTableEditRowProps) => {
           </FormGroup>
         </FlexItem>
         <FlexItem>
-          <OutputLabelsEditMode activeOutputField={activeOutputField} viewExtendedProperties={viewExtendedProperties} />
+          <OutputLabelsEditMode
+            activeOutputField={activeOutputField}
+            setActiveOutputField={setActiveOutputField}
+            viewExtendedProperties={viewExtendedProperties}
+          />
         </FlexItem>
         <FlexItem align={{ default: "alignRight" }}>
           <OutputsTableEditModeAction onCommit={onCommit} onCancel={onCancel} disableCommit={false} />
