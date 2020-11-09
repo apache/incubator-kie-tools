@@ -15,7 +15,15 @@ const MiningSchemaFields = ({ fields, onAddProperties, onDelete }: MiningSchemaF
     <ul className="mining-schema-list">
       {fields.map((field, index) => {
         if (field.isSelected) {
-          return <MiningSchemaItem field={field} index={index} onAddProperties={onAddProperties} onDelete={onDelete} />;
+          return (
+            <MiningSchemaItem
+              key={field.name}
+              field={field}
+              index={index}
+              onAddProperties={onAddProperties}
+              onDelete={onDelete}
+            />
+          );
         }
       })}
     </ul>
