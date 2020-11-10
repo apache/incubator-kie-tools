@@ -42,7 +42,7 @@ echo "Latest released OLM version = $latest_released_olm_version"
 sed -i "s/$old_version/$new_version/g" cmd/kogito/version/version.go README.md version/version.go deploy/operator.yaml ${OLM_DIR}/kogito-operator.package.yaml ${OLM_DIR}/custom-subscription-example.yaml hack/go-build.sh hack/go-vet.sh .osdk-scorecard.yaml
 
 if [ "${old_version}" != "${new_version}" ]; then
-  operator-sdk generate csv --apis-dir ./pkg/apis/app/v1alpha1 --verbose --csv-version "$new_version" --from-version "$old_version" --update-crds --operator-name kogito-operator
+  operator-sdk generate csv --apis-dir ./pkg/apis/app/v1beta1 --verbose --csv-version "$new_version" --from-version "$old_version" --update-crds --operator-name kogito-operator
 fi
 make vet
 

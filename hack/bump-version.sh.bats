@@ -43,7 +43,7 @@ teardown() {
     run hack/bump-version.sh ${NEW_VERSION}
     [ "$status" -eq 0 ]
     [[ "${output}" =~ "Latest released OLM version = ${OLD_VERSION}" ]]
-    [[ "${output}" =~ "operator-sdk generate csv --apis-dir ./pkg/apis/app/v1alpha1 --verbose --csv-version ${NEW_VERSION}" ]]
+    [[ "${output}" =~ "operator-sdk generate csv --apis-dir ./pkg/apis/app/v1beta1 --verbose --csv-version ${NEW_VERSION}" ]]
     [[ "${output}" =~ "make vet" ]]
 
     # No version should be set in test config
@@ -64,7 +64,7 @@ teardown() {
     run hack/bump-version.sh ${NEW_VERSION} true
     [ "$status" -eq 0 ]
     [[ "${output}" =~ "Latest released OLM version = ${OLD_VERSION}" ]]
-    [[ "${output}" =~ "operator-sdk generate csv --apis-dir ./pkg/apis/app/v1alpha1 --verbose --csv-version ${NEW_VERSION}" ]]
+    [[ "${output}" =~ "operator-sdk generate csv --apis-dir ./pkg/apis/app/v1beta1 --verbose --csv-version ${NEW_VERSION}" ]]
     [[ "${output}" =~ "make vet" ]]
 
     # Only image version should be set
@@ -84,7 +84,7 @@ teardown() {
     run hack/bump-version.sh ${NEW_VERSION} true false
     [ "$status" -eq 0 ]
     [[ "${output}" =~ "Latest released OLM version = ${OLD_VERSION}" ]]
-    [[ "${output}" =~ "operator-sdk generate csv --apis-dir ./pkg/apis/app/v1alpha1 --verbose --csv-version ${NEW_VERSION}" ]]
+    [[ "${output}" =~ "operator-sdk generate csv --apis-dir ./pkg/apis/app/v1beta1 --verbose --csv-version ${NEW_VERSION}" ]]
     [[ "${output}" =~ "make vet" ]]
 
     # Release branch and image version should be set

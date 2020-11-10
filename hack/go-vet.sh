@@ -33,7 +33,7 @@ for yaml in "${deploy_files[@]}"; do cat "${yaml}" >> kogito-operator.yaml; prin
 command -v openapi-gen > /dev/null || go build -o "${GOPATH}"/bin/openapi-gen k8s.io/kube-openapi/cmd/openapi-gen
 # generate the openapi files
 echo "Generating openapi files"
-openapi-gen --logtostderr=true -o "" -i github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1 -O zz_generated.openapi -p ./pkg/apis/app/v1alpha1 -h ./hack/boilerplate.go.txt -r "-"
+openapi-gen --logtostderr=true -o "" -i github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1 -O zz_generated.openapi -p ./pkg/apis/app/v1beta1 -h ./hack/boilerplate.go.txt -r "-"
 openapi-gen --logtostderr=true -o "" -i github.com/kiegroup/kogito-cloud-operator/pkg/apis/kafka/v1beta1 -O zz_generated.openapi -p ./pkg/apis/kafka/v1beta1 -h ./hack/boilerplate.go.txt -r "-"
 
 echo "Generating CSVs and handling manifests"
