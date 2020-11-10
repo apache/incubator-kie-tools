@@ -15,7 +15,7 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	framework2 "github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
@@ -44,14 +44,14 @@ func getDataIndexServiceName() string {
 }
 
 // GetKogitoDataIndexResourceStub Get basic KogitoDataIndex stub with all needed fields initialized
-func GetKogitoDataIndexResourceStub(namespace string, replicas int) *v1alpha1.KogitoSupportingService {
-	return &v1alpha1.KogitoSupportingService{
+func GetKogitoDataIndexResourceStub(namespace string, replicas int) *v1beta1.KogitoSupportingService {
+	return &v1beta1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getDataIndexServiceName()),
-		Spec: v1alpha1.KogitoSupportingServiceSpec{
-			ServiceType:       v1alpha1.DataIndex,
+		Spec: v1beta1.KogitoSupportingServiceSpec{
+			ServiceType:       v1beta1.DataIndex,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetDataIndexImageTag(), infrastructure.DefaultDataIndexImageName),
 		},
-		Status: v1alpha1.KogitoSupportingServiceStatus{
+		Status: v1beta1.KogitoSupportingServiceStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),
 		},
 	}

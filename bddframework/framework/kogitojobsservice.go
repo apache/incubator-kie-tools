@@ -17,7 +17,7 @@ package framework
 import (
 	"fmt"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
@@ -50,8 +50,8 @@ func SetKogitoJobsServiceReplicas(namespace string, nbPods int32) error {
 }
 
 // GetKogitoJobsService retrieves the running jobs service
-func GetKogitoJobsService(namespace string) (*v1alpha1.KogitoSupportingService, error) {
-	service := &v1alpha1.KogitoSupportingService{}
+func GetKogitoJobsService(namespace string) (*v1beta1.KogitoSupportingService, error) {
+	service := &v1beta1.KogitoSupportingService{}
 	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: getJobsServiceName(), Namespace: namespace}, service); err != nil && !errors.IsNotFound(err) {
 		return nil, fmt.Errorf("Error while trying to look for Kogito jobs service: %v ", err)
 	} else if !exists {
@@ -70,14 +70,14 @@ func getJobsServiceName() string {
 }
 
 // GetKogitoJobsServiceResourceStub Get basic KogitoJobsService stub with all needed fields initialized
-func GetKogitoJobsServiceResourceStub(namespace string, replicas int) *v1alpha1.KogitoSupportingService {
-	return &v1alpha1.KogitoSupportingService{
+func GetKogitoJobsServiceResourceStub(namespace string, replicas int) *v1beta1.KogitoSupportingService {
+	return &v1beta1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getJobsServiceName()),
-		Spec: v1alpha1.KogitoSupportingServiceSpec{
-			ServiceType:       v1alpha1.JobsService,
+		Spec: v1beta1.KogitoSupportingServiceSpec{
+			ServiceType:       v1beta1.JobsService,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetJobsServiceImageTag(), infrastructure.DefaultJobsServiceImageName),
 		},
-		Status: v1alpha1.KogitoSupportingServiceStatus{
+		Status: v1beta1.KogitoSupportingServiceStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),
 		},
 	}

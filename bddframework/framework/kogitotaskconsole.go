@@ -15,7 +15,7 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
@@ -36,14 +36,14 @@ func getTaskConsoleServiceName() string {
 }
 
 // GetKogitoTaskConsoleResourceStub Get basic KogitoTaskConsole stub with all needed fields initialized
-func GetKogitoTaskConsoleResourceStub(namespace string, replicas int) *v1alpha1.KogitoSupportingService {
-	return &v1alpha1.KogitoSupportingService{
+func GetKogitoTaskConsoleResourceStub(namespace string, replicas int) *v1beta1.KogitoSupportingService {
+	return &v1beta1.KogitoSupportingService{
 		ObjectMeta: NewObjectMetadata(namespace, getTaskConsoleServiceName()),
-		Spec: v1alpha1.KogitoSupportingServiceSpec{
-			ServiceType:       v1alpha1.TaskConsole,
+		Spec: v1beta1.KogitoSupportingServiceSpec{
+			ServiceType:       v1beta1.TaskConsole,
 			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetTaskConsoleImageTag(), infrastructure.DefaultTaskConsoleImageName),
 		},
-		Status: v1alpha1.KogitoSupportingServiceStatus{
+		Status: v1beta1.KogitoSupportingServiceStatus{
 			KogitoServiceStatus: NewKogitoServiceStatus(),
 		},
 	}

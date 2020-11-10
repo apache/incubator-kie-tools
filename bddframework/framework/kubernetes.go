@@ -20,7 +20,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/meta"
@@ -28,7 +28,7 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	apps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/api/extensions/v1beta1"
+	k8sv1beta1 "k8s.io/api/extensions/v1beta1"
 	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -389,7 +389,7 @@ func checkPodContainerHasEnvVariableWithValue(pod *corev1.Pod, containerName, en
 
 // GetIngressURI returns the ingress URI
 func GetIngressURI(namespace, serviceName string) (string, error) {
-	ingress := &v1beta1.Ingress{}
+	ingress := &k8sv1beta1.Ingress{}
 	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: serviceName, Namespace: namespace}, ingress); err != nil {
 		return "", err
 	} else if !exists {
@@ -402,7 +402,7 @@ func GetIngressURI(namespace, serviceName string) (string, error) {
 }
 
 // ExposeServiceOnKubernetes adds ingress CR to expose a service
-func ExposeServiceOnKubernetes(namespace string, service v1alpha1.KogitoService) error {
+func ExposeServiceOnKubernetes(namespace string, service v1beta1.KogitoService) error {
 	host := service.GetName()
 	if !config.IsLocalCluster() {
 		host += fmt.Sprintf(".%s.%s", namespace, config.GetDomainSuffix())
@@ -410,22 +410,22 @@ func ExposeServiceOnKubernetes(namespace string, service v1alpha1.KogitoService)
 
 	port := framework.DefaultExposedPort
 
-	ingress := v1beta1.Ingress{
+	ingress := k8sv1beta1.Ingress{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        service.GetName(),
 			Namespace:   namespace,
 			Annotations: map[string]string{"nginx.ingress.kubernetes.io/rewrite-target": "/"},
 		},
-		Spec: v1beta1.IngressSpec{
-			Rules: []v1beta1.IngressRule{
+		Spec: k8sv1beta1.IngressSpec{
+			Rules: []k8sv1beta1.IngressRule{
 				{
 					Host: host,
-					IngressRuleValue: v1beta1.IngressRuleValue{
-						HTTP: &v1beta1.HTTPIngressRuleValue{
-							Paths: []v1beta1.HTTPIngressPath{
+					IngressRuleValue: k8sv1beta1.IngressRuleValue{
+						HTTP: &k8sv1beta1.HTTPIngressRuleValue{
+							Paths: []k8sv1beta1.HTTPIngressPath{
 								{
 									Path: "/",
-									Backend: v1beta1.IngressBackend{
+									Backend: k8sv1beta1.IngressBackend{
 										ServiceName: service.GetName(),
 										ServicePort: intstr.FromInt(port),
 									},

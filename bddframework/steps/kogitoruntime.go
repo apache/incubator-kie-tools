@@ -16,7 +16,7 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	framework2 "github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
@@ -118,7 +118,7 @@ func getKogitoRuntimeExamplesStub(namespace, runtimeType, name, imageTag string,
 }
 
 // If JAVA_OPTIONS env variable is not set, it will be set to -Xmx2G so we have more stable resources assignment to test with.
-func addDefaultJavaOptionsIfNotProvided(spec v1alpha1.KogitoServiceSpecInterface) {
+func addDefaultJavaOptionsIfNotProvided(spec v1beta1.KogitoServiceSpecInterface) {
 	javaOptionsProvided := false
 	for _, env := range spec.GetEnvs() {
 		if env.Name == javaOptionsEnvVar {

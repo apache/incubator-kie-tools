@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 )
 
@@ -50,7 +50,7 @@ func deploySourceFilesFromPath(namespace, runtimeType, serviceName, path string)
 		return err
 	}
 
-	buildHolder.KogitoBuild.Spec.Type = v1alpha1.LocalSourceBuildType
+	buildHolder.KogitoBuild.Spec.Type = v1beta1.LocalSourceBuildType
 	buildHolder.KogitoBuild.Spec.GitSource.URI = path
 
 	return framework.DeployKogitoBuild(namespace, framework.CLIInstallerType, buildHolder)

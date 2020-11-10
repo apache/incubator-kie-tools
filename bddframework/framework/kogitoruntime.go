@@ -21,7 +21,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
@@ -46,21 +46,21 @@ func SetKogitoRuntimeReplicas(namespace, name string, nbPods int) error {
 }
 
 // GetKogitoRuntimeStub Get basic KogitoRuntime stub with all needed fields initialized
-func GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag string) *v1alpha1.KogitoRuntime {
+func GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag string) *v1beta1.KogitoRuntime {
 	replicas := int32(1)
-	kogitoRuntime := &v1alpha1.KogitoRuntime{
+	kogitoRuntime := &v1beta1.KogitoRuntime{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
 		},
-		Status: v1alpha1.KogitoRuntimeStatus{
-			KogitoServiceStatus: v1alpha1.KogitoServiceStatus{
-				ConditionsMeta: v1alpha1.ConditionsMeta{Conditions: []v1alpha1.Condition{}},
+		Status: v1beta1.KogitoRuntimeStatus{
+			KogitoServiceStatus: v1beta1.KogitoServiceStatus{
+				ConditionsMeta: v1beta1.ConditionsMeta{Conditions: []v1beta1.Condition{}},
 			},
 		},
-		Spec: v1alpha1.KogitoRuntimeSpec{
-			Runtime: v1alpha1.RuntimeType(runtimeType),
-			KogitoServiceSpec: v1alpha1.KogitoServiceSpec{
+		Spec: v1beta1.KogitoRuntimeSpec{
+			Runtime: v1beta1.RuntimeType(runtimeType),
+			KogitoServiceSpec: v1beta1.KogitoServiceSpec{
 				Image: imageTag,
 				// Use insecure registry flag in tests
 				InsecureImageRegistry: true,
@@ -72,8 +72,8 @@ func GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag string) *v1alph
 	return kogitoRuntime
 }
 
-func getKogitoRuntime(namespace, name string) (*v1alpha1.KogitoRuntime, error) {
-	kogitoRuntime := &v1alpha1.KogitoRuntime{}
+func getKogitoRuntime(namespace, name string) (*v1beta1.KogitoRuntime, error) {
+	kogitoRuntime := &v1beta1.KogitoRuntime{}
 	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: name, Namespace: namespace}, kogitoRuntime); err != nil && !errors.IsNotFound(err) {
 		return nil, fmt.Errorf("Error while trying to look for KogitoRuntime %s: %v ", name, err)
 	} else if errors.IsNotFound(err) || !exists {

@@ -25,7 +25,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/test"
@@ -203,7 +203,7 @@ func DeleteFile(folder, fileName string) error {
 
 // GetBuildImage returns a build image with defaults set
 func GetBuildImage(imageName string) string {
-	image := v1alpha1.Image{
+	image := v1beta1.Image{
 		Domain:    config.GetBuildImageRegistry(),
 		Namespace: config.GetBuildImageNamespace(),
 		Name:      imageName,

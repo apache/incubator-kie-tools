@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	bddtypes "github.com/kiegroup/kogito-cloud-operator/test/types"
 )
 
@@ -55,7 +55,7 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 		cmd = append(cmd, "--svc-labels", fmt.Sprintf("%s=%s", labelName, labelValue))
 	}
 
-	if kogitoRuntime, ok := serviceHolder.KogitoService.(*v1alpha1.KogitoRuntime); ok {
+	if kogitoRuntime, ok := serviceHolder.KogitoService.(*v1beta1.KogitoRuntime); ok {
 		if runtime := kogitoRuntime.Spec.Runtime; len(runtime) > 0 {
 			cmd = append(cmd, "--runtime", string(runtime))
 		}
@@ -65,7 +65,7 @@ func GetServiceCLIFlags(serviceHolder *bddtypes.KogitoServiceHolder) []string {
 }
 
 //GetBuildCLIFlags returns CLI flags based on KogitoBuild passed in parameter
-func GetBuildCLIFlags(kogitoBuild *v1alpha1.KogitoBuild) []string {
+func GetBuildCLIFlags(kogitoBuild *v1beta1.KogitoBuild) []string {
 	var cmd []string
 
 	// Flags ordered alphabetically
@@ -118,7 +118,7 @@ func GetBuildCLIFlags(kogitoBuild *v1alpha1.KogitoBuild) []string {
 }
 
 //GetInfraCLIFlags returns CLI flags based on KogitoInfra passed in parameter
-func GetInfraCLIFlags(infraResource *v1alpha1.KogitoInfra) []string {
+func GetInfraCLIFlags(infraResource *v1beta1.KogitoInfra) []string {
 	var cmd []string
 
 	// Flags ordered alphabetically

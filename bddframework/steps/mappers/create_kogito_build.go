@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/test/types"
 )
 
@@ -55,7 +55,7 @@ func MapKogitoBuildTable(table *godog.Table, buildHolder *types.KogitoBuildHolde
 }
 
 // mapKogitoBuildTableRow maps Cucumber table row to KogitoBuild
-func mapKogitoBuildTableRow(row *TableRow, kogitoBuild *v1alpha1.KogitoBuild) (mappingFound bool, err error) {
+func mapKogitoBuildTableRow(row *TableRow, kogitoBuild *v1beta1.KogitoBuild) (mappingFound bool, err error) {
 	if len(row.Cells) != 3 {
 		return false, fmt.Errorf("expected table to have exactly three columns")
 	}
@@ -82,7 +82,7 @@ func mapKogitoBuildTableRow(row *TableRow, kogitoBuild *v1alpha1.KogitoBuild) (m
 	}
 }
 
-func mapKogitoBuildConfigTableRow(row *TableRow, kogitoBuild *v1alpha1.KogitoBuild) (mappingFound bool, err error) {
+func mapKogitoBuildConfigTableRow(row *TableRow, kogitoBuild *v1beta1.KogitoBuild) (mappingFound bool, err error) {
 	secondColumn := getSecondColumn(row)
 
 	switch secondColumn {
@@ -96,16 +96,16 @@ func mapKogitoBuildConfigTableRow(row *TableRow, kogitoBuild *v1alpha1.KogitoBui
 	return true, nil
 }
 
-func mapKogitoBuildWebhookTableRow(row *TableRow, kogitoBuild *v1alpha1.KogitoBuild) (mappingFound bool, err error) {
+func mapKogitoBuildWebhookTableRow(row *TableRow, kogitoBuild *v1beta1.KogitoBuild) (mappingFound bool, err error) {
 	secondColumn := getSecondColumn(row)
 
 	if len(kogitoBuild.Spec.WebHooks) == 0 {
-		kogitoBuild.Spec.WebHooks = []v1alpha1.WebHookSecret{{}}
+		kogitoBuild.Spec.WebHooks = []v1beta1.WebHookSecret{{}}
 	}
 
 	switch secondColumn {
 	case kogitoBuildTypeKey:
-		kogitoBuild.Spec.WebHooks[0].Type = v1alpha1.WebHookType(getThirdColumn(row))
+		kogitoBuild.Spec.WebHooks[0].Type = v1beta1.WebHookType(getThirdColumn(row))
 	case kogitoBuildSecretKey:
 		kogitoBuild.Spec.WebHooks[0].Secret = getThirdColumn(row)
 

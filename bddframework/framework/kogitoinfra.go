@@ -17,7 +17,7 @@ package framework
 import (
 	"fmt"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework/mappers"
@@ -26,7 +26,7 @@ import (
 )
 
 // InstallKogitoInfraComponent installs the desired component with the given installer type
-func InstallKogitoInfraComponent(namespace string, installerType InstallerType, infra *v1alpha1.KogitoInfra) error {
+func InstallKogitoInfraComponent(namespace string, installerType InstallerType, infra *v1beta1.KogitoInfra) error {
 	GetLogger(namespace).Infof("%s install Kogito Infra resource with APIVersion %s and Kind %s", installerType, infra.Spec.Resource.APIVersion, infra.Spec.Resource.Kind)
 	switch installerType {
 	case CLIInstallerType:
@@ -38,14 +38,14 @@ func InstallKogitoInfraComponent(namespace string, installerType InstallerType, 
 	}
 }
 
-func crInstallKogitoInfraComponent(infra *v1alpha1.KogitoInfra) error {
+func crInstallKogitoInfraComponent(infra *v1beta1.KogitoInfra) error {
 	if err := kubernetes.ResourceC(kubeClient).CreateIfNotExists(infra); err != nil {
 		return fmt.Errorf("Error creating KogitoInfra: %v", err)
 	}
 	return nil
 }
 
-func cliInstallKogitoInfraComponent(namespace string, infraResource *v1alpha1.KogitoInfra) error {
+func cliInstallKogitoInfraComponent(namespace string, infraResource *v1beta1.KogitoInfra) error {
 	cmd := []string{"install", "infra", infraResource.Name}
 
 	cmd = append(cmd, mappers.GetInfraCLIFlags(infraResource)...)
@@ -55,29 +55,29 @@ func cliInstallKogitoInfraComponent(namespace string, infraResource *v1alpha1.Ko
 }
 
 // GetKogitoInfraResourceStub Get basic KogitoInfra stub with all needed fields initialized
-func GetKogitoInfraResourceStub(namespace, name, targetResourceType string) (*v1alpha1.KogitoInfra, error) {
+func GetKogitoInfraResourceStub(namespace, name, targetResourceType string) (*v1beta1.KogitoInfra, error) {
 	infraResource, err := parseKogitoInfraResource(targetResourceType)
 	if err != nil {
 		return nil, err
 	}
 
-	return &v1alpha1.KogitoInfra{
+	return &v1beta1.KogitoInfra{
 		ObjectMeta: NewObjectMetadata(namespace, name),
-		Spec: v1alpha1.KogitoInfraSpec{
+		Spec: v1beta1.KogitoInfraSpec{
 			Resource: *infraResource,
 		},
 	}, nil
 }
 
 // Converts infra resource from name to Resource struct
-func parseKogitoInfraResource(targetResourceType string) (*v1alpha1.Resource, error) {
+func parseKogitoInfraResource(targetResourceType string) (*v1beta1.Resource, error) {
 	switch targetResourceType {
 	case infrastructure.InfinispanKind:
-		return &v1alpha1.Resource{APIVersion: infrastructure.InfinispanAPIVersion, Kind: infrastructure.InfinispanKind}, nil
+		return &v1beta1.Resource{APIVersion: infrastructure.InfinispanAPIVersion, Kind: infrastructure.InfinispanKind}, nil
 	case infrastructure.KafkaKind:
-		return &v1alpha1.Resource{APIVersion: infrastructure.KafkaAPIVersion, Kind: infrastructure.KafkaKind}, nil
+		return &v1beta1.Resource{APIVersion: infrastructure.KafkaAPIVersion, Kind: infrastructure.KafkaKind}, nil
 	case infrastructure.KeycloakKind:
-		return &v1alpha1.Resource{APIVersion: infrastructure.KeycloakAPIVersion, Kind: infrastructure.KeycloakKind}, nil
+		return &v1beta1.Resource{APIVersion: infrastructure.KeycloakAPIVersion, Kind: infrastructure.KeycloakKind}, nil
 	default:
 		return nil, fmt.Errorf("Unknown KogitoInfra target resource type %s", targetResourceType)
 	}
@@ -100,8 +100,8 @@ func WaitForKogitoInfraResource(namespace, name string, timeoutInMin int) error 
 }
 
 // retrieves the KogitoInfra resource
-func getKogitoInfraResource(namespace, name string) (*v1alpha1.KogitoInfra, error) {
-	infraResource := &v1alpha1.KogitoInfra{}
+func getKogitoInfraResource(namespace, name string) (*v1beta1.KogitoInfra, error) {
+	infraResource := &v1beta1.KogitoInfra{}
 	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: name, Namespace: namespace}, infraResource); err != nil && !errors.IsNotFound(err) {
 		return nil, fmt.Errorf("Error while trying to look for KogitoInfra %s: %v ", name, err)
 	} else if !exists {

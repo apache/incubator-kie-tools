@@ -17,7 +17,7 @@ package framework
 import (
 	"fmt"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
@@ -72,17 +72,17 @@ func cliDeployKogitoBuild(buildHolder *bddtypes.KogitoBuildHolder) error {
 }
 
 // GetKogitoBuildStub Get basic KogitoBuild stub with all needed fields initialized
-func GetKogitoBuildStub(namespace, runtimeType, name string) *v1alpha1.KogitoBuild {
-	kogitoBuild := &v1alpha1.KogitoBuild{
+func GetKogitoBuildStub(namespace, runtimeType, name string) *v1beta1.KogitoBuild {
+	kogitoBuild := &v1beta1.KogitoBuild{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
 		},
-		Status: v1alpha1.KogitoBuildStatus{
-			Conditions: []v1alpha1.KogitoBuildConditions{},
+		Status: v1beta1.KogitoBuildStatus{
+			Conditions: []v1beta1.KogitoBuildConditions{},
 		},
-		Spec: v1alpha1.KogitoBuildSpec{
-			Runtime:        v1alpha1.RuntimeType(runtimeType),
+		Spec: v1beta1.KogitoBuildSpec{
+			Runtime:        v1beta1.RuntimeType(runtimeType),
 			MavenMirrorURL: config.GetMavenMirrorURL(),
 		},
 	}
@@ -99,8 +99,8 @@ func GetKogitoBuildStub(namespace, runtimeType, name string) *v1alpha1.KogitoBui
 }
 
 // GetKogitoBuild returns the KogitoBuild type
-func GetKogitoBuild(namespace, buildName string) (*v1alpha1.KogitoBuild, error) {
-	build := &v1alpha1.KogitoBuild{}
+func GetKogitoBuild(namespace, buildName string) (*v1beta1.KogitoBuild, error) {
+	build := &v1beta1.KogitoBuild{}
 	if exists, err := kubernetes.ResourceC(kubeClient).FetchWithKey(types.NamespacedName{Name: buildName, Namespace: namespace}, build); err != nil && !errors.IsNotFound(err) {
 		return nil, fmt.Errorf("Error while trying to look for KogitoBuild %s: %v ", buildName, err)
 	} else if errors.IsNotFound(err) || !exists {
@@ -110,12 +110,12 @@ func GetKogitoBuild(namespace, buildName string) (*v1alpha1.KogitoBuild, error) 
 }
 
 // SetupKogitoBuildImageStreams sets the correct images for the KogitoBuild
-func SetupKogitoBuildImageStreams(kogitoBuild *v1alpha1.KogitoBuild) {
+func SetupKogitoBuildImageStreams(kogitoBuild *v1beta1.KogitoBuild) {
 	kogitoBuild.Spec.BuildImage = getKogitoBuildS2IImage(kogitoBuild)
 	kogitoBuild.Spec.RuntimeImage = getKogitoBuildRuntimeImage(kogitoBuild)
 }
 
-func getKogitoBuildS2IImage(kogitoBuild *v1alpha1.KogitoBuild) string {
+func getKogitoBuildS2IImage(kogitoBuild *v1beta1.KogitoBuild) string {
 	if len(config.GetBuildS2IImageStreamTag()) > 0 {
 		return config.GetBuildS2IImageStreamTag()
 	}
@@ -123,7 +123,7 @@ func getKogitoBuildS2IImage(kogitoBuild *v1alpha1.KogitoBuild) string {
 	return getKogitoBuildImage(infrastructure.KogitoImages[kogitoBuild.Spec.Runtime][true])
 }
 
-func getKogitoBuildRuntimeImage(kogitoBuild *v1alpha1.KogitoBuild) string {
+func getKogitoBuildRuntimeImage(kogitoBuild *v1beta1.KogitoBuild) string {
 	if len(config.GetBuildRuntimeImageStreamTag()) > 0 {
 		return config.GetBuildRuntimeImageStreamTag()
 	}
@@ -136,7 +136,7 @@ func getKogitoBuildRuntimeImage(kogitoBuild *v1alpha1.KogitoBuild) string {
 
 // getKogitoBuildImage returns a build image with defaults set
 func getKogitoBuildImage(imageName string) string {
-	image := v1alpha1.Image{
+	image := v1beta1.Image{
 		Domain:    config.GetBuildImageRegistry(),
 		Namespace: config.GetBuildImageNamespace(),
 		Tag:       config.GetBuildImageVersion(),

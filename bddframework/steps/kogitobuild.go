@@ -19,7 +19,7 @@ import (
 	"path/filepath"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	"github.com/kiegroup/kogito-cloud-operator/test/steps/mappers"
@@ -49,7 +49,7 @@ func (data *Data) buildExampleServiceWithConfiguration(runtimeType, contextDir s
 		return err
 	}
 
-	buildHolder.KogitoBuild.Spec.Type = v1alpha1.RemoteSourceBuildType
+	buildHolder.KogitoBuild.Spec.Type = v1beta1.RemoteSourceBuildType
 	buildHolder.KogitoBuild.Spec.GitSource.URI = config.GetExamplesRepositoryURI()
 	buildHolder.KogitoBuild.Spec.GitSource.ContextDir = contextDir
 	if ref := config.GetExamplesRepositoryRef(); len(ref) > 0 {
@@ -65,7 +65,7 @@ func (data *Data) buildBinaryServiceWithConfiguration(runtimeType, serviceName s
 		return err
 	}
 
-	buildHolder.KogitoBuild.Spec.Type = v1alpha1.BinaryBuildType
+	buildHolder.KogitoBuild.Spec.Type = v1beta1.BinaryBuildType
 
 	return framework.DeployKogitoBuild(data.Namespace, framework.GetDefaultInstallerType(), buildHolder)
 }
@@ -76,7 +76,7 @@ func (data *Data) buildBinaryLocalExampleServiceFromTargetFolderWithConfiguratio
 		return err
 	}
 
-	buildHolder.KogitoBuild.Spec.Type = v1alpha1.BinaryBuildType
+	buildHolder.KogitoBuild.Spec.Type = v1beta1.BinaryBuildType
 	buildHolder.BuiltBinaryFolder = fmt.Sprintf(`%s/%s/target`, data.KogitoExamplesLocation, serviceName)
 
 	return framework.DeployKogitoBuild(data.Namespace, framework.CLIInstallerType, buildHolder)

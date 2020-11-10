@@ -17,7 +17,7 @@ package framework
 import (
 	"fmt"
 
-	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1alpha1"
+	"github.com/kiegroup/kogito-cloud-operator/pkg/apis/app/v1beta1"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/client/kubernetes"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/framework"
 	"github.com/kiegroup/kogito-cloud-operator/pkg/infrastructure"
@@ -81,8 +81,8 @@ func NewObjectMetadata(namespace string, name string) metav1.ObjectMeta {
 }
 
 // NewKogitoServiceSpec creates a new Kogito Service Spec object.
-func NewKogitoServiceSpec(replicas int32, fullImage string, defaultImageName string) v1alpha1.KogitoServiceSpec {
-	return v1alpha1.KogitoServiceSpec{
+func NewKogitoServiceSpec(replicas int32, fullImage string, defaultImageName string) v1beta1.KogitoServiceSpec {
+	return v1beta1.KogitoServiceSpec{
 		Replicas: &replicas,
 		Image:    NewImageOrDefault(fullImage, defaultImageName),
 		// Sets insecure image registry as service images can be stored in insecure registries
@@ -91,10 +91,10 @@ func NewKogitoServiceSpec(replicas int32, fullImage string, defaultImageName str
 }
 
 // NewKogitoServiceStatus creates a new Kogito Service Status object.
-func NewKogitoServiceStatus() v1alpha1.KogitoServiceStatus {
-	return v1alpha1.KogitoServiceStatus{
-		ConditionsMeta: v1alpha1.ConditionsMeta{
-			Conditions: []v1alpha1.Condition{},
+func NewKogitoServiceStatus() v1beta1.KogitoServiceStatus {
+	return v1beta1.KogitoServiceStatus{
+		ConditionsMeta: v1beta1.ConditionsMeta{
+			Conditions: []v1beta1.Condition{},
 		},
 	}
 }
@@ -105,7 +105,7 @@ func NewImageOrDefault(fullImage string, defaultImageName string) string {
 		return fullImage
 	}
 
-	image := v1alpha1.Image{}
+	image := v1beta1.Image{}
 	if isRuntimeImageInformationSet() {
 
 		image.Domain = config.GetServicesImageRegistry()
@@ -156,7 +156,7 @@ func cliInstall(serviceHolder *bddtypes.KogitoServiceHolder, cliDeployCommand, c
 }
 
 // OnKogitoServiceDeployed is called when a service deployed.
-func OnKogitoServiceDeployed(namespace string, service v1alpha1.KogitoService) error {
+func OnKogitoServiceDeployed(namespace string, service v1beta1.KogitoService) error {
 	if !IsOpenshift() {
 		return ExposeServiceOnKubernetes(namespace, service)
 	}
