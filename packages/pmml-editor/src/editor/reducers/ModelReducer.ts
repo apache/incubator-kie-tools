@@ -24,6 +24,8 @@ import { CharacteristicsReducer } from "./CharacteristicsReducer";
 import { CharacteristicReducer } from "./CharacteristicReducer";
 import { OutputFieldReducer } from "./OutputFieldReducer";
 import { OutputReducer } from "./OutputReducer";
+import { MiningSchemaReducer } from "./MiningSchemaReducer";
+import { MiningSchemaFieldReducer } from "./MiningSchemaFieldReducer";
 
 interface ModelPayload {
   [Actions.DeleteModel]: {
@@ -37,6 +39,7 @@ export const ModelReducer: HistoryAwareReducer<Model[], ModelActions | AllScorec
   service: HistoryService
 ): Reducer<Model[], ModelActions | AllScorecardActions> => {
   const scorecardReducer = mergeReducers(ScorecardReducer(service), {
+    MiningSchema: mergeReducers(MiningSchemaReducer(service), { MiningField: MiningSchemaFieldReducer(service) }),
     Output: mergeReducers(OutputReducer(service), { OutputField: OutputFieldReducer(service) }),
     Characteristics: mergeReducers(CharacteristicsReducer(service), {
       Characteristic: CharacteristicReducer(service)

@@ -19,7 +19,15 @@ import { Split, SplitItem } from "@patternfly/react-core";
 import DataDictionaryHandler from "../../DataDictionary/DataDictionaryHandler/DataDictionaryHandler";
 import { OutputsHandler } from "../organisms";
 import { Operation } from "../../EditorScorecard";
-import { DataType, FieldName, OpType, Output, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
+import {
+  DataType,
+  FieldName,
+  MiningSchema,
+  OpType,
+  Output,
+  RankOrder,
+  ResultFeature
+} from "@kogito-tooling/pmml-editor-marshaller";
 import MiningSchemaHandler from "../../MiningSchema/MiningSchemaHandler/MiningSchemaHandler";
 
 interface EditorHeaderProps {
@@ -28,6 +36,7 @@ interface EditorHeaderProps {
   setActiveOperation: (operation: Operation) => void;
   modelIndex: number;
   output?: Output;
+  miningSchema?: MiningSchema;
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   deleteOutputField: (index: number) => void;
   commit: (
@@ -49,6 +58,7 @@ export const EditorHeader = (props: EditorHeaderProps) => {
   const {
     activeOperation,
     setActiveOperation,
+    miningSchema,
     modelIndex,
     output,
     validateOutputFieldName,
@@ -65,7 +75,7 @@ export const EditorHeader = (props: EditorHeaderProps) => {
         <DataDictionaryHandler activeOperation={activeOperation} />
       </SplitItem>
       <SplitItem>
-        <MiningSchemaHandler activeOperation={activeOperation} />
+        <MiningSchemaHandler activeOperation={activeOperation} miningSchema={miningSchema} modelIndex={modelIndex} />
       </SplitItem>
       <SplitItem>
         <OutputsHandler

@@ -1,15 +1,24 @@
 .mining-schema-list {
-  min-height: 30vh;
-  margin: 1rem 0;
   &__item {
     border: 1px solid var(--pf-global--BorderColor--100);
     padding: 1em;
     background-color: #ffffff;
     margin-bottom: 1em;
     user-select: none;
-
     &:last-child {
       margin-bottom: 0;
+    }
+    &__name {
+      display: block;
+      font-weight: bold;
+      // find a better way to vertical align each section of the field
+      margin-top: 2px;
+      word-break: keep-all;
+    }
+    &__edit {
+      margin-top: 2px;
+      margin-left: var(--pf-global--spacer--sm);
+      padding: 0 4px;
     }
   }
 }

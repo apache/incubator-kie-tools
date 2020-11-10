@@ -9,10 +9,10 @@ import {
   Split,
   SplitItem
 } from "@patternfly/react-core";
-import { MiningSchemaField } from "../MiningSchemaContainer/MiningSchemaContainer";
+import { MiningSchemaOption } from "../MiningSchemaContainer/MiningSchemaContainer";
 
 interface MiningSchemaAddFieldsProps {
-  options: MiningSchemaField[];
+  options: MiningSchemaOption[];
   onAdd: (fields: string[]) => void;
 }
 

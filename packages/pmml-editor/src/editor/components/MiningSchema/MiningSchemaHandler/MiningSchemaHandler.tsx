@@ -13,14 +13,54 @@ import { CloseIcon } from "@patternfly/react-icons";
 import { Operation } from "../../EditorScorecard";
 import MiningSchemaContainer from "../MiningSchemaContainer/MiningSchemaContainer";
 import { useState } from "react";
+import { DataDictionary, MiningField, MiningSchema, PMML } from "@kogito-tooling/pmml-editor-marshaller";
+import { useDispatch, useSelector } from "react-redux";
+import { Actions } from "../../../reducers";
 
 interface MiningSchemaHandlerProps {
   activeOperation: Operation;
   setActiveOperation?: (operation: Operation) => void;
+  miningSchema?: MiningSchema;
+  modelIndex: number;
 }
 
-const MiningSchemaHandler = ({ activeOperation }: MiningSchemaHandlerProps) => {
+const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
+  const { activeOperation, miningSchema, modelIndex } = props;
   const [isMiningSchemaOpen, setIsMiningSchemaOpen] = useState(false);
+  const dispatch = useDispatch();
+  const dataDictionary = useSelector<PMML, DataDictionary | undefined>((state: PMML) => state.DataDictionary);
+
+  const addMiningField = (names: string[]) => {
+    dispatch({
+      type: Actions.AddMiningSchemaFields,
+      payload: {
+        modelIndex: modelIndex,
+        names: names
+      }
+    });
+  };
+
+  const deleteMiningField = (index: number) => {
+    dispatch({
+      type: Actions.DeleteMiningSchemaField,
+      payload: {
+        modelIndex: modelIndex,
+        miningSchemaIndex: index
+      }
+    });
+  };
+
+  const updateField = (index: number, field: MiningField) => {
+    dispatch({
+      type: Actions.UpdateMiningSchemaField,
+      payload: {
+        modelIndex: modelIndex,
+        miningSchemaIndex: index,
+        ...field
+      }
+    });
+  };
+
   const handleMiningSchemaToggle = () => {
     setIsMiningSchemaOpen(!isMiningSchemaOpen);
   };
@@ -53,7 +93,13 @@ const MiningSchemaHandler = ({ activeOperation }: MiningSchemaHandlerProps) => {
         variant={ModalVariant.large}
         onEscapePress={() => false}
       >
-        <MiningSchemaContainer />
+        <MiningSchemaContainer
+          miningSchema={miningSchema}
+          dataDictionary={dataDictionary}
+          onAddField={addMiningField}
+          onDeleteField={deleteMiningField}
+          onUpdateField={updateField}
+        />
       </Modal>
     </>
   );

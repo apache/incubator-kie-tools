@@ -20,6 +20,7 @@ import { EditorHeader } from "../../EditorCore/molecules";
 import {
   Characteristic,
   Characteristics,
+  MiningSchema,
   Model,
   Output,
   OutputField,
@@ -60,6 +61,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
   const characteristics: Characteristics | undefined = useMemo(() => model?.Characteristics, [model]);
   const output: Output | undefined = useMemo(() => model?.Output, [model]);
+  const miningSchema: MiningSchema | undefined = useMemo(() => model?.MiningSchema, [model]);
 
   const onAddAttribute = useCallback(() => {
     setActiveOperation(Operation.CREATE_ATTRIBUTE);
@@ -191,6 +193,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
               activeOperation={activeOperation}
               setActiveOperation={setActiveOperation}
               modelIndex={modelIndex}
+              miningSchema={miningSchema}
               output={output}
               validateOutputFieldName={validateOutputName}
               deleteOutputField={_index => {

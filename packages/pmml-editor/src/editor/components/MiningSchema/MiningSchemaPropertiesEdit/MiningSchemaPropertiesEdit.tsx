@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
 import {
-  ActionGroup,
   Button,
   Form,
   FormGroup,
@@ -13,19 +12,20 @@ import {
   Title,
   TitleSizes
 } from "@patternfly/react-core";
-import { MiningSchemaField } from "../MiningSchemaContainer/MiningSchemaContainer";
 import { GenericSelector } from "../../EditorScorecard/atoms";
 import {
   InvalidValueTreatmentMethod,
+  MiningField,
   MissingValueTreatmentMethod,
   OpType,
   OutlierTreatmentMethod,
   UsageType
 } from "@kogito-tooling/pmml-editor-marshaller";
+import "./MiningSchemaPropertiesEdit.scss";
 
 interface MiningSchemaPropertiesEditProps {
-  field: MiningSchemaField;
-  onSave: (field: MiningSchemaField) => void;
+  field: MiningField;
+  onSave: (field: MiningField) => void;
 }
 
 const MiningSchemaPropertiesEdit = ({ field, onSave }: MiningSchemaPropertiesEditProps) => {
@@ -41,7 +41,7 @@ const MiningSchemaPropertiesEdit = ({ field, onSave }: MiningSchemaPropertiesEdi
   const [invalidValueReplacement, setInvalidValueReplacement] = useState(field.invalidValueReplacement ?? "");
 
   const handleSubmit = () => {
-    const updatedField = { name: field.name } as MiningSchemaField;
+    const updatedField = { name: field.name } as MiningField;
     if (usageType.length > 0) {
       updatedField.usageType = usageType as UsageType;
     }
@@ -76,14 +76,14 @@ const MiningSchemaPropertiesEdit = ({ field, onSave }: MiningSchemaPropertiesEdi
   };
 
   return (
-    <Stack hasGutter={true}>
+    <Stack hasGutter={true} className="mining-schema__edit">
       <StackItem>
         <Title headingLevel="h4" size={TitleSizes.xl}>
           Editing Properties for <em>{field.name}</em>
         </Title>
       </StackItem>
       <StackItem>
-        <Form>
+        <Form className="mining-schema__edit__form">
           <FormGroup className="mining-schema__properties__field" label="Field Usage Type" fieldId="usageType">
             <GenericSelector
               id="usageType"
@@ -209,13 +209,12 @@ const MiningSchemaPropertiesEdit = ({ field, onSave }: MiningSchemaPropertiesEdi
               </FormGroup>
             </SplitItem>
           </Split>
-          <ActionGroup>
-            <Button variant="primary" onClick={handleSubmit}>
-              Done
-            </Button>
-            <Button variant="link">Cancel</Button>
-          </ActionGroup>
         </Form>
+        <section className="mining-schema__edit__actions">
+          <Button variant="primary" onClick={handleSubmit}>
+            Done
+          </Button>
+        </section>
       </StackItem>
     </Stack>
   );

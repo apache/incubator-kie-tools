@@ -6,7 +6,11 @@
     margin: 0 0.5em 0.5em 0;
   }
   &__fields {
-    min-height: 30vh;
+    margin: 1rem 0 0;
+    height: calc(60vh - 145px);
+    overflow-y: auto;
+    padding: 1em;
+    background-color: var(--pf-global--BackgroundColor--200);
   }
   &__overview {
     &-enter {

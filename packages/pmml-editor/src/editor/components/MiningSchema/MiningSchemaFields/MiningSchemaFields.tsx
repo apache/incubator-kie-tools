@@ -1,11 +1,12 @@
 import * as React from "react";
-import { Button, ButtonVariant, Flex, FlexItem } from "@patternfly/react-core";
+import { Button, ButtonVariant, Split, SplitItem } from "@patternfly/react-core";
 import { AngleRightIcon, TrashIcon } from "@patternfly/react-icons";
-import { MiningSchemaField } from "../MiningSchemaContainer/MiningSchemaContainer";
 import "./MiningSchemaFields.scss";
+import { MiningField } from "@kogito-tooling/pmml-editor-marshaller";
+import MiningSchemaFieldLabels from "../MiningSchemaFieldLabels/MiningSchemaFieldLabels";
 
 interface MiningSchemaFieldsProps {
-  fields: MiningSchemaField[];
+  fields: MiningField[] | undefined;
   onAddProperties: (index: number) => void;
   onDelete: (index: number) => void;
 }
@@ -13,18 +14,16 @@ interface MiningSchemaFieldsProps {
 const MiningSchemaFields = ({ fields, onAddProperties, onDelete }: MiningSchemaFieldsProps) => {
   return (
     <ul className="mining-schema-list">
-      {fields.map((field, index) => {
-        if (field.isSelected) {
-          return (
-            <MiningSchemaItem
-              key={field.name}
-              field={field}
-              index={index}
-              onAddProperties={onAddProperties}
-              onDelete={onDelete}
-            />
-          );
-        }
+      {fields?.map((field, index) => {
+        return (
+          <MiningSchemaItem
+            key={field.name as string}
+            field={field}
+            index={index}
+            onAddProperties={onAddProperties}
+            onDelete={onDelete}
+          />
+        );
       })}
     </ul>
   );
@@ -33,7 +32,7 @@ const MiningSchemaFields = ({ fields, onAddProperties, onDelete }: MiningSchemaF
 export default MiningSchemaFields;
 
 interface MiningSchemaFieldProps {
-  field: MiningSchemaField;
+  field: MiningField;
   index: number;
   onAddProperties: (index: number) => void;
   onDelete: (index: number) => void;
@@ -47,20 +46,29 @@ const MiningSchemaItem = ({ field, index, onAddProperties, onDelete }: MiningSch
     onDelete(index);
   };
   return (
-    <li className="mining-schema-list__item" key={field.name}>
-      <Flex>
-        <FlexItem>{field.name}</FlexItem>
-        <FlexItem>
-          <Button variant={ButtonVariant.link} icon={<AngleRightIcon />} iconPosition="right" onClick={addProperties}>
-            Add Properties
+    <li className="mining-schema-list__item" key={field.name as string}>
+      <Split hasGutter={true}>
+        <SplitItem>
+          <span className="mining-schema-list__item__name">{field.name}</span>
+        </SplitItem>
+        <SplitItem isFilled={true}>
+          <MiningSchemaFieldLabels field={field} />
+          <Button
+            variant={ButtonVariant.link}
+            icon={<AngleRightIcon />}
+            iconPosition="right"
+            onClick={addProperties}
+            className="mining-schema-list__item__edit"
+          >
+            Edit Properties
           </Button>
-        </FlexItem>
-        <FlexItem align={{ default: "alignRight" }}>
+        </SplitItem>
+        <SplitItem>
           <Button variant="plain" onClick={deleteField}>
             <TrashIcon />
           </Button>
-        </FlexItem>
-      </Flex>
+        </SplitItem>
+      </Split>
     </li>
   );
 };
