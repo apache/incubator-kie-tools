@@ -10,12 +10,17 @@
   strong {
     user-select: text;
   }
+
   &:last-child {
     margin-bottom: 0;
   }
+
   &__type-label {
     text-transform: capitalize;
+    margin-right: var(--pf-global--spacer--sm);
+    margin-bottom: var(--pf-global--spacer--sm);
   }
+
   &__type-select {
     &__option,
     .pf-c-select__toggle {

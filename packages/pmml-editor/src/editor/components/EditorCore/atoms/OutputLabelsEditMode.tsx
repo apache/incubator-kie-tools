@@ -15,9 +15,10 @@
  */
 import * as React from "react";
 import { CSSProperties } from "react";
-import { Label, Tooltip, TooltipPosition } from "@patternfly/react-core";
+import { Label } from "@patternfly/react-core";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons";
+import { OutputFieldLabel } from "./OutputFieldLabel";
 
 interface OutputLabelsEditModeProps {
   activeOutputField: OutputField;
@@ -32,106 +33,74 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
 
   return (
     <>
-      {activeOutputField.optype && (
-        <Tooltip position={TooltipPosition.top} content={<div>Optype</div>}>
-          <Label
-            style={PADDING}
-            color="orange"
-            onClose={e => setActiveOutputField({ ...activeOutputField, optype: undefined })}
-          >
-            OpType:{activeOutputField.optype}
-          </Label>
-        </Tooltip>
-      )}
-
-      {activeOutputField.targetField && (
-        <Tooltip position={TooltipPosition.top} content={<div>Target field</div>}>
-          <Label
-            style={PADDING}
-            color="orange"
-            onClose={e => setActiveOutputField({ ...activeOutputField, targetField: undefined })}
-          >
-            TargetField:{activeOutputField.targetField}
-          </Label>
-        </Tooltip>
-      )}
-      {activeOutputField.feature && (
-        <Tooltip position={TooltipPosition.top} content={<div>Feature</div>}>
-          <Label
-            style={PADDING}
-            color="orange"
-            onClose={e => setActiveOutputField({ ...activeOutputField, feature: undefined })}
-          >
-            Feature:{activeOutputField.feature}
-          </Label>
-        </Tooltip>
-      )}
-      {activeOutputField.value && (
-        <Tooltip position={TooltipPosition.top} content={<div>Value</div>}>
-          <Label
-            style={PADDING}
-            color="orange"
-            onClose={e => setActiveOutputField({ ...activeOutputField, value: undefined })}
-          >
-            Value:{activeOutputField.value}
-          </Label>
-        </Tooltip>
-      )}
-      {activeOutputField.rank && (
-        <Tooltip position={TooltipPosition.top} content={<div>Rank</div>}>
-          <Label
-            style={PADDING}
-            color="orange"
-            onClose={e => setActiveOutputField({ ...activeOutputField, rank: undefined })}
-          >
-            Rank:{activeOutputField.rank}
-          </Label>
-        </Tooltip>
-      )}
-      {activeOutputField.rankOrder && (
-        <Tooltip position={TooltipPosition.top} content={<div>Rank order</div>}>
-          <Label
-            style={PADDING}
-            color="orange"
-            onClose={e => setActiveOutputField({ ...activeOutputField, rankOrder: undefined })}
-          >
-            RankOrder:{activeOutputField.rankOrder}
-          </Label>
-        </Tooltip>
-      )}
-      {activeOutputField.segmentId && (
-        <Tooltip position={TooltipPosition.top} content={<div>Segment Id</div>}>
-          <Label
-            style={PADDING}
-            color="orange"
-            onClose={e => setActiveOutputField({ ...activeOutputField, segmentId: undefined })}
-          >
-            SegmentId:{activeOutputField.segmentId}
-          </Label>
-        </Tooltip>
-      )}
-      {activeOutputField.isFinalResult && (
-        <Tooltip position={TooltipPosition.top} content={<div>Final result?</div>}>
-          <Label
-            style={PADDING}
-            color="orange"
-            onClose={e => setActiveOutputField({ ...activeOutputField, isFinalResult: undefined })}
-          >
-            FinalResult:{activeOutputField.isFinalResult.toString()}
-          </Label>
-        </Tooltip>
-      )}
+      {activeOutputField.optype &&
+        OutputFieldLabel("OpType", activeOutputField.optype, () =>
+          setActiveOutputField({
+            ...activeOutputField,
+            optype: undefined
+          })
+        )}
+      {activeOutputField.targetField &&
+        OutputFieldLabel("TargetField", activeOutputField.targetField, () =>
+          setActiveOutputField({
+            ...activeOutputField,
+            targetField: undefined
+          })
+        )}
+      {activeOutputField.feature &&
+        OutputFieldLabel("Feature", activeOutputField.feature, () =>
+          setActiveOutputField({
+            ...activeOutputField,
+            feature: undefined
+          })
+        )}
+      {activeOutputField.value &&
+        OutputFieldLabel("Value", activeOutputField.value, () =>
+          setActiveOutputField({
+            ...activeOutputField,
+            value: undefined
+          })
+        )}
+      {activeOutputField.rank &&
+        OutputFieldLabel("Rank", activeOutputField.rank, () =>
+          setActiveOutputField({
+            ...activeOutputField,
+            rank: undefined
+          })
+        )}
+      {activeOutputField.rankOrder &&
+        OutputFieldLabel("RankOrder", activeOutputField.rankOrder, () =>
+          setActiveOutputField({
+            ...activeOutputField,
+            rankOrder: undefined
+          })
+        )}
+      {activeOutputField.segmentId &&
+        OutputFieldLabel("SegmentId", activeOutputField.segmentId, () =>
+          setActiveOutputField({
+            ...activeOutputField,
+            segmentId: undefined
+          })
+        )}
+      {activeOutputField.isFinalResult &&
+        OutputFieldLabel("FinalResult", activeOutputField.isFinalResult.toString(), () =>
+          setActiveOutputField({
+            ...activeOutputField,
+            isFinalResult: undefined
+          })
+        )}
       <Label
         style={PADDING}
+        variant="outline"
         color="orange"
-        href="#filled"
+        href="#outline"
         icon={<ArrowAltCircleRightIcon />}
         onClick={e => {
           e.preventDefault();
           viewExtendedProperties();
         }}
       >
-        More...
+        Edit properties...
       </Label>
     </>
   );

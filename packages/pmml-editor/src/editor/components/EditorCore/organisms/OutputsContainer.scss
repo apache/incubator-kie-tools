@@ -17,14 +17,10 @@
 .outputs-container {
   height: 60vh;
 
-  &__body {
-    height: calc(100% - 68px);
+  &__overview {
     overflow-y: auto;
     padding: 1em;
     background-color: var(--pf-global--BackgroundColor--200);
-  }
-
-  &__overview {
 
     &-enter {
       opacity: 0;
@@ -46,6 +42,9 @@
   }
 
   &__extended-properties {
+    overflow-y: auto;
+    padding: 1em;
+    background-color: var(--pf-global--BackgroundColor--200);
 
     &-enter {
       transform: translateX(100px);

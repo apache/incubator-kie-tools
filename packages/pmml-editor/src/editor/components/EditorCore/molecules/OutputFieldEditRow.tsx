@@ -15,7 +15,17 @@
  */
 import * as React from "react";
 import { useMemo, useState } from "react";
-import { Flex, FlexItem, FormGroup, Select, SelectOption, SelectVariant, TextInput } from "@patternfly/react-core";
+import {
+  FormGroup,
+  Select,
+  SelectOption,
+  SelectVariant,
+  Split,
+  SplitItem,
+  Stack,
+  StackItem,
+  TextInput
+} from "@patternfly/react-core";
 import "../organisms/OutputFieldsTable.scss";
 import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputFieldRowEditModeAction, OutputLabelsEditMode } from "../atoms";
@@ -79,64 +89,71 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
 
   return (
     <article className={`output-item output-item-n${activeOutputFieldIndex}`}>
-      <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
-        <FlexItem>
-          <FormGroup
-            label="Name"
-            fieldId="output-name-helper"
-            helperTextInvalid="Name must be unique and present."
-            helperTextInvalidIcon={<ExclamationCircleIcon />}
-            validated={isValidName ? "default" : "error"}
-            style={{ width: "16em" }}
-          >
-            <TextInput
-              type="text"
-              id="output-name"
-              name="output-name"
-              aria-describedby="output-name-helper"
-              value={activeOutputField.name.toString()}
-              validated={isValidName ? "default" : "error"}
-              autoFocus={true}
-              onChange={e => {
-                setActiveOutputField({ ...activeOutputField, name: e as FieldName });
-              }}
-            />
-          </FormGroup>
-        </FlexItem>
-        <FlexItem>
-          <FormGroup label="Data type" fieldId="output-dataType-helper" style={{ width: "12em" }}>
-            <Select
-              id="output-dataType"
-              name="output-dataType"
-              aria-label="Select Input"
-              aria-describedby="output-dataType-helper"
-              variant={SelectVariant.single}
-              onToggle={typeToggle}
-              onSelect={onSelectType}
-              selections={activeOutputField.dataType}
-              isOpen={isTypeSelectOpen}
-              placeholder="Type"
-              menuAppendTo={"parent"}
-            >
-              {dataTypes.map((dt, _index) => (
-                <SelectOption key={_index} value={dt} />
-              ))}
-            </Select>
-          </FormGroup>
-        </FlexItem>
-        <FlexItem>
-          <FormGroup label="Properties" fieldId="output-labels-helper">
-            <OutputLabelsEditMode
-              activeOutputField={activeOutputField}
-              setActiveOutputField={setActiveOutputField}
-              viewExtendedProperties={viewExtendedProperties}
-            />
-          </FormGroup>
-        </FlexItem>
-        <FlexItem align={{ default: "alignRight" }}>
-          <OutputFieldRowEditModeAction onCommit={onCommit} onCancel={onCancel} disableCommit={!isValidName} />
-        </FlexItem>
-      </Flex>
+      <Stack hasGutter={true}>
+        <StackItem>
+          <Split hasGutter={true}>
+            <SplitItem>
+              <FormGroup
+                label="Name"
+                fieldId="output-name-helper"
+                helperTextInvalid="Name must be unique and present."
+                helperTextInvalidIcon={<ExclamationCircleIcon />}
+                validated={isValidName ? "default" : "error"}
+              >
+                <TextInput
+                  type="text"
+                  id="output-name"
+                  name="output-name"
+                  aria-describedby="output-name-helper"
+                  value={activeOutputField.name.toString()}
+                  validated={isValidName ? "default" : "error"}
+                  autoFocus={true}
+                  onChange={e => {
+                    setActiveOutputField({ ...activeOutputField, name: e as FieldName });
+                  }}
+                />
+              </FormGroup>
+            </SplitItem>
+            <SplitItem isFilled={true}>
+              <FormGroup label="Data type" fieldId="output-dataType-helper" style={{ width: "12em" }}>
+                <Select
+                  id="output-dataType"
+                  name="output-dataType"
+                  aria-label="Select Input"
+                  aria-describedby="output-dataType-helper"
+                  variant={SelectVariant.single}
+                  onToggle={typeToggle}
+                  onSelect={onSelectType}
+                  selections={activeOutputField.dataType}
+                  isOpen={isTypeSelectOpen}
+                  placeholder="Type"
+                  menuAppendTo={"parent"}
+                >
+                  {dataTypes.map((dt, _index) => (
+                    <SelectOption key={_index} value={dt} />
+                  ))}
+                </Select>
+              </FormGroup>
+            </SplitItem>
+            <SplitItem>
+              <OutputFieldRowEditModeAction onCommit={onCommit} onCancel={onCancel} disableCommit={!isValidName} />
+            </SplitItem>
+          </Split>
+        </StackItem>
+        <StackItem>
+          <Split>
+            <SplitItem>
+              <FormGroup label="Properties" fieldId="output-labels-helper">
+                <OutputLabelsEditMode
+                  activeOutputField={activeOutputField}
+                  setActiveOutputField={setActiveOutputField}
+                  viewExtendedProperties={viewExtendedProperties}
+                />
+              </FormGroup>
+            </SplitItem>
+          </Split>
+        </StackItem>
+      </Stack>
     </article>
   );
 };

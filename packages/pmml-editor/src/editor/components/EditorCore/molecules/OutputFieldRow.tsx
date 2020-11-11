@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Flex, FlexItem, Label } from "@patternfly/react-core";
+import { Label, Split, SplitItem } from "@patternfly/react-core";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
-import { OutputLabels, OutputFieldRowAction } from "../atoms";
+import { OutputFieldRowAction, OutputLabels } from "../atoms";
 import "./OutputFieldRow.scss";
 
 interface OutputFieldRowProps {
@@ -32,26 +32,24 @@ export const OutputFieldRow = (props: OutputFieldRowProps) => {
 
   return (
     <article className={`output-item output-item-n${activeOutputFieldIndex}`}>
-      <Flex alignItems={{ default: "alignItemsCenter" }} style={{ height: "100%" }}>
-        <FlexItem>
+      <Split hasGutter={true} style={{ height: "100%" }}>
+        <SplitItem>
           <strong>{activeOutputField.name}</strong>
-        </FlexItem>
-        <FlexItem>
+        </SplitItem>
+        <SplitItem isFilled={true}>
           <Label color="blue" className="output-item__type-label">
             {activeOutputField.dataType}
           </Label>
-        </FlexItem>
-        <FlexItem>
           <OutputLabels activeOutputField={activeOutputField} />
-        </FlexItem>
-        <FlexItem align={{ default: "alignRight" }}>
+        </SplitItem>
+        <SplitItem>
           <OutputFieldRowAction
             onEditDataField={onEditOutputField}
             onDeleteDataField={onDeleteOutputField}
             disabled={isDisabled}
           />
-        </FlexItem>
-      </Flex>
+        </SplitItem>
+      </Split>
     </article>
   );
 };

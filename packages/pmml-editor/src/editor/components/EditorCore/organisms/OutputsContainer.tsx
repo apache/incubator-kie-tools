@@ -24,7 +24,7 @@ import {
   RankOrder,
   ResultFeature
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { Button, Flex, FlexItem } from "@patternfly/react-core";
+import { Button, Stack, StackItem, Title, TitleSizes } from "@patternfly/react-core";
 import { ArrowAltCircleLeftIcon, PlusIcon } from "@patternfly/react-icons";
 import { OutputFieldsTable } from "./OutputFieldsTable";
 import { Operation } from "../../EditorScorecard";
@@ -151,21 +151,19 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
         >
           <>
             {viewSection === "overview" && (
-              <div style={{ height: "100%" }}>
-                <Flex style={{ margin: "1em 0 2em 0" }}>
-                  <FlexItem>
-                    <Button
-                      variant="secondary"
-                      onClick={addOutputField}
-                      isDisabled={activeOperation !== Operation.NONE}
-                      icon={<PlusIcon />}
-                      iconPosition="left"
-                    >
-                      Add Output
-                    </Button>
-                  </FlexItem>
-                </Flex>
-                <div className="outputs-container__body">
+              <Stack hasGutter={true}>
+                <StackItem>
+                  <Button
+                    variant="primary"
+                    onClick={addOutputField}
+                    isDisabled={activeOperation !== Operation.NONE}
+                    icon={<PlusIcon />}
+                    iconPosition="left"
+                  >
+                    Add Output
+                  </Button>
+                </StackItem>
+                <StackItem className="outputs-container__overview">
                   <OutputFieldsTable
                     activeOperation={activeOperation}
                     onEditOutputField={onEditOutputField}
@@ -180,30 +178,40 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                     onCommit={onCommit}
                     onCancel={onCancel}
                   />
-                </div>
-              </div>
+                </StackItem>
+              </Stack>
             )}
             {viewSection === "extended-properties" && (
-              <div style={{ height: "100%" }}>
-                <Flex style={{ margin: "1em 0 2em 0" }}>
-                  <FlexItem>
-                    <Button
-                      variant="secondary"
-                      onClick={e => setViewSection("overview")}
-                      icon={<ArrowAltCircleLeftIcon />}
-                      iconPosition="left"
-                    >
-                      Done
-                    </Button>
-                  </FlexItem>
-                </Flex>
-                <div className="outputs-container__body">
+              <Stack hasGutter={true}>
+                <StackItem>
+                  <Title headingLevel="h4" size={TitleSizes.xl}>
+                    Editing Properties{" "}
+                    {outputField.name !== "" ? (
+                      <span>
+                        for <em>{outputField.name}</em>
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </Title>
+                </StackItem>
+                <StackItem className="outputs-container__extended-properties">
                   <OutputFieldExtendedProperties
                     activeOutputField={outputField}
                     setActiveOutputField={setOutputField}
                   />
-                </div>
-              </div>
+                </StackItem>
+                <StackItem>
+                  <Button
+                    variant="primary"
+                    onClick={e => setViewSection("overview")}
+                    icon={<ArrowAltCircleLeftIcon />}
+                    iconPosition="left"
+                  >
+                    Done
+                  </Button>
+                </StackItem>
+              </Stack>
             )}
           </>
         </CSSTransition>

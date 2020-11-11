@@ -13,27 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@import "../../../../../../../node_modules/@patternfly/patternfly/patternfly.css";
 
-.outputs {
-
-  &__header {
-
-    border-top: none;
-    font-weight: bold;
-    outline: none;
-
-    &__row {
-      height: 64px;
-    }
-
-    &__text {
-      padding-right: var(--pf-global--spacer--sm);
-    }
-
-    &__icon {
-      color: var(--pf-global--info-color--100);
+.output-fields-list {
+  &__item__label {
+    margin-right: var(--pf-global--spacer--sm);
+    margin-bottom: var(--pf-global--spacer--sm);
+    &:last-of-type {
+      margin-right: 0;
     }
   }
-
 }
