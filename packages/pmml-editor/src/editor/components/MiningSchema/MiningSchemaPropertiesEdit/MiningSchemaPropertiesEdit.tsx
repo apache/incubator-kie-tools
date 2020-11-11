@@ -83,133 +83,139 @@ const MiningSchemaPropertiesEdit = ({ field, onSave }: MiningSchemaPropertiesEdi
         </Title>
       </StackItem>
       <StackItem>
-        <Form className="mining-schema__edit__form">
-          <FormGroup className="mining-schema__properties__field" label="Field Usage Type" fieldId="usageType">
-            <GenericSelector
-              id="usageType"
-              items={[
-                "",
-                "active",
-                "predicted",
-                "target",
-                "supplementary",
-                "group",
-                "order",
-                "frequencyWeight",
-                "analysisWeight"
-              ]}
-              onSelect={selection => setUsageType(selection as UsageType)}
-              selection={usageType}
-            />
-          </FormGroup>
-          <FormGroup className="mining-schema__properties__field" label="Field Op Type" fieldId="opType">
-            <GenericSelector
-              id="opType"
-              items={["", "categorical", "ordinal", "continuous"]}
-              onSelect={selection => setOpType(selection as OpType)}
-              selection={opType}
-            />
-          </FormGroup>
-          <FormGroup
-            className="mining-schema__properties__field"
-            label="Importance"
-            fieldId="importance"
-            helperText="Importance is a value between 0.0 and 1.0"
-          >
-            <TextInput
-              type="number"
-              min={0}
-              max={1}
-              id="importance"
-              name="importance"
-              aria-describedby="Importance"
-              value={importance}
-              onChange={value => setImportance(Number.parseFloat(value))}
-            />
-          </FormGroup>
-          <FormGroup className="mining-schema__properties__field" label="Outliers Treatment Method" fieldId="outliers">
-            <GenericSelector
-              id="outliers"
-              items={["", "asIs", "asMissingValues", "asExtremeValues"]}
-              onSelect={selection => setOutliers(selection as OutlierTreatmentMethod)}
-              selection={outliers}
-            />
-          </FormGroup>
-          <Split hasGutter={true}>
-            <SplitItem style={{ width: 320 }}>
-              <FormGroup label="Low Value" fieldId="lowValue">
-                <TextInput
-                  type="number"
-                  id="lowValue"
-                  name="lowValue"
-                  aria-describedby="Low Value"
-                  value={lowValue}
-                  onChange={value => setLowValue(Number.parseFloat(value))}
-                />
-              </FormGroup>
-            </SplitItem>
-            <SplitItem style={{ width: 320 }}>
-              <FormGroup label="High Value" fieldId="highValue">
-                <TextInput
-                  type="number"
-                  id="highValue"
-                  name="highValue"
-                  aria-describedby="High Value"
-                  value={highValue}
-                  onChange={value => setHighValue(Number.parseFloat(value))}
-                />
-              </FormGroup>
-            </SplitItem>
-          </Split>
-          <Split hasGutter={true}>
-            <SplitItem style={{ width: 320 }}>
-              <FormGroup label="Missing Value Replacement" fieldId="missingValueReplacement">
-                <TextInput
-                  type="text"
-                  id="missingValueReplacement"
-                  name="missingValueReplacement"
-                  aria-describedby="Missing Value Replacement"
-                  value={missingValueReplacement}
-                  onChange={value => setMissingValueReplacement(value)}
-                />
-              </FormGroup>
-            </SplitItem>
-            <SplitItem style={{ width: 320 }}>
-              <FormGroup label="Missing Value Treatment" fieldId="missingValueTreatment">
-                <GenericSelector
-                  id="missingValueTreatment"
-                  items={["", "asIs", "asMean", "asMode", "asMedian", "asValue", "returnInvalid"]}
-                  onSelect={selection => setMissingValueTreatment(selection as MissingValueTreatmentMethod)}
-                  selection={missingValueTreatment}
-                />
-              </FormGroup>
-            </SplitItem>
-          </Split>
-          <Split hasGutter={true}>
-            <SplitItem style={{ width: 320 }}>
-              <FormGroup label="Invalid Value Replacement" fieldId="invalidValueReplacement">
-                <TextInput
-                  type="text"
-                  id="invalidValueReplacement"
-                  name="invalidValueReplacement"
-                  aria-describedby="Invalid Value Replacement"
-                  value={invalidValueReplacement}
-                  onChange={value => setInvalidValueReplacement(value)}
-                />
-              </FormGroup>
-            </SplitItem>
-            <SplitItem style={{ width: 320 }}>
-              <FormGroup label="Invalid Value Treatment" fieldId="invalidValueTreatment">
-                <GenericSelector
-                  id="invalidValueTreatment"
-                  items={["", "asIs", "asMean", "asMode", "asMedian", "asValue", "returnInvalid"]}
-                  onSelect={selection => setInvalidValueTreatment(selection as InvalidValueTreatmentMethod)}
-                  selection={invalidValueTreatment}
-                />
-              </FormGroup>
-            </SplitItem>
-          </Split>
-        </Form>
+        <section className="mining-schema__edit__form">
+          <Form>
+            <FormGroup className="mining-schema__properties__field" label="Field Usage Type" fieldId="usageType">
+              <GenericSelector
+                id="usageType"
+                items={[
+                  "",
+                  "active",
+                  "predicted",
+                  "target",
+                  "supplementary",
+                  "group",
+                  "order",
+                  "frequencyWeight",
+                  "analysisWeight"
+                ]}
+                onSelect={selection => setUsageType(selection as UsageType)}
+                selection={usageType}
+              />
+            </FormGroup>
+            <FormGroup className="mining-schema__properties__field" label="Field Op Type" fieldId="opType">
+              <GenericSelector
+                id="opType"
+                items={["", "categorical", "ordinal", "continuous"]}
+                onSelect={selection => setOpType(selection as OpType)}
+                selection={opType}
+              />
+            </FormGroup>
+            <FormGroup
+              className="mining-schema__properties__field"
+              label="Importance"
+              fieldId="importance"
+              helperText="Importance is a value between 0.0 and 1.0"
+            >
+              <TextInput
+                type="number"
+                min={0}
+                max={1}
+                id="importance"
+                name="importance"
+                aria-describedby="Importance"
+                value={importance}
+                onChange={value => setImportance(Number.parseFloat(value))}
+              />
+            </FormGroup>
+            <FormGroup
+              className="mining-schema__properties__field"
+              label="Outliers Treatment Method"
+              fieldId="outliers"
+            >
+              <GenericSelector
+                id="outliers"
+                items={["", "asIs", "asMissingValues", "asExtremeValues"]}
+                onSelect={selection => setOutliers(selection as OutlierTreatmentMethod)}
+                selection={outliers}
+              />
+            </FormGroup>
+            <Split hasGutter={true}>
+              <SplitItem style={{ width: 320 }}>
+                <FormGroup label="Low Value" fieldId="lowValue">
+                  <TextInput
+                    type="number"
+                    id="lowValue"
+                    name="lowValue"
+                    aria-describedby="Low Value"
+                    value={lowValue}
+                    onChange={value => setLowValue(Number.parseFloat(value))}
+                  />
+                </FormGroup>
+              </SplitItem>
+              <SplitItem style={{ width: 320 }}>
+                <FormGroup label="High Value" fieldId="highValue">
+                  <TextInput
+                    type="number"
+                    id="highValue"
+                    name="highValue"
+                    aria-describedby="High Value"
+                    value={highValue}
+                    onChange={value => setHighValue(Number.parseFloat(value))}
+                  />
+                </FormGroup>
+              </SplitItem>
+            </Split>
+            <Split hasGutter={true}>
+              <SplitItem style={{ width: 320 }}>
+                <FormGroup label="Missing Value Replacement" fieldId="missingValueReplacement">
+                  <TextInput
+                    type="text"
+                    id="missingValueReplacement"
+                    name="missingValueReplacement"
+                    aria-describedby="Missing Value Replacement"
+                    value={missingValueReplacement}
+                    onChange={value => setMissingValueReplacement(value)}
+                  />
+                </FormGroup>
+              </SplitItem>
+              <SplitItem style={{ width: 320 }}>
+                <FormGroup label="Missing Value Treatment" fieldId="missingValueTreatment">
+                  <GenericSelector
+                    id="missingValueTreatment"
+                    items={["", "asIs", "asMean", "asMode", "asMedian", "asValue", "returnInvalid"]}
+                    onSelect={selection => setMissingValueTreatment(selection as MissingValueTreatmentMethod)}
+                    selection={missingValueTreatment}
+                  />
+                </FormGroup>
+              </SplitItem>
+            </Split>
+            <Split hasGutter={true}>
+              <SplitItem style={{ width: 320 }}>
+                <FormGroup label="Invalid Value Replacement" fieldId="invalidValueReplacement">
+                  <TextInput
+                    type="text"
+                    id="invalidValueReplacement"
+                    name="invalidValueReplacement"
+                    aria-describedby="Invalid Value Replacement"
+                    value={invalidValueReplacement}
+                    onChange={value => setInvalidValueReplacement(value)}
+                  />
+                </FormGroup>
+              </SplitItem>
+              <SplitItem style={{ width: 320 }}>
+                <FormGroup label="Invalid Value Treatment" fieldId="invalidValueTreatment">
+                  <GenericSelector
+                    id="invalidValueTreatment"
+                    items={["", "asIs", "asMean", "asMode", "asMedian", "asValue", "returnInvalid"]}
+                    onSelect={selection => setInvalidValueTreatment(selection as InvalidValueTreatmentMethod)}
+                    selection={invalidValueTreatment}
+                  />
+                </FormGroup>
+              </SplitItem>
+            </Split>
+          </Form>
+        </section>
         <section className="mining-schema__edit__actions">
           <Button variant="primary" onClick={handleSubmit}>
             Done

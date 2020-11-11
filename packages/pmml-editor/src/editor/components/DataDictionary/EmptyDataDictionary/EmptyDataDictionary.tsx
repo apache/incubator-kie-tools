@@ -2,18 +2,16 @@ import * as React from "react";
 import { EmptyState, EmptyStateVariant, EmptyStateIcon, EmptyStateBody, Title } from "@patternfly/react-core";
 import { OutlinedMehIcon } from "@patternfly/react-icons";
 
-const EmptyMiningSchema = () => {
+const EmptyDataDictionary = () => {
   return (
     <EmptyState variant={EmptyStateVariant.large}>
       <EmptyStateIcon icon={OutlinedMehIcon} />
       <Title headingLevel="h3" size="md">
-        No Mining Fields found
+        No Data Fields Defined
       </Title>
-      <EmptyStateBody>
-        Add some fields first from the section above. Then you will be able to add further information for each of them.
-      </EmptyStateBody>
+      <EmptyStateBody>It looks empty here. Start adding fields using the buttons above.</EmptyStateBody>
     </EmptyState>
   );
 };
 
-export default EmptyMiningSchema;
+export default EmptyDataDictionary;

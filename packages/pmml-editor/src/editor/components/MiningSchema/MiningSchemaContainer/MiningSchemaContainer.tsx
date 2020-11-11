@@ -10,6 +10,7 @@ import MiningSchemaPropertiesEdit from "../MiningSchemaPropertiesEdit/MiningSche
 import "./MiningSchemaContainer.scss";
 
 import { DataDictionary, MiningField, MiningSchema } from "@kogito-tooling/pmml-editor-marshaller";
+import NoMiningSchemaFieldsOptions from "../NoMiningSchemaFieldsOptions/NoMiningSchemaFieldsOptions";
 
 interface MiningSchemaContainerProps {
   dataDictionary?: DataDictionary;
@@ -94,18 +95,27 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                     Fields List
                   </Title>
                   <section className="mining-schema__fields">
-                    {miningSchema === undefined ||
-                      (miningSchema?.MiningField.length === 0 && (
-                        <Bullseye style={{ height: "40vh" }}>
-                          <EmptyMiningSchema />
-                        </Bullseye>
-                      ))}
-                    {miningSchema && miningSchema.MiningField.length > 0 && (
-                      <MiningSchemaFields
-                        fields={miningSchema?.MiningField}
-                        onAddProperties={goToProperties}
-                        onDelete={handleDeleteField}
-                      />
+                    {fields.length === 0 && (
+                      <Bullseye style={{ height: "40vh" }}>
+                        <NoMiningSchemaFieldsOptions />
+                      </Bullseye>
+                    )}
+                    {fields.length > 0 && (
+                      <>
+                        {miningSchema === undefined ||
+                          (miningSchema?.MiningField.length === 0 && (
+                            <Bullseye style={{ height: "40vh" }}>
+                              <EmptyMiningSchema />
+                            </Bullseye>
+                          ))}
+                        {miningSchema && miningSchema.MiningField.length > 0 && (
+                          <MiningSchemaFields
+                            fields={miningSchema?.MiningField}
+                            onAddProperties={goToProperties}
+                            onDelete={handleDeleteField}
+                          />
+                        )}
+                      </>
                     )}
                   </section>
                 </StackItem>

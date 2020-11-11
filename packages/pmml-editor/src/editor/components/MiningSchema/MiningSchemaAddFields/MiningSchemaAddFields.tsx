@@ -74,6 +74,7 @@ const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) =
             isOpen={isOpen}
             aria-labelledby={"Select fields to add"}
             placeholderText="Select fields"
+            isDisabled={options.length === 0}
           >
             {selectOptions.map((option, index) => (
               <SelectOption isDisabled={option.disabled} key={index} value={option.value} />
@@ -81,12 +82,12 @@ const MiningSchemaAddFields = ({ options, onAdd }: MiningSchemaAddFieldsProps) =
           </Select>
         </SplitItem>
         <SplitItem>
-          <Button variant="primary" onClick={handleAdd}>
+          <Button variant="primary" onClick={handleAdd} isDisabled={options.length === 0}>
             Add Field(s)
           </Button>
         </SplitItem>
         <SplitItem>
-          <Button variant="secondary" onClick={addAllFields}>
+          <Button variant="secondary" onClick={addAllFields} isDisabled={options.length === 0}>
             Add All Fields
           </Button>
         </SplitItem>
