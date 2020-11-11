@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Button, ButtonVariant, Split, SplitItem } from "@patternfly/react-core";
-import { AngleRightIcon, TrashIcon } from "@patternfly/react-icons";
+import { Button, Split, SplitItem } from "@patternfly/react-core";
+import { TrashIcon } from "@patternfly/react-icons";
 import "./MiningSchemaFields.scss";
 import { MiningField } from "@kogito-tooling/pmml-editor-marshaller";
 import MiningSchemaFieldLabels from "../MiningSchemaFieldLabels/MiningSchemaFieldLabels";
@@ -9,9 +9,10 @@ interface MiningSchemaFieldsProps {
   fields: MiningField[] | undefined;
   onAddProperties: (index: number) => void;
   onDelete: (index: number) => void;
+  onPropertyDelete: (index: number, updatedField: MiningField) => void;
 }
 
-const MiningSchemaFields = ({ fields, onAddProperties, onDelete }: MiningSchemaFieldsProps) => {
+const MiningSchemaFields = ({ fields, onAddProperties, onDelete, onPropertyDelete }: MiningSchemaFieldsProps) => {
   return (
     <ul className="mining-schema-list">
       {fields?.map((field, index) => {
@@ -22,6 +23,7 @@ const MiningSchemaFields = ({ fields, onAddProperties, onDelete }: MiningSchemaF
             index={index}
             onAddProperties={onAddProperties}
             onDelete={onDelete}
+            onPropertyDelete={onPropertyDelete}
           />
         );
       })}
@@ -36,14 +38,18 @@ interface MiningSchemaFieldProps {
   index: number;
   onAddProperties: (index: number) => void;
   onDelete: (index: number) => void;
+  onPropertyDelete: (index: number, field: MiningField) => void;
 }
 
-const MiningSchemaItem = ({ field, index, onAddProperties, onDelete }: MiningSchemaFieldProps) => {
+const MiningSchemaItem = ({ field, index, onAddProperties, onDelete, onPropertyDelete }: MiningSchemaFieldProps) => {
   const addProperties = () => {
     onAddProperties(index);
   };
   const deleteField = () => {
     onDelete(index);
+  };
+  const deleteProperty = (updatedField: MiningField) => {
+    onPropertyDelete(index, updatedField);
   };
   return (
     <li className="mining-schema-list__item" key={field.name as string}>
@@ -52,16 +58,7 @@ const MiningSchemaItem = ({ field, index, onAddProperties, onDelete }: MiningSch
           <span className="mining-schema-list__item__name">{field.name}</span>
         </SplitItem>
         <SplitItem isFilled={true}>
-          <MiningSchemaFieldLabels field={field} />
-          <Button
-            variant={ButtonVariant.link}
-            icon={<AngleRightIcon />}
-            iconPosition="right"
-            onClick={addProperties}
-            className="mining-schema-list__item__edit"
-          >
-            Edit Properties
-          </Button>
+          <MiningSchemaFieldLabels field={field} onEdit={addProperties} onDelete={deleteProperty} />
         </SplitItem>
         <SplitItem>
           <Button variant="plain" onClick={deleteField}>

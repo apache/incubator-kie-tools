@@ -64,6 +64,7 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
   const handleMiningSchemaToggle = () => {
     setIsMiningSchemaOpen(!isMiningSchemaOpen);
   };
+
   const header = (
     <Split hasGutter={true}>
       <SplitItem isFilled={true}>
@@ -85,8 +86,8 @@ const MiningSchemaHandler = (props: MiningSchemaHandlerProps) => {
         Set Mining Schema
       </Button>
       <Modal
-        aria-label="data-dictionary"
-        title="Data Dictionary"
+        aria-label="mining-schema"
+        title="Mining Schema"
         header={header}
         isOpen={isMiningSchemaOpen}
         showClose={false}
