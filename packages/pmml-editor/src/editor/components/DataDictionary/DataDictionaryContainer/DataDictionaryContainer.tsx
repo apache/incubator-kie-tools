@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Button, Flex, FlexItem } from "@patternfly/react-core";
+import { Bullseye, Button, Flex, FlexItem } from "@patternfly/react-core";
 import { BoltIcon, PlusIcon, SortIcon } from "@patternfly/react-icons";
 import { v4 as uuid } from "uuid";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
@@ -10,6 +10,7 @@ import MultipleDataTypeAdd from "../MultipleDataTypeAdd/MultipleDataTypeAdd";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import DataTypesSort from "../DataTypesSort/DataTypesSort";
 import "./DataDictionaryContainer.scss";
+import EmptyDataDictionary from "../EmptyDataDictionary/EmptyDataDictionary";
 
 interface DataDictionaryContainerProps {
   dataDictionary: DataField[];
@@ -185,6 +186,11 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
                 <>
                   {!sorting && (
                     <section className="data-dictionary__types-list">
+                      {dataTypes.length === 0 && !newType && (
+                        <Bullseye style={{ height: "40vh" }}>
+                          <EmptyDataDictionary />
+                        </Bullseye>
+                      )}
                       {dataTypes.map((item, index) => (
                         <DataTypeItem
                           dataType={item}
