@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Button, EmptyState, EmptyStateBody, EmptyStateVariant, Title } from "@patternfly/react-core";
+import { Button, EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
+import { CalculatorIcon } from "@patternfly/react-icons";
 
 interface EmptyStateNoCharacteristicsProps {
   addCharacteristic: () => void;
@@ -22,13 +23,15 @@ interface EmptyStateNoCharacteristicsProps {
 
 export const EmptyStateNoCharacteristics = (props: EmptyStateNoCharacteristicsProps) => (
   <EmptyState data-testid="empty-state-no-characteristics" variant={EmptyStateVariant.small}>
+    <EmptyStateIcon icon={CalculatorIcon} />
     <Title headingLevel="h4" size="lg">
       No Characteristics defined
     </Title>
     <EmptyStateBody>
-      In a scorecard, input fields, also referred to as characteristics (for example, "age"), are broken down into
-      attributes (for example, "19-29" and "30-39" age groups or ranges) with specific partial scores associated with
-      them.
+      Characteristics define the point allocation strategy for the scorecard. Once point allocation between input
+      attributes and partial scores takes place, each scorecard characteristic is assigned a single partial score which
+      is used to compute the overall score. The overall score is simply the sum of all partial scores. Partial scores
+      are assumed to be continuous values of type "double".
     </EmptyStateBody>
     <Button
       data-testid="empty-state-no-characteristics__create-characteristic"

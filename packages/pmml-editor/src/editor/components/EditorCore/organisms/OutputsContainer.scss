@@ -15,12 +15,12 @@
  */
 
 .outputs-container {
-  height: 60vh;
 
   &__overview {
     overflow-y: auto;
     padding: 1em;
     background-color: var(--pf-global--BackgroundColor--200);
+    height: 60vh;
 
     &-enter {
       opacity: 0;
@@ -45,6 +45,7 @@
     overflow-y: auto;
     padding: 1em;
     background-color: var(--pf-global--BackgroundColor--200);
+    height: calc(60vh - 46px);
 
     &-enter {
       transform: translateX(100px);

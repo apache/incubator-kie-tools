@@ -21,3 +21,4 @@ export * from "./CharacteristicsTableRow";
 export * from "./CharacteristicsTableEditRow";
 export * from "./EmptyStateNoAttributes";
 export * from "./EmptyStateNoCharacteristics";
+export * from "./EmptyStateNoMatchingCharacteristics";

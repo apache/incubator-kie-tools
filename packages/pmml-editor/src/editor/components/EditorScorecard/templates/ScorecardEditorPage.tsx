@@ -31,7 +31,7 @@ import { CharacteristicPanel, CharacteristicsTable, CorePropertiesTable, Indexed
 import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";
 import { useDispatch, useSelector } from "react-redux";
-import { CharacteristicsToolbar } from "../molecules";
+import { CharacteristicsToolbar, EmptyStateNoCharacteristics, EmptyStateNoMatchingCharacteristics } from "../molecules";
 import "./ScorecardEditorPage.scss";
 import { Operation } from "../Operation";
 import { EmptyStateModelNotFound } from "../../EditorCore/organisms";
@@ -132,6 +132,14 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     filter,
     characteristics
   ]);
+
+  const characteristicsEmptyStateProvider = useMemo(() => {
+    if (filter === "") {
+      return <EmptyStateNoCharacteristics addCharacteristic={onAddCharacteristic} />;
+    } else {
+      return <EmptyStateNoMatchingCharacteristics />;
+    }
+  }, [filter]);
 
   return (
     <div data-testid="editor-page" className={"editor"}>
@@ -293,16 +301,20 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
           <PageSection isFilled={true} style={{ paddingTop: "0px" }}>
             <PageSection variant={PageSectionVariants.light}>
-              <CharacteristicsToolbar
-                activeOperation={activeOperation}
-                onFilter={setFilter}
-                onAddCharacteristic={onAddCharacteristic}
-              />
+              {((characteristics?.Characteristic ?? []).length > 0 ||
+                activeOperation === Operation.CREATE_CHARACTERISTIC) && (
+                <CharacteristicsToolbar
+                  activeOperation={activeOperation}
+                  onFilter={setFilter}
+                  onAddCharacteristic={onAddCharacteristic}
+                />
+              )}
               <div style={{ height: "432px" }}>
                 <CharacteristicsTable
                   activeOperation={activeOperation}
                   setActiveOperation={setActiveOperation}
                   characteristics={filteredCharacteristics}
+                  emptyStateProvider={() => characteristicsEmptyStateProvider}
                   validateCharacteristicName={validateCharacteristicName}
                   selectCharacteristic={index => selectCharacteristic(index)}
                   addCharacteristic={onAddCharacteristic}

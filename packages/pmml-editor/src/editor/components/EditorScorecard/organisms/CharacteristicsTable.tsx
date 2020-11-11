@@ -26,7 +26,7 @@ import {
   Form
 } from "@patternfly/react-core";
 import "./CharacteristicsTable.scss";
-import { CharacteristicsTableEditRow, CharacteristicsTableRow, EmptyStateNoCharacteristics } from "../molecules";
+import { CharacteristicsTableEditRow, CharacteristicsTableRow } from "../molecules";
 import { Operation } from "../Operation";
 import { ActionSpacer } from "../../EditorCore/atoms";
 
@@ -39,6 +39,7 @@ interface CharacteristicsTableProps {
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
   characteristics: IndexedCharacteristic[];
+  emptyStateProvider: () => JSX.Element;
   validateCharacteristicName: (index: number | undefined, name: string | undefined) => boolean;
   selectCharacteristic: (index: number) => void;
   addCharacteristic: () => void;
@@ -56,6 +57,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
     activeOperation,
     setActiveOperation,
     characteristics,
+    emptyStateProvider,
     selectCharacteristic,
     addCharacteristic,
     deleteCharacteristic
@@ -126,88 +128,95 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
 
   return (
     <div style={{ height: "100%", overflowY: "auto" }}>
-      <DataList className="characteristics__header" aria-label="characteristics header">
-        <DataListItem className="characteristics__header__row" key={"none"} aria-labelledby="characteristics-header">
-          <DataListItemRow>
-            <DataListItemCells
-              dataListCells={[
-                <DataListCell key="0" width={2}>
-                  <div>Name</div>
-                </DataListCell>,
-                <DataListCell key="1" width={2}>
-                  <div>Attributes</div>
-                </DataListCell>,
-                <DataListCell key="2" width={2}>
-                  <div>Reason Code</div>
-                </DataListCell>,
-                <DataListCell key="3" width={2}>
-                  <div>Baseline Score</div>
-                </DataListCell>,
-                <DataListAction
-                  id="characteristic-actions-header"
-                  aria-label="actions header"
-                  aria-labelledby="characteristic-actions-header"
-                  key="4"
-                  width={1}
-                >
-                  <ActionSpacer />
-                </DataListAction>
-              ]}
-            />
-          </DataListItemRow>
-        </DataListItem>
-      </DataList>
-      <Form>
-        <DataList
-          aria-label="characteristics list"
-          selectedDataListItemId={selectedItemIndex?.toString()}
-          onSelectDataListItem={onSelectDataListItem}
-        >
-          {characteristics.map(ic => {
-            if (editItemIndex === ic.index) {
-              return (
-                <CharacteristicsTableEditRow
-                  key={ic.index}
-                  characteristic={ic}
-                  validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
-                  onCommit={(_name, _reasonCode, _baselineScore) =>
-                    onCommit(ic.index, _name, _reasonCode, _baselineScore)
-                  }
-                  onCancel={() => onCancel()}
+      {(characteristics.length > 0 || activeOperation === Operation.CREATE_CHARACTERISTIC) && (
+        <>
+          <DataList className="characteristics__header" aria-label="characteristics header">
+            <DataListItem
+              className="characteristics__header__row"
+              key={"none"}
+              aria-labelledby="characteristics-header"
+            >
+              <DataListItemRow>
+                <DataListItemCells
+                  dataListCells={[
+                    <DataListCell key="0" width={2}>
+                      <div>Name</div>
+                    </DataListCell>,
+                    <DataListCell key="1" width={2}>
+                      <div>Attributes</div>
+                    </DataListCell>,
+                    <DataListCell key="2" width={2}>
+                      <div>Reason Code</div>
+                    </DataListCell>,
+                    <DataListCell key="3" width={2}>
+                      <div>Baseline Score</div>
+                    </DataListCell>,
+                    <DataListAction
+                      id="characteristic-actions-header"
+                      aria-label="actions header"
+                      aria-labelledby="characteristic-actions-header"
+                      key="4"
+                      width={1}
+                    >
+                      <ActionSpacer />
+                    </DataListAction>
+                  ]}
                 />
-              );
-            } else {
-              return (
-                <CharacteristicsTableRow
-                  key={ic.index}
-                  characteristic={ic}
-                  onEdit={() => onEdit(ic.index)}
-                  onDelete={() => onDelete(ic.index)}
-                  isDisabled={
-                    !(editItemIndex === undefined || editItemIndex === ic.index) || activeOperation !== Operation.NONE
-                  }
-                />
-              );
-            }
-          })}
-          {activeOperation === Operation.CREATE_CHARACTERISTIC && (
-            <div key={undefined} ref={addCharacteristicRowRef}>
-              <CharacteristicsTableEditRow
-                key={"add"}
-                characteristic={{ index: undefined, characteristic: { Attribute: [] } }}
-                validateCharacteristicName={_name => onValidateCharacteristicName(undefined, _name)}
-                onCommit={(_name, _reasonCode, _baselineScore) =>
-                  onCommit(undefined, _name, _reasonCode, _baselineScore)
+              </DataListItemRow>
+            </DataListItem>
+          </DataList>
+          <Form>
+            <DataList
+              aria-label="characteristics list"
+              selectedDataListItemId={selectedItemIndex?.toString()}
+              onSelectDataListItem={onSelectDataListItem}
+            >
+              {characteristics.map(ic => {
+                if (editItemIndex === ic.index) {
+                  return (
+                    <CharacteristicsTableEditRow
+                      key={ic.index}
+                      characteristic={ic}
+                      validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
+                      onCommit={(_name, _reasonCode, _baselineScore) =>
+                        onCommit(ic.index, _name, _reasonCode, _baselineScore)
+                      }
+                      onCancel={() => onCancel()}
+                    />
+                  );
+                } else {
+                  return (
+                    <CharacteristicsTableRow
+                      key={ic.index}
+                      characteristic={ic}
+                      onEdit={() => onEdit(ic.index)}
+                      onDelete={() => onDelete(ic.index)}
+                      isDisabled={
+                        !(editItemIndex === undefined || editItemIndex === ic.index) ||
+                        activeOperation !== Operation.NONE
+                      }
+                    />
+                  );
                 }
-                onCancel={() => onCancel()}
-              />
-            </div>
-          )}
-        </DataList>
-      </Form>
-      {characteristics.length === 0 && activeOperation !== Operation.CREATE_CHARACTERISTIC && (
-        <EmptyStateNoCharacteristics addCharacteristic={addCharacteristic} />
+              })}
+              {activeOperation === Operation.CREATE_CHARACTERISTIC && (
+                <div key={undefined} ref={addCharacteristicRowRef}>
+                  <CharacteristicsTableEditRow
+                    key={"add"}
+                    characteristic={{ index: undefined, characteristic: { Attribute: [] } }}
+                    validateCharacteristicName={_name => onValidateCharacteristicName(undefined, _name)}
+                    onCommit={(_name, _reasonCode, _baselineScore) =>
+                      onCommit(undefined, _name, _reasonCode, _baselineScore)
+                    }
+                    onCancel={() => onCancel()}
+                  />
+                </div>
+              )}
+            </DataList>
+          </Form>
+        </>
       )}
+      {characteristics.length === 0 && activeOperation !== Operation.CREATE_CHARACTERISTIC && emptyStateProvider()}
     </div>
   );
 };

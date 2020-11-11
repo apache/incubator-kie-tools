@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { Button, EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
-import { SignOutAltIcon } from "@patternfly/react-icons";
+import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
+import { CalculatorIcon } from "@patternfly/react-icons";
 
-interface EmptyStateNoOutputProps {
-  onAddOutputField: () => void;
-}
-
-export const EmptyStateNoOutput = (props: EmptyStateNoOutputProps) => (
-  <EmptyState data-testid="empty-state-no-output" variant={EmptyStateVariant.small}>
-    <EmptyStateIcon icon={SignOutAltIcon} />
+export const EmptyStateNoMatchingCharacteristics = () => (
+  <EmptyState data-testid="empty-state-no-characteristics" variant={EmptyStateVariant.small}>
+    <EmptyStateIcon icon={CalculatorIcon} />
     <Title headingLevel="h4" size="lg">
-      No Outputs have been defined for this model.
+      No Characteristics match filter
     </Title>
     <EmptyStateBody>
-      PMML uses Output elements to describe a set of result values that can be returned from a model.
+      There are no Characteristics that match the name entered in the filter. Please amend or remove the filter and try
+      again.
     </EmptyStateBody>
-    <Button data-testid="empty-state-no-output__add-model" variant="primary" onClick={props.onAddOutputField}>
-      Add Output
-    </Button>
   </EmptyState>
 );

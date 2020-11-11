@@ -16,6 +16,8 @@ import "./CharacteristicPanel.scss";
 import { AttributesTable } from ".";
 import { IndexedCharacteristic } from "./CharacteristicsTable";
 import { Operation } from "../Operation";
+import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
+import { useSelector } from "react-redux";
 
 interface CharacteristicPanel {
   characteristic: IndexedCharacteristic | undefined;
@@ -52,6 +54,19 @@ export const CharacteristicPanel = (props: CharacteristicPanelProps) => {
     commit
   } = props;
 
+  const attributes: Attribute[] = useSelector<PMML, Attribute[]>((state: PMML) => {
+    const characteristicIndex = characteristic?.index;
+    const model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
+    if (model !== undefined && characteristicIndex !== undefined && model instanceof Scorecard) {
+      const scorecard: Scorecard = model as Scorecard;
+      const characteristic: Characteristic | undefined = scorecard.Characteristics.Characteristic[characteristicIndex];
+      if (characteristic) {
+        return characteristic.Attribute;
+      }
+    }
+    return [];
+  });
+
   return (
     <div className={`side-panel side-panel--from-right ${showCharacteristicPanel ? "side-panel--is-visible" : ""}`}>
       <div className="side-panel__container">
@@ -75,7 +90,7 @@ export const CharacteristicPanel = (props: CharacteristicPanelProps) => {
                         data-testid="characteristic-panel__close-panel"
                         variant="link"
                         isDisabled={activeOperation !== Operation.NONE}
-                        onClick={e => hideCharacteristicPanel()}
+                        onClick={hideCharacteristicPanel}
                       >
                         <CloseIcon />
                       </Button>
@@ -85,18 +100,20 @@ export const CharacteristicPanel = (props: CharacteristicPanelProps) => {
               </StackItem>
               <StackItem>
                 <PageSection variant="light">
-                  <Button
-                    id="add-attribute-button"
-                    data-testid="characteristic-panel__add-attribute"
-                    variant="primary"
-                    onClick={addAttribute}
-                    isDisabled={activeOperation !== Operation.NONE}
-                  >
-                    Add Attribute
-                  </Button>
+                  {(attributes.length > 0 || activeOperation === Operation.CREATE_ATTRIBUTE) && (
+                    <Button
+                      id="add-attribute-button"
+                      data-testid="characteristic-panel__add-attribute"
+                      variant="primary"
+                      onClick={addAttribute}
+                      isDisabled={activeOperation !== Operation.NONE}
+                    >
+                      Add Attribute
+                    </Button>
+                  )}
                   <AttributesTable
                     modelIndex={modelIndex}
-                    characteristicIndex={characteristic?.index}
+                    attributes={attributes}
                     activeOperation={activeOperation}
                     setActiveOperation={setActiveOperation}
                     validateText={validateText}
