@@ -1,12 +1,12 @@
 import * as React from "react";
 import { EmptyState, EmptyStateVariant, EmptyStateIcon, EmptyStateBody, Title } from "@patternfly/react-core";
-import { OutlinedMehIcon } from "@patternfly/react-icons";
+import { BoxesIcon } from "@patternfly/react-icons";
 
 const NoMiningSchemaFieldsOptions = () => {
   return (
     <EmptyState variant={EmptyStateVariant.large}>
-      <EmptyStateIcon icon={OutlinedMehIcon} />
-      <Title headingLevel="h3" size="md">
+      <EmptyStateIcon icon={BoxesIcon} />
+      <Title headingLevel="h4" size="lg">
         No Data Fields defined
       </Title>
       <EmptyStateBody>

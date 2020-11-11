@@ -140,7 +140,7 @@ const DataDictionaryContainer = ({ dataDictionary, onUpdate }: DataDictionaryCon
         <Flex style={{ margin: "1em 0 2em 0" }}>
           <FlexItem>
             <Button
-              variant="secondary"
+              variant="primary"
               onClick={addDataType}
               isDisabled={editing !== false || sorting || viewSection !== "main"}
               icon={<PlusIcon />}

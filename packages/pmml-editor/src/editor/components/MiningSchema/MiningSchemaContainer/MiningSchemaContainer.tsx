@@ -44,7 +44,6 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
 
   const handlePropertiesSave = (field: MiningField) => {
     if (
-      // can be improved if undefined value are not saved by the reducer
       !isEqual(
         field,
         pickBy(miningSchema?.MiningField[editingField], value => value !== undefined)
@@ -54,6 +53,10 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
     }
     setViewSection("overview");
     setEditingField(-1);
+  };
+
+  const handlePropertyDelete = (index: number, updatedField: MiningField) => {
+    onUpdateField(index, updatedField);
   };
 
   const getTransition = (currentState: MiningSchemaSection) => {
@@ -113,6 +116,7 @@ const MiningSchemaContainer = (props: MiningSchemaContainerProps) => {
                             fields={miningSchema?.MiningField}
                             onAddProperties={goToProperties}
                             onDelete={handleDeleteField}
+                            onPropertyDelete={handlePropertyDelete}
                           />
                         )}
                       </>
