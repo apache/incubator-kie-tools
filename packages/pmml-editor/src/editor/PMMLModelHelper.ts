@@ -180,6 +180,7 @@ export const PMMLModels: Array<PMMLModelMapping<any>> = new Array<PMMLModelMappi
       const model: Scorecard = new Scorecard({
         MiningSchema: { MiningField: [] },
         Characteristics: { Characteristic: [] },
+        Output: { OutputField: [] },
         functionName: "regression"
       });
       (model as any)._type = "Scorecard";

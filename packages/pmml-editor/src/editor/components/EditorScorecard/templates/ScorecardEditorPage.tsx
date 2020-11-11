@@ -298,49 +298,51 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                 onFilter={setFilter}
                 onAddCharacteristic={onAddCharacteristic}
               />
-              <CharacteristicsTable
-                activeOperation={activeOperation}
-                setActiveOperation={setActiveOperation}
-                characteristics={filteredCharacteristics}
-                validateCharacteristicName={validateCharacteristicName}
-                selectCharacteristic={index => selectCharacteristic(index)}
-                addCharacteristic={onAddCharacteristic}
-                deleteCharacteristic={index => {
-                  if (window.confirm(`Delete Characteristic "${index}"?`)) {
-                    dispatch({
-                      type: Actions.Scorecard_DeleteCharacteristic,
-                      payload: {
-                        modelIndex: modelIndex,
-                        characteristicIndex: index
-                      }
-                    });
-                  }
-                }}
-                commit={(_index, _name, _reasonCode, _baselineScore) => {
-                  if (_index === undefined) {
-                    dispatch({
-                      type: Actions.Scorecard_AddCharacteristic,
-                      payload: {
-                        modelIndex: modelIndex,
-                        name: _name,
-                        reasonCode: _reasonCode,
-                        baselineScore: _baselineScore
-                      }
-                    });
-                  } else {
-                    dispatch({
-                      type: Actions.Scorecard_UpdateCharacteristic,
-                      payload: {
-                        modelIndex: modelIndex,
-                        characteristicIndex: _index,
-                        name: _name,
-                        reasonCode: _reasonCode,
-                        baselineScore: _baselineScore
-                      }
-                    });
-                  }
-                }}
-              />
+              <div style={{ height: "432px" }}>
+                <CharacteristicsTable
+                  activeOperation={activeOperation}
+                  setActiveOperation={setActiveOperation}
+                  characteristics={filteredCharacteristics}
+                  validateCharacteristicName={validateCharacteristicName}
+                  selectCharacteristic={index => selectCharacteristic(index)}
+                  addCharacteristic={onAddCharacteristic}
+                  deleteCharacteristic={index => {
+                    if (window.confirm(`Delete Characteristic "${index}"?`)) {
+                      dispatch({
+                        type: Actions.Scorecard_DeleteCharacteristic,
+                        payload: {
+                          modelIndex: modelIndex,
+                          characteristicIndex: index
+                        }
+                      });
+                    }
+                  }}
+                  commit={(_index, _name, _reasonCode, _baselineScore) => {
+                    if (_index === undefined) {
+                      dispatch({
+                        type: Actions.Scorecard_AddCharacteristic,
+                        payload: {
+                          modelIndex: modelIndex,
+                          name: _name,
+                          reasonCode: _reasonCode,
+                          baselineScore: _baselineScore
+                        }
+                      });
+                    } else {
+                      dispatch({
+                        type: Actions.Scorecard_UpdateCharacteristic,
+                        payload: {
+                          modelIndex: modelIndex,
+                          characteristicIndex: _index,
+                          name: _name,
+                          reasonCode: _reasonCode,
+                          baselineScore: _baselineScore
+                        }
+                      });
+                    }
+                  }}
+                />
+              </div>
             </PageSection>
           </PageSection>
         </>

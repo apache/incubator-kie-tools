@@ -125,7 +125,7 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   };
 
   return (
-    <div>
+    <div style={{ height: "100%", overflowY: "auto" }}>
       <DataList className="characteristics__header" aria-label="characteristics header">
         <DataListItem className="characteristics__header__row" key={"none"} aria-labelledby="characteristics-header">
           <DataListItemRow>
