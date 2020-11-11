@@ -59,9 +59,9 @@ export const CharacteristicPanel = (props: CharacteristicPanelProps) => {
     const model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
     if (model !== undefined && characteristicIndex !== undefined && model instanceof Scorecard) {
       const scorecard: Scorecard = model as Scorecard;
-      const characteristic: Characteristic | undefined = scorecard.Characteristics.Characteristic[characteristicIndex];
-      if (characteristic) {
-        return characteristic.Attribute;
+      const _characteristic: Characteristic | undefined = scorecard.Characteristics.Characteristic[characteristicIndex];
+      if (_characteristic) {
+        return _characteristic.Attribute;
       }
     }
     return [];
