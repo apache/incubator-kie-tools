@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { useCallback } from "react";
+
 export function extractFileExtension(fileName: string) {
   return fileName.match(/[\.]/)
     ? fileName
@@ -94,4 +96,28 @@ export function setCookie(name: string, value: string) {
   date.setTime(date.getTime() + 10 * 365 * 24 * 60 * 60); // expires in 10 years
 
   document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
+}
+
+export function getStandaloneEditorIframeSrcdoc(script: string, scriptUrl: string) {
+  return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <script src="${scriptUrl}"></script>
+      <title></title>
+      <style>
+        html,
+        body,
+        iframe {
+          margin: 0;
+          border: 0;
+          padding: 0;
+          height: 100%;
+          width: 100%;
+        }
+      </style>
+    </head>
+    <body>
+      ${script}
+    </body>
+    </html>`;
 }

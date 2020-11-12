@@ -157,15 +157,6 @@
   font-weight: var(--pf-global--FontSize--xl);
 }
 
-.kogito--editor__embed-editor-modal-embed-code {
-  display: flex;
-  align-items: center;
-}
-
-.kogito--editor__embed-editor-modal-embed-code-label {
-  width: 150px;
-}
-
 .kogito--editor__embed-editor-modal-copied-alert {
   height: 50px;
 }

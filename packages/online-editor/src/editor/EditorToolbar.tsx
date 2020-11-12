@@ -17,6 +17,7 @@
 import {
   Button,
   Dropdown,
+  DropdownGroup,
   DropdownItem,
   DropdownPosition,
   TextInput,
@@ -46,7 +47,8 @@ interface Props {
   onSetGitHubToken: () => void;
   onExportGist: () => void;
   onUpdateGist: () => void;
-  onExportIframe: () => void;
+  onEmbedCurrentContent: () => void;
+  onEmbedGithubGist: () => void;
   onClose: () => void;
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
@@ -108,14 +110,6 @@ export function EditorToolbar(props: Props) {
   const kebabItems = useCallback(
     (dropdownId: string) => [
       <DropdownItem
-        key={`dropdown-${dropdownId}-save`}
-        component={"button"}
-        onClick={props.onDownload}
-        className={"pf-u-display-none-on-xl"}
-      >
-        {i18n.terms.save}
-      </DropdownItem>,
-      <DropdownItem
         key={`dropdown-${dropdownId}-fullscreen`}
         component="button"
         onClick={props.onFullScreen}
@@ -123,74 +117,89 @@ export function EditorToolbar(props: Props) {
       >
         {i18n.terms.fullScreen}
       </DropdownItem>,
-      <React.Fragment key={`dropdown-${dropdownId}-fragment`}>
-        {context.external && !context.readonly && (
-          <DropdownItem
-            key={`dropdown-${dropdownId}-send-changes-to-github`}
-            component={"button"}
-            onClick={props.onSave}
-          >
-            {i18n.editorToolbar.sendChangesToGitHub}
-          </DropdownItem>
-        )}
-      </React.Fragment>,
-      <DropdownItem
-        key={`dropdown-${dropdownId}-copy-source`}
-        component={"button"}
-        onClick={props.onCopyContentToClipboard}
-      >
-        {i18n.editorToolbar.copySource}
-      </DropdownItem>,
-      <DropdownItem key={`dropdown-${dropdownId}-download-svg`} component="button" onClick={props.onPreview}>
-        {i18n.editorToolbar.downloadSVG}
-      </DropdownItem>,
-      <DropdownItem
-        data-testid={"set-github-token"}
-        key={`dropdown-${dropdownId}-setup-github-token`}
-        component="button"
-        onClick={props.onSetGitHubToken}
-      >
-        {i18n.editorToolbar.setGitHubToken}
-      </DropdownItem>,
-      <Tooltip
-        data-testid={"gist-it-tooltip"}
-        key={`dropdown-${dropdownId}-export-gist`}
-        content={<div>{i18n.editorToolbar.gistItTooltip}</div>}
-        trigger={!context.githubService.isAuthenticated() ? "mouseenter click" : ""}
-      >
+      <DropdownGroup key={"save-group"} label={i18n.terms.save}>
         <DropdownItem
-          component="button"
-          onClick={props.onExportGist}
-          isDisabled={!context.githubService.isAuthenticated()}
+          key={`dropdown-${dropdownId}-save`}
+          component={"button"}
+          onClick={props.onDownload}
+          className={"pf-u-display-none-on-xl"}
         >
-          {i18n.editorToolbar.gistIt}
+          {i18n.terms.download}
         </DropdownItem>
-      </Tooltip>,
-      <React.Fragment key={`dropdown-${dropdownId}-update-gist`}>
-        {isGist && (
-          <Tooltip
-            data-testid={"update-gist-tooltip"}
-            content={<div>{i18n.editorToolbar.updateGistTooltip}</div>}
-            trigger={!userCanUpdateGist ? "mouseenter click" : ""}
-          >
+        <DropdownItem
+          key={`dropdown-${dropdownId}-copy-source`}
+          component={"button"}
+          onClick={props.onCopyContentToClipboard}
+        >
+          {i18n.editorToolbar.copySource}
+        </DropdownItem>
+        <DropdownItem key={`dropdown-${dropdownId}-download-svg`} component="button" onClick={props.onPreview}>
+          {i18n.editorToolbar.downloadSVG}
+        </DropdownItem>
+        <DropdownItem
+          key={`dropdown-${dropdownId}-embed-current-content`}
+          component="button"
+          onClick={props.onEmbedCurrentContent}
+        >
+          {i18n.editorToolbar.embed}
+        </DropdownItem>
+      </DropdownGroup>,
+      <DropdownGroup key={"github-group"} label={i18n.names.github}>
+        <React.Fragment key={`dropdown-${dropdownId}-fragment`}>
+          {context.external && !context.readonly && (
             <DropdownItem
-              data-testid={"update-gist-button"}
-              component="button"
-              onClick={props.onUpdateGist}
-              isDisabled={!userCanUpdateGist}
+              key={`dropdown-${dropdownId}-send-changes-to-github`}
+              component={"button"}
+              onClick={props.onSave}
             >
-              {i18n.editorToolbar.updateGist}
+              {i18n.editorToolbar.sendChangesToGitHub}
             </DropdownItem>
-          </Tooltip>
-        )}
-      </React.Fragment>,
-      <DropdownItem
-        key={`dropdown-${dropdownId}-export-iframe-content`}
-        component="button"
-        onClick={props.onExportIframe}
-      >
-        {i18n.editorToolbar.embed}
-      </DropdownItem>
+          )}
+        </React.Fragment>
+        <DropdownItem
+          data-testid={"set-github-token"}
+          key={`dropdown-${dropdownId}-setup-github-token`}
+          component="button"
+          onClick={props.onSetGitHubToken}
+        >
+          {i18n.editorToolbar.setGitHubToken}
+        </DropdownItem>
+        <Tooltip
+          data-testid={"gist-it-tooltip"}
+          key={`dropdown-${dropdownId}-export-gist`}
+          content={<div>{i18n.editorToolbar.gistItTooltip}</div>}
+          trigger={!context.githubService.isAuthenticated() ? "mouseenter click" : ""}
+        >
+          <DropdownItem
+            component="button"
+            onClick={props.onExportGist}
+            isDisabled={!context.githubService.isAuthenticated()}
+          >
+            {i18n.editorToolbar.gistIt}
+          </DropdownItem>
+        </Tooltip>
+        <React.Fragment key={`dropdown-${dropdownId}-update-gist`}>
+          {isGist && (
+            <Tooltip
+              data-testid={"update-gist-tooltip"}
+              content={<div>{i18n.editorToolbar.updateGistTooltip}</div>}
+              trigger={!userCanUpdateGist ? "mouseenter click" : ""}
+            >
+              <DropdownItem
+                data-testid={"update-gist-button"}
+                component="button"
+                onClick={props.onUpdateGist}
+                isDisabled={!userCanUpdateGist}
+              >
+                {i18n.editorToolbar.updateGist}
+              </DropdownItem>
+            </Tooltip>
+          )}
+        </React.Fragment>
+        <DropdownItem key={`dropdown-${dropdownId}-embed-gist`} component="button" onClick={props.onEmbedGithubGist}>
+          {i18n.editorToolbar.embed}
+        </DropdownItem>
+      </DropdownGroup>
     ],
     [
       context.external,
@@ -247,7 +256,7 @@ export function EditorToolbar(props: Props) {
           }}
         >
           <Button data-testid="save-button" variant={"tertiary"} onClick={props.onDownload} aria-label={"Save button"}>
-            {i18n.terms.save}
+            {i18n.terms.download}
           </Button>
         </PageHeaderToolsItem>
       </PageHeaderToolsGroup>

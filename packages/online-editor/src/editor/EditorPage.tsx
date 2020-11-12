@@ -27,11 +27,8 @@ import { EditorToolbar } from "./EditorToolbar";
 import { useDmnTour } from "../tour";
 import { useOnlineI18n } from "../common/i18n";
 import { UpdateGistErrors } from "../common/GithubService";
-import { EmbedEditorModal } from "./EmbedEditorModal";
-
-interface Props {
-  onFileNameChanged: (fileName: string, fileExtension: string) => void;
-}
+import { EmbedModal } from "./EmbedModal";
+import { useFileUrl } from "../common/Hooks";
 
 export enum Alerts {
   NONE,
@@ -47,7 +44,12 @@ export enum Alerts {
 export enum Modal {
   NONE,
   GITHUB_TOKEN,
-  EMBED
+  EMBED_CURRENT_CONTENT,
+  EMBED_GITHUB_GIST
+}
+
+interface Props {
+  onFileNameChanged: (fileName: string, fileExtension: string) => void;
 }
 
 export function EditorPage(props: Props) {
@@ -64,6 +66,7 @@ export function EditorPage(props: Props) {
   const [modal, setModal] = useState(Modal.NONE);
   const isDirty = useDirtyState(editor);
   const { locale, i18n } = useOnlineI18n();
+  const fileUrl = useFileUrl();
 
   const close = useCallback(() => {
     if (!isDirty) {
@@ -171,6 +174,29 @@ export function EditorPage(props: Props) {
     });
   }, [context.file.fileName, editor]);
 
+  const getCurrentContentScript = useCallback(
+    async (libraryName: string) => {
+      const editorContent = ((await editor?.getContent()) ?? "").replace(/(\r\n|\n|\r)/gm, "");
+      return `
+    <script>
+      ${libraryName}.open({container: document.body, readOnly: true, initialContent: '${editorContent}', origin: "*" })
+    </script>`;
+    },
+    [editor]
+  );
+
+  const getGithubGistScript = useCallback(
+    async (libraryName: string) => {
+      return `
+    <script>
+      fetch("${fileUrl}")
+        .then(response => response.text())
+        .then(content => ${libraryName}.open({container: document.body, readOnly: true, initialContent: content, origin: "*" }))
+    </script>`;
+    },
+    [fileUrl]
+  );
+
   const fileExtension = useMemo(() => {
     return context.routes.editor.args(location.pathname).type;
   }, [location.pathname]);
@@ -179,8 +205,12 @@ export function EditorPage(props: Props) {
     setModal(Modal.GITHUB_TOKEN);
   }, []);
 
-  const requestEmbed = useCallback(() => {
-    setModal(Modal.EMBED);
+  const requestEmbedCurrentContent = useCallback(() => {
+    setModal(Modal.EMBED_CURRENT_CONTENT);
+  }, []);
+
+  const requestEmbedGitHubGist = useCallback(() => {
+    setModal(Modal.EMBED_GITHUB_GIST);
   }, []);
 
   const closeModal = useCallback(() => {
@@ -266,7 +296,8 @@ export function EditorPage(props: Props) {
           onSetGitHubToken={requestSetGitHubToken}
           onExportGist={requestExportGist}
           onUpdateGist={requestUpdateGist}
-          onExportIframe={requestEmbed}
+          onEmbedCurrentContent={requestEmbedCurrentContent}
+          onEmbedGithubGist={requestEmbedGitHubGist}
           isEdited={isDirty}
         />
       }
@@ -360,11 +391,23 @@ export function EditorPage(props: Props) {
         )}
         {!fullscreen && <GithubTokenModal isOpen={modal === Modal.GITHUB_TOKEN} onClose={closeModal} />}
         {!fullscreen && (
-          <EmbedEditorModal
-            isOpen={modal === Modal.EMBED}
-            fileExtension={fileExtension}
-            editor={editor}
+          <EmbedModal
+            isOpen={modal === Modal.EMBED_CURRENT_CONTENT}
             onClose={closeModal}
+            fileExtension={fileExtension}
+            title={i18n.embedEditorModal.currentContent.title}
+            description={i18n.embedEditorModal.currentContent.description}
+            getContentScript={getCurrentContentScript}
+          />
+        )}
+        {!fullscreen && (
+          <EmbedModal
+            isOpen={modal === Modal.EMBED_GITHUB_GIST}
+            onClose={closeModal}
+            fileExtension={fileExtension}
+            title={i18n.embedEditorModal.githubGist.title}
+            description={i18n.embedEditorModal.githubGist.description}
+            getContentScript={getGithubGistScript}
           />
         )}
         {fullscreen && <FullScreenToolbar onExitFullScreen={exitFullscreen} />}

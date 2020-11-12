@@ -74,24 +74,15 @@ interface OnlineDictionary extends ReferenceDictionary<OnlineDictionary> {
     embed: string;
   };
   embedEditorModal: {
-    title: string;
-    description: string;
-    copy: string;
-    readOnly: {
-      label: string;
+    currentContent: {
+      title: string;
       description: string;
     };
-    source: {
-      current: {
-        label: string;
-        description: string;
-      };
-      gist: {
-        tooltip: string;
-        label: string;
-        description: string;
-      };
+    githubGist: {
+      title: string;
+      description: string;
     };
+    copy: string;
     embedCode: string;
     copiedToClipboard: string;
   };
