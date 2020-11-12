@@ -25,6 +25,7 @@ import (
 	"github.com/kiegroup/kogito-cloud-operator/test/config"
 	"github.com/kiegroup/kogito-cloud-operator/test/framework"
 	imgv1 "github.com/openshift/api/image/v1"
+	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
 )
 
 var (
@@ -130,7 +131,7 @@ func (data *Data) AfterScenario(scenario *godog.Scenario, err error) error {
 		if err := framework.BumpEvents(data.Namespace); err != nil {
 			framework.GetMainLogger().Errorf("Error bumping events for namespace %s: %v", namespace, err)
 		}
-		if err := framework.LogKubernetesObjects(data.Namespace, &imgv1.ImageStreamList{}, &v1beta1.KogitoRuntimeList{}, &v1beta1.KogitoBuildList{}, &v1beta1.KogitoSupportingService{}, &v1beta1.KogitoInfraList{}); err != nil {
+		if err := framework.LogKubernetesObjects(data.Namespace, &imgv1.ImageStreamList{}, &v1beta1.KogitoRuntimeList{}, &v1beta1.KogitoBuildList{}, &v1beta1.KogitoSupportingService{}, &v1beta1.KogitoInfraList{}, &olmapiv1alpha1.ClusterServiceVersionList{}); err != nil {
 			framework.GetMainLogger().Errorf("Error logging Kubernetes objects for namespace %s: %v", namespace, err)
 		}
 		return nil
