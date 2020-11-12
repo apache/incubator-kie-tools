@@ -60,14 +60,14 @@ Build from source
 1. Build with Yarn:
     ```bash
     cd kogito-tooling
-    yarn run install
+    yarn install
     
     #prod
-    yarn run build:prod
+    yarn build:prod
     
     # dev
-    yarn run build # skips integration tests and production packing
-    yarn run build:fast # skips lint and unit tests
+    yarn build # skips integration tests and production packing
+    yarn build:fast # skips lint and unit tests
     ```
 
     > **NOTE**: It's necessary to have the Git tags fetched when building with `build:prod`.
