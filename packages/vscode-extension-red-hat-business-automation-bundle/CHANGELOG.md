@@ -1,3 +1,12 @@
+# 0.8.0 (alpha)
+
+## Fixed issues
+
+Editors
+*   [[KOGITO-3192](https://issues.redhat.com/browse/KOGITO-3192)] - [DMN Designer] Multiple DRDs support - The undo/reado are lost when user changes between diagrams
+*   [[KOGITO-3364](https://issues.redhat.com/browse/KOGITO-3364)] - [DMN Designer] Multiple DRDs support - When a node is deleted in the DRG, undo/redo operations do not work properly
+*   [[KOGITO-3366](https://issues.redhat.com/browse/KOGITO-3366)] - [DMN Designer] Boxed Expression - Decision Tables - Users lost constraints when they change the focus
+
 # 0.7.1 (alpha)
 
 ## New features

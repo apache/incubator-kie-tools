@@ -3,7 +3,7 @@
   "publisher": "redhat",
   "displayName": "Red Hat Business Automation Bundle",
   "description": "Edit BPMN, DMN and Test Scenario files",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
