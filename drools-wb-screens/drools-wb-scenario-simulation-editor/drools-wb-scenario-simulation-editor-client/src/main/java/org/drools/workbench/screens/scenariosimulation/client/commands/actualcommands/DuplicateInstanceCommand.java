@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.Dependent;
-
 import org.drools.scenariosimulation.api.model.AbstractScesimData;
 import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.ExpressionElement;
@@ -35,17 +33,12 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 /**
  * <code>Command</code> to <b>duplicate</b> an instance
  */
-@Dependent
 public class DuplicateInstanceCommand extends AbstractSelectedColumnCommand {
 
     public static final String COPY_LABEL = "_copy_";
 
     public DuplicateInstanceCommand(GridWidget gridWidget) {
         super(gridWidget, FactMappingValueType.NOT_EXPRESSION);
-    }
-
-    private DuplicateInstanceCommand() {
-        // CDI
     }
 
     @Override

@@ -35,6 +35,7 @@ import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
 import org.uberfire.client.mvp.AbstractWorkbenchActivity;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.PlaceRequest;
@@ -94,7 +95,15 @@ public abstract class AbstractScenarioSimulationDocksHandler extends AbstractWor
     }
 
     public void expandToolsDock() {
-        authoringWorkbenchDocks.expandAuthoringDock(toolsDock);
+        if (PlaceStatus.CLOSE.equals(placeManager.getStatus(getTestToolsPlaceManager()))) {
+            authoringWorkbenchDocks.expandAuthoringDock(toolsDock);
+        }
+    }
+
+    public void expandSettingsDock() {
+        if (PlaceStatus.CLOSE.equals(placeManager.getStatus(getSettingsPlaceManager()))) {
+            authoringWorkbenchDocks.expandAuthoringDock(settingsDock);
+        }
     }
 
     public abstract void expandTestResultsDock();
@@ -118,13 +127,21 @@ public abstract class AbstractScenarioSimulationDocksHandler extends AbstractWor
     }
 
     public Optional<TestToolsView.Presenter> getTestToolsPresenter() {
-        final Optional<TestToolsView> testToolsView = getTestToolsView(getCurrentRightDockPlaceRequest(TestToolsPresenter.IDENTIFIER));
+        final Optional<TestToolsView> testToolsView = getTestToolsView(getTestToolsPlaceManager());
         return testToolsView.map(TestToolsView::getPresenter);
     }
 
     public Optional<SettingsView.Presenter> getSettingsPresenter() {
-        final Optional<SettingsView> settingsView = getSettingsView(getCurrentRightDockPlaceRequest(SettingsPresenter.IDENTIFIER));
+        final Optional<SettingsView> settingsView = getSettingsView(getSettingsPlaceManager());
         return settingsView.map(SettingsView::getPresenter);
+    }
+
+    protected PlaceRequest getSettingsPlaceManager() {
+        return getCurrentRightDockPlaceRequest(SettingsPresenter.IDENTIFIER);
+    }
+
+    protected PlaceRequest getTestToolsPlaceManager() {
+        return getCurrentRightDockPlaceRequest(TestToolsPresenter.IDENTIFIER);
     }
 
     /**

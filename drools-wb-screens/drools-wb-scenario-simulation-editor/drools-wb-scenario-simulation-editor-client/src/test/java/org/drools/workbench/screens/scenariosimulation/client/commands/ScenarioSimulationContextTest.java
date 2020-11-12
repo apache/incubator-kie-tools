@@ -19,13 +19,19 @@ package org.drools.workbench.screens.scenariosimulation.client.commands;
 import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.scenariosimulation.api.model.AbstractScesimData;
+import org.drools.scenariosimulation.api.model.AbstractScesimModel;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
+import org.drools.workbench.screens.scenariosimulation.client.models.AbstractScesimGridModel;
+import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -140,7 +146,12 @@ public class ScenarioSimulationContextTest extends AbstractScenarioSimulationTes
     public void getScenarioGridPanelByGridWidgetCheckSwitch() {
         // Test to verify there are not new, un-managed, GridWidget
         for (GridWidget gridWidget : GridWidget.values()) {
-            scenarioSimulationContextLocal.getScenarioGridPanelByGridWidget(gridWidget);
+            ScenarioGridPanel gridPanel = scenarioSimulationContextLocal.getScenarioGridPanelByGridWidget(gridWidget);
+            if (GridWidget.BACKGROUND.equals(gridWidget)) {
+                assertEquals(backgroundGridPanelMock, gridPanel);
+            } else {
+                assertEquals(scenarioGridPanelMock, gridPanel);
+            }
         }
     }
 
@@ -154,7 +165,12 @@ public class ScenarioSimulationContextTest extends AbstractScenarioSimulationTes
     public void getAbstractScesimGridModelByGridWidgetCheckSwitch() {
         // Test to verify there are not new, un-managed, GridWidget
         for (GridWidget gridWidget : GridWidget.values()) {
-            scenarioSimulationContextLocal.getAbstractScesimGridModelByGridWidget(gridWidget);
+            AbstractScesimGridModel model = scenarioSimulationContextLocal.getAbstractScesimGridModelByGridWidget(gridWidget);
+            if (GridWidget.BACKGROUND.equals(gridWidget)) {
+                assertEquals(backgroundGridModelMock, model);
+            } else {
+                assertEquals(scenarioGridModelMock, model);
+            }
         }
     }
 
@@ -168,8 +184,19 @@ public class ScenarioSimulationContextTest extends AbstractScenarioSimulationTes
     public void getAbstractScesimModelByGridWidgetCheckSwitch() {
         // Test to verify there are not new, un-managed, GridWidget
         for (GridWidget gridWidget : GridWidget.values()) {
-            scenarioSimulationContextLocal.getAbstractScesimModelByGridWidget(gridWidget);
+            AbstractScesimModel<AbstractScesimData> abstractScesimData = scenarioSimulationContextLocal.getAbstractScesimModelByGridWidget(gridWidget);
+            if (GridWidget.BACKGROUND.equals(gridWidget)) {
+                assertEquals(backgroundMock, abstractScesimData);
+            } else {
+                assertEquals(simulationMock, abstractScesimData);
+            }
         }
+    }
+
+    @Test
+    public void getScenarioSimulationModel() {
+        ScenarioSimulationModel model = scenarioSimulationContextLocal.getScenarioSimulationModel();
+        assertSame(scenarioSimulationModelMock, model);
     }
 
     @Test

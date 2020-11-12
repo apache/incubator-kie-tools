@@ -210,7 +210,6 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
     public void setCollectionEditorStructureData_ManageMapRuleSimpleType() {
         when(factMappingMock.getExpressionAlias()).thenReturn(MAP_CLASS_NAME);
         when(factMappingMock.getClassName()).thenReturn(MAP_CLASS_NAME);
-        settingsLocal.setType(RULE);
         setCollectionEditorStructureData();
     }
 
@@ -218,7 +217,6 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
     public void setCollectionEditorStructureData_ManageMapRule_NotSimpleType() {
         when(factMappingMock.getExpressionAlias()).thenReturn(MAP_CLASS_NAME);
         when(factMappingMock.getClassName()).thenReturn(MAP_CLASS_NAME);
-        settingsLocal.setType(RULE);
         factMappingMock.getGenericTypes().clear();
         factMappingMock.getGenericTypes().add(FULL_CLASS_NAME);
         factMappingMock.getGenericTypes().add(FULL_CLASS_NAME + "1");
@@ -230,7 +228,6 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
     public void setCollectionEditorStructureData_ManageMapRule() {
         when(factMappingMock.getExpressionAlias()).thenReturn(MAP_CLASS_NAME);
         when(factMappingMock.getClassName()).thenReturn(MAP_CLASS_NAME);
-        settingsLocal.setType(RULE);
 
         setCollectionEditorStructureData();
     }
@@ -239,7 +236,6 @@ public class CollectionEditorSingletonDOMElementFactoryTest extends AbstractFact
     public void setCollectionEditorStructureData_ManageListRule() {
         when(factMappingMock.getExpressionAlias()).thenReturn(LIST_CLASS_NAME);
         when(factMappingMock.getClassName()).thenReturn(LIST_CLASS_NAME);
-        settingsLocal.setType(RULE);
 
         setCollectionEditorStructureData();
     }

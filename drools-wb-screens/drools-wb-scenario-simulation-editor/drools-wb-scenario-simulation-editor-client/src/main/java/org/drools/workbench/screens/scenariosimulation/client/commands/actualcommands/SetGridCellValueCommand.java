@@ -15,8 +15,6 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
-import javax.enterprise.context.Dependent;
-
 import org.drools.scenariosimulation.api.model.AbstractScesimData;
 import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.FactMapping;
@@ -29,15 +27,10 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 /**
  * <code>Command</code> to set the <i>value</i> of a grid' cell
  */
-@Dependent
 public class SetGridCellValueCommand extends AbstractScenarioGridCommand {
 
     public SetGridCellValueCommand(GridWidget gridWidget) {
         super(gridWidget);
-    }
-
-    private SetGridCellValueCommand() {
-        // CDI
     }
 
     @Override

@@ -33,6 +33,7 @@ import org.kie.workbench.common.widgets.client.docks.AuthoringEditorDock;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.AbstractWorkbenchActivity;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.PlaceRequest;
@@ -46,6 +47,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -117,14 +119,49 @@ public class AbstractScenarioSimulationDocksHandlerTest {
         assertEquals("INFO_CIRCLE", testToolsDock.getIconType());    }
 
     @Test
-    public void expandToolsDock() {
+    public void expandToolsDockClose() {
         final Collection<UberfireDock> docks = abstractScenarioSimulationDocksHandlerSpy.provideDocks("id");
         final UberfireDock toolsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.TOOLS.ordinal()];
+        when(placeManagerMock.getStatus(eq(abstractScenarioSimulationDocksHandlerSpy.getTestToolsPlaceManager()))).thenReturn(PlaceStatus.CLOSE);
 
         abstractScenarioSimulationDocksHandlerSpy.expandToolsDock();
 
-        verify(authoringWorkbenchDocksMock).expandAuthoringDock(eq(toolsDock));
+        verify(authoringWorkbenchDocksMock, times(1)).expandAuthoringDock(eq(toolsDock));
     }
+
+    @Test
+    public void expandToolsDockOpen() {
+        final Collection<UberfireDock> docks = abstractScenarioSimulationDocksHandlerSpy.provideDocks("id");
+        final UberfireDock toolsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.TOOLS.ordinal()];
+        when(placeManagerMock.getStatus(eq(abstractScenarioSimulationDocksHandlerSpy.getTestToolsPlaceManager()))).thenReturn(PlaceStatus.OPEN);
+
+        abstractScenarioSimulationDocksHandlerSpy.expandToolsDock();
+
+        verify(authoringWorkbenchDocksMock, never()).expandAuthoringDock(eq(toolsDock));
+    }
+
+    @Test
+    public void expandSettingsDockClose() {
+        final Collection<UberfireDock> docks = abstractScenarioSimulationDocksHandlerSpy.provideDocks("id");
+        final UberfireDock settingsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.SETTINGS.ordinal()];
+        when(placeManagerMock.getStatus(eq(abstractScenarioSimulationDocksHandlerSpy.getSettingsPlaceManager()))).thenReturn(PlaceStatus.CLOSE);
+
+        abstractScenarioSimulationDocksHandlerSpy.expandSettingsDock();
+
+        verify(authoringWorkbenchDocksMock, times(1)).expandAuthoringDock(eq(settingsDock));
+    }
+
+    @Test
+    public void expandSettingsDockOpen() {
+        final Collection<UberfireDock> docks = abstractScenarioSimulationDocksHandlerSpy.provideDocks("id");
+        final UberfireDock settingsDock = (UberfireDock) docks.toArray()[MANAGED_DOCKS.SETTINGS.ordinal()];
+        when(placeManagerMock.getStatus(eq(abstractScenarioSimulationDocksHandlerSpy.getSettingsPlaceManager()))).thenReturn(PlaceStatus.OPEN);
+
+        abstractScenarioSimulationDocksHandlerSpy.expandSettingsDock();
+
+        verify(authoringWorkbenchDocksMock, never()).expandAuthoringDock(eq(settingsDock));
+    }
+
 
     @Test
     public void setScesimPath() {

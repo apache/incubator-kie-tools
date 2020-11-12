@@ -166,6 +166,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         when(placeRequestMock.getPath()).thenReturn(pathMock);
         when(simulationMock.getUnmodifiableData()).thenReturn(Arrays.asList(new Scenario()));
         when(abstractScenarioSimulationDocksHandlerMock.getTestToolsPresenter()).thenReturn(Optional.ofNullable(testToolsPresenterMock));
+        when(abstractScenarioSimulationDocksHandlerMock.getSettingsPresenter()).thenReturn(Optional.ofNullable(settingsPresenterMock));
 
         this.presenterSpy = spy(new ScenarioSimulationEditorPresenter(abstractScenarioSimulationProducerMock,
                                                                       mock(ScenarioSimulationResourceType.class),
@@ -645,7 +646,7 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         presenterSpy.getModelSuccessCallbackMethod(dataManagementStrategyMock, modelLocal);
         verify(presenterSpy, times(1)).populateRightDocks(TestToolsPresenter.IDENTIFIER);
         verify(presenterSpy, times(1)).populateRightDocks(SettingsPresenter.IDENTIFIER);
-        verify(scenarioGridWidgetSpy, times(1)).setContent(eq(content.getModel().getSimulation()), eq(scenarioSimulationContextLocal.getSettings().getType()));
+        verify(scenarioGridWidgetSpy, times(1)).setContent(eq(content.getModel().getSimulation()), eq(settingsLocal.getType()));
         verify(scenarioSimulationEditorWrapperMock, times(1)).addBackgroundPage(eq(backgroundGridWidgetSpy));
         assertEquals(scenarioSimulationContextLocal.getStatus().getSimulation(), content.getModel().getSimulation());
         assertEquals(scenarioSimulationContextLocal.getStatus().getBackground(), content.getModel().getBackground());
@@ -733,5 +734,18 @@ public class ScenarioSimulationEditorPresenterTest extends AbstractScenarioSimul
         assertEquals("message", scenarioNotificationEventArgumentCaptor.getValue().getMessage());
         assertEquals(NotificationEvent.NotificationType.ERROR, scenarioNotificationEventArgumentCaptor.getValue().getNotificationType());
         assertFalse(scenarioNotificationEventArgumentCaptor.getValue().isAutoHide());
+    }
+
+    @Test
+    public void expandSettingsDock() {
+        presenterSpy.expandSettingsDock();
+        verify(abstractScenarioSimulationDocksHandlerMock, times(1)).expandSettingsDock();
+    }
+
+    @Test
+    public void reloadSettingsDock() {
+        presenterSpy.reloadSettingsDock();
+        verify(abstractScenarioSimulationDocksHandlerMock, times(1)).getSettingsPresenter();
+        verify(presenterSpy, times(1)).updateSettings(settingsPresenterMock);
     }
 }

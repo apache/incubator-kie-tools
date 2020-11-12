@@ -68,7 +68,6 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioGridCommandTes
                 return Optional.empty();
             }
         });
-        settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
     }
 
     @Test
@@ -96,7 +95,6 @@ public class SetInstanceHeaderCommandTest extends AbstractScenarioGridCommandTes
     public void executeRULE() {
         scenarioSimulationContextLocal.getStatus().setFullPackage(FULL_PACKAGE);
         scenarioSimulationContextLocal.getStatus().setClassName(VALUE_CLASS_NAME);
-        settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
         commandSpy.execute(scenarioSimulationContextLocal);
         verify(gridColumnMock, times(1)).setEditableHeaders(eq(true));
         verify(gridColumnMock, atLeastOnce()).getInformationHeaderMetaData();

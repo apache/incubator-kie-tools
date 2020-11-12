@@ -654,9 +654,9 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
      * another column of the same <b>instance</b>
      * @param columnIndex
      * @param propertyNameElements
-     * @throws Exception if the given <code>propertyNameElements</code> are already mapped to a column of the same <b>instance</b>
+     * @throws IllegalStateException if the given <code>propertyNameElements</code> are already mapped to a column of the same <b>instance</b>
      */
-    public void checkAlreadyAssignedProperty(int columnIndex, List<String> propertyNameElements) throws Exception {
+    public void checkAlreadyAssignedProperty(int columnIndex, List<String> propertyNameElements) {
         Range instanceLimits = getInstanceLimits(columnIndex);
         ScesimModelDescriptor simulationDescriptor = abstractScesimModel.getScesimModelDescriptor();
         FactIdentifier factIdentifier = simulationDescriptor.getFactMappingByIndex(columnIndex).getFactIdentifier();
@@ -673,7 +673,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
                             .collect(Collectors.toList());
                     return Objects.equals(factMappingPropertyNameElements, propertyNameElementsClone);
                 })) {
-            throw new Exception(String.join(".", propertyNameElements) + " has already been used in the current instance.");
+            throw new IllegalStateException(String.join(".", propertyNameElements) + " has already been used in the current instance.");
         }
     }
 
@@ -734,11 +734,11 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
      * column at given index
      * @param columnIndex
      * @param headerName
-     * @throws Exception if the given <b>headerName</b> is not the name of the class mapped to the given column
+     * @throws IllegalStateException if the given <b>headerName</b> is not the name of the class mapped to the given column
      */
-    public void checkSameInstanceHeader(int columnIndex, String headerName) throws Exception {
+    public void checkSameInstanceHeader(int columnIndex, String headerName) {
         if (!isSameInstanceType(columnIndex, headerName)) {
-            throw new Exception(headerName + " is not the class of the current column.");
+            throw new IllegalStateException(headerName + " is not the class of the current column.");
         }
     }
 
@@ -758,14 +758,14 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
      * Check if given <b>headerName</b> is the same as the <b>element steps</b> mapped to the given column
      * @param columnIndex
      * @param propertyNameElements
-     * @throws Exception if the given <b>propertyNameElements</b> (corrected for the class name) represents the <b>element steps</b> of the given column
+     * @throws IllegalStateException if the given <b>propertyNameElements</b> (corrected for the class name) represents the <b>element steps</b> of the given column
      */
-    public void checkSamePropertyHeader(int columnIndex, List<String> propertyNameElements) throws Exception {
+    public void checkSamePropertyHeader(int columnIndex, List<String> propertyNameElements)  {
         ScesimModelDescriptor simulationDescriptor = abstractScesimModel.getScesimModelDescriptor();
         final FactMapping factMapping = simulationDescriptor.getFactMappingByIndex(columnIndex);
         List<String> columnPropertyName = factMapping.getExpressionElementsWithoutClass().stream().map(ExpressionElement::getStep).collect(Collectors.toList());
         if (!Objects.equals(columnPropertyName, propertyNameElements)) {
-            throw new Exception(String.join(".", propertyNameElements) + " is not the same property of the current column.");
+            throw new IllegalStateException(String.join(".", propertyNameElements) + " is not the same property of the current column.");
         }
     }
 
@@ -818,7 +818,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
      * @param isADataType
      * @throws Exception with message specific to failed check
      */
-    public void validateInstanceHeaderUpdate(String instanceHeaderCellValue, int columnIndex, boolean isADataType) throws Exception {
+    public void validateInstanceHeaderUpdate(String instanceHeaderCellValue, int columnIndex, boolean isADataType) {
         if (isADataType) {
             checkSameInstanceHeader(columnIndex, instanceHeaderCellValue);
             checkValidAndUniqueInstanceHeaderTitle(instanceHeaderCellValue, columnIndex);
@@ -834,7 +834,7 @@ public abstract class AbstractScesimGridModel<T extends AbstractScesimModel<E>, 
      * @param isPropertyType
      * @throws Exception with message specific to failed check
      */
-    public void validatePropertyHeaderUpdate(String propertyHeaderCellValue, int columnIndex, boolean isPropertyType) throws Exception {
+    public void validatePropertyHeaderUpdate(String propertyHeaderCellValue, int columnIndex, boolean isPropertyType) {
         List<String> propertyNameElements = Collections.unmodifiableList(Arrays.asList(propertyHeaderCellValue.split("\\.")));
         if (isPropertyType) {
             checkSamePropertyHeader(columnIndex, propertyNameElements);

@@ -53,14 +53,11 @@ import static org.drools.workbench.screens.scenariosimulation.client.utils.Scena
  */
 public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGridCommand {
 
-    protected FactMappingValueType factMappingValueType = FactMappingValueType.NOT_EXPRESSION;
+    protected FactMappingValueType factMappingValueType;
 
     protected AbstractSelectedColumnCommand(GridWidget gridWidget, FactMappingValueType factMappingValueType) {
         super(gridWidget);
         this.factMappingValueType = factMappingValueType;
-    }
-
-    protected AbstractSelectedColumnCommand() {
     }
 
     protected abstract void executeIfSelectedColumn(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn);
@@ -159,7 +156,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
      * @return
      */
     protected FactIdentifier setEditableHeadersAndGetFactIdentifier(ScenarioSimulationContext context, ScenarioGridColumn selectedColumn, String aliasName, String canonicalClassName) {
-        final ScenarioSimulationModel.Type simulationModelType = context.getSettings().getType();
+        final ScenarioSimulationModel.Type simulationModelType = context.getScenarioSimulationModel().getSettings().getType();
         selectedColumn.setEditableHeaders(!(simulationModelType.equals(ScenarioSimulationModel.Type.DMN) || GridWidget.BACKGROUND.equals(gridWidget)));
         String nameToUseForCreation = simulationModelType.equals(ScenarioSimulationModel.Type.DMN) ? aliasName : selectedColumn.getInformationHeaderMetaData().getColumnId();
         return getFactIdentifierByColumnTitle(aliasName, context).orElseGet(() -> FactIdentifier.create(nameToUseForCreation, canonicalClassName));
@@ -253,7 +250,7 @@ public abstract class AbstractSelectedColumnCommand extends AbstractScenarioGrid
             manageCollectionProperty(context, selectedColumn, className, columnIndex, propertyNameElements);
         } else {
             selectedColumn.setFactory(context.getAbstractScesimGridModelByGridWidget(gridWidget).getDOMElementFactory(propertyClass,
-                                                                                                                      context.getSettings().getType(),
+                                                                                                                      context.getScenarioSimulationModel().getSettings().getType(),
                                                                                                                       factMappingValueType));
         }
         if (context.getScenarioSimulationEditorPresenter() != null) {

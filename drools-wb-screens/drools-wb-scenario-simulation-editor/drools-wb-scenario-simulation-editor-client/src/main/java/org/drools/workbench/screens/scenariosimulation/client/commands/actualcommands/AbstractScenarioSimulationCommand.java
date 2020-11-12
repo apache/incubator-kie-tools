@@ -34,10 +34,9 @@ public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<
     private static final AtomicLong COUNTER_ID = new AtomicLong();
 
     /**
-     * Auto-generated incremental identifier used  to uniquely identify each command
+     * Auto-generated incremental identifier used to uniquely identify each command
      */
     private final long id;
-
 
     protected AbstractScenarioSimulationCommand() {
         this.id = COUNTER_ID.getAndIncrement();
@@ -64,9 +63,7 @@ public abstract class AbstractScenarioSimulationCommand extends AbstractCommand<
         }
     }
 
-
-
-    protected abstract void internalExecute(ScenarioSimulationContext context) throws Exception;
+    protected abstract void internalExecute(ScenarioSimulationContext context);
 
     protected CommandResult<ScenarioSimulationViolation> commonExecution(final ScenarioSimulationContext context) {
         context.getSelectedScenarioGridPanel().ifPresent(ScenarioGridPanel::onResize);
