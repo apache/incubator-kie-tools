@@ -226,14 +226,30 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
             <table className="core-properties__table">
               <thead>
                 <tr>
-                  <th>Is Scorable</th>
-                  <th>Function Name</th>
-                  <th>Algorithm Name</th>
-                  <th>Baseline Score</th>
-                  <th>Baseline Method</th>
-                  <th>Initial Score</th>
-                  <th>Use Reason Codes</th>
-                  <th>Reason Code Algorithm</th>
+                  <th>
+                    <FormGroup fieldId="IsScorable" label="Is Scorable" />
+                  </th>
+                  <th>
+                    <FormGroup fieldId="FunctionName" label="Function Name" />
+                  </th>
+                  <th>
+                    <FormGroup fieldId="AlgorithmName" label="Algorithm Name" />
+                  </th>
+                  <th>
+                    <FormGroup fieldId="BaselineScore" label="Baseline Score" />
+                  </th>
+                  <th>
+                    <FormGroup fieldId="BaselineMethod" label="Baseline Method" />
+                  </th>
+                  <th>
+                    <FormGroup fieldId="InitialScore" label="Initial Score" />
+                  </th>
+                  <th>
+                    <FormGroup fieldId="UseReasonCodes" label="Use Reason Codes" />
+                  </th>
+                  <th>
+                    <FormGroup fieldId="ReasonCodeAlgorithm" label="Reason Code Algorithm" />
+                  </th>
                 </tr>
               </thead>
               <tbody>

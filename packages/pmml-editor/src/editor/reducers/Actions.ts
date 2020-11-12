@@ -22,6 +22,10 @@ import { ScorecardActions } from "./ScorecardReducer";
 import { CharacteristicsActions } from "./CharacteristicsReducer";
 import { CharacteristicActions } from "./CharacteristicReducer";
 import { AttributesActions } from "./AttributesReducer";
+import { OutputActions } from "./OutputReducer";
+import { OutputFieldActions } from "./OutputFieldReducer";
+import { MiningSchemaActions } from "./MiningSchemaReducer";
+import { MiningSchemaFieldActions } from "./MiningSchemaFieldReducer";
 
 export type ActionMap<M extends { [index: string]: any }> = {
   [Key in keyof M]: M[Key] extends undefined
@@ -64,10 +68,14 @@ export type AllActions =
   | StateControlActions
   | VersionActions
   | HeaderActions
+  | MiningSchemaActions
+  | MiningSchemaFieldActions
   | DataDictionaryActions
   | DataFieldActions
   | ModelActions
   | ScorecardActions
   | CharacteristicsActions
   | CharacteristicActions
-  | AttributesActions;
+  | AttributesActions
+  | OutputActions
+  | OutputFieldActions;

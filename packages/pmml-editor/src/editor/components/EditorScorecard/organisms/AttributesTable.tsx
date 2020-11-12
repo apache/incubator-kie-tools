@@ -23,6 +23,7 @@ import {
   DataListItemCells,
   DataListItemRow,
   Form,
+  FormGroup,
   Tooltip,
   TooltipPosition
 } from "@patternfly/react-core";
@@ -106,105 +107,118 @@ export const AttributesTable = (props: AttributesTableProps) => {
   };
 
   return (
-    <div>
+    <div style={{ height: "100%" }}>
       {(attributes.length > 0 || activeOperation === Operation.CREATE_ATTRIBUTE) && (
         <>
-          <DataList className="attributes__header" aria-label="attributes header">
-            <DataListItem className="attributes__header__row" key={"none"} aria-labelledby="attributes-header">
-              <DataListItemRow>
-                <DataListItemCells
-                  dataListCells={[
-                    <DataListCell key="0" width={4}>
-                      <div>Attribute</div>
-                    </DataListCell>,
-                    <DataListCell key="1" width={2}>
-                      <div>
-                        <span className={"attributes__header__text"}>Partial Score</span>
-                        <Tooltip
-                          position={TooltipPosition.top}
-                          content={<div>Score points awarded to the Attribute</div>}
+          <div style={{ paddingRight: "16px" }}>
+            <Form>
+              <DataList className="attributes__header" aria-label="attributes header">
+                <DataListItem className="attributes__header__row" key={"none"} aria-labelledby="attributes-header">
+                  <DataListItemRow>
+                    <DataListItemCells
+                      dataListCells={[
+                        <DataListCell key="0" width={4}>
+                          <FormGroup fieldId="Attribute" label="Attribute" isRequired={true} />
+                        </DataListCell>,
+                        <DataListCell key="1" width={2}>
+                          <FormGroup
+                            fieldId="PartialScore"
+                            label="Partial Score"
+                            labelIcon={
+                              <Tooltip
+                                position={TooltipPosition.top}
+                                content={<div>Score points awarded to the Attribute</div>}
+                              >
+                                <InfoCircleIcon className={"attributes__header__icon"} />
+                              </Tooltip>
+                            }
+                          />
+                        </DataListCell>,
+                        <DataListCell key="2" width={2}>
+                          <FormGroup
+                            fieldId="ReasonCode"
+                            label="Reason Code"
+                            labelIcon={
+                              <Tooltip
+                                position={TooltipPosition.top}
+                                content={
+                                  <div>
+                                    Attribute's reason code. If the reason code is used at this level, it takes
+                                    precedence over the reason code attribute associated with the Characteristic
+                                  </div>
+                                }
+                              >
+                                <InfoCircleIcon className={"attributes__header__icon"} />
+                              </Tooltip>
+                            }
+                          />
+                        </DataListCell>,
+                        <DataListAction
+                          id="delete-attribute-header"
+                          aria-label="delete header"
+                          aria-labelledby="delete-attribute-header"
+                          key="3"
+                          width={1}
                         >
-                          <InfoCircleIcon className={"attributes__header__icon"} />
-                        </Tooltip>
-                      </div>
-                    </DataListCell>,
-                    <DataListCell key="2" width={2}>
-                      <div>
-                        <span className={"attributes__header__text"}>Reason Code</span>
-                        <Tooltip
-                          position={TooltipPosition.top}
-                          content={
-                            <div>
-                              Attribute's reason code. If the reason code is used at this level, it takes precedence
-                              over the reason code attribute associated with the Characteristic
-                            </div>
-                          }
-                        >
-                          <InfoCircleIcon className={"attributes__header__icon"} />
-                        </Tooltip>
-                      </div>
-                    </DataListCell>,
-                    <DataListAction
-                      id="delete-attribute-header"
-                      aria-label="delete header"
-                      aria-labelledby="delete-attribute-header"
-                      key="3"
-                      width={1}
-                    >
-                      <ActionSpacer />
-                    </DataListAction>
-                  ]}
-                />
-              </DataListItemRow>
-            </DataListItem>
-          </DataList>
-          <Form>
-            <DataList aria-label="attributes list">
-              {attributes.map((attribute, index) => {
-                if (editItemIndex === index) {
-                  return (
+                          <ActionSpacer />
+                        </DataListAction>
+                      ]}
+                    />
+                  </DataListItemRow>
+                </DataListItem>
+              </DataList>
+            </Form>
+          </div>
+          <div style={{ height: "calc(100vh - 300px)", overflowY: "scroll" }}>
+            <Form>
+              <DataList aria-label="attributes list">
+                {attributes.map((attribute, index) => {
+                  if (editItemIndex === index) {
+                    return (
+                      <AttributesTableEditRow
+                        key={index}
+                        index={index}
+                        attribute={attribute}
+                        validateText={validateText}
+                        onCommit={(_text, _partialScore, _reasonCode) =>
+                          onCommit(index, _text, _partialScore, _reasonCode)
+                        }
+                        onCancel={() => onCancel()}
+                      />
+                    );
+                  } else {
+                    return (
+                      <AttributesTableRow
+                        key={index}
+                        index={index}
+                        attribute={attribute}
+                        onEdit={() => onEdit(index)}
+                        onDelete={() => onDelete(index)}
+                        isDisabled={
+                          !(editItemIndex === undefined || editItemIndex === index) ||
+                          activeOperation !== Operation.NONE
+                        }
+                      />
+                    );
+                  }
+                })}
+                {activeOperation === Operation.CREATE_ATTRIBUTE && (
+                  <div key={undefined} ref={addAttributeRowRef}>
                     <AttributesTableEditRow
-                      key={index}
-                      index={index}
-                      attribute={attribute}
+                      key={"add"}
+                      index={undefined}
+                      attribute={{}}
                       validateText={validateText}
                       onCommit={(_text, _partialScore, _reasonCode) =>
-                        onCommit(index, _text, _partialScore, _reasonCode)
+                        onCommit(undefined, _text, _partialScore, _reasonCode)
                       }
                       onCancel={() => onCancel()}
                     />
-                  );
-                } else {
-                  return (
-                    <AttributesTableRow
-                      key={index}
-                      index={index}
-                      attribute={attribute}
-                      onEdit={() => onEdit(index)}
-                      onDelete={() => onDelete(index)}
-                      isDisabled={
-                        !(editItemIndex === undefined || editItemIndex === index) || activeOperation !== Operation.NONE
-                      }
-                    />
-                  );
-                }
-              })}
-              {activeOperation === Operation.CREATE_ATTRIBUTE && (
-                <div key={undefined} ref={addAttributeRowRef}>
-                  <AttributesTableEditRow
-                    key={"add"}
-                    index={undefined}
-                    attribute={{}}
-                    validateText={validateText}
-                    onCommit={(_text, _partialScore, _reasonCode) =>
-                      onCommit(undefined, _text, _partialScore, _reasonCode)
-                    }
-                    onCancel={() => onCancel()}
-                  />
-                </div>
-              )}
-            </DataList>
-          </Form>
+                  </div>
+                )}
+              </DataList>
+            </Form>
+          </div>
         </>
       )}
       {attributes.length === 0 && activeOperation !== Operation.CREATE_ATTRIBUTE && (

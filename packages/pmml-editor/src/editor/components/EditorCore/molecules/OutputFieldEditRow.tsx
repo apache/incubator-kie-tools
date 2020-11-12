@@ -96,6 +96,7 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
               <FormGroup
                 label="Name"
                 fieldId="output-name-helper"
+                isRequired={true}
                 helperTextInvalid="Name must be unique and present."
                 helperTextInvalidIcon={<ExclamationCircleIcon />}
                 validated={isValidName ? "default" : "error"}
@@ -115,7 +116,7 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
               </FormGroup>
             </SplitItem>
             <SplitItem isFilled={true}>
-              <FormGroup label="Data type" fieldId="output-dataType-helper" style={{ width: "12em" }}>
+              <FormGroup label="Data type" fieldId="output-dataType-helper" style={{ width: "12em" }} isRequired={true}>
                 <Select
                   id="output-dataType"
                   name="output-dataType"

@@ -309,7 +309,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                   onAddCharacteristic={onAddCharacteristic}
                 />
               )}
-              <div style={{ height: "432px" }}>
+              <div style={{ height: "calc(100vh - 524px)" }}>
                 <CharacteristicsTable
                   activeOperation={activeOperation}
                   setActiveOperation={setActiveOperation}
@@ -317,7 +317,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
                   emptyStateProvider={() => characteristicsEmptyStateProvider}
                   validateCharacteristicName={validateCharacteristicName}
                   selectCharacteristic={index => selectCharacteristic(index)}
-                  addCharacteristic={onAddCharacteristic}
                   deleteCharacteristic={index => {
                     if (window.confirm(`Delete Characteristic "${index}"?`)) {
                       dispatch({
