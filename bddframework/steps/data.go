@@ -44,6 +44,7 @@ type Data struct {
 // RegisterAllSteps register all steps available to the test suite
 func (data *Data) RegisterAllSteps(ctx *godog.ScenarioContext) {
 	registerGitSteps(ctx, data)
+	registerGrafanaSteps(ctx, data)
 	registerGraphQLSteps(ctx, data)
 	registerHTTPSteps(ctx, data)
 	registerImageRegistrySteps(ctx, data)
