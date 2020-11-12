@@ -1,7 +1,7 @@
 schema_version: 1
 
 name: "kogito-image-real-name-on-overrides-file"
-version: "1.0.0-snapshot"
+version: "2.0.0-snapshot"
 # until this issue is not fixed use 8.0 tag.
 # https://github.com/rpm-software-management/microdnf/issues/50
 # https://bugzilla.redhat.com/show_bug.cgi?id=1769831
@@ -23,7 +23,7 @@ modules:
 
 envs:
   - name: "KOGITO_VERSION"
-    value: "1.0.0-SNAPSHOT"
+    value: "2.0.0-SNAPSHOT"
 
 packages:
   manager: microdnf
