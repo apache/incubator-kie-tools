@@ -66,6 +66,7 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => {
+    setActiveOperation(Operation.NONE);
     setIsModalOpen(!isModalOpen);
   };
 
@@ -77,12 +78,7 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
         </Title>
       </SplitItem>
       <SplitItem>
-        <Button
-          type="button"
-          variant={ButtonVariant.plain}
-          isDisabled={activeOperation !== Operation.NONE}
-          onClick={toggleModal}
-        >
+        <Button type="button" variant={ButtonVariant.plain} onClick={toggleModal}>
           <CloseIcon />
         </Button>
       </SplitItem>

@@ -89,7 +89,6 @@ export const CharacteristicPanel = (props: CharacteristicPanelProps) => {
                         id="close-characteristic-panel-button"
                         data-testid="characteristic-panel__close-panel"
                         variant="link"
-                        isDisabled={activeOperation !== Operation.NONE}
                         onClick={hideCharacteristicPanel}
                       >
                         <CloseIcon />

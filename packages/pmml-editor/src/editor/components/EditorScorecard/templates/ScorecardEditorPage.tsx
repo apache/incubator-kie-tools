@@ -114,6 +114,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   };
 
   const hideCharacteristicPanel = useCallback(() => {
+    setActiveOperation(Operation.NONE);
     setShowCharacteristicPanel(false);
   }, [characteristics]);
 
