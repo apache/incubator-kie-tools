@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.7.0//EN"
+    "http://www.gwtproject.org/doctype/2.7.0/gwt-module.dtd">
+<module>
+
+  <inherits name="org.kie.soup.project.datamodel.ProjectDataModelAPI"/>
+
+  <!-- Uberfire dependencies -->
+  <inherits name="org.gwtbootstrap3.GwtBootstrap3NoTheme"/>
+
+  <inherits name="org.uberfire.UberfireClientAll"/>
+  <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
+  <inherits name="org.uberfire.ssh.UberfireSSHClient"/>
+
+  <!-- Uberfire Extensions -->
+  <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
+  <inherits name="org.uberfire.UberfireDocksClient"/>
+  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
+  <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
+  <inherits name="org.uberfire.ext.widgets.core.client.UberfireWidgetsEditors"/>
+  <inherits name="org.uberfire.preferences.UberfirePreferencesAPI"/>
+  <inherits name="org.uberfire.ext.preferences.UberfirePreferences"/>
+  <inherits name="org.uberfire.UberfireBackend"/>
+
+  <!-- Guvnor dependencies -->
+  <inherits name='org.guvnor.structure.GuvnorStructureClient'/>
+  <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorAPI"/>
+  <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorClient"/>
+  <inherits name='org.guvnor.common.services.GuvnorServicesAPI'/>
+  <inherits name="org.guvnor.common.services.project.GuvnorProjectAPI"/>
+  <inherits name="org.guvnor.common.services.workingset.GuvnorWorkingsetAPI"/>
+  <inherits name="org.guvnor.common.services.workingset.GuvnorWorkingsetClient"/>
+  <inherits name="org.guvnor.messageconsole.GuvnorMessageConsoleClient"/>
+
+  <!--Common Screens -->
+  <inherits name="org.kie.workbench.common.screens.library.LibraryClient"/>
+  <inherits name="org.kie.workbench.common.screens.contributors.KieWorkbenchContributorsClient"/>
+  <inherits name="org.kie.workbench.common.screens.archetype.mgmt.KieWorkbenchArchetypeMgmtClient"/>
+  <inherits name="org.kie.workbench.common.screens.home.KieWorkbenchHomeClient"/>
+  <inherits name="org.kie.workbench.common.screens.explorer.KieWorkbenchProjectExplorerClient"/>
+  <inherits name="org.kie.workbench.common.screens.datamodeller.KieWorkbenchDatamodellerClient"/>
+  <inherits name="org.kie.workbench.common.screens.javaeditor.KieWorkbenchCommonJavaEditorClient"/>
+  <inherits name="org.kie.workbench.common.screens.server.management.ServerManagementClient"/>
+  <inherits name="org.kie.workbench.common.workbench.KieDefaultWorkbenchClient"/>
+
+  <!-- Common Services -->
+  <inherits name="org.kie.workbench.common.profile.ProfileAPI"/>
+  <inherits name="org.kie.workbench.common.services.datamodeller.DataModellerCore" />
+  <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
+  <inherits name='org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI'/>
+  <inherits name='org.kie.workbench.common.services.refactoring.KieWorkbenchCommonRefactoringAPI'/>
+  <inherits name='org.kie.workbench.common.services.refactoring.KieWorkbenchCommonRefactoringClient'/>
+
+  <!-- Stunner. -->
+  <inherits name="org.kie.workbench.common.stunner.project.StunnerProjectClient"/>
+  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoClient"/>
+  <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
+  <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnProjectClient"/>
+  <inherits name="org.kie.workbench.common.stunner.cm.StunnerCaseManagementProjectClient"/>
+
+  <!-- Stunner - jBPM Designer integration -->
+  <inherits name="org.kie.workbench.common.stunner.bpmn.integration.StunnerJBPMDesignerIntegrationShared"/>
+  <inherits name="org.kie.workbench.common.stunner.bpmn.integration.StunnerJBPMDesignerIntegrationAPI"/>
+  <inherits name="org.kie.workbench.common.stunner.bpmn.integration.StunnerJBPMDesignerIntegrationClient"/>
+
+  <!-- Form modeler.-->
+  <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
+  <inherits name="org.kie.workbench.common.forms.dynamic.DynamicFormsClient"/>
+
+  <!-- Drools models (e.g. for Drools Workbench Screens and others, don't remove -->
+  <inherits name="org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon"/>
+  <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
+  <inherits name="org.drools.workbench.models.guided.dtable.DroolsWorkbenchModelsGuidedDTable"/>
+  <inherits name="org.drools.workbench.models.guided.dtree.DroolsWorkbenchModelsGuidedDTree"/>
+  <inherits name="org.drools.workbench.models.guided.scorecard.DroolsWorkbenchModelsGuidedScoreCard" />
+  <inherits name="org.drools.workbench.models.guided.template.DroolsWorkbenchModelsGuidedTemplate"/>
+  <inherits name="org.drools.workbench.models.testscenarios.DroolsWorkbenchModelsTestScenarios" />
+
+  <inherits name="org.kie.workbench.common.screens.defaulteditor.DroolsWorkbenchDefaultEditorClient"/>
+  <inherits name="org.kie.workbench.common.screens.projecteditor.KieWorkbenchCommonProjectEditorClient"/>
+  <inherits name="org.kie.workbench.common.screens.projectimportsscreen.KieWorkbenchCommonProjectImportsScreenClient"/>
+
+  <!-- Uberfire Apps-->
+  <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
+
+  <!-- Dashbuilder -->
+  <inherits name="org.dashbuilder.DashbuilderClientAll"/>
+  <inherits name="org.dashbuilder.renderer.C3Renderer"/>
+
+  <!-- Experimental -->
+  <inherits name="org.uberfire.experimental.UberfireExperimentalClient"/>
+
+  <!-- Specify the application specific style sheet. -->
+  <stylesheet src='css/stunner-project-showcase.css'/>
+
+  <!-- Specify the paths for translatable code -->
+  <source path='client'/>
+  <source path='bpmn'/>
+
+  <set-property name="user.agent" value="gecko1_8,safari"/>
+  <set-property name="locale" value="default"/>
+
+</module>
