@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,19 @@
 
 package org.uberfire.ext.properties.editor.model.validators;
 
-/**
- * A validator of PropertyEditorFields. A field can contain multiples validators.
- */
-public interface PropertyFieldValidator {
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-    /**
-     * Validate a field new value
-     * @param value
-     * The value to be validated
-     * @return
-     * true if valid, false otherwise
-     */
-    public boolean validate(Object value);
+@Portable
+public class MandatoryValidator implements PropertyFieldValidator {
 
-    /**
-     * Error message used in property editor.
-     * @return
-     */
-    public String getValidatorErrorMessage();
+    @Override
+    public boolean validate(Object value) {
+        return value != null && !value.toString().trim().isEmpty();
+    }
+
+    @Override
+    public String getValidatorErrorMessage() {
+        return "Field is mandatory.";
+    }
+
 }

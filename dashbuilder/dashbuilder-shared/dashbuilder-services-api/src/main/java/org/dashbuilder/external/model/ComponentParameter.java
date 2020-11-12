@@ -30,6 +30,7 @@ public class ComponentParameter {
     private String defaultValue;
     private String label;
     private List<String> comboValues;
+    private boolean mandatory;
 
     public ComponentParameter() {
         // default constructor used internally
@@ -95,6 +96,16 @@ public class ComponentParameter {
 
     public void setComboValues(List<String> comboValues) {
         this.comboValues = comboValues;
+    }
+
+    
+    public boolean isMandatory() {
+        return mandatory;
+    }
+
+    
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
     }
 
 }

@@ -17,6 +17,7 @@
 package org.dashbuilder.displayer.client.widgets;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,12 +40,15 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.properties.editor.model.PropertyEditorType;
+import org.uberfire.ext.properties.editor.model.validators.MandatoryValidator;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 
 @Dependent
 public class ExternalComponentPropertiesEditor implements IsWidget {
     
-    CommonConstants i18n = CommonConstants.INSTANCE;
+    private static final CommonConstants i18n = CommonConstants.INSTANCE;
+    
+    private static final MandatoryValidator MANDATORY_VALIDATOR = new MandatoryValidator();
 
     private static final String DEFAULT_CATEGORY = "Component Properties";
 
@@ -143,6 +147,10 @@ public class ExternalComponentPropertiesEditor implements IsWidget {
         field.withKey(fieldKey);
         if (field.getType() == PropertyEditorType.COMBO) {
             field.withComboValues(p.getComboValues());
+        }
+        if (p.isMandatory()) {
+            field.withValidators(Collections.singleton(MANDATORY_VALIDATOR));
+            field.withHelpInfo(i18n.mandatoryHelpHeader(), i18n.mandatoryHelpText());
         }
         if (currentValue != null) {
             field.setCurrentStringValue(currentValue);
