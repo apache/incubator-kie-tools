@@ -157,7 +157,7 @@ describe("HomePage", () => {
         );
 
         fireEvent.change(getByTestId("url-text-input"), { target: { value: "https://gist.github.com/test/aaaa" } });
-        expect(await findByText(`Enter a valid gist URL.`)).toBeTruthy();
+        expect(await findByText(`Enter a valid gist URL. If you're using a specific gist URL remember its name can't have whitespaces and upper-case letters.`)).toBeTruthy();
       });
 
       test("should show an invalid gist error", async () => {
