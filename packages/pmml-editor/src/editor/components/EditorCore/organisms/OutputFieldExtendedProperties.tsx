@@ -19,10 +19,11 @@ import { Form, FormGroup, TextInput } from "@patternfly/react-core";
 import "../organisms/OutputFieldsTable.scss";
 import { FieldName, OpType, OutputField, RankOrder, ResultFeature } from "@kogito-tooling/pmml-editor-marshaller";
 import { GenericSelector } from "../../EditorScorecard/atoms";
+import { ValidatedType } from "../../../types";
 
 interface OutputFieldExtendedPropertiesProps {
-  activeOutputField: OutputField;
-  setActiveOutputField: (_output: OutputField) => void;
+  activeOutputField: ValidatedType<OutputField>;
+  setActiveOutputField: (_output: ValidatedType<OutputField>) => void;
 }
 
 const GenericSelectorEditor = (
@@ -51,11 +52,14 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
   const optypeEditor = GenericSelectorEditor(
     "output-optype",
     ["", "categorical", "continuous", "ordinal"],
-    (activeOutputField.optype ?? "").toString(),
+    (activeOutputField.value.optype ?? "").toString(),
     _selection =>
       setActiveOutputField({
         ...activeOutputField,
-        optype: _selection === "" ? undefined : (_selection as OpType)
+        value: {
+          ...activeOutputField.value,
+          optype: _selection === "" ? undefined : (_selection as OpType)
+        }
       })
   );
 
@@ -88,33 +92,42 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       "transformedValue",
       "warning"
     ],
-    (activeOutputField.feature ?? "").toString(),
+    (activeOutputField.value.feature ?? "").toString(),
     _selection =>
       setActiveOutputField({
         ...activeOutputField,
-        feature: _selection === "" ? undefined : (_selection as ResultFeature)
+        value: {
+          ...activeOutputField.value,
+          feature: _selection === "" ? undefined : (_selection as ResultFeature)
+        }
       })
   );
 
   const rankOrderEditor = GenericSelectorEditor(
     "output-rankOrder",
     ["", "ascending", "descending"],
-    (activeOutputField.rankOrder ?? "").toString(),
+    (activeOutputField.value.rankOrder ?? "").toString(),
     _selection =>
       setActiveOutputField({
         ...activeOutputField,
-        rankOrder: _selection === "" ? undefined : (_selection as RankOrder)
+        value: {
+          ...activeOutputField.value,
+          rankOrder: _selection === "" ? undefined : (_selection as RankOrder)
+        }
       })
   );
 
   const isFinalResultEditor = GenericSelectorEditor(
     "output-isFinalResult",
     ["", "true", "false"],
-    (activeOutputField.isFinalResult ?? "").toString(),
+    (activeOutputField.value.isFinalResult ?? "").toString(),
     _selection =>
       setActiveOutputField({
         ...activeOutputField,
-        isFinalResult: _selection === "" ? undefined : Boolean(_selection)
+        value: {
+          ...activeOutputField.value,
+          isFinalResult: _selection === "" ? undefined : Boolean(_selection)
+        }
       })
   );
 
@@ -137,8 +150,16 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           id="output-targetField"
           name="output-targetField"
           aria-describedby="output-targetField-helper"
-          value={(activeOutputField.targetField ?? "").toString()}
-          onChange={e => setActiveOutputField({ ...activeOutputField, targetField: e as FieldName })}
+          value={(activeOutputField.value.targetField ?? "").toString()}
+          onChange={e =>
+            setActiveOutputField({
+              ...activeOutputField,
+              value: {
+                ...activeOutputField.value,
+                targetField: e as FieldName
+              }
+            })
+          }
         />
       </FormGroup>
       <FormGroup
@@ -158,8 +179,16 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           id="output-value"
           name="output-value"
           aria-describedby="output-value-helper"
-          value={(activeOutputField.value ?? "").toString()}
-          onChange={e => setActiveOutputField({ ...activeOutputField, value: e })}
+          value={(activeOutputField.value.value ?? "").toString()}
+          onChange={e =>
+            setActiveOutputField({
+              ...activeOutputField,
+              value: {
+                ...activeOutputField.value,
+                value: e
+              }
+            })
+          }
         />
       </FormGroup>
       <FormGroup
@@ -172,8 +201,16 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           id="output-rank"
           name="output-rank"
           aria-describedby="output-rank-helper"
-          value={activeOutputField.rank}
-          onChange={e => setActiveOutputField({ ...activeOutputField, rank: toNumber(e) })}
+          value={activeOutputField.value.rank}
+          onChange={e =>
+            setActiveOutputField({
+              ...activeOutputField,
+              value: {
+                ...activeOutputField.value,
+                rank: toNumber(e)
+              }
+            })
+          }
         />
       </FormGroup>
       <FormGroup
@@ -193,8 +230,16 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
           id="output-segmentId"
           name="output-segmentId"
           aria-describedby="output-segmentId-helper"
-          value={activeOutputField.segmentId}
-          onChange={e => setActiveOutputField({ ...activeOutputField, segmentId: e })}
+          value={activeOutputField.value.segmentId}
+          onChange={e =>
+            setActiveOutputField({
+              ...activeOutputField,
+              value: {
+                ...activeOutputField.value,
+                segmentId: e
+              }
+            })
+          }
         />
       </FormGroup>
       <FormGroup

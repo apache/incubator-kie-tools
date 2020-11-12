@@ -41,7 +41,7 @@ interface AttributesTableEditRowProps {
 }
 
 export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
-  const { index, attribute, onCommit, onCancel } = props;
+  const { index, attribute, validateText, onCommit, onCancel } = props;
 
   const [text, setText] = useState<ValidatedType<string | undefined>>({
     value: undefined,
@@ -54,7 +54,7 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
     const _text = toText(attribute.predicate);
     setText({
       value: _text,
-      valid: props.validateText(_text)
+      valid: true
     });
     setPartialScore(attribute.partialScore);
     setReasonCode(attribute.reasonCode);
@@ -97,7 +97,7 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
                   onChange={e =>
                     setText({
                       value: e,
-                      valid: props.validateText(e)
+                      valid: validateText(e)
                     })
                   }
                 />
@@ -143,7 +143,7 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
               <AttributesTableEditModeAction
                 onCommit={() => onCommit(text.value, partialScore, reasonCode)}
                 onCancel={() => onCancel()}
-                disableCommit={!text.valid}
+                disableCommit={!validateText(text.value)}
               />
             </DataListAction>
           ]}

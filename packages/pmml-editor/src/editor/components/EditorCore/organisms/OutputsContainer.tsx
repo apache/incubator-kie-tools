@@ -31,6 +31,7 @@ import { Operation } from "../../EditorScorecard";
 import "./OutputsContainer.scss";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import { OutputFieldExtendedProperties } from "./OutputFieldExtendedProperties";
+import { ValidatedType } from "../../../types";
 
 interface OutputsContainerProps {
   modelIndex: number;
@@ -60,7 +61,13 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
   const { activeOperation, setActiveOperation, output, validateOutputFieldName, deleteOutputField, commit } = props;
 
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
-  const [outputField, setOutputField] = useState<OutputField>({ name: "" as FieldName, dataType: "boolean" });
+  const [outputField, setOutputField] = useState<ValidatedType<OutputField>>({
+    value: {
+      name: "" as FieldName,
+      dataType: "boolean"
+    },
+    valid: true
+  });
 
   const [viewSection, setViewSection] = useState<OutputsViewSection>("overview");
 
@@ -74,13 +81,13 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
 
   const onEditOutputField = (index: number) => {
     setEditItemIndex(index);
-    setOutputField((output?.OutputField as OutputField[])[index]);
+    setOutputField({ value: (output?.OutputField as OutputField[])[index], valid: true });
     setActiveOperation(Operation.UPDATE);
   };
 
   const addOutputField = () => {
     setEditItemIndex(undefined);
-    setOutputField({ name: "" as FieldName, dataType: "boolean" });
+    setOutputField({ value: { name: "" as FieldName, dataType: "boolean" }, valid: true });
     setActiveOperation(Operation.CREATE_OUTPUT);
   };
 
@@ -89,43 +96,43 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
     if (editItemIndex === undefined) {
       commit(
         undefined,
-        outputField.name,
-        outputField.dataType,
-        outputField.optype,
-        outputField.targetField,
-        outputField.feature,
-        outputField.value,
-        outputField.rank,
-        outputField.rankOrder,
-        outputField.segmentId,
-        outputField.isFinalResult
+        outputField.value.name,
+        outputField.value.dataType,
+        outputField.value.optype,
+        outputField.value.targetField,
+        outputField.value.feature,
+        outputField.value.value,
+        outputField.value.rank,
+        outputField.value.rankOrder,
+        outputField.value.segmentId,
+        outputField.value.isFinalResult
       );
     } else {
       _output = (output?.OutputField ?? [])[editItemIndex];
       if (
-        _output.name !== outputField.name ||
-        _output.dataType !== outputField.dataType ||
-        _output.optype !== outputField.optype ||
-        _output.targetField !== outputField.targetField ||
-        _output.feature !== outputField.feature ||
-        _output.value !== outputField.value ||
-        _output.rank !== outputField.rank ||
-        _output.rankOrder !== outputField.rankOrder ||
-        _output.segmentId !== outputField.segmentId ||
-        _output.isFinalResult !== outputField.isFinalResult
+        _output.name !== outputField.value.name ||
+        _output.dataType !== outputField.value.dataType ||
+        _output.optype !== outputField.value.optype ||
+        _output.targetField !== outputField.value.targetField ||
+        _output.feature !== outputField.value.feature ||
+        _output.value !== outputField.value.value ||
+        _output.rank !== outputField.value.rank ||
+        _output.rankOrder !== outputField.value.rankOrder ||
+        _output.segmentId !== outputField.value.segmentId ||
+        _output.isFinalResult !== outputField.value.isFinalResult
       ) {
         commit(
           editItemIndex,
-          outputField.name,
-          outputField.dataType,
-          outputField.optype,
-          outputField.targetField,
-          outputField.feature,
-          outputField.value,
-          outputField.rank,
-          outputField.rankOrder,
-          outputField.segmentId,
-          outputField.isFinalResult
+          outputField.value.name,
+          outputField.value.dataType,
+          outputField.value.optype,
+          outputField.value.targetField,
+          outputField.value.feature,
+          outputField.value.value,
+          outputField.value.rank,
+          outputField.value.rankOrder,
+          outputField.value.segmentId,
+          outputField.value.isFinalResult
         );
       }
     }
@@ -186,9 +193,9 @@ export const OutputsContainer = (props: OutputsContainerProps) => {
                 <StackItem>
                   <Title headingLevel="h4" size={TitleSizes.xl}>
                     Editing Properties{" "}
-                    {outputField.name !== "" ? (
+                    {outputField.value.name !== "" ? (
                       <span>
-                        for <em>{outputField.name}</em>
+                        for <em>{outputField.value.name}</em>
                       </span>
                     ) : (
                       ""

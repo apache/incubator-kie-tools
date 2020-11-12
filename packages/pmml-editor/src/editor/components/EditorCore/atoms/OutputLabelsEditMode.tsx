@@ -19,10 +19,11 @@ import { Label } from "@patternfly/react-core";
 import { OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons";
 import { OutputFieldLabel } from "./OutputFieldLabel";
+import { ValidatedType } from "../../../types";
 
 interface OutputLabelsEditModeProps {
-  activeOutputField: OutputField;
-  setActiveOutputField: (_output: OutputField) => void;
+  activeOutputField: ValidatedType<OutputField>;
+  setActiveOutputField: (_output: ValidatedType<OutputField>) => void;
   viewExtendedProperties: () => void;
 }
 
@@ -33,60 +34,84 @@ export const OutputLabelsEditMode = (props: OutputLabelsEditModeProps) => {
 
   return (
     <>
-      {activeOutputField.optype &&
-        OutputFieldLabel("OpType", activeOutputField.optype, () =>
+      {activeOutputField.value.optype &&
+        OutputFieldLabel("OpType", activeOutputField.value.optype, () =>
           setActiveOutputField({
             ...activeOutputField,
-            optype: undefined
+            value: {
+              ...activeOutputField.value,
+              optype: undefined
+            }
           })
         )}
-      {activeOutputField.targetField &&
-        OutputFieldLabel("TargetField", activeOutputField.targetField, () =>
+      {activeOutputField.value.targetField &&
+        OutputFieldLabel("TargetField", activeOutputField.value.targetField, () =>
           setActiveOutputField({
             ...activeOutputField,
-            targetField: undefined
+            value: {
+              ...activeOutputField.value,
+              targetField: undefined
+            }
           })
         )}
-      {activeOutputField.feature &&
-        OutputFieldLabel("Feature", activeOutputField.feature, () =>
+      {activeOutputField.value.feature &&
+        OutputFieldLabel("Feature", activeOutputField.value.feature, () =>
           setActiveOutputField({
             ...activeOutputField,
-            feature: undefined
+            value: {
+              ...activeOutputField.value,
+              feature: undefined
+            }
           })
         )}
-      {activeOutputField.value &&
-        OutputFieldLabel("Value", activeOutputField.value, () =>
+      {activeOutputField.value.value &&
+        OutputFieldLabel("Value", activeOutputField.value.value, () =>
           setActiveOutputField({
             ...activeOutputField,
-            value: undefined
+            value: {
+              ...activeOutputField.value,
+              value: undefined
+            }
           })
         )}
-      {activeOutputField.rank &&
-        OutputFieldLabel("Rank", activeOutputField.rank, () =>
+      {activeOutputField.value.rank &&
+        OutputFieldLabel("Rank", activeOutputField.value.rank, () =>
           setActiveOutputField({
             ...activeOutputField,
-            rank: undefined
+            value: {
+              ...activeOutputField.value,
+              rank: undefined
+            }
           })
         )}
-      {activeOutputField.rankOrder &&
-        OutputFieldLabel("RankOrder", activeOutputField.rankOrder, () =>
+      {activeOutputField.value.rankOrder &&
+        OutputFieldLabel("RankOrder", activeOutputField.value.rankOrder, () =>
           setActiveOutputField({
             ...activeOutputField,
-            rankOrder: undefined
+            value: {
+              ...activeOutputField.value,
+              rankOrder: undefined
+            }
           })
         )}
-      {activeOutputField.segmentId &&
-        OutputFieldLabel("SegmentId", activeOutputField.segmentId, () =>
+      {activeOutputField.value.segmentId &&
+        OutputFieldLabel("SegmentId", activeOutputField.value.segmentId, () =>
           setActiveOutputField({
             ...activeOutputField,
-            segmentId: undefined
+            value: {
+              ...activeOutputField.value,
+              segmentId: undefined
+            }
           })
         )}
-      {activeOutputField.isFinalResult &&
-        OutputFieldLabel("FinalResult", activeOutputField.isFinalResult.toString(), () =>
+      {activeOutputField.value.isFinalResult &&
+        OutputFieldLabel("FinalResult", activeOutputField.value.isFinalResult.toString(), () =>
           setActiveOutputField({
             ...activeOutputField,
-            isFinalResult: undefined
+            value: {
+              ...activeOutputField.value,
+              isFinalResult: undefined
+            }
           })
         )}
       <Label

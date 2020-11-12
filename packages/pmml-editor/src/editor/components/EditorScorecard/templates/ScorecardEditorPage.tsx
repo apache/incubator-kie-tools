@@ -87,7 +87,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
   const validateCharacteristicName = useCallback(
     (index: number | undefined, name: string): boolean => {
-      if (name === undefined || name === "") {
+      if (name === undefined || name.trim() === "") {
         return false;
       }
       const existing: Characteristic[] = characteristics?.Characteristic ?? [];
@@ -99,7 +99,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
   const validateOutputName = useCallback(
     (index: number | undefined, name: string): boolean => {
-      if (name === undefined || name === "") {
+      if (name === undefined || name.trim() === "") {
         return false;
       }
       const existing: OutputField[] = output?.OutputField ?? [];
@@ -110,7 +110,7 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   );
 
   const validateText = (text: string | undefined) => {
-    return text !== undefined && text !== "";
+    return text !== undefined && text.trim() !== "";
   };
 
   const hideCharacteristicPanel = useCallback(() => {

@@ -21,6 +21,7 @@ import { OutputFieldEditRow, OutputFieldRow } from "../molecules";
 import "./OutputFieldsTable.scss";
 import { Operation } from "../../EditorScorecard";
 import { EmptyStateNoOutput } from "./EmptyStateNoOutput";
+import { ValidatedType } from "../../../types";
 
 interface OutputFieldsTableProps {
   activeOperation: Operation;
@@ -28,8 +29,8 @@ interface OutputFieldsTableProps {
   onEditOutputField: (index: number) => void;
   onDeleteOutputField: (index: number) => void;
   activeOutputFieldIndex: number | undefined;
-  activeOutputField: OutputField;
-  setActiveOutputField: (_output: OutputField) => void;
+  activeOutputField: ValidatedType<OutputField>;
+  setActiveOutputField: (_output: ValidatedType<OutputField>) => void;
   outputs: OutputField[];
   validateOutputFieldName: (index: number | undefined, name: string | undefined) => boolean;
   viewExtendedProperties: () => void;

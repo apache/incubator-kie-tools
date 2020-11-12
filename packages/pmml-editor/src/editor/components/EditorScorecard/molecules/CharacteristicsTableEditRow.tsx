@@ -39,7 +39,7 @@ interface CharacteristicsTableEditRowProps {
 }
 
 export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowProps) => {
-  const { characteristic, onCommit, onCancel } = props;
+  const { characteristic, validateCharacteristicName, onCommit, onCancel } = props;
 
   const index = characteristic.index;
 
@@ -53,7 +53,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   useEffect(() => {
     setName({
       value: characteristic?.characteristic.name,
-      valid: props.validateCharacteristicName(characteristic?.characteristic.name)
+      valid: true
     });
     setReasonCode(characteristic?.characteristic.reasonCode);
     setBaselineScore(characteristic?.characteristic.baselineScore);
@@ -98,7 +98,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   onChange={e =>
                     setName({
                       value: e,
-                      valid: props.validateCharacteristicName(e)
+                      valid: validateCharacteristicName(e)
                     })
                   }
                 />
@@ -147,7 +147,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
               <CharacteristicsTableEditModeAction
                 onCommit={() => onCommit(name.value, reasonCode, baselineScore)}
                 onCancel={() => onCancel()}
-                disableCommit={!name.valid}
+                disableCommit={!validateCharacteristicName(name.value)}
               />
             </DataListAction>
           ]}

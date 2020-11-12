@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
   FormGroup,
   Select,
@@ -30,11 +30,12 @@ import "../organisms/OutputFieldsTable.scss";
 import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputFieldRowEditModeAction, OutputLabelsEditMode } from "../atoms";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
+import { ValidatedType } from "../../../types";
 
 interface OutputFieldEditRowProps {
   activeOutputFieldIndex: number | undefined;
-  activeOutputField: OutputField;
-  setActiveOutputField: (_output: OutputField) => void;
+  activeOutputField: ValidatedType<OutputField>;
+  setActiveOutputField: (_output: ValidatedType<OutputField>) => void;
   validateOutputName: (name: string | undefined) => boolean;
   viewExtendedProperties: () => void;
   onCommit: () => void;
@@ -78,14 +79,12 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
   };
 
   const onSelectType = (event: any, selection: any, isPlaceholder: boolean) => {
-    setActiveOutputField({ ...activeOutputField, dataType: isPlaceholder ? undefined : selection });
+    setActiveOutputField({
+      ...activeOutputField,
+      value: { ...activeOutputField.value, dataType: isPlaceholder ? undefined : selection }
+    });
     setIsTypeSelectOpen(false);
   };
-
-  const isValidName = useMemo(() => validateOutputName(activeOutputField.name.toString()), [
-    activeOutputFieldIndex,
-    activeOutputField
-  ]);
 
   return (
     <article className={`output-item output-item-n${activeOutputFieldIndex}`}>
@@ -99,18 +98,21 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                 isRequired={true}
                 helperTextInvalid="Name must be unique and present."
                 helperTextInvalidIcon={<ExclamationCircleIcon />}
-                validated={isValidName ? "default" : "error"}
+                validated={activeOutputField.valid ? "default" : "error"}
               >
                 <TextInput
                   type="text"
                   id="output-name"
                   name="output-name"
                   aria-describedby="output-name-helper"
-                  value={activeOutputField.name.toString()}
-                  validated={isValidName ? "default" : "error"}
+                  value={activeOutputField.value.name.toString()}
+                  validated={activeOutputField.valid ? "default" : "error"}
                   autoFocus={true}
                   onChange={e => {
-                    setActiveOutputField({ ...activeOutputField, name: e as FieldName });
+                    setActiveOutputField({
+                      value: { ...activeOutputField.value, name: e as FieldName },
+                      valid: validateOutputName(e)
+                    });
                   }}
                 />
               </FormGroup>
@@ -125,7 +127,7 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   variant={SelectVariant.single}
                   onToggle={typeToggle}
                   onSelect={onSelectType}
-                  selections={activeOutputField.dataType}
+                  selections={activeOutputField.value.dataType}
                   isOpen={isTypeSelectOpen}
                   placeholder="Type"
                   menuAppendTo={"parent"}
@@ -137,7 +139,11 @@ export const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
               </FormGroup>
             </SplitItem>
             <SplitItem>
-              <OutputFieldRowEditModeAction onCommit={onCommit} onCancel={onCancel} disableCommit={!isValidName} />
+              <OutputFieldRowEditModeAction
+                onCommit={onCommit}
+                onCancel={onCancel}
+                disableCommit={!validateOutputName(activeOutputField.value.name.toString())}
+              />
             </SplitItem>
           </Split>
         </StackItem>
