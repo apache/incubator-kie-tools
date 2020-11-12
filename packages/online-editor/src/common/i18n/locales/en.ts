@@ -72,20 +72,26 @@ export const en: OnlineI18n = {
     fileActions: "File actions",
     updateGist: "Update gist",
     updateGistTooltip: `To be able to update a gist you need to have access to it through your ${en_common.names.github} token.`,
+    share: "Share",
     embed: "Embed"
   },
-  embedEditorModal: {
-    currentContent: {
-      title: "Embed Current Content",
-      description:
-        "Embed the editor and content in your page. The embedded Editor will contain the current content, so it cannot be changed externally."
-    },
-    githubGist: {
-      title: "Embed GitHub Gist",
-      description:
-        "Embed the editor and content in your page. The embedded Editor will fetch the content from the open gist. Changes made to this gist will be reflected in the Editor."
-    },
+  embedModal: {
+    title: "Embed",
+    description:
+      "Embed the editor and content in your page. Choose the options below and copy the embed code to your clipboard:",
     copy: "Copy",
+    source: {
+      current: {
+        label: "Current content",
+        description: "The embedded Editor will contain the current content, so it cannot be changed externally."
+      },
+      gist: {
+        tooltip: `Only available when editing a file from a ${en_common.names.github} gist.`,
+        label: `${en_common.names.github} gist`,
+        description:
+          "The embedded Editor will fetch the content from the open gist. Changes made to this gist will be reflected in the Editor."
+      }
+    },
     embedCode: "Embed code",
     copiedToClipboard: "Copied to clipboard"
   },

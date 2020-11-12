@@ -47,8 +47,7 @@ interface Props {
   onSetGitHubToken: () => void;
   onExportGist: () => void;
   onUpdateGist: () => void;
-  onEmbedCurrentContent: () => void;
-  onEmbedGithubGist: () => void;
+  onEmbed: () => void;
   onClose: () => void;
   onCopyContentToClipboard: () => void;
   isPageFullscreen: boolean;
@@ -136,15 +135,8 @@ export function EditorToolbar(props: Props) {
         <DropdownItem key={`dropdown-${dropdownId}-download-svg`} component="button" onClick={props.onPreview}>
           {i18n.editorToolbar.downloadSVG}
         </DropdownItem>
-        <DropdownItem
-          key={`dropdown-${dropdownId}-embed-current-content`}
-          component="button"
-          onClick={props.onEmbedCurrentContent}
-        >
-          {i18n.editorToolbar.embed}
-        </DropdownItem>
       </DropdownGroup>,
-      <DropdownGroup key={"github-group"} label={i18n.names.github}>
+      <DropdownGroup key={"share-group"} label={i18n.editorToolbar.share}>
         <React.Fragment key={`dropdown-${dropdownId}-fragment`}>
           {context.external && !context.readonly && (
             <DropdownItem
@@ -196,7 +188,11 @@ export function EditorToolbar(props: Props) {
             </Tooltip>
           )}
         </React.Fragment>
-        <DropdownItem key={`dropdown-${dropdownId}-embed-gist`} component="button" onClick={props.onEmbedGithubGist}>
+        <DropdownItem
+          key={`dropdown-${dropdownId}-embed`}
+          component="button"
+          onClick={props.onEmbed}
+        >
           {i18n.editorToolbar.embed}
         </DropdownItem>
       </DropdownGroup>
