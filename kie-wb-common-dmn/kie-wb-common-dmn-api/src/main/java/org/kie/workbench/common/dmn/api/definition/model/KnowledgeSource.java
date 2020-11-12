@@ -185,7 +185,7 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition<Gen
         if (description != null ? !description.equals(that.description) : that.description != null) {
             return false;
         }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
+        if (nameHolder != null ? !nameHolder.equals(that.nameHolder) : that.nameHolder != null) {
             return false;
         }
         if (type != null ? !type.equals(that.type) : that.type != null) {
@@ -210,7 +210,7 @@ public class KnowledgeSource extends DRGElement implements DMNViewDefinition<Gen
     public int hashCode() {
         return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
                                          description != null ? description.hashCode() : 0,
-                                         name != null ? name.hashCode() : 0,
+                                         nameHolder != null ? nameHolder.hashCode() : 0,
                                          type != null ? type.hashCode() : 0,
                                          locationURI != null ? locationURI.hashCode() : 0,
                                          backgroundSet != null ? backgroundSet.hashCode() : 0,

@@ -231,7 +231,7 @@ public class Definitions extends NamedElement implements DMNPropertySet {
         if (description != null ? !description.equals(that.description) : that.description != null) {
             return false;
         }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
+        if (nameHolder != null ? !nameHolder.equals(that.nameHolder) : that.nameHolder != null) {
             return false;
         }
         if (_import != null ? !_import.equals(that._import) : that._import != null) {
@@ -271,7 +271,7 @@ public class Definitions extends NamedElement implements DMNPropertySet {
     public int hashCode() {
         return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
                                          description != null ? description.hashCode() : 0,
-                                         name != null ? name.hashCode() : 0,
+                                         nameHolder != null ? nameHolder.hashCode() : 0,
                                          _import != null ? _import.hashCode() : 0,
                                          itemDefinition != null ? itemDefinition.hashCode() : 0,
                                          drgElement != null ? drgElement.hashCode() : 0,
