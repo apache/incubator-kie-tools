@@ -60,7 +60,7 @@ Build from source
 1. Build with Yarn:
     ```bash
     cd kogito-tooling
-    yarn run init
+    yarn run install
     
     #prod
     yarn run build:prod
