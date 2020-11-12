@@ -45,17 +45,17 @@ module.exports = (env, argv) => {
       },
       plugins: [
         new CopyPlugin([
-          { from: "./src/showcase/static/resources", to: "./showcase/resources" },
-          { from: "./src/showcase/static/index.html", to: "./showcase/index.html" },
-          { from: "./src/showcase/static/favicon.ico", to: "./showcase/favicon.ico" },
-          { from: "./static/images", to: "./showcase/images" }
+          { from: "./src/showcase/static/resources", to: "./resources" },
+          { from: "./src/showcase/static/index.html", to: "./index.html" },
+          { from: "./src/showcase/static/favicon.ico", to: "./favicon.ico" },
+          { from: "./static/images", to: "./images" }
         ])
       ],
       devServer: {
         historyApiFallback: true,
         disableHostCheck: true,
         watchContentBase: true,
-        contentBase: path.join(__dirname, "./dist/showcase"),
+        contentBase: path.join(__dirname),
         compress: true,
         port: 9001,
         open: true,
