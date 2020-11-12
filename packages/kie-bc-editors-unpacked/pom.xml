@@ -28,7 +28,7 @@
     <repositories>
         <repository>
             <id>JBoss Nexus</id>
-            <url>https://origin-repository.jboss.org/nexus/content/groups/kie-group</url>
+            <url>https://repository.jboss.org/nexus/content/groups/public</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
