@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   DataListAction,
   DataListCell,
@@ -30,7 +30,8 @@ import { AttributesTableEditModeAction } from "../atoms";
 import { ValidatedType } from "../../../types";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { toText } from "../../../reducers";
-import MonacoEditor from "react-monaco-editor/lib/editor";
+import MonacoEditor, { EditorWillMount } from "react-monaco-editor";
+import { CancellationToken, editor, languages, Position } from "monaco-editor/esm/vs/editor/editor.api";
 
 interface AttributesTableEditRowProps {
   index: number | undefined;
@@ -50,6 +51,8 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
   const [partialScore, setPartialScore] = useState<number | undefined>();
   const [reasonCode, setReasonCode] = useState<string | undefined>();
 
+  const monaco = useRef<MonacoEditor>(null);
+
   useEffect(() => {
     const _text = toText(attribute.predicate);
     setText({
@@ -58,6 +61,8 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
     });
     setPartialScore(attribute.partialScore);
     setReasonCode(attribute.reasonCode);
+
+    monaco.current?.editor?.focus();
   }, [props]);
 
   const toNumber = (value: string): number | undefined => {
@@ -69,6 +74,59 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
       return undefined;
     }
     return n;
+  };
+
+  const editorWillMount: EditorWillMount = monaco => {
+    const theme: editor.IStandaloneThemeData = {
+      base: "vs",
+      inherit: false,
+      rules: [
+        { token: "sc-numeric", foreground: "3232E7" },
+        {
+          token: "sc-boolean",
+          foreground: "26268D",
+          fontStyle: "bold"
+        },
+        {
+          token: "sc-string",
+          foreground: "2A9343",
+          fontStyle: "bold"
+        }
+      ],
+      colors: { "editorLineNumber.foreground": "123456" }
+    };
+    const tokens: languages.IMonarchLanguage = {
+      tokenizer: {
+        root: [
+          {
+            regex: "[0-9]+",
+            action: "sc-numeric"
+          },
+          {
+            regex: "(?:(\\btrue\\b)|(\\bfalse\\b))",
+            action: "sc-boolean"
+          },
+          {
+            regex: '(?:\\"(?:.*?)\\")',
+            action: "sc-string"
+          }
+        ]
+      }
+    };
+    const provider: languages.CompletionItemProvider = {
+      provideCompletionItems(
+        model: editor.ITextModel,
+        position: Position,
+        context: languages.CompletionContext,
+        token: CancellationToken
+      ): languages.ProviderResult<languages.CompletionList> {
+        return { suggestions: [] };
+      }
+    };
+    monaco.editor.defineTheme("scorecards", theme);
+    monaco.languages.register({ id: "scorecards" });
+    monaco.languages.setMonarchTokensProvider("scorecards", tokens);
+    monaco.languages.registerCompletionItemProvider("scorecards", provider);
   };
 
   return (
@@ -84,9 +142,10 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
                 validated={text.valid ? "default" : "error"}
               >
                 <MonacoEditor
+                  ref={monaco}
                   height="150px"
-                  language="json"
-                  theme=""
+                  language="scorecards"
+                  theme="scorecards"
                   options={{
                     glyphMargin: false,
                     scrollBeyondLastLine: false
@@ -98,6 +157,7 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
                       valid: validateText(e)
                     })
                   }
+                  editorWillMount={editorWillMount}
                 />
               </FormGroup>
             </DataListCell>,
