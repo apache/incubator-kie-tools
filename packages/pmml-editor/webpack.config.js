@@ -16,6 +16,7 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../webpack.common.config");
 const pfWebpackOptions = require("@kogito-tooling/patternfly-base/patternflyWebpackOptions");
@@ -24,9 +25,23 @@ let config = merge(common, {
   entry: {
     index: "./src/editor/index.ts"
   },
-  plugins: [new CopyPlugin([{ from: "./static/images", to: "./images" }])],
+  plugins: [
+    new CopyPlugin([
+      {
+        from: "./static/images",
+        to: "./images"
+      }
+    ]),
+    new MonacoWebpackPlugin()
+  ],
   module: {
-    rules: [...pfWebpackOptions.patternflyRules]
+    rules: [
+      {
+        test: /\.ttf$/,
+        use: ["file-loader"]
+      },
+      ...pfWebpackOptions.patternflyRules
+    ]
   }
 });
 

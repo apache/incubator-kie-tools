@@ -41,8 +41,8 @@ export const AttributesTableRow = (props: AttributesTableRowProps) => {
       <DataListItemRow>
         <DataListItemCells
           dataListCells={[
-            <DataListCell key="0" width={4}>
-              <div>{toText(attribute.predicate)}</div>
+            <DataListCell key="0" width={5}>
+              <pre>{toText(attribute.predicate)}</pre>
             </DataListCell>,
             <DataListCell key="1" width={2}>
               <div>{attribute.partialScore}</div>

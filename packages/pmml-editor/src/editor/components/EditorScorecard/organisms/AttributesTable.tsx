@@ -117,7 +117,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
                   <DataListItemRow>
                     <DataListItemCells
                       dataListCells={[
-                        <DataListCell key="0" width={4}>
+                        <DataListCell key="0" width={5}>
                           <FormGroup fieldId="Predicate" label="Predicate" isRequired={true} />
                         </DataListCell>,
                         <DataListCell key="1" width={2}>

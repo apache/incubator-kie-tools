@@ -22,7 +22,6 @@ import {
   DataListItemCells,
   DataListItemRow,
   FormGroup,
-  TextArea,
   TextInput
 } from "@patternfly/react-core";
 import "../organisms/CharacteristicsTable.scss";
@@ -31,6 +30,7 @@ import { AttributesTableEditModeAction } from "../atoms";
 import { ValidatedType } from "../../../types";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { toText } from "../../../reducers";
+import MonacoEditor from "react-monaco-editor/lib/editor";
 
 interface AttributesTableEditRowProps {
   index: number | undefined;
@@ -76,24 +76,22 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
       <DataListItemRow>
         <DataListItemCells
           dataListCells={[
-            <DataListCell key="0" width={4}>
+            <DataListCell key="0" width={5}>
               <FormGroup
                 fieldId="attribute-text-helper"
-                helperText="This will be Monaco and predicate definition."
                 helperTextInvalid="Text must be present"
                 helperTextInvalidIcon={<ExclamationCircleIcon />}
                 validated={text.valid ? "default" : "error"}
               >
-                <TextArea
-                  type="text"
-                  id="attribute-text"
-                  name="attribute-text"
-                  aria-describedby="attribute-text-helper"
+                <MonacoEditor
+                  height="150px"
+                  language="json"
+                  theme=""
+                  options={{
+                    glyphMargin: false,
+                    scrollBeyondLastLine: false
+                  }}
                   value={text.value ?? ""}
-                  validated={text.valid ? "default" : "error"}
-                  autoFocus={true}
-                  style={{ resize: "vertical" }}
-                  rows={text?.value?.split("\n").length ?? 1}
                   onChange={e =>
                     setText({
                       value: e,
