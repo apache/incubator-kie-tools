@@ -100,7 +100,7 @@ export const en: OnlineI18n = {
       validating: `Validating ${en_common.names.url}`,
       invalidGistExtension: "File type on the provided gist is not supported.",
       invalidExtension: `File type on the provided ${en_common.names.url} is not supported.`,
-      invalidGist: `Enter a valid gist ${en_common.names.url}.`,
+      invalidGist: `Enter a valid gist ${en_common.names.url}. If you're using a specific gist ${en_common.names.url} remember its name can't have whitespaces and upper-case letters.`,
       invalidUrl: `This ${en_common.names.url} is not valid (don't forget "https://"!).`,
       notFoundUrl: `This ${en_common.names.url} does not exist.`,
       corsNotAvailable: `This ${en_common.names.url} cannot be opened because it doesn't allow other websites to access it.`,

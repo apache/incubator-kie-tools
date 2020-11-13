@@ -168,15 +168,16 @@ export class GithubService {
 
   public extractGistFilename(url: string): string | undefined {
     if (url.lastIndexOf("#") > -1) {
-      const gistFilename = url.substr(url.lastIndexOf("#") + 1).split("-");
-      gistFilename.splice(0, 1);
-      return gistFilename.join(".");
+      const filename = url.substr(url.lastIndexOf("#") + 1).replace("file-", "");
+      return filename.substr(0, filename.lastIndexOf("-")) + "." + filename.substr(filename.lastIndexOf("-") + 1);
     }
     return;
   }
 
   public extractGistFilenameFromRawUrl(url: string): string {
-    return url.substr(url.lastIndexOf("/") + 1);
+    // The gist raw URL is encoded two times.
+    const decodedUri = decodeURI(decodeURI(url));
+    return decodedUri.substr(decodedUri.lastIndexOf("/") + 1);
   }
 
   public hasGistScope(headers: any) {
@@ -278,14 +279,10 @@ export class GithubService {
     return this.removeCommitHashFromGistRawUrl((updateResponse.data as any).files[args.filename].raw_url);
   }
 
-  public getGistRawUrlFromId(gistId: string, gistFilename: string | undefined): Promise<string> {
-    return this.octokit.gists
-      .get({ gist_id: gistId })
-      .then(response => {
-        const filename = gistFilename ? gistFilename : Object.keys(response.data.files)[0];
-        return this.removeCommitHashFromGistRawUrl((response.data as any).files[filename].raw_url);
-      })
-      .catch(e => Promise.reject("Not able to get gist from GitHub."));
+  public async getGistRawUrlFromId(gistId: string, gistFilename: string | undefined): Promise<string> {
+    const { data } = await this.octokit.gists.get({ gist_id: gistId });
+    const filename = gistFilename ? gistFilename : Object.keys(data.files)[0];
+    return this.removeCommitHashFromGistRawUrl((data as any).files[filename].raw_url);
   }
 
   public getGithubRawUrl(fileUrl: string): Promise<string> {
