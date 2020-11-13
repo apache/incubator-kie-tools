@@ -66,7 +66,7 @@ var (
 		kogitoKafkaDependencyName: {
 			operatorPackageName: "strimzi-kafka-operator",
 			timeoutInMin:        10,
-			channel:             "stable",
+			channel:             "strimzi-0.19.x",
 		},
 		kogitoKeycloakDependencyName: {
 			operatorPackageName: "keycloak-operator",
