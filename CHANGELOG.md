@@ -1,0 +1,1 @@
+packages/vscode-extension-red-hat-business-automation-bundle/CHANGELOG.md
