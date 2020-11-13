@@ -4,7 +4,7 @@
   "displayName": "Todo List View :: Kogito Examples ",
   "description": "",
   "main": "./dist/extension.js",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.46.0"
@@ -53,6 +53,6 @@
     ]
   },
   "dependencies": {
-    "todo-list-view": "0.7.1"
+    "todo-list-view": "0.8.0"
   }
 }
