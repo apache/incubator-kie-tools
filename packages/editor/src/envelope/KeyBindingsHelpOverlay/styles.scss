@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+@import "../../../../../node_modules/@patternfly/patternfly/sass-utilities/_all.scss";
+@import "../../../../../node_modules/@patternfly/patternfly/base/_variables.scss";
+@import "../../../../../node_modules/@patternfly/patternfly/base/_themes.scss";
+
 .kogito-tooling--keyboard-shortcuts-icon {
   user-select: none;
   z-index: 999;
@@ -28,4 +32,12 @@
   height: 35px;
   font-size: 1.2em;
   cursor: pointer;
+}
+
+.vscode-dark {
+  @extend .pf-t-dark;
+
+  .pf-c-modal-box__title {
+    color: var(--pf-global--Color--light-100);
+  }
 }

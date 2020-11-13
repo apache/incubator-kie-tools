@@ -92,7 +92,7 @@ export function KeyBindingsHelpOverlay() {
       </div>
 
       <Modal
-        title={"Keyboard shortcuts"}
+        title={i18n.keyBindingsHelpOverlay.title}
         isOpen={showing}
         width={"60%"}
         onClose={toggle}

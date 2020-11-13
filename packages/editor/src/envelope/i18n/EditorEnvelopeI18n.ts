@@ -19,6 +19,7 @@ import { CommonI18n } from "@kogito-tooling/i18n-common-dictionary";
 
 export interface EditorEnvelopeDictionary extends ReferenceDictionary<EditorEnvelopeDictionary> {
   keyBindingsHelpOverlay: {
+    title: string;
     categories: {
       edit: string;
       help: string;
