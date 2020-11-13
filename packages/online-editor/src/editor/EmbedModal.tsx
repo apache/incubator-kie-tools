@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { Alert, Button, Modal, ModalVariant, Radio, TextArea, Tooltip } from "@patternfly/react-core";
+import { Button, Modal, ModalVariant, Radio, Tooltip, ClipboardCopy } from "@patternfly/react-core";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useOnlineI18n } from "../common/i18n";
 import { useFileUrl } from "../common/Hooks";
@@ -149,14 +149,6 @@ export function EmbedModal(props: Props) {
     getStandaloneEditorIframeOuterHtml().then(outerHtml => setEmbedCode(outerHtml));
   }, [getStandaloneEditorIframeOuterHtml]);
 
-  const onCopy = useCallback(() => {
-    const textArea = document.getElementById("embed-code-text-area") as HTMLTextAreaElement;
-    textArea.select();
-    if (document.execCommand("copy")) {
-      setCopied(true);
-    }
-  }, []);
-
   return (
     <Modal
       variant={ModalVariant.small}
@@ -166,9 +158,6 @@ export function EmbedModal(props: Props) {
       title={i18n.embedModal.title}
       description={i18n.embedModal.description}
       actions={[
-        <Button key="confirm" variant="primary" onClick={onCopy}>
-          {i18n.embedModal.copy}
-        </Button>,
         <Button key="cancel" variant="link" onClick={props.onClose}>
           {i18n.terms.close}
         </Button>
@@ -199,19 +188,17 @@ export function EmbedModal(props: Props) {
           onChange={() => setContentSource(ContentSource.GIST)}
         />
       </Tooltip>
-      <p>{i18n.embedModal.embedCode}</p>
-      <TextArea id={"embed-code-text-area"} aria-label={"Embed code"} value={embedCode} type={"text"} />
       <br />
-      {copied ? (
-        <Alert
-          className={"kogito--editor__embed-editor-modal-copied-alert"}
-          variant="success"
-          title={i18n.embedModal.copiedToClipboard}
-          isInline={true}
-        />
-      ) : (
-        <div className={"kogito--editor__embed-editor-modal-copied-alert"} />
-      )}
+      <div className={"kogito--editor__embed-modal-embed-code"}>
+        <p className={"kogito--editor__embed-modal-embed-code-items"}>{i18n.embedModal.embedCode}</p>
+        <ClipboardCopy
+          className={"kogito--editor__embed-modal-embed-code-items"}
+          aria-label={"Embed code"}
+          type={"text"}
+        >
+          {embedCode}
+        </ClipboardCopy>
+      </div>
     </Modal>
   );
 }
