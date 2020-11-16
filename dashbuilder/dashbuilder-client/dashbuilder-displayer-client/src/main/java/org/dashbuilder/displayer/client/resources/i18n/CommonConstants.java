@@ -281,4 +281,8 @@ public interface CommonConstants extends Messages {
     String noPropertiesComponent();
 
     String componentConfigDefaultMessage();
+
+    String mandatoryHelpHeader();
+
+    String mandatoryHelpText();
 }

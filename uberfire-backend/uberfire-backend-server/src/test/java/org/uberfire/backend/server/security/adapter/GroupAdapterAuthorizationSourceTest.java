@@ -30,7 +30,7 @@ import javax.management.remote.JMXPrincipal;
 import javax.security.auth.Subject;
 
 import org.junit.Test;
-import org.uberfire.security.backend.BasicAuthorizationPrincipal;
+import org.kie.soup.security.utils.BasicAuthorizationPrincipal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

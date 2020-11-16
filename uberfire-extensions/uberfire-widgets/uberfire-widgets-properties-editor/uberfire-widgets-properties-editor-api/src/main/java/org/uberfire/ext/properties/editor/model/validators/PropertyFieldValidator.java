@@ -24,7 +24,9 @@ public interface PropertyFieldValidator {
     /**
      * Validate a field new value
      * @param value
+     * The value to be validated
      * @return
+     * true if valid, false otherwise
      */
     public boolean validate(Object value);
 
