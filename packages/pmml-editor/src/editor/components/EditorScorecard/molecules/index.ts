@@ -22,3 +22,4 @@ export * from "./CharacteristicsTableEditRow";
 export * from "./EmptyStateNoAttributes";
 export * from "./EmptyStateNoCharacteristics";
 export * from "./EmptyStateNoMatchingCharacteristics";
+export * from "./PredicateEditor";

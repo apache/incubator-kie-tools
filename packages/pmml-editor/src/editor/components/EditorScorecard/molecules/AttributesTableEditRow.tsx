@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DataListAction,
   DataListCell,
@@ -30,10 +30,7 @@ import { AttributesTableEditModeAction } from "../atoms";
 import { ValidatedType } from "../../../types";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 import { toText } from "../../../reducers";
-import MonacoEditor, { EditorWillMount } from "react-monaco-editor";
-import { CancellationToken, editor, languages, Position } from "monaco-editor/esm/vs/editor/editor.api";
-import CompletionItemKind = languages.CompletionItemKind;
-import CompletionItemInsertTextRule = languages.CompletionItemInsertTextRule;
+import { PredicateEditor } from "./PredicateEditor";
 
 interface AttributesTableEditRowProps {
   index: number | undefined;
@@ -53,8 +50,6 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
   const [partialScore, setPartialScore] = useState<number | undefined>();
   const [reasonCode, setReasonCode] = useState<string | undefined>();
 
-  const monaco = useRef<MonacoEditor>(null);
-
   useEffect(() => {
     const _text = toText(attribute.predicate);
     setText({
@@ -63,8 +58,6 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
     });
     setPartialScore(attribute.partialScore);
     setReasonCode(attribute.reasonCode);
-
-    monaco.current?.editor?.focus();
   }, [props]);
 
   const toNumber = (value: string): number | undefined => {
@@ -76,93 +69,6 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
       return undefined;
     }
     return n;
-  };
-
-  const editorWillMount: EditorWillMount = monaco => {
-    const theme: editor.IStandaloneThemeData = {
-      base: "vs",
-      inherit: false,
-      rules: [
-        { token: "sc-numeric", foreground: "3232E7" },
-        {
-          token: "sc-boolean",
-          foreground: "26268D",
-          fontStyle: "bold"
-        },
-        {
-          token: "sc-string",
-          foreground: "2A9343",
-          fontStyle: "bold"
-        },
-        {
-          token: "sc-operator",
-          foreground: "3232E8"
-        },
-        {
-          token: "sc-keyword",
-          foreground: "0000ff",
-          fontStyle: "bold"
-        }
-      ],
-      colors: { "editorLineNumber.foreground": "00ff00" }
-    };
-    const tokens: languages.IMonarchLanguage = {
-      tokenizer: {
-        root: [
-          {
-            regex: "[0-9]+",
-            action: "sc-numeric"
-          },
-          {
-            regex: "(?:(\\btrue\\b)|(\\bfalse\\b))",
-            action: "sc-boolean"
-          },
-          {
-            regex: "True|False",
-            action: "sc-keyword"
-          },
-          {
-            regex: '(?:\\"(?:.*?)\\")',
-            action: "sc-string"
-          },
-          {
-            regex: "==|!=|<|<=|>|>=|isMissing|isNotMissing",
-            action: "sc-operator"
-          }
-        ]
-      }
-    };
-    const provider: languages.CompletionItemProvider = {
-      provideCompletionItems(
-        model: editor.ITextModel,
-        position: Position,
-        context: languages.CompletionContext,
-        token: CancellationToken
-      ): languages.ProviderResult<languages.CompletionList> {
-        return {
-          suggestions: [
-            {
-              label: "True",
-              insertText: "True",
-              kind: CompletionItemKind.Keyword,
-              insertTextRules: CompletionItemInsertTextRule.InsertAsSnippet,
-              range: { startLineNumber: 1, endLineNumber: 1, startColumn: 1, endColumn: 1 }
-            },
-            {
-              label: "False",
-              insertText: "False",
-              kind: CompletionItemKind.Keyword,
-              insertTextRules: CompletionItemInsertTextRule.InsertAsSnippet,
-              range: { startLineNumber: 1, endLineNumber: 1, startColumn: 1, endColumn: 1 }
-            }
-          ]
-        };
-      }
-    };
-    monaco.editor.defineTheme("scorecards", theme);
-    monaco.languages.register({ id: "scorecards" });
-    monaco.languages.setMonarchTokensProvider("scorecards", tokens);
-    monaco.languages.registerCompletionItemProvider("scorecards", provider);
   };
 
   return (
@@ -177,24 +83,7 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
                 helperTextInvalidIcon={<ExclamationCircleIcon />}
                 validated={text.valid ? "default" : "error"}
               >
-                <MonacoEditor
-                  ref={monaco}
-                  height="150px"
-                  language="scorecards"
-                  theme="scorecards"
-                  options={{
-                    glyphMargin: false,
-                    scrollBeyondLastLine: false
-                  }}
-                  value={text.value ?? ""}
-                  onChange={e =>
-                    setText({
-                      value: e,
-                      valid: validateText(e)
-                    })
-                  }
-                  editorWillMount={editorWillMount}
-                />
+                <PredicateEditor attribute={attribute} validateText={validateText} />
               </FormGroup>
             </DataListCell>,
             <DataListCell key="1" width={2}>
