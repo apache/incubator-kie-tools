@@ -250,7 +250,7 @@ public class Decision extends DRGElement implements DomainObject,
         if (description != null ? !description.equals(that.description) : that.description != null) {
             return false;
         }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
+        if (nameHolder != null ? !nameHolder.equals(that.nameHolder) : that.nameHolder != null) {
             return false;
         }
         if (question != null ? !question.equals(that.question) : that.question != null) {
@@ -281,7 +281,7 @@ public class Decision extends DRGElement implements DomainObject,
     public int hashCode() {
         return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
                                          description != null ? description.hashCode() : 0,
-                                         name != null ? name.hashCode() : 0,
+                                         nameHolder != null ? nameHolder.hashCode() : 0,
                                          variable != null ? variable.hashCode() : 0,
                                          question != null ? question.hashCode() : 0,
                                          allowedAnswers != null ? allowedAnswers.hashCode() : 0,

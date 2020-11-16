@@ -73,7 +73,7 @@ public class PerformanceIndicator extends BusinessContextElement {
         if (description != null ? !description.equals(that.description) : that.description != null) {
             return false;
         }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
+        if (nameHolder != null ? !nameHolder.equals(that.nameHolder) : that.nameHolder != null) {
             return false;
         }
         if (uri != null ? !uri.equals(that.uri) : that.uri != null) {
@@ -86,7 +86,7 @@ public class PerformanceIndicator extends BusinessContextElement {
     public int hashCode() {
         return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
                                          description != null ? description.hashCode() : 0,
-                                         name != null ? name.hashCode() : 0,
+                                         nameHolder != null ? nameHolder.hashCode() : 0,
                                          uri != null ? uri.hashCode() : 0,
                                          impactingDecision != null ? impactingDecision.hashCode() : 0);
     }

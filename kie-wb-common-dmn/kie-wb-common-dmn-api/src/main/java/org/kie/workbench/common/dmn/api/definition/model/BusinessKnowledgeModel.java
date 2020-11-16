@@ -233,7 +233,7 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable<In
         if (description != null ? !description.equals(that.description) : that.description != null) {
             return false;
         }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
+        if (nameHolder != null ? !nameHolder.equals(that.nameHolder) : that.nameHolder != null) {
             return false;
         }
         if (variable != null ? !variable.equals(that.variable) : that.variable != null) {
@@ -258,7 +258,7 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable<In
     public int hashCode() {
         return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
                                          description != null ? description.hashCode() : 0,
-                                         name != null ? name.hashCode() : 0,
+                                         nameHolder != null ? nameHolder.hashCode() : 0,
                                          variable != null ? variable.hashCode() : 0,
                                          encapsulatedLogic != null ? encapsulatedLogic.hashCode() : 0,
                                          backgroundSet != null ? backgroundSet.hashCode() : 0,

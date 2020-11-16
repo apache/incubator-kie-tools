@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
@@ -44,6 +45,7 @@ import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.LockRequiredEvent;
 
 import static java.util.Collections.emptyList;
 
@@ -61,6 +63,8 @@ public class DMNDiagramsSession implements GraphsProvider {
 
     private Map<String, DMNDiagramsSessionState> dmnSessionStatesByPathURI = new HashMap<>();
 
+    private Event<LockRequiredEvent> locker;
+
     public DMNDiagramsSession() {
         // CDI
     }
@@ -68,10 +72,12 @@ public class DMNDiagramsSession implements GraphsProvider {
     @Inject
     public DMNDiagramsSession(final ManagedInstance<DMNDiagramsSessionState> dmnDiagramsSessionStates,
                               final SessionManager sessionManager,
-                              final DMNDiagramUtils dmnDiagramUtils) {
+                              final DMNDiagramUtils dmnDiagramUtils,
+                              final Event<LockRequiredEvent> locker) {
         this.dmnDiagramsSessionStates = dmnDiagramsSessionStates;
         this.sessionManager = sessionManager;
         this.dmnDiagramUtils = dmnDiagramUtils;
+        this.locker = locker;
     }
 
     public void destroyState(final Metadata metadata) {
@@ -120,12 +126,14 @@ public class DMNDiagramsSession implements GraphsProvider {
         final String diagramId = dmnDiagram.getId().getValue();
         getSessionState().getDiagramsByDiagramId().put(diagramId, stunnerDiagram);
         getSessionState().getDMNDiagramsByDiagramId().put(diagramId, dmnDiagram);
+        locker.fire(new LockRequiredEvent());
     }
 
     public void remove(final DMNDiagramElement dmnDiagram) {
         final String diagramId = dmnDiagram.getId().getValue();
         getSessionState().getDiagramsByDiagramId().remove(diagramId);
         getSessionState().getDMNDiagramsByDiagramId().remove(diagramId);
+        locker.fire(new LockRequiredEvent());
     }
 
     @Override

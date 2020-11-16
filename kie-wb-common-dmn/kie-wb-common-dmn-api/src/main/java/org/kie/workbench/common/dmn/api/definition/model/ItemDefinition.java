@@ -151,7 +151,7 @@ public class ItemDefinition extends NamedElement implements HasTypeRef,
         if (description != null ? !description.equals(that.description) : that.description != null) {
             return false;
         }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
+        if (nameHolder != null ? !nameHolder.equals(that.nameHolder) : that.nameHolder != null) {
             return false;
         }
         if (typeRef != null ? !typeRef.equals(that.typeRef) : that.typeRef != null) {
@@ -176,7 +176,7 @@ public class ItemDefinition extends NamedElement implements HasTypeRef,
     public int hashCode() {
         return HashUtil.combineHashCodes(id != null ? id.hashCode() : 0,
                                          description != null ? description.hashCode() : 0,
-                                         name != null ? name.hashCode() : 0,
+                                         nameHolder != null ? nameHolder.hashCode() : 0,
                                          typeRef != null ? typeRef.hashCode() : 0,
                                          allowedValues != null ? allowedValues.hashCode() : 0,
                                          itemComponent != null ? itemComponent.hashCode() : 0,

@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-parent</artifactId>
-    <version>7.46.0-SNAPSHOT</version>
+    <version>7.47.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.kie.workbench</groupId>
@@ -17,6 +17,7 @@
   <description>Kie Workbench - Common</description>
 
   <modules>
+    <module>kie-identity-session-provider</module>
     <module>kie-wb-common-profile</module>
     <module>kie-wb-common-widgets</module>
     <module>kie-wb-testing-utils</module>

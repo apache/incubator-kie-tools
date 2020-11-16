@@ -28,8 +28,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 
 public abstract class NamedElement extends DMNElement implements HasName {
 
-    protected Name name;
-
     @Property
     @FormField(afterElement = "description", type = NameFieldType.class)
     @Valid
@@ -46,7 +44,6 @@ public abstract class NamedElement extends DMNElement implements HasName {
                         final Name name) {
         super(id,
               description);
-        this.name = name;
         this.nameHolder = new NameHolder(name);
     }
 
@@ -61,7 +58,6 @@ public abstract class NamedElement extends DMNElement implements HasName {
 
     @Override
     public void setName(final Name name) {
-        this.name = name;
         this.nameHolder.setValue(name);
     }
 
@@ -73,7 +69,6 @@ public abstract class NamedElement extends DMNElement implements HasName {
     }
 
     public void setNameHolder(final NameHolder nameHolder) {
-        this.name.setValue(nameHolder.getValue().getValue());
         this.nameHolder = nameHolder;
     }
 }
