@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
@@ -143,11 +144,12 @@ public class DMNUnmarshaller {
                 hasComponentWidthsMap.put(uuid, hcw);
             }
         };
+        final boolean isDMNDIPresent = Optional.ofNullable(dmnDefinitions.getDMNDI()).isPresent(); // Check before the DRG creation ('ensureDRGElementExists').
 
         ensureDRGElementExists(dmnDefinitions);
 
         final Definitions wbDefinitions = DefinitionsConverter.wbFromDMN(dmnDefinitions, importDefinitions, pmmlDocuments);
-        final List<NodeEntry> nodeEntries = modelToStunnerConverter.makeNodes(dmnDefinitions, importDefinitions, hasComponentWidthsConsumer);
+        final List<NodeEntry> nodeEntries = modelToStunnerConverter.makeNodes(dmnDefinitions, importDefinitions, isDMNDIPresent, hasComponentWidthsConsumer);
         final List<JSITDecisionService> dmnDecisionServices = getDecisionServices(nodeEntries);
 
         //Ensure all locations are updated to relative for Stunner

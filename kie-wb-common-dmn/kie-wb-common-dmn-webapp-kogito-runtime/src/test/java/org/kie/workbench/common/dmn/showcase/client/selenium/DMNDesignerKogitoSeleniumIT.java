@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -71,6 +70,7 @@ import org.xmlunit.diff.DifferenceEvaluators;
 import org.xmlunit.util.Predicate;
 
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
 import static org.apache.commons.io.FileUtils.copyFile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase.Namespace.DC;
@@ -1821,6 +1821,25 @@ public class DMNDesignerKogitoSeleniumIT {
     }
 
     @Test
+    public void testDMNModelWithoutDMNDI_KOGITO3696() throws Exception {
+        final String expected = loadResource("KOGITO-3696 (DMN model without DMNDI - expected).xml");
+        final String fixture = loadResource("KOGITO-3696 (DMN model without DMNDI - fixture).xml");
+        final List<String> ignoredAttributes = asList("id", "dmnElementRef");
+
+        setContent(fixture);
+
+        final String actual = getContent();
+        assertThat(actual).isNotBlank();
+
+        XmlAssert.assertThat(actual)
+                .and(expected)
+                .ignoreComments()
+                .ignoreWhitespace()
+                .withAttributeFilter(attr -> !ignoredAttributes.contains(attr.getName()))
+                .areIdentical();
+    }
+
+    @Test
     public void testDecisionTableInputClauseConstraints_KOGITO369() throws Exception {
         final String expected = loadResource("KOGITO-369 (Decision Table Input Clause constraints).xml");
         setContent(expected);
@@ -1961,7 +1980,7 @@ public class DMNDesignerKogitoSeleniumIT {
 
         final ListSeleniumModel listModel = new ListSeleniumModel();
         listModel.setName("Decision-1");
-        listModel.setItems(Arrays.asList("1", "2"));
+        listModel.setItems(asList("1", "2"));
         appendBoxedListExpressionItem(listModel, "3");
 
         final String actual = getContent();
