@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-@import "../../../../../node_modules/@patternfly/patternfly/sass-utilities/_all.scss";
-@import "../../../../../node_modules/@patternfly/patternfly/base/_variables.scss";
-@import "../../../../../node_modules/@patternfly/patternfly/base/_themes.scss";
+@import "../../../../node_modules/@patternfly/patternfly/sass-utilities/all";
+@import "../../../../node_modules/@patternfly/patternfly/base/variables";
+@import "../../../../node_modules/@patternfly/patternfly/base/themes";
 
 // Toggle dark theme
 :not(.vscode-dark) {
@@ -29,6 +29,10 @@
   @extend .pf-t-dark;
 
   .pf-c-title {
+    color: var(--pf-global--Color--light-100);
+  }
+
+  .pf-c-modal-box__title {
     color: var(--pf-global--Color--light-100);
   }
 }
@@ -59,4 +63,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.kogito-tooling--keyboard-shortcuts-icon {
+  user-select: none;
+  z-index: 999;
+  left: 0;
+  bottom: 5px;
+  position: fixed;
+  padding: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  font-size: 1.2em;
+  cursor: pointer;
 }

@@ -29,9 +29,8 @@ import {
 import { KeyboardIcon } from "@patternfly/react-icons";
 import { EditorContext } from "../../api";
 import { OperatingSystem } from "@kogito-tooling/channel-common-api";
-import "./styles.scss";
 import { useKogitoEditorEnvelopeContext } from "../../api";
-import { useEditorEnvelopeI18nContext } from "../i18n/setup";
+import { useEditorEnvelopeI18nContext } from "../i18n";
 
 export function KeyBindingsHelpOverlay() {
   const [showing, setShowing] = useState(false);
