@@ -26,7 +26,7 @@ import {
   StackItem,
   TextInput
 } from "@patternfly/react-core";
-import "../organisms/OutputFieldsTable.scss";
+import "./OutputFieldRow.scss";
 import { FieldName, OutputField } from "@kogito-tooling/pmml-editor-marshaller";
 import { OutputFieldRowEditModeAction, OutputLabelsEditMode } from "../atoms";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";

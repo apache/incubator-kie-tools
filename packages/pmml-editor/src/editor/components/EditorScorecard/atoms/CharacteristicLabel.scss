@@ -13,24 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@import "~@patternfly/patternfly/patternfly.css";
 
-.characteristics {
+.characteristic-list {
+  &__item__label {
+    margin-right: var(--pf-global--spacer--sm);
+    margin-bottom: var(--pf-global--spacer--sm);
 
-  &__header {
-
-    border-top: none;
-    font-weight: bold;
-    outline: none;
-
-    &__row {
-      border-bottom: none;
-      height: 64px;
+    &:last-of-type {
+      margin-right: 0;
     }
   }
-
-  &__list-item {
-    outline: none;
-  }
-
 }

@@ -27,20 +27,21 @@ import {
   Tooltip,
   TooltipPosition
 } from "@patternfly/react-core";
-import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
+import { Attribute, Characteristic, Model, PMML, Scorecard } from "@kogito-tooling/pmml-editor-marshaller";
 import { AttributesTableEditRow, AttributesTableRow, EmptyStateNoAttributes } from "../molecules";
 import "./AttributesTable.scss";
 
 import { InfoCircleIcon } from "@patternfly/react-icons";
 import { Operation } from "../Operation";
 import { ActionSpacer } from "../../EditorCore/atoms";
+import { useSelector } from "react-redux";
+import { IndexedCharacteristic } from "./CharacteristicsTable";
 
 interface AttributesTableProps {
   modelIndex: number;
-  attributes: Attribute[];
+  characteristic: IndexedCharacteristic | undefined;
   activeOperation: Operation;
   setActiveOperation: (operation: Operation) => void;
-  validateText: (text: string | undefined) => boolean;
   addAttribute: () => void;
   deleteAttribute: (index: number) => void;
   commit: (
@@ -53,17 +54,30 @@ interface AttributesTableProps {
 
 export const AttributesTable = (props: AttributesTableProps) => {
   const {
-    attributes,
+    modelIndex,
+    characteristic,
     activeOperation,
     setActiveOperation,
     addAttribute,
     deleteAttribute,
-    validateText,
     commit
   } = props;
 
   const [editItemIndex, setEditItemIndex] = useState<number | undefined>(undefined);
   const addAttributeRowRef = useRef<HTMLDivElement | null>(null);
+
+  const attributes: Attribute[] = useSelector<PMML, Attribute[]>((state: PMML) => {
+    const model: Model | undefined = state.models ? state.models[modelIndex] : undefined;
+    if (model !== undefined && characteristic?.index !== undefined && model instanceof Scorecard) {
+      const scorecard: Scorecard = model as Scorecard;
+      const _characteristic: Characteristic | undefined =
+        scorecard.Characteristics.Characteristic[characteristic.index];
+      if (_characteristic) {
+        return _characteristic.Attribute;
+      }
+    }
+    return [];
+  });
 
   useEffect(() => {
     if (activeOperation === Operation.CREATE_ATTRIBUTE && addAttributeRowRef.current) {
@@ -106,8 +120,12 @@ export const AttributesTable = (props: AttributesTableProps) => {
     setActiveOperation(Operation.NONE);
   };
 
+  const validateText = (text: string | undefined) => {
+    return text !== undefined && text.trim() !== "";
+  };
+
   return (
-    <div style={{ height: "100%" }}>
+    <div style={{ height: "100%", overflowY: "auto" }}>
       {(attributes.length > 0 || activeOperation === Operation.CREATE_ATTRIBUTE) && (
         <>
           <div style={{ paddingRight: "16px" }}>
@@ -169,7 +187,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
               </DataList>
             </Form>
           </div>
-          <div style={{ height: "calc(100vh - 300px)", overflowY: "scroll" }}>
+          <div className="attributes__body">
             <Form>
               <DataList aria-label="attributes list">
                 {attributes.map((attribute, index) => {
@@ -221,9 +239,7 @@ export const AttributesTable = (props: AttributesTableProps) => {
           </div>
         </>
       )}
-      {attributes.length === 0 && activeOperation !== Operation.CREATE_ATTRIBUTE && (
-        <EmptyStateNoAttributes createAttribute={addAttribute} />
-      )}
+      {attributes.length === 0 && activeOperation !== Operation.CREATE_ATTRIBUTE && <EmptyStateNoAttributes />}
     </div>
   );
 };

@@ -33,6 +33,12 @@
     }
   }
 
+  &__body {
+
+    height: calc(100vh - 604px);
+    overflow-y: scroll;
+  }
+
   &__list-item {
     outline: none;
   }

@@ -14,63 +14,37 @@
  * limitations under the License.
  */
 import * as React from "react";
-import {
-  DataListAction,
-  DataListCell,
-  DataListItem,
-  DataListItemCells,
-  DataListItemRow,
-  Label
-} from "@patternfly/react-core";
-import "../organisms/CharacteristicsTable.scss";
-import { CharacteristicsTableAction } from "../atoms";
+import { Split, SplitItem } from "@patternfly/react-core";
+import { CharacteristicLabels, CharacteristicsTableAction } from "../atoms";
 import { IndexedCharacteristic } from "../organisms";
+import "./CharacteristicsTableRow.scss";
 
 interface CharacteristicsTableRowProps {
   characteristic: IndexedCharacteristic;
+  viewAttributes: () => void;
   onEdit: () => void;
   onDelete: () => void;
   isDisabled: boolean;
 }
 
 export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => {
-  const { isDisabled, characteristic, onEdit, onDelete } = props;
+  const { isDisabled, characteristic, viewAttributes, onEdit, onDelete } = props;
 
   const index = characteristic.index;
 
   return (
-    <DataListItem
-      id={index?.toString()}
-      className="characteristics__list-item"
-      aria-labelledby={"characteristic-" + index}
-    >
-      <DataListItemRow>
-        <DataListItemCells
-          dataListCells={[
-            <DataListCell key="0" width={2}>
-              <div>{characteristic.characteristic.name}</div>
-            </DataListCell>,
-            <DataListCell key="1" width={2}>
-              <Label>{characteristic.characteristic.Attribute.length}</Label>
-            </DataListCell>,
-            <DataListCell key="2" width={2}>
-              <div>{characteristic.characteristic.reasonCode}</div>
-            </DataListCell>,
-            <DataListCell key="3" width={2}>
-              <div>{characteristic.characteristic.baselineScore}</div>
-            </DataListCell>,
-            <DataListAction
-              id="characteristic-actions"
-              aria-label="actions"
-              aria-labelledby="characteristic-actions"
-              key="4"
-              width={1}
-            >
-              <CharacteristicsTableAction onEdit={() => onEdit()} onDelete={() => onDelete()} disabled={isDisabled} />
-            </DataListAction>
-          ]}
-        />
-      </DataListItemRow>
-    </DataListItem>
+    <article className={`characteristic-item characteristic-item-n${index}`}>
+      <Split hasGutter={true} style={{ height: "100%" }}>
+        <SplitItem>
+          <strong>{characteristic.characteristic.name}</strong>
+        </SplitItem>
+        <SplitItem isFilled={true}>
+          <CharacteristicLabels activeCharacteristic={characteristic.characteristic} viewAttributes={viewAttributes} />
+        </SplitItem>
+        <SplitItem>
+          <CharacteristicsTableAction onEdit={() => onEdit()} onDelete={() => onDelete()} disabled={isDisabled} />
+        </SplitItem>
+      </Split>
+    </article>
   );
 };

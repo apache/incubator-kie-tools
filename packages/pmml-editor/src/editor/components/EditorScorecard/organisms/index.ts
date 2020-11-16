@@ -15,6 +15,6 @@
  */
 
 export * from "./AttributesTable";
-export * from "./CharacteristicPanel";
+export * from "./CharacteristicsContainer";
 export * from "./CharacteristicsTable";
 export * from "./CorePropertiesTable";

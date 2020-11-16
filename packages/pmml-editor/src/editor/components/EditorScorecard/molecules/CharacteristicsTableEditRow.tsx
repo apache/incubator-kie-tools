@@ -15,19 +15,10 @@
  */
 import * as React from "react";
 import { useEffect, useState } from "react";
-import {
-  DataListAction,
-  DataListCell,
-  DataListItem,
-  DataListItemCells,
-  DataListItemRow,
-  FormGroup,
-  Label,
-  TextInput
-} from "@patternfly/react-core";
+import { FormGroup, Split, SplitItem, TextInput } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
-import "../organisms/CharacteristicsTable.scss";
 import { CharacteristicsTableEditModeAction } from "../atoms";
+import "./CharacteristicsTableRow.scss";
 import { ValidatedType } from "../../../types";
 import { IndexedCharacteristic } from "../organisms";
 
@@ -71,88 +62,66 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   };
 
   return (
-    <DataListItem
-      id={characteristic.index?.toString()}
-      className="characteristics__list-item"
-      aria-labelledby={"characteristic-" + index}
-    >
-      <DataListItemRow style={{ minHeight: "64 px" }}>
-        <DataListItemCells
-          dataListCells={[
-            <DataListCell key="0" width={2}>
-              <FormGroup
-                fieldId="characteristic-form-name-helper"
-                helperText="Please provide a name for the Characteristic."
-                helperTextInvalid="Name must be unique and present"
-                helperTextInvalidIcon={<ExclamationCircleIcon />}
-                validated={name.valid ? "default" : "error"}
-              >
-                <TextInput
-                  type="text"
-                  id="characteristic-name"
-                  name="characteristic-name"
-                  aria-describedby="characteristic-name-helper"
-                  value={name.value ?? ""}
-                  validated={name.valid ? "default" : "error"}
-                  autoFocus={true}
-                  onChange={e =>
-                    setName({
-                      value: e,
-                      valid: validateCharacteristicName(e)
-                    })
-                  }
-                />
-              </FormGroup>
-            </DataListCell>,
-            <DataListCell key="1" width={2}>
-              <Label>{characteristic.characteristic.Attribute.length}</Label>
-            </DataListCell>,
-            <DataListCell key="2" width={2}>
-              <FormGroup
-                fieldId="characteristic-reason-code-helper"
-                helperText="A Reason Code is mapped to a Business reason."
-              >
-                <TextInput
-                  type="text"
-                  id="characteristic-reason-code"
-                  name="characteristic-reason-code"
-                  aria-describedby="characteristic-reason-code-helper"
-                  value={reasonCode ?? ""}
-                  onChange={e => setReasonCode(e)}
-                />
-              </FormGroup>
-            </DataListCell>,
-            <DataListCell key="3" width={2}>
-              <FormGroup
-                fieldId="characteristic-baseline-score-helper"
-                helperText="Helps to determine the ranking of Reason Codes."
-              >
-                <TextInput
-                  type="number"
-                  id="characteristic-baseline-score"
-                  name="characteristic-baseline-score"
-                  aria-describedby="characteristic-baseline-score-helper"
-                  value={baselineScore ?? ""}
-                  onChange={e => setBaselineScore(toNumber(e))}
-                />
-              </FormGroup>
-            </DataListCell>,
-            <DataListAction
-              id="characteristic-actions"
-              aria-label="actions"
-              aria-labelledby="characteristic-actions"
-              key="4"
-              width={1}
-            >
-              <CharacteristicsTableEditModeAction
-                onCommit={() => onCommit(name.value, reasonCode, baselineScore)}
-                onCancel={() => onCancel()}
-                disableCommit={!validateCharacteristicName(name.value)}
-              />
-            </DataListAction>
-          ]}
-        />
-      </DataListItemRow>
-    </DataListItem>
+    <article className={`characteristic-item characteristic-item-n${index}`}>
+      <Split hasGutter={true}>
+        <SplitItem>
+          <FormGroup
+            label="Name"
+            isRequired={true}
+            fieldId="characteristic-form-name-helper"
+            helperTextInvalid="Name must be unique and present"
+            helperTextInvalidIcon={<ExclamationCircleIcon />}
+            validated={name.valid ? "default" : "error"}
+          >
+            <TextInput
+              type="text"
+              id="characteristic-name"
+              name="characteristic-name"
+              aria-describedby="characteristic-name-helper"
+              value={name.value ?? ""}
+              validated={name.valid ? "default" : "error"}
+              autoFocus={true}
+              onChange={e =>
+                setName({
+                  value: e,
+                  valid: validateCharacteristicName(e)
+                })
+              }
+            />
+          </FormGroup>
+        </SplitItem>
+        <SplitItem>
+          <FormGroup label="Reason code" fieldId="characteristic-reason-code-helper">
+            <TextInput
+              type="text"
+              id="characteristic-reason-code"
+              name="characteristic-reason-code"
+              aria-describedby="characteristic-reason-code-helper"
+              value={reasonCode ?? ""}
+              onChange={e => setReasonCode(e)}
+            />
+          </FormGroup>
+        </SplitItem>
+        <SplitItem isFilled={true}>
+          <FormGroup label="Baseline score" fieldId="characteristic-baseline-score-helper" style={{ width: "12em" }}>
+            <TextInput
+              type="number"
+              id="characteristic-baseline-score"
+              name="characteristic-baseline-score"
+              aria-describedby="characteristic-baseline-score-helper"
+              value={baselineScore ?? ""}
+              onChange={e => setBaselineScore(toNumber(e))}
+            />
+          </FormGroup>
+        </SplitItem>
+        <SplitItem>
+          <CharacteristicsTableEditModeAction
+            onCommit={() => onCommit(name.value, reasonCode, baselineScore)}
+            onCancel={() => onCancel()}
+            disableCommit={!validateCharacteristicName(name.value)}
+          />
+        </SplitItem>
+      </Split>
+    </article>
   );
 };

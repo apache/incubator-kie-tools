@@ -14,39 +14,25 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
-import "../organisms/CharacteristicsTable.scss";
-import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
+import { useRef } from "react";
 import { ValidatedType } from "../../../types";
-import { toText } from "../../../reducers";
 import MonacoEditor, { EditorWillMount } from "react-monaco-editor";
 import { CancellationToken, editor, languages, Position } from "monaco-editor/esm/vs/editor/editor.api";
+import { EditorDidMount } from "react-monaco-editor/src/types";
+import * as monacoEditor from "monaco-editor";
 import CompletionItemKind = languages.CompletionItemKind;
 import CompletionItemInsertTextRule = languages.CompletionItemInsertTextRule;
 
 interface PredicateEditorProps {
-  attribute: Attribute;
+  text: ValidatedType<string | undefined>;
+  setText: (_text: ValidatedType<string | undefined>) => void;
   validateText: (text: string | undefined) => boolean;
 }
 
 export const PredicateEditor = (props: PredicateEditorProps) => {
-  const { attribute, validateText } = props;
-
-  const [text, setText] = useState<ValidatedType<string | undefined>>({
-    value: undefined,
-    valid: true
-  });
+  const { text, setText, validateText } = props;
 
   const monaco = useRef<MonacoEditor>(null);
-
-  useEffect(() => {
-    const _text = toText(attribute.predicate);
-    setText({
-      value: _text,
-      valid: true
-    });
-    monaco.current?.editor?.focus();
-  }, [props]);
 
   const editorWillMount: EditorWillMount = _monaco => {
     const theme: editor.IStandaloneThemeData = {
@@ -135,6 +121,10 @@ export const PredicateEditor = (props: PredicateEditorProps) => {
     _monaco.languages.registerCompletionItemProvider("scorecards", provider);
   };
 
+  const editorDidMount: EditorDidMount = (editor: monacoEditor.editor.IStandaloneCodeEditor) => {
+    editor.focus();
+  };
+
   return (
     <MonacoEditor
       ref={monaco}
@@ -153,6 +143,7 @@ export const PredicateEditor = (props: PredicateEditorProps) => {
         })
       }
       editorWillMount={editorWillMount}
+      editorDidMount={editorDidMount}
     />
   );
 };

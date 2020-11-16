@@ -18,7 +18,6 @@ import { useCallback, useMemo, useState } from "react";
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { EditorHeader } from "../../EditorCore/molecules";
 import {
-  Characteristic,
   Characteristics,
   MiningSchema,
   Model,
@@ -27,11 +26,11 @@ import {
   PMML,
   Scorecard
 } from "@kogito-tooling/pmml-editor-marshaller";
-import { CharacteristicPanel, CharacteristicsTable, CorePropertiesTable, IndexedCharacteristic } from "../organisms";
+import { CharacteristicsContainer, CorePropertiesTable, IndexedCharacteristic } from "../organisms";
 import { getModelName } from "../../..";
 import { Actions } from "../../../reducers";
 import { useDispatch, useSelector } from "react-redux";
-import { CharacteristicsToolbar, EmptyStateNoCharacteristics, EmptyStateNoMatchingCharacteristics } from "../molecules";
+import { EmptyStateNoCharacteristics, EmptyStateNoMatchingCharacteristics } from "../molecules";
 import "./ScorecardEditorPage.scss";
 import { Operation } from "../Operation";
 import { EmptyStateModelNotFound } from "../../EditorCore/organisms";
@@ -47,8 +46,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const dispatch = useDispatch();
 
   const [filter, setFilter] = useState("");
-  const [showCharacteristicPanel, setShowCharacteristicPanel] = useState(false);
-  const [selectedCharacteristic, setSelectedCharacteristic] = useState<IndexedCharacteristic | undefined>(undefined);
   const [activeOperation, setActiveOperation] = useState(Operation.NONE);
 
   const model: Scorecard | undefined = useSelector<PMML, Scorecard | undefined>((state: PMML) => {
@@ -63,40 +60,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
   const output: Output | undefined = useMemo(() => model?.Output, [model]);
   const miningSchema: MiningSchema | undefined = useMemo(() => model?.MiningSchema, [model]);
 
-  const onAddAttribute = useCallback(() => {
-    setActiveOperation(Operation.CREATE_ATTRIBUTE);
-  }, [characteristics]);
-
-  const onAddCharacteristic = useCallback(() => {
-    setActiveOperation(Operation.CREATE_CHARACTERISTIC);
-  }, [characteristics]);
-
-  const selectCharacteristic = useCallback(
-    index => {
-      if (activeOperation !== Operation.NONE) {
-        return;
-      }
-      setShowCharacteristicPanel(true);
-      setSelectedCharacteristic({
-        index: index,
-        characteristic: characteristics?.Characteristic[index] as Characteristic
-      });
-    },
-    [characteristics, activeOperation]
-  );
-
-  const validateCharacteristicName = useCallback(
-    (index: number | undefined, name: string): boolean => {
-      if (name === undefined || name.trim() === "") {
-        return false;
-      }
-      const existing: Characteristic[] = characteristics?.Characteristic ?? [];
-      const matching = existing.filter((c, _index) => _index !== index && c.name === name);
-      return matching.length === 0;
-    },
-    [characteristics]
-  );
-
   const validateOutputName = useCallback(
     (index: number | undefined, name: string): boolean => {
       if (name === undefined || name.trim() === "") {
@@ -108,15 +71,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     },
     [output]
   );
-
-  const validateText = (text: string | undefined) => {
-    return text !== undefined && text.trim() !== "";
-  };
-
-  const hideCharacteristicPanel = useCallback(() => {
-    setActiveOperation(Operation.NONE);
-    setShowCharacteristicPanel(false);
-  }, [characteristics]);
 
   const filterCharacteristics = useCallback((): IndexedCharacteristic[] => {
     const _lowerCaseFilter = filter.toLowerCase();
@@ -134,6 +88,10 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
     characteristics
   ]);
 
+  const onAddCharacteristic = useCallback(() => {
+    setActiveOperation(Operation.CREATE_CHARACTERISTIC);
+  }, [characteristics]);
+
   const characteristicsEmptyStateProvider = useMemo(() => {
     if (filter === "") {
       return <EmptyStateNoCharacteristics addCharacteristic={onAddCharacteristic} />;
@@ -147,55 +105,6 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
       {!model && <EmptyStateModelNotFound />}
       {model && (
         <>
-          <CharacteristicPanel
-            modelIndex={modelIndex}
-            characteristic={selectedCharacteristic}
-            activeOperation={activeOperation}
-            setActiveOperation={setActiveOperation}
-            showCharacteristicPanel={showCharacteristicPanel}
-            hideCharacteristicPanel={hideCharacteristicPanel}
-            validateText={validateText}
-            addAttribute={onAddAttribute}
-            deleteAttribute={index => {
-              if (window.confirm(`Delete Attribute "${index}"?`)) {
-                dispatch({
-                  type: Actions.Scorecard_DeleteAttribute,
-                  payload: {
-                    modelIndex: modelIndex,
-                    characteristicIndex: selectedCharacteristic?.index,
-                    attributeIndex: index
-                  }
-                });
-              }
-            }}
-            commit={(_index, _text, _partialScore, _reasonCode) => {
-              if (_index === undefined) {
-                dispatch({
-                  type: Actions.Scorecard_AddAttribute,
-                  payload: {
-                    modelIndex: modelIndex,
-                    characteristicIndex: selectedCharacteristic?.index,
-                    text: _text,
-                    partialScore: _partialScore,
-                    reasonCode: _reasonCode
-                  }
-                });
-              } else {
-                dispatch({
-                  type: Actions.Scorecard_UpdateAttribute,
-                  payload: {
-                    modelIndex: modelIndex,
-                    characteristicIndex: selectedCharacteristic?.index,
-                    attributeIndex: _index,
-                    text: _text,
-                    partialScore: _partialScore,
-                    reasonCode: _reasonCode
-                  }
-                });
-              }
-            }}
-          />
-
           <PageSection variant={PageSectionVariants.light} isFilled={false}>
             <EditorHeader
               title={getModelName(model)}
@@ -302,22 +211,15 @@ export const ScorecardEditorPage = (props: ScorecardEditorPageProps) => {
 
           <PageSection isFilled={true} style={{ paddingTop: "0px" }}>
             <PageSection variant={PageSectionVariants.light}>
-              {((characteristics?.Characteristic ?? []).length > 0 ||
-                activeOperation === Operation.CREATE_CHARACTERISTIC) && (
-                <CharacteristicsToolbar
-                  activeOperation={activeOperation}
-                  onFilter={setFilter}
-                  onAddCharacteristic={onAddCharacteristic}
-                />
-              )}
-              <div style={{ height: "calc(100vh - 524px)" }}>
-                <CharacteristicsTable
+              <div>
+                <CharacteristicsContainer
+                  modelIndex={modelIndex}
                   activeOperation={activeOperation}
                   setActiveOperation={setActiveOperation}
                   characteristics={filteredCharacteristics}
+                  onFilter={setFilter}
                   emptyStateProvider={() => characteristicsEmptyStateProvider}
-                  validateCharacteristicName={validateCharacteristicName}
-                  selectCharacteristic={index => selectCharacteristic(index)}
+                  addCharacteristic={onAddCharacteristic}
                   deleteCharacteristic={index => {
                     if (window.confirm(`Delete Characteristic "${index}"?`)) {
                       dispatch({

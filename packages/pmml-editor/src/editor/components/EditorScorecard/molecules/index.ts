@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+export * from "./AttributesToolbar";
 export * from "./AttributesTableRow";
 export * from "./AttributesTableEditRow";
 export * from "./CharacteristicsToolbar";

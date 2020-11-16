@@ -24,7 +24,6 @@ import {
   FormGroup,
   TextInput
 } from "@patternfly/react-core";
-import "../organisms/CharacteristicsTable.scss";
 import { Attribute } from "@kogito-tooling/pmml-editor-marshaller";
 import { AttributesTableEditModeAction } from "../atoms";
 import { ValidatedType } from "../../../types";
@@ -83,7 +82,7 @@ export const AttributesTableEditRow = (props: AttributesTableEditRowProps) => {
                 helperTextInvalidIcon={<ExclamationCircleIcon />}
                 validated={text.valid ? "default" : "error"}
               >
-                <PredicateEditor attribute={attribute} validateText={validateText} />
+                <PredicateEditor text={text} setText={setText} validateText={validateText} />
               </FormGroup>
             </DataListCell>,
             <DataListCell key="1" width={2}>

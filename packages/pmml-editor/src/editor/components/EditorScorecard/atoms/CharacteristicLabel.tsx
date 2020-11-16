@@ -14,17 +14,27 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from "@patternfly/react-core";
-import { DiceSixIcon } from "@patternfly/react-icons";
+import { Label } from "@patternfly/react-core";
 
-export const EmptyStateNoAttributes = () => (
-  <EmptyState data-testid="empty-state-no-attributes" variant={EmptyStateVariant.small}>
-    <EmptyStateIcon icon={DiceSixIcon} />
-    <Title headingLevel="h4" size="lg">
-      No Attributes defined
-    </Title>
-    <EmptyStateBody>
-      Input attributes for each scorecard characteristic are defined in terms of predicates.
-    </EmptyStateBody>
-  </EmptyState>
-);
+import "./CharacteristicLabel.scss";
+
+export const CharacteristicLabel = (name: string, value: any, onClose?: () => void) => {
+  return (
+    <>
+      {!onClose && (
+        <Label color="orange" className="characteristic-list__item__label">
+          <strong>{name}:</strong>
+          &nbsp;
+          <span>{value}</span>
+        </Label>
+      )}
+      {onClose && (
+        <Label color="orange" className="characteristic-list__item__label" onClose={e => onClose()}>
+          <strong>{name}:</strong>
+          &nbsp;
+          <span>{value}</span>
+        </Label>
+      )}
+    </>
+  );
+};
