@@ -43,6 +43,8 @@ public interface SettingsView
         void syncDmnFilePath();
 
         void syncSkipFromBuild();
+
+        void updateSettingsData(Settings settings);
     }
 
     void setupDropdown(Element dropdownElement);

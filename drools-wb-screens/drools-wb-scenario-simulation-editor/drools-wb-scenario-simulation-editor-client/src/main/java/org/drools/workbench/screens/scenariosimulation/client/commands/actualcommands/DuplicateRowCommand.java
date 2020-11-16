@@ -15,8 +15,6 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
-import javax.enterprise.context.Dependent;
-
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridRow;
@@ -24,15 +22,10 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 /**
  * <code>Command</code> to <b>duplicate</b> a row.
  */
-@Dependent
 public class DuplicateRowCommand extends AbstractScenarioGridCommand {
 
     public DuplicateRowCommand(GridWidget gridWidget) {
         super(gridWidget);
-    }
-
-    private DuplicateRowCommand() {
-        // CDI
     }
 
     @Override

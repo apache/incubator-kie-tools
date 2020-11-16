@@ -15,12 +15,9 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
-import javax.enterprise.context.Dependent;
-
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 
-@Dependent
 public class ImportCommand extends AbstractScenarioGridCommand {
 
     protected String fileContent;
@@ -28,10 +25,6 @@ public class ImportCommand extends AbstractScenarioGridCommand {
     public ImportCommand(GridWidget gridWidget, String fileContent) {
         super(gridWidget);
         this.fileContent = fileContent;
-    }
-
-    private ImportCommand() {
-        // CDI
     }
 
     @Override

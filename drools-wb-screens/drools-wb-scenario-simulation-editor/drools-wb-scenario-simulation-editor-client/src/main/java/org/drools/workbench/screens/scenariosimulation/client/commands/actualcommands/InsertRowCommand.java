@@ -15,25 +15,19 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
-import javax.enterprise.context.Dependent;
-
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridRow;
 
-@Dependent
 public class InsertRowCommand extends AbstractScenarioGridCommand {
 
     public InsertRowCommand(GridWidget gridWidget) {
         super(gridWidget);
     }
 
-    private InsertRowCommand() {
-        // CDI
-    }
-
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {
-        context.getAbstractScesimGridModelByGridWidget(gridWidget).insertRow(context.getStatus().getRowIndex(), new ScenarioGridRow());
+        context.getAbstractScesimGridModelByGridWidget(gridWidget).insertRow(context.getStatus().getRowIndex(),
+                                                                             new ScenarioGridRow());
     }
 }

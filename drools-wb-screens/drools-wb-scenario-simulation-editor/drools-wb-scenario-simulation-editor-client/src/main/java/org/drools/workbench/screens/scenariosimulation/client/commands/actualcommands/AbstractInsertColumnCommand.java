@@ -25,10 +25,6 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 
 public abstract class AbstractInsertColumnCommand extends AbstractScenarioGridCommand {
 
-    public AbstractInsertColumnCommand() {
-        // CDI
-    }
-
     public AbstractInsertColumnCommand(GridWidget gridWidget) {
         super(gridWidget);
     }

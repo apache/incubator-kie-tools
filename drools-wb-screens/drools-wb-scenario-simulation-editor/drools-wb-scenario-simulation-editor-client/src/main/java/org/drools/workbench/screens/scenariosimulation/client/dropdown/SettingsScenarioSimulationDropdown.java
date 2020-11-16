@@ -16,6 +16,8 @@
 package org.drools.workbench.screens.scenariosimulation.client.dropdown;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -28,7 +30,7 @@ import org.uberfire.mvp.Command;
 @Named(SettingsScenarioSimulationDropdown.BEAN_NAME)
 public class SettingsScenarioSimulationDropdown extends ScenarioSimulationDropdown {
 
-    final public static String BEAN_NAME = "SettingsDropdown";
+    public static final String BEAN_NAME = "SettingsDropdown";
 
     protected String currentValue;
     protected Command onMissingValueHandler = () -> {/*Nothing/*/};
@@ -44,8 +46,11 @@ public class SettingsScenarioSimulationDropdown extends ScenarioSimulationDropdo
      * @param currentValue
      */
     public void loadAssets(String currentValue) {
-        this.currentValue = currentValue;
-        super.loadAssets();
+        Optional<KieAssetsDropdownItem> value = getValue();
+        if (!value.isPresent() || !Objects.equals(value.get().getValue(), currentValue)) {
+            this.currentValue = currentValue;
+            super.loadAssets();
+        }
     }
 
     public void registerOnMissingValueHandler(final Command onMissingValueHandler) {

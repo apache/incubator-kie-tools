@@ -18,19 +18,12 @@ package org.drools.workbench.screens.scenariosimulation.client.commands.actualco
 import java.util.Collections;
 import java.util.List;
 
-import javax.enterprise.context.Dependent;
-
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 
 /**
  * <code>Command</code> to <b>run</b> a single <b>Scenario</b>
  */
-@Dependent
 public class RunSingleScenarioCommand extends AbstractScenarioSimulationCommand {
-
-    public RunSingleScenarioCommand() {
-        // CDI
-    }
 
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {

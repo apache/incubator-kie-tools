@@ -15,19 +15,12 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
-import javax.enterprise.context.Dependent;
-
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 
 /**
  * <code>Command</code> to <b>reload</b> the <code>TestToolsView</code>, <b>eventually</b> showing it (if required by original event)
  */
-@Dependent
 public class ReloadTestToolsCommand extends AbstractScenarioSimulationCommand {
-
-    public ReloadTestToolsCommand() {
-        // CDI
-    }
 
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {

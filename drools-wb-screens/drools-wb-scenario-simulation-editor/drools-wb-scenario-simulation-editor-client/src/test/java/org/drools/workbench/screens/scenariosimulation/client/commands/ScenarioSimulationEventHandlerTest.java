@@ -18,10 +18,13 @@ package org.drools.workbench.screens.scenariosimulation.client.commands;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.scenariosimulation.api.model.FactMappingValueType;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.workbench.screens.scenariosimulation.client.AbstractScenarioSimulationTest;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.AbstractScenarioSimulationCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.AppendColumnCommand;
@@ -42,6 +45,7 @@ import org.drools.workbench.screens.scenariosimulation.client.commands.actualcom
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.SetHeaderCellValueCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.SetInstanceHeaderCommand;
 import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.SetPropertyHeaderCommand;
+import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.UpdateSettingsDataCommand;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.events.AppendColumnEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.AppendRowEvent;
@@ -67,6 +71,7 @@ import org.drools.workbench.screens.scenariosimulation.client.events.SetInstance
 import org.drools.workbench.screens.scenariosimulation.client.events.SetPropertyHeaderEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.UndoEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.UnsupportedDMNEvent;
+import org.drools.workbench.screens.scenariosimulation.client.events.UpdateSettingsDataEvent;
 import org.drools.workbench.screens.scenariosimulation.client.events.ValidateSimulationEvent;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.RedoEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.ReloadTestToolsEventHandler;
@@ -75,6 +80,7 @@ import org.drools.workbench.screens.scenariosimulation.client.handlers.SetGridCe
 import org.drools.workbench.screens.scenariosimulation.client.handlers.SetHeaderCellValueEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.UndoEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.handlers.UnsupportedDMNEventHandler;
+import org.drools.workbench.screens.scenariosimulation.client.handlers.UpdateSettingsDataEventHandler;
 import org.drools.workbench.screens.scenariosimulation.client.popup.ConfirmPopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.DeletePopupPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.popup.FileUploadPopupPresenter;
@@ -104,6 +110,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -161,6 +168,8 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
     @Mock
     private HandlerRegistration undoEventHandlerRegistrationMock;
     @Mock
+    private HandlerRegistration updateSettingsDataRegistrationMock;
+    @Mock
     private HandlerRegistration unsupportedDMNEventHandlerRegistrationMock;
     @Mock
     private DeletePopupPresenter deletePopupPresenterMock;
@@ -198,6 +207,7 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         when(eventBusMock.addHandler(eq(SetInstanceHeaderEvent.TYPE), isA(ScenarioSimulationEventHandler.class))).thenReturn(setInstanceHeaderEventHandlerMock);
         when(eventBusMock.addHandler(eq(SetPropertyHeaderEvent.TYPE), isA(ScenarioSimulationEventHandler.class))).thenReturn(setPropertyHeaderEventHandlerMock);
         when(eventBusMock.addHandler(eq(UndoEvent.TYPE), isA(UndoEventHandler.class))).thenReturn(undoEventHandlerRegistrationMock);
+        when(eventBusMock.addHandler(eq(UpdateSettingsDataEvent.TYPE), isA(UpdateSettingsDataEventHandler.class))).thenReturn(updateSettingsDataRegistrationMock);
         when(eventBusMock.addHandler(eq(UnsupportedDMNEvent.TYPE), isA(UnsupportedDMNEventHandler.class))).thenReturn(unsupportedDMNEventHandlerRegistrationMock);
 
         when(scenarioCommandManagerMock.execute(eq(scenarioSimulationContextLocal), isA(AbstractScenarioSimulationCommand.class))).thenReturn(CommandResultBuilder.SUCCESS);
@@ -478,6 +488,36 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
     }
 
     @Test
+    public void onUpdateSettingDataEventChangedValue() {
+        Predicate<Settings> predicateMock = mock(Predicate.class);
+        when(predicateMock.test(eq(settingsLocal))).thenReturn(true);
+        Consumer<Settings> consumerMock = mock(Consumer.class);
+        UpdateSettingsDataEvent event = new UpdateSettingsDataEvent(consumerMock, predicateMock);
+        scenarioSimulationEventHandler.onEvent(event);
+        verify(predicateMock, times(1)).test(eq(settingsLocal));
+        verify(scenarioSimulationEventHandler, times(1)).commonExecution(isA(UpdateSettingsDataCommand.class), eq(false));
+    }
+
+    @Test
+    public void onUpdateSettingDataEventNoChangedValue() {
+        Predicate<Settings> predicateMock = mock(Predicate.class);
+        when(predicateMock.test(eq(settingsLocal))).thenReturn(false);
+        Consumer<Settings> consumerMock = mock(Consumer.class);
+        UpdateSettingsDataEvent event = new UpdateSettingsDataEvent(consumerMock, predicateMock);
+        scenarioSimulationEventHandler.onEvent(event);
+        verify(predicateMock, times(1)).test(eq(settingsLocal));
+        verify(scenarioSimulationEventHandler, never()).commonExecution(isA(UpdateSettingsDataCommand.class), eq(false));
+    }
+
+    @Test
+    public void onUpdateSettingDataEventNoChangedValueTest() {
+        Consumer<Settings> consumerMock = mock(Consumer.class);
+        UpdateSettingsDataEvent event = new UpdateSettingsDataEvent(consumerMock);
+        scenarioSimulationEventHandler.onEvent(event);
+        verify(scenarioSimulationEventHandler, times(1)).commonExecution(isA(UpdateSettingsDataCommand.class), eq(false));
+    }
+
+    @Test
     public void onUnsupportedDMNEvent() {
         String DMN_ERROR = "DMN_ERROR";
         UnsupportedDMNEvent event = new UnsupportedDMNEvent(DMN_ERROR);
@@ -504,6 +544,12 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         when(scenarioCommandManagerMock.execute(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock))).thenReturn(status);
         scenarioSimulationEventHandler.commonExecution(appendRowCommandMock, true);
         assertEquals(simulationMock, scenarioSimulationContextLocal.getStatus().getSimulation());
+        verify(scenarioCommandRegistryManagerMock, never()).register(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock));
+        //
+        reset(scenarioCommandRegistryManagerMock);
+        when(scenarioCommandManagerMock.execute(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock))).thenReturn(CommandResultBuilder.SUCCESS);
+        EnableTestToolsCommand enableTestToolsCommandMock = mock(EnableTestToolsCommand.class);
+        scenarioSimulationEventHandler.commonExecution(enableTestToolsCommandMock, true);
         verify(scenarioCommandRegistryManagerMock, never()).register(eq(scenarioSimulationContextLocal), eq(appendRowCommandMock));
     }
 
@@ -554,6 +600,8 @@ public class ScenarioSimulationEventHandlerTest extends AbstractScenarioSimulati
         verify(handlerRegistrationListMock, times(1)).add(eq(setPropertyHeaderEventHandlerMock));
         verify(eventBusMock, times(1)).addHandler(eq(UndoEvent.TYPE), isA(UndoEventHandler.class));
         verify(handlerRegistrationListMock, times(1)).add(eq(undoEventHandlerRegistrationMock));
+        verify(eventBusMock, times(1)).addHandler(eq(UpdateSettingsDataEvent.TYPE), isA(UpdateSettingsDataEventHandler.class));
+        verify(handlerRegistrationListMock, times(1)).add(eq(updateSettingsDataRegistrationMock));
         verify(eventBusMock, times(1)).addHandler(eq(UnsupportedDMNEvent.TYPE), isA(UnsupportedDMNEventHandler.class));
         verify(handlerRegistrationListMock, times(1)).add(eq(unsupportedDMNEventHandlerRegistrationMock));
     }

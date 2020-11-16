@@ -85,7 +85,6 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
         super.setup();
 
         when(gridColumnsMock.indexOf(gridColumnMock)).thenReturn(COLUMN_INDEX);
-        settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
         when(factModelTreeMock.getExpandableProperties()).thenReturn(mock(SortedMap.class));
         when(dataObjectFieldsMapMock.get(anyString())).thenReturn(factModelTreeMock);
 
@@ -159,7 +158,6 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
     @Test
     public void executeKeepDataFalseRule() {
         scenarioSimulationContextLocal.getStatus().setKeepData(false);
-        settingsLocal.setType(ScenarioSimulationModel.Type.RULE);
         commonSetPropertyHeader(ScenarioSimulationModel.Type.RULE, false, MULTIPART_VALUE_ELEMENTS, VALUE_CLASS_NAME);
     }
 
@@ -284,6 +282,20 @@ public abstract class AbstractSelectedColumnCommandTest extends AbstractScenario
         List<String> elements = Arrays.asList("Book", "author", "currentlyPrinted");
         FactModelTree target = ((AbstractSelectedColumnCommand) commandSpy).navigateComplexObject(book, elements, sortedMap);
         assertEquals(target, author);
+        verify(sortedMap, times(1)).get("Author");
+    }
+
+    protected void navigateComplexObject3Levels() {
+        FactModelTree book = new FactModelTree("Book", "com.Book", new HashMap<>(), new HashMap<>());
+        book.addExpandableProperty("author", "Author");
+        FactModelTree author = new FactModelTree("Author", "com.Author", new HashMap<>(), new HashMap<>());
+        author.addExpandableProperty("firstBook", "Book");
+        SortedMap<String, FactModelTree> sortedMap = spy(new TreeMap<>());
+        sortedMap.put("Book", book);
+        sortedMap.put("Author", author);
+        List<String> elements = Arrays.asList("Book", "author", "firstBook", "topics");
+        FactModelTree target = ((AbstractSelectedColumnCommand) commandSpy).navigateComplexObject(book, elements, sortedMap);
+        assertEquals(target, book);
         verify(sortedMap, times(1)).get("Author");
     }
 

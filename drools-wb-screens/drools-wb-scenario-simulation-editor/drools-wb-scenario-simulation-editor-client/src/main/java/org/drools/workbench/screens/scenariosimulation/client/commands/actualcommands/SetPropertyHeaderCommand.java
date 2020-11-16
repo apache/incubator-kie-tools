@@ -15,8 +15,6 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
-import javax.enterprise.context.Dependent;
-
 import org.drools.scenariosimulation.api.model.FactMappingValueType;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
@@ -25,15 +23,10 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 /**
  * <code>Command</code> to to set the <i>property</i> level header for a given column
  */
-@Dependent
 public class SetPropertyHeaderCommand extends AbstractSelectedColumnCommand {
 
     public SetPropertyHeaderCommand(GridWidget gridWidget, FactMappingValueType factMappingValueType) {
         super(gridWidget, factMappingValueType);
-    }
-
-    private SetPropertyHeaderCommand() {
-        // CDI
     }
 
     @Override

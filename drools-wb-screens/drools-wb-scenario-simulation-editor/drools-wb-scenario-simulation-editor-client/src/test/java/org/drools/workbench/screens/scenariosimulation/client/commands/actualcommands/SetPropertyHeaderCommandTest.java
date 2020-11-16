@@ -61,36 +61,49 @@ public class SetPropertyHeaderCommandTest extends AbstractSelectedColumnCommandT
     }
 
     @Test
+    @SuppressWarnings("squid:S2699")
     public void getPropertyHeaderTitle() {
         super.getPropertyHeaderTitle();
     }
 
     @Test
+    @SuppressWarnings("squid:S2699")
     public void getPropertyHeaderType_Expression() {
         super.getPropertyHeaderTitle_Expression();
     }
 
     @Test
+    @SuppressWarnings("squid:S2699")
     public void getPropertyHeaderType_Value() {
         super.getPropertyHeaderTitle_Value();
     }
 
     @Test
+    @SuppressWarnings("squid:S2699")
     public void getMatchingExpressionAlias() {
         super.getMatchingExpressionAlias();
     }
 
     @Test
+    @SuppressWarnings("squid:S2699")
     public void navigateComplexObject() {
         super.navigateComplexObject();
     }
 
     @Test
+    @SuppressWarnings("squid:S2699")
+    public void navigateComplexObject3Levels() {
+        super.navigateComplexObject3Levels();
+    }
+
+    @Test
+    @SuppressWarnings("squid:S2699")
     public void manageCollectionProperty() {
         super.manageCollectionProperty();
     }
 
     @Test
+    @SuppressWarnings("squid:S2699")
     public void manageSimpleTypeCollectionProperty() {
         super.manageSimpleTypeCollectionProperty();
     }

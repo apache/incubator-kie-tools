@@ -37,6 +37,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SettingsScenarioSimulationDropdownTest extends AbstractScenarioSimulationDropdownTest {
@@ -71,7 +72,28 @@ public class SettingsScenarioSimulationDropdownTest extends AbstractScenarioSimu
            initialize() method which represents the body of super.loadAssets() method   */
         verify(assetsDropdown, times(1)).clear();
         verify(assetsDropdown, times(1)).initializeDropdown();
-        assertEquals(((SettingsScenarioSimulationDropdown) assetsDropdown).currentValue, LOWER_CASE_VALUE);
+        assertEquals(LOWER_CASE_VALUE, ((SettingsScenarioSimulationDropdown) assetsDropdown).currentValue);
+    }
+
+    @Test
+    public void loadAssetsSameValue() {
+        when(viewMock.getValue()).thenReturn(DEFAULT_VALUE);
+        ((SettingsScenarioSimulationDropdown) assetsDropdown).loadAssets(DEFAULT_VALUE);
+        /* Can't directly call super.loadAssets() method, so here it verifies clear() and
+           initialize() method which represents the body of super.loadAssets() method   */
+        verify(assetsDropdown, never()).clear();
+        verify(assetsDropdown, never()).initializeDropdown();
+    }
+
+    @Test
+    public void loadAssetsEmptyValue() {
+        when(viewMock.getValue()).thenReturn(null);
+        ((SettingsScenarioSimulationDropdown) assetsDropdown).loadAssets(DEFAULT_VALUE);
+        /* Can't directly call super.loadAssets() method, so here it verifies clear() and
+           initialize() method which represents the body of super.loadAssets() method   */
+        verify(assetsDropdown, times(1)).clear();
+        verify(assetsDropdown, times(1)).initializeDropdown();
+        assertEquals(DEFAULT_VALUE, ((SettingsScenarioSimulationDropdown) assetsDropdown).currentValue);
     }
 
     @Test
@@ -106,4 +128,5 @@ public class SettingsScenarioSimulationDropdownTest extends AbstractScenarioSimu
     public void isValuePresentInKieAssets_NotPresent() {
         assertFalse(((SettingsScenarioSimulationDropdown) assetsDropdown).isValuePresentInKieAssets("ANOTHER_VALUE"));
     }
+
 }

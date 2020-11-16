@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import javax.enterprise.context.Dependent;
 
-import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.AbstractScenarioGridCommand;
+import org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands.AbstractScenarioSimulationUndoableCommand;
 import org.kie.workbench.common.command.client.CommandResult;
 import org.kie.workbench.common.command.client.CommandResultBuilder;
 import org.kie.workbench.common.command.client.impl.CommandResultImpl;
@@ -32,7 +32,7 @@ import org.kie.workbench.common.command.client.registry.AbstractCommandRegistryM
  * This class is used to store <code>Queue</code>es of <b>executed/undone</b> <code>Command</code>s
  */
 @Dependent
-public class ScenarioCommandRegistryManager extends AbstractCommandRegistryManager<AbstractScenarioGridCommand> {
+public class ScenarioCommandRegistryManager extends AbstractCommandRegistryManager<AbstractScenarioSimulationUndoableCommand> {
 
     /**
      * Method to register the status as it was soon before the command execution,
@@ -40,7 +40,7 @@ public class ScenarioCommandRegistryManager extends AbstractCommandRegistryManag
      * @param context
      * @param command
      */
-    public void register(ScenarioSimulationContext context, AbstractScenarioGridCommand command) {
+    public void register(ScenarioSimulationContext context, AbstractScenarioSimulationUndoableCommand command) {
         doneCommandsRegistry.register(command);
         undoneCommandsRegistry.clear();
         setUndoRedoButtonStatus(context);
@@ -55,7 +55,7 @@ public class ScenarioCommandRegistryManager extends AbstractCommandRegistryManag
         CommandResult<ScenarioSimulationViolation> toReturn;
         if (!doneCommandsRegistry.isEmpty()) {
             commonUndoRedoPreexecution(scenarioSimulationContext, doneCommandsRegistry.peek());
-            final AbstractScenarioGridCommand toUndo = doneCommandsRegistry.pop();
+            final AbstractScenarioSimulationUndoableCommand toUndo = doneCommandsRegistry.pop();
             toReturn = commonUndoRedoOperation(scenarioSimulationContext, toUndo, true);
             if (Objects.equals(CommandResultBuilder.SUCCESS, toReturn)) {
                 undoneCommandsRegistry.register(toUndo);
@@ -77,7 +77,7 @@ public class ScenarioCommandRegistryManager extends AbstractCommandRegistryManag
         CommandResult<ScenarioSimulationViolation> toReturn;
         if (!undoneCommandsRegistry.isEmpty()) {
             commonUndoRedoPreexecution(scenarioSimulationContext, undoneCommandsRegistry.peek());
-            final AbstractScenarioGridCommand toRedo = undoneCommandsRegistry.pop();
+            final AbstractScenarioSimulationUndoableCommand toRedo = undoneCommandsRegistry.pop();
             toReturn = commonUndoRedoOperation(scenarioSimulationContext, toRedo, false);
             if (Objects.equals(CommandResultBuilder.SUCCESS, toReturn)) {
                 doneCommandsRegistry.register(toRedo);
@@ -98,8 +98,8 @@ public class ScenarioCommandRegistryManager extends AbstractCommandRegistryManag
      * @param command
      */
     protected Optional<CommandResult<ScenarioSimulationViolation>> commonUndoRedoPreexecution(final ScenarioSimulationContext scenarioSimulationContext,
-                                                                                              final AbstractScenarioGridCommand command) {
-        return command.commonUndoRedoPreexecution(scenarioSimulationContext);
+                                                                                              final AbstractScenarioSimulationUndoableCommand command) {
+        return command.commonUndoRedoPreExecution(scenarioSimulationContext);
     }
 
     /**
@@ -110,7 +110,7 @@ public class ScenarioCommandRegistryManager extends AbstractCommandRegistryManag
      * @return
      */
     protected CommandResult<ScenarioSimulationViolation> commonUndoRedoOperation(final ScenarioSimulationContext scenarioSimulationContext,
-                                                                                 final AbstractScenarioGridCommand command,
+                                                                                 final AbstractScenarioSimulationUndoableCommand command,
                                                                                  final boolean isUndo) {
         CommandResult<ScenarioSimulationViolation> toReturn;
         if (isUndo) {

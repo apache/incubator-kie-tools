@@ -15,19 +15,12 @@
  */
 package org.drools.workbench.screens.scenariosimulation.client.commands.actualcommands;
 
-import javax.enterprise.context.Dependent;
-
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 
 /**
  * <code>Command</code> to <b>disable</b> the <code>TestToolsView</code>
  */
-@Dependent
 public class DisableTestToolsCommand extends AbstractScenarioSimulationCommand {
-
-    public DisableTestToolsCommand() {
-        // CDI
-    }
 
     @Override
     protected void internalExecute(ScenarioSimulationContext context) {

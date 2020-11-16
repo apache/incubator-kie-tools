@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.drools.scenariosimulation.api.model.AbstractScesimData;
 import org.drools.scenariosimulation.api.model.AbstractScesimModel;
 import org.drools.scenariosimulation.api.model.Background;
-import org.drools.scenariosimulation.api.model.Settings;
+import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.Simulation;
 import org.drools.workbench.screens.scenariosimulation.client.editor.ScenarioSimulationEditorPresenter;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
@@ -39,31 +39,23 @@ import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGr
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridPanel;
 import org.drools.workbench.screens.scenariosimulation.client.widgets.ScenarioGridWidget;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.PlaceRequest;
 
 /**
  * This class represent the <b>Context</b> inside which the commands will be executed
  */
 public class ScenarioSimulationContext {
 
-    private static final AtomicLong COUNTER_ID = new AtomicLong();
     private static final AtomicLong STATUS_COUNTER_ID = new AtomicLong();
+    private static final String ILLEGAL_WIDGET_MESSAGE_PREFIX = "Illegal GridWidget ";
 
     protected final ScenarioGridWidget simulationGridWidget;
     protected final ScenarioGridWidget backgroundGridWidget;
-    /**
-     * Auto-generated incremental identifier used  to uniquely identify each context
-     */
-    private final long id;
+
     protected ScenarioSimulationEditorPresenter scenarioSimulationEditorPresenter;
     protected TestToolsView.Presenter testToolsPresenter;
     protected SortedMap<String, FactModelTree> dataObjectFieldsMap;
     protected Set<String> dataObjectsInstancesName;
-    protected Settings settings;
     protected Status status = new Status();
-    protected PlaceManager placeManager;
-    protected PlaceRequest testToolsRequest;
 
     /**
      * This constructor set the <b>Simulation</b> and <b>Background</b> <code>ScenarioGridWidget</code>s
@@ -73,7 +65,6 @@ public class ScenarioSimulationContext {
     public ScenarioSimulationContext(ScenarioGridWidget simulationGridWidget, ScenarioGridWidget backgroundGridWidget) {
         this.simulationGridWidget = simulationGridWidget;
         this.backgroundGridWidget = backgroundGridWidget;
-        id = COUNTER_ID.getAndIncrement();
     }
 
     /**
@@ -100,6 +91,10 @@ public class ScenarioSimulationContext {
         this.scenarioSimulationEditorPresenter = scenarioSimulationEditorPresenter;
     }
 
+    public ScenarioSimulationModel getScenarioSimulationModel() {
+        return scenarioSimulationEditorPresenter.getModel();
+    }
+
     public TestToolsView.Presenter getTestToolsPresenter() {
         return testToolsPresenter;
     }
@@ -114,14 +109,6 @@ public class ScenarioSimulationContext {
 
     public void setDataObjectFieldsMap(SortedMap<String, FactModelTree> dataObjectFieldsMap) {
         this.dataObjectFieldsMap = dataObjectFieldsMap;
-    }
-
-    public Settings getSettings() {
-        return settings;
-    }
-
-    public void setSettings(Settings settings) {
-        this.settings = settings;
     }
 
     /**
@@ -162,7 +149,7 @@ public class ScenarioSimulationContext {
             case BACKGROUND:
                 return backgroundGridWidget.getScenarioGridPanel();
             default:
-                throw new IllegalArgumentException("Illegal GridWidget " + gridWidget);
+                throw new IllegalArgumentException(ILLEGAL_WIDGET_MESSAGE_PREFIX + gridWidget);
         }
     }
 
@@ -173,7 +160,7 @@ public class ScenarioSimulationContext {
             case BACKGROUND:
                 return backgroundGridWidget.getModel();
             default:
-                throw new IllegalArgumentException("Illegal GridWidget " + gridWidget);
+                throw new IllegalArgumentException(ILLEGAL_WIDGET_MESSAGE_PREFIX + gridWidget);
         }
     }
 
@@ -184,7 +171,7 @@ public class ScenarioSimulationContext {
             case BACKGROUND:
                 return (AbstractScesimModel<T>) status.getBackground();
             default:
-                throw new IllegalArgumentException("Illegal GridWidget " + gridWidget);
+                throw new IllegalArgumentException(ILLEGAL_WIDGET_MESSAGE_PREFIX + gridWidget);
         }
     }
 
@@ -200,27 +187,11 @@ public class ScenarioSimulationContext {
         return getSelectedScenarioGridModel().map(AbstractScesimGridModel::getGridWidget);
     }
 
-    public PlaceManager getPlaceManager() {
-        return placeManager;
-    }
-
-    public void setPlaceManager(PlaceManager placeManager) {
-        this.placeManager = placeManager;
-    }
-
-    public PlaceRequest getTestToolsRequest() {
-        return testToolsRequest;
-    }
-
-    public void setTestToolsRequest(PlaceRequest testToolsRequest) {
-        this.testToolsRequest = testToolsRequest;
-    }
-
     /**
      * Method to verify that <code>Status</code>' <b>simulation</b> is populated, since <code>Simulation</code>
      * is set inside the model <b>after</b> the creation ot the current instance
      */
-    public void setStatusSimulationIfEmpty() throws IllegalStateException {
+    public void setStatusSimulationIfEmpty() {
         if (status.getSimulation() == null) {
             final Optional<AbstractScesimModel> abstractScesimModel = simulationGridWidget.getModel().getAbstractScesimModel();
             status.setSimulation((Simulation) abstractScesimModel.orElseThrow(IllegalStateException::new));
@@ -229,10 +200,6 @@ public class ScenarioSimulationContext {
             final Optional<AbstractScesimModel> abstractScesimModel = backgroundGridWidget.getModel().getAbstractScesimModel();
             status.setBackground((Background) abstractScesimModel.orElseThrow(IllegalStateException::new));
         }
-    }
-
-    public long getId() {
-        return id;
     }
 
     public CollectionEditorSingletonDOMElementFactory getCollectionEditorSingletonDOMElementFactory(GridWidget gridWidget) {
