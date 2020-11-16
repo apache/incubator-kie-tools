@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.bpmn.client.dataproviders;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Spliterators;
 import java.util.function.Function;
 
 import org.junit.Before;
