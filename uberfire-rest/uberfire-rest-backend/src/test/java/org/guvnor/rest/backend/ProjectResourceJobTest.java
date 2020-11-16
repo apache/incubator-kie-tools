@@ -15,6 +15,8 @@
 */
 package org.guvnor.rest.backend;
 
+import java.util.Locale;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Variant;
 
@@ -106,6 +108,7 @@ public class ProjectResourceJobTest {
     public void createProject() throws Exception {
 
         projectResource.createProject("spaceName",
+                                      Locale.ENGLISH,
                                       new CreateProjectRequest());
 
         verify(jobManager).putJob(jobResultArgumentCaptor.capture());

@@ -17,6 +17,7 @@
 package org.guvnor.structure.backend.repositories.git.hooks.impl;
 
 import org.apache.commons.io.FilenameUtils;
+import org.guvnor.structure.backend.LocaleContext;
 import org.jboss.errai.bus.server.api.RpcContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +84,9 @@ public class MessageReader {
                 ClassLoader bundleClassLoader = new URLClassLoader(urls);
 
                 // Getting the bundle from the current generated classloader
-                ResourceBundle bundle = ResourceBundle.getBundle(bundleName, localeSupplier.get(), bundleClassLoader);
+                ResourceBundle bundle = ResourceBundle.getBundle(bundleName,
+                                                                 getLocale(),
+                                                                 bundleClassLoader);
 
                 result = bundle.getString(String.valueOf(exitCode));
             } catch (MissingResourceException e) {
@@ -94,6 +97,15 @@ public class MessageReader {
         }
 
         return Optional.ofNullable(result);
+    }
+    
+    private Locale getLocale() {
+        try {
+            return localeSupplier.get();
+        } catch (Exception e) {
+            LOG.warn("Locale info not available in RpcContext.");
+            return LocaleContext.get();
+        }
     }
 
 }
