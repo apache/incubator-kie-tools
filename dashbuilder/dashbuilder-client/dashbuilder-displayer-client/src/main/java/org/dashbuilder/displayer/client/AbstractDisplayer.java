@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalDouble;
 import java.util.Set;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -897,16 +898,19 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
                 return getFormatter().formatDate(pattern, d);
             }
             else if (ColumnType.NUMBER.equals(columnType)) {
-                double n = ((Number) value).doubleValue();
+                OptionalDouble od = OptionalDouble.empty();
+                if (value instanceof Number) {
+                    od = OptionalDouble.of(((Number) value).doubleValue());
+                }
                 if (!StringUtils.isBlank(expression)) {
                     String r = getEvaluator().evalExpression(value.toString(), expression);
                     try {
-                        n = Double.parseDouble(r);
+                        od = OptionalDouble.of(Double.parseDouble(r));
                     } catch (NumberFormatException e) {
                         return r;
                     }
                 }
-                return getFormatter().formatNumber(pattern, n);
+                return getFormatter().formatNumber(pattern, od.getAsDouble());
             }
             else {
                 if (StringUtils.isBlank(expression)) {

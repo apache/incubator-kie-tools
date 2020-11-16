@@ -14,21 +14,25 @@
  */
 package org.dashbuilder.displayer.client;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 
 import org.dashbuilder.common.client.error.ClientRuntimeError;
-import org.dashbuilder.dataset.DataSet;
+import org.dashbuilder.dataset.ColumnType;
+import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.client.AbstractDataSetTest;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
+import org.dashbuilder.dataset.impl.DataColumnImpl;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSettingsFactory;
 import org.dashbuilder.displayer.client.formatter.ValueFormatterRegistry;
@@ -124,5 +128,46 @@ public class AbstractDisplayerTest extends AbstractDataSetTest {
         
         simpleDisplayer.redraw();
         assertTrue(!simpleDisplayer.isDrawn());
+    }
+    
+    @Test
+    public void testFormatValue() throws Exception {
+        DisplayerSettings simpleSettings = DisplayerSettingsFactory.newTableSettings()
+                .dataset(EXPENSES)
+                .filterOn(true, false, true)
+                .buildSettings();
+        AbstractDisplayer simpleDisplayer = createNewDisplayer(simpleSettings, true);
+    
+        DataColumn dateColumn = new DataColumnImpl();
+        dateColumn.setId("proceesedDate");
+        dateColumn.setColumnType(ColumnType.DATE);
+        Date date1= new SimpleDateFormat("dd/MM/yyyy")
+                .parse("28/10/2020");
+        dateColumn.setValues(Arrays.asList(date1));
+        assertEquals("Oct 28, 2020 00:00", simpleDisplayer.formatValue(date1, dateColumn));
+        
+        DataColumn column = new DataColumnImpl();
+        column.setId("slaCompliance");
+        column.setColumnType(ColumnType.NUMBER);
+        column.setValues(Arrays.asList(0));
+        assertEquals("0.00", simpleDisplayer.formatValue(0, column));
+
+        DataColumn numberColumn = new DataColumnImpl();
+        numberColumn.setId("slaCompliance");
+        numberColumn.setColumnType(ColumnType.NUMBER);
+        numberColumn.setValues(Arrays.asList("0"));
+        assertEquals("0.00", simpleDisplayer.formatValue("0", numberColumn));
+    
+        DataColumn emptyNumberColumn = new DataColumnImpl();
+        emptyNumberColumn.setId("dataId");
+        emptyNumberColumn.setColumnType(ColumnType.NUMBER);
+        emptyNumberColumn.setValues(Arrays.asList(""));
+        assertEquals("", simpleDisplayer.formatValue("", emptyNumberColumn));
+        
+        DataColumn textColumn = new DataColumnImpl();
+        textColumn.setId("dataId");
+        textColumn.setColumnType(ColumnType.TEXT);
+        textColumn.setValues(Arrays.asList("test"));
+        assertEquals("test", simpleDisplayer.formatValue("test", textColumn));
     }
 }
