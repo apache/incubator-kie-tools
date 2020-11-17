@@ -24,8 +24,8 @@ import java.util.function.Consumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -91,7 +91,7 @@ public class CanvasDiagramValidatorTest {
     private ModelBeanViolation modelViolation;
 
     @Mock
-    private Canvas canvas;
+    private AbstractCanvas canvas;
 
     @Mock
     private Shape shape;
@@ -104,7 +104,6 @@ public class CanvasDiagramValidatorTest {
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getTitle()).thenReturn(TITLE);
         when(diagram.getName()).thenReturn(NAME);
-        when(violation.getUUID()).thenReturn(UUID);
         when(violation.getDomainViolations()).thenReturn(Arrays.asList(domainViolation));
         when(violation.getGraphViolations()).thenReturn(Arrays.asList(ruleViolation));
         when(violation.getModelViolations()).thenReturn(Arrays.asList(modelViolation));
@@ -119,8 +118,6 @@ public class CanvasDiagramValidatorTest {
     @Test
     public void validateFailedWithError() {
         when(domainViolation.getViolationType()).thenReturn(Violation.Type.ERROR);
-        when(ruleViolation.getViolationType()).thenReturn(Violation.Type.INFO);
-        when(modelViolation.getViolationType()).thenReturn(Violation.Type.INFO);
 
         assertValidateFailed();
     }
@@ -128,8 +125,6 @@ public class CanvasDiagramValidatorTest {
     @Test
     public void validateFailedWithWarning() {
         when(domainViolation.getViolationType()).thenReturn(Violation.Type.WARNING);
-        when(ruleViolation.getViolationType()).thenReturn(Violation.Type.INFO);
-        when(modelViolation.getViolationType()).thenReturn(Violation.Type.INFO);
 
         assertValidateFailed();
     }
@@ -197,7 +192,6 @@ public class CanvasDiagramValidatorTest {
         final ArgumentCaptor<CanvasValidationSuccessEvent> captorEvent = ArgumentCaptor.forClass(CanvasValidationSuccessEvent.class);
         reset(violation);
 
-        when(violation.getUUID()).thenReturn(UUID);
         when(violation.getDomainViolations()).thenReturn(Collections.emptyList());
         when(violation.getGraphViolations()).thenReturn(Collections.emptyList());
         when(violation.getModelViolations()).thenReturn(Collections.emptyList());

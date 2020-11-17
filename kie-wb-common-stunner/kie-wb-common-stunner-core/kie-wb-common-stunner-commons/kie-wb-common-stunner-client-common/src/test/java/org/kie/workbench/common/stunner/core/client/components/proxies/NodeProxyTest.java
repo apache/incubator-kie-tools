@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.ManagedInstanceStub;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
@@ -103,7 +104,7 @@ public class NodeProxyTest {
     private AbstractCanvasHandler canvasHandler;
 
     @Mock
-    private Canvas canvas;
+    private AbstractCanvas canvas;
 
     @Mock
     private Diagram diagram;
@@ -146,7 +147,6 @@ public class NodeProxyTest {
         when(metadata.getShapeSetId()).thenReturn(SHAPE_SET_ID);
         when(canvas.getShape(eq(EDGE_ID))).thenReturn(connector);
         when(canvas.getShape(eq(TARGET_NODE_ID))).thenReturn(targetShape);
-        when(definitionUtils.getDefinitionManager()).thenReturn(definitionManager);
         tested = new NodeProxy(proxy, view)
                 .setCanvasHandler(canvasHandler)
                 .setSourceNode(sourceNode)

@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class CanvasInlineTextEditorControlTest extends AbstractCanvasInlineTextEditorControlTest<CanvasInlineTextEditorControl> {
 
     @Override
