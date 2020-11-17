@@ -359,7 +359,7 @@ public class ColumnManagementViewTest {
 
         final ColumnLabelWidget columnLabel = mockColumnLabelWidget();
 
-        doReturn(columnLabel).when(view).newColumnLabelWidget(anyString());
+        doReturn(columnLabel).when(view).newColumnLabelWidget(any());
 
         view.renderColumns(columnGroups);
 
