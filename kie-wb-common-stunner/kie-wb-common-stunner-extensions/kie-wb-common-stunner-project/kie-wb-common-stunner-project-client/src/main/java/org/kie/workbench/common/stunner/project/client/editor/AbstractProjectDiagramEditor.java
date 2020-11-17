@@ -610,13 +610,9 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         resetEditorPages(diagram.getMetadata().getOverview());
         updateTitle(diagram.getName());
         addDocumentationPage(diagram);
-        updateOriginalHash();
+        setOriginalHash(getCurrentDiagramHash());
         hideLoadingViews();
         onDiagramLoad();
-    }
-
-    protected void updateOriginalHash() {
-        setOriginalHash(getCurrentDiagramHash());
     }
 
     protected void destroySession() {
