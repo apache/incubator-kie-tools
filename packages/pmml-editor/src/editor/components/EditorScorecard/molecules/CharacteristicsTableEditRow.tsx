@@ -65,7 +65,10 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
         onCancel();
       }
     },
-    { disabled: activeOperation !== Operation.UPDATE_CHARACTERISTIC }
+    {
+      disabled:
+        activeOperation !== Operation.UPDATE_CHARACTERISTIC && activeOperation !== Operation.CREATE_CHARACTERISTIC
+    }
   );
 
   useEffect(() => {
