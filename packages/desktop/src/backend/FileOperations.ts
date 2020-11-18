@@ -57,26 +57,32 @@ export class FileOperations {
         });
     });
 
-    ipcMain.on("savePreview", (event: IpcMainEvent, data: { filePath: string, fileType: string, fileContent: string }) => {
-      console.info(removeFileExtension(data.filePath) + "." + data.fileType);
-      dialog
-        .showSaveDialog(this.window, {
-          defaultPath: removeFileExtension(data.filePath) + "." + data.fileType,
-          title: "Save preview",
-          filters: [{ name: data.fileType.toUpperCase(), extensions: [data.fileType] }]
-        })
-        .then(result => {
-          if (!result.canceled) {
-            this.savePreview(result.filePath!, data.fileContent);
-          }
-        });
-    });
-
-    ipcMain.on("saveThumbnail", (event: IpcMainEvent, data: { filePath: string, fileType: string, fileContent: string }) => {
-      if (data.filePath !== UNSAVED_FILE_NAME) {
-        this.userData.saveFileThumbnail(data.filePath, data.fileType, data.fileContent);
+    ipcMain.on(
+      "savePreview",
+      (event: IpcMainEvent, data: { filePath: string; fileType: string; fileContent: string }) => {
+        console.info(removeFileExtension(data.filePath) + "." + data.fileType);
+        dialog
+          .showSaveDialog(this.window, {
+            defaultPath: removeFileExtension(data.filePath) + "." + data.fileType,
+            title: "Save preview",
+            filters: [{ name: data.fileType.toUpperCase(), extensions: [data.fileType] }]
+          })
+          .then(result => {
+            if (!result.canceled) {
+              this.savePreview(result.filePath!, data.fileContent);
+            }
+          });
       }
-    });
+    );
+
+    ipcMain.on(
+      "saveThumbnail",
+      (event: IpcMainEvent, data: { filePath: string; fileType: string; fileContent: string }) => {
+        if (data.filePath !== UNSAVED_FILE_NAME) {
+          this.userData.saveFileThumbnail(data.filePath, data.fileType, data.fileContent);
+        }
+      }
+    );
 
     ipcMain.on("requestLastOpenedFiles", () => {
       this.userData.getLastOpenedFiles().then(lastOpenedFiles => {
@@ -174,9 +180,8 @@ export class FileOperations {
         this.userData.registerFile(filePath);
         console.info("File " + filePath + " saved.");
 
-        this.window.webContents.send("saveFileSuccess", {
-          filePath: filePath
-        });
+        this.window.webContents.send("saveFileSuccessApp", { filePath });
+        this.window.webContents.send("saveFileSuccess", { filePath });
       })
       .catch(error => {
         console.info("Failed to save file" + filePath + ":" + error);

@@ -35,7 +35,6 @@ import IpcRendererEvent = Electron.IpcRendererEvent;
 import { useDesktopI18n } from "../common/i18n";
 
 interface Props {
-  fileExtension: string;
   onClose: () => void;
 }
 
@@ -94,16 +93,6 @@ export function EditorPage(props: Props) {
   const requestSavePreview = useCallback(() => {
     editor?.getPreview().then(previewSvg => {
       electron.ipcRenderer.send("savePreview", {
-        filePath: context.file!.filePath,
-        fileType: "svg",
-        fileContent: previewSvg
-      });
-    });
-  }, [editor]);
-
-  const requestThumbnailPreview = useCallback(() => {
-    editor?.getPreview().then(previewSvg => {
-      electron.ipcRenderer.send("saveThumbnail", {
         filePath: context.file!.filePath,
         fileType: "svg",
         fileContent: previewSvg
@@ -190,27 +179,28 @@ export function EditorPage(props: Props) {
   }, [requestSavePreview]);
 
   useEffect(() => {
-    electron.ipcRenderer.on("saveThumbnail", () => {
-      requestThumbnailPreview();
-    });
-
-    return () => {
-      electron.ipcRenderer.removeAllListeners("saveThumbnail");
-    };
-  }, [requestThumbnailPreview]);
-
-  useEffect(() => {
-    const saveFileSuccessListener = () => {
+    console.log("render");
+    electron.ipcRenderer.on("saveFileSuccess", (event: IpcRendererEvent, data: { filePath: string }): void => {
       editor?.getStateControl().setSavedCommand();
       setSaveFileSuccessAlertVisible(true);
-      requestThumbnailPreview();
-    };
-
-    electron.ipcRenderer.on("saveFileSuccess", saveFileSuccessListener);
+      console.log("hereee?");
+      editor
+        ?.getPreview()
+        .then(previewSvg => {
+          console.log("hereee222?");
+          electron.ipcRenderer.send("saveThumbnail", {
+            filePath: data.filePath,
+            fileType: "svg",
+            fileContent: previewSvg
+          });
+        })
+        .catch(err => console.log(err));
+    });
     return () => {
-      electron.ipcRenderer.removeListener("saveFileSuccess", saveFileSuccessListener);
+      console.log("remove");
+      electron.ipcRenderer.removeAllListeners("saveFileSuccess");
     };
-  }, [requestThumbnailPreview, editor]);
+  }, [editor]);
 
   useEffect(() => {
     electron.ipcRenderer.on("savePreviewSuccess", () => {
@@ -304,7 +294,6 @@ export function EditorPage(props: Props) {
               ref={editorRef}
               file={file}
               channelType={ChannelType.DESKTOP}
-              receive_ready={requestThumbnailPreview}
               editorEnvelopeLocator={context.editorEnvelopeLocator}
               locale={locale}
             />

@@ -31,10 +31,6 @@ import IpcRendererEvent = Electron.IpcRendererEvent;
 import { I18nDictionariesProvider } from "@kogito-tooling/i18n/dist/react-components";
 import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
 
-interface Props {
-  file?: File;
-}
-
 enum Pages {
   HOME,
   EDITOR
@@ -42,9 +38,9 @@ enum Pages {
 
 const ALERT_AUTO_CLOSE_TIMEOUT = 3000;
 
-export function App(props: Props) {
+export function App() {
   const [page, setPage] = useState(Pages.HOME);
-  const [file, setFile] = useState(props.file);
+  const [file, setFile] = useState<File>();
 
   const [invalidFileTypeErrorVisible, setInvalidFileTypeErrorVisible] = useState(false);
 
@@ -72,7 +68,7 @@ export function App(props: Props) {
       setFile(fileToOpen);
       setPage(Pages.EDITOR);
     },
-    [page, file, closeInvalidFileTypeErrorAlert]
+    [page, closeInvalidFileTypeErrorAlert]
   );
 
   const openFileByPath = useCallback((filePath: string) => {
@@ -83,7 +79,7 @@ export function App(props: Props) {
     electron.ipcRenderer.send("setFileMenusEnabled", { enabled: false });
     setPage(Pages.HOME);
     setFile(undefined);
-  }, [page, file]);
+  }, [page]);
 
   const dragAndDropFileEvent = useCallback(
     ev => {
@@ -100,7 +96,7 @@ export function App(props: Props) {
       case Pages.HOME:
         return <HomePage openFile={openFile} openFileByPath={openFileByPath} />;
       case Pages.EDITOR:
-        return <EditorPage fileExtension={file!.fileType} onClose={goToHomePage} />;
+        return <EditorPage onClose={goToHomePage} />;
       default:
         return <></>;
     }
@@ -132,16 +128,16 @@ export function App(props: Props) {
     return () => {
       electron.ipcRenderer.removeAllListeners("openFile");
     };
-  }, [page, file]);
+  }, [page]);
 
+  // TODO: REMOVE
   useEffect(() => {
-    const saveFileSuccess = (event: IpcRendererEvent, data: { filePath: string }) => {
+    electron.ipcRenderer.on("saveFileSuccessApp", (event: IpcRendererEvent, data: { filePath: string }) => {
       file!.filePath = data.filePath;
-    };
-    electron.ipcRenderer.on("saveFileSuccess", saveFileSuccess);
+    });
 
     return () => {
-      electron.ipcRenderer.removeListener("saveFileSuccess", saveFileSuccess);
+      electron.ipcRenderer.removeAllListeners("saveFileSuccessApp");
     };
   }, [file]);
 
@@ -168,7 +164,7 @@ export function App(props: Props) {
         {({ i18n }) => (
           <GlobalContext.Provider
             value={{
-              file: file,
+              file,
               editorEnvelopeLocator: editorEnvelopeLocator
             }}
           >
