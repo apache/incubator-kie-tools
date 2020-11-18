@@ -44,7 +44,7 @@ export const AttributesToolbar = (props: AttributesToolbarProps) => {
             </Button>
           </SplitItem>
           <SplitItem>
-            <Button onClick={e => onViewOverview()}>Go back</Button>
+            <Button onClick={e => onViewOverview()}>Done</Button>
           </SplitItem>
         </Split>
       </ToolbarContent>

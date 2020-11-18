@@ -17,20 +17,34 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { FormGroup, Split, SplitItem, TextInput } from "@patternfly/react-core";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
-import { CharacteristicsTableEditModeAction } from "../atoms";
+import { CharacteristicLabelsEditMode, CharacteristicsTableAction } from "../atoms";
 import "./CharacteristicsTableRow.scss";
+import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
 import { ValidatedType } from "../../../types";
 import { IndexedCharacteristic } from "../organisms";
+import useOnclickOutside from "react-cool-onclickoutside";
+import { Operation } from "../Operation";
 
 interface CharacteristicsTableEditRowProps {
+  setActiveOperation: (operation: Operation) => void;
   characteristic: IndexedCharacteristic;
   validateCharacteristicName: (name: string | undefined) => boolean;
+  viewAttributes: () => void;
   onCommit: (name: string | undefined, reasonCode: string | undefined, baselineScore: number | undefined) => void;
   onCancel: () => void;
+  onDelete?: () => void;
 }
 
 export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowProps) => {
-  const { characteristic, validateCharacteristicName, onCommit, onCancel } = props;
+  const {
+    setActiveOperation,
+    characteristic,
+    viewAttributes,
+    validateCharacteristicName,
+    onCommit,
+    onCancel,
+    onDelete
+  } = props;
 
   const index = characteristic.index;
 
@@ -40,6 +54,11 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   });
   const [reasonCode, setReasonCode] = useState<string | undefined>();
   const [baselineScore, setBaselineScore] = useState<number | undefined>();
+
+  const ref = useOnclickOutside(event => {
+    onCommit(name.value, reasonCode, baselineScore);
+    setActiveOperation(Operation.NONE);
+  });
 
   useEffect(() => {
     setName({
@@ -62,7 +81,16 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
   };
 
   return (
-    <article className={`characteristic-item characteristic-item-n${index}`}>
+    <article
+      ref={ref}
+      className={`characteristic-item characteristic-item-n${index} editable editing`}
+      tabIndex={0}
+      onKeyDown={e => {
+        if (e.key === "Escape") {
+          onCancel();
+        }
+      }}
+    >
       <Split hasGutter={true}>
         <SplitItem>
           <FormGroup
@@ -102,7 +130,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
             />
           </FormGroup>
         </SplitItem>
-        <SplitItem isFilled={true}>
+        <SplitItem>
           <FormGroup label="Baseline score" fieldId="characteristic-baseline-score-helper" style={{ width: "12em" }}>
             <TextInput
               type="number"
@@ -114,13 +142,20 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
             />
           </FormGroup>
         </SplitItem>
-        <SplitItem>
-          <CharacteristicsTableEditModeAction
-            onCommit={() => onCommit(name.value, reasonCode, baselineScore)}
-            onCancel={() => onCancel()}
-            disableCommit={!validateCharacteristicName(name.value)}
+        <SplitItem isFilled={true}>
+          <CharacteristicLabelsEditMode
+            viewAttributes={() => {
+              onCommit(name.value, reasonCode, baselineScore);
+              setActiveOperation(Operation.NONE);
+              viewAttributes();
+            }}
           />
         </SplitItem>
+        {onDelete && (
+          <SplitItem>
+            <CharacteristicsTableAction onDelete={onDelete} />
+          </SplitItem>
+        )}
       </Split>
     </article>
   );

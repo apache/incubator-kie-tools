@@ -20,3 +20,14 @@
   height: calc(100vh - 48px);
 
 }
+
+.editable:hover {
+  box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
+}
+
+.editing {
+  box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
+  border-left-color: var(--pf-global--active-color--100);
+  border-left-width: var(--pf-global--BorderWidth--l);
+  border-left-style: solid;
+}

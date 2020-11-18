@@ -18,31 +18,39 @@ import { Split, SplitItem } from "@patternfly/react-core";
 import { CharacteristicLabels, CharacteristicsTableAction } from "../atoms";
 import { IndexedCharacteristic } from "../organisms";
 import "./CharacteristicsTableRow.scss";
+import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
 
 interface CharacteristicsTableRowProps {
   characteristic: IndexedCharacteristic;
-  viewAttributes: () => void;
   onEdit: () => void;
   onDelete: () => void;
-  isDisabled: boolean;
 }
 
 export const CharacteristicsTableRow = (props: CharacteristicsTableRowProps) => {
-  const { isDisabled, characteristic, viewAttributes, onEdit, onDelete } = props;
+  const { characteristic, onEdit, onDelete } = props;
 
   const index = characteristic.index;
 
   return (
-    <article className={`characteristic-item characteristic-item-n${index}`}>
+    <article
+      className={`characteristic-item characteristic-item-n${index} editable`}
+      onClick={onEdit}
+      tabIndex={0}
+      onKeyDown={e => {
+        if (e.key === "Enter") {
+          onEdit();
+        }
+      }}
+    >
       <Split hasGutter={true} style={{ height: "100%" }}>
         <SplitItem>
           <strong>{characteristic.characteristic.name}</strong>
         </SplitItem>
         <SplitItem isFilled={true}>
-          <CharacteristicLabels activeCharacteristic={characteristic.characteristic} viewAttributes={viewAttributes} />
+          <CharacteristicLabels activeCharacteristic={characteristic.characteristic} />
         </SplitItem>
         <SplitItem>
-          <CharacteristicsTableAction onEdit={() => onEdit()} onDelete={() => onDelete()} disabled={isDisabled} />
+          <CharacteristicsTableAction onDelete={onDelete} />
         </SplitItem>
       </Split>
     </article>

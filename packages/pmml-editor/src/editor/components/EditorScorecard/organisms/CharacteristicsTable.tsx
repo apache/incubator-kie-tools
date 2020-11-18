@@ -109,7 +109,6 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
   };
 
   return (
-    //      <Form style={{ height: "100%", overflowY: "auto" }}>
     <Form>
       <section>
         {characteristics.map(ic => {
@@ -117,12 +116,15 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
             return (
               <CharacteristicsTableEditRow
                 key={ic.index}
+                setActiveOperation={setActiveOperation}
                 characteristic={ic}
+                viewAttributes={() => onViewAttributes(ic.index)}
                 validateCharacteristicName={_name => onValidateCharacteristicName(ic.index, _name)}
                 onCommit={(_name, _reasonCode, _baselineScore) =>
                   onCommit(ic.index, _name, _reasonCode, _baselineScore)
                 }
-                onCancel={() => onCancel()}
+                onDelete={() => onDelete(ic.index)}
+                onCancel={onCancel}
               />
             );
           } else {
@@ -130,12 +132,8 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
               <CharacteristicsTableRow
                 key={ic.index}
                 characteristic={ic}
-                viewAttributes={() => onViewAttributes(ic.index)}
                 onEdit={() => onEdit(ic.index)}
                 onDelete={() => onDelete(ic.index)}
-                isDisabled={
-                  !(editItemIndex === undefined || editItemIndex === ic.index) || activeOperation !== Operation.NONE
-                }
               />
             );
           }
@@ -144,10 +142,12 @@ export const CharacteristicsTable = (props: CharacteristicsTableProps) => {
           <div key={undefined} ref={addCharacteristicRowRef}>
             <CharacteristicsTableEditRow
               key={"add"}
+              setActiveOperation={setActiveOperation}
               characteristic={{ index: undefined, characteristic: { Attribute: [] } }}
+              viewAttributes={() => onViewAttributes(undefined)}
               validateCharacteristicName={_name => onValidateCharacteristicName(undefined, _name)}
               onCommit={(_name, _reasonCode, _baselineScore) => onCommit(undefined, _name, _reasonCode, _baselineScore)}
-              onCancel={() => onCancel()}
+              onCancel={onCancel}
             />
           </div>
         )}

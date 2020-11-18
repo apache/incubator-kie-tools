@@ -16,15 +16,13 @@
 import * as React from "react";
 import { Characteristic } from "@kogito-tooling/pmml-editor-marshaller";
 import { CharacteristicLabel } from "./CharacteristicLabel";
-import { CharacteristicLabelsEditMode } from "./CharacteristicLabelsEditMode";
 
 interface CharacteristicLabelsProps {
   activeCharacteristic: Characteristic;
-  viewAttributes: () => void;
 }
 
 export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
-  const { activeCharacteristic, viewAttributes } = props;
+  const { activeCharacteristic } = props;
 
   return (
     <>
@@ -32,7 +30,6 @@ export const CharacteristicLabels = (props: CharacteristicLabelsProps) => {
       {activeCharacteristic.baselineScore && CharacteristicLabel("Baseline score", activeCharacteristic.baselineScore)}
       {activeCharacteristic.Attribute.length > 0 &&
         CharacteristicLabel("Attribute count", activeCharacteristic.Attribute.length)}
-      <CharacteristicLabelsEditMode viewAttributes={viewAttributes} />
     </>
   );
 };

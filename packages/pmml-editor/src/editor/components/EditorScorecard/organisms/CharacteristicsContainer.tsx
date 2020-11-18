@@ -122,11 +122,7 @@ export const CharacteristicsContainer = (props: CharacteristicsContainerProps) =
               {viewSection === "overview" && (
                 <Stack hasGutter={true}>
                   <StackItem>
-                    <CharacteristicsToolbar
-                      activeOperation={activeOperation}
-                      onFilter={onFilter}
-                      onAddCharacteristic={addCharacteristic}
-                    />
+                    <CharacteristicsToolbar onFilter={onFilter} onAddCharacteristic={addCharacteristic} />
                   </StackItem>
                   <StackItem className="characteristics-container__overview">
                     <CharacteristicsTable
